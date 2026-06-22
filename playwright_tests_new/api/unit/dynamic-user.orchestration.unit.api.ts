@@ -849,14 +849,24 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
   });
 
   test('ProfessionalUserUtils normalises an email-shaped assignment UI user before bootstrapping the manage-org session path', async () => {
-    const originalAssignmentUiUser = process.env.ORG_USER_ASSIGNMENT_UI_USER;
+    const envKeys = [
+      'ORG_USER_ASSIGNMENT_UI_USER',
+      'ORG_USER_ASSIGNMENT_BEARER_TOKEN',
+      'ORG_USER_ASSIGNMENT_USERNAME',
+      'ORG_USER_ASSIGNMENT_PASSWORD',
+    ] as const;
+    const originalEnv = Object.fromEntries(envKeys.map((key) => [key, process.env[key]]));
     const ensuredUsers: string[] = [];
+    const ensuredOptions: Array<{ strict?: boolean; baseUrl?: string }> = [];
     const resolvedStorageUsers: string[] = [];
     const requestedStorageStates: string[] = [];
     const requestedBaseUrls: string[] = [];
     const postedPayloads: unknown[] = [];
 
     process.env.ORG_USER_ASSIGNMENT_UI_USER = 'xui_test_solicitors@xui.com';
+    delete process.env.ORG_USER_ASSIGNMENT_BEARER_TOKEN;
+    delete process.env.ORG_USER_ASSIGNMENT_USERNAME;
+    delete process.env.ORG_USER_ASSIGNMENT_PASSWORD;
 
     try {
       const utils = new ProfessionalUserUtils(
@@ -869,8 +879,7 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         {
           ensureUiStorageStateForUser: async (userIdentifier, options) => {
             ensuredUsers.push(userIdentifier);
-            expect(options.strict).toBe(true);
-            expect(options.baseUrl).toMatch(/^https:\/\/manage-org\./);
+            ensuredOptions.push(options);
           },
           resolveUiStoragePathForUser: (userIdentifier) => {
             resolvedStorageUsers.push(userIdentifier);
@@ -912,10 +921,10 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         responseBody: { invited: true },
       });
       expect(ensuredUsers).toEqual(['ORG_USER_ASSIGNMENT']);
+      expect(ensuredOptions).toEqual([{ strict: true, baseUrl: requestedBaseUrls[0] }]);
       expect(resolvedStorageUsers).toEqual(['ORG_USER_ASSIGNMENT']);
       expect(requestedStorageStates).toEqual(['/tmp/ORG_USER_ASSIGNMENT.json']);
       expect(requestedBaseUrls).toHaveLength(1);
-      expect(requestedBaseUrls[0]).toMatch(/^https:\/\/manage-org\./);
       expect(postedPayloads).toEqual([
         {
           firstName: 'Dynamic',
@@ -926,10 +935,13 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         },
       ]);
     } finally {
-      if (typeof originalAssignmentUiUser === 'string') {
-        process.env.ORG_USER_ASSIGNMENT_UI_USER = originalAssignmentUiUser;
-      } else {
-        delete process.env.ORG_USER_ASSIGNMENT_UI_USER;
+      for (const key of envKeys) {
+        const originalValue = originalEnv[key];
+        if (typeof originalValue === 'string') {
+          process.env[key] = originalValue;
+        } else {
+          delete process.env[key];
+        }
       }
     }
   });

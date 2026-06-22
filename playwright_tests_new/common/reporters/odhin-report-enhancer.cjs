@@ -115,10 +115,11 @@ function escapeAttribute(value) {
 
 function injectEnhancerStyles(root) {
   const head = root.querySelector('head');
-  if (!head || root.querySelector('#odhin-enhancer-styles')) {
+  if (!head) {
     return;
   }
 
+  root.querySelectorAll('#odhin-enhancer-styles').forEach((node) => node.remove());
   head.appendChild(
     parse(`
 <style id="odhin-enhancer-styles">
@@ -201,53 +202,6 @@ function injectEnhancerStyles(root) {
     margin-top: 8px;
     font-size: 13px;
     font-weight: 600;
-  }
-
-  #odhin-accessibility-evidence .odhin-a11y-evidence-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-    padding: 16px;
-  }
-
-  #odhin-accessibility-evidence .odhin-a11y-evidence-card {
-    border: 2px solid #d4351c;
-    border-radius: 8px;
-    background: #ffffff;
-    color: #0b0c0c;
-    overflow: hidden;
-  }
-
-  #odhin-accessibility-evidence .odhin-a11y-evidence-card-body {
-    padding: 12px;
-  }
-
-  #odhin-accessibility-evidence .odhin-a11y-evidence-title {
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 1.3;
-    margin-bottom: 8px;
-  }
-
-  #odhin-accessibility-evidence .odhin-a11y-evidence-meta {
-    margin: 0 0 10px;
-    font-size: 13px;
-  }
-
-  #odhin-accessibility-evidence .odhin-a11y-evidence-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-    font-size: 13px;
-  }
-
-  #odhin-accessibility-evidence .odhin-a11y-evidence-screenshot {
-    display: block;
-    width: 100%;
-    max-height: 260px;
-    object-fit: contain;
-    background: #f3f2f1;
-    border-bottom: 1px solid #b1b4b6;
   }
 
   .odhin-a11y-test-evidence {
@@ -502,20 +456,87 @@ function normalizeEvidenceEntries(entries) {
         entry &&
         typeof entry.testTitle === 'string' &&
         typeof entry.htmlFileName === 'string' &&
-        typeof entry.jsonFileName === 'string' &&
-        typeof entry.screenshotFileName === 'string' &&
         Number.isFinite(Number(entry.violationCount))
     )
     .map((entry) => ({
+      engine: typeof entry.engine === 'string' ? entry.engine : inferEvidenceEngine(entry),
+      feature: typeof entry.feature === 'string' ? entry.feature : '',
+      pageState: typeof entry.pageState === 'string' ? entry.pageState : '',
       testTitle: entry.testTitle,
       htmlFileName: entry.htmlFileName,
-      jsonFileName: entry.jsonFileName,
-      screenshotFileName: entry.screenshotFileName,
+      jsonFileName: typeof entry.jsonFileName === 'string' ? entry.jsonFileName : '',
+      screenshotFileName: typeof entry.screenshotFileName === 'string' ? entry.screenshotFileName : '',
+      reportFileName: typeof entry.reportFileName === 'string' ? entry.reportFileName : '',
       violationCount: Number(entry.violationCount),
+      status: typeof entry.status === 'string' ? entry.status : '',
+      summary: typeof entry.summary === 'string' ? entry.summary : '',
       rules: Array.isArray(entry.rules) ? entry.rules.map(String) : [],
       targets: Array.isArray(entry.targets) ? entry.targets.map(String) : [],
     }))
-    .sort((left, right) => left.testTitle.localeCompare(right.testTitle));
+    .sort(
+      (left, right) =>
+        left.feature.localeCompare(right.feature) ||
+        left.pageState.localeCompare(right.pageState) ||
+        engineSortOrder(left.engine) - engineSortOrder(right.engine) ||
+        left.testTitle.localeCompare(right.testTitle)
+    );
+}
+
+function inferEvidenceEngine(entry) {
+  const value = `${entry?.attachmentPrefix ?? ''} ${entry?.htmlFileName ?? ''}`.toLowerCase();
+  if (value.includes('wave')) {
+    return 'wave-like';
+  }
+  if (value.includes('screen-reader')) {
+    return 'screen-reader';
+  }
+  if (value.includes('lighthouse')) {
+    return 'lighthouse';
+  }
+  if (value.includes('page-summary')) {
+    return 'summary';
+  }
+  return 'axe';
+}
+
+function engineSortOrder(engine) {
+  return ['summary', 'axe', 'wave-like', 'screen-reader', 'lighthouse'].indexOf(engine) >= 0
+    ? ['summary', 'axe', 'wave-like', 'screen-reader', 'lighthouse'].indexOf(engine)
+    : 99;
+}
+
+function engineLabel(engine) {
+  return (
+    {
+      summary: 'Page summary',
+      axe: 'axe',
+      'wave-like': 'WAVE-like',
+      'screen-reader': 'Screen-reader',
+      lighthouse: 'Lighthouse',
+    }[engine] ?? engine
+  );
+}
+
+function jsonLinkLabel(engine) {
+  return (
+    {
+      summary: 'summary JSON',
+      axe: 'DOM and axe JSON',
+      'wave-like': 'DOM and WAVE JSON',
+      'screen-reader': 'screen-reader JSON',
+      lighthouse: 'Lighthouse JSON',
+    }[engine] ?? 'evidence JSON'
+  );
+}
+
+function issueLabel(engine, count) {
+  if (engine === 'summary') {
+    return `${count} unexpected issue(s) across engines`;
+  }
+  if (engine === 'lighthouse') {
+    return count === 0 ? 'Accessibility threshold passed' : `${count} Lighthouse issue(s)`;
+  }
+  return `${count} ${engineLabel(engine)} issue(s)`;
 }
 
 function buildAccessibilityEvidenceBlock(entries) {
@@ -526,24 +547,45 @@ function buildAccessibilityEvidenceBlock(entries) {
 
   const cards = normalizedEntries
     .map((entry) => {
-      const screenshotPath = `./accessibility-evidence/${entry.screenshotFileName}`;
-      return `
-        <article class="odhin-a11y-evidence-card">
+      const screenshotPath = entry.screenshotFileName ? `./accessibility-evidence/${entry.screenshotFileName}` : '';
+      const screenshotHtml = screenshotPath
+        ? `
           <a href="${escapeAttribute(screenshotPath)}">
-            <img class="odhin-a11y-evidence-screenshot" src="${escapeAttribute(screenshotPath)}" alt="Highlighted accessibility screenshot for ${escapeAttribute(entry.testTitle)}" />
+            <img class="odhin-a11y-evidence-screenshot" src="${escapeAttribute(screenshotPath)}" alt="${escapeAttribute(engineLabel(entry.engine))} accessibility screenshot for ${escapeAttribute(entry.testTitle)}" />
           </a>
+        `
+        : '';
+      const evidenceLinks = [
+        `<a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">${entry.engine === 'summary' ? 'open page summary' : 'issue detail'}</a>`,
+        entry.reportFileName
+          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}">native Lighthouse HTML</a>`
+          : '',
+        screenshotPath ? `<a href="${escapeAttribute(screenshotPath)}">screenshot</a>` : '',
+        entry.jsonFileName
+          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">${jsonLinkLabel(entry.engine)}</a>`
+          : '',
+      ]
+        .filter(Boolean)
+        .join('\n');
+      return `
+        <article class="odhin-a11y-evidence-card" data-engine="${escapeAttribute(entry.engine)}">
+          ${screenshotHtml}
           <div class="odhin-a11y-evidence-card-body">
+            <span class="odhin-a11y-evidence-engine">${escapeHtml(engineLabel(entry.engine))}</span>
             <div class="odhin-a11y-evidence-title">${escapeHtml(entry.testTitle)}</div>
             <p class="odhin-a11y-evidence-meta">
-              ${entry.violationCount} axe issue(s): ${escapeHtml(entry.rules.join(', ') || 'unknown rule')}
+              ${escapeHtml(issueLabel(entry.engine, entry.violationCount))}: ${escapeHtml(entry.rules.join(', ') || entry.summary || 'no rule recorded')}
             </p>
+            ${
+              entry.feature || entry.pageState
+                ? `<p class="odhin-a11y-evidence-meta">${escapeHtml([entry.feature, entry.pageState].filter(Boolean).join(' / '))}</p>`
+                : ''
+            }
             <p class="odhin-a11y-evidence-meta">
               Targets: ${escapeHtml(entry.targets.join(', ') || 'no target recorded')}
             </p>
             <div class="odhin-a11y-evidence-links">
-              <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">issue detail</a>
-              <a href="${escapeAttribute(screenshotPath)}">highlighted screenshot</a>
-              <a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">DOM and axe JSON</a>
+              ${evidenceLinks}
             </div>
           </div>
         </article>
@@ -579,18 +621,33 @@ function injectAccessibilityEvidence(root, evidenceEntries) {
   return true;
 }
 
+function removeDashboardAccessibilityEvidence(root) {
+  root.querySelectorAll('#odhin-accessibility-evidence').forEach((node) => node.remove());
+}
+
 function buildTestEvidencePanel(entry) {
-  const ruleSummary = entry.rules.length > 0 ? entry.rules.join(', ') : 'axe rule violation';
+  const ruleSummary = entry.rules.length > 0 ? entry.rules.join(', ') : entry.summary || `${engineLabel(entry.engine)} evidence`;
   const targetSummary = entry.targets.length > 0 ? entry.targets.slice(0, 6).join(', ') : 'No DOM target recorded';
+  const screenshotLink = entry.screenshotFileName
+    ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.screenshotFileName}`)}">Open screenshot</a>`
+    : '';
+  const jsonLink = entry.jsonFileName
+    ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">Open ${escapeHtml(jsonLinkLabel(entry.engine))}</a>`
+    : '';
+  const nativeReportLink = entry.reportFileName
+    ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}">Open native Lighthouse HTML</a>`
+    : '';
 
   return `
     <div class="odhin-a11y-test-evidence" data-a11y-test-evidence-link="${escapeAttribute(entry.htmlFileName)}">
-      <h2>Accessibility evidence for this test</h2>
-      <p><strong>${entry.violationCount} issue(s):</strong> ${escapeHtml(ruleSummary)}</p>
+      <h2>${escapeHtml(engineLabel(entry.engine))} accessibility findings for this test</h2>
+      <p><strong>Pipeline non-blocking:</strong> Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled.</p>
+      <p><strong>${escapeHtml(issueLabel(entry.engine, entry.violationCount))}:</strong> ${escapeHtml(ruleSummary)}</p>
       <p><strong>DOM target(s):</strong> <code>${escapeHtml(targetSummary)}</code></p>
       <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">Open highlighted issue report</a>
-      <a href="${escapeAttribute(`./accessibility-evidence/${entry.screenshotFileName}`)}">Open screenshot</a>
-      <a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">Open DOM JSON</a>
+      ${nativeReportLink}
+      ${screenshotLink}
+      ${jsonLink}
     </div>
   `;
 }
@@ -605,9 +662,7 @@ function injectAccessibilityEvidenceIntoTestModals(root, evidenceEntries) {
   const modalContents = root.querySelectorAll('.modal-content');
   normalizedEntries.forEach((entry) => {
     const marker = `[data-a11y-test-evidence-link="${entry.htmlFileName.replace(/"/g, '\\"')}"]`;
-    if (root.querySelector(marker)) {
-      return;
-    }
+    root.querySelectorAll(marker).forEach((node) => node.remove());
 
     const matchingModal = modalContents.find(
       (modalContent) => modalContent.querySelector('.header-col-center')?.text.trim() === entry.testTitle
@@ -681,12 +736,14 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
-  if (!normalizedStats.length && !normalizedEvidenceEntries.length) {
+  const hasDashboardAccessibilityEvidence = htmlWithDefaultTestRows.includes('id="odhin-accessibility-evidence"');
+  if (!normalizedStats.length && !normalizedEvidenceEntries.length && !hasDashboardAccessibilityEvidence) {
     return htmlWithDefaultTestRows;
   }
 
   const root = parse(htmlWithDefaultTestRows);
   injectEnhancerStyles(root);
+  removeDashboardAccessibilityEvidence(root);
 
   if (normalizedStats.length) {
     replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
@@ -695,7 +752,6 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
     stripLegacyFileChartArtifacts(root);
   }
 
-  injectAccessibilityEvidence(root, normalizedEvidenceEntries);
   injectAccessibilityEvidenceIntoTestModals(root, normalizedEvidenceEntries);
 
   return root.toString();

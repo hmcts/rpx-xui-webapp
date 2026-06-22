@@ -1,5 +1,5 @@
 const menuConfig = {
-  '(judge)|(judiciary)': [
+  '(judge)|(judiciary)|(panelmember)': [
     {
       active: true,
       flags: [
@@ -10,13 +10,7 @@ const menuConfig = {
         },
       ],
       href: '/work/my-work/list',
-      roles: [
-        'caseworker-civil',
-        'caseworker-ia-iacjudge',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-employment-etjudge',
-      ],
+      roles: ['hmcts-judiciary'],
       text: 'My work',
     },
     {
@@ -71,15 +65,7 @@ const menuConfig = {
       active: false,
       flags: ['feature-global-search'],
       href: '/search',
-      roles: [
-        'caseworker-civil',
-        'caseworker-ia-iacjudge',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-st_cic-judge',
-        'caseworker-st_cic-senior-judge',
-        'caseworker-employment-etjudge',
-      ],
+      roles: ['hmcts-judiciary'],
       text: 'Search',
     },
     {
@@ -142,15 +128,7 @@ const menuConfig = {
         },
       ],
       href: '/work/my-work/list',
-      roles: [
-        'caseworker-civil',
-        'caseworker-civil-staff',
-        'caseworker-ia-caseofficer',
-        'caseworker-ia-admofficer',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-employment',
-      ],
+      roles: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'My work',
     },
     {
@@ -243,20 +221,7 @@ const menuConfig = {
       active: false,
       flags: ['feature-global-search'],
       href: '/search',
-      roles: [
-        'caseworker-civil',
-        'caseworker-ia-caseofficer',
-        'senior-tribunal-caseworker',
-        'tribunal-caseworker',
-        'caseworker-ia-admofficer',
-        'caseworker-befta_master',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-st_cic',
-        'caseworker-st_cic-senior-caseworker',
-        'caseworker-sscs',
-        'caseworker-employment',
-      ],
+      roles: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'Search',
     },
     {

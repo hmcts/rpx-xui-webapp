@@ -653,7 +653,8 @@ withPipeline(type, product, component) {
                                     playwrightAccessibilityReportFile
                                 )
                             } catch (Exception e) {
-                                echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                                currentBuild.result = 'UNSTABLE'
+                                echo "[parallel-report-gathering] Playwright Accessibility failed; marking build unstable so a manual accessibility-only run cannot hide missing Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
                             } finally {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Accessibility', 'finish')
                                 try {
@@ -796,7 +797,8 @@ withPipeline(type, product, component) {
                                     playwrightAccessibilityReportFile
                                 )
                             } catch (Exception e) {
-                                echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                                currentBuild.result = 'UNSTABLE'
+                                echo "[parallel-report-gathering] Playwright Accessibility failed; marking build unstable so a manual accessibility-only run cannot hide missing Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
                             } finally {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Accessibility', 'finish')
                                 try {

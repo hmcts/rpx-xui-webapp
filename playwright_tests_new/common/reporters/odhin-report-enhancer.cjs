@@ -881,7 +881,6 @@ function buildIssueSummaryBlock(evidenceEntries) {
         engineSortOrder(left.engine) - engineSortOrder(right.engine) ||
         left.rule.localeCompare(right.rule)
     )
-    .slice(0, 12)
     .map((item) => {
       const screens = item.testTitles.size;
       const likelyFix = screens > 1 ? 'Likely shared component/app-shell fix' : 'Likely page-specific fix';
@@ -968,11 +967,19 @@ function buildIssueFilterBlock(evidenceEntries) {
         button.addEventListener('click', function() {
           var value = button.getAttribute('data-a11y-issue-filter') || '';
           if (window.jQuery && jQuery.fn && jQuery.fn.DataTable && jQuery.fn.dataTable.isDataTable('#test-list-table')) {
-            jQuery('#test-list-table').DataTable().search(value).draw();
+            var table = jQuery('#test-list-table').DataTable();
+            var issueColumnIndex = jQuery('#test-list-table thead th.odhin-a11y-issues-header').first().index();
+            if (issueColumnIndex >= 0) {
+              table.column(issueColumnIndex).search(value).draw();
+            } else {
+              table.search(value).draw();
+            }
             return;
           }
           document.querySelectorAll('#test-list-table tbody tr').forEach(function(row) {
-            row.style.display = !value || row.textContent.indexOf(value) !== -1 ? '' : 'none';
+            var issueCell = row.querySelector('.odhin-a11y-table-issues');
+            var ruleText = issueCell ? issueCell.getAttribute('data-a11y-issue-rules') || issueCell.textContent : '';
+            row.style.display = !value || ruleText.indexOf(value) !== -1 ? '' : 'none';
           });
         });
       });

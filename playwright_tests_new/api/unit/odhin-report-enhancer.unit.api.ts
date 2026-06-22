@@ -411,6 +411,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('Quick filters:');
     expect(nextHtml).toContain('data-a11y-issue-filter="skip-link"');
     expect(nextHtml).toContain('data-a11y-issue-filter="main-landmark"');
+    expect(nextHtml).toContain('table.column(issueColumnIndex).search(value).draw();');
     expect(nextHtml).toContain('<strong>WAVE-like:</strong> link-name (1)');
     expect(nextHtml).toContain('<strong>Screen-reader:</strong> skip-link (1), main-landmark (1)');
     expect(nextHtml).toContain('Also: main-landmark, link-name.');
@@ -425,6 +426,23 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('Open screen-reader JSON');
     expect(nextHtml).toContain('Open DOM and WAVE JSON');
     expect(nextHtml.indexOf('Accessibility findings for this test')).toBeLessThan(nextHtml.indexOf('run info'));
+  });
+
+  test('keeps every unique accessibility issue group in the dashboard summary', () => {
+    const entries = Array.from({ length: 13 }, (_, index) => ({
+      engine: 'wave-like',
+      testTitle: `screen ${index + 1}`,
+      htmlFileName: `issue-${index + 1}.html`,
+      violationCount: 1,
+      rules: [`custom-rule-${index + 1}`],
+      targets: ['main'],
+    }));
+
+    const summaryHtml = enhancerTest.buildIssueSummaryBlock(entries);
+
+    expect(summaryHtml).toContain('custom-rule-1');
+    expect(summaryHtml).toContain('custom-rule-13');
+    expect(summaryHtml.match(/custom-rule-/g)).toHaveLength(13);
   });
 
   test('normalizes accessibility evidence entries and drops incomplete records', () => {

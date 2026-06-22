@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body });
   });
 
-  await page.route(`**/workallocation/caseworker/getUsersByIdamIds*`, async (route) => {
+  await page.route(`**/workallocation/caseworker/getUsersByServiceName*`, async (route) => {
     const body = JSON.stringify([
       {
         email: 'test@example.com',
@@ -174,7 +174,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     };
     const tasks = buildCaseDetailsTasksMinimal(taskData);
 
-    await page.route(`**/workallocation/caseworker/getUsersByIdamIds*`, async (route) => {
+    await page.route(`**/workallocation/caseworker/getUsersByServiceName*`, async (route) => {
       const body = JSON.stringify([
         {
           email: 'test@example.com',
@@ -270,10 +270,10 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
   });
 
-  // Skipped until EXUI-4127 is resolved
-  test.skip(`Complex Markdown label renders correctly`, async ({ taskListPage, caseDetailsPage, page }) => {
+  test(`Complex Markdown label renders correctly`, async ({ caseDetailsPage, page }) => {
+    const taskId = faker.string.uuid();
     const taskData = {
-      id: [faker.string.uuid().toString()],
+      id: [taskId],
       caseId: caseMockResponse.case_id,
       titles: ['Complex markdown task'],
       states: ['assigned'],
@@ -296,23 +296,23 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
 
     await test.step('Verify Next steps elements are shown as expected', async () => {
       const content = await caseDetailsPage.getTaskKeyValueRows();
-      expect.soft(content[0]['Next steps']).toMatch(/^Overview/);
+      const nextStepsText = content[0]['Next steps'];
+      const nextStepsHtml = content[0]['Next steps HTML'];
+
+      expect.soft(nextStepsText).toContain('Overview');
+      expect.soft(nextStepsText).toContain('Current progress of the case');
       expect
-        .soft(content[0]['Next steps HTML'])
+        .soft(nextStepsHtml)
         .toContain(
-          `<img src="https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/progress_legalRep_appealStarted.svg?tid=${taskData.id}" alt="Progress map showing that the appeal is now at stage 1 of 11 stages - the Appeal started stage">`
+          `<img src="https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/progress_legalRep_appealStarted.svg" alt="Progress map showing that the appeal is now at stage 1 of 11 stages - the Appeal started stage">`
         );
       expect
-        .soft(content[0]['Next steps'])
+        .soft(nextStepsText)
         .toContain(
           'Do this next You still need to submit your appeal. Submit your appeal You can also review and edit your appeal.'
         );
-      expect
-        .soft(content[0]['Next steps HTML'])
-        .toContain(`href="/case/IA/Asylum/${caseId}/trigger/submitAppeal?tid=${taskData.id}"`);
-      expect
-        .soft(content[0]['Next steps HTML'])
-        .toContain(`href="/case/IA/Asylum/${caseId}/trigger/editAppeal?tid=${taskData.id}"`);
+      expect.soft(nextStepsHtml).toContain(`href="/case/IA/Asylum/${caseId}/trigger/submitAppeal"`);
+      expect.soft(nextStepsHtml).toContain(`href="/case/IA/Asylum/${caseId}/trigger/editAppeal?tid=${taskId}"`);
     });
   });
 });

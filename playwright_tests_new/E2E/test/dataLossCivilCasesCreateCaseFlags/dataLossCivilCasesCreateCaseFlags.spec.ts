@@ -19,6 +19,7 @@ import {
   resolveCcdCaseStateId,
   type CcdCaseDetails,
 } from '../../utils/test-setup/civil/civilCaseFlagsSetup';
+import { getCivilLipMediationApiMissingConfiguration } from '../../utils/test-setup/journeys/civilCaseJourneys';
 import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
 const COURT_STAFF_ALIAS = getCivilCaseFlagsCourtStaffAlias();
@@ -27,6 +28,12 @@ const TEST_FLAG_COMMENT = 'Data loss Civil Create Case Flag';
 const CASE_FLAG_SUCCESS_POLL_INTERVALS = [1_000, 2_000, 3_000];
 const DATA_LOSS_TEST_TAGS = ['@e2e', '@e2e-case-flags', '@e2e-civil-data-loss'];
 const DATA_LOSS_TEST_TIMEOUT_MS = resolvePositiveInt(process.env.PW_CIVIL_DATA_LOSS_TEST_TIMEOUT_MS, 35 * 60_000);
+const missingCivilConfig = getCivilLipMediationApiMissingConfiguration({ allowMissingCitizenUsers: true });
+
+test.skip(
+  missingCivilConfig.length > 0,
+  `Skipping Civil create case flag data-loss regression because ${missingCivilConfig.join(', ')}`
+);
 
 test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TEST_TAGS }, () => {
   test.describe.configure({ timeout: DATA_LOSS_TEST_TIMEOUT_MS });

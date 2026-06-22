@@ -51,6 +51,7 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/cases\/\d+\/event-triggers\//,
   /\/cases\/\d+\/events/,
   /\/event-triggers\/[^/]+\/validate/,
+  /\/data\/case-types\/[^/]+\/validate/,
 ];
 
 export class CreateCasePage extends Base {

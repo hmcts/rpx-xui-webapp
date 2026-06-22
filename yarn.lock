@@ -3191,9 +3191,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.16":
-  version: 2.30.16
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.16"
+"@hmcts/rpx-xui-node-lib@npm:2.30.16-semantic-library-upgrades":
+  version: 2.30.16-semantic-library-upgrades
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.16-semantic-library-upgrades"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     axios: "npm:^1.16.0"
@@ -3212,7 +3212,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/54c774caffea0094ffb723045c276eab87a16ad48b423ee2cb71dbc328297b6c40ad0d77f069c9cc7e08f61a7362518d88d5706aa87b220cc2011e8919468456
+  checksum: 10/fa9fa39397b5716fb25cdc1d63f71cfe4fdda8de00c86eaa1f2dfcd6c117717eedd8dd88c27c23f36758a5dae5613fa1b83d248cdd94d1675dedad6ef3fb6e5a
   languageName: node
   linkType: hard
 
@@ -15108,7 +15108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^18.0.1, joi@npm:^18.0.2, joi@npm:^18.1.2":
+"joi@npm:^18.0.1, joi@npm:^18.0.2":
   version: 18.2.1
   resolution: "joi@npm:18.2.1"
   dependencies:
@@ -15120,6 +15120,21 @@ __metadata:
     "@hapi/topo": "npm:^6.0.2"
     "@standard-schema/spec": "npm:^1.1.0"
   checksum: 10/1525745571b0b0c60fdb51a8cb6f2e5717241b04314872259f68e10ea729e456d2d4883812013fc03913b03eb2b6cbca9d40d144bbd29e7b02fb57797edb0357
+  languageName: node
+  linkType: hard
+
+"joi@npm:^18.1.2":
+  version: 18.2.3
+  resolution: "joi@npm:18.2.3"
+  dependencies:
+    "@hapi/address": "npm:^5.1.1"
+    "@hapi/formula": "npm:^3.0.2"
+    "@hapi/hoek": "npm:^11.0.7"
+    "@hapi/pinpoint": "npm:^2.0.1"
+    "@hapi/tlds": "npm:^1.1.1"
+    "@hapi/topo": "npm:^6.0.2"
+    "@standard-schema/spec": "npm:^1.1.0"
+  checksum: 10/95beb88e78c884e1b2650837b31f1fecc52b035f1b48f771f5a4c07b2202a1fcce87819b4706734d708f277875f19c813b4c695246bdf9c65659f210b681a613
   languageName: node
   linkType: hard
 
@@ -19702,7 +19717,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.12"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.16"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.16-semantic-library-upgrades"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

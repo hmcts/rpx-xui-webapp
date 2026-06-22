@@ -8,11 +8,11 @@ import {
   defaultStaffAMMenuRole,
   uniqueRoles,
 } from './amRoleAssignmentMock.helper';
+import headerConfigTemplate from '../mocks/xuiAppShellHeaderConfig.mock.js';
 
 const require = createRequire(import.meta.url);
 
 const appConfigTemplate = require('../../../src/assets/config/config.json');
-const headerConfigTemplate = require('../mocks/xuiAppShellHeaderConfig.mock.js');
 
 type UnknownRecord = Record<string, unknown>;
 

@@ -162,24 +162,41 @@ test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () =
       {
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(['IA']),
+        body: JSON.stringify([
+          {
+            serviceId: 'IA',
+            roles: [
+              {
+                roleId: 'lead-judge',
+                roleName: 'Lead judge',
+              },
+            ],
+          },
+        ]),
       },
     ]);
     expect(fulfilledBodies[6]).toEqual([
       {
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL']),
+        body: JSON.stringify(['IA']),
       },
     ]);
     expect(fulfilledBodies[7]).toEqual([
       {
         status: 200,
         contentType: 'application/json',
+        body: JSON.stringify(['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL']),
+      },
+    ]);
+    expect(fulfilledBodies[8]).toEqual([
+      {
+        status: 200,
+        contentType: 'application/json',
         body: JSON.stringify(['ORGANISATION']),
       },
     ]);
-    expect(fulfilledBodies[11]).toEqual([
+    expect(fulfilledBodies[12]).toEqual([
       {
         status: 200,
         contentType: 'application/json',

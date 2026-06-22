@@ -83,15 +83,15 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
     const htmlAttachment = attachments.find((attachment) => attachment.name === 'wave-accessibility-issues.html');
     expect(htmlAttachment?.body?.toString()).toContain('Developer advice');
     expect(htmlAttachment?.body?.toString()).toContain('What to fix');
+    expect(htmlAttachment?.body?.toString()).toContain('Fix path');
+    expect(htmlAttachment?.body?.toString()).toContain('search selector #continue');
     expect(htmlAttachment?.body?.toString()).toContain('class: govuk-button');
     expect(htmlAttachment?.body?.toString()).toContain(
-      'Add visible text, a label, aria-label, or aria-labelledby so the control has an accessible name.'
+      'Fix the template first: add visible text, a govukLabel/label for the control, aria-label, or aria-labelledby.'
     );
 
     const json = await fs.readFile(path.join(evidenceDir, 'issue-state-wave-accessibility-issues.json'), 'utf8');
     expect(json).toContain('"classes": "govuk-button"');
-    expect(json).toContain(
-      '"advice": "Add visible text, a label, aria-label, or aria-labelledby so the control has an accessible name."'
-    );
+    expect(json).toContain('"advice": "Fix the template first: add visible text, a govukLabel/label for the control');
   });
 });

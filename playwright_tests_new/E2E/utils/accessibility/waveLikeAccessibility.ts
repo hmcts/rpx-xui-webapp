@@ -562,6 +562,8 @@ function buildDeveloperAdviceHtml(url: string, violation: WaveLikeViolation): st
         <dd>${escapeHtml(violation.rule)}: ${escapeHtml(violation.message)}</dd>
         <dt>What to fix</dt>
         <dd>${escapeHtml(violation.advice ?? adviceForRule(violation.rule))}</dd>
+        <dt>Fix path</dt>
+        <dd>${buildFixPathHtml(violation)}</dd>
         <dt>Evidence</dt>
         <dd>Use this DOM snippet with the numbered highlighted screenshot marker for the same issue.</dd>
       </dl>
@@ -591,19 +593,39 @@ function buildWhereToLookHtml(url: string, violation: WaveLikeViolation): string
   return `<code>${escapeHtml(parts.join(' | '))}</code>`;
 }
 
+function buildFixPathHtml(violation: WaveLikeViolation): string {
+  const hints = [
+    violation.selector ? `search selector ${violation.selector}` : '',
+    violation.codeLocation?.id ? `search id ${violation.codeLocation.id}` : '',
+    violation.codeLocation?.testId ? `search test id ${violation.codeLocation.testId}` : '',
+    violation.codeLocation?.classes ? `search class ${violation.codeLocation.classes.split(/\s+/)[0]}` : '',
+    violation.codeLocation?.nearestHeading ? `check template near ${violation.codeLocation.nearestHeading}` : '',
+  ].filter(Boolean);
+
+  return escapeHtml(
+    hints.length > 0 ? hints.join('; ') : 'Start with the route component/template that renders this page state.'
+  );
+}
+
 function adviceForRule(rule: string): string {
   const adviceByRule: Record<string, string> = {
-    'accessible-name': 'Add visible text, a label, aria-label, or aria-labelledby so the control has an accessible name.',
-    'document-language': 'Add a lang attribute to the html element.',
-    'document-title': 'Set a meaningful page title for the current route/state.',
-    'duplicate-id': 'Make the id unique, then update any labels, error links, and aria references that point at it.',
-    'error-summary-target': 'Point the error-summary link at the invalid field id and ensure focus moves to the summary.',
-    'fieldset-legend': 'Add a visible legend that describes the grouped controls.',
-    'h1-count': 'Keep exactly one visible h1 for the page state.',
-    'heading-order': 'Change the heading level or add the missing section heading so levels do not jump.',
-    'image-alt': 'Add useful alt text, or mark decorative images with empty alt text or role="presentation".',
-    'main-landmark': 'Ensure the rendered page has exactly one usable main element or role="main".',
-    'table-headers': 'Add th elements or row/column header roles for data tables.',
+    'accessible-name':
+      'Fix the template first: add visible text, a govukLabel/label for the control, aria-label, or aria-labelledby. Prefer visible text or label before ARIA.',
+    'document-language': 'Set lang on the html element from the app shell; use en unless the Welsh route/state is rendered.',
+    'document-title':
+      'Set the route/page title to describe the current state, and include the error prefix when validation errors are present.',
+    'duplicate-id':
+      'Make the id unique in the template, then update label for, aria-describedby, aria-labelledby, and error-summary links.',
+    'error-summary-target':
+      'Set each error-summary href to the invalid field id, ensure the field exists once, and move focus to the summary on submit.',
+    'fieldset-legend': 'Wrap related radios/checkboxes in a fieldset with a visible legend that describes the group question.',
+    'h1-count':
+      'Keep one visible h1 for the page state; demote extra page-level headings or add the missing h1 in the main content.',
+    'heading-order': 'Do not skip heading levels. Change the heading level or add the missing section heading in the template.',
+    'image-alt': 'Add meaningful alt text for informative images; use alt="" or role="presentation" only for decorative images.',
+    'main-landmark':
+      'Render exactly one usable main element or role="main" in the app shell/page template; do not nest duplicate mains.',
+    'table-headers': 'Add th scope="col"/scope="row" or equivalent row/column header roles for data tables.',
   };
   return adviceByRule[rule] ?? 'Inspect the selector and DOM snippet, then apply the relevant GOV.UK accessibility pattern.';
 }

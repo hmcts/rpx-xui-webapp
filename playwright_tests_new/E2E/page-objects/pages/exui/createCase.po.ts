@@ -1099,7 +1099,9 @@ export class CreateCasePage extends Base {
       const divorceReasonCheckbox = divorceReasonField.getByLabel(reason, { exact: true }).first();
       const divorceReasonLabel = divorceReasonField.locator('label').filter({ hasText: reason }).first();
       await divorceReasonLabel.click({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-      await expect(divorceReasonCheckbox).toBeChecked({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+      if (!(await divorceReasonCheckbox.isChecked({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE }).catch(() => false))) {
+        throw new Error(`Divorce reason "${reason}" was not checked after clicking its label`);
+      }
     }
   }
 

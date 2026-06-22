@@ -21,7 +21,7 @@ const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: s
 const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
 
 const enhancerTest = enhancerModule.__test__ as {
-  enhanceDashboardHtml: (html: string, featureStats: unknown) => string;
+  enhanceDashboardHtml: (html: string, featureStats: unknown, evidenceEntries?: unknown) => string;
   formatDuration: (durationMs: number) => string;
   buildFeatureOverviewBlock: (featureStats: unknown) => string;
   buildAccessibilityEvidenceBlock: (entries: unknown) => string;
@@ -42,7 +42,10 @@ const enhancerTest = enhancerModule.__test__ as {
     htmlFileName: string;
     jsonFileName: string;
     screenshotFileName: string;
+    reportFileName: string;
     violationCount: number;
+    status: string;
+    summary: string;
     rules: string[];
     targets: string[];
   }>;
@@ -257,7 +260,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).not.toContain('DataTable({})');
   });
 
-  test('injects accessibility evidence screenshots into generated Odhín dashboard', () => {
+  test('keeps accessibility evidence off the generated Odhín dashboard', () => {
     const html = `
       <html>
         <head></head>
@@ -273,6 +276,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       [],
       [
         {
+          engine: 'axe',
+          feature: 'static pages',
+          pageState: 'privacy policy',
           testTitle: 'privacy policy page has no automatically detectable accessibility violations',
           htmlFileName: 'privacy-policy-accessibility-issues.html',
           jsonFileName: 'privacy-policy-accessibility-issues.json',
@@ -284,13 +290,35 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       ]
     );
 
-    expect(nextHtml).toContain('Accessibility Evidence');
-    expect(nextHtml).toContain('odhin-accessibility-evidence');
-    expect(nextHtml).toContain('./accessibility-evidence/privacy-policy-highlighted-screenshot.png');
-    expect(nextHtml).toContain('issue detail');
-    expect(nextHtml).toContain('DOM and axe JSON');
-    expect(nextHtml).toContain('link-name');
-    expect(nextHtml).toContain('.hmcts-header__link');
+    expect(nextHtml).not.toContain('Accessibility Evidence');
+    expect(nextHtml).not.toContain('odhin-accessibility-evidence');
+    expect(nextHtml).not.toContain('odhin-a11y-evidence-grid');
+    expect(nextHtml).not.toContain('./accessibility-evidence/privacy-policy-highlighted-screenshot.png');
+  });
+
+  test('removes previously injected accessibility evidence from the generated Odhín dashboard', () => {
+    const html = `
+      <html>
+        <head></head>
+        <body>
+          <div id="TabDashboard">
+            <div class="row">
+              <div class="col-12">
+                <div class="dashboard-block" id="odhin-accessibility-evidence">
+                  <div class="info-box-header">Accessibility Evidence</div>
+                  <div class="odhin-a11y-evidence-grid">old cards</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>`;
+
+    const nextHtml = enhancerTest.enhanceDashboardHtml(html, []);
+
+    expect(nextHtml).not.toContain('Accessibility Evidence');
+    expect(nextHtml).not.toContain('odhin-accessibility-evidence');
+    expect(nextHtml).not.toContain('old cards');
   });
 
   test('injects accessibility evidence into the matching generated Odhín test modal', () => {
@@ -329,16 +357,22 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     );
 
     expect(nextHtml).toContain('data-a11y-test-evidence-link="privacy-policy-accessibility-issues.html"');
-    expect(nextHtml).toContain('Accessibility evidence for this test');
+    expect(nextHtml).toContain('axe accessibility findings for this test');
+    expect(nextHtml).toContain(
+      'Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled'
+    );
     expect(nextHtml).toContain('Open highlighted issue report');
     expect(nextHtml).toContain('Open screenshot');
-    expect(nextHtml).toContain('Open DOM JSON');
-    expect(nextHtml.indexOf('Accessibility evidence for this test')).toBeLessThan(nextHtml.indexOf('run info'));
+    expect(nextHtml).toContain('Open DOM and axe JSON');
+    expect(nextHtml.indexOf('axe accessibility findings for this test')).toBeLessThan(nextHtml.indexOf('run info'));
   });
 
   test('normalizes accessibility evidence entries and drops incomplete records', () => {
     const entries = enhancerTest.normalizeEvidenceEntries([
       {
+        engine: 'screen-reader',
+        feature: 'case list',
+        pageState: 'results',
         testTitle: 'valid a11y evidence',
         htmlFileName: 'issue.html',
         jsonFileName: 'issue.json',
@@ -348,8 +382,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         targets: ['#reason'],
       },
       {
-        testTitle: 'missing screenshot',
-        htmlFileName: 'issue.html',
+        testTitle: 'missing html file',
         jsonFileName: 'issue.json',
         violationCount: 1,
       },
@@ -357,11 +390,17 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
 
     expect(entries).toHaveLength(1);
     expect(entries[0]).toEqual({
+      engine: 'screen-reader',
+      feature: 'case list',
+      pageState: 'results',
       testTitle: 'valid a11y evidence',
       htmlFileName: 'issue.html',
       jsonFileName: 'issue.json',
       screenshotFileName: 'issue.png',
+      reportFileName: '',
       violationCount: 2,
+      status: '',
+      summary: '',
       rules: ['label'],
       targets: ['#reason'],
     });
@@ -374,6 +413,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     fs.writeFileSync(
       path.join(evidenceDir, 'manifest-entry-case-list-accessibility-issues.json'),
       JSON.stringify({
+        engine: 'wave-like',
+        feature: 'case list',
+        pageState: 'search results',
         testTitle: 'case list page has no automatically detectable accessibility violations',
         htmlFileName: 'case-list-accessibility-issues.html',
         jsonFileName: 'case-list-accessibility-issues.json',
@@ -388,11 +430,17 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
 
     expect(entries).toEqual([
       {
+        engine: 'wave-like',
+        feature: 'case list',
+        pageState: 'search results',
         testTitle: 'case list page has no automatically detectable accessibility violations',
         htmlFileName: 'case-list-accessibility-issues.html',
         jsonFileName: 'case-list-accessibility-issues.json',
         screenshotFileName: 'case-list-accessibility-issues.png',
+        reportFileName: '',
         violationCount: 1,
+        status: '',
+        summary: '',
         rules: ['label'],
         targets: ['#case-reference'],
       },

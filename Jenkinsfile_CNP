@@ -48,7 +48,7 @@ properties([
         booleanParam(
             name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
             defaultValue: false,
-            description: 'Manual-only: run the non-blocking unified Playwright accessibility pack on this CNP build.'
+            description: 'Manual-only: run only the non-blocking unified Playwright accessibility pack on this CNP build.'
         ),
         text(
             name: 'INTEGRATION_PW_PROFILE_RUNS',
@@ -632,6 +632,7 @@ withPipeline(type, product, component) {
                 ]
 
                 if (params.RUN_PLAYWRIGHT_ACCESSIBILITY) {
+                    previewFunctionalSuites = [failFast: false]
                     previewFunctionalSuites.playwrightAccessibility = {
                         stage('Playwright Accessibility Tests') {
                             try {
@@ -664,7 +665,7 @@ withPipeline(type, product, component) {
                         }
                     }
                 } else {
-                    echo '[playwright-accessibility] CNP stage omitted by default. Set RUN_PLAYWRIGHT_ACCESSIBILITY=true on a manual build to include this pack.'
+                    echo '[playwright-accessibility] CNP stage omitted by default. Set RUN_PLAYWRIGHT_ACCESSIBILITY=true on a manual build to run only this pack.'
                 }
 
                 parallel(previewFunctionalSuites)
@@ -694,7 +695,7 @@ withPipeline(type, product, component) {
             try {
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'start')
                 // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
-                parallel(
+                def aatFunctionalSuites = [
                     failFast: false,
                     api: {
                         stage('API Tests') {
@@ -771,7 +772,46 @@ withPipeline(type, product, component) {
                             }
                         }
                     }
-                )
+                ]
+
+                if (params.RUN_PLAYWRIGHT_ACCESSIBILITY) {
+                    aatFunctionalSuites = [failFast: false]
+                    aatFunctionalSuites.playwrightAccessibility = {
+                        stage('Playwright Accessibility Tests') {
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Accessibility', 'start')
+                                withEnv([
+                                    "ORG_USER_ASSIGNMENT_MODE=external",
+                                    "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                    "PW_ACCESSIBILITY_WORKERS=6",
+                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PLAYWRIGHT_SKIP_INSTALL=true",
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                ]) {
+                                    yarnBuilder.yarn('test:accessibility:playwright')
+                                }
+                                assertHtmlReportExists(
+                                    playwrightAccessibilityReportDir,
+                                    playwrightAccessibilityReportFile
+                                )
+                            } catch (Exception e) {
+                                echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                            } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Accessibility', 'finish')
+                                try {
+                                    publishPlaywrightAccessibilityReport('AAT Playwright Accessibility')
+                                } catch (Exception publishException) {
+                                    echo "[playwright-accessibility] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    echo '[playwright-accessibility] CNP stage omitted by default. Set RUN_PLAYWRIGHT_ACCESSIBILITY=true on a manual build to run only this pack.'
+                }
+
+                parallel(aatFunctionalSuites)
             } finally {
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'finish')
                 archivePlaywrightDiagnostics()

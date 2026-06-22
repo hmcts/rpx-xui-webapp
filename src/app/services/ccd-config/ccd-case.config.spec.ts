@@ -53,6 +53,8 @@ class MockConfigService {
       mc_cdam_exclusion_list: ['DIVORCE', 'PROBATE'],
       icp_jurisdictions: ['foo'],
       wa_service_config: { test: 'config' },
+      wa_supported_role_categories: 'LEGAL_OPERATIONS, ADMIN,CTSC,JUDICIAL',
+      wa_supported_role_types: 'ORGANISATION',
       events_to_hide: ['queryManagementRespondQuery'],
       enable_service_specific_multi_followups: ['SERVICE_1'],
     };
@@ -217,6 +219,11 @@ describe('AppConfiguration', () => {
 
   it('should return enable_service_specific_multi_followups list', inject([AppConfig], (service: AppConfig) => {
     expect(service.getEnableServiceSpecificMultiFollowups()).toEqual(['foo']);
+  }));
+
+  it('should return WA-supported role categories and role types as exact arrays', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getWASupportedRoleCategories()).toEqual(['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL']);
+    expect(service.getWASupportedRoleTypes()).toEqual(['ORGANISATION']);
   }));
 
   describe('getCaseDataUrl', () => {
@@ -701,6 +708,8 @@ describe('AppConfiguration with specific config values', () => {
       notification_url: 'https://notification.test.com',
       case_flags_refdata_api_url: 'https://caseflags.test.com',
       wa_service_config: { testConfig: true },
+      wa_supported_role_categories: ['LEGAL_OPERATIONS', 'ADMIN'],
+      wa_supported_role_types: ['ORGANISATION'],
       location_ref_api_url: 'https://location.test.com',
       cam_role_assignments_api_url: 'https://cam.test.com',
       categories_and_documents_url: 'https://categories.test.com',
@@ -805,6 +814,8 @@ describe('AppConfiguration with specific config values', () => {
       expect(service.getCdamExclusionList()).toEqual(['CIVIL', 'FAMILY']);
       expect(service.getIcpJurisdictions()).toEqual(['SSCS', 'IMMIGRATION']);
       expect(service.getEventsToHide()).toEqual(['event1', 'event2', 'event3']);
+      expect(service.getWASupportedRoleCategories()).toEqual(['LEGAL_OPERATIONS', 'ADMIN']);
+      expect(service.getWASupportedRoleTypes()).toEqual(['ORGANISATION']);
     })
   ));
 

@@ -157,7 +157,12 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `ORG_USER_ASSIGNMENT_REDIRECT_URI`
 - `ORG_USER_ASSIGNMENT_UI_USER`
 - `ORG_USER_ASSIGNMENT_USER_ROLES`
-- `TEST_SOLICITOR_ORGANISATION_ID`
+- `PW_DYNAMIC_ORGANISATION_MODE`
+- `PW_DYNAMIC_ORGANISATION_RUN_ID`
+- `PW_DYNAMIC_ORGANISATION_NAME_PREFIX`
+- `PW_DYNAMIC_ORGANISATION_CACHE_DIR`
+- `PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS`
+- `PW_DYNAMIC_ORGANISATION_ACTIVE_POLL_INTERVAL_MS`
 - `MANAGE_ORG_API_PATH`
 - `RD_PROFESSIONAL_API_PATH`
 - `WA_SOLICITOR_USERNAME`
@@ -166,13 +171,49 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `PW_IAC_CASEOFFICER_R1_PASSWORD`
 - `PW_IAC_JUDGE_WA_R1_EMAIL`
 - `PW_IAC_JUDGE_WA_R1_PASSWORD`
+- `PW_E2E_MANAGE_TASKS_USER`
+- `PW_E2E_MANAGE_TASKS_EMAIL`
+- `PW_E2E_MANAGE_TASKS_PASSWORD`
 
 These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag convention.
 
 Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
+- Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run.
+- This framework does not create live Work Allocation tasks. A previous experimental `@e2e-live-wa` lane was removed because local validation failed before the browser journey when Manage Org invite returned `403` with `{"message":"Internal Server Error"}`. Reintroduce live WA task materialisation only in a separate PR with direct AAT proof.
+- `@e2e-manage-tasks` remains excluded by default because it depends on live seeded Work Allocation data. It currently covers only the live Available Tasks lane with an internal WA-capable user. Override the user with `PW_E2E_MANAGE_TASKS_USER` or with `PW_E2E_MANAGE_TASKS_EMAIL` and `PW_E2E_MANAGE_TASKS_PASSWORD` for targeted opt-in runs. Assigned My Tasks action coverage remains under `@e2e-manage-tasks-assigned` until a seeded assigned-task user or supported task materialisation flow exists.
+- Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
+- `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
+- Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers use a process-run `local-<parent-pid>` identifier instead of the shared literal `local`; CI runs with no recognised unique identifier fail fast instead of sharing a local organisation.
+- Approval uses the existing RD Professional internal approval endpoint. If RD Professional approval is unavailable, setup fails before dynamic users are created.
+- Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
 - Do not commit `.env`.
+
+### AM roles for top navigation
+
+Some EXUI top-navigation entries are now controlled by Access Management (AM) roles instead of the older IDAM-only role names. In practice, a user needs two pieces of data before the app will show entries such as **My work** or **Search**:
+
+- `userInfo.roles` must include the configured menu role, for example `hmcts-legal-operations`, `hmcts-admin`, `hmcts-ctsc`, or `hmcts-judiciary`.
+- `roleAssignmentInfo` must include a matching AM assignment with a supported `jurisdiction`, `roleCategory`, and `roleType`.
+
+The Playwright dynamic-user flow does not create those AM assignments. It creates or updates the IDAM/SIDAM account, then assigns the user into a professional organisation through PRD/manage-org APIs. That is enough for solicitor-style journeys, but it does not write `/am/role-assignments`, so it cannot by itself make an EXUI staff or judicial user eligible for the new AM-backed menu entries.
+
+For integration tests, keep the AM role contract inside the mocked `/api/user/details` response. Use `playwright_tests_new/integration/helpers/amRoleAssignmentMock.helper.ts` when a route helper needs a staff or judicial AM menu role. The helper keeps the important parts together:
+
+```ts
+{
+  roleName: 'hmcts-legal-operations',
+  roleCategory: 'LEGAL_OPERATIONS',
+  roleType: 'ORGANISATION',
+  jurisdiction: 'IA',
+  substantive: 'Y'
+}
+```
+
+For work-filter tests, prefer `ensureSupportedAMRoleAssignment(...)` instead of adding a new service row by hand. It enriches an existing organisation assignment where possible, so the navigation guard is satisfied without changing the service list the filter scenario is trying to prove.
+
+For live preview or E2E evidence, use a pre-seeded static user with known AM organisation assignments. Adding live AM assignment writes to dynamic provisioning would need privileged AM credentials, cleanup, idempotency, and parallel-worker controls, so it should be handled as a separate governed task rather than hidden in the normal dynamic-user path.
 
 ---
 
@@ -191,15 +232,20 @@ sequenceDiagram
     actor Spec as E2E Spec / Fixture
     participant Session as dynamicSolicitorSession
     participant Roles as provisionRoleResolution
+    participant Org as dynamicOrganisationResolver
     participant Retry as dynamicProvisioningFlow
     participant Users as ProfessionalUserUtils
     participant IDAM as IDAM / SIDAM
+    participant PRDOrg as RD Professional organisation APIs
     participant PRD as Org Assignment APIs
     participant Probe as propagationProbe
     participant Runtime as runtimeUserCredentials
     participant EXUI as EXUI readiness check
 
     Spec->>Session: provisionDynamicSolicitorForAlias(alias, roleContext)
+    Session->>Org: resolve run-scoped dynamic organisation id
+    Org->>PRDOrg: create, approve, and poll ACTIVE
+    Org-->>Session: dynamic organisation id
     Session->>Roles: resolveProvisionRoleNamesForAlias(...)
     Roles-->>Session: resolved role names
     Session->>Retry: provisionUserWithRetries(...)
@@ -462,10 +508,10 @@ rm -rf .sessions && npx playwright test
 ### E2E Tag Filtering
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
+- `@e2e-manage-tasks` is excluded by default because the live WA lane depends on seeded task data. Use `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-manage-tasks` only for targeted opt-in runs with a configured WA user and known data.
 - Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
 - Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
-- E2E default exclusions are currently empty so the full non-smoke E2E suite runs by default; smoke remains a separate Playwright project and Jenkins smoke stage.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
@@ -476,9 +522,6 @@ rm -rf .sessions && npx playwright test
 ```bash
 # Run only search-case E2E tests
 E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
-
-# Temporarily switch off manage-tasks and document-upload E2E tests
-E2E_PW_EXCLUDED_TAGS_OVERRIDE=@e2e-manage-tasks,@e2e-document-upload yarn test:playwrightE2E
 
 # Re-enable the V1 document-upload test for a targeted run
 E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-document-upload-v1 yarn test:playwrightE2E
@@ -688,7 +731,8 @@ test.describe('My Test Suite', () => {
 
 - `SOLICITOR` - Standard solicitor user for Private Law / civil cases
 - `DIVORCE_SOLICITOR` - Divorce-entitled solicitor user for divorce create/update journeys
-- `WA_SOLICITOR` - Work Allocation solicitor user for low-assignment live task lookup coverage
+- `WA_SOLICITOR` - Legacy solicitor-style user. Do not use it for live Work Allocation task-list E2E; local AAT evidence showed it authenticates without `roleAssignmentInfo` and lands on Case list.
+- `IAC_CASEOFFICER_R1` - Internal Work Allocation-capable user for live Available Tasks E2E when `PW_IAC_CASEOFFICER_R1_EMAIL` and `PW_IAC_CASEOFFICER_R1_PASSWORD` are populated.
 - `SEARCH_EMPLOYMENT_CASE` - Employment tribunal case user
 - `STAFF_ADMIN` - Administrative staff user
 - `USER_WITH_FLAGS` - User with case flags enabled

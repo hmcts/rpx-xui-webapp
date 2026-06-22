@@ -4,6 +4,7 @@ import { buildMyTaskListMock } from '../mocks/taskList.mock';
 import { resolveBookingUiUserIdentifier } from './bookingUiUserPool.helper';
 import { ensureSession } from '../../common/sessionCapture';
 import { applySessionCookiesAndExtractUserId } from './sessionUser.helper';
+import { judicialAMMenuRole } from './amRoleAssignmentMock.helper';
 import { setupTaskListMockRoutes, type TaskListBootstrapUserOptions } from './taskListMockRoutes.helper';
 
 type RouteHandler = (route: Route) => Promise<void>;
@@ -31,10 +32,19 @@ export type BookingUiTestRouteState = {
 };
 
 export const buildBookingUiBootstrapUser = (userId: string): TaskListBootstrapUserOptions => ({
+  amMenuRole: judicialAMMenuRole,
   userId,
   roleCategory: 'JUDICIAL',
-  roles: ['caseworker-judge'],
+  roles: ['caseworker-judge', judicialAMMenuRole],
   roleAssignments: [
+    {
+      isCaseAllocator: false,
+      jurisdiction: 'IA',
+      roleCategory: 'JUDICIAL',
+      roleName: judicialAMMenuRole,
+      roleType: 'ORGANISATION',
+      substantive: 'Y',
+    },
     {
       bookable: true,
       jurisdiction: 'IA',

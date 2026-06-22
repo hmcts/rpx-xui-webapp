@@ -25,6 +25,7 @@ const enhancerTest = enhancerModule.__test__ as {
   formatDuration: (durationMs: number) => string;
   buildFeatureOverviewBlock: (featureStats: unknown) => string;
   buildAccessibilityEvidenceBlock: (entries: unknown) => string;
+  buildIssueSummaryBlock: (entries: unknown) => string;
   defaultTestListRowsPerPage: (html: string) => string;
   normalizeFeatureStats: (featureStats: unknown) => Array<{
     name: string;
@@ -327,6 +328,23 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         <head></head>
         <body>
           <div id="TabDashboard"><div class="row"></div></div>
+          <table id="test-list-table">
+            <thead>
+              <tr><th>Title</th><th>Status</th><th>Duration</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>privacy policy page has no automatically detectable accessibility violations</td>
+                <td>failed</td>
+                <td>1s</td>
+              </tr>
+              <tr>
+                <td>passed accessibility smoke</td>
+                <td>passed</td>
+                <td>1s</td>
+              </tr>
+            </tbody>
+          </table>
           <div class="modal-content">
             <div class="modal-header result-header">
               <div class="header-col-center">
@@ -345,10 +363,30 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       [],
       [
         {
+          engine: 'summary',
           testTitle: 'privacy policy page has no automatically detectable accessibility violations',
-          htmlFileName: 'privacy-policy-accessibility-issues.html',
-          jsonFileName: 'privacy-policy-accessibility-issues.json',
-          screenshotFileName: 'privacy-policy-highlighted-screenshot.png',
+          htmlFileName: 'privacy-policy-summary.html',
+          jsonFileName: 'privacy-policy-summary.json',
+          violationCount: 1,
+          rules: ['screen-reader:skip-link'],
+          targets: [],
+        },
+        {
+          engine: 'screen-reader',
+          testTitle: 'privacy policy page has no automatically detectable accessibility violations',
+          htmlFileName: 'privacy-policy-screen-reader.html',
+          jsonFileName: 'privacy-policy-screen-reader.json',
+          screenshotFileName: 'privacy-policy-screen-reader.png',
+          violationCount: 2,
+          rules: ['skip-link', 'main-landmark'],
+          targets: ['#content'],
+        },
+        {
+          engine: 'wave-like',
+          testTitle: 'privacy policy page has no automatically detectable accessibility violations',
+          htmlFileName: 'privacy-policy-wave-like.html',
+          jsonFileName: 'privacy-policy-wave-like.json',
+          screenshotFileName: 'privacy-policy-wave-like.png',
           violationCount: 1,
           rules: ['link-name'],
           targets: ['.hmcts-header__link'],
@@ -356,15 +394,37 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       ]
     );
 
-    expect(nextHtml).toContain('data-a11y-test-evidence-link="privacy-policy-accessibility-issues.html"');
-    expect(nextHtml).toContain('axe accessibility findings for this test');
+    expect(nextHtml).toContain(
+      'data-a11y-test-evidence-link="privacy-policy-summary.html|privacy-policy-wave-like.html|privacy-policy-screen-reader.html"'
+    );
+    expect(nextHtml).toContain('Accessibility findings for this test');
+    expect(nextHtml.match(/data-a11y-test-evidence-link=/g)).toHaveLength(1);
+    expect(nextHtml).toContain('Unique issue groups');
+    expect(nextHtml).not.toContain('unexpected issue(s) across engines');
+    expect(nextHtml).toContain('2 Screen-reader issue(s):</strong> skip-link, main-landmark');
+    expect(nextHtml).toContain('1 WAVE-like issue(s):</strong> link-name');
+    expect(nextHtml).toContain('<th class="odhin-a11y-issues-header">Issue groups</th>');
+    expect(nextHtml).toContain('<th class="odhin-a11y-issues-header">Fix hint</th>');
+    expect(nextHtml).toContain('Issue Summary');
+    expect(nextHtml).toContain('<th>Fix scope</th>');
+    expect(nextHtml).toContain('Likely page-specific fix');
+    expect(nextHtml).toContain('Quick filters:');
+    expect(nextHtml).toContain('data-a11y-issue-filter="skip-link"');
+    expect(nextHtml).toContain('data-a11y-issue-filter="main-landmark"');
+    expect(nextHtml).toContain('<strong>WAVE-like:</strong> link-name (1)');
+    expect(nextHtml).toContain('<strong>Screen-reader:</strong> skip-link (1), main-landmark (1)');
+    expect(nextHtml).toContain('Also: main-landmark, link-name.');
+    expect(nextHtml).toContain('Developer hints');
+    expect(nextHtml).toContain('Check the app shell skip link target exists on this route');
+    expect(nextHtml).toContain('Check the route template renders exactly one usable &lt;main&gt; or role=&quot;main&quot;');
     expect(nextHtml).toContain(
       'Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled'
     );
     expect(nextHtml).toContain('Open highlighted issue report');
     expect(nextHtml).toContain('Open screenshot');
-    expect(nextHtml).toContain('Open DOM and axe JSON');
-    expect(nextHtml.indexOf('axe accessibility findings for this test')).toBeLessThan(nextHtml.indexOf('run info'));
+    expect(nextHtml).toContain('Open screen-reader JSON');
+    expect(nextHtml).toContain('Open DOM and WAVE JSON');
+    expect(nextHtml.indexOf('Accessibility findings for this test')).toBeLessThan(nextHtml.indexOf('run info'));
   });
 
   test('normalizes accessibility evidence entries and drops incomplete records', () => {

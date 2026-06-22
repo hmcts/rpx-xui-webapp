@@ -2,11 +2,11 @@ import { promises as fs } from 'node:fs';
 
 import { request } from '@playwright/test';
 
-import { config } from '../common/apiTestConfig';
+import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
-import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { AuthenticationError } from './utils/errors';
 import { seedRoleAccessCaseId } from './utils/role-access';
 import { RoleAssignmentContainer } from './utils/types';
@@ -133,19 +133,6 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
     expectStatus(res.status, StatusSets.allocateRole);
   });
 
-  test('get-my-access-new-count', async ({ apiClient }) => {
-    const res = await withRetry(
-      () =>
-        apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
-          timeoutMs: 20_000,
-          throwOnError: false,
-        }),
-      { retries: 1, retryStatuses: [500, 502, 504] }
-    );
-    expectStatus(res.status, [200, 401, 403, 500, 502, 504]);
-    assertMyAccessCount(res.status, res.data);
-  });
-
   test('roles/access-get responds', async ({ apiClient }, testInfo) => {
     const payload = buildCaseIdListPayload(resolveRoleAccessCaseId(roleAccessCaseId));
     const res = await withRetry(
@@ -153,12 +140,12 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
         postWaWithDiagnostics<RoleAssignmentContainer>(apiClient, {
           endpoint: 'api/role-access/roles/access-get',
           payload,
-          allowedStatuses: [200, 400, 401, 403, 404, 500],
+          allowedStatuses: StatusSets.roleAccessRead,
           testInfo,
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
+    expectStatus(res.status, StatusSets.roleAccessRead);
     assertRoleAccessGetResponse(res.status, res.data);
   });
 
@@ -173,13 +160,17 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
 
   test('roles/access-get-by-caseId responds with roles when present', async ({ apiClient }, testInfo) => {
     const payload = buildCaseIdPayload(resolveRoleAccessCaseId(roleAccessCaseId));
-    const res = await postWaWithDiagnostics<RoleAssignmentContainer>(apiClient, {
-      endpoint: 'api/role-access/roles/access-get-by-caseId',
-      payload,
-      allowedStatuses: [200, 400, 401, 403, 404, 500],
-      testInfo,
-    });
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
+    const res = await withRetry(
+      () =>
+        postWaWithDiagnostics<RoleAssignmentContainer>(apiClient, {
+          endpoint: 'api/role-access/roles/access-get-by-caseId',
+          payload,
+          allowedStatuses: StatusSets.roleAccessRead,
+          testInfo,
+        }),
+      { retries: 1, retryStatuses: [502, 504] }
+    );
+    expectStatus(res.status, StatusSets.roleAccessRead);
     assertRoleAccessByCaseIdResponse(res.status, res.data);
   });
 

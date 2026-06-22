@@ -4,14 +4,15 @@ import { Base } from '../../base';
 const CASE_FILE_VIEW_FOLDER_TIMEOUT_MS = 10_000;
 const CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS = 200;
 const CASE_FILE_VIEW_DOCUMENT_TIMEOUT_MS = 15_000;
+const DIRECT_CHILD_FOLDER_NODE = ':scope > cdk-nested-tree-node.document-tree-container__folder';
+const DIRECT_CHILD_FOLDER_LABEL = ':scope > button .node__name--folder:not(.document-tree-invisible)';
+const ROOT_DIRECT_CHILD_FOLDER_LABEL = `${DIRECT_CHILD_FOLDER_NODE} > button .node__name--folder:not(.document-tree-invisible)`;
 
 export class CaseFileViewPage extends Base {
   readonly container = this.page.locator('#case-file-view');
   readonly treeContainer = this.container.locator('.document-tree-container').first();
   readonly treeRoot = this.treeContainer.locator('cdk-tree[role="tree"]').first();
-  readonly directChildFolderLabels = this.treeRoot.locator(
-    ':scope > cdk-nested-tree-node.document-tree-container__folder > button .node__name--folder:not(.document-tree-invisible)'
-  );
+  readonly directChildFolderLabels = this.treeRoot.locator(ROOT_DIRECT_CHILD_FOLDER_LABEL);
   readonly emptyStateMessage = this.treeContainer.getByText('No results found', { exact: true });
   readonly mediaViewerContainer = this.container.locator('.media-viewer-container');
   readonly mediaViewerToolbar = this.mediaViewerContainer.locator('#mvToolbarMain');
@@ -130,10 +131,42 @@ export class CaseFileViewPage extends Base {
     return folderNode.locator('.document-tree-container__node--document > button .node-name-document').evaluateAll((nodes) =>
       nodes
         .map((node) => {
-          const firstTextNode = Array.from(node.childNodes).find((child) => child.nodeType === Node.TEXT_NODE);
-          return (firstTextNode?.textContent || '').trim();
+          const directText = Array.from(node.childNodes)
+            .filter((child) => child.nodeType === Node.TEXT_NODE)
+            .map((child) => child.textContent?.trim() || '')
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+
+          if (directText) {
+            return directText;
+          }
+
+          const clone = node.cloneNode(true) as HTMLElement;
+          clone.querySelectorAll('.node__document-upload-timestamp').forEach((child) => child.remove());
+          return (clone.textContent || '').trim();
         })
         .filter(Boolean)
+    );
+  }
+
+  public async waitForVisibleFileCountUnderFolder(folderPath: string, expectedFileCount: number): Promise<string[]> {
+    const deadline = Date.now() + CASE_FILE_VIEW_DOCUMENT_TIMEOUT_MS;
+    let lastFileNames: string[] = [];
+
+    while (Date.now() < deadline) {
+      lastFileNames = await this.getVisibleFileNamesUnderFolder(folderPath);
+      if (lastFileNames.length === expectedFileCount) {
+        return lastFileNames;
+      }
+
+      await this.page.waitForTimeout(CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS);
+    }
+
+    throw new Error(
+      `Case file view folder "${folderPath}" did not show ${expectedFileCount} visible documents before timeout. Last observed: ${
+        lastFileNames.join(', ') || 'none'
+      }`
     );
   }
 
@@ -170,8 +203,8 @@ export class CaseFileViewPage extends Base {
   }
 
   private async findDirectChildFolderNode(scope: Locator, folderName: string): Promise<Locator> {
-    const folderNodes = scope.locator(':scope > cdk-nested-tree-node.document-tree-container__folder');
-    const folderLabels = folderNodes.locator(':scope > button .node__name--folder:not(.document-tree-invisible)');
+    const folderNodes = scope.locator(DIRECT_CHILD_FOLDER_NODE);
+    const folderLabels = folderNodes.locator(DIRECT_CHILD_FOLDER_LABEL);
 
     const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
 
@@ -189,7 +222,7 @@ export class CaseFileViewPage extends Base {
 
     for (let i = 0; i < folderCount; i++) {
       const candidate = folderNodes.nth(i);
-      const label = candidate.locator(':scope > button .node__name--folder:not(.document-tree-invisible)').first();
+      const label = candidate.locator(DIRECT_CHILD_FOLDER_LABEL).first();
       const text = (await label.textContent())?.trim();
 
       if (text) {
@@ -279,9 +312,7 @@ export class CaseFileViewPage extends Base {
   }
 
   private async waitForTreeContentReady(): Promise<void> {
-    const folderLabels = this.treeRoot.locator(
-      ':scope > cdk-nested-tree-node.document-tree-container__folder > button .node__name--folder:not(.document-tree-invisible)'
-    );
+    const folderLabels = this.treeRoot.locator(ROOT_DIRECT_CHILD_FOLDER_LABEL);
     const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
 
     while (Date.now() < deadline) {

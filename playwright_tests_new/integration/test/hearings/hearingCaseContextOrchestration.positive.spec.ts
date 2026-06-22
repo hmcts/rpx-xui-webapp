@@ -25,7 +25,7 @@ test.describe(
   `Hearings case context orchestration as ${HEARING_MANAGER_CR84_ON_USER}`,
   { tag: ['@integration', '@integration-hearings'] },
   () => {
-    test('EXUI-4431/EXUI-4433/EXUI-4434 preserves non-default case context through view-edit-submit orchestration', async ({
+    test('preserves non-default case context through view-edit-submit orchestration (EXUI-4431/EXUI-4433/EXUI-4434)', async ({
       page,
       caseDetailsPage,
       hearingsTabPage,
@@ -89,7 +89,7 @@ test.describe(
       );
     });
 
-    test('EXUI-4432 keeps edit orchestration usable when service hearing values omit optional case display fields', async ({
+    test('keeps edit orchestration usable when service hearing values omit optional case display fields (EXUI-4432)', async ({
       page,
       caseDetailsPage,
       hearingsTabPage,

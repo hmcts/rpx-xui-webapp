@@ -109,12 +109,17 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function escapeAttribute(value) {
+  return escapeHtml(value).replace(/`/g, '&#96;');
+}
+
 function injectEnhancerStyles(root) {
   const head = root.querySelector('head');
-  if (!head || root.querySelector('#odhin-enhancer-styles')) {
+  if (!head) {
     return;
   }
 
+  root.querySelectorAll('#odhin-enhancer-styles').forEach((node) => node.remove());
   head.appendChild(
     parse(`
 <style id="odhin-enhancer-styles">
@@ -197,6 +202,53 @@ function injectEnhancerStyles(root) {
     margin-top: 8px;
     font-size: 13px;
     font-weight: 600;
+  }
+
+  .odhin-a11y-test-evidence {
+    background: #fff4f4;
+    border-left: 10px solid #d4351c;
+    border-top: 4px solid #ffdd00;
+    color: #0b0c0c;
+    font-family: Arial, sans-serif;
+    margin: 0 0 16px;
+    padding: 14px;
+  }
+
+  .odhin-a11y-test-evidence h2 {
+    color: #0b0c0c;
+    font-size: 22px;
+    margin: 0 0 8px;
+  }
+
+  .odhin-a11y-test-evidence p {
+    margin: 0 0 8px;
+  }
+
+  .odhin-a11y-test-evidence code {
+    background: #f3f2f1;
+    color: #0b0c0c;
+    padding: 2px 4px;
+  }
+
+  .odhin-a11y-test-evidence a {
+    color: #0b0c0c;
+    display: inline-block;
+    font-weight: bold;
+    margin: 4px 8px 0 0;
+    padding: 8px 12px;
+  }
+
+  .odhin-a11y-test-evidence a:first-of-type {
+    background: #d4351c;
+    color: #ffffff;
+  }
+
+  .odhin-a11y-test-evidence a:nth-of-type(2) {
+    background: #ffdd00;
+  }
+
+  .odhin-a11y-test-evidence a:nth-of-type(3) {
+    background: #f3f2f1;
   }
 
   #odhin-feature-summary .odhin-feature-overview-largest {
@@ -397,6 +449,236 @@ function buildFeatureOverviewBlock(featureStats) {
 </div>`;
 }
 
+function normalizeEvidenceEntries(entries) {
+  return (Array.isArray(entries) ? entries : [])
+    .filter(
+      (entry) =>
+        entry &&
+        typeof entry.testTitle === 'string' &&
+        typeof entry.htmlFileName === 'string' &&
+        Number.isFinite(Number(entry.violationCount))
+    )
+    .map((entry) => ({
+      engine: typeof entry.engine === 'string' ? entry.engine : inferEvidenceEngine(entry),
+      feature: typeof entry.feature === 'string' ? entry.feature : '',
+      pageState: typeof entry.pageState === 'string' ? entry.pageState : '',
+      testTitle: entry.testTitle,
+      htmlFileName: entry.htmlFileName,
+      jsonFileName: typeof entry.jsonFileName === 'string' ? entry.jsonFileName : '',
+      screenshotFileName: typeof entry.screenshotFileName === 'string' ? entry.screenshotFileName : '',
+      reportFileName: typeof entry.reportFileName === 'string' ? entry.reportFileName : '',
+      violationCount: Number(entry.violationCount),
+      status: typeof entry.status === 'string' ? entry.status : '',
+      summary: typeof entry.summary === 'string' ? entry.summary : '',
+      rules: Array.isArray(entry.rules) ? entry.rules.map(String) : [],
+      targets: Array.isArray(entry.targets) ? entry.targets.map(String) : [],
+    }))
+    .sort(
+      (left, right) =>
+        left.feature.localeCompare(right.feature) ||
+        left.pageState.localeCompare(right.pageState) ||
+        engineSortOrder(left.engine) - engineSortOrder(right.engine) ||
+        left.testTitle.localeCompare(right.testTitle)
+    );
+}
+
+function inferEvidenceEngine(entry) {
+  const value = `${entry?.attachmentPrefix ?? ''} ${entry?.htmlFileName ?? ''}`.toLowerCase();
+  if (value.includes('wave')) {
+    return 'wave-like';
+  }
+  if (value.includes('screen-reader')) {
+    return 'screen-reader';
+  }
+  if (value.includes('lighthouse')) {
+    return 'lighthouse';
+  }
+  if (value.includes('page-summary')) {
+    return 'summary';
+  }
+  return 'axe';
+}
+
+function engineSortOrder(engine) {
+  return ['summary', 'axe', 'wave-like', 'screen-reader', 'lighthouse'].indexOf(engine) >= 0
+    ? ['summary', 'axe', 'wave-like', 'screen-reader', 'lighthouse'].indexOf(engine)
+    : 99;
+}
+
+function engineLabel(engine) {
+  return (
+    {
+      summary: 'Page summary',
+      axe: 'axe',
+      'wave-like': 'WAVE-like',
+      'screen-reader': 'Screen-reader',
+      lighthouse: 'Lighthouse',
+    }[engine] ?? engine
+  );
+}
+
+function jsonLinkLabel(engine) {
+  return (
+    {
+      summary: 'summary JSON',
+      axe: 'DOM and axe JSON',
+      'wave-like': 'DOM and WAVE JSON',
+      'screen-reader': 'screen-reader JSON',
+      lighthouse: 'Lighthouse JSON',
+    }[engine] ?? 'evidence JSON'
+  );
+}
+
+function issueLabel(engine, count) {
+  if (engine === 'summary') {
+    return `${count} unexpected issue(s) across engines`;
+  }
+  if (engine === 'lighthouse') {
+    return count === 0 ? 'Accessibility threshold passed' : `${count} Lighthouse issue(s)`;
+  }
+  return `${count} ${engineLabel(engine)} issue(s)`;
+}
+
+function buildAccessibilityEvidenceBlock(entries) {
+  const normalizedEntries = normalizeEvidenceEntries(entries);
+  if (!normalizedEntries.length) {
+    return '';
+  }
+
+  const cards = normalizedEntries
+    .map((entry) => {
+      const screenshotPath = entry.screenshotFileName ? `./accessibility-evidence/${entry.screenshotFileName}` : '';
+      const screenshotHtml = screenshotPath
+        ? `
+          <a href="${escapeAttribute(screenshotPath)}">
+            <img class="odhin-a11y-evidence-screenshot" src="${escapeAttribute(screenshotPath)}" alt="${escapeAttribute(engineLabel(entry.engine))} accessibility screenshot for ${escapeAttribute(entry.testTitle)}" />
+          </a>
+        `
+        : '';
+      const evidenceLinks = [
+        `<a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">${entry.engine === 'summary' ? 'open page summary' : 'issue detail'}</a>`,
+        entry.reportFileName
+          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}">native Lighthouse HTML</a>`
+          : '',
+        screenshotPath ? `<a href="${escapeAttribute(screenshotPath)}">screenshot</a>` : '',
+        entry.jsonFileName
+          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">${jsonLinkLabel(entry.engine)}</a>`
+          : '',
+      ]
+        .filter(Boolean)
+        .join('\n');
+      return `
+        <article class="odhin-a11y-evidence-card" data-engine="${escapeAttribute(entry.engine)}">
+          ${screenshotHtml}
+          <div class="odhin-a11y-evidence-card-body">
+            <span class="odhin-a11y-evidence-engine">${escapeHtml(engineLabel(entry.engine))}</span>
+            <div class="odhin-a11y-evidence-title">${escapeHtml(entry.testTitle)}</div>
+            <p class="odhin-a11y-evidence-meta">
+              ${escapeHtml(issueLabel(entry.engine, entry.violationCount))}: ${escapeHtml(entry.rules.join(', ') || entry.summary || 'no rule recorded')}
+            </p>
+            ${
+              entry.feature || entry.pageState
+                ? `<p class="odhin-a11y-evidence-meta">${escapeHtml([entry.feature, entry.pageState].filter(Boolean).join(' / '))}</p>`
+                : ''
+            }
+            <p class="odhin-a11y-evidence-meta">
+              Targets: ${escapeHtml(entry.targets.join(', ') || 'no target recorded')}
+            </p>
+            <div class="odhin-a11y-evidence-links">
+              ${evidenceLinks}
+            </div>
+          </div>
+        </article>
+      `;
+    })
+    .join('');
+
+  return `
+    <div class="col-12">
+      <div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-accessibility-evidence">
+        <div class="info-box-header">Accessibility Evidence</div>
+        <div class="odhin-table">
+          <div class="odhin-a11y-evidence-grid">${cards}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function injectAccessibilityEvidence(root, evidenceEntries) {
+  const evidenceHtml = buildAccessibilityEvidenceBlock(evidenceEntries);
+  if (!evidenceHtml || root.querySelector('#odhin-accessibility-evidence')) {
+    return false;
+  }
+
+  const dashboardRow =
+    root.querySelector('#TabDashboard .row') ?? root.querySelector('#TabDashboard') ?? root.querySelector('body');
+  if (!dashboardRow) {
+    return false;
+  }
+
+  dashboardRow.appendChild(parse(evidenceHtml));
+  return true;
+}
+
+function removeDashboardAccessibilityEvidence(root) {
+  root.querySelectorAll('#odhin-accessibility-evidence').forEach((node) => node.remove());
+}
+
+function buildTestEvidencePanel(entry) {
+  const ruleSummary = entry.rules.length > 0 ? entry.rules.join(', ') : entry.summary || `${engineLabel(entry.engine)} evidence`;
+  const targetSummary = entry.targets.length > 0 ? entry.targets.slice(0, 6).join(', ') : 'No DOM target recorded';
+  const screenshotLink = entry.screenshotFileName
+    ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.screenshotFileName}`)}">Open screenshot</a>`
+    : '';
+  const jsonLink = entry.jsonFileName
+    ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">Open ${escapeHtml(jsonLinkLabel(entry.engine))}</a>`
+    : '';
+  const nativeReportLink = entry.reportFileName
+    ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}">Open native Lighthouse HTML</a>`
+    : '';
+
+  return `
+    <div class="odhin-a11y-test-evidence" data-a11y-test-evidence-link="${escapeAttribute(entry.htmlFileName)}">
+      <h2>${escapeHtml(engineLabel(entry.engine))} accessibility findings for this test</h2>
+      <p><strong>Pipeline non-blocking:</strong> Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled.</p>
+      <p><strong>${escapeHtml(issueLabel(entry.engine, entry.violationCount))}:</strong> ${escapeHtml(ruleSummary)}</p>
+      <p><strong>DOM target(s):</strong> <code>${escapeHtml(targetSummary)}</code></p>
+      <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">Open highlighted issue report</a>
+      ${nativeReportLink}
+      ${screenshotLink}
+      ${jsonLink}
+    </div>
+  `;
+}
+
+function injectAccessibilityEvidenceIntoTestModals(root, evidenceEntries) {
+  const normalizedEntries = normalizeEvidenceEntries(evidenceEntries);
+  if (!normalizedEntries.length) {
+    return 0;
+  }
+
+  let injectedCount = 0;
+  const modalContents = root.querySelectorAll('.modal-content');
+  normalizedEntries.forEach((entry) => {
+    const marker = `[data-a11y-test-evidence-link="${entry.htmlFileName.replace(/"/g, '\\"')}"]`;
+    root.querySelectorAll(marker).forEach((node) => node.remove());
+
+    const matchingModal = modalContents.find(
+      (modalContent) => modalContent.querySelector('.header-col-center')?.text.trim() === entry.testTitle
+    );
+    const modalBody = matchingModal?.querySelector('.modal-body.odhin-bg-2');
+    if (!modalBody) {
+      return;
+    }
+
+    modalBody.insertAdjacentHTML('afterbegin', buildTestEvidencePanel(entry));
+    injectedCount += 1;
+  });
+
+  return injectedCount;
+}
+
 function replaceDashboardBlock(root, title, replacementHtml) {
   const block = root
     .querySelectorAll('.dashboard-block')
@@ -438,22 +720,73 @@ function stripLegacyFileChartArtifacts(root) {
   });
 }
 
-function enhanceDashboardHtml(html, featureStats) {
+function defaultTestListRowsPerPage(html) {
+  return String(html)
+    .replace(
+      /\$\("#test-list-table"\)\.DataTable\(\{\}\)/g,
+      '$("#test-list-table").DataTable({pageLength:100,lengthMenu:[10,25,50,100]})'
+    )
+    .replace(
+      /\$\('#test-list-table'\)\.DataTable\(\{\}\)/g,
+      "$('#test-list-table').DataTable({pageLength:100,lengthMenu:[10,25,50,100]})"
+    );
+}
+
+function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
+  const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
-  if (!normalizedStats.length) {
-    return html;
+  const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
+  const hasDashboardAccessibilityEvidence = htmlWithDefaultTestRows.includes('id="odhin-accessibility-evidence"');
+  if (!normalizedStats.length && !normalizedEvidenceEntries.length && !hasDashboardAccessibilityEvidence) {
+    return htmlWithDefaultTestRows;
   }
 
-  const root = parse(html);
+  const root = parse(htmlWithDefaultTestRows);
   injectEnhancerStyles(root);
+  removeDashboardAccessibilityEvidence(root);
 
-  replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
-  removeDuplicateFeatureStatusBlock(root);
-  rebalanceTopDashboardColumns(root);
+  if (normalizedStats.length) {
+    replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
+    removeDuplicateFeatureStatusBlock(root);
+    rebalanceTopDashboardColumns(root);
+    stripLegacyFileChartArtifacts(root);
+  }
 
-  stripLegacyFileChartArtifacts(root);
+  injectAccessibilityEvidenceIntoTestModals(root, normalizedEvidenceEntries);
 
   return root.toString();
+}
+
+function readAccessibilityEvidenceEntries(outputFolder) {
+  const evidenceDir = path.join(outputFolder, 'accessibility-evidence');
+  if (!fs.existsSync(evidenceDir)) {
+    return [];
+  }
+
+  const entriesByKey = new Map();
+
+  try {
+    const manifest = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'manifest.json'), 'utf8'));
+    normalizeEvidenceEntries(manifest).forEach((entry) => {
+      entriesByKey.set(`${entry.testTitle}\u0000${entry.htmlFileName}`, entry);
+    });
+  } catch {
+    // Per-test entry files below are the source of truth when parallel workers race on the aggregate manifest.
+  }
+
+  fs.readdirSync(evidenceDir)
+    .filter((fileName) => fileName.startsWith('manifest-entry-') && fileName.endsWith('.json'))
+    .forEach((fileName) => {
+      try {
+        normalizeEvidenceEntries([JSON.parse(fs.readFileSync(path.join(evidenceDir, fileName), 'utf8'))]).forEach((entry) => {
+          entriesByKey.set(`${entry.testTitle}\u0000${entry.htmlFileName}`, entry);
+        });
+      } catch {
+        // Ignore corrupt per-test evidence so one bad entry cannot suppress the full report.
+      }
+    });
+
+  return Array.from(entriesByKey.values());
 }
 
 function enhanceGeneratedReport(outputFolder, featureStats) {
@@ -462,7 +795,8 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   }
 
   const normalizedStats = normalizeFeatureStats(featureStats);
-  if (!normalizedStats.length) {
+  const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
+  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length) {
     return;
   }
 
@@ -471,7 +805,7 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats);
+    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
 }
@@ -486,10 +820,14 @@ module.exports = {
   percentOf,
   __test__: {
     buildFeatureOverviewBlock,
+    buildAccessibilityEvidenceBlock,
     createEmptyFeatureStat,
+    defaultTestListRowsPerPage,
     deriveFeatureName,
     enhanceDashboardHtml,
     formatDuration,
+    normalizeEvidenceEntries,
+    readAccessibilityEvidenceEntries,
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
     percentOf,

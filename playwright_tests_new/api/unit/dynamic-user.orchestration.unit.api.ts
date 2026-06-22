@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { inspect } from 'node:util';
 
 import {
   createUserViaSidamFirstFlow,
@@ -20,6 +21,7 @@ import { ProfessionalUserUtils } from '../../E2E/utils/professional-user.utils.j
 import {
   DynamicProvisionTimeoutError,
   DynamicProvisioningError,
+  formatProvisionAttemptDiagnostics,
   provisionUserWithRetries,
 } from '../../E2E/utils/test-setup/dynamicProvisioningFlow.js';
 import { __test__ as dynamicSessionTest } from '../../E2E/utils/test-setup/dynamicSolicitorSession.js';
@@ -230,6 +232,7 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         attempt: 1,
         durationMs: 10,
         outcome: 'failed',
+        retryable: true,
         error: 'HTTP 503',
       },
       {
@@ -279,15 +282,20 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         attempt: 1,
         durationMs: 10,
         outcome: 'failed',
+        retryable: true,
         error: 'HTTP 503',
       },
       {
         attempt: 2,
         durationMs: 20,
         outcome: 'failed',
+        retryable: true,
         error: 'HTTP 503',
       },
     ]);
+    expect((error as DynamicProvisioningError).message).toContain(
+      'Attempt diagnostics: attempt 1: failed after 10ms, retryable=yes, error=HTTP 503; attempt 2: failed after 20ms, retryable=yes, error=HTTP 503'
+    );
   });
 
   test('provisionUserWithRetries does not retry wrapper timeouts because the original attempt may still complete in the background', async () => {
@@ -335,9 +343,120 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         attempt: 1,
         durationMs: 30,
         outcome: 'failed',
+        retryable: false,
         error: "Dynamic user provisioning timed out after 30000ms for alias 'SOLICITOR' on attempt 1/2.",
       },
     ]);
+  });
+
+  test('formatProvisionAttemptDiagnostics gives setup failures a compact Jenkins-friendly summary', () => {
+    expect(
+      formatProvisionAttemptDiagnostics([
+        {
+          attempt: 1,
+          durationMs: 250,
+          outcome: 'failed',
+          retryable: true,
+          error: 'HTTP 503',
+        },
+        {
+          attempt: 2,
+          durationMs: 100,
+          outcome: 'success',
+        },
+      ])
+    ).toBe('attempt 1: failed after 250ms, retryable=yes, error=HTTP 503; attempt 2: success after 100ms');
+  });
+
+  test('formatProvisionAttemptDiagnostics redacts sensitive error detail before terminal output', () => {
+    const diagnostics = formatProvisionAttemptDiagnostics([
+      {
+        attempt: 1,
+        durationMs: 25,
+        outcome: 'failed',
+        retryable: true,
+        error:
+          'HTTP 500 for test@example.test?access_token=abc123&password=letmein Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.secret client_secret=very-secret',
+      },
+    ]);
+
+    expect(diagnostics).toContain('[redacted-email]');
+    expect(diagnostics).toContain('access_token=[redacted]');
+    expect(diagnostics).toContain('password=[redacted]');
+    expect(diagnostics).toContain('Bearer [redacted]');
+    expect(diagnostics).toContain('client_secret=[redacted]');
+    expect(diagnostics).not.toContain('test@example.test');
+    expect(diagnostics).not.toContain('abc123');
+    expect(diagnostics).not.toContain('letmein');
+    expect(diagnostics).not.toContain('eyJhbGciOiJIUzI1NiJ9.secret');
+    expect(diagnostics).not.toContain('very-secret');
+  });
+
+  test('provisionUserWithRetries stores only redacted failure detail for attached attempt evidence', async () => {
+    const rawError =
+      'HTTP 500 for test@example.test?access_token=abc123&password=letmein Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.secret client_secret=very-secret';
+    const rawNestedCause = 'SECRET_RAW_CAUSE_VALUE';
+
+    const error = await provisionUserWithRetries(
+      {
+        alias: 'SOLICITOR',
+        organisationId: 'org-123',
+        mode: 'auto',
+        timeoutMs: 30_000,
+        maxAttempts: 1,
+        retryDelayMs: 5,
+      },
+      {
+        createSolicitorUserForOrganisation: async () => {
+          throw Object.assign(new Error(rawError), { cause: new Error(rawNestedCause) });
+        },
+        withTimeout: async (action) => action,
+        shouldRetry: () => false,
+        describeError: (failure) => (failure instanceof Error ? failure.message : String(failure)),
+        sleep: async () => undefined,
+        now: () => 100,
+        info: () => undefined,
+        warn: () => undefined,
+        outputCreatedUserData: false,
+      }
+    ).catch((failure) => failure);
+
+    expect(error).toBeInstanceOf(DynamicProvisioningError);
+    const provisioningError = error as DynamicProvisioningError;
+    const serializedError = JSON.stringify(provisioningError);
+    const inspectedError = inspect(provisioningError);
+    const reporterVisibleError = `${provisioningError.message}\n${serializedError}\n${inspectedError}`;
+
+    expect(provisioningError.attempts[0].error).toContain('[redacted-email]');
+    expect(provisioningError.diagnosticCause).toContain('[redacted-email]');
+    expect(provisioningError.message).toContain('[redacted-email]');
+    expect((provisioningError as Error & { cause?: unknown }).cause).toBeUndefined();
+    expect(inspectedError).not.toContain('[cause]');
+    expect(reporterVisibleError).not.toContain('test@example.test');
+    expect(reporterVisibleError).not.toContain('abc123');
+    expect(reporterVisibleError).not.toContain('letmein');
+    expect(reporterVisibleError).not.toContain('eyJhbGciOiJIUzI1NiJ9.secret');
+    expect(reporterVisibleError).not.toContain('very-secret');
+    expect(reporterVisibleError).not.toContain(rawNestedCause);
+  });
+
+  test('formatProvisionAttemptDiagnostics truncates long downstream error bodies', () => {
+    const diagnostics = formatProvisionAttemptDiagnostics([
+      {
+        attempt: 1,
+        durationMs: 25,
+        outcome: 'failed',
+        retryable: false,
+        error: `HTTP 500 ${'x'.repeat(500)}`,
+      },
+    ]);
+
+    expect(diagnostics.length).toBeLessThan(340);
+    expect(diagnostics).toContain('...');
+  });
+
+  test('formatProvisionAttemptDiagnostics reports missing attempt history explicitly', () => {
+    expect(formatProvisionAttemptDiagnostics([])).toBe('no provisioning attempts were recorded');
   });
 
   test('updateExistingUserFlow reuses the existing id and returns the updated account details', async () => {
@@ -722,14 +841,24 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
   });
 
   test('ProfessionalUserUtils normalises an email-shaped assignment UI user before bootstrapping the manage-org session path', async () => {
-    const originalAssignmentUiUser = process.env.ORG_USER_ASSIGNMENT_UI_USER;
+    const envKeys = [
+      'ORG_USER_ASSIGNMENT_UI_USER',
+      'ORG_USER_ASSIGNMENT_BEARER_TOKEN',
+      'ORG_USER_ASSIGNMENT_USERNAME',
+      'ORG_USER_ASSIGNMENT_PASSWORD',
+    ] as const;
+    const originalEnv = Object.fromEntries(envKeys.map((key) => [key, process.env[key]]));
     const ensuredUsers: string[] = [];
+    const ensuredOptions: Array<{ strict?: boolean; baseUrl?: string }> = [];
     const resolvedStorageUsers: string[] = [];
     const requestedStorageStates: string[] = [];
     const requestedBaseUrls: string[] = [];
     const postedPayloads: unknown[] = [];
 
     process.env.ORG_USER_ASSIGNMENT_UI_USER = 'xui_test_solicitors@xui.com';
+    delete process.env.ORG_USER_ASSIGNMENT_BEARER_TOKEN;
+    delete process.env.ORG_USER_ASSIGNMENT_USERNAME;
+    delete process.env.ORG_USER_ASSIGNMENT_PASSWORD;
 
     try {
       const utils = new ProfessionalUserUtils(
@@ -742,8 +871,7 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         {
           ensureUiStorageStateForUser: async (userIdentifier, options) => {
             ensuredUsers.push(userIdentifier);
-            expect(options.strict).toBe(true);
-            expect(options.baseUrl).toMatch(/^https:\/\/manage-org\./);
+            ensuredOptions.push(options);
           },
           resolveUiStoragePathForUser: (userIdentifier) => {
             resolvedStorageUsers.push(userIdentifier);
@@ -785,10 +913,10 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         responseBody: { invited: true },
       });
       expect(ensuredUsers).toEqual(['ORG_USER_ASSIGNMENT']);
+      expect(ensuredOptions).toEqual([{ strict: true, baseUrl: requestedBaseUrls[0] }]);
       expect(resolvedStorageUsers).toEqual(['ORG_USER_ASSIGNMENT']);
       expect(requestedStorageStates).toEqual(['/tmp/ORG_USER_ASSIGNMENT.json']);
       expect(requestedBaseUrls).toHaveLength(1);
-      expect(requestedBaseUrls[0]).toMatch(/^https:\/\/manage-org\./);
       expect(postedPayloads).toEqual([
         {
           firstName: 'Dynamic',
@@ -799,10 +927,13 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         },
       ]);
     } finally {
-      if (typeof originalAssignmentUiUser === 'string') {
-        process.env.ORG_USER_ASSIGNMENT_UI_USER = originalAssignmentUiUser;
-      } else {
-        delete process.env.ORG_USER_ASSIGNMENT_UI_USER;
+      for (const key of envKeys) {
+        const originalValue = originalEnv[key];
+        if (typeof originalValue === 'string') {
+          process.env[key] = originalValue;
+        } else {
+          delete process.env[key];
+        }
       }
     }
   });

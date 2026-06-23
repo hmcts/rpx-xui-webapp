@@ -3,6 +3,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -37,6 +38,7 @@ describe('SpecificAccessReviewComponent', () => {
         provideMockStore(),
         FormBuilder,
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: Title, useValue: jasmine.createSpyObj('Title', { getTitle: 'Test Title', setTitle: undefined }) },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],

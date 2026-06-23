@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ErrorMessageComponent } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -12,11 +13,13 @@ import { SpecificAccessInformationComponent } from './specific-access-informatio
 describe('DescribeExclusionComponent', () => {
   const mockStore = jasmine.createSpyObj('mockFormBuilder', ['pipe', 'dispatch']);
   const mockFormBuilder = jasmine.createSpyObj('mockFormBuilder', ['group']);
+  const mockTitleService = jasmine.createSpyObj('Title', ['getTitle', 'setTitle']);
+  mockTitleService.getTitle.and.returnValue('Test Title');
   const formGroup = new FormBuilder().group({
     infoCtrl: 'test',
   });
   mockFormBuilder.group.and.returnValue(formGroup);
-  const component: SpecificAccessInformationComponent = new SpecificAccessInformationComponent(mockStore, mockFormBuilder);
+  const component: SpecificAccessInformationComponent = new SpecificAccessInformationComponent(mockStore, mockFormBuilder, mockTitleService);
   component.error = {};
   component.formGroup = formGroup;
   let fixture: ComponentFixture<SpecificAccessInformationComponent>;
@@ -27,10 +30,8 @@ describe('DescribeExclusionComponent', () => {
       declarations: [SpecificAccessInformationComponent, ErrorMessageComponent],
       providers: [
         FormBuilder,
-        {
-          provide: Store,
-          useValue: mockStore,
-        },
+        { provide: Store, useValue: mockStore },
+        { provide: Title, useValue: mockTitleService },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(SpecificAccessInformationComponent);

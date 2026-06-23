@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -33,7 +34,8 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
 
   constructor(
     public readonly store: Store<fromFeature.State>,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly titleService: Title
   ) {}
 
   public ngOnInit(): void {
@@ -78,6 +80,10 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
         this.submitted = true;
         if (!this.formGroup.valid) {
           this.error = this.getErrorObject();
+          const currentTitle = this.titleService.getTitle();
+          if (!currentTitle.startsWith('Error:')) {
+            this.titleService.setTitle(`Error: ${currentTitle}`);
+          }
           return;
         }
         this.specificAccessBody.comment = this.infoCtrl.value;
@@ -96,7 +102,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
     return {
       title: 'There is a problem',
       description: 'Enter Details',
-      fieldId: 'Description',
+      fieldId: 'more-detail',
     };
   }
 

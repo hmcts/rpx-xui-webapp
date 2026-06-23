@@ -2114,6 +2114,10 @@ describe('HearingRequirementsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should use the service hearing values service code when initialising hearing conditions', () => {
+    expect(locationsDataService.getLocationById).toHaveBeenCalledWith('196538,234850', 'BBA3');
+  });
+
   it('should window onFocus', () => {
     const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
     component.lostFocus = true;

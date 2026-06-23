@@ -11,6 +11,7 @@ import * as log4jui from '../../lib/log4jui';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 const logger: JUILogger = log4jui.getLogger('location hearings');
+const INVALID_SERVICE_CODE_VALUES = new Set(['null', 'undefined']);
 /**
  * @description getLocations from service ID/location type/search term
  * @overview API sample: /api/locations/getLocations?serviceIds=BBA3,BFA1&locationType=hearing&searchTerm=CT91RL
@@ -50,7 +51,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const epimmsID = req.query.epimms_id;
-  const serviceCode = req.query.serviceCode && req.query.serviceCode !== '' ? (req.query.serviceCode as string) : null;
+  const serviceCode = getValidServiceCode(req.query.serviceCode);
   delete req.query.serviceCode;
   const serviceCodeParam = serviceCode ? `&service_code=${serviceCode}` : '';
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}${serviceCodeParam}`;
@@ -87,4 +88,18 @@ function getIdenticalLocationByEpimmsId(data: LocationModel[]): LocationByEpimms
 
 function getLocationsByCourtType(locations: LocationModel[], courtTypeIdsArray: string[]): LocationModel[] {
   return locations.filter((location) => courtTypeIdsArray.includes(location.court_type_id));
+}
+
+function getValidServiceCode(serviceCodeQuery: unknown): string | null {
+  const serviceCodeValue = Array.isArray(serviceCodeQuery) ? serviceCodeQuery[0] : serviceCodeQuery;
+  if (typeof serviceCodeValue !== 'string') {
+    return null;
+  }
+
+  const cleanedServiceCode = serviceCodeValue.trim();
+  if (!cleanedServiceCode || INVALID_SERVICE_CODE_VALUES.has(cleanedServiceCode.toLowerCase())) {
+    return null;
+  }
+
+  return cleanedServiceCode;
 }

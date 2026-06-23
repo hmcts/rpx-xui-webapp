@@ -105,5 +105,49 @@ describe('prd Locations', () => {
         throw new Error(err);
       }
     });
+
+    it('should not append service_code when serviceCode query param is a null-like string', async () => {
+      spy = sandbox.stub(http, GET).resolves(getLocationByIdRes);
+      const req = mockReq({
+        query: {
+          epimms_id: '2345',
+          serviceCode: 'null',
+        },
+      });
+
+      const response = mockRes();
+
+      try {
+        await getLocationById(req, response, next);
+        expect(spy.firstCall.args[0]).to.contain('/refdata/location/court-venues?epimms_id=2345');
+        expect(spy.firstCall.args[0]).to.not.contain('service_code=');
+        expect(response.status).to.have.been.calledWith(200);
+      } catch (err) {
+        console.log(err.stack);
+        throw new Error(err);
+      }
+    });
+
+    it('should not append service_code when serviceCode query param is undefined', async () => {
+      spy = sandbox.stub(http, GET).resolves(getLocationByIdRes);
+      const req = mockReq({
+        query: {
+          epimms_id: '2345',
+          serviceCode: undefined,
+        },
+      });
+
+      const response = mockRes();
+
+      try {
+        await getLocationById(req, response, next);
+        expect(spy.firstCall.args[0]).to.contain('/refdata/location/court-venues?epimms_id=2345');
+        expect(spy.firstCall.args[0]).to.not.contain('service_code=');
+        expect(response.status).to.have.been.calledWith(200);
+      } catch (err) {
+        console.log(err.stack);
+        throw new Error(err);
+      }
+    });
   });
 });

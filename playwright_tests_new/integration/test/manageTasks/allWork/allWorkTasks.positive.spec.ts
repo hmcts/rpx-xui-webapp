@@ -317,14 +317,14 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
   const scenarios = [
     {
       userIdentifier: 'IAC_CaseOfficer_R2',
-      roleCategory: 'LEGAL_OPERATIONS',
+      roleCategories: ['LEGAL_OPERATIONS'],
       roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer'],
       expectedDateHeader: 'Due date',
       notExpectedDateHeader: 'Task created',
     },
     {
       userIdentifier: 'IAC_Judge_WA_R1',
-      roleCategory: 'JUDICIAL',
+      roleCategories: ['JUDICIAL'],
       roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'],
       expectedDateHeader: 'Task created',
       notExpectedDateHeader: 'Due date',
@@ -345,7 +345,7 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
             supportedJurisdictions: allWorkTasksSupportedJurisdictions,
             supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
             user: {
-              roleCategory: scenario.roleCategory,
+              roleCategories: scenario.roleCategories,
               roles: scenario.roles,
             },
           });

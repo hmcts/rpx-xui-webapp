@@ -414,7 +414,7 @@ export const singleUsersGetByRoleMockResponse = [
       locationName: 'Birmingham',
       services: ['CIVIL', 'PUBLICLAW', 'PRIVATELAW', 'IA'],
     },
-    roleCategory: 'LEGAL_OPERATIONS',
+    roleCategories: ['LEGAL_OPERATIONS'],
     service: 'IA',
   },
   {
@@ -427,7 +427,7 @@ export const singleUsersGetByRoleMockResponse = [
       locationName: 'Birmingham',
       services: ['CIVIL', 'PUBLICLAW', 'PRIVATELAW', 'IA'],
     },
-    roleCategory: 'JUDICIARY',
+    roleCategories: ['JUDICIARY'],
     service: 'IA',
   },
 ];

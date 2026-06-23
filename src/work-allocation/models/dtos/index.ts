@@ -18,7 +18,7 @@ export interface Caseworker {
   lastName: string;
   email: string;
   location: Location;
-  roleCategory: RoleCategory[];
+  roleCategories: RoleCategory[];
 }
 
 export interface CaseworkersByService {

@@ -589,7 +589,7 @@ describe('RolesAndAccessComponent', () => {
           lastName: null,
           email: 'test@test.com',
           location: null,
-          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          roleCategories: [RoleCategory.LEGAL_OPERATIONS],
         },
       ];
 
@@ -607,7 +607,7 @@ describe('RolesAndAccessComponent', () => {
           lastName: undefined,
           email: 'test@test.com',
           location: null,
-          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          roleCategories: [RoleCategory.LEGAL_OPERATIONS],
         },
       ];
 

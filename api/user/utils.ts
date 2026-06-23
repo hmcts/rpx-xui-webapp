@@ -46,9 +46,9 @@ const roleCategoryRules: RoleCategoryRule[] = [
       hasRoleCategory(roles, TASK_SUPERVISOR) ||
       hasRoleCategory(roles, PUI_CASE_MANAGER) ||
       hasRoleCategory(roles, PUI_ORG_MANAGER),
-      // EXUI-4758 - Unsure whether this is correct but it is the current implementation.
-      // Looks like legal-operations has been bundled in with solicitor
-      // may just not have been noticed as is a fallback
+    // EXUI-4758 - Unsure whether this is correct but it is the current implementation.
+    // Looks like legal-operations has been bundled in with solicitor
+    // may just not have been noticed as is a fallback
     result: PROFESSIONAL_ROLE_CATEGORY,
   },
   {

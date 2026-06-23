@@ -1215,16 +1215,16 @@ describe('workAllocation.utils', () => {
     });
 
     it('should correctly get the users role category', () => {
-      expect(util.getUserRoleCategories(mockRoleAssignment, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)).to.deep.equal(
-        ['LEGAL_OPERATIONS']
-      );
-      expect(util.getUserRoleCategories(mockRoleAssignment, mockUsers[1].staff_profile, mockUsers[1].ccd_service_names)).to.deep.equal(
-        ['ADMIN', 'LEGAL_OPERATIONS']
-      );
+      expect(
+        util.getUserRoleCategories(mockRoleAssignment, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)
+      ).to.deep.equal(['LEGAL_OPERATIONS']);
+      expect(
+        util.getUserRoleCategories(mockRoleAssignment, mockUsers[1].staff_profile, mockUsers[1].ccd_service_names)
+      ).to.deep.equal(['ADMIN', 'LEGAL_OPERATIONS']);
       const specificMockRole = [{ actorId: '123', roleCategory: 'CTSC', attributes: { jurisdiction: 'ia' } } as RoleAssignment];
-      expect(util.getUserRoleCategories(specificMockRole, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)).to.deep.equal(
-        ['CTSC']
-      );
+      expect(
+        util.getUserRoleCategories(specificMockRole, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)
+      ).to.deep.equal(['CTSC']);
       // checks that if service of role does not match, role cateogry not set
       expect(util.getUserRoleCategories(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.deep.equal([]);
       specificMockRole[0].attributes = {};

@@ -131,7 +131,7 @@
     "@ngrx/store-devtools": "^20",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "applicationinsights": "1.8.10",
-    "axios": "^1.15.0",
+    "axios": "^1.18.1",
     "axios-mock-adapter": "^1.22.0",
     "class-transformer": "^0.5.1",
     "compression": "^1.7.4",
@@ -266,7 +266,8 @@
     "crypto": false
   },
   "resolutions": {
-    "form-data": "4.0.4",
+    "axios@npm:^0.24.0": "npm:1.18.1",
+    "form-data": "4.0.6",
     "flat": "~5.0.1",
     "loader-utils": "~2.0.3",
     "minimist": "^1.2.8",

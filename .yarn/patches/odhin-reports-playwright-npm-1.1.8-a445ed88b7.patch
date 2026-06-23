@@ -1,3 +1,16 @@
+diff --git a/package.json b/package.json
+index b4225d2cc09b6a17fef30d2dfcfb5e0ce445c842..211da82abb8d0f764bf31c2f1b63f03733f77940 100644
+--- a/package.json
++++ b/package.json
+@@ -37,7 +37,7 @@
+   "dependencies": {
+     "ansi-to-html": "^0.7.2",
+     "autoprefixer": "^10.4.14",
+-    "axios": "^0.24.0",
++    "axios": "^1.18.1",
+     "connect": "^3.7.0",
+     "dayjs": "^1.11.7",
+     "expres": "^0.0.5",
 diff --git a/lib/generate.js b/lib/generate.js
 index e36b904dbedea1a34a9aa2367a3636aacc46f16e..a4679f3122e76eb27f18b7019666cf129b3f2b56 100644
 --- a/lib/generate.js

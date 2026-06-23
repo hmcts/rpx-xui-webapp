@@ -19,7 +19,11 @@ describe('DescribeExclusionComponent', () => {
     infoCtrl: 'test',
   });
   mockFormBuilder.group.and.returnValue(formGroup);
-  const component: SpecificAccessInformationComponent = new SpecificAccessInformationComponent(mockStore, mockFormBuilder, mockTitleService);
+  const component: SpecificAccessInformationComponent = new SpecificAccessInformationComponent(
+    mockStore,
+    mockFormBuilder,
+    mockTitleService
+  );
   component.error = {};
   component.formGroup = formGroup;
   let fixture: ComponentFixture<SpecificAccessInformationComponent>;
@@ -28,11 +32,7 @@ describe('DescribeExclusionComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FormsModule, RouterModule, StoreModule.forRoot({})],
       declarations: [SpecificAccessInformationComponent, ErrorMessageComponent],
-      providers: [
-        FormBuilder,
-        { provide: Store, useValue: mockStore },
-        { provide: Title, useValue: mockTitleService },
-      ],
+      providers: [FormBuilder, { provide: Store, useValue: mockStore }, { provide: Title, useValue: mockTitleService }],
     }).compileComponents();
     fixture = TestBed.createComponent(SpecificAccessInformationComponent);
     mockStore.pipe.and.returnValue(of({}));

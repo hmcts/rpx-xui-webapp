@@ -114,7 +114,7 @@
     "@angular/router": "^20.3.18",
     "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.68",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.68-exui-4216",
     "@hmcts/ccpay-web-component": "6.5.17",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.21",

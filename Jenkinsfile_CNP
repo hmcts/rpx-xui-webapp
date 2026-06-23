@@ -45,6 +45,11 @@ properties([
             defaultValue: false,
             description: 'Bypass Key Vault-backed Playwright global exclusions for a verification run that is fixing an excluded test.'
         ),
+        booleanParam(
+            name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
+            defaultValue: false,
+            description: 'Manual-only: run only the non-blocking unified Playwright accessibility pack on this CNP build.'
+        ),
         text(
             name: 'INTEGRATION_PW_PROFILE_RUNS',
             defaultValue: '''workers=7''',
@@ -99,6 +104,8 @@ def archivePlaywrightDiagnostics = {
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
+def playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+def playwrightAccessibilityReportFile = 'xui-playwright-accessibility.html'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -116,6 +123,27 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
               --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
               --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
         '''
+    }
+}
+
+def publishPlaywrightAccessibilityReport = { String reportName ->
+    try {
+        ensureHtmlReportForPublishing(
+            playwrightAccessibilityReportDir,
+            playwrightAccessibilityReportFile,
+            reportName
+        )
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "${playwrightAccessibilityReportDir}/",
+            reportFiles          : playwrightAccessibilityReportFile,
+            reportName           : reportName
+        ])
+    } catch (Exception e) {
+        currentBuild.result = 'UNSTABLE'
+        echo "[playwright-accessibility] Report publish failed; marking build unstable because this pack must publish Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
 
@@ -266,7 +294,6 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "ORG_USER_ASSIGNMENT_MODE=external",
                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                 "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-                "PLAYWRIGHT_SKIP_INSTALL=true",
                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
@@ -307,7 +334,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
     }
 }
 
-def branchesToSync = ['perftest', 'ithc', 'demo']
+def branchesToSync = ['perftest', 'ithc']
 
 def secrets = [
   'rpx-${env}': [
@@ -346,6 +373,14 @@ def secrets = [
     secret('e2e-staff-admin-3-password', 'STAFF_ADMIN_3_PASSWORD'),
     secret('e2e-staff-admin-4-username', 'STAFF_ADMIN_4_USERNAME'),
     secret('e2e-staff-admin-4-password', 'STAFF_ADMIN_4_PASSWORD'),
+    secret('staff-admin-username', 'STAFF_ADMIN_USERNAME'),
+    secret('staff-admin-password', 'STAFF_ADMIN_PASSWORD'),
+    secret('e2e-iac-caseofficer-r1-username', 'PW_IAC_CASEOFFICER_R1_EMAIL'),
+    secret('e2e-iac-caseofficer-r1-password', 'PW_IAC_CASEOFFICER_R1_PASSWORD'),
+    secret('e2e-iac-caseofficer-r2-username', 'PW_IAC_CASEOFFICER_R2_EMAIL'),
+    secret('e2e-iac-caseofficer-r2-password', 'PW_IAC_CASEOFFICER_R2_PASSWORD'),
+    secret('e2e-iac-judge-wa-r1-username', 'PW_IAC_JUDGE_WA_R1_EMAIL'),
+    secret('e2e-iac-judge-wa-r1-password', 'PW_IAC_JUDGE_WA_R1_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-username', 'HEARING_MANAGER_CR84_OFF_USERNAME'),
     secret('e2e-hearing-manager-cr84-off-password', 'HEARING_MANAGER_CR84_OFF_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-1-username', 'HEARING_MANAGER_CR84_OFF_1_USERNAME'),
@@ -366,6 +401,10 @@ def secrets = [
     secret('e2e-hearing-manager-cr84-on-3-password', 'HEARING_MANAGER_CR84_ON_3_PASSWORD'),
     secret('e2e-hearing-manager-cr84-on-4-username', 'HEARING_MANAGER_CR84_ON_4_USERNAME'),
     secret('e2e-hearing-manager-cr84-on-4-password', 'HEARING_MANAGER_CR84_ON_4_PASSWORD'),
+    secret('e2e-fpl-global-search-username', 'FPL_GLOBAL_SEARCH_USERNAME'),
+    secret('e2e-fpl-global-search-password', 'FPL_GLOBAL_SEARCH_PASSWORD'),
+    secret('e2e-user-with-flags-username', 'USER_WITH_FLAGS_USERNAME'),
+    secret('e2e-user-with-flags-password', 'USER_WITH_FLAGS_PASSWORD'),
     secret('e2e-search-employment-case-username', 'SEARCH_EMPLOYMENT_CASE_USERNAME'),
     secret('e2e-search-employment-case-password', 'SEARCH_EMPLOYMENT_CASE_PASSWORD'),
     secret('e2e-restricted-case-file-view-v1-1-on-username', 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME'),
@@ -414,12 +453,26 @@ withPipeline(type, product, component) {
 
     afterSuccess('checkout') {
         startCiLoadProfile()
+        env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
         stage('Yarn Install') {
             try {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Yarn install', 'start')
                 yarnBuilder.yarn('install --immutable')
             } finally {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Yarn install', 'finish')
+            }
+        }
+
+        stage('Playwright Install Chromium') {
+            try {
+                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+                yarnBuilder.yarn('test:setup:playwright-verify-chromium')
+                env.PLAYWRIGHT_SKIP_INSTALL = 'true'
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'finish')
             }
         }
     }
@@ -430,19 +483,6 @@ withPipeline(type, product, component) {
             yarnBuilder.yarn('build:dev')
         } finally {
             recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Build', 'finish')
-        }
-    }
-
-    afterAlways('checkout'){
-        stage('Playwright Install Chromium') {
-            try {
-                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
-                yarnBuilder.yarn('test:setup:playwright-install-chromium')
-            } catch (Error) {
-                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'finish')
-            }
         }
     }
 
@@ -476,14 +516,6 @@ withPipeline(type, product, component) {
             reportName           : 'XUI Manage Cases Mutation tests'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/a11y/",
-            reportFiles          : 'Report.html',
-            reportName           : 'Manage Cases a11y Test Report'
-        ])
         recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Coverage report publish', 'finish')
 
     }
@@ -521,7 +553,7 @@ withPipeline(type, product, component) {
             try {
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'start')
                 // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
-                parallel(
+                def previewFunctionalSuites = [
                     failFast: false,
                     api: {
                         stage('API Tests') {
@@ -576,7 +608,6 @@ withPipeline(type, product, component) {
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
-                                    "PLAYWRIGHT_SKIP_INSTALL=true",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
@@ -599,7 +630,47 @@ withPipeline(type, product, component) {
                             }
                         }
                     }
-                )
+                ]
+
+                if (params.RUN_PLAYWRIGHT_ACCESSIBILITY) {
+                    previewFunctionalSuites = [failFast: false]
+                    previewFunctionalSuites.playwrightAccessibility = {
+                        stage('Playwright Accessibility Tests') {
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Accessibility', 'start')
+                                withEnv([
+                                    "ORG_USER_ASSIGNMENT_MODE=external",
+                                    "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                    "PW_ACCESSIBILITY_WORKERS=6",
+                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PLAYWRIGHT_SKIP_INSTALL=true",
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                ]) {
+                                    yarnBuilder.yarn('test:accessibility:playwright')
+                                }
+                                assertHtmlReportExists(
+                                    playwrightAccessibilityReportDir,
+                                    playwrightAccessibilityReportFile
+                                )
+                            } catch (Exception e) {
+                                currentBuild.result = 'UNSTABLE'
+                                echo "[parallel-report-gathering] Playwright Accessibility failed; marking build unstable so a manual accessibility-only run cannot hide missing Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
+                            } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Accessibility', 'finish')
+                                try {
+                                    publishPlaywrightAccessibilityReport('PREVIEW Playwright Accessibility')
+                                } catch (Exception publishException) {
+                                    echo "[playwright-accessibility] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    echo '[playwright-accessibility] CNP stage omitted by default. Set RUN_PLAYWRIGHT_ACCESSIBILITY=true on a manual build to run only this pack.'
+                }
+
+                parallel(previewFunctionalSuites)
             } finally {
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'finish')
                 archivePlaywrightDiagnostics()
@@ -626,7 +697,7 @@ withPipeline(type, product, component) {
             try {
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'start')
                 // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
-                parallel(
+                def aatFunctionalSuites = [
                     failFast: false,
                     api: {
                         stage('API Tests') {
@@ -681,7 +752,6 @@ withPipeline(type, product, component) {
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
-                                    "PLAYWRIGHT_SKIP_INSTALL=true",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
@@ -704,7 +774,47 @@ withPipeline(type, product, component) {
                             }
                         }
                     }
-                )
+                ]
+
+                if (params.RUN_PLAYWRIGHT_ACCESSIBILITY) {
+                    aatFunctionalSuites = [failFast: false]
+                    aatFunctionalSuites.playwrightAccessibility = {
+                        stage('Playwright Accessibility Tests') {
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Accessibility', 'start')
+                                withEnv([
+                                    "ORG_USER_ASSIGNMENT_MODE=external",
+                                    "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                    "PW_ACCESSIBILITY_WORKERS=6",
+                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PLAYWRIGHT_SKIP_INSTALL=true",
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                ]) {
+                                    yarnBuilder.yarn('test:accessibility:playwright')
+                                }
+                                assertHtmlReportExists(
+                                    playwrightAccessibilityReportDir,
+                                    playwrightAccessibilityReportFile
+                                )
+                            } catch (Exception e) {
+                                currentBuild.result = 'UNSTABLE'
+                                echo "[parallel-report-gathering] Playwright Accessibility failed; marking build unstable so a manual accessibility-only run cannot hide missing Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
+                            } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Accessibility', 'finish')
+                                try {
+                                    publishPlaywrightAccessibilityReport('AAT Playwright Accessibility')
+                                } catch (Exception publishException) {
+                                    echo "[playwright-accessibility] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    echo '[playwright-accessibility] CNP stage omitted by default. Set RUN_PLAYWRIGHT_ACCESSIBILITY=true on a manual build to run only this pack.'
+                }
+
+                parallel(aatFunctionalSuites)
             } finally {
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'finish')
                 archivePlaywrightDiagnostics()

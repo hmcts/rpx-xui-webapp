@@ -412,6 +412,8 @@ function buildIssueSummaryHtml(
   screenshot: Buffer
 ): string {
   const screenshotDataUrl = `data:image/png;base64,${screenshot.toString('base64')}`;
+  const odhinIndexFileName = process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-a11y.html';
+  const odhinReportHref = `../${escapeAttribute(odhinIndexFileName)}`;
   const ruleCounts = new Map<string, number>();
   for (const violation of violations) {
     ruleCounts.set(violation.rule, (ruleCounts.get(violation.rule) ?? 0) + 1);
@@ -483,6 +485,8 @@ function buildIssueSummaryHtml(
           .visual img { display: block; max-width: 100%; height: auto; }
           .issue { border: 4px solid #d4351c; padding: 16px; margin-bottom: 18px; background: #fff; }
           .issue h2 { margin-top: 0; }
+          .report-nav { margin: 0 0 18px; }
+          .report-nav a { color: #1d70b8; font-weight: bold; }
           .advice { background: #f3f2f1; border-left: 8px solid #1d70b8; padding: 12px 16px; margin: 12px 0; }
           .advice dt { font-weight: bold; margin-top: 8px; }
           .advice dd { margin-left: 0; }
@@ -533,10 +537,12 @@ function buildIssueSummaryHtml(
               <h1>WAVE-like accessibility evidence</h1>
               <p>${violations.length} issue(s) on ${escapeHtml(url)}. Match marker numbers here to the highlighted page image.</p>
             </div>
+            <p class="report-nav"><a href="${odhinReportHref}">Back to Odhín report</a></p>
             <section class="visual">
               <img alt="Highlighted page screenshot with WAVE-like issue markers" src="${screenshotDataUrl}" />
             </section>
             ${cards}
+            <p class="report-nav"><a href="${odhinReportHref}">Back to Odhín report</a></p>
           </main>
         </div>
       </body>

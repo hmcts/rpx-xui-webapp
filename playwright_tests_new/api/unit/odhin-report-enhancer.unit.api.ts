@@ -240,7 +240,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
 
     const nextHtml = enhancerTest.defaultTestListRowsPerPage(html);
 
-    expect(nextHtml).toContain('DataTable({pageLength:100,lengthMenu:[10,25,50,100]})');
+    expect(nextHtml).toContain('DataTable({pageLength:100,lengthMenu:[10,25,50,100],stateSave:true,stateDuration:-1})');
     expect(nextHtml).not.toContain('DataTable({})');
   });
 
@@ -257,8 +257,24 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
 
     const nextHtml = enhancerTest.enhanceDashboardHtml(html, []);
 
-    expect(nextHtml).toContain('DataTable({pageLength:100,lengthMenu:[10,25,50,100]})');
+    expect(nextHtml).toContain('DataTable({pageLength:100,lengthMenu:[10,25,50,100],stateSave:true,stateDuration:-1})');
     expect(nextHtml).not.toContain('DataTable({})');
+  });
+
+  test('adds saved table state when re-enhancing an older Odhín report', () => {
+    const html = `
+      <html>
+        <body>
+          <table id="test-list-table"></table>
+          <script>
+            $(document).ready(function(){var table=$("#test-list-table").DataTable({pageLength:100,lengthMenu:[10,25,50,100]}),filter=$("#status-filter");});
+          </script>
+        </body>
+      </html>`;
+
+    const nextHtml = enhancerTest.defaultTestListRowsPerPage(html);
+
+    expect(nextHtml).toContain('DataTable({pageLength:100,lengthMenu:[10,25,50,100],stateSave:true,stateDuration:-1})');
   });
 
   test('keeps accessibility evidence off the generated Odhín dashboard', () => {
@@ -399,6 +415,12 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     );
     expect(nextHtml).toContain('Accessibility findings for this test');
     expect(nextHtml.match(/data-a11y-test-evidence-link=/g)).toHaveLength(1);
+    expect(nextHtml).toContain('Back to test list');
+    expect(nextHtml).toContain('Previous finding');
+    expect(nextHtml).toContain('Next finding');
+    expect(nextHtml).toContain('1 of 1 accessibility findings');
+    expect(nextHtml).toContain('id="odhin-a11y-modal-nav-script"');
+    expect(nextHtml).toContain('data-odhin-a11y-back-title=');
     expect(nextHtml).toContain('Unique issue groups');
     expect(nextHtml).not.toContain('unexpected issue(s) across engines');
     expect(nextHtml).toContain('2 Screen-reader issue(s):</strong> skip-link, main-landmark');
@@ -422,6 +444,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       'Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled'
     );
     expect(nextHtml).toContain('Open highlighted issue report');
+    expect(nextHtml).toContain(
+      '<a href="./accessibility-evidence/privacy-policy-wave-like.html" target="_blank" rel="noopener noreferrer">Open highlighted issue report</a>'
+    );
     expect(nextHtml).toContain('Open screenshot');
     expect(nextHtml).toContain('Open screen-reader JSON');
     expect(nextHtml).toContain('Open DOM and WAVE JSON');

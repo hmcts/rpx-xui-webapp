@@ -98,6 +98,7 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
 
     const htmlAttachment = attachments.find((attachment) => attachment.name === 'wave-accessibility-issues.html');
     expect(htmlAttachment?.body?.toString()).toContain('Developer advice');
+    expect(htmlAttachment?.body?.toString()).toContain('<a href="../xui-playwright-api.html">Back to Odhín report</a>');
     expect(htmlAttachment?.body?.toString()).toContain('What to fix');
     expect(htmlAttachment?.body?.toString()).toContain('DOM hints');
     expect(htmlAttachment?.body?.toString()).toContain('search selector #continue');

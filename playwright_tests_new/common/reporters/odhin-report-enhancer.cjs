@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('node-html-parser');
 
+const evidenceLinkAttributes = ' target="_blank" rel="noopener noreferrer"';
+
 function deriveFeatureName(filePath) {
   const normalized = String(filePath ?? '')
     .replace(/\\/g, '/')
@@ -241,6 +243,44 @@ function injectEnhancerStyles(root) {
     padding: 2px 4px;
   }
 
+  .odhin-a11y-test-nav {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 12px;
+  }
+
+  .odhin-a11y-test-nav button {
+    background: #f3f2f1;
+    border: 1px solid #505a5f;
+    color: #0b0c0c;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 6px 10px;
+  }
+
+  .odhin-a11y-test-nav button:first-child {
+    background: #1d70b8;
+    border-color: #1d70b8;
+    color: #fff;
+  }
+
+  .odhin-a11y-test-nav button:hover:not(:disabled) {
+    background: #ffdd00;
+    border-color: #0b0c0c;
+    color: #0b0c0c;
+  }
+
+  .odhin-a11y-test-nav button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .odhin-a11y-test-nav span {
+    font-weight: 700;
+  }
+
   .odhin-a11y-test-evidence a {
     color: #0b0c0c;
     display: inline-block;
@@ -275,6 +315,10 @@ function injectEnhancerStyles(root) {
   .odhin-a11y-table-hint {
     max-width: 420px;
     white-space: normal;
+  }
+
+  #test-list-table tbody tr.odhin-a11y-row-focus td {
+    box-shadow: inset 0 0 0 3px #ffdd00;
   }
 
   .odhin-a11y-issue-summary {
@@ -615,13 +659,13 @@ function buildAccessibilityEvidenceBlock(entries) {
     .map((entry) => {
       const screenshotPath = entry.screenshotFileName ? `./accessibility-evidence/${entry.screenshotFileName}` : '';
       const evidenceLinks = [
-        `<a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">${entry.engine === 'summary' ? 'open page summary' : 'issue detail'}</a>`,
+        `<a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}"${evidenceLinkAttributes}>${entry.engine === 'summary' ? 'open page summary' : 'issue detail'}</a>`,
         entry.reportFileName
-          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}">native Lighthouse HTML</a>`
+          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}"${evidenceLinkAttributes}>native Lighthouse HTML</a>`
           : '',
-        screenshotPath ? `<a href="${escapeAttribute(screenshotPath)}">screenshot</a>` : '',
+        screenshotPath ? `<a href="${escapeAttribute(screenshotPath)}"${evidenceLinkAttributes}>screenshot</a>` : '',
         entry.jsonFileName
-          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">${jsonLinkLabel(entry.engine)}</a>`
+          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}"${evidenceLinkAttributes}>${jsonLinkLabel(entry.engine)}</a>`
           : '',
       ]
         .filter(Boolean)
@@ -717,7 +761,97 @@ function buildDeveloperHint(entries) {
   return hints.length ? hints : ['Open the highlighted issue report and start with the listed DOM target or page template.'];
 }
 
-function buildTestEvidencePanel(entries) {
+function buildTestEvidenceNavigation(navigation) {
+  const currentTitle = navigation?.currentTitle ?? '';
+  const previousTitle = navigation?.previousTitle ?? '';
+  const nextTitle = navigation?.nextTitle ?? '';
+  const position = navigation?.position ?? '';
+
+  return `
+    <div class="odhin-a11y-test-nav" aria-label="Accessibility finding navigation">
+      <button type="button" data-odhin-a11y-back-title="${escapeAttribute(currentTitle)}">Back to test list</button>
+      <button type="button" data-odhin-a11y-open-title="${escapeAttribute(previousTitle)}"${previousTitle ? '' : ' disabled'}>Previous finding</button>
+      <button type="button" data-odhin-a11y-open-title="${escapeAttribute(nextTitle)}"${nextTitle ? '' : ' disabled'}>Next finding</button>
+      ${position ? `<span>${escapeHtml(position)}</span>` : ''}
+    </div>
+  `;
+}
+
+function buildAccessibilityModalNavigationScript() {
+  return `
+    <script id="odhin-a11y-modal-nav-script">
+      (function() {
+        if (window.__odhinA11yModalNavigation) {
+          return;
+        }
+        window.__odhinA11yModalNavigation = true;
+
+        function normalize(text) {
+          return String(text || '').replace(/\\s+/g, ' ').trim();
+        }
+
+        function rowForTitle(title) {
+          var wantedTitle = normalize(title);
+          if (!wantedTitle) {
+            return null;
+          }
+          return Array.prototype.find.call(document.querySelectorAll('#test-list-table tbody tr'), function(row) {
+            var titleCell = row.querySelector('td');
+            return normalize(titleCell && titleCell.textContent) === wantedTitle;
+          }) || null;
+        }
+
+        function closeCurrentModal(button) {
+          var modal = button.closest('.modal');
+          if (!modal) {
+            return;
+          }
+          if (window.bootstrap && window.bootstrap.Modal) {
+            window.bootstrap.Modal.getOrCreateInstance(modal).hide();
+            return;
+          }
+          var closeButton = modal.querySelector('[data-bs-dismiss="modal"], [data-dismiss="modal"], .close-btn');
+          if (closeButton) {
+            closeButton.click();
+          }
+        }
+
+        function focusRow(row) {
+          if (!row) {
+            return;
+          }
+          row.scrollIntoView({ block: 'center' });
+          row.classList.add('odhin-a11y-row-focus');
+          window.setTimeout(function() {
+            row.classList.remove('odhin-a11y-row-focus');
+          }, 1400);
+        }
+
+        document.addEventListener('click', function(event) {
+          var button = event.target.closest('[data-odhin-a11y-back-title], [data-odhin-a11y-open-title]');
+          if (!button) {
+            return;
+          }
+          event.preventDefault();
+
+          var nextTitle = button.getAttribute('data-odhin-a11y-open-title');
+          var backTitle = button.getAttribute('data-odhin-a11y-back-title');
+          var row = rowForTitle(nextTitle || backTitle);
+          closeCurrentModal(button);
+
+          window.setTimeout(function() {
+            focusRow(row);
+            if (nextTitle && row) {
+              row.click();
+            }
+          }, 180);
+        });
+      })();
+    </script>
+  `;
+}
+
+function buildTestEvidencePanel(entries, navigation = {}) {
   const normalizedEntries = normalizeEvidenceEntries(entries);
   const firstEntry = normalizedEntries[0];
   const issueEntries = normalizedEntries.some((entry) => entry.engine !== 'summary')
@@ -740,18 +874,18 @@ function buildTestEvidencePanel(entries) {
   const links = normalizedEntries
     .map((entry) => {
       const screenshotLink = entry.screenshotFileName
-        ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.screenshotFileName}`)}">Open screenshot</a>`
+        ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.screenshotFileName}`)}"${evidenceLinkAttributes}>Open screenshot</a>`
         : '';
       const jsonLink = entry.jsonFileName
-        ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">Open ${escapeHtml(jsonLinkLabel(entry.engine))}</a>`
+        ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}"${evidenceLinkAttributes}>Open ${escapeHtml(jsonLinkLabel(entry.engine))}</a>`
         : '';
       const nativeReportLink = entry.reportFileName
-        ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}">Open native Lighthouse HTML</a>`
+        ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}"${evidenceLinkAttributes}>Open native Lighthouse HTML</a>`
         : '';
 
       return `
         <p><strong>${escapeHtml(engineLabel(entry.engine))} evidence:</strong></p>
-        <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">Open highlighted issue report</a>
+        <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}"${evidenceLinkAttributes}>Open highlighted issue report</a>
         ${nativeReportLink}
         ${screenshotLink}
         ${jsonLink}
@@ -768,6 +902,7 @@ function buildTestEvidencePanel(entries) {
   return `
     <div class="odhin-a11y-test-evidence" data-a11y-test-evidence-link="${escapeAttribute(marker)}">
       <h2>Accessibility findings for this test</h2>
+      ${buildTestEvidenceNavigation(navigation)}
       <p><strong>Pipeline non-blocking:</strong> Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled.</p>
       <h3>Unique issue groups</h3>
       <ul>${engineSummaries}</ul>
@@ -1072,12 +1207,14 @@ function injectAccessibilityEvidenceIntoTestModals(root, evidenceEntries) {
   let injectedCount = 0;
   const modalContents = root.querySelectorAll('.modal-content');
   root.querySelectorAll('.odhin-a11y-test-evidence').forEach((node) => node.remove());
+  root.querySelectorAll('#odhin-a11y-modal-nav-script').forEach((node) => node.remove());
   const entriesByTestTitle = new Map();
   normalizedEntries.forEach((entry) => {
     const entries = entriesByTestTitle.get(entry.testTitle) ?? [];
     entries.push(entry);
     entriesByTestTitle.set(entry.testTitle, entries);
   });
+  const testTitles = Array.from(entriesByTestTitle.keys());
 
   entriesByTestTitle.forEach((entries, testTitle) => {
     const matchingModal = modalContents.find(
@@ -1088,9 +1225,23 @@ function injectAccessibilityEvidenceIntoTestModals(root, evidenceEntries) {
       return;
     }
 
-    modalBody.insertAdjacentHTML('afterbegin', buildTestEvidencePanel(entries));
+    const currentIndex = testTitles.indexOf(testTitle);
+    modalBody.insertAdjacentHTML(
+      'afterbegin',
+      buildTestEvidencePanel(entries, {
+        currentTitle: testTitle,
+        previousTitle: currentIndex > 0 ? testTitles[currentIndex - 1] : '',
+        nextTitle: currentIndex >= 0 && currentIndex < testTitles.length - 1 ? testTitles[currentIndex + 1] : '',
+        position: currentIndex >= 0 ? `${currentIndex + 1} of ${testTitles.length} accessibility findings` : '',
+      })
+    );
     injectedCount += 1;
   });
+
+  if (injectedCount > 0) {
+    const body = root.querySelector('body');
+    body?.insertAdjacentHTML('beforeend', buildAccessibilityModalNavigationScript());
+  }
 
   return injectedCount;
 }
@@ -1139,12 +1290,20 @@ function stripLegacyFileChartArtifacts(root) {
 function defaultTestListRowsPerPage(html) {
   return String(html)
     .replace(
+      /\$\("#test-list-table"\)\.DataTable\(\{pageLength:100,lengthMenu:\[10,25,50,100\]\}\)/g,
+      '$("#test-list-table").DataTable({pageLength:100,lengthMenu:[10,25,50,100],stateSave:true,stateDuration:-1})'
+    )
+    .replace(
+      /\$\('#test-list-table'\)\.DataTable\(\{pageLength:100,lengthMenu:\[10,25,50,100\]\}\)/g,
+      "$('#test-list-table').DataTable({pageLength:100,lengthMenu:[10,25,50,100],stateSave:true,stateDuration:-1})"
+    )
+    .replace(
       /\$\("#test-list-table"\)\.DataTable\(\{\}\)/g,
-      '$("#test-list-table").DataTable({pageLength:100,lengthMenu:[10,25,50,100]})'
+      '$("#test-list-table").DataTable({pageLength:100,lengthMenu:[10,25,50,100],stateSave:true,stateDuration:-1})'
     )
     .replace(
       /\$\('#test-list-table'\)\.DataTable\(\{\}\)/g,
-      "$('#test-list-table').DataTable({pageLength:100,lengthMenu:[10,25,50,100]})"
+      "$('#test-list-table').DataTable({pageLength:100,lengthMenu:[10,25,50,100],stateSave:true,stateDuration:-1})"
     );
 }
 

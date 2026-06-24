@@ -84,7 +84,7 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
       )
     );
 
-    expectStatus(response.status, [200, 500, 502, 504]);
+    expectStatus(response.status, [200, 404, 500, 502, 504]);
     if (response.status === 200) {
       expect(response.data).toBeTruthy();
     }

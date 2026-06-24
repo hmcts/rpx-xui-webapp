@@ -27,6 +27,8 @@ export class QueryManagementPage extends Base {
   readonly querySubmittedHeading = this.confirmation.locator('.govuk-panel__title');
   readonly querySubmittedConfirmation = this.confirmation.locator('.qm-confirmation.govuk-panel__body');
   readonly queryResponseSubmittedConfirmation = this.confirmation.locator('.govuk-panel__body');
+  readonly queryList = this.page.locator('ccd-query-list');
+  readonly queryDetails = this.page.locator('ccd-query-details');
 
   constructor(page: Page) {
     super(page);
@@ -114,6 +116,40 @@ export class QueryManagementPage extends Base {
     await expect(this.queryResponseSubmittedConfirmation).toContainText('This query response has been added to the case');
   }
 
+  async expectQueryInQueriesTable(subject: string, partyName: string, senderName: string): Promise<void> {
+    await expect(this.queryList).toBeVisible();
+    await expect(this.queryList.locator('.query-list__caption')).toContainText(partyName);
+
+    const queryRow = this.queryList.getByRole('row', { name: new RegExp(this.escapeRegExp(subject)) }).first();
+    await expect(queryRow).toBeVisible();
+    await expect(queryRow).toContainText(subject);
+    await expect(queryRow).toContainText(senderName);
+  }
+
+  async openQueryFromQueriesTable(subject: string): Promise<void> {
+    await this.queryList.getByRole('button', { name: subject, exact: true }).click();
+    await expect(this.queryDetails).toBeVisible();
+  }
+
+  async expectQueryDetailsShown(options: {
+    body: string;
+    hearingRelated: string;
+    senderName: string;
+    subject: string;
+  }): Promise<void> {
+    await expect(this.queryDetails.locator('.govuk-table__caption').filter({ hasText: 'Query details' })).toBeVisible();
+    await this.expectQueryDetailsRow('Sender name', options.senderName);
+    await this.expectQueryDetailsRow('Query subject', options.subject);
+    await this.expectQueryDetailsRow('Query body', options.body);
+    await this.expectQueryDetailsRow('Is the query hearing related?', options.hearingRelated);
+  }
+
+  private async expectQueryDetailsRow(label: string, value: string): Promise<void> {
+    const row = this.queryDetails.locator('tr').filter({ hasText: label }).first();
+    await expect(row).toBeVisible();
+    await expect(row.locator('.govuk-table__cell')).toContainText(value);
+  }
+
   private queryManagementUrl(caseReference: string): RegExp {
     return new RegExp(`/query-management/query/${caseReference}(?:$|[/?#])`);
   }
@@ -128,5 +164,9 @@ export class QueryManagementPage extends Base {
 
   private followUpQueryUrl(caseReference: string, queryId: string): RegExp {
     return new RegExp(`/query-management/query/${caseReference}/4/${queryId}(?:$|[/?#])`);
+  }
+
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
   }
 }

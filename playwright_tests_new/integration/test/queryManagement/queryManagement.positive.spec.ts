@@ -7,10 +7,12 @@ import {
 import {
   QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID,
   QUERY_MANAGEMENT_CASE_REFERENCE,
+  QUERY_MANAGEMENT_CASE_TYPE,
   QUERY_MANAGEMENT_CONFIRMATION_HEADER,
   QUERY_MANAGEMENT_EXISTING_QUERY_ID,
   QUERY_MANAGEMENT_FOLLOW_UP_DETAIL,
   QUERY_MANAGEMENT_FOLLOW_UP_MESSAGE_TYPE,
+  QUERY_MANAGEMENT_JURISDICTION,
   QUERY_MANAGEMENT_QUERY_DETAIL,
   QUERY_MANAGEMENT_QUERY_SUBJECT,
   QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID,
@@ -88,6 +90,27 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
         attachments: [],
       });
       expect(queryMessage).not.toHaveProperty('isHmctsStaff');
+    });
+
+    await test.step('Open the Queries tab and assert the submitted query is shown', async () => {
+      await caseDetailsPage.openCaseDetails(
+        QUERY_MANAGEMENT_JURISDICTION,
+        QUERY_MANAGEMENT_CASE_TYPE,
+        QUERY_MANAGEMENT_CASE_REFERENCE
+      );
+      await caseDetailsPage.selectCaseDetailsTab('Queries');
+      await queryManagementPage.expectQueryInQueriesTable(
+        QUERY_MANAGEMENT_QUERY_SUBJECT,
+        'Query Solicitor',
+        'Query Solicitor'
+      );
+      await queryManagementPage.openQueryFromQueriesTable(QUERY_MANAGEMENT_QUERY_SUBJECT);
+      await queryManagementPage.expectQueryDetailsShown({
+        subject: QUERY_MANAGEMENT_QUERY_SUBJECT,
+        body: QUERY_MANAGEMENT_QUERY_DETAIL,
+        senderName: 'Query Solicitor',
+        hearingRelated: 'No',
+      });
     });
   });
 

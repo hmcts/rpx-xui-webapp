@@ -11,6 +11,7 @@ import {
   buildQueryManagementRespondQueryEventTriggerMock,
   buildQueryManagementValidationResponse,
   type QueryManagementCaseQueriesCollection,
+  QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID,
   QUERY_MANAGEMENT_CASE_REFERENCE,
   QUERY_MANAGEMENT_CASE_TYPE,
   QUERY_MANAGEMENT_EXISTING_QUERY_ID,
@@ -162,11 +163,12 @@ export async function setupQueryManagementMockRoutes(
   options: QueryManagementMockRoutesOptions = {}
 ): Promise<QueryManagementSubmissionCapture> {
   const user = options.user ?? 'solicitor';
-  const queryCollection = options.queryCollection;
-  const caseDetails = buildQueryManagementCaseDetailsMock({
-    includeQueryTab: options.includeQueryTab,
-    queryCollection,
-  });
+  let queryCollection = options.queryCollection;
+  const buildCaseDetails = () =>
+    buildQueryManagementCaseDetailsMock({
+      includeQueryTab: options.includeQueryTab || Boolean(queryCollection),
+      queryCollection,
+    });
   const raiseQueryEventTrigger = buildQueryManagementRaiseQueryEventTriggerMock(
     QUERY_MANAGEMENT_CASE_REFERENCE,
     queryCollection ?? null
@@ -211,7 +213,7 @@ export async function setupQueryManagementMockRoutes(
   });
 
   await page.route(`**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}*`, async (route) => {
-    await fulfillJson(route, caseDetails);
+    await fulfillJson(route, buildCaseDetails());
   });
 
   if (options.caseTasks) {
@@ -274,7 +276,15 @@ export async function setupQueryManagementMockRoutes(
   await page.route(`**/data/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/events*`, async (route) => {
     const submittedEvent = route.request().postDataJSON?.() as QueryManagementSubmittedEvent;
     capture.submittedEvents.push(submittedEvent);
-    await fulfillJson(route, buildQueryManagementCreateEventResponse(route, caseDetails));
+
+    const submittedQueryCollection = submittedEvent.data?.[
+      QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID
+    ] as QueryManagementCaseQueriesCollection | undefined;
+    if (submittedQueryCollection) {
+      queryCollection = submittedQueryCollection;
+    }
+
+    await fulfillJson(route, buildQueryManagementCreateEventResponse(route, buildCaseDetails()));
   });
 
   return capture;

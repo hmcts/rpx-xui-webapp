@@ -16,7 +16,8 @@
         </ng-container>
         <ng-template #one>
           <li>
-            <a [href]="'#' + error.fieldId">{{ error.description | rpxTranslate }}</a>
+            <a *ngIf="error.fieldId; else noLink" [href]="'#' + error.fieldId">{{ error.description | rpxTranslate }}</a>
+            <ng-template #noLink>{{ error.description | rpxTranslate }}</ng-template>
           </li>
         </ng-template>
       </ul>

@@ -64,7 +64,9 @@ export class CaseFlagPage extends Base {
     }
 
     await this.page.goto(`/cases/case-details/CIVIL/CIVIL/${caseNumber}/trigger/${triggerId}`);
+    await this.page.waitForLoadState('domcontentloaded');
     await this.exuiSpinnerComponent.wait();
+    await this.caseFlagLocationQuestion.waitFor({ state: 'visible', timeout: 60_000 });
   }
 
   async completePartyOtherCaseFlagForClaimant1(comment: string): Promise<void> {

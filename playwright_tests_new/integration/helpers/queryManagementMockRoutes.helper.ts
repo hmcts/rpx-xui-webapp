@@ -26,11 +26,34 @@ import { buildCaseDetailsTasksMinimal } from '../mocks/caseDetailsTasks.builder'
 import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 import { setupXuiAppShellBaseRoutes } from './xuiAppShellMockRoutes.helper';
 
-type QueryManagementSubmittedEvent = {
+export type QueryManagementSubmittedEvent = {
   data?: Record<string, unknown>;
   event?: { id?: string; summary?: string; description?: string };
   event_token?: string;
   ignore_warning?: boolean;
+};
+
+export type QueryManagementSubmittedCaseMessage = {
+  attachments?: unknown[];
+  body?: string;
+  hearingDate?: string | null;
+  id?: string | null;
+  isClosed?: string;
+  isHearingRelated?: string;
+  isHmctsStaff?: string;
+  messageType?: string;
+  name?: string;
+  parentId?: string;
+  subject?: string;
+};
+
+export type QueryManagementSubmittedCaseQueriesCollection = {
+  partyName?: string;
+  roleOnCase?: string;
+  caseMessages?: Array<{
+    id: string | null;
+    value?: QueryManagementSubmittedCaseMessage;
+  }>;
 };
 
 export type QueryManagementSubmissionCapture = {
@@ -158,6 +181,20 @@ function buildRespondToQueryTask() {
   });
 }
 
+export function getQueryManagementSubmittedQueryCollection(
+  submittedEvent: QueryManagementSubmittedEvent
+): QueryManagementSubmittedCaseQueriesCollection {
+  const queryCollection = submittedEvent.data?.[
+    QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID
+  ] as QueryManagementSubmittedCaseQueriesCollection;
+
+  if (!queryCollection) {
+    throw new Error(`Submitted event did not include ${QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID}`);
+  }
+
+  return queryCollection;
+}
+
 export async function setupQueryManagementMockRoutes(
   page: Page,
   options: QueryManagementMockRoutesOptions = {}
@@ -277,9 +314,9 @@ export async function setupQueryManagementMockRoutes(
     const submittedEvent = route.request().postDataJSON?.() as QueryManagementSubmittedEvent;
     capture.submittedEvents.push(submittedEvent);
 
-    const submittedQueryCollection = submittedEvent.data?.[
-      QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID
-    ] as QueryManagementCaseQueriesCollection | undefined;
+    const submittedQueryCollection = submittedEvent.data?.[QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID] as
+      | QueryManagementCaseQueriesCollection
+      | undefined;
     if (submittedQueryCollection) {
       queryCollection = submittedQueryCollection;
     }

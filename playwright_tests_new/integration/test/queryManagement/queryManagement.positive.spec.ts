@@ -1,11 +1,11 @@
 import { expect, test } from '../../../E2E/fixtures';
 import {
+  getQueryManagementSubmittedQueryCollection,
   openCaseworkerRespondToQueryFromTasksTab,
   openSolicitorFollowUpQueryFromQueryDetails,
   openSolicitorRaiseQueryFromNextStep,
 } from '../../helpers';
 import {
-  QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID,
   QUERY_MANAGEMENT_CASE_REFERENCE,
   QUERY_MANAGEMENT_CASE_TYPE,
   QUERY_MANAGEMENT_CONFIRMATION_HEADER,
@@ -54,22 +54,7 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
 
       expect(submissionCapture.submittedEvents).toHaveLength(1);
       const submittedEvent = submissionCapture.submittedEvents[0];
-      const queryCollection = submittedEvent.data?.[QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID] as {
-        partyName?: string;
-        roleOnCase?: string;
-        caseMessages?: Array<{
-          id: string | null;
-          value?: {
-            subject?: string;
-            body?: string;
-            isHearingRelated?: string;
-            hearingDate?: string | null;
-            name?: string;
-            attachments?: unknown[];
-            isHmctsStaff?: string;
-          };
-        }>;
-      };
+      const queryCollection = getQueryManagementSubmittedQueryCollection(submittedEvent);
       const queryMessage = queryCollection.caseMessages?.[0]?.value;
 
       expect(submittedEvent.event).toMatchObject({
@@ -99,11 +84,7 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
         QUERY_MANAGEMENT_CASE_REFERENCE
       );
       await caseDetailsPage.selectCaseDetailsTab('Queries');
-      await queryManagementPage.expectQueryInQueriesTable(
-        QUERY_MANAGEMENT_QUERY_SUBJECT,
-        'Query Solicitor',
-        'Query Solicitor'
-      );
+      await queryManagementPage.expectQueryInQueriesTable(QUERY_MANAGEMENT_QUERY_SUBJECT, 'Query Solicitor', 'Query Solicitor');
       await queryManagementPage.openQueryFromQueriesTable(QUERY_MANAGEMENT_QUERY_SUBJECT);
       await queryManagementPage.expectQueryDetailsShown({
         subject: QUERY_MANAGEMENT_QUERY_SUBJECT,
@@ -145,20 +126,7 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
 
       expect(submissionCapture.submittedEvents).toHaveLength(1);
       const submittedEvent = submissionCapture.submittedEvents[0];
-      const queryCollection = submittedEvent.data?.[QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID] as {
-        caseMessages?: Array<{
-          id: string | null;
-          value?: {
-            attachments?: unknown[];
-            body?: string;
-            isClosed?: string;
-            messageType?: string;
-            name?: string;
-            parentId?: string;
-            subject?: string;
-          };
-        }>;
-      };
+      const queryCollection = getQueryManagementSubmittedQueryCollection(submittedEvent);
       const responseMessage = queryCollection.caseMessages?.find(
         (message) => message.value?.parentId === QUERY_MANAGEMENT_EXISTING_QUERY_ID
       )?.value;
@@ -216,20 +184,7 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
       expect(submissionCapture.submittedEvents).toHaveLength(1);
       expect(submissionCapture.completedTasks).toHaveLength(0);
       const submittedEvent = submissionCapture.submittedEvents[0];
-      const queryCollection = submittedEvent.data?.[QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID] as {
-        caseMessages?: Array<{
-          id: string | null;
-          value?: {
-            attachments?: unknown[];
-            body?: string;
-            isClosed?: string;
-            messageType?: string;
-            name?: string;
-            parentId?: string;
-            subject?: string;
-          };
-        }>;
-      };
+      const queryCollection = getQueryManagementSubmittedQueryCollection(submittedEvent);
       const followUpMessage = queryCollection.caseMessages?.find(
         (message) => message.value?.body === QUERY_MANAGEMENT_FOLLOW_UP_DETAIL
       )?.value;

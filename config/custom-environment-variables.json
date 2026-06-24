@@ -25,7 +25,8 @@
     "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API",
     "taskApi": "HEALTH_WORK_ALLOCATION_TASK_API",
     "roleApi": "HEALTH_ROLE_ASSIGNMENT_API",
-    "caseworkerApi": "HEALTH_CASE_CASEWORKER_API"
+    "caseworkerApi": "HEALTH_CASE_CASEWORKER_API",
+    "hmctsAccess": "HEALTH_HMCTS_ACCESS"
   },
   "services": {
     "ccd": {

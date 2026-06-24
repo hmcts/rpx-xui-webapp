@@ -2,6 +2,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -83,8 +84,8 @@ describe('SpecificAccessReviewComponent', () => {
     it('should create component and show the "review access" info message banner', () => {
       const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
       expect(headingElement.textContent).toContain(SpecificAccessText.TITLE);
-      const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__legend--m');
-      expect(hintElement.textContent).toContain(SpecificAccessText.HINT);
+      const radioOptionEl = fixture.debugElement.query(By.css('exui-choose-radio-option'));
+      expect(radioOptionEl.properties['title']).toContain(SpecificAccessText.HINT);
     });
 
     it('should show validation error when any radio button selected and the form submitted', () => {

@@ -1,4 +1,4 @@
-<h1 class="govuk-heading-l">
+<h1 class="govuk-heading-l" *ngIf="title && showHeading">
   <span class="govuk-caption-l">{{ caption }}</span>
   {{ title }}
 </h1>
@@ -7,8 +7,9 @@
     {{ errorText }}
   </span>
   <p *ngIf="description">{{ description }}</p>
-  <fieldset class="govuk-fieldset" [attr.aria-label]="title">
-    <legend class="hidden-legend">{{ title }}</legend>
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" *ngIf="title && !showHeading">{{ title }}</legend>
+    <legend class="hidden-legend" *ngIf="title && showHeading">{{ title }}</legend>
     <div class="govuk-radios">
       <div *ngFor="let option of optionsList" class="govuk-radios__item">
         <input

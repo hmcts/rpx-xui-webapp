@@ -32,9 +32,6 @@
           </tr>
         </tbody>
       </table>
-      <h2 class="govuk-fieldset__heading govuk-heading-m govuk-fieldset__legend--m">
-        {{ hint }}
-      </h2>
       <div
         [formGroup]="formGroup"
         class="govuk-form-group"
@@ -45,6 +42,8 @@
           radioControlName="radioSelected"
           [optionsList]="optionsList"
           [submitted]="submitted"
+          [title]="hint"
+          [showHeading]="false"
         >
         </exui-choose-radio-option>
       </div>

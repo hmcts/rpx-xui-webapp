@@ -2,8 +2,6 @@
 <div class="govuk-width-container">
   <exui-alert></exui-alert>
   <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
-  <main id="content" role="main">
-    <router-outlet></router-outlet>
-  </main>
+  <router-outlet></router-outlet>
 </div>
 <exui-app-footer></exui-app-footer>

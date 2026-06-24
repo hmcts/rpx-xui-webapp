@@ -74,11 +74,13 @@ export interface HearingPlannedModel {
   plannedHearingDays: PlannedHearingDayModel[];
 }
 
+// Stores the hearing actuals (which is referenced in API) and can be updated directly
 export interface HearingActualsModel {
   hearingOutcome: HearingOutcomeModel;
   actualHearingDays: ActualHearingDayModel[];
 }
 
+// Populated by hearingActuals call, set directly via API, not changed by /api or /src
 export interface HearingActualsMainModel {
   hearingActuals: HearingActualsModel;
   hearingPlanned: HearingPlannedModel;

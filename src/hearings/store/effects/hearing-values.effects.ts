@@ -47,6 +47,7 @@ export class HearingValuesEffects {
     if (error && error.status) {
       return of(
         new fromAppStoreActions.Go({
+          // Note: An example of where case info is used
           path: [`/cases/case-details/${caseInfo?.jurisdictionId}/${caseInfo?.caseType}/${caseInfo.caseReference}/hearings`],
         })
       );

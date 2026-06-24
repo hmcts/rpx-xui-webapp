@@ -53,7 +53,7 @@ export class HearingsFeatureService {
           map((caseInfo) => {
             let jurisdiction: string;
             let caseType: string;
-
+            // Case info responsible for determining whether the feature is enabled based on service and case type
             if (caseInfo?.hasOwnProperty(HearingsFeatureService.JURISDICTION)) {
               jurisdiction = caseInfo[HearingsFeatureService.JURISDICTION];
             }

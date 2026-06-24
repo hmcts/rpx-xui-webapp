@@ -22,6 +22,11 @@ describe('CaseDetailsSectionComponent', () => {
     component = fixture.componentInstance;
     component.caseTypeRefData = caseTypeRefData;
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
+    const injectedHearingsService = TestBed.inject(HearingsService);
+    injectedHearingsService.propertiesUpdatedAutomatically = {
+      withinPage: {},
+      pageless: {},
+    };
     fixture.detectChanges();
   });
 

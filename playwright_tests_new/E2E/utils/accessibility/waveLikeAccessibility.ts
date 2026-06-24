@@ -17,8 +17,20 @@ export const includesWaveLikeA11y = (env: NodeJS.ProcessEnv): boolean =>
 type WaveLikeViolation = {
   rule: string;
   message: string;
+  advice?: string;
   selector?: string;
   html?: string;
+  codeLocation?: {
+    tag: string;
+    id?: string;
+    classes?: string;
+    role?: string;
+    testId?: string;
+    angularAttrs?: string;
+    accessibleName?: string;
+    nearestHeading?: string;
+    nearestLandmark?: string;
+  };
 };
 
 type PublishedEvidenceMetadata = {
@@ -63,13 +75,6 @@ export async function collectWaveLikeAccessibilityViolations(page: Page): Promis
       return element.tagName.toLowerCase();
     };
     const htmlFor = (element: Element): string => element.outerHTML.slice(0, 500);
-    const add = (violations: WaveLikeViolation[], rule: string, message: string, element?: Element) => {
-      violations.push({
-        rule,
-        message,
-        ...(element ? { selector: selectorFor(element), html: htmlFor(element) } : {}),
-      });
-    };
     const labelledByText = (element: Element): string =>
       (element.getAttribute('aria-labelledby') ?? '')
         .split(/\s+/)
@@ -115,6 +120,63 @@ export async function collectWaveLikeAccessibilityViolations(page: Page): Promis
         .filter(Boolean)
         .join(' ')
         .trim();
+    };
+    const nearestHeading = (element: Element): string => {
+      const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).filter(visible);
+      const previousHeading = headings
+        .reverse()
+        .find((heading) => Boolean(heading.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING));
+      return previousHeading ? `${previousHeading.tagName.toLowerCase()}: ${text(previousHeading)}` : '';
+    };
+    const nearestLandmark = (element: Element): string => {
+      const landmark = element.closest(
+        'main, nav, header, footer, aside, [role="main"], [role="navigation"], [role="banner"], [role="contentinfo"], [role="complementary"]'
+      );
+      if (!landmark) {
+        return '';
+      }
+      const role = landmark.getAttribute('role');
+      const id = landmark.getAttribute('id');
+      const classes = landmark.getAttribute('class');
+      return [
+        landmark.tagName.toLowerCase(),
+        role ? `role=${role}` : '',
+        id ? `#${id}` : '',
+        classes ? `.${classes.split(/\s+/).filter(Boolean).join('.')}` : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+    };
+    const codeLocationFor = (element: Element): WaveLikeViolation['codeLocation'] => {
+      const angularAttrs = Array.from(element.attributes)
+        .map((attribute) => attribute.name)
+        .filter((name) => name.startsWith('_ng') || name.startsWith('ng-reflect-'))
+        .join(' ');
+
+      const name = accessibleName(element);
+      const heading = nearestHeading(element);
+      const landmark = nearestLandmark(element);
+
+      return {
+        tag: element.tagName.toLowerCase(),
+        ...(element.id ? { id: element.id } : {}),
+        ...(element.className && typeof element.className === 'string' ? { classes: element.className } : {}),
+        ...(element.getAttribute('role') ? { role: element.getAttribute('role') ?? '' } : {}),
+        ...(element.getAttribute('data-testid') || element.getAttribute('data-test-id')
+          ? { testId: element.getAttribute('data-testid') ?? element.getAttribute('data-test-id') ?? '' }
+          : {}),
+        ...(angularAttrs ? { angularAttrs } : {}),
+        ...(name ? { accessibleName: name.slice(0, 160) } : {}),
+        ...(heading ? { nearestHeading: heading.slice(0, 160) } : {}),
+        ...(landmark ? { nearestLandmark: landmark.slice(0, 160) } : {}),
+      };
+    };
+    const add = (violations: WaveLikeViolation[], rule: string, message: string, element?: Element) => {
+      violations.push({
+        rule,
+        message,
+        ...(element ? { selector: selectorFor(element), html: htmlFor(element), codeLocation: codeLocationFor(element) } : {}),
+      });
     };
 
     const violations: WaveLikeViolation[] = [];
@@ -211,14 +273,19 @@ export async function attachWaveLikeAccessibilityEvidence(
     return;
   }
 
-  const json = JSON.stringify({ url: page.url(), violationCount: violations.length, violations }, null, 2);
+  const evidencedViolations = withDeveloperAdvice(violations);
+  const json = JSON.stringify(
+    { url: page.url(), violationCount: evidencedViolations.length, violations: evidencedViolations },
+    null,
+    2
+  );
   await testInfo.attach(`${attachmentPrefix}.json`, {
     body: json,
     contentType: 'application/json',
   });
 
   const pageSnapshot = await collectWaveLikePageSnapshot(page);
-  const cleanup = await markViolationsOnPage(page, violations);
+  const cleanup = await markViolationsOnPage(page, evidencedViolations);
   let screenshot: Buffer;
   try {
     screenshot = await page.screenshot({ fullPage: true });
@@ -231,11 +298,11 @@ export async function attachWaveLikeAccessibilityEvidence(
   }
 
   await testInfo.attach(`${attachmentPrefix}.html`, {
-    body: buildIssueSummaryHtml(page.url(), violations, pageSnapshot, screenshot),
+    body: buildIssueSummaryHtml(page.url(), evidencedViolations, pageSnapshot, screenshot),
     contentType: 'text/html',
   });
 
-  await writePublishedEvidence(testInfo, page.url(), violations, pageSnapshot, screenshot, attachmentPrefix, metadata);
+  await writePublishedEvidence(testInfo, page.url(), evidencedViolations, pageSnapshot, screenshot, attachmentPrefix, metadata);
 }
 
 async function collectWaveLikePageSnapshot(page: Page): Promise<WaveLikePageSnapshot> {
@@ -345,6 +412,8 @@ function buildIssueSummaryHtml(
   screenshot: Buffer
 ): string {
   const screenshotDataUrl = `data:image/png;base64,${screenshot.toString('base64')}`;
+  const odhinIndexFileName = process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-a11y.html';
+  const odhinReportHref = `../${escapeAttribute(odhinIndexFileName)}`;
   const ruleCounts = new Map<string, number>();
   for (const violation of violations) {
     ruleCounts.set(violation.rule, (ruleCounts.get(violation.rule) ?? 0) + 1);
@@ -385,6 +454,7 @@ function buildIssueSummaryHtml(
           <h2>${index + 1}. ${escapeHtml(violation.rule)}</h2>
           <p><strong>${escapeHtml(violation.message)}</strong></p>
           <p><strong>Selector:</strong> <code>${escapeHtml(violation.selector ?? 'page')}</code></p>
+          ${buildDeveloperAdviceHtml(url, violation)}
           <pre>${escapeHtml(violation.html ?? '')}</pre>
         </section>
       `
@@ -415,6 +485,11 @@ function buildIssueSummaryHtml(
           .visual img { display: block; max-width: 100%; height: auto; }
           .issue { border: 4px solid #d4351c; padding: 16px; margin-bottom: 18px; background: #fff; }
           .issue h2 { margin-top: 0; }
+          .report-nav { margin: 0 0 18px; }
+          .report-nav a { color: #1d70b8; font-weight: bold; }
+          .advice { background: #f3f2f1; border-left: 8px solid #1d70b8; padding: 12px 16px; margin: 12px 0; }
+          .advice dt { font-weight: bold; margin-top: 8px; }
+          .advice dd { margin-left: 0; }
           code, pre { background: #f3f2f1; padding: 4px; white-space: pre-wrap; }
           li { margin-bottom: 8px; }
           details { background: #fff; border: 1px solid #b1b4b6; margin-bottom: 12px; padding: 8px; }
@@ -462,15 +537,103 @@ function buildIssueSummaryHtml(
               <h1>WAVE-like accessibility evidence</h1>
               <p>${violations.length} issue(s) on ${escapeHtml(url)}. Match marker numbers here to the highlighted page image.</p>
             </div>
+            <p class="report-nav"><a href="${odhinReportHref}">Back to Odhín report</a></p>
             <section class="visual">
               <img alt="Highlighted page screenshot with WAVE-like issue markers" src="${screenshotDataUrl}" />
             </section>
             ${cards}
+            <p class="report-nav"><a href="${odhinReportHref}">Back to Odhín report</a></p>
           </main>
         </div>
       </body>
     </html>
   `;
+}
+
+function withDeveloperAdvice(violations: WaveLikeViolation[]): WaveLikeViolation[] {
+  return violations.map((violation) => ({
+    ...violation,
+    advice: violation.advice ?? adviceForRule(violation.rule),
+  }));
+}
+
+function buildDeveloperAdviceHtml(url: string, violation: WaveLikeViolation): string {
+  return `
+    <div class="advice">
+      <h3>Developer advice</h3>
+      <dl>
+        <dt>Where to look</dt>
+        <dd>${buildWhereToLookHtml(url, violation)}</dd>
+        <dt>What failed</dt>
+        <dd>${escapeHtml(violation.rule)}: ${escapeHtml(violation.message)}</dd>
+        <dt>What to fix</dt>
+        <dd>${escapeHtml(violation.advice ?? adviceForRule(violation.rule))}</dd>
+        <dt>DOM hints</dt>
+        <dd>${buildFixPathHtml(violation)}</dd>
+        <dt>Evidence</dt>
+        <dd>Use this DOM snippet with the numbered highlighted screenshot marker for the same issue.</dd>
+      </dl>
+    </div>
+  `;
+}
+
+function buildWhereToLookHtml(url: string, violation: WaveLikeViolation): string {
+  const hint = violation.codeLocation;
+  if (!hint) {
+    return `Route/page: <code>${escapeHtml(url)}</code>; page-level issue, inspect the document shell/template.`;
+  }
+
+  const parts = [
+    `route/page: ${url}`,
+    `tag: ${hint.tag}`,
+    hint.id ? `id: #${hint.id}` : '',
+    hint.classes ? `class: ${hint.classes}` : '',
+    hint.role ? `role: ${hint.role}` : '',
+    hint.testId ? `test id: ${hint.testId}` : '',
+    hint.angularAttrs ? `angular: ${hint.angularAttrs}` : '',
+    hint.nearestHeading ? `near: ${hint.nearestHeading}` : '',
+    hint.nearestLandmark ? `landmark: ${hint.nearestLandmark}` : '',
+    hint.accessibleName ? `name: ${hint.accessibleName}` : '',
+  ].filter(Boolean);
+
+  return `<code>${escapeHtml(parts.join(' | '))}</code>`;
+}
+
+function buildFixPathHtml(violation: WaveLikeViolation): string {
+  const hints = [
+    violation.selector ? `search selector ${violation.selector}` : '',
+    violation.codeLocation?.id ? `search id ${violation.codeLocation.id}` : '',
+    violation.codeLocation?.testId ? `search test id ${violation.codeLocation.testId}` : '',
+    violation.codeLocation?.classes ? `search class ${violation.codeLocation.classes.split(/\s+/)[0]}` : '',
+    violation.codeLocation?.nearestHeading ? `check template near ${violation.codeLocation.nearestHeading}` : '',
+  ].filter(Boolean);
+
+  return escapeHtml(
+    hints.length > 0 ? hints.join('; ') : 'Start with the route component or template that renders this page state.'
+  );
+}
+
+function adviceForRule(rule: string): string {
+  const adviceByRule: Record<string, string> = {
+    'accessible-name':
+      'Fix the template first: add visible text, a govukLabel/label for the control, aria-label, or aria-labelledby. Prefer visible text or label before ARIA.',
+    'document-language': 'Set lang on the html element from the app shell; use en unless the Welsh route/state is rendered.',
+    'document-title':
+      'Set the route/page title to describe the current state, and include the error prefix when validation errors are present.',
+    'duplicate-id':
+      'Make the id unique in the template, then update label for, aria-describedby, aria-labelledby, and error-summary links.',
+    'error-summary-target':
+      'Set each error-summary href to the invalid field id, ensure the field exists once, and move focus to the summary on submit.',
+    'fieldset-legend': 'Wrap related radios/checkboxes in a fieldset with a visible legend that describes the group question.',
+    'h1-count':
+      'Keep one visible h1 for the page state; demote extra page-level headings or add the missing h1 in the main content.',
+    'heading-order': 'Do not skip heading levels. Change the heading level or add the missing section heading in the template.',
+    'image-alt': 'Add meaningful alt text for informative images; use alt="" or role="presentation" only for decorative images.',
+    'main-landmark':
+      'Render exactly one usable main element or role="main" in the app shell/page template; do not nest duplicate mains.',
+    'table-headers': 'Add th scope="col"/scope="row" or equivalent row/column header roles for data tables.',
+  };
+  return adviceByRule[rule] ?? 'Inspect the selector and DOM snippet, then apply the relevant GOV.UK accessibility pattern.';
 }
 
 async function markViolationsOnPage(page: Page, violations: WaveLikeViolation[]): Promise<() => Promise<void>> {

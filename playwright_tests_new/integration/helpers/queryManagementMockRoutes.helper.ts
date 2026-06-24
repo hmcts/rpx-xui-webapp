@@ -364,12 +364,7 @@ export async function openCaseworkerRespondToQueryFromTasksTab(
   });
 
   await caseDetailsPage.openTasksTab(QUERY_MANAGEMENT_JURISDICTION, QUERY_MANAGEMENT_CASE_TYPE, QUERY_MANAGEMENT_CASE_REFERENCE);
-  await page.getByRole('link', { name: 'Respond to query' }).click();
-  await queryManagementPage.expectRespondToQueryPage(
-    QUERY_MANAGEMENT_CASE_REFERENCE,
-    QUERY_MANAGEMENT_EXISTING_QUERY_ID,
-    QUERY_MANAGEMENT_RESPOND_TASK_ID
-  );
+  await queryManagementPage.openRespondToQueryTask();
 
   return capture;
 }
@@ -393,9 +388,8 @@ export async function openSolicitorFollowUpQueryFromQueryDetails(
     QUERY_MANAGEMENT_CASE_REFERENCE
   );
   await caseDetailsPage.selectCaseDetailsTab('Queries');
-  await page.getByRole('button', { name: QUERY_MANAGEMENT_QUERY_SUBJECT, exact: true }).click();
-  await page.getByRole('button', { name: 'Ask a follow-up question' }).click();
-  await queryManagementPage.expectFollowUpQueryPage(QUERY_MANAGEMENT_CASE_REFERENCE, QUERY_MANAGEMENT_EXISTING_QUERY_ID);
+  await queryManagementPage.openQueryFromQueriesTable(QUERY_MANAGEMENT_QUERY_SUBJECT);
+  await queryManagementPage.openFollowUpQuery();
 
   return capture;
 }

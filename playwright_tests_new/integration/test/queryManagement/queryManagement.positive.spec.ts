@@ -32,12 +32,27 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
     const submissionCapture = await openSolicitorRaiseQueryFromNextStep(page, caseDetailsPage, queryManagementPage);
 
     await test.step('Choose the raise-query journey from Query Management options', async () => {
-      await queryManagementPage.chooseRaiseAQueryJourney(QUERY_MANAGEMENT_CASE_REFERENCE);
+      await expect(page).toHaveURL(new RegExp(`/query-management/query/${QUERY_MANAGEMENT_CASE_REFERENCE}(?:$|[/?#])`));
+      await expect(queryManagementPage.raiseANewQueryHeading).toBeVisible();
+      await expect(queryManagementPage.raiseANewQueryHeading).toContainText('Raise a new query');
+
+      await queryManagementPage.chooseRaiseAQueryJourney();
+
+      await expect(page).toHaveURL(
+        new RegExp(`/query-management/query/${QUERY_MANAGEMENT_CASE_REFERENCE}/raiseAQuery(?:$|[/?#])`)
+      );
+      await expect(queryManagementPage.enterQueryDetailsHeading).toBeVisible();
+      await expect(queryManagementPage.enterQueryDetailsHeading).toContainText('Enter query details');
     });
 
     await test.step('Enter query details and continue to review', async () => {
       await queryManagementPage.enterQueryDetailsAndContinue(QUERY_MANAGEMENT_QUERY_SUBJECT, QUERY_MANAGEMENT_QUERY_DETAIL);
-      await queryManagementPage.expectReviewQueryDetails(QUERY_MANAGEMENT_QUERY_SUBJECT, QUERY_MANAGEMENT_QUERY_DETAIL);
+
+      await expect(queryManagementPage.reviewQueryDetailsHeading).toBeVisible();
+      await expect(queryManagementPage.reviewQueryDetailsHeading).toContainText('Review query details');
+      await expect(queryManagementPage.reviewSummaryValues.nth(0)).toContainText(QUERY_MANAGEMENT_QUERY_SUBJECT);
+      await expect(queryManagementPage.reviewSummaryValues.nth(1)).toContainText(QUERY_MANAGEMENT_QUERY_DETAIL);
+      await expect(queryManagementPage.reviewSummaryValues.nth(2)).toContainText('No');
     });
 
     await test.step('Submit the query and assert the CCD event payload', async () => {
@@ -50,7 +65,9 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
       await queryManagementPage.submitQuery();
       await submitResponse;
 
-      await queryManagementPage.expectQuerySubmitted(QUERY_MANAGEMENT_CONFIRMATION_HEADER);
+      await expect(queryManagementPage.querySubmittedHeading).toBeVisible();
+      await expect(queryManagementPage.querySubmittedHeading).toContainText('Query submitted');
+      await expect(queryManagementPage.querySubmittedConfirmation).toContainText(QUERY_MANAGEMENT_CONFIRMATION_HEADER);
 
       expect(submissionCapture.submittedEvents).toHaveLength(1);
       const submittedEvent = submissionCapture.submittedEvents[0];
@@ -84,14 +101,23 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
         QUERY_MANAGEMENT_CASE_REFERENCE
       );
       await caseDetailsPage.selectCaseDetailsTab('Queries');
-      await queryManagementPage.expectQueryInQueriesTable(QUERY_MANAGEMENT_QUERY_SUBJECT, 'Query Solicitor', 'Query Solicitor');
+      await expect(queryManagementPage.queryList).toBeVisible();
+      await expect(queryManagementPage.queryListCaption).toContainText('Query Solicitor');
+
+      const queryRow = queryManagementPage.queryListRow(QUERY_MANAGEMENT_QUERY_SUBJECT);
+      await expect(queryRow).toBeVisible();
+      await expect(queryRow).toContainText(QUERY_MANAGEMENT_QUERY_SUBJECT);
+      await expect(queryRow).toContainText('Query Solicitor');
+
       await queryManagementPage.openQueryFromQueriesTable(QUERY_MANAGEMENT_QUERY_SUBJECT);
-      await queryManagementPage.expectQueryDetailsShown({
-        subject: QUERY_MANAGEMENT_QUERY_SUBJECT,
-        body: QUERY_MANAGEMENT_QUERY_DETAIL,
-        senderName: 'Query Solicitor',
-        hearingRelated: 'No',
-      });
+
+      await expect(queryManagementPage.queryDetails).toBeVisible();
+      await expect(queryManagementPage.queryDetailsCaption).toContainText('Query details');
+      await expect(queryManagementPage.queryDetailsRow('Sender name')).toBeVisible();
+      await expect(queryManagementPage.queryDetailsRowValue('Sender name')).toContainText('Query Solicitor');
+      await expect(queryManagementPage.queryDetailsRowValue('Query subject')).toContainText(QUERY_MANAGEMENT_QUERY_SUBJECT);
+      await expect(queryManagementPage.queryDetailsRowValue('Query body')).toContainText(QUERY_MANAGEMENT_QUERY_DETAIL);
+      await expect(queryManagementPage.queryDetailsRowValue('Is the query hearing related?')).toContainText('No');
     });
   });
 
@@ -99,11 +125,22 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
     const submissionCapture = await openCaseworkerRespondToQueryFromTasksTab(page, caseDetailsPage, queryManagementPage);
 
     await test.step('Enter the response and continue to review', async () => {
-      await queryManagementPage.enterResponseDetailsAndContinue(QUERY_MANAGEMENT_RESPONSE_DETAIL);
-      await queryManagementPage.expectReviewQueryResponseDetails(
-        QUERY_MANAGEMENT_QUERY_SUBJECT,
-        QUERY_MANAGEMENT_RESPONSE_DETAIL
+      await expect(page).toHaveURL(
+        new RegExp(
+          `/query-management/query/${QUERY_MANAGEMENT_CASE_REFERENCE}/3/${QUERY_MANAGEMENT_EXISTING_QUERY_ID}\\?tid=${QUERY_MANAGEMENT_RESPOND_TASK_ID}(?:$|[&#])`
+        )
       );
+      await expect(queryManagementPage.respondQueryForm).toBeVisible();
+      await expect(queryManagementPage.respondToQueryHeading).toContainText('Respond to a query');
+      await expect(queryManagementPage.responseDetailInput).toBeVisible();
+
+      await queryManagementPage.enterResponseDetailsAndContinue(QUERY_MANAGEMENT_RESPONSE_DETAIL);
+
+      await expect(queryManagementPage.reviewQueryDetailsHeading).toBeVisible();
+      await expect(queryManagementPage.reviewQueryDetailsHeading).toContainText('Review query response details');
+      await expect(queryManagementPage.reviewSummaryValues.nth(0)).toContainText(QUERY_MANAGEMENT_QUERY_SUBJECT);
+      await expect(queryManagementPage.reviewSummaryValues.nth(1)).toContainText(QUERY_MANAGEMENT_RESPONSE_DETAIL);
+      await expect(queryManagementPage.reviewSummaryValues.nth(2)).toContainText('No answer');
     });
 
     await test.step('Submit the response, complete the task and assert the CCD event payload', async () => {
@@ -122,7 +159,11 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
       await submitResponse;
       await completeTaskResponse;
 
-      await queryManagementPage.expectQueryResponseSubmitted();
+      await expect(queryManagementPage.querySubmittedHeading).toBeVisible();
+      await expect(queryManagementPage.querySubmittedHeading).toContainText('Query response submitted');
+      await expect(queryManagementPage.queryResponseSubmittedConfirmation).toContainText(
+        'This query response has been added to the case'
+      );
 
       expect(submissionCapture.submittedEvents).toHaveLength(1);
       const submittedEvent = submissionCapture.submittedEvents[0];
@@ -165,8 +206,20 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
     const submissionCapture = await openSolicitorFollowUpQueryFromQueryDetails(page, caseDetailsPage, queryManagementPage);
 
     await test.step('Enter follow-up query details and continue to review', async () => {
+      await expect(page).toHaveURL(
+        new RegExp(
+          `/query-management/query/${QUERY_MANAGEMENT_CASE_REFERENCE}/4/${QUERY_MANAGEMENT_EXISTING_QUERY_ID}(?:$|[/?#])`
+        )
+      );
+      await expect(queryManagementPage.respondQueryForm).toBeVisible();
+      await expect(queryManagementPage.respondToQueryHeading).toContainText('Ask a follow-up question');
+      await expect(queryManagementPage.responseDetailInput).toBeVisible();
+
       await queryManagementPage.enterFollowUpDetailsAndContinue(QUERY_MANAGEMENT_FOLLOW_UP_DETAIL);
-      await queryManagementPage.expectReviewFollowUpQueryDetails(QUERY_MANAGEMENT_FOLLOW_UP_DETAIL);
+
+      await expect(queryManagementPage.reviewQueryDetailsHeading).toBeVisible();
+      await expect(queryManagementPage.reviewQueryDetailsHeading).toContainText('Review query details');
+      await expect(queryManagementPage.reviewSummaryValues.nth(0)).toContainText(QUERY_MANAGEMENT_FOLLOW_UP_DETAIL);
     });
 
     await test.step('Submit the follow-up query and assert the CCD event payload', async () => {
@@ -179,7 +232,9 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
       await queryManagementPage.submitQuery();
       await submitResponse;
 
-      await queryManagementPage.expectQuerySubmitted(QUERY_MANAGEMENT_CONFIRMATION_HEADER);
+      await expect(queryManagementPage.querySubmittedHeading).toBeVisible();
+      await expect(queryManagementPage.querySubmittedHeading).toContainText('Query submitted');
+      await expect(queryManagementPage.querySubmittedConfirmation).toContainText(QUERY_MANAGEMENT_CONFIRMATION_HEADER);
 
       expect(submissionCapture.submittedEvents).toHaveLength(1);
       expect(submissionCapture.completedTasks).toHaveLength(0);

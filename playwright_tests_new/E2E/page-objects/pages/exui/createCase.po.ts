@@ -1099,8 +1099,7 @@ export class CreateCasePage extends Base {
       const divorceReasonCheckbox = divorceReasonField.getByLabel(reason, { exact: true }).first();
       const divorceReasonLabel = divorceReasonField.locator('label').filter({ hasText: reason }).first();
       if (!(await divorceReasonLabel.isVisible().catch(() => false))) {
-        const visibleReasonCount = await divorceReasonField.locator('label:visible').count();
-        if (visibleReasonCount === 0) {
+        if ((await divorceReasonField.locator('label:visible').count()) === 0) {
           return;
         }
         throw new Error(`Divorce reason "${reason}" is not visible`);

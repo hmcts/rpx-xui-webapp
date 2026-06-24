@@ -106,9 +106,7 @@ test.describe('Civil case flag data-loss helpers', { tag: '@svc-internal' }, () 
   });
 
   test('claimant name resolution supports case-view field payloads', () => {
-    expect(resolveCivilClaimantPartyName(createCaseViewPayloadWithClaimantField())).toBe(
-      EXPECTED_CLAIMANT_PARTY_NAME
-    );
+    expect(resolveCivilClaimantPartyName(createCaseViewPayloadWithClaimantField())).toBe(EXPECTED_CLAIMANT_PARTY_NAME);
   });
 
   test('data-loss report redacts case reference and describes raw attachment state', () => {

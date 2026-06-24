@@ -20,6 +20,12 @@ const CCD_DATA_STORE_HOST_TO_CIVIL_SERVICE_ENV = new Map<string, keyof typeof CI
 export function getCivilLipMediationApiMissingConfiguration(options: { allowMissingCitizenUsers?: boolean } = {}): string[] {
   const config = resolveCivilApiConfig();
   const missing: string[] = [];
+  const citizenPassword = firstNonEmpty(
+    process.env.PW_CIVIL_CITIZEN_PASSWORD,
+    process.env.CIVIL_CITIZEN_PASSWORD,
+    process.env.CITIZEN_PASSWORD,
+    process.env.TEST_PASSWORD
+  );
 
   if (!config.civilServiceUrl) {
     missing.push('CIVIL_SERVICE_URL');
@@ -33,8 +39,8 @@ export function getCivilLipMediationApiMissingConfiguration(options: { allowMiss
   if (!config.s2sToken && config.serviceAuthProviderUrl && !config.s2sSecret) {
     missing.push('S2S_SECRET');
   }
-  if (!config.claimantUser.password || !config.defendantUser.password) {
-    missing.push('CITIZEN_PASSWORD or PW_CIVIL_CITIZEN_PASSWORD');
+  if (!citizenPassword) {
+    missing.push('CITIZEN_PASSWORD, PW_CIVIL_CITIZEN_PASSWORD, or TEST_PASSWORD');
   }
   if (!options.allowMissingCitizenUsers && (!config.claimantUser.email || !config.defendantUser.email)) {
     missing.push('generated Civil users or PW_CIVIL_CLAIMANT_EMAIL/PW_CIVIL_DEFENDANT_EMAIL');

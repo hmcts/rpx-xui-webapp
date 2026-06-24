@@ -155,6 +155,15 @@ test.describe('Civil case flag data-loss helpers', { tag: '@svc-internal' }, () 
     );
   });
 
+  test('Civil mediation setup accepts TEST_PASSWORD for generated citizens', () => {
+    configureRequiredCivilMediationEnv();
+    process.env.TEST_PASSWORD = 'test-password';
+
+    expect(getCivilLipMediationApiMissingConfiguration()).not.toContain(
+      'CITIZEN_PASSWORD, PW_CIVIL_CITIZEN_PASSWORD, or TEST_PASSWORD'
+    );
+  });
+
   test('Civil LiP mediation setup returns the payload fetched after the expected state wait', async () => {
     const expectedCaseDetails = createCaseDetails({ marker: faker.string.uuid() });
     const caseNumber = faker.string.numeric(16);

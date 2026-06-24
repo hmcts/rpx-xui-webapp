@@ -178,11 +178,7 @@ export class CaseFlagPage extends Base {
     const nextButton = this.page.getByRole('button', { name: /^(Next|Continue)$/i }).first();
     await nextButton.waitFor({ state: 'visible', timeout: 30_000 });
     await nextButton.click();
-    await this.page
-      .locator('xuilib-loading-spinner')
-      .first()
-      .waitFor({ state: 'hidden', timeout: 30_000 })
-      .catch(() => undefined);
+    await this.exuiSpinnerComponent.wait();
   }
 
   private async selectPartyFlagLocationForClaimant1(): Promise<void> {

@@ -9,9 +9,16 @@ import {
   resolveCivilClaimantPartyName,
 } from '../../E2E/utils/case-flags.utils.js';
 import {
+  configureRequiredCivilMediationEnv,
+  EXPECTED_CLAIMANT_PARTY_NAME,
+  createCaseDetails,
+  createCaseViewPayloadWithClaimantField,
+  createCivilParty,
+  createPartyFlag,
+} from './case-flags-data-loss.helpers.js';
+import {
   __test__ as civilCaseJourneyTestHelpers,
   getCivilLipMediationApiMissingConfiguration,
-  type CcdCaseDetails,
 } from '../../E2E/utils/test-setup/journeys/civilCaseJourneys.js';
 
 const ENV_KEYS = [
@@ -43,22 +50,6 @@ const TEST_CASE_REFERENCE_SUFFIX = '6240';
 const TEST_CASE_REFERENCE = `${faker.string.numeric(12)}${TEST_CASE_REFERENCE_SUFFIX}`;
 const REDACTED_TEST_CASE_REFERENCE = `${'*'.repeat(TEST_CASE_REFERENCE.length - TEST_CASE_REFERENCE_SUFFIX.length)}${TEST_CASE_REFERENCE_SUFFIX}`;
 const TEST_FLAG_COMMENT = 'Data loss Civil Create Case Flag';
-const CLAIMANT_ROLE = 'Claimant 1';
-const CLAIMANT_NAME = {
-  firstName: faker.person.firstName(),
-  lastName: faker.person.lastName(),
-  title: faker.person.prefix(),
-};
-const EXPECTED_CLAIMANT_PARTY_NAME = `${CLAIMANT_NAME.title} ${CLAIMANT_NAME.firstName} ${CLAIMANT_NAME.lastName}`;
-const REQUIRED_CIVIL_MEDIATION_ENV = {
-  IDAM_API_URL: 'https://idam-api.example.test',
-  IDAM_CLIENT_SECRET: faker.string.alphanumeric(16),
-  IDAM_TEST_SUPPORT_API_URL: 'https://idam-testing-support-api.example.test',
-  PW_CIVIL_CITIZEN_PASSWORD: faker.internet.password(),
-  PW_CIVIL_SERVICE_URL: 'http://civil-service.example.test',
-  SERVICE_AUTH_PROVIDER_API_BASE_URL: 'http://service-auth-provider.example.test',
-  S2S_SECRET: faker.string.alphanumeric(16),
-} as const;
 
 let originalEnvValues: Record<(typeof ENV_KEYS)[number], string | undefined>;
 
@@ -115,7 +106,9 @@ test.describe('Civil case flag data-loss helpers', { tag: '@svc-internal' }, () 
   });
 
   test('claimant name resolution supports case-view field payloads', () => {
-    expect(resolveCivilClaimantPartyName(createCaseViewPayloadWithClaimantField())).toBe(EXPECTED_CLAIMANT_PARTY_NAME);
+    expect(resolveCivilClaimantPartyName(createCaseViewPayloadWithClaimantField())).toBe(
+      EXPECTED_CLAIMANT_PARTY_NAME
+    );
   });
 
   test('data-loss report redacts case reference and describes raw attachment state', () => {
@@ -204,68 +197,3 @@ test.describe('Civil case flag data-loss helpers', { tag: '@svc-internal' }, () 
     expect(redactCaseReference('123')).toBe('****');
   });
 });
-
-function createCaseDetails(data: Record<string, unknown> = {}, state = MEDIATION_STATE): CcdCaseDetails {
-  return {
-    data,
-    state: {
-      id: state,
-    },
-  };
-}
-
-function createCivilParty(options: { includeExistingFlags?: boolean } = {}): Record<string, unknown> {
-  const party = {
-    individualFirstName: CLAIMANT_NAME.firstName,
-    individualLastName: CLAIMANT_NAME.lastName,
-    individualTitle: CLAIMANT_NAME.title,
-  };
-
-  return options.includeExistingFlags
-    ? {
-        flags: {
-          partyName: EXPECTED_CLAIMANT_PARTY_NAME,
-          roleOnCase: CLAIMANT_ROLE,
-        },
-        ...party,
-      }
-    : party;
-}
-
-function createPartyFlag(flagComment: string): Record<string, unknown> {
-  return {
-    id: '0',
-    value: {
-      flagComment,
-      flagStatus: 'ACTIVE',
-      flagType: 'Other',
-    },
-  };
-}
-
-function createCaseViewPayloadWithClaimantField(): CcdCaseDetails {
-  return {
-    tabs: [
-      {
-        fields: [
-          {
-            id: 'respondent1',
-            value: {
-              companyName: faker.company.name(),
-            },
-          },
-          {
-            id: 'applicant1',
-            formatted_value: createCivilParty({ includeExistingFlags: true }),
-          },
-        ],
-      },
-    ],
-  };
-}
-
-function configureRequiredCivilMediationEnv(): void {
-  for (const [key, value] of Object.entries(REQUIRED_CIVIL_MEDIATION_ENV)) {
-    process.env[key] = value;
-  }
-}

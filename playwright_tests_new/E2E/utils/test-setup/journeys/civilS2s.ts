@@ -50,8 +50,16 @@ export async function getCivilS2sToken(page: Page, config: CivilApiConfig): Prom
 
   if (!response.ok()) {
     const body = await response.text().catch(() => '');
-    throw new Error(`Failed to get Civil S2S token (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`);
+    throw new Error(`Failed to get Civil S2S token (HTTP ${response.status()}).${dependencyBodyForError(body)}`);
   }
 
   return (await response.text()).replace(/^"|"$/g, '').trim();
+}
+
+function dependencyBodyForError(body: string): string {
+  if (process.env.PW_CIVIL_DEBUG_DEPENDENCY_BODIES === 'true') {
+    return ` Body='${body.slice(0, 500)}'.`;
+  }
+
+  return '';
 }

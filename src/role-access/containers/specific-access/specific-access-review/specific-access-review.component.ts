@@ -21,6 +21,7 @@ import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../..
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
+import { setErrorTitle } from '../../../utils';
 
 @Component({
   standalone: false,
@@ -123,10 +124,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
       this.reviewOptionControl.setErrors({
         invalid: true,
       });
-      const currentTitle = this.titleService.getTitle();
-      if (!currentTitle.startsWith('Error:')) {
-        this.titleService.setTitle(`Error: ${currentTitle}`);
-      }
+      setErrorTitle(this.titleService);
       return;
     }
     this.dispatchEvent(navEvent);

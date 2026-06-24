@@ -12,6 +12,7 @@ import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../mod
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
+import { setErrorTitle } from '../../../utils';
 
 @Component({
   standalone: false,
@@ -78,10 +79,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
       this.radioOptionControl.setErrors({
         invalid: true,
       });
-      const currentTitle = this.titleService.getTitle();
-      if (!currentTitle.startsWith('Error:')) {
-        this.titleService.setTitle(`Error: ${currentTitle}`);
-      }
+      setErrorTitle(this.titleService);
       return;
     }
     this.dispatchEvent(navEvent);

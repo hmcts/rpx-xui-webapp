@@ -7,6 +7,7 @@ import { take } from 'rxjs/operators';
 import { SpecificAccessNavigationEvent, SpecificAccessStateData } from '../../../models';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import * as fromFeature from '../../../store';
+import { setErrorTitle } from '../../../utils';
 
 @Component({
   standalone: false,
@@ -80,10 +81,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
         this.submitted = true;
         if (!this.formGroup.valid) {
           this.error = this.getErrorObject();
-          const currentTitle = this.titleService.getTitle();
-          if (!currentTitle.startsWith('Error:')) {
-            this.titleService.setTitle(`Error: ${currentTitle}`);
-          }
+          setErrorTitle(this.titleService);
           return;
         }
         this.specificAccessBody.comment = this.infoCtrl.value;

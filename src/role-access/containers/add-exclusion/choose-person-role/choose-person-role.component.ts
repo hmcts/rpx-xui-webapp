@@ -11,6 +11,7 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import { OptionsModel } from '../../../models/options-model';
 import { RoleExclusionsService } from '../../../services';
 import * as fromFeature from '../../../store';
+import { setErrorTitle } from '../../../utils';
 
 @Component({
   standalone: false,
@@ -67,10 +68,7 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
       this.radioOptionControl.setErrors({
         invalid: true,
       });
-      const currentTitle = this.titleService.getTitle();
-      if (!currentTitle.startsWith('Error:')) {
-        this.titleService.setTitle(`Error: ${currentTitle}`);
-      }
+      setErrorTitle(this.titleService);
       return;
     }
     this.dispatchEvent(navEvent);

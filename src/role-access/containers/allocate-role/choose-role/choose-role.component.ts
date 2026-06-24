@@ -11,6 +11,7 @@ import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState,
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
+import { setErrorTitle } from '../../../utils';
 
 @Component({
   standalone: false,
@@ -85,10 +86,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
         invalid: true,
       });
       this.error = { ...ERROR_MESSAGE, fieldId: `${this.radioControlName}-error` };
-      const currentTitle = this.titleService.getTitle();
-      if (!currentTitle.startsWith('Error:')) {
-        this.titleService.setTitle(`Error: ${currentTitle}`);
-      }
+      setErrorTitle(this.titleService);
       return;
     }
     this.dispatchEvent(navEvent);

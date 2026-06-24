@@ -16,7 +16,7 @@ import {
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
-import { getTitleText } from '../../../utils';
+import { getTitleText, setErrorTitle } from '../../../utils';
 
 @Component({
   standalone: false,
@@ -76,10 +76,7 @@ export class ChooseAllocateToComponent implements OnInit {
       this.radioOptionControl.setErrors({
         invalid: true,
       });
-      const currentTitle = this.titleService.getTitle();
-      if (!currentTitle.startsWith('Error:')) {
-        this.titleService.setTitle(`Error: ${currentTitle}`);
-      }
+      setErrorTitle(this.titleService);
       return;
     }
     this.dispatchEvent(navEvent);

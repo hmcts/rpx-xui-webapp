@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
@@ -39,7 +40,8 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store<fromFeature.State>,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly titleService: Title
   ) {}
 
   public ngOnInit(): void {
@@ -82,7 +84,11 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.radioOptionControl.setErrors({
         invalid: true,
       });
-      this.error = ERROR_MESSAGE;
+      this.error = { ...ERROR_MESSAGE, fieldId: `${this.radioControlName}-error` };
+      const currentTitle = this.titleService.getTitle();
+      if (!currentTitle.startsWith('Error:')) {
+        this.titleService.setTitle(`Error: ${currentTitle}`);
+      }
       return;
     }
     this.dispatchEvent(navEvent);

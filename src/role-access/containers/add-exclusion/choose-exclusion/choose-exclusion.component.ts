@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -18,7 +19,7 @@ import * as fromFeature from '../../../store';
   templateUrl: './choose-exclusion.component.html',
 })
 export class ChooseExclusionComponent implements OnInit, OnDestroy {
-  public ERROR_MESSAGE = ERROR_MESSAGE;
+  public ERROR_MESSAGE = { ...ERROR_MESSAGE, fieldId: `${EXCLUSION_OPTION}-error` };
   @Input() public navEvent: ExclusionNavigation;
   public title = RoleAllocationTitleText.ExclusionAllocate;
   public caption = RoleAllocationCaptionText.Exclusion;
@@ -45,7 +46,10 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
 
   public optionsList: OptionsModel[] = [this.excludeMe, this.excludeOther];
 
-  constructor(private readonly store: Store<fromFeature.State>) {}
+  constructor(
+    private readonly store: Store<fromFeature.State>,
+    private readonly titleService: Title
+  ) {}
 
   public ngOnInit(): void {
     const roleAccessState$ = this.store.pipe(select(fromFeature.getRoleAccessState));
@@ -74,6 +78,10 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
       this.radioOptionControl.setErrors({
         invalid: true,
       });
+      const currentTitle = this.titleService.getTitle();
+      if (!currentTitle.startsWith('Error:')) {
+        this.titleService.setTitle(`Error: ${currentTitle}`);
+      }
       return;
     }
     this.dispatchEvent(navEvent);

@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -17,7 +18,7 @@ import * as fromFeature from '../../../store';
   templateUrl: './choose-person-role.component.html',
 })
 export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
-  public ERROR_MESSAGE = ERROR_MESSAGE;
+  public ERROR_MESSAGE = { ...ERROR_MESSAGE, fieldId: `${PERSON_ROLE}-error` };
   @Input() public navEvent: ExclusionNavigation;
 
   public roles$: Observable<Role[]>;
@@ -37,7 +38,8 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store<fromFeature.State>,
-    private readonly roleExclusionsService: RoleExclusionsService
+    private readonly roleExclusionsService: RoleExclusionsService,
+    private readonly titleService: Title
   ) {}
 
   public ngOnInit(): void {
@@ -65,6 +67,10 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
       this.radioOptionControl.setErrors({
         invalid: true,
       });
+      const currentTitle = this.titleService.getTitle();
+      if (!currentTitle.startsWith('Error:')) {
+        this.titleService.setTitle(`Error: ${currentTitle}`);
+      }
       return;
     }
     this.dispatchEvent(navEvent);

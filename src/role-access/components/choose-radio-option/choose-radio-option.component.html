@@ -2,14 +2,25 @@
   <span class="govuk-caption-l">{{ caption }}</span>
   {{ title }}
 </h1>
-<div class="govuk-form-group" [formGroup]="formGroup">
-  <span id="error-message" class="govuk-error-message" *ngIf="formGroup.get(radioControlName).errors && submitted">
-    {{ errorText }}
-  </span>
-  <p *ngIf="description">{{ description }}</p>
-  <fieldset class="govuk-fieldset">
+<div
+  class="govuk-form-group"
+  [class.govuk-form-group--error]="formGroup.get(radioControlName).errors && submitted"
+  [formGroup]="formGroup"
+>
+  <fieldset
+    class="govuk-fieldset"
+    [attr.aria-describedby]="formGroup.get(radioControlName).errors && submitted ? radioControlName + '-error' : null"
+  >
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" *ngIf="title && !showHeading">{{ title }}</legend>
     <legend class="hidden-legend" *ngIf="title && showHeading">{{ title }}</legend>
+    <p *ngIf="description">{{ description }}</p>
+    <p
+      [id]="radioControlName + '-error'"
+      class="govuk-error-message"
+      *ngIf="formGroup.get(radioControlName).errors && submitted"
+    >
+      <span class="govuk-visually-hidden">Error:</span>{{ errorText }}
+    </p>
     <div class="govuk-radios">
       <div *ngFor="let option of optionsList" class="govuk-radios__item">
         <input

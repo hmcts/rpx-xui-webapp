@@ -275,10 +275,7 @@ function findCivilClaimantPartyRecord(value: unknown, visited = new WeakSet<obje
   return formatCivilPartyName(record) ? record : undefined;
 }
 
-function findCivilClaimantPartyRecordInArray(
-  value: unknown[],
-  visited: WeakSet<object>
-): JsonRecord | undefined {
+function findCivilClaimantPartyRecordInArray(value: unknown[], visited: WeakSet<object>): JsonRecord | undefined {
   for (const entry of value) {
     const match = findCivilClaimantPartyRecord(entry, visited);
     if (match) {
@@ -288,10 +285,7 @@ function findCivilClaimantPartyRecordInArray(
   return undefined;
 }
 
-function findCivilClaimantPartyRecordInPreferredKeys(
-  record: JsonRecord,
-  visited: WeakSet<object>
-): JsonRecord | undefined {
+function findCivilClaimantPartyRecordInPreferredKeys(record: JsonRecord, visited: WeakSet<object>): JsonRecord | undefined {
   for (const preferredKey of ['applicant1', 'value', 'formatted_value']) {
     const match = findCivilClaimantPartyRecord(record[preferredKey], visited);
     if (match) {
@@ -301,10 +295,7 @@ function findCivilClaimantPartyRecordInPreferredKeys(
   return undefined;
 }
 
-function findCivilClaimantPartyRecordInRemainingEntries(
-  record: JsonRecord,
-  visited: WeakSet<object>
-): JsonRecord | undefined {
+function findCivilClaimantPartyRecordInRemainingEntries(record: JsonRecord, visited: WeakSet<object>): JsonRecord | undefined {
   for (const [key, entryValue] of Object.entries(record)) {
     if (['applicant1', 'value', 'formatted_value'].includes(key)) {
       continue;

@@ -30,6 +30,7 @@ export interface EnvironmentConfigExceptionOptions {
 export interface EnvironmentConfigServices {
   ccdComponentApi: string;
   ccdDataApi: string;
+  hmctsAccess?: string;
   idamApi: string;
   s2s: string;
   termsAndConditions: string;

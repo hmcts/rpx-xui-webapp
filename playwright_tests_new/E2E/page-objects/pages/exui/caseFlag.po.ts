@@ -3,6 +3,7 @@ import { type Locator, type Page } from '@playwright/test';
 import { Base } from '../../base';
 import { caseBannerMatches } from '../../../utils/banner.utils';
 import { resolveCcdCaseStateId, type CcdCaseDetails } from '../../../utils/test-setup/journeys/civilCaseJourneys';
+import { civilDependencyError } from '../../../utils/test-setup/journeys/civilDiagnostics';
 
 type CcdCaseTrigger = {
   id?: string;
@@ -69,11 +70,11 @@ export class CaseFlagPage extends Base {
     await this.caseFlagLocationQuestion.waitFor({ state: 'visible', timeout: 60_000 });
   }
 
-  async completePartyOtherCaseFlagForClaimant1(comment: string): Promise<void> {
-    await this.selectPartyFlagLocationForClaimant1();
+  async completePartyOtherCaseFlagForClaimant1(claimantPartyName: string, comment: string): Promise<void> {
+    await this.selectPartyFlagLocationForClaimant1(claimantPartyName);
     await this.selectOtherFlagType();
     await this.addCaseFlagComments(comment);
-    await this.maybeConfirmActiveFlagStatus();
+    await this.confirmActiveFlagStatus();
   }
 
   async submitCreateCaseFlag(): Promise<void> {
@@ -125,7 +126,7 @@ export class CaseFlagPage extends Base {
 
     const body = await response.text().catch(() => '');
     probeResults.push(
-      `${EXPECTED_CREATE_CASE_FLAG_EVENT_ID}: HTTP ${response.status()} ${body.slice(0, 180).replace(/\s+/g, ' ')}`.trim()
+      civilDependencyError(`${EXPECTED_CREATE_CASE_FLAG_EVENT_ID}: HTTP ${response.status()}. Path='${path}'.`, body)
     );
     return { probeResults };
   }
@@ -148,13 +149,23 @@ export class CaseFlagPage extends Base {
       .catch(() => false);
   }
 
-  private async checkRadio(label: RegExp, context: string, timeoutMs = 30_000): Promise<void> {
-    const radio = this.page.getByLabel(label).first();
+  private async checkRadio(label: RegExp, context: string): Promise<void> {
+    const radio = this.page.getByRole('radio', { name: label }).first();
+    const visibleLabel = this.page.locator('label').filter({ hasText: label }).first();
     try {
-      await radio.waitFor({ state: 'attached', timeout: timeoutMs });
+      await radio.waitFor({ state: 'attached', timeout: 30_000 });
       await radio.check({ force: true });
-    } catch (error) {
-      throw new Error(`Unable to select radio for ${context}: ${error instanceof Error ? error.message : String(error)}`);
+      return;
+    } catch {
+      try {
+        await visibleLabel.waitFor({ state: 'visible', timeout: 30_000 });
+        await visibleLabel.click({ timeout: 30_000 });
+        return;
+      } catch (fallbackError) {
+        throw new Error(
+          `Unable to select radio for ${context}: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`
+        );
+      }
     }
   }
 
@@ -175,32 +186,25 @@ export class CaseFlagPage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
 
-  private async selectPartyFlagLocationForClaimant1(): Promise<void> {
+  private async selectPartyFlagLocationForClaimant1(claimantPartyName: string): Promise<void> {
     await this.selectOptionalPartyLevelFlagLocation();
-    try {
-      await this.checkRadio(/^Claimant 1(?:\s*\(.*\))?$/i, 'Claimant 1 party flag location');
-    } catch {
-      // Some Civil case-flag flows still render the claimant step with the plain label only.
-      await this.checkRadio(/Claimant 1/i, 'Claimant 1 party flag location (plain Civil shape)', 5_000);
-    }
+    await this.checkRadio(
+      new RegExp(`^${escapeRegExp(claimantPartyName)}(?:\\s*\\(Claimant 1\\))?$`, 'i'),
+      'Claimant 1 party flag location'
+    );
     await this.clickCaseFlagNext();
   }
+
   private async selectOptionalPartyLevelFlagLocation(): Promise<void> {
-    const partyLevelRadio = this.page.getByLabel(/^Party$/i).first();
-    if (await partyLevelRadio.isVisible({ timeout: 15_000 }).catch(() => false)) {
-      await partyLevelRadio.check();
+    const partyLevelLabel = this.page.getByText(/^Party$/i).first();
+    if (await partyLevelLabel.isVisible({ timeout: 15_000 }).catch(() => false)) {
+      await this.checkRadio(/^Party$/i, 'case flag location level');
       await this.clickCaseFlagNext();
     }
   }
 
   private async selectOtherFlagType(): Promise<void> {
-    const otherRadio = this.page.getByRole('radio', { name: /^Other$/i }).first();
-    try {
-      await otherRadio.waitFor({ state: 'attached', timeout: 30_000 });
-      await otherRadio.check({ force: true });
-    } catch (error) {
-      throw new Error(`Unable to select radio for Other flag type: ${error instanceof Error ? error.message : String(error)}`);
-    }
+    await this.checkRadio(/^Other$/i, 'Other flag type');
     await this.clickCaseFlagNext();
     await this.fillVisibleTextArea(/Enter a flag type|Other description/i, 'Other', 'custom Other flag description');
     await this.clickCaseFlagNext();
@@ -213,17 +217,21 @@ export class CaseFlagPage extends Base {
     await this.clickCaseFlagNext();
   }
 
-  private async maybeConfirmActiveFlagStatus(): Promise<void> {
+  private async confirmActiveFlagStatus(): Promise<void> {
     const activeRadio = this.page.getByRole('radio', { name: /^Active$/i }).first();
     if (!(await activeRadio.isVisible({ timeout: 3_000 }).catch(() => false))) {
       return;
     }
 
-    await activeRadio.check({ force: true });
+    await this.checkRadio(/^Active$/i, 'case flag active status');
     const reason = this.page.getByLabel(/Describe reason/i).first();
     if (await reason.isVisible({ timeout: 1_000 }).catch(() => false)) {
       await reason.fill('Created for data loss regression coverage');
     }
     await this.clickCaseFlagNext();
   }
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

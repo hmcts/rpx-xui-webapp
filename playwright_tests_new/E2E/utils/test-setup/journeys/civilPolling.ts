@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 
 import { resolveCivilApiRequestTimeoutMs, resolveCivilServiceBusinessProcessWaitTimeoutMs } from './civilConfig';
+import { civilDependencyError } from './civilDiagnostics';
 import type { CcdCaseDetails, CivilApiConfig } from './civilTypes';
 
 const DEFAULT_STATE_WAIT_TIMEOUT_MS = 180_000;
@@ -39,8 +40,10 @@ export async function fetchCaseDetailsViaApi(page: Page, caseNumber: string): Pr
   }
 
   throw new Error(
-    `Failed to fetch case ${caseNumber} via API: HTTP ${lastStatus}. Path='data/internal/cases/${caseNumber}'. ` +
-      `Body='${lastBody.slice(0, 500)}'`
+    civilDependencyError(
+      `Failed to fetch case ${caseNumber} via API: HTTP ${lastStatus}. Path='data/internal/cases/${caseNumber}'.`,
+      lastBody
+    )
   );
 }
 

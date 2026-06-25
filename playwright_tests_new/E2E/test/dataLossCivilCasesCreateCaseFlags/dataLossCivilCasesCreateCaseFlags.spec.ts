@@ -19,6 +19,7 @@ import {
   resolveCcdCaseStateId,
   type CcdCaseDetails,
 } from '../../utils/test-setup/civil/civilCaseFlagsSetup';
+import { resolvePositiveInt } from '../../utils/test-setup/journeys/civilConfig';
 import { getCivilLipMediationApiMissingConfiguration } from '../../utils/test-setup/journeys/civilCaseJourneys';
 import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
@@ -83,6 +84,10 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
     tableUtils,
   }, testInfo) => {
     const caseFlagPage = new CaseFlagPage(page);
+    const claimantPartyName = resolveCivilClaimantPartyName(baselineCaseDetails);
+    if (!claimantPartyName) {
+      throw new Error('Unable to resolve Civil claimant party name from baseline case data.');
+    }
 
     await test.step('Search and open the Civil case by caseId', async () => {
       await findCasePage.startFindCaseJourney(caseNumber, 'Civil', 'Civil');
@@ -96,7 +101,7 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
     await test.step('Create party-level Other case flag for Claimant 1', async () => {
       await caseFlagPage.openCreateCaseFlagEvent(baselineCaseDetails, caseNumber);
       await expect(caseFlagPage.caseFlagLocationQuestion).toBeVisible();
-      await caseFlagPage.completePartyOtherCaseFlagForClaimant1(TEST_FLAG_COMMENT);
+      await caseFlagPage.completePartyOtherCaseFlagForClaimant1(claimantPartyName, TEST_FLAG_COMMENT);
       await expect(caseFlagPage.reviewFlagDetailsHeading).toBeVisible();
       await caseFlagPage.submitCreateCaseFlag();
     });
@@ -110,11 +115,6 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
     });
 
     await test.step('Verify the party-level Other flag is persisted for Claimant 1', async () => {
-      const claimantPartyName = resolveCivilClaimantPartyName(baselineCaseDetails);
-      if (!claimantPartyName) {
-        throw new Error('Unable to resolve Civil claimant party name from baseline case data.');
-      }
-
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const expectedFlag = {
         'Party level flags': 'Other Other',
@@ -194,8 +194,3 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
     });
   });
 });
-
-function resolvePositiveInt(value: string | undefined, fallback: number): number {
-  const parsed = Number.parseInt(value ?? '', 10);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-}

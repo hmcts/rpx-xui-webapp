@@ -111,7 +111,7 @@ export async function setupXuiAppShellBaseRoutes(page: Page, options?: XuiAppShe
     [userDetails.userInfo, clientContext]
   );
 
-  await page.route('**/api/user/details*', async (route) => {
+  await page.route('**/api/user/o/userinfo*', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

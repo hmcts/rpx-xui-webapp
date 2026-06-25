@@ -108,7 +108,7 @@ test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () =
 
     expect(fakePage.initScripts).toHaveLength(1);
     expect(fakePage.routes.map(({ pattern }) => pattern)).toEqual([
-      '**/api/user/details*',
+      '**/api/user/o/userinfo*',
       '**/assets/config/config.json*',
       /\/external\/config\/ui(?:\/|\?|$)/,
       '**/api/role-access/roles/manageLabellingRoleAssignment/**',

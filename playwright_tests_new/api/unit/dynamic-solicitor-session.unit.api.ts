@@ -59,7 +59,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           attempt += 1;
           return {
             get: async (url: string) => {
-              if (url === '/api/user/details') {
+              if (url === '/api/user/o/userinfo') {
                 return {
                   status: () => 200,
                   json: async () => ({ userInfo: { uid: 'user-123' } }),
@@ -145,7 +145,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           seenStorageStates.push(storageState);
           return {
             get: async (url: string) => {
-              if (url === '/api/user/details') {
+              if (url === '/api/user/o/userinfo') {
                 if (storageState.includes('stale')) {
                   return {
                     status: () => 401,

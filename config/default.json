@@ -23,8 +23,7 @@
     "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal/health",
     "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal/health",
     "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal/health",
-    "locationApi": "http://rd-location-ref-api-prod.service.core-compute-prod.internal/health",
-    "hmctsAccess": "https://hmcts-access.prod.platform.hmcts.net/health"
+    "locationApi": "http://rd-location-ref-api-prod.service.core-compute-prod.internal/health"
   },
   "services": {
     "ccd": {

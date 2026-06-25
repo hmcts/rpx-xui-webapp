@@ -25,6 +25,7 @@
           [id]="option.optionId"
           type="radio"
           [value]="option.optionValue"
+          [attr.aria-describedby]="formGroup.get(radioControlName)?.errors && submitted ? radioControlName + '-error' : null"
         />
         <label class="govuk-label govuk-radios__label" [for]="option.optionId">
           {{ option.label || option.optionValue }}

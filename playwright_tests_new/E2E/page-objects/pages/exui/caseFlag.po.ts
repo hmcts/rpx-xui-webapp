@@ -148,12 +148,14 @@ export class CaseFlagPage extends Base {
       .catch(() => false);
   }
 
-  private async checkRadio(label: RegExp, context: string, timeoutMs = 30_000): Promise<void> {    const radio = this.page.getByLabel(label).first();
+  private async checkRadio(label: RegExp, context: string, timeoutMs = 30_000): Promise<void> {
+    const radio = this.page.getByLabel(label).first();
     try {
       await radio.waitFor({ state: 'attached', timeout: timeoutMs });
       await radio.check({ force: true });
     } catch (error) {
-      throw new Error(`Unable to select radio for ${context}: ${error instanceof Error ? error.message : String(error)}`);    }
+      throw new Error(`Unable to select radio for ${context}: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   private async fillVisibleTextArea(label: RegExp, value: string, context: string): Promise<void> {
@@ -188,7 +190,8 @@ export class CaseFlagPage extends Base {
     if (await partyLevelRadio.isVisible({ timeout: 15_000 }).catch(() => false)) {
       await partyLevelRadio.check();
       await this.clickCaseFlagNext();
-    }    }
+    }
+  }
 
   private async selectOtherFlagType(): Promise<void> {
     const otherRadio = this.page.getByRole('radio', { name: /^Other$/i }).first();

@@ -316,7 +316,9 @@ async function getIdamAccessToken(page: Page, config: CivilApiConfig, user: Civi
       }
 
       const body = await response.text().catch(() => '');
-      lastError = new Error(civilDependencyError(`Failed to get IDAM token for '${redactEmail(user.email)}' (HTTP ${response.status()}).`, body));
+      lastError = new Error(
+        civilDependencyError(`Failed to get IDAM token for '${redactEmail(user.email)}' (HTTP ${response.status()}).`, body)
+      );
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
     }

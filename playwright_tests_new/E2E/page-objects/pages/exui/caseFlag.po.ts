@@ -72,8 +72,8 @@ export class CaseFlagPage extends Base {
   async completePartyOtherCaseFlagForClaimant1(comment: string): Promise<void> {
     await this.selectPartyFlagLocationForClaimant1();
     await this.selectOtherFlagType();
-    await this.addCaseFlagCommentsIfRequested(comment);
-    await this.confirmActiveFlagStatusIfRequested();
+    await this.addCaseFlagComments(comment);
+    await this.maybeConfirmActiveFlagStatus();
   }
 
   async submitCreateCaseFlag(): Promise<void> {
@@ -148,30 +148,22 @@ export class CaseFlagPage extends Base {
       .catch(() => false);
   }
 
-  private async selectFirstVisibleRadio(labels: RegExp[], context: string): Promise<void> {
-    const deadline = Date.now() + 60_000;
+  private async checkRadio(label: RegExp, context: string, timeoutMs = 30_000): Promise<void> {    const radio = this.page.getByLabel(label).first();
+    try {
+      await radio.waitFor({ state: 'attached', timeout: timeoutMs });
+      await radio.check({ force: true });
+    } catch (error) {
+      throw new Error(`Unable to select radio for ${context}: ${error instanceof Error ? error.message : String(error)}`);    }
+  }
 
-    while (Date.now() < deadline) {
-      for (const label of labels) {
-        const radio = this.page.getByLabel(label).first();
-        if (await radio.isVisible().catch(() => false)) {
-          await radio.check();
-          return;
-        }
-      }
-
-      await this.page.waitForTimeout(500);
+  private async fillVisibleTextArea(label: RegExp, value: string, context: string): Promise<void> {
+    const input = this.page.getByLabel(label).first();
+    try {
+      await input.waitFor({ state: 'visible', timeout: 30_000 });
+    } catch (error) {
+      throw new Error(`Unable to fill text area for ${context}: ${error instanceof Error ? error.message : String(error)}`);
     }
-
-    const availableRadioLabels = await this.page
-      .locator('label')
-      .evaluateAll((labels) =>
-        labels.map((label) => label.textContent?.replace(/\s+/g, ' ').trim()).filter((label): label is string => Boolean(label))
-      );
-    throw new Error(
-      `Unable to select radio for ${context}. Tried: ${labels.map((label) => label.toString()).join(', ')}. ` +
-        `Available labels: ${availableRadioLabels.join(', ') || 'none'}`
-    );
+    await input.fill(value);
   }
 
   private async clickCaseFlagNext(): Promise<void> {
@@ -182,42 +174,49 @@ export class CaseFlagPage extends Base {
   }
 
   private async selectPartyFlagLocationForClaimant1(): Promise<void> {
+    await this.selectOptionalPartyLevelFlagLocation();
+    try {
+      await this.checkRadio(/^Claimant 1(?:\s*\(.*\))?$/i, 'Claimant 1 party flag location');
+    } catch {
+      // Some Civil case-flag flows still render the claimant step with the plain label only.
+      await this.checkRadio(/Claimant 1/i, 'Claimant 1 party flag location (plain Civil shape)', 5_000);
+    }
+    await this.clickCaseFlagNext();
+  }
+  private async selectOptionalPartyLevelFlagLocation(): Promise<void> {
     const partyLevelRadio = this.page.getByLabel(/^Party$/i).first();
-    if (await partyLevelRadio.isVisible({ timeout: 3_000 }).catch(() => false)) {
+    if (await partyLevelRadio.isVisible({ timeout: 15_000 }).catch(() => false)) {
       await partyLevelRadio.check();
       await this.clickCaseFlagNext();
-    }
-
-    await this.selectFirstVisibleRadio([/^Claimant 1(?:\s*\(.*\))?$/i, /Claimant 1/i], 'Claimant 1 party flag location');
-    await this.clickCaseFlagNext();
-  }
+    }    }
 
   private async selectOtherFlagType(): Promise<void> {
-    await this.selectFirstVisibleRadio([/^Other$/i, /Other/i], 'Other flag type');
+    const otherRadio = this.page.getByRole('radio', { name: /^Other$/i }).first();
+    try {
+      await otherRadio.waitFor({ state: 'attached', timeout: 30_000 });
+      await otherRadio.check({ force: true });
+    } catch (error) {
+      throw new Error(`Unable to select radio for Other flag type: ${error instanceof Error ? error.message : String(error)}`);
+    }
     await this.clickCaseFlagNext();
-
-    const customFlagTypeInput = this.page.getByLabel(/Enter a flag type|Other description/i).first();
-    if (await customFlagTypeInput.isVisible({ timeout: 3_000 }).catch(() => false)) {
-      await customFlagTypeInput.fill('Other');
-      await this.clickCaseFlagNext();
-    }
+    await this.fillVisibleTextArea(/Enter a flag type|Other description/i, 'Other', 'custom Other flag description');
+    await this.clickCaseFlagNext();
   }
 
-  private async addCaseFlagCommentsIfRequested(comment: string): Promise<void> {
+  private async addCaseFlagComments(comment: string): Promise<void> {
     const comments = this.page.locator('ccd-add-comments textarea, textarea#flagComments, textarea').first();
-    if (await comments.isVisible({ timeout: 3_000 }).catch(() => false)) {
-      await comments.fill(comment);
-      await this.clickCaseFlagNext();
-    }
+    await comments.waitFor({ state: 'visible', timeout: 30_000 });
+    await comments.fill(comment);
+    await this.clickCaseFlagNext();
   }
 
-  private async confirmActiveFlagStatusIfRequested(): Promise<void> {
-    const activeRadio = this.page.getByLabel(/^Active$/i).first();
+  private async maybeConfirmActiveFlagStatus(): Promise<void> {
+    const activeRadio = this.page.getByRole('radio', { name: /^Active$/i }).first();
     if (!(await activeRadio.isVisible({ timeout: 3_000 }).catch(() => false))) {
       return;
     }
 
-    await activeRadio.check();
+    await activeRadio.check({ force: true });
     const reason = this.page.getByLabel(/Describe reason/i).first();
     if (await reason.isVisible({ timeout: 1_000 }).catch(() => false)) {
       await reason.fill('Created for data loss regression coverage');

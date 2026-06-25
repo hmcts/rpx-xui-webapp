@@ -5,6 +5,7 @@ import {
   resolveCivilRoleAssignmentWaitTimeoutMs,
   resolveCivilServiceEventRequestTimeoutMs,
 } from './civilConfig';
+import { civilDependencyError } from './civilDiagnostics';
 import { waitForCivilRetryDelay } from './civilPolling';
 import type { CcdCaseDetails, CivilApiConfig, CivilCaseProgressionEvent, JsonRecord } from './civilTypes';
 
@@ -90,8 +91,11 @@ export async function submitCcdCaseEventViaApi(options: {
   if (!submitResponse.ok()) {
     const body = await submitResponse.text().catch(() => '');
     throw new Error(
-      `Civil case setup failed to submit event '${options.eventId}' (HTTP ${submitResponse.status()}). ` +
-        `Path='${submitPath}'. Body='${body.slice(0, 500)}'`
+      civilDependencyError(
+        `Civil case setup failed to submit event '${options.eventId}' (HTTP ${submitResponse.status()}). ` +
+          `Path='${submitPath}'.`,
+        body
+      )
     );
   }
 }
@@ -195,8 +199,10 @@ export async function assignCivilCaseRoleToUser(options: {
   }
 
   throw new Error(
-    `Failed to assign Civil case role '${options.caseRole}' after ${timeoutMs}ms (HTTP ${lastStatus}). ` +
-      `Body='${lastBody.slice(0, 500)}'`
+    civilDependencyError(
+      `Failed to assign Civil case role '${options.caseRole}' after ${timeoutMs}ms (HTTP ${lastStatus}).`,
+      lastBody
+    )
   );
 }
 
@@ -240,8 +246,11 @@ async function fetchCcdCaseEventTriggerWithRetry(options: {
   }
 
   throw new Error(
-    `Civil case setup failed to fetch event trigger '${options.eventId}' (HTTP ${lastStatus}). ` +
-      `Path='${eventTriggerPath}'. Body='${lastBody.slice(0, 500)}'`
+    civilDependencyError(
+      `Civil case setup failed to fetch event trigger '${options.eventId}' (HTTP ${lastStatus}). ` +
+        `Path='${eventTriggerPath}'.`,
+      lastBody
+    )
   );
 }
 
@@ -283,8 +292,11 @@ async function validateCcdCaseEventPage(options: {
   if (!validateResponse.ok()) {
     const body = await validateResponse.text().catch(() => '');
     throw new Error(
-      `Civil case setup failed to validate event '${options.eventId}' page '${options.pageId}' ` +
-        `(HTTP ${validateResponse.status()}). Path='${validatePath}'. Body='${body.slice(0, 500)}'`
+      civilDependencyError(
+        `Civil case setup failed to validate event '${options.eventId}' page '${options.pageId}' ` +
+          `(HTTP ${validateResponse.status()}). Path='${validatePath}'.`,
+        body
+      )
     );
   }
 
@@ -329,7 +341,7 @@ async function submitCivilServiceEvent(options: {
 
   if (!response.ok()) {
     const body = await response.text().catch(() => '');
-    throw new Error(`Civil API failed to ${options.context} (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`);
+    throw new Error(civilDependencyError(`Civil API failed to ${options.context} (HTTP ${response.status()}).`, body));
   }
 
   return (await response.json()) as CcdCaseDetails;

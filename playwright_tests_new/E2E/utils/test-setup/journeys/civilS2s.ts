@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 import { createGuardrails, generate as generateOneTimePassword, ScureBase32Plugin } from 'otplib';
 
 import { firstNonEmpty, resolveCivilApiRequestTimeoutMs } from './civilConfig';
+import { civilDependencyError } from './civilDiagnostics';
 import type { CivilApiConfig } from './civilTypes';
 
 const DEFAULT_CIVIL_S2S_MICROSERVICE = 'civil_service';
@@ -50,16 +51,8 @@ export async function getCivilS2sToken(page: Page, config: CivilApiConfig): Prom
 
   if (!response.ok()) {
     const body = await response.text().catch(() => '');
-    throw new Error(`Failed to get Civil S2S token (HTTP ${response.status()}).${dependencyBodyForError(body)}`);
+    throw new Error(civilDependencyError(`Failed to get Civil S2S token (HTTP ${response.status()}).`, body));
   }
 
   return (await response.text()).replace(/^"|"$/g, '').trim();
-}
-
-function dependencyBodyForError(body: string): string {
-  if (process.env.PW_CIVIL_DEBUG_DEPENDENCY_BODIES === 'true') {
-    return ` Body='${body.slice(0, 500)}'.`;
-  }
-
-  return '';
 }

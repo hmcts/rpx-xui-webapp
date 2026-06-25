@@ -7,6 +7,7 @@ import {
   resolveCivilApiRequestTimeoutMs,
   resolveCivilGeneratedAccountPassword,
 } from './civilConfig';
+import { civilDependencyError } from './civilDiagnostics';
 import type { CivilApiConfig, CivilApiUser, JsonRecord } from './civilTypes';
 
 const DEFAULT_CIVIL_COURT_STAFF_ROLES = [
@@ -44,9 +45,11 @@ export async function createCivilCourtStaffAccountViaApi(page: Page, config: Civ
   if (!response.ok() && response.status() !== 409) {
     const body = await response.text().catch(() => '');
     throw new Error(
-      `Failed to create Civil court staff account '${redactEmail(email)}' through IDAM testing support ` +
-        `(HTTP ${response.status()}). Roles='${roles.join(',')}'.${dependencyBodyForError(body)} ` +
-        "Use a Civil admin role set that IDAM burner users accept, for example 'caseworker,caseworker-civil,caseworker-civil-admin,pui-case-manager'."
+      `${civilDependencyError(
+        `Failed to create Civil court staff account '${redactEmail(email)}' through IDAM testing support ` +
+          `(HTTP ${response.status()}). Roles='${roles.join(',')}'.`,
+        body
+      )} Use a Civil admin role set that IDAM burner users accept, for example 'caseworker,caseworker-civil,caseworker-civil-admin,pui-case-manager'.`
     );
   }
 
@@ -83,8 +86,11 @@ export async function createIdamCitizenAccount(page: Page, config: CivilApiConfi
   const fallbackError = await createIdamCitizenAccountViaLegacyEndpoint(page, config, user);
   if (fallbackError) {
     throw new Error(
-      `Failed to create Civil citizen account '${redactEmail(user.email)}' through IDAM testing-support/accounts ` +
-        `(HTTP ${response.status()}).${dependencyBodyForError(body)} Legacy fallback: ${fallbackError.message}`
+      `${civilDependencyError(
+        `Failed to create Civil citizen account '${redactEmail(user.email)}' through IDAM testing-support/accounts ` +
+          `(HTTP ${response.status()}).`,
+        body
+      )} Legacy fallback: ${fallbackError.message}`
     );
   }
 }
@@ -123,7 +129,7 @@ export async function getIdamUserId(page: Page, config: CivilApiConfig, idamToke
 
   if (!response.ok()) {
     const body = await response.text().catch(() => '');
-    throw new Error(`Failed to get Civil IDAM userinfo (HTTP ${response.status()}).${dependencyBodyForError(body)}`);
+    throw new Error(civilDependencyError(`Failed to get Civil IDAM userinfo (HTTP ${response.status()}).`, body));
   }
 
   const body = (await response.json()) as { uid?: string };
@@ -282,7 +288,7 @@ async function createIdamCitizenAccountViaLegacyEndpoint(
     }
 
     const body = await response.text().catch(() => '');
-    return new Error(`HTTP ${response.status()}. Body='${body.slice(0, 500)}'`);
+    return new Error(civilDependencyError(`HTTP ${response.status()}.`, body));
   } catch (error) {
     return error instanceof Error ? error : new Error(String(error));
   }
@@ -310,9 +316,7 @@ async function getIdamAccessToken(page: Page, config: CivilApiConfig, user: Civi
       }
 
       const body = await response.text().catch(() => '');
-      lastError = new Error(
-        `Failed to get IDAM token for '${redactEmail(user.email)}' (HTTP ${response.status()}).${dependencyBodyForError(body)}`
-      );
+      lastError = new Error(civilDependencyError(`Failed to get IDAM token for '${redactEmail(user.email)}' (HTTP ${response.status()}).`, body));
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
     }
@@ -329,12 +333,4 @@ function redactEmail(email: string): string {
   }
 
   return `${localPart.slice(0, 1)}***@${domain}`;
-}
-
-function dependencyBodyForError(body: string): string {
-  if (process.env.PW_CIVIL_DEBUG_DEPENDENCY_BODIES === 'true') {
-    return ` Body='${body.slice(0, 500)}'.`;
-  }
-
-  return '';
 }

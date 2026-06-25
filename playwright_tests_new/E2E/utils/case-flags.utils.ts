@@ -52,10 +52,21 @@ export function redactCaseReference(caseNumber: string): string {
 }
 
 export function normaliseCaseDataForDataLossComparison(value: unknown, options: DataLossNormalisationOptions = {}): unknown {
+  return normaliseCaseDataForDataLossComparisonAtPath(value, options);
+}
+
+function normaliseCaseDataForDataLossComparisonAtPath(
+  value: unknown,
+  options: DataLossNormalisationOptions = {},
+  path = '$'
+): unknown {
   if (Array.isArray(value)) {
     const normalised = value
-      .map((entry) => normaliseCaseDataForDataLossComparison(entry, options))
+      .map((entry, index) => normaliseCaseDataForDataLossComparisonAtPath(entry, options, `${path}[${index}]`))
       .filter((entry) => entry !== undefined);
+    if (path === '$.tabs' && shouldSortTabsArray(normalised)) {
+      return [...normalised].sort(compareTabEntriesForDataLoss);
+    }
     if (arrayOnlyContainedIgnoredCreatedFlag(value, normalised, options.ignoredFlagComment)) {
       return undefined;
     }
@@ -77,7 +88,7 @@ export function normaliseCaseDataForDataLossComparison(value: unknown, options: 
       continue;
     }
 
-    const cleanedValue = normaliseCaseDataForDataLossComparison(entryValue, options);
+    const cleanedValue = normaliseCaseDataForDataLossComparisonAtPath(entryValue, options, `${path}.${key}`);
     if (cleanedValue !== undefined) {
       normalised[key] = cleanedValue;
     }
@@ -205,13 +216,35 @@ function arrayOnlyContainedIgnoredCreatedFlag(
   });
 }
 
+function shouldSortTabsArray(normalisedValue: unknown[]): boolean {
+  if (normalisedValue.length < 2) {
+    return false;
+  }
+
+  return normalisedValue.every((entry) => entry !== null && typeof entry === 'object' && 'id' in (entry as JsonRecord));
+}
+
+function compareTabEntriesForDataLoss(left: unknown, right: unknown): number {
+  const leftRecord = left as JsonRecord;
+  const rightRecord = right as JsonRecord;
+  const leftKey = tabSortKey(leftRecord);
+  const rightKey = tabSortKey(rightRecord);
+  return leftKey.localeCompare(rightKey);
+}
+
+function tabSortKey(value: JsonRecord): string {
+  const id = typeof value.id === 'string' ? value.id : '';
+  const label = typeof value.label === 'string' ? value.label : '';
+  return `${id}\u0000${label}`;
+}
+
 function resolveCaseDataPayload(caseDetails: CcdCaseDetails): JsonRecord {
   const data = caseDetails.data ?? caseDetails.case_data;
   return data && typeof data === 'object' ? data : {};
 }
 
 function findCivilClaimantPartyRecord(value: unknown, visited = new WeakSet<object>()): JsonRecord | undefined {
-  if (!value || typeof value !== 'object') {
+  if (!isTraversableObject(value)) {
     return undefined;
   }
 
@@ -221,27 +254,57 @@ function findCivilClaimantPartyRecord(value: unknown, visited = new WeakSet<obje
   visited.add(value);
 
   if (Array.isArray(value)) {
-    for (const entry of value) {
-      const match = findCivilClaimantPartyRecord(entry, visited);
-      if (match) {
-        return match;
-      }
-    }
-    return undefined;
+    return findCivilClaimantPartyRecordInArray(value, visited);
   }
 
   const record = value as JsonRecord;
-  if (formatCivilPartyName(record) && recordLooksLikeClaimant1(record)) {
+  if (isClaimant1PartyRecord(record)) {
     return record;
   }
 
+  const preferredMatch = findCivilClaimantPartyRecordInPreferredKeys(record, visited);
+  if (preferredMatch) {
+    return preferredMatch;
+  }
+
+  const fallbackMatch = findCivilClaimantPartyRecordInRemainingEntries(record, visited);
+  if (fallbackMatch) {
+    return fallbackMatch;
+  }
+
+  return formatCivilPartyName(record) ? record : undefined;
+}
+
+function findCivilClaimantPartyRecordInArray(
+  value: unknown[],
+  visited: WeakSet<object>
+): JsonRecord | undefined {
+  for (const entry of value) {
+    const match = findCivilClaimantPartyRecord(entry, visited);
+    if (match) {
+      return match;
+    }
+  }
+  return undefined;
+}
+
+function findCivilClaimantPartyRecordInPreferredKeys(
+  record: JsonRecord,
+  visited: WeakSet<object>
+): JsonRecord | undefined {
   for (const preferredKey of ['applicant1', 'value', 'formatted_value']) {
     const match = findCivilClaimantPartyRecord(record[preferredKey], visited);
     if (match) {
       return match;
     }
   }
+  return undefined;
+}
 
+function findCivilClaimantPartyRecordInRemainingEntries(
+  record: JsonRecord,
+  visited: WeakSet<object>
+): JsonRecord | undefined {
   for (const [key, entryValue] of Object.entries(record)) {
     if (['applicant1', 'value', 'formatted_value'].includes(key)) {
       continue;
@@ -251,11 +314,14 @@ function findCivilClaimantPartyRecord(value: unknown, visited = new WeakSet<obje
       return match;
     }
   }
-
-  return formatCivilPartyName(record) ? record : undefined;
+  return undefined;
 }
 
-function recordLooksLikeClaimant1(record: JsonRecord): boolean {
+function isTraversableObject(value: unknown): value is object {
+  return Boolean(value) && typeof value === 'object';
+}
+
+function isClaimant1PartyRecord(record: JsonRecord): boolean {
   const flags = record.flags;
   if (!flags || typeof flags !== 'object' || Array.isArray(flags)) {
     return false;

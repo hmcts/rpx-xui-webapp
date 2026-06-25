@@ -99,6 +99,25 @@ test.describe('Civil case flag data-loss helpers', { tag: '@svc-internal' }, () 
     );
   });
 
+  test('normaliser treats Civil tab reordering as presentation noise', () => {
+    const baseline = {
+      tabs: [
+        { id: 'PaymentHistory', label: 'Payment History', order: 6, fields: [{ id: 'casePaymentHistoryViewer' }] },
+        { id: 'ClaimDetails', label: 'Claim details', order: 2, fields: [{ id: 'applicant1OrganisationPolicy' }] },
+        { id: 'caseFlags', label: 'Case Flags', order: 4, fields: [{ id: 'caseFlags' }] },
+      ],
+    };
+    const updated = {
+      tabs: [
+        { id: 'ClaimDetails', label: 'Claim details', order: 2, fields: [{ id: 'applicant1OrganisationPolicy' }] },
+        { id: 'caseFlags', label: 'Case Flags', order: 4, fields: [{ id: 'caseFlags' }] },
+        { id: 'PaymentHistory', label: 'Payment History', order: 6, fields: [{ id: 'casePaymentHistoryViewer' }] },
+      ],
+    };
+
+    expect(normaliseCaseDataForDataLossComparison(updated)).toEqual(normaliseCaseDataForDataLossComparison(baseline));
+  });
+
   test('claimant name resolution uses Civil applicant fields', () => {
     expect(resolveCivilClaimantPartyName(createCaseDetails({ applicant1: createCivilParty() }))).toBe(
       EXPECTED_CLAIMANT_PARTY_NAME

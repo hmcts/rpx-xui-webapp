@@ -1,8 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
-  CaseChallengedAccessRequestComponent,
-  CaseChallengedAccessSuccessComponent,
   CaseResolver,
   editorRouting,
   viewerRouting as caseViewRouting,

@@ -1,10 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {
-  CaseResolver,
-  editorRouting,
-  viewerRouting as caseViewRouting,
-} from '@hmcts/ccd-case-ui-toolkit';
+import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,

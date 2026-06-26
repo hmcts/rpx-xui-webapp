@@ -1,6 +1,5 @@
 import { CaseCreateSubmitComponent } from './case-create-submit/case-create-submit.component';
 import { CasesCreateComponent } from './case-create/case-create.component';
-import { ChallengedAccessWrapperComponent } from './challenged-access-wrapper/challenged-access-wrapper.component';
 import { CaseDetailsHomeComponent } from './case-details-home/case-details-home.component';
 import { CaseDetailsComponent } from './case-details/case-details.component';
 import { CaseFilterComponent } from './case-filter/case-filter.component';
@@ -19,7 +18,6 @@ import { RolesAndAccessContainerComponent } from './roles-and-access-container/r
 import { TasksContainerComponent } from './tasks-container/tasks-container.component';
 
 export const containers: any[] = [
-  ChallengedAccessWrapperComponent,
   CaseListComponent,
   CasesCreateComponent,
   CaseFilterComponent,
@@ -42,7 +40,6 @@ export const containers: any[] = [
 ];
 
 export * from './case-create-submit/case-create-submit.component';
-export * from './challenged-access-wrapper/challenged-access-wrapper.component';
 export * from './case-create/case-create.component';
 export * from './case-details-home/case-details-home.component';
 export * from './case-details/case-details.component';

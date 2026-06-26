@@ -17,7 +17,6 @@ import {
   CaseShareComponent,
   CaseShareConfirmComponent,
   CasesCreateComponent,
-  ChallengedAccessWrapperComponent,
 } from './containers';
 import { CaseLoaderComponent } from './containers/case-loader/case-loader.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
@@ -126,23 +125,6 @@ export const ROUTES: Routes = [
               },
             ],
           },
-          {
-            path: 'challenged-access-request',
-            component: ChallengedAccessWrapperComponent,
-            children: [
-              {
-                path: '',
-                component: CaseChallengedAccessRequestComponent,
-                data: { title: 'Request Challenged Access' },
-                pathMatch: 'full',
-              },
-              {
-                path: 'success',
-                component: CaseChallengedAccessSuccessComponent,
-                data: { title: 'Challenged Access Success' },
-              },
-            ],
-          },
           ...caseViewRouting,
         ],
         data: {
@@ -171,23 +153,6 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'hearings',
-              },
-            ],
-          },
-          {
-            path: 'challenged-access-request',
-            component: ChallengedAccessWrapperComponent,
-            children: [
-              {
-                path: '',
-                component: CaseChallengedAccessRequestComponent,
-                data: { title: 'Request Challenged Access' },
-                pathMatch: 'full',
-              },
-              {
-                path: 'success',
-                component: CaseChallengedAccessSuccessComponent,
-                data: { title: 'Challenged Access Success' },
               },
             ],
           },

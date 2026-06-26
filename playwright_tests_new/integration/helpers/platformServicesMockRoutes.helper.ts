@@ -3,8 +3,6 @@ import { buildCaseListJurisdictionsMock, buildCaseListMock } from '../mocks/case
 import { setupCaseListMocks } from './caseList.helper';
 import { setupXuiAppShellBaseRoutes, type XuiAppShellUserDetailsOptions } from './xuiAppShellMockRoutes.helper';
 
-export const PLATFORM_SERVICES_TAG = '@integration-platform-services';
-
 export async function setupPlatformServicesCaseListRoutes(page: Page, userDetails: XuiAppShellUserDetailsOptions): Promise<void> {
   await setupXuiAppShellBaseRoutes(page, { userDetails });
   await page.route('**/auth/isAuthenticated*', async (route) => {

@@ -1,6 +1,6 @@
 import type { Locator } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
-import { PLATFORM_SERVICES_TAG, setupPlatformServicesCaseListRoutes } from '../../helpers';
+import { setupPlatformServicesCaseListRoutes } from '../../helpers';
 
 type HeaderScenario = {
   name: string;
@@ -66,7 +66,7 @@ async function visibleTexts(locator: Locator): Promise<string[]> {
   return (await locator.allTextContents()).map((text) => text.trim()).filter(Boolean);
 }
 
-test.describe('platform services header parity', { tag: ['@integration', PLATFORM_SERVICES_TAG] }, () => {
+test.describe('platform services header parity', { tag: ['@integration', '@integration-platform-services'] }, () => {
   for (const scenario of headerScenarios) {
     test(`renders ${scenario.name}`, async ({ caseListPage, page }) => {
       await setupPlatformServicesCaseListRoutes(page, {

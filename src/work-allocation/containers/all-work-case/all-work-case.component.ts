@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
@@ -67,8 +68,13 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      // Default to LegalOps if no role is found as search_by seems not to be used anyway
+      const userRole: UserRole = userRoleNames[0] || UserRole.LegalOps;
       return {
         search_parameters: [
           { key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0] },
@@ -77,6 +83,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
           { key: 'role', operator: 'EQUAL', values: this.selectedRole },
         ],
         sorting_parameters: [this.getSortParameter()],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole,
         pagination_parameters: this.getPaginationParameter(),
       };

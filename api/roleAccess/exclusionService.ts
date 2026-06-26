@@ -38,21 +38,28 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
   }
 }
 
+// EXUI-4758 - Added errors if required data not available
+// Note - unsure where the currentUserId is required when assigning for someone else so allowed that circumstance
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
   const body = req.body;
   const currentUser: UserInfo = req.session.passport.user.userinfo;
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
-  let roleCategory: string;
-  let assigneeId: string;
+  let roleCategory: string | null;
+  let assigneeId: string | undefined;
   try {
     if (body.exclusionOption === 'Exclude another person') {
       roleCategory = getCorrectRoleCategory(body.person.domain);
       assigneeId = body.person.id;
-    } else {
-      roleCategory = currentUser.roleCategory;
+    } else if (currentUserId) {
+      // EXUI-4758 - if the user is excluding themselves, use the first role category from the role category list
+      roleCategory = currentUser.roleCategories?.[0] ?? null;
       assigneeId = currentUserId;
+    } else {
+      throw new Error('Current user ID is not available in the session');
     }
-
+    if (!assigneeId) {
+      throw new Error('Assignee ID is not available');
+    }
     const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req, next);
@@ -63,7 +70,12 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   }
 }
 
-export function prepareExclusionBody(currentUserId: string, assigneeId: string, body: any, roleCategory: string): any {
+export function prepareExclusionBody(
+  currentUserId: string | undefined,
+  assigneeId: string,
+  body: any,
+  roleCategory: string | null
+): any {
   return {
     roleRequest: {
       assignerId: currentUserId,
@@ -79,6 +91,7 @@ export function prepareExclusionBody(currentUserId: string, assigneeId: string, 
           jurisdiction: body.jurisdiction,
           notes: body.exclusionDescription,
         },
+        // roleCategory not set to array since API likely expects single value
         roleCategory,
         roleName: 'conflict-of-interest',
         actorIdType: 'IDAM',

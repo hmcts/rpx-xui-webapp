@@ -30,7 +30,6 @@ import {
   getAppropriateService,
   getCaseIdListFromRoles,
   getCaseName,
-  getCaseworkerDataForServices,
   getEndDate,
   getRoleAssignmentsByQuery,
   getRoleIdsFromRoles,
@@ -39,7 +38,6 @@ import {
   getTypesOfWorkByUserId,
   getUniqueCasesCount,
   mapCasesFromData,
-  mapCaseworkerData,
   mapCaseworkerLocation,
   mapRoleType,
   mapUsersToCachedCaseworkers,
@@ -123,7 +121,7 @@ const CASEWORKER_1: Caseworker = {
   idamId: '1',
   lastName: 'Test',
   location: LOCATION_1,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  roleCategories: [RoleCategory.LEGAL_OPERATIONS],
   service: null,
 };
 const CASEWORKER_2: Caseworker = {
@@ -132,7 +130,7 @@ const CASEWORKER_2: Caseworker = {
   idamId: '2',
   lastName: 'Last',
   location: LOCATION_2,
-  roleCategory: RoleCategory.ADMIN,
+  roleCategories: [RoleCategory.ADMIN],
   service: null,
 };
 const CASEWORKER_3: Caseworker = {
@@ -141,7 +139,7 @@ const CASEWORKER_3: Caseworker = {
   idamId: '3',
   lastName: 'Two',
   location: LOCATION_2,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  roleCategories: [RoleCategory.LEGAL_OPERATIONS],
   service: null,
 };
 const CASEWORKER_4: Caseworker = {
@@ -150,7 +148,7 @@ const CASEWORKER_4: Caseworker = {
   idamId: '4',
   lastName: 'Test',
   location: null,
-  roleCategory: null,
+  roleCategories: [],
   service: null,
 };
 
@@ -519,7 +517,7 @@ describe('workAllocation.utils', () => {
               idamId: '1',
               lastName: 'Test',
               location: { id: '1', locationName: 'Test One', services: ['a', 'b'] },
-              roleCategory: 'LEGAL_OPERATIONS',
+              roleCategories: ['LEGAL_OPERATIONS'],
             },
             {
               email: 'firstlast@test.com',
@@ -527,7 +525,7 @@ describe('workAllocation.utils', () => {
               idamId: '2',
               lastName: 'Last',
               location: { id: '3', locationName: 'Test Three', services: ['b', 'c'] },
-              roleCategory: 'ADMIN',
+              roleCategories: ['ADMIN'],
             },
             {
               email: 'onetwo@test.com',
@@ -535,7 +533,7 @@ describe('workAllocation.utils', () => {
               idamId: '3',
               lastName: 'Two',
               location: { id: '3', locationName: 'Test Three', services: ['b', 'c'] },
-              roleCategory: 'LEGAL_OPERATIONS',
+              roleCategories: ['LEGAL_OPERATIONS'],
             },
             {
               email: 'fourthtest@test.com',
@@ -543,7 +541,7 @@ describe('workAllocation.utils', () => {
               idamId: '4',
               lastName: 'Test',
               location: null,
-              roleCategory: null,
+              roleCategories: [],
             },
           ],
         },
@@ -551,65 +549,6 @@ describe('workAllocation.utils', () => {
 
       const result = getSessionCaseworkerInfo(serviceIds, caseworkersByServices);
       expect(result).to.deep.equal([[], [{ service: 'IA', caseworkers: caseworkersByServices[0].caseworkers }]]);
-    });
-  });
-
-  describe('getCaseworkerDataForServices', () => {
-    it('should get correct case worker data for services', () => {
-      const caseworkerData: CaseworkerApi[] = [CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4];
-
-      const serviceCaseworkerData: ServiceCaseworkerData[] = [
-        {
-          jurisdiction: 'IA',
-          data: {
-            roleAssignmentResponse: mockRoleAssignments,
-          },
-        },
-      ];
-      const expectedCaseWorkers: Caseworker[] = [
-        {
-          email: 'nametest@test.com',
-          firstName: 'Name',
-          idamId: '1',
-          lastName: 'Test',
-          location: { id: '1', locationName: 'Test One', services: ['a', 'b'] },
-          roleCategory: 'LEGAL_OPERATIONS',
-          service: 'IA',
-        },
-        {
-          email: 'firstlast@test.com',
-          firstName: 'First',
-          idamId: '2',
-          lastName: 'Last',
-          location: { id: '3', locationName: 'Test Three', services: ['b', 'c'] },
-          roleCategory: 'ADMIN',
-          service: 'IA',
-        },
-        {
-          email: 'onetwo@test.com',
-          firstName: 'One',
-          idamId: '3',
-          lastName: 'Two',
-          location: { id: '3', locationName: 'Test Three', services: ['b', 'c'] },
-          roleCategory: 'LEGAL_OPERATIONS',
-          service: 'IA',
-        },
-        {
-          email: 'fourthtest@test.com',
-          firstName: 'Fourth',
-          idamId: '4',
-          lastName: 'Test',
-          location: null,
-          roleCategory: null,
-          service: 'IA',
-        },
-      ];
-      const caseworkersByService = getCaseworkerDataForServices(caseworkerData, serviceCaseworkerData[0]);
-      expect(caseworkersByService.caseworkers[0].service).to.be.equal('IA');
-      expect(caseworkersByService.caseworkers[0]).to.deep.equal(expectedCaseWorkers[0]);
-      expect(caseworkersByService.caseworkers[1]).to.deep.equal(expectedCaseWorkers[1]);
-      expect(caseworkersByService.caseworkers[2]).to.deep.equal(expectedCaseWorkers[2]);
-      expect(caseworkersByService.caseworkers[3]).to.deep.equal(expectedCaseWorkers[3]);
     });
   });
 
@@ -621,35 +560,6 @@ describe('workAllocation.utils', () => {
       ];
       const roleIds = getRoleIdsFromRoles(roles);
       expect(roleIds).to.deep.equal(['lead-judge', 'hearing-judge']);
-    });
-  });
-
-  describe('mapCaseworkerData', () => {
-    it('should map the primary location correctly', () => {
-      // check function seals with no locations
-      expect(mapCaseworkerLocation(undefined)).to.equal(null);
-
-      // check function deals correctly with example locations
-      expect(mapCaseworkerLocation([LOCATIONAPI_1, LOCATIONAPI_2])).to.deep.equal(LOCATION_1);
-      expect(mapCaseworkerLocation([LOCATIONAPI_2, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
-
-      // for two primary locations, should return last one
-      expect(mapCaseworkerLocation([LOCATIONAPI_1, LOCATIONAPI_3])).to.deep.equal(LOCATION_2);
-      expect(mapCaseworkerLocation([LOCATIONAPI_3, LOCATIONAPI_1])).to.deep.equal(LOCATION_1);
-
-      // if no primary location, return null
-      expect(mapCaseworkerLocation([LOCATIONAPI_2])).to.deep.equal(null);
-    });
-
-    it('should map the caseworkers correctly', () => {
-      // ensure null values are passed through with no issues
-      expect(mapCaseworkerData(null, mockRoleAssignments)).to.deep.equal([]);
-
-      // this will ensure that the mapping of caseworker data is correct
-      // NOTE : it seems new implementation returns service field , is this expected or not logic need to be checked
-      expect(
-        mapCaseworkerData([CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4], mockRoleAssignments)
-      ).to.deep.equal([CASEWORKER_1, CASEWORKER_2, CASEWORKER_3, CASEWORKER_4]);
     });
   });
 
@@ -1272,7 +1182,7 @@ describe('workAllocation.utils', () => {
             services: ['IA', 'CIVIL'],
           },
         ],
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategories: ['LEGAL_OPERATIONS'],
         services: ['IA', 'CIVIL'],
       },
       {
@@ -1287,7 +1197,7 @@ describe('workAllocation.utils', () => {
             services: ['IA'],
           },
         ],
-        roleCategory: 'ADMIN',
+        roleCategories: ['ADMIN', 'LEGAL_OPERATIONS'],
         services: ['PRIVATELAW', 'IA'],
       },
     ];
@@ -1305,23 +1215,32 @@ describe('workAllocation.utils', () => {
     });
 
     it('should correctly get the users role category', () => {
-      expect(util.getUserRoleCategory(mockRoleAssignment, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)).to.equal(
-        'LEGAL_OPERATIONS'
-      );
-      expect(util.getUserRoleCategory(mockRoleAssignment, mockUsers[1].staff_profile, mockUsers[1].ccd_service_names)).to.equal(
-        'ADMIN'
-      );
+      expect(
+        util.getUserRoleCategories(mockRoleAssignment, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)
+      ).to.deep.equal(['LEGAL_OPERATIONS']);
+      expect(
+        util.getUserRoleCategories(mockRoleAssignment, mockUsers[1].staff_profile, mockUsers[1].ccd_service_names)
+      ).to.deep.equal(['ADMIN', 'LEGAL_OPERATIONS']);
       const specificMockRole = [{ actorId: '123', roleCategory: 'CTSC', attributes: { jurisdiction: 'ia' } } as RoleAssignment];
-      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)).to.equal(
-        'CTSC'
-      );
+      expect(
+        util.getUserRoleCategories(specificMockRole, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)
+      ).to.deep.equal(['CTSC']);
       // checks that if service of role does not match, role cateogry not set
-      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal(null);
+      expect(util.getUserRoleCategories(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.deep.equal([]);
       specificMockRole[0].attributes = {};
       // checks that if role not service specific, role category is set
-      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal('CTSC');
+      expect(util.getUserRoleCategories(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.deep.equal(['CTSC']);
       specificMockRole[0].roleCategory = undefined;
-      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal(null);
+      expect(util.getUserRoleCategories(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.deep.equal([]);
+    });
+
+    it('should check all role assignments for a matching user role category', () => {
+      const roleAssignments = [
+        { actorId: '123', roleCategory: 'ADMIN', attributes: { jurisdiction: 'CIVIL' } } as RoleAssignment,
+        { actorId: '123', roleCategory: 'CTSC', attributes: { jurisdiction: 'IA' } } as RoleAssignment,
+      ];
+
+      expect(util.getUserRoleCategories(roleAssignments, mockUsers[0].staff_profile, ['IA'])).to.deep.equal(['CTSC']);
     });
 
     it('should correctly get the users location', () => {
@@ -1559,7 +1478,7 @@ describe('workAllocation.utils', () => {
           idamId: '1',
           lastName: 'User',
           locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
-          roleCategory: 'ADMIN',
+          roleCategories: ['ADMIN'],
           services: ['IA', 'CIVIL'],
         },
         {
@@ -1568,7 +1487,7 @@ describe('workAllocation.utils', () => {
           idamId: '2',
           lastName: 'User',
           locations: [{ id: 'c', locationName: 'PL location', services: undefined }],
-          roleCategory: 'CTSC',
+          roleCategories: ['CTSC'],
           services: ['PRIVATELAW'],
         },
       ];
@@ -1579,7 +1498,7 @@ describe('workAllocation.utils', () => {
           idamId: '1',
           lastName: 'User',
           location: { id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] },
-          roleCategory: 'ADMIN',
+          roleCategories: ['ADMIN'],
           service: 'CIVIL',
         },
         {
@@ -1588,7 +1507,7 @@ describe('workAllocation.utils', () => {
           idamId: '2',
           lastName: 'User',
           location: { id: 'c', locationName: 'PL location', services: undefined },
-          roleCategory: 'CTSC',
+          roleCategories: ['CTSC'],
           service: 'PRIVATELAW',
         },
       ];

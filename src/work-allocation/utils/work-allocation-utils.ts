@@ -1,6 +1,8 @@
 import { NavigationExtras } from '@angular/router';
 import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { HMCTSServiceDetails, UserInfo } from '../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from '../../app/services';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
@@ -115,8 +117,9 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   const value = sessionStorageService.getItem(sessionKey);
   if (value) {
-    return JSON.parse(value) as Caseworker[];
+    return safeJsonParse<Caseworker[]>(value, []);
   }
+  return [];
 };
 
 export const setCaseworkers = (
@@ -159,7 +162,7 @@ export const servicesMap: { [key: string]: string } = {
   EMPLOYMENT: 'Employment',
 };
 
-export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
+export function getOptions(taskRoles: TaskRole[], sessionStorageService: SessionStorageService): OptionsModel[] {
   const options = new Array<OptionsModel>();
   // Consider role categories only with either OWN or EXECUTE permissions
   const roleCategories = taskRoles
@@ -197,7 +200,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
 
 export function getRoleCategoryToBeSelectedByDefault(
   taskRoles: TaskRole[],
-  sessionStorageService: ISessionStorageService
+  sessionStorageService: SessionStorageService
 ): RoleCategory {
   // Consider only role categories with OWN permission for radio button default selection
   const uniqueRoleCategoriesWithOwnPermissions = taskRoles
@@ -210,7 +213,8 @@ export function getRoleCategoryToBeSelectedByDefault(
   // If more than one role category with OWN permission then use current user's role category
   return uniqueRoleCategoriesWithOwnPermissions.length === 1
     ? uniqueRoleCategoriesWithOwnPermissions[0]
-    : getCurrentUserRoleCategory(sessionStorageService);
+    : // EXUI-4758 - Set role category to first role category found or all
+      getCurrentUserRoleCategories(sessionStorageService)?.[0] || RoleCategory.ALL;
 }
 
 export function getLabel(roleCategory: RoleCategory): PersonRole {
@@ -265,13 +269,16 @@ export function getDestinationUrl(url: string): string {
   return REDIRECTS.NotAuthorised;
 }
 
-export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorageService): RoleCategory {
+export function getCurrentUserRoleCategories(sessionStorageService: SessionStorageService): RoleCategory[] {
   const userInfoStr = sessionStorageService.getItem('userDetails');
   if (userInfoStr) {
-    const userInfo: UserInfo = JSON.parse(userInfoStr);
-    return userInfo.roleCategory as RoleCategory;
+    const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+    if (!userInfo) {
+      return [];
+    }
+    return (userInfo.roleCategories as RoleCategory[]) || [];
   }
-  return null;
+  return [];
 }
 
 export function addLocationToLocationsByService(

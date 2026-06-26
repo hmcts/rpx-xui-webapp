@@ -136,4 +136,10 @@ const updatedLines = lines.map((line) => {
 fs.writeFileSync(outFile, updatedLines.join('\n'), 'utf-8');
 NODE
 
+for REQUIRED_KEY in WA_SOLICITOR_USERNAME WA_SOLICITOR_PASSWORD; do
+  if grep -q "^${REQUIRED_KEY}=" "${TEMPLATE_FILE}" && ! grep -Eq "^${REQUIRED_KEY}=.+" "${OUT_FILE}"; then
+    echo "Warning: ${REQUIRED_KEY} was not populated from ${VAULT}; add a tagged Key Vault secret with e2e=${REQUIRED_KEY}."
+  fi
+done
+
 echo "Done. Generated ${OUT_FILE}"

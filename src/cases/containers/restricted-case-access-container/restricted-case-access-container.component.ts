@@ -2,15 +2,16 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription, of } from 'rxjs';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
+import { JudicialRefDataService } from '../../../hearings/services/judicial-ref-data.service';
 import { CaseRole } from '../../../role-access/models/case-role.interface';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services/caseworker-data.service';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services/wa-supported-jurisdiction.service';
 import { RestrictedCase } from '../../models/restricted-case.model';
-import { JudicialRefDataService } from 'src/hearings/services/judicial-ref-data.service';
 
 @Component({
   standalone: false,
@@ -96,7 +97,7 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
       const userWithAccess = this.usersWithAccess.find((user) => user.actorId === id);
       if (!user) {
         // EXUI-2907 - Multiple users check for judicial
-        if (userWithAccess.roleCategory === 'JUDICIAL') {
+        if (userWithAccess.roleCategory === RoleCategory.JUDICIAL) {
           this.judicialRefDataService
             .searchJudicialUserByIdamID([id])
             .pipe(

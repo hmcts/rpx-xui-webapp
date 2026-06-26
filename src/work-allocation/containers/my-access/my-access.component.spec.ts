@@ -222,7 +222,7 @@ describe('MyAccessComponent', () => {
       const mockUserRole = UserRole.LegalOps;
 
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(mockUserInfo));
-      spyOn(AppUtils, 'getUserRole').and.returnValue(mockUserRole);
+      spyOn(AppUtils, 'getUserRoleNames').and.returnValue([mockUserRole]);
       spyOn(component, 'getSortParameter').and.returnValue({ sort_by: 'case_name', sort_order: 'asc' });
 
       const result = component.getSearchCaseRequestPagination();
@@ -233,7 +233,7 @@ describe('MyAccessComponent', () => {
         search_by: mockUserRole,
       });
       expect(mockSessionStorageService.getItem).toHaveBeenCalledWith('userDetails');
-      expect(AppUtils.getUserRole).toHaveBeenCalledWith(mockUserInfo.roles);
+      expect(AppUtils.getUserRoleNames).toHaveBeenCalledWith(mockUserInfo.roles);
     });
 
     it('should use uid when id is not present', () => {
@@ -249,7 +249,7 @@ describe('MyAccessComponent', () => {
       const mockUserRole = UserRole.LegalOps;
 
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(mockUserInfo));
-      spyOn(AppUtils, 'getUserRole').and.returnValue(mockUserRole);
+      spyOn(AppUtils, 'getUserRoleNames').and.returnValue([mockUserRole]);
       spyOn(component, 'getSortParameter').and.returnValue({ sort_by: 'case_name', sort_order: 'asc' });
 
       const result = component.getSearchCaseRequestPagination();

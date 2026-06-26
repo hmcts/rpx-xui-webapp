@@ -1,5 +1,5 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { FilterPersistence, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import {
   ADMIN_ROLE_LIST,
   AppConstants,
@@ -11,6 +11,7 @@ import {
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 
 export class AppUtils {
   public static getEnvironment(url: string): string {
@@ -69,7 +70,7 @@ export class AppUtils {
    * @return - ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker', 'etc...']
    */
   public static getCookieRolesAsArray(userRoles: string): string[] {
-    return JSON.parse(userRoles);
+    return safeJsonParse<string[]>(userRoles, []);
   }
 
   /**
@@ -164,17 +165,23 @@ export class AppUtils {
     // check that userRoles do not have pui-case-manager
   }
 
-  public static getUserRole(userRoles: string[]): UserRole {
+  // EXUI-4758 - We know user can have multiple role categories and we should return all of them
+  // Howwever, we shouldn't refer to them as role categories in code as they specify a different enum
+  public static getUserRoleNames(userRoles: string[]): UserRole[] {
+    const userRoleNames: UserRole[] = [];
     if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.includes(userRole))) {
-      return UserRole.Judicial;
-    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.includes(userRole))) {
-      return UserRole.Admin;
-    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.includes(userRole))) {
-      return UserRole.CTSC;
-    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.includes(userRole))) {
-      return UserRole.LegalOps;
+      userRoleNames.push(UserRole.Judicial);
     }
-    return null;
+    if (userRoles.some((userRole) => ADMIN_ROLE_LIST.includes(userRole))) {
+      userRoleNames.push(UserRole.Admin);
+    }
+    if (userRoles.some((userRole) => CTSC_ROLE_LIST.includes(userRole))) {
+      userRoleNames.push(UserRole.CTSC);
+    }
+    if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.includes(userRole))) {
+      userRoleNames.push(UserRole.LegalOps);
+    }
+    return userRoleNames;
   }
 
   public static convertDomainToLabel(userRole: string): string {
@@ -201,20 +208,6 @@ export class AppUtils {
     return userRole;
   }
 
-  public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
-    const userRole = AppUtils.getUserRole(userDetails.userInfo.roles);
-    const roleType = AppUtils.convertDomainToLabel(userRole);
-    switch (roleType) {
-      case 'LegalOps':
-        return 'session';
-      case 'Judicial':
-        return 'local';
-      default:
-        // admin and ctsc currently default unless specified
-        return 'session';
-    }
-  }
-
   public static setThemeBasedOnUserType(userType: string, theme: Theme) {
     switch (userType) {
       case 'Judicial':
@@ -239,8 +232,11 @@ export class AppUtils {
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
-    return (
-      userInfo?.roleCategory === RoleCategory.JUDICIAL &&
+    if (!roleAssignmentInfo || !userInfo) {
+      return false;
+    }
+    return !!(
+      userInfo?.roleCategories?.includes(RoleCategory.JUDICIAL) &&
       roleAssignmentInfo.some(
         (roleAssignment) =>
           'bookable' in roleAssignment && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')

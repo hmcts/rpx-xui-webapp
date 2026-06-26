@@ -86,7 +86,7 @@ test.describe('task event completion route setup helper', { tag: '@svc-internal'
                 id: 227101,
                 locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
               },
-              roleCategory: 'LEGAL_OPERATIONS',
+              roleCategories: ['LEGAL_OPERATIONS'],
               service: 'IA',
             },
           ]),

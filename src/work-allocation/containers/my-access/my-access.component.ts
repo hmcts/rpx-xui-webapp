@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CasesService } from '@hmcts/ccd-case-ui-toolkit';
+import { CasesService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { take } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -36,12 +36,17 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      const userRole: UserRole = userRoleNames[0] || undefined;
       return {
         search_parameters: [{ key: 'user', operator: 'IN', values: [id] }],
         sorting_parameters: [this.getSortParameter()],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole,
       };
     }

@@ -109,7 +109,9 @@ export function buildCaseListMock(rowCount: number = 2) {
 
     return {
       case_id: caseReference,
-      supplementary_data: null,
+      supplementary_data: {
+        orgs_assigned_users: {},
+      },
       case_fields: {
         TextField0: faker.lorem.word(),
         '[STATE]': 'CaseCreated',

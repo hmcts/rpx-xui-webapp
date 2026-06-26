@@ -4,6 +4,7 @@ import { request } from '@playwright/test';
 import { firstAllowedNonEmpty } from './accountPolicy.js';
 import {
   CASEWORKER_DIVORCE_ROLE_NAMES,
+  EXTENDED_SOLICITOR_ROLE_NAMES,
   type SolicitorRoleContext,
   type SolicitorRoleProfile,
   type SolicitorRoleSelectionResolution,
@@ -92,6 +93,11 @@ import {
   uniqueScopes,
   withBearerPrefix,
 } from './professional-user/runtime.js';
+import {
+  createApprovedOrganisationFlow,
+  type DynamicOrganisationProvisioningOptions,
+  type DynamicOrganisationProvisioningResult,
+} from './professional-user/organisationProvisioning.js';
 import { ensureUiStorageStateForUser } from './session-storage.utils.js';
 import { resolveUiStoragePathForUser } from './storage-state.utils.js';
 
@@ -106,6 +112,25 @@ const defaultManageOrgSessionInviteDependencies: ManageOrgSessionInviteDependenc
   resolveUiStoragePathForUser,
   newApiContext: request.newContext.bind(request),
 };
+
+export function canUseDirectAssignmentBearerInvite(params: { assignmentBearerToken?: string; serviceToken?: string }): boolean {
+  if (firstNonEmpty(params.assignmentBearerToken, params.serviceToken, process.env.ORG_USER_ASSIGNMENT_BEARER_TOKEN)) {
+    return true;
+  }
+  return Boolean(
+    firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_USERNAME) &&
+    firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_PASSWORD) &&
+    resolveAssignmentClientSecret()
+  );
+}
+
+function resolveAssignmentServiceAuthMicroservice(override?: string): string | undefined {
+  return firstNonEmpty(
+    override,
+    process.env.PW_PROFESSIONAL_USER_ASSIGNMENT_S2S_MICROSERVICE,
+    process.env.PW_DYNAMIC_ORGANISATION_ASSIGNMENT_S2S_MICROSERVICE
+  );
+}
 
 export {
   CASEWORKER_DIVORCE_ROLE_NAMES,
@@ -178,7 +203,10 @@ type AssignUserToOrganisationOptions = {
   roles?: readonly string[];
   mode?: OrganisationAssignmentStrategy;
   assignmentBearerToken?: string;
+  expectedAssignmentPrincipalEmail?: string;
+  assignmentStorageState?: string;
   serviceToken?: string;
+  serviceAuthMicroservice?: string;
   rdProfessionalApiPath?: string;
   resendInvite?: boolean;
   requireServiceAuth?: boolean;
@@ -189,12 +217,15 @@ type CreateSolicitorUserForOrganisationOptions = {
   idamBearerToken?: string;
   assignmentBearerToken?: string;
   serviceToken?: string;
+  serviceAuthMicroservice?: string;
   roleNames?: readonly string[];
   roleProfile?: SolicitorRoleProfile;
   roleContext?: SolicitorRoleContext;
   mode?: OrganisationAssignmentStrategy;
   rdProfessionalApiPath?: string;
   resendInvite?: boolean;
+  expectedAssignmentPrincipalEmail?: string;
+  assignmentStorageState?: string;
   requireServiceAuth?: boolean;
   maxCreateAttempts?: number;
   outputCreatedUserData?: boolean;
@@ -204,7 +235,10 @@ type OrganisationAssignmentPreflightOptions = {
   organisationId: string;
   mode?: OrganisationAssignmentStrategy;
   assignmentBearerToken?: string;
+  expectedAssignmentPrincipalEmail?: string;
+  assignmentStorageState?: string;
   serviceToken?: string;
+  serviceAuthMicroservice?: string;
   rdProfessionalApiPath?: string;
   requireServiceAuth?: boolean;
 };
@@ -215,7 +249,9 @@ type CleanupOrganisationAssignmentOptions = {
   organisationId?: string;
   rolesToRemove: readonly string[];
   assignmentBearerToken?: string;
+  expectedAssignmentPrincipalEmail?: string;
   serviceToken?: string;
+  serviceAuthMicroservice?: string;
   rdProfessionalApiPath?: string;
   requireServiceAuth?: boolean;
 };
@@ -225,6 +261,25 @@ type CleanupIdamAccountOptions = {
   bearerToken?: string;
   idamApiPath?: string;
 };
+
+export function buildCreatedUserLogSummary(params: {
+  user: ProfessionalUserInfo;
+  roleSelection?: SolicitorRoleSelectionResolution;
+  createPath: 'idam-testing-support' | 'idam-update-existing' | 'idam-api-testing-support';
+}) {
+  return {
+    username: params.user.email,
+    forename: params.user.forename,
+    surname: params.user.surname,
+    roles: params.user.roleNames,
+    createPath: params.createPath,
+    roleSource: params.roleSelection?.source,
+    roleProfile: params.roleSelection?.roleProfile,
+    jurisdiction: params.roleSelection?.context.jurisdiction,
+    testType: params.roleSelection?.context.testType,
+    caseType: params.roleSelection?.context.caseType,
+  };
+}
 
 const logger = createLogger({
   serviceName: 'professional-user-utils',
@@ -266,6 +321,33 @@ export class ProfessionalUserUtils {
       maxCreateAttempts: options.maxCreateAttempts,
       outputCreatedUserData: options.outputCreatedUserData,
     });
+  }
+
+  public async createOrganisationAssignmentAdminUser(options: {
+    email: string;
+    forename: string;
+    surname: string;
+    bearerToken?: string;
+    maxCreateAttempts?: number;
+    outputCreatedUserData?: boolean;
+  }): Promise<{ user: ProfessionalUserInfo; assignmentBearerToken: string }> {
+    const password = getRequiredEnvSecret('IDAM_SOLICITOR_USER_PASSWORD');
+    const identity = {
+      email: options.email,
+      forename: options.forename,
+      surname: options.surname,
+    };
+    const user = await this.createUserViaSidamFirst({
+      bearerToken: options.bearerToken,
+      password,
+      roleNames: EXTENDED_SOLICITOR_ROLE_NAMES,
+      emailPrefix: 'organisation_admin',
+      identity,
+      maxCreateAttempts: options.maxCreateAttempts,
+      outputCreatedUserData: options.outputCreatedUserData,
+    });
+    const assignmentBearerToken = await this.generateAssignmentBearerTokenForCredentials(user.email, password, user.email);
+    return { user, assignmentBearerToken };
   }
 
   public async createSolicitorUserForOrganisation(
@@ -315,7 +397,10 @@ export class ProfessionalUserUtils {
       roles: createdUser.roleNames,
       mode: assignmentMode,
       assignmentBearerToken: options.assignmentBearerToken,
+      expectedAssignmentPrincipalEmail: options.expectedAssignmentPrincipalEmail,
+      assignmentStorageState: options.assignmentStorageState,
       serviceToken: options.serviceToken,
+      serviceAuthMicroservice: options.serviceAuthMicroservice,
       rdProfessionalApiPath: options.rdProfessionalApiPath,
       resendInvite,
       requireServiceAuth: options.requireServiceAuth,
@@ -340,7 +425,10 @@ export class ProfessionalUserUtils {
       },
       {
         resolveAssignmentPrerequisites: async () => {
-          const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
+          const assignmentBearerToken = await this.resolveAssignmentBearerToken(
+            options.assignmentBearerToken,
+            options.expectedAssignmentPrincipalEmail
+          );
           const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
           const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
           return {
@@ -354,6 +442,30 @@ export class ProfessionalUserUtils {
         shouldFallbackToAlternateAssignmentMode,
       }
     );
+  }
+
+  public async createApprovedOrganisationForTest(
+    options: DynamicOrganisationProvisioningOptions = {}
+  ): Promise<DynamicOrganisationProvisioningResult> {
+    return createApprovedOrganisationFlow(options, {
+      resolvePrerequisites: async () => {
+        const assignmentBearerToken = await this.resolveAssignmentBearerToken();
+        const serviceToken = await this.resolveServiceToken(undefined, true);
+        const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
+        return {
+          rdProfessionalApiPath: resolveRdProfessionalApiPath(),
+          headers: buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles),
+        };
+      },
+      createApiContext: (baseURL, headers) =>
+        request.newContext({
+          baseURL,
+          ignoreHTTPSErrors: true,
+          extraHTTPHeaders: headers,
+        }),
+      now: () => Date.now(),
+      sleep,
+    });
   }
 
   public async createUser({
@@ -557,8 +669,14 @@ export class ProfessionalUserUtils {
         inviteUserViaManageOrgApi: (params) => this.inviteUserViaManageOrgApi(params),
         isUserVisibleInOrganisationAssignment: (params) =>
           isUserVisibleInOrganisationAssignmentFlow(params, {
-            resolveAssignmentBearerToken: (token) => this.resolveAssignmentBearerToken(token),
-            resolveServiceToken: (token, required) => this.resolveServiceToken(token, required),
+            resolveAssignmentBearerToken: (token) =>
+              this.resolveAssignmentBearerToken(token, options.expectedAssignmentPrincipalEmail),
+            resolveServiceToken: (token, required) =>
+              this.resolveServiceToken(
+                token,
+                required,
+                resolveAssignmentServiceAuthMicroservice(options.serviceAuthMicroservice)
+              ),
             resolveRdProfessionalApiPath,
             resolveAssignmentUserRolesResolution,
             buildHeaders,
@@ -566,8 +684,15 @@ export class ProfessionalUserUtils {
             warn: (message, meta) => logger.warn(message, meta),
           }),
         resolveAssignmentPrerequisites: async () => {
-          const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
-          const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
+          const assignmentBearerToken = await this.resolveAssignmentBearerToken(
+            options.assignmentBearerToken,
+            options.expectedAssignmentPrincipalEmail
+          );
+          const serviceToken = await this.resolveServiceToken(
+            options.serviceToken,
+            options.requireServiceAuth ?? true,
+            resolveAssignmentServiceAuthMicroservice(options.serviceAuthMicroservice)
+          );
           const rdProfessionalApiPath = resolveRdProfessionalApiPath(options.rdProfessionalApiPath);
           const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
           const headers = buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles);
@@ -622,6 +747,8 @@ export class ProfessionalUserUtils {
     roles: readonly string[];
     resendInvite: boolean;
     assignmentBearerToken?: string;
+    expectedAssignmentPrincipalEmail?: string;
+    assignmentStorageState?: string;
     serviceToken?: string;
   }): Promise<{
     status: number;
@@ -676,9 +803,41 @@ export class ProfessionalUserUtils {
       };
     };
 
-    const hasExplicitAssignmentOverrides = Boolean(firstNonEmpty(params.assignmentBearerToken, params.serviceToken));
+    const hasExplicitAssignmentBearerToken = Boolean(firstNonEmpty(params.assignmentBearerToken));
+    const useDirectBearerInvite = canUseDirectAssignmentBearerInvite(params);
     const assignmentUiUser = resolveAssignmentUiUserIdentifier();
-    if (!hasExplicitAssignmentOverrides) {
+    if (params.assignmentStorageState) {
+      try {
+        const apiContext = await this.manageOrgSessionInviteDependencies.newApiContext({
+          baseURL: manageOrgBaseUrl,
+          ignoreHTTPSErrors: true,
+          storageState: params.assignmentStorageState,
+        });
+        try {
+          const sessionInvite = await parseInviteResponse(apiContext);
+          return {
+            status: sessionInvite.status,
+            userIdentifier: undefined,
+            responseBody: sessionInvite.responseBody,
+          };
+        } finally {
+          await apiContext.dispose();
+        }
+      } catch (error) {
+        if (!hasExplicitAssignmentBearerToken) {
+          logger.warn('Dynamic organisation admin session invite path failed without an explicit dynamic bearer fallback.', {
+            email: params.user.email,
+            error: error instanceof Error ? error.message : String(error),
+          });
+          throw error;
+        }
+        logger.warn('Dynamic organisation admin session invite path unavailable; falling back to explicit bearer invite call.', {
+          email: params.user.email,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+    if (!useDirectBearerInvite) {
       try {
         await this.manageOrgSessionInviteDependencies.ensureUiStorageStateForUser(assignmentUiUser, {
           strict: true,
@@ -708,14 +867,23 @@ export class ProfessionalUserUtils {
         });
       }
     } else {
-      logger.info('Skipping manage-org session invite path because explicit assignment overrides were provided.', {
+      logger.info('Skipping manage-org session invite path because direct assignment bearer invite is available.', {
         email: params.user.email,
         hasAssignmentBearerTokenOverride: Boolean(firstNonEmpty(params.assignmentBearerToken)),
+        hasAssignmentBearerTokenEnv: Boolean(firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_BEARER_TOKEN)),
+        hasAssignmentCredentials: Boolean(
+          firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_USERNAME) &&
+          firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_PASSWORD) &&
+          resolveAssignmentClientSecret()
+        ),
         hasServiceTokenOverride: Boolean(firstNonEmpty(params.serviceToken)),
       });
     }
 
-    const assignmentBearerToken = await this.resolveAssignmentBearerToken(params.assignmentBearerToken);
+    const assignmentBearerToken = await this.resolveAssignmentBearerToken(
+      params.assignmentBearerToken,
+      params.expectedAssignmentPrincipalEmail
+    );
     const serviceToken = await this.resolveServiceToken(params.serviceToken, false);
     const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
     const supportedOrganisationAssignmentRoles = filterSupportedOrganisationAssignmentRoles(assignmentUserRoles.roles);
@@ -758,7 +926,10 @@ export class ProfessionalUserUtils {
       },
       {
         resolveAssignmentPrerequisites: async () => {
-          const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
+          const assignmentBearerToken = await this.resolveAssignmentBearerToken(
+            options.assignmentBearerToken,
+            options.expectedAssignmentPrincipalEmail
+          );
           const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
           const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
           return {
@@ -924,24 +1095,15 @@ export class ProfessionalUserUtils {
     if (!shouldOutputCreatedUserData(params.outputCreatedUserData)) {
       return;
     }
-    const summary = {
-      username: params.user.email,
-      password: params.user.password,
-      forename: params.user.forename,
-      surname: params.user.surname,
-      roles: params.user.roleNames,
-      createPath: params.createPath,
-      roleSource: params.roleSelection?.source,
-      roleProfile: params.roleSelection?.roleProfile,
-      jurisdiction: params.roleSelection?.context.jurisdiction,
-      testType: params.roleSelection?.context.testType,
-      caseType: params.roleSelection?.context.caseType,
-    };
-    // Intentional: plain log keeps credentials visible for AAT debug sessions.
+    const summary = buildCreatedUserLogSummary(params);
     logger.info('[provisioned-user-data]', { data: summary });
   }
 
-  private async resolveServiceToken(serviceToken: string | undefined, required: boolean): Promise<string | undefined> {
+  private async resolveServiceToken(
+    serviceToken: string | undefined,
+    required: boolean,
+    microserviceOverride?: string
+  ): Promise<string | undefined> {
     const fromOptionsOrEnv = firstNonEmpty(serviceToken, process.env.S2S_TOKEN);
     if (fromOptionsOrEnv) {
       return stripBearerPrefix(fromOptionsOrEnv);
@@ -956,13 +1118,14 @@ export class ProfessionalUserUtils {
       return undefined;
     }
 
-    const microservice = firstNonEmpty(process.env.S2S_MICROSERVICE_NAME, process.env.MICROSERVICE) ?? 'xui_webapp';
+    const microservice =
+      firstNonEmpty(microserviceOverride, process.env.S2S_MICROSERVICE_NAME, process.env.MICROSERVICE) ?? 'xui_webapp';
 
     const token = await this.serviceAuthUtils.retrieveToken({ microservice });
     return stripBearerPrefix(token);
   }
 
-  private async resolveAssignmentBearerToken(token?: string): Promise<string> {
+  private async resolveAssignmentBearerToken(token?: string, expectedEmail?: string): Promise<string> {
     return resolveAssignmentBearerTokenFlow(
       {
         providedToken: token,
@@ -973,7 +1136,8 @@ export class ProfessionalUserUtils {
         stripBearerPrefix,
         decodeJwtPayload,
         now: () => Date.now(),
-        assertExpectedAssignmentPrincipal: (resolvedToken) => this.assertExpectedAssignmentPrincipal(resolvedToken),
+        assertExpectedAssignmentPrincipal: (resolvedToken) =>
+          this.assertExpectedAssignmentPrincipal(resolvedToken, expectedEmail),
         tryGenerateAssignmentBearerTokenFromCredentials: () => this.tryGenerateAssignmentBearerTokenFromCredentials(),
         persistAssignmentBearerToken: (generatedToken) => {
           process.env.ORG_USER_ASSIGNMENT_BEARER_TOKEN = generatedToken;
@@ -1017,11 +1181,28 @@ export class ProfessionalUserUtils {
     return hydrated;
   }
 
-  private async tryGenerateAssignmentBearerTokenFromCredentials(): Promise<string | undefined> {
+  private async generateAssignmentBearerTokenForCredentials(
+    username: string,
+    password: string,
+    expectedEmail: string
+  ): Promise<string> {
+    const generated = await this.tryGenerateAssignmentBearerTokenFromCredentials(username, password);
+    if (!generated) {
+      throw new Error(`Unable to hydrate assignment bearer token for dynamic organisation admin ${username}.`);
+    }
+    const resolved = stripBearerPrefix(generated);
+    await this.assertExpectedAssignmentPrincipal(resolved, expectedEmail);
+    return resolved;
+  }
+
+  private async tryGenerateAssignmentBearerTokenFromCredentials(
+    usernameOverride?: string,
+    passwordOverride?: string
+  ): Promise<string | undefined> {
     return tryGenerateAssignmentBearerTokenFromCredentialsFlow(
       {
-        configuredAssignmentUsername: process.env.ORG_USER_ASSIGNMENT_USERNAME?.trim(),
-        configuredAssignmentPassword: process.env.ORG_USER_ASSIGNMENT_PASSWORD,
+        configuredAssignmentUsername: usernameOverride ?? process.env.ORG_USER_ASSIGNMENT_USERNAME?.trim(),
+        configuredAssignmentPassword: passwordOverride ?? process.env.ORG_USER_ASSIGNMENT_PASSWORD,
         fallbackUsername: firstAllowedNonEmpty(
           process.env.SOLICITOR_USERNAME,
           process.env.PRL_SOLICITOR_USERNAME,
@@ -1078,11 +1259,11 @@ export class ProfessionalUserUtils {
     );
   }
 
-  private async assertExpectedAssignmentPrincipal(token: string): Promise<void> {
+  private async assertExpectedAssignmentPrincipal(token: string, expectedEmail?: string): Promise<void> {
     return assertExpectedAssignmentPrincipalFlow(
       {
         token,
-        expectedEmail: resolveExpectedAssignmentPrincipalEmail(),
+        expectedEmail: firstNonEmpty(expectedEmail, resolveExpectedAssignmentPrincipalEmail())?.toLowerCase(),
       },
       {
         decodeJwtPayload,

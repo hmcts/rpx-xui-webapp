@@ -1,7 +1,7 @@
 import { Location as StateLocation } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
@@ -28,7 +28,13 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService,
 } from '../../services';
-import { REDIRECTS, WILDCARD_SERVICE_DOWN, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
+import {
+  REDIRECTS,
+  WILDCARD_SERVICE_DOWN,
+  getCurrentUserRoleCategories,
+  handleFatalErrors,
+  handleTasksFatalErrors,
+} from '../../utils';
 
 @Component({
   standalone: false,
@@ -54,7 +60,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasksTotal: number;
   private currentUser: string;
   public routeEventsSubscription: Subscription;
-  public userRoleCategory: string;
+  public userRoleCategories: string[] = [];
   private initialFilterApplied = false;
   private goneBackCount = 0;
 
@@ -158,7 +164,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.userRoleCategory = this.getCurrentUserRoleCategory();
+    this.userRoleCategories = getCurrentUserRoleCategories(this.sessionStorageService);
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -198,12 +204,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
-      const { fieldName, order } = JSON.parse(sortStored);
-      this.sortedBy = {
-        fieldName,
-        order: order as SortOrder,
-      };
-    } else {
+      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(sortStored, null);
+      if (parsed) {
+        const { fieldName, order } = parsed;
+        this.sortedBy = {
+          fieldName,
+          order: order as SortOrder,
+        };
+      }
+    }
+    if (!this.sortedBy?.fieldName) {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.taskServiceConfig.defaultSortFieldName,
@@ -275,7 +285,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    const savedPaginationNumber = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
+    const savedPaginationNumber = safeJsonParse<number>(this.sessionStorageService.getItem(this.pageSessionKey), null);
     if (savedPaginationNumber && typeof savedPaginationNumber === 'number') {
       return { ...this.pagination, page_number: savedPaginationNumber };
     }
@@ -393,14 +403,17 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    return this.userRoleCategory?.toUpperCase() === RoleCategory.JUDICIAL;
+    return this.userRoleCategories.includes(RoleCategory.JUDICIAL);
   }
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
     }
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -473,12 +486,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     }
   }
 
-  public getCurrentUserRoleCategory(): string {
+  public getCurrentUserRoleCategories(): string[] {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return userInfo.roleCategory;
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return [];
+      }
+      return userInfo.roleCategories || [];
     }
+    return [];
   }
 
   private locationListsEqual(newLocations: string[]): boolean {

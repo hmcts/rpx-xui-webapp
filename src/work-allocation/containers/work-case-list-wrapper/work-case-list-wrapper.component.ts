@@ -2,7 +2,7 @@ import { Location as StateLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, Jurisdiction, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
@@ -239,12 +239,16 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
-      const { fieldName, order } = JSON.parse(stored);
-      this.sortedBy = {
-        fieldName,
-        order: order as SortOrder,
-      };
-    } else {
+      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(stored, null);
+      if (parsed) {
+        const { fieldName, order } = parsed;
+        this.sortedBy = {
+          fieldName,
+          order: order as SortOrder,
+        };
+      }
+    }
+    if (!this.sortedBy?.fieldName) {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.caseServiceConfig.defaultSortFieldName,

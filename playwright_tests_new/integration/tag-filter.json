@@ -8,6 +8,7 @@
     "@integration-case-file-view",
     "@integration-case-linking",
     "@integration-case-list",
+    "@integration-ccd-toolkit",
     "@integration-create-case",
     "@integration-data-loss",
     "@integration-hearings",

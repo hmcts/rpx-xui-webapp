@@ -1,4 +1,4 @@
-import { IdamUtils } from '@hmcts/playwright-common';
+import { createLogger, IdamUtils } from '@hmcts/playwright-common';
 import { request } from '@playwright/test';
 import type { APIRequestContext } from '@playwright/test';
 import * as dotenv from 'dotenv';
@@ -197,8 +197,10 @@ function extractCaseReference(response: CaseCreateResponse): string {
   const value = response.caseReference ?? response.case_reference ?? response.case_id ?? response.id;
   const caseReference = String(value ?? '').trim();
   if (!CASE_REFERENCE_REGEX.test(caseReference)) {
+    createLogger().error(`PRL hearings case setup - invalid case reference`);
     throw new Error('PRL hearings setup created a case but CCD did not return a valid 16-digit case reference.');
   }
+  createLogger().info(`PRL hearings setup - created case ==  ${caseReference}.`);
   return caseReference;
 }
 
@@ -474,6 +476,8 @@ export async function createPrlHearingsCase(): Promise<string> {
       buildIssueAndSendToLocalCourtEventData(config)
     );
     await getCaseInfo(apiContext, config, courtAdminToken, serviceToken, caseReference);
+    logger.info('Retry reset navigation failed before create-case beforeEach retry', { error });
+
     return caseReference;
   } finally {
     await apiContext.dispose();

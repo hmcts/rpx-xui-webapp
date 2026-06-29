@@ -1,7 +1,6 @@
-import * as redis from 'redis';
 import { randomUUID } from 'crypto';
 
-import { getRedisClient } from '../redis/redisClient';
+import { getRedisClient, RedisClient } from '../redis/redisClient';
 import { CachedCaseworker } from './interfaces/common';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
 
@@ -18,7 +17,7 @@ export type RedisLock = { status: 'acquired'; key: string; value: string } | { s
 export type AcquiredRedisLock = Extract<RedisLock, { status: 'acquired' }>;
 
 // get the redis client if it exists and is connected
-function getClientIfExists(): redis.RedisClient | null {
+function getClientIfExists(): RedisClient | null {
   const client = getRedisClient();
 
   if (!client?.connected) {

@@ -2,7 +2,14 @@ export interface RedisClient {
   connected: boolean;
   get(key: string, callback: (error: Error | null, result: string | null) => void): void;
   set(key: string, value: string, mode: 'EX', duration: number, callback: (error: Error | null) => void): void;
-  set(key: string, value: string, mode: 'EX', duration: number, condition: 'NX', callback: (error: Error | null, result: string | null) => void): void;
+  set(
+    key: string,
+    value: string,
+    mode: 'EX',
+    duration: number,
+    condition: 'NX',
+    callback: (error: Error | null, result: string | null) => void
+  ): void;
   del(key: string, callback: (error: Error | null) => void): void;
   eval(script: string, numKeys: number, key: string, value: string, callback: (error: Error | null) => void): void;
 }

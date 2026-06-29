@@ -3080,11 +3080,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.19":
-  version: 4.2.19
-  resolution: "@hmcts/media-viewer@npm:4.2.19"
+"@hmcts/media-viewer@npm:4.2.21":
+  version: 4.2.21
+  resolution: "@hmcts/media-viewer@npm:4.2.21"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
+    moment-timezone: "npm:^0.5.28"
     mutable-div: "npm:^2.0.0"
     pdfjs-dist: "npm:^4.10.38"
     socket.io-client: "npm:^4.8.0"
@@ -3101,8 +3102,10 @@ __metadata:
     "@ngrx/effects": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.3
-  checksum: 10/d503cae67871679f5071b97233d6d756eeb95f0da81cc92d81ef9b959cc4ab7dec9e0cefbe1034ea453b1d03b4f6b5a8b18fd11e82f5676e80650c5ce8a43313
+    rxjs: ^7.8.1
+  checksum: 10/537dac35ec49f0a94e6b3377fd3a7c6ae758a47bcc2e4e1674fb563844d9f7fbe442b6e838e49c8f9646e78fef45ecbaa6071b1dfcd7360360cfda56ff224998
   languageName: node
   linkType: hard
 
@@ -7611,13 +7614,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^3.0.0":
-  version: 3.3.5
-  resolution: "@types/config@npm:3.3.5"
-  checksum: 10/6e8595d00e4df85e3e982f812a3fdfd9a952df11776800b0ddf7893963fc179c684a2d82c84f2160d09e90345bce7cb68a49c95dc864f0c9052019ea2c0e31bb
-  languageName: node
-  linkType: hard
-
 "@types/connect-history-api-fallback@npm:^1.5.4":
   version: 1.5.4
   resolution: "@types/connect-history-api-fallback@npm:1.5.4"
@@ -10759,12 +10755,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"config@npm:^3.2.5":
-  version: 3.3.12
-  resolution: "config@npm:3.3.12"
+"config@npm:^4.4.1":
+  version: 4.4.2
+  resolution: "config@npm:4.4.2"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/f7973d1192c98d9b8d49e273bef816b4c74a6bab6e7c500792d3fe239e87fa3a80fac89ee552b7da7e2c3d9f6f8f3568e856f08ebd9861917cf47a655cee3e6a
+  checksum: 10/57c321f94d8893f3748daefc62923b806d8d79f1da12f448f5ee190c25aa75aed5c6e31f206c3dd0ea7a8f2d11d6737d24f92019509a5d2f4773156ede16e7de
   languageName: node
   linkType: hard
 
@@ -19875,7 +19871,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.58-marked-package-update"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.19"
+    "@hmcts/media-viewer": "npm:4.2.21"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
@@ -19898,7 +19894,6 @@ __metadata:
     "@stryker-mutator/karma-runner": "npm:^8.0.0"
     "@stryker-mutator/mocha-runner": "npm:^8.0.0"
     "@stryker-mutator/typescript": "npm:^4.0.0"
-    "@types/config": "npm:^3.0.0"
     "@types/connect-redis": "npm:^0.0.23"
     "@types/cookie-parser": "npm:^1.4.2"
     "@types/ejs": "npm:^3.0.0"
@@ -19926,7 +19921,7 @@ __metadata:
     chai-as-promised: "npm:7.1.2"
     class-transformer: "npm:^0.5.1"
     compression: "npm:^1.7.4"
-    config: "npm:^3.2.5"
+    config: "npm:^4.4.1"
     cookie-parser: "npm:^1.4.4"
     core-js: "npm:^3.49.0"
     cross-env: "npm:^10.0.0"

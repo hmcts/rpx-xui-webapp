@@ -2455,10 +2455,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.29.2":
-  version: 7.29.2
-  resolution: "@babel/runtime@npm:7.29.2"
-  checksum: 10/f55ba4052aa0255055b34371a145fbe69c29b37b49eaea14805b095bfb4153701486416e89392fd27ec8abafa53868be86e960b9f8f959fff91f2c8ac2a14b02
+"@babel/runtime@npm:^7.29.7":
+  version: 7.29.7
+  resolution: "@babel/runtime@npm:7.29.7"
+  checksum: 10/9883b4951787779fd382b121f22f92966d85f19434841f65fb00b2dfec232107e139683f47c6f252891826ad8ee18317b46c3a0e4819116a9885f47b46d7126a
   languageName: node
   linkType: hard
 
@@ -2689,21 +2689,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dr.pogodin/csurf@npm:^1.14.0":
-  version: 1.16.9
-  resolution: "@dr.pogodin/csurf@npm:1.16.9"
-  dependencies:
-    "@babel/runtime": "npm:^7.29.2"
-    cookie: "npm:^1.1.1"
-    cookie-signature: "npm:^1.2.2"
-    http-errors: "npm:^2.0.1"
-    rndm: "npm:1.2.0"
-    tsscmp: "npm:1.0.6"
-    uid-safe: "npm:2.1.5"
-  checksum: 10/afa219148f8d5d8238f24d42fd7f70952fc5c19c5321896090d9d3edcccea4838866c243c45543738f16af0613dff16d053f2b035dd53b727239fcfb319c1147
-  languageName: node
-  linkType: hard
-
 "@dr.pogodin/csurf@npm:^1.16.5":
   version: 1.16.6
   resolution: "@dr.pogodin/csurf@npm:1.16.6"
@@ -2716,6 +2701,18 @@ __metadata:
     tsscmp: "npm:1.0.6"
     uid-safe: "npm:2.1.5"
   checksum: 10/87290809819dcf10890160d49af971aae047d6d5d87e185ce3f4560525b29f7edf9ecde2e2c0f277b313f53bee39a1fe691471b62de3dbbea3866266b0731d3e
+  languageName: node
+  linkType: hard
+
+"@dr.pogodin/csurf@npm:^1.16.9":
+  version: 1.17.1
+  resolution: "@dr.pogodin/csurf@npm:1.17.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.29.7"
+    cookie: "npm:^1.1.1"
+    cookie-signature: "npm:^1.2.2"
+    http-errors: "npm:^2.0.1"
+  checksum: 10/6c7cf5e2b96436524f14a35f484e58dc82525aa33b3d602fbd1bc87fafbba49c5fc71560125dff4651cf834a28e9fe590ff30534d8a79cede69354584a191f8d
   languageName: node
   linkType: hard
 
@@ -3523,19 +3520,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.15-package-update":
-  version: 2.30.15-package-update
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.15-package-update"
+"@hmcts/rpx-xui-node-lib@npm:2.30.17-package-update-01":
+  version: 2.30.17-package-update-01
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.17-package-update-01"
   dependencies:
-    "@dr.pogodin/csurf": "npm:^1.14.0"
+    "@dr.pogodin/csurf": "npm:^1.16.9"
     axios: "npm:^1.17.0"
     connect-redis: "npm:^9.0.0"
-    debug: "npm:^4.3.7"
-    deepmerge: "npm:^4.2.2"
-    express: "npm:^4.20.0"
+    debug: "npm:^4.4.3"
+    deepmerge: "npm:^4.3.1"
+    express: "npm:^5.2.1"
     express-session: "npm:^1.17.0"
     joi: "npm:^18.1.2"
-    jwt-decode: "npm:^3.1.2"
+    jwt-decode: "npm:^4.0.0"
     openid-client: "npm:^5.7.1"
     otplib: "npm:^13.4.0"
     passport: "npm:^0.7.0"
@@ -3544,7 +3541,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/951848f4f3582fa517248ced4fd4d893d10ad848fb43b22108af1e583337248dada5ccf45c16713a9dc0cee8713c0c7a2f108242109091f7140fa9b655b49f4b
+  checksum: 10/6f9558c914ee2261775f01130d10987040f63f5c4a4536b8bf36a83903ef578234875e4840e28a383acbb98d826099b47e21b35514a431066d9f605b92964232
   languageName: node
   linkType: hard
 
@@ -12380,7 +12377,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^4.2.2":
+"deepmerge@npm:^4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 10/058d9e1b0ff1a154468bf3837aea436abcfea1ba1d165ddaaf48ca93765fdd01a30d33c36173da8fbbed951dd0a267602bc782fe288b0fc4b7e1e7091afc4529
@@ -13739,7 +13736,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.18.2, express@npm:^4.20.0, express@npm:^4.21.1":
+"express@npm:^4.18.2, express@npm:^4.21.1":
   version: 4.21.2
   resolution: "express@npm:4.21.2"
   dependencies:
@@ -16400,10 +16397,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwt-decode@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "jwt-decode@npm:3.1.2"
-  checksum: 10/20a4b072d44ce3479f42d0d2c8d3dabeb353081ba4982e40b83a779f2459a70be26441be6c160bfc8c3c6eadf9f6380a036fbb06ac5406b5674e35d8c4205eeb
+"jwt-decode@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jwt-decode@npm:4.0.0"
+  checksum: 10/87b569e4a9a0067fb0d592bcf3b2ac3e638e49beee28620eeb07bef1b4470f4077dea68c15d191dd68e076846c3af8394be3bcaecffedc6e97433b221fdbbcf3
   languageName: node
   linkType: hard
 
@@ -20992,7 +20989,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.12"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.15-package-update"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.17-package-update-01"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

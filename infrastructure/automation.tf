@@ -635,17 +635,3 @@ resource "azurerm_automation_module" "az_communication" {
     uri = "https://www.powershellgallery.com/api/v2/package/Az.Communication/1.2.0"
   }
 }
-
-# Retain the existing production module in Terraform state. The runbook no longer
-# imports PSWritePDF, but removing this resource plans a delete blocked by the
-# production resource-group lock.
-resource "azurerm_automation_module" "ps_write_pdf" {
-  count                   = var.welsh_reporting_enabled ? 1 : 0
-  name                    = "PSWritePDF"
-  resource_group_name     = azurerm_resource_group.rg.name
-  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
-
-  module_link {
-    uri = "https://www.powershellgallery.com/api/v2/package/PSWritePDF"
-  }
-}

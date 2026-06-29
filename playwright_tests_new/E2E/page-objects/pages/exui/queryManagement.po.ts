@@ -9,6 +9,10 @@ export class QueryManagementPage extends Base {
   readonly respondQueryForm = this.content.locator('ccd-query-write-respond-to-query');
   readonly reviewQueryDetails = this.content.locator('ccd-query-check-your-answers');
   readonly confirmation = this.content.locator('ccd-query-confirmation');
+  readonly errorSummary = this.content.locator('.govuk-error-summary, .error-summary').first();
+  readonly errorSummaryTitle = this.errorSummary.locator('h2, h3').first();
+  readonly validationErrors = this.errorSummary.locator('.validation-error');
+  readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
 
   readonly raiseANewQueryHeading = this.qualifyingQuestionOptions.locator('h1.govuk-fieldset__heading');
   readonly raiseANewQueryRadio = this.qualifyingQuestionOptions.locator(

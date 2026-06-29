@@ -34,6 +34,7 @@ const integrationWarmupUsersByTag: Record<string, IntegrationWarmupResolver> = {
   [caseFileViewIntegrationTag]: () => [caseFileViewUser],
   '@integration-case-linking': () => ['STAFF_ADMIN', 'IAC_Judge_WA_R1'],
   '@integration-case-list': () => ['SOLICITOR'],
+  '@integration-ccd-toolkit': () => ['SOLICITOR'],
   '@integration-create-case': () => ['SOLICITOR'],
   '@integration-hearings': (env) => {
     const onUsers = getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, env);

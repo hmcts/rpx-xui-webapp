@@ -15,6 +15,7 @@ import { HearingsCYAPage } from './exui/hearingsCYA.po.ts';
 import { CaseFileViewPage } from './exui/caseFileView.po';
 import { BookingUiPage } from './exui/bookingUi.po';
 import { AccessRequestPage } from './exui/accessRequest.po';
+import { QueryManagementPage } from './exui/queryManagement.po';
 
 export interface PageFixtures {
   determinePage: Page;
@@ -33,6 +34,7 @@ export interface PageFixtures {
   caseFileViewPage: CaseFileViewPage;
   bookingUiPage: BookingUiPage;
   accessRequestPage: AccessRequestPage;
+  queryManagementPage: QueryManagementPage;
   mediaViewerPage: ExuiMediaViewerPage;
   idamPage: IdamPage;
   apiClient: ApiClient;
@@ -97,6 +99,9 @@ export const pageFixtures = {
   },
   accessRequestPage: async ({ determinePage }, use) => {
     await use(new AccessRequestPage(determinePage));
+  },
+  queryManagementPage: async ({ determinePage }, use) => {
+    await use(new QueryManagementPage(determinePage));
   },
   mediaViewerPage: async ({ determinePage }, use) => {
     await use(new ExuiMediaViewerPage(determinePage));

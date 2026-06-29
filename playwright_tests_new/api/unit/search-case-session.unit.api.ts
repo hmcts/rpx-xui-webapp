@@ -39,18 +39,18 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual(['RESTRICTED_CASE_FILE_VIEW_ON', 'FPL_GLOBAL_SEARCH', 'SEARCH_EMPLOYMENT_CASE']);
   });
 
-  test('prewarms only the stable authenticated shell for manage-tasks integration routes', () => {
+  test('prewarms the solicitor session for targeted CCD toolkit integration runs', () => {
     expect(
       resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
-        includeTags: ['@integration-manage-tasks'],
+        includeTags: ['@integration-ccd-toolkit'],
         excludedTags: [],
-        availableTags: ['@integration', '@integration-manage-tasks'],
+        availableTags: ['@integration', '@integration-ccd-toolkit', '@integration-create-case'],
         suiteTag: '@integration',
       })
-    ).toEqual(['STAFF_ADMIN']);
+    ).toEqual(['SOLICITOR']);
   });
 
-  test('prewarms shared and feature sessions for full integration runs', () => {
+  test('prewarms only the shared contention sessions for full integration runs', () => {
     expect(
       resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
         includeTags: [],

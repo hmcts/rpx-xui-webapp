@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import * as httpProxyMiddleware from 'http-proxy-middleware';
 import * as configModule from '../../configuration';
 import * as log4jui from '../log4jui';
 import authInterceptor from './auth';
@@ -21,11 +20,9 @@ describe('Proxy Middleware', () => {
   let loggerStub: any;
   let onProxyError: any;
   let applyProxy: any;
-  let proxyMiddlewareStub: sinon.SinonStub;
 
   before(() => {
     delete require.cache[require.resolve('./proxy')];
-    delete require.cache[require.resolve('http-proxy-middleware')];
   });
 
   beforeEach(() => {
@@ -48,9 +45,6 @@ describe('Proxy Middleware', () => {
 
     sandbox.stub(configModule, 'getConfigValue').returns('info');
 
-    const mockProxyMiddleware = () => {};
-    proxyMiddlewareStub = sandbox.stub(httpProxyMiddleware, 'legacyCreateProxyMiddleware').returns(mockProxyMiddleware as any);
-
     const proxyModule = require('./proxy');
     onProxyError = proxyModule.onProxyError;
     applyProxy = proxyModule.applyProxy;
@@ -59,7 +53,6 @@ describe('Proxy Middleware', () => {
   afterEach(() => {
     sandbox.restore();
     delete require.cache[require.resolve('./proxy')];
-    delete require.cache[require.resolve('http-proxy-middleware')];
   });
 
   describe('onProxyError', () => {

@@ -298,9 +298,7 @@ export async function createEmploymentCase(
       await createCasePage.respondentAcasCertifcateSelectYes.check();
       await createCasePage.respondentAcasCertificateNumberInput.fill('ACAS123456');
       if (await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false)) {
-        await createCasePage.respondentCompanyNameInput.fill(
-          `EXUI Auto ${automationRunLabel} ${journeyFaker.company.name()}`
-        );
+        await createCasePage.respondentCompanyNameInput.fill(`EXUI Auto ${automationRunLabel} ${journeyFaker.company.name()}`);
       }
       await createCasePage.manualEntryLink.waitFor({ state: 'visible' });
       await createCasePage.manualEntryLink.click();

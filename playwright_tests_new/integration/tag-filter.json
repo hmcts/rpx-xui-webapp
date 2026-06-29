@@ -12,6 +12,7 @@
     "@integration-data-loss",
     "@integration-hearings",
     "@integration-manage-tasks",
+    "@integration-query-management",
     "@integration-restricted-case",
     "@integration-search-case",
     "@integration-share-case",

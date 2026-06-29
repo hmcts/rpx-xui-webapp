@@ -84,21 +84,25 @@ test.describe('Query Management negative integration', { tag: ['@integration', '
         response.status() === 500
     );
 
-    await caseDetailsPage.openCaseDetails(
-      QUERY_MANAGEMENT_JURISDICTION,
-      QUERY_MANAGEMENT_CASE_TYPE,
-      QUERY_MANAGEMENT_CASE_REFERENCE
-    );
-    await caseDetailsPage.selectCaseAction(QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_NAME, {
-      expectedLocator: queryManagementPage.raiseANewQueryHeading,
-      expectedPath: new RegExp(`/query-management/query/${QUERY_MANAGEMENT_CASE_REFERENCE}(?:$|[/?#])`),
+    await test.step('Open the raise-query journey from case actions', async () => {
+      await caseDetailsPage.openCaseDetails(
+        QUERY_MANAGEMENT_JURISDICTION,
+        QUERY_MANAGEMENT_CASE_TYPE,
+        QUERY_MANAGEMENT_CASE_REFERENCE
+      );
+      await caseDetailsPage.selectCaseAction(QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_NAME, {
+        expectedLocator: queryManagementPage.raiseANewQueryHeading,
+        expectedPath: new RegExp(`/query-management/query/${QUERY_MANAGEMENT_CASE_REFERENCE}(?:$|[/?#])`),
+      });
+      await queryManagementPage.chooseRaiseAQueryJourney();
+      await failedTriggerResponse;
     });
-    await queryManagementPage.chooseRaiseAQueryJourney();
-    await failedTriggerResponse;
 
-    await expect(page.getByText('query-event-trigger-failed', { exact: true })).toBeVisible();
-    await expect(queryManagementPage.continueButton).not.toBeVisible();
-    expect(submissionCapture.submittedEvents).toHaveLength(0);
+    await test.step('Verify the trigger failure is shown without submitting an event', async () => {
+      await expect(page.getByText('query-event-trigger-failed', { exact: true })).toBeVisible();
+      await expect(queryManagementPage.continueButton).not.toBeVisible();
+      expect(submissionCapture.submittedEvents).toHaveLength(0);
+    });
   });
 
   test('shows an event creation error and stays on review when query submission fails', async ({
@@ -113,32 +117,36 @@ test.describe('Query Management negative integration', { tag: ['@integration', '
         body: { message: 'query-submit-failed' },
       },
     });
-    await caseDetailsPage.openCaseDetails(
-      QUERY_MANAGEMENT_JURISDICTION,
-      QUERY_MANAGEMENT_CASE_TYPE,
-      QUERY_MANAGEMENT_CASE_REFERENCE
-    );
-    await caseDetailsPage.selectCaseAction(QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_NAME, {
-      expectedLocator: queryManagementPage.raiseANewQueryHeading,
-      expectedPath: new RegExp(`/query-management/query/${QUERY_MANAGEMENT_CASE_REFERENCE}(?:$|[/?#])`),
+    await test.step('Open the review page with query details', async () => {
+      await caseDetailsPage.openCaseDetails(
+        QUERY_MANAGEMENT_JURISDICTION,
+        QUERY_MANAGEMENT_CASE_TYPE,
+        QUERY_MANAGEMENT_CASE_REFERENCE
+      );
+      await caseDetailsPage.selectCaseAction(QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_NAME, {
+        expectedLocator: queryManagementPage.raiseANewQueryHeading,
+        expectedPath: new RegExp(`/query-management/query/${QUERY_MANAGEMENT_CASE_REFERENCE}(?:$|[/?#])`),
+      });
+      await queryManagementPage.chooseRaiseAQueryJourney();
+      await queryManagementPage.enterQueryDetailsAndContinue('Submission failure subject', 'Submission failure details');
+      await expect(queryManagementPage.reviewQueryDetailsHeading).toBeVisible();
     });
-    await queryManagementPage.chooseRaiseAQueryJourney();
-    await queryManagementPage.enterQueryDetailsAndContinue('Submission failure subject', 'Submission failure details');
-    await expect(queryManagementPage.reviewQueryDetailsHeading).toBeVisible();
 
-    const failedSubmitResponse = page.waitForResponse(
-      (response) =>
-        response.url().includes(`/data/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/events`) &&
-        response.request().method() === 'POST' &&
-        response.status() === 500
-    );
+    await test.step('Submit and verify the review page shows the event creation error', async () => {
+      const failedSubmitResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes(`/data/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/events`) &&
+          response.request().method() === 'POST' &&
+          response.status() === 500
+      );
 
-    await queryManagementPage.submitQuery();
-    await failedSubmitResponse;
+      await queryManagementPage.submitQuery();
+      await failedSubmitResponse;
 
-    await expect(queryManagementPage.reviewQueryDetailsHeading).toBeVisible();
-    await expect(queryManagementPage.eventCreationErrorHeading).toBeVisible();
-    await expect(queryManagementPage.querySubmittedHeading).not.toBeVisible();
-    expect(submissionCapture.submittedEvents).toHaveLength(1);
+      await expect(queryManagementPage.reviewQueryDetailsHeading).toBeVisible();
+      await expect(queryManagementPage.eventCreationErrorHeading).toBeVisible();
+      await expect(queryManagementPage.querySubmittedHeading).not.toBeVisible();
+      expect(submissionCapture.submittedEvents).toHaveLength(1);
+    });
   });
 });

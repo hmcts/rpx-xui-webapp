@@ -4,13 +4,47 @@ This directory contains **node-api API tests**, **Playwright support unit tests*
 
 ## Table of Contents
 
+- [Functional Test Overview](#functional-test-overview)
 - [Quick Command Reference (AAT vs LOCAL)](#quick-command-reference-aat-vs-local)
 - [Secrets and Env Population (Key Vault)](#secrets-and-env-population-key-vault)
+- [Request Headers and Auth Helpers](#request-headers-and-auth-helpers)
+- [Pipeline Execution and Reporting](#pipeline-execution-and-reporting)
+- [Functional Test Structure and Ways of Working](#functional-test-structure-and-ways-of-working)
 - [Dynamic User and API Case Setup Flows](#dynamic-user-and-api-case-setup-flows)
 - [Playwright Support Unit Tests](#playwright-support-unit-tests)
 - [API Tests](#api-tests)
 - [E2E Tests](#e2e-tests)
+- [Integration Tests](#integration-tests)
 - [Session Management](#session-management)
+
+---
+
+## Functional Test Overview
+
+Functional testing in this repo is the Playwright-based test set under `playwright_tests_new/`, plus the root Playwright configs and Jenkins stages that run them. The main suites are:
+
+| Suite              | Config / project                                | Test location                                                                | Purpose                                                                                                | Main local command                                                                                   | Main CI command                                                                         |
+| ------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| API functional     | `playwright.config.ts` / `node-api`             | `playwright_tests_new/api/**/*.api.ts`                                       | Node app and downstream API contracts, auth, service smoke coverage, and Playwright support unit tests | `yarn test:api:pw`                                                                                   | CNP: `yarn test:api:pw:raw`; nightly: `yarn test:api:pw:coverage:raw`                   |
+| Integration UI     | `playwright.integration.config.ts` / `chromium` | `playwright_tests_new/integration/test/**/*.spec.ts`                         | Angular UI flows with mocked backend routes                                                            | `yarn test:playwright:integration`                                                                   | `yarn test:playwright:integration:raw -- --workers=<n>`                                 |
+| E2E UI             | `playwright.e2e.config.ts` / `chromium`         | `playwright_tests_new/E2E/test/**/*.spec.ts`                                 | Browser journeys against live EXUI and live downstream services                                        | `yarn test:playwrightE2E`                                                                            | CNP: `yarn test:playwrightE2E:raw`; nightly cross-browser: `yarn test:crossbrowser:raw` |
+| Accessibility      | `playwright.e2e.config.ts` via wrapper scripts  | `playwright_tests_new/E2E/test/**/*.a11y.spec.ts` and `@accessibility` tests | Axe/WAVE-like/Lighthouse/screen-reader-style checks                                                    | `yarn test:accessibility:playwright`                                                                 | Manual CNP when `RUN_PLAYWRIGHT_ACCESSIBILITY=true`; nightly runs by default            |
+| Support unit tests | `playwright.config.ts` / `node-api`             | `playwright_tests_new/api/unit/**/*.unit.api.ts`                             | Fast fake-driven coverage for Playwright support code                                                  | `PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit` | Included in the API functional project unless a path/tag filter excludes them           |
+
+Default target environment is AAT (`https://manage-case.aat.platform.hmcts.net`). Set `TEST_URL=http://localhost:3000` for local EXUI runs.
+
+Do not use `yarn test:functional` for this Playwright suite; it is currently a compatibility placeholder that prints `Skipping functional tests`. Use the suite commands in this README instead.
+
+### Local Prerequisites
+
+1. Install project dependencies with `yarn install --immutable`.
+2. Install browsers once, or let the wrapper scripts install them: `yarn test:setup:playwright-install-chromium` for Chromium-only runs or `yarn test:setup:playwright-install-all` for cross-browser.
+3. Populate secrets into a local `.env` when you need real users or dynamic setup: `yarn env:populate:playwright:aat`.
+4. Export the generated `.env` before API or config-sensitive runs: `set -a; source .env; set +a`.
+5. For LOCAL UI runs, start the Node service as described in the root `README.md`, then run `yarn start:ng`, and pass `TEST_URL=http://localhost:3000`.
+6. Use the F5 VPN when a run talks to private AAT/DEMO services such as RD Professional, S2S testing support, or dynamic user/organisation APIs.
+
+E2E/session helpers load the workspace `.env` through `E2E/utils/config.utils.ts`, but the root Playwright configs and API runtime config read `process.env` directly. Sourcing `.env` before local commands is the safest consistent workflow.
 
 ---
 
@@ -58,6 +92,9 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --work
 
 # Direct E2E run without the load-profile wrapper
 yarn test:playwrightE2E:raw
+
+# Dedicated accessibility suite. Produces functional-output/tests/playwright-a11y/odhin-report/xui-playwright-a11y.html.
+yarn test:a11y:playwright
 ```
 
 ### API commands
@@ -110,12 +147,13 @@ Odhin dashboard notes:
 
 - Replace `"My tasks"` with the exact test name, unique substring, or regex.
 - For LOCAL runs, set `TEST_URL=http://localhost:3000`.
+- If you generated `.env` from Key Vault, source it before the command when the values are needed by API tests, Playwright config, or direct `npx playwright` runs: `set -a; source .env; set +a`.
 
 ---
 
 ## Secrets and Env Population (Key Vault)
 
-Use Key Vault tagged secrets to generate local `.env` for Playwright runs.
+Use Key Vault tagged secrets to generate local `.env` for Playwright runs. The generated file is for local developer use and must not be committed.
 
 - Template file: `playwright_tests_new/.env.example`
 - Script wrapper: `scripts/populate-playwright-env-from-keyvault.sh`
@@ -141,6 +179,16 @@ yarn env:populate:playwright aat .env
 yarn get-secrets rpx-aat playwright_tests_new/.env.example .env
 ```
 
+After generation, export the values into your shell for API/config-level runs:
+
+```bash
+set -a
+source .env
+set +a
+```
+
+CI does not read the checked-out `.env` file. Jenkins loads Azure Key Vault secrets directly into environment variables in `Jenkinsfile_CNP`, `Jenkinsfile_nightly`, and `Jenkinsfile_parameterized`.
+
 Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populated via tags:
 
 - `ORG_USER_ASSIGNMENT_USERNAME`
@@ -154,16 +202,138 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `ORG_USER_ASSIGNMENT_REDIRECT_URI`
 - `ORG_USER_ASSIGNMENT_UI_USER`
 - `ORG_USER_ASSIGNMENT_USER_ROLES`
-- `TEST_SOLICITOR_ORGANISATION_ID`
+- `PW_DYNAMIC_ORGANISATION_MODE`
+- `PW_DYNAMIC_ORGANISATION_RUN_ID`
+- `PW_DYNAMIC_ORGANISATION_NAME_PREFIX`
+- `PW_DYNAMIC_ORGANISATION_CACHE_DIR`
+- `PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS`
+- `PW_DYNAMIC_ORGANISATION_ACTIVE_POLL_INTERVAL_MS`
 - `MANAGE_ORG_API_PATH`
 - `RD_PROFESSIONAL_API_PATH`
 - `WA_SOLICITOR_USERNAME`
 - `WA_SOLICITOR_PASSWORD`
+- `PW_IAC_CASEOFFICER_R1_EMAIL`
+- `PW_IAC_CASEOFFICER_R1_PASSWORD`
+- `PW_IAC_JUDGE_WA_R1_EMAIL`
+- `PW_IAC_JUDGE_WA_R1_PASSWORD`
+- `PW_E2E_MANAGE_TASKS_USER`
+- `PW_E2E_MANAGE_TASKS_EMAIL`
+- `PW_E2E_MANAGE_TASKS_PASSWORD`
+
+These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag convention.
 
 Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
+- Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run.
+- This framework does not create live Work Allocation tasks. A previous experimental `@e2e-live-wa` lane was removed because local validation failed before the browser journey when Manage Org invite returned `403` with `{"message":"Internal Server Error"}`. Reintroduce live WA task materialisation only in a separate PR with direct AAT proof.
+- `@e2e-manage-tasks` remains excluded by default because it depends on live seeded Work Allocation data. It currently covers only the live Available Tasks lane with an internal WA-capable user. Override the user with `PW_E2E_MANAGE_TASKS_USER` or with `PW_E2E_MANAGE_TASKS_EMAIL` and `PW_E2E_MANAGE_TASKS_PASSWORD` for targeted opt-in runs. Assigned My Tasks action coverage remains under `@e2e-manage-tasks-assigned` until a seeded assigned-task user or supported task materialisation flow exists.
+- Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
+- `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
+- Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers use a process-run `local-<parent-pid>` identifier instead of the shared literal `local`; CI runs with no recognised unique identifier fail fast instead of sharing a local organisation.
+- Approval uses the existing RD Professional internal approval endpoint. If RD Professional approval is unavailable, setup fails before dynamic users are created.
+- Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
 - Do not commit `.env`.
+
+---
+
+## Request Headers and Auth Helpers
+
+Most tests should use the shared fixtures and helpers rather than building auth headers by hand.
+
+### API Functional Headers
+
+The `node-api` fixture in `api/fixtures.ts` creates `ApiClient` instances backed by Playwright request contexts.
+
+- `apiClient` authenticates as the default `solicitor` role.
+- `anonymousClient` sends no storage state and is used for unauthenticated checks.
+- `apiClientFor(role)` creates authenticated clients for supported API roles such as `solicitor`, `waSolicitor`, `caseOfficer_r1`, and `caseOfficer_r2`.
+- Every API client sets `Content-Type: application/json`.
+- Every API client sets `X-Correlation-Id` to a UUID for traceability.
+- Set `API_AUTO_XSRF=true` or `API_AUTH_AUTO_XSRF=true` to automatically add `X-XSRF-TOKEN` from the stored `XSRF-TOKEN` cookie for authenticated API clients.
+- For action endpoints that require XSRF, prefer `withXsrf(role, async (headers) => ...)` from `api/utils/apiTestUtils.ts`; this ensures storage state exists, reads the cookie, and passes `{ 'X-XSRF-TOKEN': token }` only when present.
+
+### API Authentication Flow
+
+`api/utils/auth.ts` creates storage state under `.sessions/` and refreshes it when stale.
+
+- Token bootstrap is attempted when `IDAM_SECRET`, `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, and `S2S_URL` are available.
+- Token bootstrap sends `Authorization: Bearer <idam-token>` and `ServiceAuthorization: Bearer <s2s-token>`, then touches `auth/login` and `auth/isAuthenticated` so the EXUI gateway establishes cookies.
+- If token bootstrap is unavailable or fails, the helper falls back to the `/auth/login` form flow.
+- Set `API_AUTH_MODE=form` or `API_USE_TOKEN_LOGIN=false` to force form login.
+- Storage state files use `api-<env>-<role>.storage.json` and lock files use `api-<env>-<role>.lock`.
+
+### Dynamic Organisation and User Setup Headers
+
+Dynamic solicitor-style setup uses `E2E/utils/professional-user/runtime.ts`.
+
+- `buildHeaders()` sends `Authorization: Bearer <assignment-token>`.
+- It sends `ServiceAuthorization: Bearer <s2s-token>` when a service token is available.
+- It sends `x-user-roles` when assignment roles are resolved.
+- The headers also include `accept: application/json` and `content-type: application/json`.
+
+---
+
+## Pipeline Execution and Reporting
+
+The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_nightly`, and `Jenkinsfile_parameterized`.
+
+### CNP Pipeline
+
+- Runs after Preview and AAT smoke stages.
+- Executes API, integration, and E2E functional suites in parallel with `failFast: false` so sibling suite reports still publish if one suite fails.
+- API runs `yarn test:api:pw:raw` with `FUNCTIONAL_TESTS_WORKERS=6`.
+- Integration runs `yarn test:playwright:integration:raw -- --workers=<n>` through `INTEGRATION_PW_PROFILE_RUNS`; default is `workers=7`.
+- E2E runs `yarn test:playwrightE2E:raw` with `FUNCTIONAL_TESTS_WORKERS=6`.
+- Accessibility is manual-only on CNP and runs when `RUN_PLAYWRIGHT_ACCESSIBILITY=true`. This can be set for ad-hock runs on Jenkins, using build with parameters.
+- CNP exposes tag include/exclude parameters for API, E2E, and integration, plus `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES`.
+
+### Nightly Pipeline
+
+- Scheduled on `master` on weekdays by `Jenkinsfile_nightly`.
+- Installs and verifies all Playwright browsers.
+- Runs API, integration, cross-browser E2E, and accessibility in parallel with `failFast: false`.
+- API runs `yarn test:api:pw:coverage:raw`.
+- Integration uses the same profile matrix as CNP; default is `workers=7`.
+- Cross-browser E2E runs `yarn test:crossbrowser:raw` with `E2E_PW_INCLUDE_TAGS=@nightly` and `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none`.
+- Accessibility runs by default and is report-only unless strict mode is enabled.
+
+### Parameterized Pipeline
+
+- `Jenkinsfile_parameterized` mostly publishes legacy functional reports.
+- The Playwright accessibility pack can be run manually with `RUN_PLAYWRIGHT_ACCESSIBILITY=true`.
+- When enabled, it writes JUnit to `functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml` and publishes `functional-output/tests/playwright-accessibility/odhin-report/xui-playwright-accessibility.html`.
+
+### Published Reports and Artifacts
+
+| Suite               | Local/CI report file                                                                                                                                                                                                                            | Jenkins publish name examples                                                                              |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| API                 | `functional-output/tests/api_functional/odhin-report/xui-playwright-api.html`                                                                                                                                                                   | `PREVIEW API Functional Test`, `AAT API Functional Test`, `Nightly API Functional Test`                    |
+| Integration         | `functional-output/tests/playwright-integration/odhin-report/<profile>/xui-playwright-integration.html` in CI profile runs; default local path is `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html` | `PREVIEW Playwright Integration Tests`, `AAT Playwright Integration Tests`, `Playwright Integration Tests` |
+| E2E                 | `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`                                                                                                                                                                   | `PREVIEW Playwright E2E`, `AAT Playwright E2E`, `Nightly Playwright E2E Cross Browser`                     |
+| Accessibility       | `functional-output/tests/playwright-accessibility/odhin-report/xui-playwright-accessibility.html`                                                                                                                                               | `PREVIEW Playwright Accessibility`, `Nightly Playwright Accessibility Test Report`                         |
+| Load profile        | `functional-output/tests/playwright-integration/load-profile/ci/load-profile.html` in CNP/nightly parent monitoring                                                                                                                             | `PREVIEW CI System Load`, `AAT CI System Load`, `Nightly CI System Load`                                   |
+| Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json`                                                                                                                              | Archived as Jenkins artifacts                                                                              |
+
+The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, and `test:playwright:integration` also create local System Load reports through `scripts/playwright-load-monitor.js`. Raw CI commands rely on the parent Jenkins load monitor instead.
+
+---
+
+## Functional Test Structure and Ways of Working
+
+- Keep API functional specs in `playwright_tests_new/api/` and name them `*.api.ts`.
+- Keep fake-driven support tests in `playwright_tests_new/api/unit/` and name them `*.unit.api.ts`.
+- Keep integration specs in `playwright_tests_new/integration/test/<feature>/` with `.positive.spec.ts` and `.negative.spec.ts` naming where the feature has both success and error-path coverage.
+- Keep integration mock builders and route helpers under `integration/mocks/` and `integration/helpers/`.
+- Keep E2E specs in `playwright_tests_new/E2E/test/<feature>/`.
+- Keep E2E page objects under `E2E/page-objects/pages/exui/`; avoid hiding test data creation inside page objects.
+- Prefer role/session helpers (`ensureSession`, `apiClient`, `apiClientFor`, `withXsrf`, dynamic-user fixtures) over inline login or inline request-auth setup.
+- Tag tests with the suite tag plus a feature tag, for example `@e2e @e2e-search-case`, `@integration @integration-search-case`, or `@svc-work-allocation`.
+- Use the `*_PW_INCLUDE_TAGS` and `*_PW_EXCLUDED_TAGS_OVERRIDE` env vars for repeatable filtering; use `@none` to clear repo defaults for one run.
+- Prefer `data-testid` selectors and Playwright CSS classes.
+- Use `@hmcts/playwright-common` table utilities for table assertions.
+- Do not commit `.env`, `.sessions/`, `test-results/`, or generated `functional-output/` reports.
+- When triaging failures, check Odhín first, then attached API logs or `failure-data.json`, then session/dynamic-user provisioning evidence before changing retries or worker counts.
 
 ---
 
@@ -182,15 +352,20 @@ sequenceDiagram
     actor Spec as E2E Spec / Fixture
     participant Session as dynamicSolicitorSession
     participant Roles as provisionRoleResolution
+    participant Org as dynamicOrganisationResolver
     participant Retry as dynamicProvisioningFlow
     participant Users as ProfessionalUserUtils
     participant IDAM as IDAM / SIDAM
+    participant PRDOrg as RD Professional organisation APIs
     participant PRD as Org Assignment APIs
     participant Probe as propagationProbe
     participant Runtime as runtimeUserCredentials
     participant EXUI as EXUI readiness check
 
     Spec->>Session: provisionDynamicSolicitorForAlias(alias, roleContext)
+    Session->>Org: resolve run-scoped dynamic organisation id
+    Org->>PRDOrg: create, approve, and poll ACTIVE
+    Org-->>Session: dynamic organisation id
     Session->>Roles: resolveProvisionRoleNamesForAlias(...)
     Roles-->>Session: resolved role names
     Session->>Retry: provisionUserWithRetries(...)
@@ -246,6 +421,7 @@ sequenceDiagram
 - Dynamic-user provisioning starts in `dynamicSolicitorSession.ts` and delegates most heavy lifting into `dynamicProvisioningFlow.ts`, `professional-user.utils.ts`, and the extracted `professional-user/` collaborators.
 - API case setup starts in `caseSetup.ts` and uses `payloads/registry.ts` plus the journey templates under `E2E/utils/test-setup/payloads/templates/`.
 - The returned case number or runtime user credentials are then consumed by the spec or fixture layer, not hidden inside the page objects.
+- Provisioning failures should be triaged from the recorded attempt diagnostics before changing retry policy. The terminal `DynamicProvisioningError` includes every attempt, duration, retryability decision, and last error, and the fixture attaches the same attempt history to the test evidence.
 
 ---
 
@@ -253,9 +429,10 @@ sequenceDiagram
 
 Unit-style tests for Playwright support code live under `playwright_tests_new/api/unit/` and run on the existing `node-api` project. Use this layer for pure helpers, policy resolution, and fake-driven orchestration that does not need a real browser journey.
 
-Current files:
+Examples include:
 
 - `playwright_tests_new/api/unit/create-case.flow.unit.api.ts`
+- `playwright_tests_new/api/unit/data-loss-scenarios.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-solicitor-session.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.orchestration.unit.api.ts`
@@ -274,6 +451,14 @@ PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_
 PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit -g "resolveSolicitorRoleStrategy"
 ```
 
+### Data Loss Scenario Coverage
+
+The historical data-loss coverage map for `EXUI-848`, `EXUI-811`, `EXUI-433`, `EXUI-942`, and `EXUI-702` lives in `E2E/utils/test-setup/dataLossScenarioMatrix.ts`.
+
+- `EXUI-848`, `EXUI-811`, `EXUI-433`, and `EXUI-942` are covered by the tagged create-case E2E journey `@e2e-data-loss`, which creates a fresh Divorce PoC case and asserts the Data and History tab values after submit.
+- `EXUI-702` is deliberately marked as follow-up until the NoC owning mock contract is agreed, because closing that path needs an API-required NoC route-backed scenario rather than a looser UI-only assertion.
+- `playwright_tests_new/api/unit/data-loss-scenarios.unit.api.ts` fails if any historical ticket loses its case type, setup route, protected tabs, protected fields, or assertion layer mapping.
+
 ### Placement Rules
 
 - Keep unit tests for `playwright_tests_new` support code inside `playwright_tests_new/`.
@@ -284,16 +469,17 @@ PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_
 
 ## API Tests
 
-API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run.
+API tests are located in `playwright_tests_new/api/` and run on the Playwright `node-api` project. The root `yarn test:api` script is a compatibility command that also runs this project.
 
 ### Prerequisites
 
 - Node 20+, Yarn installed
-- Environment variables (can go into `.env`):
+- Environment variables:
   - `TEST_URL` (e.g. `https://manage-case.aat.platform.hmcts.net/`)
   - `TEST_ENV` (`aat`/`demo`)
   - IDAM/S2S endpoints used by `@hmcts/playwright-common`: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `S2S_URL`, optional `S2S_SECRET`
-- User credentials are read from `common/apiTestConfig.ts` for the selected `TEST_ENV`
+- User credentials are resolved from `api/utils/apiTestRuntimeConfig.ts` for the selected `TEST_ENV`
+- Source the generated `.env` before local API runs when credentials or IDAM/S2S values are needed.
 
 ### Running API Tests
 
@@ -357,9 +543,10 @@ Artifacts:
 - Integration Odhín report: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
 - API standalone chart: `functional-output/tests/api_functional/odhin-report/load-profile/load-profile.html`
 - E2E standalone chart: `functional-output/tests/playwright-e2e/odhin-report/load-profile/load-profile.html`
-- Integration standalone chart: `functional-output/tests/playwright-integration/load-profile/load-profile.html`
-- Integration raw samples: `functional-output/tests/playwright-integration/load-profile/samples.json`
-- Integration summary: `functional-output/tests/playwright-integration/load-profile/summary.json`
+- Integration standalone chart when using the default local wrapper: `functional-output/tests/playwright-load-profile/load-profile.html`
+- Integration raw samples when using the default local wrapper: `functional-output/tests/playwright-load-profile/samples.json`
+- Integration summary when using the default local wrapper: `functional-output/tests/playwright-load-profile/summary.json`
+- Jenkins parent CI load profile: `functional-output/tests/playwright-integration/load-profile/ci/load-profile.html`
 
 Useful controls:
 
@@ -391,15 +578,15 @@ Treat the profile as capacity evidence. If failures appear while CPU, load/core,
 ### API Authentication Model
 
 - **Default behavior**: `utils/auth.ts` attempts token/S2S login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken`
-- **Fallback**: If token bootstrap fails or env vars are absent, falls back to `/auth/login` form flow and caches storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`
-- **Required for token bootstrap**: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_CLIENT_ID` (or `SERVICES_IDAM_CLIENT_ID`), `IDAM_SECRET`, `S2S_URL`, `S2S_MICROSERVICE_NAME` (or `MICROSERVICE`)
+- **Fallback**: If token bootstrap fails or env vars are absent, falls back to `/auth/login` form flow and caches storage state under `.sessions/api-<env>-<role>.storage.json`
+- **Required for token bootstrap**: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_SECRET`, and `S2S_URL`; `IDAM_CLIENT_ID`/`SERVICES_IDAM_CLIENT_ID` defaults to `xuiwebapp`, and `S2S_MICROSERVICE_NAME`/`MICROSERVICE` defaults to `xui_webapp`
 - **XSRF handling**: Set `API_AUTO_XSRF=true` to auto-inject the `X-XSRF-TOKEN` header from stored cookies
-- **Correlation IDs**: Every API client sets `X-Correlation-Id` per request (UUID) for traceability
+- **Correlation IDs**: Every API client request context sets `X-Correlation-Id` to a UUID for traceability
 
 ### API Reports
 
-- Odhin report: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
-- Copied to `functional-output/tests/api_functional/odhin-report/` for Jenkins publishing
+- Primary Odhín report generated by the raw API command: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
+- Copied to `functional-output/tests/api_functional/odhin-report/xui-playwright-api.html` for Jenkins publishing and local wrapper consistency
 - API call logs attached automatically per test as `node-api-calls.json`
 
 ### API Coverage
@@ -422,7 +609,7 @@ Treat the profile as capacity evidence. If failures appear while CPU, load/core,
 
 ## E2E Tests
 
-E2E UI tests are located in `E2E/` and test the full user interface workflows.
+E2E UI tests are located in `playwright_tests_new/E2E/` and test the full user interface workflows.
 
 ### Running E2E Tests
 
@@ -431,20 +618,22 @@ E2E UI tests are located in `E2E/` and test the full user interface workflows.
 yarn test:playwrightE2E
 
 # Run specific test file
-npx playwright test E2E/test/documentUpload/documentUpload.positive.spec.ts --project chromium
+npx playwright test --config=playwright.e2e.config.ts playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts --project chromium
 
 # Run with single worker (local development)
-npx playwright test --project chromium --workers=1
+npx playwright test --config=playwright.e2e.config.ts --project chromium --workers=1
 
 # Clean sessions and re-run
-rm -rf .sessions && npx playwright test
+rm -rf .sessions && npx playwright test --config=playwright.e2e.config.ts
 ```
 
 ### E2E Tag Filtering
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
+- `@e2e-manage-tasks` is excluded by default because the live WA lane depends on seeded task data. Use `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-manage-tasks` only for targeted opt-in runs with a configured WA user and known data.
+- Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
+- Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
-- E2E default exclusions are currently empty so the full non-smoke E2E suite runs by default; smoke remains a separate Playwright project and Jenkins smoke stage.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
@@ -455,9 +644,6 @@ rm -rf .sessions && npx playwright test
 ```bash
 # Run only search-case E2E tests
 E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
-
-# Temporarily switch off manage-tasks and document-upload E2E tests
-E2E_PW_EXCLUDED_TAGS_OVERRIDE=@e2e-manage-tasks,@e2e-document-upload yarn test:playwrightE2E
 
 # Re-enable the V1 document-upload test for a targeted run
 E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-document-upload-v1 yarn test:playwrightE2E
@@ -470,7 +656,7 @@ E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwrightE2E
 
 ## Integration Tests
 
-Integration tests are located in `integration/` and test Angular application integration with mocked backend APIs.
+Integration tests are located in `playwright_tests_new/integration/` and test Angular application integration with mocked backend APIs.
 
 File naming convention:
 
@@ -485,7 +671,7 @@ File naming convention:
 yarn test:playwright:integration
 
 # Run specific integration test file
-npx playwright test integration/test/caseList/caseList.positive.spec.ts --config=playwright.integration.config.ts
+npx playwright test --config=playwright.integration.config.ts playwright_tests_new/integration/test/caseList/caseList.positive.spec.ts
 
 # Run the main integration project
 npx playwright test --config=playwright.integration.config.ts --project=chromium
@@ -588,7 +774,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 ### Overview
 
-**Both E2E and API tests** use **lazy session loading** with **unified storage** to minimize execution time and prevent redundant logins when running in parallel CI pipelines. Sessions are captured on-demand and shared across parallel test workers.
+**E2E, integration warmup, and API tests** use lazy storage-state capture under the shared `.sessions/` directory. The files are namespaced by suite style so parallel workers can reuse the right state without colliding.
 
 ### Unified Storage Location
 
@@ -601,14 +787,14 @@ expect(visibleRows.length).toBeGreaterThan(0);
 └── *.lock                                                       # Coordination lock files
 ```
 
-**Why unified storage matters:**
+**Why shared storage matters:**
 
-- API and E2E tests often use the **same user credentials** (e.g., `solicitor`)
-- Without unified storage, both would log in the same user independently
-- **With unified storage + prefixing**, sessions are coordinated but namespaced:
+- API and E2E tests often use the same underlying user credentials, but they need different storage-state files.
+- With one directory and clear prefixes, stale files and lock files are easy to inspect during triage:
   - E2E sessions: `{email}.storage.json`
   - API sessions: `api-{env}-{role}.storage.json`
-- Lock files coordinate across **both test suites** running in parallel
+- Lock files coordinate workers that request the same E2E session key or the same API role.
+- API and E2E do not share a single lock file and do not reuse one another's storage-state file.
 
 ### How It Works
 
@@ -619,23 +805,24 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Sessions are captured only when first requested
 - Cached sessions are reused across tests and workers
 
-#### 2. Session Freshness (15-minute TTL)
+#### 2. Session Freshness
 
-- Sessions are valid for **15 minutes** from capture time
-- `ensureSession()` checks session freshness in `test.beforeAll()` hook
-- Stale sessions are automatically refreshed
-- Fresh sessions are reused across all tests in the suite
+- E2E `sessionCapture` storage defaults to **60 minutes** and can be overridden with `PW_SESSION_MAX_AGE_MS`.
+- E2E UI storage helpers under `E2E/utils/session-storage.utils.ts` default to **15 minutes** and can be overridden with `PW_UI_STORAGE_TTL_MIN`.
+- API storage defaults to **15 minutes** in `api/utils/auth.ts`.
+- Stale storage is automatically refreshed; fresh storage is reused by later tests and workers in the same namespace.
 
 #### 3. CI Parallel Execution (Configurable Workers per Test Suite)
 
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
-- Locks coordinate across **all Playwright worker processes** (API + E2E + integration) using `proper-lockfile`
+- Locks are implemented with `proper-lockfile`
 - Jenkins currently runs API and E2E with **6 workers** and integration with **7 workers** on both Preview and AAT
-- When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
+- When one worker logs in user X for the same E2E session key, the remaining E2E/integration workers wait for lock release and reuse that E2E storage state
+- When one API worker creates `api-<env>-<role>.storage.json`, other API workers for that role wait for lock release and reuse that API storage state
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
-- The `searchCase` integration suite runs on a dedicated Playwright project so it can be targeted independently without affecting the rest of the integration matrix
+- Integration features can be targeted independently with `INTEGRATION_PW_INCLUDE_TAGS`
 
 ### Usage in E2E Tests
 
@@ -667,7 +854,8 @@ test.describe('My Test Suite', () => {
 
 - `SOLICITOR` - Standard solicitor user for Private Law / civil cases
 - `DIVORCE_SOLICITOR` - Divorce-entitled solicitor user for divorce create/update journeys
-- `WA_SOLICITOR` - Work Allocation solicitor user for low-assignment live task lookup coverage
+- `WA_SOLICITOR` - Legacy solicitor-style user. Do not use it for live Work Allocation task-list E2E; local AAT evidence showed it authenticates without `roleAssignmentInfo` and lands on Case list.
+- `IAC_CASEOFFICER_R1` - Internal Work Allocation-capable user for live Available Tasks E2E when `PW_IAC_CASEOFFICER_R1_EMAIL` and `PW_IAC_CASEOFFICER_R1_PASSWORD` are populated.
 - `SEARCH_EMPLOYMENT_CASE` - Employment tribunal case user
 - `STAFF_ADMIN` - Administrative staff user
 - `USER_WITH_FLAGS` - User with case flags enabled
@@ -681,84 +869,31 @@ test.describe('My Test Suite', () => {
 | **API**        | caseOfficer_r1 | `api-{env}-{role}.storage.json` | `api-aat-caseOfficer_r1.storage.json`                      |
 | **Lock files** | Any            | `{filename}.lock`               | `xui_auto_test_user_solicitor@mailinator.com.lock`         |
 
-### Cross-Suite Coordination in CI
+### Parallel Suite Storage in CI
 
-When **API and E2E tests run in parallel** (common in CI pipelines):
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                       CI Pipeline                                │
-│                                                                  │
-│  ┌──────────────────────┐        ┌──────────────────────┐      │
-│  │  E2E Tests            │        │  API Tests            │      │
-│  │  (up to 6 workers)    │        │  (up to 6 workers)    │      │
-│  │  Need: solicitor      │        │  Need: solicitor      │      │
-│  └──────────┬────────────┘        └──────────┬────────────┘     │
-│             │                                 │                  │
-│             │  Same user credentials!         │                  │
-│             └────────────┬────────────────────┘                  │
-│                          ▼                                        │
-│              ┌──────────────────────┐                           │
-│              │   .sessions/          │                           │
-│              │  📄 xui_auto_test...  │  ← E2E browser session   │
-│              │  📄 api-aat-solicitor │  ← API HTTP session      │
-│              │  🔒 *.lock            │  ← Coordination locks    │
-│              └──────────────────────┘                           │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-#### Timeline Example
+When API, E2E, and integration suites run in parallel, they write into the same `.sessions/` directory but use different filenames:
 
 ```
-Time: 0s
-E2E Worker 1: Acquires xui_auto_test_user_solicitor@mailinator.com.lock
-            → Logs in solicitor → Creates session file
-API Worker 1: Waiting on api-aat-solicitor.lock...
-
-Time: 2s
-E2E Worker 1: Releases lock
-API Worker 1: Acquires api-aat-solicitor.lock
-            → Checks if session fresh? YES (2s old < 15min)
-            → Reuses existing IDAM token from E2E login
-            → Creates api-aat-solicitor.storage.json ✅
-
-Result: ONE login instead of two! ⚡
+.sessions/
+  xui_auto_test_user_solicitor@mailinator.com.storage.json
+  xui_auto_test_user_solicitor@mailinator.com.lock
+  api-aat-solicitor.storage.json
+  api-aat-solicitor.lock
 ```
 
-### Benefits
+This gives two useful properties:
 
-✅ **No duplicate logins** - API and E2E coordinate via filesystem locks  
-✅ **Faster CI execution** - Single login per user across all test suites  
-✅ **Rate limit safe** - No concurrent logins to same IDAM user  
-✅ **Same principles** - Both use filesystem locks + 15min TTL  
-✅ **Namespace separation** - `api-` prefix prevents E2E/API collision  
-✅ **Cross-worker safe** - `proper-lockfile` coordinates across all processes  
-✅ **60-70% reduction** in login time for typical test runs
+- Workers inside the same suite/role avoid duplicate logins by waiting on the matching lock.
+- API and E2E storage states stay separate, so an API request context cannot accidentally consume a browser session file and vice versa.
 
-### Performance Comparison
-
-#### Before (Separate Storage + No Coordination)
-
-```
-E2E Tests:  SOLICITOR login (30s) + other users...
-API Tests:  solicitor login (30s) + other users...  ← DUPLICATE!
-Total:      60s+ wasted on duplicate logins
-```
-
-#### After (Unified Storage + Lock Coordination)
-
-```
-E2E Worker 1:  SOLICITOR login (30s) → session stored
-API Workers:   Reuse session (0s) → extract token
-Total:         30s for both test suites! ⚡
-```
+Do not assume that an API run will reuse an E2E login. It creates or refreshes its own `api-<env>-<role>.storage.json`.
 
 ### Example Scenarios
 
 #### Single Worker (Local Development)
 
 ```bash
-npx playwright test documentUpload.spec.ts --project chromium --workers=1
+npx playwright test --config=playwright.e2e.config.ts playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts --project=chromium --workers=1
 ```
 
 - Logs in SOLICITOR once (~30s)
@@ -768,7 +903,7 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 #### 6 Workers (Parallel Jenkins API/E2E Suites)
 
 ```bash
-npx playwright test --project chromium --workers=6
+npx playwright test --config=playwright.e2e.config.ts --project=chromium --workers=6
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
@@ -778,7 +913,7 @@ npx playwright test --project chromium --workers=6
 #### 7 Workers (Integration Jenkins Suite)
 
 ```bash
-npx playwright test --project chromium --workers=7
+npx playwright test --config=playwright.integration.config.ts --project=chromium --workers=7
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
@@ -788,7 +923,7 @@ npx playwright test --project chromium --workers=7
 #### Auto-Sized Workers (Local or Unpinned CI)
 
 ```bash
-npx playwright test --project chromium
+npx playwright test --config=playwright.e2e.config.ts --project=chromium
 ```
 
 - One worker logs in SOLICITOR and stores the session
@@ -799,23 +934,24 @@ npx playwright test --project chromium
 
 ```bash
 # Running simultaneously:
-npx playwright test --project chromium --workers=6  # Preview E2E tests
-npx playwright test --project node-api --workers=6  # Preview API tests
-npx playwright test --project chromium --workers=7  # Preview integration tests
+npx playwright test --config=playwright.e2e.config.ts --project=chromium --workers=6  # Preview E2E tests
+npx playwright test --project=node-api --workers=6  # Preview API tests
+npx playwright test --config=playwright.integration.config.ts --project=chromium --workers=7  # Preview integration tests
 
 # AAT:
-npx playwright test --project chromium --workers=6  # AAT E2E tests
-npx playwright test --project node-api --workers=6  # AAT API tests
-npx playwright test --project chromium --workers=7  # AAT integration tests
+npx playwright test --config=playwright.e2e.config.ts --project=chromium --workers=6  # AAT E2E tests
+npx playwright test --project=node-api --workers=6  # AAT API tests
+npx playwright test --config=playwright.integration.config.ts --project=chromium --workers=7  # AAT integration tests
 
 # Local or unpinned CI:
-npx playwright test --project chromium  # E2E tests
-npx playwright test --project node-api  # API tests
+npx playwright test --config=playwright.e2e.config.ts --project=chromium  # E2E tests
+npx playwright test --project=node-api  # API tests
 ```
 
-- E2E Worker 1 logs in solicitor → stores session
-- API workers detect fresh session → reuse IDAM token
-- Total login time is about 30 seconds instead of about 60 seconds where sessions are compatible.
+- E2E workers share the E2E storage state for the same session key.
+- API workers share the API storage state for the same role.
+- Integration workers share E2E-style storage state when they use the same session helper and session key.
+- The suites stay namespaced even when they use the same underlying user credentials.
 
 ### Session Storage
 
@@ -894,6 +1030,15 @@ try {
 
 ### Troubleshooting
 
+#### Dynamic Provisioning Failures
+
+When a run fails before the browser journey starts, check the setup evidence first:
+
+1. Open the Playwright failure attachment named `<alias>-dynamic-user-provision-attempts.json`.
+2. In the Playwright HTML/Odhín artifacts, open the `failure-data.json` attachment for the failed test.
+3. Read the terminal `DynamicProvisioningError` attempt diagnostics. It should show each provisioning attempt, whether it was retryable, and the final downstream error.
+4. Keep the default retry policy unless the failure evidence proves that the retry budget itself is the problem.
+
 #### Session Expired During Test
 
 If tests fail with authentication errors:
@@ -902,7 +1047,7 @@ If tests fail with authentication errors:
 2. Re-run tests to capture fresh sessions
 
 ```bash
-rm -rf .sessions && npx playwright test
+rm -rf .sessions && npx playwright test --config=playwright.e2e.config.ts
 ```
 
 #### Concurrent Login Issues
@@ -918,12 +1063,12 @@ If multiple workers attempt to login simultaneously:
 If a session appears stale but isn't refreshing:
 
 1. Check session file timestamp: `ls -la .sessions/`
-2. Verify 15-minute TTL hasn't been exceeded
+2. Verify the relevant freshness window has been exceeded (`PW_SESSION_MAX_AGE_MS`, `PW_UI_STORAGE_TTL_MIN`, or the API 15-minute default)
 3. Manually delete specific session file to force refresh
 
 ### Best Practices
 
-1. **Always use `ensureSession()` in `beforeAll`** - Not in `beforeEach` to avoid redundant checks
+1. **Always use `ensureSession()` in `beforeAll`** - Not in `beforeEach` to avoid redundant checks.
 2. **Load cookies in `beforeEach`** - Ensures each test starts with valid session
 3. **Specify only required users** - Don't capture sessions you won't use
 4. **Let sessions expire naturally** - Don't manually refresh unless necessary
@@ -1007,4 +1152,4 @@ export function isSessionFresh(
 
 - `api/utils/auth.ts` - API authentication helper
 - `api/data/testIds.ts` - Environment-driven test IDs
-- `common/apiTestConfig.ts` - User credentials and configuration
+- `api/utils/apiTestRuntimeConfig.ts` - Runtime user credential and environment configuration

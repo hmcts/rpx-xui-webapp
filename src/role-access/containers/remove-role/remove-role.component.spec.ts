@@ -167,7 +167,7 @@ describe('RemoveRoleComponent', () => {
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
     sessionStorageServiceMock.getItem.and.returnValue(null);
     mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
-    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([mockCaseworker]));
+    mockCaseworkerDataService.getUserByIdamId.and.returnValue(of(mockCaseworker));
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -239,7 +239,7 @@ describe('RemoveRoleComponent', () => {
   it('should set email from cached caseworker when role has no email', () => {
     const allocateRoleService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
     sessionStorageServiceMock.getItem.and.returnValue(JSON.stringify([mockCaseworker]));
-    mockCaseworkerDataService.getUsersFromServices.calls.reset();
+    mockCaseworkerDataService.getUserByIdamId.calls.reset();
     spyOn(allocateRoleService, 'getCaseRoles').and.returnValue(
       of([
         {
@@ -263,7 +263,7 @@ describe('RemoveRoleComponent', () => {
 
     expect(localComponent.role.email).toBe(mockCaseworker.email);
     expect(localComponent.answers[1].value).toBe(`Mr Test\n${mockCaseworker.email}`);
-    expect(mockCaseworkerDataService.getUsersFromServices).not.toHaveBeenCalled();
+    expect(mockCaseworkerDataService.getUserByIdamId).not.toHaveBeenCalled();
 
     localFixture.destroy();
   });
@@ -291,14 +291,14 @@ describe('RemoveRoleComponent', () => {
     localComponent.assignmentId = '999999999';
     localFixture.detectChanges();
 
-    expect(mockCaseworkerDataService.getUsersFromServices).toHaveBeenCalledWith(['IA']);
-    expect(localComponent.role.name).toBe(`${mockCaseworker.firstName}-${mockCaseworker.lastName}`);
+    expect(mockCaseworkerDataService.getUserByIdamId).toHaveBeenCalledWith(mockCaseworker.idamId);
+    expect(localComponent.role.name).toBe(`${mockCaseworker.firstName} ${mockCaseworker.lastName}`);
     expect(localComponent.role.email).toBe(mockCaseworker.email);
     expect(localComponent.answers).toEqual([
       { label: 'Type of role', value: TypeOfRole.CaseManager },
       {
         label: 'Person',
-        value: `${mockCaseworker.firstName}-${mockCaseworker.lastName}\n${mockCaseworker.email}`,
+        value: `${mockCaseworker.firstName} ${mockCaseworker.lastName}\n${mockCaseworker.email}`,
       },
     ]);
 

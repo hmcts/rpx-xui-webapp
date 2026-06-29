@@ -35,7 +35,7 @@ describe('DeleteExclusionComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getUsersFromServices']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getUserByIdamId']);
   const mockAllocateRoleService = jasmine.createSpyObj('allocateService', ['getCaseRolesUserDetails']);
   const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', [
     'getCurrentUserRoleExclusions',
@@ -106,7 +106,7 @@ describe('DeleteExclusionComponent', () => {
   beforeEach(() => {
     routerMock.navigate.calls.reset();
     routerMock.navigateByUrl.calls.reset();
-    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([mockCaseworker]));
+    mockCaseworkerDataService.getUserByIdamId.and.returnValue(of(mockCaseworker));
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -198,7 +198,7 @@ describe('DeleteExclusionComponent with no name', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getUsersFromServices']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getUserByIdamId']);
   const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', [
     'getCurrentUserRoleExclusions',
     'deleteExclusion',
@@ -271,7 +271,7 @@ describe('DeleteExclusionComponent with no name', () => {
   beforeEach(() => {
     routerMock.navigate.calls.reset();
     routerMock.navigateByUrl.calls.reset();
-    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([mockCaseworker]));
+    mockCaseworkerDataService.getUserByIdamId.and.returnValue(of(mockCaseworker));
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -319,9 +319,9 @@ describe('DeleteExclusionComponent with no name', () => {
 
     component.findAndSetExclusion([exclusionWithNoName]);
 
-    expect(mockCaseworkerDataService.getUsersFromServices).toHaveBeenCalledWith([jurisdiction]);
-    expect(component.roleExclusion.name).toBe(`${mockCaseworker.firstName}-${mockCaseworker.lastName}`);
-    expect(component.answers[0].value).toBe(`${mockCaseworker.firstName}-${mockCaseworker.lastName}`);
+    expect(mockCaseworkerDataService.getUserByIdamId).toHaveBeenCalledWith(mockCaseworker.idamId);
+    expect(component.roleExclusion.name).toBe(`${mockCaseworker.firstName} ${mockCaseworker.lastName}`);
+    expect(component.answers[0].value).toBe(`${mockCaseworker.firstName} ${mockCaseworker.lastName}`);
   });
 
   it('should navigate correctly on click', () => {

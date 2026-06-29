@@ -8,7 +8,7 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
-import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
+import { getAssignedMockTask, getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -186,7 +186,7 @@ describe('TasksContainerComponent', () => {
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(getMockTasks()));
     fixture.detectChanges();
     mockWACaseService.getTasksByCaseId.calls.reset();
-    mockCaseworkerService.getUsersFromServices.calls.reset();
+    mockCaseworkerService.getUsersByIdamIds.calls.reset();
     mockRoleService.getCaseRolesUserDetails.calls.reset();
     mockLoadingService.register.calls.reset();
     mockLoadingService.unregister.calls.reset();
@@ -207,14 +207,14 @@ describe('TasksContainerComponent', () => {
 
   // to be changed/amended when EXUI-2645 implementation is complete
   it('should get assigned names when tasks exist', () => {
-    const tasks = [getMockTasks()[0]];
+    const tasks = [getAssignedMockTask()];
     const getAssignedNamesForTasksSpy = spyOn<any>(component, 'getAssignedNamesForTasks').and.returnValue(of(tasks));
     mockWACaseService.getTasksByCaseId.and.returnValue(of(tasks));
-    mockCaseworkerService.getUsersFromServices.and.returnValue(of([]));
+    mockCaseworkerService.getUsersByIdamIds.and.returnValue(of([]));
 
     component.ngOnInit();
 
-    expect(mockCaseworkerService.getUsersFromServices).toHaveBeenCalledWith([tasks[0].jurisdiction]);
+    expect(mockCaseworkerService.getUsersByIdamIds).toHaveBeenCalledWith([tasks[0].assignee],[tasks[0].jurisdiction]);
     expect(getAssignedNamesForTasksSpy).toHaveBeenCalled();
     expect(component.tasks).toEqual(tasks);
   });
@@ -225,7 +225,7 @@ describe('TasksContainerComponent', () => {
 
     component.ngOnInit();
 
-    expect(mockCaseworkerService.getUsersFromServices).not.toHaveBeenCalled();
+    expect(mockCaseworkerService.getUsersByIdamIds).not.toHaveBeenCalled();
     expect(getAssignedNamesForTasksSpy).not.toHaveBeenCalled();
     expect(component.tasks).toEqual([]);
   });

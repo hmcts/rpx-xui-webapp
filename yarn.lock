@@ -3181,16 +3181,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.12":
-  version: 3.2.12
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.12"
+"@hmcts/rpx-xui-common-lib@npm:3.2.9":
+  version: 3.2.9
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.9"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.2.4
-  checksum: 10/e2edab59f12e9c31635ccf74a5165f447908306cd3763a9d7065e40c3ca4762f0b05e5cdfbca98383cc47825fc742c9cf22f946c775be97712db47289a2ac6fd
+    rpx-xui-translation: 1.1.2-CME-780-9
+  checksum: 10/7d82a7509c756996f11a5c88f19f2ff79d85e3e90cda2c45f44bfb7dcf76bc7defb1f140b2e951df797cff5261da125ee1c718bb92cea055869e76250f50061e
   languageName: node
   linkType: hard
 

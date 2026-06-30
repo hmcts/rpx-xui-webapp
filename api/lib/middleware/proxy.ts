@@ -27,6 +27,7 @@ export interface ProxyConfig {
   target: string;
   rewrite?: boolean;
   rewriteUrl?: string | ((path: string, req: any) => string);
+  skipAuth?: boolean;
   filter?: string | string[];
   middlewares?: any[];
   onReq?: (proxyReq: any, req: any, res: any) => void;
@@ -115,7 +116,7 @@ export const applyProxy = (app: any, config: ProxyConfig, modifyBody: boolean = 
       error: (err, req, res) => onProxyError(err, req, res),
     },
   });
-
-  const middlewares = [authInterceptor, ...(config.middlewares || [])];
+  let middlewares = config.skipAuth ? [] : [authInterceptor];
+  middlewares = [...middlewares, ...(config.middlewares || [])];
   app.use(config.source, middlewares, proxyMiddleware);
 };

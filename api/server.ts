@@ -9,17 +9,16 @@ import { createApp } from './application';
 
 import * as ejs from 'ejs';
 import * as express from 'express';
+import * as http from 'http';
 import * as path from 'path';
 import { appInsights } from './lib/appInsights';
 import errorHandler from './lib/error.handler';
 import { removeCacheHeaders } from './lib/middleware/removeCacheHeaders';
 import { corsMw } from './security/cors';
+import { attachSocketProxy } from './socket-proxy';
 
 createApp().then((app: express.Application) => {
   app.engine('html', ejs.renderFile);
-  app.set('view engine', 'html');
-  app.set('views', __dirname);
-
   app.set('view engine', 'html');
   app.set('views', __dirname);
 
@@ -42,10 +41,20 @@ createApp().then((app: express.Application) => {
 
   app.use(appInsights);
   app.use(errorHandler);
-  app.listen(process.env.PORT || 3000, (error) => {
+
+  const server = http.createServer(app);
+
+  attachSocketProxy(server);
+
+  const port = process.env.PORT || 3000;
+
+  server.on('error', (error) => {
     if (error) {
       throw error;
     }
-    console.log('Server listening on port 3000!');
+  });
+
+  server.listen(port, () => {
+    console.log(`Server listening on port ${port}!`);
   });
 });

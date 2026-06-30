@@ -1412,7 +1412,7 @@ describe('workAllocation', () => {
       // Force timestampExists true
       sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
 
-      const result = await setAssigneeNamesInTasks(tasks as any, ['user1', 'user2'], mockReq({}), next);
+      const result = await setAssigneeNamesInTasks(tasks as any, ['user1', 'user2']);
       expect(result[0].assigneeName).to.equal('Ann Alpha');
       expect(result[1].assigneeName).to.equal('Bob Beta');
     });
@@ -1422,7 +1422,7 @@ describe('workAllocation', () => {
       FullUserDetailCache.setUserDetails([]); // no cache
       sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
       sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').rejects(new Error('fail'));
-      const result = await setAssigneeNamesInTasks(tasks as any, ['uX'], mockReq({}), next);
+      const result = await setAssigneeNamesInTasks(tasks as any, ['uX']);
       expect(result[0].assigneeName).to.be.undefined;
     });
   });

@@ -185,6 +185,8 @@ export function getCorrectRoleCategory(domain: string): RoleCategory {
       return RoleCategory.JUDICIAL;
     case 'Admin':
       return RoleCategory.ADMIN;
+    case 'CTSC':
+      return RoleCategory.CTSC;
     default:
       throw new Error('Invalid roleCategory ' + domain);
   }

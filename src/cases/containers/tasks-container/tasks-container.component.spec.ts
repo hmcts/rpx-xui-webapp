@@ -214,7 +214,7 @@ describe('TasksContainerComponent', () => {
 
     component.ngOnInit();
 
-    expect(mockCaseworkerService.getUsersByIdamIds).toHaveBeenCalledWith([tasks[0].assignee],[tasks[0].jurisdiction]);
+    expect(mockCaseworkerService.getUsersByIdamIds).toHaveBeenCalledWith([tasks[0].assignee], [tasks[0].jurisdiction]);
     expect(getAssignedNamesForTasksSpy).toHaveBeenCalled();
     expect(component.tasks).toEqual(tasks);
   });

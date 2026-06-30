@@ -3021,9 +3021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.68-multiple-role-categories":
-  version: 7.3.68-multiple-role-categories
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68-multiple-role-categories"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.68-user-by-idam-rework":
+  version: 7.3.68-user-by-idam-rework
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68-user-by-idam-rework"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
@@ -3065,7 +3065,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/7a71cad1f44314c5bbc489dd48f827b66f49c008bf5a84b5c3107e3a7973e842d9e484db44c823c0fc84f6f3cc055d659ee175dc9c520415d5e197a9d25c686c
+  checksum: 10/f149aaafa0bb9a5cd70bbeb1cf456350e64de00083505b9726026a2e2bb0855ada0170e2b891f8f3504790965eb9292483230313aba805909ac66584ce301220
   languageName: node
   linkType: hard
 
@@ -19747,7 +19747,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68-multiple-role-categories"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68-user-by-idam-rework"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.21"

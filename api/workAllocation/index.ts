@@ -194,7 +194,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       const assigneeIds = getAssigneeIdsFromTasks(tasksWithActions);
       if (assigneeIds.length > 0) {
-        tasksWithActions = await setAssigneeNamesInTasks(tasksWithActions, assigneeIds, req, next);
+        tasksWithActions = await setAssigneeNamesInTasks(tasksWithActions, assigneeIds);
       }
       returnData = {
         tasks: tasksWithActions,
@@ -209,12 +209,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 
 // This will put assignee names in tasks based on cached user details
 // Note: Judges will not have their names populated until refresh within the Angular layer
-export async function setAssigneeNamesInTasks(
-  tasks: Task[],
-  assigneeIds: string[],
-  req: EnhancedRequest,
-  next: NextFunction
-): Promise<Task[]> {
+export async function setAssigneeNamesInTasks(tasks: Task[], assigneeIds: string[]): Promise<Task[]> {
   let assigneeDetails = [];
   if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
     assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
@@ -222,8 +217,8 @@ export async function setAssigneeNamesInTasks(
     try {
       // EXUI-2645 - populate / refresh cache then retrieve only if there is no alternative
       // if either call fails we revert back to proceeding without assignee names similar to previous Angular behaviours
-      const cachedUserData = await fetchUserData(req, next);
-      await fetchRoleAssignments(cachedUserData, req, next);
+      const cachedUserData = await fetchUserData();
+      await fetchRoleAssignments(cachedUserData);
       assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
     } catch (error) {
       trackTrace(`Error fetching user data for assignees: ${error.toString()}, proceeding without assignee names`);
@@ -270,7 +265,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const actionedTasks = assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
-    return res.send(actionedTasks).status(status);
+    return res.status(status).send(actionedTasks);
   } catch (e) {
     next(e);
   }
@@ -676,8 +671,8 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
         res.send(cachedUsers).status(200);
       }
       // always update the cache after getting the cache if needed
-      const cachedUserData = await fetchUserData(req, next);
-      cachedUsers = await fetchRoleAssignments(cachedUserData, req, next);
+      const cachedUserData = await fetchUserData();
+      cachedUsers = await fetchRoleAssignments(cachedUserData);
       if (firstEntry) {
         // if not previously ran ensure the new values are given back to angular layer
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
@@ -708,8 +703,8 @@ export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, nex
         res.send(idamUsers).status(200);
       }
       // always update the cache after getting the cache if needed
-      const cachedUserData = await fetchUserData(req, next);
-      await fetchRoleAssignments(cachedUserData, req, next);
+      const cachedUserData = await fetchUserData();
+      await fetchRoleAssignments(cachedUserData);
       if (firstEntry) {
         // if not previously ran ensure the new values are given back to angular layer
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
@@ -741,8 +736,8 @@ export async function getUserByIdamId(req: EnhancedRequest, res: Response, next:
         res.send(idamUser).status(200);
       }
       // always update the cache after getting the cache if needed
-      const cachedUserData = await fetchUserData(req, next);
-      await fetchRoleAssignments(cachedUserData, req, next);
+      const cachedUserData = await fetchUserData();
+      await fetchRoleAssignments(cachedUserData);
       if (firstEntry) {
         // if not previously ran ensure the new values are given back to angular layer
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)

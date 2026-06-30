@@ -24,6 +24,19 @@ chai.use(sinonChai);
 describe('Caseworker Cache Service', () => {
   let sandbox: sinon.SinonSandbox;
 
+  // Helper function to stub the auth token requests
+  const stubAuthTokenRequests = () => {
+    return sandbox.stub(http, 'post').callsFake((url: string) => {
+      if (url.includes('/lease')) {
+        return Promise.resolve({ data: 'service-token' });
+      }
+      if (url.includes('/o/token')) {
+        return Promise.resolve({ data: { access_token: 'access-token' } });
+      }
+      return Promise.reject(new Error(`Unexpected POST ${url}`));
+    });
+  };
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
   });
@@ -137,6 +150,7 @@ describe('Caseworker Cache Service', () => {
         },
       ];
       const res = mockRes({ status: 200, data: mockStaffDetails });
+      stubAuthTokenRequests();
       sandbox.stub(http, 'get').resolves(res);
       const data = await fetchNewUserData();
       expect(data).to.deep.equal(mockMergedStaffUsers);
@@ -223,7 +237,15 @@ describe('Caseworker Cache Service', () => {
         },
       ];
       const res = mockRes({ status: 200, data: { roleAssignmentResponse: mockRoleAssignments } });
-      sandbox.stub(http, 'post').resolves(res);
+      sandbox.stub(http, 'post').callsFake((url: string) => {
+        if (url.includes('/lease')) {
+          return Promise.resolve({ data: 'service-token' });
+        }
+        if (url.includes('/o/token')) {
+          return Promise.resolve({ data: { access_token: 'access-token' } });
+        }
+        return Promise.resolve(res);
+      });
       const data = await fetchRoleAssignmentsForNewUsers(mockMergedStaffUsers as StaffUserDetails[]);
       expect(data).to.deep.equal(finalCaseworkers);
     });
@@ -324,6 +346,7 @@ describe('Caseworker Cache Service', () => {
       const setCachedUsersStub = sandbox.stub(waRedisCache, 'setCachedUsers').resolves();
       const releaseLockStub = sandbox.stub(waRedisCache, 'releaseLock').resolves();
 
+      stubAuthTokenRequests();
       sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
 
       const result = await getOrRefreshCachedUsers();
@@ -381,6 +404,7 @@ describe('Caseworker Cache Service', () => {
 
       sandbox.stub(waRedisCache, 'getCachedUsers').resolves(null);
       sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves({ status: 'unavailable' });
+      stubAuthTokenRequests();
       sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
 
       const result = await getOrRefreshCachedUsers();

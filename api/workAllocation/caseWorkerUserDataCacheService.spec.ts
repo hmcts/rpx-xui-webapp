@@ -24,6 +24,29 @@ chai.use(sinonChai);
 describe('Caseworker Cache Service', () => {
   let sandbox: sinon.SinonSandbox;
 
+  const stubAuthConfig = () => {
+    const getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
+    getConfigValueStub.callsFake((key) => {
+      // values need to be structurally valid for the auth token requests to work
+      // none of these values are actually used in the tests, so they can be arbitrary
+      const values = {
+        microservice: 'xui_webapp',
+        'services.s2s': 'https://s2s.test.com',
+        'secrets.rpx.mc-s2s-client-secret': '  KAPWY3DPEHPK3PXP  ',
+        'services.idam.idamApiUrl': 'https://idam-api.test.com',
+        'services.idam.idamClientID': 'test-client-id',
+        'secrets.rpx.system-user-name': 'system-user',
+        'secrets.rpx.system-user-password': 'system-password',
+        'secrets.rpx.mc-idam-client-secret': 'test-idam-secret',
+        staffSupportedJurisdictions: 'IA,CIVIL,PRIVATELAW',
+      } as any;
+
+      return values[key];
+    });
+
+    return getConfigValueStub;
+  };
+
   // Helper function to stub the auth token requests
   const stubAuthTokenRequests = () => {
     return sandbox.stub(http, 'post').callsFake((url: string) => {
@@ -150,6 +173,7 @@ describe('Caseworker Cache Service', () => {
         },
       ];
       const res = mockRes({ status: 200, data: mockStaffDetails });
+      stubAuthConfig();
       stubAuthTokenRequests();
       sandbox.stub(http, 'get').resolves(res);
       const data = await fetchNewUserData();
@@ -237,6 +261,7 @@ describe('Caseworker Cache Service', () => {
         },
       ];
       const res = mockRes({ status: 200, data: { roleAssignmentResponse: mockRoleAssignments } });
+      stubAuthConfig();
       sandbox.stub(http, 'post').callsFake((url: string) => {
         if (url.includes('/lease')) {
           return Promise.resolve({ data: 'service-token' });
@@ -253,21 +278,7 @@ describe('Caseworker Cache Service', () => {
 
   describe('getAuthTokens', () => {
     it('should generate an OTP from the trimmed v13 secret and fetch both auth tokens', async () => {
-      const getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
-      getConfigValueStub.callsFake((key) => {
-        const values = {
-          microservice: 'xui_webapp',
-          'services.s2s': 'https://s2s.test.com',
-          'secrets.rpx.mc-s2s-client-secret': '  JBSWY3DPEHPK3PXP  ',
-          'services.idam.idamApiUrl': 'https://idam-api.test.com',
-          'services.idam.idamClientID': 'test-client-id',
-          'secrets.rpx.system-user-name': 'system-user',
-          'secrets.rpx.system-user-password': 'system-password',
-          'secrets.rpx.mc-idam-client-secret': 'test-idam-secret',
-        };
-
-        return values[key];
-      });
+      stubAuthConfig();
 
       const postStub = sandbox.stub(http, 'post');
       postStub.onFirstCall().resolves({ data: 'service-token' });
@@ -346,6 +357,7 @@ describe('Caseworker Cache Service', () => {
       const setCachedUsersStub = sandbox.stub(waRedisCache, 'setCachedUsers').resolves();
       const releaseLockStub = sandbox.stub(waRedisCache, 'releaseLock').resolves();
 
+      stubAuthConfig();
       stubAuthTokenRequests();
       sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
 
@@ -404,6 +416,7 @@ describe('Caseworker Cache Service', () => {
 
       sandbox.stub(waRedisCache, 'getCachedUsers').resolves(null);
       sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves({ status: 'unavailable' });
+      stubAuthConfig();
       stubAuthTokenRequests();
       sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
 

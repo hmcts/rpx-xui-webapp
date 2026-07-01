@@ -25,7 +25,8 @@
     "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API",
     "taskApi": "HEALTH_WORK_ALLOCATION_TASK_API",
     "roleApi": "HEALTH_ROLE_ASSIGNMENT_API",
-    "caseworkerApi": "HEALTH_CASE_CASEWORKER_API"
+    "caseworkerApi": "HEALTH_CASE_CASEWORKER_API",
+    "hmctsAccess": "HEALTH_HMCTS_ACCESS"
   },
   "services": {
     "ccd": {
@@ -89,6 +90,7 @@
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
       "iss": "SERVICES_IDAM_ISS_URL"
     },
+    "hmctsAccessApi": "SERVICES_HMCTS_ACCESS_API",
     "location_api": "SERVICES_LOCATION_API",
     "work_allocation": {
       "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"

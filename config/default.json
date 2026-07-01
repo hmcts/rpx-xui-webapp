@@ -112,6 +112,7 @@
     }
   },
   "protocol": "https",
+  "dynatraceCdn": "",
   "microservice": "xui_webapp",
   "caseworkerPageSize": "30000",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
@@ -163,6 +164,7 @@
     "workAllocationEnabled": false,
     "jrdELinksV2Enabled": true,
     "lauSpecificChallengedEnabled": false,
+    "dynatraceEnabled": false,
     "docsEnabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,

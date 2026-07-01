@@ -28,7 +28,7 @@ describe('AppComponent', () => {
       'close',
     ]);
     featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue', 'initialize']);
-    cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
+    cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch', 'getCookie']);
     loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies', 'log']);
     authService = jasmine.createSpyObj('AuthService', ['keepAlive', 'loginRedirect']);
     authService.keepAlive.and.returnValue(of(true));

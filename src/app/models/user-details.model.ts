@@ -6,7 +6,7 @@ export interface UserInfo {
   active: boolean;
   roles: string[];
   uid?: string;
-  roleCategory?: string;
+  roleCategories?: string[];
 }
 
 export interface RoleAssignmentInfo {

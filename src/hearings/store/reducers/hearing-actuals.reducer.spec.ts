@@ -17,6 +17,28 @@ describe('Hearing Actuals Reducer', () => {
     });
 
     describe('get service hearing actuals success action', () => {
+      it('should clear current hearing actuals while loading new actuals', () => {
+        const action = new fromHearingActualsActions.GetHearingActuals({
+          id: '1111222233334444',
+          caseRef: '5555666677778888',
+        });
+        const hearingsState = fromHearingActualsReducer.hearingActualsReducer(
+          {
+            hearingActualsMainModel,
+            lastError: {
+              status: 500,
+              statusText: 'Server Error',
+              message: 'Server Error',
+              errors: [],
+            },
+          },
+          action
+        );
+
+        expect(hearingsState.hearingActualsMainModel).toEqual(null);
+        expect(hearingsState.lastError).toEqual(null);
+      });
+
       it('should set correct object', () => {
         const action = new fromHearingActualsActions.GetHearingActualsSuccess(hearingActualsMainModel);
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(

@@ -73,6 +73,16 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "ST_CIC"
+    },
+    {
+      "caseTypes": [
+        "GrantOfRepresentation",
+        "Caveat",
+        "StandingSearch",
+        "WillLodgement"
+      ],
+      "releaseVersion": "4",
+       "serviceName": "PROBATE"
     }
   ]
   }`;

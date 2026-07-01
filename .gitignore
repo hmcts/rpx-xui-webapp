@@ -142,3 +142,11 @@ Fortify Scan/
 /docs/PLAN.md
 /docs/RESULT.md
 /docs/TODO.md
+
+# Java/Gradle build artifacts
+**/build/
+**/.gradle/
+**/target/
+**/.classpath
+**/.project
+**/.settings/

@@ -73,6 +73,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "ST_CIC"
+    },
+    {
+      "caseTypes": [
+        "Possession"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
   ]
   }`;
@@ -140,6 +147,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PUBLICLAW"
+    },
+    {
+      "caseTypes": [
+        "Possession"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
     ]
   }`;
@@ -218,6 +232,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "DIVORCE"
+    },
+    {
+      "caseTypes": [
+        "Possession"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
     ]
   }`;

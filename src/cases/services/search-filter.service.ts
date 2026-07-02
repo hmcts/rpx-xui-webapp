@@ -68,7 +68,7 @@ export class SearchFilterService {
       prefix = `${parentPrefix}.`;
     }
     for (const attributeName of Object.keys(formGroupValue)) {
-      let value = formGroupValue[attributeName];
+      const value = formGroupValue[attributeName];
       if (Utils.isStringOrNumber(value)) {
         const filterType = Utils.getFilterType(attributeName, this.metadataFields);
         this.addFilterValue(target[filterType], prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName), value);

@@ -1,15 +1,17 @@
-import * as redis from 'redis';
+import type { RedisClientType } from 'redis';
 
-let client: redis.RedisClient | null = null;
+export type RedisClient = RedisClientType;
 
-export function setRedisClient(redisClient: redis.RedisClient): void {
+let client: RedisClient | null = null;
+
+export function setRedisClient(redisClient: RedisClient | null): void {
   client = redisClient;
 }
 
-export function getRedisClient(): redis.RedisClient | null {
+export function getRedisClient(): RedisClient | null {
   return client;
 }
 
 export function isRedisReady(): boolean {
-  return !!client?.connected;
+  return !!client?.isReady;
 }

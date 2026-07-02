@@ -186,7 +186,7 @@ describe('TaskAssignmentContainerComponent', () => {
       surname: 'Smith',
       email: 'john.smith@email.com',
       roles: [AppTestConstants.IA_JUDGE_ROLE],
-      roleCategory: 'JUDICIAL',
+      roleCategories: ['JUDICIAL'],
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     component.isCurrentUserJudicial();
@@ -263,7 +263,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'JUDICIAL',
+          roleCategories: ['JUDICIAL'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -292,7 +292,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -321,7 +321,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -350,7 +350,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';

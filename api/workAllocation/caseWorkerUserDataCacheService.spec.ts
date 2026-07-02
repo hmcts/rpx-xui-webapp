@@ -209,7 +209,7 @@ describe('Caseworker Cache Service', () => {
           idamId: '1',
           lastName: 'User',
           locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
-          roleCategory: 'ADMIN',
+          roleCategories: ['ADMIN'],
           services: ['IA', 'CIVIL'],
         },
         {
@@ -218,7 +218,7 @@ describe('Caseworker Cache Service', () => {
           idamId: '2',
           lastName: 'User',
           locations: [{ id: 'c', locationName: 'PL location', services: undefined }],
-          roleCategory: 'CTSC',
+          roleCategories: ['CTSC'],
           services: ['PRIVATELAW'],
         },
       ];

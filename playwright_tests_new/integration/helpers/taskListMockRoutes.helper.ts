@@ -87,7 +87,7 @@ export async function setupTaskListBootstrapRoutes(
     ? userDetails.userInfo.roles.filter((role): role is string => typeof role === 'string')
     : [];
   userDetails.userInfo.roles = Array.from(new Set([...existingRoles, ...(userOptions.roles ?? []), 'task-supervisor']));
-  userDetails.userInfo.roleCategory = userOptions.roleCategory ?? 'LEGAL_OPERATIONS';
+  userDetails.userInfo.roleCategories = [userOptions.roleCategory ?? 'LEGAL_OPERATIONS'];
   const routeRoleAssignments =
     userOptions.roleAssignments ??
     supportedJurisdictions.map((jurisdiction) => ({

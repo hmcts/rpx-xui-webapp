@@ -71,20 +71,12 @@ export class SearchFilterService {
       let value = formGroupValue[attributeName];
       if (Utils.isStringOrNumber(value)) {
         const filterType = Utils.getFilterType(attributeName, this.metadataFields);
-        this.addFilterValue(
-          target[filterType],
-          prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName),
-          value
-        );
+        this.addFilterValue(target[filterType], prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName), value);
       } else if (value) {
         if (Array.isArray(value) && value.length > 0) {
           if (Utils.isStringOrNumber(value[0])) {
             const filterType = Utils.getFilterType(attributeName, this.metadataFields);
-            this.addFilterValue(
-              target[filterType],
-              prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName),
-              value
-            );
+            this.addFilterValue(target[filterType], prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName), value);
           } else {
             value.forEach((item) => this.buildCollectionFormDetails(prefix + attributeName, target, item));
           }

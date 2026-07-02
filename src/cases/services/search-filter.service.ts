@@ -71,14 +71,45 @@ export class SearchFilterService {
       let value = formGroupValue[attributeName];
       if (Utils.isStringOrNumber(value)) {
         const filterType = Utils.getFilterType(attributeName, this.metadataFields);
-        target[filterType][prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName)] = value;
+        this.addFilterValue(
+          target[filterType],
+          prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName),
+          value
+        );
       } else if (value) {
         if (Array.isArray(value) && value.length > 0) {
-          // is array and has index zero populated
-          value = Utils.isStringOrNumber(value[0]) ? value : value[0]; // determine if it is a collection or a plain array
+          if (Utils.isStringOrNumber(value[0])) {
+            const filterType = Utils.getFilterType(attributeName, this.metadataFields);
+            this.addFilterValue(
+              target[filterType],
+              prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName),
+              value
+            );
+          } else {
+            value.forEach((item) => this.buildCollectionFormDetails(prefix + attributeName, target, item));
+          }
+        } else {
+          this.buildFormDetails(prefix + attributeName, target, value);
         }
-        this.buildFormDetails(prefix + attributeName, target, value);
       }
+    }
+  }
+
+  private buildCollectionFormDetails(parentPrefix: string, target: object, item: object): void {
+    if (item && Object.prototype.hasOwnProperty.call(item, 'value')) {
+      this.buildFormDetails(`${parentPrefix}.value`, target, item['value']);
+    } else {
+      this.buildFormDetails(parentPrefix, target, item);
+    }
+  }
+
+  private addFilterValue(target: object, key: string, value): void {
+    if (target[key] === undefined) {
+      target[key] = value;
+    } else if (Array.isArray(target[key])) {
+      target[key] = target[key].concat(value);
+    } else {
+      target[key] = [target[key]].concat(value);
     }
   }
 

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
   AbstractAppConfig,
   CaseState,
@@ -125,6 +125,48 @@ describe('SearchFilterService', () => {
       },
       'SEARCH',
       { column: 'dummy', order: 0 }
+    );
+  });
+
+  it('should make collection field values turn into multiple query parameters when calling searchCases', () => {
+    const handoffReasons = new FormArray([
+      new FormGroup({
+        id: new FormControl('1'),
+        value: new FormGroup({
+          caseHandoffReason: new FormControl('ColligendaBona'),
+        }),
+      }),
+      new FormGroup({
+        id: new FormControl('2'),
+        value: new FormGroup({
+          caseHandoffReason: new FormControl('Caveat'),
+        }),
+      }),
+    ]);
+
+    const formGroupDummy = new FormGroup({
+      boHandoffReasonList: handoffReasons,
+    });
+    const filter = {
+      selected: {
+        formGroup: formGroupDummy,
+        jurisdiction: JURISDICTION,
+        caseType: CASE_TYPES[0],
+        page: 1,
+        view: 'SEARCH',
+      },
+    };
+
+    searchFilterService.search(filter, true);
+
+    expect(ccdSearchServiceMock.searchCases).toHaveBeenCalledWith(
+      CASE_TYPE.id,
+      { page: 1 },
+      {
+        'boHandoffReasonList.value.caseHandoffReason': ['ColligendaBona', 'Caveat'],
+      },
+      'SEARCH',
+      undefined
     );
   });
 

@@ -18,13 +18,16 @@ export enum REDIRECTS {
 
 export const vowels = ['a', 'e', 'i', 'o', 'u'];
 
+export function getIndefiniteArticle(word: string) {
+  return vowels.includes(word.toLowerCase().charAt(0)) ? 'an' : 'a';
+}
+
 // gets the most detailed title possible based on data available
 export const getTitleText = (role: SpecificRole, action: string, roleCategory: string): string => {
   if (role && role.name) {
-    const aOrAn = vowels.includes(role.name.toLowerCase().charAt(0)) ? 'an' : 'a';
     return role.name === TypeOfRole.CaseManager
       ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}`
-      : `${action} ${aOrAn} ${role.name}`;
+      : `${action} ${getIndefiniteArticle(role.name)} ${role.name}`;
   }
 
   if (roleCategory === RoleCategory.ADMIN) {

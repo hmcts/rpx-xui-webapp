@@ -3021,9 +3021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.68":
-  version: 7.3.68
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.68-pofcc-156":
+  version: 7.3.68-pofcc-156
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68-pofcc-156"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
@@ -3065,7 +3065,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/685ce5190a9afc4db1d1161dfb628ce5140b1e2490134c961ddf17ba46c2b39679c7bae9825ede0ed3c1887844a8a30501fc8e5b95648507cdb3492114e5d988
+  checksum: 10/abb36877281fcdaba6d66b0888b43b956f1800d90c7d6a70dec9496f10e4a552e14fb0234f44f0b7b1c070cba0bcc1798edc18c6fae6300db9cc50f09f0fe484
   languageName: node
   linkType: hard
 
@@ -3181,16 +3181,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.12":
-  version: 3.2.12
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.12"
+"@hmcts/rpx-xui-common-lib@npm:3.2.12-pofcc-156":
+  version: 3.2.12-pofcc-156
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.12-pofcc-156"
   dependencies:
+    "@hmcts/frontend": "npm:0.0.50-alpha"
+    govuk-frontend: "npm:4.9.0"
     tslib: "npm:^2.0.0"
   peerDependencies:
+    "@angular/animations": ^20.3.18
+    "@angular/cdk": 16.2.0
+    "@angular/common": ^20.3.18
+    "@angular/compiler": ^20.3.18
+    "@angular/core": ^20.3.18
+    "@angular/forms": ^20.3.18
+    "@angular/localize": ^20.3.18
+    "@angular/material": 16.2.0
+    "@angular/platform-browser": ^20.3.18
+    "@angular/platform-browser-dynamic": ^20.3.18
+    "@angular/router": ^20.3.18
+    "@ng-idle/core": ^16.0.0
+    "@ng-idle/keepalive": ^16.0.0
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.2.4
-  checksum: 10/e2edab59f12e9c31635ccf74a5165f447908306cd3763a9d7065e40c3ca4762f0b05e5cdfbca98383cc47825fc742c9cf22f946c775be97712db47289a2ac6fd
+    rxjs: ^7.8.1
+    zone.js: ~0.15.1
+  checksum: 10/b4f6be3233e0c594d23ebb2abb32214ccd13c64f42769630a016e6acc8245770e84d9b2ba6c8bf35d9c84ac546f69309c6e0a889286bdff4b5c5d0d27fe3691f
   languageName: node
   linkType: hard
 
@@ -13868,6 +13885,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"govuk-frontend@npm:4.9.0":
+  version: 4.9.0
+  resolution: "govuk-frontend@npm:4.9.0"
+  checksum: 10/03bae503b0c5aabcfb2724409f55f2221101a60f5334488319c9911408637efaa6737b733d4774436a520e9a79bf52bd9ae9a9e60f61a929c529b8125c0d5e29
+  languageName: node
+  linkType: hard
+
 "govuk-frontend@npm:^4.9.0":
   version: 4.10.1
   resolution: "govuk-frontend@npm:4.10.1"
@@ -19739,14 +19763,14 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68-pofcc-156"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.21"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.12"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.12-pofcc-156"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.17"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

@@ -1,4 +1,4 @@
-import { RoleCategory } from 'roleAccess/models/allocate-role.enum';
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { allContainOnlySafeCharacters, containsDangerousCode } from '../utils';
 import { CASE_ALLOCATOR_ROLE, ORGANISATION_ROLE_TYPE } from './constants';
@@ -57,7 +57,13 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
 }
 
 export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
-  const roleCategories = [RoleCategory.JUDICIAL, RoleCategory.LEGAL_OPERATIONS, RoleCategory.CTSC, RoleCategory.ADMIN];
+  const roleCategories = [
+    RoleCategory.JUDICIAL,
+    RoleCategory.LEGAL_OPERATIONS,
+    RoleCategory.CTSC,
+    RoleCategory.ADMIN,
+    RoleCategory.ENFORCEMENT,
+  ];
   for (const roleCategory of roleCategories) {
     if (hasRoleCategory(roleAssignments, roleCategory)) {
       return roleCategory;
@@ -88,6 +94,8 @@ export function getUserRoleCategory(roles: string[]): string {
     hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER)
   ) {
     return OTHER_GOV_DEPARTMENT_ROLE;
+  } else if (hasRoleCategory(roles, RoleCategory.ENFORCEMENT)) {
+    return RoleCategory.ENFORCEMENT.toLowerCase();
   }
 
   return LEGAL_OPERATIONS_ROLE_NAME;

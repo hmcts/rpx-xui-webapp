@@ -147,6 +147,7 @@ describe('CaseRolesTableComponent', () => {
     expect(component.getRoleCategoryTitle(RoleCategory.CTSC)).toBe('CTSC');
     expect(component.getRoleCategoryTitle(RoleCategory.JUDICIAL)).toBe('judicial');
     expect(component.getRoleCategoryTitle(RoleCategory.ADMIN)).toBe('admin');
+    expect(component.getRoleCategoryTitle(RoleCategory.ENFORCEMENT)).toBe('enforcement');
   });
 
   it('should show the reallocate and remove allocation link', () => {

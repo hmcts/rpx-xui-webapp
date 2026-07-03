@@ -10614,7 +10614,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compression@npm:^1.7.4":
+"compression@npm:^1.7.4, compression@npm:^1.8.1":
   version: 1.8.1
   resolution: "compression@npm:1.8.1"
   dependencies:
@@ -19791,7 +19791,7 @@ __metadata:
     chai: "npm:^4.3.10"
     chai-as-promised: "npm:7.1.2"
     class-transformer: "npm:^0.5.1"
-    compression: "npm:^1.7.4"
+    compression: "npm:^1.8.1"
     config: "npm:^4.4.1"
     cookie-parser: "npm:^1.4.4"
     core-js: "npm:^3.49.0"

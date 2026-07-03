@@ -96,6 +96,33 @@
   >
   </exui-role-access-section>
 
+  <exui-role-access-section
+    *ngIf="!namedEnforcementRoles"
+    title="Enforcement"
+    [roles]="enforcementRoles"
+    [caseDetails]="caseDetails"
+    [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
+    [roleQueryParams]="{ caseId: caseId, jurisdiction: jurisdiction, caseType: caseType, roleCategory: 'ENFORCEMENT' }"
+    roleCategory="ENFORCEMENT"
+    [showAllocateRoleLink]="showAllocateRoleLink"
+    linkText="Allocate an enforcement role"
+    [showAllocate]="true"
+  >
+  </exui-role-access-section>
+  <exui-role-access-section
+    *ngIf="namedEnforcementRoles"
+    title="Enforcement"
+    [roles]="namedEnforcementRoles"
+    [caseDetails]="caseDetails"
+    [roleRouterLink]="['/', 'role-access', 'allocate-role', 'allocate']"
+    [roleQueryParams]="{ caseId: caseId, jurisdiction: jurisdiction, caseType: caseType, roleCategory: 'ENFORCEMENT' }"
+    roleCategory="ENFORCEMENT"
+    [showAllocateRoleLink]="showAllocateRoleLink"
+    linkText="Allocate an enforcement role"
+    [showAllocate]="true"
+  >
+  </exui-role-access-section>
+
   <h2 class="govuk-heading-m">Exclusions</h2>
 
   <exui-exclusions-table

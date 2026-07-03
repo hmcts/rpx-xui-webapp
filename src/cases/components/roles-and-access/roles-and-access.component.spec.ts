@@ -96,6 +96,18 @@ describe('RolesAndAccessComponent', () => {
       end: '2023-12-31',
       email: 'judge@test.com',
     },
+    {
+      actorId: 'user5',
+      roleCategory: RoleCategory.ENFORCEMENT,
+      roleName: 'enforcement-role',
+      created: '2023-01-04',
+      id: 'role4',
+      name: 'Enforcement User',
+      location: 'Location 4',
+      start: '2023-01-01',
+      end: '2023-12-31',
+      email: 'enforcer@test.com',
+    },
   ];
 
   const mockExclusions: RoleExclusion[] = [
@@ -204,6 +216,9 @@ describe('RolesAndAccessComponent', () => {
 
       expect(component.judicialRoles.length).toBe(1);
       expect(component.judicialRoles[0].roleCategory).toBe(RoleCategory.JUDICIAL);
+
+      expect(component.enforcementRoles.length).toBe(1);
+      expect(component.enforcementRoles[0].roleCategory).toBe(RoleCategory.ENFORCEMENT);
     });
 
     it('should extract unique admin user IDs', () => {
@@ -269,6 +284,7 @@ describe('RolesAndAccessComponent', () => {
       expect(component.adminRoles).toEqual([]);
       expect(component.ctscRoles).toEqual([]);
       expect(component.judicialRoles).toEqual([]);
+      expect(component.enforcementRoles).toEqual([]);
     });
 
     it('should handle empty roles array', () => {
@@ -278,12 +294,13 @@ describe('RolesAndAccessComponent', () => {
       expect(component.adminRoles).toEqual([]);
       expect(component.ctscRoles).toEqual([]);
       expect(component.judicialRoles).toEqual([]);
+      expect(component.enforcementRoles).toEqual([]);
       expect(component.existingAdminUsers).toEqual([]);
       expect(component.existingCTSCUsers).toEqual([]);
     });
   });
 
-  describe('removeCashedCase', () => {
+  describe('removeCachedCase', () => {
     it('should call caseNotifier.removeCachedCase', () => {
       component.removeCashedCase();
       expect(mockCaseNotifier.removeCachedCase).toHaveBeenCalled();
@@ -373,6 +390,26 @@ describe('RolesAndAccessComponent', () => {
 
       component.ngOnChanges();
       expect(component.adminRolesNotNamed).toBe(true);
+    });
+
+    it('should set enforcementRolesNotNamed when enforcement roles have no name', () => {
+      component.enforcementRoles = [
+        {
+          actorId: 'user2',
+          roleCategory: RoleCategory.ENFORCEMENT,
+          roleName: 'role2',
+          created: '2023-01-01',
+          id: 'id2',
+          name: '',
+          location: 'Location 2',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user2@test.com',
+        },
+      ];
+
+      component.ngOnChanges();
+      expect(component.enforcementRolesNotNamed).toBe(true);
     });
 
     it('should set exclusionsNotNamed for non-judicial exclusions without names', () => {
@@ -495,6 +532,29 @@ describe('RolesAndAccessComponent', () => {
       expect(component.namedAdminRoles[0].name).toBe('Jane Smith');
     });
 
+    it('should call checkSetNamedRoles for enforcement roles when needed', () => {
+      component.enforcementRoles = [
+        {
+          actorId: 'user2',
+          roleCategory: RoleCategory.ENFORCEMENT,
+          roleName: 'role2',
+          created: '2023-01-01',
+          id: 'id2',
+          name: '',
+          location: 'Location 2',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user2@test.com',
+        },
+      ];
+      component.enforcementRolesNotNamed = true;
+
+      component.ngOnChanges();
+
+      expect(component.namedEnforcementRoles).toBeDefined();
+      expect(component.namedEnforcementRoles[0].name).toBe('Jane Smith');
+    });
+
     it('should call checkSetNamedRoles for exclusions when needed', () => {
       component.exclusions = [
         {
@@ -519,6 +579,7 @@ describe('RolesAndAccessComponent', () => {
       component.legalOpsRoles = [];
       component.ctscRoles = [];
       component.adminRoles = [];
+      component.enforcementRoles = [];
       component.exclusions = [];
 
       expect(() => component.ngOnChanges()).not.toThrow();

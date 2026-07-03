@@ -28,6 +28,9 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public caseId: string;
   public jurisdiction: string;
   public caseType: string;
+  public enforcementRoles: CaseRole[] = [];
+  public namedEnforcementRoles: CaseRole[] = [];
+  public enforcementRolesNotNamed = false;
 
   @Input() public exclusions: RoleExclusion[] = [];
   @Input() public showAllocateRoleLink: boolean = false;
@@ -50,6 +53,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
       this.judicialRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.JUDICIAL);
       this.adminRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.ADMIN);
       this.ctscRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.CTSC);
+      this.enforcementRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.ENFORCEMENT);
     }
     // Get unique array of existing admin user id's
     this.existingAdminUsers = [...new Set(this.adminRoles.map((ar) => ar.actorId))];
@@ -89,13 +93,18 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
       // checking one name will reveal whether caseworker names are available
       this.adminRolesNotNamed = true;
     }
+    if (this.enforcementRoles && this.enforcementRoles.length > 0 && !this.enforcementRoles[0].name) {
+      // checking one name will reveal whether caseworker names are available
+      this.enforcementRolesNotNamed = true;
+    }
     if (this.exclusions && this.exclusions.length > 0) {
       for (const exclusion of this.exclusions) {
         // some exclusions are judicial so this checks whether any exclusion is missing a name
         if (
           exclusion.userType === RoleCategory.LEGAL_OPERATIONS ||
           exclusion.userType === RoleCategory.ADMIN ||
-          exclusion.userType === RoleCategory.CTSC
+          exclusion.userType === RoleCategory.CTSC ||
+          exclusion.userType === RoleCategory.ENFORCEMENT
         ) {
           if (exclusion?.name) {
             break;
@@ -116,6 +125,9 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     }
     if (this.caseworkers && this.adminRoles && this.adminRoles.length > 0) {
       this.namedAdminRoles = this.checkSetNamedRoles(this.adminRoles, this.adminRolesNotNamed);
+    }
+    if (this.caseworkers && this.enforcementRoles && this.enforcementRoles.length > 0) {
+      this.namedEnforcementRoles = this.checkSetNamedRoles(this.enforcementRoles, this.enforcementRolesNotNamed);
     }
   }
 

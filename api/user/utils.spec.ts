@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants';
+import { CASE_ALLOCATOR_ROLE } from './constants';
 import { getOrganisationRoles, getUserRoleCategories, isCurrentUserCaseAllocator, userDetailsValid } from './utils';
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 
 describe('user.utils', () => {
   describe('isCurrentUserCaseAllocator without jurisdiction and location', () => {
@@ -13,7 +14,7 @@ describe('user.utils', () => {
         roleName: CASE_ALLOCATOR_ROLE,
         classification: 'PUBLIC',
         grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
@@ -33,7 +34,7 @@ describe('user.utils', () => {
         roleName: 'ROLE',
         classification: 'PUBLIC',
         grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
@@ -55,7 +56,7 @@ describe('user.utils', () => {
         roleName: CASE_ALLOCATOR_ROLE,
         classification: 'PUBLIC',
         grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
@@ -75,7 +76,7 @@ describe('user.utils', () => {
         roleName: CASE_ALLOCATOR_ROLE,
         classification: 'PUBLIC',
         grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
@@ -110,7 +111,7 @@ describe('user.utils', () => {
           roleName: 'SOME_ROLE',
           classification: 'PUBLIC',
           grantType: 'STANDARD',
-          roleCategory: LEGAL_OPS_TYPE,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
           readOnly: false,
           created: new Date(2021, 9, 8),
           attributes: {
@@ -126,7 +127,7 @@ describe('user.utils', () => {
           roleName: CASE_ALLOCATOR_ROLE,
           classification: 'PUBLIC',
           grantType: 'STANDARD',
-          roleCategory: LEGAL_OPS_TYPE,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
           readOnly: false,
           created: new Date(2021, 9, 8),
           attributes: {
@@ -141,7 +142,7 @@ describe('user.utils', () => {
     });
   });
 
-  describe('getUserRoleCategory', () => {
+  describe('getUserRoleCategories', () => {
     it('should return UserRoleCategory', () => {
       const roles = [
         'ADMIN',
@@ -154,37 +155,6 @@ describe('user.utils', () => {
         'task-supervisor',
       ];
       expect(getUserRoleCategories(roles)).to.deep.equal(['ADMIN', 'PROFESSIONAL']);
-    });
-  });
-
-  describe('userDetailsValid', () => {
-    const mockUserDetails = {
-      given_name: 'judge',
-      email: 'test@ejudiciary.net',
-      family_name: 'user',
-      name: 'judge user',
-      ssoProvider: 'testing-support',
-      uid: '12345-45678-567890',
-      identity: 'id=12345-45678-567890,ou=test-config',
-      roles: ['test-role', 'caseworker-role', 'judge-role'],
-      sub: 'test@ejudiciary.net',
-      subname: 'test@ejudiciary.net',
-      iss: 'https://test-url.com?test=1',
-    };
-    it('should ensure user details are valid', () => {
-      expect(userDetailsValid(null)).to.equal(true);
-      expect(userDetailsValid(mockUserDetails)).to.equal(true);
-    });
-
-    it('should set user details to invalid if it has dangerous characters', () => {
-      mockUserDetails.email = '<script>alert("hello")</script>';
-      expect(userDetailsValid(mockUserDetails)).to.equal(false);
-      mockUserDetails.email = 'test@ejudiciary.net';
-    });
-
-    it('should set user details to invalid if iss has dangerous characters', () => {
-      mockUserDetails.iss = 'http://test-url.com&';
-      expect(userDetailsValid(mockUserDetails)).to.equal(true);
     });
 
     it('should return citizen role category', () => {
@@ -255,6 +225,42 @@ describe('user.utils', () => {
     it('should handle empty array and return default', () => {
       const roles: string[] = [];
       expect(getUserRoleCategories(roles)).to.deep.equal(['LEGAL_OPERATIONS']);
+    });
+
+    it('should return the enforcement category', () => {
+      const roles = ['caseworker-ia', 'enforcement'];
+      expect(getUserRoleCategories(roles)).to.deep.equal(['ENFORCEMENT']);
+    });
+  });
+
+  describe('userDetailsValid', () => {
+    const mockUserDetails = {
+      given_name: 'judge',
+      email: 'test@ejudiciary.net',
+      family_name: 'user',
+      name: 'judge user',
+      ssoProvider: 'testing-support',
+      uid: '12345-45678-567890',
+      identity: 'id=12345-45678-567890,ou=test-config',
+      roles: ['test-role', 'caseworker-role', 'judge-role'],
+      sub: 'test@ejudiciary.net',
+      subname: 'test@ejudiciary.net',
+      iss: 'https://test-url.com?test=1',
+    };
+    it('should ensure user details are valid', () => {
+      expect(userDetailsValid(null)).to.equal(true);
+      expect(userDetailsValid(mockUserDetails)).to.equal(true);
+    });
+
+    it('should set user details to invalid if it has dangerous characters', () => {
+      mockUserDetails.email = '<script>alert("hello")</script>';
+      expect(userDetailsValid(mockUserDetails)).to.equal(false);
+      mockUserDetails.email = 'test@ejudiciary.net';
+    });
+
+    it('should set user details to invalid if iss has dangerous characters', () => {
+      mockUserDetails.iss = 'http://test-url.com&';
+      expect(userDetailsValid(mockUserDetails)).to.equal(true);
     });
   });
 });

@@ -103,6 +103,8 @@ describe('Case Share Real API', () => {
   beforeEach(() => {
     next = sandbox.stub();
     res = mockRes();
+    trackTraceStub.resetHistory();
+    mockLogger.info.resetHistory();
 
     // Stub CRUD service methods
     handleGetStub = sandbox.stub(crudService, 'handleGet');
@@ -430,12 +432,12 @@ describe('Case Share Real API', () => {
 
       await assignCases(req, res);
 
-      expect(trackTraceStub).to.have.been.calledWith('Case share assignments requested', {
+      expect(trackTraceStub).to.have.been.calledWith('CSA:: Case share assignments requested', {
         assignedUsersCount: 2,
         removedUsersCount: 1,
         selectedCasesCount: 2,
       });
-      expect(mockLogger.info).to.have.been.calledWith('Case share assignments requested', {
+      expect(mockLogger.info).to.have.been.calledWith('CSA:: Case share assignments requested', {
         assignedUsersCount: 2,
         removedUsersCount: 1,
         selectedCasesCount: 2,

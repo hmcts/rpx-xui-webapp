@@ -164,10 +164,16 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(hearingsCYAPage.sectionRows('Hearing Venue')).toHaveCount(1);
       await expect(hearingsCYAPage.rowValue('Hearing Venue', 'What are the hearing venue details?')).toContainText(selectedVenue);
 
+      const venuesList = hearingsCYAPage.rowListItems('Hearing Venue', 'What are the hearing venue details?');
+      const venues = await venuesList.allTextContents();
+      expect(venues).toEqual(expect.arrayContaining(['East London Family Court', 'Southampton Combined Court Centre']));
+      expect(venues).toHaveLength(2);
+
       const allJudges = hearingJourneyModel.get('hearingDetails', 'judgeType');
 
       await expect(hearingsCYAPage.sectionRows('Judge details')).toHaveCount(2);
       await expect(hearingsCYAPage.rowValue('Judge details', 'Do you want a specific judge?')).toHaveText('No');
+
       const judgeTypesText = await hearingsCYAPage.rowValue('Judge details', 'Select all judge types that apply').textContent();
       for (const judgeType of allJudges as TypeOfJudges[]) {
         expect(judgeTypesText).toContain(judgeType);

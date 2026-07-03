@@ -21,7 +21,7 @@ export class HearingsJourneyPage {
   readonly hearingOnTelephone = this.page.locator('#hearingLevelChannelList #TEL');
   readonly hearingViaVideo = this.page.locator('#hearingLevelChannelList #VID');
 
-  // how will each participatn attend the wedding
+  // How will each Participant attend the wedding?
   readonly firstParty = this.page.locator('#partyChannel0');
   readonly secondParty = this.page.locator('#partyChannel1');
   readonly participantAttendanceSelects = this.page.locator('select[id^="partyChannel"]');
@@ -49,14 +49,6 @@ export class HearingsJourneyPage {
   readonly durationDays = this.page.locator('#durationdays');
   readonly durationHours = this.page.locator('#durationhours');
   readonly durationMinutes = this.page.locator('#durationmins');
-
-  readonly dateRangeDay = this.page.locator('#earliestHearingDate-day');
-  readonly dateRangeMonth = this.page.locator('#earliestHearingDate-month');
-  readonly dateRangeYear = this.page.locator('#earliestHearingDate-year');
-
-  readonly latestHearingDay = this.page.locator('#latestHearingDate-day');
-  readonly latestHearingMonth = this.page.locator('#latestHearingDate-month');
-  readonly latestHearingYear = this.page.locator('#latestHearingDate-year');
 
   readonly specificDateNo: Locator = this.page.locator('#noSpecificDate');
   readonly specificDateYes: Locator = this.page.locator('#hearingSingleDate');
@@ -135,16 +127,6 @@ export class HearingsJourneyPage {
   }
 
   async setHearingVenue(model: HearingJourneyModel): Promise<string> {
-    const selectedVenue = await this.selectedVenueTags
-      .first()
-      .textContent({ timeout: 1_000 })
-      .then((text) => text?.replace('Click to remove:', '').replace(/\s+/g, ' ').trim())
-      .catch(() => undefined);
-
-    if (selectedVenue) {
-      return selectedVenue;
-    }
-
     const hearingVenue = model.get('hearingVenue', 'name') as string[];
     const venueSearchTerm = hearingVenue?.[0];
 
@@ -152,10 +134,12 @@ export class HearingsJourneyPage {
       throw new Error(`Expected a hearing venue search term, got: ${JSON.stringify(hearingVenue)}`);
     }
 
-    await this.hearingVenue.fill(venueSearchTerm);
+    await this.hearingVenue.pressSequentially(venueSearchTerm);
     const venueOption = this.page.getByRole('option').filter({ hasText: venueSearchTerm }).first();
     await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
+
     const newSelectedVenue = (await venueOption.textContent())?.replace(/\s+/g, ' ').trim();
+
     if (!newSelectedVenue) {
       throw new Error(`Venue option matching "${venueSearchTerm}" did not expose visible text.`);
     }

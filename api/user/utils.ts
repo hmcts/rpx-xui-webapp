@@ -53,6 +53,10 @@ const roleCategoryRules: RoleCategoryRule[] = [
       hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER),
     result: OTHER_GOV_DEPARTMENT_ROLE_CATEGORY,
   },
+  {
+    matches: (roles) => hasRoleCategory(roles, RoleCategory.ENFORCEMENT),
+    result: RoleCategory.ENFORCEMENT,
+  },
 ];
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
@@ -87,7 +91,13 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
 }
 
 export function getRoleCategoriesFromRoleAssignments(roleAssignments: string[]): string[] {
-  const roleCategories = [RoleCategory.JUDICIAL, RoleCategory.LEGAL_OPERATIONS, RoleCategory.CTSC, RoleCategory.ADMIN];
+  const roleCategories = [
+    RoleCategory.JUDICIAL,
+    RoleCategory.LEGAL_OPERATIONS,
+    RoleCategory.CTSC,
+    RoleCategory.ADMIN,
+    RoleCategory.ENFORCEMENT,
+  ];
   const userRoleCategories = [];
   for (const roleCategory of roleCategories) {
     if (hasRoleCategory(roleAssignments, roleCategory)) {

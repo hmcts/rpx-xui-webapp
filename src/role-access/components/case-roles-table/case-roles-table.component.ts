@@ -43,6 +43,7 @@ export class CaseRolesTableComponent implements OnInit {
     this.roleCategoryTitle = this.getRoleCategoryTitle(this.roleCategory);
   }
 
+  //  TODO Move into common-lib
   public getRoleCategoryTitle(roleCategory: string): string {
     switch (roleCategory) {
       case RoleCategory.LEGAL_OPERATIONS: {
@@ -59,6 +60,10 @@ export class CaseRolesTableComponent implements OnInit {
       }
       case RoleCategory.CTSC: {
         roleCategory = 'CTSC';
+        break;
+      }
+      case RoleCategory.ENFORCEMENT: {
+        roleCategory = 'enforcement';
         break;
       }
 

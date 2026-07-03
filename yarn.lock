@@ -3021,15 +3021,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.68":
-  version: 7.3.68
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68"
+"@hmcts/ccd-case-ui-toolkit@npm:v7.3.68-govuk":
+  version: 7.3.68-govuk
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68-govuk"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/media-viewer": "npm:4.2.21"
     file-saver: "npm:^2.0.2"
-    govuk-frontend: "npm:^4.9.0"
+    govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^17.0.3"
     pegjs: "npm:^0.10.0"
@@ -3054,7 +3054,6 @@ __metadata:
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
     "@nicky-lenaers/ngx-scroll-to": ^14.0.0
-    govuk-elements-sass: ^3.1.2
     moment: ^2.30.1
     moment-timezone: ^0.5.31
     ngx-chips: ^3.0.0
@@ -3065,7 +3064,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/685ce5190a9afc4db1d1161dfb628ce5140b1e2490134c961ddf17ba46c2b39679c7bae9825ede0ed3c1887844a8a30501fc8e5b95648507cdb3492114e5d988
+  checksum: 10/7eb4d7eaf97616829d960ff0639d18bf3d34ceb9968db6d2d9974d625992a3f6e86e09cabe7d529cdcffe9b8be458a5d82d9a6d32a39f5f15caaaaf87cebaf3c
   languageName: node
   linkType: hard
 
@@ -13825,13 +13824,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^4.9.0":
-  version: 4.10.1
-  resolution: "govuk-frontend@npm:4.10.1"
-  checksum: 10/7fc16896b73134d227e3c8f6ed4017015293dd12e81262b6dea30b97156727523fb6c133f95f34461846a32cafe516cccf1d94100d936ae1c48a9059177e79cc
-  languageName: node
-  linkType: hard
-
 "graceful-fs@npm:4.1.15":
   version: 4.1.15
   resolution: "graceful-fs@npm:4.1.15"
@@ -19689,7 +19681,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68"
+    "@hmcts/ccd-case-ui-toolkit": "npm:v7.3.68-govuk"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/media-viewer": "npm:4.2.21"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"

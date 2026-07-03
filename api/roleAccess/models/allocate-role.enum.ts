@@ -11,6 +11,7 @@ export enum RoleCategory {
   ADMIN = 'ADMIN',
   CTSC = 'CTSC',
   PROFESSIONAL = 'PROFESSIONAL',
+  CITIZEN = 'CITIZEN',
 }
 
 export enum AllocateTo {

@@ -26,7 +26,13 @@ import { RoleCategory } from './models/allocate-role.enum';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
-const SUPPORTED_ROLE_CATEGORIES = [RoleCategory.LEGAL_OPERATIONS, RoleCategory.JUDICIAL, RoleCategory.CTSC, RoleCategory.ADMIN];
+const SUPPORTED_ROLE_CATEGORIES = [
+  RoleCategory.LEGAL_OPERATIONS,
+  RoleCategory.JUDICIAL,
+  RoleCategory.CTSC,
+  RoleCategory.ADMIN,
+  RoleCategory.ENFORCEMENT,
+];
 
 export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const requestPayload = getRoleCategoryRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);

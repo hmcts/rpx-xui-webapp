@@ -331,6 +331,35 @@ describe('TaskAssignmentContainerComponent', () => {
       expect(component.domain).toBe(PersonRole.ADMIN);
     });
 
+    it('should handle when role query param is ENFORCEMENT', () => {
+      const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
+      mockActivatedRoute.snapshot = {
+        data: {
+          taskAndCaseworkers: {
+            task: { task: mockTasks[0] },
+            caseworkers: [],
+          },
+          verb: TaskActionType.Reassign,
+        },
+        paramMap: {
+          get: jasmine.createSpy('get').and.returnValue('task1111111'),
+        },
+        queryParamMap: {
+          get: jasmine.createSpy('get').and.returnValues('ENFORCEMENT', 'IAC'),
+        },
+      };
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          roleCategory: 'A',
+        })
+      );
+      mockRouter.url = '/work/task1111111/reassign';
+
+      component.ngOnInit();
+
+      expect(component.domain).toBe(PersonRole.ENFORCEMENT);
+    });
+
     it('should handle when role query param is null', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {

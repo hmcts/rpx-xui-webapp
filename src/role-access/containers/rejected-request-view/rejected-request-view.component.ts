@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -29,6 +30,7 @@ export class RejectedRequestViewComponent implements OnInit {
   public caseType: string;
 
   constructor(
+    private readonly location: Location,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
@@ -98,7 +100,7 @@ export class RejectedRequestViewComponent implements OnInit {
   }
 
   public onBack(): void {
-    window.history.back();
+    this.location.back();
   }
 
   public async goToRequest(): Promise<void> {

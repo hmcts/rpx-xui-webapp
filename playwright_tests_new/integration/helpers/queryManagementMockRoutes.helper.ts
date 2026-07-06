@@ -64,6 +64,11 @@ export type QueryManagementSubmissionCapture = {
   submittedEvents: QueryManagementSubmittedEvent[];
 };
 
+type QueryManagementRouteOverride = {
+  body?: unknown;
+  status?: number;
+};
+
 type QueryManagementRouteUser = 'solicitor' | 'caseworker';
 
 type QueryManagementMockRoutesOptions = {
@@ -71,6 +76,10 @@ type QueryManagementMockRoutesOptions = {
   completableTasks?: unknown[];
   includeQueryTab?: boolean;
   queryCollection?: QueryManagementCaseQueriesCollection;
+  raiseQueryEventTrigger?: QueryManagementRouteOverride;
+  respondQueryEventTrigger?: QueryManagementRouteOverride;
+  submitQueryEvent?: QueryManagementRouteOverride;
+  validateQueryEvent?: QueryManagementRouteOverride;
   user?: QueryManagementRouteUser;
 };
 
@@ -91,6 +100,19 @@ async function fulfillJson(route: Route, body: unknown, status = 200): Promise<v
     status,
     contentType: 'application/json',
     body: JSON.stringify(body),
+  });
+}
+
+async function fulfillJsonRoute(
+  route: Route,
+  override: QueryManagementRouteOverride | undefined,
+  fallbackBody: unknown,
+  fallbackStatus = 200
+): Promise<void> {
+  await route.fulfill({
+    status: override?.status ?? fallbackStatus,
+    contentType: 'application/json',
+    body: JSON.stringify(override?.body ?? fallbackBody),
   });
 }
 
@@ -281,47 +303,55 @@ export async function setupQueryManagementMockRoutes(
   await page.route(
     `**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/event-triggers/${QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID}/validate*`,
     async (route) => {
-      await fulfillJson(route, raiseQueryEventTrigger);
+      await fulfillJsonRoute(route, options.raiseQueryEventTrigger, raiseQueryEventTrigger);
     }
   );
 
   await page.route(
     `**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/event-triggers/${QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID}*`,
     async (route) => {
-      await fulfillJson(route, raiseQueryEventTrigger);
+      await fulfillJsonRoute(route, options.raiseQueryEventTrigger, raiseQueryEventTrigger);
     }
   );
 
   await page.route(
     `**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/event-triggers/${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}/validate*`,
     async (route) => {
-      await fulfillJson(route, respondQueryEventTrigger);
+      await fulfillJsonRoute(route, options.respondQueryEventTrigger, respondQueryEventTrigger);
     }
   );
 
   await page.route(
     `**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/event-triggers/${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}*`,
     async (route) => {
-      await fulfillJson(route, respondQueryEventTrigger);
+      await fulfillJsonRoute(route, options.respondQueryEventTrigger, respondQueryEventTrigger);
     }
   );
 
   await page.route(`**/data/case-types/${QUERY_MANAGEMENT_CASE_TYPE}/validate*`, async (route) => {
-    await fulfillJson(route, buildQueryManagementValidationResponse(route));
+    await fulfillJsonRoute(route, options.validateQueryEvent, buildQueryManagementValidationResponse(route));
   });
 
   await page.route(`**/data/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/events*`, async (route) => {
     const submittedEvent = route.request().postDataJSON?.() as QueryManagementSubmittedEvent;
     capture.submittedEvents.push(submittedEvent);
+    const successfulSubmit =
+      !options.submitQueryEvent?.status || (options.submitQueryEvent.status >= 200 && options.submitQueryEvent.status < 300);
 
-    const submittedQueryCollection = submittedEvent.data?.[QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID] as
-      | QueryManagementCaseQueriesCollection
-      | undefined;
-    if (submittedQueryCollection) {
-      queryCollection = submittedQueryCollection;
+    if (successfulSubmit) {
+      const submittedQueryCollection = submittedEvent.data?.[QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID] as
+        | QueryManagementCaseQueriesCollection
+        | undefined;
+      if (submittedQueryCollection) {
+        queryCollection = submittedQueryCollection;
+      }
     }
 
-    await fulfillJson(route, buildQueryManagementCreateEventResponse(route, buildCaseDetails()));
+    await fulfillJsonRoute(
+      route,
+      options.submitQueryEvent,
+      successfulSubmit ? buildQueryManagementCreateEventResponse(route, buildCaseDetails()) : { message: 'query-submit-failed' }
+    );
   });
 
   return capture;

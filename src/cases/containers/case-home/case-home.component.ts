@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import {
   AlertService,
   ErrorNotifierService,
@@ -6,15 +7,17 @@ import {
   LoadingService as CCDLoadingService,
   NavigationNotifierService,
   NavigationOrigin,
+  FocusService,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { GoActionParams } from '../../../cases/models/go-action-params.model';
-
+import { HeaderComponent } from '../../../app/components';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
+import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
 
 @Component({
   standalone: false,
@@ -30,13 +33,18 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
 
   public showSpinner$: Observable<boolean>;
 
+  private routerEventSubscription: Subscription;
+
   constructor(
     private readonly alertService: AlertService,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly navigationNotifier: NavigationNotifierService,
     private readonly store: Store<fromFeature.State>,
     private readonly commonLibLoadingService: CommonLibLoadingService,
-    private readonly ccdLibLoadingService: CCDLoadingService
+    private readonly ccdLibLoadingService: CCDLoadingService,
+    private readonly focusService: FocusService,
+    private readonly router: Router,
+    private readonly decentralisedRedirectService: DecentralisedRedirectService
   ) {}
 
   /**
@@ -48,7 +56,21 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     this.navigationSubscription = this.navigationNotifier.navigation.subscribe((navigation) => {
-      if (navigation.action) {
+      if (!navigation.action) {
+        return;
+      }
+
+      const isRedirected =
+        navigation.action === NavigationOrigin.EVENT_TRIGGERED &&
+        this.decentralisedRedirectService.tryEventRedirect({
+          caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.snapshot.data?.case?.case_type?.id,
+          eventId: navigation.etid,
+          caseId: navigation.relativeTo.snapshot.params.cid,
+          queryParams: navigation.queryParams,
+          isCaseCreate: false,
+        });
+
+      if (!isRedirected) {
         this.actionDispatcher(this.paramHandler(navigation));
       }
     }) as any;
@@ -59,6 +81,13 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       delay(0),
       map((states) => states.reduce((c, s) => c || s, false))
     );
+
+    this.routerEventSubscription = this.router.events.subscribe((event) => {
+      // do not focus if coming from the header skip link, since that is where focus will go to
+      if (event instanceof NavigationEnd && !HeaderComponent.isSkipToMainContent(event.url)) {
+        this.focusService.focus();
+      }
+    });
   }
 
   public ngOnDestroy(): void {
@@ -67,6 +96,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       this.navigationNotifier.announceNavigation({});
       this.navigationSubscription.unsubscribe();
     }
+
+    this.routerEventSubscription?.unsubscribe();
   }
 
   // TODO: please revisit
@@ -102,8 +133,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
             'cases',
             'case-details',
             navigation.relativeTo.snapshot.params.jurisdiction ??
-              navigation.relativeTo.data?.value?.case?.case_type?.jurisdiction?.id,
-            navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
+              navigation.relativeTo.snapshot.data?.case?.case_type?.jurisdiction?.id,
+            navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.snapshot.data?.case?.case_type?.id,
             navigation.relativeTo.snapshot.params.cid,
             'trigger',
             navigation.etid,

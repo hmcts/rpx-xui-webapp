@@ -3021,14 +3021,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.68":
-  version: 7.3.68
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.69-library-update":
+  version: 7.3.69-library-update
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.69-library-update"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/media-viewer": "npm:4.2.21"
-    file-saver: "npm:^2.0.2"
+    file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^17.0.3"
@@ -3065,7 +3065,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/685ce5190a9afc4db1d1161dfb628ce5140b1e2490134c961ddf17ba46c2b39679c7bae9825ede0ed3c1887844a8a30501fc8e5b95648507cdb3492114e5d988
+  checksum: 10/5d2d450004894bf8202e02fc941d40c375f17b60c30a759189e483ddf844c424dee27191f68d4e9d50d312993359a816d78c861cd2aa7fe542686ec2f9d6bdda
   languageName: node
   linkType: hard
 
@@ -13247,7 +13247,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-saver@npm:^2.0.2":
+"file-saver@npm:^2.0.5":
   version: 2.0.5
   resolution: "file-saver@npm:2.0.5"
   checksum: 10/fbba443d9b682fec0be6676c048a7ac688b9bd33b105c02e8e1a1cb3e354ed441198dc1f15dcbc137fa044bea73f8a7549f2617e3a952fa7d96390356d54a7c3
@@ -19739,7 +19739,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.69-library-update"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.21"
@@ -19804,7 +19804,7 @@ __metadata:
     exceljs: "npm:^4.4.0"
     exception-formatter: "npm:1.0.7"
     express: "npm:^5.2.1"
-    file-saver: "npm:^2.0.2"
+    file-saver: "npm:^2.0.5"
     get-port: "npm:^7.0.0"
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^4.1.3"

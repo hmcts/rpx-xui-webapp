@@ -195,7 +195,6 @@ const menuFlags = {
   MC_Work_Allocation: true,
   MC_Notice_of_Change: true,
   'feature-global-search': true,
-  'mc-work-allocation-active-feature': 'WorkAllocationRelease2',
   'feature-refunds': true,
 };
 

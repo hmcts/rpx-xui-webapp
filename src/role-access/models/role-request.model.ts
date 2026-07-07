@@ -1,3 +1,5 @@
+import { RoleCategory } from '@hmcts/ccd-case-ui-toolkit';
+
 export interface RoleRequestPayload {
   roleRequest: RoleRequest;
   requestedRoles: RequestedRole[];
@@ -31,8 +33,6 @@ export interface RequestedRoleNote {
   time: Date;
   comment: string;
 }
-
-export type RoleCategory = 'JUDICIAL' | 'LEGAL_OPERATIONS' | 'ADMIN' | 'PROFESSIONAL';
 
 export type RoleGrantTypeCategory = 'BASIC' | 'STANDARD' | 'SPECIFIC' | 'CHALLENGED' | 'EXCLUDED';
 

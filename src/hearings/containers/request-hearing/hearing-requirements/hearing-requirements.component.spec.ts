@@ -49,6 +49,7 @@ class MockHearingPartiesComponent {
 
 describe('HearingRequirementsComponent', () => {
   const serviceHearingValuesModel: ServiceHearingValuesModel = {
+    caseId: '1234567890',
     hmctsServiceID: 'BBA3',
     hmctsInternalCaseName: 'Jane vs DWP',
     publicCaseName: 'Jane vs DWP',
@@ -852,7 +853,7 @@ describe('HearingRequirementsComponent', () => {
         lastError: null,
       },
       hearingConditions: {
-        caseId: '1111222233334444',
+        caseId: '1234567890',
         mode: 'create',
         isInit: true,
         fragmentId: 'venue',
@@ -2365,7 +2366,7 @@ describe('HearingRequirementsComponent', () => {
       },
       caseDetails: {
         hmctsServiceCode: 'BBA3',
-        caseRef: '1111222233334444',
+        caseRef: '1234567890',
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
@@ -2631,7 +2632,16 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0042', 'RA0053', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID, 'RA0013', 'RA0016', 'RA0042'],
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID,
+            'RA0013',
+            'RA0016',
+            'RA0042',
+            'SM0001',
+            'service-defined-flag',
+          ],
           interpreterLanguage: 'POR',
         },
       },
@@ -2669,7 +2679,15 @@ describe('HearingRequirementsComponent', () => {
     // Assert
     expect(result.length).toEqual(2);
     const transformedPartyDetails = _.cloneDeep(partyDetails);
-    transformedPartyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
+    transformedPartyDetails[0].individualDetails.reasonableAdjustments = [
+      'RA0042',
+      'RA0053',
+      'RA0013',
+      'RA0016',
+      'RA0042',
+      'SM0001',
+      'service-defined-flag',
+    ];
     transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
     expect(result).toEqual(transformedPartyDetails);
   });
@@ -2694,6 +2712,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'create',
     };
     const serviceHearingValuesModel: ServiceHearingValuesModel = {
+      caseId: '1234567890',
       hmctsServiceID: 'BBA3',
       hmctsInternalCaseName: 'Jane vs DWP',
       publicCaseName: 'Jane vs DWP',

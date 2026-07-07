@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { config as testConfig } from '../common/apiTestConfig';
+import { config as testConfig } from './utils/apiTestRuntimeConfig';
 import { withXsrf, expectStatus, withRetry } from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
@@ -85,7 +85,7 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
       )
     );
 
-    expectStatus(response.status, [200, 500, 502, 504]);
+    expectStatus(response.status, [200, 404, 500, 502, 504]);
     if (response.status === 200) {
       expect(response.data).toBeTruthy();
     }

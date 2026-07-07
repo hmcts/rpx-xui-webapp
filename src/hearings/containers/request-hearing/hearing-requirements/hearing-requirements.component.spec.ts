@@ -2632,7 +2632,16 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0042', 'RA0053', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID, 'RA0013', 'RA0016', 'RA0042'],
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID,
+            'RA0013',
+            'RA0016',
+            'RA0042',
+            'SM0001',
+            'service-defined-flag',
+          ],
           interpreterLanguage: 'POR',
         },
       },
@@ -2670,7 +2679,15 @@ describe('HearingRequirementsComponent', () => {
     // Assert
     expect(result.length).toEqual(2);
     const transformedPartyDetails = _.cloneDeep(partyDetails);
-    transformedPartyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
+    transformedPartyDetails[0].individualDetails.reasonableAdjustments = [
+      'RA0042',
+      'RA0053',
+      'RA0013',
+      'RA0016',
+      'RA0042',
+      'SM0001',
+      'service-defined-flag',
+    ];
     transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
     expect(result).toEqual(transformedPartyDetails);
   });

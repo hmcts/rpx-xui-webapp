@@ -8,6 +8,8 @@ import {
   getDestinationUrl,
   getLabel,
   getOptions,
+  getRoleAllocationCaption,
+  getRoleCategory,
   getRoleCategoryToBeSelectedByDefault,
   handleFatalErrors,
   handleTasksFatalErrors,
@@ -221,11 +223,31 @@ describe('WorkAllocationUtils', () => {
     label = getLabel(RoleCategory.JUDICIAL);
     expect(label).toEqual('Judicial');
 
+    expect(getLabel(RoleCategory.CTSC)).toEqual('CTSC');
+    expect(getLabel(RoleCategory.ENFORCEMENT)).toEqual('Enforcement');
+
     try {
       getLabel('some' as RoleCategory);
     } catch (error) {
       expect(error.message).toContain('Invalid roleCategory');
     }
+  });
+
+  it('get the role allocation caption', () => {
+    expect(getRoleAllocationCaption(RoleCategory.CTSC)).toEqual('Allocate a CTSC role');
+    expect(getRoleAllocationCaption(RoleCategory.ENFORCEMENT)).toEqual('Allocate an enforcement role');
+    expect(getRoleAllocationCaption(RoleCategory.ADMIN)).toEqual('Allocate an admin role');
+    expect(getRoleAllocationCaption(RoleCategory.JUDICIAL)).toEqual('Allocate a judicial role');
+    expect(getRoleAllocationCaption(RoleCategory.LEGAL_OPERATIONS)).toEqual('Allocate a legal ops role');
+  });
+
+  it('get the role category', () => {
+    expect(getRoleCategory(PersonRole.JUDICIAL)).toEqual(RoleCategory.JUDICIAL);
+    expect(getRoleCategory(PersonRole.LEGAL_OPERATIONS)).toEqual(RoleCategory.LEGAL_OPERATIONS);
+    expect(getRoleCategory(PersonRole.ADMIN)).toEqual(RoleCategory.ADMIN);
+    expect(getRoleCategory(PersonRole.CTSC)).toEqual(RoleCategory.CTSC);
+    expect(getRoleCategory(PersonRole.ENFORCEMENT)).toEqual(RoleCategory.ENFORCEMENT);
+    expect(getRoleCategory('Missing Role')).toBeNull();
   });
 
   it('should attempt to navigate to the correct error page for task related errors', () => {

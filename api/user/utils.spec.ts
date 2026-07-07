@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants';
+import { CASE_ALLOCATOR_ROLE } from './constants';
 import { getOrganisationRoles, getUserRoleCategory, isCurrentUserCaseAllocator, userDetailsValid } from './utils';
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 
 describe('user.utils', () => {
   describe('isCurrentUserCaseAllocator without jurisdiction and location', () => {
@@ -13,7 +14,7 @@ describe('user.utils', () => {
         roleName: CASE_ALLOCATOR_ROLE,
         classification: 'PUBLIC',
         grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
@@ -33,7 +34,7 @@ describe('user.utils', () => {
         roleName: 'ROLE',
         classification: 'PUBLIC',
         grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
@@ -55,7 +56,7 @@ describe('user.utils', () => {
         roleName: CASE_ALLOCATOR_ROLE,
         classification: 'PUBLIC',
         grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
@@ -75,7 +76,7 @@ describe('user.utils', () => {
         roleName: CASE_ALLOCATOR_ROLE,
         classification: 'PUBLIC',
         grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         readOnly: false,
         created: new Date(2021, 9, 8),
         attributes: {
@@ -110,7 +111,7 @@ describe('user.utils', () => {
           roleName: 'SOME_ROLE',
           classification: 'PUBLIC',
           grantType: 'STANDARD',
-          roleCategory: LEGAL_OPS_TYPE,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
           readOnly: false,
           created: new Date(2021, 9, 8),
           attributes: {
@@ -126,7 +127,7 @@ describe('user.utils', () => {
           roleName: CASE_ALLOCATOR_ROLE,
           classification: 'PUBLIC',
           grantType: 'STANDARD',
-          roleCategory: LEGAL_OPS_TYPE,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
           readOnly: false,
           created: new Date(2021, 9, 8),
           attributes: {
@@ -154,6 +155,11 @@ describe('user.utils', () => {
         'task-supervisor',
       ];
       expect(getUserRoleCategory(roles)).to.equal('admin');
+    });
+
+    it('should return the enforcement category in lower case', () => {
+      const roles = ['caseworker-ia', 'ENFORCEMENT'];
+      expect(getUserRoleCategory(roles)).to.equal('enforcement');
     });
   });
 

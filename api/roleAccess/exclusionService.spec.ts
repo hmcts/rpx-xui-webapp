@@ -203,7 +203,7 @@ describe('exclusions.exclusionService', () => {
             caseType: ['Asylum'],
             jurisdiction: ['IA'],
           },
-          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'],
+          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN', 'ENFORCEMENT'],
         },
       ],
     } as unknown as EnhancedRequest;

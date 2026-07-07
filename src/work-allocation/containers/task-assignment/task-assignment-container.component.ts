@@ -147,6 +147,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     document.getElementById(eId).focus();
   }
 
+  // TODO move into common-lib and rename to be more meaningful
   private setDomain(role: RoleCategory): PersonRole {
     if (role === RoleCategory.JUDICIAL) {
       return PersonRole.JUDICIAL;
@@ -154,6 +155,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
       return PersonRole.LEGAL_OPERATIONS;
     } else if (role === RoleCategory.ADMIN) {
       return PersonRole.ADMIN;
+    } else if (role === RoleCategory.ENFORCEMENT) {
+      return PersonRole.ENFORCEMENT;
     }
     return PersonRole.ALL;
   }

@@ -1,29 +1,24 @@
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { allContainOnlySafeCharacters, containsDangerousCode } from '../utils';
 import { CASE_ALLOCATOR_ROLE, ORGANISATION_ROLE_TYPE } from './constants';
 import { RoleAssignment } from './interfaces/roleAssignment';
 
 export const JUDGE_ROLE = 'judge';
-export const JUDGE_ROLE_CATEGORY = 'JUDICIAL';
 export const JUDGE_ROLE_NAME = 'judicial';
 export const JUDICIARY_ROLE_NAME = 'judiciary';
 export const ADMIN_ROLE = 'admin';
-export const ADMIN_ROLE_CATEGORY = 'ADMIN';
 export const ADMIN_ROLE_NAME = 'admin';
 export const PROFESSIONAL_ROLE = 'solicitor';
 export const PUI_CASE_MANAGER = 'pui-case-manager';
 export const PUI_ORG_MANAGER = 'pui-organisation-manager';
-export const PROFESSIONAL_ROLE_CATEGORY = 'PROFESSIONAL';
 export const PROFESSIONAL_ROLE_NAME = 'professional';
 export const LEGAL_OPERATIONS_ROLE = 'caseworker';
-export const LEGAL_OPERATIONS_ROLE_CATEGORY = 'LEGAL_OPERATIONS';
 export const LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
 export const TASK_SUPERVISOR = 'task-supervisor';
 export const CITIZEN_ROLE = 'citizen';
-export const CITIZEN_ROLE_CATEGORY = 'CITIZEN';
 export const CITIZEN_ROLE_NAME = 'citizen';
 export const CTSC_ROLE = 'ctsc';
-export const CTSC_ROLE_CATEGORY = 'CTSC';
 export const CTSC_ROLE_NAME = 'ctsc';
 export const OTHER_GOV_DEPARTMENT_ROLE = 'other_gov_department';
 export const SSCS_DWP_RESPONSE_WRITER = 'caseworker-sscs-dwpresponsewriter';
@@ -62,7 +57,13 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
 }
 
 export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
-  const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CTSC_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
+  const roleCategories = [
+    RoleCategory.JUDICIAL,
+    RoleCategory.LEGAL_OPERATIONS,
+    RoleCategory.CTSC,
+    RoleCategory.ADMIN,
+    RoleCategory.ENFORCEMENT,
+  ];
   for (const roleCategory of roleCategories) {
     if (hasRoleCategory(roleAssignments, roleCategory)) {
       return roleCategory;
@@ -93,6 +94,8 @@ export function getUserRoleCategory(roles: string[]): string {
     hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER)
   ) {
     return OTHER_GOV_DEPARTMENT_ROLE;
+  } else if (hasRoleCategory(roles, RoleCategory.ENFORCEMENT)) {
+    return RoleCategory.ENFORCEMENT.toLowerCase();
   }
 
   return LEGAL_OPERATIONS_ROLE_NAME;

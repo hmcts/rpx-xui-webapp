@@ -4,10 +4,7 @@ import { platformServicesHeaderScenarios, setupPlatformServicesCaseListRoutes, v
 test.describe('platform services header parity', { tag: ['@integration', '@integration-platform-services'] }, () => {
   for (const scenario of platformServicesHeaderScenarios) {
     test(`renders ${scenario.name}`, async ({ caseListPage, page }) => {
-      await setupPlatformServicesCaseListRoutes(page, {
-        userId: scenario.userIdentifier,
-        roles: [...scenario.roles],
-      });
+      await setupPlatformServicesCaseListRoutes(page, scenario);
 
       await caseListPage.navigateTo();
       await expect(caseListPage.exuiHeader.header).toBeVisible();

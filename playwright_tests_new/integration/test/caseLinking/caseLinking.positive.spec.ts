@@ -78,8 +78,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
   test('allows a judiciary user to open the Link cases event from case details', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      userIdentifier: 'IAC_Judge_WA_R1',
-      userRoles: ['hmcts-judiciary'],
+      userRoles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge', 'hmcts-judiciary'],
     });
 
     await caseDetailsPage.openLinkCasesEvent();

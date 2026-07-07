@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import headerConfigTemplate from './fixtures/hearings/baseConfig.js';
 
 const require = createRequire(import.meta.url);
 const { EXUISectionStatusEnum, HMCStatus } = require('../../../src/hearings/models/hearings.enum');
@@ -7,7 +8,6 @@ const hearingsListTemplate = require('./fixtures/hearings/caseHearings.json');
 const listedHearingTemplate = require('./fixtures/hearings/mock_HMC_setup.json');
 const serviceHearingValuesTemplate = require('./fixtures/hearings/mock_SHV_setup.json');
 const appConfigTemplate = require('../../../src/assets/config/config.json');
-const headerConfigTemplate = require('./fixtures/hearings/baseConfig.js');
 const hearingTestData = require('../../../src/hearings/hearing.test.data');
 
 export const HEARINGS_CASE_REFERENCE = '1234567812345678';

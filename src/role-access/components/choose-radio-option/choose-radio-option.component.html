@@ -15,7 +15,7 @@
     <legend class="hidden-legend" *ngIf="title && showHeading">{{ title }}</legend>
     <p *ngIf="description">{{ description }}</p>
     <p [id]="radioControlName + '-error'" class="govuk-error-message" *ngIf="formGroup.get(radioControlName).errors && submitted">
-      <span class="govuk-visually-hidden">Error:</span>{{ errorText }}
+      <span class="govuk-visually-hidden">Error:</span> {{ errorText }}
     </p>
     <div class="govuk-radios">
       <div *ngFor="let option of optionsList" class="govuk-radios__item">

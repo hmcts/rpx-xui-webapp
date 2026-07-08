@@ -7,7 +7,9 @@ import {
   setupFastCaseRetrievalConfigRoute,
   setupGlobalSearchMockRoutes,
   submitHeaderQuickSearch,
+  restrictedCaseAccessContainerHelper,
 } from '../../helpers';
+
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { formatCaseNumberWithDashes } from '../../../E2E/utils/validator.utils';
 import {
@@ -33,19 +35,7 @@ const RESTRICTED_ACCESS_FAILURE_STATUSES = [400, 403, 500] as const;
 
 async function expectRestrictedAccessShellWithoutRows(page: Page, caseDetailsPage: CaseDetailsPage): Promise<void> {
   await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
-  await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
-  expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
-    formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
-  );
-  await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
-
-  const table = caseDetailsPage.exuiBodyComponent.table;
-  await expect(table.locator('thead th, thead td')).toHaveCount(3);
-  await expect(table.locator('thead th, thead td').nth(0)).toHaveText('User');
-  await expect(table.locator('thead th, thead td').nth(1)).toHaveText('Case role');
-  await expect(table.locator('thead th, thead td').nth(2)).toHaveText('Email address');
-  await expect(table.locator('tbody tr')).toHaveCount(0);
+  await restrictedCaseAccessContainerHelper(page, caseDetailsPage);
 }
 
 test.beforeEach(async ({ page }) => {

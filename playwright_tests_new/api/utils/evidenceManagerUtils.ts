@@ -1,7 +1,7 @@
 import { expect, request as playwrightRequest } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
 
-import { config } from '../../common/apiTestConfig';
+import { config } from './apiTestRuntimeConfig';
 import { ensureStorageState, getStoredCookie } from './auth';
 import { expectAnnotationShape, expectBookmarkShape } from './assertions';
 import { AnnotationPayload, BookmarkPayload } from './types';

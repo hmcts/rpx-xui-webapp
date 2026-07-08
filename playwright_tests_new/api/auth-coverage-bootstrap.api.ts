@@ -11,15 +11,16 @@ import { withEnv } from './utils/testEnv';
 
 type FakeResponse = {
   status: () => number;
+  headers?: () => Record<string, string>;
   url?: () => string;
   text?: () => Promise<string>;
   json?: () => Promise<unknown>;
 };
 
 type FakeRequestContext = {
-  get: (url: string) => Promise<FakeResponse>;
-  post: (url: string, opts?: unknown) => Promise<FakeResponse>;
-  storageState: (opts?: unknown) => Promise<void>;
+  get: (url: string, opts?: Record<string, unknown>) => Promise<FakeResponse>;
+  post: (url: string, opts?: Record<string, unknown>) => Promise<FakeResponse>;
+  storageState: (opts?: { path?: string }) => Promise<void>;
   dispose: () => Promise<void>;
 };
 
@@ -29,7 +30,7 @@ function createFormLoginContext(
   loginStatus: number,
   postStatus: number,
   html: string,
-  isAuthenticated = true,
+  isAuthenticated: unknown | unknown[] = true,
   authStatus = 200
 ): FakeRequestContext {
   const loginPage: FakeResponse = {
@@ -37,6 +38,7 @@ function createFormLoginContext(
     url: () => 'https://example.test/login',
     text: async () => html,
   };
+  const authResponses = Array.isArray(isAuthenticated) ? [...isAuthenticated] : [isAuthenticated];
 
   return {
     get: async (url: string) => {
@@ -44,7 +46,12 @@ function createFormLoginContext(
         return loginPage;
       }
       if (url === 'auth/isAuthenticated') {
-        return { status: statusFn(authStatus), json: async () => isAuthenticated };
+        const value = authResponses.length > 1 ? authResponses.shift() : authResponses[0];
+        return {
+          status: statusFn(authStatus),
+          headers: () => ({ 'content-type': 'application/json' }),
+          text: async () => JSON.stringify(value),
+        };
       }
       return { status: statusFn(200) };
     },
@@ -104,22 +111,97 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
   test('createStorageStateViaForm handles csrf and login errors', async () => {
     await expect(
       authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
-        requestFactory: async () => createFormLoginContext(400, 200, '') as any,
+        requestFactory: async () => createFormLoginContext(400, 200, ''),
       })
     ).rejects.toThrow('GET /auth/login');
 
     await expect(
       authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
-        requestFactory: async () => createFormLoginContext(200, 401, '') as any,
+        requestFactory: async () => createFormLoginContext(200, 401, ''),
       })
     ).rejects.toThrow('POST https://example.test/login');
 
     await authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
-      requestFactory: async () => createFormLoginContext(200, 200, '<input name="_csrf" value="token">') as any,
+      requestFactory: async () => createFormLoginContext(200, 200, '<input name="_csrf" value="token">'),
     });
 
     await authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
-      requestFactory: async () => createFormLoginContext(200, 200, '<html></html>') as any,
+      requestFactory: async () => createFormLoginContext(200, 200, '<html></html>'),
+    });
+  });
+
+  test('createStorageStateViaForm waits for post-login authentication readiness', async () => {
+    const authChecks: string[] = [];
+    const context = createFormLoginContext(200, 200, '<html></html>', [false, false, true]);
+    await authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
+      authCheckAttempts: 3,
+      authCheckDelayMs: 0,
+      requestFactory: async () => ({
+        ...context,
+        get: async (url: string) => {
+          authChecks.push(url);
+          return context.get(url);
+        },
+      }),
+    });
+
+    expect(authChecks.filter((url) => url === 'auth/isAuthenticated')).toHaveLength(3);
+  });
+
+  test('waitForAuthenticated ignores invalid env retry values', async () => {
+    const authChecks: string[] = [];
+    await withEnv(
+      {
+        API_AUTH_CHECK_ATTEMPTS: 'invalid',
+        API_AUTH_CHECK_DELAY_MS: 'invalid',
+      },
+      async () => {
+        await expect(
+          authTest.waitForAuthenticated({
+            get: async (url: string) => {
+              authChecks.push(url);
+              return {
+                status: statusFn(200),
+                headers: () => ({ 'content-type': 'application/json' }),
+                text: async () => JSON.stringify(true),
+              };
+            },
+          })
+        ).resolves.toMatchObject({ isAuthenticated: true, status: 200 });
+      }
+    );
+
+    expect(authChecks).toEqual(['auth/isAuthenticated']);
+  });
+
+  test('readAuthCheck accepts boolean response variants and reports 200 HTML as unauthenticated', async () => {
+    await expect(
+      authTest.readAuthCheck({
+        status: () => 200,
+        headers: () => ({ 'content-type': 'application/json' }),
+        text: async () => 'true',
+      })
+    ).resolves.toMatchObject({ isAuthenticated: true, status: 200 });
+
+    await expect(
+      authTest.readAuthCheck({
+        status: () => 200,
+        headers: () => ({ 'content-type': 'application/json' }),
+        text: async () => '{"isAuthenticated":true}',
+      })
+    ).resolves.toMatchObject({ isAuthenticated: true, status: 200 });
+
+    await expect(
+      authTest.readAuthCheck({
+        status: () => 200,
+        headers: () => ({ 'content-type': 'text/html' }),
+        text: async () => '<html><title>Sign in</title></html>',
+      })
+    ).resolves.toMatchObject({
+      isAuthenticated: false,
+      status: 200,
+      contentType: 'text/html',
+      bodyPreview: '<html><title>Sign in</title></html>',
     });
   });
 
@@ -139,6 +221,7 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
         }
         return { status: () => 200 };
       },
+      post: async () => ({ status: () => 200 }),
       storageState: async () => {},
       dispose: async () => {},
     };
@@ -155,7 +238,7 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
       env: mockEnv,
       idamUtils: { generateIdamToken: async () => 'mock-token' },
       serviceAuthUtils: { retrieveToken: async () => 'mock-service-token' },
-      requestFactory: async () => context as any,
+      requestFactory: async () => context,
       logger,
       readState: async () => ({ cookies: [{ name: 'a' }] }),
     });
@@ -163,6 +246,7 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
 
     const authFailContext = {
       get: async () => ({ status: () => 401, json: async () => true }),
+      post: async () => ({ status: () => 200 }),
       storageState: async () => {},
       dispose: async () => {},
     };
@@ -170,7 +254,7 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
       env: mockEnv,
       idamUtils: { generateIdamToken: async () => 'mock-token' },
       serviceAuthUtils: { retrieveToken: async () => 'mock-service-token' },
-      requestFactory: async () => authFailContext as any,
+      requestFactory: async () => authFailContext,
       logger,
       readState: async () => ({ cookies: [{ name: 'a' }] }),
     });

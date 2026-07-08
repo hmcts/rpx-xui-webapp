@@ -76,3 +76,16 @@ export function resolveHearingManagerUserIdentifier(
 
   return configuredUserIdentifiers[resolveParallelIndex(source, env) % configuredUserIdentifiers.length];
 }
+
+export function resolveHearingManagerSessionCandidates(
+  userIdentifier: HearingManagerUserIdentifier,
+  source?: ParallelIndexSource,
+  env: EnvMap = process.env
+): HearingManagerUserIdentifier[] {
+  const selected = resolveHearingManagerUserIdentifier(userIdentifier, source, env);
+  if (userIdentifier !== HEARING_MANAGER_CR84_ON_USER && userIdentifier !== HEARING_MANAGER_CR84_OFF_USER) {
+    return [selected];
+  }
+
+  return Array.from(new Set([selected, ...getConfiguredHearingManagerUserIdentifiers(userIdentifier, env), userIdentifier]));
+}

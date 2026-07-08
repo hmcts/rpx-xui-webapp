@@ -59,30 +59,9 @@ module "application_insights" {
   location            = var.location
   application_type    = var.application_type
   resource_group_name = azurerm_resource_group.rg.name
+  sampling_percentage = var.sampling_percentage
 
   common_tags = var.common_tags
-}
-
-moved {
-  from = azurerm_application_insights.appinsights
-  to   = module.application_insights.azurerm_application_insights.this
-}
-
-resource "azurerm_application_insights" "appinsight" {
-  name                = "${local.app_full_name}-appinsights-${var.env}-classic"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  application_type    = var.application_type
-
-  tags = var.common_tags
-
-  lifecycle {
-    ignore_changes = [
-      # Ignore changes to appinsights as otherwise upgrading to the Azure provider 2.x
-      # destroys and re-creates this appinsights instance
-      application_type,
-    ]
-  }
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -94,7 +73,7 @@ resource "azurerm_resource_group" "rg" {
 
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
-  value        = azurerm_application_insights.appinsight.instrumentation_key
+  value        = module.application_insights.instrumentation_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
@@ -135,4 +114,3 @@ locals {
   exui_throughput_stats_emails = var.exui_throughput_stats_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_throughput_stats_email.0.value)) : []
   exui_pui_activations_emails  = var.exui_pui_activations_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_pui_activations_email.0.value)) : []
 }
-

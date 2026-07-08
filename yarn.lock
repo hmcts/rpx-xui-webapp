@@ -2389,18 +2389,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dr.pogodin/csurf@npm:^1.14.0":
-  version: 1.17.1
-  resolution: "@dr.pogodin/csurf@npm:1.17.1"
-  dependencies:
-    "@babel/runtime": "npm:^7.29.7"
-    cookie: "npm:^1.1.1"
-    cookie-signature: "npm:^1.2.2"
-    http-errors: "npm:^2.0.1"
-  checksum: 10/6c7cf5e2b96436524f14a35f484e58dc82525aa33b3d602fbd1bc87fafbba49c5fc71560125dff4651cf834a28e9fe590ff30534d8a79cede69354584a191f8d
-  languageName: node
-  linkType: hard
-
 "@dr.pogodin/csurf@npm:^1.16.5":
   version: 1.16.6
   resolution: "@dr.pogodin/csurf@npm:1.16.6"
@@ -2413,6 +2401,18 @@ __metadata:
     tsscmp: "npm:1.0.6"
     uid-safe: "npm:2.1.5"
   checksum: 10/87290809819dcf10890160d49af971aae047d6d5d87e185ce3f4560525b29f7edf9ecde2e2c0f277b313f53bee39a1fe691471b62de3dbbea3866266b0731d3e
+  languageName: node
+  linkType: hard
+
+"@dr.pogodin/csurf@npm:^1.17.1":
+  version: 1.17.1
+  resolution: "@dr.pogodin/csurf@npm:1.17.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.29.7"
+    cookie: "npm:^1.1.1"
+    cookie-signature: "npm:^1.2.2"
+    http-errors: "npm:^2.0.1"
+  checksum: 10/6c7cf5e2b96436524f14a35f484e58dc82525aa33b3d602fbd1bc87fafbba49c5fc71560125dff4651cf834a28e9fe590ff30534d8a79cede69354584a191f8d
   languageName: node
   linkType: hard
 
@@ -3209,11 +3209,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.17":
-  version: 2.30.17
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.17"
+"@hmcts/rpx-xui-node-lib@npm:2.30.19-dr-pogodin-csurf-update":
+  version: 2.30.19-dr-pogodin-csurf-update
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.19-dr-pogodin-csurf-update"
   dependencies:
-    "@dr.pogodin/csurf": "npm:^1.14.0"
+    "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.16.0"
     connect-redis: "npm:^4.0.4"
     debug: "npm:^4.3.7"
@@ -3230,7 +3230,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/6b97f74bb32890f2d95147e0287b5a33eb8ad3a6d868f09e6046b2097d5c4c235a52d626ce7af93ea3a188b4ef325117dfee690c7f12de3140f3442504e6c4ef
+  checksum: 10/bf244fe59938c86e1a79fc27f61fbc2550b3108faad955c5af4727bccff1fec5a3572a5daae795971165412f170583c161be4c4e2245e0a3afc0d5236cb4b4d3
   languageName: node
   linkType: hard
 
@@ -19762,7 +19762,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.12"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.17"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.19-dr-pogodin-csurf-update"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

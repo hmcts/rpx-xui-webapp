@@ -3036,13 +3036,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.70":
-  version: 7.3.70
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.70"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.68-govuk7":
+  version: 7.3.68-govuk7
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68-govuk7"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
-    "@hmcts/media-viewer": "npm:4.2.23"
+    "@hmcts/media-viewer": "npm:4.2.21"
     file-saver: "npm:^2.0.2"
     govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
@@ -3079,7 +3079,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/876dad292ecd383fd4048ea3233144215c33a4090b86ca45bff46556a67f4736e3f7d5c09f9aaf776b213560ae05fa5dc0d14ed3dc40d2216f17b4fe7ec6d404
+  checksum: 10/6e2531e9af6aba6e4af57cad6551929e861d8e3756d38ec0a802aadeb8c1b5b1a21603e669dca531f9ec0407c34a5ed7d5ea4c50147e7b94980231f870162cc3
   languageName: node
   linkType: hard
 
@@ -3095,9 +3095,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.23":
-  version: 4.2.23
-  resolution: "@hmcts/media-viewer@npm:4.2.23"
+"@hmcts/media-viewer@npm:4.2.21":
+  version: 4.2.21
+  resolution: "@hmcts/media-viewer@npm:4.2.21"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^20.0.0"
+    moment-timezone: "npm:^0.5.28"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.0.3"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.3
+    rxjs: ^7.8.1
+  checksum: 10/537dac35ec49f0a94e6b3377fd3a7c6ae758a47bcc2e4e1674fb563844d9f7fbe442b6e838e49c8f9646e78fef45ecbaa6071b1dfcd7360360cfda56ff224998
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.24":
+  version: 4.2.24
+  resolution: "@hmcts/media-viewer@npm:4.2.24"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -19725,7 +19754,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.70"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68-govuk7"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/media-viewer": "npm:4.2.24"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"

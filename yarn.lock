@@ -3036,13 +3036,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.68-govuk7":
-  version: 7.3.68-govuk7
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68-govuk7"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.70":
+  version: 7.3.70
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.70"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
-    "@hmcts/media-viewer": "npm:4.2.21"
+    "@hmcts/media-viewer": "npm:4.2.23"
     file-saver: "npm:^2.0.2"
     govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
@@ -3079,7 +3079,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/6e2531e9af6aba6e4af57cad6551929e861d8e3756d38ec0a802aadeb8c1b5b1a21603e669dca531f9ec0407c34a5ed7d5ea4c50147e7b94980231f870162cc3
+  checksum: 10/876dad292ecd383fd4048ea3233144215c33a4090b86ca45bff46556a67f4736e3f7d5c09f9aaf776b213560ae05fa5dc0d14ed3dc40d2216f17b4fe7ec6d404
   languageName: node
   linkType: hard
 
@@ -3092,35 +3092,6 @@ __metadata:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
   checksum: 10/7be62fd80d676934e2217985ab414f107aeaf8c6e44a9a128d41a856a4417b8ab0b5ba5be57af529a207ac2599c0e47fa52b204b461dc7002dd9d9585a5667df
-  languageName: node
-  linkType: hard
-
-"@hmcts/media-viewer@npm:4.2.21":
-  version: 4.2.21
-  resolution: "@hmcts/media-viewer@npm:4.2.21"
-  dependencies:
-    "@swimlane/ngx-datatable": "npm:^20.0.0"
-    moment-timezone: "npm:^0.5.28"
-    mutable-div: "npm:^2.0.0"
-    pdfjs-dist: "npm:^4.10.38"
-    socket.io-client: "npm:^4.8.0"
-    tslib: "npm:^2.3.0"
-    uuid: "npm:^11.0.3"
-  peerDependencies:
-    "@angular/animations": ^20.0.0
-    "@angular/cdk": ^17.3.8
-    "@angular/common": ^20.0.0
-    "@angular/core": ^20.0.0
-    "@angular/forms": ^20.0.0
-    "@angular/platform-browser": ^20.0.0
-    "@angular/router": ^20.0.0
-    "@ngrx/effects": ^20
-    "@ngrx/store": ^20
-    "@ngrx/store-devtools": ^20
-    ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.3
-    rxjs: ^7.8.1
-  checksum: 10/537dac35ec49f0a94e6b3377fd3a7c6ae758a47bcc2e4e1674fb563844d9f7fbe442b6e838e49c8f9646e78fef45ecbaa6071b1dfcd7360360cfda56ff224998
   languageName: node
   linkType: hard
 
@@ -3149,7 +3120,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.3
     rxjs: ^7.8.2
-  checksum: 10/a09bbca857e2345c12ae70cc1f2e40b22b2f5a781f609a5ae41fe146b7a1da75b347e2e4ecb1997e4f6ae97ca72de3c9ec86e24a715154414fc4f79a09838737
+  checksum: 10/bda2b73f79e9afb1f433083b74ef90657b77293d7ba3a632bf1a14f8099f73bac011e7f2cb604002ef12a8dd292f934313f226cec75058c2588fcc44c3b34550
   languageName: node
   linkType: hard
 
@@ -3230,12 +3201,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.17":
-  version: 2.30.17
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.17"
+"@hmcts/rpx-xui-node-lib@npm:2.30.19":
+  version: 2.30.19
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.19"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
-    axios: "npm:^1.16.0"
+    axios: "npm:^1.18.1"
     connect-redis: "npm:^4.0.4"
     debug: "npm:^4.3.7"
     deepmerge: "npm:^4.2.2"
@@ -3251,7 +3222,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/6b97f74bb32890f2d95147e0287b5a33eb8ad3a6d868f09e6046b2097d5c4c235a52d626ce7af93ea3a188b4ef325117dfee690c7f12de3140f3442504e6c4ef
+  checksum: 10/f060a74067152ad6f6892523aa16f65847f8a3d27784ed3f9d3daaf92173994f20cb670338a8fb254200739706cbad0322d95fc3e48d3e86b78268d4334df508
   languageName: node
   linkType: hard
 
@@ -9490,24 +9461,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.24.0":
-  version: 0.24.0
-  resolution: "axios@npm:0.24.0"
-  dependencies:
-    follow-redirects: "npm:^1.14.4"
-  checksum: 10/4c5a7a5a45c909b4ce73fbf54b1fbc52a2290fc37cc51e64f8ef2ba8ac5f76a2e369a08ddfd7ec50317528d5aa55f5987cc56fb320923ef87e1b87f8ff05b5ba
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.12.1, axios@npm:^1.13.5, axios@npm:^1.15.0, axios@npm:^1.16.0, axios@npm:^1.8.4":
-  version: 1.17.0
-  resolution: "axios@npm:1.17.0"
+"axios@npm:1.18.1, axios@npm:^1.12.1, axios@npm:^1.13.5, axios@npm:^1.16.0, axios@npm:^1.18.1, axios@npm:^1.8.4":
+  version: 1.18.1
+  resolution: "axios@npm:1.18.1"
   dependencies:
     follow-redirects: "npm:^1.16.0"
     form-data: "npm:^4.0.5"
     https-proxy-agent: "npm:^5.0.1"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10/bc6995122fb9ca1431836579ae53fdd94894ad3d676de229d474da6465bc323ad93e8bf0b3bdb33ec4fbd460d93485ef2b5240e97d778700c029bf053c7f75cd
+  checksum: 10/c4cdced3ee0a9bf7dcae189fbc74a124aa079d4f04dbd995e602d39c1419476e8d021f87ee39ac8d8398e5a55e6d0b986238b3645f0d9177ac80de87c2a73f18
   languageName: node
   linkType: hard
 
@@ -13407,7 +13369,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.4, follow-redirects@npm:^1.16.0":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.16.0":
   version: 1.16.0
   resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
@@ -13427,16 +13389,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:4.0.4":
-  version: 4.0.4
-  resolution: "form-data@npm:4.0.4"
+"form-data@npm:4.0.6":
+  version: 4.0.6
+  resolution: "form-data@npm:4.0.6"
   dependencies:
     asynckit: "npm:^0.4.0"
     combined-stream: "npm:^1.0.8"
     es-set-tostringtag: "npm:^2.1.0"
-    hasown: "npm:^2.0.2"
-    mime-types: "npm:^2.1.12"
-  checksum: 10/a4b62e21932f48702bc468cc26fb276d186e6b07b557e3dd7cc455872bdbb82db7db066844a64ad3cf40eaf3a753c830538183570462d3649fdfd705601cbcfb
+    hasown: "npm:^2.0.4"
+    mime-types: "npm:^2.1.35"
+  checksum: 10/de6614c8537c92fa5fa3ee7e827758f98f5a9c033f348b7de81855ef36e5cb867e75d9f405d9483ab8d724a4a20d4e79926a299fa8dbba38f530eb659f0884e4
   languageName: node
   linkType: hard
 
@@ -14004,7 +13966,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hasown@npm:^2.0.2, hasown@npm:^2.0.3":
+"hasown@npm:^2.0.2, hasown@npm:^2.0.3, hasown@npm:^2.0.4":
   version: 2.0.4
   resolution: "hasown@npm:2.0.4"
   dependencies:
@@ -16576,7 +16538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:^2.1.12, mime-types@npm:^2.1.17, mime-types@npm:^2.1.31, mime-types@npm:~2.1.24, mime-types@npm:~2.1.34, mime-types@npm:~2.1.35":
+"mime-types@npm:^2.1.17, mime-types@npm:^2.1.31, mime-types@npm:^2.1.35, mime-types@npm:~2.1.24, mime-types@npm:~2.1.34, mime-types@npm:~2.1.35":
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
@@ -19763,14 +19725,14 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68-govuk7"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.70"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
-    "@hmcts/media-viewer": "npm:4.2.23"
+    "@hmcts/media-viewer": "npm:4.2.24"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.12"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.17"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.19"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -19809,7 +19771,7 @@ __metadata:
     applicationinsights: "npm:1.8.10"
     axe-core: "npm:^4.9.1"
     axe-html-reporter: "npm:^2.2.3"
-    axios: "npm:^1.15.0"
+    axios: "npm:^1.18.1"
     axios-mock-adapter: "npm:^1.22.0"
     c8: "npm:^9.1.0"
     chai: "npm:^4.3.10"

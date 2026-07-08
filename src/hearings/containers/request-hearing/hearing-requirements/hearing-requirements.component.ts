@@ -14,7 +14,6 @@ import { HearingRequestMainModel } from '../../../models/hearingRequestMain.mode
 import { ACTION, CaseFlagType, Mode } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { PartyFlagsDisplayModel } from '../../../models/partyFlags.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
@@ -141,7 +140,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       caseDetails: {
         hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
-        caseRef: this.hearingListMainModel?.caseRef || null,
+        // case reference/ID must be set by shv in order to maintain correct case ID
+        caseRef: this.serviceHearingValuesModel.caseId,
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,
@@ -181,23 +181,16 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         individualDetails: partyDetail.individualDetails && {
           ...partyDetail.individualDetails,
           preferredHearingChannel: partyInHMC?.individualDetails?.preferredHearingChannel,
-          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID).filter(
-            (flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID
-          ),
+          reasonableAdjustments:
+            partyDetail.individualDetails?.reasonableAdjustments?.filter(
+              (flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID
+            ) || [],
         },
         ...(organisationDetails && { organisationDetails }),
       };
       combinedPartyDetails.push(party);
     });
     return combinedPartyDetails;
-  }
-
-  public getAllPartyFlagsByPartyId(partyID: string): string[] {
-    const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce(
-      (previousValue, currentValue) => [...previousValue, ...currentValue.partyFlags],
-      []
-    );
-    return allRAFs.filter((flag) => flag.partyId === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
   public initializeHearingCondition(): void {

@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FocusService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppTitleModel } from '../../models/app-title.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import * as fromRoot from '../../store';
 import { NavItemsModel } from './../../models/nav-item.model';
-import { FocusService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   standalone: false,

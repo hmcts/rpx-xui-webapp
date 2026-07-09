@@ -103,6 +103,7 @@ export const baseConfig = {
         'caseworker-probate-solicitor',
         'caseworker-privatelaw-solicitor',
         'caseworker-employment-legalrep-solicitor',
+        'caseworker-pcs-solicitor',
       ],
       text: 'Notice of change',
     },

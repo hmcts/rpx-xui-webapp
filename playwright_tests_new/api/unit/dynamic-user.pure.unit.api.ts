@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 
 import { __test__ as caseSetupTest } from '../../E2E/utils/test-setup/caseSetup.js';
 import { buildCasePayloadFromTemplate } from '../../E2E/utils/test-setup/payloads/registry.js';
+import { buildCreatedUserLogSummary } from '../../E2E/utils/professional-user.utils.js';
+import { createFakerIdentity } from '../../E2E/utils/professional-user/runtime.js';
 import {
   DIVORCE_EXTERNAL_NOC_SOLICITOR_ROLE_NAMES,
   EMPLOYMENT_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES,
@@ -82,6 +84,11 @@ const ENV_KEYS = [
   'STAFF_ADMIN_POOL_ENABLED',
   'TEST_PARALLEL_INDEX',
   'TEST_WORKER_INDEX',
+  'DYNAMIC_USER_EMAIL_ACCOUNT_PREFIX',
+  'PW_DYNAMIC_ORGANISATION_RUN_ID',
+  'BUILD_TAG',
+  'GITHUB_RUN_ID',
+  'PW_TEST_RUN_ID',
 ] as const;
 
 let originalEnvValues: Record<string, string | undefined> = {};
@@ -105,6 +112,41 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       }
     }
     clearRuntimeUserCredentials('dynamic-user');
+  });
+
+  test('created-user log summary never includes generated passwords', () => {
+    const summary = buildCreatedUserLogSummary({
+      user: {
+        id: '123',
+        email: 'dynamic@example.test',
+        forename: 'Dynamic',
+        surname: 'User',
+        password: 'secret-password-that-must-not-leak',
+        roleNames: ['caseworker-divorce'],
+      },
+      createPath: 'idam-testing-support',
+    });
+
+    expect(summary).toEqual(
+      expect.objectContaining({
+        username: 'dynamic@example.test',
+        forename: 'Dynamic',
+        surname: 'User',
+        roles: ['caseworker-divorce'],
+        createPath: 'idam-testing-support',
+      })
+    );
+    expect(JSON.stringify(summary)).not.toContain('secret-password-that-must-not-leak');
+  });
+
+  test('dynamic user identity names identify EXUI automation-created accounts', () => {
+    process.env.DYNAMIC_USER_EMAIL_ACCOUNT_PREFIX = 'exui-auto-pack';
+
+    const identity = createFakerIdentity('employment dynamic solicitor', 'employment');
+
+    expect(identity.email).toMatch(/^exui-auto-pack\.employment-dynamic-solic\.[a-z0-9]+\.[a-z0-9]+@mailinator\.com$/);
+    expect(identity.forename).toBe('EXUI');
+    expect(identity.surname).toMatch(/^Auto Employment Dynamic Solicitor [A-Z][A-Za-z'-]+/);
   });
 
   test('resolveSolicitorRoleStrategy prefers explicit roles and deduplicates them', () => {
@@ -322,6 +364,27 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
         overrides: { TextFieldd: 'typo' } as never,
       })
     ).toThrow(/Unknown override field 'TextFieldd'/);
+  });
+
+  test('employment dynamic case payload names identify EXUI automation-created cases', () => {
+    process.env.PW_DYNAMIC_ORGANISATION_RUN_ID = 'EXUI-4767/Jenkins PR 5217';
+
+    const payload = buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case', {
+      seed: 42,
+      context: {
+        scenario: 'manage-tasks-dynamic-org-dynamic-user',
+        jurisdiction: 'EMPLOYMENT',
+        caseType: 'ET_EnglandWales',
+        eventId: 'initiateCase',
+      },
+    });
+    const claimantIndType = payload.fieldValues.claimantIndType as Record<string, string>;
+    const respondentCollection = payload.fieldValues.respondentCollection as Array<{ value: Record<string, string> }>;
+
+    expect(claimantIndType.claimant_first_names).toBe('EXUI');
+    expect(claimantIndType.claimant_last_name).toMatch(/^Auto EXUI-4767-Jenkins-PR-5217 /);
+    expect(respondentCollection[0].value.respondent_name).toMatch(/^EXUI Auto EXUI-4767-Jenkins-PR-5217 .+ Respondent$/);
+    expect(respondentCollection[0].value.respondent_email).toMatch(/@example\.com$/);
   });
 
   test('resolveProvisionRoleNamesForAlias honours explicit, template, and divorce noc role resolution', () => {

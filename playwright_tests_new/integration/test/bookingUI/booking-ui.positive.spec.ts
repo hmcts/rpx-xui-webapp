@@ -11,14 +11,15 @@ import { formatUiDate, normalizeUiDateValue } from '../../utils/tableUtils';
 const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
 const tasksPageUrlPattern = /\/work\/my-work\/list/;
-const sessionWarmupTimeoutMs = 3 * 60_000;
+const BOOKING_UI_SESSION_BOOTSTRAP_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_BOOKING_UI_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 180_000;
+
+test.beforeAll(async ({}, testInfo) => {
+  testInfo.setTimeout(BOOKING_UI_SESSION_BOOTSTRAP_TIMEOUT_MS);
+  await warmBookableBookingUiSessionForWorker(testInfo);
+});
 
 test.describe('Booking UI with lazy pooled session users', { tag: ['@integration', '@integration-booking-ui'] }, () => {
-  test.beforeAll(async ({}, workerInfo) => {
-    test.setTimeout(sessionWarmupTimeoutMs);
-    await warmBookableBookingUiSessionForWorker(workerInfo);
-  });
-
   test('can continue when choosing an existing booking', async ({ page, bookingUiPage }, testInfo) => {
     const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo);
 

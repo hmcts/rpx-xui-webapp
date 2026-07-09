@@ -1,4 +1,5 @@
 import { InfoMessageContainerComponent } from '../containers/info-message-container/info-message-container.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { CaseReferenceSearchBoxComponent } from './case-reference-search-box/case-reference-search-box.component';
 import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
@@ -15,18 +16,21 @@ import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ApplicationRoutingComponent } from './routing/application-routing.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
+import { SessionErrorWrapperComponent } from './session-error-wrapper/session-error-wrapper.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
 
 export const components: any[] = [
   HmctsGlobalFooterComponent,
   HeaderComponent,
   HmctsGlobalHeaderComponent,
+  AccessDeniedComponent,
   CookiePolicyComponent,
   NotAuthorisedComponent,
   PrivacyPolicyComponent,
   AccessibilityComponent,
   PhaseBannerComponent,
   ServiceDownComponent,
+  SessionErrorWrapperComponent,
   ErrorMessageComponent,
   MediaViewerWrapperComponent,
   GetHelpComponent,
@@ -41,8 +45,10 @@ export const components: any[] = [
 export * from './hmcts-global-footer/hmcts-global-footer.component';
 export * from './header/header.component';
 export * from './hmcts-global-header/hmcts-global-header.component';
+export * from './access-denied/access-denied.component';
 export * from './phase-banner/phase-banner.component';
 export * from './service-down/service-down.component';
+export * from './session-error-wrapper/session-error-wrapper.component';
 export * from './error-message/error-message.component';
 export * from './cookie-policy/cookie-policy.component';
 export * from './privacy-policy/privacy-policy.component';

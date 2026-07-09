@@ -191,109 +191,106 @@ async function setHearingPositions(page: Page, positions: string[]): Promise<voi
   }
 }
 
-test.describe(
-  'Hearings linked journeys integration',
-  { tag: ['@integration', '@integration-hearing-link'] },
-  () => {
-    test('shows only cases linked for a hearing on the hearing link page', async ({
+test.describe('Hearings linked journeys integration', { tag: ['@integration', '@integration-hearing-link'] }, () => {
+  test('shows only cases linked for a hearing on the hearing link page', async ({ page, caseDetailsPage, hearingsTabPage }) => {
+    await page.route('**/refdata/commondata/lov/categories/CaseLinkingReasonCode*', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(buildCaseLinkingReasonCodesMock()),
+      });
+    });
+
+    await openHearingsTabForScenario(
       page,
       caseDetailsPage,
-      hearingsTabPage,
-    }) => {
-      await page.route('**/refdata/commondata/lov/categories/CaseLinkingReasonCode*', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(buildCaseLinkingReasonCodesMock()),
-        });
-      });
-
-      await openHearingsTabForScenario(
-        page,
-        caseDetailsPage,
-        {
-          userRoles: hearingManagerRoles,
-          hearings: [LISTED_HEARING_SCENARIO],
-          judgeTypes: judgeTypesForHearingLinkJourney,
-          hearingsApiOverrides: {
-            loadServiceLinkedCases: {
-              body: linkedCasesWithHearingReason,
-            },
+      {
+        userRoles: hearingManagerRoles,
+        hearings: [LISTED_HEARING_SCENARIO],
+        judgeTypes: judgeTypesForHearingLinkJourney,
+        hearingsApiOverrides: {
+          loadServiceLinkedCases: {
+            body: linkedCasesWithHearingReason,
           },
         },
-        { sessionCookies: hearingLinkSessionCookies }
-      );
+      },
+      { sessionCookies: hearingLinkSessionCookies }
+    );
 
-      await hearingsTabPage.waitForReady(LISTED_HEARING_SCENARIO.hearingId);
-      await navigateToHearingLinkPage(page, hearingsTabPage);
+    await hearingsTabPage.waitForReady(LISTED_HEARING_SCENARIO.hearingId);
+    await navigateToHearingLinkPage(page, hearingsTabPage);
 
-      const linkedCases = page.locator('tbody.govuk-table__body tr.govuk-table__row');
-      const tableBody = page.locator('table.govuk-table').filter({ hasText: 'redacted redacted - appellantnamefordisplay' }).first();
-      await expect(linkedCases).toHaveCount(1);
-      await expect(tableBody).toContainText('redacted redacted - appellantnamefordisplay');
-      await expect(tableBody).toContainText('Linked for a hearing');
-      await expect(tableBody).not.toContainText('Not child');
-    });
+    const linkedCases = page.locator('tbody.govuk-table__body tr.govuk-table__row');
+    const tableBody = page
+      .locator('table.govuk-table')
+      .filter({ hasText: 'redacted redacted - appellantnamefordisplay' })
+      .first();
+    await expect(linkedCases).toHaveCount(1);
+    await expect(tableBody).toContainText('redacted redacted - appellantnamefordisplay');
+    await expect(tableBody).toContainText('Linked for a hearing');
+    await expect(tableBody).not.toContainText('Not child');
+  });
 
-    test.skip('shows hearing id on linked hearings pages', async ({ page, caseDetailsPage, hearingsTabPage }) => {
-      // TODO: Re-enable once the hearing ID column is delivered on the manage link and hearing link pages.
-      await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
-      await expect(page.getByRole('columnheader', { name: /hearing id/i })).toBeVisible();
-      await expect(page.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId })).toBeVisible();
+  test.skip('shows hearing id on linked hearings pages', async ({ page, caseDetailsPage, hearingsTabPage }) => {
+    // TODO: Re-enable once the hearing ID column is delivered on the manage link and hearing link pages.
+    await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
+    await expect(page.getByRole('columnheader', { name: /hearing id/i })).toBeVisible();
+    await expect(page.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId })).toBeVisible();
 
-      await selectOrderedLinkedHearings(page);
-      await continueHearingsFlow(page);
-      await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
-    });
+    await selectOrderedLinkedHearings(page);
+    await continueHearingsFlow(page);
+    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
+  });
 
-    test('shows validation error when duplicate positions are selected after going back', async ({
-      page,
-      caseDetailsPage,
-      hearingsTabPage,
-    }) => {
-      await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
+  test('shows validation error when duplicate positions are selected after going back', async ({
+    page,
+    caseDetailsPage,
+    hearingsTabPage,
+  }) => {
+    await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
 
-      await selectOrderedLinkedHearings(page);
-      await continueHearingsFlow(page);
-      await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
+    await selectOrderedLinkedHearings(page);
+    await continueHearingsFlow(page);
+    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
 
-      await page.getByRole('link', { name: /^back$/i }).click();
-      await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/group-selection$/);
-      await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
+    await page.getByRole('link', { name: /^back$/i }).click();
+    await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/group-selection$/);
+    await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
 
-      await setHearingPositions(page, ['1', '1', '1']);
-      await expect(page.locator('#hearingsOrder0')).toHaveValue('1');
-      await expect(page.locator('#hearingsOrder1')).toHaveValue('1');
-      await expect(page.locator('#hearingsOrder2')).toHaveValue('1');
-      await continueHearingsFlow(page);
-      await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/group-selection$/);
-      await expect(page.getByLabel('There is a problem').getByText('Check the position you have given to each hearing')).toBeVisible();
-      await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
-    });
+    await setHearingPositions(page, ['1', '1', '1']);
+    await expect(page.locator('#hearingsOrder0')).toHaveValue('1');
+    await expect(page.locator('#hearingsOrder1')).toHaveValue('1');
+    await expect(page.locator('#hearingsOrder2')).toHaveValue('1');
+    await continueHearingsFlow(page);
+    await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/group-selection$/);
+    await expect(
+      page.getByLabel('There is a problem').getByText('Check the position you have given to each hearing')
+    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
+  });
 
-    test('continues to check your answers when positions are unique after going back', async ({
-      page,
-      caseDetailsPage,
-      hearingsTabPage,
-    }) => {
-      await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
+  test('continues to check your answers when positions are unique after going back', async ({
+    page,
+    caseDetailsPage,
+    hearingsTabPage,
+  }) => {
+    await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
 
-      await selectOrderedLinkedHearings(page);
-      await continueHearingsFlow(page);
-      await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
+    await selectOrderedLinkedHearings(page);
+    await continueHearingsFlow(page);
+    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
 
-      await page.getByRole('link', { name: /^back$/i }).click();
-      await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/group-selection$/);
-      await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
+    await page.getByRole('link', { name: /^back$/i }).click();
+    await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/group-selection$/);
+    await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
 
-      await setHearingPositions(page, ['1', '2', '3']);
-      await expect(page.locator('#hearingsOrder0')).toHaveValue('1');
-      await expect(page.locator('#hearingsOrder1')).toHaveValue('2');
-      await expect(page.locator('#hearingsOrder2')).toHaveValue('3');
+    await setHearingPositions(page, ['1', '2', '3']);
+    await expect(page.locator('#hearingsOrder0')).toHaveValue('1');
+    await expect(page.locator('#hearingsOrder1')).toHaveValue('2');
+    await expect(page.locator('#hearingsOrder2')).toHaveValue('3');
 
-      await continueHearingsFlow(page);
-      await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/check-your-answers$/);
-      await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
-    });
-  }
-);
+    await continueHearingsFlow(page);
+    await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/check-your-answers$/);
+    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
+  });
+});

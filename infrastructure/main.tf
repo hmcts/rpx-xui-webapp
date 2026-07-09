@@ -2,6 +2,7 @@ locals {
   app_full_name     = "xui-${var.component}"
   ase_name          = "core-compute-${var.env}"
   local_env         = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview") ? "aat" : "saat" : var.env
+  reporting_enabled = var.welsh_reporting_enabled || var.exui_weekly_stats_enabled || var.exui_throughput_stats_enabled || var.exui_pui_activations_enabled
   shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
@@ -58,30 +59,9 @@ module "application_insights" {
   location            = var.location
   application_type    = var.application_type
   resource_group_name = azurerm_resource_group.rg.name
+  sampling_percentage = var.sampling_percentage
 
   common_tags = var.common_tags
-}
-
-moved {
-  from = azurerm_application_insights.appinsights
-  to   = module.application_insights.azurerm_application_insights.this
-}
-
-resource "azurerm_application_insights" "appinsight" {
-  name                = "${local.app_full_name}-appinsights-${var.env}-classic"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  application_type    = var.application_type
-
-  tags = var.common_tags
-
-  lifecycle {
-    ignore_changes = [
-      # Ignore changes to appinsights as otherwise upgrading to the Azure provider 2.x
-      # destroys and re-creates this appinsights instance
-      application_type,
-    ]
-  }
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -93,7 +73,7 @@ resource "azurerm_resource_group" "rg" {
 
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
-  value        = azurerm_application_insights.appinsight.instrumentation_key
+  value        = module.application_insights.instrumentation_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
@@ -110,7 +90,27 @@ data "azurerm_key_vault_secret" "welsh_report_email" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
-locals {
-  welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+data "azurerm_key_vault_secret" "exui_weekly_stats_email" {
+  count        = var.exui_weekly_stats_enabled ? 1 : 0
+  name         = var.exui_weekly_stats_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+data "azurerm_key_vault_secret" "exui_throughput_stats_email" {
+  count        = var.exui_throughput_stats_enabled ? 1 : 0
+  name         = var.exui_throughput_stats_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+data "azurerm_key_vault_secret" "exui_pui_activations_email" {
+  count        = var.exui_pui_activations_enabled ? 1 : 0
+  name         = var.exui_pui_activations_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+locals {
+  welsh_emails                 = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+  exui_weekly_stats_emails     = var.exui_weekly_stats_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_weekly_stats_email.0.value)) : []
+  exui_throughput_stats_emails = var.exui_throughput_stats_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_throughput_stats_email.0.value)) : []
+  exui_pui_activations_emails  = var.exui_pui_activations_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_pui_activations_email.0.value)) : []
+}

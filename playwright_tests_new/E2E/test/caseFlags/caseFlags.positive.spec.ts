@@ -62,12 +62,9 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
   });
 
   test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
-    await test.step('Record existing case level flags', async () => {
+    await test.step('Open case flags tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
-      const flagsTable = await caseDetailsPage.waitForTableByName('Case level flags');
-      const table = await tableUtils.parseDataTable(flagsTable);
-      const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      await expect(caseDetailsPage.caseFlagsHeading).toBeVisible();
     });
 
     await test.step('Create a new case level flag', async () => {
@@ -82,6 +79,9 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
           if (await caseDetailsPage.hasCallbackValidationErrorAlert()) {
             throw new Error('Callback data failed validation while creating case-level case flag.');
           }
+          if (await caseDetailsPage.eventCreationErrorHeading.isVisible().catch(() => false)) {
+            throw new Error('CCD event creation failed while creating case-level case flag.');
+          }
           const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
           if (!bannerVisible) {
             return false;
@@ -90,6 +90,7 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
           return caseBannerMatches(bannerText, caseNumber, 'has been updated with event: Create a case flag');
         })
         .toBe(true);
+      await caseDetailsPage.openCaseDetails(jurisdiction, caseType, caseNumber, 60_000);
       expect.soft(await caseDetailsPage.caseNotificationBannerTitle.isVisible()).toBe(true);
       expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
       expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');

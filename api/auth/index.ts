@@ -30,6 +30,25 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 
 const logger = log4jui.getLogger('auth');
+const POST_AUTH_ROLE_DENIED_EVENT = 'ManageCasePostAuthRoleDenied';
+
+interface AccessDeniedDetails {
+  allowRolesRegex?: string;
+  roles?: string[];
+  userinfo?: {
+    roleCategory?: string;
+    roles?: string[];
+  };
+}
+
+const getUserRoles = (details?: AccessDeniedDetails): string[] => details?.roles || details?.userinfo?.roles || [];
+
+const isCitizenUser = (details?: AccessDeniedDetails): boolean => {
+  const roleCategory = details?.userinfo?.roleCategory?.toLowerCase();
+  const roles = getUserRoles(details);
+
+  return roleCategory === 'citizen' || roles.some((role) => role.toLowerCase() === 'citizen');
+};
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { user } = req.session.passport;
@@ -60,8 +79,31 @@ export const failureCallback = (req: EnhancedRequest, res: Response) => {
   }
 };
 
+export const accessDeniedCallback = (
+  _req: EnhancedRequest,
+  _res: Response,
+  _next: NextFunction,
+  details?: AccessDeniedDetails
+) => {
+  const requiredRoleMatcher = details?.allowRolesRegex || '';
+
+  logger.warn(`Post-auth role denied: user has no role matching ${requiredRoleMatcher}`);
+
+  if (client) {
+    client.trackEvent({
+      name: POST_AUTH_ROLE_DENIED_EVENT,
+      properties: {
+        isCitizen: isCitizenUser(details),
+        requiredRoleMatcher,
+        roles: getUserRoles(details).join(','),
+      },
+    });
+  }
+};
+
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback);
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_FAILURE, failureCallback);
+xuiNode.on(AUTH.EVENT.AUTHENTICATE_ACCESS_DENIED, accessDeniedCallback);
 
 export const getXuiNodeMiddleware = () => {
   const idamWebUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);

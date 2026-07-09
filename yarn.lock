@@ -3226,12 +3226,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.19":
-  version: 2.30.19
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.19"
+"@hmcts/rpx-xui-node-lib@npm:2.30.17":
+  version: 2.30.17
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.17"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
-    axios: "npm:^1.18.1"
+    axios: "npm:^1.16.0"
     connect-redis: "npm:^4.0.4"
     debug: "npm:^4.3.7"
     deepmerge: "npm:^4.2.2"
@@ -3247,7 +3247,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/f060a74067152ad6f6892523aa16f65847f8a3d27784ed3f9d3daaf92173994f20cb670338a8fb254200739706cbad0322d95fc3e48d3e86b78268d4334df508
+  checksum: 10/6b97f74bb32890f2d95147e0287b5a33eb8ad3a6d868f09e6046b2097d5c4c235a52d626ce7af93ea3a188b4ef325117dfee690c7f12de3140f3442504e6c4ef
   languageName: node
   linkType: hard
 

@@ -48,7 +48,7 @@ export class FindCasePage extends Base {
    */
   public async navigateToFindCase(): Promise<void> {
     for (let attempt = 1; attempt <= MAX_NAVIGATION_RETRY_ATTEMPTS; attempt++) {
-      await this.openFromMainMenu();
+      await this.openFromAvailableNavigationLink();
       try {
         await this.ensureFiltersVisible();
         return;
@@ -178,6 +178,15 @@ export class FindCasePage extends Base {
     await link.click();
     await this.page.waitForURL(/\/cases\/case-search/, { timeout: EXUI_TIMEOUTS.GLOBAL_SEARCH_NAVIGATION });
     await this.exuiSpinnerComponent.wait();
+  }
+
+  private async openFromAvailableNavigationLink(): Promise<void> {
+    if (await this.findCaseLinkOnMenu.isVisible({ timeout: 1_000 }).catch(() => false)) {
+      await this.openFromMainMenu();
+      return;
+    }
+
+    await this.openFromTopRight();
   }
 
   /**

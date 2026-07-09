@@ -45,6 +45,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public hearingStageOptions: LovRefDataModel[];
   private jurisdiction: string;
   private caseType: string;
+  private formInitialised = false;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -70,12 +71,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.groupDetails;
       this.hearingLinks = state.hearingLinks;
       this.selectedOption = this.groupDetails && this.groupDetails.groupLinkType;
-      this.form = this.fb.group({
-        hearingGroup: [(this.groupDetails && this.groupDetails.groupLinkType) || '', Validators.required],
-        hearingOrder: this.fb.array([]),
-      });
       this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
       this.caseType = state?.hearingValues?.caseInfo?.caseType;
+      this.syncLinkedHearingsFormState();
     });
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
@@ -112,18 +110,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.selectedLinkedCases = [];
-    this.receivedCases.forEach((linkedCase) => {
-      this.mapLinkedCase(linkedCase);
-    });
-    this.initiateFormCreation();
-  }
-
-  private initiateFormCreation() {
-    if (this.selectedLinkedCases && this.selectedLinkedCases.length) {
-      this.positionDropdownValues = Array.from({ length: this.selectedLinkedCases.length }, (_, i) => i + 1);
-      this.createForm();
-    }
+    this.syncLinkedHearingsFormState();
   }
 
   private mapLinkedCase(linkedCase: ServiceLinkedCasesWithHearingsModel): void {
@@ -140,6 +127,21 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     this.selectedLinkedCases.forEach((linked) => {
       this.addRow(linked);
     });
+  }
+
+  private syncLinkedHearingsFormState(): void {
+    this.selectedLinkedCases = [];
+    (this.receivedCases ?? []).forEach((linkedCase) => {
+      this.mapLinkedCase(linkedCase);
+    });
+    this.positionDropdownValues = Array.from({ length: this.selectedLinkedCases.length }, (_, i) => i + 1);
+
+    if (!this.formInitialised && this.selectedLinkedCases.length > 0) {
+      this.createForm();
+      this.formInitialised = true;
+    }
+
+    this.form.get('hearingGroup')?.setValue(this.selectedOption || '', { emitEvent: false });
   }
 
   public onSubmit(): void {
@@ -183,12 +185,8 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onOrderChange(index: number) {
-    const positionSelected = this.hearingOrder.controls[index].get('position').value;
-    const hasSamePosSelectedIndex = this.hearingOrder.value.map(
-      (val, rowIndex) => val.position === positionSelected && rowIndex !== index
-    );
-    hasSamePosSelectedIndex.forEach((val, idx: number) => val && this.hearingOrder.controls[idx].patchValue({ position: '' }));
+  public onOrderChange(_index: number): void {
+    this.validationErrors = [];
   }
 
   public hasPosToBePreSelected(index: number) {
@@ -210,6 +208,18 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       this.validationErrors.push({
         id: 'selection-error',
         message: !this.form.value.hearingGroup ? 'Please make a selection' : 'Check the position you have given to each hearing',
+      });
+      return false;
+    }
+
+    const selectedPositions = this.hearingOrder.controls
+      .map((control) => String(control.get('position')?.value ?? ''))
+      .filter((value) => value !== '');
+    const hasDuplicatePositions = new Set(selectedPositions).size !== selectedPositions.length;
+    if (hasDuplicatePositions) {
+      this.validationErrors.push({
+        id: 'selection-error',
+        message: 'Check the position you have given to each hearing',
       });
       return false;
     }

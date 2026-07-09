@@ -53,6 +53,7 @@ export interface HearingsMockRoutesConfig {
   summaryHearing?: HearingScenario;
   enabledCaseVariations?: HearingsCaseVariation[];
   amendmentCaseVariations?: HearingsCaseVariation[];
+  judgeTypes?: Array<Record<string, unknown>>;
   hearingsApiOverrides?: Partial<Record<HearingsEndpoint, HearingsApiOverride>>;
 }
 
@@ -151,6 +152,14 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(userDetails),
+    });
+  });
+
+  await page.route('**/auth/isAuthenticated*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(true),
     });
   });
 
@@ -292,6 +301,7 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
         buildLovRefDataMock(categoryKey, {
           hearingTypes,
           caseTypeId: config.caseConfig?.caseTypeId,
+          judgeTypes: config.judgeTypes,
         })
       ),
     });

@@ -1,4 +1,4 @@
-import { expect, type Page, type Response } from '@playwright/test';
+import { expect, type Cookie, type Page, type Response } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
 import { applySessionCookies } from '../../common/sessionCapture';
@@ -91,9 +91,14 @@ export async function openHearingsTab(
     jurisdictionId?: string;
     caseTypeId?: string;
     caseReference?: string;
+    sessionCookies?: Cookie[];
   }
 ): Promise<void> {
-  await applyHearingManagerSessionCookies(page, options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
+  if (options.sessionCookies?.length) {
+    await page.context().addCookies(options.sessionCookies);
+  } else {
+    await applyHearingManagerSessionCookies(page, options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
+  }
   await setupHearingsMockRoutes(page, options.routeConfig);
   const route = resolveHearingsCaseRoute(options);
   await gotoCaseDetailsWithRetry(page, caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference));
@@ -107,9 +112,14 @@ export async function openHearingsTabForScenario(
   options?: {
     userIdentifier?: HearingManagerUserIdentifier;
     waitForGetHearingsResponse?: boolean;
+    sessionCookies?: Cookie[];
   }
 ): Promise<Response | null> {
-  await applyHearingManagerSessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
+  if (options?.sessionCookies?.length) {
+    await page.context().addCookies(options.sessionCookies);
+  } else {
+    await applyHearingManagerSessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
+  }
   await setupHearingsMockRoutes(page, config);
   const route = resolveHearingsCaseRoute({ routeConfig: config });
   const targetUrl = caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference);

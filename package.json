@@ -196,7 +196,6 @@
     "@stryker-mutator/karma-runner": "^8.0.0",
     "@stryker-mutator/mocha-runner": "^8.0.0",
     "@stryker-mutator/typescript": "^4.0.0",
-    "@types/connect-redis": "^0.0.23",
     "@types/cookie-parser": "^1.4.2",
     "@types/ejs": "^3.0.0",
     "@types/express": "^5.0.6",

@@ -3467,6 +3467,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/ccpay-web-component@npm:6.5.17":
+  version: 6.5.17
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.17"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^20.3.1
+    "@angular/core": ~20.3.1
+  checksum: 10/7be62fd80d676934e2217985ab414f107aeaf8c6e44a9a128d41a856a4417b8ab0b5ba5be57af529a207ac2599c0e47fa52b204b461dc7002dd9d9585a5667df
+  languageName: node
+  linkType: hard
+
 "@hmcts/ccpay-web-component@npm:6.5.22":
   version: 6.5.22
   resolution: "@hmcts/ccpay-web-component@npm:6.5.22"

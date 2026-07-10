@@ -3036,9 +3036,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.74-multiple-role-categories":
-  version: 7.3.74-multiple-role-categories
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.74-multiple-role-categories"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.74-user-by-idam-rework":
+  version: 7.3.74-user-by-idam-rework
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.74-user-by-idam-rework"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3080,7 +3080,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/49758113737d6b06a70d04543268a9f37f9d1f6f7158dc317ab9e20b141417030afe17b86e73a0dc3f0d3764dd6a021451f8b375ea68b9d2ac3b42ed69d7dcb2
+  checksum: 10/f7b4d0f1755fce9a387fc05475cffe85be944055899ce488ee1c6e2da4e2a6adc7ea31e63e1fb8c8ab9162a78db66632d1a73353119c4afe420b8f035c7ecb77
   languageName: node
   linkType: hard
 
@@ -19761,7 +19761,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.74-multiple-role-categories"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.74-user-by-idam-rework"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.25"

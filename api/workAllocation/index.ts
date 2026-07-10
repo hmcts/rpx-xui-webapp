@@ -188,10 +188,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
-    let tasksWithActions = assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
+      let tasksWithActions = assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser);
       const assigneeIds = getAssigneeIdsFromTasks(tasksWithActions);
       if (assigneeIds.length > 0) {
         tasksWithActions = await setAssigneeNamesInTasks(tasksWithActions, assigneeIds);
@@ -731,6 +731,9 @@ export async function getUserByIdamId(req: EnhancedRequest, res: Response, next:
         // if cache exists, use it
         firstEntry = false;
         idamUser = FullUserDetailCache.getUserByIdamId(idamId);
+        if (!idamUser) {
+          res.status(404).send('User not found');
+        }
         // Below to get correct location and service details - not strictly necessary depending on usage
         idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
         res.send(idamUser).status(200);

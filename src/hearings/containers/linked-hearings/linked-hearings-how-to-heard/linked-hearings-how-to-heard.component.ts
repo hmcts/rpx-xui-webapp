@@ -185,7 +185,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onOrderChange(_index: number): void {
+  public onOrderChange(): void {
     this.validationErrors = [];
   }
 

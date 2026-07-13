@@ -3,7 +3,6 @@ import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDeta
 import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
 import { applySessionCookies } from '../../common/sessionCapture';
 import {
-  HEARING_MANAGER_CR84_OFF_USER,
   HEARING_MANAGER_CR84_ON_USER,
   type HearingManagerUserIdentifier,
   resolveHearingManagerSessionCandidates,

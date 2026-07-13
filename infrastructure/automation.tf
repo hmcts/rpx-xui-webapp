@@ -921,7 +921,7 @@ resource "azurerm_automation_schedule" "exui_weekly_stats_schedule" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   frequency               = "Week"
   interval                = 1
-  start_time              = "2026-04-06T09:30:00Z"
+  start_time              = "2026-07-16T09:30:00Z"
   timezone                = "UTC"
 }
 
@@ -1194,7 +1194,7 @@ resource "azurerm_automation_schedule" "exui_throughput_stats_schedule" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   frequency               = "Week"
   interval                = 1
-  start_time              = "2026-04-06T09:30:00Z"
+  start_time              = "2026-07-16T09:30:00Z"
   timezone                = "UTC"
 }
 
@@ -1502,7 +1502,7 @@ resource "azurerm_automation_schedule" "exui_pui_activations_schedule" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   frequency               = "Week"
   interval                = 1
-  start_time              = "2026-04-06T09:30:00Z"
+  start_time              = "2026-07-16T09:30:00Z"
   timezone                = "UTC"
 }
 

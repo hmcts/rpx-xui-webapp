@@ -101,9 +101,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public getPosition(hearing: HearingDetailModel | undefined): number {
-    const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup?.filter(
-      (x) => x.hearingId === hearing?.hearingID
-    );
+    const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup?.filter((x) => x.hearingId === hearing?.hearingID);
     if (linkedHearings?.length > 0) {
       return linkedHearings[0].hearingOrder;
     }
@@ -238,11 +236,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public hasInvalidOrderSelection() {
-    return (
-      this.validationErrors.length > 0 &&
-      this.selectedOption !== null &&
-      this.selectedLinkedCases?.length
-    );
+    return this.validationErrors.length > 0 && this.selectedOption !== null && this.selectedLinkedCases?.length;
   }
 
   public onOptionSelection(value: GroupLinkType): void {

@@ -445,11 +445,11 @@ withPipeline(type, product, component) {
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableAksStagingDeployment()
     disableLegacyDeployment()
-    syncBranchesWithMaster(branchesToSync)    
+    syncBranchesWithMaster(branchesToSync)
 
     // enablePactAs([
     //    AppPipelineDsl.PactRoles.CONSUMER
-    // ])   
+    // ])
 
     afterSuccess('checkout') {
         startCiLoadProfile()

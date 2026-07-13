@@ -86,7 +86,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   private addRow(linkCase: ServiceLinkedCasesWithHearingsModel): void {
-    if (!linkCase || !linkCase.caseHearings) {
+    if (!linkCase?.caseHearings) {
       return;
     }
 
@@ -94,16 +94,17 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       this.fb.group({
         caseReference: [linkCase.caseRef],
         caseName: [linkCase.caseName],
-        hearingStage: [(linkCase.caseHearings[0] && linkCase.caseHearings[0].hearingType) || ''],
-        position: [this.getPosition(linkCase.caseHearings[0]), this.validators.mandatory('')],
+        hearingStage: [linkCase.caseHearings?.[0]?.hearingType || ''],
+        position: [this.getPosition(linkCase.caseHearings?.[0]), this.validators.mandatory('')],
       })
     );
   }
 
-  public getPosition(hearing: HearingDetailModel): number {
-    const linkedHearings: LinkedHearingsDetailModel[] =
-      this.hearingsInGroup && this.hearingsInGroup.filter((x) => x.hearingId === hearing.hearingID);
-    if (linkedHearings && linkedHearings.length > 0) {
+  public getPosition(hearing: HearingDetailModel | undefined): number {
+    const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup?.filter(
+      (x) => x.hearingId === hearing?.hearingID
+    );
+    if (linkedHearings?.length > 0) {
       return linkedHearings[0].hearingOrder;
     }
     return null;
@@ -114,8 +115,8 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   private mapLinkedCase(linkedCase: ServiceLinkedCasesWithHearingsModel): void {
-    const selectedHearings = linkedCase.caseHearings && linkedCase.caseHearings.filter((hearing) => hearing.isSelected);
-    if (selectedHearings && selectedHearings.length) {
+    const selectedHearings = linkedCase.caseHearings?.filter((hearing) => hearing.isSelected);
+    if (selectedHearings?.length) {
       this.selectedLinkedCases.push({
         ...linkedCase,
         caseHearings: selectedHearings,
@@ -154,7 +155,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     if (this.isFormValid()) {
       this.hearingOrder.value.forEach((formValue) => {
         const hearing = this.selectedLinkedCases.find((linked) => linked.caseRef === formValue.caseReference);
-        const selectedHearing = hearing && hearing.caseHearings.find((selected) => selected.isSelected);
+        const selectedHearing = hearing?.caseHearings?.find((selected) => selected.isSelected);
         if (selectedHearing) {
           if (this.form.value.hearingGroup === GroupLinkType.SAME_SLOT) {
             linkedHearingGroupMainModel.hearingsInGroup.push({
@@ -190,7 +191,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public hasPosToBePreSelected(index: number) {
-    return this.hearingOrder.controls[index].get('position') && this.hearingOrder.controls[index].get('position').value;
+    return this.hearingOrder.controls[index]?.get('position')?.value;
   }
 
   public hasGroupSelected(groupSelected) {
@@ -240,8 +241,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     return (
       this.validationErrors.length > 0 &&
       this.selectedOption !== null &&
-      this.selectedLinkedCases &&
-      this.selectedLinkedCases.length
+      this.selectedLinkedCases?.length
     );
   }
 

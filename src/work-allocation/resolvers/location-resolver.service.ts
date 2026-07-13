@@ -218,13 +218,10 @@ export class LocationResolver {
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {
-    console.log('pofcc-137 --> LocationResolver - getLocations - locations: ', locations);
     locations = locations?.filter((location) => !!location.id);
     if (!locations || locations.length === 0) {
-      console.log('pofcc-137 --> LocationResolver - getLocations - no locations found, returning null');
       return of(null);
     }
-    console.log('pofcc-137 --> LocationResolver - getLocations - calling api/locations/getLocationsById');
     return this.http.post<LocationModel[]>('api/locations/getLocationsById', { locations });
   }
 

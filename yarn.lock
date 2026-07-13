@@ -14810,10 +14810,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:5.13.0":
-  version: 5.13.0
-  resolution: "govuk-frontend@npm:5.13.0"
-  checksum: 10/6eca01260e4eb8740c805c58a7bac034041e0190226c7ef200e49a715f630f304a5816dfea3c0c6b0cfabe30995b05b024df2824546e8dd00066059c0f8d1bdb
+"govuk-elements-sass@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "govuk-elements-sass@npm:3.1.3"
+  dependencies:
+    govuk_frontend_toolkit: "npm:^7.1.0"
+  checksum: 10/eb18df760b16f4af404148ed58be423e89288e9f96caa236014a296d55b132078a669504acc997060b30964e37ed37dfb1fd7cb0b3f622cb45059433a611e576
   languageName: node
   linkType: hard
 
@@ -14828,6 +14830,20 @@ __metadata:
   version: 4.10.1
   resolution: "govuk-frontend@npm:4.10.1"
   checksum: 10/7fc16896b73134d227e3c8f6ed4017015293dd12e81262b6dea30b97156727523fb6c133f95f34461846a32cafe516cccf1d94100d936ae1c48a9059177e79cc
+  languageName: node
+  linkType: hard
+
+"govuk-frontend@npm:^5.13.0":
+  version: 5.14.0
+  resolution: "govuk-frontend@npm:5.14.0"
+  checksum: 10/be321340f49306e3dada63c67888b7947e36d60dce839c9d7f0c97932cda26a848c1fc664d48bb1d85494b7d28a3e99b2df6391dfc1bcbab905f529a2faa6788
+  languageName: node
+  linkType: hard
+
+"govuk_frontend_toolkit@npm:^7.1.0":
+  version: 7.6.0
+  resolution: "govuk_frontend_toolkit@npm:7.6.0"
+  checksum: 10/8cf196a5138a66a21c00e7c5743b0338bfbaa0a3a14fd23ef0b5f2a9a9356e28a70eabd677506bf1371a883ab68922a390ad90f1b91747559fe8e8ff065f5e66
   languageName: node
   linkType: hard
 
@@ -15291,7 +15307,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iconv-lite@npm:0.6, iconv-lite@npm:0.6.3, iconv-lite@npm:^0.6.2, iconv-lite@npm:^0.6.3":
+"iconv-lite@npm:0.6, iconv-lite@npm:0.6.3, iconv-lite@npm:^0.6.3":
   version: 0.6.3
   resolution: "iconv-lite@npm:0.6.3"
   dependencies:
@@ -16098,7 +16114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^18.0.1, joi@npm:^18.0.2, joi@npm:^18.1.2":
+"joi@npm:^18.0.1, joi@npm:^18.1.2":
   version: 18.2.1
   resolution: "joi@npm:18.2.1"
   dependencies:
@@ -20943,7 +20959,6 @@ __metadata:
     "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.74"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.25"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
@@ -21012,8 +21027,7 @@ __metadata:
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^4.1.3"
     govuk-elements-sass: "npm:^3.1.3"
-    govuk-frontend: "npm:^4.9.0"
-    govuk_frontend_toolkit: "npm:^9.0.0"
+    govuk-frontend: "npm:^5.13.0"
     helmet: "npm:^8.1.0"
     http-proxy-middleware: "npm:^4.0.0"
     husky: "npm:^9.1.7"

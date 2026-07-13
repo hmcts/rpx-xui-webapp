@@ -135,7 +135,8 @@ export function setUserRoles(userInfo: UserInfo, req: any, userId: string): any[
     const roleCategories = extractRoleCategories(userRoleAssignments);
     // We assign the role category via the role assignments assigned to user. If not we try IDAM roles
     // getUserRoleCategories is a fallback that appears to rarely, if ever, be used
-    userInfo.roleCategories = getRoleCategoriesFromRoleAssignments(roleCategories) || getUserRoleCategories(userInfo.roles);
+    const userRoleCategories = getRoleCategoriesFromRoleAssignments(roleCategories);
+    userInfo.roleCategories = userRoleCategories.length > 0 ? userRoleCategories : getUserRoleCategories(userInfo.roles);
   }
   return userRoleAssignments;
 }

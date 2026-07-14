@@ -249,6 +249,14 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       username: 'HEARING_MANAGER_CR84_ON_4_USERNAME',
       password: 'HEARING_MANAGER_CR84_ON_4_PASSWORD',
     });
+    expect(getRuntimeUserCredentialEnvMapping(' iac_judge_wa_r2 ')).toEqual({
+      username: 'IAC_JUDGE_WA_R2_USERNAME',
+      password: 'IAC_JUDGE_WA_R2_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' iac_judge_wa_r3 ')).toEqual({
+      username: 'IAC_JUDGE_WA_R3_USERNAME',
+      password: 'IAC_JUDGE_WA_R3_PASSWORD',
+    });
 
     process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce@example.test';
     process.env.DIVORCE_SOLICITOR_PASSWORD = 'divorce-secret';
@@ -295,10 +303,7 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     process.env.PW_IAC_CASEOFFICER_R1_EMAIL = 'iac-caseofficer-r1@example.test';
     process.env.PW_IAC_CASEOFFICER_R1_PASSWORD = 'iac-caseofficer-r1-secret';
-    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toEqual({
-      email: 'iac-caseofficer-r1@example.test',
-      password: 'iac-caseofficer-r1-secret',
-    });
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();
 
     process.env.PW_IAC_CASEOFFICER_R2_EMAIL = 'iac-caseofficer-r2@example.test';
     process.env.PW_IAC_CASEOFFICER_R2_PASSWORD = 'iac-caseofficer-r2-secret';

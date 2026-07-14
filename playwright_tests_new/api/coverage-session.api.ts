@@ -50,7 +50,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         expect(creds.email).toContain('@');
         expect(creds.password).toBeTruthy();
         expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
-        expect(userUtils.getUserCredentials('IAC_Judge_WA_R1')).toEqual(creds);
+        expect(() => userUtils.getUserCredentials('IAC_Judge_WA_R1')).toThrow('credentials are missing');
       }
     );
   });

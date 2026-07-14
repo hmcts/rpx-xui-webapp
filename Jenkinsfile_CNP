@@ -294,6 +294,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "ORG_USER_ASSIGNMENT_MODE=external",
                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                 "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+                "PW_INTEGRATION_SESSION_WARMUP_REQUIRED=true",
                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
@@ -381,6 +382,10 @@ def secrets = [
     secret('e2e-iac-caseofficer-r2-password', 'PW_IAC_CASEOFFICER_R2_PASSWORD'),
     secret('e2e-iac-judge-wa-r1-username', 'PW_IAC_JUDGE_WA_R1_EMAIL'),
     secret('e2e-iac-judge-wa-r1-password', 'PW_IAC_JUDGE_WA_R1_PASSWORD'),
+    secret('e2e-iac-judge-wa-r2-username', 'IAC_JUDGE_WA_R2_USERNAME'),
+    secret('e2e-iac-judge-wa-r2-password', 'IAC_JUDGE_WA_R2_PASSWORD'),
+    secret('e2e-iac-judge-wa-r3-username', 'IAC_JUDGE_WA_R3_USERNAME'),
+    secret('e2e-iac-judge-wa-r3-password', 'IAC_JUDGE_WA_R3_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-username', 'HEARING_MANAGER_CR84_OFF_USERNAME'),
     secret('e2e-hearing-manager-cr84-off-password', 'HEARING_MANAGER_CR84_OFF_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-1-username', 'HEARING_MANAGER_CR84_OFF_1_USERNAME'),

@@ -216,6 +216,10 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `PW_IAC_CASEOFFICER_R1_PASSWORD`
 - `PW_IAC_JUDGE_WA_R1_EMAIL`
 - `PW_IAC_JUDGE_WA_R1_PASSWORD`
+- `IAC_JUDGE_WA_R2_USERNAME`
+- `IAC_JUDGE_WA_R2_PASSWORD`
+- `IAC_JUDGE_WA_R3_USERNAME`
+- `IAC_JUDGE_WA_R3_PASSWORD`
 - `PW_E2E_MANAGE_TASKS_USER`
 - `PW_E2E_MANAGE_TASKS_EMAIL`
 - `PW_E2E_MANAGE_TASKS_PASSWORD`
@@ -715,7 +719,8 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 Notes:
 
 - Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
-- Integration session warmup is opt-in through `PW_INTEGRATION_SESSION_WARMUP_USERS`; use a comma-separated user list for targeted pre-capture, `@default` for the legacy shared pool, or `@none` to force no warmup
+- Integration session warmup resolves users from the selected integration tags, including every configured IAC judicial pool user that a worker may select. Override with `PW_INTEGRATION_SESSION_WARMUP_USERS` using a comma-separated user list, `@default` for the legacy shared pool, or `@none` to force no warmup
+- Warmup failures stop CI integration profiles. Local warmup is best effort so the affected test can capture its session on demand; set `PW_INTEGRATION_SESSION_WARMUP_REQUIRED=true` to use CI behavior locally
 - Integration specs continue to run on the default 7-worker `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded

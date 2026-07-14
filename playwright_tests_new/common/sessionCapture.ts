@@ -10,6 +10,11 @@ import config from '../E2E/utils/config.utils.js';
 import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
 import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
 import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorageKey } from './sessionIdentity.js';
+import {
+  SESSION_CAPTURE_LOGIN_ATTEMPTS,
+  isExplicitIdamLoginRejection,
+  isTransientSessionCaptureError,
+} from './sessionCaptureRetry.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
@@ -117,12 +122,6 @@ function clearSessionCaptureFailure(fsApi: typeof fs, failurePath: string): void
   } catch {
     // Best-effort only.
   }
-}
-
-function isIdamLoginRejection(error: Error): boolean {
-  return (
-    error.message.includes('IDAM login did not establish authenticated session') && error.message.includes('idam-web-public')
-  );
 }
 
 function currentPageUrl(page: Page): string {
@@ -332,6 +331,7 @@ type SessionCaptureDeps = {
   idamPageFactory?: (page: Page) => IdamPage;
   isSessionFresh?: typeof isSessionFresh;
   persistSession?: typeof persistSession;
+  loginAndPersistSession?: typeof loginAndPersistSession;
   fs?: typeof fs;
   config?: typeof config;
   env?: NodeJS.ProcessEnv;
@@ -1037,65 +1037,101 @@ async function loginAndPersistSession({
     operation: 'session-capture',
   });
   try {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    const idamPage = idamFactory(page);
-    try {
-      let loginError: Error | null = null;
-      for (let attempt = 0; attempt < loginTargets.length; attempt += 1) {
-        const loginTarget = loginTargets[attempt];
+    for (let captureAttempt = 1; captureAttempt <= SESSION_CAPTURE_LOGIN_ATTEMPTS; captureAttempt += 1) {
+      const context = await browser.newContext();
+      try {
+        const page = await context.newPage();
+        const idamPage = idamFactory(page);
+        let loginError: Error | null = null;
+        for (let targetAttempt = 0; targetAttempt < loginTargets.length; targetAttempt += 1) {
+          const loginTarget = loginTargets[targetAttempt];
+          try {
+            await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, loginTarget, targetAttempt + 1);
+            loginError = null;
+            break;
+          } catch (attemptError) {
+            loginError = attemptError as Error;
+            logger.warn('IDAM login target failed', {
+              userIdentifier,
+              email,
+              loginTarget,
+              targetAttempt: targetAttempt + 1,
+              totalTargetAttempts: loginTargets.length,
+              captureAttempt,
+              totalCaptureAttempts: SESSION_CAPTURE_LOGIN_ATTEMPTS,
+              currentUrl: currentPageUrl(page),
+              error: loginError.message,
+              operation: 'session-capture',
+            });
+            if (isExplicitIdamLoginRejection(loginError)) {
+              break;
+            }
+          }
+        }
+
+        if (loginError) {
+          throw loginError;
+        }
+
         try {
-          await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, loginTarget, attempt + 1);
-          loginError = null;
-          break;
-        } catch (attemptError) {
-          loginError = attemptError as Error;
-          logger.warn('IDAM login attempt failed', {
+          await new SessionCapturePage(page).header.waitFor({ timeout: 60_000 });
+          logger.info('EXUI header detected', {
+            userIdentifier,
+            operation: 'session-capture',
+          });
+        } catch (headerError) {
+          logger.warn('EXUI header not detected within timeout', {
+            userIdentifier,
+            timeout: 60_000,
+            error: (headerError as Error).message,
+            operation: 'session-capture',
+          });
+        }
+
+        const cookies = await requirePersistableSessionCookies(context, userIdentifier, currentPageUrl(page));
+        await persist(sessionPath, cookies, context, userIdentifier);
+        return;
+      } catch (error) {
+        const loginError = error as Error;
+        const shouldRetry = captureAttempt < SESSION_CAPTURE_LOGIN_ATTEMPTS && isTransientSessionCaptureError(loginError);
+        if (!shouldRetry) {
+          logger.error('Login failed', {
             userIdentifier,
             email,
-            loginTarget,
-            attempt: attempt + 1,
-            totalAttempts: loginTargets.length,
-            currentUrl: currentPageUrl(page),
+            targetUrl,
+            captureAttempt,
             error: loginError.message,
             operation: 'session-capture',
           });
-          if (isIdamLoginRejection(loginError)) {
-            break;
+          throw new SessionCaptureError(
+            `Login failed for ${userIdentifier}`,
+            userIdentifier,
+            { email, targetUrl, captureAttempt },
+            loginError
+          );
+        }
+        logger.warn('Transient session capture failure; retrying once with a fresh browser context', {
+          userIdentifier,
+          email,
+          targetUrl,
+          captureAttempt,
+          error: loginError.message,
+          operation: 'session-capture',
+        });
+      } finally {
+        try {
+          if (typeof context.close === 'function') {
+            await context.close();
           }
+        } catch (closeError) {
+          logger.warn('Failed to close browser context after session capture attempt', {
+            userIdentifier,
+            captureAttempt,
+            error: (closeError as Error).message,
+            operation: 'session-capture',
+          });
         }
       }
-
-      if (loginError) {
-        throw loginError;
-      }
-
-      try {
-        await new SessionCapturePage(page).header.waitFor({ timeout: 60_000 });
-        logger.info('EXUI header detected', {
-          userIdentifier,
-          operation: 'session-capture',
-        });
-      } catch (error_) {
-        logger.warn('EXUI header not detected within timeout', {
-          userIdentifier,
-          timeout: 60_000,
-          error: (error_ as Error).message,
-          operation: 'session-capture',
-        });
-      }
-
-      const cookies = await requirePersistableSessionCookies(context, userIdentifier, currentPageUrl(page));
-      await persist(sessionPath, cookies, context, userIdentifier);
-    } catch (e) {
-      logger.error('Login failed', {
-        userIdentifier,
-        email,
-        targetUrl,
-        error: (e as Error).message,
-        operation: 'session-capture',
-      });
-      throw new SessionCaptureError(`Login failed for ${userIdentifier}`, userIdentifier, { email, targetUrl }, e as Error);
     }
   } finally {
     try {
@@ -1136,6 +1172,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const activeConfig = deps.config ?? config;
   const isFresh = deps.isSessionFresh ?? isSessionFresh;
   const persist = deps.persistSession ?? persistSession;
+  const loginAndPersist = deps.loginAndPersistSession ?? loginAndPersistSession;
   const chromiumLauncher = deps.chromiumLauncher ?? chromium;
   const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
   const lockfileApi = deps.lockfile ?? lockfile;
@@ -1252,7 +1289,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         continue;
       }
 
-      await loginAndPersistSession({
+      await loginAndPersist({
         chromiumLauncher,
         idamFactory,
         env,

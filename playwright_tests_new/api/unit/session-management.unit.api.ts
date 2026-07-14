@@ -299,6 +299,42 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('writes the cooldown marker only after the locked login attempts are exhausted', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-retry-marker-'));
+    const previousCwd = process.cwd();
+    const failurePath = path.join(tempDir, '.sessions', 'judge-example.test.capture-failed.json');
+    let exhaustedAttempts = false;
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: { lock: async () => async () => undefined } as never,
+          loginAndPersistSession: async () => {
+            expect(fs.existsSync(failurePath)).toBe(false);
+            exhaustedAttempts = true;
+            throw new Error('both transient login attempts failed');
+          },
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'IAC_Judge_WA_R1',
+            email: 'judge@example.test',
+            password: 'not-used',
+          }),
+        })
+      ).rejects.toThrow('both transient login attempts failed');
+
+      expect(exhaustedAttempts).toBe(true);
+      expect(JSON.parse(fs.readFileSync(failurePath, 'utf8')).message).toBe('both transient login attempts failed');
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('ensureAuthenticatedPage does not retry navigation when the app shell is missing', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-shell-unit-'));
     const previousCwd = process.cwd();

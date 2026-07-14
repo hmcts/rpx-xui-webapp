@@ -7,6 +7,7 @@ import {
   getConfiguredHearingManagerUserIdentifiers,
 } from './hearingManagerUserPool.helper';
 import { BOOKING_UI_LEGACY_USER_IDENTIFIER, getConfiguredBookingUiUserIdentifiers } from './bookingUiUserPool.helper';
+import { resolveIacJudicialWarmupUsers } from './iacJudicialUserPool.helper';
 import { resolveWelshLanguageSessionUsers } from './welshLanguageSession.helper';
 
 const defaultSearchCaseSessionUsers = ['FPL_GLOBAL_SEARCH'] as const;
@@ -32,7 +33,7 @@ const integrationWarmupUsersByTag: Record<string, IntegrationWarmupResolver> = {
   },
   '@integration-case-details': () => ['STAFF_ADMIN'],
   [caseFileViewIntegrationTag]: () => [caseFileViewUser],
-  '@integration-case-linking': () => ['STAFF_ADMIN', 'IAC_Judge_WA_R1'],
+  '@integration-case-linking': (env) => ['STAFF_ADMIN', ...resolveIacJudicialWarmupUsers(env)],
   '@integration-case-list': () => ['SOLICITOR'],
   '@integration-ccd-toolkit': () => ['SOLICITOR'],
   '@integration-create-case': () => ['SOLICITOR'],
@@ -44,7 +45,7 @@ const integrationWarmupUsersByTag: Record<string, IntegrationWarmupResolver> = {
       ...(offUsers.length > 0 ? offUsers : [HEARING_MANAGER_CR84_OFF_USER]),
     ];
   },
-  '@integration-manage-tasks': () => ['STAFF_ADMIN', 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
+  '@integration-manage-tasks': (env) => ['STAFF_ADMIN', 'IAC_CaseOfficer_R2', ...resolveIacJudicialWarmupUsers(env)],
   '@integration-restricted-case': () => ['FPL_GLOBAL_SEARCH'],
   '@integration-search-case': (env) => resolveSearchCaseSessionUsers(env),
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
@@ -118,11 +119,10 @@ export function resolveIntegrationSessionWarmupUsers(
   }
 
   if (isFullIntegrationRun(tagSelection)) {
-    return uniqueSessionIdentities([
-      ...defaultIntegrationWarmupUsers,
-      ...(tagSelection.excludedTags.includes(caseFileViewIntegrationTag) ? [] : [caseFileViewUser]),
-      ...resolveSearchCaseSessionUsers(env),
-    ]);
+    const selectedTags = tagSelection.availableTags.filter(
+      (tag) => tag !== (tagSelection.suiteTag ?? integrationSuiteTag) && !tagSelection.excludedTags.includes(tag)
+    );
+    return uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationWarmupUsersByTag[tag]?.(env) ?? []));
   }
 
   return uniqueSessionIdentities(

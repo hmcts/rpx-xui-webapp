@@ -14,6 +14,7 @@ export { applySessionCookies } from '../../common/sessionCapture';
 export * from './searchCaseSession.helper';
 export * from './hearingsMockRoutes.helper';
 export * from './hearingManagerUserPool.helper';
+export * from './iacJudicialUserPool.helper';
 export * from './hearingJourneySetup.helper';
 export * from './hearingUpdateJourney.helper';
 export * from './caseworkerJurisdictionMockRoutes.helper';

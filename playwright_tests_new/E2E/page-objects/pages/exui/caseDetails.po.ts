@@ -504,6 +504,8 @@ export class CaseDetailsPage extends Base {
         `Case action "${action}" is not available. Available actions: ${availableOptions.map((option) => option.label || option.value).join(', ')}`
       );
     }
+    const timeoutMs = options.timeoutMs ?? 30000;
+    await this.waitForSpinnerToComplete(`before selecting case action "${action}"`, timeoutMs);
     try {
       if (matchingOption.label === action) {
         await this.caseActionsDropdown.selectOption({ label: action });
@@ -515,13 +517,13 @@ export class CaseDetailsPage extends Base {
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
       await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
+    await this.waitForSpinnerToComplete(`before submitting case action "${action}"`, timeoutMs);
     await this.caseActionGoButton.click();
     await this.waitForSpinnerToComplete('after selecting case action');
     await this.page.waitForLoadState('domcontentloaded');
     if (!options.expectedLocator && !options.expectedPath) {
       return;
     }
-    const timeoutMs = options.timeoutMs ?? 30000;
     const waitForExpected = async () => {
       if (options.expectedPath) {
         const matcher =
@@ -553,6 +555,7 @@ export class CaseDetailsPage extends Base {
         this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
         await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
+      await this.waitForSpinnerToComplete(`before retrying case action "${action}"`, timeoutMs);
       await this.caseActionGoButton.click();
       await this.waitForSpinnerToComplete('after retrying case action');
       await this.page.waitForLoadState('domcontentloaded');

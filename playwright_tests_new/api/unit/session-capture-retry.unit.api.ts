@@ -102,6 +102,18 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(isTransientSessionCaptureError(new Error('IDAM request timeout policy reached'))).toBe(false);
   });
 
+  test('does not retry a typed locator timeout that can indicate a wrong or changed page', () => {
+    const error = new Error('locator.waitFor: Timeout 10000ms exceeded');
+    error.name = 'TimeoutError';
+    expect(isTransientSessionCaptureError(error)).toBe(false);
+  });
+
+  test('retries a typed navigation timeout', () => {
+    const error = new Error('page.goto: Timeout 30000ms exceeded');
+    error.name = 'TimeoutError';
+    expect(isTransientSessionCaptureError(error)).toBe(true);
+  });
+
   test('does not retry deterministic browser or cookie failures', () => {
     expect(isTransientSessionCaptureError(new Error('net::ERR_CERT_AUTHORITY_INVALID'))).toBe(false);
     expect(isTransientSessionCaptureError(new Error('Cannot persist unauthenticated session'))).toBe(false);

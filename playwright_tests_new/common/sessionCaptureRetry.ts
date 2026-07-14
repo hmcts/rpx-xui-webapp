@@ -11,6 +11,11 @@ const transientSessionCapturePatterns = [
   /\b(?:bad gateway|service unavailable|gateway timeout)\b/i,
 ] as const;
 
+const transientNavigationTimeoutPatterns = [
+  /page\.goto: Timeout \d+ms exceeded/i,
+  /\bnavigation (?:timed out|timeout)\b/i,
+] as const;
+
 export const SESSION_CAPTURE_LOGIN_ATTEMPTS = 2;
 
 export function isIdamLoginRejection(error: unknown): boolean {
@@ -39,5 +44,9 @@ export function isTransientSessionCaptureError(error: unknown): boolean {
   if (isIdamLoginRejection(error) && !matchesTransientPattern) {
     return false;
   }
-  return (error instanceof Error && error.name === 'TimeoutError') || matchesTransientPattern;
+  const isNavigationTimeout =
+    error instanceof Error &&
+    error.name === 'TimeoutError' &&
+    transientNavigationTimeoutPatterns.some((pattern) => pattern.test(message));
+  return isNavigationTimeout || matchesTransientPattern;
 }

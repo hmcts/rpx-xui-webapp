@@ -94,6 +94,23 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toThrow('Integration session warmup mappings missing for: @integration-unmapped');
   });
 
+  test('required warmup cannot omit identities declared by the selected tags', () => {
+    expect(
+      resolveIntegrationSessionWarmupUsers(
+        {
+          CI: 'true',
+          PW_INTEGRATION_SESSION_WARMUP_USERS: 'FPL_GLOBAL_SEARCH',
+        } as NodeJS.ProcessEnv,
+        {
+          includeTags: ['@integration-case-linking'],
+          excludedTags: [],
+          availableTags: ['@integration', '@integration-case-linking'],
+          suiteTag: '@integration',
+        }
+      )
+    ).toEqual(['STAFF_ADMIN', 'IAC_Judge_WA_R1', 'FPL_GLOBAL_SEARCH']);
+  });
+
   test('declares route-mocked platform services as requiring no captured identities', () => {
     expect(
       resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {

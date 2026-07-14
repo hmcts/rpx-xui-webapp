@@ -122,6 +122,9 @@ export function resolveIntegrationSessionWarmupUsers(
       : resolveSelectedIntegrationTags(tagSelection)
     : [];
   assertIntegrationWarmupMappings(selectedTags);
+  const selectedTagUsers = tagSelection
+    ? uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationWarmupUsersByTag[tag](env)))
+    : [];
 
   const configured = parseUserList(env.PW_INTEGRATION_SESSION_WARMUP_USERS);
   if (configured.includes('@none')) {
@@ -133,21 +136,17 @@ export function resolveIntegrationSessionWarmupUsers(
 
   if (configured.length > 0) {
     const explicitUsers = configured.filter((userIdentifier) => userIdentifier !== '@default');
-    if (configured.includes('@default')) {
-      return uniqueSessionIdentities([...defaultIntegrationWarmupUsers, ...resolveSearchCaseSessionUsers(env), ...explicitUsers]);
-    }
-    return uniqueSessionIdentities(explicitUsers);
+    const configuredUsers = configured.includes('@default')
+      ? [...defaultIntegrationWarmupUsers, ...resolveSearchCaseSessionUsers(env), ...explicitUsers]
+      : explicitUsers;
+    return uniqueSessionIdentities([...(isIntegrationSessionWarmupRequired(env) ? selectedTagUsers : []), ...configuredUsers]);
   }
 
   if (!tagSelection) {
     return [];
   }
 
-  if (isFullIntegrationRun(tagSelection)) {
-    return uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationWarmupUsersByTag[tag](env)));
-  }
-
-  return uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationWarmupUsersByTag[tag](env)));
+  return selectedTagUsers;
 }
 
 export function resolveSearchCaseUserIdentifier(

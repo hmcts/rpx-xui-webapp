@@ -245,6 +245,8 @@ def runPlaywrightIntegrationProfileMatrix = {
     def failures = []
     resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
         def runConfig = integrationProfileRunConfig(spec)
+        def warmupCompleteFile = "${runConfig.reportDir}/session-warmup.complete"
+        sh "rm -f -- '${warmupCompleteFile}'"
         try {
             withEnv([
               "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
@@ -253,6 +255,7 @@ def runPlaywrightIntegrationProfileMatrix = {
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
               'PW_INTEGRATION_SESSION_WARMUP_REQUIRED=true',
+              "PW_INTEGRATION_SESSION_WARMUP_COMPLETE_FILE=${warmupCompleteFile}",
               "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
               yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
@@ -265,6 +268,10 @@ def runPlaywrightIntegrationProfileMatrix = {
                 throw e
             }
             if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                throw e
+            }
+            if (!fileExists(warmupCompleteFile)) {
+                echo "[playwright-integration] Required session warmup did not complete for ${runConfig.displayName}; aborting before another profile starts"
                 throw e
             }
             failures << "${runConfig.displayName}: ${e.getMessage()}"

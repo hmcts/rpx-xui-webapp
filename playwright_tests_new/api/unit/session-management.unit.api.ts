@@ -5,7 +5,7 @@ import path from 'node:path';
 import { expect, test } from '@playwright/test';
 
 import { __test__ as sessionStorageTest } from '../../E2E/utils/session-storage.utils.js';
-import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
+import { __test__ as sessionCaptureTest, ensureSession } from '../../common/sessionCapture.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
 
 function fakeSessionPage() {
@@ -30,6 +30,33 @@ function hiddenLocator() {
 }
 
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
+  test('required integration workers reject a session miss instead of capturing lazily', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-global-owner-unit-'));
+    const previousCwd = process.cwd();
+    const previousWarmupState = process.env.PW_INTEGRATION_SESSION_WARMUP_COMPLETE;
+
+    try {
+      process.chdir(tempDir);
+      process.env.PW_INTEGRATION_SESSION_WARMUP_COMPLETE = 'true';
+
+      await expect(
+        ensureSession({
+          userIdentifier: 'UNIT_GLOBAL_SETUP_USER',
+          email: 'global-setup-user@example.test',
+          password: 'not-used',
+        })
+      ).rejects.toThrow(/CI workers must not capture sessions lazily/);
+    } finally {
+      if (previousWarmupState === undefined) {
+        delete process.env.PW_INTEGRATION_SESSION_WARMUP_COMPLETE;
+      } else {
+        process.env.PW_INTEGRATION_SESSION_WARMUP_COMPLETE = previousWarmupState;
+      }
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
 
@@ -329,6 +356,52 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       expect(exhaustedAttempts).toBe(true);
       expect(JSON.parse(fs.readFileSync(failurePath, 'utf8')).message).toBe('both transient login attempts failed');
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('local best-effort prewarm bypasses and clears the failure cooldown', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-local-prewarm-'));
+    const previousCwd = process.cwd();
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const failurePath = path.join(sessionsDir, 'judge-example.test.capture-failed.json');
+    let loginCalled = false;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(failurePath, JSON.stringify({ timestamp: Date.now(), message: 'earlier warmup failure' }));
+      process.chdir(tempDir);
+
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: {
+            lock: async () => {
+              expect(fs.existsSync(failurePath)).toBe(true);
+              return async () => undefined;
+            },
+          } as never,
+          loginAndPersistSession: async () => {
+            expect(fs.existsSync(failurePath)).toBe(false);
+            loginCalled = true;
+            throw new Error('local warmup failed');
+          },
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'IAC_Judge_WA_R1',
+            email: 'judge@example.test',
+            password: 'not-used',
+          }),
+          useFailureCooldown: false,
+        })
+      ).rejects.toThrow('local warmup failed');
+
+      expect(loginCalled).toBe(true);
+      expect(fs.existsSync(failurePath)).toBe(false);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });

@@ -50,6 +50,17 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual(['SOLICITOR']);
   });
 
+  test('prewarms sessions used by targeted data loss, query management and share case runs', () => {
+    expect(
+      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-data-loss', '@integration-query-management', '@integration-share-case'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-data-loss', '@integration-query-management', '@integration-share-case'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['SOLICITOR', 'STAFF_ADMIN']);
+  });
+
   test('prewarms users selected by every enabled feature tag for full integration runs', () => {
     expect(
       resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
@@ -59,6 +70,39 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
         suiteTag: '@integration',
       })
     ).toEqual(['RESTRICTED_CASE_FILE_VIEW_ON', 'HEARING_MANAGER_CR84_ON', 'HEARING_MANAGER_CR84_OFF']);
+  });
+
+  test('requires every selected integration feature tag to declare its session identities', () => {
+    expect(() =>
+      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-unmapped'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-unmapped'],
+        suiteTag: '@integration',
+      })
+    ).toThrow('Integration session warmup mappings missing for: @integration-unmapped');
+  });
+
+  test('does not let an explicit warmup-user override bypass tag mapping validation', () => {
+    expect(() =>
+      resolveIntegrationSessionWarmupUsers({ PW_INTEGRATION_SESSION_WARMUP_USERS: 'STAFF_ADMIN' } as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-unmapped'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-unmapped'],
+        suiteTag: '@integration',
+      })
+    ).toThrow('Integration session warmup mappings missing for: @integration-unmapped');
+  });
+
+  test('declares route-mocked platform services as requiring no captured identities', () => {
+    expect(
+      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-platform-services'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-platform-services'],
+        suiteTag: '@integration',
+      })
+    ).toEqual([]);
   });
 
   test('does not prewarm case-file-view session when the full run excludes that tag', () => {
@@ -113,6 +157,17 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     } as NodeJS.ProcessEnv;
 
     expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([]);
+  });
+
+  test('does not allow the no-op warmup sentinel to disable CI fail-fast', () => {
+    const env = {
+      CI: 'true',
+      PW_INTEGRATION_SESSION_WARMUP_USERS: '@none',
+    } as NodeJS.ProcessEnv;
+
+    expect(() => resolveIntegrationSessionWarmupUsers(env)).toThrow(
+      'PW_INTEGRATION_SESSION_WARMUP_USERS=@none cannot disable required integration session warmup'
+    );
   });
 
   test('assigns workers across the configured shared user pool', () => {

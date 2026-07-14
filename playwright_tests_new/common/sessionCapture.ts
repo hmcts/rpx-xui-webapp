@@ -10,11 +10,8 @@ import config from '../E2E/utils/config.utils.js';
 import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
 import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
 import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorageKey } from './sessionIdentity.js';
-import {
-  SESSION_CAPTURE_LOGIN_ATTEMPTS,
-  isExplicitIdamLoginRejection,
-  isTransientSessionCaptureError,
-} from './sessionCaptureRetry.js';
+import { sanitizeUrl } from './failureClassification.js';
+import { SESSION_CAPTURE_LOGIN_ATTEMPTS, isTransientSessionCaptureError } from './sessionCaptureRetry.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
@@ -23,6 +20,18 @@ const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
 const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
+const SESSION_CAPTURE_TARGET_BUDGET_MS = 120_000;
+const SESSION_CAPTURE_PERSIST_BUDGET_MS = 60_000;
+const SESSION_CAPTURE_LOCK_WAIT_MS =
+  SESSION_CAPTURE_LOGIN_ATTEMPTS * SESSION_CAPTURE_TARGET_BUDGET_MS + SESSION_CAPTURE_PERSIST_BUDGET_MS;
+
+function sessionCaptureFailureEvidence(error: Error): string {
+  return error.message
+    .replace(/https?:\/\/[^\s)]+/g, (url) => sanitizeUrl(url))
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 500);
+}
 
 function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return new SessionCapturePage(page).idamUsernameCandidates(idamPage);
@@ -337,6 +346,7 @@ type SessionCaptureDeps = {
   env?: NodeJS.ProcessEnv;
   lockfile?: typeof lockfile;
   force?: boolean;
+  useFailureCooldown?: boolean;
 };
 
 const setupMarkerByPage = new WeakMap<Page, string>();
@@ -380,6 +390,16 @@ function resolveSessionMaxAgeMs(env: NodeJS.ProcessEnv = process.env): number {
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
 }
 
+function assertIntegrationWorkerCaptureAllowed(userIdentifier: string, sessionPath: string, targetUrl: string): void {
+  if (process.env.PW_INTEGRATION_SESSION_WARMUP_COMPLETE === 'true') {
+    throw new SessionCaptureError(
+      `Integration session for ${userIdentifier} was not prewarmed or became unusable after global setup; CI workers must not capture sessions lazily`,
+      userIdentifier,
+      { sessionPath, targetUrl: sanitizeUrl(targetUrl) }
+    );
+  }
+}
+
 /**
  * Ensure session is captured for a given userIdentifier before tests run.
  * Call this in test.beforeAll() to lazily capture only needed sessions.
@@ -401,6 +421,7 @@ export async function ensureSession(userIdentifier: SessionIdentityInput): Promi
     });
     return;
   }
+  assertIntegrationWorkerCaptureAllowed(identity.userIdentifier, sessionPath, targetUrl);
   logger.info('Session missing or stale, capturing lazily', {
     userIdentifier: identity.userIdentifier,
     email,
@@ -613,6 +634,7 @@ export async function ensureAuthenticatedPage(
 
   if (await isIdamLoginPage(page)) {
     markSetup('idam-login');
+    assertIntegrationWorkerCaptureAllowed(identity.userIdentifier, session.storageFile, targetUrl);
     logger.warn('Session appears invalid; refreshing', {
       userIdentifier: identity.userIdentifier,
       email: session.email,
@@ -834,7 +856,7 @@ async function acquireSessionLock({
   force: boolean;
 }): Promise<(() => Promise<void>) | null> {
   const pollIntervalMs = 1_000;
-  const maxWaitMs = 90_000;
+  const maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS;
   const staleLockWindowMs = 65_000;
   const startedAt = Date.now();
   let attempt = 0;
@@ -1039,39 +1061,11 @@ async function loginAndPersistSession({
   try {
     for (let captureAttempt = 1; captureAttempt <= SESSION_CAPTURE_LOGIN_ATTEMPTS; captureAttempt += 1) {
       const context = await browser.newContext();
+      const loginTarget = loginTargets[Math.min(captureAttempt - 1, loginTargets.length - 1)];
       try {
         const page = await context.newPage();
         const idamPage = idamFactory(page);
-        let loginError: Error | null = null;
-        for (let targetAttempt = 0; targetAttempt < loginTargets.length; targetAttempt += 1) {
-          const loginTarget = loginTargets[targetAttempt];
-          try {
-            await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, loginTarget, targetAttempt + 1);
-            loginError = null;
-            break;
-          } catch (attemptError) {
-            loginError = attemptError as Error;
-            logger.warn('IDAM login target failed', {
-              userIdentifier,
-              email,
-              loginTarget,
-              targetAttempt: targetAttempt + 1,
-              totalTargetAttempts: loginTargets.length,
-              captureAttempt,
-              totalCaptureAttempts: SESSION_CAPTURE_LOGIN_ATTEMPTS,
-              currentUrl: currentPageUrl(page),
-              error: loginError.message,
-              operation: 'session-capture',
-            });
-            if (isExplicitIdamLoginRejection(loginError)) {
-              break;
-            }
-          }
-        }
-
-        if (loginError) {
-          throw loginError;
-        }
+        await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, loginTarget, captureAttempt);
 
         try {
           await new SessionCapturePage(page).header.waitFor({ timeout: 60_000 });
@@ -1095,27 +1089,28 @@ async function loginAndPersistSession({
         const loginError = error as Error;
         const shouldRetry = captureAttempt < SESSION_CAPTURE_LOGIN_ATTEMPTS && isTransientSessionCaptureError(loginError);
         if (!shouldRetry) {
+          const evidence = sessionCaptureFailureEvidence(loginError);
+          const sanitizedCause = new Error(evidence);
+          sanitizedCause.name = loginError.name;
           logger.error('Login failed', {
             userIdentifier,
-            email,
-            targetUrl,
+            targetUrl: sanitizeUrl(loginTarget),
             captureAttempt,
-            error: loginError.message,
+            error: evidence,
             operation: 'session-capture',
           });
           throw new SessionCaptureError(
-            `Login failed for ${userIdentifier}`,
+            `Login failed for ${userIdentifier} at ${sanitizeUrl(loginTarget)} after ${captureAttempt} of ${SESSION_CAPTURE_LOGIN_ATTEMPTS} capture attempts: ${evidence}`,
             userIdentifier,
-            { email, targetUrl, captureAttempt },
-            loginError
+            { targetUrl: sanitizeUrl(loginTarget), appTargetUrl: sanitizeUrl(targetUrl), captureAttempt, evidence },
+            sanitizedCause
           );
         }
         logger.warn('Transient session capture failure; retrying once with a fresh browser context', {
           userIdentifier,
-          email,
-          targetUrl,
+          targetUrl: sanitizeUrl(loginTargets[Math.min(captureAttempt, loginTargets.length - 1)]),
           captureAttempt,
-          error: loginError.message,
+          error: sessionCaptureFailureEvidence(loginError),
           operation: 'session-capture',
         });
       } finally {
@@ -1139,8 +1134,7 @@ async function loginAndPersistSession({
     } catch (closeError) {
       logger.warn('Failed to close browser after session capture', {
         userIdentifier,
-        email,
-        targetUrl,
+        targetUrl: sanitizeUrl(targetUrl),
         error: (closeError as Error).message,
         operation: 'session-capture',
       });
@@ -1160,8 +1154,14 @@ async function requirePersistableSessionCookies(
   return cookies;
 }
 
-export async function sessionCapture(identifiers: SessionIdentityInput[], options: { force?: boolean } = {}) {
-  return sessionCaptureWith(identifiers, { force: options.force });
+export async function sessionCapture(
+  identifiers: SessionIdentityInput[],
+  options: { force?: boolean; useFailureCooldown?: boolean } = {}
+) {
+  return sessionCaptureWith(identifiers, {
+    force: options.force,
+    useFailureCooldown: options.useFailureCooldown,
+  });
 }
 
 async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: SessionCaptureDeps = {}) {
@@ -1177,6 +1177,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
   const lockfileApi = deps.lockfile ?? lockfile;
   const force = deps.force ?? false;
+  const useFailureCooldown = deps.useFailureCooldown ?? true;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
   const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
 
@@ -1196,7 +1197,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     // Acquire filesystem lock (blocks across all workers)
     let release: (() => Promise<void>) | null = null;
     try {
-      const recentFailureMessage = recentSessionCaptureFailureMessage(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
+      const recentFailureMessage = useFailureCooldown
+        ? recentSessionCaptureFailureMessage(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env))
+        : null;
       if (recentFailureMessage) {
         if (
           clearSessionCaptureFailureIfReusableSession({
@@ -1250,11 +1253,13 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         operation: 'session-capture',
       });
 
-      const lockedRecentFailureMessage = recentSessionCaptureFailureMessage(
-        fsApi,
-        failurePath,
-        resolveSessionCaptureFailureTtlMs(env)
-      );
+      if (!useFailureCooldown) {
+        clearSessionCaptureFailure(fsApi, failurePath);
+      }
+
+      const lockedRecentFailureMessage = useFailureCooldown
+        ? recentSessionCaptureFailureMessage(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env))
+        : null;
       if (lockedRecentFailureMessage) {
         if (
           clearSessionCaptureFailureIfReusableSession({
@@ -1302,7 +1307,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
       })
         .then(() => clearSessionCaptureFailure(fsApi, failurePath))
         .catch((error: Error) => {
-          writeSessionCaptureFailure(fsApi, failurePath, error);
+          if (useFailureCooldown) {
+            writeSessionCaptureFailure(fsApi, failurePath, error);
+          }
           throw error;
         });
     } finally {
@@ -1328,7 +1335,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 }
 
 export const __test__ = {
+  sessionCaptureLockWaitMs: SESSION_CAPTURE_LOCK_WAIT_MS,
   resolveSessionMaxAgeMs,
+  assertIntegrationWorkerCaptureAllowed,
   hasTargetCompatibleAuthCookies,
   resolveTargetHost,
   acquireSessionLock,

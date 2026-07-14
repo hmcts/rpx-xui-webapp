@@ -1,6 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-import { isIntegrationSessionWarmupRequired, prewarmIntegrationSessions } from '../../common/integrationSessionWarmup.js';
+import {
+  INTEGRATION_SESSION_WARMUP_COMPLETE_ENV,
+  isIntegrationSessionWarmupRequired,
+  prewarmIntegrationSessions,
+} from '../../common/integrationSessionWarmup.js';
 
 test.describe('integration session warmup', { tag: '@svc-internal' }, () => {
   test('requires successful warmup in CI and when explicitly enabled', () => {
@@ -20,18 +24,34 @@ test.describe('integration session warmup', { tag: '@svc-internal' }, () => {
   });
 
   test('fails fast when required warmup fails', async () => {
+    const env = { CI: 'true' } as NodeJS.ProcessEnv;
+    let useFailureCooldown: boolean | undefined;
     await expect(
-      prewarmIntegrationSessions(['STAFF_ADMIN'], { CI: 'true' } as NodeJS.ProcessEnv, async () => {
+      prewarmIntegrationSessions(['STAFF_ADMIN'], env, async (_identifiers, options) => {
+        useFailureCooldown = options?.useFailureCooldown;
         throw new Error('capture failed');
       })
     ).rejects.toThrow('capture failed');
+    expect(useFailureCooldown).toBe(true);
+    expect(env[INTEGRATION_SESSION_WARMUP_COMPLETE_ENV]).toBeUndefined();
+  });
+
+  test('marks required warmup complete only after every capture succeeds', async () => {
+    const env = { CI: 'true' } as NodeJS.ProcessEnv;
+
+    await prewarmIntegrationSessions(['STAFF_ADMIN'], env, async () => undefined);
+
+    expect(env[INTEGRATION_SESSION_WARMUP_COMPLETE_ENV]).toBe('true');
   });
 
   test('keeps local warmup best effort', async () => {
+    let useFailureCooldown: boolean | undefined;
     await expect(
-      prewarmIntegrationSessions(['STAFF_ADMIN'], {} as NodeJS.ProcessEnv, async () => {
+      prewarmIntegrationSessions(['STAFF_ADMIN'], {} as NodeJS.ProcessEnv, async (_identifiers, options) => {
+        useFailureCooldown = options?.useFailureCooldown;
         throw new Error('capture failed');
       })
     ).resolves.toBeUndefined();
+    expect(useFailureCooldown).toBe(false);
   });
 });

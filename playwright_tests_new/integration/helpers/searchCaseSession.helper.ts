@@ -1,6 +1,7 @@
 import type { Page, TestInfo } from '@playwright/test';
 import type { SessionIdentityInput } from '../../common/sessionIdentity';
 import { applySessionCookies, loadSessionCookies } from '../../common/sessionCapture';
+import { isIntegrationSessionWarmupRequired } from '../../common/integrationSessionWarmup';
 import {
   HEARING_MANAGER_CR84_OFF_USER,
   HEARING_MANAGER_CR84_ON_USER,
@@ -37,6 +38,7 @@ const integrationWarmupUsersByTag: Record<string, IntegrationWarmupResolver> = {
   '@integration-case-list': () => ['SOLICITOR'],
   '@integration-ccd-toolkit': () => ['SOLICITOR'],
   '@integration-create-case': () => ['SOLICITOR'],
+  '@integration-data-loss': () => ['SOLICITOR'],
   '@integration-hearings': (env) => {
     const onUsers = getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, env);
     const offUsers = getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_OFF_USER, env);
@@ -46,8 +48,12 @@ const integrationWarmupUsersByTag: Record<string, IntegrationWarmupResolver> = {
     ];
   },
   '@integration-manage-tasks': (env) => ['STAFF_ADMIN', 'IAC_CaseOfficer_R2', ...resolveIacJudicialWarmupUsers(env)],
+  // Authentication and user details are route-mocked by this suite.
+  '@integration-platform-services': () => [],
+  '@integration-query-management': () => ['SOLICITOR', 'STAFF_ADMIN'],
   '@integration-restricted-case': () => ['FPL_GLOBAL_SEARCH'],
   '@integration-search-case': (env) => resolveSearchCaseSessionUsers(env),
+  '@integration-share-case': () => ['SOLICITOR'],
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
 };
 
@@ -92,6 +98,13 @@ function isFullIntegrationRun(selection: IntegrationTagSelection): boolean {
   return selection.includeTags.length === 0 || (selection.includeTags.length === 1 && selection.includeTags[0] === suiteTag);
 }
 
+function assertIntegrationWarmupMappings(tags: string[]): void {
+  const missingTags = tags.filter((tag) => !Object.prototype.hasOwnProperty.call(integrationWarmupUsersByTag, tag));
+  if (missingTags.length > 0) {
+    throw new Error(`Integration session warmup mappings missing for: ${missingTags.join(', ')}`);
+  }
+}
+
 export function resolveSearchCaseSessionUsers(env: NodeJS.ProcessEnv = process.env): string[] {
   const configured = parseUserList(env.PW_SEARCH_CASE_SESSION_USERS);
   return configured.length > 0 ? configured : [...defaultSearchCaseSessionUsers];
@@ -101,8 +114,20 @@ export function resolveIntegrationSessionWarmupUsers(
   env: NodeJS.ProcessEnv = process.env,
   tagSelection?: IntegrationTagSelection
 ): SessionIdentityInput[] {
+  const selectedTags = tagSelection
+    ? isFullIntegrationRun(tagSelection)
+      ? tagSelection.availableTags.filter(
+          (tag) => tag !== (tagSelection.suiteTag ?? integrationSuiteTag) && !tagSelection.excludedTags.includes(tag)
+        )
+      : resolveSelectedIntegrationTags(tagSelection)
+    : [];
+  assertIntegrationWarmupMappings(selectedTags);
+
   const configured = parseUserList(env.PW_INTEGRATION_SESSION_WARMUP_USERS);
   if (configured.includes('@none')) {
+    if (isIntegrationSessionWarmupRequired(env)) {
+      throw new Error('PW_INTEGRATION_SESSION_WARMUP_USERS=@none cannot disable required integration session warmup');
+    }
     return [];
   }
 
@@ -119,15 +144,10 @@ export function resolveIntegrationSessionWarmupUsers(
   }
 
   if (isFullIntegrationRun(tagSelection)) {
-    const selectedTags = tagSelection.availableTags.filter(
-      (tag) => tag !== (tagSelection.suiteTag ?? integrationSuiteTag) && !tagSelection.excludedTags.includes(tag)
-    );
-    return uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationWarmupUsersByTag[tag]?.(env) ?? []));
+    return uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationWarmupUsersByTag[tag](env)));
   }
 
-  return uniqueSessionIdentities(
-    resolveSelectedIntegrationTags(tagSelection).flatMap((tag) => integrationWarmupUsersByTag[tag]?.(env) ?? [])
-  );
+  return uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationWarmupUsersByTag[tag](env)));
 }
 
 export function resolveSearchCaseUserIdentifier(

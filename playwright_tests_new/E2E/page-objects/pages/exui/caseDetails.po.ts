@@ -504,24 +504,30 @@ export class CaseDetailsPage extends Base {
         `Case action "${action}" is not available. Available actions: ${availableOptions.map((option) => option.label || option.value).join(', ')}`
       );
     }
-    try {
-      if (matchingOption.label === action) {
-        await this.caseActionsDropdown.selectOption({ label: action });
-      } else {
-        await this.caseActionsDropdown.selectOption(action);
-      }
-    } catch (error) {
-      // Fallback: some dropdowns don't support label selector, use value directly
-      this.logger.warn('Failed to select option by label, falling back to value selector', { error });
-      await this.caseActionsDropdown.selectOption(matchingOption.value || action);
-    }
-    await this.caseActionGoButton.click();
-    await this.waitForSpinnerToComplete('after selecting case action');
-    await this.page.waitForLoadState('domcontentloaded');
-    if (!options.expectedLocator && !options.expectedPath) {
-      return;
-    }
     const timeoutMs = options.timeoutMs ?? 30000;
+    const selectedOption = `${matchingOption.label || '[no label]'} (${matchingOption.value || '[no value]'})`;
+    const expectedTargets = [
+      options.expectedPath ? String(options.expectedPath) : undefined,
+      options.expectedLocator?.toString(),
+    ].filter((target): target is string => Boolean(target));
+    const expectedTarget = expectedTargets.join(' and ') || '[none]';
+    const performAction = async (context: string) => {
+      await this.waitForSpinnerToComplete(`before selecting case action "${action}"`, timeoutMs);
+      try {
+        if (matchingOption.label === action) {
+          await this.caseActionsDropdown.selectOption({ label: action });
+        } else {
+          await this.caseActionsDropdown.selectOption(action);
+        }
+      } catch (error) {
+        this.logger.warn('Failed to select option by label, falling back to value selector', { action, error });
+        await this.caseActionsDropdown.selectOption(matchingOption.value || action);
+      }
+      await this.waitForSpinnerToComplete(`before submitting case action "${action}"`, timeoutMs);
+      await this.caseActionGoButton.click();
+      await this.waitForSpinnerToComplete(context);
+      await this.page.waitForLoadState('domcontentloaded');
+    };
     const waitForExpected = async () => {
       if (options.expectedPath) {
         const matcher =
@@ -532,31 +538,61 @@ export class CaseDetailsPage extends Base {
       }
       await options.expectedLocator?.waitFor({ state: 'visible', timeout: timeoutMs });
     };
+    const contextualFailure = async (cause: unknown): Promise<Error> => {
+      const spinnerVisible = await this.page
+        .locator('xuilib-loading-spinner')
+        .first()
+        .isVisible()
+        .catch(() => false);
+      const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+      const redactedCause = (cause instanceof Error ? cause.message : String(cause))
+        .replace(/\d{12,}/g, '[redacted-case-reference]')
+        .replace(/https?:\/\/[^\s"'<>]+/gi, (value) => {
+          try {
+            const url = new URL(value);
+            return `${url.origin}${url.pathname}`;
+          } catch {
+            return '[redacted-url]';
+          }
+        })
+        .replace(/([?&][^=\s&]+)=([^\s&"']+)/g, '$1=[redacted]');
+      let path = '[unavailable]';
+      try {
+        path = new URL(this.page.url()).pathname.replace(/\d{12,}/g, '[redacted-case-reference]');
+      } catch {
+        // Keep the placeholder when the page no longer exposes a valid URL.
+      }
+      const error = new Error(
+        `Case action selection failed: action="${action}"; path="${path}"; selectedOption="${selectedOption}"; ` +
+          `spinnerVisible=${spinnerVisible}; eventErrorVisible=${eventErrorVisible}; expectedTarget="${expectedTarget}"; ` +
+          `cause="${redactedCause}"`
+      );
+      (error as Error & { cause?: unknown }).cause = new Error(redactedCause);
+      return error;
+    };
+
+    try {
+      await performAction('after selecting case action');
+    } catch (error) {
+      throw await contextualFailure(error);
+    }
+    if (!options.expectedLocator && !options.expectedPath) {
+      return;
+    }
     try {
       await waitForExpected();
     } catch (error) {
       const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
-      if (eventErrorVisible) {
-        throw new Error(`Case event failed after selecting "${action}": The event could not be created.`);
-      }
-      if (options.retry === false) {
-        throw error;
+      if (eventErrorVisible || options.retry === false) {
+        throw await contextualFailure(error);
       }
       this.logger.warn('Expected locator not visible after case action; retrying action', { action });
       try {
-        if (matchingOption.label === action) {
-          await this.caseActionsDropdown.selectOption({ label: action });
-        } else {
-          await this.caseActionsDropdown.selectOption(action);
-        }
+        await performAction('after retrying case action');
+        await waitForExpected();
       } catch (retryError) {
-        this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
-        await this.caseActionsDropdown.selectOption(matchingOption.value || action);
+        throw await contextualFailure(retryError);
       }
-      await this.caseActionGoButton.click();
-      await this.waitForSpinnerToComplete('after retrying case action');
-      await this.page.waitForLoadState('domcontentloaded');
-      await waitForExpected();
     }
   }
 

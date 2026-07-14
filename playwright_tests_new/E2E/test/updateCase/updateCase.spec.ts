@@ -39,50 +39,27 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
     );
   });
 
-  test('Create, update and verify case history', async ({ page, createCasePage, caseDetailsPage }) => {
-    let caseDetailsUrl = '';
-
+  test('Create, update and verify case history', async ({ createCasePage, caseDetailsPage }) => {
     await test.step('Start Update Case event', async () => {
-      caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
-      await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
       await caseDetailsPage.selectCaseAction('Update case', {
         expectedLocator: createCasePage.person2FirstNameInput,
         timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
+        retry: false,
       });
     });
 
     await test.step('Update case fields', async () => {
-      await retryOnTransientFailure(
-        async () => {
-          await createCasePage.person2FirstNameInput.fill(updatedFirstName);
-          await createCasePage.person2LastNameInput.fill(updatedLastName);
-          await createCasePage.clickContinueAndEnsureWizardAdvanced('after updating person 2 fields', {
-            expectedLocator: createCasePage.doYouAgreeGroup,
-            timeoutMs: 30_000,
-          });
-          await createCasePage.ensureDoYouAgreeAnswered();
-          await createCasePage.clickSubmitAndWait('after updating case fields', {
-            timeoutMs: 60_000,
-            maxAutoAdvanceAttempts: 0,
-          });
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            if (page.isClosed()) {
-              return;
-            }
-            await caseDetailsPage.reopenCaseDetails(caseDetailsUrl).catch(async () => {
-              await page.goto(caseDetailsUrl).catch(() => undefined);
-            });
-            await caseDetailsPage.selectCaseAction('Update case', {
-              expectedLocator: createCasePage.person2FirstNameInput,
-              timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
-              retry: false,
-            });
-          },
-        }
-      );
+      await createCasePage.person2FirstNameInput.fill(updatedFirstName);
+      await createCasePage.person2LastNameInput.fill(updatedLastName);
+      await createCasePage.clickContinueAndEnsureWizardAdvanced('after updating person 2 fields', {
+        expectedLocator: createCasePage.doYouAgreeGroup,
+        timeoutMs: 30_000,
+      });
+      await createCasePage.ensureDoYouAgreeAnswered();
+      await createCasePage.clickSubmitAndWait('after updating case fields', {
+        timeoutMs: 60_000,
+        maxAutoAdvanceAttempts: 0,
+      });
 
       await caseDetailsPage.exuiSpinnerComponent.wait();
       // Soft assertion - visibility verified by poll below, but helps with debugging if banner missing

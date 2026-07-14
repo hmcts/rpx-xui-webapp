@@ -6,7 +6,8 @@ const explicitIdamRejectionPatterns = [
 ] as const;
 
 const transientSessionCapturePatterns = [
-  /net::ERR_(?:CONNECTION_RESET|CONNECTION_CLOSED|CONNECTION_TIMED_OUT|NETWORK_CHANGED|TIMED_OUT)\b/i,
+  /(?:net::)?ERR_(?:CONNECTION_RESET|CONNECTION_CLOSED|CONNECTION_TIMED_OUT|INTERNET_DISCONNECTED|NAME_NOT_RESOLVED|NETWORK_CHANGED|TIMED_OUT)\b/i,
+  /chrome-error:\/\/chromewebdata\//i,
   /\b(?:HTTP(?: status)?|status(?: code)?|response status)\s*[:=]?\s*(?:502|503|504)\b/i,
   /\b(?:bad gateway|service unavailable|gateway timeout)\b/i,
 ] as const;
@@ -37,7 +38,7 @@ export function isExplicitIdamLoginRejection(error: unknown): boolean {
 }
 
 export function isTransientSessionCaptureError(error: unknown): boolean {
-  if (error instanceof Error && error.name === 'SessionPersistenceError') {
+  if (error instanceof Error && ['SessionCancellationError', 'SessionPersistenceError'].includes(error.name)) {
     return false;
   }
   if (isExplicitIdamLoginRejection(error)) {

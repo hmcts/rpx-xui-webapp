@@ -47,7 +47,6 @@ test.describe('Booking UI user pool unit tests', { tag: '@svc-internal' }, () =>
       'BOOKING_UI-FT-ON-1',
       'BOOKING_UI-FT-ON-3',
       'BOOKING_UI-FT-ON-4',
-      BOOKING_UI_LEGACY_USER_IDENTIFIER,
     ]);
   });
 });

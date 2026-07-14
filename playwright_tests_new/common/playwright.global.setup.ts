@@ -3,7 +3,21 @@ import { validateIntegrationSessionConfiguration } from './integrationSessionCon
 import { resolveIntegrationSessionUsers } from '../integration/helpers';
 import * as playwrightConfigUtils from '../../playwright-config-utils';
 
-const { resolveTagFilters } = playwrightConfigUtils;
+type ResolveTagFilters = typeof import('../../playwright-config-utils').resolveTagFilters;
+
+export function resolveTagFiltersExport(module: unknown): ResolveTagFilters {
+  const exports = module as {
+    resolveTagFilters?: ResolveTagFilters;
+    default?: { resolveTagFilters?: ResolveTagFilters };
+  };
+  const resolveTagFilters = exports.resolveTagFilters ?? exports.default?.resolveTagFilters;
+  if (!resolveTagFilters) {
+    throw new TypeError('playwright-config-utils does not export resolveTagFilters');
+  }
+  return resolveTagFilters;
+}
+
+const resolveTagFilters = resolveTagFiltersExport(playwrightConfigUtils);
 
 function isIntegrationConfig(fullConfig: FullConfig): boolean {
   return fullConfig.projects.some((project) => project.testDir.replace(/\\/g, '/').endsWith('playwright_tests_new/integration'));

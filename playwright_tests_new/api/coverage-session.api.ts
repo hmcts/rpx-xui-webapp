@@ -630,7 +630,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
   test('acquireSessionLock clears abandoned lock artifacts before timing out', async () => {
     let lockAttempts = 0;
     let removedArtifacts = 0;
-    const staleTime = Date.now() - 70_000;
+    const staleTime = Date.now() - sessionCaptureTest.sessionCaptureLockWaitMs - 6_000;
 
     const fsStub = {
       existsSync: (target: string) => target.endsWith('.lock'),

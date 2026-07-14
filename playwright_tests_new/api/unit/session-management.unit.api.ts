@@ -154,6 +154,42 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('does not start a new capture after the lock takeover budget is exhausted', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-lock-takeover-unit-'));
+    const previousCwd = process.cwd();
+    let loginCalled = false;
+    const clock = [0, sessionCaptureTest.sessionCaptureLockTakeoverBudgetMs + 1];
+
+    try {
+      process.chdir(tempDir);
+
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['UNIT_TAKEOVER_USER'], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: { lock: async () => async () => undefined } as never,
+          loginAndPersistSession: async () => {
+            loginCalled = true;
+          },
+          now: () => clock.shift() ?? clock[clock.length - 1],
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'UNIT_TAKEOVER_USER',
+            email: 'takeover-user@example.test',
+            password: 'not-used',
+          }),
+        })
+      ).rejects.toThrow('refusing to start a capture that cannot complete within the integration test budget');
+
+      expect(loginCalled).toBe(false);
+      expect(fs.readdirSync(path.join(tempDir, '.sessions')).some((name) => name.endsWith('.capture-failed.json'))).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
 

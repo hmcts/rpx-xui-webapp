@@ -75,7 +75,6 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
       'HEARING_MANAGER_CR84_OFF-1',
       'HEARING_MANAGER_CR84_OFF-2',
       'HEARING_MANAGER_CR84_OFF-3',
-      HEARING_MANAGER_CR84_OFF_USER,
     ]);
   });
 });

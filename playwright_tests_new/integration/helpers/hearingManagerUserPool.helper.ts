@@ -87,5 +87,6 @@ export function resolveHearingManagerSessionCandidates(
     return [selected];
   }
 
-  return Array.from(new Set([selected, ...getConfiguredHearingManagerUserIdentifiers(userIdentifier, env), userIdentifier]));
+  const configuredUserIdentifiers = getConfiguredHearingManagerUserIdentifiers(userIdentifier, env);
+  return configuredUserIdentifiers.length > 0 ? Array.from(new Set([selected, ...configuredUserIdentifiers])) : [userIdentifier];
 }

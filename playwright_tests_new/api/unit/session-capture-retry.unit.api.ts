@@ -159,7 +159,24 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(isTransientSessionCaptureError(error)).toBe(false);
   });
 
-  test('lock wait covers the full bounded owner lifecycle and leaves journey time', () => {
+  test('does not retry unconfirmed cancellation even when cleanup evidence looks transient', () => {
+    const error = new Error('Session capture attempt timed out after 45000ms; timeout cleanup failed: 503 Service Unavailable');
+    error.name = 'SessionCancellationError';
+
+    expect(isTransientSessionCaptureError(error)).toBe(false);
+  });
+
+  test('retries exhausted transient app navigation failures once', () => {
+    expect(
+      isTransientSessionCaptureError(
+        new Error('Navigation landed on chrome-error://chromewebdata/ while opening https://manage-case.example.test')
+      )
+    ).toBe(true);
+    expect(isTransientSessionCaptureError(new Error('page.goto: net::ERR_NAME_NOT_RESOLVED'))).toBe(true);
+    expect(isTransientSessionCaptureError(new Error('page.goto: ERR_INTERNET_DISCONNECTED'))).toBe(true);
+  });
+
+  test('lock wait covers owner reuse while takeover plus capture leaves journey time', () => {
     const guardedOperationBudget =
       sessionCaptureTest.sessionCaptureBrowserLaunchBudgetMs +
       2 * (sessionCaptureTest.sessionCaptureTargetBudgetMs + sessionCaptureTest.sessionCaptureContextCloseBudgetMs) +
@@ -173,6 +190,9 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     );
     expect(sessionCaptureTest.sessionCaptureLockWaitMs).toBeGreaterThan(guardedOperationBudget);
     expect(sessionCaptureTest.sessionCaptureLockWaitMs).toBeLessThanOrEqual(
+      INTEGRATION_TEST_TIMEOUT_MS - POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS
+    );
+    expect(sessionCaptureTest.sessionCaptureLockTakeoverBudgetMs + guardedOperationBudget).toBeLessThanOrEqual(
       INTEGRATION_TEST_TIMEOUT_MS - POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS
     );
   });

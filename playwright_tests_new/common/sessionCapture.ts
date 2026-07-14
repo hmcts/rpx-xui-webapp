@@ -38,6 +38,7 @@ const SESSION_CAPTURE_OWNER_BUDGET_MS =
   SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS;
 const SESSION_CAPTURE_LOCK_HEADROOM_MS = 15_000;
 const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_CAPTURE_LOCK_HEADROOM_MS;
+const SESSION_CAPTURE_LOCK_TAKEOVER_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
 
 async function withOperationTimeout<T>(
   operation: () => Promise<T>,
@@ -412,6 +413,7 @@ type SessionCaptureDeps = {
   env?: NodeJS.ProcessEnv;
   lockfile?: typeof lockfile;
   force?: boolean;
+  now?: () => number;
 };
 
 const setupMarkerByPage = new WeakMap<Page, string>();
@@ -1348,6 +1350,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
   const lockfileApi = deps.lockfile ?? lockfile;
   const force = deps.force ?? false;
+  const now = deps.now ?? Date.now;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
   const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
 
@@ -1397,6 +1400,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         operation: 'session-capture',
       });
 
+      const lockStartedAt = now();
       release = await acquireSessionLock({
         fsApi,
         lockfileApi,
@@ -1405,6 +1409,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl }),
         force,
       });
+      const lockWaitMs = Math.max(0, now() - lockStartedAt);
 
       if (!release) {
         logger.info('Skipping session capture because another worker refreshed the session', {
@@ -1460,6 +1465,14 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         continue;
       }
 
+      if (lockWaitMs > SESSION_CAPTURE_LOCK_TAKEOVER_BUDGET_MS) {
+        throw new SessionCaptureError(
+          `Session lock became available for ${identity.userIdentifier} after ${lockWaitMs}ms; refusing to start a capture that cannot complete within the integration test budget`,
+          identity.userIdentifier,
+          { sessionPath, lockWaitMs }
+        );
+      }
+
       await loginAndPersist({
         chromiumLauncher,
         idamFactory,
@@ -1501,6 +1514,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 export const __test__ = {
   sessionCaptureLockWaitMs: SESSION_CAPTURE_LOCK_WAIT_MS,
   sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
+  sessionCaptureLockTakeoverBudgetMs: SESSION_CAPTURE_LOCK_TAKEOVER_BUDGET_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
   sessionCaptureBrowserLaunchBudgetMs: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,
   sessionCaptureTargetBudgetMs: SESSION_CAPTURE_TARGET_BUDGET_MS,

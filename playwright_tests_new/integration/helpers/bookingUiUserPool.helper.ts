@@ -50,5 +50,8 @@ export function resolveBookingUiSessionCandidates(
   env: EnvMap = process.env
 ): BookingUiUserIdentifier[] {
   const selected = resolveBookingUiUserIdentifier(testInfo, env);
-  return Array.from(new Set([selected, ...getConfiguredBookingUiUserIdentifiers(env), BOOKING_UI_LEGACY_USER_IDENTIFIER]));
+  const configuredUserIdentifiers = getConfiguredBookingUiUserIdentifiers(env);
+  return configuredUserIdentifiers.length > 0
+    ? Array.from(new Set([selected, ...configuredUserIdentifiers]))
+    : [BOOKING_UI_LEGACY_USER_IDENTIFIER];
 }

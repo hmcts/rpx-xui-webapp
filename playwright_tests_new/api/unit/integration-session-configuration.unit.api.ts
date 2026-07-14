@@ -7,9 +7,17 @@ import {
   INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE_ENV,
   validateIntegrationSessionConfiguration,
 } from '../../common/integrationSessionConfiguration.js';
-import globalSetup from '../../common/playwright.global.setup.js';
+import globalSetup, { resolveTagFiltersExport } from '../../common/playwright.global.setup.js';
 
 test.describe('integration session configuration', { tag: '@svc-internal' }, () => {
+  test('resolves tag filters from ESM and CommonJS namespace shapes', () => {
+    const resolveTagFilters = () => ({ includeTags: [] });
+
+    expect(resolveTagFiltersExport({ resolveTagFilters })).toBe(resolveTagFilters);
+    expect(resolveTagFiltersExport({ default: { resolveTagFilters } })).toBe(resolveTagFilters);
+    expect(() => resolveTagFiltersExport({ default: {} })).toThrow('playwright-config-utils does not export resolveTagFilters');
+  });
+
   test('validates declared identities without creating session files', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-session-config-'));
     const previousCwd = process.cwd();

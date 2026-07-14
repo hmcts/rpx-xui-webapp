@@ -1,13 +1,13 @@
 import type { Page, TestInfo } from '@playwright/test';
 import type { SessionIdentityInput } from '../../common/sessionIdentity';
 import { applySessionCookiesFromPool } from '../../common/sessionCapture';
-import { getConfiguredStaffAdminUserIdentifiers } from '../../common/staffAdminUserPool';
+import { STAFF_ADMIN_USER, getConfiguredStaffAdminUserIdentifiers } from '../../common/staffAdminUserPool';
 import {
   HEARING_MANAGER_CR84_OFF_USER,
   HEARING_MANAGER_CR84_ON_USER,
-  getConfiguredHearingManagerUserIdentifiers,
+  resolveHearingManagerSessionCandidates,
 } from './hearingManagerUserPool.helper';
-import { BOOKING_UI_LEGACY_USER_IDENTIFIER, getConfiguredBookingUiUserIdentifiers } from './bookingUiUserPool.helper';
+import { resolveBookingUiSessionCandidates } from './bookingUiUserPool.helper';
 import { resolveWelshLanguageSessionUsers } from './welshLanguageSession.helper';
 
 const defaultSearchCaseSessionUsers = ['FPL_GLOBAL_SEARCH'] as const;
@@ -26,10 +26,7 @@ type IntegrationSessionResolver = (env: NodeJS.ProcessEnv) => SessionIdentityInp
 
 const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> = {
   '@integration-access-requests': (env) => resolveStaffAdminSessionUsers(env),
-  '@integration-booking-ui': (env) => {
-    const configuredUsers = getConfiguredBookingUiUserIdentifiers(env);
-    return configuredUsers.length > 0 ? [...configuredUsers] : [BOOKING_UI_LEGACY_USER_IDENTIFIER];
-  },
+  '@integration-booking-ui': (env) => resolveBookingUiSessionCandidates({ parallelIndex: 0 }, env),
   '@integration-case-details': (env) => resolveStaffAdminSessionUsers(env),
   [caseFileViewIntegrationTag]: () => [caseFileViewUser],
   '@integration-case-linking': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_Judge_WA_R1'],
@@ -37,20 +34,19 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-ccd-toolkit': () => ['SOLICITOR'],
   '@integration-create-case': () => ['SOLICITOR'],
   '@integration-data-loss': () => ['SOLICITOR'],
-  '@integration-hearings': (env) => {
-    const onUsers = getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, env);
-    const offUsers = getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_OFF_USER, env);
-    return [
-      ...(onUsers.length > 0 ? onUsers : [HEARING_MANAGER_CR84_ON_USER]),
-      ...(offUsers.length > 0 ? offUsers : [HEARING_MANAGER_CR84_OFF_USER]),
-    ];
-  },
+  '@integration-hearings': (env) => [
+    ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 0 }, env),
+    ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 0 }, env),
+  ],
   '@integration-manage-tasks': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
   // Authentication and user details are route-mocked by this suite.
   '@integration-platform-services': () => [],
   '@integration-query-management': (env) => ['SOLICITOR', ...resolveStaffAdminSessionUsers(env)],
   '@integration-restricted-case': () => ['FPL_GLOBAL_SEARCH'],
-  '@integration-search-case': (env) => resolveSearchCaseSessionUsers(env),
+  '@integration-search-case': (env) =>
+    resolveSearchCaseSessionUsers(env).flatMap((userIdentifier) =>
+      userIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionUsers(env) : [userIdentifier]
+    ),
   '@integration-share-case': () => ['SOLICITOR'],
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
 };

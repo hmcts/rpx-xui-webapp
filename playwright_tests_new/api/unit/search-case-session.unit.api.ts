@@ -18,6 +18,46 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveSearchCaseSessionUsers(env)).toEqual(['SOLICITOR', 'STAFF_ADMIN']);
   });
 
+  test('declares the configured staff-admin pool used by a search-case alias override', () => {
+    const env = {
+      PW_SEARCH_CASE_SESSION_USERS: 'STAFF_ADMIN',
+      STAFF_ADMIN_POOL_ENABLED: 'true',
+      STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+      STAFF_ADMIN_1_PASSWORD: 'secret-1',
+      STAFF_ADMIN_2_USERNAME: 'staff-admin-2@example.test',
+      STAFF_ADMIN_2_PASSWORD: 'secret-2',
+    } as NodeJS.ProcessEnv;
+
+    expect(
+      resolveIntegrationSessionUsers(env, {
+        includeTags: ['@integration-search-case'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-search-case'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['STAFF_ADMIN-1', 'STAFF_ADMIN-2']);
+  });
+
+  test('declares only configured booking and hearing pool identities', () => {
+    const env = {
+      BOOKING_UI_FT_ON_1_USERNAME: 'booking-ui-1@example.test',
+      BOOKING_UI_FT_ON_1_PASSWORD: 'secret-1',
+      HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
+      HEARING_MANAGER_CR84_ON_1_PASSWORD: 'secret-1',
+      HEARING_MANAGER_CR84_OFF_1_USERNAME: 'hearing-off-1@example.test',
+      HEARING_MANAGER_CR84_OFF_1_PASSWORD: 'secret-1',
+    } as NodeJS.ProcessEnv;
+
+    expect(
+      resolveIntegrationSessionUsers(env, {
+        includeTags: ['@integration-booking-ui', '@integration-hearings'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-booking-ui', '@integration-hearings'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['BOOKING_UI-FT-ON-1', 'HEARING_MANAGER_CR84_ON-1', 'HEARING_MANAGER_CR84_OFF-1']);
+  });
+
   test('returns no integration declarations without a tag selection', () => {
     expect(resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv)).toEqual([]);
   });

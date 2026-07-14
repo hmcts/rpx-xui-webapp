@@ -129,7 +129,8 @@
     { "service": "DIVORCE", "serviceCodes": ["ABA1"] },
     { "service": "FR", "serviceCodes": ["ABA2"] },
     { "service": "PROBATE", "serviceCodes": ["ABA6"] },
-    { "service": "HRS", "serviceCodes": ["HRS"] }
+    { "service": "HRS", "serviceCodes": ["HRS"] },
+    { "service": "PCS", "serviceCodes": ["AAA3"] }
   ],
   "wildcardSearchFields": {
     "Benefit": ["generatedSurname", "appeal.appellant.name.lastName"],

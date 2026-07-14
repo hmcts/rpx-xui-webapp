@@ -1,10 +1,5 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import {
-  applySessionCookies,
-  resolveIacJudicialUserIdentifier,
-  setupManageTasksBaseRoutes,
-  taskListRoutePattern,
-} from '../../../helpers';
+import { applySessionCookies, setupManageTasksBaseRoutes, taskListRoutePattern } from '../../../helpers';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
 import {
@@ -328,7 +323,7 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
       notExpectedDateHeader: 'Task created',
     },
     {
-      userIdentifier: 'IAC judicial pool',
+      userIdentifier: 'IAC_Judge_WA_R1',
       roleCategory: 'JUDICIAL',
       roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'],
       expectedDateHeader: 'Task created',
@@ -340,11 +335,8 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
     test.describe(`All-work columns render correctly for ${scenario.userIdentifier}`, () => {
       const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
 
-      test.beforeEach(async ({ page }, testInfo) => {
-        const selectedUserIdentifier =
-          scenario.roleCategory === 'JUDICIAL' ? resolveIacJudicialUserIdentifier(testInfo) : scenario.userIdentifier;
-        testInfo.annotations.push({ type: 'session-user', description: selectedUserIdentifier });
-        await applySessionCookies(page, selectedUserIdentifier);
+      test.beforeEach(async ({ page }) => {
+        await applySessionCookies(page, scenario.userIdentifier);
       });
       test(`renders expected date column and not the non-expected date column`, async ({ taskListPage, page, tableUtils }) => {
         await test.step('Setup route mocks for all-work role-based columns', async () => {

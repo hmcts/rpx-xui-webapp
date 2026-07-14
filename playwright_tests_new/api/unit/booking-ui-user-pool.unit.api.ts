@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 import {
   BOOKING_UI_LEGACY_USER_IDENTIFIER,
   getConfiguredBookingUiUserIdentifiers,
+  resolveBookingUiSessionCandidates,
   resolveBookingUiUserIdentifier,
 } from '../../integration/helpers/bookingUiUserPool.helper.js';
 
@@ -34,11 +35,19 @@ test.describe('Booking UI user pool unit tests', { tag: '@svc-internal' }, () =>
     expect(getConfiguredBookingUiUserIdentifiers(env)).toEqual(['BOOKING_UI-FT-ON-1']);
   });
 
-  test('selects configured pooled users by Playwright parallel index', () => {
+  test('distributes configured users by parallel index', () => {
     expect(resolveBookingUiUserIdentifier({ parallelIndex: 0 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-1');
     expect(resolveBookingUiUserIdentifier({ parallelIndex: 1 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-2');
-    expect(resolveBookingUiUserIdentifier({ parallelIndex: 2 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-3');
-    expect(resolveBookingUiUserIdentifier({ parallelIndex: 3 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-4');
     expect(resolveBookingUiUserIdentifier({ parallelIndex: 4 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-1');
+  });
+
+  test('orders fallback candidates after the worker-selected identity', () => {
+    expect(resolveBookingUiSessionCandidates({ parallelIndex: 1 }, configuredEnv)).toEqual([
+      'BOOKING_UI-FT-ON-2',
+      'BOOKING_UI-FT-ON-1',
+      'BOOKING_UI-FT-ON-3',
+      'BOOKING_UI-FT-ON-4',
+      BOOKING_UI_LEGACY_USER_IDENTIFIER,
+    ]);
   });
 });

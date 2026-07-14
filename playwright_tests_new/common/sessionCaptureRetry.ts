@@ -1,5 +1,5 @@
 const explicitIdamRejectionPatterns = [
-  /email or password is incorrect/i,
+  /(?:email or password is incorrect|incorrect email or password)/i,
   /invalid (?:email|username|password|credentials)/i,
   /account (?:is )?(?:disabled|locked|suspended)/i,
   /user (?:does not exist|not found)/i,
@@ -7,13 +7,14 @@ const explicitIdamRejectionPatterns = [
 
 const transientSessionCapturePatterns = [
   /net::ERR_(?:CONNECTION_RESET|CONNECTION_CLOSED|CONNECTION_TIMED_OUT|NETWORK_CHANGED|TIMED_OUT)\b/i,
-  /\b(?:502|503|504)\b/,
+  /\b(?:HTTP(?: status)?|status(?: code)?|response status)\s*[:=]?\s*(?:502|503|504)\b/i,
   /\b(?:bad gateway|service unavailable|gateway timeout)\b/i,
 ] as const;
 
 const transientNavigationTimeoutPatterns = [
   /page\.goto: Timeout \d+ms exceeded/i,
   /\bnavigation (?:timed out|timeout)\b/i,
+  /^Session capture attempt timed out after \d+ms$/i,
 ] as const;
 
 export const SESSION_CAPTURE_LOGIN_ATTEMPTS = 2;

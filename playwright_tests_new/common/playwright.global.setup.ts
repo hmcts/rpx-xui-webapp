@@ -1,6 +1,6 @@
 import { FullConfig } from '@playwright/test';
-import { isIntegrationSessionWarmupRequired, prewarmIntegrationSessions } from './integrationSessionWarmup';
-import { resolveIntegrationSessionWarmupUsers } from '../integration/helpers';
+import { validateIntegrationSessionConfiguration } from './integrationSessionConfiguration';
+import { resolveIntegrationSessionUsers } from '../integration/helpers';
 import playwrightConfigUtils from '../../playwright-config-utils';
 
 const { resolveTagFilters } = playwrightConfigUtils;
@@ -24,12 +24,13 @@ function resolveIntegrationTagSelection(env: NodeJS.ProcessEnv) {
 }
 
 async function globalSetup(fullConfig: FullConfig) {
-  const integrationConfig = isIntegrationConfig(fullConfig);
-  const tagSelection = integrationConfig ? resolveIntegrationTagSelection(process.env) : undefined;
-  const userIdentifiers = resolveIntegrationSessionWarmupUsers(process.env, tagSelection);
-  if (userIdentifiers.length > 0 || (integrationConfig && isIntegrationSessionWarmupRequired())) {
-    await prewarmIntegrationSessions(userIdentifiers);
+  if (!isIntegrationConfig(fullConfig)) {
+    return;
   }
+
+  const tagSelection = resolveIntegrationTagSelection(process.env);
+  const userIdentifiers = resolveIntegrationSessionUsers(process.env, tagSelection);
+  validateIntegrationSessionConfiguration(userIdentifiers);
 }
 
 export default globalSetup;

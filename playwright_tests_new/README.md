@@ -216,10 +216,6 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `PW_IAC_CASEOFFICER_R1_PASSWORD`
 - `PW_IAC_JUDGE_WA_R1_EMAIL`
 - `PW_IAC_JUDGE_WA_R1_PASSWORD`
-- `IAC_JUDGE_WA_R2_USERNAME`
-- `IAC_JUDGE_WA_R2_PASSWORD`
-- `IAC_JUDGE_WA_R3_USERNAME`
-- `IAC_JUDGE_WA_R3_PASSWORD`
 - `PW_E2E_MANAGE_TASKS_USER`
 - `PW_E2E_MANAGE_TASKS_EMAIL`
 - `PW_E2E_MANAGE_TASKS_PASSWORD`
@@ -719,8 +715,8 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 Notes:
 
 - Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
-- Integration session warmup resolves users from the selected integration tags, including every configured IAC judicial pool user that a worker may select. Locally, override with `PW_INTEGRATION_SESSION_WARMUP_USERS` using a comma-separated user list, `@default` for the legacy shared pool, or `@none` to disable best-effort warmup. Required and CI warmup reject `@none` and add explicit users to the tag-declared identities so an override cannot omit a worker dependency
-- Warmup failures stop CI before workers and abort any remaining integration profiles. After required warmup succeeds, integration workers reject missing or stale sessions instead of logging in lazily. Local warmup is best effort and does not create or honour the capture-failure cooldown marker, so the affected test can immediately capture its session on demand; set `PW_INTEGRATION_SESSION_WARMUP_REQUIRED=true` to use CI behavior locally
+- Integration global setup validates that every selected feature tag declares its authenticated identities and that their configured credentials can be resolved. It does not log users in or create session files
+- Integration workers capture sessions lazily. Concurrent requests for the same resolved identity share the existing filesystem lock and reuse the first successful capture. Ordered pools keep their primary identity unless it is explicitly rejected by IDAM; service, navigation, configuration, storage, lock, and unknown failures do not rotate accounts
 - Integration specs continue to run on the default 7-worker `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
@@ -786,7 +782,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 ### Overview
 
-**E2E, integration warmup, and API tests** use lazy storage-state capture under the shared `.sessions/` directory. The files are namespaced by suite style so parallel workers can reuse the right state without colliding.
+**E2E, integration, and API tests** use lazy storage-state capture under the shared `.sessions/` directory. The files are namespaced by suite style so parallel workers can reuse the right state without colliding.
 
 ### Unified Storage Location
 

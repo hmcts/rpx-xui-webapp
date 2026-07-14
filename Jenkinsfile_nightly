@@ -245,8 +245,8 @@ def runPlaywrightIntegrationProfileMatrix = {
     def failures = []
     resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
         def runConfig = integrationProfileRunConfig(spec)
-        def warmupCompleteFile = "${runConfig.reportDir}/session-warmup.complete"
-        sh "rm -f -- '${warmupCompleteFile}'"
+        def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
+        sh "rm -f -- '${sessionConfigCompleteFile}'"
         try {
             withEnv([
               "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
@@ -254,8 +254,7 @@ def runPlaywrightIntegrationProfileMatrix = {
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-              'PW_INTEGRATION_SESSION_WARMUP_REQUIRED=true',
-              "PW_INTEGRATION_SESSION_WARMUP_COMPLETE_FILE=${warmupCompleteFile}",
+              "PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE=${sessionConfigCompleteFile}",
               "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
               yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
@@ -270,8 +269,8 @@ def runPlaywrightIntegrationProfileMatrix = {
             if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
                 throw e
             }
-            if (!fileExists(warmupCompleteFile)) {
-                echo "[playwright-integration] Required session warmup did not complete for ${runConfig.displayName}; aborting before another profile starts"
+            if (!fileExists(sessionConfigCompleteFile)) {
+                echo "[playwright-integration] Session configuration validation did not complete for ${runConfig.displayName}; aborting before another profile starts"
                 throw e
             }
             failures << "${runConfig.displayName}: ${e.getMessage()}"
@@ -341,10 +340,6 @@ def secrets = [
     secret('e2e-iac-caseofficer-r2-password', 'PW_IAC_CASEOFFICER_R2_PASSWORD'),
     secret('e2e-iac-judge-wa-r1-username', 'PW_IAC_JUDGE_WA_R1_EMAIL'),
     secret('e2e-iac-judge-wa-r1-password', 'PW_IAC_JUDGE_WA_R1_PASSWORD'),
-    secret('e2e-iac-judge-wa-r2-username', 'IAC_JUDGE_WA_R2_USERNAME'),
-    secret('e2e-iac-judge-wa-r2-password', 'IAC_JUDGE_WA_R2_PASSWORD'),
-    secret('e2e-iac-judge-wa-r3-username', 'IAC_JUDGE_WA_R3_USERNAME'),
-    secret('e2e-iac-judge-wa-r3-password', 'IAC_JUDGE_WA_R3_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-username', 'HEARING_MANAGER_CR84_OFF_USERNAME'),
     secret('e2e-hearing-manager-cr84-off-password', 'HEARING_MANAGER_CR84_OFF_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-1-username', 'HEARING_MANAGER_CR84_OFF_1_USERNAME'),

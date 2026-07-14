@@ -44,3 +44,11 @@ export function resolveBookingUiUserIdentifier(
   const parallelIndex = Number.isInteger(testInfo.parallelIndex) && testInfo.parallelIndex > 0 ? testInfo.parallelIndex : 0;
   return configuredUserIdentifiers[parallelIndex % configuredUserIdentifiers.length];
 }
+
+export function resolveBookingUiSessionCandidates(
+  testInfo: ParallelIndexSource,
+  env: EnvMap = process.env
+): BookingUiUserIdentifier[] {
+  const selected = resolveBookingUiUserIdentifier(testInfo, env);
+  return Array.from(new Set([selected, ...getConfiguredBookingUiUserIdentifiers(env), BOOKING_UI_LEGACY_USER_IDENTIFIER]));
+}

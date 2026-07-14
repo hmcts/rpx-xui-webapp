@@ -249,14 +249,6 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       username: 'HEARING_MANAGER_CR84_ON_4_USERNAME',
       password: 'HEARING_MANAGER_CR84_ON_4_PASSWORD',
     });
-    expect(getRuntimeUserCredentialEnvMapping(' iac_judge_wa_r2 ')).toEqual({
-      username: 'IAC_JUDGE_WA_R2_USERNAME',
-      password: 'IAC_JUDGE_WA_R2_PASSWORD',
-    });
-    expect(getRuntimeUserCredentialEnvMapping(' iac_judge_wa_r3 ')).toEqual({
-      username: 'IAC_JUDGE_WA_R3_USERNAME',
-      password: 'IAC_JUDGE_WA_R3_PASSWORD',
-    });
 
     process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce@example.test';
     process.env.DIVORCE_SOLICITOR_PASSWORD = 'divorce-secret';

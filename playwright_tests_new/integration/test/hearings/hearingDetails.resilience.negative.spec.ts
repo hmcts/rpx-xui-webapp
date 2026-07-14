@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
+import { applySessionCookiesFromPool } from '../../../common/sessionCapture';
 import {
   caseDetailsUrl,
   expectHearingsRowsHiddenBeforeResponse,
@@ -7,7 +7,7 @@ import {
   HEARING_MANAGER_CR84_ON_USER,
   HEARINGS_SLOW_RESPONSE_DELAY_MS,
   openHearingsTabForScenario,
-  resolveHearingManagerUserIdentifier,
+  resolveHearingManagerSessionCandidates,
   setupHearingsMockRoutes,
   waitForHearingsTerminalState,
 } from '../../helpers';
@@ -107,7 +107,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
     page,
     hearingsTabPage,
   }) => {
-    await applySessionCookies(page, resolveHearingManagerUserIdentifier(userIdentifier));
+    await applySessionCookiesFromPool(page, resolveHearingManagerSessionCandidates(userIdentifier));
     await setupHearingsMockRoutes(page, {
       userRoles: hearingViewerRoles,
       hearings: [LISTED_HEARING_SCENARIO],

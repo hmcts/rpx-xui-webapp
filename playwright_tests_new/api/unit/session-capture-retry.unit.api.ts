@@ -45,7 +45,9 @@ function createLauncher() {
         const page = {
           context: () => context,
           url: () => 'https://manage-case.example.test/',
-          locator: () => ({ waitFor: async () => undefined }),
+          locator: () => {
+            throw new Error('unexpected post-authentication page readiness check');
+          },
         } as unknown as Page;
         (context as BrowserContext & { newPage: () => Promise<Page> }).newPage = async () => page;
         return context;
@@ -78,6 +80,12 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(isTransientSessionCaptureError(error)).toBe(false);
   });
 
+  test('classifies the current IDAM incorrect-credentials wording as non-transient', () => {
+    const error = new Error('IDAM login did not establish authenticated session. IDAM page message: Incorrect email or password');
+    expect(isExplicitIdamLoginRejection(error)).toBe(true);
+    expect(isTransientSessionCaptureError(error)).toBe(false);
+  });
+
   test('classifies unknown IDAM business rejection as non-transient', () => {
     const error = new Error(
       'IDAM login did not establish authenticated session. IDAM page message: Additional verification is required'
@@ -91,7 +99,18 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(isTransientSessionCaptureError(error)).toBe(true);
   });
 
-  test('classifies generic unauthenticated IDAM results as non-transient', () => {
+  test('does not treat a bare service-like number in an IDAM business message as transient', () => {
+    const error = new Error(
+      'IDAM login did not establish authenticated session. IDAM page message: Contact support quoting reference 503'
+    );
+    expect(isTransientSessionCaptureError(error)).toBe(false);
+  });
+
+  test('treats a recognised HTTP service status as transient', () => {
+    expect(isTransientSessionCaptureError(new Error('IDAM response status 503'))).toBe(true);
+  });
+
+  test('does not retry an unauthenticated result without proven transient evidence', () => {
     const error = new Error(
       'IDAM login did not establish authenticated session for IAC_Judge_WA_R1 (url=https://idam.example.test/login)'
     );
@@ -119,19 +138,47 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(isTransientSessionCaptureError(new Error('Cannot persist unauthenticated session'))).toBe(false);
   });
 
-  test('lock wait budget covers two capture attempts plus persistence', () => {
-    expect(sessionCaptureTest.sessionCaptureLockWaitMs).toBe(300_000);
+  test('lock wait budget includes lifecycle headroom after capture and persistence budgets', () => {
+    const guardedOperationBudget =
+      2 * sessionCaptureTest.sessionCaptureTargetBudgetMs + sessionCaptureTest.sessionCapturePersistBudgetMs;
+    expect(sessionCaptureTest.sessionCaptureLockHeadroomMs).toBeGreaterThan(0);
+    expect(sessionCaptureTest.sessionCaptureLockWaitMs).toBe(
+      guardedOperationBudget + sessionCaptureTest.sessionCaptureLockHeadroomMs
+    );
+    expect(sessionCaptureTest.sessionCaptureLockWaitMs).toBeGreaterThan(guardedOperationBudget);
+    expect(sessionCaptureTest.sessionCaptureLockWaitMs).toBeLessThan(120_000);
+  });
+
+  test('enforces operation budgets with a typed timeout', async () => {
+    const operation = sessionCaptureTest.withOperationTimeout(
+      () => new Promise<void>(() => undefined),
+      5,
+      'Session capture attempt timed out after 5ms'
+    );
+
+    await expect(operation).rejects.toMatchObject({
+      name: 'TimeoutError',
+      message: 'Session capture attempt timed out after 5ms',
+    });
+  });
+
+  test('retries an enforced session capture budget timeout', () => {
+    const error = new Error(`Session capture attempt timed out after ${sessionCaptureTest.sessionCaptureTargetBudgetMs}ms`);
+    error.name = 'TimeoutError';
+    expect(isTransientSessionCaptureError(error)).toBe(true);
   });
 
   test('retries one transient failure cycle with a fresh context', async () => {
     const { launcher, contexts } = createLauncher();
     let loginCalls = 0;
+    const loginTargets: string[] = [];
 
     await sessionCaptureTest.loginAndPersistSession({
       ...commonArgs,
       chromiumLauncher: launcher as any,
-      executeLoginAttemptFn: async () => {
+      executeLoginAttemptFn: async (_page, _idamPage, _userIdentifier, _email, _password, loginTarget) => {
         loginCalls += 1;
+        loginTargets.push(loginTarget);
         if (loginCalls === 1) {
           const error = new Error('Navigation timed out');
           error.name = 'TimeoutError';
@@ -141,8 +188,31 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     });
 
     expect(loginCalls).toBe(2);
+    expect(loginTargets).toEqual(['https://manage-case.example.test/', 'https://manage-case.example.test/']);
     expect(contexts).toHaveLength(2);
     expect(contexts.map((context) => context.closeCalls)).toEqual([1, 1]);
+  });
+
+  test('fails an unclassified unauthenticated result without a second attempt', async () => {
+    const { launcher, contexts } = createLauncher();
+    let loginCalls = 0;
+
+    await expect(
+      sessionCaptureTest.loginAndPersistSession({
+        ...commonArgs,
+        chromiumLauncher: launcher as any,
+        executeLoginAttemptFn: async () => {
+          loginCalls += 1;
+          throw new Error(
+            'IDAM login did not establish authenticated session for IAC_Judge_WA_R1 (url=https://idam.example.test/login)'
+          );
+        },
+      })
+    ).rejects.toThrow('after 1 of 2 capture attempts');
+
+    expect(loginCalls).toBe(1);
+    expect(contexts).toHaveLength(1);
+    expect(contexts.map((context) => context.closeCalls)).toEqual([1]);
   });
 
   test('does not retry an explicit IDAM credential rejection', async () => {
@@ -243,7 +313,7 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
         },
       })
     ).rejects.toThrow(
-      'Login failed for IAC_Judge_WA_R1 at https://idam.example.test/login after 2 of 2 capture attempts: net::ERR_CONNECTION_RESET'
+      'Login failed for IAC_Judge_WA_R1 at https://manage-case.example.test/ after 2 of 2 capture attempts: net::ERR_CONNECTION_RESET'
     );
 
     expect(loginCalls).toBe(2);

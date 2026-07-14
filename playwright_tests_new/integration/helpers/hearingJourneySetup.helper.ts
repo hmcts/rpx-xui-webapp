@@ -1,7 +1,7 @@
 import { expect, type Page, type Response } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
-import { applySessionCookies } from '../../common/sessionCapture';
+import { applySessionCookiesFromPool } from '../../common/sessionCapture';
 import {
   HEARING_MANAGER_CR84_OFF_USER,
   HEARING_MANAGER_CR84_ON_USER,
@@ -137,18 +137,7 @@ export async function openHearingsTabForScenario(
 
 async function applyHearingManagerSessionCookies(page: Page, userIdentifier: HearingManagerUserIdentifier): Promise<void> {
   const candidates = resolveHearingManagerSessionCandidates(userIdentifier);
-  let lastError: unknown;
-
-  for (const candidate of candidates) {
-    try {
-      await applySessionCookies(page, candidate);
-      return;
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  throw lastError;
+  await applySessionCookiesFromPool(page, candidates);
 }
 
 export function buildLargeListedHearings(total: number): HearingScenario[] {

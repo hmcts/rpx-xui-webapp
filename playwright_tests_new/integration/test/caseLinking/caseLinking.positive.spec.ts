@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { openCaseLinkingJourney, resolveIacJudicialUserIdentifier } from '../../helpers';
+import { openCaseLinkingJourney } from '../../helpers';
 import {
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_OTHER_DESCRIPTION,
@@ -76,11 +76,9 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
     });
   });
 
-  test('allows a judiciary user to open the Link cases event from case details', async ({ page, caseDetailsPage }, testInfo) => {
-    const userIdentifier = resolveIacJudicialUserIdentifier(testInfo);
-    testInfo.annotations.push({ type: 'session-user', description: userIdentifier });
+  test('allows a judiciary user to open the Link cases event from case details', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      userIdentifier,
+      userIdentifier: 'IAC_Judge_WA_R1',
       userRoles: ['hmcts-judiciary'],
     });
 

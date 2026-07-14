@@ -37,6 +37,9 @@ export function isExplicitIdamLoginRejection(error: unknown): boolean {
 }
 
 export function isTransientSessionCaptureError(error: unknown): boolean {
+  if (error instanceof Error && error.name === 'SessionPersistenceError') {
+    return false;
+  }
   if (isExplicitIdamLoginRejection(error)) {
     return false;
   }

@@ -22,23 +22,55 @@ const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
 const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
+const SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS = 10_000;
+const SESSION_CAPTURE_CONTEXT_CREATE_BUDGET_MS = 5_000;
 const SESSION_CAPTURE_TARGET_BUDGET_MS = 45_000;
 const SESSION_CAPTURE_PERSIST_BUDGET_MS = 10_000;
-const SESSION_CAPTURE_LOCK_HEADROOM_MS = 15_000;
-const SESSION_CAPTURE_LOCK_WAIT_MS =
-  SESSION_CAPTURE_LOGIN_ATTEMPTS * SESSION_CAPTURE_TARGET_BUDGET_MS +
+const SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS = 5_000;
+const SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS = 5_000;
+const SESSION_CAPTURE_RETRY_BACKOFF_MIN_MS = 1_000;
+const SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS = 5_000;
+const SESSION_CAPTURE_OWNER_BUDGET_MS =
+  SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS +
+  SESSION_CAPTURE_LOGIN_ATTEMPTS * (SESSION_CAPTURE_TARGET_BUDGET_MS + SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS) +
   SESSION_CAPTURE_PERSIST_BUDGET_MS +
-  SESSION_CAPTURE_LOCK_HEADROOM_MS;
+  SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS +
+  SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS;
+const SESSION_CAPTURE_LOCK_HEADROOM_MS = 15_000;
+const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_CAPTURE_LOCK_HEADROOM_MS;
 
-async function withOperationTimeout<T>(operation: () => Promise<T>, timeoutMs: number, message: string): Promise<T> {
+async function withOperationTimeout<T>(
+  operation: () => Promise<T>,
+  timeoutMs: number,
+  message: string,
+  onTimeout?: () => Promise<void> | void
+): Promise<T> {
+  let timedOut = false;
   let timeout: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
-      operation(),
+      operation().then(
+        (value) => (timedOut ? new Promise<T>(() => undefined) : value),
+        (error) => (timedOut ? new Promise<T>(() => undefined) : Promise.reject(error))
+      ),
       new Promise<T>((_resolve, reject) => {
-        timeout = setTimeout(() => {
+        timeout = setTimeout(async () => {
+          timedOut = true;
           const error = new Error(message);
           error.name = 'TimeoutError';
+          try {
+            await onTimeout?.();
+          } catch (cleanupError) {
+            const evidence = sessionCaptureFailureEvidence(cleanupError as Error);
+            logger.warn('Timed operation cleanup failed', {
+              error: evidence,
+              operation: 'session-capture',
+            });
+            const cancellationError = new Error(`${message}; timeout cleanup failed: ${evidence}`);
+            cancellationError.name = 'SessionCancellationError';
+            reject(cancellationError);
+            return;
+          }
           reject(error);
         }, timeoutMs);
       }),
@@ -48,6 +80,13 @@ async function withOperationTimeout<T>(operation: () => Promise<T>, timeoutMs: n
       clearTimeout(timeout);
     }
   }
+}
+
+async function waitForTransientRetry(): Promise<void> {
+  const delayMs =
+    SESSION_CAPTURE_RETRY_BACKOFF_MIN_MS +
+    Math.floor(Math.random() * (SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS - SESSION_CAPTURE_RETRY_BACKOFF_MIN_MS + 1));
+  await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
 }
 
 function sessionCaptureFailureEvidence(error: Error): string {
@@ -355,6 +394,7 @@ export interface LoadedSession {
 type PersistDeps = {
   cookieUtils?: CookieUtils;
   fs?: typeof fs;
+  signal?: AbortSignal;
 };
 
 export type StorageStateContext = Pick<BrowserContext, 'addCookies' | 'storageState'>;
@@ -866,11 +906,24 @@ async function persistSession(
 ) {
   const cookieUtils = deps.cookieUtils ?? new CookieUtils();
   const fsApi = deps.fs ?? fs;
+  const stagingPath = `${localSessionPath}.${process.pid}.${Date.now()}.tmp`;
+  const assertNotAborted = () => {
+    if (deps.signal?.aborted) {
+      const error = new Error(`Session persistence aborted for ${uid}`);
+      error.name = 'AbortError';
+      throw error;
+    }
+  };
   try {
-    cookieUtils.writeManageCasesSession(localSessionPath, localCookies);
-    const augmented = JSON.parse(fsApi.readFileSync(localSessionPath, 'utf8')).cookies;
+    assertNotAborted();
+    cookieUtils.writeManageCasesSession(stagingPath, localCookies);
+    assertNotAborted();
+    const augmented = JSON.parse(fsApi.readFileSync(stagingPath, 'utf8')).cookies;
     await ctx.addCookies(augmented);
-    await ctx.storageState({ path: localSessionPath });
+    assertNotAborted();
+    await ctx.storageState({ path: stagingPath });
+    assertNotAborted();
+    fsApi.renameSync(stagingPath, localSessionPath);
     logger.info('Stored storage state', {
       userIdentifier: uid,
       sessionPath: localSessionPath,
@@ -885,6 +938,10 @@ async function persistSession(
       operation: 'persist-session',
     });
     throw err;
+  } finally {
+    if (fsApi.existsSync(stagingPath)) {
+      fsApi.rmSync(stagingPath, { force: true });
+    }
   }
 }
 
@@ -917,7 +974,7 @@ async function acquireSessionLock({
 }): Promise<(() => Promise<void>) | null> {
   const pollIntervalMs = 1_000;
   const maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS;
-  const staleLockWindowMs = 65_000;
+  const staleLockWindowMs = SESSION_CAPTURE_LOCK_WAIT_MS + 5_000;
   const startedAt = Date.now();
   let attempt = 0;
 
@@ -1096,6 +1153,7 @@ async function loginAndPersistSession({
   persist,
   userIdentifier,
   executeLoginAttemptFn = executeLoginAttempt,
+  waitForRetry = waitForTransientRetry,
 }: {
   chromiumLauncher: typeof chromium;
   idamFactory: (page: Page) => IdamPage;
@@ -1107,8 +1165,8 @@ async function loginAndPersistSession({
   persist: typeof persistSession;
   userIdentifier: string;
   executeLoginAttemptFn?: typeof executeLoginAttempt;
+  waitForRetry?: () => Promise<void>;
 }) {
-  const browser = await chromiumLauncher.launch();
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
   logger.info('Logging in to EXUI', {
     userIdentifier,
@@ -1116,25 +1174,73 @@ async function loginAndPersistSession({
     targetUrl,
     operation: 'session-capture',
   });
+  const browser = await withOperationTimeout(
+    () => chromiumLauncher.launch({ timeout: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS }),
+    SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,
+    `Browser launch timed out after ${SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS}ms`
+  );
+  let browserClosePromise: Promise<void> | undefined;
+  const closeBrowser = () => {
+    browserClosePromise ??= withOperationTimeout(
+      () => browser.close(),
+      SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS,
+      `Browser close timed out after ${SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS}ms`
+    );
+    return browserClosePromise;
+  };
   try {
     for (let captureAttempt = 1; captureAttempt <= SESSION_CAPTURE_LOGIN_ATTEMPTS; captureAttempt += 1) {
-      const context = await browser.newContext();
+      const abortController = new AbortController();
+      let context: BrowserContext | undefined;
+      let contextClosePromise: Promise<void> | undefined;
+      let retryPending = false;
+      const closeContext = () => {
+        if (!context) {
+          return Promise.resolve();
+        }
+        contextClosePromise ??= withOperationTimeout(
+          () => context!.close(),
+          SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS,
+          `Browser context close timed out after ${SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS}ms`
+        );
+        return contextClosePromise;
+      };
+      const cancelAttempt = async () => {
+        abortController.abort();
+        await closeContext();
+      };
       try {
         const cookies = await withOperationTimeout(
           async () => {
+            context = await withOperationTimeout(
+              () => browser.newContext(),
+              SESSION_CAPTURE_CONTEXT_CREATE_BUDGET_MS,
+              `Browser context creation timed out after ${SESSION_CAPTURE_CONTEXT_CREATE_BUDGET_MS}ms`,
+              closeBrowser
+            );
+            abortController.signal.throwIfAborted();
             const page = await context.newPage();
             const idamPage = idamFactory(page);
             await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, targetUrl, captureAttempt);
             return requirePersistableSessionCookies(context, userIdentifier, currentPageUrl(page));
           },
           SESSION_CAPTURE_TARGET_BUDGET_MS,
-          `Session capture attempt timed out after ${SESSION_CAPTURE_TARGET_BUDGET_MS}ms`
+          `Session capture attempt timed out after ${SESSION_CAPTURE_TARGET_BUDGET_MS}ms`,
+          cancelAttempt
         );
-        await withOperationTimeout(
-          () => persist(sessionPath, cookies, context, userIdentifier),
-          SESSION_CAPTURE_PERSIST_BUDGET_MS,
-          `Session persistence timed out after ${SESSION_CAPTURE_PERSIST_BUDGET_MS}ms`
-        );
+        try {
+          await withOperationTimeout(
+            () => persist(sessionPath, cookies, context!, userIdentifier, { signal: abortController.signal }),
+            SESSION_CAPTURE_PERSIST_BUDGET_MS,
+            `Session persistence timed out after ${SESSION_CAPTURE_PERSIST_BUDGET_MS}ms`,
+            cancelAttempt
+          );
+        } catch (error) {
+          const evidence = sessionCaptureFailureEvidence(error as Error);
+          const persistenceError = new Error(`Session persistence failed for ${userIdentifier}: ${evidence}`);
+          persistenceError.name = 'SessionPersistenceError';
+          throw persistenceError;
+        }
         return;
       } catch (error) {
         const loginError = error as Error;
@@ -1164,24 +1270,42 @@ async function loginAndPersistSession({
           error: sessionCaptureFailureEvidence(loginError),
           operation: 'session-capture',
         });
+        retryPending = true;
       } finally {
         try {
-          if (typeof context.close === 'function') {
-            await context.close();
-          }
+          await closeContext();
         } catch (closeError) {
+          const evidence = sessionCaptureFailureEvidence(closeError as Error);
           logger.warn('Failed to close browser context after session capture attempt', {
             userIdentifier,
             captureAttempt,
-            error: (closeError as Error).message,
+            error: evidence,
             operation: 'session-capture',
           });
+          if (retryPending) {
+            const sanitizedCause = new Error(evidence);
+            sanitizedCause.name = 'SessionCancellationError';
+            throw new SessionCaptureError(
+              `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${SESSION_CAPTURE_LOGIN_ATTEMPTS} capture attempts: browser context cleanup failed before retry: ${evidence}`,
+              userIdentifier,
+              {
+                targetUrl: sanitizeUrl(targetUrl),
+                appTargetUrl: sanitizeUrl(targetUrl),
+                captureAttempt,
+                evidence,
+              },
+              sanitizedCause
+            );
+          }
+        }
+        if (retryPending) {
+          await waitForRetry();
         }
       }
     }
   } finally {
     try {
-      await browser.close();
+      await closeBrowser();
     } catch (closeError) {
       logger.warn('Failed to close browser after session capture', {
         userIdentifier,
@@ -1377,8 +1501,13 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 export const __test__ = {
   sessionCaptureLockWaitMs: SESSION_CAPTURE_LOCK_WAIT_MS,
   sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
+  sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
+  sessionCaptureBrowserLaunchBudgetMs: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,
   sessionCaptureTargetBudgetMs: SESSION_CAPTURE_TARGET_BUDGET_MS,
   sessionCapturePersistBudgetMs: SESSION_CAPTURE_PERSIST_BUDGET_MS,
+  sessionCaptureContextCloseBudgetMs: SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS,
+  sessionCaptureBrowserCloseBudgetMs: SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS,
+  sessionCaptureRetryBackoffMaxMs: SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS,
   withOperationTimeout,
   applySessionCookiesFromPoolWith,
   resolveSessionMaxAgeMs,

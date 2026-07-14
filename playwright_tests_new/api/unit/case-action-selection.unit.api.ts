@@ -60,4 +60,48 @@ test.describe('Case action selection', { tag: '@svc-internal' }, () => {
       'wait-for-expected',
     ]);
   });
+
+  test('does not retry the selected action when retry is disabled', async () => {
+    let clickCount = 0;
+    const expectedLocator = {
+      toString: () => 'getByLabel(First name)',
+      waitFor: async () => {
+        throw new Error('event page did not load');
+      },
+    };
+    const pageObject = {
+      caseActionGoButton: {
+        waitFor: async () => undefined,
+        click: async () => {
+          clickCount += 1;
+        },
+      },
+      caseActionsDropdown: {
+        waitFor: async () => undefined,
+        locator: () => ({
+          evaluateAll: async () => [{ label: 'Update case', value: 'updateCase' }],
+        }),
+        selectOption: async () => undefined,
+      },
+      eventCreationErrorHeading: {
+        isVisible: async () => false,
+      },
+      logger: {
+        warn: () => undefined,
+      },
+      page: {
+        waitForLoadState: async () => undefined,
+      },
+      waitForSpinnerToComplete: async () => undefined,
+    } as unknown as CaseDetailsPage;
+
+    await expect(
+      CaseDetailsPage.prototype.selectCaseAction.call(pageObject, 'Update case', {
+        expectedLocator: expectedLocator as unknown as Locator,
+        retry: false,
+      })
+    ).rejects.toThrow('event page did not load');
+
+    expect(clickCount).toBe(1);
+  });
 });

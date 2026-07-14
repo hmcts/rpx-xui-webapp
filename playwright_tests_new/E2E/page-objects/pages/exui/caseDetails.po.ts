@@ -565,12 +565,35 @@ export class CaseDetailsPage extends Base {
 
   private async waitForSpinnerToComplete(context: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
-    const spinner = this.page.locator('xuilib-loading-spinner').first();
     try {
-      await spinner.waitFor({ state: 'hidden', timeout: effectiveTimeoutMs });
+      await this.page.waitForFunction(
+        () => {
+          const spinners = Array.from(
+            document.querySelectorAll<HTMLElement>('xuilib-loading-spinner, xuilib-loading-spinner .spinner-container')
+          );
+          return spinners.every((spinner) => {
+            const style = window.getComputedStyle(spinner);
+            const bounds = spinner.getBoundingClientRect();
+            return style.display === 'none' || style.visibility === 'hidden' || bounds.width === 0 || bounds.height === 0;
+          });
+        },
+        undefined,
+        { timeout: effectiveTimeoutMs }
+      );
     } catch (error) {
-      const stillVisible = await spinner.isVisible().catch(() => false);
-      if (stillVisible) {
+      const visibleSpinnerCount = await this.page
+        .locator('xuilib-loading-spinner, xuilib-loading-spinner .spinner-container')
+        .evaluateAll(
+          (spinners) =>
+            spinners.filter((spinner) => {
+              const element = spinner as HTMLElement;
+              const style = window.getComputedStyle(element);
+              const bounds = element.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility !== 'hidden' && bounds.width > 0 && bounds.height > 0;
+            }).length
+        )
+        .catch(() => 0);
+      if (visibleSpinnerCount > 0) {
         throw new Error(`Spinner still visible ${context}`);
       }
       this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });

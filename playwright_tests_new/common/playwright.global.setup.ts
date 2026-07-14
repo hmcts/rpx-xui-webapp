@@ -1,7 +1,7 @@
 import { FullConfig } from '@playwright/test';
 import { validateIntegrationSessionConfiguration } from './integrationSessionConfiguration';
 import { resolveIntegrationSessionUsers } from '../integration/helpers';
-import playwrightConfigUtils from '../../playwright-config-utils';
+import * as playwrightConfigUtils from '../../playwright-config-utils';
 
 const { resolveTagFilters } = playwrightConfigUtils;
 

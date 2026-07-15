@@ -69,7 +69,7 @@ properties([
 ])
 
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
-// @Library("Infrastructure@fpl-long-ft-timeout")
+// @Library("Infrastructure@2.4.5")
 @Library("Infrastructure@2.4.5")
 
 import uk.gov.hmcts.contino.AppPipelineDsl

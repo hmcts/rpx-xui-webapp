@@ -656,19 +656,21 @@ export async function getRoleAssignmentsByQuery(query: any, req: express.Request
   try {
     const result = await http.post(path, query, { headers });
     return result.data;
-  } catch {}
-  return null;
+  } catch {
+    return null;
+  }
 }
 
-export async function searchCasesById(queryParams: string, query: any, req: express.Request): Promise<CaseList> {
+export async function searchCasesById(queryParams: string, query: any, req: express.Request): Promise<CaseList | null> {
   const url = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
   const path = `${url}/searchCases`;
   const headers = setHeaders(req);
   try {
     const result = await http.post(path, query, { headers, params: { ctid: queryParams } });
     return result.data;
-  } catch {}
-  return null;
+  } catch {
+    return null;
+  }
 }
 
 export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskParameter[]): any {
@@ -985,8 +987,9 @@ export async function getTypesOfWorkByUserId(path, req: express.Request): Promis
   try {
     const result = await http.get(path, { headers });
     return result.data;
-  } catch {}
-  return null;
+  } catch {
+    return null;
+  }
 }
 
 export function getUniqueCasesCount(caseData: RoleCaseData[]): number {

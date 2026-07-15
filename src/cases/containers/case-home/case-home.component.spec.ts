@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router, NavigationEnd } from '@angular/router';
 import {
   AlertService,
   ErrorNotifierService,
@@ -8,6 +9,7 @@ import {
   LoadingService as CCDLoadingService,
   NavigationNotifierService,
   NavigationOrigin,
+  FocusService,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
@@ -32,6 +34,14 @@ describe('CaseHomeComponent', () => {
   const mockCCDLoadingService = { isLoading: of(false) };
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
+  const focusService = jasmine.createSpyObj('FocusService', ['focus']);
+  const router = {
+    events: {
+      subscribe: (callback: any) => {
+        callback(new NavigationEnd(1, 'url', 'url2'));
+      },
+    },
+  } as Router;
 
   beforeEach(waitForAsync(() => {
     navigationNotifierService = new NavigationNotifierService();
@@ -49,6 +59,8 @@ describe('CaseHomeComponent', () => {
         { provide: EnvironmentService, useValue: mockEnvironmentService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: Window, useValue: mockWindow },
+        { provide: FocusService, useValue: focusService },
+        { provide: Router, useValue: router },
       ],
     }).compileComponents();
   }));
@@ -65,6 +77,12 @@ describe('CaseHomeComponent', () => {
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  });
+
+  describe('using the FocusService', () => {
+    it('calls focus() on NavigationEnd', () => {
+      expect(focusService.focus).toHaveBeenCalled();
+    });
   });
 
   describe('paramHandler', () => {

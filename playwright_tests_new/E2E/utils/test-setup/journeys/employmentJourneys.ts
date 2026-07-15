@@ -4,6 +4,8 @@ import { randomUUID } from 'node:crypto';
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
 import type { Page } from '@playwright/test';
 import { uploadDocumentViaApi } from '../uploadDocumentViaApi';
+import { firstNonEmpty, resolveDynamicOrganisationRunId } from '../../dynamicOrganisationRunId.js';
+import { createPayloadFaker } from '../payloads/core/helpers';
 
 const logger = createLogger({
   serviceName: 'employment-case-journeys',
@@ -28,6 +30,18 @@ const CCD_CREATE_EVENT_HEADERS = {
   Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json',
   'Content-Type': 'application/json',
 } as const;
+const DEFAULT_AUTOMATION_RUN_LABEL = 'local';
+
+function resolveAutomationRunLabel(): string {
+  const rawRunId =
+    firstNonEmpty(
+      process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
+      process.env.BUILD_TAG,
+      process.env.GITHUB_RUN_ID,
+      process.env.PW_TEST_RUN_ID
+    ) ?? DEFAULT_AUTOMATION_RUN_LABEL;
+  return resolveDynamicOrganisationRunId({ explicitRunId: rawRunId, maxLength: 32 });
+}
 
 export async function uploadEmploymentDraftDocument(
   createCasePage: CreateCasePage,
@@ -251,12 +265,14 @@ export async function createEmploymentCase(
         url: createCasePage.page.url(),
       });
       await createCasePage.claimantIndividualRadio.check();
-      await createCasePage.claimantIndividualFirstNameInput.fill('Test ');
-      await createCasePage.claimantIndividualLastNameInput.fill('Person');
+      const automationRunLabel = resolveAutomationRunLabel();
+      const journeyFaker = createPayloadFaker();
+      await createCasePage.claimantIndividualFirstNameInput.fill('EXUI');
+      await createCasePage.claimantIndividualLastNameInput.fill(`Auto ${automationRunLabel} ${journeyFaker.person.lastName()}`);
       await createCasePage.manualEntryLink.waitFor({ state: 'visible' });
       await createCasePage.manualEntryLink.click();
       await createCasePage.claimantAddressLine1Input.waitFor({ state: 'visible' });
-      await createCasePage.claimantAddressLine1Input.fill('1 Test Street');
+      await createCasePage.claimantAddressLine1Input.fill(`1 EXUI Auto ${automationRunLabel} ${journeyFaker.location.street()}`);
 
       await createCasePage.clickContinueAndWaitForNext('after claimant address');
       logger.info('Employment create: respondent details page ready', {
@@ -267,7 +283,9 @@ export async function createEmploymentCase(
       await createCasePage.addRespondentButton.waitFor({ state: 'visible' });
       await createCasePage.addRespondentButton.click();
       await createCasePage.respondentOneNameInput.waitFor({ state: 'visible' });
-      await createCasePage.respondentOneNameInput.fill('Respondent One');
+      await createCasePage.respondentOneNameInput.fill(
+        `EXUI Auto ${automationRunLabel} ${journeyFaker.company.name()} Respondent`
+      );
 
       const respondentTypeAvailable = await createCasePage.respondentOrganisation.isEnabled().catch(() => false);
       if (respondentTypeAvailable) {
@@ -278,12 +296,14 @@ export async function createEmploymentCase(
       await createCasePage.respondentAcasCertifcateSelectYes.check();
       await createCasePage.respondentAcasCertificateNumberInput.fill('ACAS123456');
       if (await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false)) {
-        await createCasePage.respondentCompanyNameInput.fill('Respondent Company');
+        await createCasePage.respondentCompanyNameInput.fill(`EXUI Auto ${automationRunLabel} ${journeyFaker.company.name()}`);
       }
       await createCasePage.manualEntryLink.waitFor({ state: 'visible' });
       await createCasePage.manualEntryLink.click();
       await createCasePage.respondentAddressLine1Input.waitFor({ state: 'visible' });
-      await createCasePage.respondentAddressLine1Input.fill('1 Respondent Street');
+      await createCasePage.respondentAddressLine1Input.fill(
+        `1 EXUI Auto ${automationRunLabel} ${journeyFaker.location.street()}`
+      );
       await createCasePage.respondentAddressPostcodeInput.waitFor({ state: 'visible' });
       await createCasePage.respondentAddressPostcodeInput.fill('SW1A 1AA');
 

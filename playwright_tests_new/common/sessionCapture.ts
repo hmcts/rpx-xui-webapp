@@ -272,6 +272,7 @@ function isTransientNavigationFailure(error: unknown, currentUrl: string): boole
   const message = toError(error).message;
   return (
     isChromeErrorNavigationFailure(error, currentUrl) ||
+    message.includes('ERR_CERT_VERIFIER_CHANGED') ||
     message.includes('ERR_NAME_NOT_RESOLVED') ||
     message.includes('ERR_INTERNET_DISCONNECTED') ||
     message.includes('ERR_NETWORK_CHANGED') ||
@@ -1556,6 +1557,8 @@ export const __test__ = {
   storageStateFingerprint,
   readStorageStateFingerprint,
   hasTargetCompatibleAuthCookies,
+  isTransientNavigationFailure,
+  gotoAppTarget,
   resolveTargetHost,
   acquireSessionLock,
   sessionCaptureWith,

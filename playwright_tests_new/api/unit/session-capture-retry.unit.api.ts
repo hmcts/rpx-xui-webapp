@@ -149,8 +149,38 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
   });
 
   test('does not retry deterministic browser or cookie failures', () => {
-    expect(isTransientSessionCaptureError(new Error('net::ERR_CERT_AUTHORITY_INVALID'))).toBe(false);
+    for (const certificateError of [
+      'net::ERR_CERT_AUTHORITY_INVALID',
+      'net::ERR_CERT_COMMON_NAME_INVALID',
+      'net::ERR_CERT_DATE_INVALID',
+    ]) {
+      expect(isTransientSessionCaptureError(new Error(certificateError))).toBe(false);
+    }
     expect(isTransientSessionCaptureError(new Error('Cannot persist unauthenticated session'))).toBe(false);
+  });
+
+  test('retries when Chromium certificate verifier configuration changes during navigation', () => {
+    const error = new Error('page.goto: net::ERR_CERT_VERIFIER_CHANGED at https://manage-case.example.test/');
+
+    expect(isTransientSessionCaptureError(error)).toBe(true);
+    expect(sessionCaptureTest.isTransientNavigationFailure(error, 'https://manage-case.example.test/')).toBe(true);
+  });
+
+  test('retries an authenticated app navigation after the certificate verifier changes', async () => {
+    let gotoCalls = 0;
+    const page = {
+      goto: async () => {
+        gotoCalls += 1;
+        if (gotoCalls === 1) {
+          throw new Error('page.goto: net::ERR_CERT_VERIFIER_CHANGED at https://manage-case.example.test/');
+        }
+      },
+      url: () => 'https://manage-case.example.test/',
+    } as unknown as Page;
+
+    await sessionCaptureTest.gotoAppTarget(page, 'STAFF_ADMIN-1', 'https://manage-case.example.test/');
+
+    expect(gotoCalls).toBe(2);
   });
 
   test('does not retry persistence failures even when their cause looks transient', () => {
@@ -325,6 +355,33 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(loginCalls).toBe(2);
     expect(retryWaitCalls).toBe(1);
     expect(loginTargets).toEqual(['https://manage-case.example.test/', 'https://manage-case.example.test/']);
+    expect(contexts).toHaveLength(2);
+    expect(contexts.map((context) => context.closeCalls)).toEqual([1, 1]);
+  });
+
+  test('retries the certificate verifier change once at the outer capture boundary with a fresh context', async () => {
+    const { launcher, contexts } = createLauncher();
+    let loginCalls = 0;
+    let retryWaitCalls = 0;
+
+    await sessionCaptureTest.loginAndPersistSession({
+      ...commonArgs,
+      chromiumLauncher: launcher as any,
+      waitForRetry: async () => {
+        retryWaitCalls += 1;
+      },
+      executeLoginAttemptFn: async () => {
+        loginCalls += 1;
+        if (loginCalls === 1) {
+          throw new Error(
+            'page.goto: net::ERR_CERT_VERIFIER_CHANGED at https://manage-case.example.test/ Call log: navigating to the target'
+          );
+        }
+      },
+    });
+
+    expect(loginCalls).toBe(2);
+    expect(retryWaitCalls).toBe(1);
     expect(contexts).toHaveLength(2);
     expect(contexts.map((context) => context.closeCalls)).toEqual([1, 1]);
   });

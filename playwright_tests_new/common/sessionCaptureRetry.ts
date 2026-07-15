@@ -6,7 +6,8 @@ const explicitIdamRejectionPatterns = [
 ] as const;
 
 const transientSessionCapturePatterns = [
-  /(?:net::)?ERR_(?:CONNECTION_RESET|CONNECTION_CLOSED|CONNECTION_TIMED_OUT|INTERNET_DISCONNECTED|NAME_NOT_RESOLVED|NETWORK_CHANGED|TIMED_OUT)\b/i,
+  // The verifier configuration changed mid-request; certificate validation failures remain terminal.
+  /(?:net::)?ERR_(?:CERT_VERIFIER_CHANGED|CONNECTION_RESET|CONNECTION_CLOSED|CONNECTION_TIMED_OUT|INTERNET_DISCONNECTED|NAME_NOT_RESOLVED|NETWORK_CHANGED|TIMED_OUT)\b/i,
   /chrome-error:\/\/chromewebdata\//i,
   /\b(?:HTTP(?: status)?|status(?: code)?|response status)\s*[:=]?\s*(?:502|503|504)\b/i,
   /\b(?:bad gateway|service unavailable|gateway timeout)\b/i,

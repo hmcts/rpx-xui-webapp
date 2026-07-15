@@ -140,10 +140,11 @@ export const getAssigneeNameFromList = (caseworkers: any[], assignee: string): s
 };
 
 export const getAssigneeIdsFromTasks = (tasks: Task[]): string[] => {
-  if (tasks && tasks.length > 0) {
-    const ids = tasks.map((task) => task.assignee).filter((id) => !!id);
-    return [...new Set(ids)];
+  if (!tasks?.length) {
+    return [];
   }
+  const ids = tasks.map((task) => task.assignee).filter((id) => !!id);
+  return [...new Set(ids)];
 };
 
 export const getAssigneeName = (caseworker: Caseworker, assignee: string): string => {

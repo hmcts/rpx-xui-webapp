@@ -655,7 +655,7 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     const services = req.body.services;
     let cachedUsers = [];
     let firstEntry = true;
-    if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
+    if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
       res.status(403).send('Forbidden');
     } else if (services?.length === 0 || services[0]?.length === 0) {
       // if no services selected return empty array with error to avoid showing all users from all services
@@ -668,7 +668,9 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
         cachedUsers = FullUserDetailCache.getAllUserDetails();
 
         cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-        res.send(cachedUsers).status(200);
+        res.status(200).send(cachedUsers);
+        refreshUserCache();
+        return;
       }
       // always update the cache after getting the cache if needed
       const cachedUserData = await fetchUserData();
@@ -677,7 +679,7 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
         // if not previously ran ensure the new values are given back to angular layer
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
         cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-        res.send(cachedUsers).status(200);
+        res.status(200).send(cachedUsers);
       }
     }
   } catch (error) {
@@ -692,7 +694,7 @@ export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, nex
     const idamIds = req.body.idamIds;
     let idamUsers = [];
     let firstEntry = true;
-    if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
+    if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
       res.status(403).send('Forbidden');
     } else {
       if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
@@ -700,7 +702,9 @@ export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, nex
         firstEntry = false;
         idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
         idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
-        res.send(idamUsers).status(200);
+        res.status(200).send(idamUsers);
+        refreshUserCache();
+        return;
       }
       // always update the cache after getting the cache if needed
       const cachedUserData = await fetchUserData();
@@ -710,7 +714,7 @@ export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, nex
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
         idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
         idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
-        res.send(idamUsers).status(200);
+        res.status(200).send(idamUsers);
       }
     }
   } catch (error) {
@@ -718,14 +722,16 @@ export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, nex
   }
 }
 
+// return steps set completely within this to avoid undefined issues
 export async function getUserByIdamId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   try {
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const idamId = req.body.idamId;
     let idamUser = null;
     let firstEntry = true;
-    if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
+    if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
       res.status(403).send('Forbidden');
+      return;
     } else {
       if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
         // if cache exists, use it
@@ -733,26 +739,45 @@ export async function getUserByIdamId(req: EnhancedRequest, res: Response, next:
         idamUser = FullUserDetailCache.getUserByIdamId(idamId);
         if (!idamUser) {
           res.status(404).send('User not found');
+          return;
+        } else {
+          // Below to get correct location and service details - not strictly necessary depending on usage
+          idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
+          void refreshUserCache();
+          res.status(200).send(idamUser);
+          return;
         }
-        // Below to get correct location and service details - not strictly necessary depending on usage
-        idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
-        res.send(idamUser).status(200);
       }
-      // always update the cache after getting the cache if needed
       const cachedUserData = await fetchUserData();
       await fetchRoleAssignments(cachedUserData);
       if (firstEntry) {
         // if not previously ran ensure the new values are given back to angular layer
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
         idamUser = FullUserDetailCache.getUserByIdamId(idamId);
-        idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
-        res.send(idamUser).status(200);
+        if (!idamUser) {
+          res.status(404).send('User not found');
+          return;
+        } else {
+          idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
+          res.status(200).send(idamUser);
+          return;
+        }
       }
     }
   } catch (error) {
     next(error);
   }
 }
+
+// Refreshing of cache set here to avoid conflicting error handling
+const refreshUserCache = async () => {
+  try {
+    const cachedUserData = await fetchUserData();
+    await fetchRoleAssignments(cachedUserData);
+  } catch (error) {
+    trackTrace(`Error refreshing user cache after getUserByIdamId response: ${error.toString()}`);
+  }
+};
 
 /**
  * getNewUsersByServiceName

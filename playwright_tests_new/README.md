@@ -716,7 +716,7 @@ Notes:
 
 - Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
 - Integration global setup validates that every selected feature tag declares its authenticated identities and that their configured credentials can be resolved. It does not log users in or create session files
-- Integration workers capture sessions lazily. Concurrent requests for the same resolved identity share the existing filesystem lock and reuse the first successful capture. Ordered pools keep their primary identity unless it is explicitly rejected by IDAM; service, navigation, configuration, storage, lock, and unknown failures do not rotate accounts
+- Integration workers capture sessions lazily. Concurrent non-forced requests for the same resolved identity share the filesystem lock and reuse the first successful capture. Public `sessionCapture(..., { force: true })` calls are excluded from that single-flight claim and may recapture serially; forced refresh after server-side rejection coalesces only when the internal `expectedStaleSession` fingerprint shows that another worker already replaced the rejected state. Ordered pools keep their primary identity unless IDAM explicitly rejects it. An unexplained post-submit return to the IDAM login page receives the single same-identity retry and, if still unauthenticated, may probe one additional identity before stopping. Service, navigation, configuration, storage, lock, and other unknown failures do not rotate accounts
 - Integration specs continue to run on the default 7-worker `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
@@ -969,7 +969,9 @@ Sessions are stored in `.sessions/` with filesystem-based locking. See the [file
 - Waiting workers can skip lock acquisition entirely if the target session becomes fresh while they are polling
 - Waiting workers skip login if session became fresh while waiting (prevents duplicate recapture storms)
 - Each E2E/integration acquisition attempt uses `retries: 0`; the outer polling loop owns the 145-second wait budget
-- The E2E/integration `proper-lockfile` stale threshold is 10 seconds. A healthy owner renews the lock mtime; stale-lock takeover is delegated to `proper-lockfile`
+- `proper-lockfile` refreshes the lock heartbeat while an owner is healthy. Its stale threshold is longer than the maximum supported test-run lifetime, so a suspended or abruptly interrupted owner is never displaced by another worker in the same run
+- If an owner is killed without running normal exit cleanup, waiting workers fail closed without another login or cooldown marker. CI workspace isolation clears the orphan for the next build; persistent local workspaces may require removing the orphaned `.lock` directory after confirming no test process is running
+- Session publication checks for reported lock compromise immediately before atomic rename. A detected ownership loss aborts publication and does not create a session-capture cooldown marker
 - API storage capture keeps its separate lock configuration in `api/utils/auth.ts`
 
 ### Implementation Details

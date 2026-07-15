@@ -627,7 +627,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     expect(launchAttempts).toBe(0);
   });
 
-  test('acquireSessionLock delegates abandoned lock recovery to proper-lockfile within the takeover budget', async () => {
+  test('acquireSessionLock does not make locks stale inside the active wait budget', async () => {
     let lockAttempts = 0;
     let configuredStaleMs: number | undefined;
 
@@ -655,6 +655,6 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     expect(typeof release).toBe('function');
     expect(lockAttempts).toBe(2);
     expect(configuredStaleMs).toBe(sessionCaptureTest.sessionCaptureLockStaleMs);
-    expect(configuredStaleMs).toBeLessThan(sessionCaptureTest.sessionCaptureLockTakeoverBudgetMs);
+    expect(configuredStaleMs).toBeGreaterThan(sessionCaptureTest.sessionCaptureLockWaitMs);
   });
 });

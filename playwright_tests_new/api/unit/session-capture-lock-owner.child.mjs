@@ -4,9 +4,8 @@ import process from 'node:process';
 
 import lockfile from 'proper-lockfile';
 
-const [lockFilePath, storagePath, staleMsArgument, takeoverBudgetMsArgument] = process.argv.slice(2);
+const [lockFilePath, storagePath, staleMsArgument] = process.argv.slice(2);
 const staleMs = Number(staleMsArgument);
-const takeoverBudgetMs = Number(takeoverBudgetMsArgument);
 
 function freshAuthStorageState() {
   return {
@@ -28,25 +27,48 @@ function freshAuthStorageState() {
 async function main() {
   fs.mkdirSync(path.dirname(lockFilePath), { recursive: true });
   fs.writeFileSync(lockFilePath, '', { flag: 'a' });
-  const release = await lockfile.lock(lockFilePath, { retries: 0, stale: staleMs });
+  let compromisedError;
+  const releaseLock = await lockfile.lock(lockFilePath, {
+    retries: 0,
+    stale: staleMs,
+    onCompromised: (error) => {
+      compromisedError = error;
+    },
+  });
+  const assertOwned = () => {
+    if (compromisedError || !fs.existsSync(`${lockFilePath}.lock`)) {
+      throw new Error('lock ownership lost');
+    }
+  };
   process.send?.({ type: 'locked' });
-  globalThis.setTimeout(() => process.send?.({ type: 'stale-window-elapsed' }), staleMs + 250);
 
   process.on('message', async (message) => {
-    if (message === 'start-takeover-budget') {
-      globalThis.setTimeout(() => process.send?.({ type: 'takeover-budget-elapsed' }), takeoverBudgetMs + 250);
-      return;
-    }
     if (message === 'publish') {
       const stagingPath = `${storagePath}.${process.pid}.tmp`;
       fs.writeFileSync(stagingPath, JSON.stringify(freshAuthStorageState()));
+      assertOwned();
       fs.renameSync(stagingPath, storagePath);
       process.send?.({ type: 'published' });
       return;
     }
 
+    if (message === 'suspend-before-publish') {
+      const stagingPath = `${storagePath}.${process.pid}.tmp`;
+      fs.writeFileSync(stagingPath, JSON.stringify(freshAuthStorageState()));
+      await new Promise((resolve, reject) => {
+        process.send?.({ type: 'publish-ready' }, (error) => (error ? reject(error) : resolve()));
+      });
+      process.kill(process.pid, 'SIGSTOP');
+      assertOwned();
+      fs.renameSync(stagingPath, storagePath);
+      process.send?.({ type: 'stale-published' });
+      await releaseLock();
+      process.exit(0);
+    }
+
     if (message === 'release') {
-      await release();
+      assertOwned();
+      await releaseLock();
       process.send?.({ type: 'released' });
       process.exit(0);
     }

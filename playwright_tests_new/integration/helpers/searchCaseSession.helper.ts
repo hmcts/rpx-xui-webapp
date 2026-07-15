@@ -143,12 +143,13 @@ export function resolveSearchCaseUserIdentifier(
 export async function applySearchCaseSessionCookies(
   page: Page,
   testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,
-  env: NodeJS.ProcessEnv = process.env
+  env: NodeJS.ProcessEnv = process.env,
+  applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
 ): Promise<string> {
   const users = resolveSearchCaseSessionUsers(env);
   const selectedUserIdentifier = resolveSearchCaseUserIdentifier(testInfo, env);
   const candidates = [selectedUserIdentifier, ...users.filter((userIdentifier) => userIdentifier !== selectedUserIdentifier)];
-  const { userIdentifier } = await applySessionCookiesFromPool(page, candidates);
+  const { userIdentifier } = await applyFromPool(page, candidates);
 
   testInfo.annotations.push({ type: 'session-user', description: userIdentifier });
   return userIdentifier;

@@ -20,6 +20,7 @@ const transientNavigationTimeoutPatterns = [
 ] as const;
 
 export const SESSION_CAPTURE_LOGIN_ATTEMPTS = 2;
+export const UNEXPLAINED_IDAM_LOGIN_FAILURE = 'unexplained-idam-login-rejection';
 
 export function isIdamLoginRejection(error: unknown): boolean {
   const message = errorMessage(error);
@@ -38,6 +39,19 @@ export function isExplicitIdamLoginRejection(error: unknown): boolean {
   return explicitIdamRejectionPatterns.some((pattern) => pattern.test(message));
 }
 
+export function isUnexplainedIdamLoginRejection(error: unknown): boolean {
+  const context =
+    error && typeof error === 'object' && 'context' in error
+      ? (error as { context?: { failureKind?: unknown } }).context
+      : undefined;
+  if (context?.failureKind === UNEXPLAINED_IDAM_LOGIN_FAILURE) {
+    return true;
+  }
+
+  const message = errorMessage(error);
+  return message.includes('IDAM login did not establish authenticated session') && !message.includes('IDAM page message:');
+}
+
 export function isTransientSessionCaptureError(error: unknown): boolean {
   if (error instanceof Error && ['SessionCancellationError', 'SessionPersistenceError'].includes(error.name)) {
     return false;
@@ -47,12 +61,13 @@ export function isTransientSessionCaptureError(error: unknown): boolean {
   }
   const message = errorMessage(error);
   const matchesTransientPattern = transientSessionCapturePatterns.some((pattern) => pattern.test(message));
-  if (isIdamLoginRejection(error) && !matchesTransientPattern) {
+  const isUnexplainedPostSubmitLoginFailure = isUnexplainedIdamLoginRejection(error);
+  if (isIdamLoginRejection(error) && !matchesTransientPattern && !isUnexplainedPostSubmitLoginFailure) {
     return false;
   }
   const isNavigationTimeout =
     error instanceof Error &&
     error.name === 'TimeoutError' &&
     transientNavigationTimeoutPatterns.some((pattern) => pattern.test(message));
-  return isNavigationTimeout || matchesTransientPattern;
+  return isNavigationTimeout || matchesTransientPattern || isUnexplainedPostSubmitLoginFailure;
 }

@@ -8,6 +8,8 @@ import * as path from 'node:path';
 import { createRequire } from 'node:module';
 
 import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
+import { withOrderedSessionFallback } from '../../common/orderedSessionFallback.js';
+import type { SessionIdentity } from '../../common/sessionIdentity.js';
 import { isExplicitIdamLoginRejection, isTransientSessionCaptureError } from '../../common/sessionCaptureRetry.js';
 
 const require = createRequire(import.meta.url);
@@ -125,11 +127,11 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(isTransientSessionCaptureError(new Error('IDAM response status 503'))).toBe(true);
   });
 
-  test('does not retry an unauthenticated result without proven transient evidence', () => {
+  test('retries an unexplained post-submit unauthenticated result', () => {
     const error = new Error(
       'IDAM login did not establish authenticated session for IAC_Judge_WA_R1 (url=https://idam.example.test/login)'
     );
-    expect(isTransientSessionCaptureError(error)).toBe(false);
+    expect(isTransientSessionCaptureError(error)).toBe(true);
   });
 
   test('does not retry timeout text without a typed Playwright timeout', () => {
@@ -206,7 +208,7 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(isTransientSessionCaptureError(new Error('page.goto: ERR_INTERNET_DISCONNECTED'))).toBe(true);
   });
 
-  test('lock wait covers owner reuse while takeover plus capture leaves journey time', () => {
+  test('lock wait covers owner reuse while delayed capture still leaves journey time', () => {
     const guardedOperationBudget =
       sessionCaptureTest.sessionCaptureBrowserLaunchBudgetMs +
       2 * (sessionCaptureTest.sessionCaptureTargetBudgetMs + sessionCaptureTest.sessionCaptureContextCloseBudgetMs) +
@@ -222,7 +224,7 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(sessionCaptureTest.sessionCaptureLockWaitMs).toBeLessThanOrEqual(
       INTEGRATION_TEST_TIMEOUT_MS - POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS
     );
-    expect(sessionCaptureTest.sessionCaptureLockTakeoverBudgetMs + guardedOperationBudget).toBeLessThanOrEqual(
+    expect(sessionCaptureTest.sessionCaptureLockStartBudgetMs + guardedOperationBudget).toBeLessThanOrEqual(
       INTEGRATION_TEST_TIMEOUT_MS - POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS
     );
   });
@@ -440,7 +442,27 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(contexts[0].closeCalls).toBe(1);
   });
 
-  test('fails an unclassified unauthenticated result without a second attempt', async () => {
+  test('preserves lock compromise through the real persistence boundary', async () => {
+    const { launcher, contexts } = createLauncher();
+    const lockError = new Error('Session lock ownership was lost for IAC_Judge_WA_R1');
+    lockError.name = 'SessionLockCompromisedError';
+
+    await expect(
+      sessionCaptureTest.loginAndPersistSession({
+        ...commonArgs,
+        chromiumLauncher: launcher as any,
+        persist: async () => {
+          throw lockError;
+        },
+        executeLoginAttemptFn: async () => undefined,
+      })
+    ).rejects.toBe(lockError);
+
+    expect(contexts).toHaveLength(1);
+    expect(contexts[0].closeCalls).toBe(1);
+  });
+
+  test('retries an unexplained unauthenticated result once with a fresh context', async () => {
     const { launcher, contexts } = createLauncher();
     let loginCalls = 0;
 
@@ -455,11 +477,149 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
           );
         },
       })
-    ).rejects.toThrow('after 1 of 2 capture attempts');
+    ).rejects.toThrow('after 2 of 2 capture attempts');
 
-    expect(loginCalls).toBe(1);
-    expect(contexts).toHaveLength(1);
-    expect(contexts.map((context) => context.closeCalls)).toEqual([1]);
+    expect(loginCalls).toBe(2);
+    expect(contexts).toHaveLength(2);
+    expect(contexts.map((context) => context.closeCalls)).toEqual([1, 1]);
+  });
+
+  test('recovers when the unexplained unauthenticated result is transient', async () => {
+    const { launcher, contexts } = createLauncher();
+    let loginCalls = 0;
+
+    await sessionCaptureTest.loginAndPersistSession({
+      ...commonArgs,
+      chromiumLauncher: launcher as any,
+      executeLoginAttemptFn: async () => {
+        loginCalls += 1;
+        if (loginCalls === 1) {
+          throw new Error(
+            'IDAM login did not establish authenticated session for IAC_Judge_WA_R1 (url=https://idam.example.test/login)'
+          );
+        }
+      },
+    });
+
+    expect(loginCalls).toBe(2);
+    expect(contexts).toHaveLength(2);
+    expect(contexts.map((context) => context.closeCalls)).toEqual([1, 1]);
+  });
+
+  test('persists the primary session without a cooldown or pool fallback after retry recovery', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-retry-recovery-'));
+    const previousCwd = process.cwd();
+    const primary: SessionIdentity = {
+      userIdentifier: 'PRIMARY',
+      email: 'primary@example.test',
+      password: 'not-used',
+    };
+    const fallback: SessionIdentity = {
+      userIdentifier: 'FALLBACK',
+      email: 'fallback@example.test',
+      password: 'not-used',
+    };
+    const { launcher } = createLauncher();
+    const freshPaths = new Set<string>();
+    const loginCalls: string[] = [];
+
+    try {
+      process.chdir(tempDir);
+      const result = await withOrderedSessionFallback([primary, fallback], async (identity) => {
+        await sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: launcher as any,
+          config: commonArgs.activeConfig,
+          env: commonArgs.env,
+          isSessionFresh: (sessionPath) => freshPaths.has(sessionPath),
+          persistSession: async (sessionPath) => {
+            freshPaths.add(sessionPath);
+          },
+          loginAndPersistSession: (args) =>
+            sessionCaptureTest.loginAndPersistSession({
+              ...args,
+              idamFactory: commonArgs.idamFactory,
+              executeLoginAttemptFn: async () => {
+                loginCalls.push(args.userIdentifier);
+                if (loginCalls.length === 1) {
+                  throw new Error(
+                    'IDAM login did not establish authenticated session for PRIMARY (url=https://idam.example.test/login)'
+                  );
+                }
+              },
+              waitForRetry: async () => undefined,
+            }),
+          resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+        });
+        return identity.userIdentifier;
+      });
+
+      expect(result.selectedUserIdentifier).toBe('PRIMARY');
+      expect(loginCalls).toEqual(['PRIMARY', 'PRIMARY']);
+      expect(fs.readdirSync(path.join(tempDir, '.sessions')).some((name) => name.endsWith('.capture-failed.json'))).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('persists one bounded fallback after two unexplained primary login failures', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-retry-fallback-'));
+    const previousCwd = process.cwd();
+    const primary: SessionIdentity = {
+      userIdentifier: 'PRIMARY',
+      email: 'primary@example.test',
+      password: 'not-used',
+    };
+    const fallback: SessionIdentity = {
+      userIdentifier: 'FALLBACK',
+      email: 'fallback@example.test',
+      password: 'not-used',
+    };
+    const { launcher } = createLauncher();
+    const freshPaths = new Set<string>();
+    const loginCalls: string[] = [];
+
+    try {
+      process.chdir(tempDir);
+      const result = await withOrderedSessionFallback([primary, fallback], async (identity) => {
+        await sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: launcher as any,
+          config: commonArgs.activeConfig,
+          env: commonArgs.env,
+          isSessionFresh: (sessionPath) => freshPaths.has(sessionPath),
+          persistSession: async (sessionPath) => {
+            freshPaths.add(sessionPath);
+          },
+          loginAndPersistSession: (args) =>
+            sessionCaptureTest.loginAndPersistSession({
+              ...args,
+              idamFactory: commonArgs.idamFactory,
+              executeLoginAttemptFn: async () => {
+                loginCalls.push(args.userIdentifier);
+                if (args.userIdentifier === 'PRIMARY') {
+                  throw new Error(
+                    'IDAM login did not establish authenticated session for PRIMARY (url=https://idam.example.test/login)'
+                  );
+                }
+              },
+              waitForRetry: async () => undefined,
+            }),
+          resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+        });
+        return identity.userIdentifier;
+      });
+
+      expect(result.selectedUserIdentifier).toBe('FALLBACK');
+      expect(loginCalls).toEqual(['PRIMARY', 'PRIMARY', 'FALLBACK']);
+      const markerFile = fs.readdirSync(path.join(tempDir, '.sessions')).find((name) => name.endsWith('.capture-failed.json'));
+      expect(markerFile).toBeTruthy();
+      expect(JSON.parse(fs.readFileSync(path.join(tempDir, '.sessions', markerFile!), 'utf8')).failureKind).toBe(
+        'unexplained-idam-login-rejection'
+      );
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 
   test('does not retry an explicit IDAM credential rejection', async () => {

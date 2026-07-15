@@ -12,7 +12,12 @@ import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCaptur
 import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
 import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorageKey } from './sessionIdentity.js';
 import { sanitizeUrl } from './failureClassification.js';
-import { SESSION_CAPTURE_LOGIN_ATTEMPTS, isTransientSessionCaptureError } from './sessionCaptureRetry.js';
+import {
+  SESSION_CAPTURE_LOGIN_ATTEMPTS,
+  UNEXPLAINED_IDAM_LOGIN_FAILURE,
+  isTransientSessionCaptureError,
+  isUnexplainedIdamLoginRejection,
+} from './sessionCaptureRetry.js';
 import { withOrderedSessionFallback } from './orderedSessionFallback.js';
 import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdminUserPool.js';
 
@@ -39,8 +44,10 @@ const SESSION_CAPTURE_OWNER_BUDGET_MS =
   SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS;
 const SESSION_CAPTURE_LOCK_HEADROOM_MS = 15_000;
 const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_CAPTURE_LOCK_HEADROOM_MS;
-const SESSION_CAPTURE_LOCK_TAKEOVER_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
-const SESSION_CAPTURE_LOCK_STALE_MS = 10_000;
+const SESSION_CAPTURE_LOCK_START_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
+// Automatic takeover inside a test run can let a suspended owner resume and overwrite
+// a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
+const SESSION_CAPTURE_LOCK_STALE_MS = 24 * 60 * 60_000;
 
 async function withOperationTimeout<T>(
   operation: () => Promise<T>,
@@ -155,22 +162,34 @@ function resolveSessionCaptureFailureTtlMs(env: NodeJS.ProcessEnv = process.env)
   return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
 }
 
-function recentSessionCaptureFailureMessage(
+type SessionCaptureFailureRecord = {
+  message: string;
+  failureKind?: string;
+};
+
+function recentSessionCaptureFailure(
   fsApi: typeof fs,
   failurePath: string,
   ttlMs: number,
   now: number = Date.now()
-): string | null {
+): SessionCaptureFailureRecord | null {
   if (ttlMs === 0 || !fsApi.existsSync(failurePath)) {
     return null;
   }
 
   try {
-    const parsed = JSON.parse(fsApi.readFileSync(failurePath, 'utf8')) as { timestamp?: number; message?: string };
+    const parsed = JSON.parse(fsApi.readFileSync(failurePath, 'utf8')) as {
+      timestamp?: number;
+      message?: string;
+      failureKind?: string;
+    };
     if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
       return null;
     }
-    return parsed.message?.trim() || 'previous session capture failed';
+    return {
+      message: parsed.message?.trim() || 'previous session capture failed',
+      failureKind: parsed.failureKind,
+    };
   } catch {
     return null;
   }
@@ -178,11 +197,19 @@ function recentSessionCaptureFailureMessage(
 
 function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, error: Error): void {
   try {
+    const context = 'context' in error ? (error as Error & { context?: { failureKind?: unknown } }).context : undefined;
+    const failureKind =
+      typeof context?.failureKind === 'string'
+        ? context.failureKind
+        : isUnexplainedIdamLoginRejection(error)
+          ? UNEXPLAINED_IDAM_LOGIN_FAILURE
+          : undefined;
     fsApi.writeFileSync(
       failurePath,
       JSON.stringify({
         timestamp: Date.now(),
         message: error.message,
+        failureKind,
       })
     );
   } catch {
@@ -400,7 +427,16 @@ type PersistDeps = {
   cookieUtils?: CookieUtils;
   fs?: typeof fs;
   signal?: AbortSignal;
+  assertLockOwned?: () => void;
 };
+
+type SessionLockRelease = (() => Promise<void>) & {
+  assertOwned: () => void;
+};
+
+function isSessionLockCompromisedError(error: Error): boolean {
+  return error.name === 'SessionLockCompromisedError';
+}
 
 export type StorageStateContext = Pick<BrowserContext, 'addCookies' | 'storageState'>;
 
@@ -419,6 +455,7 @@ type SessionCaptureDeps = {
   force?: boolean;
   now?: () => number;
   expectedStaleSession?: Pick<LoadedSession, 'storageFile' | 'storageStateFingerprint'>;
+  lockWaitMs?: number;
 };
 
 const setupMarkerByPage = new WeakMap<Page, string>();
@@ -942,6 +979,7 @@ async function persistSession(
     assertNotAborted();
     await ctx.storageState({ path: stagingPath });
     assertNotAborted();
+    deps.assertLockOwned?.();
     fsApi.renameSync(stagingPath, localSessionPath);
     logger.info('Stored storage state', {
       userIdentifier: uid,
@@ -982,15 +1020,16 @@ async function acquireSessionLock({
   userIdentifier,
   isSessionReusable,
   force,
+  maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS,
 }: {
   lockfileApi: typeof lockfile;
   lockFilePath: string;
   userIdentifier: string;
   isSessionReusable: () => boolean;
   force: boolean;
-}): Promise<(() => Promise<void>) | null> {
+  maxWaitMs?: number;
+}): Promise<SessionLockRelease | null> {
   const pollIntervalMs = 1_000;
-  const maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS;
   const startedAt = Date.now();
   let attempt = 0;
 
@@ -1006,10 +1045,27 @@ async function acquireSessionLock({
     }
 
     try {
-      return await lockfileApi.lock(lockFilePath, {
+      let compromisedError: Error | undefined;
+      const releaseLock = await lockfileApi.lock(lockFilePath, {
         retries: 0,
         stale: SESSION_CAPTURE_LOCK_STALE_MS,
+        onCompromised: (error) => {
+          compromisedError = error;
+        },
       });
+
+      const assertOwned = () => {
+        if (compromisedError) {
+          const error = new Error(`Session lock ownership was lost for ${userIdentifier}`);
+          error.name = 'SessionLockCompromisedError';
+          throw error;
+        }
+      };
+      const release = async () => {
+        assertOwned();
+        await releaseLock();
+      };
+      return Object.assign(release, { assertOwned });
     } catch (error) {
       if (!isLockAlreadyHeldError(error)) {
         throw error;
@@ -1139,6 +1195,7 @@ async function loginAndPersistSession({
   password,
   sessionPath,
   persist,
+  assertLockOwned,
   userIdentifier,
   executeLoginAttemptFn = executeLoginAttempt,
   waitForRetry = waitForTransientRetry,
@@ -1151,6 +1208,7 @@ async function loginAndPersistSession({
   password: string;
   sessionPath: string;
   persist: typeof persistSession;
+  assertLockOwned?: () => void;
   userIdentifier: string;
   executeLoginAttemptFn?: typeof executeLoginAttempt;
   waitForRetry?: () => Promise<void>;
@@ -1219,12 +1277,19 @@ async function loginAndPersistSession({
         );
         try {
           await withOperationTimeout(
-            () => persist(sessionPath, cookies, context!, userIdentifier, { signal: abortController.signal }),
+            () =>
+              persist(sessionPath, cookies, context!, userIdentifier, {
+                signal: abortController.signal,
+                assertLockOwned,
+              }),
             SESSION_CAPTURE_PERSIST_BUDGET_MS,
             `Session persistence timed out after ${SESSION_CAPTURE_PERSIST_BUDGET_MS}ms`,
             cancelAttempt
           );
         } catch (error) {
+          if (isSessionLockCompromisedError(error as Error)) {
+            throw error;
+          }
           const evidence = sessionCaptureFailureEvidence(error as Error);
           const persistenceError = new Error(`Session persistence failed for ${userIdentifier}: ${evidence}`);
           persistenceError.name = 'SessionPersistenceError';
@@ -1233,6 +1298,9 @@ async function loginAndPersistSession({
         return;
       } catch (error) {
         const loginError = error as Error;
+        if (isSessionLockCompromisedError(loginError)) {
+          throw loginError;
+        }
         const shouldRetry = captureAttempt < SESSION_CAPTURE_LOGIN_ATTEMPTS && isTransientSessionCaptureError(loginError);
         if (!shouldRetry) {
           const evidence = sessionCaptureFailureEvidence(loginError);
@@ -1245,10 +1313,11 @@ async function loginAndPersistSession({
             error: evidence,
             operation: 'session-capture',
           });
+          const failureKind = isUnexplainedIdamLoginRejection(loginError) ? UNEXPLAINED_IDAM_LOGIN_FAILURE : undefined;
           throw new SessionCaptureError(
             `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${SESSION_CAPTURE_LOGIN_ATTEMPTS} capture attempts: ${evidence}`,
             userIdentifier,
-            { targetUrl: sanitizeUrl(targetUrl), appTargetUrl: sanitizeUrl(targetUrl), captureAttempt, evidence },
+            { targetUrl: sanitizeUrl(targetUrl), appTargetUrl: sanitizeUrl(targetUrl), captureAttempt, evidence, failureKind },
             sanitizedCause
           );
         }
@@ -1359,10 +1428,10 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     ensureLockFile(fsApi, lockFilePath);
 
     // Acquire filesystem lock (blocks across all workers)
-    let release: (() => Promise<void>) | null = null;
+    let release: SessionLockRelease | null = null;
     try {
-      const recentFailureMessage = recentSessionCaptureFailureMessage(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
-      if (recentFailureMessage) {
+      const recentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
+      if (recentFailure) {
         if (
           clearSessionCaptureFailureIfReusableSession({
             fsApi,
@@ -1379,9 +1448,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           continue;
         }
         throw new SessionCaptureError(
-          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailureMessage}`,
+          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
           identity.userIdentifier,
-          { sessionPath }
+          { sessionPath, failureKind: recentFailure.failureKind }
         );
       }
 
@@ -1398,6 +1467,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         userIdentifier: identity.userIdentifier,
         isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl }),
         force,
+        maxWaitMs: deps.lockWaitMs,
       });
       const lockWaitMs = Math.max(0, now() - lockStartedAt);
 
@@ -1416,12 +1486,8 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         operation: 'session-capture',
       });
 
-      const lockedRecentFailureMessage = recentSessionCaptureFailureMessage(
-        fsApi,
-        failurePath,
-        resolveSessionCaptureFailureTtlMs(env)
-      );
-      if (lockedRecentFailureMessage) {
+      const lockedRecentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
+      if (lockedRecentFailure) {
         if (
           clearSessionCaptureFailureIfReusableSession({
             fsApi,
@@ -1438,9 +1504,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           continue;
         }
         throw new SessionCaptureError(
-          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailureMessage}`,
+          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
           identity.userIdentifier,
-          { sessionPath }
+          { sessionPath, failureKind: lockedRecentFailure.failureKind }
         );
       }
 
@@ -1493,7 +1559,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         continue;
       }
 
-      if (lockWaitMs > SESSION_CAPTURE_LOCK_TAKEOVER_BUDGET_MS) {
+      if (lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS) {
         throw new SessionCaptureError(
           `Session lock became available for ${identity.userIdentifier} after ${lockWaitMs}ms; refusing to start a capture that cannot complete within the integration test budget`,
           identity.userIdentifier,
@@ -1510,11 +1576,18 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         password: identity.password,
         sessionPath,
         persist,
+        assertLockOwned: release.assertOwned,
         userIdentifier: identity.userIdentifier,
       })
-        .then(() => clearSessionCaptureFailure(fsApi, failurePath))
+        .then(() => {
+          release!.assertOwned();
+          clearSessionCaptureFailure(fsApi, failurePath);
+        })
         .catch((error: Error) => {
-          writeSessionCaptureFailure(fsApi, failurePath, error);
+          release!.assertOwned();
+          if (!isSessionLockCompromisedError(error)) {
+            writeSessionCaptureFailure(fsApi, failurePath, error);
+          }
           throw error;
         });
     } finally {
@@ -1542,7 +1615,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 export const __test__ = {
   sessionCaptureLockWaitMs: SESSION_CAPTURE_LOCK_WAIT_MS,
   sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
-  sessionCaptureLockTakeoverBudgetMs: SESSION_CAPTURE_LOCK_TAKEOVER_BUDGET_MS,
+  sessionCaptureLockStartBudgetMs: SESSION_CAPTURE_LOCK_START_BUDGET_MS,
   sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
   sessionCaptureBrowserLaunchBudgetMs: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,

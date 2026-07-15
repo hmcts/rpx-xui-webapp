@@ -344,6 +344,12 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 ])
                 echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
             } catch (Exception publishException) {
+                if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                    throw publishException
+                }
+                if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                    throw publishException
+                }
                 def publishFailure = "${runConfig.displayName} report publication: ${publishException.getMessage()}"
                 failures << publishFailure
                 echo "[playwright-integration] ${publishFailure}"

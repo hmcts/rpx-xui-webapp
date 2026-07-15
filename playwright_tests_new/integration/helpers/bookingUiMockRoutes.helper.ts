@@ -91,12 +91,13 @@ export async function setupBookingUiMockRoutes(page: Page, options: BookingUiMoc
 export async function setupBookableBookingUiRoutesForTest(
   page: Page,
   testInfo: Pick<TestInfo, 'parallelIndex' | 'annotations'>,
-  options: BookingUiTestRoutesOptions = {}
+  options: BookingUiTestRoutesOptions = {},
+  applySession: typeof applySessionCookiesAndExtractUserId = applySessionCookiesAndExtractUserId
 ): Promise<BookingUiTestRouteState> {
   let getBookingsCalled = false;
   const { selectedUserIdentifier, value: userId } = await withOrderedSessionFallback(
     resolveBookingUiSessionCandidates(testInfo),
-    (identity) => applySessionCookiesAndExtractUserId(page, identity)
+    (identity) => applySession(page, identity)
   );
   testInfo.annotations.push({ type: 'session-user', description: selectedUserIdentifier });
   const existingBookingsMock = buildExistingBookingsMock(userId);

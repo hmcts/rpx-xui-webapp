@@ -1,13 +1,12 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookiesFromPool } from '../../../common/sessionCapture';
 import {
+  applyHearingManagerSessionCookies,
   caseDetailsUrl,
   expectHearingsRowsHiddenBeforeResponse,
   gotoCaseDetailsWithRetry,
   HEARING_MANAGER_CR84_ON_USER,
   HEARINGS_SLOW_RESPONSE_DELAY_MS,
   openHearingsTabForScenario,
-  resolveHearingManagerSessionCandidates,
   setupHearingsMockRoutes,
   waitForHearingsTerminalState,
 } from '../../helpers';
@@ -106,8 +105,8 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
   test('Hearings - slow response does not render tab rows before the hearings response resolves', async ({
     page,
     hearingsTabPage,
-  }) => {
-    await applySessionCookiesFromPool(page, resolveHearingManagerSessionCandidates(userIdentifier));
+  }, testInfo) => {
+    await applyHearingManagerSessionCookies(page, userIdentifier, testInfo);
     await setupHearingsMockRoutes(page, {
       userRoles: hearingViewerRoles,
       hearings: [LISTED_HEARING_SCENARIO],

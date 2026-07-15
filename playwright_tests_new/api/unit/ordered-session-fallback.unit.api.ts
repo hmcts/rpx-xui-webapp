@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { ConfigurationError, SessionCaptureError } from '../utils/errors.js';
 import { withOrderedSessionFallback } from '../../common/orderedSessionFallback.js';
+import { UNEXPLAINED_IDAM_LOGIN_FAILURE } from '../../common/sessionCaptureRetry.js';
 
 const primary = {
   userIdentifier: 'PRIMARY',
@@ -16,6 +17,14 @@ const fallback = {
 
 function identityRejection(message: string): SessionCaptureError {
   return new SessionCaptureError(`Login failed: IDAM page message: ${message}`, 'PRIMARY');
+}
+
+function unexplainedIdentityRejection(userIdentifier: string): SessionCaptureError {
+  return new SessionCaptureError(
+    `Login failed for ${userIdentifier} after 2 of 2 capture attempts: IDAM login did not establish authenticated session`,
+    userIdentifier,
+    { failureKind: UNEXPLAINED_IDAM_LOGIN_FAILURE }
+  );
 }
 
 test.describe('ordered session fallback', { tag: '@svc-internal' }, () => {
@@ -79,6 +88,48 @@ test.describe('ordered session fallback', { tag: '@svc-internal' }, () => {
         throw serviceError;
       })
     ).rejects.toBe(serviceError);
+    expect(attempts).toEqual(['PRIMARY', 'FALLBACK']);
+  });
+
+  test('probes one fallback identity after an exhausted unexplained IDAM login failure', async () => {
+    const attempts: string[] = [];
+
+    const result = await withOrderedSessionFallback([primary, fallback], async (identity) => {
+      attempts.push(identity.userIdentifier);
+      if (identity.userIdentifier === 'PRIMARY') throw unexplainedIdentityRejection('PRIMARY');
+      return 'fallback-session';
+    });
+
+    expect(attempts).toEqual(['PRIMARY', 'FALLBACK']);
+    expect(result).toEqual({ selectedUserIdentifier: 'FALLBACK', value: 'fallback-session' });
+  });
+
+  test('stops after a second unexplained IDAM login failure instead of sweeping the pool', async () => {
+    const third = { userIdentifier: 'THIRD', email: 'third@example.test', password: 'not-used' };
+    const attempts: string[] = [];
+
+    await expect(
+      withOrderedSessionFallback([primary, fallback, third], async (identity) => {
+        attempts.push(identity.userIdentifier);
+        throw unexplainedIdentityRejection(identity.userIdentifier);
+      })
+    ).rejects.toThrow('FALLBACK');
+
+    expect(attempts).toEqual(['PRIMARY', 'FALLBACK']);
+  });
+
+  test('stops when the bounded probe receives an explicit rejection', async () => {
+    const third = { userIdentifier: 'THIRD', email: 'third@example.test', password: 'not-used' };
+    const attempts: string[] = [];
+
+    await expect(
+      withOrderedSessionFallback([primary, fallback, third], async (identity) => {
+        attempts.push(identity.userIdentifier);
+        if (identity.userIdentifier === 'PRIMARY') throw unexplainedIdentityRejection('PRIMARY');
+        throw identityRejection('Account is disabled');
+      })
+    ).rejects.toThrow('Account is disabled');
+
     expect(attempts).toEqual(['PRIMARY', 'FALLBACK']);
   });
 

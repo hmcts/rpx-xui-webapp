@@ -1,6 +1,6 @@
 import { ConfigurationError } from '../api/utils/errors.js';
 import { type SessionIdentity, type SessionIdentityInput, resolveSessionIdentity } from './sessionIdentity.js';
-import { isExplicitIdamLoginRejection } from './sessionCaptureRetry.js';
+import { isExplicitIdamLoginRejection, isUnexplainedIdamLoginRejection } from './sessionCaptureRetry.js';
 
 export type OrderedSessionResult<T> = {
   selectedUserIdentifier: string;
@@ -17,6 +17,7 @@ export async function withOrderedSessionFallback<T>(
 
   const seenEmails = new Set<string>();
   let lastIdentityError: unknown;
+  let nextCandidateIsBoundedProbe = false;
 
   for (const candidate of candidates) {
     const identity = resolveSessionIdentity(candidate);
@@ -25,15 +26,26 @@ export async function withOrderedSessionFallback<T>(
       continue;
     }
     seenEmails.add(identityKey);
+    const isBoundedProbe = nextCandidateIsBoundedProbe;
+    nextCandidateIsBoundedProbe = false;
 
     try {
       const value = await useSession(identity);
       return { selectedUserIdentifier: identity.userIdentifier, value };
     } catch (error) {
-      if (!isExplicitIdamLoginRejection(error)) {
+      if (isBoundedProbe) {
         throw error;
       }
-      lastIdentityError = error;
+      if (isExplicitIdamLoginRejection(error)) {
+        lastIdentityError = error;
+        continue;
+      }
+      if (isUnexplainedIdamLoginRejection(error)) {
+        nextCandidateIsBoundedProbe = true;
+        lastIdentityError = error;
+        continue;
+      }
+      throw error;
     }
   }
 

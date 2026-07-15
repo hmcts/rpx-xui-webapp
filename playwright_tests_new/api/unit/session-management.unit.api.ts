@@ -33,6 +33,17 @@ function hiddenLocator() {
   return locator;
 }
 
+function fakeLockfile(onAcquire?: (lockPath: string, options: { onCompromised: (error: Error) => void }) => void) {
+  return {
+    lock: async (lockPath: string, options: { onCompromised: (error: Error) => void }) => {
+      const lockDirectoryPath = `${lockPath}.lock`;
+      fs.mkdirSync(lockDirectoryPath);
+      onAcquire?.(lockPath, options);
+      return async () => fs.rmSync(lockDirectoryPath, { recursive: true, force: true });
+    },
+  } as never;
+}
+
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
   test('expands a staff admin alias to the worker-selected pool before applying cookies', async () => {
     const envOverrides = {
@@ -151,12 +162,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         },
         force: true,
         isSessionFresh: () => false,
-        lockfile: {
-          lock: async () => {
-            fs.writeFileSync(sessionPath, refreshedContents);
-            return async () => undefined;
-          },
-        } as never,
+        lockfile: fakeLockfile(() => fs.writeFileSync(sessionPath, refreshedContents)),
         loginAndPersistSession: async () => {
           loginCount += 1;
         },
@@ -201,7 +207,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         },
         force: true,
         isSessionFresh: () => false,
-        lockfile: { lock: async () => async () => undefined } as never,
+        lockfile: fakeLockfile(),
         loginAndPersistSession: async () => {
           staleFilePresentAtLogin = fs.existsSync(sessionPath);
           fs.writeFileSync(sessionPath, replacementContents);
@@ -231,7 +237,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
           config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
           env: { CI: 'true' },
           isSessionFresh: () => false,
-          lockfile: { lock: async () => async () => undefined } as never,
+          lockfile: fakeLockfile(),
           loginAndPersistSession: async () => {
             loginCalled = true;
           },
@@ -250,11 +256,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
-  test('does not start a new capture after the lock takeover budget is exhausted', async () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-lock-takeover-unit-'));
+  test('does not start a new capture after the lock start budget is exhausted', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-lock-start-budget-unit-'));
     const previousCwd = process.cwd();
     let loginCalled = false;
-    const clock = [0, sessionCaptureTest.sessionCaptureLockTakeoverBudgetMs + 1];
+    const clock = [0, sessionCaptureTest.sessionCaptureLockStartBudgetMs + 1];
 
     try {
       process.chdir(tempDir);
@@ -265,7 +271,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
           config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
           env: {},
           isSessionFresh: () => false,
-          lockfile: { lock: async () => async () => undefined } as never,
+          lockfile: fakeLockfile(),
           loginAndPersistSession: async () => {
             loginCalled = true;
           },
@@ -611,7 +617,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
           config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
           env: {},
           isSessionFresh: () => false,
-          lockfile: { lock: async () => async () => undefined } as never,
+          lockfile: fakeLockfile(),
           loginAndPersistSession: async () => {
             expect(fs.existsSync(failurePath)).toBe(false);
             exhaustedAttempts = true;
@@ -627,6 +633,87 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       expect(exhaustedAttempts).toBe(true);
       expect(JSON.parse(fs.readFileSync(failurePath, 'utf8')).message).toBe('both transient login attempts failed');
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('does not write a cooldown marker when a stale lock owner is fenced', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-fenced-marker-'));
+    const previousCwd = process.cwd();
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'IAC_Judge_WA_R1',
+      email: 'judge@example.test',
+      password: 'not-used',
+    });
+    const failurePath = path.join(tempDir, '.sessions', `${storageKey}.capture-failed.json`);
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: fakeLockfile(),
+          loginAndPersistSession: async ({ assertLockOwned }) => {
+            expect(assertLockOwned).toBeDefined();
+            const error = new Error('Session lock ownership was lost for IAC_Judge_WA_R1');
+            error.name = 'SessionLockCompromisedError';
+            throw error;
+          },
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'IAC_Judge_WA_R1',
+            email: 'judge@example.test',
+            password: 'not-used',
+          }),
+        })
+      ).rejects.toThrow('Session lock ownership was lost');
+
+      expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('does not write a cooldown when lock compromise precedes an unrelated login failure', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-compromised-login-'));
+    const previousCwd = process.cwd();
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'IAC_Judge_WA_R1',
+      email: 'judge@example.test',
+      password: 'not-used',
+    });
+    const failurePath = path.join(tempDir, '.sessions', `${storageKey}.capture-failed.json`);
+    let compromiseLock: ((error: Error) => void) | undefined;
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: fakeLockfile((_lockPath, options) => {
+            compromiseLock = options.onCompromised;
+          }),
+          loginAndPersistSession: async () => {
+            compromiseLock!(new Error('proper-lockfile ownership lost'));
+            throw new Error('login failed after ownership loss');
+          },
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'IAC_Judge_WA_R1',
+            email: 'judge@example.test',
+            password: 'not-used',
+          }),
+        })
+      ).rejects.toMatchObject({ name: 'SessionLockCompromisedError' });
+
+      expect(fs.existsSync(failurePath)).toBe(false);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -682,7 +769,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
-  test('concurrent generic login failures stop on the primary after one terminal capture cycle', async () => {
+  test('concurrent unexplained login failures share one bounded fallback capture', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-pool-generic-failure-'));
     const previousCwd = process.cwd();
     const primary: SessionIdentity = {
@@ -695,6 +782,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       email: 'fallback@example.test',
       password: 'not-used',
     };
+    const freshUsers = new Set<string>();
     let primaryCaptureCycles = 0;
     let fallbackCaptureCycles = 0;
 
@@ -706,8 +794,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             chromiumLauncher: {} as never,
             config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
             env: {},
-            isSessionFresh: () => false,
-            loginAndPersistSession: async ({ userIdentifier }) => {
+            isSessionFresh: (sessionPath) =>
+              Array.from(freshUsers).some((email) =>
+                sessionPath.includes(resolveSessionStorageKey({ userIdentifier: email, email, password: 'not-used' }))
+              ),
+            loginAndPersistSession: async ({ userIdentifier, email }) => {
               if (userIdentifier === 'PRIMARY') {
                 primaryCaptureCycles += 1;
                 throw new Error(
@@ -715,16 +806,22 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
                 );
               }
               fallbackCaptureCycles += 1;
+              freshUsers.add(email);
             },
             resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
           });
+          return identity.userIdentifier;
         });
 
-      const results = await Promise.allSettled(Array.from({ length: 8 }, () => usePool()));
+      const results = await Promise.all(Array.from({ length: 8 }, () => usePool()));
+      const marker = JSON.parse(
+        fs.readFileSync(path.join(tempDir, '.sessions', `${resolveSessionStorageKey(primary)}.capture-failed.json`), 'utf8')
+      );
 
-      expect(results.every((result) => result.status === 'rejected')).toBe(true);
+      expect(results.map((result) => result.selectedUserIdentifier)).toEqual(Array(8).fill('FALLBACK'));
       expect(primaryCaptureCycles).toBe(1);
-      expect(fallbackCaptureCycles).toBe(0);
+      expect(fallbackCaptureCycles).toBe(1);
+      expect(marker.failureKind).toBe('unexplained-idam-login-rejection');
       expect(fs.readdirSync(path.join(tempDir, '.sessions')).filter((name) => name.endsWith('.capture-failed.json'))).toEqual([
         `${resolveSessionStorageKey(primary)}.capture-failed.json`,
       ]);

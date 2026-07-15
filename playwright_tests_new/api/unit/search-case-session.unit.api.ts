@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { SessionCaptureError } from '../utils/errors.js';
+import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
 import {
+  applySearchCaseSessionCookies,
   resolveIntegrationSessionUsers,
   resolveSearchCaseSessionUsers,
   resolveSearchCaseUserIdentifier,
@@ -163,5 +166,33 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveSearchCaseUserIdentifier({ workerIndex: 1 }, env)).toBe('SOLICITOR');
     expect(resolveSearchCaseUserIdentifier({ workerIndex: 2 }, env)).toBe('STAFF_ADMIN');
     expect(resolveSearchCaseUserIdentifier({ workerIndex: 3 }, env)).toBe('FPL_GLOBAL_SEARCH');
+  });
+
+  test('annotates the fallback search identity after the primary is explicitly rejected', async () => {
+    const env = {
+      PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH,SOLICITOR',
+    } as NodeJS.ProcessEnv;
+    const attempts: string[] = [];
+    const testInfo = { workerIndex: 0, annotations: [] as Array<{ type: string; description?: string }> };
+
+    const selectedUserIdentifier = await applySearchCaseSessionCookies({} as never, testInfo, env, (page, candidates) =>
+      sessionCaptureTest.applySessionCookiesFromPoolWith(page, candidates, async (_page, identity) => {
+        const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
+        attempts.push(userIdentifier);
+        if (userIdentifier === 'FPL_GLOBAL_SEARCH') {
+          throw new SessionCaptureError('Login failed: IDAM page message: Email or password is incorrect', userIdentifier);
+        }
+        return {
+          userIdentifier,
+          email: typeof identity === 'string' ? `${identity.toLowerCase()}@example.test` : identity.email,
+          cookies: [],
+          storageFile: `${userIdentifier}.storage.json`,
+        };
+      })
+    );
+
+    expect(attempts).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR']);
+    expect(selectedUserIdentifier).toBe('SOLICITOR');
+    expect(testInfo.annotations).toEqual([{ type: 'session-user', description: 'SOLICITOR' }]);
   });
 });

@@ -35,17 +35,20 @@ function getRequestCookies(req: http.IncomingMessage): Record<string, string> {
     .split(';')
     .map((cookiePart) => cookiePart.trim())
     .filter((cookiePart) => cookiePart.length > 0)
-    .reduce((cookies, cookiePart) => {
-      const separatorIndex = cookiePart.indexOf('=');
-      if (separatorIndex <= 0) {
-        return cookies;
-      }
+    .reduce(
+      (cookies, cookiePart) => {
+        const separatorIndex = cookiePart.indexOf('=');
+        if (separatorIndex <= 0) {
+          return cookies;
+        }
 
-      const key = cookiePart.slice(0, separatorIndex);
-      const value = cookiePart.slice(separatorIndex + 1);
-      cookies[key] = value;
-      return cookies;
-    }, {} as Record<string, string>);
+        const key = cookiePart.slice(0, separatorIndex);
+        const value = cookiePart.slice(separatorIndex + 1);
+        cookies[key] = value;
+        return cookies;
+      },
+      {} as Record<string, string>
+    );
 }
 
 function getSocketIoSessionId(req: http.IncomingMessage): string | undefined {
@@ -86,9 +89,7 @@ function getUpgradeLogContext(req: http.IncomingMessage): string {
     websocketKeyFingerprint: getWebSocketKeyFingerprint(req) || '<missing>',
     userId: userId || '<missing>',
     websocketSessionId: websocketSessionId || '<missing>',
-    appSessionIdFingerprint: appSessionId
-      ? createHash('sha256').update(appSessionId).digest('hex').slice(0, 12)
-      : '<missing>',
+    appSessionIdFingerprint: appSessionId ? createHash('sha256').update(appSessionId).digest('hex').slice(0, 12) : '<missing>',
   });
 }
 

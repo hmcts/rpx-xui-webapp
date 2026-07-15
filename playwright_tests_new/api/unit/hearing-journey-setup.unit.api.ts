@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { buildLargeListedHearings, resolveHearingsCaseRoute } from '../../integration/helpers/hearingJourneySetup.helper.js';
+import {
+  applyHearingManagerSessionCookies,
+  buildLargeListedHearings,
+  resolveHearingsCaseRoute,
+} from '../../integration/helpers/hearingJourneySetup.helper.js';
 
 test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
   test('uses explicit route fields before routeConfig.caseConfig', () => {
@@ -64,5 +68,17 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
         hearingType: 'ABA5-LISTED-3',
       }),
     ]);
+  });
+
+  test('annotates the hearing identity selected after session fallback', async () => {
+    const testInfo = { annotations: [] };
+    const fallbackIdentity = 'HEARING_MANAGER_CR84_ON-2';
+
+    await applyHearingManagerSessionCookies({} as never, 'HEARING_MANAGER_CR84_ON', testInfo, async (_page, candidates) => {
+      expect(candidates).toContain(fallbackIdentity);
+      return { userIdentifier: fallbackIdentity, session: {} as never };
+    });
+
+    expect(testInfo.annotations).toEqual([{ type: 'session-user', description: fallbackIdentity }]);
   });
 });

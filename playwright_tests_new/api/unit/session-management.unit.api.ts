@@ -7,7 +7,7 @@ import { expect, test } from '@playwright/test';
 import { __test__ as sessionStorageTest } from '../../E2E/utils/session-storage.utils.js';
 import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
 import { withOrderedSessionFallback } from '../../common/orderedSessionFallback.js';
-import type { SessionIdentity } from '../../common/sessionIdentity.js';
+import { resolveSessionStorageKey, type SessionIdentity } from '../../common/sessionIdentity.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
 import { SessionCaptureError } from '../utils/errors.js';
 
@@ -55,7 +55,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       const result = await sessionCaptureTest.applySessionCookiesFromPoolWith(
         {} as never,
-        ['STAFF_ADMIN'],
+        [' staff_admin '],
         async (_page, identityInput) => {
           const identity = identityInput as SessionIdentity;
           attempts.push(identity.userIdentifier);
@@ -115,6 +115,102 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       await expect(Promise.all(Array.from({ length: 12 }, () => capture()))).resolves.toHaveLength(12);
       expect(loginCount).toBe(1);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('does not delete a session another worker refreshed while the identity lock was pending', async () => {
+    const tempDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'session-compare-delete-unit-')));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_STALE_USER',
+      email: 'stale-user@example.test',
+      password: 'not-used',
+      sessionKey: 'unit-stale-user',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, 'unit-stale-user.storage.json');
+    const staleContents = JSON.stringify({ cookies: [{ name: 'stale', value: 'stale' }] });
+    const refreshedContents = JSON.stringify({ cookies: [{ name: 'fresh', value: 'fresh' }] });
+    let loginCount = 0;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(sessionPath, staleContents);
+      process.chdir(tempDir);
+
+      await sessionCaptureTest.sessionCaptureWith([identity], {
+        chromiumLauncher: {} as never,
+        config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+        env: {},
+        expectedStaleSession: {
+          storageFile: sessionPath,
+          storageStateFingerprint: sessionCaptureTest.storageStateFingerprint(staleContents),
+        },
+        force: true,
+        isSessionFresh: () => false,
+        lockfile: {
+          lock: async () => {
+            fs.writeFileSync(sessionPath, refreshedContents);
+            return async () => undefined;
+          },
+        } as never,
+        loginAndPersistSession: async () => {
+          loginCount += 1;
+        },
+        resolveSessionIdentity: () => identity,
+      });
+
+      expect(fs.readFileSync(sessionPath, 'utf8')).toBe(refreshedContents);
+      expect(loginCount).toBe(0);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('deletes the rejected session under the identity lock before recapturing it', async () => {
+    const tempDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'session-locked-delete-unit-')));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_STALE_USER',
+      email: 'stale-user@example.test',
+      password: 'not-used',
+      sessionKey: 'unit-stale-user',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, 'unit-stale-user.storage.json');
+    const staleContents = JSON.stringify({ cookies: [{ name: 'stale', value: 'stale' }] });
+    const replacementContents = JSON.stringify({ cookies: [{ name: 'replacement', value: 'replacement' }] });
+    let staleFilePresentAtLogin = true;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(sessionPath, staleContents);
+      process.chdir(tempDir);
+
+      await sessionCaptureTest.sessionCaptureWith([identity], {
+        chromiumLauncher: {} as never,
+        config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+        env: {},
+        expectedStaleSession: {
+          storageFile: sessionPath,
+          storageStateFingerprint: sessionCaptureTest.storageStateFingerprint(staleContents),
+        },
+        force: true,
+        isSessionFresh: () => false,
+        lockfile: { lock: async () => async () => undefined } as never,
+        loginAndPersistSession: async () => {
+          staleFilePresentAtLogin = fs.existsSync(sessionPath);
+          fs.writeFileSync(sessionPath, replacementContents);
+        },
+        resolveSessionIdentity: () => identity,
+      });
+
+      expect(staleFilePresentAtLogin).toBe(false);
+      expect(fs.readFileSync(sessionPath, 'utf8')).toBe(replacementContents);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -425,8 +521,13 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-unit-'));
     const previousCwd = process.cwd();
     const sessionsDir = path.join(tempDir, '.sessions');
-    const sessionPath = path.join(sessionsDir, 'booking-ui-user-example.test.storage.json');
-    const failurePath = path.join(sessionsDir, 'booking-ui-user-example.test.capture-failed.json');
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'BOOKING_UI-FT-ON-4',
+      email: 'booking-ui-user@example.test',
+      password: 'not-used',
+    });
+    const sessionPath = path.join(sessionsDir, `${storageKey}.storage.json`);
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
     let lockCalled = false;
     let freshnessMaxAgeMs: number | undefined;
 
@@ -494,7 +595,12 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
   test('writes the cooldown marker only after the locked login attempts are exhausted', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-retry-marker-'));
     const previousCwd = process.cwd();
-    const failurePath = path.join(tempDir, '.sessions', 'judge-example.test.capture-failed.json');
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'IAC_Judge_WA_R1',
+      email: 'judge@example.test',
+      password: 'not-used',
+    });
+    const failurePath = path.join(tempDir, '.sessions', `${storageKey}.capture-failed.json`);
     let exhaustedAttempts = false;
 
     try {
@@ -531,7 +637,12 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-fast-cooldown-'));
     const previousCwd = process.cwd();
     const sessionsDir = path.join(tempDir, '.sessions');
-    const failurePath = path.join(sessionsDir, 'judge-example.test.capture-failed.json');
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'IAC_Judge_WA_R1',
+      email: 'judge@example.test',
+      password: 'not-used',
+    });
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
     let lockCalled = false;
     let loginCalled = false;
 
@@ -615,7 +726,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       expect(primaryCaptureCycles).toBe(1);
       expect(fallbackCaptureCycles).toBe(0);
       expect(fs.readdirSync(path.join(tempDir, '.sessions')).filter((name) => name.endsWith('.capture-failed.json'))).toEqual([
-        'primary-example.test.capture-failed.json',
+        `${resolveSessionStorageKey(primary)}.capture-failed.json`,
       ]);
     } finally {
       process.chdir(previousCwd);
@@ -649,7 +760,15 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
             env: {},
             isSessionFresh: (sessionPath) =>
-              Array.from(freshUsers).some((email) => sessionPath.includes(email.replace('@', '-'))),
+              Array.from(freshUsers).some((email) =>
+                sessionPath.includes(
+                  resolveSessionStorageKey({
+                    userIdentifier: email,
+                    email,
+                    password: 'not-used',
+                  })
+                )
+              ),
             loginAndPersistSession: async ({ userIdentifier, email }) => {
               if (userIdentifier === 'PRIMARY') {
                 primaryCaptureCycles += 1;
@@ -667,7 +786,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       const results = await Promise.all(Array.from({ length: 8 }, () => usePool()));
       const marker = JSON.parse(
-        fs.readFileSync(path.join(tempDir, '.sessions', 'primary-example.test.capture-failed.json'), 'utf8')
+        fs.readFileSync(path.join(tempDir, '.sessions', `${resolveSessionStorageKey(primary)}.capture-failed.json`), 'utf8')
       );
 
       expect(results.map((result) => result.selectedUserIdentifier)).toEqual(Array(8).fill('FALLBACK'));

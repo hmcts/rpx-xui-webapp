@@ -627,22 +627,14 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     expect(launchAttempts).toBe(0);
   });
 
-  test('acquireSessionLock clears abandoned lock artifacts before timing out', async () => {
+  test('acquireSessionLock delegates abandoned lock recovery to proper-lockfile within the takeover budget', async () => {
     let lockAttempts = 0;
-    let removedArtifacts = 0;
-    const staleTime = Date.now() - sessionCaptureTest.sessionCaptureLockWaitMs - 6_000;
-
-    const fsStub = {
-      existsSync: (target: string) => target.endsWith('.lock'),
-      statSync: () => ({ mtimeMs: staleTime }),
-      rmSync: () => {
-        removedArtifacts += 1;
-      },
-    } as any;
+    let configuredStaleMs: number | undefined;
 
     const lockfileStub = {
-      lock: async () => {
+      lock: async (_lockPath: string, options: { stale: number }) => {
         lockAttempts += 1;
+        configuredStaleMs = options.stale;
         if (lockAttempts === 1) {
           const error = new Error('Lock file is already being held');
           (error as Error & { code?: string }).code = 'ELOCKED';
@@ -653,7 +645,6 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     } as any;
 
     const release = await sessionCaptureTest.acquireSessionLock({
-      fsApi: fsStub,
       lockfileApi: lockfileStub,
       lockFilePath: '/tmp/shared-session.lock',
       userIdentifier: 'USER',
@@ -663,6 +654,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
 
     expect(typeof release).toBe('function');
     expect(lockAttempts).toBe(2);
-    expect(removedArtifacts).toBe(1);
+    expect(configuredStaleMs).toBe(sessionCaptureTest.sessionCaptureLockStaleMs);
+    expect(configuredStaleMs).toBeLessThan(sessionCaptureTest.sessionCaptureLockTakeoverBudgetMs);
   });
 });

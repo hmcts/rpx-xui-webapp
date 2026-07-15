@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import { UserUtils } from '../E2E/utils/user.utils.js';
 
 export type SessionIdentity = {
@@ -15,6 +17,12 @@ type SessionIdentityDeps = {
 
 function normaliseSessionStorageKey(value: string): string {
   return value.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
+}
+
+function collisionSafeSessionStorageKey(value: string): string {
+  const trimmedValue = value.trim();
+  const discriminator = createHash('sha256').update(trimmedValue).digest('hex').slice(0, 12);
+  return `${normaliseSessionStorageKey(trimmedValue)}-${discriminator}`;
 }
 
 export function resolveSessionIdentity(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): SessionIdentity {
@@ -38,5 +46,6 @@ export function resolveSessionIdentity(input: SessionIdentityInput, deps: Sessio
 
 export function resolveSessionStorageKey(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): string {
   const identity = resolveSessionIdentity(input, deps);
-  return normaliseSessionStorageKey(identity.sessionKey?.trim() || identity.email);
+  const explicitSessionKey = identity.sessionKey?.trim();
+  return explicitSessionKey ? normaliseSessionStorageKey(explicitSessionKey) : collisionSafeSessionStorageKey(identity.email);
 }

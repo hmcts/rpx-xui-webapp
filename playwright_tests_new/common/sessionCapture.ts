@@ -1,4 +1,5 @@
 import { chromium, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
@@ -39,6 +40,7 @@ const SESSION_CAPTURE_OWNER_BUDGET_MS =
 const SESSION_CAPTURE_LOCK_HEADROOM_MS = 15_000;
 const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_CAPTURE_LOCK_HEADROOM_MS;
 const SESSION_CAPTURE_LOCK_TAKEOVER_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
+const SESSION_CAPTURE_LOCK_STALE_MS = 10_000;
 
 async function withOperationTimeout<T>(
   operation: () => Promise<T>,
@@ -390,6 +392,7 @@ export interface LoadedSession {
   email: string;
   cookies: Cookie[];
   storageFile: string;
+  storageStateFingerprint?: string;
 }
 
 type PersistDeps = {
@@ -414,6 +417,7 @@ type SessionCaptureDeps = {
   lockfile?: typeof lockfile;
   force?: boolean;
   now?: () => number;
+  expectedStaleSession?: Pick<LoadedSession, 'storageFile' | 'storageStateFingerprint'>;
 };
 
 const setupMarkerByPage = new WeakMap<Page, string>();
@@ -490,7 +494,20 @@ async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput): P
 }
 
 function resolveSessionCandidates(userIdentifier: SessionIdentityInput): readonly SessionIdentityInput[] {
-  return userIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionCandidates() : [userIdentifier];
+  const normalizedIdentifier = typeof userIdentifier === 'string' ? userIdentifier.trim().toUpperCase() : undefined;
+  return normalizedIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionCandidates() : [userIdentifier];
+}
+
+function storageStateFingerprint(contents: string): string {
+  return createHash('sha256').update(contents).digest('hex');
+}
+
+function readStorageStateFingerprint(fsApi: typeof fs, storageFile: string): string | undefined {
+  try {
+    return storageStateFingerprint(fsApi.readFileSync(storageFile, 'utf8'));
+  } catch {
+    return undefined;
+  }
 }
 
 export async function ensureSession(userIdentifier: SessionIdentityInput): Promise<void> {
@@ -508,9 +525,12 @@ export function loadSessionCookies(userIdentifier: SessionIdentityInput): Loaded
   const storageFile = path.join(process.cwd(), '.sessions', `${storageKey}.storage.json`);
 
   let cookies: Cookie[] = [];
+  let fingerprint: string | undefined;
   if (fs.existsSync(storageFile)) {
     try {
-      const state = JSON.parse(fs.readFileSync(storageFile, 'utf8'));
+      const storageStateContents = fs.readFileSync(storageFile, 'utf8');
+      fingerprint = storageStateFingerprint(storageStateContents);
+      const state = JSON.parse(storageStateContents);
       if (Array.isArray(state.cookies)) {
         cookies = state.cookies as Cookie[];
         logger.info('Loaded session cookies', {
@@ -560,7 +580,12 @@ export function loadSessionCookies(userIdentifier: SessionIdentityInput): Loaded
       userIdentifier: identity.userIdentifier,
     });
   }
-  return { userIdentifier: identity.userIdentifier, email, cookies, storageFile };
+  if (!fingerprint) {
+    throw new StorageStateCorruptedError(`Failed reading storage file for ${identity.userIdentifier}`, storageFile, {
+      userIdentifier: identity.userIdentifier,
+    });
+  }
+  return { userIdentifier: identity.userIdentifier, email, cookies, storageFile, storageStateFingerprint: fingerprint };
 }
 
 /**
@@ -743,20 +768,11 @@ export async function ensureAuthenticatedPage(
       targetUrl,
       operation: 'session-refresh',
     });
-    try {
-      if (fs.existsSync(session.storageFile)) {
-        fs.unlinkSync(session.storageFile);
-      }
-    } catch (error) {
-      logger.warn('Failed to delete stale session file', {
-        userIdentifier: identity.userIdentifier,
-        storageFile: session.storageFile,
-        error: (error as Error).message,
-        operation: 'session-refresh',
-      });
-    }
-
-    session = await ensureSessionCookies(userIdentifier);
+    await sessionCaptureWith([identity], {
+      force: true,
+      expectedStaleSession: session,
+    });
+    session = await ensureSessionCookiesForIdentity(identity);
     identity = resolveLoadedIdentity(session);
     markSetup('session-refresh');
     await page.context().clearCookies();
@@ -960,14 +976,12 @@ function ensureLockFile(fsApi: typeof fs, lockFilePath: string) {
 }
 
 async function acquireSessionLock({
-  fsApi,
   lockfileApi,
   lockFilePath,
   userIdentifier,
   isSessionReusable,
   force,
 }: {
-  fsApi: typeof fs;
   lockfileApi: typeof lockfile;
   lockFilePath: string;
   userIdentifier: string;
@@ -976,7 +990,6 @@ async function acquireSessionLock({
 }): Promise<(() => Promise<void>) | null> {
   const pollIntervalMs = 1_000;
   const maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS;
-  const staleLockWindowMs = SESSION_CAPTURE_LOCK_WAIT_MS + 5_000;
   const startedAt = Date.now();
   let attempt = 0;
 
@@ -994,7 +1007,7 @@ async function acquireSessionLock({
     try {
       return await lockfileApi.lock(lockFilePath, {
         retries: 0,
-        stale: 60_000,
+        stale: SESSION_CAPTURE_LOCK_STALE_MS,
       });
     } catch (error) {
       if (!isLockAlreadyHeldError(error)) {
@@ -1003,17 +1016,6 @@ async function acquireSessionLock({
 
       attempt += 1;
       const elapsedMs = Date.now() - startedAt;
-      const recovered = tryRecoverAbandonedSessionLock(fsApi, lockFilePath, staleLockWindowMs);
-      if (recovered) {
-        logger.warn('Recovered abandoned session lock artifact', {
-          userIdentifier,
-          lockFilePath,
-          attempt,
-          elapsedMs,
-          operation: 'session-capture',
-        });
-        continue;
-      }
       if (elapsedMs >= maxWaitMs) {
         throw new Error(`Timed out waiting for session lock for ${userIdentifier} after ${elapsedMs}ms (${lockFilePath})`);
       }
@@ -1027,23 +1029,6 @@ async function acquireSessionLock({
       });
       await new Promise<void>((resolve) => setTimeout(resolve, Math.min(pollIntervalMs, maxWaitMs - elapsedMs)));
     }
-  }
-}
-
-function tryRecoverAbandonedSessionLock(fsApi: typeof fs, lockFilePath: string, staleLockWindowMs: number): boolean {
-  const lockArtifactPath = `${lockFilePath}.lock`;
-  try {
-    if (!fsApi.existsSync(lockArtifactPath)) {
-      return false;
-    }
-    const ageMs = Date.now() - fsApi.statSync(lockArtifactPath).mtimeMs;
-    if (ageMs < staleLockWindowMs) {
-      return false;
-    }
-    fsApi.rmSync(lockArtifactPath, { recursive: true, force: true });
-    return true;
-  } catch {
-    return false;
   }
 }
 
@@ -1196,6 +1181,7 @@ async function loginAndPersistSession({
       let context: BrowserContext | undefined;
       let contextClosePromise: Promise<void> | undefined;
       let retryPending = false;
+      let retryCleanupError: SessionCaptureError | undefined;
       const closeContext = () => {
         if (!context) {
           return Promise.resolve();
@@ -1287,7 +1273,7 @@ async function loginAndPersistSession({
           if (retryPending) {
             const sanitizedCause = new Error(evidence);
             sanitizedCause.name = 'SessionCancellationError';
-            throw new SessionCaptureError(
+            retryCleanupError = new SessionCaptureError(
               `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${SESSION_CAPTURE_LOGIN_ATTEMPTS} capture attempts: browser context cleanup failed before retry: ${evidence}`,
               userIdentifier,
               {
@@ -1300,9 +1286,12 @@ async function loginAndPersistSession({
             );
           }
         }
-        if (retryPending) {
-          await waitForRetry();
-        }
+      }
+      if (retryCleanupError) {
+        throw retryCleanupError;
+      }
+      if (retryPending) {
+        await waitForRetry();
       }
     }
   } finally {
@@ -1350,6 +1339,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
   const lockfileApi = deps.lockfile ?? lockfile;
   const force = deps.force ?? false;
+  const expectedStaleSession = deps.expectedStaleSession;
   const now = deps.now ?? Date.now;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
   const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
@@ -1402,7 +1392,6 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 
       const lockStartedAt = now();
       release = await acquireSessionLock({
-        fsApi,
         lockfileApi,
         lockFilePath,
         userIdentifier: identity.userIdentifier,
@@ -1452,6 +1441,44 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           identity.userIdentifier,
           { sessionPath }
         );
+      }
+
+      if (expectedStaleSession) {
+        if (path.resolve(expectedStaleSession.storageFile) !== path.resolve(sessionPath)) {
+          throw new SessionCaptureError(
+            `Rejected session path does not match resolved identity for ${identity.userIdentifier}`,
+            identity.userIdentifier,
+            { sessionPath }
+          );
+        }
+
+        if (!expectedStaleSession.storageStateFingerprint) {
+          throw new SessionCaptureError(
+            `Rejected session fingerprint is unavailable for ${identity.userIdentifier}`,
+            identity.userIdentifier,
+            { sessionPath }
+          );
+        }
+
+        const currentFingerprint = readStorageStateFingerprint(fsApi, sessionPath);
+        if (currentFingerprint && currentFingerprint !== expectedStaleSession.storageStateFingerprint) {
+          logger.info('Reusing session refreshed by another worker after server-side rejection', {
+            userIdentifier: identity.userIdentifier,
+            email: identity.email,
+            sessionPath,
+            operation: 'session-refresh',
+          });
+          continue;
+        }
+
+        if (currentFingerprint === expectedStaleSession.storageStateFingerprint) {
+          fsApi.unlinkSync(sessionPath);
+          logger.info('Deleted server-rejected session under identity lock', {
+            userIdentifier: identity.userIdentifier,
+            sessionPath,
+            operation: 'session-refresh',
+          });
+        }
       }
 
       // Recheck freshness after acquiring lock (another worker may have logged in)
@@ -1515,6 +1542,7 @@ export const __test__ = {
   sessionCaptureLockWaitMs: SESSION_CAPTURE_LOCK_WAIT_MS,
   sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
   sessionCaptureLockTakeoverBudgetMs: SESSION_CAPTURE_LOCK_TAKEOVER_BUDGET_MS,
+  sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
   sessionCaptureBrowserLaunchBudgetMs: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,
   sessionCaptureTargetBudgetMs: SESSION_CAPTURE_TARGET_BUDGET_MS,
@@ -1525,6 +1553,8 @@ export const __test__ = {
   withOperationTimeout,
   applySessionCookiesFromPoolWith,
   resolveSessionMaxAgeMs,
+  storageStateFingerprint,
+  readStorageStateFingerprint,
   hasTargetCompatibleAuthCookies,
   resolveTargetHost,
   acquireSessionLock,

@@ -72,6 +72,14 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
 }
 
 def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    def reportPath = "${reportDir}/${reportFile}"
+    if (fileExists(reportPath)) {
+        echo "[playwright-report] Reusing generated report at ${reportPath}"
+        return
+    }
+    if (!fileExists('scripts/ensure-odhin-report.js')) {
+        error("Cannot create fallback report for ${suiteName}: scripts/ensure-odhin-report.js is missing from the workspace")
+    }
     withEnv([
         "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
         "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
@@ -275,21 +283,27 @@ def runPlaywrightIntegrationProfileMatrix = {
             }
             failures << "${runConfig.displayName}: ${e.getMessage()}"
         } finally {
-            echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
-            ensureHtmlReportForPublishing(
-              runConfig.reportDir,
-              playwrightIntegrationReportFile,
-              "Playwright Integration Tests"
-            )
-            publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "${runConfig.reportDir}/",
-              reportFiles          : playwrightIntegrationReportFile,
-              reportName           : "Playwright Integration Tests"
-            ])
-            echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
+            try {
+                echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
+                ensureHtmlReportForPublishing(
+                  runConfig.reportDir,
+                  playwrightIntegrationReportFile,
+                  "Playwright Integration Tests"
+                )
+                publishHTML([
+                  allowMissing         : true,
+                  alwaysLinkToLastBuild: true,
+                  keepAll              : true,
+                  reportDir            : "${runConfig.reportDir}/",
+                  reportFiles          : playwrightIntegrationReportFile,
+                  reportName           : "Playwright Integration Tests"
+                ])
+                echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
+            } catch (Exception publishException) {
+                def publishFailure = "${runConfig.displayName} report publication: ${publishException.getMessage()}"
+                failures << publishFailure
+                echo "[playwright-integration] ${publishFailure}"
+            }
         }
     }
     if (failures) {

@@ -786,20 +786,13 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 ### Unified Storage Location
 
-```
-.sessions/
-├── xui_auto_test_user_solicitor@mailinator.com.storage.json   # E2E browser session
-├── api-aat-solicitor.storage.json                              # API session (same user)
-├── employment_service@mailinator.com.storage.json              # E2E browser session
-├── api-aat-caseOfficer_r1.storage.json                         # API session
-└── *.lock                                                       # Coordination lock files
-```
+All suites use `.sessions/`; the [file naming convention](#file-naming-convention) keeps browser and API state separate.
 
 **Why shared storage matters:**
 
 - API and E2E tests often use the same underlying user credentials, but they need different storage-state files.
 - With one directory and clear prefixes, stale files and lock files are easy to inspect during triage:
-  - E2E sessions: `{email}.storage.json`
+  - E2E/integration sessions: `{sanitised-email}-{sha256-12}.storage.json`, or `{normalised-session-key}.storage.json` when an explicit session key is provided
   - API sessions: `api-{env}-{role}.storage.json`
 - Lock files coordinate workers that request the same E2E session key or the same API role.
 - API and E2E do not share a single lock file and do not reuse one another's storage-state file.
@@ -870,12 +863,13 @@ test.describe('My Test Suite', () => {
 
 ### File Naming Convention
 
-| Test Type      | User Role      | File Pattern                    | Example                                                    |
-| -------------- | -------------- | ------------------------------- | ---------------------------------------------------------- |
-| **E2E**        | Any            | `{email}.storage.json`          | `xui_auto_test_user_solicitor@mailinator.com.storage.json` |
-| **API**        | solicitor      | `api-{env}-{role}.storage.json` | `api-aat-solicitor.storage.json`                           |
-| **API**        | caseOfficer_r1 | `api-{env}-{role}.storage.json` | `api-aat-caseOfficer_r1.storage.json`                      |
-| **Lock files** | Any            | `{filename}.lock`               | `xui_auto_test_user_solicitor@mailinator.com.lock`         |
+| Test Type      | User Role      | File Pattern                                 | Example                                                                |
+| -------------- | -------------- | -------------------------------------------- | ---------------------------------------------------------------------- |
+| **E2E**        | Any            | `{sanitised-email}-{sha256-12}.storage.json` | `xui_auto_test_user_solicitor-mailinator.com-<sha256-12>.storage.json` |
+| **E2E**        | Explicit key   | `{normalised-session-key}.storage.json`      | `dynamic-solicitor-user-123.storage.json`                              |
+| **API**        | solicitor      | `api-{env}-{role}.storage.json`              | `api-aat-solicitor.storage.json`                                       |
+| **API**        | caseOfficer_r1 | `api-{env}-{role}.storage.json`              | `api-aat-caseOfficer_r1.storage.json`                                  |
+| **Lock files** | Any            | `{matching-storage-key}.lock`                | `xui_auto_test_user_solicitor-mailinator.com-<sha256-12>.lock`         |
 
 ### Parallel Suite Storage in CI
 
@@ -883,8 +877,8 @@ When API, E2E, and integration suites run in parallel, they write into the same 
 
 ```
 .sessions/
-  xui_auto_test_user_solicitor@mailinator.com.storage.json
-  xui_auto_test_user_solicitor@mailinator.com.lock
+  xui_auto_test_user_solicitor-mailinator.com-<sha256-12>.storage.json
+  xui_auto_test_user_solicitor-mailinator.com-<sha256-12>.lock
   api-aat-solicitor.storage.json
   api-aat-solicitor.lock
 ```
@@ -963,56 +957,26 @@ npx playwright test --project=node-api  # API tests
 
 ### Session Storage
 
-Sessions are stored in `.sessions/` directory with filesystem-based locking:
-
-```
-.sessions/
-  ├── xui_auto_test_user_solicitor@mailinator.com.storage.json    # E2E session
-  ├── xui_auto_test_user_solicitor@mailinator.com.lock            # E2E lock file
-  ├── api-aat-solicitor.storage.json                              # API session (same user!)
-  ├── api-aat-solicitor.lock                                       # API lock file
-  ├── employment_service@mailinator.com.storage.json              # E2E session
-  ├── employment_service@mailinator.com.lock                       # E2E lock file
-  ├── api-aat-caseOfficer_r1.storage.json                         # API session
-  └── api-aat-caseOfficer_r1.lock                                  # API lock file
-```
+Sessions are stored in `.sessions/` with filesystem-based locking. See the [file naming convention](#file-naming-convention) for the authoritative storage and lock patterns.
 
 **Lock file behavior:**
 
 - Created when a worker/test suite attempts to log in
-- Held during login process (2-5 seconds)
+- Held for the bounded browser launch, login/retry, persistence, and cleanup lifecycle
 - Released in `finally` block to prevent deadlocks
-- Other workers poll for up to 90 seconds while checking whether another worker has already refreshed the target session
+- Other E2E/integration workers poll once per second for up to 145 seconds while checking whether another worker has refreshed the target session
 - After lock released, waiting workers recheck session freshness
 - Waiting workers can skip lock acquisition entirely if the target session becomes fresh while they are polling
 - Waiting workers skip login if session became fresh while waiting (prevents duplicate recapture storms)
-- Stale threshold: 60 seconds (if lock held longer, considered abandoned)
+- Each E2E/integration acquisition attempt uses `retries: 0`; the outer polling loop owns the 145-second wait budget
+- The E2E/integration `proper-lockfile` stale threshold is 10 seconds. A healthy owner renews the lock mtime; stale-lock takeover is delegated to `proper-lockfile`
+- API storage capture keeps its separate lock configuration in `api/utils/auth.ts`
 
 ### Implementation Details
 
 #### E2E Session Capture ([common/sessionCapture.ts](common/sessionCapture.ts))
 
-```typescript
-// Filesystem lock coordinates across all workers
-const lockFilePath = path.join(sessionsDir, `${email}.lock`);
-const release = await lockfile.lock(lockFilePath, {
-  retries: { retries: 30, minTimeout: 1000, maxTimeout: 5000 },
-  stale: 60000,
-});
-
-try {
-  // Recheck freshness after acquiring lock
-  if (isSessionFresh(sessionPath)) {
-    logger.info('Another worker logged in, reusing session');
-    return;
-  }
-
-  // Login and save session
-  await browser.newContext().storageState({ path: sessionPath });
-} finally {
-  await release(); // Always release lock
-}
-```
+`common/sessionCapture.ts` is the source of truth for browser-session naming, freshness, locking, retry, cooldown, and persistence behavior.
 
 #### API Session Capture ([api/utils/auth.ts](api/utils/auth.ts))
 
@@ -1020,11 +984,11 @@ try {
 // Same approach: filesystem lock + freshness check
 const lockFilePath = path.join(storageRoot, `api-${cacheKey}.lock`);
 const release = await lockfile.lock(lockFilePath, {
-  /* same config */
+  /* API-specific lock configuration; see api/utils/auth.ts. */
 });
 
 try {
-  // Double-check freshness (E2E may have logged in this user)
+  // Double-check freshness (another API worker or test suite may have refreshed this role)
   if (isStorageStateFresh(storagePath)) {
     return storagePath; // Reuse existing session
   }

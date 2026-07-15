@@ -29,16 +29,11 @@ function getUpgradeLogContext(req: http.IncomingMessage): string {
     forwardedFor: getRequestHeader(req, 'x-forwarded-for') || '<missing>',
     userAgent: getRequestHeader(req, 'user-agent') || '<missing>',
     origin: getRequestHeader(req, 'origin') || '<missing>',
-    websocketKeyFingerprint: getWebSocketKeyFingerprint(req) || '<missing>'
+    websocketKeyFingerprint: getWebSocketKeyFingerprint(req) || '<missing>',
   });
 }
 
-function getSocketHangupReason(
-  socket: net.Socket,
-  hadError: boolean,
-  endedByPeer: boolean,
-  lastErrorMessage?: string
-): string {
+function getSocketHangupReason(socket: net.Socket, hadError: boolean, endedByPeer: boolean, lastErrorMessage?: string): string {
   if (lastErrorMessage) {
     return `socket-error:${lastErrorMessage}`;
   }
@@ -84,8 +79,8 @@ export function attachSocketProxy(server: http.Server): void {
     socket.on('close', (hadError: boolean) => {
       const hangupReason = getSocketHangupReason(socket, hadError, endedByPeer, lastSocketErrorMessage);
       logger.info(
-        `WebSocket upgrade socket closed: hadError=${hadError} hangupReason=${hangupReason} `
-        + `durationMs=${Date.now() - startedAt} context=${context}`
+        `WebSocket upgrade socket closed: hadError=${hadError} hangupReason=${hangupReason} ` +
+          `durationMs=${Date.now() - startedAt} context=${context}`
       );
     });
 

@@ -185,6 +185,34 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(gotoCalls).toBe(2);
   });
 
+  test('redacts OAuth query metadata from terminal app and login navigation errors', async () => {
+    const page = {
+      goto: async () => {
+        throw new Error(
+          'page.goto: net::ERR_CERT_AUTHORITY_INVALID at https://idam.example.test/callback?state=secret&nonce=secret&code=secret'
+        );
+      },
+      url: () => 'https://idam.example.test/callback?state=secret&nonce=secret&code=secret',
+    } as unknown as Page;
+
+    for (const navigate of [
+      () => sessionCaptureTest.gotoAppTarget(page, 'STAFF_ADMIN-1', 'https://idam.example.test/callback?state=secret'),
+      () => sessionCaptureTest.gotoLoginTarget(page, 'STAFF_ADMIN-1', 'https://idam.example.test/login?state=secret'),
+    ]) {
+      let capturedError: Error | undefined;
+      try {
+        await navigate();
+      } catch (error) {
+        capturedError = error as Error;
+      }
+
+      expect(capturedError?.message).toContain('https://idam.example.test/callback');
+      expect(capturedError?.message).not.toContain('state=secret');
+      expect(capturedError?.message).not.toContain('nonce=secret');
+      expect(capturedError?.message).not.toContain('code=secret');
+    }
+  });
+
   test('does not retry persistence failures even when their cause looks transient', () => {
     const error = new Error('Session persistence failed: net::ERR_CONNECTION_RESET');
     error.name = 'SessionPersistenceError';

@@ -5,7 +5,7 @@ import path from 'node:path';
 import { expect, test } from '@playwright/test';
 
 import { __test__ as sessionStorageTest } from '../../E2E/utils/session-storage.utils.js';
-import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
+import { __test__ as sessionCaptureTest, loadSessionCookies, refreshRejectedSession } from '../../common/sessionCapture.js';
 import { withOrderedSessionFallback } from '../../common/orderedSessionFallback.js';
 import { resolveSessionStorageKey, type SessionIdentity } from '../../common/sessionIdentity.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
@@ -191,6 +191,36 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('public rejected-session refresh preserves a newer session', async () => {
+    const tempDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'session-public-refresh-unit-')));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_PUBLIC_REFRESH_USER',
+      email: 'public-refresh@example.test',
+      password: 'not-used',
+      sessionKey: 'unit-public-refresh-user',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
+    const staleContents = JSON.stringify({ cookies: [{ name: 'stale', value: 'stale' }] });
+    const refreshedContents = JSON.stringify({ cookies: [{ name: 'fresh', value: 'fresh' }] });
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(sessionPath, staleContents);
+      process.chdir(tempDir);
+      const rejectedSession = loadSessionCookies(identity);
+      fs.writeFileSync(sessionPath, refreshedContents);
+
+      await refreshRejectedSession(identity, rejectedSession);
+
+      expect(fs.readFileSync(sessionPath, 'utf8')).toBe(refreshedContents);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('deletes the rejected session under the identity lock before recapturing it', async () => {
     const tempDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'session-locked-delete-unit-')));
     const previousCwd = process.cwd();
@@ -314,7 +344,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         fakeSessionPage() as never,
         'DYNAMIC_SOLICITOR',
         'dynamic@example.test',
-        '/login',
+        '/login?state=secret',
         1,
         {
           acceptCookies: async () => undefined,
@@ -330,15 +360,22 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     expect(infoCalls).toEqual([
       expect.objectContaining({
         userIdentifier: 'DYNAMIC_SOLICITOR',
+        loginTarget: '/login',
         marker: 'auth-cookies',
       }),
     ]);
   });
 
   test('confirmAuthenticatedLogin rejects when login establishes neither shell nor auth cookies', async () => {
-    await expect(
-      sessionCaptureTest.confirmAuthenticatedLogin(
-        fakeSessionPage() as never,
+    const page = {
+      ...fakeSessionPage(),
+      url: () => 'https://idam.example.test/login?state=secret&nonce=secret',
+    };
+    let capturedError: Error | undefined;
+
+    try {
+      await sessionCaptureTest.confirmAuthenticatedLogin(
+        page as never,
         'DYNAMIC_SOLICITOR',
         'dynamic@example.test',
         '/login',
@@ -349,8 +386,15 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
           waitForAuthCookies: async () => false,
           info: () => undefined,
         }
-      )
-    ).rejects.toThrow(/did not establish authenticated session/i);
+      );
+    } catch (error) {
+      capturedError = error as Error;
+    }
+
+    expect(capturedError?.message).toContain('did not establish authenticated session');
+    expect(capturedError?.message).toContain('url=https://idam.example.test/login');
+    expect(capturedError?.message).not.toContain('state=secret');
+    expect(capturedError?.message).not.toContain('nonce=secret');
   });
 
   test('confirmAuthenticatedLogin includes accessible IDAM rejection evidence', async () => {
@@ -399,15 +443,21 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       isVisible: async () => false,
     };
     const page = {
-      url: () => 'https://manage-case.aat.platform.hmcts.net/service-down',
+      url: () => 'https://manage-case.aat.platform.hmcts.net/service-down?code=secret&state=secret',
       locator: (selector: string) => locatorFor(selector),
       getByRole: () => hiddenRoleLocator,
       waitForTimeout: async () => undefined,
     };
 
-    await expect(sessionCaptureTest.waitForAuthenticatedShell(page as never, 'SOLICITOR', 'exui-header', 1)).rejects.toThrow(
-      /Service down page detected while waiting for app shell/
-    );
+    let capturedError: SessionCaptureError | undefined;
+    try {
+      await sessionCaptureTest.waitForAuthenticatedShell(page as never, 'SOLICITOR', 'exui-header', 1);
+    } catch (error) {
+      capturedError = error as SessionCaptureError;
+    }
+
+    expect(capturedError?.message).toContain('Service down page detected while waiting for app shell');
+    expect(capturedError?.context.currentUrl).toBe('https://manage-case.aat.platform.hmcts.net/service-down');
   });
 
   test('strict storage reuse refreshes when the cached state is no longer authenticated server-side', async () => {
@@ -553,20 +603,19 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
     try {
       fs.mkdirSync(sessionsDir, { recursive: true });
-      fs.writeFileSync(
-        sessionPath,
-        JSON.stringify({
-          cookies: [
-            { name: 'Idam.Session', value: 'session', expires: Math.floor(Date.now() / 1_000) + 600 },
-            { name: '__auth__', value: 'auth', expires: Math.floor(Date.now() / 1_000) + 600 },
-          ],
-        })
-      );
+      const sessionContents = JSON.stringify({
+        cookies: [
+          { name: 'Idam.Session', value: 'session', expires: Math.floor(Date.now() / 1_000) + 600 },
+          { name: '__auth__', value: 'auth', expires: Math.floor(Date.now() / 1_000) + 600 },
+        ],
+      });
+      fs.writeFileSync(sessionPath, sessionContents);
       fs.writeFileSync(
         failurePath,
         JSON.stringify({
           timestamp: Date.now(),
           message: 'Login failed for BOOKING_UI-FT-ON-4',
+          storageStateFingerprint: sessionCaptureTest.storageStateFingerprint('rejected-session'),
         })
       );
 
@@ -589,12 +638,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             freshnessMaxAgeMs = maxAgeMs;
             return true;
           },
-          lockfile: {
-            lock: async () => {
-              lockCalled = true;
-              throw new Error('should not acquire lock when a fresh session exists');
-            },
-          } as never,
+          lockfile: fakeLockfile(() => {
+            lockCalled = true;
+          }),
           resolveSessionIdentity: () => ({
             userIdentifier: 'BOOKING_UI-FT-ON-4',
             email: 'booking-ui-user@example.test',
@@ -603,9 +649,188 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         })
       ).resolves.toBeUndefined();
 
-      expect(lockCalled).toBe(false);
+      expect(lockCalled).toBe(true);
       expect(freshnessMaxAgeMs).toBe(1234);
       expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('session capture does not clear a newer failure marker while acquiring the identity lock', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-marker-race-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_MARKER_RACE_USER',
+      email: 'marker-race@example.test',
+      password: 'not-used',
+      sessionKey: 'unit-marker-race-user',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
+    const failurePath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.capture-failed.json`);
+    const sessionContents = JSON.stringify({
+      cookies: [
+        { name: 'Idam.Session', value: 'session', expires: Math.floor(Date.now() / 1_000) + 600 },
+        { name: '__auth__', value: 'auth', expires: Math.floor(Date.now() / 1_000) + 600 },
+      ],
+    });
+    const currentFingerprint = sessionCaptureTest.storageStateFingerprint(sessionContents);
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(sessionPath, sessionContents);
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'older failure for replaced state',
+          storageStateFingerprint: sessionCaptureTest.storageStateFingerprint('replaced-session'),
+        })
+      );
+      process.chdir(tempDir);
+
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => true,
+          lockfile: fakeLockfile(() => {
+            fs.writeFileSync(
+              failurePath,
+              JSON.stringify({
+                timestamp: Date.now(),
+                message: 'newer failure for current state',
+                storageStateFingerprint: currentFingerprint,
+              })
+            );
+          }),
+          loginAndPersistSession: async () => {
+            throw new Error('should not log in during cooldown');
+          },
+          resolveSessionIdentity: () => identity,
+        })
+      ).rejects.toThrow('newer failure for current state');
+
+      const retainedMarker = JSON.parse(fs.readFileSync(failurePath, 'utf8'));
+      expect(retainedMarker.message).toBe('newer failure for current state');
+      expect(retainedMarker.storageStateFingerprint).toBe(currentFingerprint);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('session capture retains cooldown when the fresh session matches the session present at failure', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-causal-cooldown-unit-'));
+    const previousCwd = process.cwd();
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'BOOKING_UI-FT-ON-4',
+      email: 'booking-ui-user@example.test',
+      password: 'not-used',
+    });
+    const sessionPath = path.join(sessionsDir, `${storageKey}.storage.json`);
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
+    const sessionContents = JSON.stringify({
+      cookies: [
+        { name: 'Idam.Session', value: 'session', expires: Math.floor(Date.now() / 1_000) + 600 },
+        { name: '__auth__', value: 'auth', expires: Math.floor(Date.now() / 1_000) + 600 },
+      ],
+    });
+    let lockCalled = false;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(sessionPath, sessionContents);
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'Login failed for BOOKING_UI-FT-ON-4',
+          storageStateFingerprint: sessionCaptureTest.storageStateFingerprint(sessionContents),
+        })
+      );
+      process.chdir(tempDir);
+
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['BOOKING_UI-FT-ON-4'], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.aat.platform.hmcts.net' } } as never,
+          env: {},
+          isSessionFresh: () => true,
+          lockfile: {
+            lock: async () => {
+              lockCalled = true;
+              throw new Error('should not acquire lock during cooldown');
+            },
+          } as never,
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'BOOKING_UI-FT-ON-4',
+            email: 'booking-ui-user@example.test',
+            password: 'not-used',
+          }),
+        })
+      ).rejects.toThrow(/Recent session capture failed for BOOKING_UI-FT-ON-4/);
+
+      expect(lockCalled).toBe(false);
+      expect(fs.existsSync(failurePath)).toBe(true);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('session capture retains same-state cooldown created while waiting for the identity lock', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-after-lock-causal-cooldown-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_AFTER_LOCK_CAUSAL_USER',
+      email: 'after-lock-causal@example.test',
+      password: 'not-used',
+      sessionKey: 'unit-after-lock-causal-user',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
+    const failurePath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.capture-failed.json`);
+    const sessionContents = JSON.stringify({
+      cookies: [
+        { name: 'Idam.Session', value: 'session', expires: Math.floor(Date.now() / 1_000) + 600 },
+        { name: '__auth__', value: 'auth', expires: Math.floor(Date.now() / 1_000) + 600 },
+      ],
+    });
+    let loginCalled = false;
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => fs.existsSync(sessionPath),
+          lockfile: fakeLockfile(() => {
+            fs.writeFileSync(sessionPath, sessionContents);
+            fs.writeFileSync(
+              failurePath,
+              JSON.stringify({
+                timestamp: Date.now(),
+                message: 'another worker failed capture',
+                storageStateFingerprint: sessionCaptureTest.storageStateFingerprint(sessionContents),
+              })
+            );
+          }),
+          loginAndPersistSession: async () => {
+            loginCalled = true;
+          },
+          resolveSessionIdentity: () => identity,
+        })
+      ).rejects.toThrow('Recent session capture failed for UNIT_AFTER_LOCK_CAUSAL_USER');
+
+      expect(loginCalled).toBe(false);
+      expect(fs.existsSync(failurePath)).toBe(true);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -686,11 +911,15 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       email: 'judge@example.test',
       password: 'not-used',
     });
+    const sessionPath = path.join(tempDir, '.sessions', `${storageKey}.storage.json`);
     const failurePath = path.join(tempDir, '.sessions', `${storageKey}.capture-failed.json`);
+    const rejectedContents = JSON.stringify({ cookies: [{ name: 'rejected', value: 'rejected' }] });
     let exhaustedAttempts = false;
 
     try {
       process.chdir(tempDir);
+      fs.mkdirSync(path.dirname(sessionPath), { recursive: true });
+      fs.writeFileSync(sessionPath, rejectedContents);
       await expect(
         sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
           chromiumLauncher: {} as never,
@@ -712,7 +941,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       ).rejects.toThrow('both transient login attempts failed');
 
       expect(exhaustedAttempts).toBe(true);
-      expect(JSON.parse(fs.readFileSync(failurePath, 'utf8')).message).toBe('both transient login attempts failed');
+      const marker = JSON.parse(fs.readFileSync(failurePath, 'utf8'));
+      expect(marker.message).toBe('both transient login attempts failed');
+      expect(marker.storageStateFingerprint).toBe(sessionCaptureTest.storageStateFingerprint(rejectedContents));
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });

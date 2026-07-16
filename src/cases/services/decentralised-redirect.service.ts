@@ -6,6 +6,7 @@ import {
   BuildDecentralisedEventUrlInput,
   getExpectedSubFromUserDetails,
 } from '../utils/decentralised-redirect.util';
+import { UserInfo } from '../../app/models/user-details.model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,5 +35,18 @@ export class DecentralisedRedirectService {
 
     this.window.location.assign(url);
     return true;
+  }
+
+  public addUserInfo(serviceUrl: string, userInfo: UserInfo): string {
+    if (serviceUrl) {
+      const userId = userInfo.id || userInfo.uid;
+
+      if (userId) {
+        const newUrl = new URL(serviceUrl);
+        newUrl.searchParams.set('expected_sub', userId);
+        return newUrl.toString();
+      }
+    }
+    return serviceUrl;
   }
 }

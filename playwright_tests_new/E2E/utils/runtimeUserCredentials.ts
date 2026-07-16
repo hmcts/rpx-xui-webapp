@@ -184,7 +184,7 @@ const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.Pr
   },
   FPL_GLOBAL_SEARCH: [],
   USER_WITH_FLAGS: [],
-  IAC_JUDGE_WA_R1: ['IAC_CASEOFFICER_R1', 'IAC_CASEOFFICER_R2'],
+  IAC_JUDGE_WA_R1: [],
   IAC_CASEOFFICER_R2: ['IAC_CASEOFFICER_R1'],
   IAC_CASEOFFICER_R1: [],
 };

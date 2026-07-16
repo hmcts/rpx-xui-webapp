@@ -1,4 +1,4 @@
-import { setupBookableBookingUiRoutesForTest, warmBookableBookingUiSessionForWorker } from '../../helpers';
+import { setupBookableBookingUiRoutesForTest } from '../../helpers';
 import { expect, test } from '../../../E2E/fixtures';
 import {
   type CreateBookingRequest,
@@ -15,14 +15,6 @@ const createBookingErrorCases = [
   { status: 400, expectedUrlPattern: /\/booking-service-down$/ },
   { status: 500, expectedUrlPattern: /\/service-down$/ },
 ];
-const BOOKING_UI_SESSION_BOOTSTRAP_TIMEOUT_MS =
-  Number.parseInt(process.env.PW_BOOKING_UI_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 180_000;
-
-test.beforeAll(async ({}, testInfo) => {
-  testInfo.setTimeout(BOOKING_UI_SESSION_BOOTSTRAP_TIMEOUT_MS);
-  await warmBookableBookingUiSessionForWorker(testInfo);
-});
-
 createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
   test.describe(
     `Booking UI create booking error ${status} with lazy pooled session users`,

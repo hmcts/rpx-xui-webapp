@@ -5,12 +5,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const DEFAULT_REPORT_FILE = 'load-profile.html';
+const DEFAULT_WAIT_MS = 0;
+const WAIT_POLL_INTERVAL_MS = 250;
 
 function parseArgs(argv) {
   const options = {
     reportDir: process.env.PW_LOAD_PROFILE_REPORT_DIR || '',
     reportFile: process.env.PW_LOAD_PROFILE_REPORT_FILE || DEFAULT_REPORT_FILE,
     reportName: process.env.PW_LOAD_PROFILE_REPORT_NAME || 'Playwright System Load',
+    waitMs: parseWaitMs(process.env.PW_LOAD_PROFILE_WAIT_MS || DEFAULT_WAIT_MS),
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -25,10 +28,36 @@ function parseArgs(argv) {
     } else if (arg === '--report-name' && next) {
       options.reportName = next;
       index += 1;
+    } else if (arg === '--wait-ms' && next) {
+      options.waitMs = parseWaitMs(next);
+      index += 1;
     }
   }
 
   return options;
+}
+
+function parseWaitMs(value) {
+  const waitMs = Number(value);
+  if (!Number.isFinite(waitMs) || waitMs < 0) {
+    throw new Error(`Invalid wait duration: ${value}`);
+  }
+  return waitMs;
+}
+
+async function ensureLoadProfileReportAfterWait(options) {
+  if (!options.reportDir) {
+    throw new Error('Missing report directory. Pass --report-dir or set PW_LOAD_PROFILE_REPORT_DIR.');
+  }
+
+  const reportPath = path.join(options.reportDir, options.reportFile || DEFAULT_REPORT_FILE);
+  const deadline = Date.now() + (options.waitMs || DEFAULT_WAIT_MS);
+
+  while (!fs.existsSync(reportPath) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, Math.min(WAIT_POLL_INTERVAL_MS, deadline - Date.now())));
+  }
+
+  return ensureLoadProfileReport(options);
 }
 
 function ensureLoadProfileReport(options) {
@@ -42,15 +71,25 @@ function ensureLoadProfileReport(options) {
   }
 
   fs.mkdirSync(options.reportDir, { recursive: true });
-  fs.writeFileSync(reportPath, buildFallbackReportHtml(options), 'utf8');
-  return { created: true, reportPath };
+  try {
+    fs.writeFileSync(reportPath, buildFallbackReportHtml(options), { encoding: 'utf8', flag: 'wx' });
+    return { created: true, reportPath };
+  } catch (error) {
+    if (error.code === 'EEXIST') {
+      return { created: false, reportPath };
+    }
+    throw error;
+  }
 }
 
 function buildFallbackReportHtml(options) {
   const generatedAt = new Date().toISOString();
   const reportDir = options.reportDir || '';
   const reportFiles = listFiles(reportDir);
-  const monitorLog = readFile(path.join(reportDir, 'monitor.log'));
+  const monitorLogPath = path.join(reportDir, 'monitor.log');
+  const monitorLog = readFile(monitorLogPath);
+  const monitorLogEvidence =
+    monitorLog || (fs.existsSync(monitorLogPath) ? 'monitor.log was empty.' : 'No monitor.log was present.');
 
   return `<!doctype html>
 <html lang="en">
@@ -81,7 +120,7 @@ function buildFallbackReportHtml(options) {
     <h2>Files present in report directory</h2>
     <pre>${escapeHtml(reportFiles.length ? reportFiles.join('\n') : 'No files were present.')}</pre>
     <h2>Monitor log</h2>
-    <pre>${escapeHtml(monitorLog || 'No monitor.log was present.')}</pre>
+    <pre>${escapeHtml(monitorLogEvidence)}</pre>
   </body>
 </html>
 `;
@@ -115,21 +154,24 @@ function escapeHtml(value) {
 }
 
 if (require.main === module) {
-  try {
-    const result = ensureLoadProfileReport(parseArgs(process.argv.slice(2)));
-    if (result.created) {
-      console.warn(`ensure-load-profile-report: created fallback report at ${result.reportPath}`);
-    } else {
-      console.log(`ensure-load-profile-report: report exists at ${result.reportPath}`);
+  (async () => {
+    try {
+      const result = await ensureLoadProfileReportAfterWait(parseArgs(process.argv.slice(2)));
+      if (result.created) {
+        console.warn(`ensure-load-profile-report: created fallback report at ${result.reportPath}`);
+      } else {
+        console.log(`ensure-load-profile-report: report exists at ${result.reportPath}`);
+      }
+    } catch (error) {
+      console.error(`ensure-load-profile-report: ${error.message}`);
+      process.exitCode = 1;
     }
-  } catch (error) {
-    console.error(`ensure-load-profile-report: ${error.message}`);
-    process.exit(1);
-  }
+  })();
 }
 
 module.exports = {
   buildFallbackReportHtml,
   ensureLoadProfileReport,
+  ensureLoadProfileReportAfterWait,
   parseArgs,
 };

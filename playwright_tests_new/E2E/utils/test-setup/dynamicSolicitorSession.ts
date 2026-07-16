@@ -6,7 +6,7 @@ import type { ProfessionalUserInfo, ProvisionedProfessionalUser } from '../profe
 import type { ProfessionalUserUtils } from '../professional-user.utils';
 import { type SessionIdentity } from '../../../common/sessionIdentity.js';
 import config from '../config.utils';
-import { ensureSessionCookies, sessionCapture } from '../../../common/sessionCapture';
+import { ensureSessionCookies, refreshRejectedSession, type LoadedSession } from '../../../common/sessionCapture';
 import { ensureUiStorageStateForIdentity } from '../session-storage.utils.js';
 import { resolveManageOrgApiPath } from '../professional-user/runtime.js';
 import { DynamicProvisionTimeoutError, DynamicProvisioningError, provisionUserWithRetries } from './dynamicProvisioningFlow.js';
@@ -74,8 +74,11 @@ type WaitForExuiUserPropagationDeps = {
   resolvePollIntervalMs: () => number;
   resolveBaseUrl: () => string;
   ensureSessionCookies: typeof ensureSessionCookies;
-  recaptureSession: (sessionIdentity: SessionIdentity) => Promise<void>;
-  createApiContext: (params: { baseURL: string; storageState: string }) => Promise<ExuiApiContext>;
+  recaptureSession: (sessionIdentity: SessionIdentity, rejectedSession: LoadedSession) => Promise<void>;
+  createApiContext: (params: {
+    baseURL: string;
+    storageState: { cookies: LoadedSession['cookies']; origins: [] };
+  }) => Promise<ExuiApiContext>;
   attachAttempts: (
     testInfo: TestInfo,
     alias: DynamicExuiUserAlias,
@@ -473,7 +476,7 @@ const DEFAULT_WAIT_FOR_EXUI_PROPAGATION_DEPS: WaitForExuiUserPropagationDeps = {
   resolvePollIntervalMs: resolveDynamicSolicitorExuiReadyPollIntervalMs,
   resolveBaseUrl: () => config.urls.baseURL || config.urls.exuiDefaultUrl || 'https://manage-case.aat.platform.hmcts.net',
   ensureSessionCookies,
-  recaptureSession: async (sessionIdentity) => sessionCapture([sessionIdentity], { force: true }),
+  recaptureSession: refreshRejectedSession,
   createApiContext: ({ baseURL, storageState }) =>
     request.newContext({
       baseURL,
@@ -608,7 +611,7 @@ async function runReadinessCheck(
     startedAt: number;
   },
   deps: WaitForExuiUserPropagationDeps
-): Promise<DynamicExuiReadinessAttempt> {
+): Promise<{ readinessAttempt: DynamicExuiReadinessAttempt; loadedSession?: LoadedSession }> {
   const readinessAttempt: DynamicExuiReadinessAttempt = {
     attempt,
     elapsedMs: Date.now() - startedAt,
@@ -616,10 +619,14 @@ async function runReadinessCheck(
     expectedJurisdiction,
     jurisdictionAccesses: requiredAccesses,
   };
+  let loadedSession: LoadedSession | undefined;
   try {
-    const session = await deps.ensureSessionCookies(sessionIdentity);
-    readinessAttempt.authenticated = session.cookies.length > 0;
-    const apiContext = await deps.createApiContext({ baseURL: baseUrl, storageState: session.storageFile });
+    loadedSession = await deps.ensureSessionCookies(sessionIdentity);
+    readinessAttempt.authenticated = loadedSession.cookies.length > 0;
+    const apiContext = await deps.createApiContext({
+      baseURL: baseUrl,
+      storageState: { cookies: loadedSession.cookies, origins: [] },
+    });
     try {
       await runApiReadinessChecks(apiContext, readinessAttempt, requiredAccesses, expectedJurisdiction);
     } finally {
@@ -629,7 +636,7 @@ async function runReadinessCheck(
     readinessAttempt.authenticated = false;
     readinessAttempt.note = describeUnknownError(error);
   }
-  return readinessAttempt;
+  return { readinessAttempt, loadedSession };
 }
 
 async function waitForExuiUserPropagation(
@@ -660,7 +667,7 @@ async function waitForExuiUserPropagation(
   let attempt = 0;
   while (Date.now() < deadline) {
     attempt += 1;
-    const readinessAttempt = await runReadinessCheck(
+    const { readinessAttempt, loadedSession } = await runReadinessCheck(
       { sessionIdentity, baseUrl, expectedJurisdiction, requiredAccesses, attempt, startedAt },
       deps
     );
@@ -678,6 +685,9 @@ async function waitForExuiUserPropagation(
       return;
     }
     if (!hasForcedSessionRecapture && shouldForceSessionRecapture(readinessAttempt)) {
+      if (!loadedSession) {
+        throw new Error(`Cannot refresh rejected EXUI session for alias '${alias}': loaded session evidence is unavailable.`);
+      }
       hasForcedSessionRecapture = true;
       deps.info('Dynamic solicitor readiness forcing session recapture after unauthorized EXUI probe.', {
         alias,
@@ -686,7 +696,7 @@ async function waitForExuiUserPropagation(
         userDetailsStatus: readinessAttempt.userDetailsStatus,
         expectedJurisdiction,
       });
-      await deps.recaptureSession(sessionIdentity);
+      await deps.recaptureSession(sessionIdentity, loadedSession);
       continue;
     }
     await deps.sleep(Math.min(pollIntervalMs, Math.max(0, deadline - Date.now())));

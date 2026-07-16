@@ -31,12 +31,8 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
   test('falls back to the legacy hearing manager users when no pooled users are configured', () => {
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, {})).toEqual([]);
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_OFF_USER, {})).toEqual([]);
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 3 }, {})).toBe(
-      HEARING_MANAGER_CR84_ON_USER
-    );
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 3 }, {})).toBe(
-      HEARING_MANAGER_CR84_OFF_USER
-    );
+    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, undefined, {})).toBe(HEARING_MANAGER_CR84_ON_USER);
+    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_OFF_USER, undefined, {})).toBe(HEARING_MANAGER_CR84_OFF_USER);
   });
 
   test('returns only fully configured pooled users for the requested CR84 mode', () => {
@@ -52,40 +48,33 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_OFF_USER, env)).toEqual([]);
   });
 
-  test('selects configured CR84 ON pooled users by Playwright parallel index', () => {
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 0 }, configuredEnv)).toBe(
-      'HEARING_MANAGER_CR84_ON-1'
-    );
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 1 }, configuredEnv)).toBe(
-      'HEARING_MANAGER_CR84_ON-2'
-    );
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 4 }, configuredEnv)).toBe(
-      'HEARING_MANAGER_CR84_ON-1'
+  test('distributes configured CR84 ON users by parallel index', () => {
+    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 2 }, configuredEnv)).toBe(
+      'HEARING_MANAGER_CR84_ON-3'
     );
   });
 
-  test('selects configured CR84 OFF pooled users by Playwright worker env when no source is passed', () => {
+  test('uses the Playwright parallel index env when no source is provided', () => {
     expect(
       resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_OFF_USER, undefined, {
         ...configuredEnv,
-        TEST_PARALLEL_INDEX: '2',
+        TEST_PARALLEL_INDEX: '3',
       })
-    ).toBe('HEARING_MANAGER_CR84_OFF-3');
+    ).toBe('HEARING_MANAGER_CR84_OFF-4');
   });
 
   test('keeps an already pooled user identifier unchanged', () => {
-    expect(resolveHearingManagerUserIdentifier('HEARING_MANAGER_CR84_OFF-2', { parallelIndex: 3 }, configuredEnv)).toBe(
+    expect(resolveHearingManagerUserIdentifier('HEARING_MANAGER_CR84_OFF-2', undefined, configuredEnv)).toBe(
       'HEARING_MANAGER_CR84_OFF-2'
     );
   });
 
-  test('returns fallback session candidates when a pooled CR84 user is selected', () => {
+  test('returns fallback session candidates after the worker-selected CR84 user', () => {
     expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 3 }, configuredEnv)).toEqual([
       'HEARING_MANAGER_CR84_OFF-4',
       'HEARING_MANAGER_CR84_OFF-1',
       'HEARING_MANAGER_CR84_OFF-2',
       'HEARING_MANAGER_CR84_OFF-3',
-      HEARING_MANAGER_CR84_OFF_USER,
     ]);
   });
 });

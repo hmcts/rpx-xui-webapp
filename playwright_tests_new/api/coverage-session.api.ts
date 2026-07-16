@@ -8,7 +8,7 @@ import { UserUtils } from '../E2E/utils/user.utils.js';
 import type { IdamPage } from '@hmcts/playwright-common';
 import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
 import { resolveSessionStorageKey } from '../common/sessionIdentity.js';
-import type { Cookie } from 'playwright-core';
+import type { BrowserContext, Cookie } from 'playwright-core';
 import { withEnv } from './utils/testEnv';
 
 test.describe.configure({ mode: 'serial' });
@@ -50,7 +50,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         expect(creds.email).toContain('@');
         expect(creds.password).toBeTruthy();
         expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
-        expect(userUtils.getUserCredentials('IAC_Judge_WA_R1')).toEqual(creds);
+        expect(() => userUtils.getUserCredentials('IAC_Judge_WA_R1')).toThrow('credentials are missing');
       }
     );
   });
@@ -133,7 +133,13 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
 
           expect(isSessionFresh(storagePath)).toBe(false);
 
-          await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('a', 'b')] }), 'utf8');
+          await fsp.writeFile(
+            storagePath,
+            JSON.stringify({
+              cookies: [baseCookie('Idam.Session', 'session'), baseCookie('__auth__', 'auth')],
+            }),
+            'utf8'
+          );
           expect(isSessionFresh(storagePath, 60 * 1000)).toBe(true);
 
           const oldTime = Date.now() - 10 * 60 * 1000;
@@ -141,14 +147,19 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
           expect(isSessionFresh(storagePath, 60 * 1000)).toBe(false);
 
           const loaded = loadSessionCookies('IAC_CaseOfficer_R1');
-          expect(loaded.cookies.length).toBe(1);
+          expect(loaded.cookies.length).toBe(2);
 
           await fsp.writeFile(storagePath, JSON.stringify({ cookies: {} }), 'utf8');
-          const invalidCookies = loadSessionCookies('IAC_CaseOfficer_R1');
-          expect(invalidCookies.cookies).toHaveLength(0);
+          expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file corrupted');
+          expect(await fsp.readFile(storagePath, 'utf8')).toBe(JSON.stringify({ cookies: {} }));
+
+          await fsp.writeFile(storagePath, JSON.stringify({ origins: [] }), 'utf8');
+          expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file corrupted');
+          expect(await fsp.readFile(storagePath, 'utf8')).toBe(JSON.stringify({ origins: [] }));
 
           await fsp.writeFile(storagePath, '{bad-json', 'utf8');
           expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file corrupted');
+          expect(await fsp.readFile(storagePath, 'utf8')).toBe('{bad-json');
 
           await fsp.rm(storagePath, { force: true });
           expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Failed parsing storage file');
@@ -170,8 +181,18 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
 
     await fsp.writeFile(sessionPath, JSON.stringify({ cookies: aatCookies }), 'utf8');
 
-    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'http://localhost:3000' })).toBe(false);
-    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'https://manage-case.aat.platform.hmcts.net' })).toBe(true);
+    expect(
+      isSessionFresh(sessionPath, 60 * 1000, {
+        targetUrl: 'http://localhost:3000',
+        idamUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+      })
+    ).toBe(false);
+    expect(
+      isSessionFresh(sessionPath, 60 * 1000, {
+        targetUrl: 'https://manage-case.aat.platform.hmcts.net',
+        idamUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+      })
+    ).toBe(true);
 
     const localCookies = [
       { ...baseCookie('Idam.Session', 'local-session'), domain: 'localhost' },
@@ -179,7 +200,100 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     ];
 
     await fsp.writeFile(sessionPath, JSON.stringify({ cookies: localCookies }), 'utf8');
-    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'http://localhost:3000' })).toBe(true);
+    expect(
+      isSessionFresh(sessionPath, 60 * 1000, {
+        targetUrl: 'http://localhost:3000',
+        idamUrl: 'http://localhost:3000',
+      })
+    ).toBe(true);
+  });
+
+  test('isSessionFresh preserves host-only and dotted-domain cookie semantics', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-cookie-domain-'));
+    const sessionPath = path.join(tmpDir, 'session.storage.json');
+    const targetUrl = 'https://manage.example.test';
+    const idamUrl = 'https://idam.example.test';
+    const parentDomainCookies = [
+      { ...baseCookie('Idam.Session', 'session'), domain: 'example.test' },
+      { ...baseCookie('__auth__', 'auth'), domain: 'example.test' },
+    ];
+
+    await fsp.writeFile(sessionPath, JSON.stringify({ cookies: parentDomainCookies }), 'utf8');
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+
+    const dottedDomainCookies = parentDomainCookies.map((cookie) => ({ ...cookie, domain: '.example.test' }));
+    await fsp.writeFile(sessionPath, JSON.stringify({ cookies: dottedDomainCookies }), 'utf8');
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(true);
+  });
+
+  test('isSessionFresh rejects incomplete and expired authentication state', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-auth-contract-'));
+    const sessionPath = path.join(tmpDir, 'session.storage.json');
+    const targetUrl = 'https://manage-case.example.test';
+    const idamUrl = 'https://idam.example.test';
+    const idamCookie = { ...baseCookie('Idam.Session', 'session'), domain: 'idam.example.test' };
+    const authCookie = { ...baseCookie('__auth__', 'auth'), domain: 'manage-case.example.test' };
+    const nowSeconds = Math.floor(Date.now() / 1_000);
+
+    await fsp.writeFile(sessionPath, JSON.stringify({ cookies: [idamCookie] }), 'utf8');
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+
+    await fsp.writeFile(sessionPath, JSON.stringify({ cookies: [authCookie] }), 'utf8');
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+
+    await fsp.writeFile(
+      sessionPath,
+      JSON.stringify({ cookies: [{ ...idamCookie, expires: nowSeconds + 60 }, authCookie] }),
+      'utf8'
+    );
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+
+    await fsp.writeFile(
+      sessionPath,
+      JSON.stringify({ cookies: [idamCookie, { ...authCookie, expires: nowSeconds + 60 }] }),
+      'utf8'
+    );
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+
+    const expiredAuthCookie = { ...authCookie, expires: nowSeconds - 1 };
+    await fsp.writeFile(
+      sessionPath,
+      JSON.stringify({ cookies: [idamCookie, expiredAuthCookie, baseCookie('analytics', 'valid')] }),
+      'utf8'
+    );
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+
+    const malformedIdamCookie = { ...idamCookie, expires: undefined };
+    await fsp.writeFile(sessionPath, JSON.stringify({ cookies: [malformedIdamCookie, authCookie] }), 'utf8');
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+  });
+
+  test('rejects empty or whitespace-only authentication cookie values before reuse or persistence', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-empty-auth-cookie-'));
+    const sessionPath = path.join(tmpDir, 'session.storage.json');
+    const targetUrl = 'https://manage-case.example.test';
+    const idamUrl = 'https://idam.example.test';
+    const idamCookie = { ...baseCookie('Idam.Session', 'session'), domain: 'idam.example.test' };
+    const authCookie = { ...baseCookie('__auth__', 'auth'), domain: 'manage-case.example.test' };
+
+    for (const invalidCookieValue of ['', '   ']) {
+      for (const invalidCookieName of ['Idam.Session', '__auth__'] as const) {
+        const cookies = [idamCookie, authCookie].map((cookie) =>
+          cookie.name === invalidCookieName ? { ...cookie, value: invalidCookieValue } : cookie
+        );
+        await fsp.writeFile(sessionPath, JSON.stringify({ cookies }), 'utf8');
+
+        expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+        await expect(
+          sessionCaptureTest.requirePersistableSessionCookies(
+            { cookies: async () => cookies } as Pick<BrowserContext, 'cookies'>,
+            'BLANK_AUTH_COOKIE',
+            targetUrl,
+            idamUrl
+          )
+        ).rejects.toThrow('Cannot persist unauthenticated session');
+      }
+    }
   });
 
   test('loadSessionCookies uses explicit sessionKey for dynamic identities', async () => {
@@ -189,15 +303,16 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     try {
       const sessionsDir = path.join(tmpDir, '.sessions');
       await fsp.mkdir(sessionsDir, { recursive: true });
-      const storagePath = path.join(sessionsDir, 'dynamic-employment-user-123.storage.json');
-      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('session', 'value')] }), 'utf8');
-
-      const loaded = loadSessionCookies({
+      const identity = {
         userIdentifier: 'EMPLOYMENT_DYNAMIC_CASEWORKER',
         email: 'dynamic@example.test',
         password: 'secret',
         sessionKey: 'dynamic-employment-user-123',
-      });
+      };
+      const storagePath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
+      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('session', 'value')] }), 'utf8');
+
+      const loaded = loadSessionCookies(identity);
 
       expect(loaded.storageFile).toBe(storagePath);
       expect(loaded.cookies).toHaveLength(1);
@@ -627,22 +742,15 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     expect(launchAttempts).toBe(0);
   });
 
-  test('acquireSessionLock clears abandoned lock artifacts before timing out', async () => {
+  test('acquireSessionLock does not make locks stale inside the active wait budget', async () => {
     let lockAttempts = 0;
-    let removedArtifacts = 0;
-    const staleTime = Date.now() - 70_000;
-
-    const fsStub = {
-      existsSync: (target: string) => target.endsWith('.lock'),
-      statSync: () => ({ mtimeMs: staleTime }),
-      rmSync: () => {
-        removedArtifacts += 1;
-      },
-    } as any;
+    let configuredStaleMs: number | undefined;
 
     const lockfileStub = {
-      lock: async () => {
+      lock: async (_lockPath: string, options: { stale: number; update: number }) => {
         lockAttempts += 1;
+        configuredStaleMs = options.stale;
+        expect(options.update).toBe(sessionCaptureTest.sessionCaptureLockUpdateMs);
         if (lockAttempts === 1) {
           const error = new Error('Lock file is already being held');
           (error as Error & { code?: string }).code = 'ELOCKED';
@@ -653,7 +761,6 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     } as any;
 
     const release = await sessionCaptureTest.acquireSessionLock({
-      fsApi: fsStub,
       lockfileApi: lockfileStub,
       lockFilePath: '/tmp/shared-session.lock',
       userIdentifier: 'USER',
@@ -663,6 +770,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
 
     expect(typeof release).toBe('function');
     expect(lockAttempts).toBe(2);
-    expect(removedArtifacts).toBe(1);
+    expect(configuredStaleMs).toBe(sessionCaptureTest.sessionCaptureLockStaleMs);
+    expect(configuredStaleMs).toBeGreaterThan(sessionCaptureTest.sessionCaptureLockWaitMs);
   });
 });

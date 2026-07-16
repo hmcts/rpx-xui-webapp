@@ -17,6 +17,8 @@ const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
+const INTEGRATION_TEST_TIMEOUT_MS = 180_000;
+const POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS = 30_000;
 const appVersion = (() => {
   try {
     return JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version ?? 'unknown';
@@ -229,7 +231,7 @@ const buildConfig = (env = process.env) => {
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     retries: 2,
-    timeout: 120_000,
+    timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },
     workers: workerCount,
     reporter,
@@ -272,4 +274,6 @@ module.exports = {
   resolveOdhinTimeoutExitCode,
   resolveOdhinCompletionExitDelayMs,
   resolveOdhinForceExitOnCompletion,
+  INTEGRATION_TEST_TIMEOUT_MS,
+  POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS,
 };

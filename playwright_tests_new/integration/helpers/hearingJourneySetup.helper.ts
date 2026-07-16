@@ -1,9 +1,8 @@
-import { expect, type Page, type Response } from '@playwright/test';
+import { expect, test, type Page, type Response, type TestInfo } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
-import { applySessionCookies } from '../../common/sessionCapture';
+import { applySessionCookiesFromPool } from '../../common/sessionCapture';
 import {
-  HEARING_MANAGER_CR84_OFF_USER,
   HEARING_MANAGER_CR84_ON_USER,
   type HearingManagerUserIdentifier,
   resolveHearingManagerSessionCandidates,
@@ -135,20 +134,21 @@ export async function openHearingsTabForScenario(
   return getHearingsResponse;
 }
 
-async function applyHearingManagerSessionCookies(page: Page, userIdentifier: HearingManagerUserIdentifier): Promise<void> {
+export function annotateHearingManagerSessionUser(testInfo: Pick<TestInfo, 'annotations'>, selectedUserIdentifier: string): void {
+  testInfo.annotations.push({ type: 'session-user', description: selectedUserIdentifier });
+}
+
+export async function applyHearingManagerSessionCookies(
+  page: Page,
+  userIdentifier: HearingManagerUserIdentifier,
+  testInfo: Pick<TestInfo, 'annotations'> = test.info(),
+  applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
+): Promise<string> {
   const candidates = resolveHearingManagerSessionCandidates(userIdentifier);
-  let lastError: unknown;
+  const { userIdentifier: selectedUserIdentifier } = await applyFromPool(page, candidates);
 
-  for (const candidate of candidates) {
-    try {
-      await applySessionCookies(page, candidate);
-      return;
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  throw lastError;
+  annotateHearingManagerSessionUser(testInfo, selectedUserIdentifier);
+  return selectedUserIdentifier;
 }
 
 export function buildLargeListedHearings(total: number): HearingScenario[] {

@@ -89,9 +89,16 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
 
   test('waitForExuiUserPropagation forces one session recapture after unauthorized user details and then succeeds', async () => {
     const attachedBodies: string[] = [];
-    const seenStorageStates: string[] = [];
+    const seenSessionCookieValues: string[] = [];
     let attempt = 0;
     let recaptureCount = 0;
+    const staleSession = {
+      email: 'test@example.com',
+      cookies: [{ name: 'session', value: 'stale' }] as never,
+      storageFile: '/tmp/stale-storage.json',
+      storageStateFingerprint: 'stale-session-fingerprint',
+    };
+    let rejectedSessionSeen: typeof staleSession | undefined;
 
     await dynamicSessionTest.waitForExuiUserPropagation(
       {
@@ -132,21 +139,30 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
         resolveTimeoutMs: () => 5_000,
         resolvePollIntervalMs: () => 1,
         resolveBaseUrl: () => TEST_APP_BASE_URL,
-        ensureSessionCookies: async () => ({
-          email: 'test@example.com',
-          cookies: [{ name: 'session' }] as never,
-          storageFile: recaptureCount === 0 ? '/tmp/stale-storage.json' : '/tmp/fresh-storage.json',
-        }),
-        recaptureSession: async () => {
+        ensureSessionCookies: async () =>
+          recaptureCount === 0
+            ? staleSession
+            : {
+                email: 'test@example.com',
+                cookies: [{ name: 'session', value: 'fresh' }] as never,
+                storageFile: '/tmp/fresh-storage.json',
+                storageStateFingerprint: 'fresh-session-fingerprint',
+              },
+        recaptureSession: async (_sessionIdentity, rejectedSession) => {
+          rejectedSessionSeen = rejectedSession as typeof staleSession;
           recaptureCount += 1;
         },
         createApiContext: async ({ storageState }) => {
           attempt += 1;
-          seenStorageStates.push(storageState);
+          const sessionCookieValue = storageState.cookies.find((cookie) => cookie.name === 'session')?.value;
+          if (!sessionCookieValue) {
+            throw new Error('expected loaded session cookie snapshot');
+          }
+          seenSessionCookieValues.push(sessionCookieValue);
           return {
             get: async (url: string) => {
               if (url === '/api/user/details') {
-                if (storageState.includes('stale')) {
+                if (sessionCookieValue === 'stale') {
                   return {
                     status: () => 401,
                     json: async () => ({}),
@@ -177,8 +193,9 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
     );
 
     expect(recaptureCount).toBe(1);
+    expect(rejectedSessionSeen).toBe(staleSession);
     expect(attempt).toBe(2);
-    expect(seenStorageStates).toEqual(['/tmp/stale-storage.json', '/tmp/fresh-storage.json']);
+    expect(seenSessionCookieValues).toEqual(['stale', 'fresh']);
     expect(attachedBodies[attachedBodies.length - 1]).toContain('"userDetailsStatus":200');
   });
 

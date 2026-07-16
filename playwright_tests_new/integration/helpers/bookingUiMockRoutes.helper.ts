@@ -1,15 +1,12 @@
-import type { Page, Route } from '@playwright/test';
+import type { Page, Route, TestInfo } from '@playwright/test';
 import { buildExistingBookingsMock, singleLocationMock } from '../mocks/bookingUI.mock';
 import { buildMyTaskListMock } from '../mocks/taskList.mock';
-import { resolveBookingUiUserIdentifier } from './bookingUiUserPool.helper';
-import { ensureSession } from '../../common/sessionCapture';
+import { resolveBookingUiSessionCandidates } from './bookingUiUserPool.helper';
+import { withOrderedSessionFallback } from '../../common/orderedSessionFallback';
 import { applySessionCookiesAndExtractUserId } from './sessionUser.helper';
 import { setupTaskListMockRoutes, type TaskListBootstrapUserOptions } from './taskListMockRoutes.helper';
 
 type RouteHandler = (route: Route) => Promise<void>;
-type ParallelIndexSource = {
-  parallelIndex: number;
-};
 
 type BookingUiMockRoutesOptions = {
   locationResponseBody: unknown;
@@ -28,6 +25,7 @@ export type BookingUiTestRouteState = {
   existingBookingsMock: ReturnType<typeof buildExistingBookingsMock>;
   getBookingsCalled: () => boolean;
   sessionUserId: string;
+  sessionUserIdentifier: string;
 };
 
 export const buildBookingUiBootstrapUser = (userId: string): TaskListBootstrapUserOptions => ({
@@ -92,12 +90,16 @@ export async function setupBookingUiMockRoutes(page: Page, options: BookingUiMoc
 
 export async function setupBookableBookingUiRoutesForTest(
   page: Page,
-  testInfo: ParallelIndexSource,
-  options: BookingUiTestRoutesOptions = {}
+  testInfo: Pick<TestInfo, 'parallelIndex' | 'annotations'>,
+  options: BookingUiTestRoutesOptions = {},
+  applySession: typeof applySessionCookiesAndExtractUserId = applySessionCookiesAndExtractUserId
 ): Promise<BookingUiTestRouteState> {
   let getBookingsCalled = false;
-  const userIdentifier = resolveBookingUiUserIdentifier(testInfo);
-  const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  const { selectedUserIdentifier, value: userId } = await withOrderedSessionFallback(
+    resolveBookingUiSessionCandidates(testInfo),
+    (identity) => applySession(page, identity)
+  );
+  testInfo.annotations.push({ type: 'session-user', description: selectedUserIdentifier });
   const existingBookingsMock = buildExistingBookingsMock(userId);
 
   await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
@@ -117,9 +119,6 @@ export async function setupBookableBookingUiRoutesForTest(
     existingBookingsMock,
     getBookingsCalled: () => getBookingsCalled,
     sessionUserId: userId,
+    sessionUserIdentifier: selectedUserIdentifier,
   };
-}
-
-export async function warmBookableBookingUiSessionForWorker(testInfo: ParallelIndexSource): Promise<void> {
-  await ensureSession(resolveBookingUiUserIdentifier(testInfo));
 }

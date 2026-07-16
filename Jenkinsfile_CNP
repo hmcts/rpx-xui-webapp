@@ -69,7 +69,6 @@ properties([
 ])
 
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
-// @Library("Infrastructure@2.4.4")
 @Library("Infrastructure@2.4.5")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
@@ -112,6 +111,14 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
 }
 
 def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    def reportPath = "${reportDir}/${reportFile}"
+    if (fileExists(reportPath)) {
+        echo "[playwright-report] Reusing generated report at ${reportPath}"
+        return
+    }
+    if (!fileExists('scripts/ensure-odhin-report.js')) {
+        error("Cannot create fallback report for ${suiteName}: scripts/ensure-odhin-report.js is missing from the workspace")
+    }
     withEnv([
         "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
         "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
@@ -155,7 +162,11 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
         node scripts/ensure-load-profile-report.js \\
           --report-dir '${reportDir}' \\
           --report-file '${playwrightLoadProfileReportFile}' \\
-          --report-name '${reportName}'
+          --report-name '${reportName}' \\
+          --wait-ms 30000
+        if [ -f '${reportDir}/monitor.log' ]; then
+          cat '${reportDir}/monitor.log'
+        fi
     """
     steps.sh """
         set +e
@@ -182,35 +193,22 @@ def startPlaywrightLoadProfile = { String reportDir, String label, String events
     steps.sh """
         set +e
         mkdir -p '${reportDir}'
-        rm -f '${reportDir}/stop' '${reportDir}/monitor.pid'
+        rm -f '${reportDir}/stop' '${reportDir}/monitor.pid' \\
+          '${reportDir}/${playwrightLoadProfileReportFile}' '${reportDir}/summary.json' '${reportDir}/samples.json' \\
+          '${eventsFile}'
         JENKINS_NODE_COOKIE=dontKillMe nohup node scripts/playwright-load-monitor.js \\
           --output-folder '${reportDir}' \\
           --label '${label}' \\
           --events-file '${eventsFile}' \\
           --stop-file '${reportDir}/stop' \\
           > '${reportDir}/monitor.log' 2>&1 &
-        echo \$! > '${reportDir}/monitor.pid'
     """
 }
 
 def stopPlaywrightLoadProfile = { String reportDir ->
     steps.sh """
         set +e
-        if [ -f '${reportDir}/monitor.pid' ]; then
-          pid=\$(cat '${reportDir}/monitor.pid')
-          touch '${reportDir}/stop'
-          for i in \$(seq 1 30); do
-            kill -0 "\${pid}" 2>/dev/null || break
-            sleep 1
-          done
-          if kill -0 "\${pid}" 2>/dev/null; then
-            kill -TERM "\${pid}" 2>/dev/null || true
-            sleep 2
-          fi
-        fi
-        if [ -f '${reportDir}/monitor.log' ]; then
-          cat '${reportDir}/monitor.log'
-        fi
+        touch '${reportDir}/stop'
     """
 }
 
@@ -286,6 +284,8 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
     def failures = []
     resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
         def runConfig = integrationProfileRunConfig(spec, testType)
+        def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
+        sh "rm -f -- '${sessionConfigCompleteFile}'"
         try {
             withEnv([
                 "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
@@ -294,6 +294,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "ORG_USER_ASSIGNMENT_MODE=external",
                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                 "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+                "PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE=${sessionConfigCompleteFile}",
                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
@@ -310,23 +311,39 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
             if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
                 throw e
             }
+            if (!fileExists(sessionConfigCompleteFile)) {
+                echo "[playwright-integration] Session configuration validation did not complete for ${runConfig.displayName}; aborting before another profile starts"
+                throw e
+            }
             failures << "${runConfig.displayName}: ${e.getMessage()}"
         } finally {
-            echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
-            ensureHtmlReportForPublishing(
-                runConfig.reportDir,
-                playwrightIntegrationReportFile,
-                "${reportNamePrefix} Playwright Integration Tests"
-            )
-            publishHTML([
-                allowMissing         : true,
-                alwaysLinkToLastBuild: true,
-                keepAll              : true,
-                reportDir            : "${runConfig.reportDir}/",
-                reportFiles          : playwrightIntegrationReportFile,
-                reportName           : "${reportNamePrefix} Playwright Integration Tests"
-            ])
-            echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
+            try {
+                echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
+                ensureHtmlReportForPublishing(
+                    runConfig.reportDir,
+                    playwrightIntegrationReportFile,
+                    "${reportNamePrefix} Playwright Integration Tests"
+                )
+                publishHTML([
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : "${runConfig.reportDir}/",
+                    reportFiles          : playwrightIntegrationReportFile,
+                    reportName           : "${reportNamePrefix} Playwright Integration Tests"
+                ])
+                echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
+            } catch (Exception publishException) {
+                if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                    throw publishException
+                }
+                if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                    throw publishException
+                }
+                def publishFailure = "${runConfig.displayName} report publication: ${publishException.getMessage()}"
+                failures << publishFailure
+                echo "[playwright-integration] ${publishFailure}"
+            }
         }
     }
     if (failures) {

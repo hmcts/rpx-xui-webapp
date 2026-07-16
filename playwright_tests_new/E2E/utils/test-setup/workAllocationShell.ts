@@ -17,7 +17,6 @@ export function resolveWorkAllocationUser(): SessionIdentityInput {
       userIdentifier: 'PW_E2E_MANAGE_TASKS',
       email: explicitEmail,
       password: explicitPassword,
-      sessionKey: explicitEmail,
     };
   }
 

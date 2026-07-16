@@ -70,3 +70,17 @@ export function getLegacyStaffAdminSessionIdentity(userUtils: UserUtils = new Us
     password: credentials.password,
   };
 }
+
+export function resolveStaffAdminSessionCandidates(
+  source?: ParallelIndexSource,
+  env: EnvMap = process.env,
+  userUtils: UserUtils = new UserUtils()
+): Array<StaffAdminUserIdentifier | SessionIdentity> {
+  const configuredUserIdentifiers = getConfiguredStaffAdminUserIdentifiers(env);
+  if (configuredUserIdentifiers.length === 0) {
+    return [getLegacyStaffAdminSessionIdentity(userUtils)];
+  }
+
+  const selected = resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, source, env) as StaffAdminUserIdentifier;
+  return [selected, ...configuredUserIdentifiers.filter((userIdentifier) => userIdentifier !== selected)];
+}

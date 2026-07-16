@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test';
+import { SessionCaptureError } from '../utils/errors.js';
+import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
 import {
-  resolveIntegrationSessionWarmupUsers,
+  applySearchCaseSessionCookies,
+  resolveIntegrationSessionUsers,
   resolveSearchCaseSessionUsers,
   resolveSearchCaseUserIdentifier,
 } from '../../integration/helpers/searchCaseSession.helper.js';
@@ -10,27 +13,65 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveSearchCaseSessionUsers({} as NodeJS.ProcessEnv)).toEqual(['FPL_GLOBAL_SEARCH']);
   });
 
-  test('supports env-driven pool overrides and explicit warmup users', () => {
+  test('supports env-driven search-case pool overrides', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'SOLICITOR, STAFF_ADMIN',
-      PW_INTEGRATION_SESSION_WARMUP_USERS: 'STAFF_ADMIN, FPL_GLOBAL_SEARCH, STAFF_ADMIN',
     } as NodeJS.ProcessEnv;
 
     expect(resolveSearchCaseSessionUsers(env)).toEqual(['SOLICITOR', 'STAFF_ADMIN']);
-    expect(resolveIntegrationSessionWarmupUsers(env)).toEqual(['STAFF_ADMIN', 'FPL_GLOBAL_SEARCH']);
   });
 
-  test('does not prewarm sessions by default', () => {
-    expect(resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv)).toEqual([]);
+  test('declares the configured staff-admin pool used by a search-case alias override', () => {
+    const env = {
+      PW_SEARCH_CASE_SESSION_USERS: 'STAFF_ADMIN',
+      STAFF_ADMIN_POOL_ENABLED: 'true',
+      STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+      STAFF_ADMIN_1_PASSWORD: 'secret-1',
+      STAFF_ADMIN_2_USERNAME: 'staff-admin-2@example.test',
+      STAFF_ADMIN_2_PASSWORD: 'secret-2',
+    } as NodeJS.ProcessEnv;
+
+    expect(
+      resolveIntegrationSessionUsers(env, {
+        includeTags: ['@integration-search-case'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-search-case'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['STAFF_ADMIN-1', 'STAFF_ADMIN-2']);
   });
 
-  test('prewarms sessions for selected integration tags when no explicit override is provided', () => {
+  test('declares only configured booking and hearing pool identities', () => {
+    const env = {
+      BOOKING_UI_FT_ON_1_USERNAME: 'booking-ui-1@example.test',
+      BOOKING_UI_FT_ON_1_PASSWORD: 'secret-1',
+      HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
+      HEARING_MANAGER_CR84_ON_1_PASSWORD: 'secret-1',
+      HEARING_MANAGER_CR84_OFF_1_USERNAME: 'hearing-off-1@example.test',
+      HEARING_MANAGER_CR84_OFF_1_PASSWORD: 'secret-1',
+    } as NodeJS.ProcessEnv;
+
+    expect(
+      resolveIntegrationSessionUsers(env, {
+        includeTags: ['@integration-booking-ui', '@integration-hearings'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-booking-ui', '@integration-hearings'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['BOOKING_UI-FT-ON-1', 'HEARING_MANAGER_CR84_ON-1', 'HEARING_MANAGER_CR84_OFF-1']);
+  });
+
+  test('returns no integration declarations without a tag selection', () => {
+    expect(resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv)).toEqual([]);
+  });
+
+  test('declares sessions for selected integration tags', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH, SEARCH_EMPLOYMENT_CASE',
     } as NodeJS.ProcessEnv;
 
     expect(
-      resolveIntegrationSessionWarmupUsers(env, {
+      resolveIntegrationSessionUsers(env, {
         includeTags: ['@integration-case-file-view', '@integration-search-case'],
         excludedTags: [],
         availableTags: ['@integration', '@integration-case-file-view', '@integration-search-case', '@integration-manage-tasks'],
@@ -39,9 +80,9 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual(['RESTRICTED_CASE_FILE_VIEW_ON', 'FPL_GLOBAL_SEARCH', 'SEARCH_EMPLOYMENT_CASE']);
   });
 
-  test('prewarms the solicitor session for targeted CCD toolkit integration runs', () => {
+  test('declares the solicitor session for targeted CCD toolkit integration runs', () => {
     expect(
-      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
         includeTags: ['@integration-ccd-toolkit'],
         excludedTags: [],
         availableTags: ['@integration', '@integration-ccd-toolkit', '@integration-create-case'],
@@ -50,52 +91,73 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual(['SOLICITOR']);
   });
 
-  test('prewarms only the shared contention sessions for full integration runs', () => {
+  test('declares sessions used by targeted data loss, query management and share case runs', () => {
     expect(
-      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-data-loss', '@integration-query-management', '@integration-share-case'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-data-loss', '@integration-query-management', '@integration-share-case'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['SOLICITOR', 'STAFF_ADMIN']);
+  });
+
+  test('declares users selected by every enabled feature tag for full integration runs', () => {
+    expect(
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
         includeTags: [],
         excludedTags: ['@integration-manage-tasks'],
         availableTags: ['@integration', '@integration-case-file-view', '@integration-hearings', '@integration-manage-tasks'],
         suiteTag: '@integration',
       })
-    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN', 'RESTRICTED_CASE_FILE_VIEW_ON']);
+    ).toEqual(['RESTRICTED_CASE_FILE_VIEW_ON', 'HEARING_MANAGER_CR84_ON', 'HEARING_MANAGER_CR84_OFF']);
   });
 
-  test('does not prewarm case-file-view session when the full run excludes that tag', () => {
+  test('requires every selected integration feature tag to declare its session identities', () => {
+    expect(() =>
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-unmapped'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-unmapped'],
+        suiteTag: '@integration',
+      })
+    ).toThrow('Integration session mappings missing for: @integration-unmapped');
+  });
+
+  test('declares route-mocked platform services as requiring no captured identities', () => {
     expect(
-      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-platform-services'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-platform-services'],
+        suiteTag: '@integration',
+      })
+    ).toEqual([]);
+  });
+
+  test('does not declare case-file-view session when the full run excludes that tag', () => {
+    expect(
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
         includeTags: ['@integration'],
         excludedTags: ['@integration-case-file-view'],
         availableTags: ['@integration', '@integration-case-file-view', '@integration-hearings', '@integration-manage-tasks'],
         suiteTag: '@integration',
       })
-    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN']);
+    ).toEqual(['HEARING_MANAGER_CR84_ON', 'HEARING_MANAGER_CR84_OFF', 'STAFF_ADMIN', 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1']);
   });
 
-  test('supports explicit default integration warmup pool when requested', () => {
-    const env = {
-      PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH, SEARCH_EMPLOYMENT_CASE',
-      PW_INTEGRATION_SESSION_WARMUP_USERS: '@default,RESTRICTED_CASE_FILE_VIEW_ON',
-    } as NodeJS.ProcessEnv;
-
-    expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([
-      'FPL_GLOBAL_SEARCH',
-      'SOLICITOR',
-      'STAFF_ADMIN',
-      'SEARCH_EMPLOYMENT_CASE',
-      'RESTRICTED_CASE_FILE_VIEW_ON',
-    ]);
+  test('declares the proven judicial identity that selected-tag workers use', () => {
+    expect(
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-case-linking'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-case-linking'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['STAFF_ADMIN', 'IAC_Judge_WA_R1']);
   });
 
-  test('supports explicit no-op warmup sentinel', () => {
-    const env = {
-      PW_INTEGRATION_SESSION_WARMUP_USERS: '@none,RESTRICTED_CASE_FILE_VIEW_ON',
-    } as NodeJS.ProcessEnv;
-
-    expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([]);
-  });
-
-  test('assigns workers across the configured shared user pool', () => {
+  test('distributes configured search users by worker index', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH,SOLICITOR,STAFF_ADMIN',
     } as NodeJS.ProcessEnv;
@@ -104,5 +166,33 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveSearchCaseUserIdentifier({ workerIndex: 1 }, env)).toBe('SOLICITOR');
     expect(resolveSearchCaseUserIdentifier({ workerIndex: 2 }, env)).toBe('STAFF_ADMIN');
     expect(resolveSearchCaseUserIdentifier({ workerIndex: 3 }, env)).toBe('FPL_GLOBAL_SEARCH');
+  });
+
+  test('annotates the fallback search identity after the primary is explicitly rejected', async () => {
+    const env = {
+      PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH,SOLICITOR',
+    } as NodeJS.ProcessEnv;
+    const attempts: string[] = [];
+    const testInfo = { workerIndex: 0, annotations: [] as Array<{ type: string; description?: string }> };
+
+    const selectedUserIdentifier = await applySearchCaseSessionCookies({} as never, testInfo, env, (page, candidates) =>
+      sessionCaptureTest.applySessionCookiesFromPoolWith(page, candidates, async (_page, identity) => {
+        const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
+        attempts.push(userIdentifier);
+        if (userIdentifier === 'FPL_GLOBAL_SEARCH') {
+          throw new SessionCaptureError('Login failed: IDAM page message: Email or password is incorrect', userIdentifier);
+        }
+        return {
+          userIdentifier,
+          email: typeof identity === 'string' ? `${identity.toLowerCase()}@example.test` : identity.email,
+          cookies: [],
+          storageFile: `${userIdentifier}.storage.json`,
+        };
+      })
+    );
+
+    expect(attempts).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR']);
+    expect(selectedUserIdentifier).toBe('SOLICITOR');
+    expect(testInfo.annotations).toEqual([{ type: 'session-user', description: 'SOLICITOR' }]);
   });
 });

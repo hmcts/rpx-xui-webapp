@@ -395,6 +395,8 @@ async function runUntilStopFile(options) {
       settled = true;
       clearInterval(sampleTimer);
       clearInterval(stopTimer);
+      process.removeListener('SIGTERM', stopOnSignal);
+      process.removeListener('SIGINT', stopOnSignal);
       resolve(code);
     };
     const sampleTimer = setInterval(() => samples.push(sample()), options.sampleIntervalMs);
@@ -410,6 +412,7 @@ async function runUntilStopFile(options) {
     const stopOnSignal = () => finish(0);
     process.once('SIGTERM', stopOnSignal);
     process.once('SIGINT', stopOnSignal);
+    console.log(`[load-profile] monitoring until ${options.stopFile}`);
   });
 
   samples.push(sample());
@@ -594,7 +597,10 @@ function writeProfileArtifacts(outputFolder, summary, samples) {
   fs.mkdirSync(outputFolder, { recursive: true });
   fs.writeFileSync(path.join(outputFolder, SUMMARY_FILE), `${JSON.stringify(summary, null, 2)}\n`);
   fs.writeFileSync(path.join(outputFolder, SAMPLES_FILE), `${JSON.stringify(samples, null, 2)}\n`);
-  fs.writeFileSync(path.join(outputFolder, REPORT_FILE), buildLoadProfileHtml(summary, samples));
+  const reportPath = path.join(outputFolder, REPORT_FILE);
+  const temporaryReportPath = `${reportPath}.${process.pid}.tmp`;
+  fs.writeFileSync(temporaryReportPath, buildLoadProfileHtml(summary, samples));
+  fs.renameSync(temporaryReportPath, reportPath);
 }
 
 function buildLoadProfileHtml(summary, samples) {

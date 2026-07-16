@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { map, skipWhile, switchMap } from 'rxjs/operators';
@@ -14,6 +13,7 @@ import { UserService } from '../../services/user/user.service';
 import { AppConstants } from '../../../app/app.constants';
 import { filterNavigationItemsByFlags, filterNavigationItemsByRoles } from '../../shared/utils/navigation-access.utils';
 import { WAVerificationService } from '../../../work-allocation/services';
+import { DecentralisedRedirectService } from '../../../cases/services/decentralised-redirect.service';
 
 @Component({
   standalone: false,
@@ -22,8 +22,6 @@ import { WAVerificationService } from '../../../work-allocation/services';
   styleUrls: ['./hmcts-global-header.component.scss'],
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
-  private static readonly GLOBAL_SEARCH_FEATURE_CONFIG = 'feature-global-search';
-
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
   }
@@ -60,10 +58,10 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     private readonly appStore: Store<fromAppStore.State>,
     private readonly nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
-    private readonly featureToggleService: FeatureToggleService,
     private readonly searchService: SearchService,
     private readonly waVerificationService: WAVerificationService,
-    private readonly loggerService: LoggerService
+    private readonly loggerService: LoggerService,
+    private readonly decentralisedRedirectService: DecentralisedRedirectService
   ) {}
 
   public ngOnInit(): void {
@@ -115,12 +113,23 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       .pipe(
         switchMap((unfilteredItems) => this.filterNavItemsOnRole(unfilteredItems)),
         switchMap((roleFilteredItems) => this.filterNavItemsOnFlag(roleFilteredItems)),
-        map((filteredItems) => this.splitNavItems(filteredItems))
+        map((filteredItems) => this.augmentDecentralisedUrls(filteredItems)),
+        map((augmentedItems) => this.splitNavItems(augmentedItems))
       )
       .subscribe((sortedItems) => {
         this.menuItems.left.next(sortedItems.left);
         this.menuItems.right.next(sortedItems.right);
       });
+  }
+
+  private augmentDecentralisedUrls(items: NavigationItem[]): NavigationItem[] {
+    const userInfo = this.userService.getUserInfo();
+    return items?.map((item) => {
+      if (item.isDecentralisedService) {
+        item.href = this.decentralisedRedirectService.addUserInfo(item.href, userInfo);
+      }
+      return item;
+    });
   }
 
   private splitNavItems(items: NavigationItem[]): { right: NavigationItem[]; left: NavigationItem[] } {

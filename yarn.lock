@@ -3225,7 +3225,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/properties-volume@npm:^1.3.1":
+"@hmcts/properties-volume@npm:^1.4.0":
   version: 1.4.0
   resolution: "@hmcts/properties-volume@npm:1.4.0"
   dependencies:
@@ -20556,7 +20556,7 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.2.25"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
-    "@hmcts/properties-volume": "npm:^1.3.1"
+    "@hmcts/properties-volume": "npm:^1.4.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.13"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.20"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
@@ -20660,7 +20660,7 @@ __metadata:
     playwright-core: "npm:1.61.1"
     prettier: "npm:^3.8.0"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.7"
+    rpx-xui-translation: "npm:1.2.8"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -20691,9 +20691,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.7":
-  version: 1.2.7
-  resolution: "rpx-xui-translation@npm:1.2.7"
+"rpx-xui-translation@npm:1.2.8":
+  version: 1.2.8
+  resolution: "rpx-xui-translation@npm:1.2.8"
   dependencies:
     dexie: "npm:^4.0.8"
     luxon: "npm:^2.5.2"
@@ -20702,7 +20702,7 @@ __metadata:
     "@angular/common": ^20.3.18
     "@angular/core": ^20.3.18
     rxjs: ^7.8.0
-  checksum: 10/423c51d17fefbc00828a645ba4d1c766d1bab3ebbe2bf3e3b5cbc9327cab8468953d132c4e2d6ed14fec4d5c5d935a67057790342b8bfa7d6c1cdf84adb5f24f
+  checksum: 10/ae96499f5ebe9add516c286a9de1f6e5cfed93bddda2e883cd128ca29e55586167cdfc71ec4cecc29a69d089069adbc49caaeccf2c313b5ff7faa05087d21d37
   languageName: node
   linkType: hard
 

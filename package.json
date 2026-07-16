@@ -130,7 +130,6 @@
     "@ngrx/router-store": "^20",
     "@ngrx/store": "^20",
     "@ngrx/store-devtools": "^20",
-    "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "applicationinsights": "1.8.10",
     "axios": "^1.18.1",
     "axios-mock-adapter": "^1.22.0",

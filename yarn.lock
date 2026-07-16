@@ -5672,25 +5672,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nicky-lenaers/ngx-scroll-to@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@nicky-lenaers/ngx-scroll-to@npm:14.0.0"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^14.0.0
-    "@angular/core": ^14.0.0
-  checksum: 10/f3aa11a64e2d0267dce1850af769de0f9caa133008e048975970afd9b0e37ba5d517fd09a6f4303e3a5f579b6460f6274d73a7406d2d988a8d3c352940912e1e
-  languageName: node
-  linkType: hard
-
-"@noble/hashes@npm:1.4.0":
-  version: 1.4.0
-  resolution: "@noble/hashes@npm:1.4.0"
-  checksum: 10/e156e65794c473794c52fa9d06baf1eb20903d0d96719530f523cc4450f6c721a957c544796e6efd0197b2296e7cd70efeb312f861465e17940a3e3c7e0febc6
-  languageName: node
-  linkType: hard
-
 "@noble/hashes@npm:^1.1.5":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
@@ -19921,7 +19902,6 @@ __metadata:
     "@ngrx/router-store": "npm:^20"
     "@ngrx/store": "npm:^20"
     "@ngrx/store-devtools": "npm:^20"
-    "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
     "@playwright/test": "npm:1.61.1"

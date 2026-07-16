@@ -7,8 +7,7 @@ import * as configModule from '../../configuration';
 import * as log4jui from '../log4jui';
 import authInterceptor from './auth';
 
-// Import sinon-chai using require to avoid ES module issues
-const sinonChai = require('sinon-chai');
+const sinonChai = module.require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Proxy Middleware', () => {
@@ -45,7 +44,7 @@ describe('Proxy Middleware', () => {
 
     sandbox.stub(configModule, 'getConfigValue').returns('info');
 
-    const proxyModule = require('./proxy');
+    const proxyModule = module.require('./proxy');
     onProxyError = proxyModule.onProxyError;
     applyProxy = proxyModule.applyProxy;
   });

@@ -41,6 +41,7 @@ import {
   mapCaseworkerLocation,
   mapRoleType,
   mapUsersToCachedCaseworkers,
+  prepareGetSpecificLocationUrl,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
@@ -333,6 +334,18 @@ describe('workAllocation.utils', () => {
       const TASK_ID: string = '123456';
       const url = prepareGetTaskUrl(BASE_URL, TASK_ID);
       expect(url).to.equal('base/task/123456');
+    });
+  });
+
+  describe('prepareGetSpecificLocationUrl', () => {
+    it('should correctly format with an epimms id and service code', () => {
+      const url = prepareGetSpecificLocationUrl('base', '123456', 'AAA6');
+      expect(url).to.equal('base/refdata/location/court-venues?epimms_id=123456&service_code=AAA6');
+    });
+
+    it('should preserve the existing URL shape when service code is not provided', () => {
+      const url = prepareGetSpecificLocationUrl('base', '123456');
+      expect(url).to.equal('base/refdata/location/court-venues?epimms_id=123456');
     });
   });
 

@@ -19,10 +19,9 @@ function normaliseSessionStorageKey(value: string): string {
   return value.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
 }
 
-function collisionSafeSessionStorageKey(value: string): string {
-  const canonicalValue = value.trim().toLowerCase();
+function collisionSafeSessionStorageKey(readableValue: string, canonicalValue: string): string {
   const discriminator = createHash('sha256').update(canonicalValue).digest('hex').slice(0, 12);
-  return `${normaliseSessionStorageKey(canonicalValue)}-${discriminator}`;
+  return `${normaliseSessionStorageKey(readableValue)}-${discriminator}`;
 }
 
 export function resolveSessionIdentity(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): SessionIdentity {
@@ -47,5 +46,9 @@ export function resolveSessionIdentity(input: SessionIdentityInput, deps: Sessio
 export function resolveSessionStorageKey(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): string {
   const identity = resolveSessionIdentity(input, deps);
   const explicitSessionKey = identity.sessionKey?.trim();
-  return explicitSessionKey ? normaliseSessionStorageKey(explicitSessionKey) : collisionSafeSessionStorageKey(identity.email);
+  if (explicitSessionKey) {
+    return collisionSafeSessionStorageKey(explicitSessionKey, `explicit\0${explicitSessionKey}`);
+  }
+  const canonicalEmail = identity.email.trim().toLowerCase();
+  return collisionSafeSessionStorageKey(canonicalEmail, canonicalEmail);
 }

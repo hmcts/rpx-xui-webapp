@@ -271,7 +271,10 @@ function isCookieCompatibleWithHost(cookie: Cookie, targetHost: string): boolean
 
 function isCookieUsable(cookie: Cookie, nowSeconds: number): boolean {
   return (
-    Number.isFinite(cookie.expires) && (cookie.expires <= 0 || cookie.expires > nowSeconds + AUTH_COOKIE_MIN_REMAINING_SECONDS)
+    typeof cookie.value === 'string' &&
+    cookie.value.trim().length > 0 &&
+    Number.isFinite(cookie.expires) &&
+    (cookie.expires <= 0 || cookie.expires > nowSeconds + AUTH_COOKIE_MIN_REMAINING_SECONDS)
   );
 }
 

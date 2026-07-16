@@ -28,11 +28,16 @@ function resolveIntegrationTestDirs(fullConfig: FullConfig): string[] {
     .map((project) => path.resolve(project.testDir));
 }
 
-function integrationFeatureTagsFromSource(source: string, fileName: string): string[] {
+function integrationTagsFromSource(source: string, fileName: string): { featureTags: string[]; hasSuiteTag: boolean } {
   const sourceFile = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
   const tags = new Set<string>();
+  let hasSuiteTag = false;
 
   const collectTagValues = (node: ts.Node): boolean => {
+    if (ts.isStringLiteralLike(node) && node.text === '@integration') {
+      hasSuiteTag = true;
+      return true;
+    }
     if (ts.isStringLiteralLike(node) && /^@integration-.+$/.test(node.text)) {
       tags.add(node.text);
       return true;
@@ -98,7 +103,7 @@ function integrationFeatureTagsFromSource(source: string, fileName: string): str
   };
 
   visit(sourceFile);
-  return [...tags];
+  return { featureTags: [...tags], hasSuiteTag };
 }
 
 function integrationSpecFiles(testDir: string): string[] {
@@ -117,12 +122,16 @@ function integrationSpecFiles(testDir: string): string[] {
 export function validateIntegrationSpecTagCatalogue(testDirs: string[], availableTags: string[], configPath: string): void {
   const availableTagSet = new Set(availableTags);
   const missingTags = new Map<string, string[]>();
+  const missingSuiteTagSpecs: string[] = [];
   const untaggedSpecs: string[] = [];
 
   for (const testDir of new Set(testDirs)) {
     for (const specFile of integrationSpecFiles(testDir)) {
       const source = fs.readFileSync(specFile, 'utf8');
-      const featureTags = integrationFeatureTagsFromSource(source, specFile);
+      const { featureTags, hasSuiteTag } = integrationTagsFromSource(source, specFile);
+      if (!hasSuiteTag) {
+        missingSuiteTagSpecs.push(path.relative(process.cwd(), specFile));
+      }
       if (featureTags.length === 0) {
         untaggedSpecs.push(path.relative(process.cwd(), specFile));
       }
@@ -136,8 +145,11 @@ export function validateIntegrationSpecTagCatalogue(testDirs: string[], availabl
     }
   }
 
-  if (missingTags.size > 0 || untaggedSpecs.length > 0) {
+  if (missingTags.size > 0 || missingSuiteTagSpecs.length > 0 || untaggedSpecs.length > 0) {
     const details = [
+      missingSuiteTagSpecs.length > 0
+        ? `specs without a static @integration suite tag (${missingSuiteTagSpecs.join(', ')})`
+        : undefined,
       untaggedSpecs.length > 0 ? `specs without a static @integration-* feature tag (${untaggedSpecs.join(', ')})` : undefined,
       missingTags.size > 0
         ? `feature tags missing from ${configPath}: ${[...missingTags]

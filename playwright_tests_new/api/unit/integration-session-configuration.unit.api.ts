@@ -101,6 +101,21 @@ test.describe('integration session configuration', { tag: '@svc-internal' }, () 
     }
   });
 
+  test('rejects an integration spec without the base suite tag', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-missing-suite-tag-'));
+    const specFile = path.join(tempDir, 'missing-suite-tag.spec.ts');
+
+    try {
+      fs.writeFileSync(specFile, "test.describe('feature', { tag: '@integration-feature' }, () => {});\n");
+
+      expect(() =>
+        validateIntegrationSpecTagCatalogue([tempDir], ['@integration', '@integration-feature'], 'tag-filter.json')
+      ).toThrow(/without a static @integration suite tag.*missing-suite-tag\.spec\.ts/);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('rejects tag identifiers and spreads that cannot be validated statically', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-dynamic-spec-tags-'));
     const specFile = path.join(tempDir, 'dynamic.spec.ts');

@@ -156,7 +156,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       sessionKey: 'unit-stale-user',
     };
     const sessionsDir = path.join(tempDir, '.sessions');
-    const sessionPath = path.join(sessionsDir, 'unit-stale-user.storage.json');
+    const sessionPath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
     const staleContents = JSON.stringify({ cookies: [{ name: 'stale', value: 'stale' }] });
     const refreshedContents = JSON.stringify({ cookies: [{ name: 'fresh', value: 'fresh' }] });
     let loginCount = 0;
@@ -201,7 +201,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       sessionKey: 'unit-stale-user',
     };
     const sessionsDir = path.join(tempDir, '.sessions');
-    const sessionPath = path.join(sessionsDir, 'unit-stale-user.storage.json');
+    const sessionPath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
     const staleContents = JSON.stringify({ cookies: [{ name: 'stale', value: 'stale' }] });
     const replacementContents = JSON.stringify({ cookies: [{ name: 'replacement', value: 'replacement' }] });
     let staleFilePresentAtLogin = true;
@@ -622,8 +622,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       sessionKey: 'unit-after-lock-user',
     };
     const sessionsDir = path.join(tempDir, '.sessions');
-    const sessionPath = path.join(sessionsDir, 'unit-after-lock-user.storage.json');
-    const failurePath = path.join(sessionsDir, 'unit-after-lock-user.capture-failed.json');
+    const sessionStorageKey = resolveSessionStorageKey(identity);
+    const sessionPath = path.join(sessionsDir, `${sessionStorageKey}.storage.json`);
+    const failurePath = path.join(sessionsDir, `${sessionStorageKey}.capture-failed.json`);
     let loginCalled = false;
 
     try {
@@ -1047,7 +1048,13 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-shell-unit-'));
     const previousCwd = process.cwd();
     const previousTestUrl = process.env.TEST_URL;
-    const sessionPath = path.join(tempDir, '.sessions', 'unit-shell-user.storage.json');
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_SHELL_USER',
+      email: 'unit-shell-user@example.test',
+      password: 'not-used',
+      sessionKey: 'unit-shell-user',
+    };
+    const sessionPath = path.join(tempDir, '.sessions', `${resolveSessionStorageKey(identity)}.storage.json`);
     let gotoCount = 0;
 
     try {
@@ -1091,20 +1098,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       };
 
       await expect(
-        sessionCaptureTest.ensureAuthenticatedPage(
-          page as never,
-          {
-            userIdentifier: 'UNIT_SHELL_USER',
-            email: 'unit-shell-user@example.test',
-            password: 'not-used',
-            sessionKey: 'unit-shell-user',
-          },
-          {
-            targetUrl: 'https://manage-case.aat.platform.hmcts.net',
-            waitForSelector: 'exui-header',
-            timeoutMs: 1,
-          }
-        )
+        sessionCaptureTest.ensureAuthenticatedPage(page as never, identity, {
+          targetUrl: 'https://manage-case.aat.platform.hmcts.net',
+          waitForSelector: 'exui-header',
+          timeoutMs: 1,
+        })
       ).rejects.toThrow(/App shell not detected within 1ms/);
 
       expect(gotoCount).toBe(1);

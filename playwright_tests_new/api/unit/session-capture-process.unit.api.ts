@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
 
 import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
-import type { SessionIdentity } from '../../common/sessionIdentity.js';
+import { resolveSessionStorageKey, type SessionIdentity } from '../../common/sessionIdentity.js';
 
 const childScript = fileURLToPath(new URL('./session-capture-lock-owner.child.mjs', import.meta.url));
 const identity: SessionIdentity = {
@@ -16,6 +16,7 @@ const identity: SessionIdentity = {
   password: 'not-used',
   sessionKey: 'process-lock-contract',
 };
+const sessionStorageKey = resolveSessionStorageKey(identity);
 
 function waitForChildMessage(child: ChildProcess, type: string, timeoutMs = 5_000): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -92,8 +93,8 @@ test.describe('session capture cross-process lock contract', { tag: '@svc-intern
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-process-publish-'));
     const previousCwd = process.cwd();
     const sessionsDir = path.join(tempDir, '.sessions');
-    const lockFilePath = path.join(sessionsDir, 'process-lock-contract.lock');
-    const storagePath = path.join(sessionsDir, 'process-lock-contract.storage.json');
+    const lockFilePath = path.join(sessionsDir, `${sessionStorageKey}.lock`);
+    const storagePath = path.join(sessionsDir, `${sessionStorageKey}.storage.json`);
     let child: ChildProcess | undefined;
     let loginCount = 0;
 
@@ -132,8 +133,8 @@ test.describe('session capture cross-process lock contract', { tag: '@svc-intern
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-process-compromised-'));
     const previousCwd = process.cwd();
     const sessionsDir = path.join(tempDir, '.sessions');
-    const lockFilePath = path.join(sessionsDir, 'process-lock-contract.lock');
-    const storagePath = path.join(sessionsDir, 'process-lock-contract.storage.json');
+    const lockFilePath = path.join(sessionsDir, `${sessionStorageKey}.lock`);
+    const storagePath = path.join(sessionsDir, `${sessionStorageKey}.storage.json`);
     let child: ChildProcess | undefined;
 
     try {
@@ -164,8 +165,8 @@ test.describe('session capture cross-process lock contract', { tag: '@svc-intern
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-process-suspended-'));
     const previousCwd = process.cwd();
     const sessionsDir = path.join(tempDir, '.sessions');
-    const lockFilePath = path.join(sessionsDir, 'process-lock-contract.lock');
-    const storagePath = path.join(sessionsDir, 'process-lock-contract.storage.json');
+    const lockFilePath = path.join(sessionsDir, `${sessionStorageKey}.lock`);
+    const storagePath = path.join(sessionsDir, `${sessionStorageKey}.storage.json`);
     let child: ChildProcess | undefined;
     let captureSettled = false;
     let loginCount = 0;
@@ -209,9 +210,9 @@ test.describe('session capture cross-process lock contract', { tag: '@svc-intern
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-process-owner-death-'));
     const previousCwd = process.cwd();
     const sessionsDir = path.join(tempDir, '.sessions');
-    const lockFilePath = path.join(sessionsDir, 'process-lock-contract.lock');
-    const storagePath = path.join(sessionsDir, 'process-lock-contract.storage.json');
-    const failurePath = path.join(sessionsDir, 'process-lock-contract.capture-failed.json');
+    const lockFilePath = path.join(sessionsDir, `${sessionStorageKey}.lock`);
+    const storagePath = path.join(sessionsDir, `${sessionStorageKey}.storage.json`);
+    const failurePath = path.join(sessionsDir, `${sessionStorageKey}.capture-failed.json`);
     let child: ChildProcess | undefined;
     let loginCount = 0;
 
@@ -245,8 +246,8 @@ test.describe('session capture cross-process lock contract', { tag: '@svc-intern
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-process-release-'));
     const previousCwd = process.cwd();
     const sessionsDir = path.join(tempDir, '.sessions');
-    const lockFilePath = path.join(sessionsDir, 'process-lock-contract.lock');
-    const storagePath = path.join(sessionsDir, 'process-lock-contract.storage.json');
+    const lockFilePath = path.join(sessionsDir, `${sessionStorageKey}.lock`);
+    const storagePath = path.join(sessionsDir, `${sessionStorageKey}.storage.json`);
     let child: ChildProcess | undefined;
     let loginCount = 0;
 

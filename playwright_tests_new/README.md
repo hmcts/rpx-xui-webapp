@@ -792,11 +792,12 @@ The shared session-capture helper and API authentication store state under `.ses
 
 - API and E2E tests often use the same underlying user credentials, but they need different storage-state files.
 - With one directory and clear prefixes, stale files and lock files are easy to inspect during triage:
-  - E2E/integration sessions: `{sanitised-email}-{sha256-12}.storage.json`, or `{normalised-session-key}.storage.json` when an explicit session key is provided
+  - E2E/integration sessions: `{sanitised-email}-{sha256-12}.storage.json`, or `{normalised-session-key}-{sha256-12}.storage.json` when an explicit session key is provided
   - API sessions: `api-{env}-{role}.storage.json`
 - Lock files coordinate workers that request the same E2E session key or the same API role.
 - API and E2E do not share a single lock file and do not reuse one another's storage-state file.
 - Email-derived browser-session keys canonicalise email case. Legacy files created from uppercase email variants are intentionally not migrated and are recaptured once under the canonical key.
+- Explicit browser-session keys retain their exact trimmed case in the hash input. Legacy unhashed explicit-key files are not migrated because their original key cannot be proven; they are ignored and recaptured once.
 
 ### How It Works
 
@@ -864,13 +865,13 @@ test.describe('My Test Suite', () => {
 
 ### File Naming Convention
 
-| Test Type      | User Role      | File Pattern                                 | Example                                                                |
-| -------------- | -------------- | -------------------------------------------- | ---------------------------------------------------------------------- |
-| **E2E**        | Any            | `{sanitised-email}-{sha256-12}.storage.json` | `xui_auto_test_user_solicitor-mailinator.com-<sha256-12>.storage.json` |
-| **E2E**        | Explicit key   | `{normalised-session-key}.storage.json`      | `dynamic-solicitor-user-123.storage.json`                              |
-| **API**        | solicitor      | `api-{env}-{role}.storage.json`              | `api-aat-solicitor.storage.json`                                       |
-| **API**        | caseOfficer_r1 | `api-{env}-{role}.storage.json`              | `api-aat-caseOfficer_r1.storage.json`                                  |
-| **Lock files** | Any            | `{matching-storage-key}.lock`                | `xui_auto_test_user_solicitor-mailinator.com-<sha256-12>.lock`         |
+| Test Type      | User Role      | File Pattern                                        | Example                                                                |
+| -------------- | -------------- | --------------------------------------------------- | ---------------------------------------------------------------------- |
+| **E2E**        | Any            | `{sanitised-email}-{sha256-12}.storage.json`        | `xui_auto_test_user_solicitor-mailinator.com-<sha256-12>.storage.json` |
+| **E2E**        | Explicit key   | `{normalised-session-key}-{sha256-12}.storage.json` | `dynamic-solicitor-user-123-<sha256-12>.storage.json`                  |
+| **API**        | solicitor      | `api-{env}-{role}.storage.json`                     | `api-aat-solicitor.storage.json`                                       |
+| **API**        | caseOfficer_r1 | `api-{env}-{role}.storage.json`                     | `api-aat-caseOfficer_r1.storage.json`                                  |
+| **Lock files** | Any            | `{matching-storage-key}.lock`                       | `xui_auto_test_user_solicitor-mailinator.com-<sha256-12>.lock`         |
 
 ### Parallel Suite Storage in CI
 

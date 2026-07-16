@@ -36,8 +36,29 @@ test.describe('session identity storage key', { tag: '@svc-internal' }, () => {
     const firstAlias = resolveSessionStorageKey(identity('first@example.test', ' shared-session '));
     const secondAlias = resolveSessionStorageKey(identity('second@example.test', 'shared-session'));
 
-    expect(firstAlias).toBe('shared-session');
+    expect(firstAlias).toBe('shared-session-3509cd313e3f');
     expect(secondAlias).toBe(firstAlias);
+  });
+
+  test('does not collide when explicit-key punctuation normalises to the same readable value', () => {
+    const plusVariant = resolveSessionStorageKey(identity('first@example.test', 'shared+session'));
+    const hyphenVariant = resolveSessionStorageKey(identity('second@example.test', 'shared-session'));
+
+    expect(plusVariant).not.toBe(hyphenVariant);
+  });
+
+  test('does not collide with an explicit key that matches another key generated name', () => {
+    const generatedName = resolveSessionStorageKey(identity('first@example.test', 'shared+session'));
+    const matchingKey = resolveSessionStorageKey(identity('second@example.test', generatedName));
+
+    expect(matchingKey).not.toBe(generatedName);
+  });
+
+  test('does not collide for explicit key case variants on a case-insensitive filesystem', () => {
+    const lowerCase = resolveSessionStorageKey(identity('first@example.test', 'shared-session'));
+    const upperCase = resolveSessionStorageKey(identity('second@example.test', 'Shared-Session'));
+
+    expect(lowerCase.toLowerCase()).not.toBe(upperCase.toLowerCase());
   });
 
   test('falls back to the email when the explicit session key is blank', () => {

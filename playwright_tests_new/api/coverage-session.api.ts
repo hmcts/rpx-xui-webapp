@@ -8,7 +8,7 @@ import { UserUtils } from '../E2E/utils/user.utils.js';
 import type { IdamPage } from '@hmcts/playwright-common';
 import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
 import { resolveSessionStorageKey } from '../common/sessionIdentity.js';
-import type { Cookie } from 'playwright-core';
+import type { BrowserContext, Cookie } from 'playwright-core';
 import { withEnv } from './utils/testEnv';
 
 test.describe.configure({ mode: 'serial' });
@@ -268,6 +268,34 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
   });
 
+  test('rejects empty or whitespace-only authentication cookie values before reuse or persistence', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-empty-auth-cookie-'));
+    const sessionPath = path.join(tmpDir, 'session.storage.json');
+    const targetUrl = 'https://manage-case.example.test';
+    const idamUrl = 'https://idam.example.test';
+    const idamCookie = { ...baseCookie('Idam.Session', 'session'), domain: 'idam.example.test' };
+    const authCookie = { ...baseCookie('__auth__', 'auth'), domain: 'manage-case.example.test' };
+
+    for (const invalidCookieValue of ['', '   ']) {
+      for (const invalidCookieName of ['Idam.Session', '__auth__'] as const) {
+        const cookies = [idamCookie, authCookie].map((cookie) =>
+          cookie.name === invalidCookieName ? { ...cookie, value: invalidCookieValue } : cookie
+        );
+        await fsp.writeFile(sessionPath, JSON.stringify({ cookies }), 'utf8');
+
+        expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl, idamUrl })).toBe(false);
+        await expect(
+          sessionCaptureTest.requirePersistableSessionCookies(
+            { cookies: async () => cookies } as Pick<BrowserContext, 'cookies'>,
+            'BLANK_AUTH_COOKIE',
+            targetUrl,
+            idamUrl
+          )
+        ).rejects.toThrow('Cannot persist unauthenticated session');
+      }
+    }
+  });
+
   test('loadSessionCookies uses explicit sessionKey for dynamic identities', async () => {
     const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-identity-'));
     const originalCwd = process.cwd();
@@ -275,15 +303,16 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     try {
       const sessionsDir = path.join(tmpDir, '.sessions');
       await fsp.mkdir(sessionsDir, { recursive: true });
-      const storagePath = path.join(sessionsDir, 'dynamic-employment-user-123.storage.json');
-      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('session', 'value')] }), 'utf8');
-
-      const loaded = loadSessionCookies({
+      const identity = {
         userIdentifier: 'EMPLOYMENT_DYNAMIC_CASEWORKER',
         email: 'dynamic@example.test',
         password: 'secret',
         sessionKey: 'dynamic-employment-user-123',
-      });
+      };
+      const storagePath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
+      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('session', 'value')] }), 'utf8');
+
+      const loaded = loadSessionCookies(identity);
 
       expect(loaded.storageFile).toBe(storagePath);
       expect(loaded.cookies).toHaveLength(1);

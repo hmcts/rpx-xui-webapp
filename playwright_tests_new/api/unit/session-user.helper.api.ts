@@ -32,4 +32,27 @@ test.describe('session user helper', { tag: '@svc-internal' }, () => {
       'Expected session for STAFF_ADMIN to include __userid__ cookie.'
     );
   });
+
+  test('annotates the concrete pooled identity selected for a generic alias', async () => {
+    const testInfo = { annotations: [] as Array<{ type: string; description?: string }> };
+    const fakeApplier = async () => ({
+      userIdentifier: 'STAFF_ADMIN-2',
+      cookies: [{ name: '__userid__', value: '123456789' }],
+    });
+
+    await expect(resolveSessionUserId({} as never, 'STAFF_ADMIN', fakeApplier, {}, testInfo)).resolves.toBe('123456789');
+    expect(testInfo.annotations).toEqual([{ type: 'session-user', description: 'STAFF_ADMIN-2' }]);
+  });
+
+  test('does not duplicate an existing annotation for the selected pooled identity', async () => {
+    const existingAnnotation = { type: 'session-user', description: 'STAFF_ADMIN-2' };
+    const testInfo = { annotations: [existingAnnotation] };
+    const fakeApplier = async () => ({
+      userIdentifier: 'STAFF_ADMIN-2',
+      cookies: [{ name: '__userid__', value: '123456789' }],
+    });
+
+    await resolveSessionUserId({} as never, 'STAFF_ADMIN', fakeApplier, {}, testInfo);
+    expect(testInfo.annotations).toEqual([existingAnnotation]);
+  });
 });

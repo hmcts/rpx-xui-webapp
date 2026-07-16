@@ -182,7 +182,7 @@ test.describe('integration session configuration', { tag: '@svc-internal' }, () 
     }
   });
 
-  test('rejects a catalogued spec feature tag without a session mapping', async () => {
+  test('rejects an unselected catalogued feature tag without a session mapping', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-spec-mapping-'));
     const integrationDir = path.join(tempDir, 'playwright_tests_new', 'integration');
     const tagConfig = path.join(tempDir, 'tag-filter.json');
@@ -192,11 +192,17 @@ test.describe('integration session configuration', { tag: '@svc-internal' }, () 
     try {
       fs.mkdirSync(integrationDir, { recursive: true });
       fs.writeFileSync(
-        path.join(integrationDir, 'unmapped.spec.ts'),
-        "test.describe('feature', { tag: ['@integration', '@integration-unmapped'] }, () => {});\n"
+        path.join(integrationDir, 'mapped.spec.ts'),
+        "test.describe('feature', { tag: ['@integration', '@integration-search-case'] }, () => {});\n"
       );
-      fs.writeFileSync(tagConfig, JSON.stringify({ availableTags: ['@integration', '@integration-unmapped'], excludedTags: [] }));
-      process.env.INTEGRATION_PW_INCLUDE_TAGS = '@integration-unmapped';
+      fs.writeFileSync(
+        tagConfig,
+        JSON.stringify({
+          availableTags: ['@integration', '@integration-search-case', '@integration-unmapped'],
+          excludedTags: [],
+        })
+      );
+      process.env.INTEGRATION_PW_INCLUDE_TAGS = '@integration-search-case';
       process.env.INTEGRATION_PW_TAG_FILTER_CONFIG = tagConfig;
 
       await expect(globalSetup({ projects: [{ testDir: integrationDir }] } as FullConfig)).rejects.toThrow(

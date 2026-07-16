@@ -42,8 +42,15 @@ const authCookies: Cookie[] = [
   },
 ];
 
-function createLauncher({ failFirstContextClose = false }: { failFirstContextClose?: boolean } = {}) {
+function createLauncher({
+  failFirstContextClose = false,
+  closeBrowser = async () => undefined,
+}: {
+  failFirstContextClose?: boolean;
+  closeBrowser?: () => Promise<void>;
+} = {}) {
   const contexts: Array<{ closeCalls: number }> = [];
+  const browserState = { closeCalls: 0 };
   const launcher = {
     launch: async () => ({
       newContext: async () => {
@@ -68,10 +75,13 @@ function createLauncher({ failFirstContextClose = false }: { failFirstContextClo
         (context as BrowserContext & { newPage: () => Promise<Page> }).newPage = async () => page;
         return context;
       },
-      close: async () => undefined,
+      close: async () => {
+        browserState.closeCalls += 1;
+        await closeBrowser();
+      },
     }),
   };
-  return { launcher, contexts };
+  return { launcher, browserState, contexts };
 }
 
 const commonArgs = {
@@ -387,6 +397,73 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(loginTargets).toEqual(['https://manage-case.example.test/', 'https://manage-case.example.test/']);
     expect(contexts).toHaveLength(2);
     expect(contexts.map((context) => context.closeCalls)).toEqual([1, 1]);
+  });
+
+  test('fails a successful capture when browser shutdown rejects', async () => {
+    const { launcher, browserState, contexts } = createLauncher({
+      closeBrowser: async () => {
+        throw new Error('browser close failed');
+      },
+    });
+
+    await expect(
+      sessionCaptureTest.loginAndPersistSession({
+        ...commonArgs,
+        chromiumLauncher: launcher as any,
+        executeLoginAttemptFn: async () => undefined,
+      })
+    ).rejects.toThrow(
+      'Session capture cleanup failed for IAC_Judge_WA_R1 at https://manage-case.example.test/: browser close failed'
+    );
+
+    expect(contexts).toHaveLength(1);
+    expect(contexts[0].closeCalls).toBe(1);
+    expect(browserState.closeCalls).toBe(1);
+  });
+
+  test('preserves the capture failure when browser shutdown also rejects', async () => {
+    const { launcher, browserState } = createLauncher({
+      closeBrowser: async () => {
+        throw new Error('browser close failed');
+      },
+    });
+    let capturedError: (Error & { browserCloseError?: Error }) | undefined;
+
+    try {
+      await sessionCaptureTest.loginAndPersistSession({
+        ...commonArgs,
+        chromiumLauncher: launcher as any,
+        executeLoginAttemptFn: async () => {
+          throw new Error('Incorrect email or password');
+        },
+      });
+    } catch (error) {
+      capturedError = error as Error & { browserCloseError?: Error };
+    }
+
+    expect(capturedError?.message).toContain('Login failed for IAC_Judge_WA_R1');
+    expect(capturedError?.message).toContain('Incorrect email or password');
+    expect(capturedError?.message).not.toContain('browser close failed');
+    expect(capturedError?.browserCloseError?.message).toContain('browser close failed');
+    expect(browserState.closeCalls).toBe(1);
+  });
+
+  test('fails a successful capture when browser shutdown exceeds its budget', async () => {
+    const { launcher, browserState } = createLauncher({
+      closeBrowser: () => new Promise<void>(() => undefined),
+    });
+
+    await expect(
+      sessionCaptureTest.loginAndPersistSession({
+        ...commonArgs,
+        chromiumLauncher: launcher as any,
+        executeLoginAttemptFn: async () => undefined,
+      })
+    ).rejects.toThrow(
+      `Session capture cleanup failed for IAC_Judge_WA_R1 at https://manage-case.example.test/: Browser close timed out after ${sessionCaptureTest.sessionCaptureBrowserCloseBudgetMs}ms`
+    );
+
+    expect(browserState.closeCalls).toBe(1);
   });
 
   test('retries the certificate verifier change once at the outer capture boundary with a fresh context', async () => {

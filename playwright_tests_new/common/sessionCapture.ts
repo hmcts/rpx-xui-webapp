@@ -473,6 +473,10 @@ type ErrorWithSessionLockReleaseError = Error & {
   sessionLockReleaseError?: Error;
 };
 
+type ErrorWithBrowserCloseError = Error & {
+  browserCloseError?: Error;
+};
+
 function isSessionLockCompromisedError(error: Error): boolean {
   return error.name === 'SessionLockCompromisedError';
 }
@@ -1256,6 +1260,7 @@ async function loginAndPersistSession({
     );
     return browserClosePromise;
   };
+  let captureError: unknown;
   try {
     for (let captureAttempt = 1; captureAttempt <= SESSION_CAPTURE_LOGIN_ATTEMPTS; captureAttempt += 1) {
       const abortController = new AbortController();
@@ -1317,7 +1322,7 @@ async function loginAndPersistSession({
           persistenceError.name = 'SessionPersistenceError';
           throw persistenceError;
         }
-        return;
+        break;
       } catch (error) {
         const loginError = error as Error;
         if (isSessionLockCompromisedError(loginError)) {
@@ -1386,17 +1391,37 @@ async function loginAndPersistSession({
         await waitForRetry();
       }
     }
-  } finally {
-    try {
-      await closeBrowser();
-    } catch (closeError) {
-      logger.warn('Failed to close browser after session capture', {
-        userIdentifier,
-        targetUrl: sanitizeUrl(targetUrl),
-        error: sessionCaptureFailureEvidence(toError(closeError)),
-        operation: 'session-capture',
-      });
+  } catch (error) {
+    captureError = error;
+  }
+
+  try {
+    await closeBrowser();
+  } catch (closeError) {
+    const evidence = sessionCaptureFailureEvidence(toError(closeError));
+    const sanitizedCause = new Error(evidence);
+    sanitizedCause.name = 'SessionCancellationError';
+    const browserCloseError = new SessionCaptureError(
+      `Session capture cleanup failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)}: ${evidence}`,
+      userIdentifier,
+      { targetUrl: sanitizeUrl(targetUrl), appTargetUrl: sanitizeUrl(targetUrl), evidence },
+      sanitizedCause
+    );
+    logger.warn('Failed to close browser after session capture', {
+      userIdentifier,
+      targetUrl: sanitizeUrl(targetUrl),
+      error: evidence,
+      operation: 'session-capture',
+    });
+    if (captureError instanceof Error) {
+      (captureError as ErrorWithBrowserCloseError).browserCloseError = browserCloseError;
+    } else if (captureError === undefined) {
+      captureError = browserCloseError;
     }
+  }
+
+  if (captureError !== undefined) {
+    throw captureError;
   }
 }
 

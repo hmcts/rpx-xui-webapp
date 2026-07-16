@@ -113,23 +113,19 @@ export function resolveIntegrationSessionUsers(
   env: NodeJS.ProcessEnv = process.env,
   tagSelection?: IntegrationTagSelection
 ): SessionIdentityInput[] {
-  const selectedTags = tagSelection
-    ? isFullIntegrationRun(tagSelection)
-      ? tagSelection.availableTags.filter(
-          (tag) => tag !== (tagSelection.suiteTag ?? integrationSuiteTag) && !tagSelection.excludedTags.includes(tag)
-        )
-      : resolveSelectedIntegrationTags(tagSelection)
-    : [];
-  assertIntegrationSessionMappings(selectedTags);
-  const selectedTagUsers = tagSelection
-    ? uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationSessionUsersByTag[tag](env)))
-    : [];
-
   if (!tagSelection) {
     return [];
   }
 
-  return selectedTagUsers;
+  const suiteTag = tagSelection.suiteTag ?? integrationSuiteTag;
+  const availableFeatureTags = tagSelection.availableTags.filter((tag) => tag !== suiteTag);
+  assertIntegrationSessionMappings(availableFeatureTags);
+
+  const selectedTags = isFullIntegrationRun(tagSelection)
+    ? availableFeatureTags.filter((tag) => !tagSelection.excludedTags.includes(tag))
+    : resolveSelectedIntegrationTags(tagSelection);
+
+  return uniqueSessionIdentities(selectedTags.flatMap((tag) => integrationSessionUsersByTag[tag](env)));
 }
 
 export function resolveSearchCaseUserIdentifier(

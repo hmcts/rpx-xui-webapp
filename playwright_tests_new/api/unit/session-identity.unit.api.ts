@@ -25,11 +25,11 @@ test.describe('session identity storage key', { tag: '@svc-internal' }, () => {
     expect(plusVariant).not.toBe(hyphenVariant);
   });
 
-  test('does not collide for case variants', () => {
+  test('uses one storage key for case variants of the same IDAM email', () => {
     const lowerCase = resolveSessionStorageKey(identity('user@example.test'));
     const upperCase = resolveSessionStorageKey(identity('USER@example.test'));
 
-    expect(lowerCase).not.toBe(upperCase);
+    expect(lowerCase).toBe(upperCase);
   });
 
   test('uses the trimmed explicit session key instead of the email', () => {

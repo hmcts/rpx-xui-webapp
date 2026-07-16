@@ -86,6 +86,21 @@ test.describe('integration session configuration', { tag: '@svc-internal' }, () 
     }
   });
 
+  test('rejects an integration spec without a static feature tag', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-untagged-spec-'));
+    const specFile = path.join(tempDir, 'untagged.spec.ts');
+
+    try {
+      fs.writeFileSync(specFile, "test.describe('feature', () => {});\n");
+
+      expect(() => validateIntegrationSpecTagCatalogue([tempDir], ['@integration'], 'tag-filter.json')).toThrow(
+        /without a static @integration-\* feature tag.*untagged\.spec\.ts/
+      );
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('rejects tag identifiers and spreads that cannot be validated statically', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-dynamic-spec-tags-'));
     const specFile = path.join(tempDir, 'dynamic.spec.ts');
@@ -142,9 +157,11 @@ test.describe('integration session configuration', { tag: '@svc-internal' }, () 
     try {
       fs.writeFileSync(
         specFile,
-        "test('feature', { tag: ['@integration'] }, async () => test.step('step', async () => {}, { box: true }));\n"
+        "test('feature', { tag: ['@integration', '@integration-step'] }, async () => test.step('step', async () => {}, { box: true }));\n"
       );
-      expect(() => validateIntegrationSpecTagCatalogue([tempDir], ['@integration'], 'tag-filter.json')).not.toThrow();
+      expect(() =>
+        validateIntegrationSpecTagCatalogue([tempDir], ['@integration', '@integration-step'], 'tag-filter.json')
+      ).not.toThrow();
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

@@ -4,8 +4,9 @@ import process from 'node:process';
 
 import lockfile from 'proper-lockfile';
 
-const [lockFilePath, storagePath, staleMsArgument] = process.argv.slice(2);
+const [lockFilePath, storagePath, staleMsArgument, updateMsArgument] = process.argv.slice(2);
 const staleMs = Number(staleMsArgument);
+const updateMs = Number(updateMsArgument);
 
 function freshAuthStorageState() {
   return {
@@ -13,6 +14,16 @@ function freshAuthStorageState() {
       {
         name: 'Idam.Session',
         value: 'child-session',
+        domain: '.example.test',
+        path: '/',
+        expires: Math.floor(Date.now() / 1_000) + 600,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax',
+      },
+      {
+        name: '__auth__',
+        value: 'child-auth',
         domain: '.example.test',
         path: '/',
         expires: Math.floor(Date.now() / 1_000) + 600,
@@ -31,18 +42,20 @@ async function main() {
   const releaseLock = await lockfile.lock(lockFilePath, {
     retries: 0,
     stale: staleMs,
+    update: updateMs,
     onCompromised: (error) => {
       compromisedError = error;
+      process.send?.({ type: 'compromised' });
     },
   });
   const assertOwned = () => {
-    if (compromisedError || !fs.existsSync(`${lockFilePath}.lock`)) {
+    if (compromisedError) {
       throw new Error('lock ownership lost');
     }
   };
   process.send?.({ type: 'locked' });
 
-  process.on('message', async (message) => {
+  const handleMessage = async (message) => {
     if (message === 'publish') {
       const stagingPath = `${storagePath}.${process.pid}.tmp`;
       fs.writeFileSync(stagingPath, JSON.stringify(freshAuthStorageState()));
@@ -72,6 +85,13 @@ async function main() {
       process.send?.({ type: 'released' });
       process.exit(0);
     }
+  };
+
+  process.on('message', (message) => {
+    void handleMessage(message).catch((error) => {
+      process.send?.({ type: 'error', message: error.message });
+      process.exit(1);
+    });
   });
 }
 

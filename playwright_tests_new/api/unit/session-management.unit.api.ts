@@ -33,15 +33,29 @@ function hiddenLocator() {
   return locator;
 }
 
-function fakeLockfile(onAcquire?: (lockPath: string, options: { onCompromised: (error: Error) => void }) => void) {
+type FakeLockOptions = { onCompromised: (error: Error) => void };
+
+function fakeLockfile(
+  onAcquire?: (lockPath: string, options: FakeLockOptions) => void,
+  onRelease?: (lockPath: string, options: FakeLockOptions) => void
+) {
   return {
-    lock: async (lockPath: string, options: { onCompromised: (error: Error) => void }) => {
+    lock: async (lockPath: string, options: FakeLockOptions) => {
       const lockDirectoryPath = `${lockPath}.lock`;
       fs.mkdirSync(lockDirectoryPath);
       onAcquire?.(lockPath, options);
-      return async () => fs.rmSync(lockDirectoryPath, { recursive: true, force: true });
+      return async () => {
+        fs.rmSync(lockDirectoryPath, { recursive: true, force: true });
+        onRelease?.(lockPath, options);
+      };
     },
   } as never;
+}
+
+function releaseCompromisedLockfile() {
+  return fakeLockfile(undefined, (_lockPath, options) => {
+    options.onCompromised(new Error('lock ownership lost during release'));
+  });
 }
 
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
@@ -598,6 +612,71 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('after locking, a cooldown is not cleared by an IDAM cookie for the wrong host', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-after-lock-cooldown-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_AFTER_LOCK_USER',
+      email: 'after-lock@example.test',
+      password: 'not-used',
+      sessionKey: 'unit-after-lock-user',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, 'unit-after-lock-user.storage.json');
+    const failurePath = path.join(sessionsDir, 'unit-after-lock-user.capture-failed.json');
+    let loginCalled = false;
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: {
+            urls: {
+              exuiDefaultUrl: 'https://manage-case.example.test',
+              idamWebUrl: 'https://idam.example.test',
+            },
+          } as never,
+          env: {},
+          lockfile: fakeLockfile(() => {
+            fs.writeFileSync(
+              sessionPath,
+              JSON.stringify({
+                cookies: [
+                  {
+                    name: 'Idam.Session',
+                    value: 'session',
+                    domain: 'wrong-idam.example.test',
+                    path: '/',
+                    expires: Math.floor(Date.now() / 1_000) + 600,
+                  },
+                  {
+                    name: '__auth__',
+                    value: 'auth',
+                    domain: 'manage-case.example.test',
+                    path: '/',
+                    expires: Math.floor(Date.now() / 1_000) + 600,
+                  },
+                ],
+              })
+            );
+            fs.writeFileSync(failurePath, JSON.stringify({ timestamp: Date.now(), message: 'another worker failed capture' }));
+          }),
+          loginAndPersistSession: async () => {
+            loginCalled = true;
+          },
+          resolveSessionIdentity: () => identity,
+        })
+      ).rejects.toThrow('Recent session capture failed for UNIT_AFTER_LOCK_USER');
+
+      expect(loginCalled).toBe(false);
+      expect(fs.existsSync(failurePath)).toBe(true);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('writes the cooldown marker only after the locked login attempts are exhausted', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-retry-marker-'));
     const previousCwd = process.cwd();
@@ -673,6 +752,74 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       ).rejects.toThrow('Session lock ownership was lost');
 
       expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('fails a successful capture when lock ownership is lost during release', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-release-compromise-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'RELEASE_COMPROMISE_USER',
+      email: 'release-compromise@example.test',
+      password: 'not-used',
+    };
+    const failurePath = path.join(tempDir, '.sessions', `${resolveSessionStorageKey(identity)}.capture-failed.json`);
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: releaseCompromisedLockfile(),
+          loginAndPersistSession: async () => undefined,
+          resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+        })
+      ).rejects.toMatchObject({ name: 'SessionLockCompromisedError' });
+
+      expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('preserves a capture failure and attaches a release-time lock compromise', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-release-diagnostic-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'RELEASE_DIAGNOSTIC_USER',
+      email: 'release-diagnostic@example.test',
+      password: 'not-used',
+    };
+    const captureError = new Error('capture failed before release');
+    let receivedError: (Error & { sessionLockReleaseError?: Error }) | undefined;
+
+    try {
+      process.chdir(tempDir);
+      try {
+        await sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: releaseCompromisedLockfile(),
+          loginAndPersistSession: async () => {
+            throw captureError;
+          },
+          resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+        });
+      } catch (error) {
+        receivedError = error as Error & { sessionLockReleaseError?: Error };
+      }
+
+      expect(receivedError).toBe(captureError);
+      expect(receivedError?.sessionLockReleaseError).toMatchObject({ name: 'SessionLockCompromisedError' });
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -912,7 +1059,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             {
               name: 'Idam.Session',
               value: 'session',
-              domain: 'manage-case.aat.platform.hmcts.net',
+              domain: 'idam-web-public.aat.platform.hmcts.net',
               path: '/',
               expires: Math.floor(Date.now() / 1_000) + 600,
             },

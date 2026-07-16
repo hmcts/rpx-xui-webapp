@@ -53,10 +53,27 @@ function waitForExit(child: ChildProcess): Promise<void> {
   return new Promise((resolve) => child.once('exit', () => resolve()));
 }
 
+async function waitForLockHeartbeat(lockDirectoryPath: string, initialMtimeMs: number, timeoutMs = 12_000): Promise<void> {
+  await expect
+    .poll(() => fs.statSync(lockDirectoryPath).mtimeMs, {
+      message: `lock heartbeat updates ${lockDirectoryPath}`,
+      timeout: timeoutMs,
+    })
+    .toBeGreaterThan(initialMtimeMs);
+}
+
 function startLockOwner(lockFilePath: string, storagePath: string): ChildProcess {
-  return spawn(process.execPath, [childScript, lockFilePath, storagePath, String(sessionCaptureTest.sessionCaptureLockStaleMs)], {
-    stdio: ['ignore', 'ignore', 'inherit', 'ipc'],
-  });
+  return spawn(
+    process.execPath,
+    [
+      childScript,
+      lockFilePath,
+      storagePath,
+      String(sessionCaptureTest.sessionCaptureLockStaleMs),
+      String(sessionCaptureTest.sessionCaptureLockUpdateMs),
+    ],
+    { stdio: ['ignore', 'ignore', 'inherit', 'ipc'] }
+  );
 }
 
 function captureWith(lockWaitMs: number, onLogin: () => void = () => undefined) {
@@ -85,11 +102,13 @@ test.describe('session capture cross-process lock contract', { tag: '@svc-intern
       process.chdir(tempDir);
       child = startLockOwner(lockFilePath, storagePath);
       await waitForChildMessage(child, 'locked');
+      const lockDirectoryPath = `${lockFilePath}.lock`;
+      const initialMtimeMs = fs.statSync(lockDirectoryPath).mtimeMs;
 
-      const capture = captureWith(5_000, () => {
+      const capture = captureWith(12_000, () => {
         loginCount += 1;
       });
-      await new Promise<void>((resolve) => setTimeout(resolve, 500));
+      await waitForLockHeartbeat(lockDirectoryPath, initialMtimeMs);
       expect(loginCount).toBe(0);
       const published = waitForChildMessage(child, 'published');
       child.send('publish');
@@ -102,6 +121,38 @@ test.describe('session capture cross-process lock contract', { tag: '@svc-intern
         const released = waitForChildMessage(child, 'released');
         child.send('release');
         await released.catch(() => undefined);
+        await waitForExit(child);
+      }
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('a reported lock compromise prevents session publication', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-process-compromised-'));
+    const previousCwd = process.cwd();
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const lockFilePath = path.join(sessionsDir, 'process-lock-contract.lock');
+    const storagePath = path.join(sessionsDir, 'process-lock-contract.storage.json');
+    let child: ChildProcess | undefined;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      process.chdir(tempDir);
+      child = startLockOwner(lockFilePath, storagePath);
+      await waitForChildMessage(child, 'locked');
+      const compromised = waitForChildMessage(child, 'compromised', 12_000);
+      fs.rmSync(`${lockFilePath}.lock`, { recursive: true, force: true });
+      await compromised;
+
+      const publication = waitForChildMessage(child, 'published');
+      child.send('publish');
+      await expect(publication).rejects.toThrow('lock ownership lost');
+      await waitForExit(child);
+      expect(fs.existsSync(storagePath)).toBe(false);
+    } finally {
+      if (child && child.exitCode === null && child.signalCode === null) {
+        child.kill('SIGKILL');
         await waitForExit(child);
       }
       process.chdir(previousCwd);

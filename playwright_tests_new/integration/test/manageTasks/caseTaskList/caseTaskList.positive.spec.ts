@@ -43,7 +43,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
+test.describe(`User ${userIdentifier} can see assigned tasks on a case`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`Low priority tasks assigned to logged in user show elements and markdown as expected`, async ({
     caseDetailsPage,
     page,

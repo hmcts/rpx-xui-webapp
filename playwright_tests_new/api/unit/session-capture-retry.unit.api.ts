@@ -23,7 +23,7 @@ const authCookies: Cookie[] = [
   {
     name: 'Idam.Session',
     value: 'idam',
-    domain: 'example.test',
+    domain: 'idam.example.test',
     path: '/',
     expires: -1,
     httpOnly: true,
@@ -33,7 +33,7 @@ const authCookies: Cookie[] = [
   {
     name: '__auth__',
     value: 'auth',
-    domain: 'example.test',
+    domain: 'manage-case.example.test',
     path: '/',
     expires: -1,
     httpOnly: true,
@@ -442,24 +442,39 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(contexts[0].closeCalls).toBe(1);
   });
 
-  test('preserves lock compromise through the real persistence boundary', async () => {
-    const { launcher, contexts } = createLauncher();
+  test('the real persistence boundary rejects lock compromise before atomic publication', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-persist-lock-compromise-'));
+    const sessionPath = path.join(tempDir, 'session.storage.json');
     const lockError = new Error('Session lock ownership was lost for IAC_Judge_WA_R1');
     lockError.name = 'SessionLockCompromisedError';
+    const context = {
+      addCookies: async () => undefined,
+      storageState: async ({ path: stagingPath }: { path: string }) => {
+        fs.writeFileSync(stagingPath, JSON.stringify({ cookies: authCookies }), 'utf8');
+      },
+    };
+    const cookieUtils = {
+      writeManageCasesSession: (stagingPath: string, cookies: Cookie[]) => {
+        fs.writeFileSync(stagingPath, JSON.stringify({ cookies }), 'utf8');
+      },
+    };
 
-    await expect(
-      sessionCaptureTest.loginAndPersistSession({
-        ...commonArgs,
-        chromiumLauncher: launcher as any,
-        persist: async () => {
-          throw lockError;
-        },
-        executeLoginAttemptFn: async () => undefined,
-      })
-    ).rejects.toBe(lockError);
+    try {
+      await expect(
+        sessionCaptureTest.persistSession(sessionPath, authCookies, context as any, 'IAC_Judge_WA_R1', {
+          assertLockOwned: () => {
+            throw lockError;
+          },
+          cookieUtils: cookieUtils as any,
+          fs,
+        })
+      ).rejects.toBe(lockError);
 
-    expect(contexts).toHaveLength(1);
-    expect(contexts[0].closeCalls).toBe(1);
+      expect(fs.existsSync(sessionPath)).toBe(false);
+      expect(fs.readdirSync(tempDir)).toEqual([]);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 
   test('retries an unexplained unauthenticated result once with a fresh context', async () => {

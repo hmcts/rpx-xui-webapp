@@ -117,11 +117,16 @@ function integrationSpecFiles(testDir: string): string[] {
 export function validateIntegrationSpecTagCatalogue(testDirs: string[], availableTags: string[], configPath: string): void {
   const availableTagSet = new Set(availableTags);
   const missingTags = new Map<string, string[]>();
+  const untaggedSpecs: string[] = [];
 
   for (const testDir of new Set(testDirs)) {
     for (const specFile of integrationSpecFiles(testDir)) {
       const source = fs.readFileSync(specFile, 'utf8');
-      for (const tag of integrationFeatureTagsFromSource(source, specFile)) {
+      const featureTags = integrationFeatureTagsFromSource(source, specFile);
+      if (featureTags.length === 0) {
+        untaggedSpecs.push(path.relative(process.cwd(), specFile));
+      }
+      for (const tag of featureTags) {
         if (!availableTagSet.has(tag)) {
           const files = missingTags.get(tag) ?? [];
           files.push(path.relative(process.cwd(), specFile));
@@ -131,9 +136,18 @@ export function validateIntegrationSpecTagCatalogue(testDirs: string[], availabl
     }
   }
 
-  if (missingTags.size > 0) {
-    const details = [...missingTags].map(([tag, files]) => `${tag} (${files.join(', ')})`).join('; ');
-    throw new Error(`Integration spec feature tags missing from ${configPath}: ${details}`);
+  if (missingTags.size > 0 || untaggedSpecs.length > 0) {
+    const details = [
+      untaggedSpecs.length > 0 ? `specs without a static @integration-* feature tag (${untaggedSpecs.join(', ')})` : undefined,
+      missingTags.size > 0
+        ? `feature tags missing from ${configPath}: ${[...missingTags]
+            .map(([tag, files]) => `${tag} (${files.join(', ')})`)
+            .join('; ')}`
+        : undefined,
+    ]
+      .filter(Boolean)
+      .join('; ');
+    throw new Error(`Integration spec tag catalogue validation failed: ${details}`);
   }
 }
 

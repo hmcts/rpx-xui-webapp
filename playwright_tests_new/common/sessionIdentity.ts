@@ -20,9 +20,9 @@ function normaliseSessionStorageKey(value: string): string {
 }
 
 function collisionSafeSessionStorageKey(value: string): string {
-  const trimmedValue = value.trim();
-  const discriminator = createHash('sha256').update(trimmedValue).digest('hex').slice(0, 12);
-  return `${normaliseSessionStorageKey(trimmedValue)}-${discriminator}`;
+  const canonicalValue = value.trim().toLowerCase();
+  const discriminator = createHash('sha256').update(canonicalValue).digest('hex').slice(0, 12);
+  return `${normaliseSessionStorageKey(canonicalValue)}-${discriminator}`;
 }
 
 export function resolveSessionIdentity(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): SessionIdentity {

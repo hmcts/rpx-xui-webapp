@@ -782,11 +782,11 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 ### Overview
 
-**E2E, integration, and API tests** use lazy storage-state capture under the shared `.sessions/` directory. The files are namespaced by suite style so parallel workers can reuse the right state without colliding.
+Browser sessions managed by `common/sessionCapture.ts` are captured lazily under `.sessions/`. E2E and integration callers of that helper deliberately share browser-session keys, while API state remains separately namespaced. Some E2E journeys use the separate UI storage helper under `test-results/storage-states/ui`.
 
-### Unified Storage Location
+### Session Capture Storage
 
-All suites use `.sessions/`; the [file naming convention](#file-naming-convention) keeps browser and API state separate.
+The shared session-capture helper and API authentication store state under `.sessions/`; the [file naming convention](#file-naming-convention) keeps browser and API state separate. E2E flows using `E2E/utils/storage-state.utils.ts` store their UI state under `test-results/storage-states/ui` instead.
 
 **Why shared storage matters:**
 
@@ -796,12 +796,13 @@ All suites use `.sessions/`; the [file naming convention](#file-naming-conventio
   - API sessions: `api-{env}-{role}.storage.json`
 - Lock files coordinate workers that request the same E2E session key or the same API role.
 - API and E2E do not share a single lock file and do not reuse one another's storage-state file.
+- Email-derived browser-session keys canonicalise email case. Legacy files created from uppercase email variants are intentionally not migrated and are recaptured once under the canonical key.
 
 ### How It Works
 
 #### 1. Lazy Loading
 
-- Sessions are **NOT** pre-captured during global setup
+- Normal E2E and integration sessions are not pre-captured during global setup. Accessibility E2E runs prewarm their configured session unless `PW_A11Y_PREWARM_SESSION=false`
 - Each test specifies which user it needs via `ensureSession()` (E2E) or fixtures (API)
 - Sessions are captured only when first requested
 - Cached sessions are reused across tests and workers
@@ -953,7 +954,7 @@ npx playwright test --project=node-api  # API tests
 - E2E workers share the E2E storage state for the same session key.
 - API workers share the API storage state for the same role.
 - Integration workers share E2E-style storage state when they use the same session helper and session key.
-- The suites stay namespaced even when they use the same underlying user credentials.
+- API storage remains separate from the browser-session state shared by E2E and integration.
 
 ### Session Storage
 
@@ -963,15 +964,15 @@ Sessions are stored in `.sessions/` with filesystem-based locking. See the [file
 
 - Created when a worker/test suite attempts to log in
 - Held for the bounded browser launch, login/retry, persistence, and cleanup lifecycle
-- Released in `finally` block to prevent deadlocks
+- Released after every capture outcome; release failures fail a successful capture or are attached to the original capture error
 - Other E2E/integration workers poll once per second for up to 145 seconds while checking whether another worker has refreshed the target session
 - After lock released, waiting workers recheck session freshness
 - Waiting workers can skip lock acquisition entirely if the target session becomes fresh while they are polling
 - Waiting workers skip login if session became fresh while waiting (prevents duplicate recapture storms)
 - Each E2E/integration acquisition attempt uses `retries: 0`; the outer polling loop owns the 145-second wait budget
 - `proper-lockfile` refreshes the lock heartbeat while an owner is healthy. Its stale threshold is longer than the maximum supported test-run lifetime, so a suspended or abruptly interrupted owner is never displaced by another worker in the same run
-- If an owner is killed without running normal exit cleanup, waiting workers fail closed without another login or cooldown marker. CI workspace isolation clears the orphan for the next build; persistent local workspaces may require removing the orphaned `.lock` directory after confirming no test process is running
-- Session publication checks for reported lock compromise immediately before atomic rename. A detected ownership loss aborts publication and does not create a session-capture cooldown marker
+- If an owner is killed without running normal exit cleanup, waiting workers fail closed without another login or cooldown marker. A clean CI workspace removes the orphan for the next build; reused CI or local workspaces may require removing the orphaned `.lock` directory after confirming no test process is running
+- Session publication checks for compromise reported by `proper-lockfile` immediately before atomic rename. A detected ownership loss aborts publication and does not create a session-capture cooldown marker
 - API storage capture keeps its separate lock configuration in `api/utils/auth.ts`
 
 ### Implementation Details

@@ -24,6 +24,7 @@ import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdm
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
+const AUTH_COOKIE_MIN_REMAINING_SECONDS = 60;
 const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
@@ -45,6 +46,7 @@ const SESSION_CAPTURE_OWNER_BUDGET_MS =
 const SESSION_CAPTURE_LOCK_HEADROOM_MS = 15_000;
 const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_CAPTURE_LOCK_HEADROOM_MS;
 const SESSION_CAPTURE_LOCK_START_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
+const SESSION_CAPTURE_LOCK_UPDATE_MS = 5_000;
 // Automatic takeover inside a test run can let a suspended owner resume and overwrite
 // a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
 const SESSION_CAPTURE_LOCK_STALE_MS = 24 * 60 * 60_000;
@@ -235,9 +237,15 @@ function currentPageUrl(page: Page): string {
   }
 }
 
-function normalizeCookieDomain(domain: string | undefined): string | null {
-  const value = domain?.trim().replace(/^\./, '');
-  return value ? value.toLowerCase() : null;
+function parseCookieDomain(domain: string | undefined): { host: string; includesSubdomains: boolean } | null {
+  const value = domain?.trim().toLowerCase();
+  if (!value) {
+    return null;
+  }
+  return {
+    host: value.replace(/^\./, ''),
+    includesSubdomains: value.startsWith('.'),
+  };
 }
 
 function resolveTargetHost(targetUrl: string | undefined): string | null {
@@ -253,26 +261,37 @@ function resolveTargetHost(targetUrl: string | undefined): string | null {
 }
 
 function isCookieCompatibleWithHost(cookie: Cookie, targetHost: string): boolean {
-  const cookieDomain = normalizeCookieDomain(cookie.domain);
+  const cookieDomain = parseCookieDomain(cookie.domain);
   if (!cookieDomain) {
     return false;
   }
 
-  return targetHost === cookieDomain || targetHost.endsWith(`.${cookieDomain}`) || cookieDomain.endsWith(`.${targetHost}`);
+  return targetHost === cookieDomain.host || (cookieDomain.includesSubdomains && targetHost.endsWith(`.${cookieDomain.host}`));
 }
 
-function hasTargetCompatibleAuthCookies(cookies: Cookie[], targetUrl: string | undefined): boolean {
+function isCookieUsable(cookie: Cookie, nowSeconds: number): boolean {
+  return (
+    Number.isFinite(cookie.expires) && (cookie.expires <= 0 || cookie.expires > nowSeconds + AUTH_COOKIE_MIN_REMAINING_SECONDS)
+  );
+}
+
+function hasReusableAuthCookies(
+  cookies: Cookie[],
+  targetUrl: string | undefined,
+  idamUrl: string | undefined,
+  nowSeconds = Math.floor(Date.now() / 1_000)
+): boolean {
   const targetHost = resolveTargetHost(targetUrl);
-  if (!targetHost) {
-    return true;
-  }
+  const idamHost = resolveTargetHost(idamUrl);
+  const hasUsableCookie = (name: 'Idam.Session' | '__auth__', expectedHost: string | null) =>
+    cookies.some(
+      (cookie) =>
+        cookie.name === name &&
+        isCookieUsable(cookie, nowSeconds) &&
+        (!expectedHost || isCookieCompatibleWithHost(cookie, expectedHost))
+    );
 
-  const authCookies = cookies.filter((cookie) => cookie.name === 'Idam.Session' || cookie.name === '__auth__');
-  if (authCookies.length === 0) {
-    return false;
-  }
-
-  return authCookies.some((cookie) => isCookieCompatibleWithHost(cookie, targetHost));
+  return hasUsableCookie('Idam.Session', idamHost) && hasUsableCookie('__auth__', targetHost);
 }
 
 function toError(error: unknown): Error {
@@ -395,11 +414,6 @@ export async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
   }
 }
 
-function hasRequiredAuthCookies(cookies: Cookie[]): boolean {
-  const names = new Set(cookies.map((cookie) => cookie.name));
-  return names.has('Idam.Session') && names.has('__auth__');
-}
-
 async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promise<boolean> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -407,7 +421,7 @@ async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promis
       .context()
       .cookies()
       .catch(() => []);
-    if (hasRequiredAuthCookies(cookies)) {
+    if (hasReusableAuthCookies(cookies, undefined, undefined)) {
       return true;
     }
     await new Promise<void>((resolve) => setTimeout(resolve, Math.min(500, deadline - Date.now())));
@@ -434,8 +448,24 @@ type SessionLockRelease = (() => Promise<void>) & {
   assertOwned: () => void;
 };
 
+type ErrorWithSessionLockReleaseError = Error & {
+  sessionLockReleaseError?: Error;
+};
+
 function isSessionLockCompromisedError(error: Error): boolean {
   return error.name === 'SessionLockCompromisedError';
+}
+
+function toSessionLockReleaseError(userIdentifier: string, error: unknown): Error {
+  const releaseError = toError(error);
+  if (isSessionLockCompromisedError(releaseError)) {
+    return releaseError;
+  }
+  const wrapped = new Error(`Failed to release session lock for ${userIdentifier}: ${releaseError.message}`, {
+    cause: releaseError,
+  });
+  wrapped.name = 'SessionLockReleaseError';
+  return wrapped;
 }
 
 export type StorageStateContext = Pick<BrowserContext, 'addCookies' | 'storageState'>;
@@ -510,7 +540,10 @@ async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput): P
   const sessionPath = path.join(process.cwd(), '.sessions', `${sessionStorageKey}.storage.json`);
   const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
 
-  const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs(), { targetUrl });
+  const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs(), {
+    targetUrl,
+    idamUrl: config.urls.idamWebUrl,
+  });
   if (isFresh) {
     logger.info('Session is fresh, skipping capture', {
       userIdentifier: identity.userIdentifier,
@@ -568,41 +601,26 @@ export function loadSessionCookies(userIdentifier: SessionIdentityInput): Loaded
     try {
       const storageStateContents = fs.readFileSync(storageFile, 'utf8');
       fingerprint = storageStateFingerprint(storageStateContents);
-      const state = JSON.parse(storageStateContents);
-      if (Array.isArray(state.cookies)) {
-        cookies = state.cookies as Cookie[];
-        logger.info('Loaded session cookies', {
-          userIdentifier: identity.userIdentifier,
-          email,
-          cookieCount: cookies.length,
-          operation: 'load-session',
-        });
-      } else {
-        logger.warn('Cookies missing or invalid in storage file', {
-          storageFile,
-          userIdentifier: identity.userIdentifier,
-          operation: 'load-session',
-        });
+      const state: unknown = JSON.parse(storageStateContents);
+      if (!state || typeof state !== 'object' || !Array.isArray((state as { cookies?: unknown }).cookies)) {
+        throw new TypeError('Storage state must contain a cookies array');
       }
+      cookies = (state as { cookies: Cookie[] }).cookies;
+      logger.info('Loaded session cookies', {
+        userIdentifier: identity.userIdentifier,
+        email,
+        cookieCount: cookies.length,
+        operation: 'load-session',
+      });
     } catch (e) {
-      logger.error('Failed parsing storage state - cleaning up and throwing', {
+      logger.error('Failed parsing storage state', {
         userIdentifier: identity.userIdentifier,
         storageFile,
         error: (e as Error).message,
         operation: 'load-session',
       });
-      // Auto-clean corrupted session file
-      try {
-        fs.unlinkSync(storageFile);
-        logger.info('Deleted corrupted session file', { storageFile });
-      } catch (cleanupError) {
-        logger.warn('Failed to delete corrupted session file', {
-          storageFile,
-          error: (cleanupError as Error).message,
-        });
-      }
       throw new StorageStateCorruptedError(
-        `Storage file corrupted for ${userIdentifier} - file has been deleted. Re-run test to capture fresh session.`,
+        `Storage file corrupted for ${identity.userIdentifier}. A fresh session will replace it under the identity lock.`,
         storageFile,
         { userIdentifier: identity.userIdentifier },
         e as Error
@@ -870,7 +888,7 @@ export async function ensureAuthenticatedPage(
 export function isSessionFresh(
   sessionPath: string,
   maxAgeMs = DEFAULT_SESSION_MAX_AGE_MS,
-  deps: { fs?: typeof fs; now?: () => number; targetUrl?: string } = {}
+  deps: { fs?: typeof fs; now?: () => number; targetUrl?: string; idamUrl?: string } = {}
 ): boolean {
   const fsApi = deps.fs ?? fs;
   const now = deps.now ?? Date.now;
@@ -888,22 +906,8 @@ export function isSessionFresh(
         return false;
       }
 
-      // Treat session as stale if all cookies are expired or nearly expired.
       const nowSeconds = Math.floor(now() / 1_000);
-      const hasValidCookie = cookies.some((cookie: Cookie) => {
-        if (typeof cookie.expires !== 'number') {
-          return true;
-        }
-        if (cookie.expires <= 0) {
-          return true; // session cookie (no explicit expiry)
-        }
-        return cookie.expires > nowSeconds + 60;
-      });
-      if (!hasValidCookie) {
-        return false;
-      }
-
-      return hasTargetCompatibleAuthCookies(cookies, deps.targetUrl);
+      return hasReusableAuthCookies(cookies, deps.targetUrl, deps.idamUrl, nowSeconds);
     }
     return false;
   } catch (err) {
@@ -924,6 +928,7 @@ function clearSessionCaptureFailureIfReusableSession({
   maxAgeMs,
   sessionPath,
   targetUrl,
+  idamUrl,
   userIdentifier,
   waitContext,
 }: {
@@ -934,10 +939,11 @@ function clearSessionCaptureFailureIfReusableSession({
   maxAgeMs: number;
   sessionPath: string;
   targetUrl: string;
+  idamUrl: string;
   userIdentifier: string;
   waitContext: 'before-lock' | 'after-lock';
 }): boolean {
-  if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl })) {
+  if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl, idamUrl })) {
     return false;
   }
 
@@ -1049,6 +1055,7 @@ async function acquireSessionLock({
       const releaseLock = await lockfileApi.lock(lockFilePath, {
         retries: 0,
         stale: SESSION_CAPTURE_LOCK_STALE_MS,
+        update: SESSION_CAPTURE_LOCK_UPDATE_MS,
         onCompromised: (error) => {
           compromisedError = error;
         },
@@ -1064,6 +1071,7 @@ async function acquireSessionLock({
       const release = async () => {
         assertOwned();
         await releaseLock();
+        assertOwned();
       };
       return Object.assign(release, { assertOwned });
     } catch (error) {
@@ -1269,7 +1277,7 @@ async function loginAndPersistSession({
             const page = await context.newPage();
             const idamPage = idamFactory(page);
             await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, targetUrl, captureAttempt);
-            return requirePersistableSessionCookies(context, userIdentifier, currentPageUrl(page));
+            return requirePersistableSessionCookies(context, userIdentifier, currentPageUrl(page), activeConfig.urls.idamWebUrl);
           },
           SESSION_CAPTURE_TARGET_BUDGET_MS,
           `Session capture attempt timed out after ${SESSION_CAPTURE_TARGET_BUDGET_MS}ms`,
@@ -1381,10 +1389,11 @@ async function loginAndPersistSession({
 async function requirePersistableSessionCookies(
   context: Pick<BrowserContext, 'cookies'>,
   userIdentifier: string,
-  currentUrl: string
+  currentUrl: string,
+  idamUrl?: string
 ): Promise<Cookie[]> {
   const cookies = await context.cookies();
-  if (!hasRequiredAuthCookies(cookies)) {
+  if (!hasReusableAuthCookies(cookies, currentUrl, idamUrl)) {
     throw new Error(`Cannot persist unauthenticated session for ${userIdentifier} (url=${currentUrl}).`);
   }
   return cookies;
@@ -1429,185 +1438,201 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 
     // Acquire filesystem lock (blocks across all workers)
     let release: SessionLockRelease | null = null;
+    let captureError: unknown;
     try {
-      const recentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
-      if (recentFailure) {
-        if (
-          clearSessionCaptureFailureIfReusableSession({
-            fsApi,
-            failurePath,
-            force,
-            isFresh,
-            maxAgeMs: sessionMaxAgeMs,
-            sessionPath,
-            targetUrl,
-            userIdentifier: identity.userIdentifier,
-            waitContext: 'before-lock',
-          })
-        ) {
-          continue;
+      await (async () => {
+        const recentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
+        if (recentFailure) {
+          if (
+            clearSessionCaptureFailureIfReusableSession({
+              fsApi,
+              failurePath,
+              force,
+              isFresh,
+              maxAgeMs: sessionMaxAgeMs,
+              sessionPath,
+              targetUrl,
+              idamUrl: activeConfig.urls.idamWebUrl,
+              userIdentifier: identity.userIdentifier,
+              waitContext: 'before-lock',
+            })
+          ) {
+            return;
+          }
+          throw new SessionCaptureError(
+            `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
+            identity.userIdentifier,
+            { sessionPath, failureKind: recentFailure.failureKind }
+          );
         }
-        throw new SessionCaptureError(
-          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
-          identity.userIdentifier,
-          { sessionPath, failureKind: recentFailure.failureKind }
-        );
-      }
 
-      logger.info('Attempting to acquire lock for user', {
-        userIdentifier: identity.userIdentifier,
-        lockFilePath,
-        operation: 'session-capture',
-      });
-
-      const lockStartedAt = now();
-      release = await acquireSessionLock({
-        lockfileApi,
-        lockFilePath,
-        userIdentifier: identity.userIdentifier,
-        isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl }),
-        force,
-        maxWaitMs: deps.lockWaitMs,
-      });
-      const lockWaitMs = Math.max(0, now() - lockStartedAt);
-
-      if (!release) {
-        logger.info('Skipping session capture because another worker refreshed the session', {
+        logger.info('Attempting to acquire lock for user', {
           userIdentifier: identity.userIdentifier,
-          email: identity.email,
-          sessionPath,
+          lockFilePath,
           operation: 'session-capture',
         });
-        continue;
-      }
 
-      logger.info('Lock acquired', {
-        userIdentifier: identity.userIdentifier,
-        operation: 'session-capture',
-      });
+        const lockStartedAt = now();
+        release = await acquireSessionLock({
+          lockfileApi,
+          lockFilePath,
+          userIdentifier: identity.userIdentifier,
+          isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl: activeConfig.urls.idamWebUrl }),
+          force,
+          maxWaitMs: deps.lockWaitMs,
+        });
+        const lockWaitMs = Math.max(0, now() - lockStartedAt);
 
-      const lockedRecentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
-      if (lockedRecentFailure) {
-        if (
-          clearSessionCaptureFailureIfReusableSession({
-            fsApi,
-            failurePath,
-            force,
-            isFresh,
-            maxAgeMs: sessionMaxAgeMs,
-            sessionPath,
-            targetUrl,
-            userIdentifier: identity.userIdentifier,
-            waitContext: 'after-lock',
-          })
-        ) {
-          continue;
-        }
-        throw new SessionCaptureError(
-          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
-          identity.userIdentifier,
-          { sessionPath, failureKind: lockedRecentFailure.failureKind }
-        );
-      }
-
-      if (expectedStaleSession) {
-        if (path.resolve(expectedStaleSession.storageFile) !== path.resolve(sessionPath)) {
-          throw new SessionCaptureError(
-            `Rejected session path does not match resolved identity for ${identity.userIdentifier}`,
-            identity.userIdentifier,
-            { sessionPath }
-          );
-        }
-
-        if (!expectedStaleSession.storageStateFingerprint) {
-          throw new SessionCaptureError(
-            `Rejected session fingerprint is unavailable for ${identity.userIdentifier}`,
-            identity.userIdentifier,
-            { sessionPath }
-          );
-        }
-
-        const currentFingerprint = readStorageStateFingerprint(fsApi, sessionPath);
-        if (currentFingerprint && currentFingerprint !== expectedStaleSession.storageStateFingerprint) {
-          logger.info('Reusing session refreshed by another worker after server-side rejection', {
+        if (!release) {
+          logger.info('Skipping session capture because another worker refreshed the session', {
             userIdentifier: identity.userIdentifier,
             email: identity.email,
             sessionPath,
-            operation: 'session-refresh',
+            operation: 'session-capture',
           });
-          continue;
+          return;
         }
 
-        if (currentFingerprint === expectedStaleSession.storageStateFingerprint) {
-          fsApi.unlinkSync(sessionPath);
-          logger.info('Deleted server-rejected session under identity lock', {
-            userIdentifier: identity.userIdentifier,
-            sessionPath,
-            operation: 'session-refresh',
-          });
-        }
-      }
-
-      // Recheck freshness after acquiring lock (another worker may have logged in)
-      if (!force && isFresh(sessionPath, sessionMaxAgeMs, { targetUrl })) {
-        logger.info('Session became fresh while waiting for lock', {
+        logger.info('Lock acquired', {
           userIdentifier: identity.userIdentifier,
-          email: identity.email,
-          sessionPath,
           operation: 'session-capture',
         });
-        continue;
-      }
 
-      if (lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS) {
-        throw new SessionCaptureError(
-          `Session lock became available for ${identity.userIdentifier} after ${lockWaitMs}ms; refusing to start a capture that cannot complete within the integration test budget`,
-          identity.userIdentifier,
-          { sessionPath, lockWaitMs }
-        );
-      }
-
-      await loginAndPersist({
-        chromiumLauncher,
-        idamFactory,
-        env,
-        activeConfig,
-        email: identity.email,
-        password: identity.password,
-        sessionPath,
-        persist,
-        assertLockOwned: release.assertOwned,
-        userIdentifier: identity.userIdentifier,
-      })
-        .then(() => {
-          release!.assertOwned();
-          clearSessionCaptureFailure(fsApi, failurePath);
-        })
-        .catch((error: Error) => {
-          release!.assertOwned();
-          if (!isSessionLockCompromisedError(error)) {
-            writeSessionCaptureFailure(fsApi, failurePath, error);
+        const lockedRecentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
+        if (lockedRecentFailure) {
+          if (
+            clearSessionCaptureFailureIfReusableSession({
+              fsApi,
+              failurePath,
+              force,
+              isFresh,
+              maxAgeMs: sessionMaxAgeMs,
+              sessionPath,
+              targetUrl,
+              idamUrl: activeConfig.urls.idamWebUrl,
+              userIdentifier: identity.userIdentifier,
+              waitContext: 'after-lock',
+            })
+          ) {
+            return;
           }
-          throw error;
+          throw new SessionCaptureError(
+            `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
+            identity.userIdentifier,
+            { sessionPath, failureKind: lockedRecentFailure.failureKind }
+          );
+        }
+
+        if (expectedStaleSession) {
+          if (path.resolve(expectedStaleSession.storageFile) !== path.resolve(sessionPath)) {
+            throw new SessionCaptureError(
+              `Rejected session path does not match resolved identity for ${identity.userIdentifier}`,
+              identity.userIdentifier,
+              { sessionPath }
+            );
+          }
+
+          if (!expectedStaleSession.storageStateFingerprint) {
+            throw new SessionCaptureError(
+              `Rejected session fingerprint is unavailable for ${identity.userIdentifier}`,
+              identity.userIdentifier,
+              { sessionPath }
+            );
+          }
+
+          const currentFingerprint = readStorageStateFingerprint(fsApi, sessionPath);
+          if (currentFingerprint && currentFingerprint !== expectedStaleSession.storageStateFingerprint) {
+            logger.info('Reusing session refreshed by another worker after server-side rejection', {
+              userIdentifier: identity.userIdentifier,
+              email: identity.email,
+              sessionPath,
+              operation: 'session-refresh',
+            });
+            return;
+          }
+
+          if (currentFingerprint === expectedStaleSession.storageStateFingerprint) {
+            fsApi.unlinkSync(sessionPath);
+            logger.info('Deleted server-rejected session under identity lock', {
+              userIdentifier: identity.userIdentifier,
+              sessionPath,
+              operation: 'session-refresh',
+            });
+          }
+        }
+
+        // Recheck freshness after acquiring lock (another worker may have logged in)
+        if (!force && isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl: activeConfig.urls.idamWebUrl })) {
+          logger.info('Session became fresh while waiting for lock', {
+            userIdentifier: identity.userIdentifier,
+            email: identity.email,
+            sessionPath,
+            operation: 'session-capture',
+          });
+          return;
+        }
+
+        if (lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS) {
+          throw new SessionCaptureError(
+            `Session lock became available for ${identity.userIdentifier} after ${lockWaitMs}ms; refusing to start a capture that cannot complete within the integration test budget`,
+            identity.userIdentifier,
+            { sessionPath, lockWaitMs }
+          );
+        }
+
+        await loginAndPersist({
+          chromiumLauncher,
+          idamFactory,
+          env,
+          activeConfig,
+          email: identity.email,
+          password: identity.password,
+          sessionPath,
+          persist,
+          assertLockOwned: release.assertOwned,
+          userIdentifier: identity.userIdentifier,
+        })
+          .then(() => {
+            release!.assertOwned();
+            clearSessionCaptureFailure(fsApi, failurePath);
+          })
+          .catch((error: Error) => {
+            release!.assertOwned();
+            if (!isSessionLockCompromisedError(error)) {
+              writeSessionCaptureFailure(fsApi, failurePath, error);
+            }
+            throw error;
+          });
+      })();
+    } catch (error) {
+      captureError = error;
+    }
+
+    if (release) {
+      try {
+        await release();
+        logger.info('Lock released', {
+          userIdentifier: identity.userIdentifier,
+          operation: 'session-capture',
         });
-    } finally {
-      // Always release lock
-      if (release) {
-        try {
-          await release();
-          logger.info('Lock released', {
-            userIdentifier: identity.userIdentifier,
-            operation: 'session-capture',
-          });
-        } catch (e) {
-          logger.warn('Failed to release lock', {
-            userIdentifier: identity.userIdentifier,
-            lockFilePath,
-            error: (e as Error).message,
-            operation: 'session-capture',
-          });
+      } catch (e) {
+        const releaseError = toSessionLockReleaseError(identity.userIdentifier, e);
+        logger.warn('Failed to release lock', {
+          userIdentifier: identity.userIdentifier,
+          lockFilePath,
+          error: releaseError.message,
+          operation: 'session-capture',
+        });
+        if (captureError instanceof Error) {
+          (captureError as ErrorWithSessionLockReleaseError).sessionLockReleaseError = releaseError;
+        } else if (captureError === undefined) {
+          captureError = releaseError;
         }
       }
+    }
+
+    if (captureError !== undefined) {
+      throw captureError;
     }
   }
 }
@@ -1617,6 +1642,7 @@ export const __test__ = {
   sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
   sessionCaptureLockStartBudgetMs: SESSION_CAPTURE_LOCK_START_BUDGET_MS,
   sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
+  sessionCaptureLockUpdateMs: SESSION_CAPTURE_LOCK_UPDATE_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
   sessionCaptureBrowserLaunchBudgetMs: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,
   sessionCaptureTargetBudgetMs: SESSION_CAPTURE_TARGET_BUDGET_MS,
@@ -1629,7 +1655,7 @@ export const __test__ = {
   resolveSessionMaxAgeMs,
   storageStateFingerprint,
   readStorageStateFingerprint,
-  hasTargetCompatibleAuthCookies,
+  hasReusableAuthCookies,
   isTransientNavigationFailure,
   gotoAppTarget,
   resolveTargetHost,

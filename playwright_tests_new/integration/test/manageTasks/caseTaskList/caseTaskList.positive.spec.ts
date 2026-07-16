@@ -43,7 +43,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`User ${userIdentifier} can see assigned tasks on a case`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+function caseTaskListPositiveTests() {
   test(`Low priority tasks assigned to logged in user show elements and markdown as expected`, async ({
     caseDetailsPage,
     page,
@@ -315,4 +315,10 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, { tag: 
       expect.soft(nextStepsHtml).toContain(`href="/case/IA/Asylum/${caseId}/trigger/editAppeal?tid=${taskId}"`);
     });
   });
-});
+}
+
+test.describe(
+  `User ${userIdentifier} can see assigned tasks on a case`,
+  { tag: ['@integration', '@integration-manage-tasks'] },
+  caseTaskListPositiveTests
+);

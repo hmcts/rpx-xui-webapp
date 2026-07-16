@@ -11,7 +11,13 @@ const ensureReport = require('../../../scripts/ensure-load-profile-report.js') a
     created: boolean;
     reportPath: string;
   };
-  parseArgs: (argv: string[]) => { reportDir: string; reportFile: string; reportName: string };
+  ensureLoadProfileReportAfterWait: (options: {
+    reportDir: string;
+    reportFile?: string;
+    reportName?: string;
+    waitMs?: number;
+  }) => Promise<{ created: boolean; reportPath: string }>;
+  parseArgs: (argv: string[]) => { reportDir: string; reportFile: string; reportName: string; waitMs: number };
 };
 
 test.describe('ensure load profile report script', { tag: '@svc-internal' }, () => {
@@ -47,6 +53,41 @@ test.describe('ensure load profile report script', { tag: '@svc-internal' }, () 
     expect(html).toContain('[load-profile] monitor was interrupted');
   });
 
+  test('distinguishes an empty monitor log from a missing log', () => {
+    const reportDir = fs.mkdtempSync(path.join(os.tmpdir(), 'empty-load-profile-log-'));
+    fs.writeFileSync(path.join(reportDir, 'monitor.log'), '');
+
+    const result = ensureReport.ensureLoadProfileReport({
+      reportDir,
+      reportFile: 'load-profile.html',
+      reportName: 'PREVIEW CI System Load',
+    });
+
+    const html = fs.readFileSync(result.reportPath, 'utf8');
+    expect(html).toContain('monitor.log was empty.');
+    expect(html).not.toContain('No monitor.log was present.');
+  });
+
+  test('waits for a real report instead of creating a fallback immediately', async () => {
+    const reportDir = fs.mkdtempSync(path.join(os.tmpdir(), 'delayed-load-profile-'));
+    const reportPath = path.join(reportDir, 'load-profile.html');
+    const writeReport = setTimeout(() => fs.writeFileSync(reportPath, '<html><body>delayed real report</body></html>'), 50);
+
+    try {
+      const result = await ensureReport.ensureLoadProfileReportAfterWait({
+        reportDir,
+        reportFile: 'load-profile.html',
+        reportName: 'PREVIEW CI System Load',
+        waitMs: 1_000,
+      });
+
+      expect(result).toEqual({ created: false, reportPath });
+      expect(fs.readFileSync(reportPath, 'utf8')).toContain('delayed real report');
+    } finally {
+      clearTimeout(writeReport);
+    }
+  });
+
   test('parses Jenkins CLI arguments', () => {
     expect(
       ensureReport.parseArgs([
@@ -56,11 +97,14 @@ test.describe('ensure load profile report script', { tag: '@svc-internal' }, () 
         'load-profile.html',
         '--report-name',
         'PREVIEW Playwright System Load',
+        '--wait-ms',
+        '30000',
       ])
     ).toEqual({
       reportDir: 'functional-output/tests/playwright-integration/load-profile/preview',
       reportFile: 'load-profile.html',
       reportName: 'PREVIEW Playwright System Load',
+      waitMs: 30_000,
     });
   });
 });

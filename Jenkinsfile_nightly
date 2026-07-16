@@ -122,7 +122,11 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
       node scripts/ensure-load-profile-report.js \\
         --report-dir '${reportDir}' \\
         --report-file '${playwrightLoadProfileReportFile}' \\
-        --report-name '${reportName}'
+        --report-name '${reportName}' \\
+        --wait-ms 30000
+      if [ -f '${reportDir}/monitor.log' ]; then
+        cat '${reportDir}/monitor.log'
+      fi
     """
     steps.sh """
       set +e
@@ -149,35 +153,22 @@ def startPlaywrightLoadProfile = { String reportDir, String label, String events
     steps.sh """
       set +e
       mkdir -p '${reportDir}'
-      rm -f '${reportDir}/stop' '${reportDir}/monitor.pid'
+      rm -f '${reportDir}/stop' '${reportDir}/monitor.pid' \\
+        '${reportDir}/${playwrightLoadProfileReportFile}' '${reportDir}/summary.json' '${reportDir}/samples.json' \\
+        '${eventsFile}'
       JENKINS_NODE_COOKIE=dontKillMe nohup node scripts/playwright-load-monitor.js \\
         --output-folder '${reportDir}' \\
         --label '${label}' \\
         --events-file '${eventsFile}' \\
         --stop-file '${reportDir}/stop' \\
         > '${reportDir}/monitor.log' 2>&1 &
-      echo \$! > '${reportDir}/monitor.pid'
     """
 }
 
 def stopPlaywrightLoadProfile = { String reportDir ->
     steps.sh """
       set +e
-      if [ -f '${reportDir}/monitor.pid' ]; then
-        pid=\$(cat '${reportDir}/monitor.pid')
-        touch '${reportDir}/stop'
-        for i in \$(seq 1 30); do
-          kill -0 "\${pid}" 2>/dev/null || break
-          sleep 1
-        done
-        if kill -0 "\${pid}" 2>/dev/null; then
-          kill -TERM "\${pid}" 2>/dev/null || true
-          sleep 2
-        fi
-      fi
-      if [ -f '${reportDir}/monitor.log' ]; then
-        cat '${reportDir}/monitor.log'
-      fi
+      touch '${reportDir}/stop'
     """
 }
 

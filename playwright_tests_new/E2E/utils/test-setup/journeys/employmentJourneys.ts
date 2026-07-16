@@ -287,7 +287,9 @@ export async function createEmploymentCase(
         `EXUI Auto ${automationRunLabel} ${journeyFaker.company.name()} Respondent`
       );
 
-      const respondentTypeAvailable = await createCasePage.respondentOrganisation.isEnabled().catch(() => false);
+      const respondentTypeAvailable =
+        (await createCasePage.respondentOrganisation.isVisible().catch(() => false)) &&
+        (await createCasePage.respondentOrganisation.isEnabled().catch(() => false));
       if (respondentTypeAvailable) {
         await createCasePage.respondentOrganisation.check({ force: true });
       }

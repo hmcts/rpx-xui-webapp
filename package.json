@@ -164,7 +164,7 @@
     "ngx-pagination": "^6.0.3",
     "otplib": "^13.4.0",
     "pegjs": "^0.10.0",
-    "prettier": "^3.9.4",
+    "prettier": "^3.9.5",
     "rpx-xui-translation": "1.2.7",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",

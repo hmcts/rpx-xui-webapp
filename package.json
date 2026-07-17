@@ -119,7 +119,7 @@
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.26-nodejs-healthcheck-update-01",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
-    "@hmcts/properties-volume": "^1.3.1",
+    "@hmcts/properties-volume": "^1.4.0",
     "@hmcts/rpx-xui-common-lib": "3.2.13",
     "@hmcts/rpx-xui-node-lib": "2.30.20",
     "@microsoft/applicationinsights-web": "^3.1.0",

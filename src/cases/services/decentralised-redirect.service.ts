@@ -37,16 +37,39 @@ export class DecentralisedRedirectService {
     return true;
   }
 
-  public addUserInfo(serviceUrl: string, userInfo: UserInfo): string {
-    if (serviceUrl) {
-      const userId = userInfo.id || userInfo.uid;
+  public getUrl(serviceId: string, serviceUrl: string, userInfo: UserInfo): string {
+    const absoluteUrl = this.getAbsoluteUrl(serviceId, serviceUrl);
+    return absoluteUrl ? this.addUserInfo(absoluteUrl, userInfo).toString() : serviceUrl;
+  }
 
-      if (userId) {
-        const newUrl = new URL(serviceUrl);
-        newUrl.searchParams.set('expected_sub', userId);
-        return newUrl.toString();
+  private addUserInfo(url: URL, userInfo: UserInfo): URL {
+    const userId = userInfo.id || userInfo.uid;
+
+    if (userId) {
+      url.searchParams.set('expected_sub', userId);
+    }
+
+    return url;
+  }
+
+  private getAbsoluteUrl(serviceId: string, relativeUrl: string): URL | null {
+    if (serviceId && relativeUrl) {
+      const serviceMap = this.environmentService.get('decentralisedServiceMap');
+
+      if (serviceMap && serviceId in serviceMap) {
+        const baseUrl = serviceMap[serviceId].baseUrl;
+
+        // prevent adding the baseURL if it has already been added
+        if (relativeUrl.startsWith(baseUrl)) {
+          return new URL(relativeUrl);
+        }
+
+        // try not to add a double slash
+        return baseUrl?.endsWith('/') || relativeUrl.startsWith('/')
+          ? new URL(`${baseUrl}${relativeUrl}`)
+          : new URL(`${baseUrl}/${relativeUrl}`);
       }
     }
-    return serviceUrl;
+    return null;
   }
 }

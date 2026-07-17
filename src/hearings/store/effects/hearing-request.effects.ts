@@ -157,7 +157,13 @@ export class HearingRequestEffects {
               this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
               if (payload.targetURL) {
                 this.router
-                  .navigateByUrl(payload.targetURL, { state: { hearingId: payload.hearingID, caseRef: payload.caseRef } })
+                  .navigateByUrl(payload.targetURL, {
+                    state: {
+                      hearingId: payload.hearingID,
+                      caseRef: payload.caseRef,
+                      showEditButton: payload.showEditButton,
+                    },
+                  })
                   .catch((err) => this.loggerService.error(`Error navigating to ${payload.targetURL}`, err));
               }
             }),

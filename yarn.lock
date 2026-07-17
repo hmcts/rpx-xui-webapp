@@ -3199,16 +3199,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/properties-volume@npm:^1.3.1":
-  version: 1.4.0
-  resolution: "@hmcts/properties-volume@npm:1.4.0"
+"@hmcts/properties-volume@npm:^1.4.0":
+  version: 1.4.1
+  resolution: "@hmcts/properties-volume@npm:1.4.1"
   dependencies:
     "@azure/identity": "npm:^4.13.0"
     "@azure/keyvault-secrets": "npm:^4.10.0"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     js-yaml: "npm:^4.1.1"
     lodash: "npm:^4.18.0"
-  checksum: 10/2d5ecf1286a96b7b35a40e5c71e8fc33b1c0fa59475562c0fa55547fcc3e7901bf6ebbb03eb17df16254447ef68b5f97c0b8d6dcf9b83230f265b98ca3085a76
+  checksum: 10/e5c532a5a488e5dabf31858d7cc73c5ee9b5e362f880a44f9b32b7b2bfc4bc5610a839ae38c301ad3d83608beb0e5cff47bb49c5c85dde46f8cf880ec9303269
   languageName: node
   linkType: hard
 
@@ -19800,7 +19800,7 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.2.26-nodejs-healthcheck-update-01"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
-    "@hmcts/properties-volume": "npm:^1.3.1"
+    "@hmcts/properties-volume": "npm:^1.4.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.13"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.20"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"

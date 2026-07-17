@@ -13,9 +13,7 @@ describe('Idam API user details', () => {
     surname: somethingLike('Bloggs'),
     email: somethingLike('joe.bloggs@hmcts.net'),
     active: somethingLike(true),
-    roles: somethingLike([
-      somethingLike('solicitor'), somethingLike('caseworker')
-    ])
+    roles: somethingLike([somethingLike('solicitor'), somethingLike('caseworker')]),
   };
 
   describe('get /details', () => {
@@ -29,16 +27,16 @@ describe('Idam API user details', () => {
           method: 'GET',
           path: '/details',
           headers: {
-            Authorization: 'Bearer some-access-token'
-          }
+            Authorization: 'Bearer some-access-token',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -54,7 +52,7 @@ describe('Idam API user details', () => {
   });
 });
 
-function assertResponses(dto:IdamGetDetailsResponseDto) {
+function assertResponses(dto: IdamGetDetailsResponseDto) {
   expect(dto.active).to.be.equal(true);
   expect(dto.email).to.be.equal('joe.bloggs@hmcts.net');
   expect(dto.forename).to.be.equal('Joe');
@@ -63,11 +61,11 @@ function assertResponses(dto:IdamGetDetailsResponseDto) {
   expect(dto.roles[1]).to.be.equal('caseworker');
 }
 
-export interface IdamGetDetailsResponseDto{
-  id:string,
-  forename:string,
-  surname:string,
-  email:string,
-  active:boolean
-  roles:string[]
+export interface IdamGetDetailsResponseDto {
+  id: string;
+  forename: string;
+  surname: string;
+  email: string;
+  active: boolean;
+  roles: string[];
 }

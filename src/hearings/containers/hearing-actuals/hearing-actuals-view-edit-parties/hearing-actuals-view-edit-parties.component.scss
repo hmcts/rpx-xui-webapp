@@ -2,11 +2,8 @@
   vertical-align: middle;
 }
 
-
 .govuk-table__row {
-
   > * {
-
     &:first-child {
       width: 20%;
     }
@@ -37,7 +34,7 @@
   }
 }
 
-.table-group-error{
+.table-group-error {
   position: absolute;
   border: 2px solid #d4351c;
   height: 38px;

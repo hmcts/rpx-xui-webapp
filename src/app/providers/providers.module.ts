@@ -11,18 +11,13 @@ import { AppConfigService } from '../services/config/configuration.services';
   imports: [],
   exports: [],
   declarations: [],
-  providers: []
+  providers: [],
 })
 export class ProvidersModule {
   public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: ProvidersModule,
-      providers: [
-        AuthService,
-        AppConfigService,
-        AppConfig,
-        AuthService
-      ]
+      providers: [AuthService, AppConfigService, AppConfig, AuthService],
     };
   }
 }

@@ -24,22 +24,24 @@
 
     <div class="search-location">
       <div class="search-location__input">
-        <label class="govuk-body" for="location-primary">
-          Enter a location name
-        </label>
-        <input id="location-primary"
+        <label class="govuk-body" for="location-primary"> Enter a location name </label>
+        <input
+          id="location-primary"
           class="govuk-input"
           [formControl]="searchTermFormControl"
           [matAutocomplete]="autoSearchLocation"
-        >
+        />
       </div>
 
       <div class="auto-complete-container">
         <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLocation="matAutocomplete">
           <ng-container *ngIf="filteredList$ | async as filteredList">
             <ng-container *ngIf="filteredList && filteredList.length >= 0">
-              <mat-option *ngFor="let location of filteredList" [value]="location.venue_name"
-                          (onSelectionChange)="autocompleteSelectedLocation = location">
+              <mat-option
+                *ngFor="let location of filteredList"
+                [value]="location.venue_name"
+                (onSelectionChange)="autocompleteSelectedLocation = location"
+              >
                 {{ location.venue_name }}
               </mat-option>
               <mat-option *ngIf="filteredList.length === 0">No results found</mat-option>
@@ -51,8 +53,12 @@
   </div>
 
   <div>
-    <a class="govuk-button govuk-button--secondary"
-       href="#" (click)="addLocation(); $event.preventDefault()" data-module="govuk-button">
+    <a
+      class="govuk-button govuk-button--secondary"
+      href="#"
+      (click)="addLocation(); $event.preventDefault()"
+      data-module="govuk-button"
+    >
       <ng-container>{{ addButtonTitle }}</ng-container>
     </a>
   </div>

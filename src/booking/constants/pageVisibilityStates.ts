@@ -1,8 +1,6 @@
 import { BookingState } from '../models';
 
-export const bookingBackButtonVisibilityStates = [
-  BookingState.LOCATION, BookingState.BOOKDATE, BookingState.CHECK
-];
+export const bookingBackButtonVisibilityStates = [BookingState.LOCATION, BookingState.BOOKDATE, BookingState.CHECK];
 
 export const bookingHomeVisibilityStates = [BookingState.HOME];
 export const bookingLocationVisibilityStates = [BookingState.LOCATION];

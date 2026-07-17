@@ -22,12 +22,10 @@ describe('CaseFlagsComponent', () => {
           flagDescription: 'Some comment',
           flagStatus: 'ACTIVE',
           displayName: 'A',
-          displayPath: [
-            'Reasonable adjustment'
-          ]
-        }
+          displayPath: ['Reasonable adjustment'],
+        },
       ],
-      partyAmendmentLabelStatus: AmendmentLabelStatus.AMENDED
+      partyAmendmentLabelStatus: AmendmentLabelStatus.AMENDED,
     },
     {
       name: 'Jack Ryan',
@@ -40,9 +38,7 @@ describe('CaseFlagsComponent', () => {
           flagDescription: 'Some additional comment',
           flagStatus: 'ACTIVE',
           displayName: 'A',
-          displayPath: [
-            'Reasonable adjustment'
-          ]
+          displayPath: ['Reasonable adjustment'],
         },
         {
           partyId: '1234-uytr-7654-asdf-0002',
@@ -52,13 +48,11 @@ describe('CaseFlagsComponent', () => {
           flagDescription: 'Some more additional comment',
           flagStatus: 'ACTIVE',
           displayName: 'B',
-          displayPath: [
-            'Reasonable adjustment'
-          ],
-          flagAmendmentLabelStatus: AmendmentLabelStatus.ACTION_NEEDED
-        }
+          displayPath: ['Reasonable adjustment'],
+          flagAmendmentLabelStatus: AmendmentLabelStatus.ACTION_NEEDED,
+        },
       ],
-      partyAmendmentLabelStatus: AmendmentLabelStatus.NONE
+      partyAmendmentLabelStatus: AmendmentLabelStatus.NONE,
     },
     {
       name: 'Rob Kennedy',
@@ -71,12 +65,10 @@ describe('CaseFlagsComponent', () => {
           flagDescription: 'Some details about the flag',
           flagStatus: 'ACTIVE',
           displayName: 'B',
-          displayPath: [
-            'Reasonable adjustment'
-          ]
-        }
+          displayPath: ['Reasonable adjustment'],
+        },
       ],
-      partyAmendmentLabelStatus: AmendmentLabelStatus.ACTION_NEEDED
+      partyAmendmentLabelStatus: AmendmentLabelStatus.ACTION_NEEDED,
     },
     {
       name: 'test',
@@ -90,21 +82,18 @@ describe('CaseFlagsComponent', () => {
           flagStatus: 'Active',
           flagComment: 'Comment to show',
           displayName: 'Language Interpreter',
-          displayPath: [
-            'Reasonable adjustment'
-          ]
-        }
+          displayPath: ['Reasonable adjustment'],
+        },
       ],
-      partyAmendmentLabelStatus: AmendmentLabelStatus.ACTION_NEEDED
-    }
+      partyAmendmentLabelStatus: AmendmentLabelStatus.ACTION_NEEDED,
+    },
   ];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CaseFlagsComponent, MockRpxTranslatePipe],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
     fixture = TestBed.createComponent(CaseFlagsComponent);
     component = fixture.componentInstance;
     nativeElement = fixture.debugElement.nativeElement;
@@ -133,16 +122,16 @@ describe('CaseFlagsComponent', () => {
     component.caseFlagsGroup = [
       {
         ...caseFlagsGroup[0],
-        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE
+        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE,
       },
       {
         ...caseFlagsGroup[1],
-        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE
+        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE,
       },
       {
         ...caseFlagsGroup[2],
-        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE
-      }
+        partyAmendmentLabelStatus: AmendmentLabelStatus.NONE,
+      },
     ];
     fixture.detectChanges();
     expect(nativeElement.querySelector('#party-label-0')).toBeNull();

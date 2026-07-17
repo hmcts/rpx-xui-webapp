@@ -1,4 +1,13 @@
-import { Component, DebugElement, Directive, Input, NO_ERRORS_SCHEMA, TemplateRef, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DebugElement,
+  Directive,
+  Input,
+  NO_ERRORS_SCHEMA,
+  TemplateRef,
+  ViewContainerRef,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
@@ -11,25 +20,29 @@ import { ActionBindingModel } from '../../models/create-case-actions.model';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @Component({
+  standalone: false,
   selector: 'exui-ccd-connector',
-  template: '<ng-content></ng-content>'
+  template: '<ng-content></ng-content>',
 })
 class MockCcdConnectorComponent {}
 
 @Component({
+  standalone: false,
   selector: 'ccd-create-case-filters',
-  template: 'Mock CCD Create Case Filters'
+  template: 'Mock CCD Create Case Filters',
 })
 class MockCreateCaseFiltersComponent {}
 
 @Component({
+  standalone: false,
   selector: 'exui-page-wrapper',
-  template: '<ng-content></ng-content>'
+  template: '<ng-content></ng-content>',
 })
 class MockPageWrapperComponent {}
 
 @Directive({
-  selector: '[exuiFeatureToggle]'
+  standalone: false,
+  selector: '[exuiFeatureToggle]',
 })
 class MockFeatureToggleDirective {
   @Input('exuiFeatureToggle') featureName: string;
@@ -56,7 +69,7 @@ describe('CaseFilterComponent', () => {
         MockCcdConnectorComponent,
         MockCreateCaseFiltersComponent,
         MockPageWrapperComponent,
-        MockFeatureToggleDirective
+        MockFeatureToggleDirective,
       ],
       imports: [
         StoreModule.forRoot({ ...fromCases.reducers, cases: combineReducers(fromCases.reducers) }),
@@ -65,14 +78,13 @@ describe('CaseFilterComponent', () => {
           baseUrl: '',
           debounceTimeMs: 300,
           validity: {
-            days: 1
+            days: 1,
           },
-          testMode: true
-        })
+          testMode: true,
+        }),
       ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -118,7 +130,7 @@ describe('CaseFilterComponent', () => {
 
       const expectedBindings: ActionBindingModel[] = [
         { type: 'selectionSubmitted', action: 'CaseCreateFilterApply' },
-        { type: 'selectionChanged', action: 'CaseCreateFilterChanged' }
+        { type: 'selectionChanged', action: 'CaseCreateFilterChanged' },
       ];
 
       expect(component.caseCreatFilterBindings).toEqual(expectedBindings);
@@ -203,7 +215,7 @@ describe('CaseFilterComponent', () => {
 
       expect(component.caseCreatFilterBindings).toEqual([
         { type: 'selectionSubmitted', action: 'CaseCreateFilterApply' },
-        { type: 'selectionChanged', action: 'CaseCreateFilterChanged' }
+        { type: 'selectionChanged', action: 'CaseCreateFilterChanged' },
       ]);
     });
 

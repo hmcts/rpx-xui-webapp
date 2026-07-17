@@ -1,14 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserInfo } from '../../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
-import { bookingBackButtonVisibilityStates, bookingCheckVisibilityStates, bookingDateVisibilityStates, bookingHomeVisibilityStates, bookingLocationVisibilityStates } from '../../constants/pageVisibilityStates';
+import {
+  bookingBackButtonVisibilityStates,
+  bookingCheckVisibilityStates,
+  bookingDateVisibilityStates,
+  bookingHomeVisibilityStates,
+  bookingLocationVisibilityStates,
+} from '../../constants/pageVisibilityStates';
 import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState } from '../../models';
 
 @Component({
+  standalone: false,
   selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',
-  styleUrls: ['./booking-wrapper.component.scss']
+  styleUrls: ['./booking-wrapper.component.scss'],
 })
 export class BookingWrapperComponent implements OnInit {
   public backVisibilityStates = bookingBackButtonVisibilityStates;
@@ -33,7 +41,10 @@ export class BookingWrapperComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       this.userId = userInfo.id ? userInfo.id : userInfo.uid;
     }
   }
@@ -41,7 +52,7 @@ export class BookingWrapperComponent implements OnInit {
   public onNavEvent(event: BookingNavigationEvent) {
     this.navEvent = {
       event,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     this.navigationHandler(event);
   }
@@ -68,16 +79,13 @@ export class BookingWrapperComponent implements OnInit {
         if (this.bookingProcess.selectedBookingOption === 1) {
           this.bookingNavigationCurrentState = BookingState.LOCATION;
         } else {
-          this.router.navigate(
-            ['/work/my-work/list'],
-            {
-              state: {
-                location: {
-                  ids: this.bookingProcess.selectedBookingLocationIds
-                }
-              }
-            }
-          );
+          this.router.navigate(['/work/my-work/list'], {
+            state: {
+              location: {
+                ids: this.bookingProcess.selectedBookingLocationIds,
+              },
+            },
+          });
         }
         break;
       case BookingNavigationEvent.LOCATIONCONTINUE:
@@ -95,9 +103,6 @@ export class BookingWrapperComponent implements OnInit {
       case BookingNavigationEvent.CANCEL:
         this.bookingProcess = {} as BookingProcess;
         this.bookingNavigationCurrentState = BookingState.HOME;
-        break;
-      case BookingNavigationEvent.CONFIRMBOOKINGSUBMIT:
-        // TODO: Submit booking
         break;
       default:
         throw new Error('Invalid Booking state');

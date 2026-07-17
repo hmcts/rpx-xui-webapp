@@ -7,13 +7,14 @@ import { FeatureToggleDirective } from './feature-toggle.directive';
 
 // Test component that uses the directive
 @Component({
+  standalone: false,
   template: `
     <div>
       <p *exuiFeatureToggle="'testFeature'" id="test-element">Feature content</p>
       <p *exuiFeatureToggle="'anotherFeature'" id="another-element">Another feature</p>
       <p *exuiFeatureToggle="'undefinedFeature'" id="undefined-element">Undefined feature</p>
     </div>
-  `
+  `,
 })
 class TestComponent {}
 
@@ -29,9 +30,7 @@ describe('FeatureToggleDirective', () => {
 
     TestBed.configureTestingModule({
       declarations: [TestComponent, FeatureToggleDirective],
-      providers: [
-        { provide: AppConfigService, useValue: mockAppConfigService }
-      ]
+      providers: [{ provide: AppConfigService, useValue: mockAppConfigService }],
     });
   });
 
@@ -43,7 +42,7 @@ describe('FeatureToggleDirective', () => {
   describe('when feature is enabled', () => {
     it('should display the element when feature is explicitly enabled', () => {
       mockConfig = {
-        testFeature: { isEnabled: true }
+        testFeature: { isEnabled: true },
       };
       mockAppConfigService.getFeatureToggle.and.returnValue(mockConfig);
 
@@ -69,7 +68,7 @@ describe('FeatureToggleDirective', () => {
   describe('when feature is disabled', () => {
     it('should not display the element when feature is explicitly disabled', () => {
       mockConfig = {
-        testFeature: { isEnabled: false }
+        testFeature: { isEnabled: false },
       };
       mockAppConfigService.getFeatureToggle.and.returnValue(mockConfig);
 
@@ -84,7 +83,7 @@ describe('FeatureToggleDirective', () => {
     it('should handle multiple features with different states', () => {
       mockConfig = {
         testFeature: { isEnabled: true },
-        anotherFeature: { isEnabled: false }
+        anotherFeature: { isEnabled: false },
       };
       mockAppConfigService.getFeatureToggle.and.returnValue(mockConfig);
 
@@ -128,7 +127,7 @@ describe('FeatureToggleDirective', () => {
 
     it('should handle feature config without isEnabled property', () => {
       mockConfig = {
-        testFeature: {} as any // Feature exists but no isEnabled property
+        testFeature: {} as any, // Feature exists but no isEnabled property
       };
       mockAppConfigService.getFeatureToggle.and.returnValue(mockConfig);
 
@@ -151,7 +150,7 @@ describe('FeatureToggleDirective', () => {
 
     it('should create embedded view when feature is enabled', () => {
       mockConfig = {
-        testFeature: { isEnabled: true }
+        testFeature: { isEnabled: true },
       };
       mockAppConfigService.getFeatureToggle.and.returnValue(mockConfig);
 
@@ -183,7 +182,7 @@ describe('FeatureToggleDirective', () => {
 
     it('should return true when feature is enabled', () => {
       directive.config = {
-        myFeature: { isEnabled: true }
+        myFeature: { isEnabled: true },
       } as any;
       directive.exuiFeatureToggle = 'myFeature';
 
@@ -192,7 +191,7 @@ describe('FeatureToggleDirective', () => {
 
     it('should return false when feature is disabled', () => {
       directive.config = {
-        myFeature: { isEnabled: false }
+        myFeature: { isEnabled: false },
       } as any;
       directive.exuiFeatureToggle = 'myFeature';
 
@@ -201,7 +200,7 @@ describe('FeatureToggleDirective', () => {
 
     it('should return false when feature exists but isEnabled is undefined', () => {
       directive.config = {
-        myFeature: {} as any
+        myFeature: {} as any,
       } as any;
       directive.exuiFeatureToggle = 'myFeature';
 
@@ -212,7 +211,7 @@ describe('FeatureToggleDirective', () => {
   describe('dynamic feature toggle changes', () => {
     it('should not re-render when config changes after initialization', () => {
       mockConfig = {
-        testFeature: { isEnabled: true }
+        testFeature: { isEnabled: true },
       };
       mockAppConfigService.getFeatureToggle.and.returnValue(mockConfig);
 
@@ -233,11 +232,9 @@ describe('FeatureToggleDirective', () => {
 
   describe('template syntax variations', () => {
     @Component({
-      template: `
-        <div *exuiFeatureToggle="featureName">
-          Dynamic feature name content
-        </div>
-      `
+      standalone: false,
+
+      template: ` <div *exuiFeatureToggle="featureName">Dynamic feature name content</div> `,
     })
     class DynamicTestComponent {
       featureName = 'dynamicFeature';
@@ -247,13 +244,11 @@ describe('FeatureToggleDirective', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         declarations: [DynamicTestComponent, FeatureToggleDirective],
-        providers: [
-          { provide: AppConfigService, useValue: mockAppConfigService }
-        ]
+        providers: [{ provide: AppConfigService, useValue: mockAppConfigService }],
       });
 
       mockConfig = {
-        dynamicFeature: { isEnabled: true }
+        dynamicFeature: { isEnabled: true },
       };
       mockAppConfigService.getFeatureToggle.and.returnValue(mockConfig);
 
@@ -289,7 +284,7 @@ describe('FeatureToggleDirective', () => {
 
     it('should call createEmbeddedView when feature is enabled', () => {
       mockAppConfigService.getFeatureToggle.and.returnValue({
-        testFeature: { isEnabled: true }
+        testFeature: { isEnabled: true },
       });
       directive.exuiFeatureToggle = 'testFeature';
 
@@ -301,7 +296,7 @@ describe('FeatureToggleDirective', () => {
 
     it('should call clear when feature is disabled', () => {
       mockAppConfigService.getFeatureToggle.and.returnValue({
-        testFeature: { isEnabled: false }
+        testFeature: { isEnabled: false },
       });
       directive.exuiFeatureToggle = 'testFeature';
 

@@ -1,4 +1,3 @@
-/* eslint-disable semi */
 import { CaseFieldConfig } from '.';
 import { CaseService, SortOrder } from '../../enums';
 

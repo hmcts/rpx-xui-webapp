@@ -5,7 +5,11 @@ import { BookingLocationComponent } from './booking-location/booking-location.co
 import { BookingWrapperComponent } from './booking-wrapper/booking-wrapper.component';
 
 export const containers: any[] = [
-  BookingCheckComponent, BookingDateComponent, BookingHomeComponent, BookingLocationComponent, BookingWrapperComponent
+  BookingCheckComponent,
+  BookingDateComponent,
+  BookingHomeComponent,
+  BookingLocationComponent,
+  BookingWrapperComponent,
 ];
 
 export * from './booking-check/booking-check.component';

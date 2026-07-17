@@ -1,19 +1,19 @@
 .all-work-filter {
-    max-width: 260px;
+  max-width: 260px;
 }
 .all-work-filter-label {
-    font-weight: 550!important;
+  font-weight: 550 !important;
 }
 
 .tasks-container {
-    display: flex;
-    justify-content: space-between;
-    exui-task-manager-filter {
-      margin-right: 40px;
-      width: 25%;
-    }
-  
-    .exui-task-list {
-      width: 70%;
-    }
+  display: flex;
+  justify-content: space-between;
+  exui-task-manager-filter {
+    margin-right: 40px;
+    width: 25%;
+  }
+
+  .exui-task-list {
+    width: 70%;
+  }
 }

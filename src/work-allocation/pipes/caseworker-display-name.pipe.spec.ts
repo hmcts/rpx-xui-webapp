@@ -8,7 +8,7 @@ const mockCaseworker: Caseworker = {
   lastName: 'Test',
   email: 'MrTest@email.com',
   location: null,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS
+  roleCategory: RoleCategory.LEGAL_OPERATIONS,
 };
 
 const mockName = `${mockCaseworker.firstName} ${mockCaseworker.lastName}`;

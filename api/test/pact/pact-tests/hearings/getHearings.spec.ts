@@ -22,8 +22,8 @@ describe('Hearings, get hearings for a given caseId', () => {
             attendees: [
               {
                 hearingSubChannel: somethingLike('CVP'),
-                partyID: somethingLike('string')
-              }
+                partyID: somethingLike('string'),
+              },
             ],
             hearingEndDateTime: somethingLike('2023-07-03T12:37:25.683Z'),
             hearingJudgeId: somethingLike('string'),
@@ -31,10 +31,8 @@ describe('Hearings, get hearings for a given caseId', () => {
             hearingStartDateTime: somethingLike('2023-07-03T12:37:25.683Z'),
             hearingVenueId: somethingLike('string'),
             listAssistSessionID: somethingLike('string'),
-            panelMemberIds: [
-              somethingLike('string')
-            ]
-          }
+            panelMemberIds: [somethingLike('string')],
+          },
         ],
         hearingGroupRequestId: somethingLike('string'),
         hearingID: somethingLike(0),
@@ -45,11 +43,11 @@ describe('Hearings, get hearings for a given caseId', () => {
         hmcStatus: somethingLike('string'),
         lastResponseReceivedDateTime: somethingLike('2023-07-03T12:37:25.683Z'),
         listAssistCaseStatus: somethingLike('string'),
-        requestVersion: somethingLike(0)
-      }
+        requestVersion: somethingLike(0),
+      },
     ],
     caseRef: somethingLike('string'),
-    hmctsServiceCode: somethingLike('string')
+    hmctsServiceCode: somethingLike('string'),
   };
 
   describe('get /getHearings}', () => {
@@ -68,18 +66,18 @@ describe('Hearings, get hearings for a given caseId', () => {
           method: 'GET',
           path: `/hearings/${caseId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -101,13 +99,13 @@ describe('Hearings, get hearings for a given caseId', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           query: {
-            caseId
-          }
+            caseId,
+          },
         });
         let returnedResponse = null;
         const response = mockRes();
@@ -134,8 +132,8 @@ function assertResponses(dto: any) {
       attendees: [
         {
           hearingSubChannel: 'CVP',
-          partyID: 'string'
-        }
+          partyID: 'string',
+        },
       ],
       hearingEndDateTime: '2023-07-03T12:37:25.683Z',
       hearingJudgeId: 'string',
@@ -143,10 +141,8 @@ function assertResponses(dto: any) {
       hearingStartDateTime: '2023-07-03T12:37:25.683Z',
       hearingVenueId: 'string',
       listAssistSessionID: 'string',
-      panelMemberIds: [
-        'string'
-      ]
-    }
+      panelMemberIds: ['string'],
+    },
   ]);
   expect(dto.caseHearings[0].hearingGroupRequestId).to.be.equal('string');
   expect(dto.caseHearings[0].hearingID).to.be.equal(0);

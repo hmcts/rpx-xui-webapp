@@ -7,10 +7,16 @@ import { IsAmendedConverter } from './is-amended.converter';
 
 export class IsPaperHearingAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
-      const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
-      return !_.isEqual(objA, objB);
-    }));
+    return hearingState$.pipe(
+      map((state) => {
+        const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels.includes(
+          HearingChannelEnum.ONPPR
+        );
+        const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(
+          HearingChannelEnum.ONPPR
+        );
+        return !_.isEqual(objA, objB);
+      })
+    );
   }
 }

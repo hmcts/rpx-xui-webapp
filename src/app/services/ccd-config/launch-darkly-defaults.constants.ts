@@ -73,6 +73,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "ST_CIC"
+    },
+    {
+      "caseTypes": [
+        "Possession"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
   ]
   }`;
@@ -89,7 +96,8 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "Asylum"
+        "Asylum",
+        "Bail"
       ],
       "releaseVersion": "4",
       "serviceName": "IA"
@@ -217,18 +225,22 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "DIVORCE"
+    },
+    {
+      "caseTypes": [
+        "Possession"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
     ]
   }`;
 
-  public static readonly waServiceConfigTest: WAFeatureConfig
-    = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTEST);
+  public static readonly waServiceConfigTest: WAFeatureConfig = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTEST);
 
-  public static readonly waServiceConfigProd:WAFeatureConfig
-    = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGPROD);
+  public static readonly waServiceConfigProd: WAFeatureConfig = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGPROD);
 
-  public static readonly waServiceConfigTestQm:WAFeatureConfig
-    = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTESTQM);
+  public static readonly waServiceConfigTestQm: WAFeatureConfig = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTESTQM);
 
   public static getWaServiceConfig(env: DeploymentEnvironmentEnum): WAFeatureConfig {
     if (env === DeploymentEnvironmentEnum.PROD) {

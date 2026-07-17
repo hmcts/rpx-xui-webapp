@@ -10,9 +10,7 @@ import * as fromSearchFilterEffects from './search-filter.effects';
 describe('Pending Organisation Effects', () => {
   let actions$;
   let effects: fromSearchFilterEffects.SearchFilterEffects;
-  const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
-    'search'
-  ]);
+  const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', ['search']);
 
   const payload = mockedSearchFilters;
 
@@ -21,11 +19,11 @@ describe('Pending Organisation Effects', () => {
       providers: [
         {
           provide: SearchFilterService,
-          useValue: SearchFilterServiceMock
+          useValue: SearchFilterServiceMock,
         },
         fromSearchFilterEffects.SearchFilterEffects,
-        provideMockActions(() => actions$)
-      ]
+        provideMockActions(() => actions$),
+      ],
     });
 
     effects = TestBed.inject(fromSearchFilterEffects.SearchFilterEffects);

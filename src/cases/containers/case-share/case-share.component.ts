@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib';
 import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import { initAll } from 'govuk-frontend';
@@ -13,9 +13,10 @@ import { LoadShareCase, LoadUserFromOrgForCase } from '../../store/actions';
 import * as fromCaseList from '../../store/reducers';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-share',
   templateUrl: './case-share.component.html',
-  styleUrls: ['./case-share.component.scss']
+  styleUrls: ['./case-share.component.scss'],
 })
 export class CaseShareComponent implements OnInit {
   public routerState$: Observable<RouterReducerState<RouterStateUrl>>;
@@ -25,12 +26,14 @@ export class CaseShareComponent implements OnInit {
   public orgUsers$: Observable<UserDetails[]>;
   public removeUserFromCaseToggleOn$: Observable<boolean>;
 
-  constructor(private readonly store: Store<fromCaseList.State>,
-              private readonly featureToggleService: FeatureToggleService) {}
+  constructor(
+    private readonly store: Store<fromCaseList.State>,
+    private readonly featureToggleService: FeatureToggleService
+  ) {}
 
   public ngOnInit() {
     this.routerState$ = this.store.pipe(select(getRouterState));
-    this.routerState$.subscribe((router) => this.init = router.state.queryParams.init);
+    this.routerState$.subscribe((router) => (this.init = router.state.queryParams.init));
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe((shareCases) => {
       this.shareCases = shareCases;

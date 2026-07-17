@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
@@ -9,21 +10,22 @@ import { PaginationParameter, SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-all-work-cases',
   templateUrl: 'all-work-case.component.html',
-  styleUrls: ['all-work-case.component.scss']
+  styleUrls: ['all-work-case.component.scss'],
 })
 export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implements OnInit {
   public sortedBy: SortField = {
     fieldName: '',
-    order: SortOrder.NONE
+    order: SortOrder.NONE,
   };
 
   public isFirsTimeLoad = true;
   public isCasesFiltered = false;
   public pagination: PaginationParameter = {
     page_number: 1,
-    page_size: 25
+    page_size: 25,
   };
 
   public jurisdictions: string[];
@@ -32,7 +34,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   private readonly selectedLocation: Location = {
     id: '231596',
     locationName: 'Birmingham',
-    services: []
+    services: [],
   };
 
   public get emptyMessage(): string {
@@ -66,18 +68,21 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       return {
         search_parameters: [
           { key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0] },
           { key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id },
           { key: 'actorId', operator: 'EQUAL', values: this.selectedPerson },
-          { key: 'role', operator: 'EQUAL', values: this.selectedRole }
+          { key: 'role', operator: 'EQUAL', values: this.selectedRole },
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole,
-        pagination_parameters: this.getPaginationParameter()
+        pagination_parameters: this.getPaginationParameter(),
       };
     }
   }
@@ -89,8 +94,14 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location: string, jurisdiction: string, actorId: string, role: string, person: any }): void {
-    this.selectedLocation.id = !selection.location ? '' : selection.location;
+  public onSelectionChanged(selection: {
+    location: string;
+    jurisdiction: string;
+    actorId: string;
+    role: string;
+    person: any;
+  }): void {
+    this.selectedLocation.id = selection.location ? selection.location : '';
     this.selectedServices = [selection.jurisdiction];
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;

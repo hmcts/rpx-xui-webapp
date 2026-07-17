@@ -1,0 +1,298 @@
+import { faker } from '@faker-js/faker';
+import { Response } from '@playwright/test';
+import { expect, test } from '../../fixtures';
+import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
+import { TEST_DATA } from './constants';
+import { expectCaseBanner } from '../../utils';
+import { createLogger } from '@hmcts/playwright-common';
+import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
+import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
+import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
+import {
+  assertDocumentUploadRuntimeAliasConfigured,
+  createDocumentUploadUpdateEventTracker,
+  resolveDocumentUploadTranslatedLabel,
+} from '../../utils/test-setup/documentUploadLiveSupport';
+
+const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
+const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
+const CANCEL_UPLOAD_LABEL = 'Cancel upload';
+const DOCUMENT_UPLOAD_V2_SCENARIOS = [
+  {
+    title: 'file chooser upload works in English',
+    language: 'English',
+    uploadMode: 'file-input',
+    cancelUploadLabel: CANCEL_UPLOAD_LABEL,
+  },
+  {
+    title: 'browser file drag-and-drop upload works in English',
+    language: 'English',
+    uploadMode: 'drag-drop',
+    cancelUploadLabel: CANCEL_UPLOAD_LABEL,
+  },
+  {
+    title: 'browser file drag-and-drop upload works in Cymraeg',
+    language: 'Cymraeg',
+    uploadMode: 'drag-drop',
+    cancelUploadLabel: CANCEL_UPLOAD_LABEL,
+  },
+] as const;
+
+// Document upload journeys combine case creation, multi-step CCD wizard navigation,
+// file upload + ClamAV scan, and submit polling. The 5 minute envelope covers the
+// upper bound observed in nightly runs against AAT and is overridable via env.
+const DOCUMENT_UPLOAD_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_DOCUMENT_UPLOAD_TEST_TIMEOUT_MS ?? '', 10) || 300_000;
+
+// Cold-cache IDAM bootstrap for two distinct aliases (Divorce solicitor + Employment
+// search user) can serialise behind the session lock and IDAM rate limits; allow up
+// to 5 minutes for the worst case before failing fast.
+const SESSION_BOOTSTRAP_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_DOCUMENT_UPLOAD_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 300_000;
+
+// Run serially: the V2 and V1 describes share module-level `caseNumber` / `testValue`
+// state that the per-test beforeEach mutates, and the IDAM session lock contends
+// when both aliases bootstrap concurrently in the same worker.
+test.describe.configure({ mode: 'serial', timeout: DOCUMENT_UPLOAD_TEST_TIMEOUT_MS });
+
+test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
+  testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
+  assertDocumentUploadRuntimeAliasConfigured(RuntimeUserAlias.DIVORCE_SOLICITOR);
+  assertDocumentUploadRuntimeAliasConfigured(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
+  await ensureSession(RuntimeUserAlias.DIVORCE_SOLICITOR);
+  await ensureSession(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
+});
+
+test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
+  let testValue: string;
+  let caseNumber: string;
+  test.beforeAll(async () => {
+    // Set deterministic seed once per suite
+    faker.seed(12345);
+  });
+
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+    // Generate fresh value per test for retry safety
+    testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
+    logger.info('Generated test value', { testValue, worker: process.env.TEST_WORKER_INDEX });
+
+    await ensureAuthenticatedPage(page, RuntimeUserAlias.DIVORCE_SOLICITOR, { waitForSelector: 'exui-header' });
+    const setup = await setupCaseForJourney({
+      scenario: 'document-upload-v2-divorce',
+      jurisdiction: TEST_DATA.V2.JURISDICTION,
+      caseType: TEST_DATA.V2.CASE_TYPE,
+      apiEventId: 'createCase',
+      mode: 'api-required',
+      apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case', {
+        overrides: {
+          TextField: testValue,
+        },
+      }),
+      page,
+      createCasePage,
+      caseDetailsPage,
+      testInfo,
+    });
+    caseNumber = setup.caseNumber;
+    logger.info('Created divorce case', { caseNumber, testValue });
+  });
+
+  for (const scenario of DOCUMENT_UPLOAD_V2_SCENARIOS) {
+    test(`Check the documentV2 ${scenario.title}`, async ({ createCasePage, caseDetailsPage }) => {
+      let caseDetailsUrl = '';
+
+      await test.step('Verify case details tab does not contain an uploaded file', async () => {
+        caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
+        await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
+        const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
+        await expect(textFieldRow).toContainText(testValue);
+      });
+
+      await test.step(`Upload a document to the case in ${scenario.language}`, async () => {
+        const updateEventTracker = createDocumentUploadUpdateEventTracker(caseNumber);
+        caseDetailsPage.page.on('response', updateEventTracker.onResponse);
+        try {
+          await retryOnTransientFailure(
+            async () => {
+              await createCasePage.exuiHeader.switchLanguage('English');
+              await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
+              await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
+              const welshTranslationResponse =
+                scenario.language === 'Cymraeg'
+                  ? caseDetailsPage.page.waitForResponse(
+                      (response) => response.url().includes('/api/translation/cy') && response.status() === 200
+                    )
+                  : undefined;
+              await createCasePage.exuiHeader.switchLanguage(scenario.language, {
+                waitForTranslatedContent: scenario.language === 'English',
+              });
+              const cancelUploadLabel = welshTranslationResponse
+                ? await resolveDocumentUploadTranslatedLabel(await welshTranslationResponse, CANCEL_UPLOAD_LABEL)
+                : scenario.cancelUploadLabel;
+              await expect(createCasePage.fileUploadCancelButton).toContainText(cancelUploadLabel);
+              await expect(createCasePage.fileUploadComponent).not.toContainText(TEST_DATA.V2.FILE_NAME);
+              const uploadFormUrl = caseDetailsPage.page.url();
+              if (scenario.uploadMode === 'drag-drop') {
+                await createCasePage.dragAndDropFile(
+                  TEST_DATA.V2.FILE_NAME,
+                  TEST_DATA.V2.FILE_TYPE,
+                  TEST_DATA.V2.FILE_CONTENT,
+                  createCasePage.fileUploadInput,
+                  { dropTarget: createCasePage.fileUploadComponent }
+                );
+                await expect(
+                  caseDetailsPage.page,
+                  'Document drag-and-drop should not navigate away or open the file in the browser'
+                ).toHaveURL(uploadFormUrl);
+              } else {
+                await createCasePage.uploadFile(
+                  TEST_DATA.V2.FILE_NAME,
+                  TEST_DATA.V2.FILE_TYPE,
+                  TEST_DATA.V2.FILE_CONTENT,
+                  createCasePage.fileUploadInput
+                );
+              }
+              await createCasePage.clickContinueMultipleTimes(3);
+              await createCasePage.uploadFile(
+                'complex-type-required-document.pdf',
+                'application/pdf',
+                '%PDF-1.4\n%test\n%%EOF',
+                createCasePage.complexType3FileUploadInput
+              );
+              await createCasePage.clickSubmitAndWait('after uploading V2 document', {
+                timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
+                maxAutoAdvanceAttempts: 3,
+              });
+              await expect(caseDetailsPage.caseAlertSuccessMessage).toBeVisible({ timeout: 30_000 });
+            },
+            {
+              maxAttempts: 2,
+              onRetry: async () => {
+                try {
+                  await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
+                } catch (reopenError) {
+                  logger.warn('Failed to reopen case details during V2 document upload retry; trying direct goto', {
+                    reopenError,
+                    caseDetailsUrl,
+                  });
+                  await caseDetailsPage.page.goto(caseDetailsUrl);
+                }
+              },
+            }
+          );
+        } finally {
+          caseDetailsPage.page.off('response', updateEventTracker.onResponse);
+        }
+        expect(updateEventTracker.successfulPosts()).toBe(1);
+      });
+
+      await test.step('Verify the document upload was successful', async () => {
+        await expect
+          .poll(
+            async () => {
+              const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
+              if (bannerVisible) {
+                const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText().catch(() => '');
+                if (
+                  bannerText.includes(caseNumber) &&
+                  bannerText.includes(`has been updated with event: ${TEST_DATA.V2.ACTION}`)
+                ) {
+                  return true;
+                }
+              }
+
+              await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME).catch(() => undefined);
+              const tableVisible = await caseDetailsPage.caseViewerTable.isVisible().catch(() => false);
+              if (!tableVisible) {
+                return false;
+              }
+              const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
+              const documentText = await documentRow.innerText().catch(() => '');
+              return documentText.includes(TEST_DATA.V2.FILE_NAME);
+            },
+            { timeout: 45_000, intervals: [1_000, 2_000, 3_000] }
+          )
+          .toBe(true);
+
+        const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
+        if (bannerVisible) {
+          const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
+          expectCaseBanner(bannerText, caseNumber, `has been updated with event: ${TEST_DATA.V2.ACTION}`);
+        }
+
+        await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
+        const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
+        await expect(textFieldRow).toContainText(testValue);
+
+        const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
+        await expect(documentRow).toContainText(TEST_DATA.V2.FILE_NAME);
+      });
+    });
+  }
+});
+
+test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2e-document-upload-v1'] }, () => {
+  let testValue: string;
+  let testFileName: string;
+  let caseNumber: string;
+  test.beforeAll(async () => {
+    // Set deterministic seed once per suite
+    faker.seed(67890);
+  });
+
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+    // Generate fresh values per test for retry safety
+    testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
+    testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
+    logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
+
+    await ensureAuthenticatedPage(page, RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE, { waitForSelector: 'exui-header' });
+    const setup = await setupCaseForJourney({
+      scenario: 'document-upload-v1-employment',
+      jurisdiction: TEST_DATA.V1.JURISDICTION,
+      caseType: TEST_DATA.V1.CASE_TYPE,
+      apiEventId: 'initiateCase',
+      mode: 'api-required',
+      apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+      page,
+      createCasePage,
+      caseDetailsPage,
+      testInfo,
+    });
+    caseNumber = setup.caseNumber;
+    logger.info('Created employment case', { caseNumber, testValue });
+  });
+
+  test('Check the documentV1 upload works as expected', async ({ createCasePage, caseDetailsPage, tableUtils }) => {
+    await test.step('Start document upload process', async () => {
+      await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
+        expectedLocator: createCasePage.documentCollectionButton,
+      });
+    });
+
+    await test.step('Upload a document to the case', async () => {
+      await uploadEmploymentDraftDocument(createCasePage, testFileName, TEST_DATA.V1.FILE_TYPE, TEST_DATA.V1.FILE_CONTENT);
+    });
+
+    await test.step('Verify document was uploaded successfully', async () => {
+      await caseDetailsPage.selectCaseDetailsTab('Documents');
+      await caseDetailsPage.caseActionGoButton.waitFor({ state: 'visible' });
+      const table = await caseDetailsPage.getDocumentsList();
+      expect(table.length, 'Documents table should contain at least 1 row').toBeGreaterThan(0);
+      expect(table[0]).toMatchObject({
+        Number: '1',
+        Document: testFileName,
+        'Document Category': 'Misc',
+        'Type of Document': 'Other',
+      });
+
+      const documentsTable = caseDetailsPage.caseDocumentsTable.first();
+      const parsedRows = await tableUtils.parseDataTable(documentsTable, caseDetailsPage.page);
+      const hasUploadedDocument = parsedRows.some((row) => row.Document === testFileName);
+      expect(hasUploadedDocument, 'TableUtils should find the uploaded document row').toBe(true);
+    });
+  });
+});

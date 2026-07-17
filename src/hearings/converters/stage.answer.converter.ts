@@ -6,8 +6,7 @@ import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 
 export class StageAnswerConverter implements AnswerConverter {
-  constructor(
-    protected readonly route: ActivatedRoute) {}
+  constructor(protected readonly route: ActivatedRoute) {}
 
   private static getHearingTypeDisplayValue(hearingStageOptions: LovRefDataModel[], key: string): string {
     const lovData: LovRefDataModel = hearingStageOptions.find((stage) => stage.key === key);

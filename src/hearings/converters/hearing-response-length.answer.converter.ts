@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { State } from '../store';
@@ -45,19 +45,11 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
   }
 
   public calculateFormattedDaysAndHours(duration: number): string {
-    const days = Math.floor((duration / 60) / 6);
-    const formattedDays = days === 0
-      ? ''
-      : days > 1
-        ? `${days} Days`
-        : `${days} Day`;
+    const days = Math.floor(duration / 60 / 6);
+    const formattedDays = days === 0 ? '' : days > 1 ? `${days} Days` : `${days} Day`;
 
     const hours = Math.floor((duration / 60) % 6);
-    const formattedHours = hours === 0
-      ? ''
-      : hours > 1
-        ? `${hours} Hours`
-        : `${hours} Hour`;
+    const formattedHours = hours === 0 ? '' : hours > 1 ? `${hours} Hours` : `${hours} Hour`;
 
     return days > 0 && hours > 0
       ? `${formattedDays} ${formattedHours}`
@@ -69,8 +61,6 @@ export class HearingResponseLengthAnswerConverter implements AnswerConverter {
   }
 
   public calculateFormattedMinutes(minutes: number): string {
-    return minutes > 0
-      ? `${minutes} Minutes`
-      : '';
+    return minutes > 0 ? `${minutes} Minutes` : '';
   }
 }

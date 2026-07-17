@@ -1,20 +1,23 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
+import { SERVICE_REF_DATA_MAPPING, SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
-import { EnhancedRequest } from '../lib/models';
+import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { Service } from '../staff-ref-data/models/staff-filter-option.model';
 import { CourtVenue } from '../workAllocation/interfaces/location';
 import { handleLocationGet } from '../workAllocation/locationService';
 import { prepareGetSpecificLocationUrl } from '../workAllocation/util';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
+import { trackTrace } from '../lib/appInsights';
+import * as log4jui from '../lib/log4jui';
 
 // const url: string = getConfigValue(SERVICES_PRD_API_URL);
-// TODO: CAM_BOOKING - check this
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
+const logger: JUILogger = log4jui.getLogger('location work allocation');
 
 /**
  * @description getLocations from service ID/location type/search term
@@ -36,10 +39,19 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     serviceIds = serviceIds.split(',');
   }
   const courtTypeIds = getCourtTypeIdsByService(serviceIds);
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
+
+  if (!isValidServiceId(serviceIds[0])) {
+    serviceIds = getServiceIdsByService(serviceIds);
+  }
+  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}&service_code=${serviceIds}`;
+  trackTrace(`POFCC-138 - Track trace - getLocations, markupPath used -->: ${markupPath}`, { functionCall: 'getLocations' });
+  logger.info(`POFCC-138 - Logger - getLocations, markupPath used -->: ${markupPath}`);
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
+    const containsServiceCode = response.data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_code'));
+    trackTrace(`POFCC-138 - containse service code new api -->: ${containsServiceCode}`, { functionCall: 'getLocations' });
+    logger.info(`POFCC-138 - containse service code new api -->: ${containsServiceCode}`);
     let results: LocationModel[] = response.data;
     if (locationType === LocationTypeEnum.HEARING) {
       results = results.filter((location) => location.is_hearing_location === 'Y');
@@ -53,15 +65,18 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
       const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
-      results = filterOutResults(results, locationIds, regionIds, courtTypes);
+      if (containsServiceCode) {
+        results = filterOutResultsWhenServiceCodePresent(results, locationIds, regionIds);
+      } else {
+        results = filterOutResults(results, locationIds, regionIds, courtTypes);
+      }
     });
-    // added line below to ensure any locations from non-used services are removes
-    // (API occasionally sending irrelevant location previously)
-    results = results.filter((location) => courtTypeIds.includes(location.court_type_id));
-    response.data.results = results.filter((locationInfo, index, self) =>
-      index === self.findIndex((location) => (
-        location.epimms_id === locationInfo.epimms_id
-      ))
+    // Legacy API ignores service_code, so keep the court type cleanup for that response shape only.
+    if (!containsServiceCode) {
+      results = results.filter((location) => courtTypeIds.includes(location.court_type_id));
+    }
+    response.data.results = results.filter(
+      (locationInfo, index, self) => index === self.findIndex((location) => location.epimms_id === locationInfo.epimms_id)
     );
 
     res.status(response.status).send(response.data.results);
@@ -70,10 +85,34 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   }
 }
 
-export function filterOutResults(locations: LocationModel[], locationIds: string[],
-  regions: string[], courtTypes: string[]): LocationModel[] {
-  return locations.filter((location) => !(courtTypes.includes(location.court_type_id))
-|| (locationIds.includes(location.epimms_id) || regions.includes(location.region_id)));
+export function filterOutResults(
+  locations: LocationModel[],
+  locationIds: string[],
+  regions: string[],
+  courtTypes: string[]
+): LocationModel[] {
+  trackTrace(`POFCC-138 - in old filter method filterOutResults`, {
+    functionCall: 'filterOutResults',
+  });
+  logger.info('POFCC-138 - in old filter method filterOutResults');
+  return locations.filter(
+    (location) =>
+      !courtTypes.includes(location.court_type_id) ||
+      locationIds.includes(location.epimms_id) ||
+      regions.includes(location.region_id)
+  );
+}
+
+export function filterOutResultsWhenServiceCodePresent(
+  locations: LocationModel[],
+  locationIds: string[],
+  regions: string[]
+): LocationModel[] {
+  trackTrace(`POFCC-138 - in new filter method filterOutResultsWhenServiceCodePresent`, {
+    functionCall: 'filterOutResultsWhenServiceIdPresent',
+  });
+  logger.info('POFCC-138 - in new filter method filterOutResultsWhenServiceCodePresent');
+  return locations.filter((location) => locationIds.includes(location.epimms_id) || regions.includes(location.region_id));
 }
 
 /**
@@ -91,9 +130,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       const path: string = prepareGetSpecificLocationUrl(basePath, id);
       // no longer LocationResponse but CourtVenue
       const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
-      const filteredResults = response.data.filter((courtVenue) =>
-        courtVenue.epimms_id === id.toString()
-      );
+      const filteredResults = response.data.filter((courtVenue) => courtVenue.epimms_id === id.toString());
       const mappedLocationModel = mapCourtVenuesToLocationModels(filteredResults);
       locationModels.push(mappedLocationModel);
       responseStatus = response.status;
@@ -131,7 +168,8 @@ function getRegionIdsFromLocationList(locations: any): string[] {
 }
 
 function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
-  const courtTypeIdsArray = serviceIdArray.map((serviceId) => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
+  const courtTypeIdsArray = serviceIdArray
+    .map((serviceId) => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
     .reduce(concatCourtTypeWithoutDuplicates, []);
   if (courtTypeIdsArray) {
     return courtTypeIdsArray;
@@ -139,10 +177,25 @@ function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
   return [''];
 }
 
-function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
+export function getServiceIdsByService(serviceIdArray: string[]): string[] {
+  const serviceRefDataMappings = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING) || [];
+  const serviceCodesArray = serviceIdArray
+    .map((serviceId) => serviceRefDataMappings.find((serviceMapping) => serviceMapping.service === serviceId)?.serviceCodes)
+    .reduce(concatCourtTypeWithoutDuplicates, []);
+  if (serviceCodesArray.length) {
+    return serviceCodesArray;
+  }
+  return [''];
+}
+
+export function isValidServiceId(serviceId: string): boolean {
+  return /^[A-Za-z]{3}\d$/.test(serviceId?.trim());
+}
+
+function concatCourtTypeWithoutDuplicates<T>(array1: T[], array2: T[]) {
   array1 = array1 ? array1 : [];
   array2 = array2 ? array2 : [];
-  return array1.concat(array2.filter((item) => array1.indexOf(item) < 0));
+  return array1.concat(array2.filter((item) => !array1.includes(item)));
 }
 
 function mapCourtVenuesToLocationModels(courtVenues: CourtVenue[]): CourtVenue {

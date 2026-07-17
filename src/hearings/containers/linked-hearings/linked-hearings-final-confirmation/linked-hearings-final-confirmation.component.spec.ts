@@ -14,21 +14,17 @@ describe('LinkedHearingsFinalConfirmationComponent', () => {
     snapshot: {
       params: {
         caseId: '1111-2222-3333-4444',
-        hearingId: 'h100002'
-      }
-    }
+        hearingId: 'h100002',
+      },
+    },
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsFinalConfirmationComponent],
-      providers: [
-        provideMockStore({ initialState }),
-        { provide: ActivatedRoute, useValue: mockRoute }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      providers: [provideMockStore({ initialState }), { provide: ActivatedRoute, useValue: mockRoute }],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

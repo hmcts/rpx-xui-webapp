@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class StaffSupportedJurisdictionsService {
-  public static jurisdictionUrl: string = '/api/staff-supported-jurisdiction/get';
+  public static readonly jurisdictionUrl: string = '/api/staff-supported-jurisdiction/get';
   public constructor(private readonly http: HttpClient) {}
 
   public getStaffSupportedJurisdictions(): Observable<string[]> {

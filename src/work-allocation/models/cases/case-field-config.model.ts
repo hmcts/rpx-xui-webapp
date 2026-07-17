@@ -1,4 +1,3 @@
-/* eslint-disable semi */
 import { FieldType } from '../../enums';
 
 export default interface CaseFieldConfig {

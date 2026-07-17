@@ -9,13 +9,16 @@ import * as fromStore from '../../store';
  * absorbs Terms and Condition dumb component
  */
 @Component({
+  standalone: false,
   selector: 'exui-accept-terms-conditions-wrapper',
-  templateUrl: './accept-tc-wrapper.component.html'
+  templateUrl: './accept-tc-wrapper.component.html',
 })
 export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
   public subscription: Subscription;
-  constructor(private readonly store: Store<fromApp.State>,
-              private readonly actions$: Actions) {}
+  constructor(
+    private readonly store: Store<fromApp.State>,
+    private readonly actions$: Actions
+  ) {}
 
   public ngOnInit(): void {
     this.subscription = this.getObservable(this.actions$, fromApp.ACCEPT_T_AND_C_SUCCESS).subscribe(() => {
@@ -27,7 +30,6 @@ export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
     return actions$.pipe(ofType(action));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public onAcceptTandC() {}
 
   public ngOnDestroy() {

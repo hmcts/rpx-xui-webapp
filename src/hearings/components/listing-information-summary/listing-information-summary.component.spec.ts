@@ -30,15 +30,15 @@ describe('ListingInformationSummaryComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData
-              }
+                caseFlags: caseFlagsRefData,
+              },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ListingInformationSummaryComponent);

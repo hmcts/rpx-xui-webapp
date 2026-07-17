@@ -3,7 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AnswersComponent } from './answers.component';
 
 @Component({
-  template: '<exui-answers [caption]="caption" [heading]="heading" [hint]="hint" [answers]="answers" (navigate)="onNavigate($event)"></exui-answers>'
+  standalone: false,
+  template:
+    '<exui-answers [caption]="caption" [heading]="heading" [hint]="hint" [answers]="answers" (navigate)="onNavigate($event)"></exui-answers>',
 })
 class WrapperComponent {
   @ViewChild(AnswersComponent, { static: true }) public ref: AnswersComponent;
@@ -16,7 +18,7 @@ describe('AnswersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AnswersComponent, WrapperComponent]
+      declarations: [AnswersComponent, WrapperComponent],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

@@ -24,9 +24,6 @@ export const init = () => {
       });
     }
 
-    return [
-      200,
-      data
-    ];
+    return [200, data];
   });
 };

@@ -9,6 +9,7 @@ import { ScreenNavigationModel } from './screenNavigation.model';
 import { VocabularyModel } from './vocabulary.model';
 
 export interface ServiceHearingValuesModel {
+  caseId: string;
   hmctsServiceID: string;
   hmctsInternalCaseName: string;
   publicCaseName: string;
@@ -38,8 +39,8 @@ export interface ServiceHearingValuesModel {
   hearingIsLinkedFlag: boolean;
   parties: PartyDetailsModel[];
   caseFlags: {
-    flags: PartyFlagsModel[],
-    flagAmendURL: string,
+    flags: PartyFlagsModel[];
+    flagAmendURL: string;
   };
   screenFlow: ScreenNavigationModel[];
   vocabulary: VocabularyModel[];

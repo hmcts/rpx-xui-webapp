@@ -23,10 +23,9 @@ describe('Panel Member Search Response Resolver', () => {
         JudicialRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }
-    );
+        provideHttpClientTesting(),
+      ],
+    });
     judicialRefDataService = TestBed.inject(JudicialRefDataService) as JudicialRefDataService;
   });
 

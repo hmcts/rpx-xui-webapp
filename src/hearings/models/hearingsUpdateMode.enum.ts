@@ -4,7 +4,7 @@ import { PartyFlagsModel } from './partyFlags.model';
 
 export enum HearingUpdateMode {
   UPDATED_AUTOMATICALLY,
-  UPDATED_ON_PAGE_VISIT
+  UPDATED_ON_PAGE_VISIT,
 }
 
 export enum AutoUpdateMode {
@@ -12,14 +12,14 @@ export enum AutoUpdateMode {
   PARTY,
   PAGELESS,
   WITHIN_PAGE,
-  AFTER_PAGE_VISIT
+  AFTER_PAGE_VISIT,
 }
 
 export enum PagelessPropertiesEnum {
   CASE_MANAGEMENT_LOCATIONCODE = 'caseManagementLocationCode',
   CASE_INTERPRETER_REQUIRED_FLAG = 'caseInterpreterRequiredFlag',
   HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag',
-  PARTIES = 'parties'
+  PARTIES = 'parties',
 }
 
 export enum WithinPagePropertiesEnum {
@@ -29,13 +29,13 @@ export enum WithinPagePropertiesEnum {
   CASE_RESTRICTED_FLAG = 'caserestrictedFlag',
   PRIVATE_HEARING_REQUIRED_FLAG = 'privateHearingRequiredFlag',
   PARTIES = 'parties',
-  HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag'
+  HEARING_IN_WELSH_FLAG = 'hearingInWelshFlag',
 }
 
 export enum AfterPageVisitPropertiesEnum {
   REASONABLE_ADJUSTMENTS = 'reasonableAdjustments',
   NON_REASONABLE_ADJUSTMENTS = 'nonReasonableAdjustments',
-  PARTIES = 'parties'
+  PARTIES = 'parties',
 }
 
 export interface PagelessProperties {
@@ -57,8 +57,8 @@ export interface AfterPageVisitProperties {
   reasonableAdjustmentChangesConfirmed?: boolean;
   nonReasonableAdjustmentChangesRequired: boolean;
   nonReasonableAdjustmentChangesConfirmed?: boolean;
-  partyDetailsChangesRequired: boolean;
-  partyDetailsChangesConfirmed?: boolean;
+  participantAttendanceChangesRequired: boolean;
+  participantAttendanceChangesConfirmed?: boolean;
   partyDetailsAnyChangesRequired?: boolean;
   hearingWindowChangesRequired: boolean;
   hearingWindowChangesConfirmed?: boolean;
@@ -66,6 +66,8 @@ export interface AfterPageVisitProperties {
   hearingFacilitiesChangesConfirmed?: boolean;
   hearingUnavailabilityDatesChanged: boolean;
   hearingUnavailabilityDatesConfirmed?: boolean;
+  additionalInstructionsChangesRequired: boolean;
+  additionalInstructionsChangesConfirmed?: boolean;
 }
 
 export interface PropertiesUpdatedAutomatically {
@@ -74,10 +76,10 @@ export interface PropertiesUpdatedAutomatically {
 }
 
 export interface PropertiesUpdatedOnPageVisit {
-  hearingId: string,
+  hearingId: string;
   caseFlags: {
-    flags: PartyFlagsModel[],
-    flagAmendURL: string,
+    flags: PartyFlagsModel[];
+    flagAmendURL: string;
   };
   parties: PartyDetailsModel[];
   hearingWindow: HearingWindowModel;
@@ -88,7 +90,8 @@ export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
   AMENDED = 'AMENDED',
   WARNING = 'WARNING',
-  NONE = 'NONE'
+  NONE = 'NONE',
+  EMPTY = '',
 }
 
 export interface ParticipantAttendanceMode {
@@ -96,4 +99,9 @@ export interface ParticipantAttendanceMode {
   channel: string;
   partyNameChanged: boolean;
   partyChannelChanged: boolean;
+}
+
+export interface HearingChannelMode {
+  hearingChannel: string;
+  hearingChannelChanged: boolean;
 }

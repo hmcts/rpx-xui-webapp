@@ -1,4 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
+import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { ACTION, HearingRequestPageRouteNames } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
@@ -10,27 +11,29 @@ import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.mod
 import { Subscription } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'exui-request-hearing',
   templateUrl: './request-hearing.component.html',
-  styleUrls: ['./request-hearing.component.scss']
+  styleUrls: ['./request-hearing.component.scss'],
 })
 export class RequestHearingComponent implements OnDestroy {
-  private readonly reloadMessage = 'The Party IDs for this request appear mismatched, please reload and start the request again.';
   public action = ACTION;
   public hearingStateSub: Subscription;
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;
   public showMismatchErrorMessage: boolean;
-  public validationErrors: { id: string, message: string };
+  public validationErrors: { id: string; message: string };
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
-    private readonly hearingsService: HearingsService) {
-    this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      (hearingState) => {
-        this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
-        this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
-      });
+    private readonly hearingsService: HearingsService,
+    private readonly appConfig: AbstractAppConfig
+  ) {
+    this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe((hearingState) => {
+      this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
+      this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
+    });
   }
 
   public onBack(): void {
@@ -51,9 +54,14 @@ export class RequestHearingComponent implements OnDestroy {
       this.hearingsService.submitUpdatedRequestClicked = true;
       this.hearingsService.navigateAction(action);
     } else if (action === ACTION.SUBMIT) {
-      if (!HearingsUtils.checkHearingPartiesConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
+      const mismatchLogMessages = HearingsUtils.getHearingConsistencyLogMessages(
+        this.hearingRequestMainModel,
+        this.serviceHearingValuesModel
+      );
+      mismatchLogMessages.forEach((message) => this.appConfig.logMessage(message));
+      if (!HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
         this.showMismatchErrorMessage = true;
-        this.validationErrors = { id: 'reload-error-message', message: this.reloadMessage };
+        this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE };
       } else {
         this.hearingsService.hearingRequestForSubmitValid = true;
         this.hearingsService.navigateAction(action);
@@ -97,12 +105,14 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public get isChildPage(): boolean {
-    return !this.isCreateEditSummary &&
+    return (
+      !this.isCreateEditSummary &&
       !this.isViewEditSummary &&
       !this.isViewSummary &&
       !this.isEditSummary &&
       !this.isViewEditReason &&
-      !this.isConfirmationPage;
+      !this.isConfirmationPage
+    );
   }
 
   public ngOnDestroy(): void {

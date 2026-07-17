@@ -6,17 +6,16 @@ describe('AccessibilityComponent', () => {
   let component: AccessibilityComponent;
   let fixture: ComponentFixture<AccessibilityComponent>;
 
-  beforeEach(waitForAsync((() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [AccessibilityComponent]
-    })
-      .compileComponents();
+      declarations: [AccessibilityComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AccessibilityComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  })));
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();

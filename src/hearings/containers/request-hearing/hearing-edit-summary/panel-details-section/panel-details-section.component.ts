@@ -6,8 +6,9 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PanelRequirementsModel } from '../../../../models/panelRequirements.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-panel-details-section',
-  templateUrl: './panel-details-section.component.html'
+  templateUrl: './panel-details-section.component.html',
 })
 export class PanelDetailsSectionComponent implements OnInit {
   @Input() public panelRolesRefData: LovRefDataModel[];
@@ -47,7 +48,9 @@ export class PanelDetailsSectionComponent implements OnInit {
   }
 
   private getHearingPanel(): string {
-    const panelMembers = this.panelRequirements?.panelPreferences?.filter((preference) => preference.memberType === MemberType.PANEL_MEMBER).length || 0;
+    const panelMembers =
+      this.panelRequirements?.panelPreferences?.filter((preference) => preference.memberType === MemberType.PANEL_MEMBER)
+        .length || 0;
     const panelSpecialisms = this.panelRequirements?.panelSpecialisms?.length || 0;
     if (panelMembers > 0 || panelSpecialisms > 0) {
       return RadioOptions.YES;
@@ -56,9 +59,12 @@ export class PanelDetailsSectionComponent implements OnInit {
   }
 
   private getIncludedPanelMembers(): string {
-    const includedPanelMembers = this.panelRequirements?.panelPreferences?.filter(
-      (preference) => preference.memberType === MemberType.PANEL_MEMBER && preference.requirementType === RequirementType.MUSTINC
-    ).map((preference) => preference.memberID);
+    const includedPanelMembers = this.panelRequirements?.panelPreferences
+      ?.filter(
+        (preference) =>
+          preference.memberType === MemberType.PANEL_MEMBER && preference.requirementType === RequirementType.MUSTINC
+      )
+      .map((preference) => preference.memberID);
 
     const includedPanelMemberNames: string[] = [];
     this.panelMembers?.forEach((panelMemberInfo) => {
@@ -70,9 +76,12 @@ export class PanelDetailsSectionComponent implements OnInit {
   }
 
   private getExcludedPanelMembers(): string {
-    const excludedJudges = this.panelRequirements?.panelPreferences?.filter(
-      (preference) => preference.memberType === MemberType.PANEL_MEMBER && preference.requirementType === RequirementType.EXCLUDE
-    ).map((preference) => preference.memberID);
+    const excludedJudges = this.panelRequirements?.panelPreferences
+      ?.filter(
+        (preference) =>
+          preference.memberType === MemberType.PANEL_MEMBER && preference.requirementType === RequirementType.EXCLUDE
+      )
+      .map((preference) => preference.memberID);
 
     const excludedJudgeNames: string[] = [];
     this.panelMembers?.forEach((panelMemberInfo) => {

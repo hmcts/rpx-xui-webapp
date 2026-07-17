@@ -10,7 +10,7 @@ describe('Create Cases Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCreateCases.CREATE_CASE_APPLY,
-          payload
+          payload,
         });
       });
     });
@@ -20,7 +20,7 @@ describe('Create Cases Actions', () => {
         const action = new fromCreateCases.CreateCaseReset();
 
         expect({ ...action }).toEqual({
-          type: fromCreateCases.CREATE_CASE_RESET
+          type: fromCreateCases.CREATE_CASE_RESET,
         });
       });
     });
@@ -32,7 +32,7 @@ describe('Create Cases Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCreateCases.CREATED_CASE_LOADED,
-          caseId
+          caseId,
         });
       });
     });
@@ -44,7 +44,7 @@ describe('Create Cases Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCreateCases.CREATE_CASE_FILTER_APPLY,
-          payload
+          payload,
         });
       });
     });
@@ -56,7 +56,7 @@ describe('Create Cases Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCreateCases.CREATE_CASE_FILTER_CHANGED,
-          payload
+          payload,
         });
       });
     });

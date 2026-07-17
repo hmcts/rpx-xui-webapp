@@ -16,9 +16,7 @@ import * as fromRoot from '../../../app/store';
 describe('Allocate Role Effects', () => {
   let actions$;
   let effects: AllocateRoleEffects;
-  const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', [
-    'confirmAllocation', 'backUrl'
-  ]);
+  const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', ['confirmAllocation', 'backUrl']);
   let store: Store;
   let dispatchSpy;
   beforeEach(() => {
@@ -27,11 +25,11 @@ describe('Allocate Role Effects', () => {
       providers: [
         {
           provide: AllocateRoleService,
-          useValue: allocateRoleServiceMock
+          useValue: allocateRoleServiceMock,
         },
         AllocateRoleEffects,
-        provideMockActions(() => actions$)
-      ]
+        provideMockActions(() => actions$),
+      ],
     });
     store = TestBed.inject(Store);
     dispatchSpy = spyOn(store, 'dispatch');
@@ -50,7 +48,7 @@ describe('Allocate Role Effects', () => {
         person: null,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         action: Actions.Allocate,
-        period: null
+        period: null,
       };
       allocateRoleServiceMock.confirmAllocation.and.returnValue(of({}));
       const action = new allocateRoleAction.ConfirmAllocation(STATE_DATA);
@@ -63,11 +61,11 @@ describe('Allocate Role Effects', () => {
             retainMessages: true,
             message: {
               type: 'success',
-              message: RoleAllocationMessageText.Add
+              message: RoleAllocationMessageText.Add,
             },
-            messageText: RoleAllocationMessageText.Add
-          }
-        }
+            messageText: RoleAllocationMessageText.Add,
+          },
+        },
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -85,7 +83,7 @@ describe('Allocate Role Effects', () => {
         person: null,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         action: Actions.Reallocate,
-        period: null
+        period: null,
       };
       allocateRoleServiceMock.confirmAllocation.and.returnValue(of({}));
       const action = new allocateRoleAction.ConfirmAllocation(STATE_DATA);
@@ -98,11 +96,11 @@ describe('Allocate Role Effects', () => {
             retainMessages: true,
             message: {
               type: 'success',
-              message: RoleAllocationMessageText.Reallocate
+              message: RoleAllocationMessageText.Reallocate,
             },
-            messageText: RoleAllocationMessageText.Reallocate
-          }
-        }
+            messageText: RoleAllocationMessageText.Reallocate,
+          },
+        },
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });

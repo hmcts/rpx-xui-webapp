@@ -3,12 +3,14 @@ import * as fromActions from '../actions';
 
 export const initialHearingConditionsState: HearingConditions = {};
 
-export function hearingConditionsReducer(currentState = initialHearingConditionsState,
-  action: fromActions.HearingConditionsAction): HearingConditions {
+export function hearingConditionsReducer(
+  currentState = initialHearingConditionsState,
+  action: fromActions.HearingConditionsAction
+): HearingConditions {
   switch (action.type) {
     case fromActions.RESET_HEARING_CONDITIONS: {
       return {
-        ...initialHearingConditionsState
+        ...initialHearingConditionsState,
       };
     }
     case fromActions.SAVE_HEARING_CONDITIONS: {
@@ -16,7 +18,7 @@ export function hearingConditionsReducer(currentState = initialHearingConditions
     }
     default: {
       return {
-        ...currentState
+        ...currentState,
       };
     }
   }

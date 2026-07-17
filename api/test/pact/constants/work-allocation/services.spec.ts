@@ -5,5 +5,5 @@ export const SERVICE_C = 'c';
 export const SERVICES = {
   A: SERVICE_A,
   B: SERVICE_B,
-  C: SERVICE_C
+  C: SERVICE_C,
 };

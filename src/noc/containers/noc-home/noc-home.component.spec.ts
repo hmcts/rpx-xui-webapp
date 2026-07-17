@@ -14,7 +14,10 @@ import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocHomeComponent } from './noc-home.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -28,9 +31,7 @@ describe('NocHomeComponent', () => {
   let storePipeMock: any;
   let storeDispatchMock: any;
 
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl'
-  ]);
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
 
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
@@ -38,24 +39,15 @@ describe('NocHomeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        UtilsModule,
-        RouterTestingModule
-      ],
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
-      declarations: [
-        ...fromContainers.containers,
-        RpxTranslateMockPipe
-      ],
+      imports: [ReactiveFormsModule, UtilsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [...fromContainers.containers, RpxTranslateMockPipe],
       providers: [
         provideMockStore(),
         { provide: Router, useValue: routerMock },
         { provide: LoggerService, useValue: loggerServiceMock },
-        { provide: Location, useValue: locationMock }
-      ]
+        { provide: Location, useValue: locationMock },
+      ],
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -110,10 +102,7 @@ describe('NocHomeComponent', () => {
       component.navigationHandler(NocNavigationEvent.BACK);
 
       expect(locationMock.back).toHaveBeenCalled();
-      expect(loggerServiceMock.error).toHaveBeenCalledWith(
-        'Error navigating back, trying fallback route.',
-        jasmine.any(Error)
-      );
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating back, trying fallback route.', jasmine.any(Error));
       expect(routerMock.navigateByUrl).toHaveBeenCalledWith('');
     });
 
@@ -125,14 +114,8 @@ describe('NocHomeComponent', () => {
       await component.navigationHandler(NocNavigationEvent.BACK);
 
       expect(locationMock.back).toHaveBeenCalled();
-      expect(loggerServiceMock.error).toHaveBeenCalledWith(
-        'Error navigating back, trying fallback route.',
-        jasmine.any(Error)
-      );
-      expect(loggerServiceMock.error).toHaveBeenCalledWith(
-        'Error navigating to \'\' ',
-        'Navigation failed'
-      );
+      expect(loggerServiceMock.error).toHaveBeenCalledWith('Error navigating back, trying fallback route.', jasmine.any(Error));
+      expect(loggerServiceMock.error).toHaveBeenCalledWith("Error navigating to '' ", 'Navigation failed');
     });
 
     it('should navigate to case ref page when click back button if on question page', () => {

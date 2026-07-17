@@ -20,8 +20,8 @@ describe('Hearings, get single hearing for given hearingId', () => {
         {
           categoryParent: somethingLike('string'),
           categoryType: somethingLike('string'),
-          categoryValue: somethingLike('string')
-        }
+          categoryValue: somethingLike('string'),
+        },
       ]),
       caseDeepLink: somethingLike('string'),
       caseInterpreterRequiredFlag: somethingLike(true),
@@ -32,7 +32,7 @@ describe('Hearings, get single hearing for given hearingId', () => {
       externalCaseReference: somethingLike('string'),
       hmctsInternalCaseName: somethingLike('string'),
       hmctsServiceCode: somethingLike('string'),
-      publicCaseName: somethingLike('string')
+      publicCaseName: somethingLike('string'),
     },
     hearingDetails: {
       amendReasonCodes: [somethingLike('string')],
@@ -42,17 +42,19 @@ describe('Hearings, get single hearing for given hearingId', () => {
       hearingChannels: [somethingLike('string')],
       hearingInWelshFlag: somethingLike(true),
       hearingIsLinkedFlag: somethingLike(true),
-      hearingLocations: [{
-        locationId: somethingLike('string'),
-        locationType: somethingLike('string')
-      }],
+      hearingLocations: [
+        {
+          locationId: somethingLike('string'),
+          locationType: somethingLike('string'),
+        },
+      ],
       hearingPriorityType: somethingLike('string'),
       hearingRequester: somethingLike('string'),
       hearingType: somethingLike('string'),
       hearingWindow: {
         dateRangeEnd: somethingLike('2023-07-03'),
         dateRangeStart: somethingLike('2023-07-03'),
-        firstDateTimeMustBe: somethingLike('2023-07-03T15:11:34.019Z')
+        firstDateTimeMustBe: somethingLike('2023-07-03T15:11:34.019Z'),
       },
       leadJudgeContractType: somethingLike('string'),
       listingAutoChangeReasonCode: somethingLike('string'),
@@ -66,73 +68,85 @@ describe('Hearings, get single hearing for given hearingId', () => {
           {
             memberID: somethingLike('string'),
             memberType: somethingLike('string'),
-            requirementType: somethingLike('string')
-          }
+            requirementType: somethingLike('string'),
+          },
         ],
         panelSpecialisms: [somethingLike('string')],
-        roleType: [somethingLike('string')]
+        roleType: [somethingLike('string')],
       },
-      privateHearingRequiredFlag: somethingLike(true)
+      privateHearingRequiredFlag: somethingLike(true),
     },
     hearingResponse: {
       hearingCancellationReason: somethingLike('string'),
-      hearingDaySchedule: [{
-        attendees: [{
-          hearingSubChannel: somethingLike('string'),
-          partyID: somethingLike('string')
-        }],
-        hearingEndDateTime: somethingLike('2023-07-03T15:11:34.019Z'),
-        hearingJudgeId: somethingLike('string'),
-        hearingRoomId: somethingLike('string'),
-        hearingStartDateTime: somethingLike('2023-07-03T15:11:34.019Z'),
-        hearingVenueId: somethingLike('string'),
-        listAssistSessionID: somethingLike('string'),
-        panelMemberIds: [somethingLike('string')]
-      }],
+      hearingDaySchedule: [
+        {
+          attendees: [
+            {
+              hearingSubChannel: somethingLike('string'),
+              partyID: somethingLike('string'),
+            },
+          ],
+          hearingEndDateTime: somethingLike('2023-07-03T15:11:34.019Z'),
+          hearingJudgeId: somethingLike('string'),
+          hearingRoomId: somethingLike('string'),
+          hearingStartDateTime: somethingLike('2023-07-03T15:11:34.019Z'),
+          hearingVenueId: somethingLike('string'),
+          listAssistSessionID: somethingLike('string'),
+          panelMemberIds: [somethingLike('string')],
+        },
+      ],
       laCaseStatus: somethingLike('string'),
       listAssistTransactionID: somethingLike('string'),
       listingStatus: somethingLike('string'),
       receivedDateTime: somethingLike('2023-07-03T15:11:34.019Z'),
-      requestVersion: somethingLike(0)
+      requestVersion: somethingLike(0),
     },
-    partyDetails: [{
-      individualDetails: {
-        custodyStatus: somethingLike('string'),
-        firstName: somethingLike('string'),
-        hearingChannelEmail: [somethingLike('string')],
-        hearingChannelPhone: [somethingLike('string')],
-        interpreterLanguage: somethingLike('string'),
-        lastName: somethingLike('string'),
-        otherReasonableAdjustmentDetails: somethingLike('string'),
-        preferredHearingChannel: somethingLike('string'),
-        reasonableAdjustments: [somethingLike('string')],
-        relatedParties: [{
-          relatedPartyID: somethingLike('string'),
-          relationshipType: somethingLike('string')
-        }],
-        title: somethingLike('string'),
-        vulnerabilityDetails: somethingLike('string'),
-        vulnerableFlag: somethingLike(true)
+    partyDetails: [
+      {
+        individualDetails: {
+          custodyStatus: somethingLike('string'),
+          firstName: somethingLike('string'),
+          hearingChannelEmail: [somethingLike('string')],
+          hearingChannelPhone: [somethingLike('string')],
+          interpreterLanguage: somethingLike('string'),
+          lastName: somethingLike('string'),
+          otherReasonableAdjustmentDetails: somethingLike('string'),
+          preferredHearingChannel: somethingLike('string'),
+          reasonableAdjustments: [somethingLike('string')],
+          relatedParties: [
+            {
+              relatedPartyID: somethingLike('string'),
+              relationshipType: somethingLike('string'),
+            },
+          ],
+          title: somethingLike('string'),
+          vulnerabilityDetails: somethingLike('string'),
+          vulnerableFlag: somethingLike(true),
+        },
+        organisationDetails: {
+          cftOrganisationID: somethingLike('string'),
+          name: somethingLike('string'),
+          organisationType: somethingLike('string'),
+        },
+        partyChannelSubType: somethingLike('string'),
+        partyID: somethingLike('string'),
+        partyRole: somethingLike('string'),
+        partyType: somethingLike('string'),
+        unavailabilityDOW: [
+          {
+            DOW: somethingLike('string'),
+            DOWUnavailabilityType: somethingLike('string'),
+          },
+        ],
+        unavailabilityRanges: [
+          {
+            unavailabilityType: somethingLike('string'),
+            unavailableFromDate: somethingLike('2023-07-03'),
+            unavailableToDate: somethingLike('2023-07-03'),
+          },
+        ],
       },
-      organisationDetails: {
-        cftOrganisationID: somethingLike('string'),
-        name: somethingLike('string'),
-        organisationType: somethingLike('string')
-      },
-      partyChannelSubType: somethingLike('string'),
-      partyID: somethingLike('string'),
-      partyRole: somethingLike('string'),
-      partyType: somethingLike('string'),
-      unavailabilityDOW: [{
-        DOW: somethingLike('string'),
-        DOWUnavailabilityType: somethingLike('string')
-      }],
-      unavailabilityRanges: [{
-        unavailabilityType: somethingLike('string'),
-        unavailableFromDate: somethingLike('2023-07-03'),
-        unavailableToDate: somethingLike('2023-07-03')
-      }]
-    }],
+    ],
     requestDetails: {
       cancellationReasonCodes: [somethingLike('string')],
       hearingGroupRequestId: somethingLike('string'),
@@ -140,8 +154,8 @@ describe('Hearings, get single hearing for given hearingId', () => {
       partiesNotified: somethingLike('2023-07-03T15:11:34.019Z'),
       status: somethingLike('string'),
       timestamp: somethingLike('2023-07-03T15:11:34.019Z'),
-      versionNumber: somethingLike(0)
-    }
+      versionNumber: somethingLike(0),
+    },
   };
 
   describe('get /getHearing/{ccdCaseRef}}', () => {
@@ -160,18 +174,18 @@ describe('Hearings, get single hearing for given hearingId', () => {
           method: 'GET',
           path: `/hearing/${hearingId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -193,13 +207,13 @@ describe('Hearings, get single hearing for given hearingId', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           query: {
-            hearingId
-          }
+            hearingId,
+          },
         });
         let returnedResponse = null;
         const response = mockRes();
@@ -222,11 +236,13 @@ describe('Hearings, get single hearing for given hearingId', () => {
 function assertResponses(dto: any) {
   expect(dto.caseDetails.caseAdditionalSecurityFlag).to.be.equal(true);
 
-  expect(dto.caseDetails.caseCategories).to.be.eql([{
-    categoryParent: 'string',
-    categoryType: 'string',
-    categoryValue: 'string'
-  }]);
+  expect(dto.caseDetails.caseCategories).to.be.eql([
+    {
+      categoryParent: 'string',
+      categoryType: 'string',
+      categoryValue: 'string',
+    },
+  ]);
 
   expect(dto.caseDetails.caseDeepLink).to.be.equal('string');
   expect(dto.caseDetails.caseInterpreterRequiredFlag).to.be.equal(true);
@@ -246,16 +262,14 @@ function assertResponses(dto: any) {
   expect(dto.hearingDetails.hearingChannels).to.be.eql(['string']);
   expect(dto.hearingDetails.hearingInWelshFlag).to.be.equal(true);
   expect(dto.hearingDetails.hearingIsLinkedFlag).to.be.equal(true);
-  expect(dto.hearingDetails.hearingLocations).to.be.eql([
-    { locationId: 'string', locationType: 'string' }
-  ]);
+  expect(dto.hearingDetails.hearingLocations).to.be.eql([{ locationId: 'string', locationType: 'string' }]);
   expect(dto.hearingDetails.hearingPriorityType).to.be.equal('string');
   expect(dto.hearingDetails.hearingRequester).to.be.equal('string');
   expect(dto.hearingDetails.hearingType).to.be.equal('string');
   expect(dto.hearingDetails.hearingWindow).to.be.eql({
     dateRangeEnd: '2023-07-03',
     dateRangeStart: '2023-07-03',
-    firstDateTimeMustBe: '2023-07-03T15:11:34.019Z'
+    firstDateTimeMustBe: '2023-07-03T15:11:34.019Z',
   });
   expect(dto.hearingDetails.leadJudgeContractType).to.be.equal('string');
   expect(dto.hearingDetails.leadJudgeContractType).to.be.equal('string');
@@ -266,11 +280,13 @@ function assertResponses(dto: any) {
 
   expect(dto.hearingDetails.panelRequirements.authorisationSubType).to.be.eql(['string']);
   expect(dto.hearingDetails.panelRequirements.authorisationTypes).to.be.eql(['string']);
-  expect(dto.hearingDetails.panelRequirements.panelPreferences).to.be.eql([{
-    memberID: 'string',
-    memberType: 'string',
-    requirementType: 'string'
-  }]);
+  expect(dto.hearingDetails.panelRequirements.panelPreferences).to.be.eql([
+    {
+      memberID: 'string',
+      memberType: 'string',
+      requirementType: 'string',
+    },
+  ]);
   expect(dto.hearingDetails.panelRequirements.panelSpecialisms).to.be.eql(['string']);
   expect(dto.hearingDetails.panelRequirements.roleType).to.be.eql(['string']);
 
@@ -278,10 +294,12 @@ function assertResponses(dto: any) {
   expect(dto.hearingResponse.hearingCancellationReason).to.be.equal('string');
 
   expect(dto.hearingResponse.hearingDaySchedule.length).to.be.equal(1);
-  expect(dto.hearingResponse.hearingDaySchedule[0].attendees).to.eql([{
-    hearingSubChannel: 'string',
-    partyID: 'string'
-  }]);
+  expect(dto.hearingResponse.hearingDaySchedule[0].attendees).to.eql([
+    {
+      hearingSubChannel: 'string',
+      partyID: 'string',
+    },
+  ]);
   expect(dto.hearingResponse.hearingDaySchedule[0].hearingEndDateTime).to.be.equal('2023-07-03T15:11:34.019Z');
   expect(dto.hearingResponse.hearingDaySchedule[0].hearingJudgeId).to.be.equal('string');
   expect(dto.hearingResponse.hearingDaySchedule[0].hearingRoomId).to.be.equal('string');
@@ -311,7 +329,7 @@ function assertResponses(dto: any) {
   expect(dto.partyDetails[0].individualDetails.reasonableAdjustments).to.be.eql(['string']);
   expect(dto.partyDetails[0].individualDetails.relatedParties[0]).to.be.eql({
     relatedPartyID: 'string',
-    relationshipType: 'string'
+    relationshipType: 'string',
   });
   expect(dto.partyDetails[0].individualDetails.title).to.be.equal('string');
   expect(dto.partyDetails[0].individualDetails.vulnerabilityDetails).to.be.equal('string');
@@ -325,15 +343,19 @@ function assertResponses(dto: any) {
   expect(dto.partyDetails[0].partyID).to.be.equal('string');
   expect(dto.partyDetails[0].partyRole).to.be.equal('string');
   expect(dto.partyDetails[0].partyType).to.be.equal('string');
-  expect(dto.partyDetails[0].unavailabilityDOW).to.be.eql([{
-    DOW: 'string',
-    DOWUnavailabilityType: 'string'
-  }]);
-  expect(dto.partyDetails[0].unavailabilityRanges).to.be.eql([{
-    unavailabilityType: 'string',
-    unavailableFromDate: '2023-07-03',
-    unavailableToDate: '2023-07-03'
-  }]);
+  expect(dto.partyDetails[0].unavailabilityDOW).to.be.eql([
+    {
+      DOW: 'string',
+      DOWUnavailabilityType: 'string',
+    },
+  ]);
+  expect(dto.partyDetails[0].unavailabilityRanges).to.be.eql([
+    {
+      unavailabilityType: 'string',
+      unavailableFromDate: '2023-07-03',
+      unavailableToDate: '2023-07-03',
+    },
+  ]);
 
   expect(dto.requestDetails.cancellationReasonCodes).to.be.eql(['string']);
   expect(dto.requestDetails.hearingGroupRequestId).to.be.equal('string');

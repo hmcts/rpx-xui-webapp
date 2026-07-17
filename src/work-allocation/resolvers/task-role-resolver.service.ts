@@ -7,11 +7,13 @@ import { WorkAllocationTaskService } from '../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskRoleResolverService {
-  constructor(private readonly service: WorkAllocationTaskService,
-              private readonly router: Router) {}
+  constructor(
+    private readonly service: WorkAllocationTaskService,
+    private readonly router: Router
+  ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable<TaskRole[]> {
     return this.service.getTaskRoles(route.paramMap.get('taskId')).pipe(

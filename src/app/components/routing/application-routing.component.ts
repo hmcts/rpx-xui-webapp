@@ -9,7 +9,10 @@ import { AppConstants } from '../../../app/app.constants';
 import { WALandingPageRoles } from '../../../work-allocation/models/common/service-config.model';
 import * as fromActions from '../../store';
 
-@Component({ templateUrl: './application-routing.component.html' })
+@Component({
+  standalone: false,
+  templateUrl: './application-routing.component.html',
+})
 export class ApplicationRoutingComponent implements OnInit {
   constructor(
     private readonly router: Router,
@@ -28,29 +31,34 @@ export class ApplicationRoutingComponent implements OnInit {
 
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
-    const waLandingPageRoles$ =
-      this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
+    const waLandingPageRoles$ = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
     const userAccess$ = combineLatest([userDetails$, waLandingPageRoles$]);
-    userAccess$.pipe(map(([userDetails, landingRoles]) => {
-      if (this.router.url !== '/') {
-        return;
-      }
-      if (AppUtils.isBookableAndJudicialRole(userDetails)) {
-        return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
-      }
-      if (!(userDetails?.userInfo?.roles?.includes('pui-case-manager'))) {
-        const userRoles = userDetails.userInfo.roles;
-        let rolePresent = false;
-        for (let i = 0, len = landingRoles?.roles?.length; i < len; i++) {
-          if (userRoles.includes(landingRoles?.roles[i])) {
-            rolePresent = true;
-            break;
+    userAccess$
+      .pipe(
+        map(([userDetails, landingRoles]) => {
+          if (this.router.url !== '/') {
+            return;
           }
-        }
-        rolePresent ? this.router.navigate([ApplicationRoutingComponent.defaultWAPage]) : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
-      } else {
-        this.router.navigate([ApplicationRoutingComponent.defaultPage]);
-      }
-    })).subscribe();
+          if (AppUtils.isBookableAndJudicialRole(userDetails)) {
+            return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
+          }
+          if (!userDetails?.userInfo?.roles?.includes('pui-case-manager')) {
+            const userRoles = userDetails.userInfo.roles;
+            let rolePresent = false;
+            for (let i = 0, len = landingRoles?.roles?.length; i < len; i++) {
+              if (userRoles.includes(landingRoles?.roles[i])) {
+                rolePresent = true;
+                break;
+              }
+            }
+            this.router.navigate([
+              rolePresent ? ApplicationRoutingComponent.defaultWAPage : ApplicationRoutingComponent.defaultPage,
+            ]);
+          } else {
+            this.router.navigate([ApplicationRoutingComponent.defaultPage]);
+          }
+        })
+      )
+      .subscribe();
   }
 }

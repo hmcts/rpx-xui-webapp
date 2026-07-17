@@ -2,9 +2,10 @@ import { Organisation } from '../../models';
 import {
   LoadOrganisation,
   LoadOrganisationFail,
-  LoadOrganisationSuccess, LOAD_ORGANISATION,
+  LoadOrganisationSuccess,
+  LOAD_ORGANISATION,
   LOAD_ORGANISATION_FAIL,
-  LOAD_ORGANISATION_SUCCESS
+  LOAD_ORGANISATION_SUCCESS,
 } from './organisation.actions';
 
 describe('Load Organisation', () => {
@@ -24,12 +25,12 @@ describe('LoadOrganisationSuccess', () => {
       addressLine2: '',
       country: 'UK',
       contactInformation: [],
-      paymentAccount: []
+      paymentAccount: [],
     };
     const action = new LoadOrganisationSuccess(payload);
     expect({ ...action }).toEqual({
       type: LOAD_ORGANISATION_SUCCESS,
-      payload
+      payload,
     });
   });
 });
@@ -40,7 +41,7 @@ describe('LoadOrganisationFail', () => {
     const action = new LoadOrganisationFail(payload);
     expect({ ...action }).toEqual({
       type: LOAD_ORGANISATION_FAIL,
-      payload
+      payload,
     });
   });
 });

@@ -8,12 +8,6 @@ export const getOrganisationState = createSelector(
   (state: fromFeature.OrganisationState) => state.organisation
 );
 
-export const getOrganisationSel = createSelector(
-  getOrganisationState,
-  fromOrganisation.getOrganisation
-);
+export const getOrganisationSel = createSelector(getOrganisationState, fromOrganisation.getOrganisation);
 
-export const getOrganisationLoaded = createSelector(
-  getOrganisationState,
-  fromOrganisation.getOrganisationLoaded
-);
+export const getOrganisationLoaded = createSelector(getOrganisationState, fromOrganisation.getOrganisationLoaded);

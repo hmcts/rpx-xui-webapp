@@ -11,27 +11,32 @@
             <exui-choose-exclusion
               #chooseExclusion
               *ngIf="isComponentVisible(navigationCurrentState, chooseExclusionStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-choose-exclusion>
             <exui-choose-person-role
               #choosePersonRole
               *ngIf="isComponentVisible(navigationCurrentState, choosePersonRoleStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-choose-person-role>
             <exui-add-exclusion-search-person
               #findPerson
               *ngIf="isComponentVisible(navigationCurrentState, findPersonVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-add-exclusion-search-person>
             <exui-describe-exclusion
               #describeExclusion
               *ngIf="isComponentVisible(navigationCurrentState, describeExclusionVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-describe-exclusion>
             <exui-add-exclusion-check-answers
               #checkAnswers
               *ngIf="isComponentVisible(navigationCurrentState, checkAnswersVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-add-exclusion-check-answers>
           </div>
         </exui-exclusion-navigation>

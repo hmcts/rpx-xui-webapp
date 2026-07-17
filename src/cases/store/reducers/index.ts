@@ -16,12 +16,10 @@ export const reducers: ActionReducerMap<State> = {
   caseCreate: fromCaseCreate.reducerCreateCase,
   caseSearch: fromCaseSearchFilters.reducer,
   caseList: fromCaseListFilters.caselistReducer,
-  caseShare: fromCaseShare.shareCasesReducer
+  caseShare: fromCaseShare.shareCasesReducer,
 };
 
-export const getCaseFeatureState = createFeatureSelector<State>(
-  'cases'
-);
+export const getCaseFeatureState = createFeatureSelector<State>('cases');
 
 export * from './search-filter.reducer';
 export * from './create-case.reducer';

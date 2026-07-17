@@ -23,12 +23,12 @@ describe('StaffAddEditFormService', () => {
                 jobTitles: staffFilterOptionsTestData.jobTitles,
                 skills: staffFilterOptionsTestData.skills,
                 services: staffFilterOptionsTestData.services,
-                regions: staffFilterOptionsTestData.regions
-              }
-            }
-          }
-        }
-      ]
+                regions: staffFilterOptionsTestData.regions,
+              },
+            },
+          },
+        },
+      ],
     });
     service = TestBed.inject(StaffAddEditFormService);
   });
@@ -50,13 +50,11 @@ describe('StaffAddEditFormService', () => {
     expect(formGroupKeys).toEqual(jasmine.arrayContaining(staffUserKeys));
   });
 
-  describe('selectedServiceCodes$', (() => {
+  describe('selectedServiceCodes$', () => {
     it('should emit an array of service codes from selected services', () => {
-      service.selectedServiceCodes$
-        .pipe(take(1))
-        .subscribe((serviceCodes) => {
-          expect(serviceCodes).toEqual([]);
-        });
+      service.selectedServiceCodes$.pipe(take(1)).subscribe((serviceCodes) => {
+        expect(serviceCodes).toEqual([]);
+      });
 
       const firstServiceCodeOption = service.staffFilterOptions.services[0];
       const selectedServices = service.formGroup.get('services')?.value;
@@ -66,9 +64,9 @@ describe('StaffAddEditFormService', () => {
         expect(serviceCodes).toEqual([firstServiceCodeOption.key]);
       });
     });
-  }));
+  });
 
-  describe('patchFormValues', (() => {
+  describe('patchFormValues', () => {
     it('should call patchValue on formGroup with the passed value', () => {
       spyOn(service.formGroup, 'patchValue').and.callThrough();
       const staffUserData = {
@@ -79,7 +77,7 @@ describe('StaffAddEditFormService', () => {
         user_type: 'User Type',
         task_supervisor: false,
         case_allocator: false,
-        staff_admin: false
+        staff_admin: false,
       };
       const newStaffUser = StaffUser.from(staffUserData);
       service.patchFormValues(newStaffUser);
@@ -88,5 +86,5 @@ describe('StaffAddEditFormService', () => {
         expect(service.formGroup.value[key]).toBe(staffUserData[key]);
       });
     });
-  }));
+  });
 });

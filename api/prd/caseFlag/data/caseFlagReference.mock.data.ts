@@ -15,10 +15,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'CF0002',
         isParent: false,
-        Path: [
-          'Case'
-        ],
-        childFlags: []
+        Path: ['Case'],
+        childFlags: [],
       },
       {
         name: 'Potentially harmful medical evidence',
@@ -26,10 +24,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'CF0003',
         isParent: false,
-        Path: [
-          'Case'
-        ],
-        childFlags: []
+        Path: ['Case'],
+        childFlags: [],
       },
       {
         name: 'Gender recognition',
@@ -37,10 +33,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'CF0004',
         isParent: false,
-        Path: [
-          'Case'
-        ],
-        childFlags: []
+        Path: ['Case'],
+        childFlags: [],
       },
       {
         name: 'Domestic violence allegation',
@@ -48,10 +42,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'CF0005',
         isParent: false,
-        Path: [
-          'Case'
-        ],
-        childFlags: []
+        Path: ['Case'],
+        childFlags: [],
       },
       {
         name: 'Potential fraud',
@@ -59,10 +51,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'CF0006',
         isParent: false,
-        Path: [
-          'Case'
-        ],
-        childFlags: []
+        Path: ['Case'],
+        childFlags: [],
       },
       {
         name: 'Urgent flag',
@@ -70,10 +60,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'CF0007',
         isParent: false,
-        Path: [
-          'Case'
-        ],
-        childFlags: []
+        Path: ['Case'],
+        childFlags: [],
       },
       {
         name: 'Exclusion order with Police',
@@ -81,12 +69,10 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'CF0008',
         isParent: false,
-        Path: [
-          'Case'
-        ],
-        childFlags: []
-      }
-    ]
+        Path: ['Case'],
+        childFlags: [],
+      },
+    ],
   },
   {
     name: 'Party',
@@ -102,10 +88,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0002',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Potentially suicidal',
@@ -113,10 +97,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0003',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Confidential address',
@@ -124,10 +106,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0004',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Anonymous party',
@@ -135,10 +115,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0005',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Potentially Violent Person',
@@ -146,10 +124,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0006',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Unacceptable customer behaviour',
@@ -157,10 +133,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0007',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Vexatious litigant',
@@ -168,10 +142,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0008',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Civil restraint order',
@@ -179,10 +151,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0009',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Extended civil restraint order',
@@ -190,10 +160,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0010',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Banning order',
@@ -201,10 +169,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0011',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Foreign national offender',
@@ -212,10 +178,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0012',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Unaccompanied minor',
@@ -223,10 +187,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0013',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Audio/Video Evidence',
@@ -234,10 +196,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0014',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Language Interpreter',
@@ -245,10 +205,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'PF0015',
         isParent: false,
-        Path: [
-          'Party'
-        ],
-        childFlags: []
+        Path: ['Party'],
+        childFlags: [],
       },
       {
         name: 'Reasonable adjustment',
@@ -256,9 +214,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
         flagComment: true,
         flagCode: 'RA0001',
         isParent: true,
-        Path: [
-          'Party'
-        ],
+        Path: ['Party'],
         childFlags: [
           {
             name: 'Alternative formats of our information',
@@ -266,9 +222,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
             flagComment: true,
             flagCode: 'RA0002',
             isParent: true,
-            Path: [
-              'Party', 'Reasonable adjustment'
-            ],
+            Path: ['Party', 'Reasonable adjustment'],
             childFlags: [
               {
                 name: 'Audio / CD',
@@ -276,10 +230,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0009',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                childFlags: [],
               },
               {
                 name: 'Braille',
@@ -287,10 +239,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0010',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                childFlags: [],
               },
               {
                 name: 'Coloured paper',
@@ -298,10 +248,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0011',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                childFlags: [],
               },
               {
                 name: 'Easy Read',
@@ -309,10 +257,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0012',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                childFlags: [],
               },
               {
                 name: 'Larger font size',
@@ -320,12 +266,10 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0013',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                ],
-                childFlags: []
-              }
-            ]
+                Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                childFlags: [],
+              },
+            ],
           },
           {
             name: 'Assistance with court and tribunal processes and forms',
@@ -333,9 +277,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
             flagComment: true,
             flagCode: 'RA0003',
             isParent: true,
-            Path: [
-              'Party', 'Reasonable adjustment'
-            ],
+            Path: ['Party', 'Reasonable adjustment'],
             childFlags: [
               {
                 name: 'Completing forms and documents dictated by customer',
@@ -343,10 +285,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0014',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'],
+                childFlags: [],
               },
               {
                 name: 'Face to face explanations to help customer to complete forms',
@@ -354,10 +294,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0015',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'],
+                childFlags: [],
               },
               {
                 name: 'Reading documents for customer',
@@ -365,10 +303,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0016',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'],
+                childFlags: [],
               },
               {
                 name: 'Time and opportunity for customer to explain their needs and preferences',
@@ -376,12 +312,10 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0017',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
-                ],
-                childFlags: []
-              }
-            ]
+                Path: ['Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'],
+                childFlags: [],
+              },
+            ],
           },
           {
             name: 'Pre- Hearing visit',
@@ -389,10 +323,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
             flagComment: true,
             flagCode: 'RA0004',
             isParent: false,
-            Path: [
-              'Party', 'Reasonable adjustment'
-            ],
-            childFlags: []
+            Path: ['Party', 'Reasonable adjustment'],
+            childFlags: [],
           },
           {
             name: 'Physical access and facilities',
@@ -400,9 +332,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
             flagComment: true,
             flagCode: 'RA0005',
             isParent: true,
-            Path: [
-              'Party', 'Reasonable adjustment'
-            ],
+            Path: ['Party', 'Reasonable adjustment'],
             childFlags: [
               {
                 name: 'Accessible toilet',
@@ -410,10 +340,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0018',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Assistance to get to court or tribunal',
@@ -421,10 +349,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0019',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Assistance using lifts',
@@ -432,10 +358,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0020',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Lift required',
@@ -443,10 +367,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0021',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Parking space close to court or tribunal',
@@ -454,10 +376,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0022',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Personal Evacuation Emergency Plan (PEEP) arrangements',
@@ -465,10 +385,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0023',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Ramps',
@@ -476,10 +394,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0024',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Relocation to another building / hearing room / ground floor room',
@@ -487,10 +403,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0025',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Use of venue wheelchair',
@@ -498,10 +412,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0026',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
               },
               {
                 name: 'Wheelchair access',
@@ -509,12 +421,10 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0027',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                ],
-                childFlags: []
-              }
-            ]
+                Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                childFlags: [],
+              },
+            ],
           },
           {
             name: 'Within our buildings and hearing room environment',
@@ -522,9 +432,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
             flagComment: true,
             flagCode: 'RA0006',
             isParent: true,
-            Path: [
-              'Party', 'Reasonable adjustment'
-            ],
+            Path: ['Party', 'Reasonable adjustment'],
             childFlags: [
               {
                 name: 'Alterations to seating layout',
@@ -532,10 +440,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0028',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                childFlags: [],
               },
               {
                 name: 'Chair in the witness box',
@@ -543,10 +449,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0030',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                childFlags: [],
               },
               {
                 name: 'Chair with back support / cushion / arms / adjustable / extra leg room',
@@ -554,10 +458,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0031',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                childFlags: [],
               },
               {
                 name: 'Hearing Enhancement System (hearing loops infra red receiver)',
@@ -565,9 +467,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0032',
                 isParent: true,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                ],
+                Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
                 childFlags: [
                   {
                     name: 'Hearing Loop',
@@ -576,10 +476,12 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                     flagCode: 'RA0053',
                     isParent: false,
                     Path: [
-                      'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                      'Hearing Enhancement System (hearing loops infra red receiver)'
+                      'Party',
+                      'Reasonable adjustment',
+                      'Within our buildings and hearing room environment',
+                      'Hearing Enhancement System (hearing loops infra red receiver)',
                     ],
-                    childFlags: []
+                    childFlags: [],
                   },
                   {
                     name: 'Infra Red Receiver',
@@ -588,10 +490,12 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                     flagCode: 'RA0054',
                     isParent: false,
                     Path: [
-                      'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                      'Hearing Enhancement System (hearing loops infra red receiver)'
+                      'Party',
+                      'Reasonable adjustment',
+                      'Within our buildings and hearing room environment',
+                      'Hearing Enhancement System (hearing loops infra red receiver)',
                     ],
-                    childFlags: []
+                    childFlags: [],
                   },
                   {
                     name: 'Induction Loop',
@@ -600,12 +504,14 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                     flagCode: 'RA0055',
                     isParent: false,
                     Path: [
-                      'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                      'Hearing Enhancement System (hearing loops infra red receiver)'
+                      'Party',
+                      'Reasonable adjustment',
+                      'Within our buildings and hearing room environment',
+                      'Hearing Enhancement System (hearing loops infra red receiver)',
                     ],
-                    childFlags: []
-                  }
-                ]
+                    childFlags: [],
+                  },
+                ],
               },
               {
                 name: 'Natural light',
@@ -613,10 +519,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0033',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                childFlags: [],
               },
               {
                 name: 'Need to be close to who is speaking',
@@ -624,10 +528,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0034',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                childFlags: [],
               },
               {
                 name: 'Separate waiting area / Private room',
@@ -635,12 +537,10 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0035',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                ],
-                childFlags: []
-              }
-            ]
+                Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                childFlags: [],
+              },
+            ],
           },
           {
             name: 'The Hearing',
@@ -648,9 +548,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
             flagComment: true,
             flagCode: 'RA0007',
             isParent: true,
-            Path: [
-              'Party', 'Reasonable adjustment'
-            ],
+            Path: ['Party', 'Reasonable adjustment'],
             childFlags: [
               {
                 name: 'Domiciliary hearing',
@@ -658,10 +556,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0036',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                childFlags: [],
               },
               {
                 name: 'Facility to be able to get up and move around',
@@ -669,10 +565,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0037',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                childFlags: [],
               },
               {
                 name: 'On-line hearing',
@@ -680,10 +574,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0038',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                childFlags: [],
               },
               {
                 name: 'Regular or extra breaks (eg for medication, food and drink or lavatory needs',
@@ -691,10 +583,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0039',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                childFlags: [],
               },
               {
                 name: 'Telephone hearing',
@@ -702,10 +592,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0040',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                childFlags: [],
               },
               {
                 name: 'Video link',
@@ -713,12 +601,10 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0041',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'The Hearing'
-                ],
-                childFlags: []
-              }
-            ]
+                Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                childFlags: [],
+              },
+            ],
           },
           {
             name: 'Help or support from a third party',
@@ -726,9 +612,7 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
             flagComment: true,
             flagCode: 'RA0008',
             isParent: true,
-            Path: [
-              'Party', 'Reasonable adjustment'
-            ],
+            Path: ['Party', 'Reasonable adjustment'],
             childFlags: [
               {
                 name: 'Sign Language Interpreter',
@@ -736,10 +620,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0042',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'CA Witness Services',
@@ -747,10 +629,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0043',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Clock (Community Legal Outreach Collaboration) representative',
@@ -758,10 +638,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0044',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Good Things foundation',
@@ -769,10 +647,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0045',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Intermediary',
@@ -780,10 +656,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0046',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Lip Speaker',
@@ -791,10 +665,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0047',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Mackenzie Friend',
@@ -802,10 +674,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0048',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Other Charity representative',
@@ -813,10 +683,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0049',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Personal Support Unit',
@@ -824,10 +692,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0050',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Speech to text reporter (Palantypist)',
@@ -835,10 +701,8 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0051',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
               },
               {
                 name: 'Support Worker / Carer',
@@ -846,15 +710,13 @@ export const CASE_FLAG_REFERENCE_VALUES: CaseFlagReferenceModel[] = [
                 flagComment: true,
                 flagCode: 'RA0052',
                 isParent: false,
-                Path: [
-                  'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                ],
-                childFlags: []
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+                Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                childFlags: [],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];

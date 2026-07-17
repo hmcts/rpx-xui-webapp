@@ -3,7 +3,7 @@ import authInterceptor from '../lib/middleware/auth';
 import {
   orchestrationRequestMoreInformation,
   orchestrationSpecificAccessRequest,
-  specificAccessRequestUpdateAttributes
+  specificAccessRequestUpdateAttributes,
 } from './index';
 
 export const router = express.Router({ mergeParams: true });

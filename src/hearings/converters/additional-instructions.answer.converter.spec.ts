@@ -24,7 +24,7 @@ describe('AdditionalInstructionsAnswerConverter', () => {
       ...initialState.hearings,
       hearingConditions: {
         ...initialState.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
+        isHearingAmendmentsEnabled: true,
       },
       hearingRequestToCompare: {
         ...initialState.hearings.hearingRequestToCompare,
@@ -32,10 +32,10 @@ describe('AdditionalInstructionsAnswerConverter', () => {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
           hearingDetails: {
             ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-            listingComments: 'some comments to compare'
-          }
-        }
-      }
+            listingComments: 'some comments to compare',
+          },
+        },
+      },
     };
     const result$ = converter.transformAnswer(of(STATE));
     const listingComments = 'some comments to compare';

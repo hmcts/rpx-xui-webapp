@@ -9,20 +9,13 @@ export const backButtonVisibilityStates = [
   NocState.ANSWER_SUBMISSION_FAILURE,
   NocState.CHECK_ANSWERS,
   NocState.AFFIRMATION_NOT_AGREED,
-  NocState.SUBMISSION_FAILURE
+  NocState.SUBMISSION_FAILURE,
 ];
 
-export const continueButtonVisibilityStates = [
-  NocState.START,
-  NocState.CASE_REF_VALIDATION_FAILURE
-];
+export const continueButtonVisibilityStates = [NocState.START, NocState.CASE_REF_VALIDATION_FAILURE];
 
-export const setAnswersButtonVisibilityStates = [
-  NocState.QUESTION,
-  NocState.ANSWER_INCOMPLETE
-];
+export const setAnswersButtonVisibilityStates = [NocState.QUESTION, NocState.ANSWER_INCOMPLETE];
 
 export const checkAnswersButtonVisibilityStates = [NocState.CHECK_ANSWERS];
 
-export const submitButtonVisibilityStates = [NocState.CHECK_ANSWERS,
-  NocState.AFFIRMATION_NOT_AGREED];
+export const submitButtonVisibilityStates = [NocState.CHECK_ANSWERS, NocState.AFFIRMATION_NOT_AGREED];

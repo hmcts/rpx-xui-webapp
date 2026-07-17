@@ -6,15 +6,17 @@ import { catchError, first, tap } from 'rxjs/operators';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation/utils';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CaseAllocateRoleLinkResolverService {
   private static readonly CASE_ALLOCATE_ROLE_LINK_URL: string = '/workallocation/roles';
   private caseId: string = null;
   private showAllocateRoleLink: boolean = null;
 
-  constructor(private readonly http: HttpClient,
-    private readonly router: Router) { }
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router
+  ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable<boolean> {
     const caseId = route.paramMap.get('cid');
@@ -22,10 +24,11 @@ export class CaseAllocateRoleLinkResolverService {
       return of(this.showAllocateRoleLink);
     }
     this.caseId = caseId;
-    return this.http.get<boolean>(`${CaseAllocateRoleLinkResolverService.CASE_ALLOCATE_ROLE_LINK_URL}/${caseId}/show-allocate-role-link`)
+    return this.http
+      .get<boolean>(`${CaseAllocateRoleLinkResolverService.CASE_ALLOCATE_ROLE_LINK_URL}/${caseId}/show-allocate-role-link`)
       .pipe(
         first(),
-        tap((value) => this.showAllocateRoleLink = value),
+        tap((value) => (this.showAllocateRoleLink = value)),
         catchError((error) => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           return EMPTY;

@@ -20,7 +20,7 @@ describe('Hearing Values Actions', () => {
       const payload = {
         status: 403,
         errors: null,
-        message: 'Http failure response: 403 Forbidden'
+        message: 'Http failure response: 403 Forbidden',
       };
       const action = new fromHearingValuesAction.LoadHearingValuesFailure(payload);
       expect(action.type).toBe(fromHearingValuesAction.LOAD_HEARING_VALUES_FAILURE);

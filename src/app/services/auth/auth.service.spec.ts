@@ -10,12 +10,7 @@ describe('AuthService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
-      providers: [
-        AuthService,
-        SessionStorageService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+      providers: [AuthService, SessionStorageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
   });
 
@@ -34,6 +29,21 @@ describe('AuthService', () => {
         const req = httpMock.expectOne('/auth/isAuthenticated');
         expect(req.request.method).toEqual('GET');
         req.flush('false');
+      }
+    ));
+  });
+
+  describe('keepAlive', () => {
+    it('should call keepalive endpoint', inject(
+      [HttpTestingController, AuthService],
+      (httpMock: HttpTestingController, service: AuthService) => {
+        service.keepAlive().subscribe((response) => {
+          expect(JSON.parse(String(response))).toBeTruthy();
+        });
+
+        const req = httpMock.expectOne('/auth/keepalive');
+        expect(req.request.method).toEqual('GET');
+        req.flush('true');
       }
     ));
   });
@@ -58,15 +68,12 @@ describe('AuthService', () => {
   });
 
   describe('logOutAndRedirect', () => {
-    it('should work', inject(
-      [AuthService],
-      async (service: AuthService) => {
-        const spyOnSetWindowLocation = spyOn(service, 'setWindowLocationHref');
-        spyOn(service, 'logOut').and.returnValue(of(false));
-        service.logOutAndRedirect();
-        expect(spyOnSetWindowLocation).toHaveBeenCalledWith('/idle-sign-out');
-      }
-    ));
+    it('should work', inject([AuthService], async (service: AuthService) => {
+      const spyOnSetWindowLocation = spyOn(service, 'setWindowLocationHref');
+      spyOn(service, 'logOut').and.returnValue(of(false));
+      service.logOutAndRedirect();
+      expect(spyOnSetWindowLocation).toHaveBeenCalledWith('/idle-sign-out');
+    }));
   });
 
   describe('signOut', () => {

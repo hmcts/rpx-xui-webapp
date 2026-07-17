@@ -16,18 +16,20 @@ const isChildRequired = 'false';
 
 describe('RD get lov ref data', async () => {
   const RESPONSE_BODY = {
-    list_of_values: [{
-      category_key: somethingLike('category 1'),
-      key: somethingLike('cat1'),
-      value_en: somethingLike('catflag'),
-      value_cy: somethingLike('catDragon'),
-      hint_text_en: somethingLike('test example'),
-      hint_text_cy: somethingLike('welsh test example'),
-      lov_order: somethingLike(1),
-      parent_category: somethingLike('examples'),
-      parent_key: somethingLike('ex'),
-      active_flag: somethingLike('cat1')
-    }]
+    list_of_values: [
+      {
+        category_key: somethingLike('category 1'),
+        key: somethingLike('cat1'),
+        value_en: somethingLike('catflag'),
+        value_cy: somethingLike('catDragon'),
+        hint_text_en: somethingLike('test example'),
+        hint_text_cy: somethingLike('welsh test example'),
+        lov_order: somethingLike(1),
+        parent_category: somethingLike('examples'),
+        parent_key: somethingLike('ex'),
+        active_flag: somethingLike('cat1'),
+      },
+    ],
   };
 
   describe('get lov ref data', () => {
@@ -45,21 +47,21 @@ describe('RD get lov ref data', async () => {
           path: `/refdata/commondata/lov/categories/${categoryId}`,
           query: {
             serviceId: serviceId,
-            isChildRequired: 'false'
+            isChildRequired: 'false',
           },
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -78,11 +80,11 @@ describe('RD get lov ref data', async () => {
         const { getLovRefData } = requireReloaded('../../../../prd/lov');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          query: { serviceId, categoryId, isChildRequired }
+          query: { serviceId, categoryId, isChildRequired },
         });
         let returnedResponse = null;
         const response = mockRes();

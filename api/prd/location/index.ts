@@ -2,13 +2,16 @@ import { NextFunction, Response } from 'express';
 import { handleGet } from '../../common/crudService';
 import { getConfigValue } from '../../configuration';
 import { SERVICES_PRD_LOCATION_API } from '../../configuration/references';
-import { EnhancedRequest } from '../../lib/models';
+import { EnhancedRequest, JUILogger } from '../../lib/models';
 import { getCourtTypeIdsByServices } from '../mappings.utils';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { LocationByEpimmsModel, LocationModel, toEpimmsLocation } from './models/location.model';
+import { trackTrace } from '../../lib/appInsights';
+import * as log4jui from '../../lib/log4jui';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
-
+const logger: JUILogger = log4jui.getLogger('location hearings');
+const INVALID_SERVICE_CODE_VALUES = new Set(['null', 'undefined']);
 /**
  * @description getLocations from service ID/location type/search term
  * @overview API sample: /api/locations/getLocations?serviceIds=BBA3,BFA1&locationType=hearing&searchTerm=CT91RL
@@ -23,9 +26,11 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const serviceIdArray = serviceIds.split(',');
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices(serviceIdArray);
   const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
+  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}&service_code=${serviceIds}`;
+  trackTrace(`POFCC-138 - prd (hearings) getLocations, markupPath used -->: ${markupPath}`, { functionCall: 'getLocations' });
+  logger.info(`POFCC-138 - prd (hearings) getLocations, markupPath used -->: ${markupPath}`);
   try {
-    const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
     let result: LocationModel[] = data;
     if (locationType === LocationTypeEnum.HEARING) {
       result = data.filter((location) => location.is_hearing_location === 'Y');
@@ -46,13 +51,25 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const epimmsID = req.query.epimms_id;
-  const serviceCode = !!req.query.serviceCode ? req.query.serviceCode as string : null;
+  const serviceCode = getValidServiceCode(req.query.serviceCode);
   delete req.query.serviceCode;
-  const courtTypeIdsArray: string[] = getCourtTypeIdsByServices([serviceCode]);
-  const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
+  const serviceCodeParam = serviceCode ? `&service_code=${serviceCode}` : '';
+  const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}${serviceCodeParam}`;
+  trackTrace(`pofcc-137 - prd (hearings) getLocationById, markupPath used -->: ${markupPath}`, {
+    functionCall: 'getLocationById',
+  });
+  logger.info(`pofcc-137 - prd (hearings) getLocationById, markupPath used -->: ${markupPath}`);
   try {
-    const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);
-    const courtLocations = serviceCode && courtTypeIdsArray?.length > 0 ? getLocationsByCourtType(data, courtTypeIdsArray) : data;
+    const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
+
+    const containsServiceCode = data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_code'));
+    trackTrace(`pofcc-137 - new api called, containsServiceCode -->: ${containsServiceCode}`, {
+      functionCall: 'getLocationById',
+    });
+    logger.info(`pofcc-137 - new api called, containsServiceCode -->: ${containsServiceCode}`);
+    const courtLocations =
+      serviceCode && !containsServiceCode ? getLocationsByCourtType(data, getCourtTypeIdsByServices([serviceCode])) : data;
+
     const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(courtLocations);
     res.status(status).send(identicalLocationByEpimmsId);
   } catch (error) {
@@ -61,11 +78,28 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
 }
 
 function getIdenticalLocationByEpimmsId(data: LocationModel[]): LocationByEpimmsModel[] {
-  return data.map((locationModel) => toEpimmsLocation(locationModel))
-    .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
-      locationByEPIMSModelArray.findIndex((location) => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
+  return data
+    .map((locationModel) => toEpimmsLocation(locationModel))
+    .filter(
+      (locationByEPIMSModel, index, locationByEPIMSModelArray) =>
+        locationByEPIMSModelArray.findIndex((location) => location.epimms_id === locationByEPIMSModel.epimms_id) === index
+    );
 }
 
 function getLocationsByCourtType(locations: LocationModel[], courtTypeIdsArray: string[]): LocationModel[] {
   return locations.filter((location) => courtTypeIdsArray.includes(location.court_type_id));
+}
+
+function getValidServiceCode(serviceCodeQuery: unknown): string | null {
+  const serviceCodeValue = Array.isArray(serviceCodeQuery) ? serviceCodeQuery[0] : serviceCodeQuery;
+  if (typeof serviceCodeValue !== 'string') {
+    return null;
+  }
+
+  const cleanedServiceCode = serviceCodeValue.trim();
+  if (!cleanedServiceCode || INVALID_SERVICE_CODE_VALUES.has(cleanedServiceCode.toLowerCase())) {
+    return null;
+  }
+
+  return cleanedServiceCode;
 }

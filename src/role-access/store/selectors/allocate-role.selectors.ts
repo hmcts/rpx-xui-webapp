@@ -7,17 +7,8 @@ export const getAllocateRoleState = createSelector(
   (state: fromFeature.State) => state.allocateRole
 );
 
-export const getAllocateRoleActiveState = createSelector(
-  getAllocateRoleState,
-  fromFeature.allocateRoleActiveState
-);
+export const getAllocateRoleActiveState = createSelector(getAllocateRoleState, fromFeature.allocateRoleActiveState);
 
-export const getAllocateRoleLastError = createSelector(
-  getAllocateRoleState,
-  fromFeature.allocateRoleLastErrors
-);
+export const getAllocateRoleLastError = createSelector(getAllocateRoleState, fromFeature.allocateRoleLastErrors);
 
-export const getAvailableRolesForService = createSelector(
-  getAllocateRoleState,
-  fromFeature.availableRoles
-);
+export const getAvailableRolesForService = createSelector(getAllocateRoleState, fromFeature.availableRoles);

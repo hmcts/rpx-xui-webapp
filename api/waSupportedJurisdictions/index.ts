@@ -53,13 +53,20 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSServ
   const waSupportedServices: HMCTSServiceDetails[] = [];
   jurisdictionsArray.forEach((serviceId) => {
     // search for the service name based on the supported jursdiction
-    const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
+    const jurisdiction =
+      refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
     if (jurisdiction?.length > 0) {
       // handle Civil service which has different service_short_description
       if (jurisdiction.length > 1) {
-        waSupportedServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: toTitleCase(jurisdiction[0].ccd_service_name) });
+        waSupportedServices.push({
+          serviceId: jurisdiction[0].ccd_service_name,
+          serviceName: toTitleCase(jurisdiction[0].ccd_service_name),
+        });
       } else {
-        waSupportedServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: jurisdiction[0].service_short_description });
+        waSupportedServices.push({
+          serviceId: jurisdiction[0].ccd_service_name,
+          serviceName: jurisdiction[0].service_short_description,
+        });
       }
     } else {
       waSupportedServices.push({ serviceId, serviceName: serviceId });

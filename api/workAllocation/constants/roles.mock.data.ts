@@ -4,8 +4,8 @@ import { CaseRole } from '../interfaces/caseRole';
 export const CASEROLES: CaseRole[] = [
   {
     actions: [
-      { 'id': 'reallocate', 'title': 'Reallocate' },
-      { 'id': 'remove', 'title': 'Remove Allocation' }
+      { id: 'reallocate', title: 'Reallocate' },
+      { id: 'remove', title: 'Remove Allocation' },
     ],
     actorId: '37eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     email: 'Judge.Beech@mail.com',
@@ -15,12 +15,12 @@ export const CASEROLES: CaseRole[] = [
     name: 'Judge Beech',
     roleCategory: RoleCategory.JUDICIAL,
     roleName: TypeOfRole.LeadJudge,
-    start: '2021-07-13T00:29:10.656Z'
+    start: '2021-07-13T00:29:10.656Z',
   },
   {
     actions: [
-      { 'id': 'reallocate', 'title': 'Reallocate' },
-      { 'id': 'remove', 'title': 'Remove Allocation' }
+      { id: 'reallocate', title: 'Reallocate' },
+      { id: 'remove', title: 'Remove Allocation' },
     ],
     actorId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     email: 'Kuda.Nyamainashe@mail.com',
@@ -30,12 +30,12 @@ export const CASEROLES: CaseRole[] = [
     name: 'Kuda Nyamainashe',
     roleCategory: RoleCategory.JUDICIAL,
     roleName: TypeOfRole.LeadJudge,
-    start: '2021-05-19T00:29:10.656Z'
+    start: '2021-05-19T00:29:10.656Z',
   },
   {
     actions: [
-      { 'id': 'reallocate', 'title': 'Reallocate' },
-      { 'id': 'remove', 'title': 'Remove Allocation' }
+      { id: 'reallocate', title: 'Reallocate' },
+      { id: 'remove', title: 'Remove Allocation' },
     ],
     actorId: '1',
     email: 'Bisa.Bulter@mail.com',
@@ -45,6 +45,6 @@ export const CASEROLES: CaseRole[] = [
     name: 'Bisa Bulter',
     roleCategory: RoleCategory.LEGAL_OPERATIONS,
     roleName: TypeOfRole.CaseManager,
-    start: '2021-08-19T00:29:10.656Z'
-  }
+    start: '2021-08-19T00:29:10.656Z',
+  },
 ];

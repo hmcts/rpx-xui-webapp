@@ -7,7 +7,9 @@ describe('Judicial RefData service', () => {
       const personalCodes = ['p100000', 'p100001'];
       const service = new JudicialRefDataService(mockHttpService);
       service.searchJudicialUserByPersonalCodes(personalCodes);
-      expect(mockHttpService.post).toHaveBeenCalledWith('api/prd/judicial/searchJudicialUserByPersonalCodes', { personal_code: personalCodes });
+      expect(mockHttpService.post).toHaveBeenCalledWith('api/prd/judicial/searchJudicialUserByPersonalCodes', {
+        personal_code: personalCodes,
+      });
     });
   });
 });

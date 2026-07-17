@@ -12,7 +12,7 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole
+  DurationOfRole,
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseAllocateToComponent } from './choose-allocate-to.component';
@@ -34,20 +34,20 @@ describe('ChooseAllocateToComponent', () => {
     personToBeRemoved: {
       id: 'p111111',
       name: 'test1',
-      domain: ''
+      domain: '',
     },
     person: {
       id: 'p222222',
       name: 'test2',
-      domain: ''
+      domain: '',
     },
     durationOfRole: DurationOfRole.SEVEN_DAYS,
     action: Actions.Allocate,
     period: {
       startDate: new Date(),
-      endDate: new Date()
+      endDate: new Date(),
     },
-    roleCategory: RoleCategory.LEGAL_OPERATIONS
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
   };
 
   beforeEach(waitForAsync(() => {
@@ -55,17 +55,14 @@ describe('ChooseAllocateToComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChooseAllocateToComponent],
-      imports: [
-        ReactiveFormsModule
-      ],
+      imports: [ReactiveFormsModule],
       providers: [
         {
           provide: Store,
-          useValue: mockStore
-        }
-      ]
-    })
-      .compileComponents();
+          useValue: mockStore,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -99,10 +96,12 @@ describe('ChooseAllocateToComponent', () => {
   it('should dispatchEvent', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
     component.dispatchEvent(navEvent);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseAllocateToAndGo({
-      allocateTo: AllocateTo.ALLOCATE_TO_ME,
-      allocateRoleState: 3
-    }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new fromFeature.ChooseAllocateToAndGo({
+        allocateTo: AllocateTo.ALLOCATE_TO_ME,
+        allocateRoleState: 3,
+      })
+    );
   });
 
   afterEach(() => {

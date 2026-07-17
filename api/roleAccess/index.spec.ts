@@ -44,15 +44,15 @@ describe('roleAccess/index', () => {
         id: 'user-123',
         name: 'Test User',
         email: 'test.user@example.com',
-        domain: PersonRole.JUDICIAL
+        domain: PersonRole.JUDICIAL,
       },
       durationOfRole: DurationOfRole.SEVEN_DAYS,
       period: {
         startDate: new Date(),
-        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
       roleCategory: RoleCategory.JUDICIAL,
-      ...overrides
+      ...overrides,
     };
   };
 
@@ -63,7 +63,7 @@ describe('roleAccess/index', () => {
         assignerId: 'assigner-123',
         replaceExisting: false,
         process: 'role-assignment',
-        reference: 'test-reference'
+        reference: 'test-reference',
       },
       requestedRoles: [
         {
@@ -80,15 +80,17 @@ describe('roleAccess/index', () => {
           attributes: {
             caseId: '1234567890123456',
             jurisdiction: 'SSCS',
-            caseType: 'Benefit'
+            caseType: 'Benefit',
           },
-          notes: [{
-            userId: 'assigner-123',
-            time: new Date(),
-            comment: 'Test allocation'
-          }]
-        }
-      ]
+          notes: [
+            {
+              userId: 'assigner-123',
+              time: new Date(),
+              comment: 'Test allocation',
+            },
+          ],
+        },
+      ],
     };
   };
 
@@ -100,10 +102,10 @@ describe('roleAccess/index', () => {
           attributes: {
             caseId: ['1234567890123456'],
             jurisdiction: ['SSCS'],
-            caseType: ['Benefit']
-          }
-        }
-      ]
+            caseType: ['Benefit'],
+          },
+        },
+      ],
     };
   };
 
@@ -114,7 +116,7 @@ describe('roleAccess/index', () => {
       knownAs: `Judge ${id}`,
       full_name: `Judge ${id} Full Name`,
       sidam_id: id,
-      email_id: `judge.${id}@example.com`
+      email_id: `judge.${id}@example.com`,
     };
   };
 
@@ -132,10 +134,10 @@ describe('roleAccess/index', () => {
           grantType: { mandatory: true, values: ['STANDARD'] },
           classification: { mandatory: true, values: ['PUBLIC'] },
           attributes: {
-            jurisdiction: { mandatory: true, values: ['SSCS'] }
-          }
-        }
-      ]
+            jurisdiction: { mandatory: true, values: ['SSCS'] },
+          },
+        },
+      ],
     };
   };
 
@@ -153,16 +155,16 @@ describe('roleAccess/index', () => {
               id: 'user-123',
               name: 'Test User',
               email: 'test.user@example.com',
-              roleCategory: 'ADMIN'
-            }
-          }
-        }
-      }
+              roleCategory: 'ADMIN',
+            },
+          },
+        },
+      },
     } as EnhancedRequest;
 
     res = {
       status: sandbox.stub().returnsThis(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
     } as unknown as Response;
 
     next = sandbox.stub();
@@ -186,12 +188,12 @@ describe('roleAccess/index', () => {
           attributes: {
             caseId: '1234567890123456',
             jurisdiction: 'SSCS',
-            caseType: 'Benefit'
+            caseType: 'Benefit',
           },
           beginTime: new Date(),
           endTime: null,
-          notes: 'Test role assignment'
-        }
+          notes: 'Test role assignment',
+        },
       ];
 
       sandbox.stub(configuration, 'getConfigValue').returns('http://role-assignment-api');
@@ -199,8 +201,8 @@ describe('roleAccess/index', () => {
       sandbox.stub(httpModule.http, 'post').resolves({
         status: 200,
         data: {
-          roleAssignmentResponse: mockRoleAssignments
-        }
+          roleAssignmentResponse: mockRoleAssignments,
+        },
       });
 
       const mockRefinedRoles: RefinedRole[] = [
@@ -210,9 +212,9 @@ describe('roleAccess/index', () => {
           roleName: 'lead-judge',
           roleJurisdiction: {
             mandatory: false,
-            values: ['SSCS']
-          }
-        }
+            values: ['SSCS'],
+          },
+        },
       ];
 
       sandbox.stub(roleAssignmentService, 'getSubstantiveRoles').resolves(mockRefinedRoles);
@@ -231,7 +233,7 @@ describe('roleAccess/index', () => {
         roleName: 'lead-judge',
         email: 'test.user@example.com',
         name: 'Test User',
-        roleCategory: RoleCategory.JUDICIAL
+        roleCategory: RoleCategory.JUDICIAL,
       });
     });
 
@@ -240,7 +242,7 @@ describe('roleAccess/index', () => {
       sandbox.stub(proxy, 'setHeaders').returns({});
       sandbox.stub(httpModule.http, 'post').resolves({
         status: 200,
-        data: { roleAssignmentResponse: [] }
+        data: { roleAssignmentResponse: [] },
       });
       sandbox.stub(roleAssignmentService, 'getSubstantiveRoles').resolves([]);
 
@@ -278,8 +280,8 @@ describe('roleAccess/index', () => {
           classification: 'PRIVATE',
           attributes: {
             caseId: '1234567890123456',
-            specificAccessReason: 'Urgent case review'
-          }
+            specificAccessReason: 'Urgent case review',
+          },
         },
         {
           id: 'assignment-2',
@@ -289,22 +291,22 @@ describe('roleAccess/index', () => {
           grantType: 'STANDARD',
           classification: 'PUBLIC',
           attributes: {
-            caseId: '1234567890123456'
-          }
-        }
+            caseId: '1234567890123456',
+          },
+        },
       ];
 
       sandbox.stub(configuration, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
       sandbox.stub(httpModule.http, 'post').resolves({
         status: 200,
-        data: { roleAssignmentResponse: mockRoleAssignments }
+        data: { roleAssignmentResponse: mockRoleAssignments },
       });
       sandbox.stub(exclusionService, 'getEmail').callsFake((actorId) => `${actorId}@example.com`);
       sandbox.stub(exclusionService, 'getUserName').callsFake(() => 'User');
-      sandbox.stub(exclusionService, 'mapRoleCategory').callsFake((cat) =>
-        cat === 'LEGAL_OPERATIONS' ? RoleCategory.LEGAL_OPERATIONS : RoleCategory.ADMIN
-      );
+      sandbox
+        .stub(exclusionService, 'mapRoleCategory')
+        .callsFake((cat) => (cat === 'LEGAL_OPERATIONS' ? RoleCategory.LEGAL_OPERATIONS : RoleCategory.ADMIN));
 
       req.body = { caseId: '1234567890123456', jurisdiction: 'SSCS', caseType: 'Benefit' };
 
@@ -326,35 +328,35 @@ describe('roleAccess/index', () => {
           actorId: 'user-123',
           roleName: 'judge',
           roleCategory: 'JUDICIAL',
-          attributes: {}
+          attributes: {},
         },
         {
           id: 'assignment-2',
           actorId: 'user-456',
           roleName: 'solicitor',
           roleCategory: 'PROFESSIONAL',
-          attributes: {}
+          attributes: {},
         },
         {
           id: 'assignment-3',
           actorId: 'user-789',
           roleName: 'case-manager',
           roleCategory: 'ADMIN',
-          attributes: {}
-        }
+          attributes: {},
+        },
       ];
 
       const mockRoles: Role[] = [
         createMockRole('judge', 'JUDICIAL'),
         createMockRole('solicitor', 'PROFESSIONAL'),
-        createMockRole('case-manager', 'ADMIN')
+        createMockRole('case-manager', 'ADMIN'),
       ];
 
       sandbox.stub(configuration, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
       sandbox.stub(httpModule.http, 'post').resolves({
         status: 200,
-        data: { roleAssignmentResponse: mockRoleAssignments }
+        data: { roleAssignmentResponse: mockRoleAssignments },
       });
 
       const mockAxiosResponse: AxiosResponse<Role[]> = {
@@ -362,7 +364,7 @@ describe('roleAccess/index', () => {
         data: mockRoles,
         statusText: 'OK',
         headers: {},
-        config: { headers: new AxiosHeaders() }
+        config: { headers: new AxiosHeaders() },
       };
 
       sandbox.stub(roleAssignmentService, 'getAllRoles').resolves(mockAxiosResponse);
@@ -370,9 +372,12 @@ describe('roleAccess/index', () => {
       sandbox.stub(exclusionService, 'getUserName').returns('Test User');
       sandbox.stub(exclusionService, 'mapRoleCategory').callsFake((cat) => {
         switch (cat) {
-          case 'JUDICIAL': return RoleCategory.JUDICIAL;
-          case 'PROFESSIONAL': return RoleCategory.PROFESSIONAL;
-          default: return RoleCategory.ADMIN;
+          case 'JUDICIAL':
+            return RoleCategory.JUDICIAL;
+          case 'PROFESSIONAL':
+            return RoleCategory.PROFESSIONAL;
+          default:
+            return RoleCategory.ADMIN;
         }
       });
 
@@ -400,23 +405,18 @@ describe('roleAccess/index', () => {
     });
 
     it('should return judicial users with proper DTO structure', async () => {
-      const mockJudicialUsers: JudicialUserDto[] = [
-        createMockJudicialUser('user-123'),
-        createMockJudicialUser('user-456')
-      ];
+      const mockJudicialUsers: JudicialUserDto[] = [createMockJudicialUser('user-123'), createMockJudicialUser('user-456')];
 
       req.body = { userIds: ['user-123', 'user-456'], services: ['SSCS'] };
 
-      sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns([
-        { service: 'SSCS', serviceCodes: ['BBA3'] }
-      ]);
+      sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns([{ service: 'SSCS', serviceCodes: ['BBA3'] }]);
 
       const mockAxiosResponse: AxiosResponse<JudicialUserDto[]> = {
         status: 200,
         data: mockJudicialUsers,
         statusText: 'OK',
         headers: {},
-        config: { headers: new AxiosHeaders() }
+        config: { headers: new AxiosHeaders() },
       };
 
       sandbox.stub(exclusionService, 'getJudicialUsersFromApi').resolves(mockAxiosResponse);
@@ -432,9 +432,7 @@ describe('roleAccess/index', () => {
       const error = new Error('Judicial API Error');
       req.body = { userIds: ['user-123'], services: ['SSCS'] };
 
-      sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns([
-        { service: 'SSCS', serviceCodes: ['BBA3'] }
-      ]);
+      sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns([{ service: 'SSCS', serviceCodes: ['BBA3'] }]);
       sandbox.stub(exclusionService, 'getJudicialUsersFromApi').rejects(error);
 
       await index.getJudicialUsers(req, res, next);
@@ -454,23 +452,25 @@ describe('roleAccess/index', () => {
       toRoleAssignmentBodyStub.returns({
         roleRequest: {
           assignerId: 'assigner-123',
-          replaceExisting: false
+          replaceExisting: false,
         },
-        requestedRoles: [{
-          roleType: 'CASE',
-          grantType: 'SPECIFIC',
-          classification: 'RESTRICTED',
-          attributes: {
-            caseId: mockAllocateData.caseId,
-            jurisdiction: mockAllocateData.jurisdiction
+        requestedRoles: [
+          {
+            roleType: 'CASE',
+            grantType: 'SPECIFIC',
+            classification: 'RESTRICTED',
+            attributes: {
+              caseId: mockAllocateData.caseId,
+              jurisdiction: mockAllocateData.jurisdiction,
+            },
+            roleName: mockAllocateData.typeOfRole.id,
+            roleCategory: mockAllocateData.roleCategory,
+            actorIdType: 'IDAM',
+            actorId: mockAllocateData.person.id,
+            beginTime: mockAllocateData.period.startDate,
+            endTime: mockAllocateData.period.endDate,
           },
-          roleName: mockAllocateData.typeOfRole.id,
-          roleCategory: mockAllocateData.roleCategory,
-          actorIdType: 'IDAM',
-          actorId: mockAllocateData.person.id,
-          beginTime: mockAllocateData.period.startDate,
-          endTime: mockAllocateData.period.endDate
-        }]
+        ],
       });
 
       const mockAxiosResponse: AxiosResponse = {
@@ -478,7 +478,7 @@ describe('roleAccess/index', () => {
         data: { roleAssignmentId: 'new-assignment-123' },
         statusText: 'Created',
         headers: {},
-        config: { headers: new AxiosHeaders() }
+        config: { headers: new AxiosHeaders() },
       };
 
       sandbox.stub(crudService, 'sendPost').resolves(mockAxiosResponse);
@@ -497,9 +497,9 @@ describe('roleAccess/index', () => {
         roleCategory: RoleCategory.ADMIN,
         period: {
           startDate: new Date(),
-          endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
-        durationOfRole: DurationOfRole.ANOTHER_PERIOD
+        durationOfRole: DurationOfRole.ANOTHER_PERIOD,
       });
 
       req.body = mockAllocateData;
@@ -510,23 +510,25 @@ describe('roleAccess/index', () => {
       toRoleAssignmentBodyStub.returns({
         roleRequest: {
           assignerId: 'assigner-123',
-          replaceExisting: false
+          replaceExisting: false,
         },
-        requestedRoles: [{
-          roleType: 'CASE',
-          grantType: 'SPECIFIC',
-          classification: 'RESTRICTED',
-          attributes: {
-            caseId: mockAllocateData.caseId,
-            jurisdiction: mockAllocateData.jurisdiction
+        requestedRoles: [
+          {
+            roleType: 'CASE',
+            grantType: 'SPECIFIC',
+            classification: 'RESTRICTED',
+            attributes: {
+              caseId: mockAllocateData.caseId,
+              jurisdiction: mockAllocateData.jurisdiction,
+            },
+            roleName: mockAllocateData.typeOfRole.id,
+            roleCategory: mockAllocateData.roleCategory,
+            actorIdType: 'IDAM',
+            actorId: mockAllocateData.person.id,
+            beginTime: mockAllocateData.period.startDate,
+            endTime: mockAllocateData.period.endDate,
           },
-          roleName: mockAllocateData.typeOfRole.id,
-          roleCategory: mockAllocateData.roleCategory,
-          actorIdType: 'IDAM',
-          actorId: mockAllocateData.person.id,
-          beginTime: mockAllocateData.period.startDate,
-          endTime: mockAllocateData.period.endDate
-        }]
+        ],
       });
 
       sandbox.stub(crudService, 'sendPost').resolves({
@@ -534,7 +536,7 @@ describe('roleAccess/index', () => {
         data: { roleAssignmentId: 'specific-access-assignment-123' },
         statusText: 'Created',
         headers: {},
-        config: { headers: new AxiosHeaders() }
+        config: { headers: new AxiosHeaders() },
       });
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
 
@@ -562,7 +564,7 @@ describe('roleAccess/index', () => {
       const mockRoleAssignments = [
         { id: '1', attributes: { isNew: true }, roleName: 'judge' },
         { id: '2', attributes: { isNew: false }, roleName: 'case-manager' },
-        { id: '3', attributes: { isNew: true }, roleName: 'specific-access-admin' }
+        { id: '3', attributes: { isNew: true }, roleName: 'specific-access-admin' },
       ];
 
       req.session.roleAssignmentResponse = mockRoleAssignments;
@@ -580,7 +582,7 @@ describe('roleAccess/index', () => {
           startDate: new Date(),
           endDate: null,
           assignee: 'Test User',
-          isNew: true
+          isNew: true,
         },
         {
           id: '2',
@@ -594,7 +596,7 @@ describe('roleAccess/index', () => {
           startDate: new Date(),
           endDate: null,
           assignee: 'Test User',
-          isNew: false
+          isNew: false,
         },
         {
           id: '3',
@@ -608,8 +610,8 @@ describe('roleAccess/index', () => {
           startDate: new Date(),
           endDate: null,
           assignee: 'Test User',
-          isNew: true
-        }
+          isNew: true,
+        },
       ];
 
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
@@ -638,8 +640,8 @@ describe('roleAccess/index', () => {
         {
           id: '1',
           attributes: { caseId: '9999999999999999' },
-          roleName: 'judge'
-        }
+          roleName: 'judge',
+        },
       ];
 
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
@@ -656,9 +658,9 @@ describe('roleAccess/index', () => {
         attributes: {
           caseId: caseId,
           isNew: true,
-          requestedRole: 'specific-access-admin'
+          requestedRole: 'specific-access-admin',
         },
-        roleName: 'challenged-access-judiciary'
+        roleName: 'challenged-access-judiciary',
       };
 
       req.params = { caseId };
@@ -666,14 +668,14 @@ describe('roleAccess/index', () => {
         {
           id: 'assignment-other',
           attributes: { caseId: '9999999999999999' },
-          roleName: 'judge'
+          roleName: 'judge',
         },
         expectedAssignment,
         {
           id: 'assignment-456',
           attributes: { caseId: caseId },
-          roleName: 'case-manager'
-        }
+          roleName: 'case-manager',
+        },
       ];
 
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
@@ -690,9 +692,9 @@ describe('roleAccess/index', () => {
         id: 'assignment-123',
         attributes: {
           caseId: caseId,
-          isNew: true
+          isNew: true,
         },
-        roleName: 'challenged-access-admin'
+        roleName: 'challenged-access-admin',
       };
 
       req.params = { caseId };
@@ -732,10 +734,10 @@ describe('roleAccess/index', () => {
             caseId: '1234567890123456',
             jurisdiction: 'SSCS',
             location: 'location-123',
-            specificAccessReason: 'Assigned as lead judge'
+            specificAccessReason: 'Assigned as lead judge',
           },
           beginTime: '2023-01-01T00:00:00Z',
-          endTime: '2023-12-31T23:59:59Z'
+          endTime: '2023-12-31T23:59:59Z',
         },
         {
           id: 'assignment-2',
@@ -743,18 +745,18 @@ describe('roleAccess/index', () => {
           roleName: 'hearing-judge',
           roleCategory: 'JUDICIAL',
           attributes: {
-            caseId: '1234567890123456'
-          }
-        }
+            caseId: '1234567890123456',
+          },
+        },
       ];
 
-      sandbox.stub(exclusionService, 'getEmail').callsFake((actorId) =>
-        actorId === 'user-123' ? 'judge.123@example.com' : 'judge.456@example.com'
-      );
+      sandbox
+        .stub(exclusionService, 'getEmail')
+        .callsFake((actorId) => (actorId === 'user-123' ? 'judge.123@example.com' : 'judge.456@example.com'));
       sandbox.stub(exclusionService, 'getUserName').callsFake((actorId) => {
         const userNames = {
           'user-123': 'Judge Smith',
-          'user-456': 'Judge Jones'
+          'user-456': 'Judge Jones',
         };
         return userNames[actorId] || 'Unknown User';
       });
@@ -773,7 +775,7 @@ describe('roleAccess/index', () => {
         location: null,
         start: '2023-01-01T00:00:00Z',
         end: '2023-12-31T23:59:59Z',
-        notes: 'Assigned as lead judge'
+        notes: 'Assigned as lead judge',
       });
       expect(result[0].actions).to.be.an('array');
     });
@@ -785,22 +787,22 @@ describe('roleAccess/index', () => {
           actorId: 'user-123',
           roleName: 'judge',
           roleCategory: 'JUDICIAL',
-          attributes: {}
+          attributes: {},
         },
         {
           id: 'assignment-2',
           actorId: 'user-456',
           roleName: 'case-manager',
           roleCategory: 'ADMIN',
-          attributes: {}
-        }
+          attributes: {},
+        },
       ];
 
       sandbox.stub(exclusionService, 'getEmail').returns('test@example.com');
       sandbox.stub(exclusionService, 'getUserName').returns('Test User');
-      sandbox.stub(exclusionService, 'mapRoleCategory').callsFake((cat) =>
-        cat === 'JUDICIAL' ? RoleCategory.JUDICIAL : RoleCategory.ADMIN
-      );
+      sandbox
+        .stub(exclusionService, 'mapRoleCategory')
+        .callsFake((cat) => (cat === 'JUDICIAL' ? RoleCategory.JUDICIAL : RoleCategory.ADMIN));
 
       const result = (index as any).mapResponseToCaseRoles(mockRoleAssignments, 'assignment-2', req);
 
@@ -819,14 +821,14 @@ describe('roleAccess/index', () => {
     it('should parse JSON and return specificReason field', () => {
       const jsonReason = JSON.stringify({
         specificReason: 'Urgent case review required',
-        additionalInfo: 'Extra details'
+        additionalInfo: 'Extra details',
       });
       expect((index as any).getSpecificReason(jsonReason)).to.equal('Urgent case review required');
     });
 
     it('should return undefined if specificReason not present in JSON', () => {
       const jsonWithoutReason = JSON.stringify({
-        otherField: 'Some value'
+        otherField: 'Some value',
       });
       expect((index as any).getSpecificReason(jsonWithoutReason)).to.be.undefined;
     });

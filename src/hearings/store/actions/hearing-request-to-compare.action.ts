@@ -9,5 +9,4 @@ export class InitializeHearingRequestToCompare implements Action {
   constructor(public payload: HearingRequestMainModel) {}
 }
 
-export type HearingRequestToCompareAction =
-  | InitializeHearingRequestToCompare;
+export type HearingRequestToCompareAction = InitializeHearingRequestToCompare;

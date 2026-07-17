@@ -3,21 +3,15 @@ import { csp } from '@hmcts/rpx-xui-node-lib';
 export const MC_CSP: Parameters<typeof csp>[0] = {
   /* ── hosts common to every MC environment ─────────────── */
   extraScript: [
+    "'unsafe-eval'",
     'https://www.googletagmanager.com',
     'https://www.google-analytics.com',
     'az416426.vo.msecnd.net',
-    '\'unsafe-eval\''
   ],
 
-  extraStyle: [
-    'https://fonts.googleapis.com',
-    'https://fonts.gstatic.com',
-    'https://www.googletagmanager.com'
-  ],
+  extraStyle: ['https://fonts.googleapis.com', 'https://fonts.gstatic.com', 'https://www.googletagmanager.com'],
 
-  extraFont: [
-    'https://fonts.gstatic.com'
-  ],
+  extraFont: ['https://fonts.gstatic.com'],
 
   extraImg: [
     'https://stats.g.doubleclick.net',
@@ -26,7 +20,7 @@ export const MC_CSP: Parameters<typeof csp>[0] = {
     'https://raw.githubusercontent.com/hmcts/',
     'https://*.google-analytics.com',
     'https://*.googletagmanager.com',
-    'https://fonts.gstatic.com'
+    'https://fonts.gstatic.com',
   ],
 
   extraConnect: [
@@ -42,6 +36,6 @@ export const MC_CSP: Parameters<typeof csp>[0] = {
     'wss://*.webpubsub.azure.com',
     //below is put in in case the WEBPUBSUB_URL double dot causes issues
     'wss://em-icp-webpubsub.platform.hmcts.net',
-    process.env.WEBPUBSUB_URL || ''
-  ].filter(Boolean)
+    process.env.WEBPUBSUB_URL || '',
+  ].filter(Boolean),
 };

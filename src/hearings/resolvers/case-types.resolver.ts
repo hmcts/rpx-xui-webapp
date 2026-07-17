@@ -10,7 +10,7 @@ import * as fromHearingStore from '../store';
 import { RefDataResolver } from './ref-data-resolver.resolve';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CaseTypesResolver extends RefDataResolver {
   constructor(
@@ -25,7 +25,7 @@ export class CaseTypesResolver extends RefDataResolver {
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
     route.data = {
       ...route.data,
-      category: HearingCategory.CaseType
+      category: HearingCategory.CaseType,
     };
 
     return super.resolve(route);

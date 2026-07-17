@@ -18,12 +18,12 @@ describe('CaseFlagAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData
-              }
-            }
-          }
-        }
-      ]
+                caseFlags: caseFlagsRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     router = TestBed.inject(ActivatedRoute);
     caseFlagConverter = new CaseFlagAnswerConverter(router);
@@ -32,7 +32,8 @@ describe('CaseFlagAnswerConverter', () => {
   it('should transform case flag', () => {
     const STATE: State = initialState.hearings;
     const result$ = caseFlagConverter.transformAnswer(of(STATE));
-    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>';
+    const caseFlags =
+      "<strong class='bold'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>";
     const expected = cold('(b|)', { b: caseFlags });
     expect(result$).toBeObservable(expected);
   });

@@ -24,10 +24,9 @@ describe('HearingStage Resolver', () => {
         LovRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }
-    );
+        provideHttpClientTesting(),
+      ],
+    });
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
@@ -41,7 +40,7 @@ describe('HearingStage Resolver', () => {
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Hearings | Request Hearing | Hearing Stage'
+      title: 'HMCTS Hearings | Request Hearing | Hearing Stage',
     };
     service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();

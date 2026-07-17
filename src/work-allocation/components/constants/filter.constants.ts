@@ -1,7 +1,7 @@
 const ALL_LOCATIONS = {
   id: '**ALL_LOCATIONS**',
   locationName: 'All locations',
-  services: []
+  services: [],
 };
 
 const OPTIONS = {
@@ -11,30 +11,30 @@ const OPTIONS = {
       firstName: 'All',
       lastName: 'caseworkers',
       email: undefined,
-      location: ALL_LOCATIONS
+      location: ALL_LOCATIONS,
     },
     UNASSIGNED: {
       idamId: '**NO_CASEWORKER_ASSIGNED**',
       firstName: 'None',
       lastName: '(unassigned tasks)',
       email: undefined,
-      location: ALL_LOCATIONS
-    }
+      location: ALL_LOCATIONS,
+    },
   },
   Locations: {
-    ALL: ALL_LOCATIONS
-  }
+    ALL: ALL_LOCATIONS,
+  },
 };
 
 const SESSION = {
   AvailableTasks: 'availableTasksFilter',
-  TaskManager: 'taskManagerFilter'
+  TaskManager: 'taskManagerFilter',
 };
 
 export const FILTER_CONSTANTS = {
   Options: OPTIONS,
   Session: SESSION,
   Defaults: {
-    LOCATION: ALL_LOCATIONS
-  }
+    LOCATION: ALL_LOCATIONS,
+  },
 };

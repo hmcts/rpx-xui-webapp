@@ -11,8 +11,7 @@ export class JurisdictionService {
 
   public getJurisdictions(): Observable<Jurisdiction[]> {
     // Headers had to be set here as the request is going via proxy
-    const headers = new HttpHeaders()
-      .set('content-type', 'application/json');
+    const headers = new HttpHeaders().set('content-type', 'application/json');
     return this.http.get<Jurisdiction[]>(JurisdictionService.jurisdictionUrl, { headers });
   }
 }

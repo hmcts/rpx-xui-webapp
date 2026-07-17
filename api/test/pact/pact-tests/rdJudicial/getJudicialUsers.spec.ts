@@ -14,7 +14,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicialUsers', port: 8000 });
 
-const MockApp = require('../../../../../test_codecept/nodeMock/app');
+const MockApp = require('../../pact-mocks/app');
 
 const REQUEST_BODY = {
   sidam_ids: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
@@ -70,7 +70,6 @@ describe('Judicial ref data api, get all judge users', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -84,7 +83,6 @@ describe('Judicial ref data api, get all judge users', () => {
       const configValues = getJudicialRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
       configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
-      // @ts-ignore
       configValues.serviceRefDataMapping = [
         { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
       ];

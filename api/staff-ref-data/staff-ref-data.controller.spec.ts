@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as controller from './staff-ref-data.controller';
 
-const StaffRefDataService = require('./staff-ref-data.service');
+import { StaffRefDataService } from './staff-ref-data.service';
 
 describe('staff-ref-data.controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -28,38 +28,38 @@ describe('staff-ref-data.controller', () => {
       addNewUser: sandbox.stub(),
       fetchSingleUserById: sandbox.stub(),
       fetchUsersById: sandbox.stub(),
-      updateUser: sandbox.stub()
+      updateUser: sandbox.stub(),
     };
 
     // Stub the service constructor to return our mocked service
-    sandbox.stub(StaffRefDataService.prototype, 'getFilteredUsers').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'getFilteredUsers').callsFake(function (req, res, next) {
       return serviceStub.getFilteredUsers(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'getUserTypes').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'getUserTypes').callsFake(function (req, res, next) {
       return serviceStub.getUserTypes(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'getJobTitles').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'getJobTitles').callsFake(function (req, res, next) {
       return serviceStub.getJobTitles(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'getServices').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'getServices').callsFake(function (req, res, next) {
       return serviceStub.getServices(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'getSkills').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'getSkills').callsFake(function (req, res, next) {
       return serviceStub.getSkills(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'getUsersByPartialName').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'getUsersByPartialName').callsFake(function (req, res, next) {
       return serviceStub.getUsersByPartialName(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'addNewUser').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'addNewUser').callsFake(function (req, res, next) {
       return serviceStub.addNewUser(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'fetchSingleUserById').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'fetchSingleUserById').callsFake(function (req, res, next) {
       return serviceStub.fetchSingleUserById(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'fetchUsersById').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'fetchUsersById').callsFake(function (req, res, next) {
       return serviceStub.fetchUsersById(req, res, next);
     });
-    sandbox.stub(StaffRefDataService.prototype, 'updateUser').callsFake(function(req, res, next) {
+    sandbox.stub(StaffRefDataService.prototype, 'updateUser').callsFake(function (req, res, next) {
       return serviceStub.updateUser(req, res, next);
     });
   });
@@ -213,7 +213,7 @@ describe('staff-ref-data.controller', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        userType: 'caseworker'
+        userType: 'caseworker',
       };
       serviceStub.addNewUser.resolves();
 
@@ -304,7 +304,7 @@ describe('staff-ref-data.controller', () => {
       req.body = {
         firstName: 'Jane',
         lastName: 'Smith',
-        skills: ['skill1', 'skill2']
+        skills: ['skill1', 'skill2'],
       };
       serviceStub.updateUser.resolves();
 

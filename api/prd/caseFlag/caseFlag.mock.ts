@@ -8,9 +8,6 @@ export const init = () => {
   const getCaseFlagRefDataUrl = /caseflagrefdata/;
 
   mock.onGet(getCaseFlagRefDataUrl).reply(() => {
-    return [
-      200,
-      CASE_FLAG_REFERENCE_VALUES
-    ];
+    return [200, CASE_FLAG_REFERENCE_VALUES];
   });
 };

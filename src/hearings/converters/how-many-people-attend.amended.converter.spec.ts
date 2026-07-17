@@ -10,9 +10,9 @@ import { HowManyPeopleAttendAmendedConverter } from './how-many-people-attend.am
 
 describe('HowManyPeopleAttendAmendedConverter', () => {
   let converter: HowManyPeopleAttendAmendedConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: any;
 
   beforeEach(() => {
@@ -24,12 +24,12 @@ describe('HowManyPeopleAttendAmendedConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData
-              }
-            }
-          }
-        }
-      ]
+                hearingStageOptions: hearingStageRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);

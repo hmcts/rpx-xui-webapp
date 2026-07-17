@@ -7,7 +7,7 @@ export enum LoggerStateActionTypes {
   Warning = '[LoggerState] Warning',
   Error = '[LoggerState] Error',
   Fatal = '[LoggerState] Fatal',
-  Clear = '[LoggerState] Clear'
+  Clear = '[LoggerState] Clear',
 }
 
 export class Debug implements Action {

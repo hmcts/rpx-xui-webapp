@@ -13,6 +13,4 @@ export class SaveHearingConditions implements Action {
   constructor(public payload: HearingConditions) {}
 }
 
-export type HearingConditionsAction =
-  | ResetHearingConditions
-  | SaveHearingConditions;
+export type HearingConditionsAction = ResetHearingConditions | SaveHearingConditions;

@@ -14,7 +14,7 @@ import {
   EXUISectionStatusEnum,
   HearingListingStatusEnum,
   HMCStatus,
-  Mode
+  Mode,
 } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesWithHearingsModel } from '../../../models/linkHearings.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
@@ -31,7 +31,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let mockHearingService: any;
   const caseId = '1111-2222-3333-4444';
   const hearingId = 'h100002';
@@ -48,7 +48,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'HearingType',
@@ -61,7 +61,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'HearingType',
@@ -74,8 +74,8 @@ describe('LinkedHearingsWithCaseComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
   const linkedCases: ServiceLinkedCasesWithHearingsModel[] = [
     {
@@ -97,20 +97,20 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
           hearingDaySchedule: [],
-          isSelected: true
-        }
-      ]
+          isSelected: true,
+        },
+      ],
     },
     {
       caseRef: '5283819672542864',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case']
+      reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
     },
     {
       caseRef: '8254902572336147',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing']
-    }
+      reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+    },
   ];
   const linkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
     {
@@ -132,14 +132,14 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
           hearingDaySchedule: [],
-          isSelected: true
-        }
-      ]
+          isSelected: true,
+        },
+      ],
     },
     {
       caseRef: '5283819672542864',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case']
+      reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
     },
     {
       caseRef: '8254902572336147',
@@ -160,8 +160,9 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
           hearingDaySchedule: [],
-          isSelected: true
-        }, {
+          isSelected: true,
+        },
+        {
           hearingID: 'h1000003',
           hearingType: 'Chambers Outcome',
           hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
@@ -175,21 +176,22 @@ describe('LinkedHearingsWithCaseComponent', () => {
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
           hearingDaySchedule: [],
-          isSelected: true
-        }
-      ]
-    }
+          isSelected: true,
+        },
+      ],
+    },
   ];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [LinkedHearingsWithCaseComponent, MockRpxTranslatePipe],
-      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
-        { path: 'hearings/link/4652724902696211/h000001/group-selection', redirectTo: '' }
-      ]),
-      HearingsPipesModule,
-      RouterModule,
-      RouterTestingModule.withRoutes([])],
+      imports: [
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([{ path: 'hearings/link/4652724902696211/h000001/group-selection', redirectTo: '' }]),
+        HearingsPipesModule,
+        RouterModule,
+        RouterTestingModule.withRoutes([]),
+      ],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -201,16 +203,16 @@ describe('LinkedHearingsWithCaseComponent', () => {
             snapshot: {
               data: {
                 mode: Mode.LINK_HEARINGS,
-                hearingStageOptions: HEARING_STAGE_OPTIONS
+                hearingStageOptions: HEARING_STAGE_OPTIONS,
               },
-              params: { caseId: '4652724902696211', hearingId: 'h000001' }
+              params: { caseId: '4652724902696211', hearingId: 'h000001' },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
-        FormBuilder
+        FormBuilder,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -245,16 +247,39 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.hearingId = 'h1000002';
     component.hearingGroupRequestId = 'g000101';
     component.onBack();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '8254902572336147', 'hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'cases',
+      'case-details',
+      'IA',
+      'Asylum',
+      '8254902572336147',
+      'hearings',
+    ]);
 
     component.isManageLink = true;
     component.onBack();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g000101', 'h1000002']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'hearings',
+      'manage-links',
+      '8254902572336147',
+      'g000101',
+      'h1000002',
+    ]);
   });
 
   it('should navigate to hearings tab', () => {
     component.onCancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '8254902572336147', 'hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'cases',
+      'case-details',
+      'IA',
+      'Asylum',
+      '8254902572336147',
+      'hearings',
+    ]);
   });
 
   it('should check on submit for manage link', () => {
@@ -265,7 +290,15 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   it('should navigate to case hearing page', () => {
     component.navigateToCaseHearing('8254902572336147');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '8254902572336147', 'hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'cases',
+      'case-details',
+      'IA',
+      'Asylum',
+      '8254902572336147',
+      'hearings',
+    ]);
   });
 
   it('should check update linked cases', () => {
@@ -279,14 +312,30 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.hearingId = 'h1000002';
     component.mode = component.pageMode.MANAGE_HEARINGS;
     component.navigate();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g00101', 'h1000002', 'group-selection']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'hearings',
+      'manage-links',
+      '8254902572336147',
+      'g00101',
+      'h1000002',
+      'group-selection',
+    ]);
 
     component.initForm();
     component.getHearingsAvailable();
     component.mode = component.pageMode.MANAGE_HEARINGS;
     fixture.detectChanges();
     component.navigate();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '8254902572336147', 'g00101', 'h1000002', 'group-selection']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'hearings',
+      'manage-links',
+      '8254902572336147',
+      'g00101',
+      'h1000002',
+      'group-selection',
+    ]);
   });
 
   it('should dispatch to store on unlink hearings', () => {
@@ -295,9 +344,16 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.hearingId = hearingId;
     component.hearingGroupRequestId = hearingGroupRequestId;
     component.onUnlinkHearings();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ManageLinkedHearingGroup({
-      linkedHearingGroup: null, hearingGroupRequestId, caseId, hearingId
-    })));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining(
+        new fromHearingStore.ManageLinkedHearingGroup({
+          linkedHearingGroup: null,
+          hearingGroupRequestId,
+          caseId,
+          hearingId,
+        })
+      )
+    );
   });
 
   it('should return true if isManageLink is true and the hearing is linkable', () => {

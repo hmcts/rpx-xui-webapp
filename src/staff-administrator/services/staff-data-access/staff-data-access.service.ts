@@ -8,36 +8,31 @@ import { StaffUserListData } from '../../models/staff-user-list-data.model';
 import { StaffUser } from '../../models/staff-user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StaffDataAccessService {
   private API_PATH = '/api/staff-ref-data';
   constructor(private readonly http: HttpClient) {}
 
   public getFilteredUsers(searchFilters: StaffSearchFilters) {
-    const params = new HttpParams()
-      .appendAll({
-        ...searchFilters.advancedSearchFilters
-      });
+    const params = new HttpParams().appendAll({
+      ...searchFilters.advancedSearchFilters,
+    });
 
     const headers = new HttpHeaders()
       .append('page-number', searchFilters.pageNumber.toString())
       .append('page-size', searchFilters.pageSize.toString());
 
-    return this.http.get<StaffUserListData>(`${this.API_PATH}/getFilteredUsers`,
-      { params, headers });
+    return this.http.get<StaffUserListData>(`${this.API_PATH}/getFilteredUsers`, { params, headers });
   }
 
   public getUsersByPartialName(searchFilters: StaffSearchFilters) {
-    const params = new HttpParams()
-      .append('search', searchFilters.partialName);
+    const params = new HttpParams().append('search', searchFilters.partialName);
     const headers = new HttpHeaders()
       .append('page-number', searchFilters.pageNumber.toString())
       .append('page-size', searchFilters.pageSize.toString());
 
-    return this.http.get<StaffUserListData>(`${this.API_PATH}/getUsersByPartialName`,
-      { params, headers }
-    );
+    return this.http.get<StaffUserListData>(`${this.API_PATH}/getUsersByPartialName`, { params, headers });
   }
 
   public getUserTypes() {
@@ -58,7 +53,7 @@ export class StaffDataAccessService {
 
   public fetchSingleUserById(userId: string) {
     return this.http.get<StaffUser>(`${this.API_PATH}/fetchSingleUserById`, {
-      params: new HttpParams().set('id', userId)
+      params: new HttpParams().set('id', userId),
     });
   }
 

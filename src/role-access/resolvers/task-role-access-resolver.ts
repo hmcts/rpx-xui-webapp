@@ -16,7 +16,7 @@ export class TaskRoleAccessResolver {
     private readonly allocateRoleService: AllocateRoleService
   ) {}
 
-  public resolve(route: ActivatedRouteSnapshot): Observable< { task: Task; role: any[]; } > {
+  public resolve(route: ActivatedRouteSnapshot): Observable<{ task: Task; role: any[] }> {
     const assignmentId = route.paramMap.get('assignmentId');
     const task$ = this.taskService.getTask(route.paramMap.get('taskId')).pipe(
       catchError((error) => {
@@ -24,10 +24,17 @@ export class TaskRoleAccessResolver {
         return EMPTY;
       })
     );
-    const role$ = task$.pipe(mergeMap((task) => {
-      const thisTask: Task = task.task;
-      return this.allocateRoleService.getCaseAccessRoles(thisTask.case_id, thisTask.jurisdiction, thisTask.case_type_id, assignmentId);
-    }));
+    const role$ = task$.pipe(
+      mergeMap((task) => {
+        const thisTask: Task = task.task;
+        return this.allocateRoleService.getCaseAccessRoles(
+          thisTask.case_id,
+          thisTask.jurisdiction,
+          thisTask.case_type_id,
+          assignmentId
+        );
+      })
+    );
     return forkJoin({ task: task$, role: role$ });
   }
 }

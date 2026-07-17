@@ -11,5 +11,5 @@ export enum SearchFormControl {
   DATE_OF_DEATH_DAY = 'dateOfDeath_day',
   DATE_OF_DEATH_MONTH = 'dateOfDeath_month',
   DATE_OF_DEATH_YEAR = 'dateOfDeath_year',
-  SERVICES_LIST = 'servicesList'
+  SERVICES_LIST = 'servicesList',
 }

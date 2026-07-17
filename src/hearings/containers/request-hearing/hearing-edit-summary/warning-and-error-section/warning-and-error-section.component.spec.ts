@@ -9,7 +9,7 @@ describe('WarningAndErrorSectionComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [WarningAndErrorSectionComponent],
-      providers: [{ provide: HearingsService, useValue: hearingService }]
+      providers: [{ provide: HearingsService, useValue: hearingService }],
     }).compileComponents();
   });
 
@@ -27,7 +27,9 @@ describe('WarningAndErrorSectionComponent', () => {
     hearingService.displayValidationError = true;
     hearingService.submitUpdatedRequestClicked = true;
     expect(component.displayValidationError()).toBe(true);
-    expect(fixture.debugElement.nativeElement.innerText).toBe('You have not added all the updates. Click the \'Change\' link under any sections labelled \'Action needed\' and then click the continue button at the end of the page to add the changes to the hearing summary. You will not be able to submit the request until this is done.');
+    expect(fixture.debugElement.nativeElement.innerText).toBe(
+      "You have not added all the updates. Click the 'Change' link under any sections labelled 'Action needed' and then click the continue button at the end of the page to add the changes to the hearing summary. You will not be able to submit the request until this is done."
+    );
   });
 
   it('should not display validation error', () => {

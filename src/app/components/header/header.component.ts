@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FocusService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppTitleModel } from '../../models/app-title.model';
@@ -7,8 +8,9 @@ import * as fromRoot from '../../store';
 import { NavItemsModel } from './../../models/nav-item.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
 })
 export class HeaderComponent {
   @Input() public navItems: NavItemsModel[];
@@ -22,10 +24,11 @@ export class HeaderComponent {
   @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
-  public contentHash: string = '#content';
+  private static contentHash: string = '#content';
 
   constructor(
     public store: Store<fromRoot.State>,
+    public readonly focusService: FocusService
   ) {}
 
   public onNavigate(event) {
@@ -37,5 +40,17 @@ export class HeaderComponent {
    */
   public emitNavigate(event: any, emitter: EventEmitter<string>) {
     emitter.emit(event);
+  }
+
+  public getSkipToMainContentUrl(): string {
+    return this.currentUrl?.split('#')[0] + HeaderComponent.contentHash;
+  }
+
+  /**
+   * @param url to test
+   * @return true if the given url will navigate to the main content
+   */
+  public static isSkipToMainContent(url: string): boolean {
+    return url?.endsWith(HeaderComponent.contentHash);
   }
 }

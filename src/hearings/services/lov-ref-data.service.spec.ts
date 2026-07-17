@@ -13,7 +13,7 @@ describe('Lov RefData service', () => {
         params: new HttpParams()
           .set('categoryId', HearingCategory.HearingPriority)
           .set('serviceId', 'BBA3')
-          .set('isChildRequired', 'N')
+          .set('isChildRequired', 'N'),
       };
 
       expect(mockHttpService.get).toHaveBeenCalledWith('api/prd/lov/getLovRefData', options);

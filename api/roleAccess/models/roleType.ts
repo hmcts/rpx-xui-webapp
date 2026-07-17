@@ -5,7 +5,7 @@ export interface Role {
   description: string;
   category: string;
   substantive: boolean;
-  patterns: RoleTypePattern [];
+  patterns: RoleTypePattern[];
 }
 
 export interface RefinedRole {
@@ -31,5 +31,5 @@ export interface RoleTypePattern {
 
 export interface RoleType {
   mandatory: boolean;
-  values: string [];
+  values: string[];
 }

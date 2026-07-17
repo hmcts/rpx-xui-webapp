@@ -38,8 +38,16 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableServiceSpecificMultiFollowups, ['foo'], obArray);
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey, AppConstants.DEFAULT_SERVICE_MESSAGE, obArray);
+        this.setUpLaunchDarklyForFeature(
+          AppConstants.FEATURE_NAMES.cdamExclusionList,
+          this.config.documentSecureModeCaseTypeExclusions,
+          obArray
+        );
+        this.setUpLaunchDarklyForFeature(
+          AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey,
+          AppConstants.DEFAULT_SERVICE_MESSAGE,
+          obArray
+        );
         if (obArray.length === 5) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
@@ -48,28 +56,34 @@ export class AppConfig extends AbstractAppConfig {
         }
       } else {
         console.error('InitialisationSyncService indicated initialisation failed, using default config values');
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey, AppConstants.DEFAULT_SERVICE_MESSAGE, []);
+        this.setUpLaunchDarklyForFeature(
+          AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey,
+          AppConstants.DEFAULT_SERVICE_MESSAGE,
+          []
+        );
         this.initialisationComplete = false;
       }
     });
   }
 
-  private setUpLaunchDarklyForFeature<V extends ConfigValue>(featureName: string, defaultVal: V,
-    obArray: Array<Observable<V>>) : void {
+  private setUpLaunchDarklyForFeature<V extends ConfigValue>(
+    featureName: string,
+    defaultVal: V,
+    obArray: Array<Observable<V>>
+  ): void {
     const ob = this.featureToggleService.getValue(featureName, defaultVal);
     const cbFn = (val) => {
-      this.config = this.addAttribute(this.config,
-        AppConstants.FEATURE_TO_ATTRIBUTE_MAP.get(featureName), val);
+      this.config = this.addAttribute(this.config, AppConstants.FEATURE_TO_ATTRIBUTE_MAP.get(featureName), val);
     };
     ob.subscribe(cbFn);
     obArray.push(ob);
   }
 
   // Add a named attribute to an object in a properly typed way
-  public addAttribute<T extends object, K extends string, V>(obj: T, key: K, value: V):T & { [P in K]: V } {
+  public addAttribute<T extends object, K extends string, V>(obj: T, key: K, value: V): T & { [P in K]: V } {
     return {
       ...obj,
-      [key]: value
+      [key]: value,
     } as T & { [P in K]: V };
   }
 

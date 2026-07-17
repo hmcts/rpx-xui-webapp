@@ -7,7 +7,7 @@ export enum AccessReason {
 export enum SpecificAccessText {
   TITLE = 'Review specific access request',
   HINT = 'What do you want to do with this request?',
-  CASE_REF = 'Case reference'
+  CASE_REF = 'Case reference',
 }
 
 export enum SpecificAccessErrors {

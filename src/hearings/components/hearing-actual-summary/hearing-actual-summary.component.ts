@@ -5,12 +5,13 @@ import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel 
 import { AnswerSource, HearingChannelEnum, HearingDateEnum, HearingResult } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import * as fromHearingStore from '../../store';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actual-summary',
   templateUrl: './hearing-actual-summary.component.html',
-  styleUrls: ['./hearing-actual-summary.component.scss']
+  styleUrls: ['./hearing-actual-summary.component.scss'],
 })
 export class HearingActualSummaryComponent implements OnInit {
   @Input() public hearingState$: Observable<fromHearingStore.State>;
@@ -51,9 +52,13 @@ export class HearingActualSummaryComponent implements OnInit {
   }
 
   public actualHearingDate(): string {
-    return this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime ?
-      this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime :
-      this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingDate;
+    return this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime
+      ? this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime
+      : this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingDate;
+  }
+
+  public actualHearingDayDate(actualHearingDay: ActualHearingDayModel): string {
+    return actualHearingDay?.hearingStartTime || actualHearingDay?.hearingDate;
   }
 
   private convertUTCDateToLocalDate(date): Date {
@@ -61,7 +66,8 @@ export class HearingActualSummaryComponent implements OnInit {
   }
 
   private applyActualsModel(): void {
-    const hearingOutcome = this.hearingActualsMainModel &&
+    const hearingOutcome =
+      this.hearingActualsMainModel &&
       this.hearingActualsMainModel.hearingActuals &&
       this.hearingActualsMainModel.hearingActuals.hearingOutcome;
     this.isCompleted = hearingOutcome && hearingOutcome.hearingResult === HearingResult.COMPLETED;
@@ -71,15 +77,31 @@ export class HearingActualSummaryComponent implements OnInit {
       this.adjournReasonTypeValue = adjournReasonType ? adjournReasonType.value_en : hearingOutcome.hearingResultReasonType;
     }
 
-    this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
-      map((state) => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
-    );
+    this.isPaperHearing$ =
+      this.hearingState$ &&
+      this.hearingState$.pipe(
+        map((state) =>
+          state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR)
+        )
+      );
     this.hearingTypeDescription = hearingOutcome?.hearingType && this.getHearingTypeDescription(hearingOutcome.hearingType);
     this.hearingId = history.state?.hearingId ?? '';
     this.caseReference = history.state?.caseRef ?? '';
   }
 
   public actualMultiDaysHearingDates(): string {
-    return `${moment.tz(this.convertUTCDateToLocalDate(new Date(this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0].hearingStartTime)), moment.tz.guess()).format('DD MMM YYYY')} - ${moment.tz(this.convertUTCDateToLocalDate(new Date(this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[this.hearingActualsMainModel?.hearingActuals?.actualHearingDays.length - 1].hearingStartTime)), moment.tz.guess()).format('DD MMM YYYY')}`;
+    const actualHearingDays = this.hearingActualsMainModel?.hearingActuals?.actualHearingDays;
+    const firstHearingDay = actualHearingDays[0];
+    const lastHearingDay = actualHearingDays[actualHearingDays.length - 1];
+    const firstHearingDate = moment.tz(
+      this.convertUTCDateToLocalDate(new Date(this.actualHearingDayDate(firstHearingDay))),
+      moment.tz.guess()
+    );
+    const lastHearingDate = moment.tz(
+      this.convertUTCDateToLocalDate(new Date(this.actualHearingDayDate(lastHearingDay))),
+      moment.tz.guess()
+    );
+
+    return `${firstHearingDate.format('DD MMM YYYY')} - ${lastHearingDate.format('DD MMM YYYY')}`;
   }
 }

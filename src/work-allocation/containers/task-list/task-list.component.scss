@@ -14,7 +14,7 @@
  */
 .govuk-table__cell {
   border: 0;
-  font-family: "GDS Transport", arial, sans-serif;
+  font-family: 'GDS Transport', arial, sans-serif;
   overflow-wrap: anywhere;
 }
 
@@ -35,21 +35,20 @@
   padding-right: 20px;
   white-space: nowrap;
 
-  &:hover{
+  &:hover {
     padding-right: 20px;
   }
 
-  &:after{
+  &:after {
     right: 0.5px;
   }
 
-  &:before{
+  &:before {
     right: 0.5px;
   }
 }
 
 .header-cell {
-
   display: flex;
   .arrow {
     border: 1px solid red;

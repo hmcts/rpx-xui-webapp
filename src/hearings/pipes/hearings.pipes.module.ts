@@ -15,7 +15,7 @@ import { ShowHidePipe } from './show-hide.pipe';
     ShowHidePipe,
     ConvertToValuePipe,
     CaseReferencePipe,
-    ConvertArrayToStringPipe
+    ConvertArrayToStringPipe,
   ],
   exports: [
     HearingsBadgePipe,
@@ -24,7 +24,7 @@ import { ShowHidePipe } from './show-hide.pipe';
     IsAmendedPipe,
     ShowHidePipe,
     CaseReferencePipe,
-    ConvertArrayToStringPipe
-  ]
+    ConvertArrayToStringPipe,
+  ],
 })
 export class HearingsPipesModule {}

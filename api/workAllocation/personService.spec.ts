@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
@@ -12,6 +11,8 @@ import * as util from './util';
 import { PersonRole } from './interfaces/person';
 import { postFindPersonSearch } from './personService';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Person Service', () => {
@@ -45,12 +46,12 @@ describe('Person Service', () => {
     const mockServiceRefDataMapping = [
       {
         service: 'IA',
-        serviceCodes: ['BBA3', 'BBA2']
+        serviceCodes: ['BBA3', 'BBA2'],
       },
       {
         service: 'CIVIL',
-        serviceCodes: ['AAA6', 'AAA7']
-      }
+        serviceCodes: ['AAA6', 'AAA7'],
+      },
     ];
 
     const mockJudicialSearchResponse = {
@@ -58,14 +59,14 @@ describe('Person Service', () => {
         {
           fullName: 'Judge John Smith',
           emailId: 'john.smith@judicial.com',
-          idamId: 'judicial-user-1'
+          idamId: 'judicial-user-1',
         },
         {
           fullName: 'Judge Jane Doe',
           emailId: 'jane.doe@judicial.com',
-          idamId: 'judicial-user-2'
-        }
-      ]
+          idamId: 'judicial-user-2',
+        },
+      ],
     };
 
     beforeEach(() => {
@@ -107,7 +108,7 @@ describe('Person Service', () => {
 
       it('should return 400 when searchTerm is missing', async () => {
         req.body = {
-          searchOptions: {}
+          searchOptions: {},
         };
 
         await postFindPersonSearch(req, res);
@@ -119,8 +120,8 @@ describe('Person Service', () => {
       it('should return 400 when searchTerm is empty string', async () => {
         req.body = {
           searchOptions: {
-            searchTerm: ''
-          }
+            searchTerm: '',
+          },
         };
 
         await postFindPersonSearch(req, res);
@@ -132,8 +133,8 @@ describe('Person Service', () => {
       it('should return 400 when searchTerm is null', async () => {
         req.body = {
           searchOptions: {
-            searchTerm: null
-          }
+            searchTerm: null,
+          },
         };
 
         await postFindPersonSearch(req, res);
@@ -149,8 +150,8 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: PersonRole.JUDICIAL,
-            services: ['IA', 'CIVIL']
-          }
+            services: ['IA', 'CIVIL'],
+          },
         };
       });
 
@@ -168,11 +169,11 @@ describe('Person Service', () => {
         // Verify the calls contain the correct parameters
         expect(httpPostStub.firstCall.args[1]).to.deep.equal({
           searchString: 'John',
-          serviceCode: 'BBA3'
+          serviceCode: 'BBA3',
         });
         expect(httpPostStub.secondCall.args[1]).to.deep.equal({
           searchString: 'John',
-          serviceCode: 'BBA2'
+          serviceCode: 'BBA2',
         });
 
         expect(res.status).to.have.been.calledWith(200);
@@ -303,9 +304,9 @@ describe('Person Service', () => {
               fullName: 'Judge Test',
               emailId: 'test@judicial.com',
               idamId: 'test-id-123',
-              additionalField: 'should be ignored'
-            }
-          ]
+              additionalField: 'should be ignored',
+            },
+          ],
         };
         httpPostStub.resolves(mockResponse);
 
@@ -321,7 +322,7 @@ describe('Person Service', () => {
         expect(responseData[0]).to.include({
           name: 'Judge Test',
           email: 'test@judicial.com',
-          id: 'test-id-123'
+          id: 'test-id-123',
         });
       });
 
@@ -367,8 +368,8 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: PersonRole.LEGAL_OPERATIONS,
-            services: ['IA']
-          }
+            services: ['IA'],
+          },
         };
       });
 
@@ -378,8 +379,8 @@ describe('Person Service', () => {
             id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
             name: 'John Legal',
             email: 'john.legal@legalops.com',
-            domain: PersonRole.LEGAL_OPERATIONS
-          }
+            domain: PersonRole.LEGAL_OPERATIONS,
+          },
         ];
         applySearchFilterStub.returns(true);
         applySearchFilterStub.onCall(0).returns(true);
@@ -438,8 +439,8 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: null,
-            services: ['IA']
-          }
+            services: ['IA'],
+          },
         };
         applySearchFilterStub.returns(false);
 
@@ -454,8 +455,8 @@ describe('Person Service', () => {
         req.body = {
           searchOptions: {
             searchTerm: 'John',
-            services: ['IA']
-          }
+            services: ['IA'],
+          },
         };
         applySearchFilterStub.returns(false);
 
@@ -471,8 +472,8 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: PersonRole.JUDICIAL,
-            services: null
-          }
+            services: null,
+          },
         };
         showFeatureStub.returns(false);
 
@@ -489,8 +490,8 @@ describe('Person Service', () => {
         req.body = {
           searchOptions: {
             searchTerm: 'John',
-            userRole: PersonRole.JUDICIAL
-          }
+            userRole: PersonRole.JUDICIAL,
+          },
         };
         showFeatureStub.returns(false);
 
@@ -508,8 +509,8 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: PersonRole.JUDICIAL,
-            services: ['IA']
-          }
+            services: ['IA'],
+          },
         };
         getServiceRefDataMappingListStub.returns(null);
         showFeatureStub.returns(false);
@@ -528,8 +529,8 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: PersonRole.JUDICIAL,
-            services: ['IA']
-          }
+            services: ['IA'],
+          },
         };
         getServiceRefDataMappingListStub.returns(undefined);
         showFeatureStub.returns(false);
@@ -548,8 +549,8 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: PersonRole.JUDICIAL,
-            services: ['IA']
-          }
+            services: ['IA'],
+          },
         };
         getServiceRefDataMappingListStub.returns([]);
         showFeatureStub.returns(false);
@@ -566,14 +567,14 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: PersonRole.JUDICIAL,
-            services: ['IA']
-          }
+            services: ['IA'],
+          },
         };
         getServiceRefDataMappingListStub.returns([
           {
             service: 'IA',
-            serviceCodes: []
-          }
+            serviceCodes: [],
+          },
         ]);
         showFeatureStub.returns(false);
 
@@ -589,14 +590,14 @@ describe('Person Service', () => {
           searchOptions: {
             searchTerm: 'John',
             userRole: PersonRole.JUDICIAL,
-            services: ['IA']
-          }
+            services: ['IA'],
+          },
         };
         getServiceRefDataMappingListStub.returns([
           {
             service: 'IA',
-            serviceCodes: null
-          }
+            serviceCodes: null,
+          },
         ]);
         showFeatureStub.returns(false);
 

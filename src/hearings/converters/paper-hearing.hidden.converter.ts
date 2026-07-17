@@ -6,14 +6,17 @@ import { HiddenConverter } from './hidden.converter';
 
 export class PaperHearingHiddenConverter implements HiddenConverter {
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const hearingChannels = state.hearingConditions?.isHearingAmendmentsEnabled
-        ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels
-        : state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
+    return hearingState$.pipe(
+      map((state) => {
+        const hearingChannels = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
 
-      return (hearingChannels.includes(HearingChannelEnum.ONPPR)
-        || !!state.hearingRequest.hearingRequestMainModel.hearingDetails.isPaperHearing);
-    }
-    ));
+        return (
+          hearingChannels.includes(HearingChannelEnum.ONPPR) ||
+          !!state.hearingRequest.hearingRequestMainModel.hearingDetails.isPaperHearing
+        );
+      })
+    );
   }
 }

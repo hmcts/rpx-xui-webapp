@@ -4,7 +4,7 @@ import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TermsConditionsService {
   constructor(private readonly http: HttpClient) {}

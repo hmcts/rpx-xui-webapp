@@ -14,77 +14,75 @@ const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_search
 
 describe('Task management api, Search task', () => {
   const RESPONSE_BODY = {
-    'tasks': [
+    tasks: [
       {
-        'id': somethingLike('4d4b6fgh-c91f-433f-92ac-e456ae34f72a'),
-        'name': somethingLike('Review the appeal'),
-        'type': somethingLike('reviewTheAppeal'),
-        'task_state': somethingLike('assigned'),
-        'task_system': somethingLike('SELF'),
-        'security_classification': somethingLike('PUBLIC'),
-        'task_title': somethingLike('Review the appeal'),
-        'created_date': term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
-        'due_date': term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
-        'assignee': somethingLike('10bac6bf-80a7-4c81-b2db-516aba826be6'),
-        'auto_assigned': somethingLike(false),
-        'execution_type': somethingLike('Case Management Task'),
-        'jurisdiction': somethingLike('IA'),
-        'region': somethingLike('1'),
-        'location': somethingLike('765324'),
-        'location_name': somethingLike('Taylor House'),
-        'case_type_id': somethingLike('Asylum'),
-        'case_id': somethingLike('1617708245335311'),
-        'case_category': somethingLike('refusalOfHumanRights'),
-        'case_name': somethingLike('Bob Smith'),
-        'warnings': somethingLike(false),
-        'permissions': {
-          'values': eachLike('Read')
-        }
+        id: somethingLike('4d4b6fgh-c91f-433f-92ac-e456ae34f72a'),
+        name: somethingLike('Review the appeal'),
+        type: somethingLike('reviewTheAppeal'),
+        task_state: somethingLike('assigned'),
+        task_system: somethingLike('SELF'),
+        security_classification: somethingLike('PUBLIC'),
+        task_title: somethingLike('Review the appeal'),
+        created_date: term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
+        due_date: term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
+        assignee: somethingLike('10bac6bf-80a7-4c81-b2db-516aba826be6'),
+        auto_assigned: somethingLike(false),
+        execution_type: somethingLike('Case Management Task'),
+        jurisdiction: somethingLike('IA'),
+        region: somethingLike('1'),
+        location: somethingLike('765324'),
+        location_name: somethingLike('Taylor House'),
+        case_type_id: somethingLike('Asylum'),
+        case_id: somethingLike('1617708245335311'),
+        case_category: somethingLike('refusalOfHumanRights'),
+        case_name: somethingLike('Bob Smith'),
+        warnings: somethingLike(false),
+        permissions: {
+          values: eachLike('Read'),
+        },
       },
       {
-        'id': somethingLike('fda422de-b381-43ff-94ea-eea5790188a3'),
-        'name': somethingLike('Review the appeal'),
-        'type': somethingLike('reviewTheAppeal'),
-        'task_state': somethingLike('unassigned'),
-        'task_system': somethingLike('SELF'),
-        'security_classification': somethingLike('PUBLIC'),
-        'task_title': somethingLike('Review the appeal'),
-        'created_date': term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
-        'due_date': term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
-        'auto_assigned': somethingLike(true),
-        'execution_type': somethingLike('Case Management Task'),
-        'jurisdiction': somethingLike('IA'),
-        'region': somethingLike('1'),
-        'location': somethingLike('765324'),
-        'location_name': somethingLike('Taylor House'),
-        'case_type_id': somethingLike('Asylum'),
-        'case_id': somethingLike('1617708245308495'),
-        'case_category': somethingLike('refusalOfHumanRights'),
-        'case_name': somethingLike('John Doe'),
-        'warnings': somethingLike(true),
-        'permissions': {
-          'values': eachLike('Create')
-        }
-      }
-    ]
+        id: somethingLike('fda422de-b381-43ff-94ea-eea5790188a3'),
+        name: somethingLike('Review the appeal'),
+        type: somethingLike('reviewTheAppeal'),
+        task_state: somethingLike('unassigned'),
+        task_system: somethingLike('SELF'),
+        security_classification: somethingLike('PUBLIC'),
+        task_title: somethingLike('Review the appeal'),
+        created_date: term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
+        due_date: term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
+        auto_assigned: somethingLike(true),
+        execution_type: somethingLike('Case Management Task'),
+        jurisdiction: somethingLike('IA'),
+        region: somethingLike('1'),
+        location: somethingLike('765324'),
+        location_name: somethingLike('Taylor House'),
+        case_type_id: somethingLike('Asylum'),
+        case_id: somethingLike('1617708245308495'),
+        case_category: somethingLike('refusalOfHumanRights'),
+        case_name: somethingLike('John Doe'),
+        warnings: somethingLike(true),
+        permissions: {
+          values: eachLike('Create'),
+        },
+      },
+    ],
   };
 
   const mockSearchRequestBody = {
-    'search_parameters': [
+    search_parameters: [
       {
-        'key': 'caseId',
-        'operator': 'IN',
-        'values': [
-          'f782bde3-8d51-11eb-a9a4-06d032acc76d'
-        ]
-      }
+        key: 'caseId',
+        operator: 'IN',
+        values: ['f782bde3-8d51-11eb-a9a4-06d032acc76d'],
+      },
     ],
-    'sorting_parameters': [
+    sorting_parameters: [
       {
-        'sort_by': 'case_category',
-        'sort_order': 'asc'
-      }
-    ]
+        sort_by: 'case_category',
+        sort_order: 'asc',
+      },
+    ],
   };
 
   describe('post /task', () => {
@@ -103,21 +101,21 @@ describe('Task management api, Search task', () => {
           method: 'POST',
           path: '/task',
           query: {
-            'first_result': '0',
-            'max_results': '25'
+            first_result: '0',
+            max_results: '25',
           },
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
-            ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
             // 'content-Type': 'application/json'
           },
-          body: mockSearchRequestBody
+          body: mockSearchRequestBody,
         },
         willRespondWith: {
           status: 200,
           headers: {},
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -139,7 +137,7 @@ describe('Task management api, Search task', () => {
         const req = mockReq({
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
-            ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
             // 'content-Type': 'application/json'
           },
           body: {
@@ -147,11 +145,11 @@ describe('Task management api, Search task', () => {
               ...mockSearchRequestBody,
               pagination_parameters: {
                 page_number: 1,
-                page_size: 25
-              }
+                page_size: 25,
+              },
             },
-            view: 'AllWork'
-          }
+            view: 'AllWork',
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

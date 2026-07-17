@@ -6,9 +6,9 @@ export interface TaskRole {
 }
 
 export enum Permissions {
-  Own= 'OWN',
-  Execute= 'EXECUTE',
-  Read= 'READ',
-  Manage= 'MANAGE',
-  Cancel= 'CANCEL',
+  Own = 'OWN',
+  Execute = 'EXECUTE',
+  Read = 'READ',
+  Manage = 'MANAGE',
+  Cancel = 'CANCEL',
 }

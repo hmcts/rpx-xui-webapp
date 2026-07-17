@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'exui-url-field',
-  templateUrl: './url-field.component.html'
+  templateUrl: './url-field.component.html',
 })
 export class UrlFieldComponent {
   /**

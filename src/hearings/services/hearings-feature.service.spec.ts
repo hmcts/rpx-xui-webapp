@@ -13,8 +13,8 @@ describe('HearingsFeatureService', () => {
         HearingsFeatureService,
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
   });
   it('should be created', inject([HearingsFeatureService], (service: HearingsFeatureService) => {

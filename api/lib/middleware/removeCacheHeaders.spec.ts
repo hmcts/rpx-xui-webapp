@@ -51,11 +51,6 @@ describe('removeCacheHeaders', () => {
     removeCacheHeaders(req, res, next);
 
     const callOrder = res.removeHeader.getCalls().map((call: any) => call.args[0]);
-    expect(callOrder).to.deep.equal([
-      'Cache-Control',
-      'Pragma',
-      'Expires',
-      'Surrogate-Control'
-    ]);
+    expect(callOrder).to.deep.equal(['Cache-Control', 'Pragma', 'Expires', 'Surrogate-Control']);
   });
 });

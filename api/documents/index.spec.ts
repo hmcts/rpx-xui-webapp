@@ -1,22 +1,17 @@
-import * as chai from 'chai';
-import 'mocha';
+import { expect, use } from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import * as documents from './index';
+import { handleRequest, handleResponse } from './index';
 
-chai.use(sinonChai);
-
-const { expect } = chai;
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
+use(sinonChai);
 
 describe('Documents Uploading', () => {
   let sandbox;
   let res;
   let req;
   let proxyRes;
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let json;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -26,27 +21,9 @@ describe('Documents Uploading', () => {
     res = {
       session: {
         lastUploadTime: 1705066299756,
-        nextTimeout: 10000
-      }
+        nextTimeout: 10000,
+      },
     };
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    json = [
-      {
-        classification: 'PUBLIC',
-        size: 12317,
-        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        originalDocumentName: 'blank copy 4.docx',
-        hashToken: 'test0hash0value0000000000000000000000000000000000000000000000000',
-        createdOn: '2024-01-12T14:30:10.000+00:00',
-        createdBy: 'c9ca25c7-0554-4e05-b781-442f02a59907',
-        lastModifiedBy: 'c9ca25c7-0554-4e05-b781-442f02a59907',
-        modifiedOn: '2024-01-12T14:30:10.000+00:00',
-        ttl: '2024-01-13T14:30:10.000+00:00',
-        metadata: [Object],
-        _links: [Object]
-      }
-    ];
   });
 
   afterEach(() => {
@@ -54,7 +31,7 @@ describe('Documents Uploading', () => {
   });
 
   it('should handle request and return true if not rate-limited', () => {
-    const result = documents.handleRequest(req, res, proxyRes);
+    const result = handleRequest(req, res, proxyRes);
 
     expect(result).to.deep.equal(true);
   });
@@ -65,11 +42,11 @@ describe('Documents Uploading', () => {
       method: 'POST',
       session: {
         lastUploadTime: Date.now(),
-        nextTimeout: nextTimeout
-      }
+        nextTimeout: nextTimeout,
+      },
     };
 
-    const result = documents.handleRequest(req, rateLimitedReq, proxyRes);
+    const result = handleRequest(req, rateLimitedReq, proxyRes);
     expect(result).to.deep.equal(false);
   });
 
@@ -79,11 +56,79 @@ describe('Documents Uploading', () => {
       method: 'POST',
       session: {
         lastUploadTime: Date.now(),
-        nextTimeout: nextTimeout
+        nextTimeout: nextTimeout,
       },
-      headers: { cookie: 'test1' }
+      headers: { cookie: 'test1' },
     };
-    documents.handleRequest(req, mainReq, proxyRes);
+    handleRequest(req, mainReq, proxyRes);
     expect(mainReq?.headers?.cookie).to.be.an('undefined');
+  });
+
+  it('should apply route-scoped CSP for HTML legacy binary document responses', () => {
+    const upstreamResponse = {
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+      },
+    };
+    const request = {
+      method: 'GET',
+      originalUrl: '/documents/abc-123/binary',
+    };
+    const response = {
+      setHeader: sandbox.stub(),
+      removeHeader: sandbox.stub(),
+    };
+
+    handleResponse(upstreamResponse, request, response);
+
+    expect(response.setHeader).to.have.been.calledWith(
+      'Content-Security-Policy',
+      "default-src 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; connect-src 'none'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'none'; media-src 'self' data: blob:"
+    );
+    expect(response.removeHeader).to.have.been.calledWith('Content-Security-Policy-Report-Only');
+    expect(response.removeHeader).to.have.been.calledWith('X-Content-Security-Policy');
+    expect(response.removeHeader).to.have.been.calledWith('X-WebKit-CSP');
+  });
+
+  it('should keep CSP headers unchanged for non-HTML legacy binary responses', () => {
+    const upstreamResponse = {
+      headers: {
+        'content-type': 'application/pdf',
+      },
+    };
+    const request = {
+      method: 'GET',
+      originalUrl: '/documents/abc-123/binary',
+    };
+    const response = {
+      setHeader: sandbox.stub(),
+      removeHeader: sandbox.stub(),
+    };
+
+    handleResponse(upstreamResponse, request, response);
+
+    expect(response.setHeader).to.not.have.been.called;
+    expect(response.removeHeader).to.not.have.been.called;
+  });
+
+  it('should keep CSP headers unchanged for unrelated routes', () => {
+    const upstreamResponse = {
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+      },
+    };
+    const request = {
+      method: 'GET',
+      originalUrl: '/data/internal/cases/1713376274978432',
+    };
+    const response = {
+      setHeader: sandbox.stub(),
+      removeHeader: sandbox.stub(),
+    };
+
+    handleResponse(upstreamResponse, request, response);
+
+    expect(response.setHeader).to.not.have.been.called;
+    expect(response.removeHeader).to.not.have.been.called;
   });
 });

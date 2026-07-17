@@ -16,7 +16,7 @@ const REQUEST_BODY = {
   typeOfRole: { id: 'specific-access-granted', name: 'specific-access-granted' },
   period: {
     startDate: new Date(),
-    endDate: new Date()
+    endDate: new Date(),
   },
   actorId: '123',
   caseName: 'example name',
@@ -35,16 +35,16 @@ const REQUEST_BODY = {
         startDate: {
           day: 11,
           month: 11,
-          year: 2024
+          year: 2024,
         },
         endDate: {
           day: 11,
           month: 11,
-          year: 2024
-        }
-      }
-    }
-  }
+          year: 2024,
+        },
+      },
+    },
+  },
 };
 
 describe('access management service, delete role by assignment id', () => {
@@ -64,15 +64,15 @@ describe('access management service, delete role by assignment id', () => {
           method: 'DELETE',
           path: `/am/role-assignments/${assigmentId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
-          status: 204
-        }
+          status: 204,
+        },
       };
 
       const refreshRoleAssignmentInteraction = {
@@ -82,18 +82,19 @@ describe('access management service, delete role by assignment id', () => {
           method: 'GET',
           path: '/am/role-assignments/actors/123',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
           },
-          body: {}
-        }
+          body: {},
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -115,12 +116,12 @@ describe('access management service, delete role by assignment id', () => {
         const { deleteRoleByAssignmentId } = requireReloaded('../../../../roleAccess/index');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           session: { passport: { user: { userinfo: { id: '123' } } } },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         });
 
         let returnedResponse = null;

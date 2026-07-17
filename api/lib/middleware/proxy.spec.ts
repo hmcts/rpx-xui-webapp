@@ -1,14 +1,13 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import * as httpProxyMiddleware from 'http-proxy-middleware';
 import * as configModule from '../../configuration';
 import * as log4jui from '../log4jui';
 import authInterceptor from './auth';
 
+const sinonChai = module.require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Proxy Middleware', () => {
@@ -20,11 +19,9 @@ describe('Proxy Middleware', () => {
   let loggerStub: any;
   let onProxyError: any;
   let applyProxy: any;
-  let proxyMiddlewareStub: sinon.SinonStub;
 
   before(() => {
     delete require.cache[require.resolve('./proxy')];
-    delete require.cache[require.resolve('http-proxy-middleware')];
   });
 
   beforeEach(() => {
@@ -37,20 +34,17 @@ describe('Proxy Middleware', () => {
       error: sandbox.stub(),
       info: sandbox.stub(),
       debug: sandbox.stub(),
-      warn: sandbox.stub()
+      warn: sandbox.stub(),
     };
     sandbox.stub(log4jui, 'getLogger').returns(loggerStub);
 
     mockApp = {
-      use: sandbox.stub()
+      use: sandbox.stub(),
     };
 
     sandbox.stub(configModule, 'getConfigValue').returns('info');
 
-    const mockProxyMiddleware = () => {};
-    proxyMiddlewareStub = sandbox.stub(httpProxyMiddleware, 'legacyCreateProxyMiddleware').returns(mockProxyMiddleware as any);
-
-    const proxyModule = require('./proxy');
+    const proxyModule = module.require('./proxy');
     onProxyError = proxyModule.onProxyError;
     applyProxy = proxyModule.applyProxy;
   });
@@ -58,7 +52,6 @@ describe('Proxy Middleware', () => {
   afterEach(() => {
     sandbox.restore();
     delete require.cache[require.resolve('./proxy')];
-    delete require.cache[require.resolve('http-proxy-middleware')];
   });
 
   describe('onProxyError', () => {
@@ -81,7 +74,7 @@ describe('Proxy Middleware', () => {
       expect(res.status).to.have.been.calledWith(500);
       expect(res.send).to.have.been.calledWith({
         error: 'Error when connecting to remote server',
-        status: 504
+        status: 504,
       });
     });
 
@@ -100,8 +93,8 @@ describe('Proxy Middleware', () => {
         userinfo: {
           id: 'user123',
           forename: 'John',
-          surname: 'Doe'
-        }
+          surname: 'Doe',
+        },
       };
 
       onProxyError(error, req, res);
@@ -118,16 +111,13 @@ describe('Proxy Middleware', () => {
         userinfo: {
           id: 'user123',
           forename: 'John',
-          surname: 'Doe'
-        }
+          surname: 'Doe',
+        },
       };
 
       onProxyError(error, req, res);
 
-      expect(loggerStub.info).to.not.have.been.calledWith(
-        'ActivityTrackerResponseFailed => ',
-        sinon.match.string
-      );
+      expect(loggerStub.info).to.not.have.been.calledWith('ActivityTrackerResponseFailed => ', sinon.match.string);
     });
 
     it('should not log activity tracker info when user is not present', () => {
@@ -136,10 +126,7 @@ describe('Proxy Middleware', () => {
 
       onProxyError(error, req, res);
 
-      expect(loggerStub.info).to.not.have.been.calledWith(
-        'ActivityTrackerResponseFailed => ',
-        sinon.match.string
-      );
+      expect(loggerStub.info).to.not.have.been.calledWith('ActivityTrackerResponseFailed => ', sinon.match.string);
     });
 
     it('should not log activity tracker info when userinfo is not present', () => {
@@ -148,10 +135,7 @@ describe('Proxy Middleware', () => {
 
       onProxyError(error, req, res);
 
-      expect(loggerStub.info).to.not.have.been.calledWith(
-        'ActivityTrackerResponseFailed => ',
-        sinon.match.string
-      );
+      expect(loggerStub.info).to.not.have.been.calledWith('ActivityTrackerResponseFailed => ', sinon.match.string);
     });
   });
 
@@ -162,7 +146,7 @@ describe('Proxy Middleware', () => {
       config = {
         source: '/api/test',
         target: 'http://localhost:3000',
-        rewriteUrl: '/test'
+        rewriteUrl: '/test',
       };
     });
 
@@ -170,17 +154,12 @@ describe('Proxy Middleware', () => {
       applyProxy(mockApp, config);
 
       // Verify that app.use was called with correct parameters
-      expect(mockApp.use).to.have.been.calledWith(
-        '/api/test',
-        [authInterceptor],
-        sinon.match.func
-      );
+      expect(mockApp.use).to.have.been.calledWith('/api/test', [authInterceptor], sinon.match.func);
 
       // Verify the proxy middleware has the expected properties
       const proxyMiddleware = mockApp.use.firstCall.args[2];
       expect(proxyMiddleware).to.be.a('function');
       expect(proxyMiddleware).to.have.property('upgrade');
-      expect(proxyMiddleware).to.have.property('__LEGACY_HTTP_PROXY_MIDDLEWARE__', true);
     });
 
     it('should include authInterceptor in middleware array', () => {
@@ -209,11 +188,7 @@ describe('Proxy Middleware', () => {
 
       applyProxy(mockApp, config);
 
-      expect(mockApp.use).to.have.been.calledWith(
-        '/api/different',
-        [authInterceptor],
-        sinon.match.func
-      );
+      expect(mockApp.use).to.have.been.calledWith('/api/different', [authInterceptor], sinon.match.func);
     });
 
     it('should work with config.rewrite = false', () => {
@@ -239,11 +214,7 @@ describe('Proxy Middleware', () => {
 
       applyProxy(mockApp, config);
 
-      expect(mockApp.use).to.have.been.calledWith(
-        '/api/test',
-        [authInterceptor],
-        sinon.match.func
-      );
+      expect(mockApp.use).to.have.been.calledWith('/api/test', [authInterceptor], sinon.match.func);
     });
 
     it('should work with config.onRes provided', () => {
@@ -269,16 +240,12 @@ describe('Proxy Middleware', () => {
         filter: filterMock,
         middlewares: [customMiddleware],
         ws: true,
-        rewriteUrl: '/complex-path'
+        rewriteUrl: '/complex-path',
       };
 
       applyProxy(mockApp, complexConfig);
 
-      expect(mockApp.use).to.have.been.calledWith(
-        '/api/complex',
-        [authInterceptor, customMiddleware],
-        sinon.match.func
-      );
+      expect(mockApp.use).to.have.been.calledWith('/api/complex', [authInterceptor, customMiddleware], sinon.match.func);
     });
 
     it('should work without config.rewriteUrl', () => {

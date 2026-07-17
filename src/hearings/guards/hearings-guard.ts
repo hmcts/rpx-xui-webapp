@@ -13,14 +13,15 @@ export class HearingsGuard {
   public static DEFAULT_URL: string = 'cases';
   public userRoles$: Observable<string[]>;
 
-  constructor(protected readonly appStore: Store<fromAppStore.State>,
-              protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
-              protected readonly hearingStore: Store<fromAppStore.State>,
-              protected readonly router: Router
-  ){
-    this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
-      map((userDetails) => userDetails.userInfo.roles)
-    );
+  constructor(
+    protected readonly appStore: Store<fromAppStore.State>,
+    protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
+    protected readonly hearingStore: Store<fromAppStore.State>,
+    protected readonly router: Router
+  ) {
+    this.userRoles$ = this.appStore
+      .pipe(select(fromAppStore.getUserDetails))
+      .pipe(map((userDetails) => userDetails.userInfo.roles));
   }
 
   public hasMatchedPermissions(): Observable<boolean> {
@@ -32,20 +33,20 @@ export class HearingsGuard {
         }
         return this.hearingStore.select(fromHearingReducers.serviceHearingValueSelector).pipe(
           switchMap((hearingValueModel) => {
-            if (hearingValueModel){
-              return this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig().pipe(
-                map((jurisdictionsConfig) =>
-                  jurisdictionsConfig.some((featureVariation) =>
-                    Utils.hasMatchedJurisdictionAndCaseType(
-                      featureVariation,
-                      caseInfo.jurisdictionId,
-                      caseInfo.caseType
+            if (hearingValueModel) {
+              return this.hearingJurisdictionConfigService
+                .getHearingJurisdictionsConfig()
+                .pipe(
+                  map((jurisdictionsConfig) =>
+                    jurisdictionsConfig.some((featureVariation) =>
+                      Utils.hasMatchedJurisdictionAndCaseType(featureVariation, caseInfo.jurisdictionId, caseInfo.caseType)
                     )
                   )
-                )
-              );
+                );
             }
-            this.router.navigate([`/cases/case-details/${caseInfo.jurisdictionId}/${caseInfo.caseType}/${caseInfo.caseReference}`]);
+            this.router.navigate([
+              `/cases/case-details/${caseInfo.jurisdictionId}/${caseInfo.caseType}/${caseInfo.caseReference}`,
+            ]);
             return of(false);
           }),
           map((result) => !!result)

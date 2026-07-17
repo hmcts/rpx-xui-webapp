@@ -1,9 +1,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router, NavigationEnd } from '@angular/router';
 import {
   AlertService,
-  ErrorNotifierService, HttpError, LoadingService as CCDLoadingService, NavigationNotifierService, NavigationOrigin
+  ErrorNotifierService,
+  HttpError,
+  LoadingService as CCDLoadingService,
+  NavigationNotifierService,
+  NavigationOrigin,
+  FocusService,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
@@ -21,25 +27,31 @@ describe('CaseHomeComponent', () => {
   const mockCCDLoadingService = jasmine.createSpyObj('CCDLoadingService', ['']);
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
+  const focusService = jasmine.createSpyObj('FocusService', ['focus']);
+  const router = {
+    events: {
+      subscribe: (callback: any) => {
+        callback(new NavigationEnd(1, 'url', 'url2'));
+      },
+    },
+  } as Router;
 
   beforeEach(waitForAsync(() => {
     navigationNotifierService = new NavigationNotifierService();
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        RouterTestingModule,
-        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromFeature.reducers) })
-      ],
+      imports: [RouterTestingModule, StoreModule.forRoot({ ...reducers, cases: combineReducers(fromFeature.reducers) })],
       declarations: [CaseHomeComponent],
       providers: [
         { provide: AlertService, useValue: mockAlertService },
         { provide: NavigationNotifierService, useValue: navigationNotifierService },
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: CommonLibLoadingService, useValue: mockCommonLibLoadingService },
-        { provide: CCDLoadingService, useValue: mockCCDLoadingService }
-      ]
-    })
-      .compileComponents();
+        { provide: CCDLoadingService, useValue: mockCCDLoadingService },
+        { provide: FocusService, useValue: focusService },
+        { provide: Router, useValue: router },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -55,10 +67,16 @@ describe('CaseHomeComponent', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });
 
+  describe('using the FocusService', () => {
+    it('calls focus() on NavigationEnd', () => {
+      expect(focusService.focus).toHaveBeenCalled();
+    });
+  });
+
   describe('paramHandler', () => {
     it('should create params for DRAFT_DELETED', () => {
       const navigation = {
-        action: NavigationOrigin.DRAFT_DELETED
+        action: NavigationOrigin.DRAFT_DELETED,
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -72,7 +90,7 @@ describe('CaseHomeComponent', () => {
 
     it('should create params for ERROR_DELETING_DRAFT', () => {
       const navigation = {
-        action: NavigationOrigin.ERROR_DELETING_DRAFT
+        action: NavigationOrigin.ERROR_DELETING_DRAFT,
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -81,7 +99,7 @@ describe('CaseHomeComponent', () => {
 
     it('should create params for DRAFT_RESUMED', () => {
       const navigation = {
-        action: NavigationOrigin.DRAFT_RESUMED
+        action: NavigationOrigin.DRAFT_RESUMED,
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -100,10 +118,10 @@ describe('CaseHomeComponent', () => {
         relativeTo: {
           snapshot: {
             params: {
-              cid: 'cid'
-            }
-          }
-        }
+              cid: 'cid',
+            },
+          },
+        },
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -118,7 +136,7 @@ describe('CaseHomeComponent', () => {
 
     it('should create params for NO_READ_ACCESS_REDIRECTION', () => {
       const navigation = {
-        action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION
+        action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION,
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -135,10 +153,10 @@ describe('CaseHomeComponent', () => {
         relativeTo: {
           snapshot: {
             params: {
-              cid: 'cid'
-            }
-          }
-        }
+              cid: 'cid',
+            },
+          },
+        },
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -149,7 +167,7 @@ describe('CaseHomeComponent', () => {
   describe('actionDispatcher', () => {
     it('should dispatch an action', () => {
       const params = {
-        path: []
+        path: [],
       };
       component.actionDispatcher(params);
 

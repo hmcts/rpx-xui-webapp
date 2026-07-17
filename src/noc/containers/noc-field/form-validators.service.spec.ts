@@ -16,8 +16,8 @@ describe('FormValidatorsService', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
             type: 'Text',
-            regular_expression: '^[A-Z]+$'
-          }
+            regular_expression: '^[A-Z]+$',
+          },
         } as NocQuestion;
         const control = new FormControl('');
 
@@ -33,8 +33,8 @@ describe('FormValidatorsService', () => {
       it('should add default whitespace pattern validator when no regular expression provided', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'Text'
-          }
+            type: 'Text',
+          },
         } as NocQuestion;
         const control = new FormControl('');
 
@@ -52,8 +52,8 @@ describe('FormValidatorsService', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
             type: 'Text',
-            min: 5
-          }
+            min: 5,
+          },
         } as NocQuestion;
         const control = new FormControl('');
 
@@ -69,8 +69,8 @@ describe('FormValidatorsService', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
             type: 'Text',
-            max: 10
-          }
+            max: 10,
+          },
         } as NocQuestion;
         const control = new FormControl('');
 
@@ -88,8 +88,8 @@ describe('FormValidatorsService', () => {
             type: 'Text',
             regular_expression: '^[0-9]+$',
             min: 3,
-            max: 6
-          }
+            max: 6,
+          },
         } as NocQuestion;
         const control = new FormControl('');
 
@@ -111,8 +111,8 @@ describe('FormValidatorsService', () => {
       it('should add email validator', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'Email'
-          }
+            type: 'Email',
+          },
         } as NocQuestion;
         const control = new FormControl('');
 
@@ -129,8 +129,8 @@ describe('FormValidatorsService', () => {
       it('should add number validator', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'Number'
-          }
+            type: 'Number',
+          },
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'numberValidator').and.returnValue(Validators.pattern(/^\d+$/));
@@ -145,8 +145,8 @@ describe('FormValidatorsService', () => {
       it('should add postcode validator', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'Postcode'
-          }
+            type: 'Postcode',
+          },
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'postcodeValidator').and.returnValue(Validators.pattern(/^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$/));
@@ -161,8 +161,8 @@ describe('FormValidatorsService', () => {
       it('should add phoneUK validator', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'PhoneUK'
-          }
+            type: 'PhoneUK',
+          },
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'phoneUKValidator').and.returnValue(Validators.pattern(/^\+?44/));
@@ -177,8 +177,8 @@ describe('FormValidatorsService', () => {
       it('should add date validator', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'Date'
-          }
+            type: 'Date',
+          },
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'dateValidator').and.returnValue(Validators.pattern(/^\d{4}-\d{2}-\d{2}$/));
@@ -193,8 +193,8 @@ describe('FormValidatorsService', () => {
       it('should add dateTime validator', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'DateTime'
-          }
+            type: 'DateTime',
+          },
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'dateTimeValidator').and.returnValue(Validators.pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/));
@@ -209,8 +209,8 @@ describe('FormValidatorsService', () => {
       it('should add time validator', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'Time'
-          }
+            type: 'Time',
+          },
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'timeValidator').and.returnValue(Validators.pattern(/^\d{2}:\d{2}:\d{2}$/));
@@ -225,8 +225,8 @@ describe('FormValidatorsService', () => {
       it('should preserve existing validators on the control', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'Text'
-          }
+            type: 'Text',
+          },
         } as NocQuestion;
         const existingValidator = Validators.required;
         const control = new FormControl('', existingValidator);
@@ -242,7 +242,7 @@ describe('FormValidatorsService', () => {
 
       it('should handle nocQuestion with answer_field_type but no type property', () => {
         const nocQuestion: NocQuestion = {
-          answer_field_type: {}
+          answer_field_type: {},
         } as NocQuestion;
         const control = new FormControl('');
         const initialValidators = control.validator;
@@ -256,8 +256,8 @@ describe('FormValidatorsService', () => {
       it('should handle unknown field type gracefully', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'UnknownType'
-          }
+            type: 'UnknownType',
+          },
         } as NocQuestion;
         const control = new FormControl('');
 
@@ -271,8 +271,8 @@ describe('FormValidatorsService', () => {
       it('should return the same control instance', () => {
         const nocQuestion: NocQuestion = {
           answer_field_type: {
-            type: 'Text'
-          }
+            type: 'Text',
+          },
         } as NocQuestion;
         const control = new FormControl('');
 
@@ -286,8 +286,8 @@ describe('FormValidatorsService', () => {
           answer_field_type: {
             type: 'Text',
             min: 5,
-            max: 10
-          }
+            max: 10,
+          },
         } as NocQuestion;
         const control = new FormControl('', Validators.required);
 

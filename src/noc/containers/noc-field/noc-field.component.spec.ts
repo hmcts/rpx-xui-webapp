@@ -14,8 +14,9 @@ import { NocDateFieldComponent } from './date';
 import { NocYesNoFieldComponent } from './yes-no';
 
 @Component({
+  standalone: false,
   selector: 'exui-test-component',
-  template: '<div>Test Component</div>'
+  template: '<div>Test Component</div>',
 })
 class TestComponent {
   public questionField: NocQuestion;
@@ -46,12 +47,12 @@ describe('NocFieldComponent', () => {
       regular_expression: null,
       fixed_list_items: [],
       complex_fields: [],
-      collection_field_type: null
+      collection_field_type: null,
     },
     display_context_parameter: 'MANDATORY',
     challenge_question_id: 'test-challenge',
     answer_field: 'test-answer',
-    question_id: 'test-question-id'
+    question_id: 'test-question-id',
   };
 
   beforeEach(waitForAsync(() => {
@@ -60,15 +61,16 @@ describe('NocFieldComponent', () => {
     mockComponentFactoryResolver = jasmine.createSpyObj('ComponentFactoryResolver', ['resolveComponentFactory']);
     mockViewContainerRef = jasmine.createSpyObj('ViewContainerRef', ['insert']);
     mockInjector = jasmine.createSpyObj('Injector', ['get']);
+    (mockInjector as any).destroy = jasmine.createSpy('destroy');
 
     TestBed.configureTestingModule({
       declarations: [NocFieldComponent, TestComponent],
       providers: [
         { provide: PaletteService, useValue: mockPaletteService },
         { provide: FormValidatorsService, useValue: mockFormValidatorsService },
-        { provide: ComponentFactoryResolver, useValue: mockComponentFactoryResolver }
+        { provide: ComponentFactoryResolver, useValue: mockComponentFactoryResolver },
       ],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -84,7 +86,7 @@ describe('NocFieldComponent', () => {
     // Define parentInjector on mock
     Object.defineProperty(mockViewContainerRef, 'parentInjector', {
       get: () => mockInjector,
-      configurable: true
+      configurable: true,
     });
   });
 
@@ -98,15 +100,15 @@ describe('NocFieldComponent', () => {
       const mockComponentInstance = {};
       const mockComponentRef = {
         instance: mockComponentInstance,
-        hostview: {}
+        hostview: {},
       } as any;
       const mockComponentFactory = {
-        create: jasmine.createSpy('create').and.returnValue(mockComponentRef)
+        create: jasmine.createSpy('create').and.returnValue(mockComponentRef),
       } as any;
 
       mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
-      spyOn(Injector, 'create').and.returnValue(mockInjector);
+      spyOn(Injector, 'create').and.returnValue(mockInjector as any);
 
       fixture.detectChanges();
 
@@ -146,7 +148,7 @@ describe('NocFieldComponent', () => {
         injector: null,
         changeDetectorRef: null,
         destroy: jasmine.createSpy('destroy'),
-        onDestroy: jasmine.createSpy('onDestroy')
+        onDestroy: jasmine.createSpy('onDestroy'),
       } as any;
 
       mockComponentFactory = {
@@ -155,14 +157,14 @@ describe('NocFieldComponent', () => {
         componentType: TestComponent,
         ngContentSelectors: [],
         inputs: [],
-        outputs: []
+        outputs: [],
       };
 
       mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
 
       // Mock Injector.create as a static method
-      spyOn(Injector, 'create').and.returnValue(mockInjector);
+      spyOn(Injector, 'create').and.returnValue(mockInjector as any);
     });
 
     it('should create component based on field type', () => {
@@ -177,7 +179,7 @@ describe('NocFieldComponent', () => {
 
       expect(Injector.create).toHaveBeenCalledWith({
         providers: [],
-        parent: mockInjector
+        parent: mockInjector,
       });
     });
 
@@ -226,7 +228,7 @@ describe('NocFieldComponent', () => {
         { type: 'Number', component: NocNumberFieldComponent },
         { type: 'Email', component: NocEmailFieldComponent },
         { type: 'Date', component: NocDateFieldComponent },
-        { type: 'YesOrNo', component: NocYesNoFieldComponent }
+        { type: 'YesOrNo', component: NocYesNoFieldComponent },
       ];
 
       fieldTypes.forEach(({ type, component: expectedComponent }) => {
@@ -295,7 +297,7 @@ describe('NocFieldComponent', () => {
       const mockComponentInstance = {};
       const mockComponentRef = {
         instance: mockComponentInstance,
-        hostView: {}
+        hostView: {},
       } as any;
       const mockComponentFactory = {
         create: jasmine.createSpy('create').and.returnValue(mockComponentRef),
@@ -303,12 +305,12 @@ describe('NocFieldComponent', () => {
         componentType: TestComponent,
         ngContentSelectors: [],
         inputs: [],
-        outputs: []
+        outputs: [],
       } as any;
 
       mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
-      spyOn(Injector, 'create').and.returnValue(mockInjector);
+      spyOn(Injector, 'create').and.returnValue(mockInjector as any);
     });
 
     it('should handle complex questionField with all properties', () => {
@@ -321,8 +323,8 @@ describe('NocFieldComponent', () => {
           regular_expression: '^[A-Z]+$',
           fixed_list_items: [],
           complex_fields: [],
-          collection_field_type: { id: 'collection', type: 'Complex' }
-        }
+          collection_field_type: { id: 'collection', type: 'Complex' },
+        },
       };
 
       component.questionField = complexQuestion;

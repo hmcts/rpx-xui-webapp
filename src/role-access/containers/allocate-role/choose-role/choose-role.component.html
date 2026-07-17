@@ -1,7 +1,5 @@
 <exui-error-message *ngIf="radioOptionControl.errors && submitted" [error]="error"></exui-error-message>
-<div [formGroup]="formGroup"
-     class="govuk-form-group"
-     [ngClass]="{'form-group-error': radioOptionControl.errors && submitted}">
+<div [formGroup]="formGroup" class="govuk-form-group" [ngClass]="{ 'form-group-error': radioOptionControl.errors && submitted }">
   <exui-choose-radio-option
     [formGroup]="formGroup"
     [radioControlName]="radioControlName"

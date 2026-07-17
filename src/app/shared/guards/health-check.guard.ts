@@ -9,8 +9,8 @@ import { HealthCheckService } from '../services/health-check.service';
 @Injectable()
 export class HealthCheckGuard {
   constructor(
-        private readonly healthCheck: HealthCheckService,
-        private readonly store: Store<fromRoot.State>,
+    private readonly healthCheck: HealthCheckService,
+    private readonly store: Store<fromRoot.State>
   ) {}
 
   public canActivate() {
@@ -37,4 +37,3 @@ export class HealthCheckGuard {
     this.store.dispatch(new fromRoot.Go({ path: ['/service-down'] }));
   }
 }
-

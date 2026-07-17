@@ -14,7 +14,7 @@ describe('NeedJudgeAmendedConverter', () => {
   it('should transform judge needed flag based on selection', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      roleType: ['P000001']
+      roleType: ['P000001'],
     };
     const result$ = needJudgeAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;

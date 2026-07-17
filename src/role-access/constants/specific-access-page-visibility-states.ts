@@ -1,23 +1,31 @@
 import { SpecificAccessState } from '../models/specific-access-state.enum';
 
 export const specificAccessBackButtonVisibilityStates = [
-  SpecificAccessState.SPECIFIC_ACCESS_DURATION, SpecificAccessState.SPECIFIC_ACCESS_INFORMATION
+  SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+  SpecificAccessState.SPECIFIC_ACCESS_INFORMATION,
 ];
 
 export const specificAccessContinueButtonVisibilityStates = [
-  SpecificAccessState.SPECIFIC_ACCESS_REVIEW, SpecificAccessState.SPECIFIC_ACCESS_DURATION, SpecificAccessState.SPECIFIC_ACCESS_INFORMATION
+  SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+  SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+  SpecificAccessState.SPECIFIC_ACCESS_INFORMATION,
 ];
 
 export const specificAccessCancelButtonVisibilityStates = [
-  SpecificAccessState.SPECIFIC_ACCESS_REVIEW, SpecificAccessState.SPECIFIC_ACCESS_DURATION, SpecificAccessState.SPECIFIC_ACCESS_INFORMATION
+  SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+  SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+  SpecificAccessState.SPECIFIC_ACCESS_INFORMATION,
 ];
 
 export const specificAccessReturnToMyTasksButtonVisibilityStates = [
-  SpecificAccessState.SPECIFIC_ACCESS_APPROVED, SpecificAccessState.SPECIFIC_ACCESS_DENIED, SpecificAccessState.SPECIFIC_ACCESS_DUPLICATE_RECORD
+  SpecificAccessState.SPECIFIC_ACCESS_APPROVED,
+  SpecificAccessState.SPECIFIC_ACCESS_DENIED,
+  SpecificAccessState.SPECIFIC_ACCESS_DUPLICATE_RECORD,
 ];
 
 export const specificAccessReturnToTasksTabVisibilityStates = [
-  SpecificAccessState.SPECIFIC_ACCESS_APPROVED, SpecificAccessState.SPECIFIC_ACCESS_DENIED
+  SpecificAccessState.SPECIFIC_ACCESS_APPROVED,
+  SpecificAccessState.SPECIFIC_ACCESS_DENIED,
 ];
 export const specificAccessReviewVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_REVIEW];
 export const specificAccessDurationVisibilityStates = [SpecificAccessState.SPECIFIC_ACCESS_DURATION];

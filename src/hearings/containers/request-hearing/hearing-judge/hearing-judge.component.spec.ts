@@ -35,7 +35,7 @@ describe('HearingJudgeComponent', () => {
     personalCode: 'P100001',
     isJudge: '',
     isMagistrate: '',
-    isPanelMember: ''
+    isPanelMember: '',
   };
   const judgeTypes: LovRefDataModel[] = [
     {
@@ -50,7 +50,7 @@ describe('HearingJudgeComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default'
+      from: 'exui-default',
     },
     {
       key: 'dtj',
@@ -64,7 +64,7 @@ describe('HearingJudgeComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default'
+      from: 'exui-default',
     },
     {
       key: 'rtj',
@@ -78,8 +78,8 @@ describe('HearingJudgeComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default'
-    }
+      from: 'exui-default',
+    },
   ];
 
   beforeEach(() => {
@@ -96,15 +96,15 @@ describe('HearingJudgeComponent', () => {
             snapshot: {
               data: {
                 hearingJudgeTypes: judgeTypes,
-                judicialUsers: [{ personalCode: 'p1000000' }]
-              }
+                judicialUsers: [{ personalCode: 'p1000000' }],
+              },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingJudgeComponent);
@@ -195,20 +195,24 @@ describe('HearingJudgeComponent', () => {
 
   it('should get getFormData', () => {
     component.hearingRequestMainModel.hearingDetails.panelRequirements = { roleType: ['Tribunal'] };
-    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences = [{
-      memberID: 'P000001',
-      memberType: MemberType.JUDGE,
-      requirementType: RequirementType.EXCLUDE
-    }];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences = [
+      {
+        memberID: 'P000001',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE,
+      },
+    ];
     component.getFormData();
     expect(component.hearingJudgeFormInfo.excludedJudges.length).toBe(1);
     expect(component.specificJudgeSelection).toBe(RadioOptions.NO);
     component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = null;
-    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences = [{
-      memberID: 'P000001',
-      memberType: MemberType.JUDGE,
-      requirementType: RequirementType.MUSTINC
-    }];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences = [
+      {
+        memberID: 'P000001',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.MUSTINC,
+      },
+    ];
     component.getFormData();
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
   });
@@ -216,34 +220,36 @@ describe('HearingJudgeComponent', () => {
   it('should check setFormData', () => {
     component.setFormData();
     expect(component.excludedJudgeList.length).toBe(0);
-    const personalCodeJudgeList: JudicialUserModel[] = [{
-      title: 'Mr',
-      knownAs: 'Jacky Collins',
-      surname: 'Jacky Collins',
-      fullName: 'Jacky Collins',
-      emailId: 'jacky.collins@judicial.com',
-      idamId: '1102839232',
-      initials: 'JC',
-      postNominals: 'JP',
-      personalCode: 'P100001',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
-    },
-    {
-      title: 'Mr',
-      knownAs: 'Jammie Williams',
-      surname: 'Jammie Williams',
-      fullName: 'Jammie Williams',
-      emailId: 'jammie.williams@judicial.com',
-      idamId: '1102839233',
-      initials: 'JW',
-      postNominals: 'JP',
-      personalCode: 'P0000002',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
-    }];
+    const personalCodeJudgeList: JudicialUserModel[] = [
+      {
+        title: 'Mr',
+        knownAs: 'Jacky Collins',
+        surname: 'Jacky Collins',
+        fullName: 'Jacky Collins',
+        emailId: 'jacky.collins@judicial.com',
+        idamId: '1102839232',
+        initials: 'JC',
+        postNominals: 'JP',
+        personalCode: 'P100001',
+        isJudge: '',
+        isMagistrate: '',
+        isPanelMember: '',
+      },
+      {
+        title: 'Mr',
+        knownAs: 'Jammie Williams',
+        surname: 'Jammie Williams',
+        fullName: 'Jammie Williams',
+        emailId: 'jammie.williams@judicial.com',
+        idamId: '1102839233',
+        initials: 'JW',
+        postNominals: 'JP',
+        personalCode: 'P0000002',
+        isJudge: '',
+        isMagistrate: '',
+        isPanelMember: '',
+      },
+    ];
     component.specificJudgeSelection = RadioOptions.YES;
     component.hearingJudgeFormInfo.includedJudges = ['P0000001'];
     component.hearingJudgeFormInfo.excludedJudges = ['P0000002'];

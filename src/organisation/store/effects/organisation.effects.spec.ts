@@ -15,11 +15,17 @@ describe('Organisation Effects', () => {
   let effects: OrganisationEffects;
   let loggerService: LoggerService;
 
-  const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
-    'fetchOrganisation'
-  ]);
+  const organisationServiceMock = jasmine.createSpyObj('OrganisationService', ['fetchOrganisation']);
 
-  const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['trace', 'info', 'debug', 'log', 'warn', 'error', 'fatal']);
+  const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', [
+    'trace',
+    'info',
+    'debug',
+    'log',
+    'warn',
+    'error',
+    'fatal',
+  ]);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,17 +33,17 @@ describe('Organisation Effects', () => {
       providers: [
         {
           provide: OrganisationService,
-          useValue: organisationServiceMock
+          useValue: organisationServiceMock,
         },
         {
           provide: LoggerService,
-          useValue: mockedLoggerService
+          useValue: mockedLoggerService,
         },
         fromOrganisationEffects.OrganisationEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
 
     effects = TestBed.inject(OrganisationEffects);
@@ -52,7 +58,7 @@ describe('Organisation Effects', () => {
         credit_limit: 0,
         available_balance: 0,
         status: 'someStatus',
-        effective_date: 'someDate'
+        effective_date: 'someDate',
       };
       organisationServiceMock.fetchOrganisation.and.returnValue(of(payload));
       const action = new LoadOrganisation();

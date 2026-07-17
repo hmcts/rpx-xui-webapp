@@ -13,19 +13,9 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { LocationDataService } from '../work-allocation/services';
 import { BookingService } from './services';
 
-@NgModule({ declarations: [
-  ...fromContainers.containers
-], imports: [FormsModule,
-  ReactiveFormsModule,
-  CommonModule,
-  bookingRouting,
-  SharedModule,
-  bookingRouting,
-  ExuiCommonLibModule], providers: [
-  AlertService,
-  LocationDataService,
-  BookingGuard,
-  BookingService,
-  provideHttpClient(withInterceptorsFromDi())
-] })
+@NgModule({
+  declarations: [...fromContainers.containers],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, bookingRouting, SharedModule, bookingRouting, ExuiCommonLibModule],
+  providers: [AlertService, LocationDataService, BookingGuard, BookingService, provideHttpClient(withInterceptorsFromDi())],
+})
 export class BookingModule {}

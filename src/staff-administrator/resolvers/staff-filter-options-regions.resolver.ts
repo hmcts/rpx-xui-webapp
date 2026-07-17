@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StaffFilterOptionsRegionsResolver {
   constructor(private refDataService: RefDataService) {}

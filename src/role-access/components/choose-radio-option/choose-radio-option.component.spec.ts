@@ -7,7 +7,9 @@ import { OptionsModel } from '../../models/options-model';
 import { ChooseRadioOptionComponent } from './choose-radio-option.component';
 
 @Component({
-  template: '<exui-choose-radio-option [optionsList]="optionsList" [title]="title" [caption]="caption"></exui-choose-radio-option>'
+  standalone: false,
+  template:
+    '<exui-choose-radio-option [optionsList]="optionsList" [title]="title" [caption]="caption"></exui-choose-radio-option>',
 })
 class WrapperComponent {
   @ViewChild(ChooseRadioOptionComponent, { static: true }) public ref: ChooseRadioOptionComponent;
@@ -19,7 +21,8 @@ class WrapperComponent {
 const mockRoles: OptionsModel[] = [
   { optionId: '1', optionValue: 'Role 1' },
   { optionId: '2', optionValue: 'Role 2' },
-  { optionId: '3', optionValue: 'Role 3' }];
+  { optionId: '3', optionValue: 'Role 3' },
+];
 
 describe('ChooseRadioOptionComponent', () => {
   const RADIO_OPTION_CONTROL: FormControl = new FormControl('');
@@ -32,9 +35,7 @@ describe('ChooseRadioOptionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ChooseRadioOptionComponent, WrapperComponent],
-      imports: [
-        ReactiveFormsModule
-      ]
+      imports: [ReactiveFormsModule],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

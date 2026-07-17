@@ -8,9 +8,8 @@ describe('TaskAlertBannerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TaskAlertBannerComponent]
-    })
-      .compileComponents();
+      declarations: [TaskAlertBannerComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -40,14 +39,15 @@ describe('TaskAlertBannerComponent', () => {
           values: [
             {
               warningCode: '123',
-              warningText: 'this is a warning message 1'
+              warningText: 'this is a warning message 1',
             },
             {
               warningCode: '124',
-              warningText: 'this is a warning message 2'
-            }
-          ] },
-        actions: []
+              warningText: 'this is a warning message 2',
+            },
+          ],
+        },
+        actions: [],
       },
       {
         assignee: null,
@@ -67,20 +67,21 @@ describe('TaskAlertBannerComponent', () => {
           values: [
             {
               warningCode: '125',
-              warningText: 'this is a warning message 3'
+              warningText: 'this is a warning message 3',
             },
             {
               warningCode: '124',
-              warningText: 'this is a warning message 2'
-            }
-          ] },
+              warningText: 'this is a warning message 2',
+            },
+          ],
+        },
         actions: [
           {
             id: 'actionId2',
-            title: 'Release this task'
-          }
-        ]
-      }
+            title: 'Release this task',
+          },
+        ],
+      },
     ];
   }
 

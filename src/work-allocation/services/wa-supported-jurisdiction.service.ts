@@ -5,7 +5,7 @@ import { HMCTSServiceDetails } from '../../app/models';
 
 @Injectable()
 export class WASupportedJurisdictionsService {
-  public static jurisdictionUrl: string = '/api/wa-supported-jurisdiction';
+  public static readonly jurisdictionUrl: string = '/api/wa-supported-jurisdiction';
   public constructor(private readonly http: HttpClient) {}
 
   // Note: this will include service name

@@ -11,7 +11,7 @@ export const containers: any[] = [
   ...specificAccessContainers.containers,
   DeleteExclusionComponent,
   RemoveRoleComponent,
-  RejectedRequestViewComponent
+  RejectedRequestViewComponent,
 ];
 
 export * from './delete-exclusion/delete-exclusion.component';

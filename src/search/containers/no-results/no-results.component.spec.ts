@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -11,20 +12,18 @@ describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
   let mockRouter: any;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let mockLocation: Location;
+
   let store: Store<fromActions.State>;
-  const storeMock = jasmine.createSpyObj('Store', [
-    'dispatch'
-  ]);
+  const storeMock = jasmine.createSpyObj('Store', ['dispatch']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NoResultsComponent],
       schemas: [NO_ERRORS_SCHEMA],
       imports: [RouterTestingModule.withRoutes([])],
-      providers: [{ provide: Store, useValue: storeMock }]
-    })
-      .compileComponents();
+      providers: [{ provide: Store, useValue: storeMock }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -33,64 +32,71 @@ describe('NoResultsComponent', () => {
     fixture.detectChanges();
     mockRouter = TestBed.inject(Router);
     store = TestBed.inject(Store);
+    mockLocation = TestBed.inject(Location);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call window history back when back link is clicked', () => {
-    spyOn(window.history, 'back');
+  it('should call location back when back link is clicked', () => {
+    spyOn(mockLocation, 'back');
     fixture.debugElement.nativeElement.querySelector('.govuk-back-link').click();
-    expect(window.history.back).toHaveBeenCalled();
+    expect(mockLocation.back).toHaveBeenCalled();
   });
 
   it('should display no results content if no error', () => {
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({
       extras: {
         state: {
-          messageId: NoResultsMessageId.NO_RESULTS
-        }
-      }
+          messageId: NoResultsMessageId.NO_RESULTS,
+        },
+      },
     });
     // We have to TestBed.createComponent again for the activated route to work
     fixture = TestBed.createComponent(NoResultsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.messageId = NoResultsMessageId.NO_RESULTS;
-    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search using different criteria');
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain(
+      'search using different criteria'
+    );
   });
 
   it('should display something went wrong content if error', () => {
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({
       extras: {
         state: {
-          messageId: NoResultsMessageId.ERROR
-        }
-      }
+          messageId: NoResultsMessageId.ERROR,
+        },
+      },
     });
     // We have to TestBed.createComponent again for the activated route to work
     fixture = TestBed.createComponent(NoResultsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.messageId = NoResultsMessageId.ERROR;
-    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('search for as many fields as possible');
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain(
+      'search for as many fields as possible'
+    );
   });
 
   it('should display no results content if 16 digit case reference error', () => {
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({
       extras: {
         state: {
-          messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH
-        }
-      }
+          messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH,
+        },
+      },
     });
     // We have to TestBed.createComponent again for the activated route to work
     fixture = TestBed.createComponent(NoResultsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.messageId = NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH;
-    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain('This 16-digit case reference could not be found.');
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-width-container').innerText).toContain(
+      'This 16-digit case reference could not be found.'
+    );
     expect(storeMock.dispatch).toHaveBeenCalled();
   });
 });

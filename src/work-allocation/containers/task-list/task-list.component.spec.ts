@@ -18,14 +18,15 @@ import { MockRouter, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
 
 @Component({
-  template: `
-    <exui-task-list
-      [fields]='fields'
-      [tasks]='tasks'
-      [tasksTotal]="tasksTotal"
-      [taskServiceConfig]="taskServiceConfig"
-      [sortedBy]="sortedBy"
-      [pagination]="pagination"></exui-task-list>`
+  standalone: false,
+  template: ` <exui-task-list
+    [fields]="fields"
+    [tasks]="tasks"
+    [tasksTotal]="tasksTotal"
+    [taskServiceConfig]="taskServiceConfig"
+    [sortedBy]="sortedBy"
+    [pagination]="pagination"
+  ></exui-task-list>`,
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
@@ -38,6 +39,7 @@ class WrapperComponent {
 }
 
 // @Component({
+//   standalone: false,
 //   selector: 'exui-task-field',
 //   template: '<div class="xui-task-field">{{task.taskName}}</div>'
 // })
@@ -68,7 +70,7 @@ function getTaskService(): TaskServiceConfig {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: getFields()
+    fields: getFields(),
   };
 }
 
@@ -76,7 +78,7 @@ describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let routerSpy: jasmine.SpyObj<any>;
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
@@ -84,7 +86,7 @@ describe('TaskListComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem', 'getItem']);
 
-  beforeEach((() => {
+  beforeEach(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       imports: [
@@ -95,10 +97,10 @@ describe('TaskListComponent', () => {
           baseUrl: '',
           debounceTimeMs: 300,
           validity: {
-            days: 1
+            days: 1,
           },
-          testMode: true
-        })
+          testMode: true,
+        }),
       ],
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
@@ -106,8 +108,8 @@ describe('TaskListComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
-      ]
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -119,23 +121,25 @@ describe('TaskListComponent', () => {
     wrapper.tasksTotal = 2;
     wrapper.pagination = {
       page_number: 1,
-      page_size: 10
+      page_size: 10,
     };
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     mockFeatureToggleService.getValue.and.returnValue(of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] }));
 
     fixture.detectChanges();
-  }));
-
-  it('should return the fields as an array with a \'manage\' entry, so that we can ' +
-    'display the manage column in the table.', () => {
-    component = fixture.componentInstance.appComponentRef;
-    const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
-    const fieldsWithManage = [...fields, 'manage'];
-
-    expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
   });
+
+  it(
+    "should return the fields as an array with a 'manage' entry, so that we can " + 'display the manage column in the table.',
+    () => {
+      component = fixture.componentInstance.appComponentRef;
+      const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'task', 'dueDate'];
+      const fieldsWithManage = [...fields, 'manage'];
+
+      expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
+    }
+  );
 
   it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
     component = fixture.componentInstance.appComponentRef;

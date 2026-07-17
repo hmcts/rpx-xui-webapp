@@ -18,22 +18,31 @@ import { nocRouting } from './noc.routes';
 import { NocService } from './services';
 import { effects, reducers } from './store';
 
-@NgModule({ declarations: [...fromContainers.containers], imports: [CommonModule,
-  StoreModule.forFeature('noc', reducers),
-  EffectsModule.forFeature(effects),
-  nocRouting,
-  SharedModule,
-  FormsModule,
-  ReactiveFormsModule,
-  UtilsModule,
-  ExuiCommonLibModule], providers: [{
-  provide: AbstractAppConfig,
-  useExisting: AppConfig
-},
-NocService,
-PaletteService,
-FormValidatorsService,
-YesNoService, provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [...fromContainers.containers],
+  imports: [
+    CommonModule,
+    StoreModule.forFeature('noc', reducers),
+    EffectsModule.forFeature(effects),
+    nocRouting,
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UtilsModule,
+    ExuiCommonLibModule,
+  ],
+  providers: [
+    {
+      provide: AbstractAppConfig,
+      useExisting: AppConfig,
+    },
+    NocService,
+    PaletteService,
+    FormValidatorsService,
+    YesNoService,
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
 /**
  * Entry point for NOC Module that is also lazy loaded.
  */
@@ -46,8 +55,7 @@ export class NocModule {
   public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: NocModule,
-      providers: [
-      ]
+      providers: [],
     };
   }
 }

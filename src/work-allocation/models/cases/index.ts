@@ -4,10 +4,4 @@ import CaseServiceConfig from './case-service-config.model';
 import Case from './case.model';
 import InvokedCaseAction from './invoked-case-action.model';
 
-export {
-  Case,
-  CaseAction,
-  CaseFieldConfig,
-  CaseServiceConfig,
-  InvokedCaseAction
-};
+export { Case, CaseAction, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction };

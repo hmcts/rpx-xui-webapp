@@ -11,9 +11,7 @@ describe('LinkedHearingsAnswerConverter', () => {
   let converter: AnswerConverter;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-
-    });
+    TestBed.configureTestingModule({});
     converter = new LinkedHearingsAnswerConverter();
   });
 

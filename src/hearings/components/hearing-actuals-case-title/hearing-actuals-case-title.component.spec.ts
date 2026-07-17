@@ -9,9 +9,8 @@ describe('HearingActualsCaseTitleComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsCaseTitleComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsCaseTitleComponent);
     component = fixture.componentInstance;

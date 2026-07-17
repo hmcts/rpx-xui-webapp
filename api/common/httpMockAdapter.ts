@@ -5,7 +5,7 @@ import { HttpMock } from './httpMock';
 export class HttpMockAdapter {
   public static getInstance(): MockAdapter {
     if (!this.adapterInstance) {
-      this.adapterInstance = new MockAdapter(this.mockInstance);
+      this.adapterInstance = new MockAdapter(this.mockInstance as any);
     }
     return this.adapterInstance;
   }

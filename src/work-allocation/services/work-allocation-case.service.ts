@@ -11,7 +11,7 @@ export enum ACTION {
   CANCEL = 'cancel',
   CLAIM = 'claim',
   COMPLETE = 'complete',
-  UNCLAIM = 'unclaim'
+  UNCLAIM = 'unclaim',
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,19 +27,19 @@ export class WorkAllocationCaseService {
     return this.http.post<any>(`${BASE_URL}`, caseParams);
   }
 
-  public searchCase(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
+  public searchCase(body: { searchRequest: SearchCaseRequest; view: string }): Observable<Case[]> {
     return this.http.post<Case[]>(`${BASE_URL}`, body);
   }
 
-  public getMyCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
+  public getMyCases(body: { searchRequest: SearchCaseRequest; view: string }): Observable<Case[]> {
     return this.http.post<Case[]>('/workallocation/my-work/cases', body);
   }
 
-  public getMyAccess(body: { searchRequest: SearchCaseRequest, view: string }): Observable<any> {
+  public getMyAccess(body: { searchRequest: SearchCaseRequest; view: string }): Observable<any> {
     return this.http.post<any>('/workallocation/my-work/myaccess', body);
   }
 
-  public getCases(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
+  public getCases(body: { searchRequest: SearchCaseRequest; view: string }): Observable<Case[]> {
     return this.http.post<Case[]>('/workallocation/all-work/cases', body);
   }
 

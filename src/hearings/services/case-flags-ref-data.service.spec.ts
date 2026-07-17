@@ -8,11 +8,7 @@ describe('CaseFlagsRefDataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
-      providers: [
-        CaseFlagsRefDataService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+      providers: [CaseFlagsRefDataService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
   });
 
@@ -21,14 +17,17 @@ describe('CaseFlagsRefDataService', () => {
   }));
 
   describe('getCaseFlagsRefData', () => {
-    it('should get case flags ref data', inject([HttpTestingController, CaseFlagsRefDataService], (httpMock: HttpTestingController, service: CaseFlagsRefDataService) => {
-      service.getCaseFlagsRefData('BBA3').subscribe((response) => {
-        expect(response).toBeNull();
-      });
+    it('should get case flags ref data', inject(
+      [HttpTestingController, CaseFlagsRefDataService],
+      (httpMock: HttpTestingController, service: CaseFlagsRefDataService) => {
+        service.getCaseFlagsRefData('BBA3').subscribe((response) => {
+          expect(response).toBeNull();
+        });
 
-      const req = httpMock.expectOne('api/prd/caseFlag/getCaseFlagRefData?serviceId=BBA3');
-      expect(req.request.method).toEqual('GET');
-      req.flush(null);
-    }));
+        const req = httpMock.expectOne('api/prd/caseFlag/getCaseFlagRefData?serviceId=BBA3');
+        expect(req.request.method).toEqual('GET');
+        req.flush(null);
+      }
+    ));
   });
 });

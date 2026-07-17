@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
@@ -13,6 +14,7 @@ import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { HearingChangeReasonsComponent } from './hearing-change-reasons.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -23,6 +25,7 @@ describe('HearingChangeReasonsComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockRouter = jasmine.createSpyObj('router', ['navigateByUrl']);
+  const appConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
   const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
 
@@ -37,7 +40,7 @@ describe('HearingChangeReasonsComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: ''
+      active_flag: '',
     },
     {
       key: 'reasonTwo',
@@ -49,7 +52,7 @@ describe('HearingChangeReasonsComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: ''
+      active_flag: '',
     },
     {
       key: 'reasonThree',
@@ -61,8 +64,8 @@ describe('HearingChangeReasonsComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: ''
-    }
+      active_flag: '',
+    },
   ];
 
   beforeEach(waitForAsync(() => {
@@ -73,44 +76,48 @@ describe('HearingChangeReasonsComponent', () => {
       providers: [
         {
           provide: HearingsService,
-          useValue: hearingsService
+          useValue: hearingsService,
         },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingChangeReasons: reasons
-              }
-            }
-          }
+                hearingChangeReasons: reasons,
+              },
+            },
+          },
         },
         {
           provide: Router,
-          useValue: mockRouter
+          useValue: mockRouter,
+        },
+        {
+          provide: AbstractAppConfig,
+          useValue: appConfig,
         },
         {
           provide: FeatureToggleService,
-          useValue: mockFeatureToggleService
+          useValue: mockFeatureToggleService,
         },
         provideMockStore({ initialState }),
         {
           provide: HearingsService,
-          useValue: hearingsService
+          useValue: hearingsService,
         },
         {
           provide: HearingsFeatureService,
-          useValue: hearingsFeatureServiceMock
+          useValue: hearingsFeatureServiceMock,
         },
         FormBuilder,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
+    appConfig.logMessage.calls.reset();
     fixture = TestBed.createComponent(HearingChangeReasonsComponent);
     component = fixture.componentInstance;
     component.hearingChangeReasons = reasons;
@@ -136,15 +143,17 @@ describe('HearingChangeReasonsComponent', () => {
   });
 
   it('should be true when calling isFormValid reasons selected', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = true)
+    );
     const formValid = component.isFormValid(ACTION.CONTINUE);
     expect(formValid).toEqual(true);
   });
 
   it('should be false when calling isFormValid with no reasons selected', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = false);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = false)
+    );
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
@@ -161,8 +170,9 @@ describe('HearingChangeReasonsComponent', () => {
   });
 
   it('should prepareHearingRequestData', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = true)
+    );
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.amendReasonCodes).toEqual(['reasonOne', 'reasonTwo', 'reasonThree']);
   });
@@ -176,25 +186,44 @@ describe('HearingChangeReasonsComponent', () => {
   });
 
   it('should execute Action', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = true)
+    );
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.isFormValid).toHaveBeenCalled();
     expect(component.errors.length).toBe(0);
-    expect(hearingsService.hearingRequestForSubmitValid = true);
+    expect((hearingsService.hearingRequestForSubmitValid = true));
     component.executeAction(ACTION.BACK);
     expect(component.errors.length).toBe(0);
-    expect(hearingsService.hearingRequestForSubmitValid = false);
+    expect((hearingsService.hearingRequestForSubmitValid = false));
+  });
+
+  it('should log hearing consistency messages on submit when form is valid', () => {
+    spyOn(HearingsUtils, 'getHearingConsistencyLogMessages').and.returnValue([
+      'Hearing internal name mismatch detected. HRM: A SHV: B for caseId: 1234567890123456',
+    ]);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls[0].patchValue({ selected: true });
+    spyOn(component, 'prepareHearingRequestData');
+    spyOn(component, 'navigateAction').and.callThrough();
+
+    component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
+
+    expect(appConfig.logMessage).toHaveBeenCalledWith(
+      'Hearing internal name mismatch detected. HRM: A SHV: B for caseId: 1234567890123456'
+    );
+    expect(component.prepareHearingRequestData).toHaveBeenCalled();
+    expect(hearingsService.hearingRequestForSubmitValid).toBeTrue();
   });
 
   it('should execute Action and fail validation', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = false);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = false)
+    );
     hearingsService.hearingRequestForSubmitValid = false;
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.isFormValid).toHaveBeenCalled();
     expect(component.errors.length).toBe(1);
-    expect(hearingsService.hearingRequestForSubmitValid = false);
+    expect((hearingsService.hearingRequestForSubmitValid = false));
     component.executeAction(ACTION.BACK);
     expect(component.errors.length).toBe(1);
   });

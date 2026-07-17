@@ -23,24 +23,28 @@ export const caseMessagesMockData = [
               id: 'ccd-document-id-001',
               value: {
                 document_filename: 'Screenshot 2023-06-01 at 16.07.06.png',
-                document_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f',
-                document_binary_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary'
-              }
+                document_url:
+                  'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f',
+                document_binary_url:
+                  'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary',
+              },
             },
             {
               id: 'ccd-document-id-002',
               value: {
                 document_filename: 'dummy.pdf',
-                document_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506',
-                document_binary_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary'
-              }
-            }
+                document_url:
+                  'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506',
+                document_binary_url:
+                  'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary',
+              },
+            },
           ],
           isHearingRelated: 'Yes',
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 0, 3),
-          createdBy: '1111-1111-1111-1111'
-        }
+          createdBy: '1111-1111-1111-1111',
+        },
       },
       {
         id: 'ccd-message-id-001',
@@ -55,15 +59,15 @@ export const caseMessagesMockData = [
               value: {
                 document_filename: 'talking-document.pdf',
                 document_url: '/',
-                document_binary_url: '/'
-              }
-            }
+                document_binary_url: '/',
+              },
+            },
           ],
           isHearingRelated: 'Yes',
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 0, 3),
-          createdBy: '1111-1111-1111-1111'
-        }
+          createdBy: '1111-1111-1111-1111',
+        },
       },
       {
         id: 'ccd-message-id-003',
@@ -77,16 +81,16 @@ export const caseMessagesMockData = [
               value: {
                 document_filename: 'games-document.pdf',
                 document_url: '/',
-                document_binary_url: '/'
-              }
-            }
+                document_binary_url: '/',
+              },
+            },
           ],
           isHearingRelated: 'Yes',
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 2, 4),
           createdBy: '2222-2222-2222-2222',
-          parentId: 'case-message-002'
-        }
+          parentId: 'case-message-002',
+        },
       },
       {
         id: 'ccd-message-id-004',
@@ -99,8 +103,8 @@ export const caseMessagesMockData = [
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 3, 8),
           createdBy: '2222-2222-2222-2222',
-          parentId: 'case-message-003'
-        }
+          parentId: 'case-message-003',
+        },
       },
       {
         id: 'ccd-message-id-005',
@@ -113,10 +117,10 @@ export const caseMessagesMockData = [
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 4, 24),
           createdBy: '2222-2222-2222-2222',
-          parentId: 'case-message-004'
-        }
-      }
-    ]
+          parentId: 'case-message-004',
+        },
+      },
+    ],
   },
   {
     partyName: 'Kevin Peterson - Respondent',
@@ -132,8 +136,8 @@ export const caseMessagesMockData = [
           attachments: [],
           isHearingRelated: 'Yes',
           createdOn: new Date(2023, 1, 5),
-          createdBy: '1111-1111-1111-1111'
-        }
+          createdBy: '1111-1111-1111-1111',
+        },
       },
       {
         id: 'ccd-message-id-007',
@@ -145,8 +149,8 @@ export const caseMessagesMockData = [
           isHearingRelated: 'Yes',
           createdOn: new Date(2023, 1, 6),
           createdBy: '2222-2222-2222-2222',
-          parentId: 'case-message-006'
-        }
+          parentId: 'case-message-006',
+        },
       },
       {
         id: 'ccd-message-id-008',
@@ -159,8 +163,8 @@ export const caseMessagesMockData = [
           isHearingRelated: 'Yes',
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 0, 3),
-          createdBy: '1111-1111-1111-1111'
-        }
+          createdBy: '1111-1111-1111-1111',
+        },
       },
       {
         id: 'ccd-message-id-009',
@@ -173,8 +177,8 @@ export const caseMessagesMockData = [
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 0, 5),
           createdBy: '2222-2222-2222-2222',
-          parentId: 'case-message-008'
-        }
+          parentId: 'case-message-008',
+        },
       },
       {
         id: 'ccd-message-id-010',
@@ -187,8 +191,8 @@ export const caseMessagesMockData = [
           isHearingRelated: 'Yes',
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 0, 6),
-          createdBy: '1111-1111-1111-1111'
-        }
+          createdBy: '1111-1111-1111-1111',
+        },
       },
       {
         id: 'ccd-message-id-011',
@@ -201,9 +205,9 @@ export const caseMessagesMockData = [
           hearingDate: '2023-01-10',
           createdOn: new Date(2023, 0, 7),
           createdBy: '2222-2222-2222-2222',
-          parentId: 'case-message-010'
-        }
-      }
-    ]
-  }
+          parentId: 'case-message-010',
+        },
+      },
+    ],
+  },
 ];

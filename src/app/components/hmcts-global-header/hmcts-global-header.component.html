@@ -1,19 +1,16 @@
 <div class="hmcts-header">
   <div class="hmcts-header__container">
     <ng-container [ngSwitch]="logo">
-
       <!-- Logo for Judicial Users -->
       <ng-container *ngSwitchCase="'judicial'">
         <div class="judicial-header__logo" *ngIf="showItems">
           <a href="#">
-            <img class="img-responsive" alt="GOV.UK logo" src="/assets/images/govuk-crest-jcm.png" width="83px">
+            <img class="img-responsive" alt="GOV.UK logo" src="/assets/images/govuk-crest-jcm.png" width="83px" />
           </a>
         </div>
-        <div class="govuk-header__logo">
-        </div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url"
-           [attr.aria-label]="headerTitle?.name | rpxTranslate">
-          {{headerTitle?.name | rpxTranslate}}
+        <div class="govuk-header__logo"></div>
+        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name | rpxTranslate">
+          {{ headerTitle?.name | rpxTranslate }}
         </a>
       </ng-container>
 
@@ -22,15 +19,12 @@
         <div class="govuk-header__logo">
           <a href="#" class="govuk-header__link govuk-header__link--homepage">
             <span class="govuk-header__logotype">
-              <span class="govuk-header__logotype-text">
-                MyHMCTS
-              </span>
+              <span class="govuk-header__logotype-text"> MyHMCTS </span>
             </span>
           </a>
         </div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url"
-           [attr.aria-label]="headerTitle?.name | rpxTranslate">
-          {{headerTitle?.name | rpxTranslate}}
+        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name | rpxTranslate">
+          {{ headerTitle?.name | rpxTranslate }}
         </a>
       </ng-container>
       <!-- Logo for Users (Default) -->
@@ -38,30 +32,32 @@
         <div *ngIf="!headerTitle?.name" class="govuk-header__logo">
           <a href="#" class="govuk-header__link govuk-header__link--homepage">
             <span class="govuk-header__logotype">
-              <span class="govuk-header__logotype-text">
-                MyHMCTS
-              </span>
+              <span class="govuk-header__logotype-text"> MyHMCTS </span>
             </span>
           </a>
         </div>
         <div class="hmcts-header__logo">
-          <a class="hmcts-header__link" [routerLink]="'/'"
-             [attr.aria-label]="headerTitle?.name | rpxTranslate">
-            {{headerTitle?.name | rpxTranslate}}
+          <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name | rpxTranslate">
+            {{ headerTitle?.name | rpxTranslate }}
           </a>
         </div>
       </ng-container>
-
     </ng-container>
 
     <!-- HMCTS header navigation items displayed in top right-hand corner (currently, just one: "Sign out") -->
     <div class="hmcts-header__content">
-      <nav class="hmcts-header__navigation" attr.aria-label="{{navigation?.label | rpxTranslate}}">
+      <nav class="hmcts-header__navigation" attr.aria-label="{{ navigation?.label | rpxTranslate }}">
         <ul class="hmcts-header__navigation-list">
           <li *ngFor="let item of navigation?.items; let i = index" class="hmcts-header__navigation-item">
-            <a class="hmcts-header__navigation-link" tabindex="0" (click)="onEmitEvent(i)" (keyup.enter)="onEmitEvent(i)" *ngIf="userValue"
-               [routerLink]="">
-              {{item.text | rpxTranslate}}
+            <a
+              class="hmcts-header__navigation-link"
+              tabindex="0"
+              (click)="onEmitEvent(i)"
+              (keyup.enter)="onEmitEvent(i)"
+              *ngIf="userValue"
+              [routerLink]=""
+            >
+              {{ item.text | rpxTranslate }}
             </a>
           </li>
         </ul>
@@ -76,9 +72,14 @@
     <div class="hmcts-primary-navigation__nav">
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
-          <li class="hmcts-primary-navigation__item" *ngFor="let item of (leftItems | async)">
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item?.active ? true : null" [routerLink]="item?.href">
-              {{item.text | rpxTranslate}}
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of leftItems | async">
+            <a
+              class="hmcts-primary-navigation__link"
+              (click)="onEmitSubMenu(item)"
+              [attr.aria-current]="item?.active ? true : null"
+              [routerLink]="item?.href"
+            >
+              {{ item.text | rpxTranslate }}
             </a>
           </li>
         </ul>
@@ -87,20 +88,22 @@
     <div class="hmcts-primary-navigation__search">
       <div class="hmcts-primary-navigation__item">
         <ul class="hmcts-primary-navigation__list">
-          <li class="hmcts-primary-navigation__item" *ngFor="let item of (rightItems | async)">
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of rightItems | async">
             <a
               *ngIf="(isUserCaseManager$ | async) || !isGlobalSearchEnabled"
               class="hmcts-primary-navigation__link transparent-background"
               [ngClass]="item.ngClass"
               (click)="onEmitSubMenu(item)"
               [attr.aria-current]="item.active ? true : null"
-              [routerLink]="item.href">
-              {{item.text | rpxTranslate}}
+              [routerLink]="item.href"
+            >
+              {{ item.text | rpxTranslate }}
             </a>
             <exui-case-reference-search-box
               *ngIf="!(isUserCaseManager$ | async) && isGlobalSearchEnabled"
               [item]="item"
-              [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader">
+              [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader"
+            >
             </exui-case-reference-search-box>
           </li>
         </ul>

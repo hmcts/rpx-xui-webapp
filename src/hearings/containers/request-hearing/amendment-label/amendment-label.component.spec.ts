@@ -9,9 +9,8 @@ describe('AmendmentLabelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AmendmentLabelComponent]
-    })
-      .compileComponents();
+      declarations: [AmendmentLabelComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

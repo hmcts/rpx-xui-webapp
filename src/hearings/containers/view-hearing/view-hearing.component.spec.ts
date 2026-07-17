@@ -15,12 +15,11 @@ describe('ViewHearingComponent', () => {
       providers: [
         {
           provide: Location,
-          useValue: mockLocation
-        }
+          useValue: mockLocation,
+        },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

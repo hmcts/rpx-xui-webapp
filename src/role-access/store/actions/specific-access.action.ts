@@ -2,7 +2,13 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { Action } from '@ngrx/store';
 
-import { Period, SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
+import {
+  Period,
+  SpecificAccessFormData,
+  SpecificAccessMoreInformationForm,
+  SpecificAccessState,
+  SpecificAccessStateData,
+} from '../../models';
 import { AccessReason } from '../../models/enums';
 
 export enum SpecificAccessActionTypes {
@@ -23,25 +29,27 @@ export class ChangeSpecificAccessNavigation implements Action {
 
 export class SetSpecificAccessInitData implements Action {
   public readonly type = SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA;
-  constructor(public payload: {
-    state: SpecificAccessState,
-    caseId: string,
-    taskId: string,
-    requestId: string,
-    jurisdiction: string,
-    caseName: string,
-    requestCreated: string,
-    actorId: string,
-    accessReason: string,
-    specificAccessReason: string,
-    roleCategory: RoleCategory,
-    requestedRole: string
-  }) {}
+  constructor(
+    public payload: {
+      state: SpecificAccessState;
+      caseId: string;
+      taskId: string;
+      requestId: string;
+      jurisdiction: string;
+      caseName: string;
+      requestCreated: string;
+      actorId: string;
+      accessReason: string;
+      specificAccessReason: string;
+      roleCategory: RoleCategory;
+      requestedRole: string;
+    }
+  ) {}
 }
 
 export class DecideSpecificAccessAndGo implements Action {
   public readonly type = SpecificAccessActionTypes.DECIDE_SPECIFIC_ACCESS_AND_GO;
-  constructor(public payload: { accessReason: AccessReason, specificAccessState: SpecificAccessState }) {}
+  constructor(public payload: { accessReason: AccessReason; specificAccessState: SpecificAccessState }) {}
 }
 
 export class SetSpecificAccessFormData implements Action {
@@ -62,7 +70,7 @@ export class RequestMoreInfoSpecificAccessRequest implements Action {
 }
 export class ApproveSpecificAccessRequest implements Action {
   public readonly type = SpecificAccessActionTypes.APPROVE_SPECIFIC_ACCESS_REQUEST;
-  constructor(public payload: { specificAccessStateData: SpecificAccessStateData, period: Period }) {}
+  constructor(public payload: { specificAccessStateData: SpecificAccessStateData; period: Period }) {}
 }
 
 export type SpecificAccessAction =
@@ -73,4 +81,3 @@ export type SpecificAccessAction =
   | ChangeSpecificAccessNavigation
   | SetSpecificAccessInfoFormData
   | RequestMoreInfoSpecificAccessRequest;
-

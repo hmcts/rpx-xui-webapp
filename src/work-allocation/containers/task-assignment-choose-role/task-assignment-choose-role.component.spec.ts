@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,14 +17,19 @@ describe('TaskAssignmentChooseRoleComponent', () => {
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
 
   const router = {
-    navigate: jasmine.createSpy('navigate')
+    navigate: jasmine.createSpy('navigate'),
+  };
+  const mockLocation: any = {
+    getState: jasmine.createSpy('getState'),
   };
 
-  mockSessionStorageService.getItem.and.returnValue('' +
-    '{"id":"db17f6f7-1abf-4223-8b5e-1eece04ee5d8","forename":"Case","surname":"Officer","email":' +
-    '"CRD_func_test_demo_user@justice.gov.uk","active":true,"roles":["case-allocator","caseworker","caseworker-ia",' +
-    '"caseworker-ia-caseofficer","cwd-user","hmcts-legal-operations",' +
-    '"task-supervisor","tribunal-caseworker"],"roleCategory":"LEGAL_OPERATIONS"}');
+  mockSessionStorageService.getItem.and.returnValue(
+    '' +
+      '{"id":"db17f6f7-1abf-4223-8b5e-1eece04ee5d8","forename":"Case","surname":"Officer","email":' +
+      '"CRD_func_test_demo_user@justice.gov.uk","active":true,"roles":["case-allocator","caseworker","caseworker-ia",' +
+      '"caseworker-ia-caseofficer","cwd-user","hmcts-legal-operations",' +
+      '"task-supervisor","tribunal-caseworker"],"roleCategory":"LEGAL_OPERATIONS"}'
+  );
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -37,19 +43,19 @@ describe('TaskAssignmentChooseRoleComponent', () => {
             snapshot: {
               data: {
                 verb: 'Reassign',
-                roles: TASK_ROLES
+                roles: TASK_ROLES,
               },
               paramMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' }),
-              queryParamMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' })
-            }
-          }
+              queryParamMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' }),
+            },
+          },
         },
         { provide: Router, useValue: router },
+        { provide: Location, useValue: mockLocation },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -80,12 +86,12 @@ describe('TaskAssignmentChooseRoleComponent', () => {
   });
 
   it('should send user to find person', () => {
-    window.history.pushState({ returnUrl: '/case-details/123243430403904/IA/Appeal-864/tasks' }, 'state');
-    const state = window.history.state;
+    const expectedState = { returnUrl: '/case-details/123243430403904/IA/Appeal-864/tasks' };
+    mockLocation.getState.and.returnValue(expectedState);
     component.submit(component.form.value, component.form.valid);
-    expect(router.navigate).toHaveBeenCalledWith(
-      ['work', 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', 'reassign', 'person'],
-      { queryParams: { role: 'LEGAL_OPERATIONS', service: null }, state }
-    );
+    expect(router.navigate).toHaveBeenCalledWith(['work', 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', 'reassign', 'person'], {
+      queryParams: { role: 'LEGAL_OPERATIONS', service: null },
+      state: jasmine.objectContaining({ returnUrl: jasmine.any(String) }),
+    });
   });
 });

@@ -25,7 +25,7 @@ const REQUEST_BODY = {
   roleCategory: 'LEGAL_OPERATIONS',
   period: {
     startDate: new Date(),
-    endDate: new Date()
+    endDate: new Date(),
   },
   jurisdiction: 'IA',
   comment: null,
@@ -33,7 +33,7 @@ const REQUEST_BODY = {
   requestCreated: null,
   accessReason: null,
   originalRequestJustification: null,
-  specificReason: null
+  specificReason: null,
 };
 
 const DENY_SPECIFIC_ACCESS_ROLE_ASSIGNMENTS_BODY = {
@@ -41,7 +41,7 @@ const DENY_SPECIFIC_ACCESS_ROLE_ASSIGNMENTS_BODY = {
     assignerId: somethingLike('123'),
     replaceExisting: somethingLike(true),
     process: somethingLike('specific-access'),
-    reference: somethingLike('1594717367271987/specific-access-legal-ops/assignee-id-001')
+    reference: somethingLike('1594717367271987/specific-access-legal-ops/assignee-id-001'),
   }),
   requestedRoles: somethingLike([
     {
@@ -56,7 +56,7 @@ const DENY_SPECIFIC_ACCESS_ROLE_ASSIGNMENTS_BODY = {
         reviewer: somethingLike('123'),
         infoRequired: somethingLike(false),
         infoRequiredComment: null,
-        isNew: somethingLike(true)
+        isNew: somethingLike(true),
       },
       roleName: somethingLike('specific-access-denied'),
       roleCategory: somethingLike('LEGAL_OPERATIONS'),
@@ -67,11 +67,11 @@ const DENY_SPECIFIC_ACCESS_ROLE_ASSIGNMENTS_BODY = {
         {
           comment: null,
           time: somethingLike('2023-07-24T15:46:19.182Z'),
-          userId: somethingLike('123')
-        }
-      ]
-    }
-  ])
+          userId: somethingLike('123'),
+        },
+      ],
+    },
+  ]),
 };
 
 describe('access management service, create specific access deny role', () => {
@@ -83,7 +83,7 @@ describe('access management service, create specific access deny role', () => {
       next = sandbox.spy();
     });
 
-    before(async() => {
+    before(async () => {
       const roleAssignmentInteraction = {
         states: [{ description: 'Create specific access deny role for user' }],
         uponReceiving: 'create specific access deny role',
@@ -91,19 +91,20 @@ describe('access management service, create specific access deny role', () => {
           method: 'POST',
           path: '/am/role-assignments',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: DENY_SPECIFIC_ACCESS_ROLE_ASSIGNMENTS_BODY
+          body: DENY_SPECIFIC_ACCESS_ROLE_ASSIGNMENTS_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
           },
-          body: {}
-        }
+          body: {},
+        },
       };
 
       pactSetUp.provider.addInteraction(roleAssignmentInteraction);
@@ -124,12 +125,12 @@ describe('access management service, create specific access deny role', () => {
         const { createSpecificAccessDenyRole } = requireReloaded('../../../../roleAccess/index');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           session: { passport: { user: { userinfo: { id: '123' } } } },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         });
 
         const returnedResponse = await createSpecificAccessDenyRole(req, null, next);

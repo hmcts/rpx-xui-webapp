@@ -1,15 +1,16 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BookingCheckType, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { BookingNavigationEvent, BookingProcess } from '../../models';
 
 @Component({
+  standalone: false,
   selector: 'exui-booking-location',
   templateUrl: './booking-location.component.html',
-  styleUrls: ['./booking-location.component.scss']
+  styleUrls: ['./booking-location.component.scss'],
 })
 export class BookingLocationComponent implements AfterViewInit, OnInit {
   @Input() public bookingProcess: BookingProcess;
@@ -27,10 +28,10 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly store: Store<fromRoot.State>,
+    private readonly store: Store<fromRoot.State>
   ) {
     this.findLocationFormGroup = this.fb.group({
-      locationSelectedFormControl: [null, Validators.required]
+      locationSelectedFormControl: [null, Validators.required],
     });
   }
 
@@ -41,8 +42,6 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   public ngAfterViewInit(): void {
     this.getLocationSearchFocus();
-    // TODO: CAM_BOOKING - remomve these if no longer needed
-    // this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(this.bookingProcess.location);
   }
 
   public onLocationChanged(location: LocationByEpimmsModel): void {
@@ -54,16 +53,15 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   public onContinueClick(): void {
     this.formError = !this.bookingProcess.location;
-    if (!this.bookingProcess.location) {
-      // TODO: CAM_BOOKING - remove this?
-      this.getLocationSearchFocus();
-    } else {
+    if (this.bookingProcess.location) {
       this.eventTrigger.emit(BookingNavigationEvent.LOCATIONCONTINUE);
+    } else {
+      this.getLocationSearchFocus();
     }
   }
 
+  // EXUI-3967 - CAM Booking - may be needed in future?
   public getLocationSearchFocus(): void {
-    // TODO: CAM_BOOKING - resolve focus
     //   if (this.searchLocationComponent &&
     //     this.searchLocationComponent.autoCompleteInputBox &&
     //     this.searchLocationComponent.autoCompleteInputBox.nativeElement) {
@@ -74,7 +72,9 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   // get a comma separated list of unique jurisdictions from the user role assignment info
   private getJurisdictions(): void {
     this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
-      this.jurisdictions = Array.from(new Set(user.roleAssignmentInfo.filter((role) => role.bookable).map((a) => a.jurisdiction))).toString();
+      this.jurisdictions = Array.from(
+        new Set(user.roleAssignmentInfo.filter((role) => role.bookable).map((a) => a.jurisdiction))
+      ).toString();
     });
   }
 }

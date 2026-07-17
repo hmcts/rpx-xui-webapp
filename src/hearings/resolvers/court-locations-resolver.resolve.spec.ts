@@ -2,7 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LocationByEPIMMSModel as LocationByEpimmsModel, LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel, LocationModel } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
@@ -28,7 +28,7 @@ describe('CourtLocationsData Resolver', () => {
     cluster_name: 'West Midlands and Warwickshire',
     open_for_public: 'No',
     court_address: '54 HAGLEY ROAD, EDGBASTON ',
-    postcode: 'B16 8PE'
+    postcode: 'B16 8PE',
   };
 
   beforeEach(() => {
@@ -40,10 +40,9 @@ describe('CourtLocationsData Resolver', () => {
         LocationsDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }
-    );
+        provideHttpClientTesting(),
+      ],
+    });
     locationsDataService = TestBed.inject(LocationsDataService) as LocationsDataService;
   });
 

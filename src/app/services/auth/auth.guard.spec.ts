@@ -43,14 +43,8 @@ class SessionStorageMock implements SessionStorageService {
 describe('AuthGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({})
-      ],
-      providers: [
-        AuthService,
-        SessionStorageService,
-        { provide: HttpClient, useClass: HttpClientMock }
-      ]
+      imports: [StoreModule.forRoot({})],
+      providers: [AuthService, SessionStorageService, { provide: HttpClient, useClass: HttpClientMock }],
     });
   });
 

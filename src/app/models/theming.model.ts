@@ -18,5 +18,5 @@ export interface NavigationItem {
   notFlags?: FlagDefinition[];
   ngClass?: string;
   align?: 'right' | 'left';
-  isDecentralisedService?: false;
+  decentralisedServiceId?: string;
 }

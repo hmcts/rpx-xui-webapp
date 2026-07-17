@@ -74,7 +74,7 @@
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of leftItems | async">
             <a
-              *ngIf="item.isDecentralisedService"
+              *ngIf="item.decentralisedServiceId"
               class="hmcts-primary-navigation__link"
               (click)="onEmitSubMenu(item)"
               href="{{ item.href }}"
@@ -82,7 +82,7 @@
               {{ item.text | rpxTranslate }}
             </a>
             <a
-              *ngIf="!item.isDecentralisedService"
+              *ngIf="!item.decentralisedServiceId"
               class="hmcts-primary-navigation__link"
               (click)="onEmitSubMenu(item)"
               [attr.aria-current]="item?.active ? true : null"

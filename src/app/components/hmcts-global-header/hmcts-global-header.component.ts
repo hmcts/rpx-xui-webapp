@@ -121,8 +121,8 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   private augmentDecentralisedUrls(items: NavigationItem[]): NavigationItem[] {
     const userInfo = this.userService.getUserInfo();
     return items?.map((item) => {
-      if (item.isDecentralisedService) {
-        item.href = this.decentralisedRedirectService.addUserInfo(item.href, userInfo);
+      if (item.decentralisedServiceId) {
+        item.href = this.decentralisedRedirectService.getUrl(item.decentralisedServiceId, item.href, userInfo);
       }
       return item;
     });

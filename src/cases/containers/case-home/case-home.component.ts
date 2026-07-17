@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import {
   AlertService,
   ErrorNotifierService,
@@ -6,13 +7,14 @@ import {
   LoadingService as CCDLoadingService,
   NavigationNotifierService,
   NavigationOrigin,
+  FocusService,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { GoActionParams } from '../../../cases/models/go-action-params.model';
-
+import { HeaderComponent } from '../../../app/components';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
 
@@ -30,13 +32,17 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
 
   public showSpinner$: Observable<boolean>;
 
+  private routerEventSubscription: Subscription;
+
   constructor(
     private readonly alertService: AlertService,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly navigationNotifier: NavigationNotifierService,
     private readonly store: Store<fromFeature.State>,
     private readonly commonLibLoadingService: CommonLibLoadingService,
-    private readonly ccdLibLoadingService: CCDLoadingService
+    private readonly ccdLibLoadingService: CCDLoadingService,
+    private readonly focusService: FocusService,
+    private readonly router: Router
   ) {}
 
   /**
@@ -59,6 +65,13 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       delay(0),
       map((states) => states.reduce((c, s) => c || s, false))
     );
+
+    this.routerEventSubscription = this.router.events.subscribe((event) => {
+      // do not focus if coming from the header skip link, since that is where focus will go to
+      if (event instanceof NavigationEnd && !HeaderComponent.isSkipToMainContent(event.url)) {
+        this.focusService.focus();
+      }
+    });
   }
 
   public ngOnDestroy(): void {
@@ -67,6 +80,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       this.navigationNotifier.announceNavigation({});
       this.navigationSubscription.unsubscribe();
     }
+
+    this.routerEventSubscription?.unsubscribe();
   }
 
   // TODO: please revisit

@@ -32,7 +32,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.5")
+@Library("Infrastructure@2.4.4")
 
 def type      = "nodejs"
 def product   = "xui"
@@ -383,7 +383,7 @@ withNightlyPipeline(type, product, component) {
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableFortifyScan('rpx-aat')
-    
+
       afterSuccess('checkout') {
         startCiLoadProfile()
         env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"

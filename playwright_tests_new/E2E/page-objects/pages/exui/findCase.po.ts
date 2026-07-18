@@ -29,6 +29,16 @@ export class FindCasePage extends Base {
     .locator('.hmcts-primary-navigation__search .hmcts-primary-navigation__link[href*="case-search"]')
     .first();
 
+  readonly handOffReasonCollection = this.page.locator('ccd-write-collection-field #boHandoffReasonList');
+  readonly handOffReasonAddNewTop = this.handOffReasonCollection.locator('button.write-collection-add-item__top');
+
+  readonly handOffReasonAddNewButton = this.page.locator(
+    'ccd-write-collection-field #boHandoffReasonList button.write-collection-add-item__top'
+  );
+  readonly handOffReason = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_0_0').nth(0);
+  readonly handOffReason_1 = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_1_1').nth(0);
+  readonly handOffReason_2 = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_2_2').nth(0);
+
   /**
    * Opens the Find Case page from the main navigation menu.
    */
@@ -111,7 +121,22 @@ export class FindCasePage extends Base {
   public async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
     await this.navigateToFindCase();
     await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
+    await this.page.waitForTimeout(EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE);
     await this.submitSearch();
+  }
+
+  public async startProbateFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
+    await this.navigateToFindCase();
+    await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
+
+    for (let i = 1; i <= 3; i++) {
+      await this.handOffReasonAddNewButton.click();
+      await this.handOffReasonAddNewTop.scrollIntoViewIfNeeded();
+    }
+
+    await this.handOffReason.locator('select.ccd-dropdown').selectOption({ label: 'Double Probate' });
+    await this.handOffReason_1.locator('select.ccd-dropdown').selectOption({ label: 'Horizon Scheme' });
+    await this.handOffReason_2.locator('select.ccd-dropdown').selectOption({ label: 'Literary Estate' });
   }
 
   public async applyFilters(): Promise<void> {

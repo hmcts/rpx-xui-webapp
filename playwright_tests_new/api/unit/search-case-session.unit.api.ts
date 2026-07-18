@@ -13,11 +13,15 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
   test('supports env-driven pool overrides and explicit warmup users', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'SOLICITOR, STAFF_ADMIN',
-      PW_INTEGRATION_SESSION_WARMUP_USERS: 'STAFF_ADMIN, FPL_GLOBAL_SEARCH, STAFF_ADMIN',
+      PW_INTEGRATION_SESSION_WARMUP_USERS: 'STAFF_ADMIN, FPL_GLOBAL_SEARCH, STAFF_ADMIN,PROBATE_FIND_CASE_CW_USERNAME',
     } as NodeJS.ProcessEnv;
 
     expect(resolveSearchCaseSessionUsers(env)).toEqual(['SOLICITOR', 'STAFF_ADMIN']);
-    expect(resolveIntegrationSessionWarmupUsers(env)).toEqual(['STAFF_ADMIN', 'FPL_GLOBAL_SEARCH']);
+    expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([
+      'STAFF_ADMIN',
+      'FPL_GLOBAL_SEARCH',
+      'PROBATE_FIND_CASE_CW_USERNAME',
+    ]);
   });
 
   test('does not prewarm sessions by default', () => {

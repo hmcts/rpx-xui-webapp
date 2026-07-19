@@ -2,11 +2,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import {
   buildFindCaseCaseDetailsMock,
   buildFindCaseEmptySearchResultsMock,
-  buildFindCaseJurisdictionsMock,
   buildFindCaseSearchResultsMock,
-  buildFindCaseWorkBasketInputsMock,
-  FIND_CASE_CASE_TYPE_LABEL,
-  FIND_CASE_JURISDICTION_LABEL,
   getCaseReferenceFromFindCaseSearchPayload,
 } from '../../mocks/findCase.mock';
 import {
@@ -14,7 +10,7 @@ import {
   buildProbateFindCaseWorkBasketInputsMock,
   PROBATE_FIND_CASE_CASE_TYPE_LABEL,
   PROBATE_FIND_CASE_JURISDICTION_LABEL,
-} from '../../mocks/genericFindCase.mock.ts';
+} from '../../mocks/probateFindCase.mock.ts';
 import {
   applyProbateSearchCaseSessionCookies,
   applySearchCaseSessionCookies,
@@ -70,24 +66,29 @@ test.describe('Find Case with prewarmed search session', { tag: ['@integration',
 
       const params = new URL(request.url()).searchParams;
 
-      expect(params.get('case_reference')).toBe('1670165807353529');
-      //const reasons = params.get("case.boHandoffReasonList.value.caseHandoffReason").split(',');
+      const raw = params.get('case.boHandoffReasonList.value.caseHandoffReason');
+      expect(raw, 'handoff reason param missing from query string').not.toBeNull();
+      let reasons: string[] = [];
+      if (raw) {
+        reasons = raw.split(',');
+        console.log('.......reasons for the boHandOff ....', reasons);
+      }
+
       //expect(reasons.sort()).toEqual(['DoubleProbate', 'Horizon Scheme', 'Literary Estate'].sort());
 
       await page.waitForTimeout(100_000);
     });
 
-    await test.step('Verify that Search API call to downstream retains the Filter criteria as set on UI  ', async () => {
-      // await findCasePage.searchResultsDataTable.waitFor({ state: 'visible' });
-      // await expect(findCasePage.searchResultsSummary).toContainText('Showing 1 to 1 of 1 results');
-      // await expect(findCasePage.firstRowOfSearchResultsTable).toBeVisible();
-      // const firstResultText = (await findCasePage.firstRowOfSearchResultsTable.first().textContent()) ?? '';
-      // expect(firstResultText.replaceAll(/\D/g, '')).toContain(existingCaseReference);
-      //
+    await test.step('Verify result row contains the searched case reference', async () => {
+      await findCasePage.searchResultsDataTable.waitFor({ state: 'visible' });
+      await expect(findCasePage.searchResultsSummary).toContainText('Showing 1 to 1 of 1 results');
+      await expect(findCasePage.firstRowOfSearchResultsTable).toBeVisible();
+      const firstResultText = (await findCasePage.firstRowOfSearchResultsTable.first().textContent()) ?? '';
+      expect(firstResultText.replaceAll(/\D/g, '')).toContain(existingCaseReference);
     });
 
-    await test.step('Verify user remains on XXX page after Search by Filtering', async () => {
-      //await expect(page).toHaveURL(/\/cases\/case-search/);
+    await test.step('Verify results remain on Find case page after filtering', async () => {
+      await expect(page).toHaveURL(/\/cases\/case-search/);
     });
   });
 });

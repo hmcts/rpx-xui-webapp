@@ -1,7 +1,7 @@
 export const PROBATE_FIND_CASE_JURISDICTION_LABEL = 'Probate';
 export const PROBATE_FIND_CASE_CASE_TYPE_LABEL = 'Grant of Representation';
 
-// clean later .. retained to get code 2 compile.
+// TODO Clean this -Retained to get code 2 compile.
 export const FIND_CASE_JURISDICTION_LABEL = 'Public Law';
 export const FIND_CASE_CASE_TYPE_LABEL = 'Public Law Applications';
 
@@ -274,78 +274,6 @@ export function buildProbateFindCaseWorkBasketInputsMock() {
               live_from: null,
               live_until: null,
               show_condition: null,
-              // acls: [
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: false,
-              //     role: 'citizen',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: false,
-              //     role: 'caseworker-probate-solicitor',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: true,
-              //     role: 'caseworker-probate-issuer',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: false,
-              //     role: 'caseworker-probate-systemupdate',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: true,
-              //     role: 'caseworker-probate-superuser',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: true,
-              //     role: 'caseworker-probate-registrar',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: true,
-              //     role: 'caseworker-probate-caseofficer',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: true,
-              //     role: 'caseworker-probate-caseadmin',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: true,
-              //     role: 'caseworker-probate-scheduler',
-              //   },
-              //   {
-              //     create: true,
-              //     read: true,
-              //     update: true,
-              //     delete: true,
-              //     role: 'caseworker-probate-rparobot',
-              //   },
-              // ],
               complexACLs: [],
               display_context: null,
               display_context_parameter: null,
@@ -366,116 +294,5 @@ export function buildProbateFindCaseWorkBasketInputsMock() {
   return {
     workbasketInputs: [caseReferenceInput, applicantForenameInput, handOffReason],
     searchInputs: [caseReferenceInput, applicantForenameInput, handOffReason],
-  };
-}
-
-// others
-export function buildFindCaseSearchResultsMock(caseReference: string) {
-  const textFieldType = {
-    id: 'Text',
-    type: 'Text',
-    min: null,
-    max: null,
-    regular_expression: null,
-    fixed_list_items: [],
-    complex_fields: [],
-    collection_field_type: null,
-  };
-
-  return {
-    columns: [
-      {
-        label: 'Case reference',
-        order: 1,
-        metadata: true,
-        case_field_id: '[CASE_REFERENCE]',
-        case_field_type: textFieldType,
-        display_context_parameter: null,
-      },
-      {
-        label: 'Case name',
-        order: 2,
-        metadata: false,
-        case_field_id: 'caseNameHmctsInternal',
-        case_field_type: textFieldType,
-        display_context_parameter: null,
-      },
-      {
-        label: 'State',
-        order: 3,
-        metadata: true,
-        case_field_id: '[STATE]',
-        case_field_type: textFieldType,
-        display_context_parameter: null,
-      },
-    ],
-    results: [
-      {
-        case_id: caseReference,
-        supplementary_data: null,
-        case_fields: {
-          '[CASE_REFERENCE]': caseReference,
-          caseNameHmctsInternal: 'Integration test family case',
-          '[STATE]': 'CaseCreated',
-          '[JURISDICTION]': 'PUBLICLAW',
-          '[CASE_TYPE]': 'PRLAPPS',
-          '[LAST_MODIFIED_DATE]': '2025-01-15T10:30:00.000Z',
-        },
-        case_fields_formatted: {
-          '[CASE_REFERENCE]': caseReference,
-          caseNameHmctsInternal: 'Integration test family case',
-          '[STATE]': 'CaseCreated',
-          '[JURISDICTION]': 'PUBLICLAW',
-          '[CASE_TYPE]': 'PRLAPPS',
-          '[LAST_MODIFIED_DATE]': '2025-01-15T10:30:00.000Z',
-        },
-      },
-    ],
-    total: 1,
-  };
-}
-export function buildFindCaseEmptySearchResultsMock() {
-  return {
-    columns: [],
-    results: [],
-    total: 0,
-  };
-}
-export function buildFindCaseCaseDetailsMock(caseReference: string) {
-  return {
-    case_id: caseReference,
-    case_type: {
-      id: 'PRLAPPS',
-      name: FIND_CASE_CASE_TYPE_LABEL,
-      jurisdiction: {
-        id: 'PUBLICLAW',
-        name: FIND_CASE_JURISDICTION_LABEL,
-      },
-    },
-    state: {
-      id: 'CaseCreated',
-      name: 'Case created',
-    },
-    metadataFields: [
-      {
-        id: '[CASE_REFERENCE]',
-        value: Number(caseReference),
-      },
-      {
-        id: '[JURISDICTION]',
-        value: 'PUBLICLAW',
-      },
-      {
-        id: '[CASE_TYPE]',
-        value: 'PRLAPPS',
-      },
-    ],
-    tabs: [],
-    triggers: [
-      {
-        id: 'updateCase',
-        name: 'Update case',
-      },
-    ],
   };
 }

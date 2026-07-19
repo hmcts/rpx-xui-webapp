@@ -10,6 +10,7 @@ import { BOOKING_UI_LEGACY_USER_IDENTIFIER, getConfiguredBookingUiUserIdentifier
 import { resolveWelshLanguageSessionUsers } from './welshLanguageSession.helper';
 
 const defaultSearchCaseSessionUsers = ['FPL_GLOBAL_SEARCH'] as const;
+const defaultProbateFindCaseSessionUsers = ['PROBATE_FIND_CASE'] as const;
 const defaultIntegrationWarmupUsers = ['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN'] as const;
 const integrationSuiteTag = '@integration';
 const caseFileViewIntegrationTag = '@integration-case-file-view';
@@ -96,8 +97,8 @@ export function resolveSearchCaseSessionUsers(env: NodeJS.ProcessEnv = process.e
   return configured.length > 0 ? configured : [...defaultSearchCaseSessionUsers];
 }
 export function resolveProbateSearchCaseSessionUsers(env: NodeJS.ProcessEnv = process.env): string[] {
-  const configured = parseUserList(env.PW_SEARCH_CASE_SESSION_USERS);
-  return configured.length > 0 ? configured : [...defaultSearchCaseSessionUsers];
+  const configured = parseUserList(env.PROBATE_FIND_CASE);
+  return configured.length > 0 ? configured : [...defaultProbateFindCaseSessionUsers];
 }
 
 export function resolveIntegrationSessionWarmupUsers(
@@ -146,9 +147,7 @@ export function resolveProbateSearchCaseUserIdentifier(
   testInfo: Pick<TestInfo, 'workerIndex'>,
   env: NodeJS.ProcessEnv = process.env
 ): string {
-  //const users = resolveSearchCaseSessionUsers(env);
-  // hardcoding fornow.
-  const users = ['PROBATE_FIND_CASE'];
+  const users = resolveProbateSearchCaseSessionUsers(env);
   return users[testInfo.workerIndex % users.length];
 }
 

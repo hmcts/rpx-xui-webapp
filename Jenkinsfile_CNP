@@ -70,7 +70,7 @@ properties([
 
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
 // @Library("Infrastructure@2.4.4")
-@Library("Infrastructure@2.4.5")
+@Library("Infrastructure@2.4.4")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 
@@ -403,6 +403,8 @@ def secrets = [
     secret('e2e-hearing-manager-cr84-on-4-password', 'HEARING_MANAGER_CR84_ON_4_PASSWORD'),
     secret('e2e-fpl-global-search-username', 'FPL_GLOBAL_SEARCH_USERNAME'),
     secret('e2e-fpl-global-search-password', 'FPL_GLOBAL_SEARCH_PASSWORD'),
+    secret('e2e-probate-find-case-username', 'PROBATE_FIND_CASE_USERNAME'),
+    secret('e2e-probate-find-case-password', 'PROBATE_FIND_CASE_PASSWORD'),
     secret('e2e-user-with-flags-username', 'USER_WITH_FLAGS_USERNAME'),
     secret('e2e-user-with-flags-password', 'USER_WITH_FLAGS_PASSWORD'),
     secret('e2e-search-employment-case-username', 'SEARCH_EMPLOYMENT_CASE_USERNAME'),

@@ -129,11 +129,13 @@ export class FindCasePage extends Base {
     await this.navigateToFindCase();
     await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
 
+    // 'Add new' - Handoff reason.
     for (let i = 1; i <= 3; i++) {
       await this.handOffReasonAddNewButton.click();
       await this.handOffReasonAddNewTop.scrollIntoViewIfNeeded();
     }
 
+    // Choosing 'Handoff reason' option.
     await this.handOffReason.locator('select.ccd-dropdown').selectOption({ label: 'Double Probate' });
     await this.handOffReason_1.locator('select.ccd-dropdown').selectOption({ label: 'Horizon Scheme' });
     await this.handOffReason_2.locator('select.ccd-dropdown').selectOption({ label: 'Literary Estate' });

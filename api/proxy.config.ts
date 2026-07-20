@@ -31,7 +31,7 @@ export const initProxy = (app: Express) => {
     skipAuth: true, // socket.io transport auth is handled by the activity service
     source: '/socket.io',
     target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
-    ws: true
+    ws: true,
   });
 
   applyProxy(app, {

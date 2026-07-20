@@ -19374,7 +19374,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.8.0":
+"prettier@npm:^3.9.5":
   version: 3.9.5
   resolution: "prettier@npm:3.9.5"
   bin:
@@ -20604,7 +20604,7 @@ __metadata:
     pegjs: "npm:^0.10.0"
     playwright: "npm:1.61.1"
     playwright-core: "npm:1.61.1"
-    prettier: "npm:^3.8.0"
+    prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
     rpx-xui-translation: "npm:1.2.7"
     rx-polling-hmcts: "npm:1.1.1"

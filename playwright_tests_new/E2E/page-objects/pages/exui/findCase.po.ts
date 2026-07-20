@@ -1,6 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, MAX_NAVIGATION_RETRY_ATTEMPTS } from './exui-timeouts';
+import { expect } from '../../../fixtures.ts';
 
 export class FindCasePage extends Base {
   // Locators
@@ -144,6 +145,31 @@ export class FindCasePage extends Base {
   public async applyFilters(): Promise<void> {
     await this.exuiCaseListComponent.filters.applyFilterBtn.click();
     await this.exuiSpinnerComponent.wait();
+  }
+
+  private parseBracketedList(value: string): string[] {
+    return value
+      .replace(/^\[|\]$/g, '')
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean);
+  }
+
+  public async checkApiCallQueryParameters(page, findCasePage) {
+    const [request] = await Promise.all([
+      page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST'),
+      await findCasePage.applyFilters(),
+    ]);
+
+    const params = new URL(request.url()).searchParams;
+    const HANDOFF_REASON_PARAM = 'case.boHandoffReasonList.value.caseHandoffReason';
+    const EXPECTED_HANDOFF_REASONS = ['DoubleProbate', 'HorizonScheme', 'LiteraryEstate'];
+
+    const raw = params.get(HANDOFF_REASON_PARAM);
+    expect(raw, `${HANDOFF_REASON_PARAM} missing from query string`).not.toBeNull();
+
+    const reasons = this.parseBracketedList(raw!);
+    expect(reasons).toEqual(EXPECTED_HANDOFF_REASONS);
   }
 
   /**

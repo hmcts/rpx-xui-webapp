@@ -59,24 +59,9 @@ test.describe('Find Case with prewarmed search session', { tag: ['@integration',
         PROBATE_FIND_CASE_JURISDICTION_LABEL
       );
 
-      const [request] = await Promise.all([
-        page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST'),
-        await findCasePage.applyFilters(),
-      ]);
+      await findCasePage.checkApiCallQueryParameters(page, findCasePage);
 
-      const params = new URL(request.url()).searchParams;
-
-      const raw = params.get('case.boHandoffReasonList.value.caseHandoffReason');
-      expect(raw, 'handoff reason param missing from query string').not.toBeNull();
-      let reasons: string[] = [];
-      if (raw) {
-        reasons = raw.split(',');
-        console.log('.......reasons for the boHandOff ....', reasons);
-      }
-
-      //expect(reasons.sort()).toEqual(['DoubleProbate', 'Horizon Scheme', 'Literary Estate'].sort());
-
-      await page.waitForTimeout(100_000);
+      //await page.waitForTimeout(100_000);
     });
 
     await test.step('Verify result row contains the searched case reference', async () => {

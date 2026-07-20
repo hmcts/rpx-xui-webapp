@@ -10,6 +10,7 @@ import { BOOKING_UI_LEGACY_USER_IDENTIFIER, getConfiguredBookingUiUserIdentifier
 import { resolveWelshLanguageSessionUsers } from './welshLanguageSession.helper';
 
 const defaultSearchCaseSessionUsers = ['FPL_GLOBAL_SEARCH'] as const;
+const defaultProbateFindCaseSessionUsers = ['PROBATE_FIND_CASE'] as const;
 const defaultIntegrationWarmupUsers = ['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN'] as const;
 const integrationSuiteTag = '@integration';
 const caseFileViewIntegrationTag = '@integration-case-file-view';
@@ -95,6 +96,10 @@ export function resolveSearchCaseSessionUsers(env: NodeJS.ProcessEnv = process.e
   const configured = parseUserList(env.PW_SEARCH_CASE_SESSION_USERS);
   return configured.length > 0 ? configured : [...defaultSearchCaseSessionUsers];
 }
+export function resolveProbateSearchCaseSessionUsers(env: NodeJS.ProcessEnv = process.env): string[] {
+  const configured = parseUserList(env.PROBATE_FIND_CASE);
+  return configured.length > 0 ? configured : [...defaultProbateFindCaseSessionUsers];
+}
 
 export function resolveIntegrationSessionWarmupUsers(
   env: NodeJS.ProcessEnv = process.env,
@@ -138,6 +143,14 @@ export function resolveSearchCaseUserIdentifier(
   return users[testInfo.workerIndex % users.length];
 }
 
+export function resolveProbateSearchCaseUserIdentifier(
+  testInfo: Pick<TestInfo, 'workerIndex'>,
+  env: NodeJS.ProcessEnv = process.env
+): string {
+  const users = resolveProbateSearchCaseSessionUsers(env);
+  return users[testInfo.workerIndex % users.length];
+}
+
 export async function applySearchCaseSessionCookies(
   page: Page,
   testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,
@@ -155,5 +168,28 @@ export async function applySearchCaseSessionCookies(
   }
 
   testInfo.annotations.push({ type: 'session-user', description: userIdentifier });
+  console.log(`~~~~~~  the user Identifiter being used is ~~~~~~: ${userIdentifier}`);
+  return userIdentifier;
+}
+
+export async function applyProbateSearchCaseSessionCookies(
+  page: Page,
+  testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,
+  env: NodeJS.ProcessEnv = process.env
+): Promise<string> {
+  const userIdentifier = resolveProbateSearchCaseUserIdentifier(testInfo, env);
+
+  try {
+    const session = loadSessionCookies(userIdentifier);
+    if (session.cookies.length > 0) {
+      await page.context().addCookies(session.cookies);
+    }
+  } catch {
+    await applySessionCookies(page, userIdentifier);
+  }
+  testInfo.annotations.push({ type: 'session-user', description: userIdentifier });
+
+  console.log(`~~~~~~  the user Identifiter being used in the test is  ~~~~~~: ${userIdentifier}`);
+
   return userIdentifier;
 }

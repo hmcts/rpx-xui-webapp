@@ -20,7 +20,6 @@ import {
 import { TEST_CASE_REFERENCES } from '../../testData';
 
 const existingCaseReference = TEST_CASE_REFERENCES.FIND_CASE_EXISTING;
-const nonExistentCaseReference = TEST_CASE_REFERENCES.FIND_CASE_NON_EXISTENT;
 const probateJurisdictionMock = buildProbateFindCaseJurisdictionsMock('PROBATE');
 const probateWorkBasketInputsMock = buildProbateFindCaseWorkBasketInputsMock();
 
@@ -58,10 +57,7 @@ test.describe('Find Case with prewarmed search session', { tag: ['@integration',
         PROBATE_FIND_CASE_CASE_TYPE_LABEL,
         PROBATE_FIND_CASE_JURISDICTION_LABEL
       );
-
       await findCasePage.checkApiCallQueryParameters(page, findCasePage);
-
-      //await page.waitForTimeout(100_000);
     });
 
     await test.step('Verify result row contains the searched case reference', async () => {

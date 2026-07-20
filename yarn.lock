@@ -3157,9 +3157,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.75-update-all-error-message-1":
-  version: 7.2.75-update-all-error-message-1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.75-update-all-error-message-1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.76-update-all-error-message-1":
+  version: 7.2.76-update-all-error-message-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.76-update-all-error-message-1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3167,7 +3167,7 @@ __metadata:
     file-saver: "npm:^2.0.2"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
-    marked: "npm:^17.0.3"
+    marked: "npm:^18.0.5"
     pegjs: "npm:^0.10.0"
     tslib: "npm:^2.3.0"
     yargs: "npm:17.7.2"
@@ -3189,7 +3189,6 @@ __metadata:
     "@angular/upgrade": ^20.3.18
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
-    "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     govuk-elements-sass: ^3.1.2
     moment: ^2.30.1
     moment-timezone: ^0.5.31
@@ -3201,7 +3200,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/57e7018bc0a3f4c0c03392112cd3882615fa82ab9c9c7f65ae52b592fb2b9ba1adddeb2847e39e92bec45bebb83c3364643eb702c4ae7f03a6d420d5bdd3153b
+  checksum: 10/fc5d288559b5357e5db9239b5cc4a158ef214570951d6b21c924fae3d93dbeecdf08872a42d65e710359056c9e06f01e3e535d258824dc4fe7daa4b98dfa98a7
   languageName: node
   linkType: hard
 
@@ -16883,15 +16882,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^17.0.3":
-  version: 17.0.6
-  resolution: "marked@npm:17.0.6"
-  bin:
-    marked: bin/marked.js
-  checksum: 10/46dac9481c028b6ab36f093084842f5c020329eb5529fa96ed22112f1f3a79b51b2f2c169a8b104b28c3ed09842ef372260dee08946fb1f7b1c70a7fb6f5cdc0
-  languageName: node
-  linkType: hard
-
 "marked@npm:^18.0.5":
   version: 18.0.6
   resolution: "marked@npm:18.0.6"
@@ -20506,7 +20496,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.75-update-all-error-message-1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.76-update-all-error-message-1"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.25"

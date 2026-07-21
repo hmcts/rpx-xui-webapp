@@ -90,7 +90,7 @@ const getRouteParam = (param: RouteParam): string => (Array.isArray(param) ? par
  */
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   const traceProps = { functionCall: 'getTask' };
-  const taskId = getRouteParam(req.params.taskId);
+  const taskId = req.params.taskId as string;
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, taskId);
     // Adding log in app insights for task completion journey
@@ -300,8 +300,8 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
  */
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
   const traceProps = { functionCall: 'postTaskAction' };
-  const taskId = getRouteParam(req.params.taskId);
-  const action = getRouteParam(req.params.action);
+  const taskId = req.params.taskId as string;
+  const action = req.params.action as string;
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
     if (req.body.hasNoAssigneeOnComplete === true) {
@@ -374,8 +374,8 @@ export async function postTaskCompletionForAccess(
  * Get CaseWorkers for Location
  */
 export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const locationId = req.params.locationId as string;
   try {
-    const locationId = getRouteParam(req.params.locationId);
     const getCaseWorkerPath: string = prepareCaseWorkerForLocation(baseCaseWorkerRefUrl, locationId);
     const jsonResponse = await handleCaseWorkerForLocation(getCaseWorkerPath, req);
     res.status(200);
@@ -389,8 +389,8 @@ export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Re
  * Get CaseWorkers for Service
  */
 export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const serviceId = req.params.serviceId as string;
   try {
-    const serviceId = getRouteParam(req.params.serviceId);
     const getCaseWorkerPath: string = prepareCaseWorkerForService(baseCaseWorkerRefUrl, serviceId);
     const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
     res.status(200);
@@ -404,9 +404,9 @@ export async function getCaseWorkersForService(req: EnhancedRequest, res: Respon
  * Get CaseWorkers for Location and Service
  */
 export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const locationId = req.params.locationId as string;
+  const serviceId = req.params.serviceId as string;
   try {
-    const locationId = getRouteParam(req.params.locationId);
-    const serviceId = getRouteParam(req.params.serviceId);
     const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, locationId, serviceId);
     const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
     res.status(200);
@@ -462,8 +462,8 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response) {
 }
 
 export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const jurisdiction = getRouteParam(req.params.jurisdiction);
-  const caseLocationId = getRouteParam(req.params.caseLocationId);
+  const jurisdiction = req.params.jurisdiction as string;
+  const caseLocationId = req.params.caseLocationId as string;
   try {
     const result: boolean = checkIfCaseAllocator(jurisdiction, caseLocationId, req);
     return res.send(result).status(200);

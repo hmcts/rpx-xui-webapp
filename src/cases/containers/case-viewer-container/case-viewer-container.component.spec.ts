@@ -296,12 +296,10 @@ describe('CaseViewerContainerComponent', () => {
   });
 
   it('should render two tabs', () => {
-    const matTabLabels: DebugElement = debug.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    const roleAndAccessTab: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
-    expect((roleAndAccessTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
+    const tabLabels = debug.queryAll(By.css('[role="tab"]'));
+    expect(tabLabels.length).toBe(2);
+    expect((tabLabels[0].nativeElement as HTMLElement).innerText).toBe('Tasks');
+    expect((tabLabels[1].nativeElement as HTMLElement).innerText).toBe('Roles and access');
   });
 });
 

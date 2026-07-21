@@ -611,16 +611,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material-moment-adapter@npm:22.0.5":
-  version: 22.0.5
-  resolution: "@angular/material-moment-adapter@npm:22.0.5"
+"@angular/material-moment-adapter@npm:^20.0.0":
+  version: 20.2.14
+  resolution: "@angular/material-moment-adapter@npm:20.2.14"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/core": ^22.0.0 || ^23.0.0
-    "@angular/material": 22.0.5
+    "@angular/core": ^20.0.0 || ^21.0.0
+    "@angular/material": 20.2.14
     moment: ^2.18.1
-  checksum: 10/cf18bae060ac625bb97e020e5e7b87bf968eb920637299d36e9e9c61905b6b00d15d18e0043692db120ae608ec5f8cbf466e47535c72948d809ef3c2de552db1
+  checksum: 10/2211f4ea51ceb8fd1f1028334aac78e7b92f066b04cb8d6fc9c0fcd2068b69fe611d99bd3d57333ea62ea22cd40720809b1a12b491d9f76d33c08619341cdf60
   languageName: node
   linkType: hard
 
@@ -3045,9 +3045,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.75":
-  version: 7.3.75
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.75"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.75-CME-1106-material-datetime":
+  version: 7.3.75-CME-1106-material-datetime
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.75-CME-1106-material-datetime"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3061,8 +3061,6 @@ __metadata:
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
   peerDependencies:
-    "@angular-material-components/datetime-picker": 16.0.1
-    "@angular-material-components/moment-adapter": 16.0.1
     "@angular/animations": ^20.3.18
     "@angular/cdk": 17.3.5
     "@angular/common": ^20.3.18
@@ -3071,12 +3069,14 @@ __metadata:
     "@angular/forms": ^20.3.18
     "@angular/localize": ^20.3.18
     "@angular/material": ^16.2.0
+    "@angular/material-moment-adapter": ^20.0.0
     "@angular/platform-browser": ^20.3.18
     "@angular/platform-browser-dynamic": ^20.3.18
     "@angular/router": ^20.3.18
     "@angular/upgrade": ^20.3.18
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
+    "@ngxmc/datetime-picker": 20.1.0
     govuk-elements-sass: ^3.1.2
     moment: ^2.30.1
     moment-timezone: ^0.5.31
@@ -3088,7 +3088,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/8d86fb1963b8188d09e4eb3a53810ec526965173b63cf0aac65118ea486fedf01ded35e7b383bdba337c89a609fea61a3b32911123b572e1627cc921bb236574
+  checksum: 10/89d040a8f995ac1f29940895abc4ea0f5f4f3dd1997c2ed3260ba1144152f1fb6d9d47443737b7610c5eb6658a5d2a05806d8b9a217426a7825bbd94dd1498e0
   languageName: node
   linkType: hard
 
@@ -5716,6 +5716,22 @@ __metadata:
     "@angular/material": ^22
     "@angular/platform-browser": ^22
   checksum: 10/d265291df664c11ac6b74c1ee23697139d84bf46c321bdaa6eaebc51b59e1a275851eb11410dc2bb942025fe1c468ba361a85448c018616e89dde195b38e3b5e
+  languageName: node
+  linkType: hard
+
+"@ngxmc/datetime-picker@npm:20.1.0":
+  version: 20.1.0
+  resolution: "@ngxmc/datetime-picker@npm:20.1.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/cdk": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/material": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+  checksum: 10/2a8b28f77f4e36748bf7f7cedd65b1087b674ed6e8622d87047261a5d6faa3b2246de469c7405d7f083807641cb22e793d861a7f9d0c0d6cb4619d9a2c7c9072
   languageName: node
   linkType: hard
 
@@ -19929,7 +19945,7 @@ __metadata:
     "@angular/elements": "npm:^20.3.18"
     "@angular/forms": "npm:^20.3.18"
     "@angular/material": "npm:^16.2.12"
-    "@angular/material-moment-adapter": "npm:22.0.5"
+    "@angular/material-moment-adapter": "npm:^20.0.0"
     "@angular/platform-browser": "npm:^20.3.18"
     "@angular/platform-browser-dynamic": "npm:^20.3.18"
     "@angular/router": "npm:^20.3.18"
@@ -19939,7 +19955,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.75"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.75-CME-1106-material-datetime"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.25"
@@ -19956,6 +19972,7 @@ __metadata:
     "@ngrx/store": "npm:^20"
     "@ngrx/store-devtools": "npm:^20"
     "@ngx-mce/datetime-picker": "npm:22.1.2"
+    "@ngxmc/datetime-picker": "npm:20.1.0"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
     "@playwright/test": "npm:1.61.1"

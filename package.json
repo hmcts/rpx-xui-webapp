@@ -101,7 +101,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-material-components/datetime-picker": "16.0.1",
     "@angular/animations": "^20.3.18",
     "@angular/cdk": "17.3.5",
     "@angular/common": "^20.3.18",
@@ -115,7 +114,7 @@
     "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.75",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.75-CME-1106-material-datetime",
     "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.25",
@@ -130,6 +129,8 @@
     "@ngrx/router-store": "^20",
     "@ngrx/store": "^20",
     "@ngrx/store-devtools": "^20",
+    "@ngx-mce/datetime-picker": "22.1.2",
+    "@ngxmc/datetime-picker": "20.1.0",
     "applicationinsights": "1.8.10",
     "axios": "^1.18.1",
     "axios-mock-adapter": "^1.22.0",
@@ -179,10 +180,10 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.3.18",
     "@angular-eslint/builder": "20.4.0",
-    "@angular-material-components/moment-adapter": "^16.0.1",
     "@angular/cli": "^20.3.18",
     "@angular/compiler": "^20.3.18",
     "@angular/compiler-cli": "^20.3.18",
+    "@angular/material-moment-adapter": "^20.0.0",
     "@axe-core/playwright": "^4.9.1",
     "@eslint/js": "^9.39.2",
     "@faker-js/faker": "^9.2.0",
@@ -294,5 +295,5 @@
     "lodash": "^4.17.22",
     "lodash-es": "^4.17.22"
   },
-  "packageManager": "yarn@4.7.0"
+  "packageManager": "yarn@4.17.1"
 }

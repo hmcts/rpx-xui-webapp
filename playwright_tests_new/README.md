@@ -1020,9 +1020,7 @@ try {
 ```typescript
 // Same approach: filesystem lock + freshness check
 const lockFilePath = path.join(storageRoot, `api-${cacheKey}.lock`);
-const release = await lockfile.lock(lockFilePath, {
-  /* same config */
-});
+const release = await lockfile.lock(lockFilePath, {/* same config */});
 
 try {
   // Double-check freshness (E2E may have logged in this user)

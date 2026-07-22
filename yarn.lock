@@ -3076,13 +3076,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.76":
-  version: 7.3.76
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.76"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.76-mv-tar-upgrade":
+  version: 7.3.76-mv-tar-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.76-mv-tar-upgrade"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.25"
+    "@hmcts/media-viewer": "npm:4.2.25-tar-upgrade"
     file-saver: "npm:^2.0.2"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
@@ -3119,7 +3119,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/b076fd075b184d3aa3757afc19efa1b979b8ba65ddc4da1e3893df9ed3354deba7d6301720725699e150f7face63e6f5f47df2f59f5d93871926fe48c54e7871
+  checksum: 10/9d3198738f0ea1eb91410012ffef03e2f2d4a66de783e85878c3ae1008b6e0b90fb5841268402e21320de7dc659f00729a2d8c1e8ab2179c6d8730fbe9819b83
   languageName: node
   linkType: hard
 
@@ -3144,9 +3144,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.25":
-  version: 4.2.25
-  resolution: "@hmcts/media-viewer@npm:4.2.25"
+"@hmcts/media-viewer@npm:4.2.25-tar-upgrade":
+  version: 4.2.25-tar-upgrade
+  resolution: "@hmcts/media-viewer@npm:4.2.25-tar-upgrade"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3169,7 +3169,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.7
     rxjs: ^7.8.2
-  checksum: 10/e3dc052c066d08dd76d155ca7da41f3ce5e8253b60349d25bb155cfe9a930104b36f31d7f16bbcdaabbf8cf5dc7af04ae5c1d66b9b3f24d99fcf19181ac51377
+  checksum: 10/0e2a55db7a14596e66a3156b0564b095ed837e5227102116a31f4201567806159ce3b17297b990c3717a93938be028202093eb9426329677500fe2d56a2a8cc6
   languageName: node
   linkType: hard
 
@@ -19982,10 +19982,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.76"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.76-mv-tar-upgrade"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.25"
+    "@hmcts/media-viewer": "npm:4.2.25-tar-upgrade"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"

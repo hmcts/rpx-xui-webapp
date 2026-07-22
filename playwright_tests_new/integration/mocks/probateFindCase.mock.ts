@@ -15,7 +15,7 @@ const FIND_CASE_TYPE_MOCKS: Record<string, FindCaseTypeMock> = {
   PROBATE: {
     jurisdictionId: 'PROBATE',
     jurisdictionName: PROBATE_FIND_CASE_JURISDICTION_LABEL,
-    caseTypeId: 'Grant of Representation',
+    caseTypeId: 'GrantOfRepresentation',
     caseTypeName: PROBATE_FIND_CASE_CASE_TYPE_LABEL,
     states: [
       { id: 'Draft', name: 'Draft' },
@@ -35,7 +35,7 @@ const FIND_CASE_TYPE_MOCKS: Record<string, FindCaseTypeMock> = {
 };
 
 // Probate Jurisdiction
-export function buildProbateFindCaseJurisdictionsMock(caseType: string = PROBATE_FIND_CASE_JURISDICTION_LABEL) {
+export function buildProbateFindCaseJurisdictionsMock(caseType: string = 'PROBATE') {
   const config = FIND_CASE_TYPE_MOCKS[caseType];
 
   if (!config) {

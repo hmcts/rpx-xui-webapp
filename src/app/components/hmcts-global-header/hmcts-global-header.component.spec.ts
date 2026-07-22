@@ -3,7 +3,6 @@ import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule, combineReducers } from '@ngrx/store';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -12,6 +11,7 @@ import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { DecentralisedRedirectService } from '../../../cases/services/decentralised-redirect.service';
 
 @Pipe({
   standalone: false,
@@ -62,6 +62,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
 
   const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 
+  const getUserInfoMock = jasmine.createSpy('getUserInfo').and.returnValue({ id: 'USER_INFO_ID' });
+  const decentralisedRedirectService = jasmine.createSpyObj('decentralisedRedirectService', {
+    addUserInfo: jasmine.createSpy('addUserInfo').and.returnValue('AUGMENTED_URL'),
+  });
+
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
@@ -88,13 +93,12 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
                   roles: ['roleA', 'roleB'],
                 },
               }),
+            getUserInfo: getUserInfoMock,
           },
         },
         {
-          provide: FeatureToggleService,
-          useValue: {
-            isEnabled: (flag) => of(flags[flag]),
-          },
+          provide: DecentralisedRedirectService,
+          useValue: decentralisedRedirectService,
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -517,6 +521,10 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
 
   const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 
+  const decentralisedRedirectService = jasmine.createSpyObj('decentralisedRedirectService', {
+    addUserInfo: jasmine.createSpy('addUserInfo').and.returnValue('AUGMENTED_URL'),
+  });
+
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
@@ -541,10 +549,8 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
           },
         },
         {
-          provide: FeatureToggleService,
-          useValue: {
-            isEnabled: (flag) => of(flags[flag]),
-          },
+          provide: DecentralisedRedirectService,
+          useValue: decentralisedRedirectService,
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

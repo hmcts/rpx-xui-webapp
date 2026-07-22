@@ -22,19 +22,8 @@ const FIND_CASE_TYPE_MOCKS: Record<string, FindCaseTypeMock> = {
       { id: 'Submitted', name: 'Submitted' },
     ],
   },
-  C100: {
-    jurisdictionId: 'PRIVATELAW',
-    jurisdictionName: 'Private Law',
-    caseTypeId: 'C100',
-    caseTypeName: 'C100 Application',
-    states: [
-      { id: 'Draft', name: 'Draft' },
-      { id: 'Submitted', name: 'Submitted' },
-    ],
-  },
 };
 
-// Probate Jurisdiction
 export function buildProbateFindCaseJurisdictionsMock(caseType: string = PROBATE_FIND_CASE_JURISDICTION_LABEL) {
   const config = FIND_CASE_TYPE_MOCKS[caseType];
 
@@ -58,7 +47,6 @@ export function buildProbateFindCaseJurisdictionsMock(caseType: string = PROBATE
   ];
 }
 
-// PROBATE  WorkBasket Items
 export function buildProbateFindCaseWorkBasketInputsMock() {
   const caseReferenceInput = {
     label: 'Case Reference',

@@ -294,5 +294,5 @@
     "lodash": "^4.17.22",
     "lodash-es": "^4.17.22"
   },
-  "packageManager": "yarn@4.7.0"
+  "packageManager": "yarn@4.17.1"
 }

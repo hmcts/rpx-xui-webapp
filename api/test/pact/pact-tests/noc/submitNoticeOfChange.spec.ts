@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import { NextFunction } from 'express';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
@@ -41,7 +41,7 @@ describe('submitNoCEvents API', () => {
 
   function setUpMockConfigForFunction(url) {
     const configValues = getNocAPIOverrides(url);
-    sandbox.stub(config, 'get').callsFake((prop) => {
+    sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
       return configValues[prop];
     });
     const { submitNoCEvents } = requireReloaded('../../../../noc/index');
@@ -58,7 +58,7 @@ describe('submitNoCEvents API', () => {
     before(async () => {
       return pactSetUp.provider.addInteraction({
         states: [{ description: 'A valid submit NoC event is requested' }],
-        uponReceiving: 'a request to submit NoC',
+        uponReceiving: 'a valid request to submit NoC',
         withRequest: {
           method: 'POST',
           path: '/noc/noc-requests',

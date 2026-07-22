@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import { NextFunction } from 'express';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
@@ -21,7 +21,7 @@ describe('getNoCQuestions API', () => {
 
   function setUpMockConfigForFunction(url) {
     const configValues = getNocAPIOverrides(url);
-    sandbox.stub(config, 'get').callsFake((prop) => {
+    sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
       return configValues[prop];
     });
     const { getNoCQuestions } = requireReloaded('../../../../noc/index');
@@ -61,7 +61,7 @@ describe('getNoCQuestions API', () => {
       next = sandbox.spy();
       pactSetUp.provider.addInteraction({
         states: [{ description: 'NoC questions exist for case with given id', parameters: { caseId } }],
-        uponReceiving: 'a request to retrieve NoC questions',
+        uponReceiving: 'a valid request to retrieve NoC questions',
         withRequest: {
           method: 'GET',
           path: '/noc/noc-questions',

@@ -22,7 +22,7 @@ describe('Post Cases from CaseAssignment Api', () => {
     before(async () => {
       const interaction = {
         states: [{ description: 'Assign a user to a case' }],
-        uponReceiving: 'A request for that case to be assigned',
+        uponReceiving: 'a valid request for that case to be assigned',
         withRequest: {
           method: 'POST',
           path: '/case-assignments',

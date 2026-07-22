@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { NocAnswer } from '../../../../../src/noc/models';
@@ -40,7 +40,7 @@ describe('verifyAnswers API', () => {
 
   function setUpMockConfigForFunction(url) {
     const configValues = getNocAPIOverrides(url);
-    sandbox.stub(config, 'get').callsFake((prop) => {
+    sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
       return configValues[prop];
     });
     const { validateNoCQuestions } = requireReloaded('../../../../noc/index');
@@ -51,7 +51,7 @@ describe('verifyAnswers API', () => {
     before(async () => {
       pactSetUp.provider.addInteraction({
         states: [{ description: 'An invalid NoC answer request' }],
-        uponReceiving: 'a request to verify NoC answers',
+        uponReceiving: 'an invalid request to verify NoC answers',
         withRequest: {
           method: 'POST',
           path: '/noc/verify-noc-answers',

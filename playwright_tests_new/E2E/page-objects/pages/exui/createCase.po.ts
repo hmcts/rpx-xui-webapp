@@ -7,7 +7,6 @@ import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
-import { extractCaseNumberFromUrl } from './caseDetails.po';
 import { clickSubmitAndWaitFlow, findCreateCaseBootstrapFailure, startCreateCaseFlow } from './createCase.flow.js';
 import { buildCreateCaseLocators } from './createCase.locators.js';
 
@@ -51,6 +50,7 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/cases\/\d+\/event-triggers\//,
   /\/cases\/\d+\/events/,
   /\/event-triggers\/[^/]+\/validate/,
+  /\/data\/case-types\/[^/]+\/validate/,
 ];
 
 export class CreateCasePage extends Base {
@@ -303,30 +303,7 @@ export class CreateCasePage extends Base {
 
   async waitForCaseDetails(context: string) {
     await this.assertNoEventCreationError(context);
-    try {
-      await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
-    } catch (error) {
-      const recovered = await this.recoverCaseDetailsFromCreatedBanner(context, error);
-      if (recovered) {
-        return;
-      }
-      throw error;
-    }
-  }
-
-  private async extractCreatedCaseNumberFromBanner(): Promise<string | null> {
-    const bannerVisible = await this.caseAlertSuccessMessage.isVisible().catch(() => false);
-    if (!bannerVisible) {
-      return null;
-    }
-
-    const bannerText = await this.caseAlertSuccessMessage.innerText().catch(() => '');
-    if (!/has been created/i.test(bannerText)) {
-      return null;
-    }
-
-    const numericMatch = /\d{16}/.exec(bannerText.replace(/\D/g, '')); // NOSONAR typescript:S5852 — replaceAll requires ES2021; tsconfig targets ES2020
-    return numericMatch?.[0] ?? null;
+    await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
   }
 
   private normalizeUnknownError(error: unknown): string {
@@ -341,42 +318,6 @@ export class CreateCasePage extends Base {
       return serialized ?? '[Unable to stringify error]';
     } catch {
       return '[Unstringifiable error object]';
-    }
-  }
-
-  private async recoverCaseDetailsFromCreatedBanner(context: string, initialError: unknown): Promise<boolean> {
-    if (this.page.isClosed()) {
-      return false;
-    }
-
-    const caseNumber = extractCaseNumberFromUrl(this.page.url()) ?? (await this.extractCreatedCaseNumberFromBanner());
-    if (!caseNumber) {
-      return false;
-    }
-
-    const caseDetailsUrl = `/cases/case-details/${caseNumber}`;
-    const initialErrorMessage = this.normalizeUnknownError(initialError);
-    this.logger.warn('Case details did not render after submit; trying direct case details URL', {
-      context,
-      caseNumber,
-      caseDetailsUrl,
-      initialError: initialErrorMessage.slice(0, 220),
-    });
-
-    try {
-      await this.page.goto(caseDetailsUrl);
-      await this.assertNoEventCreationError(`${context} (after direct case details navigation)`);
-      await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
-      return true;
-    } catch (recoveryError) {
-      const recoveryErrorMessage = this.normalizeUnknownError(recoveryError);
-      this.logger.warn('Direct case details recovery failed', {
-        context,
-        caseNumber,
-        caseDetailsUrl,
-        recoveryError: recoveryErrorMessage.slice(0, 220),
-      });
-      return false;
     }
   }
 
@@ -1157,8 +1098,17 @@ export class CreateCasePage extends Base {
 
     for (const reason of reasons) {
       const divorceReasonCheckbox = divorceReasonField.getByLabel(reason, { exact: true }).first();
-      await divorceReasonCheckbox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-      await divorceReasonCheckbox.check({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+      const divorceReasonLabel = divorceReasonField.locator('label').filter({ hasText: reason }).first();
+      if (!(await divorceReasonLabel.isVisible().catch(() => false))) {
+        if ((await divorceReasonField.locator('label:visible').count()) === 0) {
+          return;
+        }
+        throw new Error(`Divorce reason "${reason}" is not visible`);
+      }
+      await divorceReasonLabel.click({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+      if (!(await divorceReasonCheckbox.isChecked({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE }).catch(() => false))) {
+        throw new Error(`Divorce reason "${reason}" was not checked after clicking its label`);
+      }
     }
   }
 

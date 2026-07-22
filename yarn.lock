@@ -2401,6 +2401,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@edium/fsm@npm:^2.1.2":
+  version: 2.1.5
+  resolution: "@edium/fsm@npm:2.1.5"
+  dependencies:
+    global: "npm:^4.4.0"
+    lodash: "npm:^4.17.21"
+    tslib: "npm:^2.6.3"
+  checksum: 10/3d8d66228dc2c2fd7f37ea0be4cf489302a018a6ab70b3d645d7d00cf422f9fef69b5b4ce2dd42f4bd8eb33a01d974d7904fb451ccc18681291bc17625318ecd
+  languageName: node
+  linkType: hard
+
 "@edium/fsm@npm:^3.0.2":
   version: 3.0.2
   resolution: "@edium/fsm@npm:3.0.2"
@@ -3021,9 +3032,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.74":
-  version: 7.3.74
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.74"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.76":
+  version: 7.3.76
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.76"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3031,7 +3042,7 @@ __metadata:
     file-saver: "npm:^2.0.2"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
-    marked: "npm:^17.0.3"
+    marked: "npm:^18.0.5"
     pegjs: "npm:^0.10.0"
     tslib: "npm:^2.3.0"
     yargs: "npm:17.7.2"
@@ -3053,7 +3064,6 @@ __metadata:
     "@angular/upgrade": ^20.3.18
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
-    "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     govuk-elements-sass: ^3.1.2
     moment: ^2.30.1
     moment-timezone: ^0.5.31
@@ -3065,7 +3075,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/df9c8f621d1cb975d03cda059858c62e942f1c0ce16099dced3951a9e8cc9059de8b41e59ffd00bd15953a98237f07708553e3f137c96748bb82996c33663747
+  checksum: 10/b076fd075b184d3aa3757afc19efa1b979b8ba65ddc4da1e3893df9ed3354deba7d6301720725699e150f7face63e6f5f47df2f59f5d93871926fe48c54e7871
   languageName: node
   linkType: hard
 
@@ -5721,18 +5731,6 @@ __metadata:
     typescript: ">=5.8 <6.0"
     webpack: ^5.54.0
   checksum: 10/a1b00c6b300630502841730e84bf818778fadc8a830f555b9f231dc54f4ca5f51c85e248f80474042f714e90ebc11d4a80acd88f272c7eaca9c61c7472a55f6d
-  languageName: node
-  linkType: hard
-
-"@nicky-lenaers/ngx-scroll-to@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@nicky-lenaers/ngx-scroll-to@npm:14.0.0"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^14.0.0
-    "@angular/core": ^14.0.0
-  checksum: 10/f3aa11a64e2d0267dce1850af769de0f9caa133008e048975970afd9b0e37ba5d517fd09a6f4303e3a5f579b6460f6274d73a7406d2d988a8d3c352940912e1e
   languageName: node
   linkType: hard
 
@@ -10656,7 +10654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compression@npm:^1.7.4":
+"compression@npm:^1.7.4, compression@npm:^1.8.1":
   version: 1.8.1
   resolution: "compression@npm:1.8.1"
   dependencies:
@@ -11932,6 +11930,13 @@ __metadata:
     domhandler: "npm:^5.0.2"
     entities: "npm:^4.2.0"
   checksum: 10/e3bf9027a64450bca0a72297ecdc1e3abb7a2912268a9f3f5d33a2e29c1e2c3502c6e9f860fc6625940bfe0cfb57a44953262b9e94df76872fdfb8151097eeb3
+  languageName: node
+  linkType: hard
+
+"dom-walk@npm:^0.1.0":
+  version: 0.1.2
+  resolution: "dom-walk@npm:0.1.2"
+  checksum: 10/19eb0ce9c6de39d5e231530685248545d9cd2bd97b2cb3486e0bfc0f2a393a9addddfd5557463a932b52fdfcf68ad2a619020cd2c74a5fe46fbecaa8e80872f3
   languageName: node
   linkType: hard
 
@@ -13840,6 +13845,16 @@ __metadata:
     semver: "npm:^7.3.5"
     serialize-error: "npm:^8.1.0"
   checksum: 10/ab36715c87d1afa10d005d6670461be9571a343b0e59f141ba0e88787d6bb05f922cccb38fd7f2a7391d188f4a5e97b3669aeb941fd761b68b8c8b71551d767d
+  languageName: node
+  linkType: hard
+
+"global@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "global@npm:4.4.0"
+  dependencies:
+    min-document: "npm:^2.19.0"
+    process: "npm:^0.11.10"
+  checksum: 10/9c057557c8f5a5bcfbeb9378ba4fe2255d04679452be504608dd5f13b54edf79f7be1db1031ea06a4ec6edd3b9f5f17d2d172fb47e6c69dae57fd84b7e72b77f
   languageName: node
   linkType: hard
 
@@ -16415,21 +16430,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^17.0.3":
-  version: 17.0.3
-  resolution: "marked@npm:17.0.3"
+"marked@npm:^18.0.5":
+  version: 18.0.7
+  resolution: "marked@npm:18.0.7"
   bin:
     marked: bin/marked.js
-  checksum: 10/2e3bce6bb012b0d39fba75689b4dea672156d372ae8f089de99e73932bf71f0bb3a5bffa43e58474d6476950b462b7580cb181d68134df3d222b12d190bfa4b2
-  languageName: node
-  linkType: hard
-
-"marked@npm:^18.0.3":
-  version: 18.0.6
-  resolution: "marked@npm:18.0.6"
-  bin:
-    marked: bin/marked.js
-  checksum: 10/ab4747d071888726a91ccf381416366c17345c6cdf6bf8739d114482f633740bb9227aff03324d20b1e14c8052f4c6b523c5d5974f7346b240aef45c900c7d27
+  checksum: 10/7ea7b8556a9e8cab2881b194815a7550c61d77639c6b8f8d9022f96790fd2b289b2ea28969cea6e01c24c3b8ec822373288ee02b7c50f178bc3ec79aa42d05f1
   languageName: node
   linkType: hard
 
@@ -16675,6 +16681,15 @@ __metadata:
   version: 5.0.1
   resolution: "mimic-function@npm:5.0.1"
   checksum: 10/eb5893c99e902ccebbc267c6c6b83092966af84682957f79313311edb95e8bb5f39fb048d77132b700474d1c86d90ccc211e99bae0935447a4834eb4c882982c
+  languageName: node
+  linkType: hard
+
+"min-document@npm:^2.19.1":
+  version: 2.19.2
+  resolution: "min-document@npm:2.19.2"
+  dependencies:
+    dom-walk: "npm:^0.1.0"
+  checksum: 10/9c98ea950451ac3292762fdc7a076ef2d365d795280a2a9357a5d1a17d80c44ecab2354ad507432411c1605515731259b41ce97b87f0b7126e1dfe610b2674ae
   languageName: node
   linkType: hard
 
@@ -18733,12 +18748,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.8.0":
-  version: 3.8.4
-  resolution: "prettier@npm:3.8.4"
+"prettier@npm:^3.9.5":
+  version: 3.9.6
+  resolution: "prettier@npm:3.9.6"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/54684a3cc6689238692b29fab541c01934af7677be94c02293ba49981a1ac121c8bebe2a865f0c3b963e99d208f847c53aed354cc0ce8750e2d45791d64506c5
+  checksum: 10/1dd1a1e0e40ec3b91cda9d294c4a95022aef61880ca3f441aad99b1252279f58a766c4cece81132c01550dcff1fd445efbd8812ea4a2374313e7fc6c8136f11f
   languageName: node
   linkType: hard
 
@@ -19792,9 +19807,10 @@ __metadata:
     "@angular/ssr": "npm:^20.3.21"
     "@axe-core/playwright": "npm:^4.9.1"
     "@dr.pogodin/csurf": "npm:^1.16.5"
+    "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.74"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.76"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.26-nodejs-healthcheck-update-01"
@@ -19810,7 +19826,6 @@ __metadata:
     "@ngrx/router-store": "npm:^20"
     "@ngrx/store": "npm:^20"
     "@ngrx/store-devtools": "npm:^20"
-    "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
     "@playwright/test": "npm:1.61.1"
@@ -19847,7 +19862,7 @@ __metadata:
     chai: "npm:^4.3.10"
     chai-as-promised: "npm:7.1.2"
     class-transformer: "npm:^0.5.1"
-    compression: "npm:^1.7.4"
+    compression: "npm:^1.8.1"
     config: "npm:^4.4.1"
     cookie-parser: "npm:^1.4.4"
     core-js: "npm:^3.49.0"
@@ -19885,7 +19900,7 @@ __metadata:
     launchdarkly-js-client-sdk: "npm:3.8.1"
     lodash: "npm:^4.17.23"
     lz-string: "npm:^1.5.0"
-    marked: "npm:^18.0.3"
+    marked: "npm:^18.0.5"
     material-design-icons: "npm:^3.0.1"
     mocha: "npm:^10.0.0"
     mochawesome: "npm:^7.0.0"
@@ -19903,7 +19918,7 @@ __metadata:
     pegjs: "npm:^0.10.0"
     playwright: "npm:1.61.1"
     playwright-core: "npm:1.61.1"
-    prettier: "npm:^3.8.0"
+    prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
     rpx-xui-translation: "npm:1.2.7"
     rx-polling-hmcts: "npm:1.1.1"
@@ -21618,7 +21633,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.6.0, tslib@npm:^2.6.1, tslib@npm:^2.6.2, tslib@npm:^2.8.0, tslib@npm:^2.8.1, tslib@npm:~2.8.0":
+"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.6.0, tslib@npm:^2.6.1, tslib@npm:^2.6.2, tslib@npm:^2.6.3, tslib@npm:^2.8.0, tslib@npm:^2.8.1, tslib@npm:~2.8.0":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10/3e2e043d5c2316461cb54e5c7fe02c30ef6dccb3384717ca22ae5c6b5bc95232a6241df19c622d9c73b809bea33b187f6dbc73030963e29950c2141bc32a79f7

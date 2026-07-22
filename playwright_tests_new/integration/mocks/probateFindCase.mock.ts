@@ -1,10 +1,6 @@
 export const PROBATE_FIND_CASE_JURISDICTION_LABEL = 'Probate';
 export const PROBATE_FIND_CASE_CASE_TYPE_LABEL = 'Grant of Representation';
 
-// TODO Clean this -Retained to get code 2 compile.
-export const FIND_CASE_JURISDICTION_LABEL = 'Public Law';
-export const FIND_CASE_CASE_TYPE_LABEL = 'Public Law Applications';
-
 type FindCaseStateMock = { id: string; name: string };
 
 type FindCaseTypeMock = {
@@ -39,7 +35,7 @@ const FIND_CASE_TYPE_MOCKS: Record<string, FindCaseTypeMock> = {
 };
 
 // Probate Jurisdiction
-export function buildProbateFindCaseJurisdictionsMock(caseType: string = FIND_CASE_JURISDICTION_LABEL) {
+export function buildProbateFindCaseJurisdictionsMock(caseType: string = PROBATE_FIND_CASE_JURISDICTION_LABEL) {
   const config = FIND_CASE_TYPE_MOCKS[caseType];
 
   if (!config) {

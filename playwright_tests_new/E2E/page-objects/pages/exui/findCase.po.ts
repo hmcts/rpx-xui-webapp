@@ -156,12 +156,20 @@ export class FindCasePage extends Base {
   }
 
   public async checkApiCallQueryParameters(page, findCasePage) {
-    const [request] = await Promise.all([
-      page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST'),
-      await findCasePage.applyFilters(),
-    ]);
+    // const [request] = await Promise.all([
+    //   page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST'),
+    //   await findCasePage.applyFilters(),
+    // ]);
+    //
+    // const params = new URL(request.url()).searchParams;
+    // const requestPromise = page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST');
 
+    const requestPromise = page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST');
+    await findCasePage.applyFilters();
+
+    const request = await requestPromise;
     const params = new URL(request.url()).searchParams;
+
     const HANDOFF_REASON_PARAM = 'case.boHandoffReasonList.value.caseHandoffReason';
     const EXPECTED_HANDOFF_REASONS = ['DoubleProbate', 'HorizonScheme', 'LiteraryEstate'];
 

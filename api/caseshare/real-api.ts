@@ -2,7 +2,9 @@ import { NextFunction, Response } from 'express';
 import { handleGet, sendDelete, sendPost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
+import { trackTrace } from '../lib/appInsights';
+import * as log4jui from '../lib/log4jui';
+import { EnhancedRequest, JUILogger } from '../lib/models';
 import { ccdToUserDetails, prdToUserDetails } from './dtos/user-dto';
 import { CaseAssigneeMappingModel } from './models/case-assignee-mapping.model';
 import { SharedCase } from './models/case-share.model';
@@ -12,6 +14,7 @@ import { UserDetails } from './models/user-details.model';
 
 const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL);
 const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
+const logger: JUILogger = log4jui.getLogger('case-share-api');
 
 export async function getUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
@@ -48,6 +51,8 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
 export async function assignCases(req: EnhancedRequest, res: Response): Promise<Response> {
   const shareCases: SharedCase[] = req.body.sharedCases.slice();
 
+  trackCaseAssignmentRequest(shareCases);
+
   let allPromises;
 
   // call share case api(the n call)
@@ -73,6 +78,25 @@ export async function assignCases(req: EnhancedRequest, res: Response): Promise<
   }
 
   return res.status(201).send(finalSharedCases);
+}
+
+function trackCaseAssignmentRequest(shareCases: SharedCase[]): void {
+  const properties = {
+    assignedUsersCount: getAssignedUsersCount(shareCases),
+    removedUsersCount: getPendingUserCount(shareCases, 'pendingUnshares'),
+    selectedCasesCount: shareCases.length,
+  };
+
+  logger.info('CSA:: Case share assignments requested', properties);
+  trackTrace('CSA:: Case share assignments requested', properties);
+}
+
+function getAssignedUsersCount(shareCases: SharedCase[]): number {
+  return shareCases[0]?.pendingShares?.length || 0;
+}
+
+function getPendingUserCount(shareCases: SharedCase[], pendingKey: 'pendingShares' | 'pendingUnshares'): number {
+  return shareCases.reduce((count, sharedCase) => count + (sharedCase[pendingKey]?.length || 0), 0);
 }
 
 function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any[] {

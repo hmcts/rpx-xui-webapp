@@ -33,7 +33,6 @@ export class CaseTaskComponent implements OnInit {
   public isUserJudicial: boolean;
   public isTaskUrgent: boolean;
   private pTask: Task;
-  public userRoleCategory: string;
 
   constructor(
     private readonly alertService: AlertService,
@@ -100,9 +99,10 @@ export class CaseTaskComponent implements OnInit {
         return false;
       }
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
-      this.userRoleCategory = userInfo.roleCategory;
-      this.isUserJudicial = this.userRoleCategory === RoleCategory.JUDICIAL;
-      return task.assignee && task.assignee === userId;
+      if (userInfo.roleCategories && userInfo.roleCategories.length > 0) {
+        this.isUserJudicial = userInfo.roleCategories.includes(RoleCategory.JUDICIAL);
+      }
+      return !!(task.assignee && task.assignee === userId);
     }
     return false;
   }

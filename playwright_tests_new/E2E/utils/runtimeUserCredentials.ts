@@ -158,6 +158,10 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'FPL_GLOBAL_SEARCH_USERNAME',
     password: 'FPL_GLOBAL_SEARCH_PASSWORD',
   },
+  PROBATE_FIND_CASE: {
+    username: 'PROBATE_FIND_CASE_USERNAME',
+    password: 'PROBATE_FIND_CASE_PASSWORD',
+  },
   NOC_SOLICITOR: {
     username: 'NOC_SOLICITOR_USERNAME',
     password: 'NOC_SOLICITOR_PASSWORD',

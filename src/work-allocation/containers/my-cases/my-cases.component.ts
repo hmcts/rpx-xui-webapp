@@ -39,7 +39,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
         return;
       }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      const userRole: UserRole = userRoleNames[0] || undefined;
 
       // get 'locations' key from local storage
       const locationsFromLS = safeJsonParse<any>(localStorage.getItem('locations'), null);
@@ -66,6 +67,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
           { key: 'locations', operator: 'IN', values: locationFilters },
         ],
         sorting_parameters: [this.getSortParameter()],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole,
       };
     }

@@ -45,7 +45,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       if (!userInfo) {
         return;
       }
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      // EXUI-4758 - Get first user role category, otherwise default to LegalOps
+      const userRole: UserRole = userRoleNames[0] || UserRole.LegalOps;
       const searchParameters: SearchTaskParameter[] = [{ key: 'jurisdiction', operator: 'IN', values: this.selectedServices }];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
@@ -59,6 +61,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [...this.getSortParameter()],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter(),
       };

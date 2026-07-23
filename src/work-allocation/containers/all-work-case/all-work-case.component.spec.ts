@@ -150,7 +150,7 @@ describe('AllWorkCaseComponent', () => {
 
       const userInfo = { roles: [UserRole.Admin] };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
-      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Admin);
+      spyOn(AppUtils, 'getUserRoleNames').and.returnValue([UserRole.Admin]);
 
       const actual = component.getSearchCaseRequestPagination();
 

@@ -115,7 +115,7 @@
     "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.76",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.75-case-search-v2",
     "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.25",
@@ -293,5 +293,5 @@
     "lodash": "^4.17.22",
     "lodash-es": "^4.17.22"
   },
-  "packageManager": "yarn@4.7.0"
+  "packageManager": "yarn@4.17.1"
 }

@@ -141,7 +141,7 @@ describe('waRedisCache', () => {
 
       const result = await waRedisCache.getCachedUsersWithRoles();
 
-      expect(client.get).to.have.been.calledWith('wa:cachedUsersWithRoles');
+      expect(client.get).to.have.been.calledWith('wa:cachedUsersWithFullRoles');
       expect(result).to.deep.equal(cachedUsersWithRoles);
     });
 
@@ -152,12 +152,13 @@ describe('waRedisCache', () => {
 
       await waRedisCache.setCachedUsersWithRoles(cachedUsersWithRoles);
 
-      expect(client.set).to.have.been.calledWith('wa:cachedUsersWithRoles', JSON.stringify(cachedUsersWithRoles), {
-        expiration: {
-          type: 'EX',
-          value: 720,
-        },
-      });
+      expect(client.set).to.have.been.calledWith(
+        'wa:cachedUsersWithFullRoles',
+        JSON.stringify(cachedUsersWithRoles),
+        'EX',
+        720,
+        sinon.match.func
+      );
     });
   });
 
@@ -179,7 +180,7 @@ describe('waRedisCache', () => {
 
       await waRedisCache.clearCachedUsersWithRoles();
 
-      expect(client.del).to.have.been.calledWith('wa:cachedUsersWithRoles');
+      expect(client.del).to.have.been.calledWith('wa:cachedUsersWithFullRoles', sinon.match.func);
     });
   });
 
@@ -235,15 +236,16 @@ describe('waRedisCache', () => {
       expect(result.status).to.equal('acquired');
 
       if (result.status === 'acquired') {
-        expect(result.key).to.equal('wa:cachedUsersWithRoles:lock');
+        expect(result.key).to.equal('wa:cachedUsersWithFullRoles:lock');
 
-        expect(client.set).to.have.been.calledWith('wa:cachedUsersWithRoles:lock', result.value, {
-          expiration: {
-            type: 'EX',
-            value: 90,
-          },
-          condition: 'NX',
-        });
+        expect(client.set).to.have.been.calledWith(
+          'wa:cachedUsersWithFullRoles:lock',
+          result.value,
+          'EX',
+          90,
+          'NX',
+          sinon.match.func
+        );
       }
     });
 

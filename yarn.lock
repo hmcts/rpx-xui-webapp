@@ -2704,7 +2704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dr.pogodin/csurf@npm:^1.16.9":
+"@dr.pogodin/csurf@npm:^1.17.1":
   version: 1.17.1
   resolution: "@dr.pogodin/csurf@npm:1.17.1"
   dependencies:
@@ -3358,9 +3358,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.75":
-  version: 7.3.75
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.75"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.76":
+  version: 7.3.76
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.76"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3401,7 +3401,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/8d86fb1963b8188d09e4eb3a53810ec526965173b63cf0aac65118ea486fedf01ded35e7b383bdba337c89a609fea61a3b32911123b572e1627cc921bb236574
+  checksum: 10/b076fd075b184d3aa3757afc19efa1b979b8ba65ddc4da1e3893df9ed3354deba7d6301720725699e150f7face63e6f5f47df2f59f5d93871926fe48c54e7871
   languageName: node
   linkType: hard
 
@@ -3549,11 +3549,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.21-package-update-05":
-  version: 2.30.21-package-update-05
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.21-package-update-05"
+"@hmcts/rpx-xui-node-lib@npm:2.30.22-package-update-05":
+  version: 2.30.22-package-update-05
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.22-package-update-05"
   dependencies:
-    "@dr.pogodin/csurf": "npm:^1.16.9"
+    "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.18.1"
     connect-redis: "npm:^9.0.0"
     debug: "npm:^4.4.3"
@@ -3570,7 +3570,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/e9ff38b956b098ee9ae91d91896162eb92553798b796576fef14325b714dbf639feb623aa70208ad08255fd1ecc2b2af9d7aed799051f0ba99640a54360411f5
+  checksum: 10/9d1b3d8f953bb8219a1084225b89784c823982fbde257f9ee856fb3cc988eead6296550e8a924f22d74decdc4a05d875271c3b50eb40a871445d30b9a7c9192a
   languageName: node
   linkType: hard
 
@@ -11446,7 +11446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compression@npm:^1.7.4, compression@npm:^1.8.1":
+"compression@npm:^1.8.1":
   version: 1.8.1
   resolution: "compression@npm:1.8.1"
   dependencies:
@@ -21074,7 +21074,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.75"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.76"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.25"
@@ -21082,7 +21082,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.13"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.21-package-update-05"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.22-package-update-05"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -21125,7 +21125,7 @@ __metadata:
     chai: "npm:^4.3.10"
     chai-as-promised: "npm:7.1.2"
     class-transformer: "npm:^0.5.1"
-    compression: "npm:^1.7.4"
+    compression: "npm:^1.8.1"
     config: "npm:^4.4.1"
     cookie-parser: "npm:^1.4.4"
     core-js: "npm:^3.49.0"

@@ -38,11 +38,8 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
       return res.send('Invalid bearer token').status(400);
     }
     const userInfo = { ...rawUserInfo, token: `Bearer ${bearerToken}` };
-    const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
-    const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
-    trackTrace(`User ${userInfo?.id} roles: ${JSON.stringify(allRoles)}`, { functionCall: 'getUserDetails' });
+    trackTrace(`User ${userInfo?.id} roles: ${JSON.stringify(userInfo.roles)}`, { functionCall: 'getUserDetails' });
     trackTrace(`User ${userInfo?.id} has ${userInfo?.roleCategory} roleCategory`, { functionCall: 'getUserDetails' });
-    userInfo.roles = allRoles;
     res.send({
       canShareCases,
       roleAssignmentInfo,
@@ -52,28 +49,6 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   } catch (error) {
     next(error);
   }
-}
-
-export function getSyntheticRoles(roleAssignments: RoleAssignment[]): string[] {
-  let syntheticRoles = [];
-  const activeRoleAssignments = getActiveRoleAssignments(roleAssignments, new Date());
-  activeRoleAssignments?.forEach((roleAssignment) => {
-    if (
-      roleAssignment?.substantive === 'Y' &&
-      roleAssignment?.jurisdiction &&
-      roleAssignment?.roleName &&
-      roleAssignment?.roleType &&
-      roleAssignment?.roleType.toUpperCase() === 'ORGANISATION'
-    ) {
-      syntheticRoles = [...syntheticRoles, getSyntheticRole(roleAssignment.jurisdiction, roleAssignment.roleName)];
-    }
-  });
-  syntheticRoles = [...new Set(syntheticRoles)];
-  return syntheticRoles;
-}
-
-export function getSyntheticRole(jurisdiction: string, roleName: string): string {
-  return jurisdiction && roleName ? `${jurisdiction.toLocaleLowerCase()}-${roleName.toLocaleLowerCase()}` : '';
 }
 
 export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any[]> {

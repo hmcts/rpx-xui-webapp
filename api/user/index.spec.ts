@@ -9,8 +9,6 @@ import {
   extractRoleCategories,
   getActiveRoleAssignments,
   getRoleAssignmentInfo,
-  getSyntheticRole,
-  getSyntheticRoles,
   getUserDetails,
   getUserRoleAssignments,
   refreshRoleAssignmentForUser,
@@ -344,7 +342,6 @@ describe('Index', () => {
       // Verify that original roles are present
       expect(callArgs.userInfo.roles).to.include('caseworker');
       expect(callArgs.userInfo.roles).to.include('pui-case-manager');
-      // Note: synthetic roles would be added if roleAssignmentResponse had appropriate data
     });
 
     it('should handle errors and call next', async () => {
@@ -362,132 +359,6 @@ describe('Index', () => {
       await getUserDetails(req, res, next);
 
       expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('getSyntheticRoles', () => {
-    it('should return empty array when no role assignments provided', () => {
-      const result = getSyntheticRoles([]);
-      expect(result).to.deep.equal([]);
-    });
-
-    it('should return empty array when no substantive organisation roles', () => {
-      const roleAssignments = [
-        {
-          id: '1',
-          substantive: 'N',
-          jurisdiction: 'IA',
-          roleName: 'case-worker',
-          roleType: 'ORGANISATION',
-          attributes: {},
-        },
-        {
-          id: '2',
-          substantive: 'Y',
-          jurisdiction: 'IA',
-          roleName: 'case-worker',
-          roleType: 'CASE',
-          attributes: {},
-        },
-      ];
-
-      const result = getSyntheticRoles(roleAssignments);
-      expect(result).to.deep.equal([]);
-    });
-
-    it('should return synthetic roles for valid substantive organisation roles', () => {
-      const roleAssignments = [
-        {
-          id: '1',
-          substantive: 'Y',
-          jurisdiction: 'IA',
-          roleName: 'case-worker',
-          roleType: 'ORGANISATION',
-          attributes: {},
-        },
-        {
-          id: '2',
-          substantive: 'Y',
-          jurisdiction: 'CIVIL',
-          roleName: 'judge',
-          roleType: 'ORGANISATION',
-          attributes: {},
-        },
-      ];
-
-      const result = getSyntheticRoles(roleAssignments);
-      expect(result).to.deep.equal(['ia-case-worker', 'civil-judge']);
-    });
-
-    it('should return unique synthetic roles when duplicates exist', () => {
-      const roleAssignments = [
-        {
-          id: '1',
-          substantive: 'Y',
-          jurisdiction: 'IA',
-          roleName: 'case-worker',
-          roleType: 'ORGANISATION',
-          attributes: {},
-        },
-        {
-          id: '2',
-          substantive: 'Y',
-          jurisdiction: 'IA',
-          roleName: 'case-worker',
-          roleType: 'ORGANISATION',
-          attributes: {},
-        },
-      ];
-
-      const result = getSyntheticRoles(roleAssignments);
-      expect(result).to.deep.equal(['ia-case-worker']);
-    });
-
-    it('should filter out expired role assignments', () => {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-
-      const roleAssignments = [
-        {
-          id: '1',
-          substantive: 'Y',
-          jurisdiction: 'IA',
-          roleName: 'case-worker',
-          roleType: 'ORGANISATION',
-          endTime: yesterday,
-          attributes: {},
-        },
-      ];
-
-      const result = getSyntheticRoles(roleAssignments);
-      expect(result).to.deep.equal([]);
-    });
-  });
-
-  describe('getSyntheticRole', () => {
-    it('should return empty string when jurisdiction is null', () => {
-      const result = getSyntheticRole(null, 'case-worker');
-      expect(result).to.equal('');
-    });
-
-    it('should return empty string when roleName is null', () => {
-      const result = getSyntheticRole('IA', null);
-      expect(result).to.equal('');
-    });
-
-    it('should return empty string when both are null', () => {
-      const result = getSyntheticRole(null, null);
-      expect(result).to.equal('');
-    });
-
-    it('should return formatted synthetic role when both values provided', () => {
-      const result = getSyntheticRole('IA', 'Case-Worker');
-      expect(result).to.equal('ia-case-worker');
-    });
-
-    it('should handle uppercase jurisdiction and roleName', () => {
-      const result = getSyntheticRole('CIVIL', 'JUDGE');
-      expect(result).to.equal('civil-judge');
     });
   });
 

@@ -27,11 +27,9 @@ import * as documents from './documents';
 export const initProxy = (app: Express) => {
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: '/socket.io',
-    skipAuth: true, // socket.io transport auth is handled by the activity service
-    source: '/socket.io',
+    rewriteUrl: '/web-pubsub/negotiate',
+    source: '/web-pubsub/negotiate',
     target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
-    ws: true,
   });
 
   applyProxy(app, {

@@ -19754,7 +19754,6 @@ __metadata:
     sinon: "npm:^7.3.2"
     sinon-chai: "npm:^3.3.0"
     sinon-express-mock: "npm:^2.2.0"
-    socket.io-client: "npm:^4.8.1"
     sonar-scanner: "npm:^3.1.0"
     start-server-and-test: "npm:^2.0.13"
     stream: "npm:^0.0.3"
@@ -20382,7 +20381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket.io-client@npm:^4.8.0, socket.io-client@npm:^4.8.1":
+"socket.io-client@npm:^4.8.0":
   version: 4.8.3
   resolution: "socket.io-client@npm:4.8.3"
   dependencies:

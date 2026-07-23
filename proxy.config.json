@@ -69,10 +69,9 @@
     "secure": false,
     "logLevel": "debug"
   },
-  "/socket.io": {
+  "/web-pubsub/negotiate": {
     "target": "http://localhost:3001",
     "secure": false,
-    "ws": true,
     "logLevel": "debug"
   },
   "/activity": {

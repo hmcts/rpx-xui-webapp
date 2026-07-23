@@ -9,13 +9,11 @@ import { createApp } from './application';
 
 import * as ejs from 'ejs';
 import * as express from 'express';
-import * as http from 'http';
 import * as path from 'path';
 import { appInsights } from './lib/appInsights';
 import errorHandler from './lib/error.handler';
 import { removeCacheHeaders } from './lib/middleware/removeCacheHeaders';
 import { corsMw } from './security/cors';
-import { attachSocketProxy } from './socket-proxy';
 
 createApp().then((app: express.Application) => {
   app.engine('html', ejs.renderFile);
@@ -42,19 +40,11 @@ createApp().then((app: express.Application) => {
   app.use(appInsights);
   app.use(errorHandler);
 
-  const server = http.createServer(app);
-
-  attachSocketProxy(server);
-
   const port = process.env.PORT || 3000;
-
-  server.on('error', (error) => {
+  app.listen(port, (error) => {
     if (error) {
       throw error;
     }
-  });
-
-  server.listen(port, () => {
     console.log(`Server listening on port ${port}!`);
   });
 });

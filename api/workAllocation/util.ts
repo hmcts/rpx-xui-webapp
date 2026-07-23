@@ -75,8 +75,9 @@ export function prepareGetLocationsUrl(baseUrl: string, serviceCode: string = 'B
 
 // note: this function was created in order to get specific eppims id but spans services so not useful
 // however could still be used for another process
-export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string): string {
-  return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}`;
+export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string, serviceCode?: string): string {
+  const serviceCodeParam = serviceCode ? `&service_code=${serviceCode}` : '';
+  return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}${serviceCodeParam}`;
 }
 
 export function prepareGetUsersUrl(baseUrl: string, service: string): string {

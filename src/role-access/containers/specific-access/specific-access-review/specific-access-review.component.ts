@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
@@ -20,6 +21,7 @@ import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../..
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
+import { setErrorTitle } from '../../../utils';
 
 @Component({
   standalone: false,
@@ -37,6 +39,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public errorMessage = {
     title: 'There is a problem',
     description: SpecificAccessErrors.NO_SELECTION,
+    fieldId: 'APPROVE_REQUEST',
   };
 
   public optionsList: OptionsModel[];
@@ -59,7 +62,8 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromFeature.State>,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly caseworkerDataService: CaseworkerDataService,
-    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
+    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+    private readonly titleService: Title
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
@@ -120,6 +124,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
       this.reviewOptionControl.setErrors({
         invalid: true,
       });
+      setErrorTitle(this.titleService);
       return;
     }
     this.dispatchEvent(navEvent);

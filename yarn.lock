@@ -3237,9 +3237,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.13":
-  version: 3.2.13
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.13"
+"@hmcts/rpx-xui-common-lib@npm:3.2.12-multiple-role-categories":
+  version: 3.2.12-multiple-role-categories
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.12-multiple-role-categories"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
@@ -3263,7 +3263,7 @@ __metadata:
     rpx-xui-translation: 1.2.4
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/631c75119177b988ed518a4690137089fcfaac1ce62e9bc15125886bea1fecde7a35184f6c29780bc61b5fde20d71d46053488373b6f66bb37493bec4f637443
+  checksum: 10/d4f5ec937cad97e55125a9e105d274d29e6fa0db772b216250e0d9cf77be912c53b1f7c57336aad200ebe8a8847de48fedd18615fb11d7c6273c62371dca80c4
   languageName: node
   linkType: hard
 

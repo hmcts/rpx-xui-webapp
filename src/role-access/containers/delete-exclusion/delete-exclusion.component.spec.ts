@@ -27,7 +27,7 @@ const mockCaseworker: Caseworker = {
   lastName: 'testing',
   email: 'test@test.com',
   location: null,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  roleCategories: [RoleCategory.LEGAL_OPERATIONS],
 };
 
 describe('DeleteExclusionComponent', () => {

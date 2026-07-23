@@ -128,7 +128,7 @@ const buildCaseworkerResponse = (assigneeId: string) => [
       id: 227101,
       locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
     },
-    roleCategory: 'LEGAL_OPERATIONS',
+    roleCategories: ['LEGAL_OPERATIONS'],
     service: 'IA',
   },
 ];
@@ -398,7 +398,7 @@ export const singleUsersGetByRoleMockResponse = [
       locationName: 'Birmingham',
       services: ['CIVIL', 'PUBLICLAW', 'PRIVATELAW', 'IA'],
     },
-    roleCategory: 'LEGAL_OPERATIONS',
+    roleCategories: ['LEGAL_OPERATIONS'],
     service: 'IA',
   },
   {
@@ -411,7 +411,7 @@ export const singleUsersGetByRoleMockResponse = [
       locationName: 'Birmingham',
       services: ['CIVIL', 'PUBLICLAW', 'PRIVATELAW', 'IA'],
     },
-    roleCategory: 'JUDICIARY',
+    roleCategories: ['JUDICIARY'],
     service: 'IA',
   },
 ];

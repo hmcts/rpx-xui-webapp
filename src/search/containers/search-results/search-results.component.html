@@ -1,6 +1,7 @@
 <exui-app-header></exui-app-header>
 <xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
 <div class="govuk-width-container" *ngIf="!showSpinner">
+  <main id="content" role="main">
   <exui-page-wrapper [title]="'Search results'">
     <p>
       <a class="govuk-link" href="" [routerLink]="['/search']"> Change search </a>
@@ -47,5 +48,6 @@
     >
     </xuilib-pagination>
   </exui-page-wrapper>
+  </main>
 </div>
 <exui-app-footer></exui-app-footer>

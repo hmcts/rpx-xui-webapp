@@ -1,5 +1,6 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
+  <main id="content" role="main">
   <exui-page-wrapper [title]="'No results found'" *ngIf="messageId === noResultsMessageId.NO_RESULTS">
     <p class="govuk-body">Try searching again.</p>
     <p>You might be able to get more accurate results if you:</p>
@@ -30,5 +31,6 @@
       <p>Try searching again or go back.</p>
     </exui-page-wrapper>
   </div>
+  </main>
 </div>
 <exui-app-footer></exui-app-footer>

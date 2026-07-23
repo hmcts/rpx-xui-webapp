@@ -76,6 +76,14 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
+        "FinancialRemedyContested",
+        "FinancialRemedyMVP2"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "DIVORCE"
+    },
+    {
+      "caseTypes": [
         "Possession"
       ],
       "releaseVersion": "4",

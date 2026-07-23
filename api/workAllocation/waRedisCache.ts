@@ -9,7 +9,7 @@ const CACHE_TTL_SECONDS = 720;
 const LOCK_TTL_SECONDS = 90;
 
 const CACHED_USERS_KEY = 'wa:cachedUsers';
-const CACHED_USERS_WITH_ROLES_KEY = 'wa:cachedUsersWithRoles';
+const CACHED_USERS_WITH_ROLES_KEY = 'wa:cachedUsersWithFullRoles';
 const CACHED_USERS_LOCK_KEY = `${CACHED_USERS_KEY}:lock`;
 const CACHED_USERS_WITH_ROLES_LOCK_KEY = `${CACHED_USERS_WITH_ROLES_KEY}:lock`;
 

@@ -67,7 +67,7 @@ describe('AvailableTasksComponent', () => {
   const mockRouter = new MockRouter();
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getUsersFromServices']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getUsersByIdamId']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -126,7 +126,7 @@ describe('AvailableTasksComponent', () => {
         },
       ],
     };
-    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([]));
+    mockCaseworkerDataService.getUsersByIdamId.and.returnValue(of(null));
     mockFilterService.getStream.and.returnValue(of(filterFields));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     const tasks: Task[] = getMockTasks();

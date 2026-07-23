@@ -196,6 +196,41 @@ export function buildCaseListJurisdictionsMock() {
   ];
 }
 
+export function buildCaseListJurisdictionsWithProbateMock() {
+  return [
+    {
+      id: 'DIVORCE',
+      name: 'Family Divorce',
+      caseTypes: [
+        {
+          id: 'xuiTestJurisdiction',
+          name: 'XUI Case PoC',
+          states: CASE_LIST_STATE_FILTER_OPTIONS.map((state) => ({
+            id: state,
+            name: state,
+          })),
+        },
+      ],
+    },
+    {
+      id: 'PROBATE',
+      name: 'Probate',
+      caseTypes: [
+        {
+          id: 'GrantOfRepresentation',
+          name: 'Grant of representation',
+          states: [
+            {
+              id: 'CaseCreated',
+              name: 'CaseCreated',
+            },
+          ],
+        },
+      ],
+    },
+  ];
+}
+
 export function buildCaseListStateFilterInputsMock() {
   const stateInput = buildWorkbasketInput(
     'State',
@@ -217,6 +252,24 @@ export function buildCaseListStateFilterInputsMock() {
   return {
     workbasketInputs: [textFieldInput, stateInput, regionInput, localAuthorityInput],
     searchInputs: [textFieldInput, stateInput, regionInput, localAuthorityInput],
+  };
+}
+
+export function buildCaseListTextFilterInputsMock() {
+  const textFieldInput = buildWorkbasketInput('Case name', 'TextField0', buildTextFieldType());
+
+  return {
+    workbasketInputs: [textFieldInput],
+    searchInputs: [textFieldInput],
+  };
+}
+
+export function buildCaseListProbateFilterInputsMock() {
+  const probateFieldInput = buildWorkbasketInput('Probate number', 'ProbateNumber', buildTextFieldType());
+
+  return {
+    workbasketInputs: [probateFieldInput],
+    searchInputs: [probateFieldInput],
   };
 }
 

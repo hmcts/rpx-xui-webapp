@@ -46,7 +46,7 @@ describe('waRedisCache', () => {
 
   function createMockRedisClient(overrides: Partial<any> = {}) {
     return {
-      connected: true,
+      isReady: true,
       get: sandbox.stub(),
       set: sandbox.stub(),
       del: sandbox.stub(),
@@ -65,7 +65,7 @@ describe('waRedisCache', () => {
     });
 
     it('should return null when redis client is disconnected', async () => {
-      getRedisClientStub.returns(createMockRedisClient({ connected: false }));
+      getRedisClientStub.returns(createMockRedisClient({ isReady: false }));
 
       const result = await waRedisCache.getCachedUsers();
 
@@ -74,7 +74,7 @@ describe('waRedisCache', () => {
 
     it('should get and parse cached users from redis', async () => {
       const client = createMockRedisClient();
-      client.get.callsFake((key, callback) => callback(null, JSON.stringify(cachedUsers)));
+      client.get.resolves(JSON.stringify(cachedUsers));
       getRedisClientStub.returns(client);
 
       const result = await waRedisCache.getCachedUsers();
@@ -85,7 +85,7 @@ describe('waRedisCache', () => {
 
     it('should reject when redis get fails', async () => {
       const client = createMockRedisClient();
-      client.get.callsFake((key, callback) => callback(new Error('redis get failed')));
+      client.get.rejects(new Error('redis get failed'));
       getRedisClientStub.returns(client);
 
       try {
@@ -100,12 +100,17 @@ describe('waRedisCache', () => {
   describe('setCachedUsers', () => {
     it('should set cached users in redis with TTL', async () => {
       const client = createMockRedisClient();
-      client.set.callsFake((key, value, ex, ttl, callback) => callback(null));
+      client.set.resolves('OK');
       getRedisClientStub.returns(client);
 
       await waRedisCache.setCachedUsers(cachedUsers);
 
-      expect(client.set).to.have.been.calledWith('wa:cachedUsers', JSON.stringify(cachedUsers), 'EX', 720, sinon.match.func);
+      expect(client.set).to.have.been.calledWith('wa:cachedUsers', JSON.stringify(cachedUsers), {
+        expiration: {
+          type: 'EX',
+          value: 720,
+        },
+      });
     });
 
     it('should not throw when redis client is unavailable', async () => {
@@ -116,7 +121,7 @@ describe('waRedisCache', () => {
 
     it('should reject when redis set fails', async () => {
       const client = createMockRedisClient();
-      client.set.callsFake((key, value, ex, ttl, callback) => callback(new Error('redis set failed')));
+      client.set.rejects(new Error('redis set failed'));
       getRedisClientStub.returns(client);
 
       try {
@@ -131,24 +136,24 @@ describe('waRedisCache', () => {
   describe('users with roles cache', () => {
     it('should get cached users with roles from redis', async () => {
       const client = createMockRedisClient();
-      client.get.callsFake((key, callback) => callback(null, JSON.stringify(cachedUsersWithRoles)));
+      client.get.resolves(JSON.stringify(cachedUsersWithRoles));
       getRedisClientStub.returns(client);
 
       const result = await waRedisCache.getCachedUsersWithRoles();
 
-      expect(client.get).to.have.been.calledWith('wa:cachedUsersWithRoles');
+      expect(client.get).to.have.been.calledWith('wa:cachedUsersWithFullRoles');
       expect(result).to.deep.equal(cachedUsersWithRoles);
     });
 
     it('should set cached users with roles in redis with TTL', async () => {
       const client = createMockRedisClient();
-      client.set.callsFake((key, value, ex, ttl, callback) => callback(null));
+      client.set.resolves('OK');
       getRedisClientStub.returns(client);
 
       await waRedisCache.setCachedUsersWithRoles(cachedUsersWithRoles);
 
       expect(client.set).to.have.been.calledWith(
-        'wa:cachedUsersWithRoles',
+        'wa:cachedUsersWithFullRoles',
         JSON.stringify(cachedUsersWithRoles),
         'EX',
         720,
@@ -160,22 +165,22 @@ describe('waRedisCache', () => {
   describe('clear cache', () => {
     it('should clear cached users', async () => {
       const client = createMockRedisClient();
-      client.del.callsFake((key, callback) => callback(null));
+      client.del.resolves(1);
       getRedisClientStub.returns(client);
 
       await waRedisCache.clearCachedUsers();
 
-      expect(client.del).to.have.been.calledWith('wa:cachedUsers', sinon.match.func);
+      expect(client.del).to.have.been.calledWith('wa:cachedUsers');
     });
 
     it('should clear cached users with roles', async () => {
       const client = createMockRedisClient();
-      client.del.callsFake((key, callback) => callback(null));
+      client.del.resolves(1);
       getRedisClientStub.returns(client);
 
       await waRedisCache.clearCachedUsersWithRoles();
 
-      expect(client.del).to.have.been.calledWith('wa:cachedUsersWithRoles', sinon.match.func);
+      expect(client.del).to.have.been.calledWith('wa:cachedUsersWithFullRoles', sinon.match.func);
     });
   });
 
@@ -190,7 +195,7 @@ describe('waRedisCache', () => {
 
     it('should acquire cached users lock', async () => {
       const client = createMockRedisClient();
-      client.set.callsFake((key, value, ex, ttl, nx, callback) => callback(null, 'OK'));
+      client.set.resolves('OK');
       getRedisClientStub.returns(client);
 
       const result = await waRedisCache.acquireCachedUsersLock();
@@ -201,13 +206,19 @@ describe('waRedisCache', () => {
         expect(result.key).to.equal('wa:cachedUsers:lock');
         expect(result.value).to.be.a('string');
 
-        expect(client.set).to.have.been.calledWith('wa:cachedUsers:lock', result.value, 'EX', 90, 'NX', sinon.match.func);
+        expect(client.set).to.have.been.calledWith('wa:cachedUsers:lock', result.value, {
+          expiration: {
+            type: 'EX',
+            value: 90,
+          },
+          condition: 'NX',
+        });
       }
     });
 
     it('should return held when cached users lock already exists', async () => {
       const client = createMockRedisClient();
-      client.set.callsFake((key, value, ex, ttl, nx, callback) => callback(null, null));
+      client.set.resolves(null);
       getRedisClientStub.returns(client);
 
       const result = await waRedisCache.acquireCachedUsersLock();
@@ -217,7 +228,7 @@ describe('waRedisCache', () => {
 
     it('should acquire cached users with roles lock', async () => {
       const client = createMockRedisClient();
-      client.set.callsFake((key, value, ex, ttl, nx, callback) => callback(null, 'OK'));
+      client.set.resolves('OK');
       getRedisClientStub.returns(client);
 
       const result = await waRedisCache.acquireCachedUsersWithRolesLock();
@@ -225,10 +236,10 @@ describe('waRedisCache', () => {
       expect(result.status).to.equal('acquired');
 
       if (result.status === 'acquired') {
-        expect(result.key).to.equal('wa:cachedUsersWithRoles:lock');
+        expect(result.key).to.equal('wa:cachedUsersWithFullRoles:lock');
 
         expect(client.set).to.have.been.calledWith(
-          'wa:cachedUsersWithRoles:lock',
+          'wa:cachedUsersWithFullRoles:lock',
           result.value,
           'EX',
           90,
@@ -240,7 +251,7 @@ describe('waRedisCache', () => {
 
     it('should release lock using redis eval', async () => {
       const client = createMockRedisClient();
-      client.eval.callsFake((script, numberOfKeys, key, value, callback) => callback(null, 1));
+      client.eval.resolves(1);
       getRedisClientStub.returns(client);
 
       await waRedisCache.releaseLock({
@@ -251,10 +262,10 @@ describe('waRedisCache', () => {
 
       expect(client.eval).to.have.been.calledWith(
         sinon.match((script: string) => script.includes('redis.call("get"') && script.includes('redis.call("del"')),
-        1,
-        'wa:cachedUsers:lock',
-        'lock-id',
-        sinon.match.func
+        {
+          keys: ['wa:cachedUsers:lock'],
+          arguments: ['lock-id'],
+        }
       );
     });
   });

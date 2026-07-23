@@ -89,9 +89,9 @@ describe('TaskAssignmentConfirmComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: {
+                taskAndCaseworker: {
                   task: { task: mockTasks[0] },
-                  caseworkers: [],
+                  caseworker: {},
                 },
                 ...TaskActionConstants.Reassign,
               },
@@ -323,7 +323,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       getItem: jasmine.createSpy('getItem').and.returnValue(
         JSON.stringify({
           roles: [role],
-          roleCategory: role === AppTestConstants.IA_JUDGE_ROLE ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS,
+          roleCategories: role === AppTestConstants.IA_JUDGE_ROLE ? [RoleCategory.JUDICIAL] : [RoleCategory.LEGAL_OPERATIONS],
         })
       ),
     };
@@ -351,7 +351,7 @@ describe('TaskAssignmentConfirmComponent', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: { task: { task: mockTasks[0] }, caseworkers: [] },
+                  taskAndCaseworker: { task: { task: mockTasks[0] }, caseworker: {} },
                   ...TaskActionConstants.Reassign,
                 },
                 params: {

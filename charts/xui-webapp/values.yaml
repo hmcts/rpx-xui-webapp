@@ -55,6 +55,7 @@ nodejs:
     HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_HMCTS_ACCESS: https://hmcts-access.{{ .Values.global.environment }}.platform.hmcts.net/health
     # Services CCD Endpoints
     SERVICES_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_CCD_ACTIVITY_API: http://ccd-case-activity-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
@@ -111,6 +112,7 @@ nodejs:
     SERVICES_IDAM_CLIENT_ID: xuiwebapp
 
     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
+    SERVICES_HMCTS_ACCESS_API: https://hmcts-access.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_INDEX_URL: /
     SERVICES_IDAM_OAUTH_CALLBACK_URL: /oauth2/callback
     # Services payments

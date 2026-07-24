@@ -115,6 +115,8 @@ export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher';
 
 export const LOG4_J_CONFIG = 'log4JConfig';
 
+export const HMCTS_ACCESS_API = 'services.hmctsAccessApi';
+
 export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled';
 export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled';
 export const FEATURE_PROXY_ENABLED = 'proxyEnabled';

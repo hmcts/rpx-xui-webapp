@@ -5,6 +5,7 @@ import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   FEATURE_WORKALLOCATION_ENABLED,
+  HMCTS_ACCESS_API,
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIAL_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
@@ -39,6 +40,7 @@ export interface HealthChecks {
     docassemblyApi: any;
     idamApi: any;
     idamWeb: any;
+    hmctsAccess: any;
     judicialApi?: any;
     s2s: any;
     workAllocationApi?: any;
@@ -56,6 +58,7 @@ const config: HealthChecks = {
     documentsApiV2: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2)),
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
+    hmctsAccess: checkServiceHealth(getConfigValue(HMCTS_ACCESS_API)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
   },
 };

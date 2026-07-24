@@ -12,6 +12,7 @@ import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   FEATURE_WORKALLOCATION_ENABLED,
+  HMCTS_ACCESS_API,
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIAL_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
@@ -89,6 +90,7 @@ describe('Health Check', (): void => {
     getConfigValueStub.withArgs(SERVICES_DOCUMENTS_API_PATH_V2).returns('http://documents-api-v2');
     getConfigValueStub.withArgs(SERVICES_IDAM_LOGIN_URL).returns('http://idam-login');
     getConfigValueStub.withArgs(SERVICES_IDAM_API_URL).returns('http://idam-api');
+    getConfigValueStub.withArgs(HMCTS_ACCESS_API).returns('http://hmcts-access');
     getConfigValueStub.withArgs(SERVICE_S2S_PATH).returns('http://s2s');
     getConfigValueStub.withArgs(SERVICES_WORK_ALLOCATION_TASK_API_PATH).returns('http://work-allocation-api');
     getConfigValueStub.withArgs(SERVICES_CASE_CASEWORKER_REF_PATH).returns('http://caseworker-ref-api');
@@ -139,6 +141,7 @@ describe('Health Check', (): void => {
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_DOCUMENTS_API_PATH_V2);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_IDAM_LOGIN_URL);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_IDAM_API_URL);
+      expect(getConfigValueStub).to.have.been.calledWith(HMCTS_ACCESS_API);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICE_S2S_PATH);
       expect(showFeatureStub).to.have.been.calledWith(FEATURE_WORKALLOCATION_ENABLED);
     });

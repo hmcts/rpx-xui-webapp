@@ -126,13 +126,21 @@ Detailed suite documentation and architecture:
 
 - **E2E UI journeys (browser + backend):**
   - AAT: `yarn test:playwrightE2E`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:playwrightE2E`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:playwrightE2E`
   - Local app target: `TEST_URL=http://localhost:3000 yarn test:playwrightE2E`
 - **Integration tests (UI with mocked backend routes):**
   - AAT: `yarn test:playwright:integration`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:playwright:integration`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:playwright:integration`
   - Local app target with Playwright route mocks: `TEST_URL=http://localhost:3000 EXUI_BASE_URL=http://localhost:3000 PLAYWRIGHT_SKIP_INSTALL=true yarn test:playwright:integration`
 - **API functional tests (Playwright node-api project):**
   - `yarn test:api:pw`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:api:pw`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:api:pw`
   - With coverage/report copy: `yarn test:api:pw:coverage`
+
+For AAT and DEMO, generate and source the local Playwright env first with `yarn env:populate:playwright:aat` or `yarn env:populate:playwright:demo`, then `set -a; source .env; set +a`. For ITHC, export the required credentials through an approved local secret mechanism and keep passwords out of command history.
 
 ### How tests operate
 

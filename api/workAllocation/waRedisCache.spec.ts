@@ -155,9 +155,12 @@ describe('waRedisCache', () => {
       expect(client.set).to.have.been.calledWith(
         'wa:cachedUsersWithFullRoles',
         JSON.stringify(cachedUsersWithRoles),
-        'EX',
-        720,
-        sinon.match.func
+        {
+          expiration: {
+            type: 'EX',
+            value: 720,
+          },
+        },
       );
     });
   });
@@ -180,7 +183,7 @@ describe('waRedisCache', () => {
 
       await waRedisCache.clearCachedUsersWithRoles();
 
-      expect(client.del).to.have.been.calledWith('wa:cachedUsersWithFullRoles', sinon.match.func);
+      expect(client.del).to.have.been.calledWith('wa:cachedUsersWithFullRoles');
     });
   });
 
@@ -241,10 +244,13 @@ describe('waRedisCache', () => {
         expect(client.set).to.have.been.calledWith(
           'wa:cachedUsersWithFullRoles:lock',
           result.value,
-          'EX',
-          90,
-          'NX',
-          sinon.match.func
+          {
+            expiration: {
+              type: 'EX',
+              value: 90,
+            },
+            condition: 'NX',
+          }
         );
       }
     });

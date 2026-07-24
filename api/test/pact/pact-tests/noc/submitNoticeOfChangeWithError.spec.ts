@@ -6,10 +6,10 @@ import { NocAnswer } from '../../../../../src/noc/models';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+const { MatchersV3: Matchers } = require('@pact-foundation/pact');
+const { eachLike, like, regex, string } = Matchers;
 
-const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
 
 describe('submitNoCEvents API', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
@@ -28,6 +28,13 @@ describe('submitNoCEvents API', () => {
     case_id: '1234567812345670',
     answers: answers,
   };
+  const pactRequest = {
+    case_id: regex('^[0-9]{16}$', '1234567812345670'),
+    answers: eachLike({
+      question_id: string('1233434'),
+      value: string('test@email.com'),
+    }),
+  };
 
   const req = mockReq({
     headers: {
@@ -40,7 +47,7 @@ describe('submitNoCEvents API', () => {
 
   function setUpMockConfigForFunction(url) {
     const configValues = getNocAPIOverrides(url);
-    sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
+    sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop: string) => {
       return configValues[prop];
     });
     const { submitNoCEvents } = requireReloaded('../../../../noc/index');
@@ -54,15 +61,15 @@ describe('submitNoCEvents API', () => {
         withRequest: {
           method: 'POST',
           path: '/noc/noc-requests',
-          body: mockRequest,
+          body: pactRequest,
         },
         willRespondWith: {
           status: 400,
           body: {
-            status: somethingLike('BAD_REQUEST'),
-            message: somethingLike('Missing ChangeOrganisationRequest.CaseRoleID [APPLICANT]'),
-            code: somethingLike('missing-cor-case-role-id'),
-            errors: [],
+            status: string('BAD_REQUEST'),
+            message: string('Missing ChangeOrganisationRequest.CaseRoleID [APPLICANT]'),
+            code: string('missing-cor-case-role-id'),
+            errors: like([]),
           },
         },
       });

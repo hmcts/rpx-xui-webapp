@@ -6,8 +6,8 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike, eachLike } = Matchers;
+const { MatchersV3: Matchers } = require('@pact-foundation/pact');
+const { eachLike, integer, regex, string } = Matchers;
 
 const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
 
@@ -21,7 +21,7 @@ describe('getNoCQuestions API', () => {
 
   function setUpMockConfigForFunction(url) {
     const configValues = getNocAPIOverrides(url);
-    sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
+    sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop: string) => {
       return configValues[prop];
     });
     const { getNoCQuestions } = requireReloaded('../../../../noc/index');
@@ -39,20 +39,20 @@ describe('getNoCQuestions API', () => {
   describe('when a request is made to retrieve NoC questions', () => {
     const expectedResponse = {
       questions: eachLike({
-        case_type_id: somethingLike('Probate'),
-        order: somethingLike(1),
-        question_text: somethingLike('What is their Email?'),
+        case_type_id: string('Probate'),
+        order: integer(1),
+        question_text: string('What is their Email?'),
         answer_field_type: {
-          id: somethingLike('Email'),
-          type: somethingLike('Email'),
-          min: somethingLike('0'),
-          max: somethingLike('10'),
-          regular_expression: somethingLike('asdsa'),
+          id: string('Email'),
+          type: string('Email'),
+          min: string('0'),
+          max: string('10'),
+          regular_expression: string('asdsa'),
         },
-        display_context_parameter: somethingLike('1'),
-        challenge_question_id: somethingLike('NoC'),
-        answer_field: somethingLike(''),
-        question_id: somethingLike('QuestionId67745'),
+        display_context_parameter: string('1'),
+        challenge_question_id: string('NoC'),
+        answer_field: string(''),
+        question_id: string('QuestionId67745'),
       }),
     };
 
@@ -66,7 +66,7 @@ describe('getNoCQuestions API', () => {
           method: 'GET',
           path: '/noc/noc-questions',
           query: {
-            case_id: caseId,
+            case_id: regex('^[0-9]{16}$', caseId),
           },
         },
         willRespondWith: {

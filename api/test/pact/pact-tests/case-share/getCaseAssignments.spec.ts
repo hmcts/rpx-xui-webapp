@@ -3,8 +3,8 @@ import { CaseAssignmentResponseDto } from '../../pactFixtures';
 import { getCaseAssignments } from '../../pactUtil';
 import { PactV3TestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+const { MatchersV3: Matchers } = require('@pact-foundation/pact');
+const { eachLike, regex, string, uuid } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('Get Cases from CaseAssignment Api', () => {
@@ -49,21 +49,17 @@ describe('Get Cases from CaseAssignment Api', () => {
 });
 
 const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
-  status_message: somethingLike('Case-User-Role assignments returned successfully'),
-  case_assignments: somethingLike([
-    {
-      case_id: somethingLike('1588234985453946'),
-      shared_with: [
-        {
-          idam_id: somethingLike('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
-          first_name: somethingLike('Bill'),
-          last_name: somethingLike('Roberts'),
-          email: somethingLike('bill.roberts@greatbrsolicitors.co.uk'),
-          case_roles: somethingLike(['[Claimant]', '[Defendant]']),
-        },
-      ],
-    },
-  ]),
+  status_message: string('Case-User-Role assignments returned successfully'),
+  case_assignments: eachLike({
+    case_id: regex('^[0-9]{16}$', '1588234985453946'),
+    shared_with: eachLike({
+      idam_id: uuid('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
+      first_name: string('Bill'),
+      last_name: string('Roberts'),
+      email: regex('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$', 'bill.roberts@greatbrsolicitors.co.uk'),
+      case_roles: eachLike(string('[Claimant]')),
+    }),
+  }),
 };
 
 function assertCaseAssignmentResponses(response: CaseAssignmentResponseDto) {

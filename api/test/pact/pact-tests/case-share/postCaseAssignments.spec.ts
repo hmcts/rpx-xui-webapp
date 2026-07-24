@@ -3,8 +3,8 @@ import { AssignAccessWithinOrganisationDto } from '../../pactFixtures';
 import { postAssignCasesToUsers } from '../../pactUtil';
 import { PactV3TestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+const { MatchersV3: Matchers } = require('@pact-foundation/pact');
+const { regex, string } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('Post Cases from CaseAssignment Api', () => {
@@ -13,9 +13,14 @@ describe('Post Cases from CaseAssignment Api', () => {
     case_id: '1583841721773828',
     assignee_id: '0a5874a4-3f38-4bbd-ba4c',
   };
+  const pactRequest = {
+    case_type_id: string('PROBATE'),
+    case_id: regex('^[0-9]{16}$', '1583841721773828'),
+    assignee_id: string('0a5874a4-3f38-4bbd-ba4c'),
+  };
 
   const mockResponse: AssignAccessWithinOrganisationDto = {
-    status_message: somethingLike('Roles Role1,Role2 from the organisation policies successfully assigned to the assignee.'),
+    status_message: string('Roles Role1,Role2 from the organisation policies successfully assigned to the assignee.'),
   };
 
   describe('When Cases are assigned to Users', () => {
@@ -31,7 +36,7 @@ describe('Post Cases from CaseAssignment Api', () => {
             ServiceAuthorization: 'ServiceAuthToken',
             Authorization: 'Bearer some-access-token',
           },
-          body: mockRequest,
+          body: pactRequest,
         },
         willRespondWith: {
           status: 201,

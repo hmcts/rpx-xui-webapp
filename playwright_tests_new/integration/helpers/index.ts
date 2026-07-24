@@ -10,7 +10,7 @@ export * from './caseSearchMockRoutes.helper';
 export * from './caseList.helper';
 export * from './caseFileViewMockRoutes.helper';
 export * from './caseLinkingMockRoutes.helper';
-export { applySessionCookies } from '../../common/sessionCapture';
+export { applyMockSessionCookies, applySessionCookies, type MockSessionGuard } from '../../common/sessionCapture';
 export * from './searchCaseSession.helper';
 export * from './hearingsMockRoutes.helper';
 export * from './hearingManagerUserPool.helper';

@@ -1,5 +1,5 @@
 import { FullConfig } from '@playwright/test';
-import { sessionCapture } from './sessionCapture';
+import { prewarmIntegrationSessions } from './integrationSessionWarmup';
 import { resolveIntegrationSessionWarmupUsers } from '../integration/helpers';
 import playwrightConfigUtils from '../../playwright-config-utils';
 
@@ -27,7 +27,7 @@ async function globalSetup(fullConfig: FullConfig) {
   const tagSelection = isIntegrationConfig(fullConfig) ? resolveIntegrationTagSelection(process.env) : undefined;
   const userIdentifiers = resolveIntegrationSessionWarmupUsers(process.env, tagSelection);
   if (userIdentifiers.length > 0) {
-    await sessionCapture(userIdentifiers);
+    await prewarmIntegrationSessions(userIdentifiers);
   }
 }
 

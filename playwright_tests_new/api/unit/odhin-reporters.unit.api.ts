@@ -16,7 +16,11 @@ let OdhinAdaptiveReporter: {
   __test__: {
     trimResult: (
       result: Record<string, unknown>,
-      options: { lightweight: boolean; testOutputMode: true | false | 'only-on-failure' }
+      options: {
+        lightweight: boolean;
+        testOutputMode: true | false | 'only-on-failure';
+        trimFailedArtifacts?: boolean;
+      }
     ) => {
       nextResult: Record<string, unknown>;
       trimmedCounts: { output: number; heavyArtifacts: number };
@@ -106,8 +110,8 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
   test('adaptive reporter trims passed-test output and heavy artifacts in lightweight mode', () => {
     const result = {
       status: 'passed',
-      stdout: [{ text: 'stdout' }],
-      stderr: [{ text: 'stderr' }],
+      stdout: ['stdout'],
+      stderr: ['stderr'],
       steps: [{ title: 'step' }],
       attachments: [{ name: 'trace.zip' }],
     };
@@ -132,8 +136,8 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
   test('adaptive reporter preserves failed-test artifacts', () => {
     const result = {
       status: 'failed',
-      stdout: [{ text: 'stdout' }],
-      stderr: [{ text: 'stderr' }],
+      stdout: ['stdout'],
+      stderr: ['stderr'],
       steps: [{ title: 'step' }],
       attachments: [{ name: 'trace.zip' }],
     };
@@ -353,41 +357,56 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
     expect(stderrWrites.some((entry) => entry.includes('onTestEnd timed out'))).toBe(true);
   });
 
-  test('adaptive reporter can trim failed-test artifacts before handing results to Odhín', async () => {
+  test('adaptive reporter bounds failed output and externalizes attachments before handing results to Odhín', async () => {
     let forwardedResult: {
       stdout?: unknown[];
       stderr?: unknown[];
       steps?: unknown[];
       attachments?: unknown[];
     };
+    let forwardedOptions: { embedAttachments?: boolean } | undefined;
     const reporter = new OdhinAdaptiveReporter({
-      lightweight: true,
+      lightweight: false,
       profile: false,
       trimFailedArtifacts: true,
-      createInnerReporter: () => ({
-        onTestEnd: async (_test: unknown, result: unknown) => {
-          forwardedResult = result;
-        },
-        onEnd: async () => undefined,
-      }),
+      createInnerReporter: (options: { embedAttachments?: boolean }) => {
+        forwardedOptions = options;
+        return {
+          onStdOut: async () => {
+            throw new Error('streaming stdout must not be forwarded while trimming');
+          },
+          onStdErr: async () => {
+            throw new Error('streaming stderr must not be forwarded while trimming');
+          },
+          onTestEnd: async (_test: unknown, result: unknown) => {
+            forwardedResult = result;
+          },
+          onEnd: async () => undefined,
+        };
+      },
     });
 
+    await reporter.onStdOut('x'.repeat(1024), { title: 'failed accessibility test' }, { status: 'failed' });
+    await reporter.onStdErr('y'.repeat(1024), { title: 'failed accessibility test' }, { status: 'failed' });
     await reporter.onTestEnd(
       { title: 'failed accessibility test' },
       {
         status: 'failed',
-        stdout: [{ text: 'failure output' }],
-        stderr: [{ text: 'failure error' }],
+        stdout: ['prefix', '£'.repeat(1024 * 1024)],
+        stderr: ['suffix', '🙂'.repeat(256 * 1024)],
         steps: [{ title: 'step' }],
         attachments: [{ name: 'highlighted screenshot' }],
       }
     );
     await reporter.onEnd({ status: 'failed' });
 
-    expect(forwardedResult.stdout).toEqual([{ text: 'failure output' }]);
-    expect(forwardedResult.stderr).toEqual([{ text: 'failure error' }]);
-    expect(forwardedResult.steps).toEqual([]);
-    expect(forwardedResult.attachments).toEqual([]);
+    expect(Buffer.byteLength(String(forwardedResult.stdout?.[0]))).toBeLessThanOrEqual(64 * 1024);
+    expect(Buffer.byteLength(String(forwardedResult.stderr?.[0]))).toBeLessThanOrEqual(64 * 1024);
+    expect(String(forwardedResult.stdout?.[0])).toContain('[output truncated]');
+    expect(String(forwardedResult.stderr?.[0])).toContain('[output truncated]');
+    expect(forwardedResult.steps).toEqual([{ title: 'step' }]);
+    expect(forwardedResult.attachments).toEqual([{ name: 'highlighted screenshot' }]);
+    expect(forwardedOptions?.embedAttachments).toBe(false);
   });
 
   test('adaptive reporter bounds stalled Odhín finalization', async () => {

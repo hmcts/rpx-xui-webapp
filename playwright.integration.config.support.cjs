@@ -225,6 +225,7 @@ const buildConfig = (env = process.env) => {
   }
 
   return defineConfig({
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],

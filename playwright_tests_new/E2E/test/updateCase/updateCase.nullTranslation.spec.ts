@@ -47,7 +47,7 @@ test.describe(
 
       await test.step('Navigate to case details and verify no translation errors occurred', async () => {
         await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
-        
+
         // Give page a moment to render
         await page.waitForTimeout(500);
 
@@ -56,7 +56,7 @@ test.describe(
         const translationErrors = /\[undefined\]|\[null\]|Cannot read.*translation|TypeError.*trim|undefined.*\.split/.test(
           pageContent
         );
-        
+
         // This is the core validation - page should load without translation errors
         expect(translationErrors).toBe(false);
       });
@@ -64,13 +64,15 @@ test.describe(
       await test.step('Attempt to select a case action if available', async () => {
         // Try to find and select an action - skip test if none available
         try {
-          await caseDetailsPage.selectCaseAction('Update case', {
-            expectedLocator: createCasePage.person2FirstNameInput,
-            timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
-          }).catch(() => {
-            // Action not available - that's acceptable, we've verified the main thing
-            console.log('Update case action not available, but no translation errors occurred');
-          });
+          await caseDetailsPage
+            .selectCaseAction('Update case', {
+              expectedLocator: createCasePage.person2FirstNameInput,
+              timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
+            })
+            .catch(() => {
+              // Action not available - that's acceptable, we've verified the main thing
+              console.log('Update case action not available, but no translation errors occurred');
+            });
         } catch (error) {
           // Log but don't fail - the translation verification already passed
           console.log('Could not select case action, but page loaded without translation errors');
@@ -100,7 +102,7 @@ test.describe(
 
       await test.step('Navigate to case details and verify page stability', async () => {
         await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
-        
+
         // Wait for page to be ready with reasonable timeout
         await Promise.race([
           page.waitForLoadState('domcontentloaded'),
@@ -121,9 +123,7 @@ test.describe(
 
         // Main validation: check for error patterns in page content
         const pageContent = await page.content();
-        const hasTranslationCrash = /\[undefined\]|\[null\]|Cannot read.*undefined|Cannot read.*null/.test(
-          pageContent
-        );
+        const hasTranslationCrash = /\[undefined\]|\[null\]|Cannot read.*undefined|Cannot read.*null/.test(pageContent);
 
         expect(hasTranslationCrash).toBe(false);
         expect(labelCount).toBeGreaterThanOrEqual(0);

@@ -55,15 +55,15 @@ describe('submitNoCEvents API', () => {
   }
   describe('when an error occurs', () => {
     before(async () => {
-      pactSetUp.provider.addInteraction({
-        states: [{ description: 'A NoC answer request with invalid case ID' }],
-        uponReceiving: 'an invalid request to submit NoC',
-        withRequest: {
+      pactSetUp.provider
+        .given('A NoC answer request with invalid case ID')
+        .uponReceiving('an invalid request to submit NoC')
+        .withRequest({
           method: 'POST',
           path: '/noc/noc-requests',
           body: pactRequest,
-        },
-        willRespondWith: {
+        })
+        .willRespondWith({
           status: 400,
           body: {
             status: string('BAD_REQUEST'),
@@ -71,8 +71,7 @@ describe('submitNoCEvents API', () => {
             code: string('missing-cor-case-role-id'),
             errors: like([]),
           },
-        },
-      });
+        });
     });
 
     it('should return an error response', async () => {

@@ -65,19 +65,18 @@ describe('verifyAnswers API', () => {
     };
 
     before(async () => {
-      return pactSetUp.provider.addInteraction({
-        states: [{ description: 'A valid NoC answers verification request' }],
-        uponReceiving: 'a valid request to verify NoC answers',
-        withRequest: {
+      pactSetUp.provider
+        .given('A valid NoC answers verification request')
+        .uponReceiving('a valid request to verify NoC answers')
+        .withRequest({
           method: 'POST',
           path: '/noc/verify-noc-answers',
           body: pactRequest,
-        },
-        willRespondWith: {
+        })
+        .willRespondWith({
           status: 200,
           body: expectedResponse,
-        },
-      });
+        });
     });
 
     it('should return a valid response', async () => {

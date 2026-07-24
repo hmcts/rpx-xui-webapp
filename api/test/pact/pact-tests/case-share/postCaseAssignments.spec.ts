@@ -52,10 +52,10 @@ describe('Post Cases from CaseAssignment Api', () => {
 
   describe('When Cases are assigned to Users', () => {
     before(async () => {
-      const interaction = {
-        states: [{ description: 'Assign a user to a case' }],
-        uponReceiving: 'a valid request for that case to be assigned',
-        withRequest: {
+      pactSetUp.provider
+        .given('Assign a user to a case')
+        .uponReceiving('a valid request for that case to be assigned')
+        .withRequest({
           method: 'POST',
           path: '/case-assignments',
           query: { use_user_token: 'true' },
@@ -65,13 +65,10 @@ describe('Post Cases from CaseAssignment Api', () => {
             Authorization: 'Bearer some-access-token',
           },
           body: pactRequest,
-        },
-        willRespondWith: {
+        })
+        .willRespondWith({
           status: 201,
-        },
-      };
-
-      pactSetUp.provider.addInteraction(interaction);
+        });
     });
 
     it('Returns CaseAssingments Response', async () => {

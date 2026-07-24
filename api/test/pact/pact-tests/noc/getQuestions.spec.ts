@@ -59,21 +59,20 @@ describe('getNoCQuestions API', () => {
     let next;
     before(async () => {
       next = sandbox.spy();
-      pactSetUp.provider.addInteraction({
-        states: [{ description: 'NoC questions exist for case with given id', parameters: { caseId } }],
-        uponReceiving: 'a valid request to retrieve NoC questions',
-        withRequest: {
+      pactSetUp.provider
+        .given('NoC questions exist for case with given id', { caseId })
+        .uponReceiving('a valid request to retrieve NoC questions')
+        .withRequest({
           method: 'GET',
           path: '/noc/noc-questions',
           query: {
             case_id: regex('^[0-9]{16}$', caseId),
           },
-        },
-        willRespondWith: {
+        })
+        .willRespondWith({
           status: 200,
           body: expectedResponse,
-        },
-      });
+        });
     });
 
     it('returns the expected NoC questions', async () => {

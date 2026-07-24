@@ -63,19 +63,18 @@ describe('submitNoCEvents API', () => {
     };
 
     before(async () => {
-      return pactSetUp.provider.addInteraction({
-        states: [{ description: 'A valid submit NoC event is requested' }],
-        uponReceiving: 'a valid request to submit NoC',
-        withRequest: {
+      pactSetUp.provider
+        .given('A valid submit NoC event is requested')
+        .uponReceiving('a valid request to submit NoC')
+        .withRequest({
           method: 'POST',
           path: '/noc/noc-requests',
           body: pactRequest,
-        },
-        willRespondWith: {
+        })
+        .willRespondWith({
           status: 201,
           body: expectedResponse,
-        },
-      });
+        });
     });
 
     it('should return a valid response', async () => {

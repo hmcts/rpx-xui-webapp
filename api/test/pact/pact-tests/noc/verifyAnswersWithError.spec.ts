@@ -56,15 +56,15 @@ describe('verifyAnswers API', () => {
 
   describe('when an error occurs', () => {
     before(async () => {
-      pactSetUp.provider.addInteraction({
-        states: [{ description: 'An invalid NoC answer request' }],
-        uponReceiving: 'an invalid request to verify NoC answers',
-        withRequest: {
+      pactSetUp.provider
+        .given('An invalid NoC answer request')
+        .uponReceiving('an invalid request to verify NoC answers')
+        .withRequest({
           method: 'POST',
           path: '/noc/verify-noc-answers',
           body: pactRequest,
-        },
-        willRespondWith: {
+        })
+        .willRespondWith({
           status: 400,
           body: {
             status: string('BAD_REQUEST'),
@@ -72,8 +72,7 @@ describe('verifyAnswers API', () => {
             code: string('answers-not-matched-any-litigant'),
             errors: like([]),
           },
-        },
-      });
+        });
     });
 
     it('should return an error response', async () => {

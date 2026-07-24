@@ -27,10 +27,10 @@ describe('Get Cases from CaseAssignment Api', () => {
 
   describe('when requested to get case assignments for array of CaseIds ', () => {
     before(async () => {
-      const interaction = {
-        states: [{ description: 'Case assignments exist for case Ids' }],
-        uponReceiving: 'a valid request for those cases',
-        withRequest: {
+      pactSetUp.provider
+        .given('Case assignments exist for case Ids')
+        .uponReceiving('a valid request for those cases')
+        .withRequest({
           method: 'GET',
           path: '/case-assignments',
           query: {
@@ -41,17 +41,14 @@ describe('Get Cases from CaseAssignment Api', () => {
             ServiceAuthorization: 'ServiceAuthToken',
             Authorization: 'Bearer some-access-token',
           },
-        },
-        willRespondWith: {
+        })
+        .willRespondWith({
           status: 200,
           headers: {
             'Content-Type': 'application/json',
           },
           body: caseAssignmentResponseDto,
-        },
-      };
-
-      pactSetUp.provider.addInteraction(interaction);
+        });
     });
 
     it('Returns CaseAssignments Response', async () => {

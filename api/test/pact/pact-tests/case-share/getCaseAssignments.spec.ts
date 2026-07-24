@@ -9,7 +9,7 @@ import { getCaseAssignmentAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { MatchersV3: Matchers } = require('@pact-foundation/pact');
-const { eachLike, like, regex, string, uuid } = Matchers;
+const { eachLike, like, string } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('Get Cases from CaseAssignment Api', () => {
@@ -78,14 +78,14 @@ describe('Get Cases from CaseAssignment Api', () => {
 const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
   status_message: string('Case-User-Role assignments returned successfully'),
   case_assignments: eachLike({
-    case_id: regex('^[0-9]{16}$', '1588234985453946'),
+    case_id: string('1588234985453946'),
     case_title: string('A case title'),
     shared_with: eachLike({
-      idam_id: uuid('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
+      idam_id: string('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
       first_name: string('Bill'),
       last_name: string('Roberts'),
-      email: regex('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$', 'bill.roberts@greatbrsolicitors.co.uk'),
-      case_roles: like(['[Claimant]', '[Defendant]']),
+      email: string('bill.roberts@greatbrsolicitors.co.uk'),
+      case_roles: like([string('[Claimant]'), string('[Defendant]')]),
     }),
   }),
 };

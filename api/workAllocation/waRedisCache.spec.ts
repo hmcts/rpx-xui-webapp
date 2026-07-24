@@ -152,16 +152,12 @@ describe('waRedisCache', () => {
 
       await waRedisCache.setCachedUsersWithRoles(cachedUsersWithRoles);
 
-      expect(client.set).to.have.been.calledWith(
-        'wa:cachedUsersWithFullRoles',
-        JSON.stringify(cachedUsersWithRoles),
-        {
-          expiration: {
-            type: 'EX',
-            value: 720,
-          },
+      expect(client.set).to.have.been.calledWith('wa:cachedUsersWithFullRoles', JSON.stringify(cachedUsersWithRoles), {
+        expiration: {
+          type: 'EX',
+          value: 720,
         },
-      );
+      });
     });
   });
 
@@ -241,17 +237,13 @@ describe('waRedisCache', () => {
       if (result.status === 'acquired') {
         expect(result.key).to.equal('wa:cachedUsersWithFullRoles:lock');
 
-        expect(client.set).to.have.been.calledWith(
-          'wa:cachedUsersWithFullRoles:lock',
-          result.value,
-          {
-            expiration: {
-              type: 'EX',
-              value: 90,
-            },
-            condition: 'NX',
-          }
-        );
+        expect(client.set).to.have.been.calledWith('wa:cachedUsersWithFullRoles:lock', result.value, {
+          expiration: {
+            type: 'EX',
+            value: 90,
+          },
+          condition: 'NX',
+        });
       }
     });
 

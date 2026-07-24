@@ -132,7 +132,7 @@
     "@ngrx/store-devtools": "^20",
     "applicationinsights": "1.8.10",
     "axios": "^1.18.1",
-    "axios-mock-adapter": "^1.22.0",
+    "axios-mock-adapter": "^2.0.0",
     "class-transformer": "^0.5.1",
     "compression": "^1.8.1",
     "config": "^4.4.1",

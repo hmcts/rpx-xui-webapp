@@ -57,6 +57,10 @@ export const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetai
   defaultSupportedJurisdictionsMock
 );
 
+const defaultWASupportedRoleCategories = ['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL'];
+
+const defaultWASupportedRoleTypes = ['ORGANISATION'];
+
 const defaultTaskListLocationMock = {
   epimms_id: '765324',
   site_name: 'Taylor House',
@@ -95,6 +99,7 @@ export async function setupTaskListBootstrapRoutes(
       roleName: 'task-supervisor',
       roleType: 'ORGANISATION',
       substantive: 'Y',
+      roleCategory: userOptions.roleCategory ?? 'LEGAL_OPERATIONS',
     }));
   userDetails.roleAssignmentInfo = [
     ...(userOptions.replaceRoleAssignments
@@ -191,6 +196,22 @@ export async function setupTaskListBootstrapRoutes(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(resolvedSupportedJurisdictionDetails),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleCategories*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(defaultWASupportedRoleCategories),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleTypes*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(defaultWASupportedRoleTypes),
     });
   });
 

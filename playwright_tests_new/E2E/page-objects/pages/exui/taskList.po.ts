@@ -10,7 +10,7 @@ const FILTER_CHECKBOX_STATE_TIMEOUT_MS = 5_000;
 const FILTER_APPLY_READY_TIMEOUT_MS = 2_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
 const FILTER_APPLY_CLICK_ATTEMPTS = 3;
-const TASK_LIST_NAVIGATION_ATTEMPTS = 2;
+const TASK_LIST_NAVIGATION_ATTEMPTS = 3;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
@@ -128,6 +128,15 @@ export class TaskListPage extends Base {
 
   async goto() {
     await this.navigateToTaskListView('/work/my-work/list', /\/work\/my-work\/list(?:\?.*)?$/, 'task list navigation');
+  }
+
+  async gotoExpectingServiceDown() {
+    await this.navigateToTerminalTaskListView(
+      '/work/my-work/list',
+      /\/service-down$/,
+      this.serviceDownHeading,
+      'task list service down navigation'
+    );
   }
 
   async gotoAndWaitForTaskRow(
@@ -303,9 +312,31 @@ export class TaskListPage extends Base {
     context: string,
     timeoutMs = TASK_LIST_READY_TIMEOUT_MS
   ) {
-    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
-    await terminalHeading.waitFor({ state: 'visible', timeout: Math.min(10_000, timeoutMs) });
+    const sourceUrlPattern = this.taskListSourcePathPattern(path);
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
+      try {
+        await this.gotoTaskListPath(path, sourceUrlPattern, context, timeoutMs);
+        await this.waitForTaskListSpinnerToSettle(10_000);
+        await this.recoverBlankTaskListDocumentAfterNavigation(sourceUrlPattern, context, timeoutMs);
+        await this.page.waitForURL(urlPattern, { timeout: Math.min(10_000, timeoutMs) }).catch(() => undefined);
+        await terminalHeading.waitFor({ state: 'visible', timeout: Math.min(5_000, timeoutMs) });
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt === TASK_LIST_NAVIGATION_ATTEMPTS || !(await this.isRecoverableBrowserNavigationDocument(sourceUrlPattern))) {
+          throw error;
+        }
+      }
+    }
+
+    throw lastError instanceof Error ? lastError : new Error(`Task list terminal navigation failed while ${context}.`);
+  }
+
+  private taskListSourcePathPattern(path: string): RegExp {
+    const sourcePath = new URL(path, 'https://xui.local').pathname;
+    return new RegExp(`${sourcePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:[/?#]|$)`);
   }
 
   private async gotoTaskListPath(path: string, urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
@@ -332,7 +363,7 @@ export class TaskListPage extends Base {
 
   private isTransientTaskListNavigationError(error: Error, urlPattern: RegExp): boolean {
     return (
-      /net::ERR_NETWORK_CHANGED|net::ERR_CONNECTION_TIMED_OUT|Timeout \d+ms exceeded|chrome-error:\/\/chromewebdata/i.test(
+      /net::ERR_NAME_NOT_RESOLVED|net::ERR_NETWORK_CHANGED|net::ERR_CONNECTION_TIMED_OUT|Timeout \d+ms exceeded|chrome-error:\/\/chromewebdata/i.test(
         error.message
       ) &&
       (this.page.url() === 'about:blank' || this.page.url().startsWith('chrome-error://') || urlPattern.test(this.page.url()))
@@ -380,7 +411,7 @@ export class TaskListPage extends Base {
   }
 
   private async reloadBlankTaskListDocumentIfNeeded(urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
-    if (!(await this.isBlankTaskListDocument(urlPattern))) {
+    if (!(await this.isBlankTaskListDocument(urlPattern)) && !(await this.isRecoverableBrowserNavigationDocument(urlPattern))) {
       return;
     }
 
@@ -401,6 +432,14 @@ export class TaskListPage extends Base {
     }
   }
 
+  async recoverBlankDocumentAfterCurrentNavigation(
+    urlPattern: RegExp,
+    context: string,
+    timeoutMs = TASK_LIST_READY_TIMEOUT_MS
+  ): Promise<void> {
+    await this.recoverBlankTaskListDocumentAfterNavigation(urlPattern, context, timeoutMs);
+  }
+
   private async isBlankTaskListDocument(urlPattern: RegExp): Promise<boolean> {
     if (!urlPattern.test(this.page.url())) {
       return false;
@@ -411,6 +450,22 @@ export class TaskListPage extends Base {
       .innerText({ timeout: 500 })
       .catch(() => '');
     return bodyText.trim().length === 0;
+  }
+
+  private async isRecoverableBrowserNavigationDocument(urlPattern: RegExp): Promise<boolean> {
+    if (this.page.url().startsWith('chrome-error://')) {
+      return true;
+    }
+
+    if (!urlPattern.test(this.page.url())) {
+      return false;
+    }
+
+    const bodyText = await this.page
+      .locator('body')
+      .innerText({ timeout: 500 })
+      .catch(() => '');
+    return /This site can.t be reached|ERR_(?:CONNECTION_TIMED_OUT|NAME_NOT_RESOLVED|NETWORK_CHANGED)/i.test(bodyText);
   }
 
   private async assertTaskListHealthy(context: string, options: { allowServiceDown?: boolean } = {}): Promise<void> {

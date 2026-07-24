@@ -427,6 +427,24 @@ def secrets = [
   ],
 ]
 
+def prlHearingsSecrets = [
+  'rpx-${env}': [
+    secret('citizen-user', 'CITIZEN_USERNAME'),
+    secret('citizen-password', 'CITIZEN_PASSWORD'),
+    secret('court-admin-stoke-username', 'COURT_ADMIN_STOKE_USERNAME'),
+    secret('court-admin-stoke-password', 'COURT_ADMIN_STOKE_PASSWORD'),
+    secret('s2s-token-url', 'S2S_URL'),
+    secret('ccd-datastore-client-id', 'CCD_DATA_STORE_CLIENT_ID'),
+    secret('ccd-datastore-url', 'CCD_DATA_STORE_URL'),
+    secret('manage-case-redirect-uri', 'MANAGE_CASE_REDIRECT_URI'),
+    secret('idam-api-url', 'IDAM_API_URL'),
+    secret('idam-web-url', 'IDAM_WEB_URL'),
+    secret('idam-testing-support-url', 'IDAM_TESTING_SUPPORT_URL'),
+    secret('prl-cos-aat-url', 'PRL_COS_API_URL'),
+    secret('prl-cos-idam-client-secret', 'PRL_HEARINGS_IDAM_SECRET'),
+  ],
+]
+
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
       secretType: 'Secret',
@@ -434,6 +452,34 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
       version: '',
       envVariable: envVar
     ]
+}
+
+static List<String> splitPlaywrightTags(String tags) {
+    (tags ?: '')
+        .split(/[,\s]+/)
+        .collect { it.trim() }
+        .findAll { it }
+}
+
+static boolean shouldEnablePrlHearingsSetup(String includeTags, String excludedTags) {
+    def included = splitPlaywrightTags(includeTags)
+    def excluded = splitPlaywrightTags(excludedTags)
+    if (excluded.contains('@e2e-hearings')) {
+        return false
+    }
+    included.isEmpty() || included.contains('@e2e') || included.contains('@e2e-hearings')
+}
+
+def withPrlHearingsSecrets = { String environmentName, Closure body ->
+    def vaultEnv = environmentName == 'preview' ? 'aat' : environmentName
+    withAzureKeyvault(
+        azureKeyVaultSecrets: prlHearingsSecrets['rpx-${env}'],
+        keyVaultURLOverride: "https://rpx-${vaultEnv}.vault.azure.net/",
+        applicationIDOverride: env.AZURE_CLIENT_ID,
+        applicationSecretOverride: env.AZURE_CLIENT_SECRET
+    ) {
+        body.call()
+    }
 }
 
 withPipeline(type, product, component) {
@@ -603,16 +649,27 @@ withPipeline(type, product, component) {
                         stage('Playwright E2E') {
                             try {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'start')
+                                def enablePrlHearingsSetup = shouldEnablePrlHearingsSetup(
+                                    params.E2E_PW_INCLUDE_TAGS ?: '',
+                                    params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''
+                                )
                                 withEnv([
                                     "ORG_USER_ASSIGNMENT_MODE=external",
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PRL_HEARINGS_CASE_SETUP=${enablePrlHearingsSetup ? 'true' : 'false'}",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
-                                    yarnBuilder.yarn('test:playwrightE2E:raw')
+                                    if (enablePrlHearingsSetup) {
+                                        withPrlHearingsSecrets('preview') {
+                                            yarnBuilder.yarn('test:playwrightE2E:raw')
+                                        }
+                                    } else {
+                                        yarnBuilder.yarn('test:playwrightE2E:raw')
+                                    }
                                 }
                             } catch (Exception e) {
                                 echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
@@ -747,16 +804,27 @@ withPipeline(type, product, component) {
                         stage('Playwright E2E') {
                             try {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'start')
+                                def enablePrlHearingsSetup = shouldEnablePrlHearingsSetup(
+                                    params.E2E_PW_INCLUDE_TAGS ?: '',
+                                    params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''
+                                )
                                 withEnv([
                                     "ORG_USER_ASSIGNMENT_MODE=external",
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PRL_HEARINGS_CASE_SETUP=${enablePrlHearingsSetup ? 'true' : 'false'}",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
-                                    yarnBuilder.yarn('test:playwrightE2E:raw')
+                                    if (enablePrlHearingsSetup) {
+                                        withPrlHearingsSecrets('aat') {
+                                            yarnBuilder.yarn('test:playwrightE2E:raw')
+                                        }
+                                    } else {
+                                        yarnBuilder.yarn('test:playwrightE2E:raw')
+                                    }
                                 }
                             } catch (Exception e) {
                                 echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"

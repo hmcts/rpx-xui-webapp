@@ -1,4 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
+import type { Page } from '@playwright/test';
 import {
   DEFAULT_ROLE_ACCESS_USERS_JUDICIAL,
   createGlobalSearchResultsRouteHandler,
@@ -6,7 +7,9 @@ import {
   setupFastCaseRetrievalConfigRoute,
   setupGlobalSearchMockRoutes,
   submitHeaderQuickSearch,
+  restrictedCaseAccessContainerHelper,
 } from '../../helpers';
+
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { formatCaseNumberWithDashes } from '../../../E2E/utils/validator.utils';
 import {
@@ -17,6 +20,7 @@ import {
   VALID_SEARCH_CASE_REFERENCE,
 } from '../../mocks/search.mock';
 import { TEST_USERS } from '../../testData';
+import { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
 
 const searchCaseJurisdictionsMock = buildSearchCaseJurisdictionsMock();
 const globalSearchServicesMock = buildGlobalSearchServicesMock();
@@ -28,6 +32,11 @@ const globalSearchResultsHandler = createGlobalSearchResultsRouteHandler({
 
 const RESTRICTED_ACCESS_MESSAGE = 'This case is restricted. The details of the users with access are provided below.';
 const RESTRICTED_ACCESS_FAILURE_STATUSES = [400, 403, 500] as const;
+
+async function expectRestrictedAccessShellWithoutRows(page: Page, caseDetailsPage: CaseDetailsPage): Promise<void> {
+  await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
+  await restrictedCaseAccessContainerHelper(page, caseDetailsPage);
+}
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, TEST_USERS.FPL_GLOBAL_SEARCH);
@@ -52,7 +61,7 @@ test.describe(
   `Restricted case access as ${TEST_USERS.FPL_GLOBAL_SEARCH} negative flows with prewarmed search session`,
   { tag: ['@integration', '@integration-restricted-case'] },
   () => {
-    test('renders empty table when no users have access', async ({ caseDetailsPage, searchCasePage, page, tableUtils }) => {
+    test('renders empty table when no users have access', async ({ caseDetailsPage, searchCasePage, page }) => {
       await test.step('Configure restricted-access mocks with empty access lists', async () => {
         await setupRestrictedAccessMocks(page, { roleAccessBody: [], caseworkersBody: [] });
       });
@@ -62,21 +71,7 @@ test.describe(
       });
 
       await test.step('Verify restricted access shell and empty users table', async () => {
-        await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
-        await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
-        expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
-          formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
-        );
-        await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
-        await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
-
-        await expect(caseDetailsPage.exuiBodyComponent.tableHeaders).toHaveCount(3);
-        await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(0)).toHaveText('User');
-        await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(1)).toHaveText('Case role');
-        await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(2)).toHaveText('Email address');
-
-        const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
-        expect(table).toEqual([]);
+        await expectRestrictedAccessShellWithoutRows(page, caseDetailsPage);
       });
     });
 
@@ -85,7 +80,6 @@ test.describe(
         caseDetailsPage,
         searchCasePage,
         page,
-        tableUtils,
       }) => {
         await test.step(`Configure restricted-access mocks with role-access HTTP ${status}`, async () => {
           await setupRestrictedAccessMocks(page, { roleAccessStatus: status, roleAccessBody: { message: 'error' } });
@@ -96,21 +90,7 @@ test.describe(
         });
 
         await test.step('Verify restricted access shell is shown without table rows', async () => {
-          await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
-          await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
-          expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
-            formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
-          );
-          await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
-          await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
-
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders).toHaveCount(3);
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(0)).toHaveText('User');
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(1)).toHaveText('Case role');
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(2)).toHaveText('Email address');
-
-          const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
-          expect(table).toEqual([]);
+          await expectRestrictedAccessShellWithoutRows(page, caseDetailsPage);
         });
       });
     });
@@ -120,7 +100,6 @@ test.describe(
         caseDetailsPage,
         searchCasePage,
         page,
-        tableUtils,
       }) => {
         await test.step(`Configure restricted-access mocks with caseworker lookup HTTP ${status}`, async () => {
           await setupRestrictedAccessMocks(page, { caseworkersStatus: status, caseworkersBody: { message: 'error' } });
@@ -131,21 +110,7 @@ test.describe(
         });
 
         await test.step('Verify restricted access shell is shown without table rows', async () => {
-          await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
-          await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
-          expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
-            formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
-          );
-          await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
-          await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
-
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders).toHaveCount(3);
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(0)).toHaveText('User');
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(1)).toHaveText('Case role');
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(2)).toHaveText('Email address');
-
-          const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
-          expect(table).toEqual([]);
+          await expectRestrictedAccessShellWithoutRows(page, caseDetailsPage);
         });
       });
     });
@@ -155,7 +120,6 @@ test.describe(
         caseDetailsPage,
         searchCasePage,
         page,
-        tableUtils,
       }) => {
         await test.step(`Configure restricted-access mocks with supported-jurisdiction HTTP ${status}`, async () => {
           await setupRestrictedAccessMocks(page, {
@@ -169,21 +133,7 @@ test.describe(
         });
 
         await test.step('Verify restricted access shell is shown without table rows', async () => {
-          await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
-          await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
-          expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
-            formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
-          );
-          await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
-          await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
-
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders).toHaveCount(3);
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(0)).toHaveText('User');
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(1)).toHaveText('Case role');
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(2)).toHaveText('Email address');
-
-          const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
-          expect(table).toEqual([]);
+          await expectRestrictedAccessShellWithoutRows(page, caseDetailsPage);
         });
       });
     });
@@ -193,7 +143,6 @@ test.describe(
         caseDetailsPage,
         searchCasePage,
         page,
-        tableUtils,
       }) => {
         await test.step(`Configure restricted-access mocks with judicial lookup HTTP ${status}`, async () => {
           await setupRestrictedAccessMocks(page, {
@@ -209,21 +158,7 @@ test.describe(
         });
 
         await test.step('Verify restricted access shell is shown without table rows', async () => {
-          await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
-          await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
-          expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
-            formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
-          );
-          await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
-          await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
-
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders).toHaveCount(3);
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(0)).toHaveText('User');
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(1)).toHaveText('Case role');
-          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(2)).toHaveText('Email address');
-
-          const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
-          expect(table).toEqual([]);
+          await expectRestrictedAccessShellWithoutRows(page, caseDetailsPage);
         });
       });
     });

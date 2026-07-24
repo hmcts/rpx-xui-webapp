@@ -115,14 +115,14 @@
     "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.77",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.77-exui-5016-rc-1",
     "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.26",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.4.0",
-    "@hmcts/rpx-xui-common-lib": "3.2.13",
-    "@hmcts/rpx-xui-node-lib": "2.30.21",
+    "@hmcts/rpx-xui-common-lib": "3.2.13-multiple-role-categories-rc-1",
+    "@hmcts/rpx-xui-node-lib": "2.30.22-package-update-06",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
@@ -196,7 +196,6 @@
     "@stryker-mutator/karma-runner": "^8.0.0",
     "@stryker-mutator/mocha-runner": "^8.0.0",
     "@stryker-mutator/typescript": "^4.0.0",
-    "@types/connect-redis": "^0.0.23",
     "@types/cookie-parser": "^1.4.2",
     "@types/ejs": "^3.0.0",
     "@types/express": "^5.0.6",
@@ -294,5 +293,5 @@
     "lodash": "^4.17.22",
     "lodash-es": "^4.17.22"
   },
-  "packageManager": "yarn@4.7.0"
+  "packageManager": "yarn@4.17.1"
 }

@@ -1,6 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, MAX_NAVIGATION_RETRY_ATTEMPTS } from './exui-timeouts';
+import { expect } from '../../../fixtures.ts';
 
 export class FindCasePage extends Base {
   // Locators
@@ -28,6 +29,16 @@ export class FindCasePage extends Base {
   readonly findCaseLinkOnTopRight = this.page
     .locator('.hmcts-primary-navigation__search .hmcts-primary-navigation__link[href*="case-search"]')
     .first();
+
+  readonly handOffReasonCollection = this.page.locator('ccd-write-collection-field #boHandoffReasonList');
+  readonly handOffReasonAddNewTop = this.handOffReasonCollection.locator('button.write-collection-add-item__top');
+
+  readonly handOffReasonAddNewButton = this.page.locator(
+    'ccd-write-collection-field #boHandoffReasonList button.write-collection-add-item__top'
+  );
+  readonly handOffReason = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_0_0').nth(0);
+  readonly handOffReason_1 = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_1_1').nth(0);
+  readonly handOffReason_2 = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_2_2').nth(0);
 
   /**
    * Opens the Find Case page from the main navigation menu.
@@ -111,12 +122,62 @@ export class FindCasePage extends Base {
   public async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
     await this.navigateToFindCase();
     await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
+    await this.page.waitForTimeout(EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE);
     await this.submitSearch();
+  }
+
+  public async startProbateFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
+    await this.navigateToFindCase();
+    await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
+
+    // 'Add new' - Handoff reason.
+    for (let i = 1; i <= 3; i++) {
+      await this.handOffReasonAddNewButton.click();
+      await this.handOffReasonAddNewTop.scrollIntoViewIfNeeded();
+    }
+
+    // Choosing 'Handoff reason' option.
+    await this.handOffReason.locator('select.ccd-dropdown').selectOption({ label: 'Double Probate' });
+    await this.handOffReason_1.locator('select.ccd-dropdown').selectOption({ label: 'Horizon Scheme' });
+    await this.handOffReason_2.locator('select.ccd-dropdown').selectOption({ label: 'Literary Estate' });
   }
 
   public async applyFilters(): Promise<void> {
     await this.exuiCaseListComponent.filters.applyFilterBtn.click();
     await this.exuiSpinnerComponent.wait();
+  }
+
+  private parseBracketedList(value: string): string[] {
+    return value
+      .replace(/^\[|\]$/g, '')
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean);
+  }
+
+  public async checkApiCallQueryParameters(page, findCasePage) {
+    // const [request] = await Promise.all([
+    //   page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST'),
+    //   await findCasePage.applyFilters(),
+    // ]);
+    //
+    // const params = new URL(request.url()).searchParams;
+    // const requestPromise = page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST');
+
+    const requestPromise = page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST');
+    await findCasePage.applyFilters();
+
+    const request = await requestPromise;
+    const params = new URL(request.url()).searchParams;
+
+    const HANDOFF_REASON_PARAM = 'case.boHandoffReasonList.value.caseHandoffReason';
+    const EXPECTED_HANDOFF_REASONS = ['DoubleProbate', 'HorizonScheme', 'LiteraryEstate'];
+
+    const raw = params.get(HANDOFF_REASON_PARAM);
+    expect(raw, `${HANDOFF_REASON_PARAM} missing from query string`).not.toBeNull();
+
+    const reasons = this.parseBracketedList(raw!);
+    expect(reasons).toEqual(EXPECTED_HANDOFF_REASONS);
   }
 
   /**

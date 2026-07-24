@@ -141,7 +141,8 @@ export function toDenySARoleAssignmentBody(
           specificAccessReason: allocateRoleData.specificAccessReason,
           requestDate: allocateRoleData.requestCreated,
           reviewer: currentUserId,
-          reviewerRoleCategory: currentUser.roleCategory,
+          // EXUI-4758 - Just use the first role category found for now
+          reviewerRoleCategory: currentUser.roleCategories?.[0],
           infoRequired: allocateRoleData.accessReason === 'Request more information',
           infoRequiredComment: allocateRoleData.comment,
           // note: line below added in conflict with lines above

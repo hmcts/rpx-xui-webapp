@@ -577,7 +577,7 @@ async function runApiReadinessChecks(
   requiredAccesses: Array<'read' | 'create'>,
   expectedJurisdiction: string | undefined
 ): Promise<void> {
-  const userDetailsResponse = await apiContext.get('/api/user/details', { failOnStatusCode: false });
+  const userDetailsResponse = await apiContext.get('/api/user/o/userinfo', { failOnStatusCode: false });
   readinessAttempt.userDetailsStatus = userDetailsResponse.status();
   readinessAttempt.authStatus = userDetailsResponse.status();
   const userId =

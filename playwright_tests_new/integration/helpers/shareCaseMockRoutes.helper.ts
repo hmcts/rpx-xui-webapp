@@ -59,7 +59,7 @@ export async function setupShareCaseBootstrapRoutes(page: Page): Promise<void> {
   }, userDetails.userInfo);
 
   await page.route('**/auth/isAuthenticated*', async (route) => fulfillJson(route, true));
-  await page.route('**/api/user/details*', async (route) => fulfillJson(route, userDetails));
+  await page.route('**/api/user/o/userinfo*', async (route) => fulfillJson(route, userDetails));
   await page.route('**/api/organisation*', async (route) =>
     fulfillJson(route, {
       name: 'Playwright Organisation',

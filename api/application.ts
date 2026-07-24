@@ -10,6 +10,8 @@ import amRoutes from './accessManagement/routes';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
+  DYNATRACE_CDN,
+  FEATURE_DYNATRACE_ENABLED,
   FEATURE_HELMET_ENABLED,
   FEATURE_COMPRESSION_ENABLED,
   HELMET,
@@ -45,11 +47,24 @@ function loadIndexHtml(staticRoot: string): string {
   }
   return readFileSync(p, 'utf8');
 }
+
 const staticRoot = resolveStaticRoot();
 const indexHtmlRaw = loadIndexHtml(staticRoot);
 
-function injectNonce(html: string, nonce: string): string {
-  return html.replaceAll(/{{cspNonce}}/g, nonce);
+function escapeHtmlAttribute(value: string): string {
+  return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+}
+
+function getDynatraceCdn(): string | null {
+  if (!showFeature(FEATURE_DYNATRACE_ENABLED)) {
+    return null;
+  }
+
+  return getConfigValue<string>(DYNATRACE_CDN)?.trim() || null;
+}
+
+function injectTemplateValues(html: string, nonce: string): string {
+  return html.replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(getDynatraceCdn() ?? '')).replaceAll(/{{cspNonce}}/g, nonce);
 }
 
 export async function createApp() {
@@ -128,14 +143,14 @@ export async function createApp() {
   // Serve /index.html through the same nonce injector
   // This is to ensure that <MC URL>/index.html works with CSP
   app.get('/index.html', (req, res) => {
-    const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+    const html = injectTemplateValues(indexHtmlRaw, res.locals.cspNonce as string);
     res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
   });
   // runs for every incoming request in the order middleware are declared
   app.use(express.static(staticRoot, { index: false }));
   // Catch-all handler for every URL that the static middleware didn’t serve
   app.use('/{*splat}', (req, res) => {
-    const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+    const html = injectTemplateValues(indexHtmlRaw, res.locals.cspNonce as string);
     res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
   });
 

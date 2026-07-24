@@ -117,6 +117,7 @@
     }
   },
   "protocol": "PROTOCOL",
+  "dynatraceCdn": "DYNATRACE_CDN",
   "secureCookie": "SECURE_COOKIE",
   "microservice": "MICROSERVICE",
   "secrets": {
@@ -199,6 +200,10 @@
     },
     "docsEnabled": {
       "__name": "FEATURE_DOCS_ENABLED",
+      "__format": "json"
+    },
+    "dynatraceEnabled": {
+      "__name": "FEATURE_DYNATRACE_ENABLED",
       "__format": "json"
     },
     "queryIdamServiceOverride": {

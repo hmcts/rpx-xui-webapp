@@ -6,11 +6,14 @@ import {
   logResolvedTagFilters,
   parseNonNegativeInt,
   resolveDefaultReporter,
+  resolveLocalWorktreeTestIgnorePatterns,
   resolveTagFilters,
   resolveWorkerCount,
 } from './playwright-config-utils';
-
 type EnvMap = NodeJS.ProcessEnv;
+
+const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
+  env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
 
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || 'xui-playwright-e2e.html';
@@ -24,12 +27,14 @@ const resolveOdhinTitle = (env: EnvMap = process.env): string => {
 };
 
 const buildConfig = (env: EnvMap = process.env) => {
+  const e2eEnv = withPlaywrightTagsAlias(env);
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
+  const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const headlessMode = env.HEAD !== 'true';
   const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
   const e2eTagFilters = resolveTagFilters({
-    env,
+    env: e2eEnv,
     includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
     excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
     configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
@@ -39,7 +44,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
     globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
   });
-  logResolvedTagFilters('E2E', e2eTagFilters, env);
+  logResolvedTagFilters('E2E', e2eTagFilters, e2eEnv);
 
   const parsePositiveInt = (raw: string | undefined): number | undefined => {
     if (!raw) {
@@ -54,7 +59,8 @@ const buildConfig = (env: EnvMap = process.env) => {
 
   const retries = parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
   const globalTimeoutMs = parsePositiveInt(env.PW_E2E_GLOBAL_TIMEOUT_MS);
-  const isAccessibilityRun = env.PLAYWRIGHT_INCLUDE_A11Y === 'true';
+  const isAccessibilityRun = env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true';
+  const disableGenericFailureArtifacts = env.PLAYWRIGHT_DISABLE_GENERIC_FAILURE_ARTIFACTS === 'true';
   const prewarmAccessibilitySession = isAccessibilityRun && env.PW_A11Y_PREWARM_SESSION !== 'false';
   const testTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_TEST_TIMEOUT_MS) ?? 60_000) : 180_000;
   const expectTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_EXPECT_TIMEOUT_MS) ?? 7_000) : 60_000;
@@ -121,13 +127,39 @@ const buildConfig = (env: EnvMap = process.env) => {
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const reportBranch = resolveBranchName();
 
+  const testIgnore = [
+    temporaryProbePattern,
+    '**/test/smoke/smokeTest.spec.ts',
+    ...localWorktreeTestIgnorePatterns,
+    ...(isAccessibilityRun ? [] : ['**/*.a11y.spec.ts']),
+  ];
+  const reporter: [string, Record<string, unknown> | undefined][] = [
+    [resolveDefaultReporter(env), undefined],
+    ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs', undefined],
+    [
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
+      {
+        outputFolder: odhinOutputFolder,
+        indexFilename: resolveOdhinIndexFilename(env),
+        title: resolveOdhinTitle(env),
+        testEnvironment,
+        project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
+        release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+        startServer: false,
+        consoleLog: true,
+        consoleError: true,
+        testOutput: 'only-on-failure',
+      },
+    ],
+  ];
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
+    reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
+  }
+
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore:
-      env.PLAYWRIGHT_INCLUDE_A11Y === 'true'
-        ? [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts']
-        : [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts', '**/*.a11y.spec.ts'],
+    testIgnore,
     ...(prewarmAccessibilitySession ? { globalSetup: './playwright_tests_new/E2E/setup/a11ySession.global-setup.ts' } : {}),
     fullyParallel: true,
     retries,
@@ -137,32 +169,16 @@ const buildConfig = (env: EnvMap = process.env) => {
     },
     ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
     workers: workerCount,
-    reporter: [
-      [resolveDefaultReporter(env)],
-      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
-      [
-        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
-        {
-          outputFolder: odhinOutputFolder,
-          indexFilename: resolveOdhinIndexFilename(env),
-          title: resolveOdhinTitle(env),
-          testEnvironment,
-          project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
-          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
-          startServer: false,
-          consoleLog: true,
-          consoleError: true,
-          testOutput: 'only-on-failure',
-        },
-      ],
-    ],
+    reporter,
     use: {
       baseURL: baseUrl,
-      trace: 'retain-on-failure',
-      screenshot: {
-        mode: 'only-on-failure',
-        fullPage: true,
-      },
+      trace: disableGenericFailureArtifacts ? 'off' : 'retain-on-failure',
+      screenshot: disableGenericFailureArtifacts
+        ? 'off'
+        : {
+            mode: 'only-on-failure',
+            fullPage: true,
+          },
       video: 'off',
       headless: headlessMode,
     },

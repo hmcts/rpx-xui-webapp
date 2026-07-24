@@ -2,26 +2,14 @@ export const baseConfig = {
   '(judge)|(judiciary)|(panelmember)': [
     {
       active: true,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
       roles: ['hmcts-judiciary'],
       text: 'My work',
     },
     {
       active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/all-work/tasks',
       roles: ['task-supervisor'],
       text: 'All work',
@@ -115,6 +103,7 @@ export const baseConfig = {
         'caseworker-probate-solicitor',
         'caseworker-privatelaw-solicitor',
         'caseworker-employment-legalrep-solicitor',
+        'caseworker-pcs-solicitor',
       ],
       text: 'Notice of change',
     },
@@ -129,55 +118,17 @@ export const baseConfig = {
   '.+': [
     {
       active: true,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
       roles: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'My work',
     },
     {
       active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/all-work/tasks',
       roles: ['task-supervisor'],
       text: 'All work',
-    },
-    {
-      active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease1',
-        },
-      ],
-      href: '/tasks',
-      roles: ['caseworker-ia-caseofficer'],
-      text: 'Task list',
-    },
-    {
-      active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease1',
-        },
-      ],
-      href: '/tasks/task-manager',
-      roles: ['caseworker-ia-caseofficer', 'task-supervisor'],
-      text: 'Task manager',
     },
     {
       active: false,

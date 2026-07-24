@@ -1,15 +1,15 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { NocAnswer } from '../../../../../src/noc/models';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+const { MatchersV3: Matchers } = require('@pact-foundation/pact');
+const { eachLike, like, regex, string } = Matchers;
 
-const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
 
 describe('verifyAnswers API', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
@@ -28,6 +28,13 @@ describe('verifyAnswers API', () => {
     case_id: '1234567812345670',
     answers: answers,
   };
+  const pactRequest = {
+    case_id: regex('^[0-9]{16}$', '1234567812345670'),
+    answers: eachLike({
+      question_id: string('1233434'),
+      value: string('test@email.com'),
+    }),
+  };
 
   const req = mockReq({
     headers: {
@@ -40,7 +47,7 @@ describe('verifyAnswers API', () => {
 
   function setUpMockConfigForFunction(url) {
     const configValues = getNocAPIOverrides(url);
-    sandbox.stub(config, 'get').callsFake((prop) => {
+    sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop: string) => {
       return configValues[prop];
     });
     const { validateNoCQuestions } = requireReloaded('../../../../noc/index');
@@ -49,24 +56,23 @@ describe('verifyAnswers API', () => {
 
   describe('when an error occurs', () => {
     before(async () => {
-      pactSetUp.provider.addInteraction({
-        states: [{ description: 'An invalid NoC answer request' }],
-        uponReceiving: 'a request to verify NoC answers',
-        withRequest: {
+      pactSetUp.provider
+        .given('An invalid NoC answer request')
+        .uponReceiving('an invalid request to verify NoC answers')
+        .withRequest({
           method: 'POST',
           path: '/noc/verify-noc-answers',
-          body: mockRequest,
-        },
-        willRespondWith: {
+          body: pactRequest,
+        })
+        .willRespondWith({
           status: 400,
           body: {
-            status: somethingLike('BAD_REQUEST'),
-            message: somethingLike('The answers did not match those for any litigant'),
-            code: somethingLike('answers-not-matched-any-litigant'),
-            errors: [],
+            status: string('BAD_REQUEST'),
+            message: string('The answers did not match those for any litigant'),
+            code: string('answers-not-matched-any-litigant'),
+            errors: like([]),
           },
-        },
-      });
+        });
     });
 
     it('should return an error response', async () => {

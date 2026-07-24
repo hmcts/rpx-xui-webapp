@@ -3358,9 +3358,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.77":
-  version: 7.3.77
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.77"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.77-exui-5016-rc-1":
+  version: 7.3.77-exui-5016-rc-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.77-exui-5016-rc-1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3369,7 +3369,6 @@ __metadata:
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
-    pegjs: "npm:^0.10.0"
     tslib: "npm:^2.3.0"
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
@@ -3401,7 +3400,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/2d45dec13c83ebc839bc37d7075e8e9ecc747183813533e34f943ac9be4b8bdf0bc5dfbc6488fa7dfcc0b3ec7ee751a4f1e582f783aecc0cb627a51e8ce2cad9
+  checksum: 10/96194eb894a84dd7ab717e867b4e582e3ffb0735cbeb9489c57b132e59244948f5c135f5eaa4841dcdc61df635651c6f198e395ecf1ecdd72c1980877f7c9495
   languageName: node
   linkType: hard
 
@@ -3519,9 +3518,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.13":
-  version: 3.2.13
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.13"
+"@hmcts/rpx-xui-common-lib@npm:3.2.13-multiple-role-categories-rc-1":
+  version: 3.2.13-multiple-role-categories-rc-1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.13-multiple-role-categories-rc-1"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
@@ -3545,13 +3544,13 @@ __metadata:
     rpx-xui-translation: 1.2.4
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/631c75119177b988ed518a4690137089fcfaac1ce62e9bc15125886bea1fecde7a35184f6c29780bc61b5fde20d71d46053488373b6f66bb37493bec4f637443
+  checksum: 10/279918ab00bb767b04a2225f3309e910ba6f9bfeee58e62870e3dd7687b6ebfb40d6ee2f9c7ccb0c4b68cac87ea2ae5bc330553e6d18419932630f15f3f9b69a
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.22-package-update-05":
-  version: 2.30.22-package-update-05
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.22-package-update-05"
+"@hmcts/rpx-xui-node-lib@npm:2.30.22-package-update-06":
+  version: 2.30.22-package-update-06
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.22-package-update-06"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.18.1"
@@ -3570,7 +3569,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/9d1b3d8f953bb8219a1084225b89784c823982fbde257f9ee856fb3cc988eead6296550e8a924f22d74decdc4a05d875271c3b50eb40a871445d30b9a7c9192a
+  checksum: 10/4cfcd0eab5c3d183fc9a9d2080305ced1422754646bb387c00ec52c73ae5305b1404c8ae56c7757a124fbf7ab3ffc854ab210f031396d2ab39117864bbe65917
   languageName: node
   linkType: hard
 
@@ -21074,15 +21073,15 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.77"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.77-exui-5016-rc-1"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.26"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.13"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.22-package-update-05"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.13-multiple-role-categories-rc-1"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.22-package-update-06"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

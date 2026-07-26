@@ -1,7 +1,7 @@
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <div *ngIf="completeScreenMode === 'COMPLETE'">
   <div class="hmcts-width-container">
-    <main role="main" class="govuk-main-wrapper">
+    <div class="govuk-main-wrapper">
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
           <div class="govuk-panel govuk-panel--confirmation">
@@ -23,7 +23,7 @@
           </p>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </div>
 <div *ngIf="completeScreenMode === 'PENDING'">

@@ -159,6 +159,7 @@
     "material-design-icons": "^3.0.1",
     "moment-timezone": "^0.5.28",
     "ngx-chips": "3.0.0",
+    "ngx-editor": "19.0.0-beta.1",
     "ngx-logger": "^5.0.12",
     "ngx-markdown": "20",
     "ngx-pagination": "^6.0.3",

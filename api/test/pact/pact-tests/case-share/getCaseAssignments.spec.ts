@@ -34,7 +34,7 @@ describe('Get Cases from CaseAssignment Api', () => {
           method: 'GET',
           path: '/case-assignments',
           query: {
-            case_ids: '12345678,87654321',
+            case_ids: '1234567890123456,8765432109876543',
           },
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ describe('Get Cases from CaseAssignment Api', () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const getCases = setUpMockConfigForFunction(mockServer.url);
         const req = mockReq({
-          query: { case_ids: '12345678,87654321' },
+          query: { case_ids: '1234567890123456,8765432109876543' },
           headers: {
             Authorization: 'Bearer some-access-token',
             ServiceAuthorization: 'ServiceAuthToken',

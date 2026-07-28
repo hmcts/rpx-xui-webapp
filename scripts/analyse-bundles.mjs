@@ -13,9 +13,7 @@ try {
 const outputMetadata = new Map(
   Object.entries(buildMetadata.outputs || {}).map(([output, metadata]) => [output.split('/').pop(), metadata])
 );
-const files = (await readdir(outputDirectory))
-  .filter((file) => file.endsWith('.js'))
-  .sort();
+const files = (await readdir(outputDirectory)).filter((file) => file.endsWith('.js')).sort();
 
 const bundles = await Promise.all(
   files.map(async (file) => {

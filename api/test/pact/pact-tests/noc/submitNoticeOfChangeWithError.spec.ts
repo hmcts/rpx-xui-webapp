@@ -9,7 +9,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { MatchersV3: Matchers } = require('@pact-foundation/pact');
 const { eachLike, like, regex, string } = Matchers;
 
-const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('submitNoCEvents API', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();

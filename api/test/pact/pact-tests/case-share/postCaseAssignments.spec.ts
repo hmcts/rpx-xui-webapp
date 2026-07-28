@@ -8,7 +8,7 @@ import { getCaseAssignmentAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { MatchersV3: Matchers } = require('@pact-foundation/pact');
-const { regex, string } = Matchers;
+const { string } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('Post Cases from CaseAssignment Api', () => {
@@ -40,7 +40,7 @@ describe('Post Cases from CaseAssignment Api', () => {
 
   const pactRequest = {
     case_type_id: string('PROBATE'),
-    case_id: regex('^[0-9]{16}$', '1583841721773828'),
+    case_id: string('1583841721773828'),
     assignee_id: string('0a5874a4-3f38-4bbd-ba4c'),
   };
 

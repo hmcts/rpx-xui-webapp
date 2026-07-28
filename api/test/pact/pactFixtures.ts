@@ -33,7 +33,6 @@ export interface ProfessionalUserDetails {
 }
 
 export interface CaseAssignmentResponseDto {
-  status_message: string;
   case_assignments: CaseAssignmentDto[];
 }
 

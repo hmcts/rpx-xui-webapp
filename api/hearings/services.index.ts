@@ -27,7 +27,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
     const serviceResponse = await sendPost(markupPath, reqBody, req, next);
     if (serviceResponse) {
       const { status, data }: { status: number; data: ServiceHearingValuesModel } = serviceResponse;
-      let dataByDefault = mapDataByDefault(data);
+      let dataByDefault = mapDataByDefault(data, reqBody.caseReference);
       // If service don't supply the screenFlow pre-set the default screen flow from ExUI
       if (!data.screenFlow) {
         dataByDefault = {
@@ -43,7 +43,9 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   }
 }
 
-export function mapDataByDefault(data: ServiceHearingValuesModel): ServiceHearingValuesModel {
+export function mapDataByDefault(data: ServiceHearingValuesModel, caseReference: string): ServiceHearingValuesModel {
+  // EXUI-4529 - set caseId in ServiceHearingValuesModel in order to maintain true case ID
+  data.caseId = caseReference;
   // There is an inconsistency with the PartyFlagsModel data provided by the services
   // i.e., PrL provides partyId and CIVIL provides partyID
   // Resolving this to copy over partyID into partyId

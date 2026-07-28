@@ -48,7 +48,7 @@ export class FindCasePage extends Base {
    */
   public async navigateToFindCase(): Promise<void> {
     for (let attempt = 1; attempt <= MAX_NAVIGATION_RETRY_ATTEMPTS; attempt++) {
-      await this.openFromMainMenu();
+      await this.openFromAvailableNavigationLink();
       try {
         await this.ensureFiltersVisible();
         return;
@@ -139,7 +139,7 @@ export class FindCasePage extends Base {
     const caseDetailsLink = this.searchResultsTable
       .locator(`a.govuk-link[href*="/cases/case-details/"][href*="${normalizedCaseNumber}"]`)
       .first();
-    await caseDetailsLink.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
+    await this.waitForMatchingCaseResult(caseDetailsLink, normalizedCaseNumber);
     await this.openCaseDetailsFromSearchResult(caseDetailsLink, normalizedCaseNumber, caseNumber);
   }
 
@@ -180,6 +180,15 @@ export class FindCasePage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
 
+  private async openFromAvailableNavigationLink(): Promise<void> {
+    if (await this.findCaseLinkOnMenu.isVisible({ timeout: 1_000 }).catch(() => false)) {
+      await this.openFromMainMenu();
+      return;
+    }
+
+    await this.openFromTopRight();
+  }
+
   /**
    * Attempts to navigate to case details from search result with retry logic.
    *
@@ -198,8 +207,8 @@ export class FindCasePage extends Base {
     originalCaseNumber: string
   ): Promise<void> {
     for (let attemptIndex = 0; attemptIndex < MAX_NAVIGATION_RETRY_ATTEMPTS; attemptIndex++) {
-      await searchResultCaseLink.scrollIntoViewIfNeeded();
-      await searchResultCaseLink.click();
+      await searchResultCaseLink.scrollIntoViewIfNeeded({ timeout: EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_DEFAULT });
+      await searchResultCaseLink.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
       await this.exuiSpinnerComponent.wait();
       if (await this.waitForCaseDetailsUrl(caseNumberFromUrl, EXUI_TIMEOUTS.CASE_DETAILS_NAVIGATION)) {
         return;
@@ -217,6 +226,25 @@ export class FindCasePage extends Base {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  private async waitForMatchingCaseResult(caseDetailsLink: Locator, caseNumber: string): Promise<void> {
+    try {
+      await caseDetailsLink.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
+    } catch {
+      const resultsText = ((await this.searchResultsContainer.textContent().catch(() => '')) ?? '').trim();
+      const visibleCaseReferences = await this.searchResultsTable
+        .locator('a.govuk-link[href*="/cases/case-details/"]')
+        .evaluateAll((links) => links.map((link) => link.textContent?.replace(/\D/g, '') ?? '').filter(Boolean))
+        .catch(() => []);
+      const visibleReferencesMessage = visibleCaseReferences.length
+        ? ` Visible case references: ${visibleCaseReferences.join(', ')}.`
+        : '';
+
+      throw new Error(
+        `Find Case results did not contain case reference ${caseNumber} within ${EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN}ms. Results text: ${resultsText || '<empty>'}.${visibleReferencesMessage}`
+      );
     }
   }
 

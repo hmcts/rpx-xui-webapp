@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { expect, type Page, type Route } from '@playwright/test';
 
 export type UiTaskAction = 'cancel' | 'complete' | 'go' | 'reassign' | 'unassign';
@@ -55,6 +54,9 @@ export const expectValidUnassignSubmission = (submission: CapturedTaskSubmission
 };
 
 const DEFAULT_TASK_ID = 'f782bde3-8d51-11eb-a9a4-06d032acc76d';
+const DEFAULT_CREATED_DATE = '2026-01-10T10:00:00.000Z';
+const DEFAULT_DUE_DATE = '2026-02-10T10:00:00.000Z';
+const DEFAULT_PRIORITY_DATE = '2026-01-20T10:00:00.000Z';
 
 const buildTaskDetailsResponse = (options: TaskActionMockOptions) => {
   const taskId = options.taskId ?? DEFAULT_TASK_ID;
@@ -72,12 +74,12 @@ const buildTaskDetailsResponse = (options: TaskActionMockOptions) => {
       task_system: 'SELF',
       security_classification: 'PUBLIC',
       task_title: options.task_name ?? 'Review the appeal',
-      created_date: faker.date.past({ years: 0.25 }).toISOString(),
-      due_date: options.due_date ?? faker.date.future({ years: 0.25 }).toISOString(),
-      dueDate: options.dueDate ?? faker.date.future({ years: 0.25 }).toISOString(),
+      created_date: DEFAULT_CREATED_DATE,
+      due_date: options.due_date ?? DEFAULT_DUE_DATE,
+      dueDate: options.dueDate ?? DEFAULT_DUE_DATE,
       minor_priority: options.minor_priority ?? 500,
       major_priority: options.major_priority ?? 1000,
-      priority_date: options.priority_date ?? faker.date.future({ years: 0.25 }).toISOString(),
+      priority_date: options.priority_date ?? DEFAULT_PRIORITY_DATE,
       assignee: assigneeId,
       auto_assigned: false,
       execution_type: 'Case Management Task',
@@ -385,29 +387,11 @@ export const setupUnassignSubmissionCapture = async (
   return { submissionPromise };
 };
 
-/**
- * Example usage in a Playwright test:
- *
- * const expectation = await setupTaskActionEndpointMocks(page, 'cancel', {
- *   taskId: 'f782bde3-8d51-11eb-a9a4-06d032acc76d',
- *   caseId: '1617708245335311',
- * });
- *
- * // expectation.apiCalls contains endpoint + expected JSON contract for assertions/logging.
- */
-export const testTaskActionMockContract = async (
-  page: Page,
-  action: UiTaskAction,
-  options: TaskActionMockOptions
-): Promise<TaskActionExpectation> => {
-  return setupTaskActionEndpointMocks(page, action, options);
-};
-
 export const singleUsersGetByRoleMockResponse = [
   {
     email: 'auto_test1@example.com',
     firstName: 'test',
-    idamId: faker.string.uuid(),
+    idamId: '38400000-8cf0-11bd-b23e-10b96e4ef00d',
     lastName: 'Legal Operations',
     location: {
       id: 231596,
@@ -420,7 +404,7 @@ export const singleUsersGetByRoleMockResponse = [
   {
     email: 'auto_test2@example.com',
     firstName: 'test',
-    idamId: faker.string.uuid(),
+    idamId: '38400000-8cf0-11bd-b23e-10b96e4ef00e',
     lastName: 'Judiciary',
     location: {
       id: 231596,

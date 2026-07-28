@@ -19,6 +19,7 @@ export function buildRolesAndAccessUserDetails(
   } = {}
 ) {
   const userDetails = nodeAppDataModels.getUserDetails_oauth();
+  userDetails.userInfo.roles = Array.from(new Set([...(userDetails.userInfo.roles ?? []), 'case-allocator']));
 
   userDetails.roleAssignmentInfo = [
     {

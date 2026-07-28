@@ -5,8 +5,8 @@ import { applySessionCookies } from '../../common/sessionCapture';
 import {
   HEARING_MANAGER_CR84_OFF_USER,
   HEARING_MANAGER_CR84_ON_USER,
-  resolveHearingManagerUserIdentifier,
   type HearingManagerUserIdentifier,
+  resolveHearingManagerSessionCandidates,
 } from './hearingManagerUserPool.helper';
 import { setupHearingsMockRoutes, type HearingsMockRoutesConfig } from './hearingsMockRoutes.helper';
 import {
@@ -93,7 +93,7 @@ export async function openHearingsTab(
     caseReference?: string;
   }
 ): Promise<void> {
-  await applySessionCookies(page, resolveHearingManagerUserIdentifier(options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER));
+  await applyHearingManagerSessionCookies(page, options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, options.routeConfig);
   const route = resolveHearingsCaseRoute(options);
   await gotoCaseDetailsWithRetry(page, caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference));
@@ -109,7 +109,7 @@ export async function openHearingsTabForScenario(
     waitForGetHearingsResponse?: boolean;
   }
 ): Promise<Response | null> {
-  await applySessionCookies(page, resolveHearingManagerUserIdentifier(options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER));
+  await applyHearingManagerSessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, config);
   const route = resolveHearingsCaseRoute({ routeConfig: config });
   const targetUrl = caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference);
@@ -133,6 +133,22 @@ export async function openHearingsTabForScenario(
   const getHearingsResponse = page.waitForResponse((response) => response.url().includes('/api/hearings/getHearings'));
   await caseDetailsPage.selectCaseDetailsTab('Hearings');
   return getHearingsResponse;
+}
+
+async function applyHearingManagerSessionCookies(page: Page, userIdentifier: HearingManagerUserIdentifier): Promise<void> {
+  const candidates = resolveHearingManagerSessionCandidates(userIdentifier);
+  let lastError: unknown;
+
+  for (const candidate of candidates) {
+    try {
+      await applySessionCookies(page, candidate);
+      return;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError;
 }
 
 export function buildLargeListedHearings(total: number): HearingScenario[] {

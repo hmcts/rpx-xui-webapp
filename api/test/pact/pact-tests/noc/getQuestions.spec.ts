@@ -43,8 +43,8 @@ describe('getNoCQuestions API', () => {
         question_text: string('What is their Email?'),
         answer_field_type: {
           type: string('Email'),
-          min: integer(0),
-          max: integer(10),
+          min: string('0'),
+          max: string('10'),
           regular_expression: string('asdsa'),
         },
         question_id: string('QuestionId67745'),
@@ -98,8 +98,8 @@ function assertResponse(returnedResponse: any) {
   expect(returnedResponse.questions[0].order).to.be.equal(1);
   expect(returnedResponse.questions[0].question_text).to.be.equal('What is their Email?');
   expect(returnedResponse.questions[0].answer_field_type.type).to.be.equal('Email');
-  expect(returnedResponse.questions[0].answer_field_type.min).to.be.equal(0);
-  expect(returnedResponse.questions[0].answer_field_type.max).to.be.equal(10);
+  expect(returnedResponse.questions[0].answer_field_type.min).to.be.equal('0');
+  expect(returnedResponse.questions[0].answer_field_type.max).to.be.equal('10');
   expect(returnedResponse.questions[0].answer_field_type.regular_expression).to.be.equal('asdsa');
   expect(returnedResponse.questions[0].question_id).to.be.equal('QuestionId67745');
 }

@@ -1,7 +1,7 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { NavigationExtras } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ISessionStorageService } from '../../work-allocation/interfaces/common';
 import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
 import { InfoMessageType } from '../models/enums';

@@ -3,7 +3,6 @@ import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from 
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
   CookieService,
   ExuiCommonLibModule,
@@ -25,11 +24,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
 import { LoggerModule, NGXLogger, NgxLoggerLevel, NGXLoggerMapperService } from 'ngx-logger';
 import { RpxTranslationModule } from 'rpx-xui-translation';
-import {
-  BookingServiceDownComponent,
-  BookingSystemErrorComponent,
-  RefreshBookingServiceDownComponent,
-} from '../booking/containers';
 import { environment } from '../environments/environment';
 import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
@@ -58,7 +52,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
 }
 
 @NgModule({
-  declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent],
+  declarations: [AppComponent],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
@@ -80,7 +74,6 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     SharedModule,
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
-    PaymentLibModule,
     RpxTranslationModule.forRoot({
       baseUrl: '/api/translation',
       debounceTimeMs: 300,

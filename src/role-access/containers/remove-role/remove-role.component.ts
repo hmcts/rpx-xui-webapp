@@ -1,10 +1,10 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Utils } from '../../../cases/utils/utils';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';

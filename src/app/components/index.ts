@@ -10,7 +10,6 @@ import { HeaderComponent } from './header/header.component';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer/hmcts-global-footer.component';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header/hmcts-global-header.component';
 import { InfoMessageComponent } from './info-message/info-message.component';
-import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
 import { NotAuthorisedComponent } from './not-authorised/not-authorised.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
@@ -32,7 +31,6 @@ export const components: any[] = [
   ServiceDownComponent,
   SessionErrorWrapperComponent,
   ErrorMessageComponent,
-  MediaViewerWrapperComponent,
   GetHelpComponent,
   SignedOutComponent,
   ApplicationRoutingComponent,
@@ -53,7 +51,6 @@ export * from './error-message/error-message.component';
 export * from './cookie-policy/cookie-policy.component';
 export * from './privacy-policy/privacy-policy.component';
 export * from './accessibility/accessibility.component';
-export * from './media-viewer-wrapper/media-viewer-wrapper.component';
 export * from './get-help/get-help.component';
 export * from './signed-out/signed-out.component';
 export * from './not-authorised/not-authorised.component';

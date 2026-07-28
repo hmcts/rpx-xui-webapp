@@ -1,8 +1,8 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { EnvironmentService } from '../../shared/services/environment.service';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { FeatureVariation } from 'src/cases/models/feature-variation.model';
 

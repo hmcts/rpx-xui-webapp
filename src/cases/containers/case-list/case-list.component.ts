@@ -1,3 +1,4 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
@@ -17,7 +18,6 @@ import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../../organisation/models';
 import * as fromStore from '../../../organisation/store';

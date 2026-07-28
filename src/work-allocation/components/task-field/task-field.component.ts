@@ -1,8 +1,8 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services';
 import { FieldType, PriorityLimits } from '../../enums';
 import { FieldConfig } from '../../models/common';

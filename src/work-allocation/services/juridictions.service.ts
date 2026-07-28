@@ -1,6 +1,7 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Jurisdiction, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';

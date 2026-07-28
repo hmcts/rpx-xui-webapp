@@ -1,7 +1,7 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { NavigationExtras } from '@angular/router';
 import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { HMCTSServiceDetails, UserInfo } from '../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';

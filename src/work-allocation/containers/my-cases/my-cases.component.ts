@@ -1,7 +1,7 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';

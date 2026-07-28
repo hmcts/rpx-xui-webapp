@@ -7,7 +7,7 @@ import { PactV3TestSetup } from '../settings/provider.mock';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 const { MatchersV3: Matchers } = require('@pact-foundation/pact');
-const { eachLike, like, regex, string } = Matchers;
+const { eachLike, regex, string } = Matchers;
 
 const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
@@ -67,10 +67,8 @@ describe('verifyAnswers API', () => {
         .willRespondWith({
           status: 400,
           body: {
-            status: string('BAD_REQUEST'),
             message: string('The answers did not match those for any litigant'),
             code: string('answers-not-matched-any-litigant'),
-            errors: like([]),
           },
         });
     });

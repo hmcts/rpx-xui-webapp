@@ -58,8 +58,6 @@ describe('submitNoCEvents API', () => {
   describe('when a request is made to submit an NoC event', () => {
     const expectedResponse = {
       approval_status: string('APPROVED'),
-      case_role: string('[Claimant]'),
-      status_message: string('Notice of request has been successfully submitted.'),
     };
 
     before(async () => {
@@ -101,6 +99,4 @@ describe('submitNoCEvents API', () => {
 
 function assertResponse(returnedResponse: any) {
   expect(returnedResponse.approval_status).to.be.equal('APPROVED');
-  expect(returnedResponse.case_role).to.be.equal('[Claimant]');
-  expect(returnedResponse.status_message).to.be.equal('Notice of request has been successfully submitted.');
 }

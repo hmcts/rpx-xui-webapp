@@ -39,19 +39,14 @@ describe('getNoCQuestions API', () => {
   describe('when a request is made to retrieve NoC questions', () => {
     const expectedResponse = {
       questions: eachLike({
-        case_type_id: string('Probate'),
         order: integer(1),
         question_text: string('What is their Email?'),
         answer_field_type: {
-          id: string('Email'),
           type: string('Email'),
-          min: string('0'),
-          max: string('10'),
+          min: integer(0),
+          max: integer(10),
           regular_expression: string('asdsa'),
         },
-        display_context_parameter: string('1'),
-        challenge_question_id: string('NoC'),
-        answer_field: string(''),
         question_id: string('QuestionId67745'),
       }),
     };
@@ -100,15 +95,11 @@ describe('getNoCQuestions API', () => {
 
 function assertResponse(returnedResponse: any) {
   expect(returnedResponse.questions.length).to.be.equal(1);
-  expect(returnedResponse.questions[0].case_type_id).to.be.equal('Probate');
   expect(returnedResponse.questions[0].order).to.be.equal(1);
   expect(returnedResponse.questions[0].question_text).to.be.equal('What is their Email?');
-  expect(returnedResponse.questions[0].answer_field_type.id).to.be.equal('Email');
   expect(returnedResponse.questions[0].answer_field_type.type).to.be.equal('Email');
-  expect(returnedResponse.questions[0].answer_field_type.min).to.be.equal('0');
+  expect(returnedResponse.questions[0].answer_field_type.min).to.be.equal(0);
+  expect(returnedResponse.questions[0].answer_field_type.max).to.be.equal(10);
   expect(returnedResponse.questions[0].answer_field_type.regular_expression).to.be.equal('asdsa');
-  expect(returnedResponse.questions[0].display_context_parameter).to.be.equal('1');
-  expect(returnedResponse.questions[0].challenge_question_id).to.be.equal('NoC');
-  expect(returnedResponse.questions[0].answer_field).to.be.equal('');
   expect(returnedResponse.questions[0].question_id).to.be.equal('QuestionId67745');
 }

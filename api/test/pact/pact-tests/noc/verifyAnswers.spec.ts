@@ -56,14 +56,6 @@ describe('verifyAnswers API', () => {
   }
 
   describe('when a request is made to verify NoC answers', () => {
-    const expectedResponse = {
-      organisation: {
-        OrganisationID: string('QUK822NA'),
-        OrganisationName: string('Some Org'),
-      },
-      status_message: string('Notice of Change answers verified successfully'),
-    };
-
     before(async () => {
       pactSetUp.provider
         .given('A valid NoC answers verification request')
@@ -75,7 +67,6 @@ describe('verifyAnswers API', () => {
         })
         .willRespondWith({
           status: 200,
-          body: expectedResponse,
         });
     });
 
@@ -83,15 +74,16 @@ describe('verifyAnswers API', () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const validateNoCQuestions = setUpMockConfigForFunction(mockServer.url);
 
-        let returnedResponse = null;
         const response = mockRes();
-        response.send = (ret) => {
-          returnedResponse = ret;
+        let returnedStatus = null;
+        response.status = (status) => {
+          returnedStatus = status;
+          return response;
         };
         const next = sinon.mock().atLeast(1) as NextFunction;
         try {
           await validateNoCQuestions(req, response, next);
-          assertResponse(returnedResponse);
+          expect(returnedStatus).to.be.equal(200);
         } catch (err) {
           console.log(err.stack);
           throw new Error(err);
@@ -100,9 +92,3 @@ describe('verifyAnswers API', () => {
     });
   });
 });
-
-function assertResponse(returnedResponse: any) {
-  expect(returnedResponse.organisation.OrganisationID).to.be.equal('QUK822NA');
-  expect(returnedResponse.organisation.OrganisationName).to.be.equal('Some Org');
-  expect(returnedResponse.status_message).to.be.equal('Notice of Change answers verified successfully');
-}

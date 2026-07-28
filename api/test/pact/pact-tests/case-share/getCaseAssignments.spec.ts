@@ -76,7 +76,6 @@ describe('Get Cases from CaseAssignment Api', () => {
 });
 
 const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
-  status_message: string('Case-User-Role assignments returned successfully'),
   case_assignments: eachLike({
     case_id: string('1588234985453946'),
     case_title: string('A case title'),

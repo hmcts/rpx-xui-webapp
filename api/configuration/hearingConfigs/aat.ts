@@ -8,6 +8,10 @@ export const aatEnableHearingAmendments = {
       includeCaseTypes: ['Asylum', 'Bail'],
       jurisdiction: 'IA',
     },
+    {
+      includeCaseTypes: ['PRIVATELAW', 'PRLAPPS'],
+      jurisdiction: 'PRIVATELAW',
+    },
   ],
 };
 

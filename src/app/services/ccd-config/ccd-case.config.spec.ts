@@ -49,8 +49,8 @@ class MockConfigService {
       document_data_url: 'test-doc-data',
       rd_common_data_api_url: 'test-rd-common',
       case_data_store_api_url: 'test-case-store',
-      documentSecureModeCaseTypeExclusions: ['DIVORCE', 'PROBATE'],
-      mc_cdam_exclusion_list: ['DIVORCE', 'PROBATE'],
+      documentSecureModeCaseTypeExclusions: 'DIVORCE,PROBATE',
+      mc_cdam_exclusion_list: 'DIVORCE,PROBATE',
       icp_jurisdictions: ['foo'],
       wa_service_config: { test: 'config' },
       events_to_hide: ['queryManagementRespondQuery'],
@@ -378,13 +378,13 @@ describe('AppConfiguration', () => {
 
   describe('getDocumentSecureModeCaseTypeExclusions', () => {
     it('should return document secure mode case type exclusions', inject([AppConfig], (service: AppConfig) => {
-      expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual(['DIVORCE', 'PROBATE']);
+      expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual('DIVORCE,PROBATE');
     }));
   });
 
   describe('getCdamExclusionList', () => {
     it('should return CDAM exclusion list', inject([AppConfig], (service: AppConfig) => {
-      expect(service.getCdamExclusionList()).toEqual(['DIVORCE', 'PROBATE']);
+      expect(service.getCdamExclusionList()).toEqual('DIVORCE,PROBATE');
     }));
   });
 
@@ -436,7 +436,7 @@ describe('AppConfiguration with different deployment environments', () => {
 
     mockAppConfigService = jasmine.createSpyObj('AppConfigService', ['getEditorConfiguration']);
     mockAppConfigService.getEditorConfiguration.and.returnValue({
-      documentSecureModeCaseTypeExclusions: ['TEST_CASE_TYPE'],
+      documentSecureModeCaseTypeExclusions: 'TEST_CASE_TYPE',
       login_url: 'test-login',
       api_url: 'test-api',
       case_data_url: 'test-case-data',
@@ -679,8 +679,8 @@ describe('AppConfiguration with specific config values', () => {
       document_management_url: 'https://dm.test.com',
       document_management_url_v2: 'https://dmv2.test.com',
       remote_document_management_url: 'https://remote-dm.test.com',
-      documentSecureModeCaseTypeExclusions: ['DIVORCE', 'PROBATE'],
-      mc_cdam_exclusion_list: ['CIVIL', 'FAMILY'],
+      documentSecureModeCaseTypeExclusions: 'DIVORCE,PROBATE',
+      mc_cdam_exclusion_list: 'CIVIL,FAMILY',
       postcode_lookup_url: 'https://postcode.test.com',
       oauth2_client_id: 'test-client-id',
       payments_url: 'https://payments.test.com',
@@ -719,7 +719,7 @@ describe('AppConfiguration with specific config values', () => {
         return of(['SSCS', 'IMMIGRATION']);
       }
       if (featureName === AppConstants.FEATURE_NAMES.cdamExclusionList) {
-        return of(['CIVIL', 'FAMILY']);
+        return of('CIVIL,FAMILY');
       }
       return of(defVal);
     });
@@ -801,8 +801,8 @@ describe('AppConfiguration with specific config values', () => {
   it('should return all configured array values correctly', fakeAsync(
     inject([AppConfig], (service: AppConfig) => {
       tick(5000);
-      expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual(['DIVORCE', 'PROBATE']);
-      expect(service.getCdamExclusionList()).toEqual(['CIVIL', 'FAMILY']);
+      expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual('DIVORCE,PROBATE');
+      expect(service.getCdamExclusionList()).toEqual('CIVIL,FAMILY');
       expect(service.getIcpJurisdictions()).toEqual(['SSCS', 'IMMIGRATION']);
       expect(service.getEventsToHide()).toEqual(['event1', 'event2', 'event3']);
     })
@@ -836,7 +836,7 @@ describe('AppConfiguration with specific config values', () => {
       mockWindow = {};
       mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 
-      mockAppConfigService.getEditorConfiguration.and.returnValue({ documentSecureModeCaseTypeExclusions: ['DIVORCE'] });
+      mockAppConfigService.getEditorConfiguration.and.returnValue({ documentSecureModeCaseTypeExclusions: 'DIVORCE' });
       mockFeatureToggleService.getValue.and.callFake((featureName: string, defVal: any) => of(defVal));
       mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
     });

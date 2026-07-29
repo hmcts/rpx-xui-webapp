@@ -3076,9 +3076,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.54-exui-1855-rc-1":
-  version: 7.3.54-exui-1855-rc-1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.54-exui-1855-rc-1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.54-exui-1855-rc-2":
+  version: 7.3.54-exui-1855-rc-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.54-exui-1855-rc-2"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3089,13 +3089,43 @@ __metadata:
     marked: "npm:^18.0.5"
     pegjs: "npm:^0.10.0"
     tslib: "npm:^2.3.0"
-  checksum: 10/758676f7975ae80b23a1b6169254d93fa127f23420584d4853e39c2b79c964638741ac570117edc5ec0aa3b3ea35dc76e094415bee9593e6fbd769799f2f1baa
+    yargs: "npm:17.7.2"
+    yargs-parser: "npm:^21.1.1"
+  peerDependencies:
+    "@angular-material-components/datetime-picker": 16.0.1
+    "@angular-material-components/moment-adapter": 16.0.1
+    "@angular/animations": ^20.3.18
+    "@angular/cdk": 17.3.5
+    "@angular/common": ^20.3.18
+    "@angular/compiler": ^20.3.18
+    "@angular/core": ^20.3.18
+    "@angular/forms": ^20.3.18
+    "@angular/localize": ^20.3.18
+    "@angular/material": ^16.2.0
+    "@angular/platform-browser": ^20.3.18
+    "@angular/platform-browser-dynamic": ^20.3.18
+    "@angular/router": ^20.3.18
+    "@angular/upgrade": ^20.3.18
+    "@ngrx/effects": ^20.1.0
+    "@ngrx/store": ^20.1.0
+    govuk-elements-sass: ^3.1.2
+    moment: ^2.30.1
+    moment-timezone: ^0.5.31
+    ngx-chips: ^3.0.0
+    ngx-markdown: ^20
+    ngx-pagination: 6.0.3
+    rpx-xui-translation: 1.2.7
+    rxjs: ^7.8.1
+    rxjs-compat: ^6.6.7
+    underscore: ^1.9.1
+    zone.js: ^0.15.1
+  checksum: 10/2f75fe6233ae9404b73f91cfbcf2d2a0e852ba326c400cee312a6f0d1cc558d74a267c87fdb80c6819416e1ff586240afd9c855540605d3df17e455382042c54
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.5.17":
-  version: 6.5.17
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.17"
+"@hmcts/ccpay-web-component@npm:6.5.22":
+  version: 6.5.22
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.22"
   dependencies:
     exceljs: "npm:^4.4.0"
     file-saver: "npm:^2.0.2"
@@ -3207,9 +3237,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.9-exui-1855-rc-1":
-  version: 3.2.9-exui-1855-rc-1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.9-exui-1855-rc-1"
+"@hmcts/rpx-xui-common-lib@npm:3.2.9-exui-1855-rc-2":
+  version: 3.2.9-exui-1855-rc-2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.9-exui-1855-rc-2"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
@@ -3230,8 +3260,10 @@ __metadata:
     "@ng-idle/keepalive": ^16.0.0
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/d14ccb9d78e5984402379e76a5f704cceb85ccc4192c83794142affcbfc968dbee655e57b098ba6c85b8712bca1a5c473c591c6ae390976ec8e4ebab06fc9370
+    rpx-xui-translation: 1.2.4
+    rxjs: ^7.8.1
+    zone.js: ~0.15.1
+  checksum: 10/c6920b1490a52346aa3eba5020105cc877e1961d32b3748ebf6d29eb3c06d41557faeb447e149a7ecd7b7b3325eab657d2967a03da492572637e69a81737dff0
   languageName: node
   linkType: hard
 
@@ -11939,7 +11971,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dexie@npm:^4.0.8":
+"dexie@npm:^4.4.4":
   version: 4.4.4
   resolution: "dexie@npm:4.4.4"
   checksum: 10/df6f98ef639dedd2428c30798a292ddd54ca5b6800df9e220af371249ea4434e923c03d7576141cdc9c39110a8f549f37fbfff2b550f679ecce912c6e424f114
@@ -19934,7 +19966,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-exui-1855-rc-1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-exui-1855-rc-2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.26"
@@ -20043,7 +20075,7 @@ __metadata:
     playwright-core: "npm:1.61.1"
     prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.3-exui-1855-rc-1"
+    rpx-xui-translation: "npm:1.2.3-exui-1855-rc-2"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -20074,18 +20106,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.3-exui-1855-rc-1":
-  version: 1.2.3-exui-1855-rc-1
-  resolution: "rpx-xui-translation@npm:1.2.3-exui-1855-rc-1"
+"rpx-xui-translation@npm:1.2.3-exui-1855-rc-2":
+  version: 1.2.3-exui-1855-rc-2
+  resolution: "rpx-xui-translation@npm:1.2.3-exui-1855-rc-2"
   dependencies:
-    dexie: "npm:^4.0.8"
+    dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
     tslib: "npm:^2.0.0"
   peerDependencies:
     "@angular/common": ^20.3.18
     "@angular/core": ^20.3.18
     rxjs: ^7.8.0
-  checksum: 10/423c51d17fefbc00828a645ba4d1c766d1bab3ebbe2bf3e3b5cbc9327cab8468953d132c4e2d6ed14fec4d5c5d935a67057790342b8bfa7d6c1cdf84adb5f24f
+  checksum: 10/f7cdfc5fe0975045b93d37525a2210ffba16c20348dca6383a5b7b7fa720340da09b3dc9168b8760dc5bf33d4aa742a9f84ac4b29a039842e20f3119375ec8bd
   languageName: node
   linkType: hard
 

@@ -71,7 +71,7 @@ describe('Post Cases from CaseAssignment Api', () => {
         });
     });
 
-    it('Returns CaseAssingments Response', async () => {
+    it('Returns CaseAssignments Response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const assignCases = setUpMockConfigForFunction(mockServer.url);
         const req = mockReq({

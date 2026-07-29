@@ -60,7 +60,11 @@ function buildServiceHearingValuesWithFixtureFlags(): ServiceHearingValuesModel 
 }
 
 function expectedLabelsFromFixture(predicate: (flag: ServiceFlag) => boolean): string[] {
-  return unique(buildCaseFlagsFixture().filter(predicate).map((flag) => resolveFlagLabel(flag.flagId)));
+  return unique(
+    buildCaseFlagsFixture()
+      .filter(predicate)
+      .map((flag) => resolveFlagLabel(flag.flagId))
+  );
 }
 
 async function setupHearingsJourneyWithRealCaseFlags(page: Page, caseDetailsPage: CaseDetailsPage): Promise<void> {

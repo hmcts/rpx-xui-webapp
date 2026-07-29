@@ -69,8 +69,8 @@ properties([
 ])
 
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
-// @Library("Infrastructure@fpl-long-ft-timeout")
-@Library("Infrastructure")
+// @Library("Infrastructure@2.4.4")
+@Library("Infrastructure@2.4.4")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 
@@ -445,11 +445,11 @@ withPipeline(type, product, component) {
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableAksStagingDeployment()
     disableLegacyDeployment()
-    syncBranchesWithMaster(branchesToSync)    
+    syncBranchesWithMaster(branchesToSync)
 
     // enablePactAs([
     //    AppPipelineDsl.PactRoles.CONSUMER
-    // ])   
+    // ])
 
     afterSuccess('checkout') {
         startCiLoadProfile()

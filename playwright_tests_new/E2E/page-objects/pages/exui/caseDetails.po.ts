@@ -57,8 +57,9 @@ export class CaseDetailsPage extends Base {
   readonly tabList = this.page.locator('div[role="tablist"]');
   readonly tablist2 = this.page.getByRole('tab');
 
-  //Case flags
   // Case flags
+  readonly caseFlagsHeading = this.page.getByRole('heading', { name: 'Case flags', exact: true });
+
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
 
   readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');

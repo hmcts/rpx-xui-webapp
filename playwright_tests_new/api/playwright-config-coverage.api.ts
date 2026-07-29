@@ -317,8 +317,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
     const nodeApiProject = config.projects.find((project) => project.name === 'node-api') as
-      | { grep?: RegExp; grepInvert?: RegExp }
-      | undefined;
+      { grep?: RegExp; grepInvert?: RegExp } | undefined;
     expect(nodeApiProject).toBeDefined();
     expect(nodeApiProject?.grep).toBeInstanceOf(RegExp);
     expect(nodeApiProject?.grep?.test('@svc-auth')).toBe(true);

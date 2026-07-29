@@ -51,7 +51,10 @@ const resolveBrowserChannel = (env = process.env) => {
     return 'chrome';
   }
   const normalized = configured.trim();
-  return normalized.length > 0 ? normalized : undefined;
+  if (normalized.length === 0) {
+    return null;
+  }
+  return normalized;
 };
 
 const resolveFlag = (rawValue, defaultValue) => {
@@ -249,8 +252,15 @@ const buildConfig = (env = process.env) => {
       {
         name: 'chromium',
         use: {
-          ...devices['Desktop Chrome'],
-          ...(browserChannel ? { channel: browserChannel } : {}),
+          ...(() => {
+            const desktopChrome = { ...devices['Desktop Chrome'] };
+            if (browserChannel === null) {
+              delete desktopChrome.channel;
+            } else if (browserChannel) {
+              desktopChrome.channel = browserChannel;
+            }
+            return desktopChrome;
+          })(),
         },
       },
     ],

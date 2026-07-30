@@ -38,16 +38,16 @@ describe('Post Cases from CaseAssignment Api', () => {
     ],
   };
 
-const pactRequest = {
-  case_type_id: string('PROBATE'),
-  case_id: string('1583841721773828'),
-  assignee_id: string('0a5874a4-3f38-4bbd-ba4c'),
-};
+  const pactRequest = {
+    case_type_id: string('PROBATE'),
+    case_id: string('1583841721773828'),
+    assignee_id: string('0a5874a4-3f38-4bbd-ba4c'),
+  };
 
-const pactErrorResponse = {
-  status: string('BAD_REQUEST'),
-  message: string('Bad Request'),
-};
+  const pactErrorResponse = {
+    status: string('BAD_REQUEST'),
+    message: string('Bad Request'),
+  };
 
   function setUpMockConfigForFunction(url: string) {
     const configValues = getCaseAssignmentAPIOverrides(url);

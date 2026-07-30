@@ -8,7 +8,7 @@ import { getCaseAssignmentAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { MatchersV3: Matchers } = require('@pact-foundation/pact');
-const { integer, string } = Matchers;
+const { string } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('Post Cases from CaseAssignment Api', () => {
@@ -45,7 +45,7 @@ const pactRequest = {
 };
 
 const pactErrorResponse = {
-  status: integer(400),
+  status: string('BAD_REQUEST'),
   message: string('Bad Request'),
 };
 
@@ -177,7 +177,7 @@ function assertCaseAssignmentErrorResponse(response: any) {
 
   const errorMessage = response[0] as string;
   const requestJson = errorMessage.match(/request:\s*(\{.*\})\s*,\s*response:/)?.[1];
-  const providerError = errorMessage.match(/response:\s*(\d+)\s+(.+)$/);
+  const providerError = errorMessage.match(/response:\s*(\d+|[A-Z_]+)\s+(.+)$/);
 
   expect(requestJson).to.not.be.undefined;
   expect(providerError).to.not.be.null;
@@ -188,6 +188,6 @@ function assertCaseAssignmentErrorResponse(response: any) {
   expect(request.assignee_id).to.be.equal('0a5874a4-3f38-4bbd-ba4c');
   expect(request.case_id).to.be.equal('1583841721773828');
   expect(request.case_type_id).to.be.equal('PROBATE');
-  expect(providerError?.[1]).to.be.equal('400');
+  expect(providerError?.[1]).to.be.equal('BAD_REQUEST');
   expect(providerError?.[2]).to.be.equal('Bad Request');
 }

@@ -9,7 +9,7 @@ import { IndividualDetailsModel } from '../models/individualDetails.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
-import { PartyType } from 'api/hearings/models/hearings.enum';
+import { PartyType } from '../models/hearings.enum';
 
 type DateOption = 'noDate' | 'specificDate' | 'dateRange';
 

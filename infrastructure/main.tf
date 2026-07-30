@@ -2,7 +2,7 @@ locals {
   app_full_name     = "xui-${var.component}"
   ase_name          = "core-compute-${var.env}"
   local_env         = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview") ? "aat" : "saat" : var.env
-  reporting_enabled = var.welsh_reporting_enabled || var.exui_weekly_stats_enabled || var.exui_throughput_stats_enabled || var.exui_pui_activations_enabled
+  reporting_enabled = var.welsh_reporting_enabled || var.exui_weekly_stats_enabled || var.exui_throughput_stats_enabled || var.exui_pui_activations_enabled || var.exui_mo_logins_stats_enabled
   shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 

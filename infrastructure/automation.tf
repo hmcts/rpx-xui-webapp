@@ -1528,6 +1528,259 @@ resource "azurerm_automation_job_schedule" "exui_pui_activations_job" {
   ]
 }
 
+resource "azurerm_automation_runbook" "exui_mo_logins_stats_runbook" {
+  count                   = var.exui_mo_logins_stats_enabled ? 1 : 0
+  name                    = "Generate-ExUI-MO-Logins-Stats"
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  log_verbose             = true
+  log_progress            = true
+  description             = "Generates a weekly 31-day ExUI Manage Organisation login report from Application Insights"
+  runbook_type            = "PowerShell"
+  content                 = <<EOT
+param(
+    [string]$appinsightsappid,
+    [string]$acsresourcename,
+    [string]$senderaddress,
+    [string]$recipientaddress,
+    [string]$environment
+)
+
+$ErrorActionPreference = "Stop"
+
+try {
+    Connect-AzAccount -Identity
+}
+catch {
+    Write-Error "Failed to log in with the Automation Account managed identity."
+    throw
+}
+
+$query = @"
+requests
+| where resultCode == "302"
+| where name == "POST /login"
+| where timestamp >= ago(31d)
+| project timestamp, url
+| extend service = tostring(parse_url(url)["Query Parameters"]["client_id"]),
+    app = tostring(parse_url(url)["Query Parameters"]["redirect_uri"])
+| where service == "xuimowebapp"
+| summarize logins_per_day = count() by service, bin(timestamp, 1d)
+| sort by timestamp asc, service asc
+| project timestamp, Date = format_datetime(timestamp, "dd/MM/yyyy"), logins_per_day
+"@
+
+try {
+    Write-Output "Querying Application Insights for ExUI Manage Organisation logins..."
+    $appInsightsToken = (Get-AzAccessToken -ResourceUrl "https://api.applicationinsights.io").Token
+    $queryResponse = Invoke-RestMethod `
+        -Uri "https://api.applicationinsights.io/v1/apps/$appinsightsappid/query" `
+        -Method Post `
+        -Headers @{
+            Authorization = "Bearer $appInsightsToken"
+            "Content-Type" = "application/json"
+        } `
+        -Body (@{ query = $query } | ConvertTo-Json)
+
+    $dataRows = @($queryResponse.tables[0].rows | ForEach-Object {
+        $row = $_
+        $result = [PSCustomObject]@{}
+        for ($columnIndex = 0; $columnIndex -lt $queryResponse.tables[0].columns.Count; $columnIndex++) {
+            $result | Add-Member `
+                -MemberType NoteProperty `
+                -Name $queryResponse.tables[0].columns[$columnIndex].name `
+                -Value $row[$columnIndex]
+        }
+        $result
+    })
+}
+catch {
+    Write-Error "Failed to query Application Insights: $($_.Exception.Message)"
+    throw
+}
+
+$totalLogins = 0
+$latest7DayTotal = 0
+$maxLogins = 0
+$weekWindowStart = [DateTime]::UtcNow.Date.AddDays(-7)
+
+foreach ($row in $dataRows) {
+    $loginCount = if ($null -ne $row.logins_per_day) { [int]$row.logins_per_day } else { 0 }
+    $day = if ($null -ne $row.timestamp) { [DateTime]$row.timestamp } else { $null }
+    $totalLogins += $loginCount
+    if ($loginCount -gt $maxLogins) {
+        $maxLogins = $loginCount
+    }
+    if ($null -ne $day -and $day -ge $weekWindowStart) {
+        $latest7DayTotal += $loginCount
+    }
+}
+
+if ($dataRows.Count -eq 0) {
+    $htmlSummary = "<p><strong>No matching Manage Organisation login requests were recorded in the last 31 days.</strong></p>"
+    $htmlTable = ""
+    $htmlChart = ""
+}
+else {
+    $averageLogins = [Math]::Round($totalLogins / $dataRows.Count, 2)
+    $htmlSummary = @"
+<div class="summary-grid">
+  <div class="summary-card"><span>Last 31 days total</span><strong>$totalLogins</strong></div>
+  <div class="summary-card"><span>Last 7 days total</span><strong>$latest7DayTotal</strong></div>
+  <div class="summary-card"><span>Average per active day</span><strong>$averageLogins</strong></div>
+</div>
+"@
+
+    $htmlTable = "<table><thead><tr><th>Date</th><th>MO logins</th></tr></thead><tbody>"
+    $htmlChart = "<h3>Daily Manage Organisation logins</h3><div class=`"chart`">"
+    foreach ($row in $dataRows) {
+        $loginCount = if ($null -ne $row.logins_per_day) { [int]$row.logins_per_day } else { 0 }
+        $date = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
+        $barHeight = if ($maxLogins -gt 0) { [Math]::Round(($loginCount / $maxLogins) * 220) } else { 0 }
+        if ($barHeight -lt 4) {
+            $barHeight = 4
+        }
+        $htmlTable += "<tr><td>$date</td><td>$loginCount</td></tr>"
+        $htmlChart += "<div class=`"bar-column`"><strong>$loginCount</strong><div class=`"bar-area`"><div class=`"bar`" style=`"height:" + $barHeight + "px`"></div></div><span>$date</span></div>"
+    }
+    $htmlTable += "</tbody><tfoot><tr><th>Total</th><th>$totalLogins</th></tr></tfoot></table>"
+    $htmlChart += "</div>"
+}
+
+$csvPath = Join-Path ([System.IO.Path]::GetTempPath()) "ExUIMOLoginsStats_$(Get-Date -Format 'yyyyMMdd').csv"
+$csvRows = @($dataRows | ForEach-Object {
+    [PSCustomObject]@{
+        Date   = $_.Date
+        Logins = if ($null -ne $_.logins_per_day) { [int]$_.logins_per_day } else { 0 }
+    }
+})
+
+if ($csvRows.Count -eq 0) {
+    [System.IO.File]::WriteAllText($csvPath, "Date,Logins`n")
+}
+else {
+    $csvRows | Export-Csv -Path $csvPath -NoTypeInformation
+}
+$csvBase64 = [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($csvPath))
+
+$reportDate = [DateTime]::UtcNow.ToString("dd MMM yyyy")
+$emailBody = @"
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; color: #0b0c0c; }
+table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+th { background: #0b0c0c; color: white; }
+tfoot th { background: #005ea5; }
+.summary-grid { display: flex; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+.summary-card { background: #f3f2f1; border-left: 4px solid #005ea5; min-width: 180px; padding: 16px; }
+.summary-card span { display: block; color: #505a5f; font-size: 12px; text-transform: uppercase; }
+.summary-card strong { display: block; font-size: 24px; margin-top: 8px; }
+.chart { display: flex; align-items: flex-end; gap: 14px; overflow-x: auto; padding: 20px; }
+.bar-column { min-width: 58px; text-align: center; font-size: 10px; }
+.bar-area { align-items: flex-end; border-bottom: 2px solid #505a5f; display: flex; height: 220px; justify-content: center; margin: 5px 0; }
+.bar { background: #005ea5; border-radius: 3px 3px 0 0; width: 36px; }
+</style>
+</head>
+<body>
+<h2>ExUI Manage Organisation Logins Stats</h2>
+<p>Environment: <strong>$environment</strong></p>
+<p>Reporting date: <strong>$reportDate</strong></p>
+<p>Successful <code>POST /login</code> redirects for the <code>xuimowebapp</code> client over the last 31 days.</p>
+$htmlSummary
+$htmlTable
+$htmlChart
+<hr>
+<p><small><em>Generated on $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC.</em></small></p>
+</body>
+</html>
+"@
+
+try {
+    $communicationToken = (Get-AzAccessToken -ResourceUrl "https://communication.azure.com").Token
+    $emailPayload = @{
+        senderAddress = $senderaddress
+        recipients = @{
+            to = @(@{ address = $recipientaddress })
+        }
+        content = @{
+            subject = "ExUI MO Logins Stats - $environment - $reportDate"
+            html = $emailBody
+        }
+        attachments = @(
+            @{
+                name = "ExUIMOLoginsStats_$([DateTime]::UtcNow.ToString('yyyyMMdd')).csv"
+                contentType = "text/csv"
+                contentInBase64 = $csvBase64
+            }
+        )
+    }
+
+    $emailResponse = Invoke-RestMethod `
+        -Uri "https://$acsresourcename.communication.azure.com/emails:send?api-version=2023-03-31" `
+        -Method Post `
+        -Headers @{
+            Authorization = "Bearer $communicationToken"
+            "Content-Type" = "application/json"
+        } `
+        -Body ($emailPayload | ConvertTo-Json -Depth 10)
+
+    Write-Output "Email sent to $recipientaddress. Message ID: $($emailResponse.id)"
+}
+catch {
+    Write-Error "Failed to send the ExUI MO login stats email: $($_.Exception.Message)"
+    throw
+}
+finally {
+    if (Test-Path $csvPath) {
+        Remove-Item $csvPath -Force
+    }
+}
+EOT
+
+  tags = var.common_tags
+}
+
+resource "azurerm_automation_schedule" "exui_mo_logins_stats_schedule" {
+  count                   = var.exui_mo_logins_stats_enabled ? 1 : 0
+  name                    = "weekly-exui-mo-logins-stats-schedule"
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  frequency               = "Week"
+  interval                = 1
+  start_time              = timeadd(timestamp(), "10m")
+  timezone                = "UTC"
+  week_days               = ["Thursday"]
+
+  lifecycle {
+    ignore_changes = [start_time]
+  }
+}
+
+resource "azurerm_automation_job_schedule" "exui_mo_logins_stats_job" {
+  count                   = var.exui_mo_logins_stats_enabled ? 1 : 0
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  schedule_name           = azurerm_automation_schedule.exui_mo_logins_stats_schedule.0.name
+  runbook_name            = azurerm_automation_runbook.exui_mo_logins_stats_runbook.0.name
+
+  parameters = {
+    appinsightsappid = module.application_insights.app_id
+    acsresourcename  = azurerm_communication_service.comm_service.0.name
+    senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
+    recipientaddress = var.exui_mo_logins_stats_recipient_address
+    environment      = var.env
+  }
+
+  depends_on = [
+    azurerm_automation_runbook.exui_mo_logins_stats_runbook,
+    azurerm_automation_schedule.exui_mo_logins_stats_schedule,
+    azurerm_automation_module.az_communication
+  ]
+}
+
 resource "azurerm_automation_module" "az_communication" {
   count                   = local.reporting_enabled ? 1 : 0
   name                    = "Az.Communication"

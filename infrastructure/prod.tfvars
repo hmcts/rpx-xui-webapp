@@ -17,3 +17,6 @@ exui_throughput_stats_enabled = true
 
 # ExUI PUI Activations Reporting
 exui_pui_activations_enabled = true
+
+# ExUI Manage Organisation Login Stats Reporting
+exui_mo_logins_stats_enabled = true

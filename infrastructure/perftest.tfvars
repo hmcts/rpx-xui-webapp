@@ -14,3 +14,6 @@ exui_weekly_stats_enabled = false
 
 # ExUI Throughput Stats Reporting
 exui_throughput_stats_enabled = false
+
+# ExUI Manage Organisation Login Stats Reporting
+exui_mo_logins_stats_enabled = false

@@ -3612,9 +3612,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.21-v6":
-  version: 2.30.21-v6
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.21-v6"
+"@hmcts/rpx-xui-node-lib@npm:2.30.21-v7":
+  version: 2.30.21-v7
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.21-v7"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.18.1"
@@ -3633,7 +3633,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/b7ad7e0f57e721b9852f2819fc762bef8fedb4eaa549926bb92b8ac0c11e250358aff7e719c6c170af3d9589240acef59a6bddff4e2b9c3bd28609a1847a6b54
+  checksum: 10/c085c597cc10503755601295abd585f2d9995807f5b33aa87fa1d8b76adbda7cce32e9a99159bd0fe357b93beb0bd67aa3f7d2f352e691c9bc79f55682aae909
   languageName: node
   linkType: hard
 
@@ -10545,9 +10545,9 @@ __metadata:
   linkType: hard
 
 "bn.js@npm:^4.12.3":
-  version: 4.12.3
-  resolution: "bn.js@npm:4.12.3"
-  checksum: 10/57ed5a055f946f3e009f1589c45a5242db07f3dddfc72e4506f0dd9d8b145f0dbee4edabc2499288f3fc338eb712fb96a1c623a2ed2bcd49781df1a64db64dd1
+  version: 4.12.5
+  resolution: "bn.js@npm:4.12.5"
+  checksum: 10/be6afe3e31e812e240983a6661e4c8f31f7f5a28e6fc4fbd8ea04d18c887ce4a5089c4bd28d8495a535411deda84d1125f72bcfa253f223067d15f743d8e65a8
   languageName: node
   linkType: hard
 
@@ -16128,7 +16128,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^18.0.1, joi@npm:^18.1.2":
+"joi@npm:^18.0.1":
   version: 18.2.1
   resolution: "joi@npm:18.2.1"
   dependencies:
@@ -16158,6 +16158,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"joi@npm:^18.1.2":
+  version: 18.2.3
+  resolution: "joi@npm:18.2.3"
+  dependencies:
+    "@hapi/address": "npm:^5.1.1"
+    "@hapi/formula": "npm:^3.0.2"
+    "@hapi/hoek": "npm:^11.0.7"
+    "@hapi/pinpoint": "npm:^2.0.1"
+    "@hapi/tlds": "npm:^1.1.1"
+    "@hapi/topo": "npm:^6.0.2"
+    "@standard-schema/spec": "npm:^1.1.0"
+  checksum: 10/95beb88e78c884e1b2650837b31f1fecc52b035f1b48f771f5a4c07b2202a1fcce87819b4706734d708f277875f19c813b4c695246bdf9c65659f210b681a613
+  languageName: node
+  linkType: hard
+
 "jose@npm:^6.1.3":
   version: 6.2.2
   resolution: "jose@npm:6.2.2"
@@ -16166,9 +16181,9 @@ __metadata:
   linkType: hard
 
 "jose@npm:^6.2.2":
-  version: 6.2.3
-  resolution: "jose@npm:6.2.3"
-  checksum: 10/876974613c5ee988d43b65a34c96ce440dbf7706a2f07f465b8874af16ee532102e224459a7068d2c6ef044affe49690667d23ca12770c279804baec95a09608
+  version: 6.2.5
+  resolution: "jose@npm:6.2.5"
+  checksum: 10/d0e06fd0e0c3b3ea949049fc15db6724c60c1fa1fcb51ca830b2d513f6bbcaf70c4f80cc47cc463fed5991905846da6de323215413cdde057dc113cb694fc416
   languageName: node
   linkType: hard
 
@@ -20962,7 +20977,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.13"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.21-v6"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.21-v7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

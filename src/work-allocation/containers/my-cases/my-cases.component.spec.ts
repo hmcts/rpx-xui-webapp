@@ -13,12 +13,7 @@ import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants, ListConstants, SortConstants } from '../../../work-allocation/components/constants';
 import { SortOrder } from '../../../work-allocation/enums';
-import {
-  CaseworkerDataService,
-  LocationDataService,
-  WASupportedJurisdictionsService,
-  WorkAllocationCaseService,
-} from '../../services';
+import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
 import { MyCasesComponent } from './my-cases.component';
 
@@ -41,7 +36,6 @@ describe('MyCasesComponent', () => {
     infoMessageCommService = {},
     sessionStorageService = {},
     alertService = {},
-    caseworkerDataService = {},
     loadingService = {},
     featureToggleService = {},
     locationDataService = {},
@@ -63,7 +57,6 @@ describe('MyCasesComponent', () => {
       infoMessageCommService as InfoMessageCommService,
       sessionStorageService as SessionStorageService,
       alertService as AlertService,
-      caseworkerDataService as CaseworkerDataService,
       loadingService as LoadingService,
       locationDataService as LocationDataService,
       featureToggleService as FeatureToggleService,

@@ -6,8 +6,8 @@ import { AlertService, Jurisdiction, LoadingService, safeJsonParse } from '@hmct
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
-import { debounceTime, filter, first, map, mergeMap, switchMap } from 'rxjs/operators';
-import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
+import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
+import { HMCTSServiceDetails } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -17,16 +17,10 @@ import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
 import { CaseService, SortOrder } from '../../enums';
-import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import {
-  CaseworkerDataService,
-  LocationDataService,
-  WASupportedJurisdictionsService,
-  WorkAllocationCaseService,
-} from '../../services';
+import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
 import { handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
 
@@ -36,7 +30,6 @@ import { handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN }
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public specificPage: string = '';
-  public caseworkers: Caseworker[] = [];
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public locations$: Observable<Location[]>;
@@ -49,7 +42,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public supportedRoles$: Observable<Role[]>;
   protected allJurisdictions: Jurisdiction[];
   protected allRoles: Role[];
-  protected defaultLocation: string = 'all';
   private pCases: Case[];
   public selectedLocations: string[] = [];
 
@@ -81,7 +73,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly infoMessageCommService: InfoMessageCommService,
     protected readonly sessionStorageService: SessionStorageService,
     protected readonly alertService: AlertService,
-    protected readonly caseworkerService: CaseworkerDataService,
     protected readonly loadingService: LoadingService,
     protected readonly locationService: LocationDataService,
     protected readonly featureToggleService: FeatureToggleService,
@@ -223,19 +214,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     this.waSupportedJurisdictions$
       .pipe(switchMap((jurisdictions) => this.rolesService.getValidRoles(jurisdictions)))
       .subscribe((roles) => (this.allRoles = roles));
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userId = userInfo.id ? userInfo.id : userInfo.uid;
-      this.caseworkerService
-        .getUserByIdamId(userId)
-        .pipe(first())
-        .subscribe((caseworker) => {
-          if (caseworker?.location?.id) {
-            this.defaultLocation = caseworker.location.id;
-          }
-        });
-    }
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {

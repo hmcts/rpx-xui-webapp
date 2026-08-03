@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { EMPTY, forkJoin, Observable } from 'rxjs';
+import { EMPTY, forkJoin, Observable, of } from 'rxjs';
 import { catchError, mergeMap } from 'rxjs/operators';
 import { Caseworker } from '../models/dtos';
 
@@ -16,7 +16,7 @@ export class TaskResolver {
     private readonly caseworkerService: CaseworkerDataService
   ) {}
 
-  public resolve(route: ActivatedRouteSnapshot): Observable<{ task: Task; caseworkers: Caseworker[] }> {
+  public resolve(route: ActivatedRouteSnapshot): Observable<{ task: Task; caseworker: Caseworker | null }> {
     const task$ = this.service.getTask(route.paramMap.get('taskId')).pipe(
       catchError((error) => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
@@ -25,9 +25,13 @@ export class TaskResolver {
     );
     const caseworker$ = task$.pipe(
       mergeMap((task) => {
-        return this.caseworkerService.getUsersFromServices([task.task.jurisdiction]);
+        if (!task.task.assignee) {
+          // if no assignee, return no caseworker
+          return of(null);
+        }
+        return this.caseworkerService.getUserByIdamId(task.task.assignee);
       })
     );
-    return forkJoin({ task: task$, caseworkers: caseworker$ });
+    return forkJoin({ task: task$, caseworker: caseworker$ });
   }
 }

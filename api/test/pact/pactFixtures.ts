@@ -38,7 +38,6 @@ export interface CaseAssignmentResponseDto {
 
 export interface CaseAssignmentDto {
   case_id: string;
-  case_title: string;
   shared_with: SharedWithDto[];
 }
 

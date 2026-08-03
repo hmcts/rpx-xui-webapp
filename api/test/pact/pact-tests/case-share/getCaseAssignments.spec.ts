@@ -78,7 +78,6 @@ describe('Get Cases from CaseAssignment Api', () => {
 const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
   case_assignments: eachLike({
     case_id: string('1588234985453946'),
-    case_title: string('A case title'),
     shared_with: eachLike({
       idam_id: string('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
       first_name: string('Bill'),
@@ -91,7 +90,6 @@ const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
 
 function assertCaseAssignmentResponses(response: any) {
   expect(response[0].caseId).to.be.equal('1588234985453946');
-  expect(response[0].caseTitle).to.be.equal('A case title');
   expect(response[0].sharedWith[0].idamId).to.be.equal('221a2877-e1ab-4dc4-a9ff-f9424ad58738');
   expect(response[0].sharedWith[0].firstName).to.be.equal('Bill');
   expect(response[0].sharedWith[0].lastName).to.be.equal('Roberts');

@@ -1,5 +1,11 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
 import { expect, test } from '@playwright/test';
 
+import config from '../../E2E/utils/config.utils.js';
+import { applySessionCookiesAndExtractUserId } from '../../integration/helpers/sessionUser.helper.js';
 import {
   getConfiguredStaffAdminUserIdentifiers,
   getLegacyStaffAdminSessionIdentity,
@@ -134,6 +140,62 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
         })
       ).toBe(resolveSessionStorageKey(identity));
     } finally {
+      for (const [key, value] of Object.entries(previousEnv)) {
+        if (typeof value === 'string') {
+          process.env[key] = value;
+        } else {
+          delete process.env[key];
+        }
+      }
+    }
+  });
+
+  test('propagates the resolved pooled identity through the public session cookie path', async () => {
+    const tempDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'staff-admin-public-session-')));
+    const previousCwd = process.cwd();
+    const previousEnv: Record<string, string | undefined> = {
+      STAFF_ADMIN_POOL_ENABLED: process.env.STAFF_ADMIN_POOL_ENABLED,
+      TEST_PARALLEL_INDEX: process.env.TEST_PARALLEL_INDEX,
+    };
+    for (const key of staffAdminPoolCredentialEnvKeys) {
+      previousEnv[key] = process.env[key];
+      delete process.env[key];
+    }
+
+    try {
+      process.env.STAFF_ADMIN_POOL_ENABLED = 'true';
+      process.env.STAFF_ADMIN_2_USERNAME = 'staff-admin-2@example.test';
+      process.env.STAFF_ADMIN_2_PASSWORD = 'secret-2';
+      process.env.TEST_PARALLEL_INDEX = '1';
+      process.chdir(tempDir);
+
+      const identity = resolveSessionIdentity('STAFF_ADMIN');
+      const sessionsDir = path.join(tempDir, '.sessions');
+      const storageFile = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
+      const exuiHost = new URL(process.env.TEST_URL ?? config.urls.exuiDefaultUrl).hostname;
+      const idamHost = new URL(config.urls.idamWebUrl).hostname;
+      const cookies = [
+        { name: 'Idam.Session', value: 'idam-session', domain: idamHost, path: '/', expires: -1 },
+        { name: '__auth__', value: 'auth-session', domain: exuiHost, path: '/', expires: -1 },
+        { name: '__userid__', value: 'staff-admin-user-id', domain: exuiHost, path: '/', expires: -1 },
+      ];
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(storageFile, JSON.stringify({ cookies }));
+
+      const appliedCookies: unknown[] = [];
+      const page = {
+        context: () => ({
+          addCookies: async (values: unknown[]) => appliedCookies.push(...values),
+        }),
+      } as never;
+
+      await expect(applySessionCookiesAndExtractUserId(page, 'STAFF_ADMIN')).resolves.toBe('staff-admin-user-id');
+      expect(identity.userIdentifier).toBe('STAFF_ADMIN-2');
+      expect(appliedCookies).toEqual(cookies);
+      expect(test.info().annotations).toContainEqual({ type: 'session-user', description: 'STAFF_ADMIN-2' });
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
       for (const [key, value] of Object.entries(previousEnv)) {
         if (typeof value === 'string') {
           process.env[key] = value;

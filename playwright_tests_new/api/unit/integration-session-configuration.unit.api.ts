@@ -86,6 +86,105 @@ test.describe('integration session configuration', { tag: '@svc-internal' }, () 
     }
   });
 
+  test('clears a stale completion marker before catalogue validation fails', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-stale-marker-'));
+    const integrationDir = path.join(tempDir, 'playwright_tests_new', 'integration');
+    const completeFile = path.join(tempDir, 'session-configuration.complete');
+    const tagConfig = path.join(tempDir, 'tag-filter.json');
+    const previousCompleteFile = process.env[INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE_ENV];
+    const previousTagConfig = process.env.INTEGRATION_PW_TAG_FILTER_CONFIG;
+    const previousAllowEmptySelection = process.env.PLAYWRIGHT_ALLOW_EMPTY_TAG_SELECTION;
+
+    try {
+      fs.mkdirSync(integrationDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(integrationDir, 'uncatalogued.spec.ts'),
+        "test.describe('feature', { tag: ['@integration', '@integration-uncatalogued'] }, () => {});\n"
+      );
+      fs.writeFileSync(tagConfig, JSON.stringify({ availableTags: ['@integration'], excludedTags: [] }));
+      fs.writeFileSync(completeFile, 'stale\n');
+      process.env[INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE_ENV] = completeFile;
+      process.env.INTEGRATION_PW_TAG_FILTER_CONFIG = tagConfig;
+      process.env.PLAYWRIGHT_ALLOW_EMPTY_TAG_SELECTION = 'true';
+
+      await expect(globalSetup({ projects: [{ testDir: integrationDir }] } as FullConfig)).rejects.toThrow(
+        'Integration spec tag catalogue validation failed'
+      );
+      expect(fs.existsSync(completeFile)).toBe(false);
+    } finally {
+      if (previousCompleteFile === undefined) delete process.env[INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE_ENV];
+      else process.env[INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE_ENV] = previousCompleteFile;
+      if (previousTagConfig === undefined) delete process.env.INTEGRATION_PW_TAG_FILTER_CONFIG;
+      else process.env.INTEGRATION_PW_TAG_FILTER_CONFIG = previousTagConfig;
+      if (previousAllowEmptySelection === undefined) delete process.env.PLAYWRIGHT_ALLOW_EMPTY_TAG_SELECTION;
+      else process.env.PLAYWRIGHT_ALLOW_EMPTY_TAG_SELECTION = previousAllowEmptySelection;
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('validates only specs selected by the effective Playwright project patterns', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-selected-spec-tags-'));
+    const testDir = path.join(tempDir, 'test');
+
+    try {
+      fs.mkdirSync(testDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(testDir, 'selected.spec.ts'),
+        "test.describe('feature', { tag: ['@integration', '@integration-selected'] }, () => {});\n"
+      );
+      fs.writeFileSync(
+        path.join(testDir, 'ignored.spec.ts'),
+        "test.describe('feature', { tag: ['@integration', '@integration-uncatalogued'] }, () => {});\n"
+      );
+
+      expect(() =>
+        validateIntegrationSpecTagCatalogue(
+          [
+            {
+              testDir: tempDir,
+              testMatch: [/selected\.spec\.ts$/],
+              testIgnore: [/ignored\.spec\.ts$/],
+            },
+          ],
+          ['@integration', '@integration-selected'],
+          'tag-filter.json'
+        )
+      ).not.toThrow();
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('uses the same string glob semantics as the configured integration project', () => {
+    const testDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-session-config-string-glob-'));
+    const selectedDir = path.join(testDir, 'test', 'selected');
+    const ignoredDir = path.join(testDir, 'test', 'ignored');
+    fs.mkdirSync(selectedDir, { recursive: true });
+    fs.mkdirSync(ignoredDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(selectedDir, 'selected.spec.ts'),
+      "test.describe('selected', { tag: ['@integration', '@integration-selected'] }, () => {});"
+    );
+    fs.writeFileSync(
+      path.join(ignoredDir, 'ignored.spec.ts'),
+      "test.describe('ignored', { tag: ['@integration', '@integration-not-catalogued'] }, () => {});"
+    );
+
+    expect(() =>
+      validateIntegrationSpecTagCatalogue(
+        [
+          {
+            testDir,
+            testMatch: '**/test/**/*.spec.ts',
+            testIgnore: '**/test/ignored/**',
+          },
+        ],
+        ['@integration-selected'],
+        'tag-filter.json'
+      )
+    ).not.toThrow();
+  });
+
   test('rejects an integration spec without a static feature tag', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integration-untagged-spec-'));
     const specFile = path.join(tempDir, 'untagged.spec.ts');

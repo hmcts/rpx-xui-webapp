@@ -14,6 +14,7 @@ import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorag
 import { sanitizeUrl } from './failureClassification.js';
 import {
   SESSION_CAPTURE_LOGIN_ATTEMPTS,
+  SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
   UNEXPLAINED_IDAM_LOGIN_FAILURE,
   isTransientSessionCaptureError,
   isUnexplainedIdamLoginRejection,
@@ -46,6 +47,8 @@ const SESSION_CAPTURE_OWNER_BUDGET_MS =
 const SESSION_CAPTURE_LOCK_HEADROOM_MS = 15_000;
 const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_CAPTURE_LOCK_HEADROOM_MS;
 const SESSION_CAPTURE_LOCK_START_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
+// The integration timeout reserves its final 30 seconds for the journey after lazy capture.
+const SESSION_CAPTURE_POOL_BUDGET_MS = 150_000;
 const SESSION_CAPTURE_LOCK_UPDATE_MS = 5_000;
 // Automatic takeover inside a test run can let a suspended owner resume and overwrite
 // a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
@@ -511,6 +514,7 @@ type SessionCaptureDeps = {
   now?: () => number;
   expectedStaleSession?: Pick<LoadedSession, 'storageFile' | 'storageStateFingerprint'>;
   lockWaitMs?: number;
+  captureDeadlineAt?: number;
 };
 
 const setupMarkerByPage = new WeakMap<Page, string>();
@@ -523,6 +527,7 @@ const setupMarkerValues = [
   'waiting-shell',
   'shell-ready',
   'shell-timeout',
+  'service-down',
   'session-refresh',
   'idam-login',
   'setup-ready',
@@ -558,7 +563,7 @@ function resolveSessionMaxAgeMs(env: NodeJS.ProcessEnv = process.env): number {
  * Ensure session is captured for a given userIdentifier before tests run.
  * Call this in test.beforeAll() to lazily capture only needed sessions.
  */
-async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput): Promise<void> {
+async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput, captureDeadlineAt?: number): Promise<void> {
   const identity = resolveSessionIdentity(userIdentifier);
   const email = identity.email;
   const sessionStorageKey = resolveSessionStorageKey(identity);
@@ -586,7 +591,7 @@ async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput): P
   });
   // Do not force recapture here: when many workers race on a stale session,
   // lock waiters should be able to reuse the freshly captured session.
-  await sessionCapture([identity]);
+  await sessionCaptureWith([identity], { captureDeadlineAt });
 }
 
 function resolveSessionCandidates(userIdentifier: SessionIdentityInput): readonly SessionIdentityInput[] {
@@ -607,7 +612,10 @@ function readStorageStateFingerprint(fsApi: typeof fs, storageFile: string): str
 }
 
 export async function ensureSession(userIdentifier: SessionIdentityInput): Promise<void> {
-  await withOrderedSessionFallback(resolveSessionCandidates(userIdentifier), ensureSessionForIdentity);
+  const captureDeadlineAt = Date.now() + SESSION_CAPTURE_POOL_BUDGET_MS;
+  await withOrderedSessionFallback(resolveSessionCandidates(userIdentifier), (identity) =>
+    ensureSessionForIdentity(identity, captureDeadlineAt)
+  );
 }
 
 /**
@@ -673,13 +681,16 @@ export function loadSessionCookies(userIdentifier: SessionIdentityInput): Loaded
  * Ensure a session is captured and return the loaded cookies.
  * Retries once if the session file is missing or corrupted.
  */
-async function ensureSessionCookiesForIdentity(userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
-  await ensureSessionForIdentity(userIdentifier);
+async function ensureSessionCookiesForIdentity(
+  userIdentifier: SessionIdentityInput,
+  captureDeadlineAt?: number
+): Promise<LoadedSession> {
+  await ensureSessionForIdentity(userIdentifier, captureDeadlineAt);
   try {
     return loadSessionCookies(userIdentifier);
   } catch (error) {
     if (error instanceof StorageStateCorruptedError) {
-      await ensureSessionForIdentity(userIdentifier);
+      await ensureSessionForIdentity(userIdentifier, captureDeadlineAt);
       return loadSessionCookies(userIdentifier);
     }
     throw error;
@@ -687,15 +698,24 @@ async function ensureSessionCookiesForIdentity(userIdentifier: SessionIdentityIn
 }
 
 export async function ensureSessionCookies(userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
-  const selection = await withOrderedSessionFallback(resolveSessionCandidates(userIdentifier), ensureSessionCookiesForIdentity);
+  const captureDeadlineAt = Date.now() + SESSION_CAPTURE_POOL_BUDGET_MS;
+  const selection = await withOrderedSessionFallback(resolveSessionCandidates(userIdentifier), (identity) =>
+    ensureSessionCookiesForIdentity(identity, captureDeadlineAt)
+  );
   return selection.value;
 }
 
 /**
  * Ensure a session exists and add its cookies to the provided page context.
  */
-async function applySessionCookiesForIdentity(page: Page, userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
-  const session = await ensureSessionCookies(userIdentifier);
+async function applySessionCookiesForIdentity(
+  page: Page,
+  userIdentifier: SessionIdentityInput,
+  captureDeadlineAt?: number
+): Promise<LoadedSession> {
+  const session = captureDeadlineAt
+    ? await ensureSessionCookiesForIdentity(userIdentifier, captureDeadlineAt)
+    : await ensureSessionCookies(userIdentifier);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
   }
@@ -724,7 +744,10 @@ export async function applySessionCookiesFromPool(
   page: Page,
   candidates: readonly SessionIdentityInput[]
 ): Promise<{ userIdentifier: string; session: LoadedSession }> {
-  return applySessionCookiesFromPoolWith(page, candidates, applySessionCookies);
+  const captureDeadlineAt = Date.now() + SESSION_CAPTURE_POOL_BUDGET_MS;
+  return applySessionCookiesFromPoolWith(page, candidates, (candidatePage, identity) =>
+    applySessionCookiesForIdentity(candidatePage, identity, captureDeadlineAt)
+  );
 }
 
 async function isIdamLoginPage(page: Page): Promise<boolean> {
@@ -780,6 +803,7 @@ async function waitForAuthenticatedShell(
         {
           currentUrl: sanitizedPageUrl(page),
           preferredSelector: preferredSelector ?? 'none',
+          failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
         }
       );
     }
@@ -804,6 +828,30 @@ async function waitForAuthenticatedShell(
       .map((marker) => marker.name)
       .join(',')})`
   );
+}
+
+function isExpectedUnauthenticatedShellProbeFailure(error: unknown): boolean {
+  const message = toError(error).message;
+  return (
+    message.startsWith('Login page detected while waiting for app shell') || message.startsWith('App shell not detected within')
+  );
+}
+
+async function probeAuthenticatedShell(
+  page: Page,
+  userIdentifier: string,
+  preferredSelector: string | undefined,
+  timeoutMs: number,
+  waitForShell: typeof waitForAuthenticatedShell = waitForAuthenticatedShell
+): Promise<string | null> {
+  try {
+    return await waitForShell(page, userIdentifier, preferredSelector, timeoutMs);
+  } catch (error) {
+    if (isExpectedUnauthenticatedShellProbeFailure(error)) {
+      return null;
+    }
+    throw error;
+  }
 }
 
 /**
@@ -1126,7 +1174,7 @@ async function executeLoginAttempt(
 ): Promise<void> {
   await gotoLoginTarget(page, userIdentifier, loginTarget);
   await acceptAccessCookiesIfPresent(page);
-  const shellMarker = await waitForAuthenticatedShell(page, userIdentifier, undefined, 5_000).catch(() => null);
+  const shellMarker = await probeAuthenticatedShell(page, userIdentifier, undefined, 5_000);
   if (shellMarker) {
     logger.info('Authenticated shell detected without IDAM form login', {
       userIdentifier,
@@ -1192,7 +1240,7 @@ async function confirmAuthenticatedLogin(
 
   await acceptCookies(page);
   const [postLoginShell, hasAuthCookies] = await Promise.all([
-    waitForShell(page, userIdentifier, undefined, POST_LOGIN_AUTH_TIMEOUT_MS).catch(() => null),
+    probeAuthenticatedShell(page, userIdentifier, undefined, POST_LOGIN_AUTH_TIMEOUT_MS, waitForShell),
     waitForAuthCookies(page, POST_LOGIN_AUTH_TIMEOUT_MS),
   ]);
   if (!postLoginShell && !hasAuthCookies) {
@@ -1261,6 +1309,7 @@ async function loginAndPersistSession({
     return browserClosePromise;
   };
   let captureError: unknown;
+  let sessionPersisted = false;
   try {
     for (let captureAttempt = 1; captureAttempt <= SESSION_CAPTURE_LOGIN_ATTEMPTS; captureAttempt += 1) {
       const abortController = new AbortController();
@@ -1313,6 +1362,7 @@ async function loginAndPersistSession({
             `Session persistence timed out after ${SESSION_CAPTURE_PERSIST_BUDGET_MS}ms`,
             cancelAttempt
           );
+          sessionPersisted = true;
         } catch (error) {
           if (isSessionLockCompromisedError(error as Error)) {
             throw error;
@@ -1340,7 +1390,9 @@ async function loginAndPersistSession({
             error: evidence,
             operation: 'session-capture',
           });
-          const failureKind = isUnexplainedIdamLoginRejection(loginError) ? UNEXPLAINED_IDAM_LOGIN_FAILURE : undefined;
+          const failureKind =
+            (loginError as { context?: { failureKind?: string } }).context?.failureKind ??
+            (isUnexplainedIdamLoginRejection(loginError) ? UNEXPLAINED_IDAM_LOGIN_FAILURE : undefined);
           throw new SessionCaptureError(
             `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${SESSION_CAPTURE_LOGIN_ATTEMPTS} capture attempts: ${evidence}`,
             userIdentifier,
@@ -1415,7 +1467,7 @@ async function loginAndPersistSession({
     });
     if (captureError instanceof Error) {
       (captureError as ErrorWithBrowserCloseError).browserCloseError = browserCloseError;
-    } else if (captureError === undefined) {
+    } else if (!sessionPersisted && captureError === undefined) {
       captureError = browserCloseError;
     }
   }
@@ -1519,13 +1571,19 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         });
 
         const lockStartedAt = now();
+        const remainingCaptureBudgetMsBeforeLock =
+          deps.captureDeadlineAt === undefined ? undefined : Math.max(0, deps.captureDeadlineAt - lockStartedAt);
+        const maxLockWaitMs =
+          remainingCaptureBudgetMsBeforeLock === undefined
+            ? deps.lockWaitMs
+            : Math.min(deps.lockWaitMs ?? SESSION_CAPTURE_LOCK_WAIT_MS, remainingCaptureBudgetMsBeforeLock);
         release = await acquireSessionLock({
           lockfileApi,
           lockFilePath,
           userIdentifier: identity.userIdentifier,
           isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl: activeConfig.urls.idamWebUrl }),
           force: force || requiresLockedFailureClear,
-          maxWaitMs: deps.lockWaitMs,
+          maxWaitMs: maxLockWaitMs,
         });
         const lockWaitMs = Math.max(0, now() - lockStartedAt);
 
@@ -1624,11 +1682,15 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           return;
         }
 
-        if (lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS) {
+        const remainingCaptureBudgetMs = deps.captureDeadlineAt === undefined ? undefined : deps.captureDeadlineAt - now();
+        if (
+          (remainingCaptureBudgetMs !== undefined && remainingCaptureBudgetMs < SESSION_CAPTURE_OWNER_BUDGET_MS) ||
+          (remainingCaptureBudgetMs === undefined && lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS)
+        ) {
           throw new SessionCaptureError(
-            `Session lock became available for ${identity.userIdentifier} after ${lockWaitMs}ms; refusing to start a capture that cannot complete within the integration test budget`,
+            `Session capture cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget`,
             identity.userIdentifier,
-            { sessionPath, lockWaitMs }
+            { sessionPath, lockWaitMs, remainingCaptureBudgetMs }
           );
         }
 
@@ -1650,7 +1712,11 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           })
           .catch((error: Error) => {
             release!.assertOwned();
-            if (!isSessionLockCompromisedError(error)) {
+            const reusableSessionWasPersisted = isFresh(sessionPath, sessionMaxAgeMs, {
+              targetUrl,
+              idamUrl: activeConfig.urls.idamWebUrl,
+            });
+            if (!isSessionLockCompromisedError(error) && !reusableSessionWasPersisted) {
               writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error);
             }
             throw error;
@@ -1693,6 +1759,7 @@ export const __test__ = {
   sessionCaptureLockWaitMs: SESSION_CAPTURE_LOCK_WAIT_MS,
   sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
   sessionCaptureLockStartBudgetMs: SESSION_CAPTURE_LOCK_START_BUDGET_MS,
+  sessionCapturePoolBudgetMs: SESSION_CAPTURE_POOL_BUDGET_MS,
   sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
   sessionCaptureLockUpdateMs: SESSION_CAPTURE_LOCK_UPDATE_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
@@ -1718,6 +1785,8 @@ export const __test__ = {
   confirmAuthenticatedLogin,
   ensureAuthenticatedPage,
   loginAndPersistSession,
+  executeLoginAttempt,
   requirePersistableSessionCookies,
   waitForAuthenticatedShell,
+  probeAuthenticatedShell,
 };

@@ -20074,6 +20074,7 @@ __metadata:
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
     material-design-icons: "npm:^3.0.1"
+    minimatch: "npm:^3.1.5"
     mocha: "npm:^10.0.0"
     mochawesome: "npm:^7.0.0"
     moment-timezone: "npm:^0.5.28"

@@ -1,8 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { FullConfig } from '@playwright/test';
 import ts from 'typescript';
-import { validateIntegrationSessionConfiguration } from './integrationSessionConfiguration';
+import {
+  clearIntegrationSessionConfigurationMarker,
+  validateIntegrationSessionConfiguration,
+} from './integrationSessionConfiguration';
 import { resolveIntegrationSessionUsers } from '../integration/helpers';
 import * as playwrightConfigUtils from '../../playwright-config-utils';
 
@@ -21,11 +25,29 @@ export function resolveTagFiltersExport(module: unknown): ResolveTagFilters {
 }
 
 const resolveTagFilters = resolveTagFiltersExport(playwrightConfigUtils);
+const require = createRequire(import.meta.url);
+const minimatch = require('minimatch') as (
+  filePath: string,
+  pattern: string,
+  options: { nocase: boolean; dot: boolean }
+) => boolean;
 
-function resolveIntegrationTestDirs(fullConfig: FullConfig): string[] {
+type TestFilePattern = string | RegExp;
+type TestFilePatterns = TestFilePattern | TestFilePattern[] | undefined;
+type IntegrationTestProject = {
+  testDir: string;
+  testMatch?: TestFilePatterns;
+  testIgnore?: TestFilePatterns;
+};
+
+function resolveIntegrationTestProjects(fullConfig: FullConfig): IntegrationTestProject[] {
   return fullConfig.projects
     .filter((project) => project.testDir.replace(/\\/g, '/').endsWith('playwright_tests_new/integration'))
-    .map((project) => path.resolve(project.testDir));
+    .map((project) => ({
+      testDir: path.resolve(project.testDir),
+      testMatch: project.testMatch,
+      testIgnore: project.testIgnore,
+    }));
 }
 
 function integrationTagsFromSource(source: string, fileName: string): { featureTags: string[]; hasSuiteTag: boolean } {
@@ -106,6 +128,21 @@ function integrationTagsFromSource(source: string, fileName: string): { featureT
   return { featureTags: [...tags], hasSuiteTag };
 }
 
+function matchesAnyPattern(filePath: string, patterns: TestFilePatterns, matchesWhenEmpty = false): boolean {
+  const patternList = patterns === undefined ? [] : Array.isArray(patterns) ? patterns : [patterns];
+  if (!patternList.length) {
+    return matchesWhenEmpty;
+  }
+  return patternList.some((pattern) => {
+    if (typeof pattern === 'string') {
+      const normalizedPattern = pattern.startsWith('**/') ? pattern : `**/${pattern}`;
+      return minimatch(filePath, normalizedPattern, { nocase: true, dot: true });
+    }
+    pattern.lastIndex = 0;
+    return pattern.test(filePath);
+  });
+}
+
 function integrationSpecFiles(testDir: string): string[] {
   const files: string[] = [];
   for (const entry of fs.readdirSync(testDir, { withFileTypes: true })) {
@@ -119,14 +156,25 @@ function integrationSpecFiles(testDir: string): string[] {
   return files;
 }
 
-export function validateIntegrationSpecTagCatalogue(testDirs: string[], availableTags: string[], configPath: string): void {
+function selectedIntegrationSpecFiles(project: IntegrationTestProject): string[] {
+  return integrationSpecFiles(project.testDir).filter(
+    (specFile) => matchesAnyPattern(specFile, project.testMatch, true) && !matchesAnyPattern(specFile, project.testIgnore)
+  );
+}
+
+export function validateIntegrationSpecTagCatalogue(
+  testProjects: Array<string | IntegrationTestProject>,
+  availableTags: string[],
+  configPath: string
+): void {
   const availableTagSet = new Set(availableTags);
   const missingTags = new Map<string, string[]>();
   const missingSuiteTagSpecs: string[] = [];
   const untaggedSpecs: string[] = [];
 
-  for (const testDir of new Set(testDirs)) {
-    for (const specFile of integrationSpecFiles(testDir)) {
+  const projects = testProjects.map((project) => (typeof project === 'string' ? { testDir: project } : project));
+  for (const project of projects) {
+    for (const specFile of selectedIntegrationSpecFiles(project)) {
       const source = fs.readFileSync(specFile, 'utf8');
       const { featureTags, hasSuiteTag } = integrationTagsFromSource(source, specFile);
       if (!hasSuiteTag) {
@@ -177,14 +225,16 @@ function resolveIntegrationTagSelection(env: NodeJS.ProcessEnv) {
   });
 }
 
-async function globalSetup(fullConfig: FullConfig) {
-  const integrationTestDirs = resolveIntegrationTestDirs(fullConfig);
-  if (integrationTestDirs.length === 0) {
+export async function globalSetup(fullConfig: FullConfig) {
+  const integrationTestProjects = resolveIntegrationTestProjects(fullConfig);
+  if (integrationTestProjects.length === 0) {
     return;
   }
 
+  // The marker is a success-only signal. Clear it before any validation that can fail.
+  clearIntegrationSessionConfigurationMarker();
   const tagSelection = resolveIntegrationTagSelection(process.env);
-  validateIntegrationSpecTagCatalogue(integrationTestDirs, tagSelection.availableTags, tagSelection.configPath);
+  validateIntegrationSpecTagCatalogue(integrationTestProjects, tagSelection.availableTags, tagSelection.configPath);
   const userIdentifiers = resolveIntegrationSessionUsers(process.env, tagSelection);
   validateIntegrationSessionConfiguration(userIdentifiers);
 }

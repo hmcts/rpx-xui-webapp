@@ -10,7 +10,11 @@ import { createRequire } from 'node:module';
 import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
 import { withOrderedSessionFallback } from '../../common/orderedSessionFallback.js';
 import type { SessionIdentity } from '../../common/sessionIdentity.js';
-import { isExplicitIdamLoginRejection, isTransientSessionCaptureError } from '../../common/sessionCaptureRetry.js';
+import {
+  SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
+  isExplicitIdamLoginRejection,
+  isTransientSessionCaptureError,
+} from '../../common/sessionCaptureRetry.js';
 
 const require = createRequire(import.meta.url);
 const { INTEGRATION_TEST_TIMEOUT_MS, POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS } =
@@ -111,6 +115,14 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     const error = new Error('IDAM login did not establish authenticated session. IDAM page message: Incorrect email or password');
     expect(isExplicitIdamLoginRejection(error)).toBe(true);
     expect(isTransientSessionCaptureError(error)).toBe(false);
+  });
+
+  test('classifies an observed service-down page as transient', () => {
+    const error = Object.assign(new Error('Service down page detected while waiting for app shell'), {
+      context: { failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE },
+    });
+
+    expect(isTransientSessionCaptureError(error)).toBe(true);
   });
 
   test('classifies unknown IDAM business rejection as non-transient', () => {
@@ -399,23 +411,68 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(contexts.map((context) => context.closeCalls)).toEqual([1, 1]);
   });
 
-  test('fails a successful capture when browser shutdown rejects', async () => {
+  test('retries an observed service-down shell failure once', async () => {
+    const { launcher, contexts } = createLauncher();
+    let loginCalls = 0;
+    const locatorFor = (selector: string) => {
+      const locator = {
+        first: () => locator,
+        isVisible: async () => selector === 'exui-service-down',
+        click: async () => undefined,
+      };
+      return locator;
+    };
+    const serviceDownPage = {
+      goto: async () => undefined,
+      url: () => 'https://manage-case.example.test/service-down?state=secret',
+      locator: (selector: string) => locatorFor(selector),
+      getByRole: () => locatorFor('hidden'),
+      waitForTimeout: async () => undefined,
+    } as unknown as Page;
+
+    await sessionCaptureTest.loginAndPersistSession({
+      ...commonArgs,
+      chromiumLauncher: launcher as any,
+      executeLoginAttemptFn: async (_page, idamPage, userIdentifier, email, password, loginTarget, attemptIndex) => {
+        loginCalls += 1;
+        if (loginCalls === 1) {
+          await sessionCaptureTest.executeLoginAttempt(
+            serviceDownPage,
+            idamPage,
+            userIdentifier,
+            email,
+            password,
+            loginTarget,
+            attemptIndex
+          );
+        }
+      },
+    });
+
+    expect(loginCalls).toBe(2);
+    expect(contexts).toHaveLength(2);
+  });
+
+  test('keeps a successfully persisted capture when browser shutdown rejects', async () => {
     const { launcher, browserState, contexts } = createLauncher({
       closeBrowser: async () => {
         throw new Error('browser close failed');
       },
     });
+    let persisted = false;
 
     await expect(
       sessionCaptureTest.loginAndPersistSession({
         ...commonArgs,
         chromiumLauncher: launcher as any,
         executeLoginAttemptFn: async () => undefined,
+        persist: async () => {
+          persisted = true;
+        },
       })
-    ).rejects.toThrow(
-      'Session capture cleanup failed for IAC_Judge_WA_R1 at https://manage-case.example.test/: browser close failed'
-    );
+    ).resolves.toBeUndefined();
 
+    expect(persisted).toBe(true);
     expect(contexts).toHaveLength(1);
     expect(contexts[0].closeCalls).toBe(1);
     expect(browserState.closeCalls).toBe(1);
@@ -448,7 +505,7 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     expect(browserState.closeCalls).toBe(1);
   });
 
-  test('fails a successful capture when browser shutdown exceeds its budget', async () => {
+  test('keeps a successfully persisted capture when browser shutdown exceeds its budget', async () => {
     const { launcher, browserState } = createLauncher({
       closeBrowser: () => new Promise<void>(() => undefined),
     });
@@ -459,9 +516,7 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
         chromiumLauncher: launcher as any,
         executeLoginAttemptFn: async () => undefined,
       })
-    ).rejects.toThrow(
-      `Session capture cleanup failed for IAC_Judge_WA_R1 at https://manage-case.example.test/: Browser close timed out after ${sessionCaptureTest.sessionCaptureBrowserCloseBudgetMs}ms`
-    );
+    ).resolves.toBeUndefined();
 
     expect(browserState.closeCalls).toBe(1);
   });

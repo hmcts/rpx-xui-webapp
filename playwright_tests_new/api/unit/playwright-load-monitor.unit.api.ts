@@ -41,6 +41,7 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
       label: string;
       eventsFile: string;
       stopFile: string;
+      stopFileMaxRuntimeMs: number;
     };
     commandArgs: string[];
   };
@@ -48,6 +49,12 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
     isCiLikeEnvironment: (env: Record<string, string | undefined>) => boolean;
     runMonitoredCommand: (commandArgs: string[], options: Record<string, unknown>) => Promise<number>;
     runUntilStopFile: (options: Record<string, unknown>) => Promise<number>;
+    writeProfileArtifacts: (
+      outputFolder: string,
+      summary: Summary,
+      samples: unknown[],
+      options?: { preserveExistingReport?: boolean }
+    ) => boolean;
   };
 };
 
@@ -340,6 +347,63 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(fs.existsSync(path.join(outputFolder, 'load-profile.html'))).toBe(true);
   });
 
+  test('flushes a bounded monitor report when Jenkins cannot create its stop file', async () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-max-runtime-'));
+
+    try {
+      await expect(
+        loadMonitor.__test__.runUntilStopFile({
+          outputFolder,
+          reportFolder: outputFolder,
+          sampleIntervalMs: 5,
+          childIdleTimeoutMs: 0,
+          childCloseGraceMs: 0,
+          childTerminateGraceMs: 20,
+          label: 'bounded-jenkins-stage',
+          eventsFile: '',
+          stopFile: path.join(outputFolder, 'stop'),
+          stopFileMaxRuntimeMs: 25,
+        })
+      ).resolves.toBe(0);
+
+      const summary = JSON.parse(fs.readFileSync(path.join(outputFolder, 'summary.json'), 'utf8'));
+      expect(summary.stopReason).toBe('max-runtime');
+      expect(fs.readFileSync(path.join(outputFolder, 'load-profile.html'), 'utf8')).toContain('max-runtime');
+    } finally {
+      fs.rmSync(outputFolder, { recursive: true, force: true });
+    }
+  });
+
+  test('does not overwrite Jenkins fallback report when a late monitor flush completes', () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-preserve-fallback-'));
+    const reportPath = path.join(outputFolder, 'load-profile.html');
+    const fallbackReport = '<html><body>Jenkins fallback report</body></html>';
+    fs.writeFileSync(reportPath, fallbackReport, 'utf8');
+
+    const published = loadMonitor.__test__.writeProfileArtifacts(outputFolder, reportSummary(), [], {
+      preserveExistingReport: true,
+    });
+
+    expect(published).toBe(false);
+    expect(fs.readFileSync(reportPath, 'utf8')).toBe(fallbackReport);
+    fs.rmSync(outputFolder, { recursive: true, force: true });
+  });
+
+  test('replaces an earlier report for a normal completed command', () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-replace-report-'));
+    const reportPath = path.join(outputFolder, 'load-profile.html');
+
+    try {
+      fs.writeFileSync(reportPath, '<html><body>previous report</body></html>', 'utf8');
+      const published = loadMonitor.__test__.writeProfileArtifacts(outputFolder, reportSummary(), []);
+
+      expect(published).toBe(true);
+      expect(fs.readFileSync(reportPath, 'utf8')).toContain('<title>Playwright load profile</title>');
+    } finally {
+      fs.rmSync(outputFolder, { recursive: true, force: true });
+    }
+  });
+
   test('flushes the real report after a stop file without relying on a visible monitor PID', async () => {
     const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-process-'));
     const stopFile = path.join(outputFolder, 'stop');
@@ -572,6 +636,22 @@ function sample(overrides: Record<string, unknown>) {
     },
     ...overrides,
   };
+}
+
+function reportSummary(): Summary {
+  return loadMonitor.buildSummary(
+    {
+      command: ['jenkins-functional-stages'],
+      startEpochMs: Date.now() - 1_000,
+      sampleIntervalMs: 1_000,
+      effectiveCpuCount: 4,
+      totalMemoryBytes: 8 * 1024 ** 3,
+      workers: 'config-default',
+      shard: '',
+    },
+    [sample({})],
+    0
+  );
 }
 
 function withTemporaryEnv(overrides: Record<string, string | undefined>, callback: () => void) {

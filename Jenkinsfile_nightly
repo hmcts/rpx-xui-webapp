@@ -117,36 +117,38 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
 def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
     def safeReportName = reportName.replaceAll(/[^A-Za-z0-9._-]/, '-')
     def slimReportDir = "functional-output/tests/playwright-published-reports/load-profile/${safeReportName}"
-    steps.sh """
-      set +e
-      node scripts/ensure-load-profile-report.js \\
-        --report-dir '${reportDir}' \\
-        --report-file '${playwrightLoadProfileReportFile}' \\
-        --report-name '${reportName}' \\
-        --wait-ms 30000
-      if [ -f '${reportDir}/monitor.log' ]; then
-        cat '${reportDir}/monitor.log'
-      fi
-    """
-    steps.sh """
-      set +e
-      mkdir -p '${slimReportDir}'
-      if [ -f '${reportDir}/${playwrightLoadProfileReportFile}' ]; then
+    try {
+      steps.sh """
+        node scripts/ensure-load-profile-report.js \\
+          --report-dir '${reportDir}' \\
+          --report-file '${playwrightLoadProfileReportFile}' \\
+          --report-name '${reportName}' \\
+          --wait-ms 30000
+        if [ -f '${reportDir}/monitor.log' ]; then
+          cat '${reportDir}/monitor.log'
+        fi
+        mkdir -p '${slimReportDir}'
         cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
-      fi
-    """
-    steps.archiveArtifacts(
-      allowEmptyArchive: true,
-      artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}"
-    )
-    publishHTML([
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "${slimReportDir}/",
-      reportFiles          : playwrightLoadProfileReportFile,
-      reportName           : reportName
-    ])
+      """
+      steps.archiveArtifacts(allowEmptyArchive: false, artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}")
+      publishHTML([
+        allowMissing         : false,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "${slimReportDir}/",
+        reportFiles          : playwrightLoadProfileReportFile,
+        reportName           : reportName
+      ])
+    } catch (Exception publishException) {
+      if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+        throw publishException
+      }
+      if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+        throw publishException
+      }
+      currentBuild.result = 'UNSTABLE'
+      echo "[playwright-load-profile] Report publication failed; marking build unstable: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
+    }
 }
 
 def startPlaywrightLoadProfile = { String reportDir, String label, String eventsFile ->

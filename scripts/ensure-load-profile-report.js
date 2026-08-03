@@ -109,8 +109,7 @@ function buildFallbackReportHtml(options) {
     <h1>${escapeHtml(options.reportName)}</h1>
     <div class="warning">
       <strong>System load profile was not generated before Jenkins publishing.</strong>
-      <p>The monitor was interrupted or did not flush <code>${escapeHtml(options.reportFile || DEFAULT_REPORT_FILE)}</code>
-      before Jenkins reached the publishing step. Jenkins generated this fallback so failed runs still expose a
+      <p>A real profile was not available by the Jenkins publishing deadline. Jenkins generated this fallback so failed runs still expose a
       System Load artifact.</p>
     </div>
     <div class="meta">

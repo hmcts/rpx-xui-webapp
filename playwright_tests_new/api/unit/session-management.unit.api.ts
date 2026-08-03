@@ -336,6 +336,92 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('does not start a fallback capture after the shared pool budget is exhausted', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-pool-deadline-unit-'));
+    const previousCwd = process.cwd();
+    const primary: SessionIdentity = { userIdentifier: 'PRIMARY', email: 'primary@example.test', password: 'not-used' };
+    const fallback: SessionIdentity = { userIdentifier: 'FALLBACK', email: 'fallback@example.test', password: 'not-used' };
+    let now = 0;
+    const loginAttempts: string[] = [];
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        withOrderedSessionFallback([primary, fallback], async (identity) => {
+          await sessionCaptureTest.sessionCaptureWith([identity], {
+            chromiumLauncher: {} as never,
+            captureDeadlineAt: sessionCaptureTest.sessionCapturePoolBudgetMs,
+            config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+            env: {},
+            isSessionFresh: () => false,
+            lockfile: fakeLockfile(),
+            loginAndPersistSession: async ({ userIdentifier }) => {
+              loginAttempts.push(userIdentifier);
+              now = sessionCaptureTest.sessionCapturePoolBudgetMs - sessionCaptureTest.sessionCaptureOwnerBudgetMs + 1;
+              throw new SessionCaptureError('IDAM login did not establish authenticated session', userIdentifier, {
+                failureKind: 'unexplained-idam-login-rejection',
+              });
+            },
+            now: () => now,
+            resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+          });
+          return identity.userIdentifier;
+        })
+      ).rejects.toThrow('refusing to start a capture that cannot complete within the integration test budget');
+
+      expect(loginAttempts).toEqual(['PRIMARY']);
+      expect(fs.readdirSync(path.join(tempDir, '.sessions')).filter((name) => name.includes('fallback'))).toEqual([
+        `${resolveSessionStorageKey(fallback)}.lock`,
+      ]);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('caps a held lock wait to the remaining shared pool budget', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-pool-lock-budget-unit-'));
+    const previousCwd = process.cwd();
+    const startedAt = Date.now();
+    let loginCalled = false;
+    const heldLockfile = {
+      lock: async () => {
+        const error = new Error('Lock file is already being held');
+        Object.assign(error, { code: 'ELOCKED' });
+        throw error;
+      },
+    } as never;
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['POOL_LOCK_USER'], {
+          chromiumLauncher: {} as never,
+          captureDeadlineAt: startedAt + 25,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: heldLockfile,
+          loginAndPersistSession: async () => {
+            loginCalled = true;
+          },
+          now: Date.now,
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'POOL_LOCK_USER',
+            email: 'pool-lock-user@example.test',
+            password: 'not-used',
+          }),
+        })
+      ).rejects.toThrow('Timed out waiting for session lock');
+
+      expect(Date.now() - startedAt).toBeLessThan(500);
+      expect(loginCalled).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
 
@@ -458,6 +544,32 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
     expect(capturedError?.message).toContain('Service down page detected while waiting for app shell');
     expect(capturedError?.context.currentUrl).toBe('https://manage-case.aat.platform.hmcts.net/service-down');
+    expect(capturedError?.context.failureKind).toBe('service-down');
+
+    await expect(
+      sessionCaptureTest.probeAuthenticatedShell(page as never, 'SOLICITOR', 'exui-header', 1, async () => {
+        throw capturedError;
+      })
+    ).rejects.toBe(capturedError);
+  });
+
+  test('does not suppress a later unexpected shell failure after an IDAM probe', async () => {
+    const hidden = hiddenLocator();
+    const page = {
+      url: () => 'https://idam-web-public.aat.platform.hmcts.net/login',
+      locator: () => hidden,
+      getByRole: () => hidden,
+      waitForTimeout: async () => undefined,
+    };
+
+    await expect(sessionCaptureTest.waitForAuthenticatedShell(page as never, 'SOLICITOR', undefined, 1)).rejects.toThrow(
+      'Login page detected while waiting for app shell'
+    );
+    await expect(
+      sessionCaptureTest.probeAuthenticatedShell(page as never, 'SOLICITOR', undefined, 1, async () => {
+        throw new Error('unexpected browser disconnect after IDAM login');
+      })
+    ).rejects.toThrow('unexpected browser disconnect after IDAM login');
   });
 
   test('strict storage reuse refreshes when the cached state is no longer authenticated server-side', async () => {
@@ -944,6 +1056,86 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       const marker = JSON.parse(fs.readFileSync(failurePath, 'utf8'));
       expect(marker.message).toBe('both transient login attempts failed');
       expect(marker.storageStateFingerprint).toBe(sessionCaptureTest.storageStateFingerprint(rejectedContents));
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('does not write a cooldown marker when cleanup fails after a reusable session was persisted', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-cleanup-marker-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'CLEANUP_USER',
+      email: 'cleanup@example.test',
+      password: 'not-used',
+    };
+    const storageKey = resolveSessionStorageKey(identity);
+    const sessionPath = path.join(tempDir, '.sessions', `${storageKey}.storage.json`);
+    const failurePath = path.join(tempDir, '.sessions', `${storageKey}.capture-failed.json`);
+    let secondLoginCalled = false;
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: {
+            urls: {
+              exuiDefaultUrl: 'https://manage-case.example.test',
+              idamWebUrl: 'https://idam.example.test',
+            },
+          } as never,
+          env: {},
+          lockfile: fakeLockfile(),
+          loginAndPersistSession: async () => {
+            fs.writeFileSync(
+              sessionPath,
+              JSON.stringify({
+                cookies: [
+                  {
+                    name: 'Idam.Session',
+                    value: 'idam-session',
+                    domain: 'idam.example.test',
+                    path: '/',
+                    expires: Math.floor(Date.now() / 1_000) + 600,
+                  },
+                  {
+                    name: '__auth__',
+                    value: 'authenticated',
+                    domain: 'manage-case.example.test',
+                    path: '/',
+                    expires: Math.floor(Date.now() / 1_000) + 600,
+                  },
+                ],
+              })
+            );
+            throw new Error('browser close failed after persistence');
+          },
+          resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+        })
+      ).rejects.toThrow('browser close failed after persistence');
+
+      expect(fs.existsSync(sessionPath)).toBe(true);
+      expect(fs.existsSync(failurePath)).toBe(false);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: {
+            urls: {
+              exuiDefaultUrl: 'https://manage-case.example.test',
+              idamWebUrl: 'https://idam.example.test',
+            },
+          } as never,
+          env: {},
+          lockfile: fakeLockfile(),
+          loginAndPersistSession: async () => {
+            secondLoginCalled = true;
+          },
+          resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+        })
+      ).resolves.toBeUndefined();
+      expect(secondLoginCalled).toBe(false);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });

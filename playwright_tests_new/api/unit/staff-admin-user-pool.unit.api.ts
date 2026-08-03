@@ -74,6 +74,12 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 4 }, configuredEnv)).toBe('STAFF_ADMIN-1');
   });
 
+  test('honours an explicit zero parallel index over a configured environment index', () => {
+    expect(
+      resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 0 }, { ...configuredEnv, TEST_PARALLEL_INDEX: '2' })
+    ).toBe('STAFF_ADMIN-1');
+  });
+
   test('keeps non-staff-admin user identifiers unchanged', () => {
     expect(resolveStaffAdminUserIdentifier('SOLICITOR', { parallelIndex: 1 }, configuredEnv)).toBe('SOLICITOR');
   });

@@ -5,14 +5,19 @@ import { resolveSessionIdentity } from './sessionIdentity.js';
 
 export const INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE_ENV = 'PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE';
 
+export function clearIntegrationSessionConfigurationMarker(env: NodeJS.ProcessEnv = process.env): void {
+  const completeFile = env[INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE_ENV]?.trim();
+  if (completeFile) {
+    fs.rmSync(completeFile, { force: true });
+  }
+}
+
 export function validateIntegrationSessionConfiguration(
   userIdentifiers: readonly SessionIdentityInput[],
   env: NodeJS.ProcessEnv = process.env
 ): void {
   const completeFile = env[INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE_ENV]?.trim();
-  if (completeFile) {
-    fs.rmSync(completeFile, { force: true });
-  }
+  clearIntegrationSessionConfigurationMarker(env);
 
   userIdentifiers.forEach((userIdentifier) => resolveSessionIdentity(userIdentifier));
 

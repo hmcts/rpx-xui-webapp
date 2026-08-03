@@ -10,6 +10,7 @@ const DEFAULT_SAMPLE_INTERVAL_MS = 2000;
 const DEFAULT_CHILD_IDLE_TIMEOUT_MS = isCiLikeEnvironment(process.env) ? 120_000 : 0;
 const DEFAULT_CHILD_CLOSE_GRACE_MS = isCiLikeEnvironment(process.env) ? 5_000 : 0;
 const DEFAULT_CHILD_TERMINATE_GRACE_MS = 10_000;
+const DEFAULT_STOP_FILE_MAX_RUNTIME_MS = isCiLikeEnvironment(process.env) ? 4 * 60 * 60_000 : 0;
 const DEFAULT_OUTPUT_FOLDER = 'functional-output/tests/playwright-load-profile';
 const DEFAULT_REPORT_FOLDER = 'functional-output/tests/playwright-integration/odhin-report';
 const SUMMARY_FILE = 'summary.json';
@@ -35,6 +36,10 @@ function parseArgs(argv) {
     label: process.env.PW_LOAD_PROFILE_LABEL ?? '',
     eventsFile: process.env.PW_LOAD_PROFILE_EVENTS_FILE ?? '',
     stopFile: process.env.PW_LOAD_PROFILE_STOP_FILE ?? '',
+    stopFileMaxRuntimeMs: parseNonNegativeInteger(
+      process.env.PW_LOAD_PROFILE_STOP_FILE_MAX_RUNTIME_MS,
+      DEFAULT_STOP_FILE_MAX_RUNTIME_MS
+    ),
   };
 
   for (let index = 0; index < optionArgs.length; index += 1) {
@@ -66,6 +71,9 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg === '--stop-file' && next) {
       options.stopFile = next;
+      index += 1;
+    } else if (arg === '--stop-file-max-runtime-ms' && next) {
+      options.stopFileMaxRuntimeMs = parseNonNegativeInteger(next, DEFAULT_STOP_FILE_MAX_RUNTIME_MS);
       index += 1;
     }
   }
@@ -385,16 +393,21 @@ async function runUntilStopFile(options) {
   const samples = [];
   const sample = createSampler(metadata);
   samples.push(sample());
+  let stopReason = 'stop-file';
 
   const exitCode = await new Promise((resolve) => {
     let settled = false;
-    const finish = (code) => {
+    const finish = (code, reason = 'stop-file') => {
       if (settled) {
         return;
       }
       settled = true;
+      stopReason = reason;
       clearInterval(sampleTimer);
       clearInterval(stopTimer);
+      if (maxRuntimeTimer) {
+        clearTimeout(maxRuntimeTimer);
+      }
       process.removeListener('SIGTERM', stopOnSignal);
       process.removeListener('SIGINT', stopOnSignal);
       resolve(code);
@@ -403,21 +416,30 @@ async function runUntilStopFile(options) {
     const stopTimer = setInterval(
       () => {
         if (fs.existsSync(options.stopFile)) {
-          finish(0);
+          finish(0, 'stop-file');
         }
       },
       Math.min(options.sampleIntervalMs, 1000)
     );
 
-    const stopOnSignal = () => finish(0);
+    const maxRuntimeTimer = options.stopFileMaxRuntimeMs
+      ? setTimeout(() => {
+          console.error(
+            `[load-profile] monitor reached its ${options.stopFileMaxRuntimeMs}ms maximum runtime before the stop file was observed`
+          );
+          finish(0, 'max-runtime');
+        }, options.stopFileMaxRuntimeMs)
+      : undefined;
+    const stopOnSignal = () => finish(0, 'signal');
     process.once('SIGTERM', stopOnSignal);
     process.once('SIGINT', stopOnSignal);
     console.log(`[load-profile] monitoring until ${options.stopFile}`);
   });
 
   samples.push(sample());
+  metadata.stopReason = stopReason;
   const summary = buildSummary(metadata, samples, exitCode, readTimelineEvents(options.eventsFile));
-  writeProfileArtifacts(options.outputFolder, summary, samples);
+  writeProfileArtifacts(options.outputFolder, summary, samples, { preserveExistingReport: true });
   return exitCode;
 }
 
@@ -593,14 +615,29 @@ function summarizeValues(values) {
   };
 }
 
-function writeProfileArtifacts(outputFolder, summary, samples) {
+function writeProfileArtifacts(outputFolder, summary, samples, { preserveExistingReport = false } = {}) {
   fs.mkdirSync(outputFolder, { recursive: true });
+  const reportPath = path.join(outputFolder, REPORT_FILE);
   fs.writeFileSync(path.join(outputFolder, SUMMARY_FILE), `${JSON.stringify(summary, null, 2)}\n`);
   fs.writeFileSync(path.join(outputFolder, SAMPLES_FILE), `${JSON.stringify(samples, null, 2)}\n`);
-  const reportPath = path.join(outputFolder, REPORT_FILE);
   const temporaryReportPath = `${reportPath}.${process.pid}.tmp`;
   fs.writeFileSync(temporaryReportPath, buildLoadProfileHtml(summary, samples));
-  fs.renameSync(temporaryReportPath, reportPath);
+  try {
+    if (preserveExistingReport) {
+      fs.linkSync(temporaryReportPath, reportPath);
+    } else {
+      fs.renameSync(temporaryReportPath, reportPath);
+    }
+    return true;
+  } catch (error) {
+    if (preserveExistingReport && error?.code === 'EEXIST') {
+      console.warn(`[load-profile] report already exists at ${reportPath}; preserving the published report`);
+      return false;
+    }
+    throw error;
+  } finally {
+    fs.rmSync(temporaryReportPath, { force: true });
+  }
 }
 
 function buildLoadProfileHtml(summary, samples) {
@@ -669,6 +706,10 @@ function buildSummaryTable(summary, relativeProfilePath) {
     ['Memory limit', formatBytes(summary.cgroupMemoryLimitBytes ?? summary.totalMemoryBytes)],
     ['Samples', summary.sampleCount],
   ];
+
+  if (summary.stopReason) {
+    rows.push(['Stop reason', summary.stopReason]);
+  }
 
   if (relativeProfilePath) {
     rows.push(['Standalone profile', `<a href="${escapeHtml(relativeProfilePath)}">open load-profile.html</a>`]);
@@ -932,5 +973,6 @@ module.exports = {
     parseNonNegativeInteger,
     runMonitoredCommand,
     runUntilStopFile,
+    writeProfileArtifacts,
   },
 };

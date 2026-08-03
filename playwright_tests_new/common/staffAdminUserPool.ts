@@ -28,7 +28,7 @@ function isStaffAdminPoolEnabled(env: EnvMap): boolean {
 }
 
 function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = process.env): number {
-  if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) > 0) {
+  if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) >= 0) {
     return Number(source?.parallelIndex);
   }
 

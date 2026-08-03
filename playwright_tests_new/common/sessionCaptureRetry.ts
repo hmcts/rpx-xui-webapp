@@ -21,6 +21,13 @@ const transientNavigationTimeoutPatterns = [
 
 export const SESSION_CAPTURE_LOGIN_ATTEMPTS = 2;
 export const UNEXPLAINED_IDAM_LOGIN_FAILURE = 'unexplained-idam-login-rejection';
+export const SERVICE_DOWN_SESSION_CAPTURE_FAILURE = 'service-down';
+
+function sessionCaptureFailureKind(error: unknown): unknown {
+  return error && typeof error === 'object' && 'context' in error
+    ? (error as { context?: { failureKind?: unknown } }).context?.failureKind
+    : undefined;
+}
 
 export function isIdamLoginRejection(error: unknown): boolean {
   const message = errorMessage(error);
@@ -40,11 +47,7 @@ export function isExplicitIdamLoginRejection(error: unknown): boolean {
 }
 
 export function isUnexplainedIdamLoginRejection(error: unknown): boolean {
-  const context =
-    error && typeof error === 'object' && 'context' in error
-      ? (error as { context?: { failureKind?: unknown } }).context
-      : undefined;
-  if (context?.failureKind === UNEXPLAINED_IDAM_LOGIN_FAILURE) {
+  if (sessionCaptureFailureKind(error) === UNEXPLAINED_IDAM_LOGIN_FAILURE) {
     return true;
   }
 
@@ -58,6 +61,9 @@ export function isTransientSessionCaptureError(error: unknown): boolean {
   }
   if (isExplicitIdamLoginRejection(error)) {
     return false;
+  }
+  if (sessionCaptureFailureKind(error) === SERVICE_DOWN_SESSION_CAPTURE_FAILURE) {
+    return true;
   }
   const message = errorMessage(error);
   const matchesTransientPattern = transientSessionCapturePatterns.some((pattern) => pattern.test(message));

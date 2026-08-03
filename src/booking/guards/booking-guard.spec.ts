@@ -24,7 +24,7 @@ describe('BookingGuard', () => {
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
-      roleCategory: 'JUDICIAL',
+      roleCategories: ['JUDICIAL'],
       active: true,
       roles: [
         'caseworker',

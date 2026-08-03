@@ -16444,6 +16444,8 @@ __metadata:
 "jui@workspace:api":
   version: 0.0.0-use.local
   resolution: "jui@workspace:api"
+  dependencies:
+    openid-client: "npm:6.8.4"
   languageName: unknown
   linkType: soft
 
@@ -21073,7 +21075,6 @@ __metadata:
     nodemon: "npm:^2.0.19"
     npm-run-all2: "npm:^7.0.0"
     odhin-reports-playwright: "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch"
-    openid-client: "npm:6.8.4"
     otplib: "npm:^13.4.0"
     pegjs: "npm:^0.10.0"
     playwright: "npm:1.61.1"

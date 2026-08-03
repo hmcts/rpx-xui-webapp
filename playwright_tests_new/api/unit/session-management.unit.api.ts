@@ -11,6 +11,8 @@ import { resolveSessionStorageKey, type SessionIdentity } from '../../common/ses
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
 import { SessionCaptureError } from '../utils/errors.js';
 
+test.describe.configure({ mode: 'serial' });
+
 function fakeSessionPage() {
   const locator = {
     first: () => locator,
@@ -261,6 +263,59 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       expect(staleFilePresentAtLogin).toBe(false);
       expect(fs.readFileSync(sessionPath, 'utf8')).toBe(replacementContents);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('does not delete a rejected session after lock ownership is compromised', async () => {
+    const tempDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-compromised-delete-')));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_COMPROMISED_DELETE_USER',
+      email: 'compromised-delete@example.test',
+      password: 'not-used',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
+    const rejectedContents = JSON.stringify({ cookies: [{ name: 'rejected', value: 'session' }] });
+    let onCompromised: ((error: Error) => void) | undefined;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(sessionPath, rejectedContents);
+      process.chdir(tempDir);
+
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          expectedStaleSession: {
+            storageFile: sessionPath,
+            storageStateFingerprint: sessionCaptureTest.storageStateFingerprint(rejectedContents),
+          },
+          force: true,
+          fs: {
+            ...fs,
+            readFileSync: ((filePath: fs.PathOrFileDescriptor, options?: Parameters<typeof fs.readFileSync>[1]) => {
+              const contents = fs.readFileSync(filePath, options);
+              if (path.resolve(String(filePath)) === sessionPath) {
+                onCompromised!(new Error('proper-lockfile ownership lost before rejected-session deletion'));
+              }
+              return contents;
+            }) as typeof fs.readFileSync,
+          } as typeof fs,
+          isSessionFresh: () => false,
+          lockfile: fakeLockfile((_lockPath, options) => {
+            onCompromised = options.onCompromised;
+          }),
+          resolveSessionIdentity: () => identity,
+        })
+      ).rejects.toMatchObject({ name: 'SessionLockCompromisedError' });
+
+      expect(fs.readFileSync(sessionPath, 'utf8')).toBe(rejectedContents);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -764,6 +819,59 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       expect(lockCalled).toBe(true);
       expect(freshnessMaxAgeMs).toBe(1234);
       expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('does not clear a superseded cooldown marker after lock ownership is compromised', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-compromised-marker-clear-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_COMPROMISED_MARKER_USER',
+      email: 'compromised-marker@example.test',
+      password: 'not-used',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const storageKey = resolveSessionStorageKey(identity);
+    const sessionPath = path.join(sessionsDir, `${storageKey}.storage.json`);
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
+    const sessionContents = JSON.stringify({ cookies: [{ name: 'fresh', value: 'session' }] });
+    const markerContents = JSON.stringify({
+      timestamp: Date.now(),
+      message: 'failure for replaced session',
+      storageStateFingerprint: sessionCaptureTest.storageStateFingerprint('rejected-session'),
+    });
+    let onCompromised: ((error: Error) => void) | undefined;
+    let freshnessChecks = 0;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(sessionPath, sessionContents);
+      fs.writeFileSync(failurePath, markerContents);
+      process.chdir(tempDir);
+
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => {
+            freshnessChecks += 1;
+            if (freshnessChecks === 2) {
+              onCompromised!(new Error('proper-lockfile ownership lost before marker clear'));
+            }
+            return true;
+          },
+          lockfile: fakeLockfile((_lockPath, options) => {
+            onCompromised = options.onCompromised;
+          }),
+          resolveSessionIdentity: () => identity,
+        })
+      ).rejects.toMatchObject({ name: 'SessionLockCompromisedError' });
+
+      expect(fs.readFileSync(failurePath, 'utf8')).toBe(markerContents);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });

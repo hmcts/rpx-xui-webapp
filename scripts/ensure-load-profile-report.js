@@ -13,7 +13,7 @@ function parseArgs(argv) {
     reportDir: process.env.PW_LOAD_PROFILE_REPORT_DIR || '',
     reportFile: process.env.PW_LOAD_PROFILE_REPORT_FILE || DEFAULT_REPORT_FILE,
     reportName: process.env.PW_LOAD_PROFILE_REPORT_NAME || 'Playwright System Load',
-    waitMs: parseWaitMs(process.env.PW_LOAD_PROFILE_WAIT_MS || DEFAULT_WAIT_MS),
+    waitMs: DEFAULT_WAIT_MS,
   };
 
   for (let index = 0; index < argv.length; index += 1) {

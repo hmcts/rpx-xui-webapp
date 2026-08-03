@@ -107,4 +107,21 @@ test.describe('ensure load profile report script', { tag: '@svc-internal' }, () 
       waitMs: 30_000,
     });
   });
+
+  test('ignores the retired wait environment override while retaining the CLI option', () => {
+    const baseline = ensureReport.parseArgs([]);
+    const originalWaitMs = process.env.PW_LOAD_PROFILE_WAIT_MS;
+    try {
+      process.env.PW_LOAD_PROFILE_WAIT_MS = '999999';
+      expect(ensureReport.parseArgs([])).toEqual(baseline);
+    } finally {
+      if (originalWaitMs === undefined) {
+        delete process.env.PW_LOAD_PROFILE_WAIT_MS;
+      } else {
+        process.env.PW_LOAD_PROFILE_WAIT_MS = originalWaitMs;
+      }
+    }
+
+    expect(ensureReport.parseArgs(['--wait-ms', '30000']).waitMs).toBe(30_000);
+  });
 });

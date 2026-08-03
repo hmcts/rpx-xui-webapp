@@ -2,8 +2,8 @@ import type { Page, Route, TestInfo } from '@playwright/test';
 import { buildExistingBookingsMock, singleLocationMock } from '../mocks/bookingUI.mock';
 import { buildMyTaskListMock } from '../mocks/taskList.mock';
 import { resolveBookingUiSessionCandidates } from './bookingUiUserPool.helper';
-import { withOrderedSessionFallback } from '../../common/orderedSessionFallback';
-import { applySessionCookiesAndExtractUserId } from './sessionUser.helper';
+import { applySessionCookiesFromPool } from '../../common/sessionCapture';
+import { extractUserIdFromCookies } from '../utils/extractUserIdFromCookies';
 import { setupTaskListMockRoutes, type TaskListBootstrapUserOptions } from './taskListMockRoutes.helper';
 
 type RouteHandler = (route: Route) => Promise<void>;
@@ -92,13 +92,17 @@ export async function setupBookableBookingUiRoutesForTest(
   page: Page,
   testInfo: Pick<TestInfo, 'parallelIndex' | 'annotations'>,
   options: BookingUiTestRoutesOptions = {},
-  applySession: typeof applySessionCookiesAndExtractUserId = applySessionCookiesAndExtractUserId
+  applySessionFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
 ): Promise<BookingUiTestRouteState> {
   let getBookingsCalled = false;
-  const { selectedUserIdentifier, value: userId } = await withOrderedSessionFallback(
-    resolveBookingUiSessionCandidates(testInfo),
-    (identity) => applySession(page, identity)
+  const { userIdentifier: selectedUserIdentifier, session } = await applySessionFromPool(
+    page,
+    resolveBookingUiSessionCandidates(testInfo)
   );
+  const userId = extractUserIdFromCookies(session.cookies);
+  if (!userId) {
+    throw new Error(`Expected session for ${selectedUserIdentifier} to include __userid__ cookie.`);
+  }
   testInfo.annotations.push({ type: 'session-user', description: selectedUserIdentifier });
   const existingBookingsMock = buildExistingBookingsMock(userId);
 

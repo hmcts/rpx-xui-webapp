@@ -162,6 +162,17 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration']);
   });
 
+  test('ignores the retired max-runtime environment override while retaining the CLI option', () => {
+    const args = ['--stop-file', 'functional-output/load-profile.stop'];
+    const baseline = loadMonitor.parseArgs(args);
+
+    withTemporaryEnv({ PW_LOAD_PROFILE_STOP_FILE_MAX_RUNTIME_MS: '1' }, () => {
+      expect(loadMonitor.parseArgs(args).options.stopFileMaxRuntimeMs).toBe(baseline.options.stopFileMaxRuntimeMs);
+    });
+
+    expect(loadMonitor.parseArgs([...args, '--stop-file-max-runtime-ms', '25']).options.stopFileMaxRuntimeMs).toBe(25);
+  });
+
   test('treats Jenkins build metadata as CI for watchdog defaults', () => {
     expect(loadMonitor.__test__.isCiLikeEnvironment({})).toBe(false);
     expect(loadMonitor.__test__.isCiLikeEnvironment({ CI: 'true' })).toBe(true);

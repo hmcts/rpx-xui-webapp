@@ -1623,6 +1623,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
               waitContext: 'after-lock',
               operation: 'session-capture',
             });
+            release.assertOwned();
             clearSessionCaptureFailure(fsApi, failurePath);
             return;
           }
@@ -1662,6 +1663,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           }
 
           if (currentFingerprint === expectedStaleSession.storageStateFingerprint) {
+            release.assertOwned();
             fsApi.unlinkSync(sessionPath);
             logger.info('Deleted server-rejected session under identity lock', {
               userIdentifier: identity.userIdentifier,

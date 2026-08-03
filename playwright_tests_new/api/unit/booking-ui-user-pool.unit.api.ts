@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-import { SessionCaptureError } from '../utils/errors.js';
 import { setupBookableBookingUiRoutesForTest } from '../../integration/helpers/bookingUiMockRoutes.helper.js';
 import {
   BOOKING_UI_LEGACY_USER_IDENTIFIER,
@@ -52,10 +51,10 @@ test.describe('Booking UI user pool unit tests', { tag: '@svc-internal' }, () =>
     ]);
   });
 
-  test('annotates the fallback Booking UI identity after the primary is explicitly rejected', async () => {
-    const envOverrides = Object.fromEntries(Object.entries(configuredEnv).slice(0, 4));
+  test('uses the deadline-aware Booking UI pool once and annotates its selected identity', async () => {
+    const envOverrides = configuredEnv;
     const previousValues = Object.fromEntries(Object.keys(envOverrides).map((key) => [key, process.env[key]]));
-    const attempts: string[] = [];
+    const poolCalls: string[][] = [];
     const testInfo = { parallelIndex: 0, annotations: [] as Array<{ type: string; description?: string }> };
     const page = {
       addInitScript: async () => undefined,
@@ -64,16 +63,17 @@ test.describe('Booking UI user pool unit tests', { tag: '@svc-internal' }, () =>
 
     try {
       Object.assign(process.env, envOverrides);
-      const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo, {}, async (_page, identity) => {
-        const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
-        attempts.push(userIdentifier);
-        if (userIdentifier === 'BOOKING_UI-FT-ON-1') {
-          throw new SessionCaptureError('Login failed: IDAM page message: Email or password is incorrect', userIdentifier);
-        }
-        return 'fallback-booking-user-id';
+      const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo, {}, async (_page, candidates) => {
+        poolCalls.push(candidates.map((candidate) => (typeof candidate === 'string' ? candidate : candidate.userIdentifier)));
+        return {
+          userIdentifier: 'BOOKING_UI-FT-ON-2',
+          session: {
+            cookies: [{ name: '__userid__', value: 'fallback-booking-user-id' }],
+          },
+        };
       });
 
-      expect(attempts).toEqual(['BOOKING_UI-FT-ON-1', 'BOOKING_UI-FT-ON-2']);
+      expect(poolCalls).toEqual([['BOOKING_UI-FT-ON-1', 'BOOKING_UI-FT-ON-2', 'BOOKING_UI-FT-ON-3', 'BOOKING_UI-FT-ON-4']]);
       expect(routeState.sessionUserIdentifier).toBe('BOOKING_UI-FT-ON-2');
       expect(routeState.sessionUserId).toBe('fallback-booking-user-id');
       expect(testInfo.annotations).toEqual([{ type: 'session-user', description: 'BOOKING_UI-FT-ON-2' }]);

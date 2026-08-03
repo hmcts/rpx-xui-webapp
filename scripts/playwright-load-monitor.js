@@ -36,10 +36,7 @@ function parseArgs(argv) {
     label: process.env.PW_LOAD_PROFILE_LABEL ?? '',
     eventsFile: process.env.PW_LOAD_PROFILE_EVENTS_FILE ?? '',
     stopFile: process.env.PW_LOAD_PROFILE_STOP_FILE ?? '',
-    stopFileMaxRuntimeMs: parseNonNegativeInteger(
-      process.env.PW_LOAD_PROFILE_STOP_FILE_MAX_RUNTIME_MS,
-      DEFAULT_STOP_FILE_MAX_RUNTIME_MS
-    ),
+    stopFileMaxRuntimeMs: DEFAULT_STOP_FILE_MAX_RUNTIME_MS,
   };
 
   for (let index = 0; index < optionArgs.length; index += 1) {

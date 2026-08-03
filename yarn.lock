@@ -3076,9 +3076,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.77":
-  version: 7.3.77
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.77"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.77-4949-5044":
+  version: 7.3.77-4949-5044
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.77-4949-5044"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3087,7 +3087,6 @@ __metadata:
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
-    pegjs: "npm:^0.10.0"
     tslib: "npm:^2.3.0"
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
@@ -3119,7 +3118,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/2d45dec13c83ebc839bc37d7075e8e9ecc747183813533e34f943ac9be4b8bdf0bc5dfbc6488fa7dfcc0b3ec7ee751a4f1e582f783aecc0cb627a51e8ce2cad9
+  checksum: 10/d09b8e0271ccd7b55b3f36e98a5840d05f27c7e8c199651a7f046921524df6ff2efde725e3b51ae5081fb76aa2e4776c457173e4e1997c15aaf9b014a07040d7
   languageName: node
   linkType: hard
 
@@ -3237,9 +3236,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.13":
-  version: 3.2.13
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.13"
+"@hmcts/rpx-xui-common-lib@npm:3.2.14-4949-5044":
+  version: 3.2.14-4949-5044
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.14-4949-5044"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
@@ -3263,7 +3262,7 @@ __metadata:
     rpx-xui-translation: 1.2.4
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/631c75119177b988ed518a4690137089fcfaac1ce62e9bc15125886bea1fecde7a35184f6c29780bc61b5fde20d71d46053488373b6f66bb37493bec4f637443
+  checksum: 10/f6cfa26642a3c59f6b74b65b2c4a886424cc4346711f1498b11de26541b9ac8ec5f96b74d79c002606f71c5195229b51064a05405e4bbb99ae710ceaa9c85c1f
   languageName: node
   linkType: hard
 
@@ -11987,7 +11986,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dexie@npm:^4.0.8":
+"dexie@npm:^4.4.4":
   version: 4.4.4
   resolution: "dexie@npm:4.4.4"
   checksum: 10/df6f98ef639dedd2428c30798a292ddd54ca5b6800df9e220af371249ea4434e923c03d7576141cdc9c39110a8f549f37fbfff2b550f679ecce912c6e424f114
@@ -19982,14 +19981,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.77"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.77-4949-5044"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.26"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.13"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.14-4949-5044"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.21"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
@@ -20092,7 +20091,7 @@ __metadata:
     playwright-core: "npm:1.61.1"
     prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.7"
+    rpx-xui-translation: "npm:1.2.9-4949-5044"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -20123,18 +20122,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.7":
-  version: 1.2.7
-  resolution: "rpx-xui-translation@npm:1.2.7"
+"rpx-xui-translation@npm:1.2.9-4949-5044":
+  version: 1.2.9-4949-5044
+  resolution: "rpx-xui-translation@npm:1.2.9-4949-5044"
   dependencies:
-    dexie: "npm:^4.0.8"
+    dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
     tslib: "npm:^2.0.0"
   peerDependencies:
     "@angular/common": ^20.3.18
     "@angular/core": ^20.3.18
     rxjs: ^7.8.0
-  checksum: 10/423c51d17fefbc00828a645ba4d1c766d1bab3ebbe2bf3e3b5cbc9327cab8468953d132c4e2d6ed14fec4d5c5d935a67057790342b8bfa7d6c1cdf84adb5f24f
+  checksum: 10/7ddec49c15898fb1c82f69b819b0ebc74e47b47c6ac36dc03da74ce5fcf8cc5671e860c8dd445b326d8e0b9965fb6802c888ca5fde784973f43081689fafffb9
   languageName: node
   linkType: hard
 

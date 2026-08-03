@@ -186,11 +186,17 @@ export class AppComponent implements OnInit, OnDestroy {
       this.setCookieBannerVisibility();
       // If the user has not previously accepted cookies, suppress Dynatrace
       // until dtrum.enable() is called by the cookie banner on acceptance
-      if (!this.cookieService.getCookie(this.cookieName) && (window as any).dtrum) {
-        (window as any).dtrum.disable();
-        (window as any).dtrum.disableSessionReplay();
+      if (!this.cookieService.getCookie(this.cookieName)) {
+        this.disableDynatrace();
       }
     }
+  }
+
+  private disableDynatrace(): void {
+    const dtrum = (window as any).dtrum;
+
+    dtrum?.disable?.();
+    dtrum?.disableSessionReplay?.();
   }
 
   public notifyAcceptance() {
@@ -200,10 +206,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public notifyRejection() {
     // Disable Dynatrace monitoring
-    if ((window as any).dtrum) {
-      (window as any).dtrum.disable();
-      (window as any).dtrum.disableSessionReplay();
-    }
+    this.disableDynatrace();
     // AppInsights
     this.cookieService.deleteCookieByPartialMatch('ai_');
     // Google Analytics

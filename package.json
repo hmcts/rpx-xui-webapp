@@ -162,6 +162,7 @@
     "ngx-logger": "^5.0.12",
     "ngx-markdown": "20",
     "ngx-pagination": "^6.0.3",
+    "openid-client": "6.8.4",
     "otplib": "^13.4.0",
     "pegjs": "^0.10.0",
     "prettier": "^3.9.5",

@@ -22729,10 +22729,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tldts-core@npm:^7.0.19":
-  version: 7.0.19
-  resolution: "tldts-core@npm:7.0.19"
-  checksum: 10/809229186fdf9202711a09293f5c6ab21d26207f34805a98faee59b6c295806cc88c102553e1f106c5d499228b0f22418c9c5226f6dbf81810eaa3c11c0b022a
+"tldts-core@npm:^7.4.10":
+  version: 7.4.10
+  resolution: "tldts-core@npm:7.4.10"
+  checksum: 10/eb09428c7dde4f75e4bc0a4f23c677588b4598d0019298247e8a6be255953038f383e12d8bae2d4cd403cecb9c14830c3e992fe66f3862608aa97212dabda385
   languageName: node
   linkType: hard
 
@@ -22743,12 +22743,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tldts-icann@npm:^7.4.2":
-  version: 7.4.2
-  resolution: "tldts-icann@npm:7.4.2"
+"tldts-icann@npm:^7.0.17":
+  version: 7.4.10
+  resolution: "tldts-icann@npm:7.4.10"
   dependencies:
-    tldts-core: "npm:^7.0.19"
-  checksum: 10/20d7977963ef2e4e5dfcecfdf82bfe1d802e784c17a29470708312592cffdcc8388cf7dff107f843af4ac09e644e9983ad06b68da577c04b822b14ea66b28004
+    tldts-core: "npm:^7.4.10"
+  checksum: 10/03f7f2b106d707aa6949e69d8a5384ae16344ce00543aa08233a2fe2aae1f7da8f16267b5e929d0ec82f6f87929b5bd622635ed20d75f86dac4f21610ba4341f
   languageName: node
   linkType: hard
 
@@ -23442,16 +23442,6 @@ __metadata:
   version: 4.0.1
   resolution: "url-join@npm:4.0.1"
   checksum: 10/b53b256a9a36ed6b0f6768101e78ca97f32d7b935283fd29ce19d0bbfb6f88aa80aa6c03fd87f2f8978ab463a6539f597a63051e7086f3379685319a7495f709
-  languageName: node
-  linkType: hard
-
-"url-parse@npm:^1.5.3":
-  version: 1.5.10
-  resolution: "url-parse@npm:1.5.10"
-  dependencies:
-    querystringify: "npm:^2.1.1"
-    requires-port: "npm:^1.0.0"
-  checksum: 10/c9e96bc8c5b34e9f05ddfeffc12f6aadecbb0d971b3cc26015b58d5b44676a99f50d5aeb1e5c9e61fa4d49961ae3ab1ae997369ed44da51b2f5ac010d188e6ad
   languageName: node
   linkType: hard
 

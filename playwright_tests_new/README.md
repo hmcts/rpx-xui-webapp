@@ -987,9 +987,7 @@ Sessions are stored in `.sessions/` with filesystem-based locking. See the [file
 ```typescript
 // Same approach: filesystem lock + freshness check
 const lockFilePath = path.join(storageRoot, `api-${cacheKey}.lock`);
-const release = await lockfile.lock(lockFilePath, {
-  /* API-specific lock configuration; see api/utils/auth.ts. */
-});
+const release = await lockfile.lock(lockFilePath, {/* API-specific lock configuration; see api/utils/auth.ts. */});
 
 try {
   // Double-check freshness (another API worker or test suite may have refreshed this role)

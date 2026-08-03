@@ -10,8 +10,7 @@ export const BOOKING_UI_POOLED_USER_IDENTIFIERS = [
 ] as const;
 
 export type BookingUiUserIdentifier =
-  | typeof BOOKING_UI_LEGACY_USER_IDENTIFIER
-  | (typeof BOOKING_UI_POOLED_USER_IDENTIFIERS)[number];
+  typeof BOOKING_UI_LEGACY_USER_IDENTIFIER | (typeof BOOKING_UI_POOLED_USER_IDENTIFIERS)[number];
 
 type ParallelIndexSource = {
   parallelIndex: number;

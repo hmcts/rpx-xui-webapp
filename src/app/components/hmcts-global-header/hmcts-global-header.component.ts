@@ -11,7 +11,7 @@ import { SearchService } from '../../../search/services/search.service';
 import { NavigationItem, UserNavModel } from '../../models';
 import { LoggerService } from '../../services/logger/logger.service';
 import { UserService } from '../../services/user/user.service';
-import { AppConstants } from 'src/app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
 import { filterNavigationItemsByFlags, filterNavigationItemsByRoles } from '../../shared/utils/navigation-access.utils';
 import { WAVerificationService } from '../../../work-allocation/services';
 

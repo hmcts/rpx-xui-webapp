@@ -13,8 +13,8 @@ import { LoggerService } from '../logger/logger.service';
 
 type ConfigValue = string | boolean | Array<string> | object;
 type WAConfig = {
-  wa_supported_role_categories?: unknown;
-  wa_supported_role_types?: unknown;
+  wa_supported_role_categories?: string | string[];
+  wa_supported_role_types?: string | string[];
 };
 /**
  * https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=797343913#Integrationsteps-Caseview(`ccd-case-view`)

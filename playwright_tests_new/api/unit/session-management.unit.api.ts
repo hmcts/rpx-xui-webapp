@@ -431,7 +431,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
-  test('does not start a fallback capture after the shared pool budget is exhausted', async () => {
+  test('does not start a fallback capture when even one bounded attempt cannot finish', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-pool-deadline-unit-'));
     const previousCwd = process.cwd();
     const primary: SessionIdentity = { userIdentifier: 'PRIMARY', email: 'primary@example.test', password: 'not-used' };
@@ -452,7 +452,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             lockfile: fakeLockfile(),
             loginAndPersistSession: async ({ userIdentifier }) => {
               loginAttempts.push(userIdentifier);
-              now = sessionCaptureTest.sessionCapturePoolBudgetMs - sessionCaptureTest.sessionCaptureOwnerBudgetMs + 1;
+              now = sessionCaptureTest.sessionCapturePoolBudgetMs - sessionCaptureTest.sessionCaptureSingleAttemptBudgetMs + 1;
               throw new SessionCaptureError('IDAM login did not establish authenticated session', userIdentifier, {
                 failureKind: 'unexplained-idam-login-rejection',
               });

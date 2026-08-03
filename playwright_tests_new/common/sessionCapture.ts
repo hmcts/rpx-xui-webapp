@@ -43,6 +43,12 @@ const SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS = 5_000;
 const SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS = 5_000;
 const SESSION_CAPTURE_RETRY_BACKOFF_MIN_MS = 1_000;
 const SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS = 5_000;
+const SESSION_CAPTURE_SINGLE_ATTEMPT_BUDGET_MS =
+  SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS +
+  SESSION_CAPTURE_TARGET_BUDGET_MS +
+  SESSION_CAPTURE_PERSIST_BUDGET_MS +
+  SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS +
+  SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS;
 const SESSION_CAPTURE_OWNER_BUDGET_MS =
   SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS +
   SESSION_CAPTURE_LOGIN_ATTEMPTS * (SESSION_CAPTURE_TARGET_BUDGET_MS + SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS) +
@@ -58,6 +64,13 @@ const SESSION_CAPTURE_LOCK_UPDATE_MS = 5_000;
 // Automatic takeover inside a test run can let a suspended owner resume and overwrite
 // a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
 const SESSION_CAPTURE_LOCK_STALE_MS = 24 * 60 * 60_000;
+
+function resolveCaptureAttemptLimit(remainingCaptureBudgetMs: number | undefined): number {
+  if (remainingCaptureBudgetMs === undefined || remainingCaptureBudgetMs >= SESSION_CAPTURE_OWNER_BUDGET_MS) {
+    return SESSION_CAPTURE_LOGIN_ATTEMPTS;
+  }
+  return remainingCaptureBudgetMs >= SESSION_CAPTURE_SINGLE_ATTEMPT_BUDGET_MS ? 1 : 0;
+}
 
 async function withOperationTimeout<T>(
   operation: () => Promise<T>,
@@ -1386,6 +1399,7 @@ async function loginAndPersistSession({
   persist,
   assertLockOwned,
   userIdentifier,
+  maxAttempts = SESSION_CAPTURE_LOGIN_ATTEMPTS,
   executeLoginAttemptFn = executeLoginAttempt,
   waitForRetry = waitForTransientRetry,
 }: {
@@ -1399,6 +1413,7 @@ async function loginAndPersistSession({
   persist: typeof persistSession;
   assertLockOwned?: () => void;
   userIdentifier: string;
+  maxAttempts?: number;
   executeLoginAttemptFn?: typeof executeLoginAttempt;
   waitForRetry?: () => Promise<void>;
 }) {
@@ -1426,7 +1441,7 @@ async function loginAndPersistSession({
   let captureError: unknown;
   let sessionPersisted = false;
   try {
-    for (let captureAttempt = 1; captureAttempt <= SESSION_CAPTURE_LOGIN_ATTEMPTS; captureAttempt += 1) {
+    for (let captureAttempt = 1; captureAttempt <= maxAttempts; captureAttempt += 1) {
       const abortController = new AbortController();
       let context: BrowserContext | undefined;
       let contextClosePromise: Promise<void> | undefined;
@@ -1493,7 +1508,7 @@ async function loginAndPersistSession({
         if (isSessionLockCompromisedError(loginError)) {
           throw loginError;
         }
-        const shouldRetry = captureAttempt < SESSION_CAPTURE_LOGIN_ATTEMPTS && isTransientSessionCaptureError(loginError);
+        const shouldRetry = captureAttempt < maxAttempts && isTransientSessionCaptureError(loginError);
         if (!shouldRetry) {
           const evidence = sessionCaptureFailureEvidence(loginError);
           const sanitizedCause = new Error(evidence);
@@ -1509,7 +1524,7 @@ async function loginAndPersistSession({
             (loginError as { context?: { failureKind?: string } }).context?.failureKind ??
             (isUnexplainedIdamLoginRejection(loginError) ? UNEXPLAINED_IDAM_LOGIN_FAILURE : undefined);
           throw new SessionCaptureError(
-            `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${SESSION_CAPTURE_LOGIN_ATTEMPTS} capture attempts: ${evidence}`,
+            `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${maxAttempts} capture attempts: ${evidence}`,
             userIdentifier,
             { targetUrl: sanitizeUrl(targetUrl), appTargetUrl: sanitizeUrl(targetUrl), captureAttempt, evidence, failureKind },
             sanitizedCause
@@ -1538,7 +1553,7 @@ async function loginAndPersistSession({
             const sanitizedCause = new Error(evidence);
             sanitizedCause.name = 'SessionCancellationError';
             retryCleanupError = new SessionCaptureError(
-              `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${SESSION_CAPTURE_LOGIN_ATTEMPTS} capture attempts: browser context cleanup failed before retry: ${evidence}`,
+              `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${maxAttempts} capture attempts: browser context cleanup failed before retry: ${evidence}`,
               userIdentifier,
               {
                 targetUrl: sanitizeUrl(targetUrl),
@@ -1800,10 +1815,8 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         }
 
         const remainingCaptureBudgetMs = deps.captureDeadlineAt === undefined ? undefined : deps.captureDeadlineAt - now();
-        if (
-          (remainingCaptureBudgetMs !== undefined && remainingCaptureBudgetMs < SESSION_CAPTURE_OWNER_BUDGET_MS) ||
-          (remainingCaptureBudgetMs === undefined && lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS)
-        ) {
+        const maxAttempts = resolveCaptureAttemptLimit(remainingCaptureBudgetMs);
+        if (maxAttempts === 0 || (remainingCaptureBudgetMs === undefined && lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS)) {
           throw new SessionCaptureError(
             `Session capture cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget`,
             identity.userIdentifier,
@@ -1822,6 +1835,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           persist,
           assertLockOwned: release.assertOwned,
           userIdentifier: identity.userIdentifier,
+          maxAttempts,
         })
           .then(() => {
             release!.assertOwned();
@@ -1880,6 +1894,7 @@ export const __test__ = {
   sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
   sessionCaptureLockUpdateMs: SESSION_CAPTURE_LOCK_UPDATE_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
+  sessionCaptureSingleAttemptBudgetMs: SESSION_CAPTURE_SINGLE_ATTEMPT_BUDGET_MS,
   sessionCaptureBrowserLaunchBudgetMs: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,
   sessionCaptureTargetBudgetMs: SESSION_CAPTURE_TARGET_BUDGET_MS,
   sessionCapturePersistBudgetMs: SESSION_CAPTURE_PERSIST_BUDGET_MS,
@@ -1903,6 +1918,7 @@ export const __test__ = {
   resolveTargetHost,
   acquireSessionLock,
   sessionCaptureWith,
+  resolveCaptureAttemptLimit,
   persistSession,
   confirmAuthenticatedLogin,
   ensureAuthenticatedPage,

@@ -753,32 +753,41 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     const { launcher } = createLauncher();
     const freshPaths = new Set<string>();
     const loginCalls: string[] = [];
+    const captureAttemptsByIdentity: Array<[string, number | undefined]> = [];
+    let now = 0;
 
     try {
       process.chdir(tempDir);
       const result = await withOrderedSessionFallback([primary, fallback], async (identity) => {
         await sessionCaptureTest.sessionCaptureWith([identity], {
           chromiumLauncher: launcher as any,
+          captureDeadlineAt: sessionCaptureTest.sessionCapturePoolBudgetMs,
           config: commonArgs.activeConfig,
           env: commonArgs.env,
           isSessionFresh: (sessionPath) => freshPaths.has(sessionPath),
           persistSession: async (sessionPath) => {
             freshPaths.add(sessionPath);
           },
-          loginAndPersistSession: (args) =>
-            sessionCaptureTest.loginAndPersistSession({
+          loginAndPersistSession: (args) => {
+            captureAttemptsByIdentity.push([args.userIdentifier, args.maxAttempts]);
+            return sessionCaptureTest.loginAndPersistSession({
               ...args,
               idamFactory: commonArgs.idamFactory,
               executeLoginAttemptFn: async () => {
                 loginCalls.push(args.userIdentifier);
                 if (args.userIdentifier === 'PRIMARY') {
+                  if (loginCalls.filter((userIdentifier) => userIdentifier === 'PRIMARY').length === 2) {
+                    now = sessionCaptureTest.sessionCapturePoolBudgetMs - sessionCaptureTest.sessionCaptureOwnerBudgetMs + 1;
+                  }
                   throw new Error(
                     'IDAM login did not establish authenticated session for PRIMARY (url=https://idam.example.test/login)'
                   );
                 }
               },
               waitForRetry: async () => undefined,
-            }),
+            });
+          },
+          now: () => now,
           resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
         });
         return identity.userIdentifier;
@@ -786,6 +795,10 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
 
       expect(result.selectedUserIdentifier).toBe('FALLBACK');
       expect(loginCalls).toEqual(['PRIMARY', 'PRIMARY', 'FALLBACK']);
+      expect(captureAttemptsByIdentity).toEqual([
+        ['PRIMARY', 2],
+        ['FALLBACK', 1],
+      ]);
       const markerFile = fs.readdirSync(path.join(tempDir, '.sessions')).find((name) => name.endsWith('.capture-failed.json'));
       expect(markerFile).toBeTruthy();
       expect(JSON.parse(fs.readFileSync(path.join(tempDir, '.sessions', markerFile!), 'utf8')).failureKind).toBe(

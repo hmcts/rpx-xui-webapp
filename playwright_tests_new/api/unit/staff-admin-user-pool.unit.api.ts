@@ -7,7 +7,18 @@ import {
   resolveStaffAdminUserIdentifier,
   STAFF_ADMIN_USER,
 } from '../../common/staffAdminUserPool.js';
-import { resolveSessionIdentity } from '../../common/sessionIdentity.js';
+import { resolveSessionIdentity, resolveSessionStorageKey } from '../../common/sessionIdentity.js';
+
+const staffAdminPoolCredentialEnvKeys = [
+  'STAFF_ADMIN_1_USERNAME',
+  'STAFF_ADMIN_1_PASSWORD',
+  'STAFF_ADMIN_2_USERNAME',
+  'STAFF_ADMIN_2_PASSWORD',
+  'STAFF_ADMIN_3_USERNAME',
+  'STAFF_ADMIN_3_PASSWORD',
+  'STAFF_ADMIN_4_USERNAME',
+  'STAFF_ADMIN_4_PASSWORD',
+] as const;
 
 const configuredEnv = {
   STAFF_ADMIN_POOL_ENABLED: 'true',
@@ -86,17 +97,50 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     ]);
   });
 
-  test('resolves the legacy alias without hidden pool substitution', () => {
-    const identity = resolveSessionIdentity('STAFF_ADMIN', {
-      userUtils: {
-        getUserCredentials: (userIdentifier: string) => {
-          expect(userIdentifier).toBe(STAFF_ADMIN_USER);
-          return { email: 'legacy-staff-admin@example.test', password: 'legacy-secret' };
-        },
-      } as never,
-    });
+  test('preserves pooled resolution for the legacy staff admin alias', () => {
+    const previousEnv: Record<string, string | undefined> = {
+      STAFF_ADMIN_POOL_ENABLED: process.env.STAFF_ADMIN_POOL_ENABLED,
+      TEST_PARALLEL_INDEX: process.env.TEST_PARALLEL_INDEX,
+    };
+    for (const key of staffAdminPoolCredentialEnvKeys) {
+      previousEnv[key] = process.env[key];
+      delete process.env[key];
+    }
 
-    expect(identity.userIdentifier).toBe(STAFF_ADMIN_USER);
-    expect(identity.email).toBe('legacy-staff-admin@example.test');
+    try {
+      process.env.STAFF_ADMIN_POOL_ENABLED = 'true';
+      process.env.STAFF_ADMIN_2_USERNAME = 'staff-admin-2@example.test';
+      process.env.STAFF_ADMIN_2_PASSWORD = 'secret-2';
+      process.env.TEST_PARALLEL_INDEX = '1';
+
+      const resolvedUserIdentifiers: string[] = [];
+      const identity = resolveSessionIdentity('STAFF_ADMIN', {
+        userUtils: {
+          getUserCredentials: (userIdentifier: string) => {
+            resolvedUserIdentifiers.push(userIdentifier);
+            return { email: `${userIdentifier.toLowerCase()}@example.test`, password: 'secret' };
+          },
+        } as never,
+      });
+
+      expect(resolvedUserIdentifiers).toEqual(['STAFF_ADMIN-2']);
+      expect(identity.userIdentifier).toBe('STAFF_ADMIN-2');
+      expect(identity.email).toBe('staff_admin-2@example.test');
+      expect(
+        resolveSessionStorageKey('STAFF_ADMIN', {
+          userUtils: {
+            getUserCredentials: () => ({ email: 'staff_admin-2@example.test', password: 'secret' }),
+          } as never,
+        })
+      ).toBe(resolveSessionStorageKey(identity));
+    } finally {
+      for (const [key, value] of Object.entries(previousEnv)) {
+        if (typeof value === 'string') {
+          process.env[key] = value;
+        } else {
+          delete process.env[key];
+        }
+      }
+    }
   });
 });

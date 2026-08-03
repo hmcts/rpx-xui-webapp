@@ -12,6 +12,9 @@ import { UserInfo } from '../../app/models/user-details.model';
   providedIn: 'root',
 })
 export class DecentralisedRedirectService {
+  /** environment variable name where the service map is configured */
+  public static readonly SERVICE_MAP_ENV_VAR_NAME = 'decentralisedServiceMap';
+
   constructor(
     private readonly environmentService: EnvironmentService,
     private readonly sessionStorageService: SessionStorageService,
@@ -54,7 +57,7 @@ export class DecentralisedRedirectService {
 
   private getAbsoluteUrl(serviceId: string, relativeUrl: string): URL | null {
     if (serviceId && relativeUrl) {
-      const serviceMap = this.environmentService.get('decentralisedServiceMap');
+      const serviceMap = this.environmentService.get(DecentralisedRedirectService.SERVICE_MAP_ENV_VAR_NAME);
 
       if (serviceMap && serviceId in serviceMap) {
         const baseUrl = serviceMap[serviceId].baseUrl;

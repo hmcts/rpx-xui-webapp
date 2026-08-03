@@ -3358,9 +3358,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.77-exui-5016-rc-4":
-  version: 7.3.77-exui-5016-rc-4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.77-exui-5016-rc-4"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.78":
+  version: 7.3.78
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.78"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3400,7 +3400,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/2e269a1bd60ef99b732e808e701e19328d06c720ad28f00d5c2145cd9206761062aabc135940bde82b52c0c610c892c2f2d1938cd77bfd80062c5bb5bc5bc828
+  checksum: 10/34bcbcd66a344d0928f27b8723c09e82c24f606f2b83dc559529a77c2d6511ba493255e3d81c3e055b805cd4ca569cbcadab1cece8b3c130d0d41b15c9880232
   languageName: node
   linkType: hard
 
@@ -3518,9 +3518,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.13-multiple-role-categories-rc-1":
-  version: 3.2.13-multiple-role-categories-rc-1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.13-multiple-role-categories-rc-1"
+"@hmcts/rpx-xui-common-lib@npm:3.2.14":
+  version: 3.2.14
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.14"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
@@ -3544,13 +3544,13 @@ __metadata:
     rpx-xui-translation: 1.2.4
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/279918ab00bb767b04a2225f3309e910ba6f9bfeee58e62870e3dd7687b6ebfb40d6ee2f9c7ccb0c4b68cac87ea2ae5bc330553e6d18419932630f15f3f9b69a
+  checksum: 10/90f4f6b3a7170075c3bdaac4bc1cc45f6f76731cf8b90f253273f09595a3285b7fdaedb830d48ba3e85449aab6d508ecb25c9487ff426cc40c762f7df50bd471
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.22-package-update-06":
-  version: 2.30.22-package-update-06
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.22-package-update-06"
+"@hmcts/rpx-xui-node-lib@npm:2.30.22":
+  version: 2.30.22
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.22"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.18.1"
@@ -3569,7 +3569,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/4cfcd0eab5c3d183fc9a9d2080305ced1422754646bb387c00ec52c73ae5305b1404c8ae56c7757a124fbf7ab3ffc854ab210f031396d2ab39117864bbe65917
+  checksum: 10/f1cdbe342e2256a9b3d7f63f18b7b5f526f0596dceb06beee2c6261568c475996d62e5c6641089c6ab2a97c11454d3e9c33b4d47779d76fc151bf86362e780cf
   languageName: node
   linkType: hard
 
@@ -21073,15 +21073,15 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.77-exui-5016-rc-4"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.78"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.26"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.13-multiple-role-categories-rc-1"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.22-package-update-06"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.14"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.22"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

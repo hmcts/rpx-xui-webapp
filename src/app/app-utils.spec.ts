@@ -179,14 +179,14 @@ describe('getFeatureToggledUrl', () => {
   });
 });
 
-describe('getUserRole', () => {
+describe('getUserRoleNames', () => {
   it('should return legal ops role if user has any legal ops role', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker-ia-caseofficer']);
-    expect(roleCategory).toBe(UserRole.LegalOps);
+    const roleNames = AppUtils.getUserRoleNames(['caseworker-ia-caseofficer']);
+    expect(roleNames).toEqual([UserRole.LegalOps]);
   });
 
   it('should return Judicial', () => {
-    const roleCategory = AppUtils.getUserRole([
+    const roleNames = AppUtils.getUserRoleNames([
       'caseworker',
       'caseworker-civil',
       'caseworker-civil-judge',
@@ -199,29 +199,31 @@ describe('getUserRole', () => {
       'caseworker-publiclaw-judiciary',
       'judiciary',
     ]);
-    expect(roleCategory).toBe(UserRole.Judicial);
+    expect(roleNames).toEqual([UserRole.Judicial, UserRole.LegalOps]);
   });
 
   it('should return judicial role if user has any judicial role', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker-ia-iacjudge']);
-    expect(roleCategory).toBe(UserRole.Judicial);
+    const roleNames = AppUtils.getUserRoleNames(['caseworker-ia-iacjudge']);
+    expect(roleNames).toEqual([UserRole.Judicial]);
   });
 
-  it('should return null if user has no judicial or legal ops role', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker']);
-    expect(roleCategory).toBeNull();
+  it('should return empty array if user has no mapped roles', () => {
+    const roleNames = AppUtils.getUserRoleNames(['caseworker']);
+    expect(roleNames).toEqual([]);
   });
 
   it('should return legal ops role if user is an task supervisor', () => {
-    const roleCategory = AppUtils.getUserRole(['task-supervisor']);
-    expect(roleCategory).toBe('legalops');
+    const roleNames = AppUtils.getUserRoleNames(['task-supervisor']);
+    expect(roleNames).toEqual([UserRole.LegalOps]);
   });
 
   it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker-ia-admofficer']);
-    expect(roleCategory).toBe('legalops');
+    const roleNames = AppUtils.getUserRoleNames(['caseworker-ia-admofficer']);
+    expect(roleNames).toEqual([UserRole.LegalOps]);
   });
+});
 
+describe('convertDomainToLabel', () => {
   it('should return the judicial domain from the user list', () => {
     const role = AppUtils.convertDomainToLabel(UserRole.Judicial);
     expect(role).toBe('Judicial');
@@ -270,18 +272,6 @@ describe('setThemeBasedOnUserType', () => {
 });
 
 describe('getFilterPersistenceByRoleType', () => {
-  it('should return local persistence if user is a judicial user', () => {
-    const persistence = AppUtils.getFilterPersistenceByRoleType(initialMockState.appConfig.userDetails);
-    expect(persistence).toEqual('local');
-  });
-
-  it('should return local persistence if user is a legalOps user', () => {
-    const userDetails = initialMockState.appConfig.userDetails;
-    userDetails.userInfo.roles = LEGAL_OPS_ROLE_LIST;
-    const persistence = AppUtils.getFilterPersistenceByRoleType(userDetails);
-    expect(persistence).toEqual('session');
-  });
-
   describe('isBookableAndJudicialRole', () => {
     it('should set true/false base on the user details', () => {
       const USER_2: UserDetails = {
@@ -303,7 +293,7 @@ describe('getFilterPersistenceByRoleType', () => {
           forename: 'Luke',
           surname: 'Wilson',
           email: 'lukesuperuserxui@mailnesia.com',
-          roleCategory: RoleCategory.JUDICIAL,
+          roleCategories: [RoleCategory.JUDICIAL],
           active: true,
           roles: ['caseworker', 'caseworker-sscs-judge', 'fee-paid-judge'],
         },
@@ -314,7 +304,7 @@ describe('getFilterPersistenceByRoleType', () => {
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
       USER_2.roleAssignmentInfo[0].bookable = false;
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
-      USER_2.userInfo.roleCategory = RoleCategory.LEGAL_OPERATIONS;
+      USER_2.userInfo.roleCategories = [RoleCategory.LEGAL_OPERATIONS];
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
     });
   });

@@ -35,7 +35,7 @@ export interface ProxyConfig {
   ws?: boolean;
 }
 
-function buildPathRewrite(config: ProxyConfig) {
+export function buildPathRewrite(config: ProxyConfig) {
   const sources = Array.isArray(config.source) ? config.source : [config.source];
   if (config.rewrite === false) {
     return (path: string, req: any) => {

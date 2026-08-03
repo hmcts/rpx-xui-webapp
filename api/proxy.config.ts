@@ -26,8 +26,7 @@ import * as documents from './documents';
 
 export const initProxy = (app: Express) => {
   applyProxy(app, {
-    rewrite: true,
-    rewriteUrl: '/web-pubsub/negotiate',
+    rewrite: false,
     source: '/web-pubsub/negotiate',
     target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
   });

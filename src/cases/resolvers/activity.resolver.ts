@@ -21,7 +21,11 @@ export class ActivityResolver implements Resolve<boolean>, OnDestroy {
         distinctUntilChanged()
       )
       .subscribe((mode) => {
-        this.activityService.mode = this.getActivityMode(mode);
+        // TODO: TEMPORARY OVERRIDE - Remove this after testing. Currently forcing socket mode to use Azure Web PubSub.
+        // This ensures we use web-pubsub approach instead of polling (should be removed once LD flag is properly set to "socket" in all envs)
+        const forceSocketMode = true;
+        const finalMode = forceSocketMode ? ActivityService.MODES.socket : this.getActivityMode(mode);
+        this.activityService.mode = finalMode;
       });
   }
 

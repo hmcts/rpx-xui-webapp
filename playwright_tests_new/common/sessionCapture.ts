@@ -1,5 +1,5 @@
 import { chromium, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
@@ -10,7 +10,12 @@ import { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
 import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
 import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
-import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorageKey } from './sessionIdentity.js';
+import {
+  type SessionIdentity,
+  type SessionIdentityInput,
+  resolveSessionIdentity,
+  resolveSessionStorageKey,
+} from './sessionIdentity.js';
 import { sanitizeUrl } from './failureClassification.js';
 import {
   SESSION_CAPTURE_LOGIN_ATTEMPTS,
@@ -602,11 +607,101 @@ function resolveCurrentPlaywrightParallelIndex(): number | undefined {
   }
 }
 
-function resolveSessionCandidates(userIdentifier: SessionIdentityInput): readonly SessionIdentityInput[] {
+function resolveSessionCandidates(
+  userIdentifier: SessionIdentityInput,
+  parallelIndex = resolveCurrentPlaywrightParallelIndex()
+): readonly SessionIdentityInput[] {
   const normalizedIdentifier = typeof userIdentifier === 'string' ? userIdentifier.trim().toUpperCase() : undefined;
-  return normalizedIdentifier === STAFF_ADMIN_USER
-    ? resolveStaffAdminSessionCandidates({ parallelIndex: resolveCurrentPlaywrightParallelIndex() })
-    : [userIdentifier];
+  return normalizedIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionCandidates({ parallelIndex }) : [userIdentifier];
+}
+
+type SessionSelectionRecord = {
+  selectedUserIdentifier: string;
+  selectedEmail: string;
+};
+
+function normaliseSessionEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function resolveSessionSelectionPath(
+  candidates: readonly SessionIdentityInput[],
+  parallelIndex = resolveCurrentPlaywrightParallelIndex()
+): string | undefined {
+  if (candidates.length < 2) {
+    return undefined;
+  }
+
+  const primaryStorageKey = resolveSessionStorageKey(resolveSessionIdentity(candidates[0]));
+  const workerSuffix = Number.isInteger(parallelIndex) && Number(parallelIndex) >= 0 ? `.worker-${parallelIndex}` : '';
+  return path.join(process.cwd(), '.sessions', `${primaryStorageKey}${workerSuffix}.selection.json`);
+}
+
+function persistSessionSelection(candidates: readonly SessionIdentityInput[], selectedIdentity: SessionIdentity): void {
+  const selectionPath = resolveSessionSelectionPath(candidates);
+  if (!selectionPath) {
+    return;
+  }
+
+  const stagingPath = `${selectionPath}.${process.pid}.${randomUUID()}.tmp`;
+  const record: SessionSelectionRecord = {
+    selectedUserIdentifier: selectedIdentity.userIdentifier,
+    selectedEmail: normaliseSessionEmail(selectedIdentity.email),
+  };
+
+  fs.mkdirSync(path.dirname(selectionPath), { recursive: true });
+  try {
+    fs.writeFileSync(stagingPath, JSON.stringify(record), 'utf8');
+    fs.renameSync(stagingPath, selectionPath);
+  } finally {
+    if (fs.existsSync(stagingPath)) {
+      fs.rmSync(stagingPath, { force: true });
+    }
+  }
+}
+
+function resolveSessionIdentityForLoad(userIdentifier: SessionIdentityInput): SessionIdentity {
+  const candidates = resolveSessionCandidates(userIdentifier);
+  const primaryIdentity = resolveSessionIdentity(candidates[0]);
+  const selectionPath = resolveSessionSelectionPath(candidates);
+  if (!selectionPath) {
+    return primaryIdentity;
+  }
+
+  try {
+    const record = JSON.parse(fs.readFileSync(selectionPath, 'utf8')) as Partial<SessionSelectionRecord>;
+    if (typeof record.selectedUserIdentifier !== 'string' || typeof record.selectedEmail !== 'string') {
+      throw new TypeError('Session selection must contain a user identifier and email');
+    }
+
+    const selectedIdentity = candidates
+      .map((candidate) => resolveSessionIdentity(candidate))
+      .find(
+        (candidate) =>
+          candidate.userIdentifier === record.selectedUserIdentifier &&
+          normaliseSessionEmail(candidate.email) === record.selectedEmail
+      );
+    if (selectedIdentity) {
+      return selectedIdentity;
+    }
+
+    logger.warn('Ignoring session selection for an unconfigured identity', {
+      userIdentifier: primaryIdentity.userIdentifier,
+      selectionPath,
+      operation: 'load-session',
+    });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      logger.warn('Ignoring unreadable session selection', {
+        userIdentifier: primaryIdentity.userIdentifier,
+        selectionPath,
+        error: (error as Error).message,
+        operation: 'load-session',
+      });
+    }
+  }
+
+  return primaryIdentity;
 }
 
 function storageStateFingerprint(contents: string): string {
@@ -621,11 +716,21 @@ function readStorageStateFingerprint(fsApi: typeof fs, storageFile: string): str
   }
 }
 
-export async function ensureSession(userIdentifier: SessionIdentityInput): Promise<void> {
+async function ensureSessionWith(
+  userIdentifier: SessionIdentityInput,
+  ensureCandidate: (identity: SessionIdentity, captureDeadlineAt: number) => Promise<void> = ensureSessionForIdentity,
+  candidates = resolveSessionCandidates(userIdentifier)
+): Promise<void> {
   const captureDeadlineAt = Date.now() + SESSION_CAPTURE_POOL_BUDGET_MS;
-  await withOrderedSessionFallback(resolveSessionCandidates(userIdentifier), (identity) =>
-    ensureSessionForIdentity(identity, captureDeadlineAt)
-  );
+  const selection = await withOrderedSessionFallback(candidates, async (identity) => {
+    await ensureCandidate(identity, captureDeadlineAt);
+    return identity;
+  });
+  persistSessionSelection(candidates, selection.value);
+}
+
+export async function ensureSession(userIdentifier: SessionIdentityInput): Promise<void> {
+  await ensureSessionWith(userIdentifier);
 }
 
 /**
@@ -633,7 +738,7 @@ export async function ensureSession(userIdentifier: SessionIdentityInput): Promi
  * Throws if session doesn't exist. Use ensureSession() first.
  */
 export function loadSessionCookies(userIdentifier: SessionIdentityInput): LoadedSession {
-  const identity = resolveSessionIdentity(userIdentifier);
+  const identity = resolveSessionIdentityForLoad(userIdentifier);
   const email = identity.email;
   const storageKey = resolveSessionStorageKey(identity);
   const storageFile = path.join(process.cwd(), '.sessions', `${storageKey}.storage.json`);
@@ -1784,6 +1889,10 @@ export const __test__ = {
   withOperationTimeout,
   applySessionCookiesFromPoolWith,
   resolveSessionCandidates,
+  ensureSessionWith,
+  resolveSessionIdentityForLoad,
+  resolveSessionSelectionPath,
+  persistSessionSelection,
   resolveSessionMaxAgeMs,
   storageStateFingerprint,
   readStorageStateFingerprint,

@@ -825,6 +825,7 @@ The shared session-capture helper and API authentication store state under `.ses
 - When one API worker creates `api-<env>-<role>.storage.json`, other API workers for that role wait for lock release and reuse that API storage state
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
+- For `STAFF_ADMIN`, a legacy `ensureSession()` then `loadSessionCookies()` sequence uses an atomic, non-secret selection receipt scoped to the worker slot and its primary pooled account. It preserves the concrete ordered fallback identity across worker-process restarts.
 - Integration features can be targeted independently with `INTEGRATION_PW_INCLUDE_TAGS`
 
 ### Usage in E2E Tests

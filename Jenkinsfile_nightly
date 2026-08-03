@@ -110,6 +110,12 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
             reportName           : reportName
         ])
     } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+            throw e
+        }
         echo "[playwright-accessibility] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
@@ -186,6 +192,12 @@ def recordPlaywrightLoadEvent = { String label, String eventType ->
     try {
         steps.sh "node scripts/playwright-load-event.js '${playwrightLoadProfileEventsFile()}' '${label}' '${eventType}'"
     } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+            throw e
+        }
         echo "[load-profile] failed to record ${label} ${eventType}: ${e.getMessage()}"
     }
 }
@@ -576,12 +588,24 @@ withNightlyPipeline(type, product, component) {
                                 playwrightAccessibilityReportFile
                             )
                         } catch (Exception e) {
+                            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                throw e
+                            }
+                            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                throw e
+                            }
                             echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
                         } finally {
                             recordPlaywrightLoadEvent('Accessibility', 'finish')
                             try {
                                 publishPlaywrightAccessibilityReport('Nightly Playwright Accessibility Test Report')
                             } catch (Exception publishException) {
+                                if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                    throw publishException
+                                }
+                                if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                    throw publishException
+                                }
                                 echo "[playwright-accessibility] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
                             }
                         }

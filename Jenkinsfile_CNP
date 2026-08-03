@@ -149,6 +149,12 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
             reportName           : reportName
         ])
     } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+            throw e
+        }
         currentBuild.result = 'UNSTABLE'
         echo "[playwright-accessibility] Report publish failed; marking build unstable because this pack must publish Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
     }
@@ -222,6 +228,12 @@ def recordPlaywrightLoadEvent = { String eventsFile, String label, String eventT
     try {
         steps.sh "node scripts/playwright-load-event.js '${eventsFile}' '${label}' '${eventType}'"
     } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+            throw e
+        }
         echo "[load-profile] failed to record ${label} ${eventType}: ${e.getMessage()}"
     }
 }
@@ -673,6 +685,12 @@ withPipeline(type, product, component) {
                                     playwrightAccessibilityReportFile
                                 )
                             } catch (Exception e) {
+                                if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                    throw e
+                                }
+                                if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                    throw e
+                                }
                                 currentBuild.result = 'UNSTABLE'
                                 echo "[parallel-report-gathering] Playwright Accessibility failed; marking build unstable so a manual accessibility-only run cannot hide missing Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
                             } finally {
@@ -680,6 +698,12 @@ withPipeline(type, product, component) {
                                 try {
                                     publishPlaywrightAccessibilityReport('PREVIEW Playwright Accessibility')
                                 } catch (Exception publishException) {
+                                    if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                        throw publishException
+                                    }
+                                    if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                        throw publishException
+                                    }
                                     echo "[playwright-accessibility] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
                                 }
                             }
@@ -817,6 +841,12 @@ withPipeline(type, product, component) {
                                     playwrightAccessibilityReportFile
                                 )
                             } catch (Exception e) {
+                                if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                    throw e
+                                }
+                                if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                    throw e
+                                }
                                 currentBuild.result = 'UNSTABLE'
                                 echo "[parallel-report-gathering] Playwright Accessibility failed; marking build unstable so a manual accessibility-only run cannot hide missing Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
                             } finally {
@@ -824,6 +854,12 @@ withPipeline(type, product, component) {
                                 try {
                                     publishPlaywrightAccessibilityReport('AAT Playwright Accessibility')
                                 } catch (Exception publishException) {
+                                    if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                        throw publishException
+                                    }
+                                    if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                        throw publishException
+                                    }
                                     echo "[playwright-accessibility] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
                                 }
                             }

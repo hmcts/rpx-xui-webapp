@@ -104,6 +104,12 @@ def runManualPlaywrightAccessibility = { String environmentName ->
                     sh 'yarn test:accessibility:playwright'
                 }
             } catch (Exception e) {
+                if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                    throw e
+                }
+                if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                    throw e
+                }
                 echo "[playwright-accessibility] Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
             } finally {
                 try {
@@ -114,6 +120,12 @@ def runManualPlaywrightAccessibility = { String environmentName ->
                         'functional-output/tests/playwright-accessibility/**'
                     )
                 } catch (Exception publishException) {
+                    if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                        throw publishException
+                    }
+                    if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                        throw publishException
+                    }
                     echo "[playwright-accessibility] Report/evidence publish failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
                 }
             }

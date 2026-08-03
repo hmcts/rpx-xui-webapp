@@ -35,6 +35,10 @@ function hiddenLocator() {
   return locator;
 }
 
+function sessionUserIdentifier(identity: SessionIdentity | string): string {
+  return typeof identity === 'string' ? identity : identity.userIdentifier;
+}
+
 type FakeLockOptions = { onCompromised: (error: Error) => void };
 
 function fakeLockfile(
@@ -64,7 +68,6 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
   test('expands a staff admin alias to the worker-selected pool before applying cookies', async () => {
     const envOverrides = {
       STAFF_ADMIN_POOL_ENABLED: 'true',
-      TEST_PARALLEL_INDEX: '2',
       STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
       STAFF_ADMIN_1_PASSWORD: 'secret-1',
       STAFF_ADMIN_2_USERNAME: 'staff-admin-2@example.test',
@@ -79,6 +82,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
     try {
       Object.assign(process.env, envOverrides);
+      const candidates = sessionCaptureTest.resolveSessionCandidates('STAFF_ADMIN');
+      const selectedUserIdentifier = sessionUserIdentifier(candidates[0]);
+      const fallbackUserIdentifier = sessionUserIdentifier(candidates[1]);
 
       const result = await sessionCaptureTest.applySessionCookiesFromPoolWith(
         {} as never,
@@ -86,7 +92,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         async (_page, identityInput) => {
           const identity = identityInput as SessionIdentity;
           attempts.push(identity.userIdentifier);
-          if (identity.userIdentifier === 'STAFF_ADMIN-3') {
+          if (identity.userIdentifier === selectedUserIdentifier) {
             throw new SessionCaptureError(
               'Login failed: IDAM page message: Email or password is incorrect',
               identity.userIdentifier
@@ -101,8 +107,42 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         }
       );
 
-      expect(attempts).toEqual(['STAFF_ADMIN-3', 'STAFF_ADMIN-1']);
-      expect(result.userIdentifier).toBe('STAFF_ADMIN-1');
+      expect(attempts).toEqual([selectedUserIdentifier, fallbackUserIdentifier]);
+      expect(result.userIdentifier).toBe(fallbackUserIdentifier);
+    } finally {
+      for (const [key, value] of Object.entries(previousValues)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+    }
+  });
+
+  test('uses the active Playwright test index for staff admin pool selection', ({}, testInfo) => {
+    const envOverrides = {
+      STAFF_ADMIN_POOL_ENABLED: 'true',
+      STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+      STAFF_ADMIN_1_PASSWORD: 'secret-1',
+      STAFF_ADMIN_2_USERNAME: 'staff-admin-2@example.test',
+      STAFF_ADMIN_2_PASSWORD: 'secret-2',
+      STAFF_ADMIN_3_USERNAME: '',
+      STAFF_ADMIN_3_PASSWORD: '',
+      STAFF_ADMIN_4_USERNAME: '',
+      STAFF_ADMIN_4_PASSWORD: '',
+    };
+    const previousValues = Object.fromEntries(Object.keys(envOverrides).map((key) => [key, process.env[key]]));
+
+    try {
+      Object.assign(process.env, envOverrides);
+      const candidates = sessionCaptureTest.resolveSessionCandidates('STAFF_ADMIN');
+      const selected = `STAFF_ADMIN-${(testInfo.parallelIndex % 2) + 1}`;
+
+      expect(candidates.map((candidate) => (typeof candidate === 'string' ? candidate : candidate.userIdentifier))).toEqual([
+        selected,
+        selected === 'STAFF_ADMIN-1' ? 'STAFF_ADMIN-2' : 'STAFF_ADMIN-1',
+      ]);
     } finally {
       for (const [key, value] of Object.entries(previousValues)) {
         if (value === undefined) {

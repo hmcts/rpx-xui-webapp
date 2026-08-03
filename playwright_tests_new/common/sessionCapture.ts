@@ -1,4 +1,4 @@
-import { chromium, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { chromium, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -594,9 +594,19 @@ async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput, ca
   await sessionCaptureWith([identity], { captureDeadlineAt });
 }
 
+function resolveCurrentPlaywrightParallelIndex(): number | undefined {
+  try {
+    return test.info().parallelIndex;
+  } catch {
+    return undefined;
+  }
+}
+
 function resolveSessionCandidates(userIdentifier: SessionIdentityInput): readonly SessionIdentityInput[] {
   const normalizedIdentifier = typeof userIdentifier === 'string' ? userIdentifier.trim().toUpperCase() : undefined;
-  return normalizedIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionCandidates() : [userIdentifier];
+  return normalizedIdentifier === STAFF_ADMIN_USER
+    ? resolveStaffAdminSessionCandidates({ parallelIndex: resolveCurrentPlaywrightParallelIndex() })
+    : [userIdentifier];
 }
 
 function storageStateFingerprint(contents: string): string {
@@ -1773,6 +1783,7 @@ export const __test__ = {
   sessionCaptureRetryBackoffMaxMs: SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS,
   withOperationTimeout,
   applySessionCookiesFromPoolWith,
+  resolveSessionCandidates,
   resolveSessionMaxAgeMs,
   storageStateFingerprint,
   readStorageStateFingerprint,

@@ -84,6 +84,11 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     expect(resolveStaffAdminUserIdentifier('SOLICITOR', { parallelIndex: 1 }, configuredEnv)).toBe('SOLICITOR');
   });
 
+  test('normalises a staff admin alias before resolving a pool or legacy identity', () => {
+    expect(resolveStaffAdminUserIdentifier(' staff_admin ', { parallelIndex: 1 }, configuredEnv)).toBe('STAFF_ADMIN-2');
+    expect(resolveStaffAdminUserIdentifier(' staff_admin ', undefined, {})).toBe(STAFF_ADMIN_USER);
+  });
+
   test('creates an explicit legacy staff admin session identity that bypasses pool resolution', () => {
     const identity = getLegacyStaffAdminSessionIdentity({
       getUserCredentials: (userIdentifier: string) => {

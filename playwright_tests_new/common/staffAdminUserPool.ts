@@ -50,13 +50,14 @@ export function resolveStaffAdminUserIdentifier(
   source?: ParallelIndexSource,
   env: EnvMap = process.env
 ): string {
-  if (userIdentifier !== STAFF_ADMIN_USER) {
+  const normalizedUserIdentifier = userIdentifier.trim().toUpperCase();
+  if (normalizedUserIdentifier !== STAFF_ADMIN_USER) {
     return userIdentifier;
   }
 
   const configuredUserIdentifiers = getConfiguredStaffAdminUserIdentifiers(env);
   if (configuredUserIdentifiers.length === 0) {
-    return userIdentifier;
+    return STAFF_ADMIN_USER;
   }
 
   return configuredUserIdentifiers[resolveParallelIndex(source, env) % configuredUserIdentifiers.length];

@@ -170,6 +170,7 @@ def startPlaywrightLoadProfile = { String reportDir, String label, String events
         --events-file '${eventsFile}' \\
         --stop-file '${reportDir}/stop' \\
         > '${reportDir}/monitor.log' 2>&1 &
+      echo \$! > '${reportDir}/monitor.pid'
     """
 }
 
@@ -177,11 +178,40 @@ def stopPlaywrightLoadProfile = { String reportDir ->
     steps.sh """
       set +e
       touch '${reportDir}/stop'
+      if [ -s '${reportDir}/monitor.pid' ]; then
+        monitorPid=\$(cat '${reportDir}/monitor.pid')
+        case "\$monitorPid" in
+          ''|*[!0-9]*)
+            echo "[playwright-load-profile] ignoring invalid monitor PID: \$monitorPid"
+            ;;
+          *)
+            monitorCommand=\$(ps -p "\$monitorPid" -o args= 2>/dev/null || true)
+            case "\$monitorCommand" in
+              *"scripts/playwright-load-monitor.js"*"--output-folder ${reportDir}"*)
+                deadline=\$((\$(date +%s) + 5))
+                while kill -0 "\$monitorPid" 2>/dev/null && [ "\$(date +%s)" -lt "\$deadline" ]; do
+                  sleep 1
+                done
+                if kill -0 "\$monitorPid" 2>/dev/null; then
+                  kill -TERM "\$monitorPid" 2>/dev/null
+                  sleep 1
+                fi
+                if kill -0 "\$monitorPid" 2>/dev/null; then
+                  kill -KILL "\$monitorPid" 2>/dev/null
+                fi
+                ;;
+              *)
+                echo "[playwright-load-profile] ignoring PID that does not own ${reportDir}: \$monitorPid"
+                ;;
+            esac
+            ;;
+        esac
+      fi
     """
 }
 
-def ciLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/ci'
-def ciLoadProfileEventsFile = 'functional-output/tests/playwright-integration/load-profile/ci-stage-events.jsonl'
+def ciLoadProfileDir = "functional-output/tests/playwright-integration/load-profile/ci-${env.BUILD_NUMBER ?: 'local'}"
+def ciLoadProfileEventsFile = "${ciLoadProfileDir}/stage-events.jsonl"
 def ciLoadProfilePublished = false
 
 def playwrightLoadProfileEventsFile = { ->

@@ -488,6 +488,65 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     }
   });
 
+  test('keeps overlapping monitor lifecycles isolated by output folder', async () => {
+    const rootFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-isolation-'));
+    const firstOutputFolder = path.join(rootFolder, 'ci-101');
+    const secondOutputFolder = path.join(rootFolder, 'ci-102');
+    const monitors = [firstOutputFolder, secondOutputFolder].map((outputFolder) => {
+      const stopFile = path.join(outputFolder, 'stop');
+      const monitor = childProcess.spawn(
+        process.execPath,
+        [
+          path.join(process.cwd(), 'scripts/playwright-load-monitor.js'),
+          '--output-folder',
+          outputFolder,
+          '--sample-interval-ms',
+          '20',
+          '--stop-file',
+          stopFile,
+        ],
+        { stdio: ['ignore', 'pipe', 'pipe'] }
+      );
+      let stdout = '';
+      monitor.stdout?.on('data', (chunk) => {
+        stdout += String(chunk);
+      });
+      const exit = new Promise<number | null>((resolve, reject) => {
+        monitor.once('error', reject);
+        monitor.once('exit', (code) => resolve(code));
+      });
+      return { outputFolder, stopFile, monitor, exit, getStdout: () => stdout };
+    });
+
+    try {
+      await expect
+        .poll(() => monitors.every((entry) => entry.getStdout().includes('[load-profile] monitoring until')), {
+          timeout: 5_000,
+        })
+        .toBe(true);
+
+      fs.mkdirSync(secondOutputFolder, { recursive: true });
+      fs.writeFileSync(monitors[1].stopFile, 'stop\n');
+      await expect(monitors[1].exit).resolves.toBe(0);
+      const secondReportPath = path.join(secondOutputFolder, 'load-profile.html');
+      const secondReport = fs.readFileSync(secondReportPath, 'utf8');
+
+      fs.mkdirSync(firstOutputFolder, { recursive: true });
+      fs.writeFileSync(monitors[0].stopFile, 'stop\n');
+      await expect(monitors[0].exit).resolves.toBe(0);
+
+      expect(fs.readFileSync(secondReportPath, 'utf8')).toBe(secondReport);
+      expect(fs.existsSync(path.join(firstOutputFolder, 'load-profile.html'))).toBe(true);
+    } finally {
+      for (const { monitor } of monitors) {
+        if (monitor.exitCode === null && monitor.signalCode === null) {
+          monitor.kill('SIGKILL');
+        }
+      }
+      fs.rmSync(rootFolder, { recursive: true, force: true });
+    }
+  });
+
   test('terminates a silent child command after the configured idle watchdog expires', async () => {
     const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-child-timeout-'));
     const child = new EventEmitter() as EventEmitter & {

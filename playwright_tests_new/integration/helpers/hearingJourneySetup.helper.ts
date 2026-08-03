@@ -141,10 +141,10 @@ export function annotateHearingManagerSessionUser(testInfo: Pick<TestInfo, 'anno
 export async function applyHearingManagerSessionCookies(
   page: Page,
   userIdentifier: HearingManagerUserIdentifier,
-  testInfo: Pick<TestInfo, 'annotations'> = test.info(),
+  testInfo: Pick<TestInfo, 'annotations'> & Partial<Pick<TestInfo, 'parallelIndex'>> = test.info(),
   applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
 ): Promise<string> {
-  const candidates = resolveHearingManagerSessionCandidates(userIdentifier);
+  const candidates = resolveHearingManagerSessionCandidates(userIdentifier, { parallelIndex: testInfo.parallelIndex });
   const { userIdentifier: selectedUserIdentifier } = await applyFromPool(page, candidates);
 
   annotateHearingManagerSessionUser(testInfo, selectedUserIdentifier);

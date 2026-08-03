@@ -93,6 +93,20 @@ function expectCancellationGuard(catchBlock: string, variable: ProtectedCatch['v
 }
 
 test.describe('Jenkins accessibility cancellation contract', { tag: '@svc-internal' }, () => {
+  for (const fileName of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
+    test(`${fileName} scopes CI load-profile output to the Jenkins build`, () => {
+      const source = fs.readFileSync(path.join(repositoryRoot, fileName), 'utf8');
+
+      expect(source).toContain(
+        'def ciLoadProfileDir = "functional-output/tests/playwright-integration/load-profile/ci-${env.BUILD_NUMBER ?: \'local\'}"'
+      );
+      expect(source).toContain('def ciLoadProfileEventsFile = "${ciLoadProfileDir}/stage-events.jsonl"');
+      expect(source).toContain("echo \\$! > '${reportDir}/monitor.pid'");
+      expect(source).toContain("touch '${reportDir}/stop'");
+      expect(source).toContain('kill -KILL "\\$monitorPid"');
+    });
+  }
+
   for (const [fileName, catches] of Object.entries(protectedCatches)) {
     test(`${fileName} rethrows Jenkins cancellation before non-blocking accessibility handling`, () => {
       const source = fs.readFileSync(path.join(repositoryRoot, fileName), 'utf8');

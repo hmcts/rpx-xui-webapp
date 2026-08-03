@@ -7,7 +7,7 @@ import {
   clearIntegrationSessionConfigurationMarker,
   validateIntegrationSessionConfiguration,
 } from './integrationSessionConfiguration';
-import { resolveIntegrationSessionUsers } from '../integration/helpers';
+import { resolveIntegrationSessionUsers } from '../integration/helpers/integrationSessionUsers.helper';
 import * as playwrightConfigUtils from '../../playwright-config-utils';
 
 type ResolveTagFilters = typeof import('../../playwright-config-utils').resolveTagFilters;

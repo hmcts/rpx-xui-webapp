@@ -62,10 +62,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
 
   const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 
-  const getUserInfoMock = jasmine.createSpy('getUserInfo').and.returnValue({ id: 'USER_INFO_ID' });
-  const decentralisedRedirectService = jasmine.createSpyObj('decentralisedRedirectService', {
-    addUserInfo: jasmine.createSpy('addUserInfo').and.returnValue('AUGMENTED_URL'),
-  });
+  const userInfo = { id: 'USER_INFO_ID' };
+  const getUserInfoSpy = jasmine.createSpy('getUserInfo').and.returnValue(userInfo);
+  const decentralisedRedirectService = {
+    getUrl: jasmine.createSpy('getUrl').and.returnValue('AUGMENTED_URL'),
+  };
 
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -93,7 +94,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
                   roles: ['roleA', 'roleB'],
                 },
               }),
-            getUserInfo: getUserInfoMock,
+            getUserInfo: getUserInfoSpy,
           },
         },
         {
@@ -494,6 +495,34 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
         done();
       });
   });
+
+  it('augments the URLs of menu items for decentralised services', (done) => {
+    component.items = [
+      {
+        active: false,
+        href: '/duty-advisor',
+        roles: ['caseworker-pcs-solicitor'],
+        text: 'Duty Advisor',
+        decentralisedServiceId: 'PCS',
+      },
+    ];
+
+    // Ensure userDetails has the required role for filtering
+    userDetails.userInfo.roles = ['caseworker-pcs-solicitor'];
+    storeMock.pipe.and.returnValue(of(userDetails));
+    component.ngOnInit();
+    component.leftItems.subscribe((items) => {
+      expect(getUserInfoSpy).toHaveBeenCalled();
+      expect(decentralisedRedirectService.getUrl).toHaveBeenCalledWith('PCS', '/duty-advisor', userInfo);
+      expect(items[0].decentralisedServiceId).toBe('PCS');
+      expect(items[0].href).toBe('AUGMENTED_URL');
+
+      component.rightItems.subscribe((right) => {
+        expect(right).toEqual([]);
+        done();
+      });
+    });
+  });
 });
 
 describe('HmctsGlobalHeaderComponent - logged out', () => {
@@ -521,9 +550,9 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
 
   const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 
-  const decentralisedRedirectService = jasmine.createSpyObj('decentralisedRedirectService', {
-    addUserInfo: jasmine.createSpy('addUserInfo').and.returnValue('AUGMENTED_URL'),
-  });
+  const decentralisedRedirectService = {
+    getUrl: jasmine.createSpy('getUrl'),
+  };
 
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;

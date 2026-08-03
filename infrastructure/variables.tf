@@ -47,6 +47,18 @@ variable "redis_capacity" {
   description = "The size of the Redis cache to deploy. Valid values are 1, 2, 3, 4, 5"
 }
 
+variable "managed_redis_sku_name" {
+  default     = "Balanced_B1"
+  description = "The SKU to use for Azure Managed Redis. Balanced_B1 matches the legacy Basic C1 cache used by environments without a tfvars override."
+  type        = string
+}
+
+variable "private_dns_subscription_id" {
+  default     = "1baf5470-1c3e-40d3-a6f7-74bfbce4b348"
+  description = "Subscription ID containing the shared Azure Managed Redis private DNS zone."
+  type        = string
+}
+
 variable "welsh_reporting_enabled" {
   default     = false
   description = "Enable Welsh language usage reporting"
@@ -94,4 +106,3 @@ variable "exui_pui_activations_email_address_key" {
   description = "Email address key in Azure Key Vault for ExUI PUI activations reporting."
   type        = string
 }
-

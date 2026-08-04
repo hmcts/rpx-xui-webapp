@@ -105,6 +105,14 @@ test.describe('Jenkins accessibility cancellation contract', { tag: '@svc-intern
       expect(source).toContain("touch '${reportDir}/stop'");
       expect(source).toContain('kill -KILL "\\$monitorPid"');
     });
+
+    test(`${fileName} archives retained Playwright traces with failure diagnostics`, () => {
+      const source = fs.readFileSync(path.join(repositoryRoot, fileName), 'utf8');
+
+      expect(source).toContain(
+        "artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,test-results/**/trace.zip'"
+      );
+    });
   }
 
   for (const [fileName, catches] of Object.entries(protectedCatches)) {

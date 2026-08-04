@@ -238,7 +238,7 @@ const buildConfig = (env = process.env) => {
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'on-first-retry',
+      trace: 'retain-on-failure',
       screenshot: {
         mode: 'only-on-failure',
         fullPage: true,

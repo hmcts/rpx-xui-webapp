@@ -71,14 +71,36 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
   });
 
   test('annotates the hearing identity selected after session fallback', async () => {
-    const testInfo = { annotations: [] };
+    const environment = {
+      HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
+      HEARING_MANAGER_CR84_ON_1_PASSWORD: 'not-a-real-password',
+      HEARING_MANAGER_CR84_ON_2_USERNAME: 'hearing-on-2@example.test',
+      HEARING_MANAGER_CR84_ON_2_PASSWORD: 'not-a-real-password',
+      HEARING_MANAGER_CR84_ON_3_USERNAME: '',
+      HEARING_MANAGER_CR84_ON_3_PASSWORD: '',
+      HEARING_MANAGER_CR84_ON_4_USERNAME: '',
+      HEARING_MANAGER_CR84_ON_4_PASSWORD: '',
+    };
+    const previousEnvironment = Object.fromEntries(Object.keys(environment).map((key) => [key, process.env[key]]));
+    const testInfo = { annotations: [], parallelIndex: 0 };
     const fallbackIdentity = 'HEARING_MANAGER_CR84_ON-2';
 
-    await applyHearingManagerSessionCookies({} as never, 'HEARING_MANAGER_CR84_ON', testInfo, async (_page, candidates) => {
-      expect(candidates).toContain(fallbackIdentity);
-      return { userIdentifier: fallbackIdentity, session: {} as never };
-    });
+    try {
+      Object.assign(process.env, environment);
+      await applyHearingManagerSessionCookies({} as never, 'HEARING_MANAGER_CR84_ON', testInfo, async (_page, candidates) => {
+        expect(candidates).toEqual(['HEARING_MANAGER_CR84_ON-1', fallbackIdentity]);
+        return { userIdentifier: fallbackIdentity, session: {} as never };
+      });
 
-    expect(testInfo.annotations).toEqual([{ type: 'session-user', description: fallbackIdentity }]);
+      expect(testInfo.annotations).toEqual([{ type: 'session-user', description: fallbackIdentity }]);
+    } finally {
+      for (const [key, value] of Object.entries(previousEnvironment)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+    }
   });
 });

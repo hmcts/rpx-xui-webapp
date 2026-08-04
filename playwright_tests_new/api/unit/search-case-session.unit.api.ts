@@ -91,6 +91,17 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual(['SOLICITOR']);
   });
 
+  test('declares the probate identity for targeted Probate Find Case runs', () => {
+    expect(
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration-probate-find-case'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-probate-find-case'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['PROBATE_FIND_CASE']);
+  });
+
   test('declares sessions used by targeted data loss, query management and share case runs', () => {
     expect(
       resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {

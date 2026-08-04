@@ -2,6 +2,8 @@ import type { Page, TestInfo } from '@playwright/test';
 import { applySessionCookiesFromPool } from '../../common/sessionCapture';
 import { resolveSearchCaseSessionUsers } from './integrationSessionUsers.helper';
 
+const probateFindCaseSessionUsers = ['PROBATE_FIND_CASE'] as const;
+
 export { resolveIntegrationSessionUsers, resolveSearchCaseSessionUsers } from './integrationSessionUsers.helper';
 
 export function resolveSearchCaseUserIdentifier(
@@ -10,6 +12,10 @@ export function resolveSearchCaseUserIdentifier(
 ): string {
   const users = resolveSearchCaseSessionUsers(env);
   return users[testInfo.workerIndex % users.length];
+}
+
+export function resolveProbateSearchCaseUserIdentifier(testInfo: Pick<TestInfo, 'workerIndex'>): string {
+  return probateFindCaseSessionUsers[testInfo.workerIndex % probateFindCaseSessionUsers.length];
 }
 
 export async function applySearchCaseSessionCookies(
@@ -25,4 +31,16 @@ export async function applySearchCaseSessionCookies(
 
   testInfo.annotations.push({ type: 'session-user', description: userIdentifier });
   return userIdentifier;
+}
+
+export async function applyProbateSearchCaseSessionCookies(
+  page: Page,
+  testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,
+  applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
+): Promise<string> {
+  const userIdentifier = resolveProbateSearchCaseUserIdentifier(testInfo);
+  const session = await applyFromPool(page, [userIdentifier]);
+
+  testInfo.annotations.push({ type: 'session-user', description: session.userIdentifier });
+  return session.userIdentifier;
 }

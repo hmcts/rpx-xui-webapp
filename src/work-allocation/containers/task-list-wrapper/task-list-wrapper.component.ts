@@ -28,7 +28,13 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService,
 } from '../../services';
-import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
+import {
+  REDIRECTS,
+  WILDCARD_SERVICE_DOWN,
+  getCurrentUserRoleCategories,
+  handleFatalErrors,
+  handleTasksFatalErrors,
+} from '../../utils';
 
 @Component({
   standalone: false,
@@ -54,7 +60,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasksTotal: number;
   private currentUser: string;
   public routeEventsSubscription: Subscription;
-  public userRoleCategory: string;
+  public userRoleCategories: string[] = [];
   private initialFilterApplied = false;
   private goneBackCount = 0;
 
@@ -158,7 +164,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.userRoleCategory = this.getCurrentUserRoleCategory();
+    this.userRoleCategories = getCurrentUserRoleCategories(this.sessionStorageService);
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -195,24 +201,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    // NOTE - staffSupportedJurisdictions can replace waSupportedJurisdictions for quick testing purposes
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(
-      switchMap((jurisdictions) => this.caseworkerService.getUsersFromServices(jurisdictions))
-    );
-    // similar to case list wrapper changes
-    caseworkersByService$.subscribe(
-      (caseworkers) => {
-        this.caseworkers = caseworkers;
-        // EUI-2027 - Load tasks again in case this is start of new caching of caseworkers
-        // note: the if is relevant to stop the same request happening at exactly the same time on available tasks causing an error
-        if (this.tasks.length > 0) {
-          this.doLoad();
-        }
-      },
-      (error) => {
-        handleFatalErrors(error.status, this.router);
-      }
-    );
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
@@ -415,7 +403,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    return this.userRoleCategory?.toUpperCase() === RoleCategory.JUDICIAL;
+    return this.userRoleCategories.includes(RoleCategory.JUDICIAL);
   }
 
   // Do the actual load. This is separate as it's called from two methods.
@@ -435,8 +423,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       mergeMap((result: TaskResponse) => {
         const assignedJudicialUsers: string[] = [];
         result.tasks.forEach((task) => {
-          task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
           if (!task.assigneeName && task.assignee) {
+            // EXUI-2645 - only needs to be added for judicial users now
             assignedJudicialUsers.push(task.assignee);
           }
         });
@@ -498,15 +486,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     }
   }
 
-  public getCurrentUserRoleCategory(): string {
+  public getCurrentUserRoleCategories(): string[] {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (!userInfo) {
-        return;
+        return [];
       }
-      return userInfo.roleCategory;
+      return userInfo.roleCategories || [];
     }
+    return [];
   }
 
   private locationListsEqual(newLocations: string[]): boolean {

@@ -44,7 +44,7 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should call navigateBasedOnUserRole on ngOnInit and call booking url', () => {
     featureToggleMock.getValueOnce.and.returnValue(of({ roles: ['caseworker-ia'] }));
-    mockStore.pipe.and.returnValue(of({ userInfo: { roleCategory: 'JUDICIAL' }, roleAssignmentInfo: [{ bookable: true }] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roleCategories: ['JUDICIAL'] }, roleAssignmentInfo: [{ bookable: true }] }));
     component.ngOnInit();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.bookingUrl]);
   });

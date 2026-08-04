@@ -14,6 +14,7 @@ const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /timeout of \d+ms exceeded/i,
   /timeout \d+ms exceeded/i,
   /ECONNRESET/i,
+  /ENOTFOUND|getaddrinfo/i,
   /ETIMEDOUT/i,
   /Exceeded \d+ auto-advance attempts before submit/i,
   /Submit button did not become available/i,
@@ -44,7 +45,7 @@ export function isDependencyEnvironmentFailure(error: unknown): boolean {
     /status\s+5\d\d/i.test(message) ||
     /something went wrong page/i.test(message) ||
     /network timeout/i.test(message) ||
-    /ECONNRESET|ETIMEDOUT/i.test(message) ||
+    /ECONNRESET|ENOTFOUND|ETIMEDOUT|getaddrinfo/i.test(message) ||
     /Target page, context or browser has been closed/i.test(message) ||
     /setup exceeded \d+ms/i.test(message)
   );

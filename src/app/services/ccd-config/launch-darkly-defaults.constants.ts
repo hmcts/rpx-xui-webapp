@@ -76,13 +76,10 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "GrantOfRepresentation",
-        "Caveat",
-        "StandingSearch",
-        "WillLodgement"
+        "Possession"
       ],
       "releaseVersion": "4",
-       "serviceName": "PROBATE"
+      "serviceName": "PCS"
     }
   ]
   }`;
@@ -228,6 +225,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "DIVORCE"
+    },
+    {
+      "caseTypes": [
+        "Possession"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
     ]
   }`;

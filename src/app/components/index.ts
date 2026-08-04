@@ -1,4 +1,5 @@
 import { InfoMessageContainerComponent } from '../containers/info-message-container/info-message-container.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { CaseReferenceSearchBoxComponent } from './case-reference-search-box/case-reference-search-box.component';
 import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
@@ -22,6 +23,7 @@ export const components: any[] = [
   HmctsGlobalFooterComponent,
   HeaderComponent,
   HmctsGlobalHeaderComponent,
+  AccessDeniedComponent,
   CookiePolicyComponent,
   NotAuthorisedComponent,
   PrivacyPolicyComponent,
@@ -43,6 +45,7 @@ export const components: any[] = [
 export * from './hmcts-global-footer/hmcts-global-footer.component';
 export * from './header/header.component';
 export * from './hmcts-global-header/hmcts-global-header.component';
+export * from './access-denied/access-denied.component';
 export * from './phase-banner/phase-banner.component';
 export * from './service-down/service-down.component';
 export * from './session-error-wrapper/session-error-wrapper.component';

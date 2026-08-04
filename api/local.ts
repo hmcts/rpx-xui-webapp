@@ -1,9 +1,10 @@
 /**
  * Local.ts used to run the application locally.
  */
+// App Insights must patch console before application imports initialise node-lib loggers.
+import { appInsights } from './lib/appInsights';
 import { createApp } from './application';
 import { applicationConfiguration } from './configuration/appConfig';
-import { appInsights } from './lib/appInsights';
 import errorHandler from './lib/error.handler';
 
 /**

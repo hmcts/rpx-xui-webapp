@@ -317,8 +317,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
     const nodeApiProject = config.projects.find((project) => project.name === 'node-api') as
-      | { grep?: RegExp; grepInvert?: RegExp }
-      | undefined;
+      { grep?: RegExp; grepInvert?: RegExp } | undefined;
     expect(nodeApiProject).toBeDefined();
     expect(nodeApiProject?.grep).toBeInstanceOf(RegExp);
     expect(nodeApiProject?.grep?.test('@svc-auth')).toBe(true);
@@ -419,11 +418,12 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults exclude browser Work Allocation until seeded task data exists', () => {
+  test('E2E tag defaults exclude nightly and browser Work Allocation until seeded task data exists', () => {
     const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual(['@e2e-manage-tasks']);
+    expect(filters.excludedTags).toEqual(['@nightly', '@e2e-manage-tasks']);
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
+    expect(filters.grepInvert?.test('@nightly')).toBe(true);
     expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(true);
     expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(true);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
@@ -431,6 +431,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       expect.arrayContaining([
         '@e2e-case-file-view',
         '@e2e-case-flags',
+        '@e2e-civil-data-loss',
         '@e2e-create-case',
         '@e2e-data-loss',
         '@e2e-document-upload',

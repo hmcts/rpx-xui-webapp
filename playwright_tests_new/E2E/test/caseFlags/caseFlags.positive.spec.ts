@@ -62,12 +62,9 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
   });
 
   test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
-    await test.step('Record existing case level flags', async () => {
+    await test.step('Open case flags tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
-      const flagsTable = await caseDetailsPage.waitForTableByName('Case level flags');
-      const table = await tableUtils.parseDataTable(flagsTable);
-      const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      await expect(caseDetailsPage.caseFlagsHeading).toBeVisible();
     });
 
     await test.step('Create a new case level flag', async () => {

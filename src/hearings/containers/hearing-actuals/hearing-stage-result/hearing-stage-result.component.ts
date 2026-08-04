@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -35,6 +36,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly location: Location,
     private readonly formBuilder: FormBuilder,
     private readonly route: ActivatedRoute
   ) {
@@ -138,6 +140,10 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
         })
       );
     }
+  }
+
+  public onBack(): void {
+    this.location.back();
   }
 
   private isFormValid(): boolean {

@@ -22,12 +22,7 @@ export interface ApiFixtures {
 }
 
 type FailureType =
-  | 'DOWNSTREAM_API_5XX'
-  | 'DOWNSTREAM_API_4XX'
-  | 'SLOW_API_RESPONSE'
-  | 'NETWORK_TIMEOUT'
-  | 'ASSERTION_FAILURE'
-  | 'UNKNOWN';
+  'DOWNSTREAM_API_5XX' | 'DOWNSTREAM_API_4XX' | 'SLOW_API_RESPONSE' | 'NETWORK_TIMEOUT' | 'ASSERTION_FAILURE' | 'UNKNOWN';
 
 type ApiError = {
   url: string;

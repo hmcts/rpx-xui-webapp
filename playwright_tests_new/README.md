@@ -5,7 +5,7 @@ This directory contains **node-api API tests**, **Playwright support unit tests*
 ## Table of Contents
 
 - [Functional Test Overview](#functional-test-overview)
-- [Quick Command Reference (AAT vs LOCAL)](#quick-command-reference-aat-vs-local)
+- [Quick Command Reference (AAT, DEMO, ITHC and LOCAL)](#quick-command-reference-aat-demo-ithc-and-local)
 - [Secrets and Env Population (Key Vault)](#secrets-and-env-population-key-vault)
 - [Request Headers and Auth Helpers](#request-headers-and-auth-helpers)
 - [Pipeline Execution and Reporting](#pipeline-execution-and-reporting)
@@ -48,9 +48,30 @@ E2E/session helpers load the workspace `.env` through `E2E/utils/config.utils.ts
 
 ---
 
-## Quick Command Reference (AAT vs LOCAL)
+## Quick Command Reference (AAT, DEMO, ITHC and LOCAL)
 
-By default, Playwright tests run against **AAT** from your local machine. Use `TEST_URL=http://localhost:3000` for LOCAL runs.
+By default, Playwright tests run against **AAT** from your local machine. Override `TEST_URL` to point the same suite at DEMO, ITHC, preview, or LOCAL.
+
+| Environment | `TEST_URL`                                     |
+| ----------- | ---------------------------------------------- |
+| AAT         | `https://manage-case.aat.platform.hmcts.net/`  |
+| DEMO        | `https://manage-case.demo.platform.hmcts.net/` |
+| ITHC        | `https://manage-case.ithc.platform.hmcts.net/` |
+| LOCAL       | `http://localhost:3000`                        |
+
+Populate and source matching secrets before running against shared environments:
+
+```bash
+# AAT
+yarn env:populate:playwright:aat
+set -a; source .env; set +a
+
+# DEMO
+yarn env:populate:playwright:demo
+set -a; source .env; set +a
+```
+
+For ITHC, export the required user credentials and service values through your approved local secret mechanism. Do not commit credentials or paste passwords into test commands.
 
 ### Start EXUI locally (for LOCAL runs)
 
@@ -65,6 +86,12 @@ yarn start:ng
 ```bash
 # AAT: run all E2E. Produces Odhín plus a separate System Load profile by default.
 yarn test:playwrightE2E
+
+# DEMO: run all E2E
+TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:playwrightE2E
+
+# ITHC: run all E2E
+TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:playwrightE2E
 
 # LOCAL: run all E2E. Produces Odhín plus a separate System Load profile by default.
 TEST_URL=http://localhost:3000 yarn test:playwrightE2E
@@ -110,6 +137,12 @@ API_PW_INCLUDE_TAGS=@svc-work-allocation API_PW_EXCLUDED_TAGS_OVERRIDE=@none yar
 # LOCAL - produces Odhín plus a separate System Load profile by default
 TEST_URL=http://localhost:3000 yarn test:api:pw
 
+# DEMO
+TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:api:pw
+
+# ITHC
+TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:api:pw
+
 # LOCAL with coverage - produces Odhín plus a separate System Load profile by default
 TEST_URL=http://localhost:3000 yarn test:api:pw:coverage
 
@@ -126,6 +159,12 @@ TEST_URL=http://localhost:3000 yarn test:playwright:integration
 
 # AAT - produces Odhín plus a separate System Load profile by default
 yarn test:playwright:integration
+
+# DEMO
+TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:playwright:integration
+
+# ITHC
+TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:playwright:integration
 
 # Direct Playwright run without the load-profile wrapper
 yarn test:playwright:integration:raw

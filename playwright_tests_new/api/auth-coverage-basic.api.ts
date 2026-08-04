@@ -6,7 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 
-import { config } from './utils/apiTestRuntimeConfig';
+import { config, __test__ as runtimeConfigTest } from './utils/apiTestRuntimeConfig';
 import { __test__ as authTest } from './utils/auth';
 
 test.describe.configure({ mode: 'serial' });
@@ -23,6 +23,11 @@ test.describe('Auth helper coverage - basic utilities', { tag: '@svc-auth' }, ()
 
   test('getCacheKey includes test environment', () => {
     expect(authTest.getCacheKey('solicitor')).toBe(`${config.testEnv}-solicitor`);
+  });
+
+  test('runtime config derives ITHC environment from explicit env or URL', () => {
+    expect(runtimeConfigTest.resolveTestEnv('ithc', 'https://manage-case.aat.platform.hmcts.net')).toBe('ithc');
+    expect(runtimeConfigTest.resolveTestEnv(undefined, 'https://manage-case.ithc.platform.hmcts.net')).toBe('ithc');
   });
 
   test('getCredentials returns configured users and errors on unknown roles', () => {

@@ -23,6 +23,10 @@ function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return new SessionCapturePage(page).idamUsernameCandidates(idamPage);
 }
 
+function getIdamPasswordCandidates(page: Page, idamPage: IdamPage): Locator[] {
+  return new SessionCapturePage(page).idamPasswordCandidates(idamPage);
+}
+
 function getIdamSubmitCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return new SessionCapturePage(page).idamSubmitCandidates(idamPage);
 }
@@ -950,17 +954,42 @@ async function executeLoginAttempt(
   }
 
   const usernameInput = (await waitForFirstVisibleLocator(page, usernameCandidates, 1_000)) ?? idamPage.usernameInput.first();
-  const passwordInput = idamPage.passwordInput.first(); // NOSONAR
-  const submitButton =
-    (await waitForFirstVisibleLocator(page, getIdamSubmitCandidates(page, idamPage), 1_000)) ?? idamPage.submitBtn.first();
-  await usernameInput.fill(email);
-  await passwordInput.fill(password); // NOSONAR
+  await completeIdamCredentialFlow(page, idamPage, usernameInput, email, password);
+  await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
+}
+
+async function clickOrSubmitActiveField(page: Page, submitButton: Locator, activeField: Locator): Promise<void> {
   if (await submitButton.isVisible().catch(() => false)) {
     await submitButton.click();
   } else {
-    await passwordInput.press('Enter');
+    await activeField.press('Enter');
   }
-  await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
+  await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
+}
+
+async function completeIdamCredentialFlow(
+  page: Page,
+  idamPage: IdamPage,
+  usernameInput: Locator,
+  email: string,
+  password: string
+): Promise<void> {
+  await usernameInput.fill(email);
+  let passwordInput = await waitForFirstVisibleLocator(page, getIdamPasswordCandidates(page, idamPage), 1_000);
+  let submitButton =
+    (await waitForFirstVisibleLocator(page, getIdamSubmitCandidates(page, idamPage), 1_000)) ?? idamPage.submitBtn.first();
+
+  if (!passwordInput) {
+    await clickOrSubmitActiveField(page, submitButton, usernameInput);
+    passwordInput =
+      (await waitForFirstVisibleLocator(page, getIdamPasswordCandidates(page, idamPage), IDAM_LOGIN_SURFACE_TIMEOUT_MS)) ??
+      idamPage.passwordInput.first();
+    submitButton =
+      (await waitForFirstVisibleLocator(page, getIdamSubmitCandidates(page, idamPage), 1_000)) ?? idamPage.submitBtn.first();
+  }
+
+  await passwordInput.fill(password); // NOSONAR
+  await clickOrSubmitActiveField(page, submitButton, passwordInput);
 }
 
 async function confirmAuthenticatedLogin(
@@ -1298,6 +1327,7 @@ export const __test__ = {
   sessionCaptureWith,
   persistSession,
   confirmAuthenticatedLogin,
+  completeIdamCredentialFlow,
   ensureAuthenticatedPage,
   loginAndPersistSession,
   requirePersistableSessionCookies,

@@ -360,6 +360,8 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       switch (selector) {
         case 'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]':
           return usernameLocator;
+        case 'input#password, input[name="password"], input[type="password"]':
+          return passwordLocator;
         case 'button:has-text("Sign in"), button:has-text("Continue")':
           return submitLocator;
         case 'exui-header, exui-case-home':
@@ -377,6 +379,9 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     const resolveRoleLocator = (role: string, name: string) => {
       if (role === 'button' && name === '/accept (additional|analytics) cookies/i') {
         return acceptCookiesLocator;
+      }
+      if (role === 'button' && name === '/^(continue|sign in)$/i') {
+        return submitLocator;
       }
       if (role === 'link' && name === 'Create case') {
         return createCaseLinkLocator;

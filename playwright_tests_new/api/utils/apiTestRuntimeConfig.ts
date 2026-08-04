@@ -1,4 +1,4 @@
-type TestEnvironment = 'aat' | 'demo';
+type TestEnvironment = 'aat' | 'demo' | 'ithc';
 
 type UserCredentials = {
   e: string;
@@ -15,11 +15,21 @@ function resolveTestEnv(value?: string, baseUrl?: string): TestEnvironment {
   if (normalized?.includes('demo')) {
     return 'demo';
   }
+  if (normalized?.includes('ithc')) {
+    return 'ithc';
+  }
   if (normalized?.includes('aat')) {
     return 'aat';
   }
 
-  return (baseUrl ?? '').toLowerCase().includes('.demo.') ? 'demo' : 'aat';
+  const normalizedBaseUrl = (baseUrl ?? '').toLowerCase();
+  if (normalizedBaseUrl.includes('.demo.')) {
+    return 'demo';
+  }
+  if (normalizedBaseUrl.includes('.ithc.')) {
+    return 'ithc';
+  }
+  return 'aat';
 }
 
 function resolveCredential(...candidates: Array<string | undefined>): string | undefined {
@@ -117,6 +127,23 @@ const users = {
       [process.env.PW_IAC_CASEOFFICER_R2_PASSWORD, process.env.IAC_CASEOFFICER_R2_PASSWORD]
     ),
   },
+  ithc: {
+    solicitor: resolveRequiredUser('solicitor@example.test', 'not-configured', [solicitorUsername], [solicitorPassword]),
+    waSolicitor: resolveRequiredUser(
+      'wa.solicitor@example.test',
+      'not-configured',
+      [process.env.WA_SOLICITOR_USERNAME, process.env.SOLICITOR_USERNAME, process.env.DIVORCE_SOLICITOR_USERNAME],
+      [process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD, process.env.DIVORCE_SOLICITOR_PASSWORD]
+    ),
+    caseOfficer_r1: resolveOptionalUser(
+      [process.env.PW_IAC_CASEOFFICER_R1_EMAIL, process.env.IAC_CASEOFFICER_R1_USERNAME],
+      [process.env.PW_IAC_CASEOFFICER_R1_PASSWORD, process.env.IAC_CASEOFFICER_R1_PASSWORD]
+    ),
+    caseOfficer_r2: resolveOptionalUser(
+      [process.env.PW_IAC_CASEOFFICER_R2_EMAIL, process.env.IAC_CASEOFFICER_R2_USERNAME],
+      [process.env.PW_IAC_CASEOFFICER_R2_PASSWORD, process.env.IAC_CASEOFFICER_R2_PASSWORD]
+    ),
+  },
 };
 
 export const config = {
@@ -133,19 +160,27 @@ export const config = {
       { id: 'IA', caseTypeIds: ['Asylum'] },
       { id: 'PROBATE', caseTypeIds: ['GrantOfRepresentation'] },
     ],
+    ithc: [
+      { id: 'DIVORCE', caseTypeIds: ['xuiTestCaseType'] },
+      { id: 'IA', caseTypeIds: [] },
+      { id: 'PROBATE', caseTypeIds: [] },
+    ],
   },
   jurisdictionNames: {
     aat: ['Family Divorce', 'Public Law', 'Immigration & Asylum', 'Manage probate application'],
     demo: ['Family Divorce - v104-26.1', 'Public Law', 'Immigration & Asylum'],
+    ithc: ['Family Divorce', 'Public Law', 'Immigration & Asylum', 'Manage probate application'],
   },
   em: {
     aat: { docId: '249cfa9e-622c-4877-a588-e9daa3fe10d8' },
     demo: { docId: '005ed16f-be03-4620-a8ee-9bc90635f6f2' },
+    ithc: { docId: '249cfa9e-622c-4877-a588-e9daa3fe10d8' },
   },
   users,
   configurationUi: {
     aat: [...sharedUiConfigKeys],
     demo: [...sharedUiConfigKeys],
+    ithc: [...sharedUiConfigKeys],
   },
   workallocation: {
     aat: {
@@ -170,6 +205,20 @@ export const config = {
         name: 'Tom Cruz',
       },
       iaCaseIds: ['1547458486131483'],
+    },
+    ithc: {
+      locationId: '698118',
+      judgeUser: {
+        email: '330085EMP-@ejudiciary.net',
+        id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+        name: 'Tom Cruz',
+      },
+      legalOpsUser: {
+        email: '330085EMP-@ejudiciary.net',
+        id: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',
+        name: 'Tom Cruz',
+      },
+      iaCaseIds: ['1546883526751282'],
     },
   },
 } as const;

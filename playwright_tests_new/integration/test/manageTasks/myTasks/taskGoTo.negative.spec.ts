@@ -74,7 +74,7 @@ test.describe.skip(
                   id: 227101,
                   locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
                 },
-                roleCategory: 'LEGAL_OPERATIONS',
+                roleCategories: ['LEGAL_OPERATIONS'],
                 service: 'IA',
               },
             ]);

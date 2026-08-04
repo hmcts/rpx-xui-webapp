@@ -291,7 +291,8 @@
     "bn.js": "^4.12.3",
     "dompurify": "^3.3.2",
     "lodash": "^4.17.22",
-    "lodash-es": "^4.17.22"
+    "lodash-es": "^4.17.22",
+    "mermaid": "^11.16.1"
   },
   "packageManager": "yarn@4.17.1"
 }

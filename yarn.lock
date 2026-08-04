@@ -18349,7 +18349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-markdown@npm:20":
+"ngx-markdown@npm:^20.1.0":
   version: 20.1.0
   resolution: "ngx-markdown@npm:20.1.0"
   dependencies:
@@ -21170,7 +21170,7 @@ __metadata:
     ngrx-store-freeze: "npm:^0.2.4"
     ngx-chips: "npm:3.0.0"
     ngx-logger: "npm:^5.0.12"
-    ngx-markdown: "npm:20"
+    ngx-markdown: "npm:^20.1.0"
     ngx-pagination: "npm:^6.0.3"
     node-html-parser: "npm:^7.0.0"
     nodemon: "npm:^2.0.19"

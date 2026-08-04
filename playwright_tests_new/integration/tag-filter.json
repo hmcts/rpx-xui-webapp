@@ -12,6 +12,7 @@
     "@integration-create-case",
     "@integration-data-loss",
     "@integration-hearings",
+    "@integration-hearing-link",
     "@integration-manage-tasks",
     "@integration-platform-services",
     "@integration-query-management",

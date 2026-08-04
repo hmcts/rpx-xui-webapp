@@ -8,7 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, CaseNotifier, CasesService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -19,12 +19,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants, SortConstants, ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import {
-  CaseworkerDataService,
-  LocationDataService,
-  WASupportedJurisdictionsService,
-  WorkAllocationCaseService,
-} from '../../services';
+import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
 import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
@@ -48,7 +43,6 @@ describe('MyAccessComponent', () => {
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getMyAccess']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
@@ -81,7 +75,6 @@ describe('MyAccessComponent', () => {
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: FilterService, useValue: mockFilterService },
@@ -104,7 +97,6 @@ describe('MyAccessComponent', () => {
     const cases: Case[] = getMockCases();
     mockCaseService.searchCase.and.returnValue(of({ cases }));
     mockCaseService.getMyAccess.and.returnValue(of({ cases }));
-    mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFilterService.getStream.and.returnValue(of({}));
@@ -222,7 +214,7 @@ describe('MyAccessComponent', () => {
       const mockUserRole = UserRole.LegalOps;
 
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(mockUserInfo));
-      spyOn(AppUtils, 'getUserRole').and.returnValue(mockUserRole);
+      spyOn(AppUtils, 'getUserRoleNames').and.returnValue([mockUserRole]);
       spyOn(component, 'getSortParameter').and.returnValue({ sort_by: 'case_name', sort_order: 'asc' });
 
       const result = component.getSearchCaseRequestPagination();
@@ -233,7 +225,7 @@ describe('MyAccessComponent', () => {
         search_by: mockUserRole,
       });
       expect(mockSessionStorageService.getItem).toHaveBeenCalledWith('userDetails');
-      expect(AppUtils.getUserRole).toHaveBeenCalledWith(mockUserInfo.roles);
+      expect(AppUtils.getUserRoleNames).toHaveBeenCalledWith(mockUserInfo.roles);
     });
 
     it('should use uid when id is not present', () => {
@@ -249,7 +241,7 @@ describe('MyAccessComponent', () => {
       const mockUserRole = UserRole.LegalOps;
 
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(mockUserInfo));
-      spyOn(AppUtils, 'getUserRole').and.returnValue(mockUserRole);
+      spyOn(AppUtils, 'getUserRoleNames').and.returnValue([mockUserRole]);
       spyOn(component, 'getSortParameter').and.returnValue({ sort_by: 'case_name', sort_order: 'asc' });
 
       const result = component.getSearchCaseRequestPagination();

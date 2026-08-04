@@ -146,6 +146,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const apiRetries = resolveApiRetries(env);
 
   return defineConfig({
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     use: {
       baseURL: resolveBaseUrl(env),
     },

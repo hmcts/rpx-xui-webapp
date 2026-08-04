@@ -5,6 +5,7 @@ import {
   assertValidWorkAllocationTaskListMock,
 } from './workAllocationMockValidation.helper';
 import { setupCaseworkerJurisdictionsRoute, type SupportedJurisdictionDetail } from './caseworkerJurisdictionMockRoutes.helper';
+import { buildXuiAppShellAppConfigMock, buildXuiAppShellEnvironmentConfigMock } from './xuiAppShellMockRoutes.helper';
 
 export const taskListRoutePattern = /\/workallocation\/task(?:\?.*)?$/;
 const defaultSupportedJurisdictionsMock = ['IA', 'SSCS', 'Other'];
@@ -122,6 +123,30 @@ export async function setupTaskListBootstrapRoutes(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(userDetails),
+    });
+  });
+
+  await page.route('**/api/configuration*', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(false) });
+  });
+
+  await page.route('**/api/monitoring-tools*', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({}) });
+  });
+
+  await page.route('**/assets/config/config.json*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(buildXuiAppShellAppConfigMock()),
+    });
+  });
+
+  await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(buildXuiAppShellEnvironmentConfigMock()),
     });
   });
 

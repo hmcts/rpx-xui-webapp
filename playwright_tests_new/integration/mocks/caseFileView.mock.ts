@@ -85,9 +85,9 @@ export function buildCaseFileViewCategoriesMock() {
         category_name: 'Evidence',
         category_order: 1,
         documents: [
-          buildV2Document(CASE_FILE_VIEW_DOC_IDS.evidenceZetaV2, 'Zeta evidence.pdf', '2023-10-22T09:15:00.000Z'),
-          buildV1Document(CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1, 'Alpha evidence.pdf', '2023-10-20T08:15:00.000Z'),
-          buildV2Document(CASE_FILE_VIEW_DOC_IDS.evidenceMiddleV2, 'Middle evidence.pdf', '2023-10-21T10:30:00.000Z'),
+          buildV2Document(CASE_FILE_VIEW_DOC_IDS.evidenceZetaV2, 'Zeta evidence.pdf', '2023-10-20T09:15:00.000Z'),
+          buildV1Document(CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1, 'Alpha evidence.pdf', '2023-10-21T08:15:00.000Z'),
+          buildV2Document(CASE_FILE_VIEW_DOC_IDS.evidenceMiddleV2, 'Middle evidence.pdf', '2023-10-22T10:30:00.000Z'),
         ],
         sub_categories: [],
       },

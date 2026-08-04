@@ -5,7 +5,7 @@ import path from 'node:path';
 import { expect, test } from '@playwright/test';
 
 import { __test__ as sessionStorageTest } from '../../E2E/utils/session-storage.utils.js';
-import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
+import { __test__ as sessionCaptureTest, applyMockSessionCookies } from '../../common/sessionCapture.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
 
 function fakeSessionPage() {
@@ -30,6 +30,68 @@ function hiddenLocator() {
 }
 
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
+  test('mock auth installs the authentication route and adds only the deterministic user cookie', async () => {
+    const routes: Array<{ pattern: string; handler: (route: never) => unknown }> = [];
+    const cookies: Array<Record<string, unknown>> = [];
+    const page = {
+      context: () => ({
+        addCookies: async (addedCookies: Array<Record<string, unknown>>) => cookies.push(...addedCookies),
+      }),
+      route: async (pattern: string, handler: (route: never) => unknown) => {
+        routes.push({ pattern, handler });
+      },
+    };
+
+    const guard = await applyMockSessionCookies(page as never, 'FPL_GLOBAL_SEARCH', {
+      TEST_URL: 'http://localhost:3000',
+    });
+    let fulfilOptions: unknown;
+    await routes[1].handler({
+      fulfill: async (options) => {
+        fulfilOptions = options;
+      },
+    } as never);
+
+    expect(routes.map(({ pattern }) => pattern)).toEqual(['**/*', '**/auth/isAuthenticated*']);
+    expect(fulfilOptions).toEqual({ json: true });
+    expect(cookies).toEqual([
+      expect.objectContaining({
+        name: '__userid__',
+        value: 'FPL_GLOBAL_SEARCH',
+        domain: 'localhost',
+      }),
+    ]);
+    expect(cookies.map(({ name }) => name)).not.toContain('__auth__');
+    expect(cookies.map(({ name }) => name)).not.toContain('Idam.Session');
+    expect(() => guard()).not.toThrow();
+  });
+
+  test('mock auth guard fails an unmatched same-origin API request without exposing its query', async () => {
+    const routes: Array<{ pattern: string; handler: (route: never) => unknown }> = [];
+    const page = {
+      context: () => ({ addCookies: async () => undefined }),
+      route: async (pattern: string, handler: (route: never) => unknown) => routes.push({ pattern, handler }),
+    };
+    const guard = await applyMockSessionCookies(page as never, 'STAFF_ADMIN', { TEST_URL: 'https://xui.example' });
+    let abortedWith: string | undefined;
+
+    await routes[0].handler({
+      request: () => ({
+        method: () => 'GET',
+        resourceType: () => 'xhr',
+        url: () => 'https://xui.example/api/user/details?access_token=secret',
+      }),
+      abort: async (reason: string) => {
+        abortedWith = reason;
+      },
+      fallback: async () => undefined,
+    } as never);
+
+    expect(abortedWith).toBe('blockedbyclient');
+    expect(() => guard()).toThrow('GET /api/user/details');
+    expect(() => guard()).not.toThrow(/access_token|secret/);
+  });
+
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
 

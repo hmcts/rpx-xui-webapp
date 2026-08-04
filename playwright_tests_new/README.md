@@ -121,10 +121,10 @@ yarn test:api:pw:coverage:raw
 ### Integration commands
 
 ```bash
-# LOCAL - produces Odhín plus a separate System Load profile by default
+# LOCAL integration run against a locally started application
 TEST_URL=http://localhost:3000 yarn test:playwright:integration
 
-# AAT - produces Odhín plus a separate System Load profile by default
+# AAT integration run (hybrid specs retain live session authentication)
 yarn test:playwright:integration
 
 # Direct Playwright run without the load-profile wrapper
@@ -142,6 +142,7 @@ Odhin dashboard notes:
 - The dashboard now groups the former file summary by Playwright feature folder, for example `caseFileView`, `caseLinking`, `accessRequests`, and `hearings`.
 - API, integration, and E2E reports now share the adaptive Odhin wrapper, so grouped feature summaries and inline grouped status are applied consistently across suites.
 - The report stays single-page: grouped feature status is rendered directly under `Run info` instead of generating a separate drilldown page.
+- Nightly failed-result trimming preserves failed steps and attachment links, disables attachment embedding in the Odhín HTML, suppresses duplicate incremental stdout/stderr hooks, and caps retained stdout and stderr at 64 KiB per stream. Jenkins also archives each failed test's `failure-data.json`, trace, and screenshots from the isolated Playwright output directories.
 
 ### Notes
 
@@ -316,6 +317,8 @@ The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_n
 | Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json`                                                                                                                              | Archived as Jenkins artifacts                                                                              |
 
 The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, and `test:playwright:integration` also create local System Load reports through `scripts/playwright-load-monitor.js`. Raw CI commands rely on the parent Jenkins load monitor instead.
+
+Nightly API, integration profiles, E2E, and accessibility runs set separate `PLAYWRIGHT_OUTPUT_DIR` values. This prevents a suite starting later from cleaning another suite's redacted `failure-data.json` evidence before the diagnostics archive step runs. Raw traces and screenshots remain transient and are not copied into the retained diagnostics archive.
 
 ---
 
@@ -781,7 +784,9 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 ### Overview
 
-**E2E, integration warmup, and API tests** use lazy storage-state capture under the shared `.sessions/` directory. The files are namespaced by suite style so parallel workers can reuse the right state without colliding.
+**E2E, hybrid integration, and API tests** use lazy storage-state capture under the shared `.sessions/` directory. The files are namespaced by suite style so parallel workers can reuse the right state without colliding.
+
+Integration session warmup is best-effort: if warmup fails, route-mocked specs can still run and hybrid specs capture their required live sessions lazily. Specs may use `applyMockSessionCookies` only when their application-shell and feature API routes are self-contained. The helper registers `**/auth/isAuthenticated*`, adds a deterministic `__userid__` cookie without creating a plausible live auth token, and returns a guard that must be checked after each test. The guard blocks and reports any same-origin XHR or fetch request that was not fulfilled by a feature or application-shell mock. Other integration specs continue to use `applySessionCookies` and the storage-backed IDAM flow below.
 
 ### Unified Storage Location
 

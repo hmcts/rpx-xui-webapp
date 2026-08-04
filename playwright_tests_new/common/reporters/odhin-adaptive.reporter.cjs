@@ -1,11 +1,13 @@
-/* global clearTimeout, process, require, module, setTimeout */
+/* global Buffer, clearTimeout, process, require, module, setTimeout */
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
+const defaultFailedOutputMaxBytes = 64 * 1024;
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
@@ -70,8 +72,11 @@ class OdhinAdaptiveReporter {
     this.featureStats = new Map();
     this.finalizationStartedAt = 0;
     this.pendingInnerCallbacks = Promise.resolve();
+    const innerOptions = this.trimFailedArtifacts ? { ...options, embedAttachments: false } : options;
     this.inner =
-      typeof options.createInnerReporter === 'function' ? options.createInnerReporter(options) : new OdhinReporter(options);
+      typeof options.createInnerReporter === 'function'
+        ? options.createInnerReporter(innerOptions)
+        : new OdhinReporter(innerOptions);
   }
 
   async onBegin(config, suite) {
@@ -85,27 +90,13 @@ class OdhinAdaptiveReporter {
       return;
     }
 
-    let nextResult = result;
-    const passedOrSkipped = result?.status === 'passed' || result?.status === 'skipped';
-    const shouldTrimHeavyArtifacts = this.lightweight && (passedOrSkipped || (this.trimFailedArtifacts && !passedOrSkipped));
-
-    const shouldDropTestOutput = this.testOutputMode === false || (this.testOutputMode === 'only-on-failure' && passedOrSkipped);
-
-    if (shouldTrimHeavyArtifacts || shouldDropTestOutput) {
-      nextResult = { ...result };
-
-      if (shouldDropTestOutput) {
-        nextResult.stdout = [];
-        nextResult.stderr = [];
-        this.trimmedCounts.output += 1;
-      }
-
-      if (shouldTrimHeavyArtifacts) {
-        nextResult.steps = [];
-        nextResult.attachments = [];
-        this.trimmedCounts.heavyArtifacts += 1;
-      }
-    }
+    const { nextResult, trimmedCounts } = trimResultForOdhin(result, {
+      lightweight: this.lightweight,
+      testOutputMode: this.testOutputMode,
+      trimFailedArtifacts: this.trimFailedArtifacts,
+    });
+    this.trimmedCounts.output += trimmedCounts.output;
+    this.trimmedCounts.heavyArtifacts += trimmedCounts.heavyArtifacts;
 
     this.recordStatus(result?.status);
     this.recordFeatureStat(test, result);
@@ -145,13 +136,13 @@ class OdhinAdaptiveReporter {
   }
 
   async onStdOut(chunk, test, result) {
-    if (typeof this.inner.onStdOut === 'function') {
+    if (!this.trimFailedArtifacts && typeof this.inner.onStdOut === 'function') {
       this.enqueueInnerCallback('onStdOut', () => this.inner.onStdOut(chunk, test, result), { test });
     }
   }
 
   async onStdErr(chunk, test, result) {
-    if (typeof this.inner.onStdErr === 'function') {
+    if (!this.trimFailedArtifacts && typeof this.inner.onStdErr === 'function') {
       this.enqueueInnerCallback('onStdErr', () => this.inner.onStdErr(chunk, test, result), { test });
     }
   }
@@ -315,6 +306,89 @@ const formatHookContext = ({ test } = {}) => {
   return title ? ` test="${title}"` : '';
 };
 
+const outputEntryText = (entry) => {
+  if (Buffer.isBuffer(entry)) {
+    return entry.toString('utf8');
+  }
+  if (typeof entry === 'string') {
+    return entry;
+  }
+  return String(entry ?? '');
+};
+
+const boundOutputEntries = (entries, maxBytes) => {
+  if (!Array.isArray(entries)) {
+    return { entries, truncated: false };
+  }
+  const marker = '\n...[output truncated]';
+  const contentBytes = Math.max(0, maxBytes - Buffer.byteLength(marker, 'utf8'));
+  const retained = [];
+  let retainedBytes = 0;
+  let totalBytes = 0;
+
+  for (const entry of entries) {
+    const text = outputEntryText(entry);
+    const textBytes = Buffer.byteLength(text, 'utf8');
+    totalBytes += textBytes;
+    if (retainedBytes >= contentBytes) {
+      continue;
+    }
+    if (retainedBytes + textBytes <= contentBytes) {
+      retained.push(text);
+      retainedBytes += textBytes;
+      continue;
+    }
+
+    const availableBytes = Math.max(0, contentBytes - retainedBytes);
+    const buffer = Buffer.from(text, 'utf8');
+    let end = Math.min(availableBytes, buffer.length);
+    while (end > 0 && end < buffer.length && (buffer[end] & 0xc0) === 0x80) {
+      end -= 1;
+    }
+    retained.push(buffer.subarray(0, end).toString('utf8'));
+    retainedBytes += end;
+  }
+
+  return totalBytes <= maxBytes ? { entries, truncated: false } : { entries: [`${retained.join('')}${marker}`], truncated: true };
+};
+
+const trimResultForOdhin = (result, { lightweight, testOutputMode, trimFailedArtifacts = false }) => {
+  let nextResult = result;
+  const trimmedCounts = { output: 0, heavyArtifacts: 0 };
+  const passedOrSkipped = result?.status === 'passed' || result?.status === 'skipped';
+  const shouldTrimHeavyArtifacts = lightweight && passedOrSkipped;
+  const shouldDropTestOutput = testOutputMode === false || (testOutputMode === 'only-on-failure' && passedOrSkipped);
+  const shouldBoundFailedOutput = trimFailedArtifacts && !passedOrSkipped && !shouldDropTestOutput;
+
+  if (shouldTrimHeavyArtifacts || shouldDropTestOutput || shouldBoundFailedOutput) {
+    nextResult = { ...result };
+
+    if (shouldDropTestOutput) {
+      nextResult.stdout = [];
+      nextResult.stderr = [];
+      trimmedCounts.output += 1;
+    }
+
+    if (shouldTrimHeavyArtifacts) {
+      nextResult.steps = [];
+      nextResult.attachments = [];
+      trimmedCounts.heavyArtifacts += 1;
+    }
+
+    if (shouldBoundFailedOutput) {
+      const stdout = boundOutputEntries(result.stdout, defaultFailedOutputMaxBytes);
+      const stderr = boundOutputEntries(result.stderr, defaultFailedOutputMaxBytes);
+      nextResult.stdout = stdout.entries;
+      nextResult.stderr = stderr.entries;
+      if (stdout.truncated || stderr.truncated) {
+        trimmedCounts.output += 1;
+      }
+    }
+  }
+
+  return { nextResult, trimmedCounts };
+};
+
 const exportedReporter = OdhinAdaptiveReporter;
 exportedReporter.__test__ = {
   isFinalResult,
@@ -334,36 +408,7 @@ exportedReporter.__test__ = {
     }
     return 'only-on-failure';
   },
-  trimResult(result, { lightweight, testOutputMode }) {
-    const reporter = {
-      lightweight,
-      testOutputMode,
-      trimmedCounts: { output: 0, heavyArtifacts: 0 },
-    };
-    let nextResult = result;
-    const passedOrSkipped = result?.status === 'passed' || result?.status === 'skipped';
-    const shouldTrimHeavyArtifacts = reporter.lightweight && passedOrSkipped;
-    const shouldDropTestOutput =
-      reporter.testOutputMode === false || (reporter.testOutputMode === 'only-on-failure' && passedOrSkipped);
-
-    if (shouldTrimHeavyArtifacts || shouldDropTestOutput) {
-      nextResult = { ...result };
-
-      if (shouldDropTestOutput) {
-        nextResult.stdout = [];
-        nextResult.stderr = [];
-        reporter.trimmedCounts.output += 1;
-      }
-
-      if (shouldTrimHeavyArtifacts) {
-        nextResult.steps = [];
-        nextResult.attachments = [];
-        reporter.trimmedCounts.heavyArtifacts += 1;
-      }
-    }
-
-    return { nextResult, trimmedCounts: reporter.trimmedCounts };
-  },
+  trimResult: trimResultForOdhin,
   normalizeBoolean,
   normalizeRuntimeHookTimeoutMs,
   withTimeout,

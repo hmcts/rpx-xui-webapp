@@ -157,6 +157,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   }
 
   return defineConfig({
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore,

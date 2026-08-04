@@ -1,11 +1,19 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies, ACCESS_REQUEST_REVIEW_PATH, setupReviewSpecificAccessMockRoutes } from '../../helpers';
+import {
+  applyMockSessionCookies,
+  type MockSessionGuard,
+  ACCESS_REQUEST_REVIEW_PATH,
+  setupReviewSpecificAccessMockRoutes,
+} from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
+let mockSessionGuard: MockSessionGuard;
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  mockSessionGuard = await applyMockSessionCookies(page, userIdentifier);
 });
+
+test.afterEach(() => mockSessionGuard());
 
 test.describe(
   `Review Specific Access Request negative paths as ${userIdentifier}`,

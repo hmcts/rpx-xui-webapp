@@ -12,6 +12,8 @@ const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
 const sortedDocumentOrderTimeoutMs = 15_000;
 const evidenceDocumentsAscending = ['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf'];
 const evidenceDocumentsDescending = ['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf'];
+const evidenceDocumentsRecentFirst = ['Middle evidence.pdf', 'Alpha evidence.pdf', 'Zeta evidence.pdf'];
+const evidenceDocumentsOldestFirst = ['Zeta evidence.pdf', 'Alpha evidence.pdf', 'Middle evidence.pdf'];
 const orderDocumentsOldestFirst = ['Approved order.pdf', 'Root order.pdf'];
 const fileViewV1ModeUser = {
   idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
@@ -57,9 +59,9 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
     await test.step('Upload timestamps for evidence document are correct', async () => {
       const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
 
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('21 Oct 2023');
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('22 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('21 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('22 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('20 Oct 2023');
     });
   });
 
@@ -137,7 +139,6 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents A to Z', async () => {
       await caseFileViewPage.sortByAscending();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(evidenceDocumentsAscending);
@@ -145,7 +146,6 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents Z to A', async () => {
       await caseFileViewPage.sortByDescending();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(evidenceDocumentsDescending);
@@ -153,21 +153,18 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents by most recent first', async () => {
       await caseFileViewPage.sortByRecentFirst();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
-        .toEqual(evidenceDocumentsDescending);
+        .toEqual(evidenceDocumentsRecentFirst);
     });
 
     await test.step('Sort evidence documents by oldest first', async () => {
       await caseFileViewPage.getFolderNode('Orders.Approved orders');
       await caseFileViewPage.sortByOldestFirst();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
-        .toEqual(evidenceDocumentsAscending);
+        .toEqual(evidenceDocumentsOldestFirst);
 
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Orders', orderDocumentsOldestFirst.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(orderDocumentsOldestFirst);
@@ -193,7 +190,7 @@ test.describe('Case file view V1 mode', { tag: ['@integration', '@integration-ca
     await test.step('Show the core case file view content', async () => {
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
       const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('21 Oct 2023');
     });
   });
 });

@@ -1,14 +1,17 @@
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies, setupManageTasksBaseRoutes } from '../../../helpers';
+import { applyMockSessionCookies, type MockSessionGuard, setupManageTasksBaseRoutes } from '../../../helpers';
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';
 const broaderSupportedJurisdictionsMock = ['IA', 'PRIVATELAW', 'PUBLICLAW', 'CIVIL', 'ST_CIC', 'EMPLOYMENT', 'SSCS', 'DIVORCE'];
+let mockSessionGuard: MockSessionGuard;
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  mockSessionGuard = await applyMockSessionCookies(page, userIdentifier);
 });
+
+test.afterEach(() => mockSessionGuard());
 
 test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User ${userIdentifier} sees filter errors if no services are selected`, async ({ taskListPage, page }) => {

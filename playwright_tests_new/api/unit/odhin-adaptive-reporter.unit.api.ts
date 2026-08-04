@@ -16,7 +16,11 @@ const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
   withTimeout: <T>(promise: Promise<T>, timeoutMs: number) => Promise<T>;
   trimResult: (
     result: Record<string, unknown>,
-    options: { lightweight: boolean; testOutputMode: true | false | 'only-on-failure' }
+    options: {
+      lightweight: boolean;
+      testOutputMode: true | false | 'only-on-failure';
+      trimFailedArtifacts?: boolean;
+    }
   ) => {
     nextResult: Record<string, unknown>;
     trimmedCounts: { output: number; heavyArtifacts: number };
@@ -52,8 +56,8 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     const { nextResult, trimmedCounts } = odhinAdaptiveTest.trimResult(
       {
         status: 'passed',
-        stdout: [{ text: 'pass out' }],
-        stderr: [{ text: 'pass err' }],
+        stdout: ['pass out'],
+        stderr: ['pass err'],
         steps: [{ title: 'step' }],
         attachments: [{ name: 'trace' }],
       },
@@ -70,8 +74,8 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
   test('keeps failure artifacts when only-on-failure mode is used', () => {
     const originalResult = {
       status: 'failed',
-      stdout: [{ text: 'fail out' }],
-      stderr: [{ text: 'fail err' }],
+      stdout: ['fail out'],
+      stderr: ['fail err'],
       steps: [{ title: 'step' }],
       attachments: [{ name: 'trace' }],
     };
@@ -82,6 +86,25 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
 
     expect(nextResult).toEqual(originalResult);
     expect(trimmedCounts).toEqual({ output: 0, heavyArtifacts: 0 });
+  });
+
+  test('bounds failed output without removing steps or attachments in failed-artifact trim mode', () => {
+    const { nextResult, trimmedCounts } = odhinAdaptiveTest.trimResult(
+      {
+        status: 'failed',
+        stdout: ['x'.repeat(128 * 1024)],
+        stderr: ['y'.repeat(128 * 1024)],
+        steps: [{ title: 'failed step' }],
+        attachments: [{ name: 'trace', path: '/tmp/trace.zip' }],
+      },
+      { lightweight: false, testOutputMode: 'only-on-failure', trimFailedArtifacts: true }
+    );
+
+    expect(Buffer.byteLength(String((nextResult.stdout as string[])[0]))).toBeLessThanOrEqual(64 * 1024);
+    expect(Buffer.byteLength(String((nextResult.stderr as string[])[0]))).toBeLessThanOrEqual(64 * 1024);
+    expect(nextResult.steps).toEqual([{ title: 'failed step' }]);
+    expect(nextResult.attachments).toEqual([{ name: 'trace', path: '/tmp/trace.zip' }]);
+    expect(trimmedCounts).toEqual({ output: 1, heavyArtifacts: 0 });
   });
 
   test('times out stalled runtime hook promises', async () => {

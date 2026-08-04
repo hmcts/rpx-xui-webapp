@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 
 import { __test__ as diagnosticsTest } from '../../E2E/fixtures.js';
 import { TEST_AVAILABLE_TASKS_URL, TEST_SERVICE_DOWN_URL } from './testAppUrls.js';
@@ -13,6 +14,26 @@ const baseExecutionSignals = {
 };
 
 test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
+  test('writes failure data to the test output directory and attaches it by path', async ({ request }, testInfo) => {
+    expect(request).toBeDefined();
+    const attachments: Array<{ name: string; path?: string; contentType?: string }> = [];
+    const failureData = { failureType: 'DOWNSTREAM_API_5XX', topSuspect: 'GET /cases returned HTTP 502' };
+
+    await diagnosticsTest.attachFailureData(
+      {
+        outputPath: testInfo.outputPath.bind(testInfo),
+        attach: async (name, options) => {
+          attachments.push({ name, path: options.path, contentType: options.contentType });
+        },
+      },
+      failureData
+    );
+
+    const failureDataPath = testInfo.outputPath('failure-data.json');
+    await expect(readFile(failureDataPath, 'utf8')).resolves.toBe(JSON.stringify(failureData, null, 2));
+    expect(attachments).toEqual([{ name: 'failure-data.json', path: failureDataPath, contentType: 'application/json' }]);
+  });
+
   test('classifyFailure treats direct CCD event-token 502 failures as backend 5xx', () => {
     const failureType = diagnosticsTest.classifyFailure({
       error: "Error: Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",

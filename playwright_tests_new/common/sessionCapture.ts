@@ -18,6 +18,10 @@ const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
 const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
+const MOCK_AUTH_ROUTE = '**/auth/isAuthenticated*';
+const MOCK_ROUTE_CLOSURE = '**/*';
+
+export type MockSessionGuard = () => void;
 
 function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return new SessionCapturePage(page).idamUsernameCandidates(idamPage);
@@ -380,6 +384,27 @@ function resolveSessionMaxAgeMs(env: NodeJS.ProcessEnv = process.env): number {
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
 }
 
+function mockSessionUserIdentifier(userIdentifier: SessionIdentityInput): string {
+  return typeof userIdentifier === 'string' ? userIdentifier : userIdentifier.userIdentifier;
+}
+
+function buildMockSessionCookie(userIdentifier: SessionIdentityInput, env: NodeJS.ProcessEnv): Cookie {
+  const value = mockSessionUserIdentifier(userIdentifier);
+  const targetUrl = env.TEST_URL ?? config.urls.exuiDefaultUrl;
+  const target = new URL(targetUrl);
+
+  return {
+    name: '__userid__',
+    value,
+    domain: target.hostname,
+    path: '/',
+    expires: -1,
+    httpOnly: false,
+    secure: target.protocol === 'https:',
+    sameSite: 'Lax',
+  };
+}
+
 /**
  * Ensure session is captured for a given userIdentifier before tests run.
  * Call this in test.beforeAll() to lazily capture only needed sessions.
@@ -504,6 +529,36 @@ export async function applySessionCookies(page: Page, userIdentifier: SessionIde
     await page.context().addCookies(session.cookies);
   }
   return session;
+}
+
+/** Apply synthetic auth only to specs whose application and API routes are fully mocked. */
+export async function applyMockSessionCookies(
+  page: Page,
+  userIdentifier: SessionIdentityInput,
+  env: NodeJS.ProcessEnv = process.env
+): Promise<MockSessionGuard> {
+  const targetUrl = env.TEST_URL ?? config.urls.exuiDefaultUrl;
+  const targetOrigin = new URL(targetUrl).origin;
+  const unexpectedRequests = new Set<string>();
+
+  // Feature mocks are registered after this guard and therefore handle known routes first.
+  await page.route(MOCK_ROUTE_CLOSURE, async (route) => {
+    const request = route.request();
+    const requestUrl = new URL(request.url());
+    if (requestUrl.origin === targetOrigin && ['fetch', 'xhr'].includes(request.resourceType())) {
+      unexpectedRequests.add(`${request.method()} ${requestUrl.pathname}`);
+      await route.abort('blockedbyclient');
+      return;
+    }
+    await route.fallback();
+  });
+  await page.route(MOCK_AUTH_ROUTE, (route) => route.fulfill({ json: true }));
+  await page.context().addCookies([buildMockSessionCookie(userIdentifier, env)]);
+  return () => {
+    if (unexpectedRequests.size > 0) {
+      throw new Error(`Synthetic-auth spec made unexpected same-origin requests: ${[...unexpectedRequests].join(', ')}`);
+    }
+  };
 }
 
 async function isIdamLoginPage(page: Page): Promise<boolean> {

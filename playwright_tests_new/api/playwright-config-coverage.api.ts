@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
 import {
@@ -64,6 +65,7 @@ const resolveE2eTagFilters = (env: EnvMap) =>
   };
 const buildE2eConfig = (env: EnvMap) =>
   e2eConfigModule.__test__.buildConfig(env) as {
+    outputDir: string;
     reporter: [string, Record<string, unknown> | undefined][];
     globalSetup?: string;
     testIgnore: string[];
@@ -73,6 +75,7 @@ const buildE2eConfig = (env: EnvMap) =>
 
 const buildIntegrationConfig = (env: EnvMap) =>
   integrationConfigModule.__test__.buildConfig(env) as {
+    outputDir: string;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
@@ -92,6 +95,7 @@ const resolveIntegrationWorkerCount = (env: EnvMap) =>
   ).resolveWorkerCount(env);
 const buildNightlyConfig = (env: EnvMap) =>
   nightlyConfigModule.__test__.buildConfig(env) as {
+    outputDir: string;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { baseURL: string };
@@ -141,6 +145,25 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
     const defaultApiCount = resolveApiProjectWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
     expect(defaultApiCount).toBe(6);
+  });
+
+  test('parallel nightly suites use isolated Playwright output directories', () => {
+    expect(buildConfig({ PLAYWRIGHT_OUTPUT_DIR: 'test-results/api' }).outputDir).toBe('test-results/api');
+    expect(buildE2eConfig({ PLAYWRIGHT_OUTPUT_DIR: 'test-results/e2e' }).outputDir).toBe('test-results/e2e');
+    expect(buildNightlyConfig({ PLAYWRIGHT_OUTPUT_DIR: 'test-results/e2e' }).outputDir).toBe('test-results/e2e');
+    expect(buildIntegrationConfig({ PLAYWRIGHT_OUTPUT_DIR: 'test-results/integration-nightly-workers-7' }).outputDir).toBe(
+      'test-results/integration-nightly-workers-7'
+    );
+
+    const nightly = readFileSync('Jenkinsfile_nightly', 'utf8');
+    expect(nightly).toContain('PLAYWRIGHT_OUTPUT_DIR=test-results/api');
+    expect(nightly).toContain('PLAYWRIGHT_OUTPUT_DIR=test-results/e2e');
+    expect(nightly).toContain('PLAYWRIGHT_OUTPUT_DIR=test-results/accessibility');
+    expect(nightly).toContain('PLAYWRIGHT_OUTPUT_DIR=test-results/integration-${runConfig.label}');
+    expect(nightly).toContain("find test-results -type f -name 'failure-data.json'");
+    expect(nightly).toContain('rm -rf "${out_dir}"');
+    expect(nightly).toContain('destination="${out_dir}/${rel}"');
+    expect(nightly).toContain('functional-output/tests/playwright-diagnostics/failure-data/**/*');
   });
 
   test('resolveConfigModule prefers __test__ and default exports', () => {

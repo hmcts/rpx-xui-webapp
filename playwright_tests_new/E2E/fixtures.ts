@@ -1,11 +1,14 @@
 import { test as baseTest, type Request, type Response, type TestInfo } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
 import getPort from 'get-port';
+import { writeFile } from 'node:fs/promises';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
+
+type FailureDataTestInfo = Pick<TestInfo, 'attach' | 'outputPath'>;
 
 type FailureType =
   | 'DOWNSTREAM_API_5XX'
@@ -1077,29 +1080,30 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     contentType: 'text/plain',
   });
 
-  // Also attach as JSON for programmatic analysis
+  await attachFailureData(testInfo, {
+    failureType,
+    phaseMarker,
+    setupMarker,
+    backendWait,
+    likelyRootCause,
+    failureLocation,
+    actionableError,
+    executionSignals,
+    topSuspect,
+    slowEndpointSummary,
+    apiErrors,
+    failedRequests,
+    slowCalls,
+    networkTimeout,
+    timestamp: new Date().toISOString(),
+  });
+}
+
+async function attachFailureData(testInfo: FailureDataTestInfo, failureData: Record<string, unknown>): Promise<void> {
+  const failureDataPath = testInfo.outputPath('failure-data.json');
+  await writeFile(failureDataPath, JSON.stringify(failureData, null, 2), 'utf8');
   await testInfo.attach('failure-data.json', {
-    body: JSON.stringify(
-      {
-        failureType,
-        phaseMarker,
-        setupMarker,
-        backendWait,
-        likelyRootCause,
-        failureLocation,
-        actionableError,
-        executionSignals,
-        topSuspect,
-        slowEndpointSummary,
-        apiErrors,
-        failedRequests,
-        slowCalls,
-        networkTimeout,
-        timestamp: new Date().toISOString(),
-      },
-      null,
-      2
-    ),
+    path: failureDataPath,
     contentType: 'application/json',
   });
 }
@@ -1236,6 +1240,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
 export const expect = test.expect;
 
 export const __test__ = {
+  attachFailureData,
   classifyFailure: (context: ClassifyFailureContext) => classifyFailure(context),
   derivePhaseMarker: (
     failureType: FailureType,

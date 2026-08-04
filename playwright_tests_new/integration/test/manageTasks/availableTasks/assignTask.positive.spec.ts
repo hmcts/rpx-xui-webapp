@@ -1,13 +1,16 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies } from '../../../../common/sessionCapture';
+import { applyMockSessionCookies, type MockSessionGuard } from '../../../../common/sessionCapture';
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
 import { setupManageTasksBaseRoutes } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
+let mockSessionGuard: MockSessionGuard;
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  mockSessionGuard = await applyMockSessionCookies(page, userIdentifier);
 });
+
+test.afterEach(() => mockSessionGuard());
 
 test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User can assign a task to themselves and see the expected notifications`, async ({ taskListPage, page }) => {

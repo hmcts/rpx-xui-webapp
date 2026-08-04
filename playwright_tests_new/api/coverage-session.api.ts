@@ -471,11 +471,21 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     const acceptCookiesLocator = createLocator('accept-cookies', {
       isVisible: async () => false,
     });
+    const signInHeadingLocator = createLocator('sign-in-heading', {
+      isVisible: async () => false,
+    });
+    const hiddenFallbackLocator = createLocator('hidden-fallback', {
+      isVisible: async () => false,
+    });
     const resolveSelectorLocator = (selector: string) => {
       switch (selector) {
+        case '[data-testid="idam-username-input"], #username, input[name="username"], input[type="email"]':
         case 'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]':
           return usernameLocator;
+        case '[data-testid="idam-password-input"], #password, input[name="password"], input[type="password"]':
+          return passwordLocator;
         case 'button:has-text("Sign in"), button:has-text("Continue")':
+        case '[data-testid="idam-submit-button"], [name="save"], button[type="submit"], input[type="submit"]':
           return submitLocator;
         case 'exui-header, exui-case-home':
           return shellLocator;
@@ -485,6 +495,8 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
           return nextStepLocator;
         case '#cc-jurisdiction':
           return jurisdictionLocator;
+        case 'exui-service-down':
+          return hiddenFallbackLocator;
         default:
           throw new Error(`Unexpected selector ${selector}`);
       }
@@ -498,6 +510,9 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       }
       if (role === 'link' && name === 'Case list') {
         return caseListLinkLocator;
+      }
+      if (role === 'heading' && name === 'Sign in or create an account') {
+        return signInHeadingLocator;
       }
       throw new Error(`Unexpected role locator ${role}:${name}`);
     };
@@ -523,6 +538,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       cookies: async () =>
         pageState.loggedIn ? [baseCookie('Idam.Session', 'session-1'), baseCookie('__auth__', 'auth-1')] : [],
       addCookies: async () => {},
+      close: async () => {},
       storageState: async () => ({}),
     } as any;
     page.context = () => context;
@@ -625,6 +641,12 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
           return hiddenFallbackLocator;
         }
         if (selector === 'button:has-text("Sign in"), button:has-text("Continue")') {
+          return hiddenFallbackLocator;
+        }
+        if (selector === '[data-testid="idam-submit-button"], [name="save"], button[type="submit"], input[type="submit"]') {
+          return hiddenFallbackLocator;
+        }
+        if (selector === 'exui-service-down') {
           return hiddenFallbackLocator;
         }
         throw new Error(`Unexpected selector ${selector}`);

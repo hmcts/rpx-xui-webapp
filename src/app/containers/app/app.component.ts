@@ -186,7 +186,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.setCookieBannerVisibility();
       // If the user has not previously accepted cookies, suppress Dynatrace
       // until dtrum.enable() is called by the cookie banner on acceptance
-      if (!this.cookieService.getCookie(this.cookieName)) {
+      if (!this.cookieService.checkCookie(this.cookieName)) {
         this.disableDynatrace();
       }
     }

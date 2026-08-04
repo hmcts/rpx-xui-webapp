@@ -95,3 +95,14 @@ variable "exui_pui_activations_email_address_key" {
   type        = string
 }
 
+variable "exui_mo_logins_stats_enabled" {
+  default     = false
+  description = "Enable ExUI Manage Organisation login stats weekly reporting"
+  type        = bool
+}
+
+variable "exui_mo_logins_stats_recipient_address" {
+  default     = "cftcommoncomponents@justice.gov.uk"
+  description = "Group email address that receives the ExUI Manage Organisation login stats report."
+  type        = string
+}

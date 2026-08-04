@@ -53,7 +53,7 @@ export function buildXuiAppShellUserDetailsMock(options?: XuiAppShellUserDetails
       surname: options?.surname ?? 'Playwright',
       email: options?.email ?? 'wave2.playwright@justice.gov.uk',
       active: true,
-      roleCategory: options?.roleCategory ?? 'LEGAL_OPERATIONS',
+      roleCategories: [options?.roleCategory ?? 'LEGAL_OPERATIONS'],
       roles,
     },
     roleAssignmentInfo: deepClone(options?.roleAssignmentInfo ?? []),

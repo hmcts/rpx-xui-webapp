@@ -29,6 +29,8 @@ export interface Case {
   caseName: string;
   caseCategory: string;
   assigneeName: string;
+  // actorName used in parts of application - may not be needed
+  actorName?: string;
   name: string;
   isNew?: boolean;
   hearing_date?: string;

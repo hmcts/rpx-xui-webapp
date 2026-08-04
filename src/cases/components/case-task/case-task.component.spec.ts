@@ -138,7 +138,7 @@ describe('CaseTaskComponent', () => {
         firstName: 'Some',
         lastName: 'Name',
         email: 'test@test.com',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        roleCategories: [RoleCategory.LEGAL_OPERATIONS],
         location: {
           id: '1',
           locationName: 'TestLocation',

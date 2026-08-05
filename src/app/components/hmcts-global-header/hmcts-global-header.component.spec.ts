@@ -11,7 +11,7 @@ import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { DecentralisedRedirectService } from '../../../cases/services/decentralised-redirect.service';
+import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 @Pipe({
   standalone: false,

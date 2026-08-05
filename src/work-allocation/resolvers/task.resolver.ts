@@ -35,8 +35,8 @@ export class TaskResolver {
         return this.allocateRoleService.getRoleCategoriesByUserId(task.task.assignee).pipe(
           switchMap((roleCategories) =>
             roleCategories?.includes(RoleCategory.JUDICIAL)
-              // if judicial, get judicial user details, otherwise get caseworker details
-              ? this.getJudicialUser(task.task.assignee, task.task.jurisdiction)
+              ? // if judicial, get judicial user details, otherwise get caseworker details
+                this.getJudicialUser(task.task.assignee, task.task.jurisdiction)
               : this.caseworkerService.getUserByIdamId(task.task.assignee)
           )
         );

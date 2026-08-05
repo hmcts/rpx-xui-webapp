@@ -1,5 +1,5 @@
 import { Params } from '@angular/router';
-import { DecentralisedCaseTypeConfigMap } from './decentralised-casetype';
+import { DecentralisedCaseTypeMap } from './decentralised-casetype';
 
 const DECENTRALISED_EVENT_PREFIX = 'ext:';
 const TEMPLATE_PLACEHOLDER = '%s';
@@ -8,7 +8,7 @@ const isDecentralisedEvent = (eventId?: string): eventId is string => {
   return !!eventId && eventId.startsWith(DECENTRALISED_EVENT_PREFIX);
 };
 
-const getDecentralisedWebUrl = (caseTypeConfig: DecentralisedCaseTypeConfigMap, caseType?: string): string | null => {
+const getDecentralisedWebUrl = (caseTypeConfig: DecentralisedCaseTypeMap, caseType?: string): string | null => {
   if (!caseTypeConfig || !caseType) {
     return null;
   }
@@ -72,7 +72,7 @@ export type BuildDecentralisedEventUrlInput = BuildDecentralisedCaseCreateEventU
 
 export const buildDecentralisedEventUrl = (
   params: BuildDecentralisedEventUrlInput,
-  caseTypeConfig: DecentralisedCaseTypeConfigMap,
+  caseTypeConfig: DecentralisedCaseTypeMap,
   expectedSub?: string
 ): string | null => {
   if (!isDecentralisedEvent(params.eventId)) {
@@ -101,7 +101,7 @@ export const buildDecentralisedEventUrl = (
   return queryString ? `${webUrl}${eventPath}?${queryString}` : `${webUrl}${eventPath}`;
 };
 
-const getConfiguredCaseType = (caseTypeConfig: DecentralisedCaseTypeConfigMap, caseType: string): string | null => {
+const getConfiguredCaseType = (caseTypeConfig: DecentralisedCaseTypeMap, caseType: string): string | null => {
   const lowerCaseType = caseType.toLowerCase();
   return (
     Object.keys(caseTypeConfig)

@@ -10,11 +10,11 @@ const caseAssignmentUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_AP
 const NOC_CASE_TYPE_SESSION_KEY = 'nocCaseTypesByCaseId';
 const TEMPLATE_PLACEHOLDER = '%s';
 
-type DecentralisedCaseTypeConfig = {
+type DecentralisedCaseType = {
   nocBaseUrl?: string;
 };
 
-type DecentralisedCaseTypeConfigMap = Record<string, DecentralisedCaseTypeConfig>;
+type DecentralisedCaseTypeMap = Record<string, DecentralisedCaseType>;
 
 /**
  * getNoCQuestions
@@ -71,7 +71,7 @@ function getNoCBaseUrl(caseId: unknown, req: EnhancedRequest): string {
 }
 
 function getDecentralisedNoCBaseUrl(caseType: string): string | null {
-  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeConfigMap>(DECENTRALISED_CASE_TYPE_CONFIG) || {};
+  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeMap>(DECENTRALISED_CASE_TYPE_CONFIG) || {};
   const configuredCaseType = getConfiguredCaseType(caseTypeConfig, caseType);
   if (!configuredCaseType) {
     return null;
@@ -111,7 +111,7 @@ function getCachedNoCCaseType(req: EnhancedRequest, caseId: unknown): string | n
   return caseType || null;
 }
 
-function getConfiguredCaseType(caseTypeConfig: DecentralisedCaseTypeConfigMap, caseType: string): string | null {
+function getConfiguredCaseType(caseTypeConfig: DecentralisedCaseTypeMap, caseType: string): string | null {
   const lowerCaseType = caseType.toLowerCase();
   return (
     Object.keys(caseTypeConfig)

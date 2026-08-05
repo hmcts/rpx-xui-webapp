@@ -123,14 +123,14 @@
     "@hmcts/properties-volume": "^1.4.0",
     "@hmcts/rpx-xui-common-lib": "3.2.14",
     "@hmcts/rpx-xui-node-lib": "2.30.22",
-    "@microsoft/applicationinsights-web": "^3.1.0",
+    "@microsoft/applicationinsights-web": "^3.4.3",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
     "@ngrx/effects": "^20",
     "@ngrx/router-store": "^20",
     "@ngrx/store": "^20",
     "@ngrx/store-devtools": "^20",
-    "applicationinsights": "1.8.10",
+    "applicationinsights": "2.9.8",
     "axios": "^1.18.1",
     "axios-mock-adapter": "^1.22.0",
     "class-transformer": "^0.5.1",
@@ -291,7 +291,8 @@
     "bn.js": "^4.12.3",
     "dompurify": "^3.3.2",
     "lodash": "^4.17.22",
-    "lodash-es": "^4.17.22"
+    "lodash-es": "^4.17.22",
+    "@opentelemetry/core": "^2.8.0"
   },
   "packageManager": "yarn@4.17.1"
 }

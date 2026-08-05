@@ -161,6 +161,7 @@ export const servicesMap: { [key: string]: string } = {
   PRIVATELAW: 'Private Law',
   PUBLICLAW: 'Public Law',
   EMPLOYMENT: 'Employment',
+  PCS: 'Civil Possessions',
 };
 
 export function getOptions(taskRoles: TaskRole[], sessionStorageService: SessionStorageService): OptionsModel[] {

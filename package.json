@@ -292,7 +292,8 @@
     "dompurify": "^3.3.2",
     "lodash": "^4.17.22",
     "lodash-es": "^4.17.22",
-    "body-parser": "^2.3.0"
+    "body-parser": "^2.3.0",
+    "path-to-regexp": "^8.4.2"
   },
   "packageManager": "yarn@4.17.1"
 }

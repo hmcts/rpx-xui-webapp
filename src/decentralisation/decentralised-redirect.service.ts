@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
-import { SessionStorageService } from '../../app/services';
-import { EnvironmentService } from '../../app/shared/services/environment.service';
+import { SessionStorageService } from '../app/services';
+import { EnvironmentService } from '../app/shared/services/environment.service';
 import {
   buildDecentralisedEventUrl,
   BuildDecentralisedEventUrlInput,
   getExpectedSubFromUserDetails,
-} from '../utils/decentralised-redirect.util';
-import { UserInfo } from '../../app/models/user-details.model';
+} from './decentralised-redirect.util';
+import { UserInfo } from '../app/models/user-details.model';
 
 @Injectable({
   providedIn: 'root',

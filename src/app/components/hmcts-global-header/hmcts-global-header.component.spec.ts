@@ -13,7 +13,7 @@ import { WAVerificationService } from '../../../work-allocation/services';
 import { LoggerService } from '../../services/logger/logger.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { DecentralisedRedirectService } from '../../../cases/services/decentralised-redirect.service';
+import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 @Pipe({
   standalone: false,

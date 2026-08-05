@@ -1,6 +1,6 @@
 import { DecentralisedRedirectService } from './decentralised-redirect.service';
-import { SessionStorageService } from '../../app/services';
-import { UserInfo } from '../../app/models/user-details.model';
+import { SessionStorageService } from '../app/services';
+import { UserInfo } from '../app/models/user-details.model';
 
 describe('DecentralisedRedirectService', () => {
   let decentralisedRedirectService: DecentralisedRedirectService;

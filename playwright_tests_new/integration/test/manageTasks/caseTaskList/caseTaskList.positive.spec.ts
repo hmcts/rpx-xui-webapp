@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body });
   });
 
-  await page.route(`**/workallocation/caseworker/getUsersByServiceName*`, async (route) => {
+  await page.route(`**/workallocation/caseworker/getUsersByIdamIds*`, async (route) => {
     const body = JSON.stringify([
       {
         email: 'test@example.com',
@@ -35,7 +35,7 @@ test.beforeEach(async ({ page }) => {
           id: 227101,
           locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
         },
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategories: ['LEGAL_OPERATIONS'],
         service: 'IA',
       },
     ]);
@@ -174,7 +174,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     };
     const tasks = buildCaseDetailsTasksMinimal(taskData);
 
-    await page.route(`**/workallocation/caseworker/getUsersByServiceName*`, async (route) => {
+    await page.route(`**/workallocation/caseworker/getUsersByIdamIds*`, async (route) => {
       const body = JSON.stringify([
         {
           email: 'test@example.com',
@@ -185,7 +185,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
             id: 227101,
             locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
           },
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
           service: 'IA',
         },
       ]);

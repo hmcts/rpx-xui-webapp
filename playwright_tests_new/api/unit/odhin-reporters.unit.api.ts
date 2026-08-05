@@ -23,6 +23,12 @@ let OdhinAdaptiveReporter: {
     };
   };
 };
+let FlakeGateReporter: {
+  new (): {
+    onTestEnd: (test: unknown, result: { status: string; retry: number }) => void;
+    onEnd: () => { status: string } | undefined;
+  };
+};
 
 test.describe.configure({ mode: 'serial' });
 
@@ -33,6 +39,68 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
 
     const adaptiveModule = await import('../../common/reporters/odhin-adaptive.reporter.cjs');
     OdhinAdaptiveReporter = (adaptiveModule.default ?? adaptiveModule) as typeof OdhinAdaptiveReporter;
+
+    const flakeGateModule = await import('../../common/reporters/flake-gate.reporter.cjs');
+    FlakeGateReporter = (flakeGateModule.default ?? flakeGateModule) as typeof FlakeGateReporter;
+  });
+
+  test('flake gate remains report-only with documented thresholds', () => {
+    const originalEnv = {
+      PW_ENABLE_FLAKE_GATE: process.env.PW_ENABLE_FLAKE_GATE,
+      PW_FLAKE_GATE_MODE: process.env.PW_FLAKE_GATE_MODE,
+      PW_FLAKE_GATE_REPORT_ONLY: process.env.PW_FLAKE_GATE_REPORT_ONLY,
+      PW_MAX_FLAKY_RATE: process.env.PW_MAX_FLAKY_RATE,
+      PW_MAX_FLAKY_TESTS: process.env.PW_MAX_FLAKY_TESTS,
+    };
+    const writes: string[] = [];
+    const originalWrite = process.stdout.write.bind(process.stdout);
+    process.stdout.write = ((chunk: string | Uint8Array) => {
+      writes.push(String(chunk));
+      return true;
+    }) as typeof process.stdout.write;
+
+    try {
+      process.env.PW_ENABLE_FLAKE_GATE = 'true';
+      process.env.PW_FLAKE_GATE_MODE = 'enforce';
+      process.env.PW_FLAKE_GATE_REPORT_ONLY = 'false';
+      delete process.env.PW_MAX_FLAKY_RATE;
+      delete process.env.PW_MAX_FLAKY_TESTS;
+
+      const reporter = new FlakeGateReporter();
+      reporter.onTestEnd(
+        {
+          id: 'flaky-test',
+          outcome: () => 'flaky',
+        },
+        { status: 'passed', retry: 1 }
+      );
+      reporter.onTestEnd(
+        {
+          id: 'failed-test',
+          outcome: () => 'unexpected',
+        },
+        { status: 'failed', retry: 2 }
+      );
+      const result = reporter.onEnd();
+
+      expect(result).toBeUndefined();
+      const output = writes.join('');
+      expect(output).toContain('[flake-gate] flaky=1');
+      expect(output).toContain('[flake-gate] passed-on-retry=1');
+      expect(output).toContain('[flake-gate] failed=1');
+      expect(output).toContain('[flake-gate] thresholds: maxFlakyTests=20, maxFlakyRate=20.00%');
+      expect(output).toContain('[flake-gate] mode=report-only');
+      expect(output).not.toContain('[flake-gate] result=');
+    } finally {
+      for (const [key, value] of Object.entries(originalEnv)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+      process.stdout.write = originalWrite;
+    }
   });
 
   test('adaptive reporter trims passed-test output and heavy artifacts in lightweight mode', () => {
@@ -283,5 +351,66 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
       failed: 0,
     });
     expect(stderrWrites.some((entry) => entry.includes('onTestEnd timed out'))).toBe(true);
+  });
+
+  test('adaptive reporter can trim failed-test artifacts before handing results to Odhín', async () => {
+    let forwardedResult: {
+      stdout?: unknown[];
+      stderr?: unknown[];
+      steps?: unknown[];
+      attachments?: unknown[];
+    };
+    const reporter = new OdhinAdaptiveReporter({
+      lightweight: true,
+      profile: false,
+      trimFailedArtifacts: true,
+      createInnerReporter: () => ({
+        onTestEnd: async (_test: unknown, result: unknown) => {
+          forwardedResult = result;
+        },
+        onEnd: async () => undefined,
+      }),
+    });
+
+    await reporter.onTestEnd(
+      { title: 'failed accessibility test' },
+      {
+        status: 'failed',
+        stdout: [{ text: 'failure output' }],
+        stderr: [{ text: 'failure error' }],
+        steps: [{ title: 'step' }],
+        attachments: [{ name: 'highlighted screenshot' }],
+      }
+    );
+    await reporter.onEnd({ status: 'failed' });
+
+    expect(forwardedResult.stdout).toEqual([{ text: 'failure output' }]);
+    expect(forwardedResult.stderr).toEqual([{ text: 'failure error' }]);
+    expect(forwardedResult.steps).toEqual([]);
+    expect(forwardedResult.attachments).toEqual([]);
+  });
+
+  test('adaptive reporter bounds stalled Odhín finalization', async () => {
+    const reporter = new OdhinAdaptiveReporter({
+      profile: false,
+      finalizationTimeoutMs: 20,
+      createInnerReporter: () => ({
+        onEnd: async () => new Promise(() => {}),
+      }),
+    });
+    const stderrWrites: string[] = [];
+    const originalWrite = process.stderr.write.bind(process.stderr);
+    process.stderr.write = ((chunk: string | Uint8Array) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    }) as typeof process.stderr.write;
+
+    try {
+      await reporter.onEnd({ status: 'failed' });
+    } finally {
+      process.stderr.write = originalWrite;
+    }
+
+    expect(stderrWrites.some((entry) => entry.includes('onEnd timed out after 20ms'))).toBe(true);
   });
 });

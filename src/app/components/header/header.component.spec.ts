@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FocusService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
@@ -21,6 +22,7 @@ class RpxTranslateMockPipe implements PipeTransform {
 
 describe('Header Component', () => {
   let mockStore: any;
+  const focusService = jasmine.createSpyObj('FocusService', ['focus']);
 
   let mockService: any;
   let component: HeaderComponent;
@@ -39,6 +41,7 @@ describe('Header Component', () => {
       imports: [RouterTestingModule],
       providers: [
         { provide: Store, useValue: mockStore },
+        { provide: FocusService, useValue: focusService },
         {
           provide: RpxTranslationService,
           useFactory: rpxTranslationServiceStub,
@@ -53,13 +56,15 @@ describe('Header Component', () => {
     fixture = TestBed.createComponent(HeaderComponent);
     mockStore = jasmine.createSpyObj('store', ['pipe']);
     mockService = jasmine.createSpyObj('service', ['get']);
-    component = new HeaderComponent(mockStore);
+    component = new HeaderComponent(mockStore, focusService);
   });
 
   it('should render the skip to content link', () => {
     const translatePipeSpy = spyOn(RpxTranslateMockPipe.prototype, 'transform').and.callThrough();
+    fixture.componentInstance.currentUrl = 'http://localhost:8080/A/B#C';
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('.govuk-skip-link')).nativeElement;
+    expect(element.getAttribute('href')).toEqual('http://localhost:8080/A/B#content');
     expect(element.textContent).toEqual('Skip to main content');
     expect(translatePipeSpy).toHaveBeenCalledWith('Skip to main content');
   });
@@ -85,5 +90,11 @@ describe('Header Component', () => {
     const emitter = jasmine.createSpyObj('emitter', ['emit']);
     component.emitNavigate(event, emitter);
     expect(emitter.emit).toHaveBeenCalled();
+  });
+
+  it('matches the skip to main content URL', () => {
+    expect(HeaderComponent.isSkipToMainContent('url')).toBeFalsy();
+    expect(HeaderComponent.isSkipToMainContent('#url')).toBeFalsy();
+    expect(HeaderComponent.isSkipToMainContent('#content')).toBeTruthy();
   });
 });

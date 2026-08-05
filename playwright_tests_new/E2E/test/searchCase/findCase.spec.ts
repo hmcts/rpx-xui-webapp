@@ -4,18 +4,16 @@ import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-re
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 
 test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
-  let availableCaseReference = '';
   test.beforeAll(async () => {
     await ensureSession('FPL_GLOBAL_SEARCH');
   });
 
   test.beforeEach(async ({ page }) => {
     await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
-    availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
   });
 
   test('Find case using Public Law jurisdiction', async ({ tableUtils, findCasePage, caseDetailsPage, page }) => {
-    const caseNumber = availableCaseReference;
+    const caseNumber = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
     const jurisdiction = 'Public Law';
     const caseType = 'Public Law Applications';
 

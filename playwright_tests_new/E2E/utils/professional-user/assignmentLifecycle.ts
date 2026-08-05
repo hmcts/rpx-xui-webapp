@@ -113,10 +113,13 @@ export async function cleanupOrganisationAssignmentFlow(
   });
 
   const rolesToRemove = [...new Set(args.rolesToRemove)];
-  const organisationId = firstNonEmpty(args.organisationId, process.env.TEST_SOLICITOR_ORGANISATION_ID);
+  const organisationId = firstNonEmpty(args.organisationId);
+  if (!organisationId) {
+    throw new Error('Organisation assignment cleanup requires an explicit organisationId from dynamic organisation resolution.');
+  }
   const userIdentifier = await deps.resolveAssignmentUserIdentifier({
     rdProfessionalApiPath: args.rdProfessionalApiPath,
-    organisationId: organisationId ?? '',
+    organisationId,
     user: {
       ...args.user,
       id: firstNonEmpty(args.userIdentifier, args.user.id),

@@ -49,6 +49,7 @@ describe('uiConfigRouter', () => {
     setupMenuConfigStub = sandbox.stub(menuConfigs, 'setupMenuConfig');
     setupHearingConfigsStub = sandbox.stub(hearingConfigs, 'setupHearingConfigs');
 
+    getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({});
     setupMenuConfigStub.returns(mockMenuConfig);
     setupHearingConfigsStub.returns(mockHearingConfig);
   });
@@ -97,6 +98,12 @@ describe('uiConfigRouter', () => {
       getConfigValueStub.withArgs('services.idam.oauthCallbackUrl').returns('https://callback.url');
       getConfigValueStub.withArgs('protocol').returns('https');
       getConfigValueStub.withArgs('services.payment_return_url').returns('https://payment.return.url');
+      getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({
+        PCS: {
+          webUrl: 'https://pcs-frontend.service.gov.uk',
+          nocBaseUrl: 'http://pcs-api.service.core-compute.internal',
+        },
+      });
       getConfigValueStub.withArgs('services.waWorkflowApi').returns('https://wa.workflow.api');
       getConfigValueStub.withArgs('services.judicialBookingApi').returns('https://judicial.booking.api');
 
@@ -118,6 +125,12 @@ describe('uiConfigRouter', () => {
         protocol: 'https',
         substantiveEnabled: true,
         paymentReturnUrl: 'https://payment.return.url',
+        decentralisedCaseTypeConfig: {
+          PCS: {
+            webUrl: 'https://pcs-frontend.service.gov.uk',
+            nocBaseUrl: 'http://pcs-api.service.core-compute.internal',
+          },
+        },
         waWorkflowApi: 'https://wa.workflow.api',
         judicialBookingApi: 'https://judicial.booking.api',
         headerConfig: mockMenuConfig,

@@ -1,13 +1,42 @@
 import { expect, test } from '../../fixtures';
-import { ensureSessionCookies } from '../../../common/sessionCapture';
-import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { applyWorkAllocationSession, bootstrapWorkAllocationShell } from '../../utils/test-setup/workAllocationShell';
 
-test.describe('Verify the my tasks page tabs appear as expected', { tag: ['@e2e', '@e2e-manage-tasks'] }, () => {
+test.describe('Verify live available tasks actions appear as expected', { tag: ['@e2e', '@e2e-manage-tasks'] }, () => {
   test.beforeEach(async ({ page, taskListPage }) => {
-    const { cookies } = await ensureSessionCookies('STAFF_ADMIN');
-    if (cookies.length) {
-      await page.context().addCookies(cookies);
-    }
+    await bootstrapWorkAllocationShell({ page, taskListPage });
+  });
+
+  test('Verify Available tasks actions appear as expected', async ({ taskListPage, tableUtils }) => {
+    await test.step('Open Available tasks and wait for live task data', async () => {
+      taskListPage.clearApiCalls();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening live available tasks', {
+        timeoutMs: 60_000,
+      });
+      await taskListPage.waitForTaskRowReady('live available tasks', { timeoutMs: 60_000 });
+    });
+
+    await test.step('Check available tasks has data in the table', async () => {
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+      expect(table.length).toBeGreaterThan(0);
+    });
+
+    await test.step('Verify tasks actions are shown as expected', async () => {
+      await taskListPage.openManageActionsForRow(0, 'live available tasks actions');
+      await expect(taskListPage.getTaskActionsRow(0)).toBeVisible();
+      await expect(taskListPage.getTaskActionForRow(0, 'claim')).toBeVisible();
+      await expect(taskListPage.getTaskActionForRow(0, 'claim-and-go')).toBeVisible();
+    });
+  });
+});
+
+test.describe('Verify live assigned my tasks actions appear as expected', { tag: ['@e2e', '@e2e-manage-tasks-assigned'] }, () => {
+  test.skip(
+    true,
+    'Requires a seeded assigned Work Allocation task. Local AAT probes found WA-capable users but 0 assigned My Tasks.'
+  );
+
+  test.beforeEach(async ({ page, taskListPage }) => {
+    await applyWorkAllocationSession(page);
     await taskListPage.goto();
     // Prefer UI readiness over brittle network waits; fall back to response when available.
     await Promise.race([
@@ -22,18 +51,8 @@ test.describe('Verify the my tasks page tabs appear as expected', { tag: ['@e2e'
   test('Verify My tasks actions appear as expected', async ({ taskListPage, tableUtils }) => {
     await test.step('Navigate to the task list page', async () => {
       await expect(taskListPage.taskListTable).toBeVisible();
-      await retryOnTransientFailure(
-        async () => {
-          taskListPage.clearApiCalls();
-          await taskListPage.waitForManageButton('my tasks tab', { timeoutMs: 60_000 });
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            await taskListPage.goto();
-          },
-        }
-      );
+      taskListPage.clearApiCalls();
+      await taskListPage.waitForManageButton('my tasks tab', { timeoutMs: 60_000 });
     });
 
     await test.step('Check my available tasks has data in the table', async () => {
@@ -49,37 +68,6 @@ test.describe('Verify the my tasks page tabs appear as expected', { tag: ['@e2e'
       await expect(taskListPage.taskActionMarkAsDone).toBeVisible();
       await expect(taskListPage.taskActionReassign).toBeVisible();
       await expect(taskListPage.taskActionUnassign).toBeVisible();
-    });
-  });
-
-  test('Verify Available tasks actions appear as expected', async ({ taskListPage, tableUtils }) => {
-    await test.step('Navigate to the task list page', async () => {
-      await retryOnTransientFailure(
-        async () => {
-          taskListPage.clearApiCalls();
-          await taskListPage.selectWorkMenuItem('Available tasks');
-          await expect(taskListPage.taskListTable).toBeVisible();
-          await taskListPage.waitForManageButton('available tasks tab', { timeoutMs: 60_000 });
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            await taskListPage.goto();
-          },
-        }
-      );
-    });
-
-    await test.step('Check my available tasks has data in the table', async () => {
-      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-      expect(table.length).toBeGreaterThan(0);
-    });
-
-    await test.step('Verify tasks actions are shown as expected', async () => {
-      await taskListPage.manageCaseButtons.nth(0).click();
-      await expect(taskListPage.taskActionsRow).toBeVisible();
-      await expect(taskListPage.taskActionClaim).toBeVisible();
-      await expect(taskListPage.taskActionClaimAndGo).toBeVisible();
     });
   });
 });

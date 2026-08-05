@@ -7,7 +7,7 @@ import { test as base, request } from '@playwright/test';
 export { expect } from '@playwright/test';
 export { buildApiAttachment } from '@hmcts/playwright-common';
 
-import { config } from '../common/apiTestConfig';
+import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './utils/auth';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
@@ -22,12 +22,7 @@ export interface ApiFixtures {
 }
 
 type FailureType =
-  | 'DOWNSTREAM_API_5XX'
-  | 'DOWNSTREAM_API_4XX'
-  | 'SLOW_API_RESPONSE'
-  | 'NETWORK_TIMEOUT'
-  | 'ASSERTION_FAILURE'
-  | 'UNKNOWN';
+  'DOWNSTREAM_API_5XX' | 'DOWNSTREAM_API_4XX' | 'SLOW_API_RESPONSE' | 'NETWORK_TIMEOUT' | 'ASSERTION_FAILURE' | 'UNKNOWN';
 
 type ApiError = {
   url: string;
@@ -203,6 +198,9 @@ async function createNodeApiClient(
     baseUrl,
     name: `node-api-${role}`,
     logger,
+    redaction: {
+      patterns: ['responseBody'],
+    },
     captureRawBodies: process.env.PLAYWRIGHT_DEBUG_API === '1',
     onResponse: (entry) => {
       entries.push(entry);

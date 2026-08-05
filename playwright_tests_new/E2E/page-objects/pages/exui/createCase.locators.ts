@@ -3,6 +3,10 @@ import type { Page } from '@playwright/test';
 export function buildCreateCaseLocators(page: Page) {
   const doYouAgreeGroup = page.getByRole('group', { name: /Do you agree\?/i });
   const refreshModal = page.locator('.refresh-modal');
+  const primaryDocumentUploadComponent = page
+    .locator('ccd-write-document-field')
+    .filter({ has: page.locator('#DocumentUrl') })
+    .first();
 
   return {
     container: page.locator('exui-case-home'),
@@ -15,8 +19,8 @@ export function buildCreateCaseLocators(page: Page) {
     caseTypeSelect: page.locator('#cc-case-type'),
     eventTypeSelect: page.locator('#cc-event'),
     startButton: page.locator('button[type="submit"]'),
-    submitButton: page.getByRole('button', { name: /^submit\b/i }),
-    continueButton: page.getByRole('button', { name: /^continue\b/i }),
+    submitButton: page.getByRole('button', { name: /^(submit|cyflwyno)\b/i }),
+    continueButton: page.getByRole('button', { name: /^(continue|parhau)\b/i }),
 
     legalRepParty1Block: page.locator('#LegalRepParty1Flags_LegalRepParty1Flags'),
     legalRepParty2Block: page.locator('#LegalRepParty2Flags_LegalRepParty2Flags'),
@@ -93,7 +97,9 @@ export function buildCreateCaseLocators(page: Page) {
     doYouAgreeYesRadio: doYouAgreeGroup.getByRole('radio', { name: /^Yes$/i }).first(),
     doYouAgreeNoRadio: doYouAgreeGroup.getByRole('radio', { name: /^No$/i }).first(),
 
+    fileUploadComponent: primaryDocumentUploadComponent,
     fileUploadInput: page.locator('#DocumentUrl'),
+    fileUploadCancelButton: primaryDocumentUploadComponent.locator('button.button-secondary').first(),
     fileUploadStatusLabel: page.locator('ccd-write-document-field .error-message'),
     textField0Input: page.locator('#TextField0'),
     textField1Input: page.locator('#TextField1'),

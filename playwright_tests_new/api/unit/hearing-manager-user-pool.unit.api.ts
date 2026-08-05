@@ -5,6 +5,7 @@ import {
   HEARING_MANAGER_CR84_OFF_USER,
   HEARING_MANAGER_CR84_ON_USER,
   resolveHearingManagerUserIdentifier,
+  resolveHearingManagerSessionCandidates,
 } from '../../integration/helpers/hearingManagerUserPool.helper.js';
 
 const configuredEnv = {
@@ -76,5 +77,15 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     expect(resolveHearingManagerUserIdentifier('HEARING_MANAGER_CR84_OFF-2', { parallelIndex: 3 }, configuredEnv)).toBe(
       'HEARING_MANAGER_CR84_OFF-2'
     );
+  });
+
+  test('returns fallback session candidates when a pooled CR84 user is selected', () => {
+    expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 3 }, configuredEnv)).toEqual([
+      'HEARING_MANAGER_CR84_OFF-4',
+      'HEARING_MANAGER_CR84_OFF-1',
+      'HEARING_MANAGER_CR84_OFF-2',
+      'HEARING_MANAGER_CR84_OFF-3',
+      HEARING_MANAGER_CR84_OFF_USER,
+    ]);
   });
 });

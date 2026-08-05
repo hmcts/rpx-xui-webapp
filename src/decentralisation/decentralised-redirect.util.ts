@@ -1,5 +1,5 @@
 import { Params } from '@angular/router';
-import type { DecentralisedCaseTypeConfigMap } from '../../models/environmentConfig.model';
+import type { DecentralisedCaseTypeConfigMap } from '../models/environmentConfig.model';
 
 const DECENTRALISED_EVENT_PREFIX = 'ext:';
 const TEMPLATE_PLACEHOLDER = '%s';

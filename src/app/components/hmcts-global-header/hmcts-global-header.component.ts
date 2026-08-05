@@ -13,7 +13,7 @@ import { UserService } from '../../services/user/user.service';
 import { AppConstants } from '../../../app/app.constants';
 import { filterNavigationItemsByFlags, filterNavigationItemsByRoles } from '../../shared/utils/navigation-access.utils';
 import { WAVerificationService } from '../../../work-allocation/services';
-import { DecentralisedRedirectService } from '../../../cases/services/decentralised-redirect.service';
+import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 @Component({
   standalone: false,

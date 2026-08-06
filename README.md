@@ -148,7 +148,7 @@ Detailed suite documentation and architecture:
   - Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
   - API: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
 - **Playwright diagnostics:**
-  - Trace/video/screenshot outputs (on failures): `test-results/`
+  - Trace/screenshot outputs for failed and timed-out browser tests: `test-results/`
   - Additional failure payloads: `functional-output/tests/playwright-diagnostics/failure-data/`
 - **CI publishing:** Jenkins archives Odhin reports and Playwright diagnostics artifacts for troubleshooting.
 - **Migration closure:** the Playwright parity matrix, Codecept retirement gate, closure checklist, and ticket coverage snapshot live in [Playwright parity matrix and migration closure gate](./docs/playwright-parity-matrix.md).
@@ -405,7 +405,7 @@ Key behaviour:
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
 - Run info shows project, release, environment, branch and worker count. Branch defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) and can be overridden via `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`. Other overrides: `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `FUNCTIONAL_TESTS_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
-- Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.
+- Browser runs retain the Playwright trace and failure screenshot when a test fails or times out; successful runs discard these artefacts to limit noise.
 - A flake summary is printed at the end of Playwright runs by `playwright_tests_new/common/reporters/flake-gate.reporter.cjs` (counts flaky, retry-pass and failed tests).
 - Flake gate is currently report-only in all environments; it does not fail the run.
 - `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
@@ -416,9 +416,11 @@ Key behaviour:
 Playwright-capable pipeline stages archive diagnostics for troubleshooting and triage:
 
 - `functional-output/tests/playwright-diagnostics/failure-data/**/*`
+- `test-results/**/trace.zip`
 
 `failure-data.json` files attached by Playwright tests are also copied into
 `functional-output/tests/playwright-diagnostics/failure-data/` with flattened filenames so they are easier to find in Jenkins artifacts.
+Retained trace bundles keep their original test-results path, including the retry attempt, so a timed-out test can be opened with `npx playwright show-trace <trace.zip>`.
 Odhín HTML reports and standalone system-load reports are published through Jenkins HTML Publisher links rather than archived as raw build artifacts.
 
 ### Playwright locator audit

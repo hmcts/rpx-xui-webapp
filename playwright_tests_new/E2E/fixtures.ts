@@ -83,7 +83,7 @@ const defaultBenignApiErrorRules: BenignApiErrorRule[] = [
 function createBenignApiErrorRuleRegistry(): BenignApiErrorRuleRegistry {
   const benignApiErrorRules = [...defaultBenignApiErrorRules];
 
-  const registerBenignApiErrorRule = (rule: BenignApiErrorRule): () => void => {
+  const registerBenignApiErrorRule = (rule: BenignApiErrorRule): (() => void) => {
     benignApiErrorRules.push(rule);
     return () => {
       const index = benignApiErrorRules.lastIndexOf(rule);

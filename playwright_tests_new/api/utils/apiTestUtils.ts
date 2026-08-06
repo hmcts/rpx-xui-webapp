@@ -31,6 +31,11 @@ export function expectStatus(actual: number, allowed: ReadonlyArray<number>, mes
   }
 }
 
+export function isRequestTimeoutError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up|Request context disposed/i.test(message);
+}
+
 export async function buildXsrfHeaders(role: ApiUserRole): Promise<Record<string, string>> {
   return buildXsrfHeadersWith(role);
 }
@@ -94,15 +99,15 @@ export async function guardedRequest<T extends { status: number; data?: unknown 
   try {
     return await fn();
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (/timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(message)) {
-      if (options.failOnRequestError === true) {
-        throw error;
-      }
-      options.onRequestTimeout?.(message);
-      return { data: undefined, status: options.timeoutStatus ?? 504 };
+    if (!isRequestTimeoutError(error)) {
+      throw error;
     }
-    throw error;
+    if (options.failOnRequestError === true) {
+      throw error;
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    options.onRequestTimeout?.(message);
+    return { data: undefined, status: options.timeoutStatus ?? 504 };
   }
 }
 

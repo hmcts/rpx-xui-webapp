@@ -1,5 +1,7 @@
 import { AppConstants } from '../../app.constants';
 import { FlagDefinition, NavigationItem } from '../../models/theming.model';
+import { AppUtils } from '../../app-utils';
+import { UserDetails, WAVerificationModel } from '../../models';
 
 export function isNavigationItemVisible(
   item: NavigationItem,
@@ -9,14 +11,36 @@ export function isNavigationItemVisible(
   return !!item && filterNavigationItemsByAccess([item], userRoles, menuFlags).length > 0;
 }
 
-export function filterNavigationItemsByRoles(items: NavigationItem[] = [], userRoles: string[] = []): NavigationItem[] {
-  const roles = userRoles ?? [];
+export interface NavigationRoleFilterOptions {
+  userDetails?: UserDetails;
+  waVerification?: WAVerificationModel;
+  onRoleMatched?: (role: string, item: NavigationItem) => void;
+}
+
+export function filterNavigationItemsByRoles(
+  items: NavigationItem[] = [],
+  userRoles: string[] = [],
+  options: NavigationRoleFilterOptions = {}
+): NavigationItem[] {
+  const roles = options.userDetails?.userInfo?.roles ?? userRoles ?? [];
+  const isRoleSupported = (item: NavigationItem, role: string, logMatch = false): boolean => {
+    const supported =
+      options.userDetails && options.waVerification
+        ? AppUtils.checkRoleIsSupported(options.waVerification, role, options.userDetails)
+        : roles.includes(role);
+
+    if (supported && logMatch) {
+      options.onRoleMatched?.(role, item);
+    }
+
+    return supported;
+  };
   const roleFilteredItems = (items || []).filter((item) =>
-    item.roles?.length > 0 ? item.roles.some((role) => roles.includes(role)) : true
+    item.roles?.length > 0 ? item.roles.some((role) => isRoleSupported(item, role, true)) : true
   );
 
   return roleFilteredItems.filter((item) =>
-    item.notRoles?.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true
+    item.notRoles?.length > 0 ? item.notRoles.every((role) => !isRoleSupported(item, role)) : true
   );
 }
 
@@ -52,11 +76,12 @@ export function filterNavigationItemsByFlags(
 export function filterNavigationItemsByAccess(
   items: NavigationItem[] = [],
   userRoles: string[] = [],
-  menuFlags: Record<string, string | boolean> = AppConstants.MENU_FLAGS
+  menuFlags: Record<string, string | boolean> = AppConstants.MENU_FLAGS,
+  roleFilterOptions: NavigationRoleFilterOptions = {}
 ): NavigationItem[] {
-  return filterNavigationItemsByFlags(filterNavigationItemsByRoles(items, userRoles), menuFlags);
+  return filterNavigationItemsByFlags(filterNavigationItemsByRoles(items, userRoles, roleFilterOptions), menuFlags);
 }
 
 function isPlainFlag(flag: FlagDefinition): flag is string {
-  return !flag.hasOwnProperty('flagName');
+  return !Object.prototype.hasOwnProperty.call(flag, 'flagName');
 }

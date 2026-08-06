@@ -58,7 +58,14 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
         availableTags: ['@integration', '@integration-case-file-view', '@integration-hearings', '@integration-manage-tasks'],
         suiteTag: '@integration',
       })
-    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN', 'RESTRICTED_CASE_FILE_VIEW_ON']);
+    ).toEqual([
+      'FPL_GLOBAL_SEARCH',
+      'SOLICITOR',
+      'STAFF_ADMIN',
+      'RESTRICTED_CASE_FILE_VIEW_ON',
+      'HEARING_MANAGER_CR84_ON',
+      'HEARING_MANAGER_CR84_OFF',
+    ]);
   });
 
   test('does not prewarm case-file-view session when the full run excludes that tag', () => {
@@ -69,7 +76,7 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
         availableTags: ['@integration', '@integration-case-file-view', '@integration-hearings', '@integration-manage-tasks'],
         suiteTag: '@integration',
       })
-    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN']);
+    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN', 'HEARING_MANAGER_CR84_ON', 'HEARING_MANAGER_CR84_OFF']);
   });
 
   test('supports explicit default integration warmup pool when requested', () => {

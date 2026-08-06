@@ -12,13 +12,14 @@ export interface UserInfo {
 export interface RoleAssignmentInfo {
   primaryLocation?: string;
   baseLocation?: string;
-  jurisdiction: string;
+  jurisdiction?: string;
   substantive?: string;
   isCaseAllocator: boolean;
   bookable?: boolean | string;
   region?: string;
   roleType?: string;
   roleName?: string;
+  roleCategory?: string;
   beginTime?: string;
   endTime?: string;
   caseId?: string;

@@ -1,13 +1,12 @@
 import nodeAppDataModels from '../../api/data/nodeAppDataModels';
+import { applySessionCookies } from '../../common/sessionCapture';
+import { extractUserIdFromCookies } from '../utils/extractUserIdFromCookies';
 import { setupTaskListBootstrapRoutes } from './taskListMockRoutes.helper';
 import { setupXuiAppShellBaseRoutes } from './xuiAppShellMockRoutes.helper';
 import { buildAsylumCaseMock } from '../mocks/cases/asylumCase.mock';
-import type { BrowserContext, Page, Route } from '@playwright/test';
-import fs from 'node:fs';
-import path from 'node:path';
-import type { Cookie } from 'playwright-core';
+import type { Page, Route } from '@playwright/test';
 
-export const caseDetailsEventErrorsUserIdentifier = 'hearing-link-local';
+export const caseDetailsEventErrorsUserIdentifier = 'STAFF_ADMIN';
 export const caseDetailsEventErrorsCaseId = '1784198964550349';
 export const caseDetailsEventErrorsJurisdictionId = 'IA';
 export const caseDetailsEventErrorsCaseTypeId = 'Asylum';
@@ -15,39 +14,11 @@ export const caseDetailsEventErrorsEventName = 'Record remission decision';
 export const caseDetailsEventErrorsErrorMessage = 'Record remission decision is not valid for the appeal type.';
 export const caseDetailsEventErrorsEventId = 'recordRemissionDecision';
 
-const storageStatePath = path.resolve(process.cwd(), '.sessions/hearing-link-local.storage.json');
-const targetOrigin = resolveTargetOrigin();
-
-const userDetails = {
-  userId: caseDetailsEventErrorsUserIdentifier,
-  email: 'hearing-link-local@example.com',
-  roles: ['caseworker-ia-caseofficer', 'caseworker-ia-admofficer'],
-  roleCategory: 'LEGAL_OPERATIONS',
-};
-
-const profileDetails = (() => {
-  const details = nodeAppDataModels.getUserDetails_oauth();
-  details.userInfo.id = userDetails.userId;
-  details.userInfo.uid = userDetails.userId;
-  details.userInfo.roles = userDetails.roles;
-  details.userInfo.roleCategories = [userDetails.roleCategory];
-  details.roleAssignmentInfo = [
-    {
-      jurisdiction: caseDetailsEventErrorsJurisdictionId,
-      isCaseAllocator: true,
-      substantive: true,
-      roleType: 'ORGANISATION',
-    },
-  ];
-  return details;
-})();
-
 const caseMockResponse = buildAsylumCaseMock({
   caseId: caseDetailsEventErrorsCaseId,
   triggers: [{ id: caseDetailsEventErrorsEventId, name: caseDetailsEventErrorsEventName }],
 });
 
-type AddCookie = Parameters<BrowserContext['addCookies']>[0][number];
 type BenignRule = { method: string; status: number; urlPattern: RegExp };
 
 async function fulfillJson(route: Route, body: unknown, status = 200): Promise<void> {
@@ -67,22 +38,22 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function loadStorageStateCookies(filePath: string): Cookie[] {
-  const state = JSON.parse(fs.readFileSync(filePath, 'utf8')) as { cookies?: Cookie[] };
-  return Array.isArray(state.cookies) ? state.cookies : [];
-}
-
-function rebaseStorageStateCookies(cookies: Cookie[]): AddCookie[] {
-  const idamOrigin = 'https://idam-web-public.aat.platform.hmcts.net';
-
-  return cookies.map((cookie) => {
-    const { domain: _domain, path: _path, ...rest } = cookie;
-    const url = cookie.domain?.includes('idam-web-public') ? idamOrigin : targetOrigin;
-    return {
-      ...rest,
-      url,
-    };
-  });
+function buildUserDetails(userId: string) {
+  const details = nodeAppDataModels.getUserDetails_oauth();
+  details.userInfo.id = userId;
+  details.userInfo.uid = userId;
+  details.userInfo.email = `${userId}@example.com`;
+  details.userInfo.roles = ['caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
+  details.userInfo.roleCategories = ['LEGAL_OPERATIONS'];
+  details.roleAssignmentInfo = [
+    {
+      jurisdiction: caseDetailsEventErrorsJurisdictionId,
+      isCaseAllocator: true,
+      substantive: true,
+      roleType: 'ORGANISATION',
+    },
+  ];
+  return details;
 }
 
 export function registerCaseDetailsEventErrorsBenignRule(
@@ -98,6 +69,12 @@ export function registerCaseDetailsEventErrorsBenignRule(
 }
 
 export async function seedCaseDetailsEventErrorsSession(page: Page): Promise<void> {
+  const session = await applySessionCookies(page, 'STAFF_ADMIN');
+  const sessionUserId = extractUserIdFromCookies(session.cookies) ?? caseDetailsEventErrorsUserIdentifier;
+  const userDetails = buildUserDetails(sessionUserId);
+  const profileDetails = buildUserDetails(sessionUserId);
+  const targetOrigin = resolveTargetOrigin();
+
   await setupXuiAppShellBaseRoutes(page, {
     userDetails,
     environmentConfig: {
@@ -140,6 +117,4 @@ export async function seedCaseDetailsEventErrorsSession(page: Page): Promise<voi
       paymentAccount: [],
     })
   );
-
-  await page.context().addCookies(rebaseStorageStateCookies(loadStorageStateCookies(storageStatePath)));
 }

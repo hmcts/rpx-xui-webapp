@@ -735,16 +735,16 @@ __metadata:
   linkType: hard
 
 "@angular/router@npm:^20.3.18":
-  version: 20.3.25
-  resolution: "@angular/router@npm:20.3.25"
+  version: 20.3.27
+  resolution: "@angular/router@npm:20.3.27"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": 20.3.25
-    "@angular/core": 20.3.25
-    "@angular/platform-browser": 20.3.25
+    "@angular/common": 20.3.27
+    "@angular/core": 20.3.27
+    "@angular/platform-browser": 20.3.27
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/53766aae5011dcdfac6f9c3dff5be944474420f92fd208f49bd43953b25aa4c33065f43c9693da9ee91a8cf2563a07bc7e283e6b2a6e0bccb03312af9f4bb7e3
+  checksum: 10/6e11ae837e55a406a0e650321509b3a464091f288cc8ca219450d4dc9af0545ee0822cd94bc36258b0fd4b7dcfb2c258a25674f24c6d4158feb2d596dfcb8ff1
   languageName: node
   linkType: hard
 
@@ -3358,9 +3358,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.79":
-  version: 7.3.79
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.79"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.79-exui-2837-1":
+  version: 7.3.79-exui-2837-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.79-exui-2837-1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3400,7 +3400,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/a3cc4a08a097bff9e48bd70372b8a60962d277aed4e255ed78fb19f1abbba50b1bfc0a89427c55c2ff1c2733ccb555fe3d2a2d6cfe2c4393627b5fc95d290d17
+  checksum: 10/2ff0f070afaf2baaf7dca7fad830e9bbce7f4e405027cec8eb9fe420edf3a997c2e6ca74873f41f93c7b0f53b41c2c1388b37cdfe906d851cec37de6b32abc0c
   languageName: node
   linkType: hard
 
@@ -17457,11 +17457,11 @@ __metadata:
   linkType: hard
 
 "marked@npm:^18.0.5":
-  version: 18.0.6
-  resolution: "marked@npm:18.0.6"
+  version: 18.0.9
+  resolution: "marked@npm:18.0.9"
   bin:
     marked: bin/marked.js
-  checksum: 10/ab4747d071888726a91ccf381416366c17345c6cdf6bf8739d114482f633740bb9227aff03324d20b1e14c8052f4c6b523c5d5974f7346b240aef45c900c7d27
+  checksum: 10/99d337c50acd57034734f8460f25b28e9658b15627f950092707cb443b840f0bd29fe343bf211b948e643303c34abdb5b5a12cf5245a846635750697524bb747
   languageName: node
   linkType: hard
 
@@ -21082,7 +21082,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.79"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.79-exui-2837-1"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.27"

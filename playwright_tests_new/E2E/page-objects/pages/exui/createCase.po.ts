@@ -1141,12 +1141,12 @@ export class CreateCasePage extends Base {
     if (options.textFields?.textField3 !== undefined) {
       await this.textField3Input.fill(options.textFields.textField3);
     }
-    if (options.textFields?.textField0 !== undefined) {
-      await this.textField0Input.fill(options.textFields.textField0);
-    }
-
     if (options.divorceReasons?.length) {
       await this.selectDivorceReasons(options.divorceReasons);
+    }
+
+    if (options.textFields?.textField0 !== undefined) {
+      await this.textField0Input.fill(options.textFields.textField0);
     }
 
     const hiddenFieldDetailsUrl = this.page.url();

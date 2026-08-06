@@ -74,7 +74,7 @@
         >
           {{ field.columnLabel }}
         </button>
-        <h1 class="column-label" *ngIf="field.disableSort">{{ field.columnLabel }}</h1>
+        <span class="column-label" *ngIf="field.disableSort">{{ field.columnLabel }}</span>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
         <exui-work-field
@@ -100,7 +100,7 @@
         >
           {{ field.columnLabel }}
         </button>
-        <h1 class="column-label" *ngIf="field.disableSort">{{ field.columnLabel }}</h1>
+        <span class="column-label" *ngIf="field.disableSort">{{ field.columnLabel }}</span>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
         <exui-work-field

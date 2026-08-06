@@ -1,6 +1,7 @@
 import type { Page, Route, TestInfo } from '@playwright/test';
 import { buildExistingBookingsMock, singleLocationMock } from '../mocks/bookingUI.mock';
 import { buildMyTaskListMock } from '../mocks/taskList.mock';
+import { judicialAMMenuRole } from './amRoleAssignmentMock.helper';
 import { resolveBookingUiSessionCandidates } from './bookingUiUserPool.helper';
 import { applySessionCookiesFromPool } from '../../common/sessionCapture';
 import { extractUserIdFromCookies } from '../utils/extractUserIdFromCookies';
@@ -29,10 +30,19 @@ export type BookingUiTestRouteState = {
 };
 
 export const buildBookingUiBootstrapUser = (userId: string): TaskListBootstrapUserOptions => ({
+  amMenuRole: judicialAMMenuRole,
   userId,
   roleCategory: 'JUDICIAL',
-  roles: ['caseworker-judge'],
+  roles: ['caseworker-judge', judicialAMMenuRole],
   roleAssignments: [
+    {
+      isCaseAllocator: false,
+      jurisdiction: 'IA',
+      roleCategory: 'JUDICIAL',
+      roleName: judicialAMMenuRole,
+      roleType: 'ORGANISATION',
+      substantive: 'Y',
+    },
     {
       bookable: true,
       jurisdiction: 'IA',

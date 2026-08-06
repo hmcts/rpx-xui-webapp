@@ -21,3 +21,17 @@ export async function restrictedCaseAccessContainerHelper(page: Page, caseDetail
   await expect(table.locator('thead th, thead td').nth(2)).toHaveText('Email address');
   await expect(table.locator('tbody tr')).toHaveCount(0);
 }
+
+export function restrictedCaseAccessContainer(page: Page, caseDetailsPage: CaseDetailsPage) {
+  const table = caseDetailsPage.exuiBodyComponent.table;
+
+  return {
+    restrictedMessage: page.getByText(RESTRICTED_ACCESS_MESSAGE),
+    mainHeading: caseDetailsPage.exuiBodyComponent.mainHeading,
+    container: caseDetailsPage.restrictedAccessContainer,
+    usersWithAccessHeading: page.getByRole('heading', { level: 2, name: 'Users with access' }),
+    tableHeaders: table.locator('thead th, thead td'),
+    tableRows: table.locator('tbody tr'),
+    expectedCaseReference: formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE),
+  };
+}

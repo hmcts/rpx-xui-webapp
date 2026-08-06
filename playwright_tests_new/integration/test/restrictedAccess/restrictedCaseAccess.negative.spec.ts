@@ -8,6 +8,7 @@ import {
   setupGlobalSearchMockRoutes,
   submitHeaderQuickSearch,
   restrictedCaseAccessContainerHelper,
+  restrictedCaseAccessContainer,
 } from '../../helpers';
 
 import { applySessionCookies } from '../../../common/sessionCapture';
@@ -37,6 +38,8 @@ async function expectRestrictedAccessShellWithoutRows(page: Page, caseDetailsPag
   await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
   await restrictedCaseAccessContainerHelper(page, caseDetailsPage);
 }
+
+async function checkRestrictedAccessShell(page: Page, caseDetailsPage: CaseDetailsPage): Promise<void> {}
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, TEST_USERS.FPL_GLOBAL_SEARCH);
@@ -72,6 +75,36 @@ test.describe(
 
       await test.step('Verify restricted access shell and empty users table', async () => {
         await expectRestrictedAccessShellWithoutRows(page, caseDetailsPage);
+
+        const restrictedAccess = restrictedCaseAccessContainer(page, caseDetailsPage);
+
+        await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
+        await expect(restrictedAccess.restrictedMessage).toBeVisible();
+        expect(await restrictedAccess.mainHeading.textContent()).toContain(restrictedAccess.expectedCaseReference);
+        await expect(restrictedAccess.container).toBeVisible();
+        await expect(restrictedAccess.usersWithAccessHeading).toBeVisible();
+
+        await expect(restrictedAccess.tableHeaders).toHaveCount(3);
+        await expect(restrictedAccess.tableHeaders.nth(0)).toHaveText('User');
+        await expect(restrictedAccess.tableHeaders.nth(1)).toHaveText('Case role');
+        await expect(restrictedAccess.tableHeaders.nth(2)).toHaveText('Email address');
+        await expect(restrictedAccess.tableRows).toHaveCount(0);
+      });
+
+      await test.step('Verify restricted messages shell table columns', async () => {
+        const restrictedAccess = restrictedCaseAccessContainer(page, caseDetailsPage);
+
+        await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
+        await expect(restrictedAccess.restrictedMessage).toBeVisible();
+        expect(await restrictedAccess.mainHeading.textContent()).toContain(restrictedAccess.expectedCaseReference);
+        await expect(restrictedAccess.container).toBeVisible();
+        await expect(restrictedAccess.usersWithAccessHeading).toBeVisible();
+
+        await expect(restrictedAccess.tableHeaders).toHaveCount(3);
+        await expect(restrictedAccess.tableHeaders.nth(0)).toHaveText('User');
+        await expect(restrictedAccess.tableHeaders.nth(1)).toHaveText('Case role');
+        await expect(restrictedAccess.tableHeaders.nth(2)).toHaveText('Email address');
+        await expect(restrictedAccess.tableRows).toHaveCount(0);
       });
     });
 

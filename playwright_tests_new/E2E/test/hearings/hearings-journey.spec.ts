@@ -32,7 +32,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
   }) => {
     const scenario = prlHearingHappyPathScenario;
     const hearingJourneyModel = createHearingJourneyModel();
-    let selectedVenue = '';
+    let selectedHearingVenue = '';
 
     await test.step('Navigate to Hearings Page and click on the hearings tab', async () => {
       await openEligibleHearingsCase(page, scenario.route);
@@ -76,8 +76,8 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-venue$/);
       await expect(page.getByRole('heading', { name: /What are the hearing venue details?/i })).toBeVisible();
 
-      selectedVenue = await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
-      await expect(hearingsJourneyPage.removeLocationLink(selectedVenue)).toBeVisible();
+      selectedHearingVenue = await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
+      await expect(hearingsJourneyPage.removeLocationLink(selectedHearingVenue)).toBeVisible();
       await continueHearingsFlow(page);
     });
 
@@ -162,11 +162,10 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       ).toHaveText('2');
 
       await expect(hearingsCYAPage.sectionRows('Hearing Venue')).toHaveCount(1);
-      await expect(hearingsCYAPage.rowValue('Hearing Venue', 'What are the hearing venue details?')).toContainText(selectedVenue);
 
       const venuesList = hearingsCYAPage.rowListItems('Hearing Venue', 'What are the hearing venue details?');
       const venues = await venuesList.allTextContents();
-      expect(venues).toEqual(expect.arrayContaining(['East London Family Court', 'Southampton Combined Court Centre']));
+      expect(venues).toEqual(expect.arrayContaining(['East London Family Court', selectedHearingVenue]));
       expect(venues).toHaveLength(2);
 
       const allJudges = hearingJourneyModel.get('hearingDetails', 'judgeType');

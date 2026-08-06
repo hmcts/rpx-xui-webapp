@@ -14,6 +14,7 @@
     "@integration-hearings",
     "@integration-manage-tasks",
     "@integration-platform-services",
+    "@integration-probate-find-case",
     "@integration-query-management",
     "@integration-restricted-case",
     "@integration-search-case",

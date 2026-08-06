@@ -132,7 +132,7 @@ const buildConfig = (env: EnvMap = process.env) => {
         use: {
           ...devices['Desktop Firefox'],
           headless: headlessMode,
-          trace: 'on-first-retry',
+          trace: 'retain-on-failure',
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -146,7 +146,7 @@ const buildConfig = (env: EnvMap = process.env) => {
         grepInvert: e2eTagFilters.grepInvert,
         use: {
           headless: headlessMode,
-          trace: 'on-first-retry',
+          trace: 'retain-on-failure',
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,

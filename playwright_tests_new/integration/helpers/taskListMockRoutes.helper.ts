@@ -113,7 +113,7 @@ export async function setupTaskListBootstrapRoutes(
     'task-supervisor',
     amMenuRole,
   ]);
-  userDetails.userInfo.roleCategory = userOptions.roleCategory ?? 'LEGAL_OPERATIONS';
+  userDetails.userInfo.roleCategories = [userOptions.roleCategory ?? 'LEGAL_OPERATIONS'];
   const routeRoleAssignments = userOptions.roleAssignments
     ? ensureSupportedAMRoleAssignment(userOptions.roleAssignments, amMenuRole, supportedJurisdictions)
     : [

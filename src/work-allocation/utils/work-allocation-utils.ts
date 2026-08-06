@@ -2,10 +2,11 @@ import { NavigationExtras } from '@angular/router';
 import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { HMCTSServiceDetails, UserInfo } from '../../app/models';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from '../../app/services';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
-import { TaskPermission, TaskRole } from '../models/tasks';
+import { Task, TaskPermission, TaskRole } from '../models/tasks';
 
 interface Navigator {
   url: string;
@@ -130,10 +131,25 @@ export const setCaseworkers = (
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
 };
 
-export const getAssigneeName = (caseworkers: any[], assignee: string): string => {
+export const getAssigneeNameFromList = (caseworkers: any[], assignee: string): string => {
   if (assignee && caseworkers?.some((cw) => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter((cw) => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
+  }
+  return null;
+};
+
+export const getAssigneeIdsFromTasks = (tasks: Task[]): string[] => {
+  if (!tasks?.length) {
+    return [];
+  }
+  const ids = tasks.map((task) => task.assignee).filter((id) => !!id);
+  return [...new Set(ids)];
+};
+
+export const getAssigneeName = (caseworker: Caseworker, assignee: string): string => {
+  if (assignee && caseworker) {
+    return `${caseworker.firstName} ${caseworker.lastName}`;
   }
   return null;
 };
@@ -147,7 +163,7 @@ export const servicesMap: { [key: string]: string } = {
   EMPLOYMENT: 'Employment',
 };
 
-export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
+export function getOptions(taskRoles: TaskRole[], sessionStorageService: SessionStorageService): OptionsModel[] {
   const options = new Array<OptionsModel>();
   // Consider role categories only with either OWN or EXECUTE permissions
   const roleCategories = taskRoles
@@ -185,7 +201,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
 
 export function getRoleCategoryToBeSelectedByDefault(
   taskRoles: TaskRole[],
-  sessionStorageService: ISessionStorageService
+  sessionStorageService: SessionStorageService
 ): RoleCategory {
   // Consider only role categories with OWN permission for radio button default selection
   const uniqueRoleCategoriesWithOwnPermissions = taskRoles
@@ -198,7 +214,8 @@ export function getRoleCategoryToBeSelectedByDefault(
   // If more than one role category with OWN permission then use current user's role category
   return uniqueRoleCategoriesWithOwnPermissions.length === 1
     ? uniqueRoleCategoriesWithOwnPermissions[0]
-    : getCurrentUserRoleCategory(sessionStorageService);
+    : // EXUI-4758 - Set role category to first role category found or all
+      getCurrentUserRoleCategories(sessionStorageService)?.[0] || RoleCategory.ALL;
 }
 
 export function getLabel(roleCategory: RoleCategory): PersonRole {
@@ -253,16 +270,16 @@ export function getDestinationUrl(url: string): string {
   return REDIRECTS.NotAuthorised;
 }
 
-export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorageService): RoleCategory {
+export function getCurrentUserRoleCategories(sessionStorageService: SessionStorageService): RoleCategory[] {
   const userInfoStr = sessionStorageService.getItem('userDetails');
   if (userInfoStr) {
     const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
     if (!userInfo) {
-      return null;
+      return [];
     }
-    return userInfo.roleCategory as RoleCategory;
+    return (userInfo.roleCategories as RoleCategory[]) || [];
   }
-  return null;
+  return [];
 }
 
 export function addLocationToLocationsByService(

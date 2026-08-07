@@ -115,7 +115,7 @@
     "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.80-pofcc-131",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.79-exui-5006-1",
     "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.27",
@@ -160,7 +160,7 @@
     "moment-timezone": "^0.5.28",
     "ngx-chips": "3.0.0",
     "ngx-logger": "^5.0.12",
-    "ngx-markdown": "20",
+    "ngx-markdown": "^20.1.0",
     "ngx-pagination": "^6.0.3",
     "otplib": "^13.4.0",
     "pegjs": "^0.10.0",
@@ -290,9 +290,10 @@
     "jsdom": "^27.4.0",
     "qs": "^6.15.0",
     "bn.js": "^4.12.3",
-    "dompurify": "^3.3.2",
+    "dompurify": "^3.4.13",
     "lodash": "^4.17.22",
-    "lodash-es": "^4.17.22"
+    "lodash-es": "^4.17.22",
+    "mermaid": "^11.16.1"
   },
   "packageManager": "yarn@4.17.1"
 }

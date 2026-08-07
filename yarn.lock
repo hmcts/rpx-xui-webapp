@@ -2854,9 +2854,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.78-exui-2906-activity-tracker-web-pubsub":
-  version: 7.3.78-exui-2906-activity-tracker-web-pubsub
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.78-exui-2906-activity-tracker-web-pubsub"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.78-exui-2906-activity-tracker-web-pubsub-2":
+  version: 7.3.78-exui-2906-activity-tracker-web-pubsub-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.78-exui-2906-activity-tracker-web-pubsub-2"
   dependencies:
     "@azure/web-pubsub-client": "npm:^1.0.4"
     "@edium/fsm": "npm:^3.0.2"
@@ -2897,7 +2897,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/3afe48c03c5a46a0ba1b52b2fef5e7d2f7f84b47f3571f23d517c75e0e15fa9767bce322934975cb5f04057240da9212dc9d6da017d5885ae5f1ca50caf3311d
+  checksum: 10/03312e5db2be0b40f420f0cd550ac365bb6cce0349e51821b0ea44c254bbbb2b8afa09b08dc26903a1be91aebd0eff63571c77ba553208e64607c1a7d6bbd1c5
   languageName: node
   linkType: hard
 
@@ -19727,7 +19727,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.78-exui-2906-activity-tracker-web-pubsub"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.78-exui-2906-activity-tracker-web-pubsub-2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.21"

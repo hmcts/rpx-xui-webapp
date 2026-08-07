@@ -504,6 +504,8 @@ export class CaseDetailsPage extends Base {
         `Case action "${action}" is not available. Available actions: ${availableOptions.map((option) => option.label || option.value).join(', ')}`
       );
     }
+    const timeoutMs = options.timeoutMs ?? 30000;
+    await this.waitForSpinnerToComplete(`before selecting case action "${action}"`, timeoutMs);
     try {
       if (matchingOption.label === action) {
         await this.caseActionsDropdown.selectOption({ label: action });
@@ -515,13 +517,13 @@ export class CaseDetailsPage extends Base {
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
       await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
+    await this.waitForSpinnerToComplete(`before submitting case action "${action}"`, timeoutMs);
     await this.caseActionGoButton.click();
     await this.waitForSpinnerToComplete('after selecting case action');
     await this.page.waitForLoadState('domcontentloaded');
     if (!options.expectedLocator && !options.expectedPath) {
       return;
     }
-    const timeoutMs = options.timeoutMs ?? 30000;
     const waitForExpected = async () => {
       if (options.expectedPath) {
         const matcher =
@@ -553,6 +555,7 @@ export class CaseDetailsPage extends Base {
         this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
         await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
+      await this.waitForSpinnerToComplete(`before retrying case action "${action}"`, timeoutMs);
       await this.caseActionGoButton.click();
       await this.waitForSpinnerToComplete('after retrying case action');
       await this.page.waitForLoadState('domcontentloaded');
@@ -562,12 +565,35 @@ export class CaseDetailsPage extends Base {
 
   private async waitForSpinnerToComplete(context: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
-    const spinner = this.page.locator('xuilib-loading-spinner').first();
     try {
-      await spinner.waitFor({ state: 'hidden', timeout: effectiveTimeoutMs });
+      await this.page.waitForFunction(
+        () => {
+          const spinners = Array.from(
+            document.querySelectorAll<HTMLElement>('xuilib-loading-spinner, xuilib-loading-spinner .spinner-container')
+          );
+          return spinners.every((spinner) => {
+            const style = window.getComputedStyle(spinner);
+            const bounds = spinner.getBoundingClientRect();
+            return style.display === 'none' || style.visibility === 'hidden' || bounds.width === 0 || bounds.height === 0;
+          });
+        },
+        undefined,
+        { timeout: effectiveTimeoutMs }
+      );
     } catch (error) {
-      const stillVisible = await spinner.isVisible().catch(() => false);
-      if (stillVisible) {
+      const visibleSpinnerCount = await this.page
+        .locator('xuilib-loading-spinner, xuilib-loading-spinner .spinner-container')
+        .evaluateAll(
+          (spinners) =>
+            spinners.filter((spinner) => {
+              const element = spinner as HTMLElement;
+              const style = window.getComputedStyle(element);
+              const bounds = element.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility !== 'hidden' && bounds.width > 0 && bounds.height > 0;
+            }).length
+        )
+        .catch(() => 0);
+      if (visibleSpinnerCount > 0) {
         throw new Error(`Spinner still visible ${context}`);
       }
       this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });

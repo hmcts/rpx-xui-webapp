@@ -48,6 +48,7 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
       await caseDetailsPage.selectCaseAction('Update case', {
         expectedLocator: createCasePage.person2FirstNameInput,
         timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
+        retry: false,
       });
     });
 

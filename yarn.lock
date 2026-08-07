@@ -3384,9 +3384,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.80-pofcc-131":
-  version: 7.3.80-pofcc-131
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.80-pofcc-131"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.79-exui-4919-rc-1":
+  version: 7.3.79-exui-4919-rc-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.79-exui-4919-rc-1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3419,14 +3419,18 @@ __metadata:
     moment: ^2.30.1
     moment-timezone: ^0.5.31
     ngx-chips: ^3.0.0
+    ngx-editor: 19.0.0-beta.1
     ngx-markdown: ^20
     ngx-pagination: 6.0.3
+    prosemirror-commands: 1.7.1
+    prosemirror-history: 1.5.0
+    prosemirror-schema-list: 1.5.1
     rpx-xui-translation: 1.2.7
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/3b5fb3a4177da492ea50d69eb614c0c50d8120787eafc8508f91ecb3f57f6c1c59e504cb6646242711dfa48ab70385fad76a39c0d3b0983421a3a7d7cf8f6f30
+  checksum: 10/fbae0d5908175fd9137050945ee1d195827e3a18e61af15eaa573e219aa77b30732f0c896d59bf39151e1faf75cb27eda7cd89b3cdc745a1e4e5332aa58e6fe8
   languageName: node
   linkType: hard
 
@@ -21242,7 +21246,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.80-pofcc-131"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.79-exui-4919-rc-1"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.27"

@@ -235,6 +235,31 @@ Notes:
 - Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
 - Do not commit `.env`.
 
+### AM roles for top navigation
+
+Some EXUI top-navigation entries are now controlled by Access Management (AM) roles instead of the older IDAM-only role names. In practice, a user needs two pieces of data before the app will show entries such as **My work** or **Search**:
+
+- `userInfo.roles` must include the configured menu role, for example `hmcts-legal-operations`, `hmcts-admin`, `hmcts-ctsc`, or `hmcts-judiciary`.
+- `roleAssignmentInfo` must include a matching AM assignment with a supported `jurisdiction`, `roleCategory`, and `roleType`.
+
+The Playwright dynamic-user flow does not create those AM assignments. It creates or updates the IDAM/SIDAM account, then assigns the user into a professional organisation through PRD/manage-org APIs. That is enough for solicitor-style journeys, but it does not write `/am/role-assignments`, so it cannot by itself make an EXUI staff or judicial user eligible for the new AM-backed menu entries.
+
+For integration tests, keep the AM role contract inside the mocked `/api/user/details` response. Use `playwright_tests_new/integration/helpers/amRoleAssignmentMock.helper.ts` when a route helper needs a staff or judicial AM menu role. The helper keeps the important parts together:
+
+```ts
+{
+  roleName: 'hmcts-legal-operations',
+  roleCategory: 'LEGAL_OPERATIONS',
+  roleType: 'ORGANISATION',
+  jurisdiction: 'IA',
+  substantive: 'Y'
+}
+```
+
+For work-filter tests, prefer `ensureSupportedAMRoleAssignment(...)` instead of adding a new service row by hand. It enriches an existing organisation assignment where possible, so the navigation guard is satisfied without changing the service list the filter scenario is trying to prove.
+
+For live preview or E2E evidence, use a pre-seeded static user with known AM organisation assignments. Adding live AM assignment writes to dynamic provisioning would need privileged AM credentials, cleanup, idempotency, and parallel-worker controls, so it should be handled as a separate governed task rather than hidden in the normal dynamic-user path.
+
 ---
 
 ## Request Headers and Auth Helpers

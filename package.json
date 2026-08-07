@@ -122,7 +122,7 @@
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.4.0",
     "@hmcts/rpx-xui-common-lib": "3.2.14",
-    "@hmcts/rpx-xui-node-lib": "2.30.22",
+    "@hmcts/rpx-xui-node-lib": "2.30.22-exui-4976",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
@@ -288,11 +288,13 @@
     "min-document": "^2.19.1",
     "@types/jsdom": "^27",
     "jsdom": "^27.4.0",
-    "qs": "^6.15.0",
+    "qs": "^6.15.3",
     "bn.js": "^4.12.3",
     "dompurify": "^3.3.2",
     "lodash": "^4.17.22",
-    "lodash-es": "^4.17.22"
+    "lodash-es": "^4.17.22",
+    "body-parser": "^2.3.0",
+    "path-to-regexp": "^8.4.2"
   },
   "packageManager": "yarn@4.17.1"
 }

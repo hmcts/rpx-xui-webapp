@@ -17,6 +17,7 @@
           [id]="option.optionId"
           type="radio"
           [value]="option.optionValue"
+          [attr.name]="radioControlName"
         />
         <label class="govuk-label govuk-radios__label" [for]="option.optionId">
           {{ option.label || option.optionValue }}

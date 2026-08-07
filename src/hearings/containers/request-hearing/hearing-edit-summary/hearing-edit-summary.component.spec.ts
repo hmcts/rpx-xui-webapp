@@ -38,6 +38,7 @@ describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
   let fixture: ComponentFixture<HearingEditSummaryComponent>;
   let store: any;
+  let hearingsService: HearingsService;
 
   const routeMock = {
     snapshot: {
@@ -50,7 +51,6 @@ describe('HearingEditSummaryComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const locationsDataService = new LocationsDataService(mockedHttpClient);
-  const hearingsService = new HearingsService(mockedHttpClient);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
   const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
 
@@ -103,12 +103,13 @@ describe('HearingEditSummaryComponent', () => {
   ];
 
   beforeEach(() => {
+    hearingsService = new HearingsService(mockedHttpClient);
     TestBed.configureTestingModule({
       imports: [],
       declarations: [HearingEditSummaryComponent, CaseReferencePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: _.cloneDeep(initialState) }),
         LoadingService,
         {
           provide: HearingsService,
@@ -667,10 +668,13 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should set the hearingWindowChangesRequired to false', () => {
     hearingsService.propertiesUpdatedOnPageVisit = null;
-    component.hearingRequestMainModel.hearingDetails.hearingWindow = component.serviceHearingValuesModel.hearingWindow;
-    component.serviceHearingValuesModel.parties =
-      initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
-    component.serviceHearingValuesModel.duration = 60;
+    component.hearingRequestMainModel.hearingDetails.hearingWindow = _.cloneDeep(
+      component.serviceHearingValuesModel.hearingWindow
+    );
+    component.serviceHearingValuesModel.parties = _.cloneDeep(component.hearingRequestToCompareMainModel.partyDetails);
+    component.serviceHearingValuesModel.duration = component.hearingRequestMainModel.hearingDetails.duration;
+    component.serviceHearingValuesModel.hearingPriorityType =
+      component.hearingRequestMainModel.hearingDetails.hearingPriorityType;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired).toEqual(false);
   });
@@ -700,12 +704,10 @@ describe('HearingEditSummaryComponent', () => {
 
   it('should update the hearing details properties automatically setPropertiesUpdatedAutomatically', () => {
     component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
-    component.serviceHearingValuesModel.hearingInWelshFlag = true;
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.ngOnInit();
     const expectedResult = { ...component.hearingRequestMainModel.hearingDetails };
     expectedResult.privateHearingRequiredFlag = true;
-    expectedResult.hearingInWelshFlag = true;
     expect(component.hearingRequestMainModel.hearingDetails).toEqual(expectedResult);
     expect(storeDispatchSpy).toHaveBeenCalledWith(
       new fromHearingStore.UpdateHearingRequest(component.hearingRequestMainModel, component.hearingCondition)
@@ -1067,26 +1069,24 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   describe('Display of warning and error message', () => {
-    it('should display banner message', () => {
+    it('should display pageless and within-page banner messages', () => {
       component.serviceHearingValuesModel.caseManagementLocationCode = 'New Management location code';
       component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
-      component.serviceHearingValuesModel.hearingInWelshFlag = true;
       component.ngOnInit();
       expect(component.isPagelessAttributeChanged).toEqual(true);
       expect(component.isWithinPageAttributeChanged).toEqual(true);
     });
 
-    it('should display banner message', () => {
+    it('should display only the within-page banner message when pageless attributes are unchanged', () => {
       component.serviceHearingValuesModel.caseFlags = { flags: [], flagAmendURL: '/' };
       component.serviceHearingValuesModel.parties = [];
       component.hearingRequestMainModel.partyDetails = [];
       component.hearingRequestMainModel.hearingDetails.hearingWindow = {};
       component.serviceHearingValuesModel.hearingWindow = {};
       component.serviceHearingValuesModel.privateHearingRequiredFlag = true;
-      component.serviceHearingValuesModel.hearingInWelshFlag = true;
       const storeDispatchSpy = spyOn(store, 'dispatch');
       component.ngOnInit();
-      expect(component.isPagelessAttributeChanged).toEqual(true);
+      expect(component.isPagelessAttributeChanged).toEqual(false);
       expect(component.isWithinPageAttributeChanged).toEqual(true);
       storeDispatchSpy.calls.reset();
     });
@@ -1686,12 +1686,13 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should set propertiesUpdatedOnPageVisit when case flags not present', () => {
-    const parties = initialState.hearings.hearingValues.serviceHearingValuesModel.parties;
-    parties[0].individualDetails.interpreterLanguage = 'spa';
+    const parties = _.cloneDeep(component.serviceHearingValuesModel.parties);
+    parties[0].individualDetails.interpreterLanguage = 'fra';
+    parties[0].unavailabilityRanges = [];
 
     component.serviceHearingValuesModel = {
-      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-      parties: [...parties],
+      ...component.serviceHearingValuesModel,
+      parties,
       caseFlags: undefined,
     };
 
@@ -1700,8 +1701,8 @@ describe('HearingEditSummaryComponent', () => {
     const expectedResult: PropertiesUpdatedOnPageVisit = {
       hearingId: '1000000',
       caseFlags: undefined,
-      parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
-      hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+      parties,
+      hearingWindow: component.serviceHearingValuesModel.hearingWindow,
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,

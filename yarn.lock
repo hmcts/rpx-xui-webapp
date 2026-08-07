@@ -17887,6 +17887,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:8.0.7":
+  version: 8.0.7
+  resolution: "minimatch@npm:8.0.7"
+  dependencies:
+    brace-expansion: "npm:^2.0.1"
+  checksum: 10/dead7be9ad3eac2b0f9796373aa345a194aed608622880621ce53e100d75ace295ed68b9ae59c2a4de0854435b8dcd56fb7692812dda1c439463ba44dae5252c
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^10.0.1":
   version: 10.1.1
   resolution: "minimatch@npm:10.1.1"
@@ -17914,7 +17923,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^10.2.1, minimatch@npm:^10.2.6":
+"minimatch@npm:^10.2.1":
   version: 10.2.6
   resolution: "minimatch@npm:10.2.6"
   dependencies:
@@ -21343,7 +21352,7 @@ __metadata:
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
     material-design-icons: "npm:^3.0.1"
-    minimatch: "npm:^10.2.6"
+    minimatch: "npm:8.0.7"
     mocha: "npm:^11.8.0"
     mochawesome: "npm:^7.0.0"
     moment-timezone: "npm:^0.5.28"

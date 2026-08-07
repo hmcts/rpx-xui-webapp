@@ -46,7 +46,9 @@ export class SessionCapturePage {
 
   idamLoginErrorCandidates(): Locator[] {
     return [
+      this.page.getByRole('alert').first(),
       this.page.locator('.govuk-error-summary').first(),
+      this.page.locator('.error-summary').first(),
       this.page.locator('.govuk-error-message').first(),
       this.page.locator('[data-testid="error-summary"]').first(),
       this.page.locator('#error-summary').first(),

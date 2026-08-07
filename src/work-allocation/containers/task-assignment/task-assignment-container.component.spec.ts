@@ -106,9 +106,9 @@ describe('TaskAssignmentContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: {
+                taskAndCaseworker: {
                   task: { task: mockTasks[0] },
-                  caseworkers: [],
+                  caseworker: {},
                 },
                 ...TaskActionConstants.Reassign,
               },
@@ -186,7 +186,7 @@ describe('TaskAssignmentContainerComponent', () => {
       surname: 'Smith',
       email: 'john.smith@email.com',
       roles: [AppTestConstants.IA_JUDGE_ROLE],
-      roleCategory: 'JUDICIAL',
+      roleCategories: ['JUDICIAL'],
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     component.isCurrentUserJudicial();
@@ -211,9 +211,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -248,9 +248,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -263,7 +263,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'JUDICIAL',
+          roleCategories: ['JUDICIAL'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -277,9 +277,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -292,7 +292,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -306,9 +306,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -321,7 +321,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -335,9 +335,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -350,7 +350,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';

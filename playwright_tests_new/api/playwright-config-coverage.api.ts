@@ -75,6 +75,7 @@ const buildIntegrationConfig = (env: EnvMap) =>
   integrationConfigModule.__test__.buildConfig(env) as {
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
+    use: { trace: string };
     projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
   };
 
@@ -95,7 +96,7 @@ const buildNightlyConfig = (env: EnvMap) =>
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { baseURL: string };
-    projects: Array<{ name: string; grep?: RegExp; grepInvert?: RegExp; use?: { headless?: boolean } }>;
+    projects: Array<{ name: string; grep?: RegExp; grepInvert?: RegExp; use?: { headless?: boolean; trace?: string } }>;
   };
 
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
@@ -317,8 +318,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
     const nodeApiProject = config.projects.find((project) => project.name === 'node-api') as
-      | { grep?: RegExp; grepInvert?: RegExp }
-      | undefined;
+      { grep?: RegExp; grepInvert?: RegExp } | undefined;
     expect(nodeApiProject).toBeDefined();
     expect(nodeApiProject?.grep).toBeInstanceOf(RegExp);
     expect(nodeApiProject?.grep?.test('@svc-auth')).toBe(true);
@@ -590,6 +590,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.profile).toBe(true);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
     expect(config.expect.timeout).toBe(60_000);
+    expect(config.use.trace).toBe('retain-on-failure');
     expect(config.use.timezoneId).toBe('Europe/London');
     expect(config.projects).toHaveLength(1);
     expect(config.projects[0]?.name).toBe('chromium');
@@ -681,6 +682,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
     expect(config.projects.find((project) => project.name === 'firefox')?.use?.headless).toBe(false);
     expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
+    expect(config.projects.find((project) => project.name === 'firefox')?.use?.trace).toBe('retain-on-failure');
+    expect(config.projects.find((project) => project.name === 'webkit')?.use?.trace).toBe('retain-on-failure');
   });
 
   test('nightly config honours report folder and file overrides', async () => {

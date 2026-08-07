@@ -7,6 +7,8 @@ test.describe('platform services header parity', { tag: ['@integration', '@integ
       await setupPlatformServicesCaseListRoutes(page, {
         userId: scenario.userIdentifier,
         roles: [...scenario.roles],
+        roleCategory: scenario.roleCategory,
+        roleAssignmentInfo: scenario.roleAssignmentInfo,
       });
 
       await caseListPage.navigateTo();

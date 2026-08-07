@@ -84,6 +84,23 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     expect(trimmedCounts).toEqual({ output: 0, heavyArtifacts: 0 });
   });
 
+  test('keeps timed-out test artifacts when only-on-failure mode is used', () => {
+    const timedOutResult = {
+      status: 'timedOut',
+      stdout: [{ text: 'timeout out' }],
+      stderr: [{ text: 'timeout err' }],
+      steps: [{ title: 'timeout step' }],
+      attachments: [{ name: 'trace' }],
+    };
+    const { nextResult, trimmedCounts } = odhinAdaptiveTest.trimResult(timedOutResult, {
+      lightweight: true,
+      testOutputMode: 'only-on-failure',
+    });
+
+    expect(nextResult).toEqual(timedOutResult);
+    expect(trimmedCounts).toEqual({ output: 0, heavyArtifacts: 0 });
+  });
+
   test('times out stalled runtime hook promises', async () => {
     const stalledPromise = new Promise<never>(() => {});
 

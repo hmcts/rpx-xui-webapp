@@ -178,6 +178,14 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
       responseJson: buildCaseworkerResponse(assigneeId),
     },
     {
+      purpose: 'Task action route resolver: load assignee role categories',
+      method: 'POST',
+      urlPattern: '**/api/role-access/roles/getRoleCategoriesByUserId*',
+      expectedRequestJson: { userId: assigneeId },
+      responseStatus: 200,
+      responseJson: ['LEGAL_OPERATIONS'],
+    },
+    {
       purpose: 'Task action route resolver: load caseworkers for task jurisdiction',
       method: 'POST',
       urlPattern: '**/workallocation/caseworker/getUserByIdamId*',

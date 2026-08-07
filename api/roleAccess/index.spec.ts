@@ -441,6 +441,59 @@ describe('roleAccess/index', () => {
     });
   });
 
+  describe('getRoleCategoriesByUserId', () => {
+    it('should return empty array if no userId provided', async () => {
+      req.body = {};
+
+      await index.getRoleCategoriesByUserId(req, res, next);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.send).to.have.been.calledWith([]);
+    });
+
+    it('should return unique supported role categories for a user', async () => {
+      const roleAssignments = [
+        { actorId: 'user-123', roleCategory: 'JUDICIAL' },
+        { actorId: 'user-123', roleCategory: 'JUDICIAL' },
+        { actorId: 'user-123', roleCategory: 'LEGAL_OPERATIONS' },
+        { actorId: 'user-123', roleCategory: 'PROFESSIONAL' },
+        { actorId: 'user-123', roleCategory: 'UNKNOWN' },
+      ];
+      const postStub = sandbox.stub(httpModule.http, 'post').resolves({
+        status: 200,
+        data: { roleAssignmentResponse: roleAssignments },
+      });
+      sandbox.stub(proxy, 'setHeaders').returns({ 'x-test-header': 'test-value' });
+      req.body = { userId: 'user-123' };
+
+      await index.getRoleCategoriesByUserId(req, res, next);
+
+      const [url, payload, options] = postStub.firstCall.args;
+      expect(url).to.contain('/am/role-assignments/query');
+      expect(payload).to.deep.equal({
+        queryRequests: [
+          {
+            actorId: ['user-123'],
+          },
+        ],
+      });
+      expect(options).to.deep.equal({ headers: { 'x-test-header': 'test-value' } });
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.send).to.have.been.calledWith(['JUDICIAL', 'LEGAL_OPERATIONS']);
+    });
+
+    it('should handle role assignment query errors', async () => {
+      const error = new Error('Role assignment query failed');
+      sandbox.stub(httpModule.http, 'post').rejects(error);
+      sandbox.stub(proxy, 'setHeaders').returns({});
+      req.body = { userId: 'user-123' };
+
+      await index.getRoleCategoriesByUserId(req, res, next);
+
+      expect(next).to.have.been.calledWith(error);
+    });
+  });
+
   describe('confirmAllocateRole', () => {
     it('should allocate role using proper DTOs and models', async () => {
       const mockAllocateData = createMockAllocateRoleData();

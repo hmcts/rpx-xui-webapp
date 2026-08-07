@@ -76,7 +76,7 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "PCS"
+        "Possession"
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"
@@ -147,6 +147,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PUBLICLAW"
+    },
+    {
+      "caseTypes": [
+        "Possession"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
     ]
   }`;
@@ -228,7 +235,7 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "PCS"
+        "Possession"
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"

@@ -13,11 +13,11 @@ const origins = [
 
 test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
   origins.forEach(({ label, origin, expected }) => {
-    test(`OPTIONS /api/user/details (${label} origin)`, async () => {
+    test(`OPTIONS /api/user/o/userinfo (${label} origin)`, async () => {
       const ctx = await request.newContext({ baseURL, ignoreHTTPSErrors: true });
       try {
         const res = await withRetry(async () => {
-          const response = await ctx.fetch('api/user/details', {
+          const response = await ctx.fetch('api/user/o/userinfo', {
             method: 'OPTIONS',
             headers: { origin },
             failOnStatusCode: false,

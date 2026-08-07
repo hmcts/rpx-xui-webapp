@@ -16,7 +16,7 @@ describe('Idam API user details', () => {
     roles: somethingLike([somethingLike('solicitor'), somethingLike('caseworker')]),
   };
 
-  describe('get /details', () => {
+  describe('get /o/userinfo', () => {
     const jwt = 'some-access-token';
 
     before(async () => {
@@ -25,7 +25,7 @@ describe('Idam API user details', () => {
         uponReceiving: 'a request for that user:',
         withRequest: {
           method: 'GET',
-          path: '/details',
+          path: '/o/userinfo',
           headers: {
             Authorization: 'Bearer some-access-token',
           },

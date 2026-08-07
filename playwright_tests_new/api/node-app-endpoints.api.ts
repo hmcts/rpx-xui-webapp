@@ -57,7 +57,7 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
   });
 
   test('returns enriched user details for solicitor session', async ({ apiClient }, testInfo) => {
-    const response = await apiClient.get<any>('api/user/details', { throwOnError: false });
+    const response = await apiClient.get<any>('api/user/o/userinfo', { throwOnError: false });
 
     expectStatus(response.status, StatusSets.guardedExtended);
     if (!shouldProcessUserDetails(response.status)) {
@@ -81,7 +81,7 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
   });
 
   test('rejects unauthenticated calls to user details', async ({ anonymousClient }) => {
-    const response = await anonymousClient.get('api/user/details', {
+    const response = await anonymousClient.get('api/user/o/userinfo', {
       throwOnError: false,
     });
 
@@ -115,7 +115,7 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
       ignoreHTTPSErrors: true,
       storageState: { cookies: expiredCookies, origins: [] },
     });
-    const res = await ctx.get('api/user/details', { failOnStatusCode: false });
+    const res = await ctx.get('api/user/o/userinfo', { failOnStatusCode: false });
     expectStatus(res.status(), [401, 403]);
     await ctx.dispose();
   });

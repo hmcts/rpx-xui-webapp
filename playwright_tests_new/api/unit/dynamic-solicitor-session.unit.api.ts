@@ -59,7 +59,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           attempt += 1;
           return {
             get: async (url: string) => {
-              if (url === '/api/user/details') {
+              if (url === '/api/user/o/userinfo') {
                 return {
                   status: () => 200,
                   json: async () => ({ userInfo: { uid: 'user-123' } }),
@@ -161,7 +161,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           seenSessionCookieValues.push(sessionCookieValue);
           return {
             get: async (url: string) => {
-              if (url === '/api/user/details') {
+              if (url === '/api/user/o/userinfo') {
                 if (sessionCookieValue === 'stale') {
                   return {
                     status: () => 401,

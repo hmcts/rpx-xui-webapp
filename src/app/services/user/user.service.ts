@@ -10,6 +10,6 @@ export class UserService {
   constructor(private readonly http: HttpClient) {}
 
   public getUserDetails(refreshRoleAssignments: boolean = false): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`api/user/details?refreshRoleAssignments=${refreshRoleAssignments}`);
+    return this.http.get<UserDetails>(`api/user/o/userinfo?refreshRoleAssignments=${refreshRoleAssignments}`);
   }
 }

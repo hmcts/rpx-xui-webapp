@@ -79,10 +79,10 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     }
   });
 
-  test('GET /api/user/details contract: returns UserDetails with userInfo object', async ({ apiClient }) => {
+  test('GET /api/user/o/userinfo contract: returns UserDetails with userInfo object', async ({ apiClient }) => {
     // Given: An authenticated user
     // When: Fetching user details
-    const response = await apiClient.get('api/user/details', { throwOnError: false });
+    const response = await apiClient.get('api/user/o/userinfo', { throwOnError: false });
 
     // Then: Response status is within expected range
     expectStatus(response.status, StatusSets.guardedBasic);

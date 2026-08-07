@@ -322,7 +322,7 @@ async function requestUserDetailsWithRetry(request: SetupCaseRequest, effectiveT
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      const response = await request.page.request.get('api/user/details', {
+      const response = await request.page.request.get('api/user/o/userinfo', {
         failOnStatusCode: false,
         timeout: effectiveTimeoutMs,
       });

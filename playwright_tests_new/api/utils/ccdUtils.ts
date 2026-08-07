@@ -17,7 +17,7 @@ type Jurisdiction = {
 };
 
 export async function assertJurisdictionsForUser(apiClient: PlaywrightApiClient, expectedNames: string[]): Promise<void> {
-  const user = await apiClient.get('api/user/details', { throwOnError: false });
+  const user = await apiClient.get('api/user/o/userinfo', { throwOnError: false });
   expectStatus(user.status, StatusSets.guardedExtended);
   if (user.status !== 200) {
     return;

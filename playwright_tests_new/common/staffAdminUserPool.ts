@@ -28,7 +28,7 @@ function isStaffAdminPoolEnabled(env: EnvMap): boolean {
 }
 
 function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = process.env): number {
-  if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) > 0) {
+  if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) >= 0) {
     return Number(source?.parallelIndex);
   }
 
@@ -50,13 +50,14 @@ export function resolveStaffAdminUserIdentifier(
   source?: ParallelIndexSource,
   env: EnvMap = process.env
 ): string {
-  if (userIdentifier !== STAFF_ADMIN_USER) {
+  const normalizedUserIdentifier = userIdentifier.trim().toUpperCase();
+  if (normalizedUserIdentifier !== STAFF_ADMIN_USER) {
     return userIdentifier;
   }
 
   const configuredUserIdentifiers = getConfiguredStaffAdminUserIdentifiers(env);
   if (configuredUserIdentifiers.length === 0) {
-    return userIdentifier;
+    return STAFF_ADMIN_USER;
   }
 
   return configuredUserIdentifiers[resolveParallelIndex(source, env) % configuredUserIdentifiers.length];
@@ -69,4 +70,18 @@ export function getLegacyStaffAdminSessionIdentity(userUtils: UserUtils = new Us
     email: credentials.email,
     password: credentials.password,
   };
+}
+
+export function resolveStaffAdminSessionCandidates(
+  source?: ParallelIndexSource,
+  env: EnvMap = process.env,
+  userUtils: UserUtils = new UserUtils()
+): Array<StaffAdminUserIdentifier | SessionIdentity> {
+  const configuredUserIdentifiers = getConfiguredStaffAdminUserIdentifiers(env);
+  if (configuredUserIdentifiers.length === 0) {
+    return [getLegacyStaffAdminSessionIdentity(userUtils)];
+  }
+
+  const selected = resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, source, env) as StaffAdminUserIdentifier;
+  return [selected, ...configuredUserIdentifiers.filter((userIdentifier) => userIdentifier !== selected)];
 }

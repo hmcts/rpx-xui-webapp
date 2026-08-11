@@ -29,7 +29,14 @@ export class TaskResolver {
           // if no assignee, return no caseworker
           return of(null);
         }
-        return this.caseworkerService.getUserByIdamId(task.task.assignee);
+        return this.caseworkerService.getUserByIdamId(task.task.assignee, true).pipe(
+          catchError((error) => {
+            if (error.status === 404) {
+              return of(null);
+            }
+            throw error;
+          })
+        );
       })
     );
     return forkJoin({ task: task$, caseworker: caseworker$ });

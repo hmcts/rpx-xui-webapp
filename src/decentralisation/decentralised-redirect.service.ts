@@ -5,7 +5,7 @@ import {
   buildDecentralisedEventUrl,
   BuildDecentralisedEventUrlInput,
   getExpectedSubFromUserDetails,
-} from './decentralised-redirect.util';
+} from '../../common/decentralisation/decentralised-redirect.util';
 import { UserInfo } from '../app/models/user-details.model';
 
 @Injectable({

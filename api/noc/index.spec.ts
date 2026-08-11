@@ -301,7 +301,7 @@ describe('NoC API', (): void => {
     it('should validate NoC questions against a configured decentralised service', async () => {
       const getConfigValueStub = sandbox.stub(configIndex, 'getConfigValue');
       getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({
-        PCS: { nocBaseUrl: 'http://localhost:3206/' },
+        PCS: { webUrl: 'http://localhost:3206/' },
       });
       req.session.nocCaseTypesByCaseId = { '1234567890123456': 'PCS' };
       const mockResponse = createMockResponse(200, mockValidationResponse);
@@ -486,7 +486,7 @@ describe('NoC API', (): void => {
     it('should submit NoC events against a configured decentralised service', async () => {
       const getConfigValueStub = sandbox.stub(configIndex, 'getConfigValue');
       getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({
-        PCS: { nocBaseUrl: 'http://localhost:3206/' },
+        PCS: { webUrl: 'http://localhost:3206/' },
       });
       req.session.nocCaseTypesByCaseId = { '1234567890123456': 'PCS' };
       const mockResponse = createMockResponse(201, mockSubmissionResponse, 'Created');

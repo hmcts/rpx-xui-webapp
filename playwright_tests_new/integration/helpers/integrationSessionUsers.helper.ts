@@ -41,7 +41,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-manage-tasks': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
   // Authentication and user details are route-mocked by this suite.
   '@integration-platform-services': () => [],
-  '@integration-probate-find-case': () => ['PROBATE_FIND_CASE'],
+  '@integration-probate-find-case': () => ['PROBATE_CASEWORKER'],
   '@integration-query-management': (env) => ['SOLICITOR', ...resolveStaffAdminSessionUsers(env)],
   '@integration-restricted-case': () => ['FPL_GLOBAL_SEARCH'],
   '@integration-search-case': (env) =>

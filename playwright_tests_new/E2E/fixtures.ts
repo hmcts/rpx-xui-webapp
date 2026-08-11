@@ -64,16 +64,47 @@ interface ErrorContext {
   actionableLine: string;
 }
 
-type BenignApiErrorRule = {
+export type BenignApiErrorRule = {
   method: string;
   status: number;
   urlPattern: RegExp;
 };
 
-const benignApiErrorRules: BenignApiErrorRule[] = [
+interface BenignApiErrorRuleRegistry {
+  registerBenignApiErrorRule: (rule: BenignApiErrorRule) => () => void;
+  isKnownBenignApiError: (url: string, method: string, status: number) => boolean;
+}
+
+const defaultBenignApiErrorRules: BenignApiErrorRule[] = [
   { method: 'GET', status: 403, urlPattern: /\/api\/organisation$/ },
   { method: 'GET', status: 400, urlPattern: /\/data\/internal\/cases\/\d+$/ },
 ];
+
+function createBenignApiErrorRuleRegistry(): BenignApiErrorRuleRegistry {
+  const benignApiErrorRules = [...defaultBenignApiErrorRules];
+
+  const registerBenignApiErrorRule = (rule: BenignApiErrorRule): (() => void) => {
+    benignApiErrorRules.push(rule);
+    return () => {
+      const index = benignApiErrorRules.lastIndexOf(rule);
+      if (index >= 0) {
+        benignApiErrorRules.splice(index, 1);
+      }
+    };
+  };
+
+  const isKnownBenignApiError = (url: string, method: string, status: number): boolean => {
+    const requestMethod = method.toUpperCase();
+    return benignApiErrorRules.some((rule) => {
+      return rule.status === status && rule.method === requestMethod && rule.urlPattern.test(url);
+    });
+  };
+
+  return {
+    registerBenignApiErrorRule,
+    isKnownBenignApiError,
+  };
+}
 
 const MAX_API_ERRORS_DETAILS_CHARS = 420;
 const DEFAULT_API_SLOW_THRESHOLD_MS = 5_000;
@@ -138,13 +169,6 @@ function formatElapsed(elapsedMs: number): string {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
-}
-
-function isKnownBenignApiError(url: string, method: string, status: number): boolean {
-  const requestMethod = method.toUpperCase();
-  return benignApiErrorRules.some((rule) => {
-    return rule.status === status && rule.method === requestMethod && rule.urlPattern.test(url);
-  });
 }
 
 function summarizeApiFailures(serverErrors: ApiError[], clientErrors: ApiError[], failedRequests: FailedRequest[]): string[] {
@@ -839,7 +863,11 @@ function isBackendApi(url: string): boolean {
  * Creates a response handler for tracking API errors.
  * Monitors 4xx and 5xx responses, excluding known benign errors.
  */
-function createResponseHandler(apiErrors: ApiError[], maxTracked: number) {
+function createResponseHandler(
+  apiErrors: ApiError[],
+  maxTracked: number,
+  isKnownBenignApiError: (url: string, method: string, status: number) => boolean
+) {
   return async (response: Response) => {
     try {
       const url = response.url();
@@ -1106,13 +1134,27 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
 
 // Gather all fixture types into a common type
 export type CustomFixtures = PageFixtures & UtilsFixtures;
+export interface TestFixtures extends CustomFixtures {
+  benignApiErrorRuleRegistry: BenignApiErrorRuleRegistry;
+  registerBenignApiErrorRule: BenignApiErrorRuleRegistry['registerBenignApiErrorRule'];
+}
 
 // Extend 'test' object using custom fixtures with enhanced failure diagnosis
-export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>({
+export const test = baseTest.extend<TestFixtures, { lighthousePort: number }>({
   ...pageFixtures,
   ...utilsFixtures,
 
-  page: async ({ page }, use, testInfo) => {
+  // Playwright fixture functions must use object destructuring here.
+  // eslint-disable-next-line no-empty-pattern
+  benignApiErrorRuleRegistry: async ({}, use) => {
+    await use(createBenignApiErrorRuleRegistry());
+  },
+
+  registerBenignApiErrorRule: async ({ benignApiErrorRuleRegistry }, use) => {
+    await use(benignApiErrorRuleRegistry.registerBenignApiErrorRule);
+  },
+
+  page: async ({ page, benignApiErrorRuleRegistry }, use, testInfo) => {
     const apiErrors: ApiError[] = [];
     const failedRequests: FailedRequest[] = [];
     const slowCalls: Array<{ url: string; duration: number; method: string }> = [];
@@ -1165,7 +1207,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
     });
 
     // Set up monitoring handlers
-    page.on('response', createResponseHandler(apiErrors, maxTracked));
+    page.on('response', createResponseHandler(apiErrors, maxTracked, benignApiErrorRuleRegistry.isKnownBenignApiError));
     page.on('requestfinished', createRequestFinishedHandler(slowCalls, slowThreshold, maxTracked));
     page.on('requestfailed', createRequestFailedHandler(failedRequests, maxTracked, networkTimeoutRef));
 

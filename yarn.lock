@@ -3366,9 +3366,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.82":
-  version: 7.3.82
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.82"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.83":
+  version: 7.3.83
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.83"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3403,12 +3403,12 @@ __metadata:
     ngx-chips: ^3.0.0
     ngx-markdown: ^20.1.0
     ngx-pagination: 6.0.3
-    rpx-xui-translation: 1.2.10
+    rpx-xui-translation: 1.2.12
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/13283ea62828729d36a7dd8b8a6a9df7b65ff0c75510df009a47b368de0dc1edcf70b2b13021428002ceefe7094d00fea019051837d8817276e77d7279133adb
+  checksum: 10/956951dd7d41b6b8001580e184bad6d453528c59921b26a5a2c735b39902ed44811902e13eb60c7caa99d1e9115c543646bda2deb03ed6368d80687bd8701318
   languageName: node
   linkType: hard
 
@@ -3526,9 +3526,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.15":
-  version: 3.2.15
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.15"
+"@hmcts/rpx-xui-common-lib@npm:3.2.16":
+  version: 3.2.16
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.16"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
@@ -3549,10 +3549,10 @@ __metadata:
     "@ng-idle/keepalive": ^16.0.0
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.2.10
+    rpx-xui-translation: 1.2.12
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/2bfeb132f7374ee75185729429f202ad5106c5ec5e02a394a46b885689b26c36778cfc66ca3236658116516a2f7f74c51221932e439b8a86b9580bc850e2b7de
+  checksum: 10/8be9eb966a6bbccda09bc832aeacd59e4f4edecc6834a258302007b7428b81595efd2d869205ee3addd7593661d497a49271445e52ac837202bcb0f720d46d62
   languageName: node
   linkType: hard
 
@@ -8530,26 +8530,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:*":
-  version: 5.1.12
-  resolution: "@types/jasmine@npm:5.1.12"
-  checksum: 10/a727ba36fccc152319d649c94f0de90af477eb8bceb56cee06b24e74fff995e79e1d1c2ce39c4f5adf325f94b99cc05728c1a1ced8d55a0a23a41892fd79e3d4
-  languageName: node
-  linkType: hard
-
-"@types/jasmine@npm:~3.10.0":
-  version: 3.10.18
-  resolution: "@types/jasmine@npm:3.10.18"
-  checksum: 10/25ae5b329ccf9e99af24164bdbfb461989047a3ab74dbb25ba5f2c27e1985e59106c6a58da18494dd34357bed37a11093b4b83baca3bf46c81fb15a2af55a6f5
-  languageName: node
-  linkType: hard
-
-"@types/jasminewd2@npm:~2.0.3":
-  version: 2.0.13
-  resolution: "@types/jasminewd2@npm:2.0.13"
-  dependencies:
-    "@types/jasmine": "npm:*"
-  checksum: 10/a661e1add2d7c0582b05e79fcdbc0297fa4292b38b1273e2970d88d0775c85ecc322e1417c84826b5e6caeceab4dc267f5f00300c0c11d0fc459601057698700
+"@types/jasmine@npm:5.1.0":
+  version: 5.1.0
+  resolution: "@types/jasmine@npm:5.1.0"
+  checksum: 10/b20c59b0dc5b0f12975583fcc47fa2982da42e11c8713db1c22467ba41082c0fb9b4679fb109dde3ca4a428014210df9b6ec8500b0f1855679a1ac9f8dad757d
   languageName: node
   linkType: hard
 
@@ -21117,14 +21101,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.82"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.83"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.27"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.15"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.16"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.22"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
@@ -21147,8 +21131,7 @@ __metadata:
     "@types/express": "npm:^5.0.6"
     "@types/express-session": "npm:^1.17.0"
     "@types/global-agent": "npm:^3.0.0"
-    "@types/jasmine": "npm:~3.10.0"
-    "@types/jasminewd2": "npm:~2.0.3"
+    "@types/jasmine": "npm:5.1.0"
     "@types/mocha": "npm:^10.0.0"
     "@types/node": "npm:^20.19.0"
     "@types/proper-lockfile": "npm:^4"
@@ -21227,7 +21210,7 @@ __metadata:
     playwright-core: "npm:1.61.1"
     prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.11"
+    rpx-xui-translation: "npm:1.2.12"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -21258,9 +21241,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.11":
-  version: 1.2.11
-  resolution: "rpx-xui-translation@npm:1.2.11"
+"rpx-xui-translation@npm:1.2.12":
+  version: 1.2.12
+  resolution: "rpx-xui-translation@npm:1.2.12"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -21269,7 +21252,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/04cfbbb33ed0fc34ea4a9efd5d22ee950ea7a98a59efb9e9fb52968d55bbce96755e237fa078499ef034de4e1c2de0b7064db02eaf4735796bbce155466ed065
+  checksum: 10/b75a3c9de89a972496aca8fcb4811e9c80e7095e93f500766148d0e1403dfe0a26cc14ab6a99635c8dd50b89556c5c773f85310d9308142c9eb27cf5eb1053f9
   languageName: node
   linkType: hard
 

@@ -12,9 +12,10 @@ import { DecentralisedCaseTypeMap } from 'common/decentralisation/decentralised-
 })
 export class DecentralisedRedirectService {
   /** environment variable name where the service map is configured */
-  public static readonly SERVICE_MAP_ENV_VAR_NAME = 'decentralisedServiceMap';
+  static readonly SERVICE_MAP_ENV_VAR_NAME = 'decentralisedServiceMap';
 
-  public static readonly DECENTRALISED_EVENT_PREFIX = 'ext:';
+  private static readonly DECENTRALISED_EVENT_PREFIX = 'ext:';
+  private static readonly USER_ID_REQUEST_PARAM_NAME = 'expected_sub';
 
   constructor(
     private readonly environmentService: EnvironmentService,
@@ -22,7 +23,35 @@ export class DecentralisedRedirectService {
     @Inject(Window) private readonly window: Window
   ) {}
 
-  public buildDecentralisedEventUrl(
+  public static getExpectedSubFromUserDetails(userInfoStr?: string | null): string | null {
+    if (!userInfoStr) {
+      return null;
+    }
+
+    try {
+      const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
+      return userInfo.id || userInfo.uid || null;
+    } catch {
+      return null;
+    }
+  }
+
+  public tryEventRedirect(params: BuildDecentralisedEventUrlInput): boolean {
+    return this.redirect(
+      this.buildDecentralisedEventUrl(
+        params,
+        this.environmentService.get('decentralisedCaseTypeConfig'),
+        DecentralisedRedirectService.getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
+      )
+    );
+  }
+
+  public getUrl(serviceId: string, serviceUrl: string, userInfo: UserInfo): string {
+    const absoluteUrl = this.getAbsoluteUrl(serviceId, serviceUrl);
+    return absoluteUrl ? this.addUserInfo(absoluteUrl, userInfo).toString() : serviceUrl;
+  }
+
+  buildDecentralisedEventUrl(
     params: BuildDecentralisedEventUrlInput,
     caseTypeConfig: DecentralisedCaseTypeMap,
     expectedSub?: string
@@ -46,24 +75,11 @@ export class DecentralisedRedirectService {
     const searchParams = new URLSearchParams();
     this.appendQueryParams(searchParams, params.queryParams);
     if (expectedSub) {
-      searchParams.set('expected_sub', expectedSub);
+      searchParams.set(DecentralisedRedirectService.USER_ID_REQUEST_PARAM_NAME, expectedSub);
     }
 
     const queryString = searchParams.toString();
     return queryString ? `${webUrl}${eventPath}?${queryString}` : `${webUrl}${eventPath}`;
-  }
-
-  public static getExpectedSubFromUserDetails(userInfoStr?: string | null): string | null {
-    if (!userInfoStr) {
-      return null;
-    }
-
-    try {
-      const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
-      return userInfo.id || userInfo.uid || null;
-    } catch {
-      return null;
-    }
   }
 
   private isDecentralisedEvent(eventId?: string): eventId is string {
@@ -87,16 +103,6 @@ export class DecentralisedRedirectService {
     });
   }
 
-  public tryEventRedirect(params: BuildDecentralisedEventUrlInput): boolean {
-    return this.redirect(
-      this.buildDecentralisedEventUrl(
-        params,
-        this.environmentService.get('decentralisedCaseTypeConfig'),
-        DecentralisedRedirectService.getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
-      )
-    );
-  }
-
   private redirect(url: string | null): boolean {
     if (!url) {
       return false;
@@ -106,16 +112,11 @@ export class DecentralisedRedirectService {
     return true;
   }
 
-  public getUrl(serviceId: string, serviceUrl: string, userInfo: UserInfo): string {
-    const absoluteUrl = this.getAbsoluteUrl(serviceId, serviceUrl);
-    return absoluteUrl ? this.addUserInfo(absoluteUrl, userInfo).toString() : serviceUrl;
-  }
-
   private addUserInfo(url: URL, userInfo: UserInfo): URL {
     const userId = userInfo.id || userInfo.uid;
 
     if (userId) {
-      url.searchParams.set('expected_sub', userId);
+      url.searchParams.set(DecentralisedRedirectService.USER_ID_REQUEST_PARAM_NAME, userId);
     }
 
     return url;

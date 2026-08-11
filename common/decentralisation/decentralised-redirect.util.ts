@@ -101,7 +101,7 @@ export const buildDecentralisedEventUrl = (
   return queryString ? `${webUrl}${eventPath}?${queryString}` : `${webUrl}${eventPath}`;
 };
 
-const getConfiguredCaseType = (caseTypeConfig: DecentralisedCaseTypeMap, caseType: string): string | null => {
+export const getConfiguredCaseType = (caseTypeConfig: DecentralisedCaseTypeMap, caseType: string): string | null => {
   const lowerCaseType = caseType.toLowerCase();
   return (
     Object.keys(caseTypeConfig)
@@ -110,7 +110,7 @@ const getConfiguredCaseType = (caseTypeConfig: DecentralisedCaseTypeMap, caseTyp
   );
 };
 
-const resolveUrl = (url: string, configuredCaseType: string, caseType: string): string => {
+export const resolveUrl = (url: string, configuredCaseType: string, caseType: string): string => {
   let resolvedUrl = url.replace(TEMPLATE_PLACEHOLDER, caseType.substring(configuredCaseType.length));
   while (resolvedUrl.endsWith('/')) {
     resolvedUrl = resolvedUrl.slice(0, -1);

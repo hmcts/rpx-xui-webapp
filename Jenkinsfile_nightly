@@ -356,6 +356,8 @@ def secrets = [
   'rpx-${env}': [
     secret('mc-s2s-client-secret', 'S2S_SECRET'),
     secret('mc-idam-client-secret', 'IDAM_SECRET'),
+    secret('idam-api-url', 'IDAM_API_URL'),
+    secret('s2s-url', 'S2S_URL'),
     secret('webapp-redis6-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
@@ -447,6 +449,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE

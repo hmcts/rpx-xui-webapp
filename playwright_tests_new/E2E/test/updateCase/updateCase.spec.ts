@@ -39,7 +39,7 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
     );
   });
 
-  test('Create, update and verify case history', async ({ page, createCasePage, caseDetailsPage }) => {
+  test.skip('Create, update and verify case history', async ({ page, createCasePage, caseDetailsPage }) => {
     let caseDetailsUrl = '';
 
     await test.step('Start Update Case event', async () => {

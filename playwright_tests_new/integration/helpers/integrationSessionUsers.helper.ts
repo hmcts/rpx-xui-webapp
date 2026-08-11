@@ -31,7 +31,9 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-case-list': () => ['SOLICITOR'],
   '@integration-ccd-toolkit': () => ['SOLICITOR'],
   '@integration-create-case': () => ['SOLICITOR'],
+  '@integration-dynamic-field-config': () => ['SOLICITOR'],
   '@integration-data-loss': () => ['SOLICITOR'],
+  '@integration-event-behaviour': () => ['STAFF_ADMIN'],
   '@integration-hearings': (env) => [
     ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 0 }, env),
     ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 0 }, env),
@@ -47,6 +49,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
       userIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionUsers(env) : [userIdentifier]
     ),
   '@integration-share-case': () => ['SOLICITOR'],
+  '@integration-case-viewer': () => ['STAFF_ADMIN'],
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
 };
 

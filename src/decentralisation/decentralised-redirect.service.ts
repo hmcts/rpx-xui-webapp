@@ -1,12 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { SessionStorageService } from '../app/services';
 import { EnvironmentService } from '../app/shared/services/environment.service';
-import { getDecentralisedWebUrl } from '../../common/decentralisation/decentralised-redirect.util';
+import { getUrlForCaseType } from '../../common/decentralisation/decentralised-redirect.util';
 import { UserInfo } from '../app/models/user-details.model';
 import { Params } from '@angular/router';
 import { BuildDecentralisedEventUrlInput } from './event-url-types';
 import { DecentralisedCaseTypeMap } from 'common/decentralisation/decentralised-casetype';
-import { DECENTRALISED_CASE_TYPE_CONFIG } from 'api/configuration/references';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +31,7 @@ export class DecentralisedRedirectService {
       return null;
     }
 
-    const webUrl = getDecentralisedWebUrl(caseTypeConfig, params.caseType);
+    const webUrl = getUrlForCaseType(caseTypeConfig, params.caseType);
     if (!webUrl) {
       return null;
     }

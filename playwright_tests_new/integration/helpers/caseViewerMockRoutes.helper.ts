@@ -12,26 +12,52 @@ import {
 
 export type CaseViewerVariant = 'populated' | 'empty' | 'shuttered';
 
-export async function setupCaseViewerMockRoutes(page: Page, variant: CaseViewerVariant = 'populated'): Promise<void> {
+export type CaseViewerMockConfig = {
+  roles?: string[];
+  caseDetailsStatus?: number;
+  caseDetailsBody?: unknown;
+};
+
+export async function setupCaseViewerMockRoutes(
+  page: Page,
+  variant: CaseViewerVariant = 'populated',
+  config: CaseViewerMockConfig = {}
+): Promise<void> {
   await applySessionCookies(page, 'STAFF_ADMIN');
   await setupXuiAppShellBaseRoutes(page, {
     userDetails: {
-      roles: ['caseworker-sscs', 'hmcts-staff'],
+      roles: config.roles ?? ['caseworker-sscs', 'hmcts-staff'],
     },
   });
   await setupCaseworkerJurisdictionsRoute(page, [CASE_VIEWER_JURISDICTION]);
 
   const caseDetails = buildCaseViewerMock(variant);
   await page.route(`**/data/internal/cases/${CASE_VIEWER_CASE_REFERENCE}*`, async (route) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(caseDetails) });
+    await route.fulfill({
+      status: config.caseDetailsStatus ?? 200,
+      contentType: 'application/json',
+      body: JSON.stringify(config.caseDetailsBody ?? caseDetails),
+    });
   });
 }
 
 export async function openCaseViewer(
   page: Page,
   caseDetailsPage: CaseDetailsPage,
-  variant: CaseViewerVariant = 'populated'
+  variant: CaseViewerVariant = 'populated',
+  config: CaseViewerMockConfig = {}
 ): Promise<void> {
-  await setupCaseViewerMockRoutes(page, variant);
+  await setupCaseViewerMockRoutes(page, variant, config);
   await caseDetailsPage.openCaseDetails(CASE_VIEWER_JURISDICTION, CASE_VIEWER_CASE_TYPE, CASE_VIEWER_CASE_REFERENCE);
+}
+
+export async function openCaseViewerWithFailure(
+  page: Page,
+  variant: CaseViewerVariant,
+  config: CaseViewerMockConfig
+): Promise<void> {
+  await setupCaseViewerMockRoutes(page, variant, config);
+  await page.goto(`/cases/case-details/${CASE_VIEWER_JURISDICTION}/${CASE_VIEWER_CASE_TYPE}/${CASE_VIEWER_CASE_REFERENCE}`, {
+    waitUntil: 'domcontentloaded',
+  });
 }

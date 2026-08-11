@@ -9,6 +9,16 @@ export const CASE_VIEWER_JURISDICTION = 'SSCS';
 
 type ViewerVariant = 'populated' | 'empty' | 'shuttered';
 
+const CASE_VIEWER_RESTRICTED_ACL = [
+  {
+    create: false,
+    read: true,
+    update: false,
+    delete: false,
+    role: 'caseworker-sscs',
+  },
+];
+
 type CaseViewerMock = {
   case_id: string;
   case_type: {
@@ -62,6 +72,7 @@ function viewerField(id: string, label: string, type: 'CaseHistoryViewer' | 'Cas
   return {
     ...textField(id, label, null),
     value,
+    acls: CASE_VIEWER_RESTRICTED_ACL,
     field_type: {
       ...textField(id, label, null).field_type,
       id: type,
@@ -110,6 +121,7 @@ export function buildCaseViewerMock(variant: ViewerVariant = 'populated') {
       label: 'Activity and history',
       order: 2,
       fields: [viewerField('caseHistory', 'Case history', 'CaseHistoryViewer', events)],
+      acls: CASE_VIEWER_RESTRICTED_ACL,
       show_condition: null,
     },
     {
@@ -117,6 +129,7 @@ export function buildCaseViewerMock(variant: ViewerVariant = 'populated') {
       label: 'Payment history',
       order: 3,
       fields: [viewerField('paymentHistory', 'Payment history', 'CasePaymentHistoryViewer', null)],
+      acls: CASE_VIEWER_RESTRICTED_ACL,
       show_condition: null,
     },
     {
@@ -124,6 +137,7 @@ export function buildCaseViewerMock(variant: ViewerVariant = 'populated') {
       label: 'Retain or dispose',
       order: 4,
       fields: [textField('retentionStatus', 'Retention status', variant === 'shuttered' ? null : 'Retain case')],
+      acls: CASE_VIEWER_RESTRICTED_ACL,
       show_condition: variant === 'shuttered' ? 'NeverMatches="true"' : null,
     },
   ];

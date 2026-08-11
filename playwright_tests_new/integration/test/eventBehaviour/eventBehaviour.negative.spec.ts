@@ -50,6 +50,24 @@ test.describe('Event behaviour integration failures', { tag: ['@integration', '@
     await expect(caseDetailsPage.checkYourAnswersHeading).toBeHidden();
   });
 
+  test('shows mid-event callback errors and stays on the current wizard page', async ({ caseDetailsPage, page }) => {
+    await openEventBehaviourJourney(page, caseDetailsPage, {
+      midEventValidation: {
+        status: 400,
+        body: { callbackErrors: ['Mid-event callback rejected the outcome'], callbackWarnings: [] },
+      },
+    });
+    await caseDetailsPage.selectCaseAction(EVENT_BEHAVIOUR_TRIGGER_NAME, {
+      expectedLocator: page.getByLabel('Outcome type'),
+    });
+
+    await caseDetailsPage.continueCaseEvent();
+
+    await expect(page.getByText('Mid-event callback rejected the outcome')).toBeVisible();
+    await expect(page.getByLabel('Outcome type')).toBeVisible();
+    await expect(page.getByLabel('Decision reference')).toBeHidden();
+  });
+
   for (const [status, message] of [
     [500, 'event-submit-failed'],
     [403, 'event-submit-forbidden'],

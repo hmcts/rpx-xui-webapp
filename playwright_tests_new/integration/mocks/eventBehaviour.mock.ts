@@ -9,6 +9,7 @@ export const EVENT_BEHAVIOUR_JURISDICTION = 'SSCS';
 export const EVENT_BEHAVIOUR_TRIGGER_ID = 'recordOutcome';
 export const EVENT_BEHAVIOUR_TRIGGER_NAME = 'Record outcome';
 export const EVENT_BEHAVIOUR_EVENT_TOKEN = 'mock-record-outcome-event-token';
+export const EVENT_BEHAVIOUR_CALLBACK_URL = '/data/case-types/Benefit_Xui/callbacks/record-outcome';
 
 type FixedListItem = { code: string; label: string; order: number };
 
@@ -129,8 +130,8 @@ export function buildEventBehaviourTrigger() {
           { case_field_id: 'OutcomeNote', order: 2, page_column_no: null, complex_field_overrides: [] },
         ],
         show_condition: null,
-        callback_url_mid_event: null,
-        retries_timeout_mid_event: [],
+        callback_url_mid_event: EVENT_BEHAVIOUR_CALLBACK_URL,
+        retries_timeout_mid_event: [1, 2],
       },
       {
         id: 'recordOutcomePage2',

@@ -22,6 +22,10 @@ export type EventBehaviourSubmitOverride = {
 export type EventBehaviourMockConfig = {
   eventAvailable?: boolean;
   submit?: EventBehaviourSubmitOverride;
+  midEventValidation?: {
+    status: number;
+    body: unknown;
+  };
 };
 
 function resolveBody(body: unknown): string {
@@ -89,6 +93,11 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
   );
 
   await page.route(`**/data/case-types/${EVENT_BEHAVIOUR_CASE_TYPE}/validate*`, async (route) => {
+    const pageId = new URL(route.request().url()).searchParams.get('pageId');
+    if (config.midEventValidation && pageId === 'recordOutcomePage1') {
+      await fulfil(route, config.midEventValidation.status, config.midEventValidation.body);
+      return;
+    }
     await fulfil(route, 200, buildValidationResponse(route));
   });
 

@@ -1,14 +1,8 @@
-import { Params } from '@angular/router';
 import { DecentralisedCaseTypeMap } from './decentralised-casetype';
 
-const DECENTRALISED_EVENT_PREFIX = 'ext:';
 const TEMPLATE_PLACEHOLDER = '%s';
 
-const isDecentralisedEvent = (eventId?: string): eventId is string => {
-  return !!eventId && eventId.startsWith(DECENTRALISED_EVENT_PREFIX);
-};
-
-const getDecentralisedWebUrl = (caseTypeConfig: DecentralisedCaseTypeMap, caseType?: string): string | null => {
+export const getDecentralisedWebUrl = (caseTypeConfig: DecentralisedCaseTypeMap, caseType?: string): string | null => {
   if (!caseTypeConfig || !caseType) {
     return null;
   }
@@ -20,85 +14,6 @@ const getDecentralisedWebUrl = (caseTypeConfig: DecentralisedCaseTypeMap, caseTy
 
   const webUrl = caseTypeConfig[configuredCaseType].webUrl;
   return webUrl ? resolveUrl(webUrl, configuredCaseType, caseType) : null;
-};
-
-export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): string | null => {
-  if (!userInfoStr) {
-    return null;
-  }
-
-  try {
-    const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
-    return userInfo.id || userInfo.uid || null;
-  } catch {
-    return null;
-  }
-};
-
-const appendQueryParams = (params: URLSearchParams, queryParams?: Params): void => {
-  if (!queryParams) {
-    return;
-  }
-  Object.keys(queryParams).forEach((key) => {
-    const value = queryParams[key];
-    if (value === undefined || value === null) {
-      return;
-    }
-    if (Array.isArray(value)) {
-      value.forEach((item) => params.append(key, String(item)));
-    } else {
-      params.set(key, String(value));
-    }
-  });
-};
-
-interface BuildDecentralisedEventUrlCommonInput {
-  eventId: string;
-  caseType: string;
-  queryParams?: Params;
-}
-
-interface BuildDecentralisedCaseCreateEventUrlInput extends BuildDecentralisedEventUrlCommonInput {
-  isCaseCreate: true;
-  jurisdiction: string;
-}
-
-interface BuildDecentralisedCaseEventUrlInput extends BuildDecentralisedEventUrlCommonInput {
-  isCaseCreate: false;
-  caseId: string;
-}
-
-export type BuildDecentralisedEventUrlInput = BuildDecentralisedCaseCreateEventUrlInput | BuildDecentralisedCaseEventUrlInput;
-
-export const buildDecentralisedEventUrl = (
-  params: BuildDecentralisedEventUrlInput,
-  caseTypeConfig: DecentralisedCaseTypeMap,
-  expectedSub?: string
-): string | null => {
-  if (!isDecentralisedEvent(params.eventId)) {
-    return null;
-  }
-
-  const webUrl = getDecentralisedWebUrl(caseTypeConfig, params.caseType);
-  if (!webUrl) {
-    return null;
-  }
-
-  let eventPath: string;
-  if (params.isCaseCreate === true) {
-    eventPath = `/cases/case-create/${encodeURIComponent(params.jurisdiction)}/${encodeURIComponent(params.caseType)}/${encodeURIComponent(params.eventId)}`;
-  } else {
-    eventPath = `/cases/${encodeURIComponent(params.caseId)}/event/${encodeURIComponent(params.eventId)}`;
-  }
-
-  const searchParams = new URLSearchParams();
-  appendQueryParams(searchParams, params.queryParams);
-  if (expectedSub) {
-    searchParams.set('expected_sub', expectedSub);
-  }
-
-  const queryString = searchParams.toString();
-  return queryString ? `${webUrl}${eventPath}?${queryString}` : `${webUrl}${eventPath}`;
 };
 
 export const getConfiguredCaseType = (caseTypeConfig: DecentralisedCaseTypeMap, caseType: string): string | null => {

@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
 import { SessionStorageService } from '../app/services';
 import { EnvironmentService } from '../app/shared/services/environment.service';
-import {
-  buildDecentralisedEventUrl,
-  BuildDecentralisedEventUrlInput,
-  getExpectedSubFromUserDetails,
-} from '../../common/decentralisation/decentralised-redirect.util';
+import { getDecentralisedWebUrl } from '../../common/decentralisation/decentralised-redirect.util';
 import { UserInfo } from '../app/models/user-details.model';
+import { Params } from '@angular/router';
+import { BuildDecentralisedEventUrlInput } from './event-url-types';
+import { DecentralisedCaseTypeMap } from 'common/decentralisation/decentralised-casetype';
+import { DECENTRALISED_CASE_TYPE_CONFIG } from 'api/configuration/references';
 
 @Injectable({
   providedIn: 'root',
@@ -15,18 +15,85 @@ export class DecentralisedRedirectService {
   /** environment variable name where the service map is configured */
   public static readonly SERVICE_MAP_ENV_VAR_NAME = 'decentralisedServiceMap';
 
+  public static readonly DECENTRALISED_EVENT_PREFIX = 'ext:';
+
   constructor(
     private readonly environmentService: EnvironmentService,
     private readonly sessionStorageService: SessionStorageService,
     @Inject(Window) private readonly window: Window
   ) {}
 
+  public buildDecentralisedEventUrl(
+    params: BuildDecentralisedEventUrlInput,
+    caseTypeConfig: DecentralisedCaseTypeMap,
+    expectedSub?: string
+  ): string | null {
+    if (!this.isDecentralisedEvent(params.eventId)) {
+      return null;
+    }
+
+    const webUrl = getDecentralisedWebUrl(caseTypeConfig, params.caseType);
+    if (!webUrl) {
+      return null;
+    }
+
+    let eventPath: string;
+    if (params.isCaseCreate === true) {
+      eventPath = `/cases/case-create/${encodeURIComponent(params.jurisdiction)}/${encodeURIComponent(params.caseType)}/${encodeURIComponent(params.eventId)}`;
+    } else {
+      eventPath = `/cases/${encodeURIComponent(params.caseId)}/event/${encodeURIComponent(params.eventId)}`;
+    }
+
+    const searchParams = new URLSearchParams();
+    this.appendQueryParams(searchParams, params.queryParams);
+    if (expectedSub) {
+      searchParams.set('expected_sub', expectedSub);
+    }
+
+    const queryString = searchParams.toString();
+    return queryString ? `${webUrl}${eventPath}?${queryString}` : `${webUrl}${eventPath}`;
+  }
+
+  public static getExpectedSubFromUserDetails(userInfoStr?: string | null): string | null {
+    if (!userInfoStr) {
+      return null;
+    }
+
+    try {
+      const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
+      return userInfo.id || userInfo.uid || null;
+    } catch {
+      return null;
+    }
+  }
+
+  private isDecentralisedEvent(eventId?: string): eventId is string {
+    return !!eventId && eventId.startsWith(DecentralisedRedirectService.DECENTRALISED_EVENT_PREFIX);
+  }
+
+  private appendQueryParams(params: URLSearchParams, queryParams?: Params): void {
+    if (!queryParams) {
+      return;
+    }
+    Object.keys(queryParams).forEach((key) => {
+      const value = queryParams[key];
+      if (value === undefined || value === null) {
+        return;
+      }
+      if (Array.isArray(value)) {
+        value.forEach((item) => params.append(key, String(item)));
+      } else {
+        params.set(key, String(value));
+      }
+    });
+  }
+
   public tryEventRedirect(params: BuildDecentralisedEventUrlInput): boolean {
     return this.redirect(
-      buildDecentralisedEventUrl(
+      this.buildDecentralisedEventUrl(
         params,
         this.environmentService.get('decentralisedCaseTypeConfig'),
-        getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
+        DecentralisedRedirectService.getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
       )
     );
   }

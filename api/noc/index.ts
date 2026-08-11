@@ -5,7 +5,7 @@ import { EnhancedRequest } from '../lib/models';
 import { generateErrorMessageWithCode } from './errorCodeConverter';
 import { NoCQuestions } from './models/noCQuestions.interface';
 import { handleGet, handlePost } from './noCService';
-import { getConfiguredCaseType, resolveUrl } from '../../common/decentralisation/decentralised-redirect.util';
+import { getUrlForCaseType } from '../../common/decentralisation/decentralised-redirect.util';
 import { DecentralisedCaseTypeMap } from '../../common/decentralisation/decentralised-casetype';
 
 const caseAssignmentUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
@@ -61,19 +61,9 @@ function getNoCBaseUrl(caseId: unknown, req: EnhancedRequest): string {
     return caseAssignmentUrl;
   }
 
-  const decentralisedNocBaseUrl = getDecentralisedNoCBaseUrl(caseType);
+  const caseTypeMap = getConfigValue<DecentralisedCaseTypeMap>(DECENTRALISED_CASE_TYPE_CONFIG);
+  const decentralisedNocBaseUrl = getUrlForCaseType(caseTypeMap, caseType);
   return decentralisedNocBaseUrl || caseAssignmentUrl;
-}
-
-function getDecentralisedNoCBaseUrl(caseType: string): string | null {
-  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeMap>(DECENTRALISED_CASE_TYPE_CONFIG) || {};
-  const configuredCaseType = getConfiguredCaseType(caseTypeConfig, caseType);
-  if (!configuredCaseType) {
-    return null;
-  }
-
-  const nocBaseUrl = caseTypeConfig[configuredCaseType].webUrl;
-  return nocBaseUrl ? resolveUrl(nocBaseUrl, configuredCaseType, caseType) : null;
 }
 
 function buildNoCQuestionsPath(baseUrl: string, caseId: unknown): string {

@@ -4,6 +4,9 @@ $hmcts-images-path: '/assets/images/';
 // Width of main container
 $hmcts-page-width: 1920px;
 
+@use 'govuk-frontend/govuk/all' as govuk;
+@use 'src/style/hmcts-frontend' as frontend;
+
 // TODO temporary solution to extend the width of the page until is addressed through govuk-frontend"
 header,
 footer.govuk-footer {
@@ -46,20 +49,17 @@ body .govuk-width-container {
   cursor: pointer;
 }
 
-@import 'govuk-frontend/govuk/all';
-@import 'node_modules/@hmcts/frontend/all';
-
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend
 // Find case button START
 a.hmcts-search-toggle__button {
-  color: govuk-colour('white');
+  color: govuk.govuk-colour('white');
 }
 
 .hmcts-search-toggle__button {
-  @include govuk-font($size: 19, $weight: bold);
-  background-color: govuk-colour('black');
+  @include govuk.govuk-font($size: 19, $weight: bold);
+  background-color: govuk.govuk-colour('black');
   border: none;
-  color: govuk-colour('white');
+  color: govuk.govuk-colour('white');
   cursor: pointer;
   display: inline-block;
   padding-top: 12px;
@@ -75,7 +75,7 @@ a.hmcts-search-toggle__button {
     content: '';
     display: inline-block;
     height: 20px;
-    margin-left: govuk-spacing(2);
+    margin-left: govuk.govuk-spacing(2);
     vertical-align: middle;
     width: 20px;
   }

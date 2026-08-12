@@ -640,6 +640,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular/material-moment-adapter@npm:^20.0.0":
+  version: 20.2.14
+  resolution: "@angular/material-moment-adapter@npm:20.2.14"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/core": ^20.0.0 || ^21.0.0
+    "@angular/material": 20.2.14
+    moment: ^2.18.1
+  checksum: 10/2211f4ea51ceb8fd1f1028334aac78e7b92f066b04cb8d6fc9c0fcd2068b69fe611d99bd3d57333ea62ea22cd40720809b1a12b491d9f76d33c08619341cdf60
+  languageName: node
+  linkType: hard
+
 "@angular/material@npm:^16.2.12":
   version: 16.2.14
   resolution: "@angular/material@npm:16.2.14"
@@ -3366,9 +3379,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.83":
-  version: 7.3.83
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.83"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.83-CME-1008-dart-sass":
+  version: 7.3.83-CME-1008-dart-sass
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.83-CME-1008-dart-sass"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3377,38 +3390,39 @@ __metadata:
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
+    peggy: "npm:^5.1.0"
     tslib: "npm:^2.3.0"
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
   peerDependencies:
-    "@angular-material-components/datetime-picker": 16.0.1
-    "@angular-material-components/moment-adapter": 16.0.1
     "@angular/animations": ^20.3.27
-    "@angular/cdk": 17.3.5
+    "@angular/cdk": ^20.2.14
     "@angular/common": ^20.3.27
     "@angular/compiler": ^20.3.27
     "@angular/core": ^20.3.27
     "@angular/forms": ^20.3.27
     "@angular/localize": ^20.3.27
-    "@angular/material": ^16.2.0
+    "@angular/material": ^20.2.14
+    "@angular/material-moment-adapter": ^20.0.0
     "@angular/platform-browser": ^20.3.27
     "@angular/platform-browser-dynamic": ^20.3.27
     "@angular/router": ^20.3.27
     "@angular/upgrade": ^20.3.27
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
+    "@ngxmc/datetime-picker": 20.1.0
     govuk-elements-sass: ^3.1.2
     moment: ^2.30.1
     moment-timezone: ^0.5.31
     ngx-chips: ^3.0.0
-    ngx-markdown: ^20.1.0
+    ngx-markdown: ^20
     ngx-pagination: 6.0.3
     rpx-xui-translation: 1.2.12
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/956951dd7d41b6b8001580e184bad6d453528c59921b26a5a2c735b39902ed44811902e13eb60c7caa99d1e9115c543646bda2deb03ed6368d80687bd8701318
+  checksum: 10/8458dac96f4c8446380d170853f985f2e9ceed884d396a801598efe367a5900a6dc21f814a228a647794f9e23753e655d7c8fb8654b5cd0f0002dfdb14b654d4
   languageName: node
   linkType: hard
 
@@ -3526,22 +3540,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.16":
-  version: 3.2.16
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.16"
+"@hmcts/rpx-xui-common-lib@npm:3.2.16-CME-1008-dart-sass":
+  version: 3.2.16-CME-1008-dart-sass
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.16-CME-1008-dart-sass"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
     tslib: "npm:^2.0.0"
   peerDependencies:
     "@angular/animations": ^20.3.18
-    "@angular/cdk": 16.2.0
+    "@angular/cdk": ^20.2.14
     "@angular/common": ^20.3.18
     "@angular/compiler": ^20.3.18
     "@angular/core": ^20.3.18
     "@angular/forms": ^20.3.18
     "@angular/localize": ^20.3.18
-    "@angular/material": 16.2.0
+    "@angular/material": ^20.2.14
     "@angular/platform-browser": ^20.3.18
     "@angular/platform-browser-dynamic": ^20.3.18
     "@angular/router": ^20.3.18
@@ -3552,7 +3566,7 @@ __metadata:
     rpx-xui-translation: 1.2.12
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/8be9eb966a6bbccda09bc832aeacd59e4f4edecc6834a258302007b7428b81595efd2d869205ee3addd7593661d497a49271445e52ac837202bcb0f720d46d62
+  checksum: 10/8fb6baa117d452e9ed6026d1541f5d7c22471506c2e44fa38330c819f4446242e7ca77f80bd468147a8b5475714da268aa64343667aadcaa23b0e69eb953f8b3
   languageName: node
   linkType: hard
 
@@ -5914,6 +5928,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ngxmc/datetime-picker@npm:20.1.0":
+  version: 20.1.0
+  resolution: "@ngxmc/datetime-picker@npm:20.1.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/cdk": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/material": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+  checksum: 10/2a8b28f77f4e36748bf7f7cedd65b1087b674ed6e8622d87047261a5d6faa3b2246de469c7405d7f083807641cb22e793d861a7f9d0c0d6cb4619d9a2c7c9072
+  languageName: node
+  linkType: hard
+
 "@noble/hashes@npm:1.4.0":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
@@ -7074,6 +7104,15 @@ __metadata:
     tslib: "npm:^2.8.1"
     tsyringe: "npm:^4.10.0"
   checksum: 10/d37c56fa5f2c644141948d85010e14f0e4963089e3b0b81edd0bfe85bdfea0eb3f38ab6ff20d322db2bd6977117824cc498a77b2d35af111983b4d58b5e2ccd1
+  languageName: node
+  linkType: hard
+
+"@peggyjs/from-mem@npm:3.1.3":
+  version: 3.1.3
+  resolution: "@peggyjs/from-mem@npm:3.1.3"
+  dependencies:
+    semver: "npm:7.7.4"
+  checksum: 10/29901aee6701f635d6021f684ccf576d587135a1ada9f44b83706fe614059ff70d41b12eb1b6fff5ac7b1b65fb31422ef9695c307023dfa20f04bc17a27d88f4
   languageName: node
   linkType: hard
 
@@ -11453,6 +11492,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:^14.0.3, commander@npm:~14.0.0":
+  version: 14.0.3
+  resolution: "commander@npm:14.0.3"
+  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
+  languageName: node
+  linkType: hard
+
 "commander@npm:^2.19.0, commander@npm:^2.20.0, commander@npm:^2.3.0":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
@@ -11464,13 +11510,6 @@ __metadata:
   version: 8.3.0
   resolution: "commander@npm:8.3.0"
   checksum: 10/6b7b5d334483ce24bd73c5dac2eab901a7dbb25fd983ea24a1eeac6e7166bb1967f641546e8abf1920afbde86a45fbfe5812fbc69d0dc451bb45ca416a12a3a3
-  languageName: node
-  linkType: hard
-
-"commander@npm:~14.0.0":
-  version: 14.0.3
-  resolution: "commander@npm:14.0.3"
-  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
   languageName: node
   linkType: hard
 
@@ -19571,6 +19610,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"peggy@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "peggy@npm:5.1.0"
+  dependencies:
+    "@peggyjs/from-mem": "npm:3.1.3"
+    commander: "npm:^14.0.3"
+    source-map-generator: "npm:2.0.6"
+  bin:
+    peggy: bin/peggy.js
+  checksum: 10/be8fa9130c7b4f7e9a341f402fff92261f9cbf0fecdcce2a9b48e911d489a337e73f083ee557f801d1dded400d6fd7b768899e82c52380b5958977e17907f9e7
+  languageName: node
+  linkType: hard
+
 "pegjs@npm:^0.10.0":
   version: 0.10.0
   resolution: "pegjs@npm:0.10.0"
@@ -21092,6 +21144,7 @@ __metadata:
     "@angular/elements": "npm:^20.3.27"
     "@angular/forms": "npm:^20.3.27"
     "@angular/material": "npm:^16.2.12"
+    "@angular/material-moment-adapter": "npm:^20.0.0"
     "@angular/platform-browser": "npm:^20.3.27"
     "@angular/platform-browser-dynamic": "npm:^20.3.27"
     "@angular/router": "npm:^20.3.27"
@@ -21101,14 +21154,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.83"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.83-CME-1008-dart-sass"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.27"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.16"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.16-CME-1008-dart-sass"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.23"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
@@ -21117,6 +21170,7 @@ __metadata:
     "@ngrx/router-store": "npm:^20"
     "@ngrx/store": "npm:^20"
     "@ngrx/store-devtools": "npm:^20"
+    "@ngxmc/datetime-picker": "npm:20.1.0"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
     "@playwright/test": "npm:1.61.1"
@@ -21980,6 +22034,13 @@ __metadata:
   dependencies:
     atomic-sleep: "npm:^1.0.0"
   checksum: 10/e03c9611e43fa81132cd2ce0fe4eb7fbcf19db267e9dec20dc6c586f82465c9c906e91a02f72150c740463ad9335536ea2131850307aaa6686d1fb5d4cc4be3e
+  languageName: node
+  linkType: hard
+
+"source-map-generator@npm:2.0.6":
+  version: 2.0.6
+  resolution: "source-map-generator@npm:2.0.6"
+  checksum: 10/a634587d5c017225e331f7f97416b4599ca1a82609077e18e2c6eb3a1759c77802e1fddf8c9c642b22258b0f34669b584ba3ac250bb8c45ff97c813d54660c49
   languageName: node
   linkType: hard
 

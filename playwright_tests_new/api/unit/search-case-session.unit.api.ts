@@ -99,7 +99,7 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
         availableTags: ['@integration', '@integration-probate-find-case'],
         suiteTag: '@integration',
       })
-    ).toEqual(['PROBATE_FIND_CASE']);
+    ).toEqual(['PROBATE_CASEWORKER']);
   });
 
   test('declares sessions used by targeted data loss, query management and share case runs', () => {

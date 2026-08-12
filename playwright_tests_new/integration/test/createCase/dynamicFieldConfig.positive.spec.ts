@@ -6,7 +6,10 @@ test.describe(
   'Create case dynamic field-config coverage',
   { tag: ['@integration', '@integration-create-case', '@integration-dynamic-field-config'] },
   () => {
-    test.beforeEach(async ({ page }) => openDynamicFieldConfigJourney(page));
+    test.beforeEach(async ({ page }) => {
+      await openDynamicFieldConfigJourney(page);
+      await expect(page.getByLabel('Case title')).toBeVisible();
+    });
 
     test('renders configured defaults, lists, hints and conditional fields', async ({ page }) => {
       await expect(page.getByLabel('Case title')).toHaveValue('Default case title');

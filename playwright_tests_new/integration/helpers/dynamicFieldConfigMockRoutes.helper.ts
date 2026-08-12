@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { applySessionCookies } from '../../common/sessionCapture';
 import { buildHearingsUserDetailsMock } from '../mocks/hearings.mock';
 import { dynamicFieldConfigCaseData } from '../mocks/dynamicFieldConfig.mock';
@@ -28,5 +28,4 @@ export async function openDynamicFieldConfigJourney(page: Page): Promise<void> {
   });
 
   await page.goto(`/cases/case-create/DIVORCE/${CASE_TYPE}/createCase/`);
-  await expect(page.getByLabel('Case title')).toBeVisible();
 }

@@ -5,7 +5,10 @@ test.describe(
   'Create case dynamic field-config validation',
   { tag: ['@integration', '@integration-create-case', '@integration-dynamic-field-config'] },
   () => {
-    test.beforeEach(async ({ page }) => openDynamicFieldConfigJourney(page));
+    test.beforeEach(async ({ page }) => {
+      await openDynamicFieldConfigJourney(page);
+      await expect(page.getByLabel('Case title')).toBeVisible();
+    });
 
     test('rejects a value that violates configured regular-expression validation', async ({ createCasePage, page }) => {
       await page.getByLabel('Case title').fill('A title');

@@ -8,7 +8,11 @@ import {
 } from '../../mocks/eventBehaviour.mock';
 
 test.describe('Event behaviour integration', { tag: ['@integration', '@integration-event-behaviour'] }, () => {
-  test('renders a configured multi-page event and submits the exact event payload', async ({ caseDetailsPage, page }) => {
+  test('renders a configured multi-page event and submits the exact event payload', async ({
+    caseDetailsPage,
+    createCasePage,
+    page,
+  }) => {
     await openEventBehaviourJourney(page, caseDetailsPage);
 
     await caseDetailsPage.selectCaseAction(EVENT_BEHAVIOUR_TRIGGER_NAME, {
@@ -29,7 +33,7 @@ test.describe('Event behaviour integration', { tag: ['@integration', '@integrati
     await caseDetailsPage.continueCaseEvent();
     await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
 
-    const answers = await caseDetailsPage.trRowsToObjectInPage(page.getByRole('table').first());
+    const answers = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersTable);
     expect(answers).toMatchObject({
       'Outcome type': 'Approved',
       'Decision reference': 'EVT-123',

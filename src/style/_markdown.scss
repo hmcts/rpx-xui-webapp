@@ -30,9 +30,10 @@
     }
   }
   .bottom-0 {
-      margin-bottom: 0;
+    margin-bottom: 0;
   }
-  ul, .order-list  {
+  ul,
+  .order-list {
     padding: 0;
     margin-top: 5px;
     margin-bottom: 45px;
@@ -45,12 +46,12 @@
   }
 
   .order-list li {
-      list-style-type: decimal;
+    list-style-type: decimal;
 
-      strong {
-        @include bold-12pt();
-      }
+    strong {
+      @include bold-12pt();
     }
+  }
 
   table {
     margin-bottom: 30px;

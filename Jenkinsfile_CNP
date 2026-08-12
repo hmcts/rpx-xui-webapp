@@ -69,7 +69,7 @@ properties([
 ])
 
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
-@Library("Infrastructure@2.4.9")
+@Library("Infrastructure@2.5.1")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 
@@ -501,6 +501,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withPipeline(type, product, component) {
 
+    enableBuildCache()
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'

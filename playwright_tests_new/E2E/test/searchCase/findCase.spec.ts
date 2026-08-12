@@ -12,41 +12,45 @@ test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search
     await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
   });
 
-  test('Find case using Public Law jurisdiction', async ({ tableUtils, findCasePage, caseDetailsPage, page }) => {
-    const caseNumber = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
-    const jurisdiction = 'Public Law';
-    const caseType = 'Public Law Applications';
+  test(
+    'Find case using Public Law jurisdiction',
+    { tag: '@e2e-find-case-public-law' },
+    async ({ tableUtils, findCasePage, caseDetailsPage, page }) => {
+      const caseNumber = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
+      const jurisdiction = 'Public Law';
+      const caseType = 'Public Law Applications';
 
-    await test.step('Start Find Case journey', async () => {
-      await findCasePage.startFindCaseJourney(caseNumber, caseType, jurisdiction);
-    });
+      await test.step('Start Find Case journey', async () => {
+        await findCasePage.startFindCaseJourney(caseNumber, caseType, jurisdiction);
+      });
 
-    await test.step("Verify that case searched for appears under 'Your cases' ", async () => {
-      await findCasePage.searchResultsDataTable.waitFor({ state: 'visible' });
-      const searchTable = await tableUtils.parseDataTable(findCasePage.searchResultsDataTable);
+      await test.step("Verify that case searched for appears under 'Your cases' ", async () => {
+        await findCasePage.searchResultsDataTable.waitFor({ state: 'visible' });
+        const searchTable = await tableUtils.parseDataTable(findCasePage.searchResultsDataTable);
 
-      const rowContent = {
-        'Case name': expect.any(String),
-        'Date submitted': expect.any(String),
-        'FamilyMan case number': expect.any(String),
-        'Local authority': expect.any(String),
-        State: expect.any(String),
-      };
+        const rowContent = {
+          'Case name': expect.any(String),
+          'Date submitted': expect.any(String),
+          'FamilyMan case number': expect.any(String),
+          'Local authority': expect.any(String),
+          State: expect.any(String),
+        };
 
-      expect(searchTable.length).toBeGreaterThan(0);
-      expect(searchTable[0]).toMatchObject(rowContent);
+        expect(searchTable.length).toBeGreaterThan(0);
+        expect(searchTable[0]).toMatchObject(rowContent);
 
-      await findCasePage.displayCaseDetailsFor(caseNumber);
-      await expect(page).toHaveURL(/\/cases\/case-details\//);
-    });
+        await findCasePage.displayCaseDetailsFor(caseNumber);
+        await expect(page).toHaveURL(/\/cases\/case-details\//);
+      });
 
-    await test.step('Verify case details page displays correct case', async () => {
-      await expect.soft(caseDetailsPage.caseActionsDropdown).toBeVisible();
-      await expect.soft(caseDetailsPage.caseActionGoButton).toBeVisible();
-      const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
-      expect(caseNumberFromUrl).toContain(caseNumber);
-    });
-  });
+      await test.step('Verify case details page displays correct case', async () => {
+        await expect.soft(caseDetailsPage.caseActionsDropdown).toBeVisible();
+        await expect.soft(caseDetailsPage.caseActionGoButton).toBeVisible();
+        const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
+        expect(caseNumberFromUrl).toContain(caseNumber);
+      });
+    }
+  );
 
   test('Find case is accessible from main menu navigation', async ({ findCasePage, page }) => {
     await test.step('Open Find case from main navigation', async () => {

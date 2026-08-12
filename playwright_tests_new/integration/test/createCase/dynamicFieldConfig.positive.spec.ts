@@ -57,6 +57,7 @@ test.describe(
         CaseType: 'urgent',
         CaseReference: '123',
         Service: { value: { code: 'family', label: 'Family' } },
+        UrgentReason: 'Priority issue',
         HiddenWithRetention: 'keep-me',
       });
       expect(request.data).not.toHaveProperty('HiddenWithoutRetention');

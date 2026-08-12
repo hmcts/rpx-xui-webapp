@@ -31,7 +31,7 @@ export async function setupCaseViewerMockRoutes(
   });
   await setupCaseworkerJurisdictionsRoute(page, [CASE_VIEWER_JURISDICTION]);
 
-  const caseDetails = buildCaseViewerMock(variant);
+  const caseDetails = buildCaseViewerMock(variant, config.roles);
   await page.route(`**/data/internal/cases/${CASE_VIEWER_CASE_REFERENCE}*`, async (route) => {
     await route.fulfill({
       status: config.caseDetailsStatus ?? 200,

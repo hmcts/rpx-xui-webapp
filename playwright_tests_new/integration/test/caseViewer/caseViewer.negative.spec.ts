@@ -13,13 +13,13 @@ test.describe('CCD case viewer empty and shuttered states', { tag: ['@integratio
     await expect(page.getByRole('row', { name: /Create a case/ })).toHaveCount(0);
   });
 
-  test('omits ACL-protected viewer data for a user without the caseworker role', async ({ page, caseDetailsPage }) => {
+  test('does not render viewer data omitted by CCD for a user without the caseworker role', async ({ page, caseDetailsPage }) => {
     await openCaseViewer(page, caseDetailsPage, 'populated', { roles: ['hmcts-staff'] });
 
     await expect(page.getByRole('tab', { name: 'Case summary' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Activity and history' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Payment history' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Retain or dispose' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Activity and history' })).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: 'Payment history' })).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: 'Retain or dispose' })).toHaveCount(0);
     await expect(page.getByText('Case created from the viewer fixture', { exact: true })).toHaveCount(0);
     await expect(page.getByText('Retain case', { exact: true })).toHaveCount(0);
   });

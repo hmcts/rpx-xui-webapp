@@ -81,7 +81,7 @@ function viewerField(id: string, label: string, type: 'CaseHistoryViewer' | 'Cas
   };
 }
 
-export function buildCaseViewerMock(variant: ViewerVariant = 'populated') {
+export function buildCaseViewerMock(variant: ViewerVariant = 'populated', roles?: string[]) {
   const mock = clone(caseTemplate) as CaseViewerMock;
   mock.case_id = CASE_VIEWER_CASE_REFERENCE;
   mock.case_type.id = CASE_VIEWER_CASE_TYPE;
@@ -142,7 +142,12 @@ export function buildCaseViewerMock(variant: ViewerVariant = 'populated') {
     },
   ];
 
+  const canReadRestrictedData = !roles || roles.includes('caseworker-sscs');
+  if (!canReadRestrictedData) {
+    mock.tabs = mock.tabs.filter((tab: { acls?: typeof CASE_VIEWER_RESTRICTED_ACL }) => !tab.acls?.length);
+  }
+
   mock.triggers = [];
-  mock.events = events;
+  mock.events = canReadRestrictedData ? events : [];
   return mock;
 }

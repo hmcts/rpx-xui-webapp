@@ -8,8 +8,8 @@ import {
 } from '../../mocks/eventBehaviour.mock';
 
 test.describe('Event behaviour integration failures', { tag: ['@integration', '@integration-event-behaviour'] }, () => {
-  test('does not offer an unavailable event action', async ({ caseDetailsPage, page }) => {
-    await openEventBehaviourJourney(page, caseDetailsPage, { eventAvailable: false });
+  test('does not offer an event action withheld by the case view', async ({ caseDetailsPage, page }) => {
+    await openEventBehaviourJourney(page, caseDetailsPage, { eventReturnedByCaseView: false });
 
     const actionLabels = await caseDetailsPage.caseActionsDropdown.locator('option').allTextContents();
     expect(actionLabels).not.toContain(EVENT_BEHAVIOUR_TRIGGER_NAME);

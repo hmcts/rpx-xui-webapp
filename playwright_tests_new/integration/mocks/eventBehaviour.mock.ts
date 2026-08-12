@@ -162,7 +162,7 @@ export function buildEventBehaviourTrigger() {
   };
 }
 
-export function buildEventBehaviourCaseDetails(options: { eventRecorded?: boolean; eventAvailable?: boolean } = {}) {
+export function buildEventBehaviourCaseDetails(options: { eventRecorded?: boolean; eventReturnedByCaseView?: boolean } = {}) {
   const caseDetails = JSON.parse(JSON.stringify(caseDetailsTemplate)) as Record<string, unknown>;
   caseDetails.case_id = EVENT_BEHAVIOUR_CASE_REFERENCE;
   caseDetails.case_type = {
@@ -171,7 +171,7 @@ export function buildEventBehaviourCaseDetails(options: { eventRecorded?: boolea
     jurisdiction: { id: EVENT_BEHAVIOUR_JURISDICTION },
   };
   caseDetails.triggers =
-    options.eventAvailable === false
+    options.eventReturnedByCaseView === false
       ? []
       : [
           {

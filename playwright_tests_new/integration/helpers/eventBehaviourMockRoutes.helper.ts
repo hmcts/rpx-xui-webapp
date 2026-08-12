@@ -20,7 +20,7 @@ export type EventBehaviourSubmitOverride = {
 };
 
 export type EventBehaviourMockConfig = {
-  eventAvailable?: boolean;
+  eventReturnedByCaseView?: boolean;
   submit?: EventBehaviourSubmitOverride;
   midEventValidation?: {
     status: number;
@@ -60,7 +60,7 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
       surname: 'Tester',
       email: 'event.behaviour@justice.gov.uk',
       roleCategory: 'LEGAL_OPERATIONS',
-      roles: config.eventAvailable === false ? ['hmcts-staff'] : ['caseworker-event-behaviour'],
+      roles: ['caseworker-event-behaviour'],
     },
   });
 
@@ -73,7 +73,7 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
       200,
       buildEventBehaviourCaseDetails({
         eventRecorded,
-        eventAvailable: config.eventAvailable !== false,
+        eventReturnedByCaseView: config.eventReturnedByCaseView !== false,
       })
     );
   });
@@ -115,7 +115,7 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
       submit?.body ??
         buildEventBehaviourCaseDetails({
           eventRecorded,
-          eventAvailable: config.eventAvailable !== false,
+          eventReturnedByCaseView: config.eventReturnedByCaseView !== false,
         }),
       submit?.abortErrorCode
     );
@@ -130,7 +130,7 @@ export async function openEventBehaviourJourney(
   await applySessionCookies(page, 'STAFF_ADMIN');
   await setupEventBehaviourMockRoutes(page, config);
   await caseDetailsPage.openCaseDetails(EVENT_BEHAVIOUR_JURISDICTION, EVENT_BEHAVIOUR_CASE_TYPE, EVENT_BEHAVIOUR_CASE_REFERENCE);
-  if (config.eventAvailable === false) {
+  if (config.eventReturnedByCaseView === false) {
     await caseDetailsPage.waitForCaseDetailsReady();
   } else {
     await caseDetailsPage.caseActionsDropdown.waitFor({ state: 'visible' });

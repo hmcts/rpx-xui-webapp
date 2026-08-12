@@ -1,32 +1,33 @@
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/_shims' as *;
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals' as *;
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements' as *;
+@use './typography' as typography;
 
 .markdown {
   h1 {
-    @include bold-18pt();
+    @include typography.bold-18pt();
     margin-top: 30px;
     margin-bottom: 30px;
   }
   h2 {
-    @include bold-16pt();
+    @include typography.bold-16pt();
     margin-top: 45px;
     margin-bottom: 15px;
   }
   h3 {
-    @include bold-14pt();
+    @include typography.bold-14pt();
     margin-top: 45px;
     margin-bottom: 15px;
   }
   h4 {
-    @include bold-12pt();
+    @include typography.bold-12pt();
     margin-top: 20px;
   }
   p {
-    @include core-12pt();
+    @include typography.core-12pt();
     margin-bottom: 15px;
     strong {
-      @include bold-12pt();
+      @include typography.bold-12pt();
     }
   }
   ul {
@@ -35,7 +36,7 @@
     margin-bottom: 45px;
     padding-left: 20px;
     li {
-      @include core-12pt();
+      @include typography.core-12pt();
       margin-bottom: 5px;
       list-style-type: disc;
     }

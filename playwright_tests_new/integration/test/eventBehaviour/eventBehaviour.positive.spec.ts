@@ -82,6 +82,17 @@ test.describe('Event behaviour integration', { tag: ['@integration', '@integrati
 
     await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${EVENT_BEHAVIOUR_CASE_REFERENCE}(?:$|#)`));
     await expect(page.getByText(/has been updated with event: Record outcome/)).toBeVisible();
+    await caseDetailsPage.selectCaseDetailsTab('Activity and history');
+    const eventRow = caseDetailsPage.historyTable.getByRole('row', { name: new RegExp(EVENT_BEHAVIOUR_TRIGGER_NAME) });
+    await expect(eventRow).toBeVisible();
+    await eventRow.click();
+    const eventDetails = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
+    expect(eventDetails).toMatchObject({
+      'End state': 'Outcome recorded',
+      Event: EVENT_BEHAVIOUR_TRIGGER_NAME,
+      Summary: 'Record outcome',
+      Comment: 'Outcome recorded',
+    });
   });
 
   test('shows conditional fields on the configured wizard page', async ({ caseDetailsPage, page }) => {

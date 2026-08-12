@@ -52,15 +52,20 @@ test.describe(
       const createRequestPromise = routeCaseCreationFlow(page);
       await createCasePage.testSubmitButton.click({ noWaitAfter: true });
       const request = (await createRequestPromise) as { data?: Record<string, unknown> };
-      expect(request.data).toMatchObject({
+      expect(request.data).toEqual({
         CaseTitle: 'Dynamic field-config case',
         CaseType: 'urgent',
         CaseReference: '123',
-        Service: { value: { code: 'family', label: 'Family' } },
+        Service: {
+          value: { code: 'family', label: 'Family' },
+          list_items: [
+            { code: 'civil', label: 'Civil' },
+            { code: 'family', label: 'Family' },
+          ],
+        },
         UrgentReason: 'Priority issue',
         HiddenWithRetention: 'keep-me',
       });
-      expect(request.data).not.toHaveProperty('HiddenWithoutRetention');
     });
   }
 );

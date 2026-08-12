@@ -206,5 +206,36 @@ export function buildEventBehaviourCaseDetails(options: { eventRecorded?: boolea
     caseDetails.state = { id: 'outcomeRecorded', name: 'Outcome recorded' };
   }
 
+  caseDetails.tabs = [
+    {
+      id: 'activity-history',
+      label: 'Activity and history',
+      order: 1,
+      fields: [
+        {
+          id: 'caseHistory',
+          label: 'Case history',
+          value: caseDetails.events,
+          field_type: {
+            id: 'CaseHistoryViewer',
+            type: 'CaseHistoryViewer',
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          acls: [],
+          complexACLs: [],
+          display_context: 'OPTIONAL',
+          display_context_parameter: null,
+          show_condition: null,
+        },
+      ],
+      show_condition: null,
+    },
+  ];
+
   return caseDetails;
 }

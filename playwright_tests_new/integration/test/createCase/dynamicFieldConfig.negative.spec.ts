@@ -12,11 +12,13 @@ test.describe(
 
     test('rejects a value that violates configured regular-expression validation', async ({ createCasePage, page }) => {
       await page.getByLabel('Case title').fill('A title');
-      await page.locator('#CaseReference').fill('12');
+      await page.locator('#CaseReference').fill('ABC');
       await createCasePage.continueButton.click();
 
-      await expect(page.locator('#CaseReference')).toHaveValue('12');
-      await expect(page.locator('.govuk-error-message, .validation-error').filter({ hasText: /case reference/i })).toBeVisible();
+      await expect(page.locator('#CaseReference')).toHaveValue('ABC');
+      await expect(
+        page.locator('.govuk-error-message, .validation-error').filter({ hasText: /Case reference is not valid/i })
+      ).toBeVisible();
       await expect(page.getByRole('heading', { name: 'Check your answers' })).toBeHidden();
     });
 

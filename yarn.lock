@@ -640,6 +640,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular/material-moment-adapter@npm:^20.0.0":
+  version: 20.2.14
+  resolution: "@angular/material-moment-adapter@npm:20.2.14"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/core": ^20.0.0 || ^21.0.0
+    "@angular/material": 20.2.14
+    moment: ^2.18.1
+  checksum: 10/2211f4ea51ceb8fd1f1028334aac78e7b92f066b04cb8d6fc9c0fcd2068b69fe611d99bd3d57333ea62ea22cd40720809b1a12b491d9f76d33c08619341cdf60
+  languageName: node
+  linkType: hard
+
 "@angular/material@npm:^16.2.12":
   version: 16.2.14
   resolution: "@angular/material@npm:16.2.14"
@@ -5912,6 +5925,22 @@ __metadata:
     typescript: ">=5.8 <6.0"
     webpack: ^5.54.0
   checksum: 10/ed08a95500140c9be25930027e7d0bb10709f0666d5d2327f77afa8725a33c3abfb2ebbbdb20e4625c940c66a823808509185cfe84dcee291b27813823ff3768
+  languageName: node
+  linkType: hard
+
+"@ngxmc/datetime-picker@npm:20.1.0":
+  version: 20.1.0
+  resolution: "@ngxmc/datetime-picker@npm:20.1.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/cdk": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/material": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+  checksum: 10/2a8b28f77f4e36748bf7f7cedd65b1087b674ed6e8622d87047261a5d6faa3b2246de469c7405d7f083807641cb22e793d861a7f9d0c0d6cb4619d9a2c7c9072
   languageName: node
   linkType: hard
 
@@ -21115,6 +21144,7 @@ __metadata:
     "@angular/elements": "npm:^20.3.27"
     "@angular/forms": "npm:^20.3.27"
     "@angular/material": "npm:^16.2.12"
+    "@angular/material-moment-adapter": "npm:^20.0.0"
     "@angular/platform-browser": "npm:^20.3.27"
     "@angular/platform-browser-dynamic": "npm:^20.3.27"
     "@angular/router": "npm:^20.3.27"
@@ -21140,6 +21170,7 @@ __metadata:
     "@ngrx/router-store": "npm:^20"
     "@ngrx/store": "npm:^20"
     "@ngrx/store-devtools": "npm:^20"
+    "@ngxmc/datetime-picker": "npm:20.1.0"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
     "@playwright/test": "npm:1.61.1"

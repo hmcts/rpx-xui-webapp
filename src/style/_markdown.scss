@@ -29,7 +29,10 @@
       @include bold-12pt();
     }
   }
-  ul {
+  .bottom-0 {
+      margin-bottom: 0;
+  }
+  ul, .order-list  {
     padding: 0;
     margin-top: 5px;
     margin-bottom: 45px;
@@ -40,6 +43,15 @@
       list-style-type: disc;
     }
   }
+
+  .order-list li {
+      list-style-type: decimal;
+
+      strong {
+        @include bold-12pt();
+      }
+    }
+
   table {
     margin-bottom: 30px;
   }
@@ -49,6 +61,14 @@
 
     &:visited {
       color: #4c2c92;
+    }
+  }
+}
+
+.qm-qualifying-question {
+  .markdown {
+    ul li strong {
+      @include bold-12pt();
     }
   }
 }

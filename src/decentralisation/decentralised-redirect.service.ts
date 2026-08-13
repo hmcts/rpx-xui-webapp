@@ -5,7 +5,7 @@ import { getWebUrlForCaseType } from '../../common/decentralisation/decentralise
 import { UserInfo } from '../app/models/user-details.model';
 import { Params } from '@angular/router';
 import { BuildDecentralisedEventUrlInput } from './event-url-types';
-import { DecentralisedCaseTypeMap } from 'common/decentralisation/decentralised-casetype';
+import { CaseTypeMap, FrontendDecentralisedCaseType } from 'common/decentralisation/decentralised-casetype';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +53,7 @@ export class DecentralisedRedirectService {
 
   buildDecentralisedEventUrl(
     params: BuildDecentralisedEventUrlInput,
-    caseTypeConfig: DecentralisedCaseTypeMap,
+    caseTypeConfig: CaseTypeMap<FrontendDecentralisedCaseType>,
     expectedSub?: string
   ): string | null {
     if (!this.isDecentralisedEvent(params.eventId)) {

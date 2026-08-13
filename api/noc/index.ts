@@ -6,7 +6,7 @@ import { generateErrorMessageWithCode } from './errorCodeConverter';
 import { NoCQuestions } from './models/noCQuestions.interface';
 import { handleGet, handlePost } from './noCService';
 import { getNocBaseUrlForCaseType } from '../../common/decentralisation/decentralised-redirect.util';
-import { DecentralisedCaseTypeMap } from '../../common/decentralisation/decentralised-casetype';
+import { BackendDecentralisedCaseType, CaseTypeMap } from '../../common/decentralisation/decentralised-casetype';
 
 const caseAssignmentUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
 const NOC_CASE_TYPE_SESSION_KEY = 'nocCaseTypesByCaseId';
@@ -61,7 +61,7 @@ function getNoCBaseUrl(caseId: unknown, req: EnhancedRequest): string {
     return caseAssignmentUrl;
   }
 
-  const caseTypeMap = getConfigValue<DecentralisedCaseTypeMap>(DECENTRALISED_CASE_TYPE_CONFIG);
+  const caseTypeMap = getConfigValue<CaseTypeMap<BackendDecentralisedCaseType>>(DECENTRALISED_CASE_TYPE_CONFIG);
   const decentralisedNocBaseUrl = getNocBaseUrlForCaseType(caseTypeMap, caseType);
   return decentralisedNocBaseUrl || caseAssignmentUrl;
 }

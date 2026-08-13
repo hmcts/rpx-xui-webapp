@@ -1,18 +1,29 @@
-import { CaseTypeMapEntry, DecentralisedCaseTypeMap } from './decentralised-casetype';
+import {
+  CaseTypeMap,
+  CaseTypeMapEntry,
+  BackendDecentralisedCaseType,
+  FrontendDecentralisedCaseType,
+} from './decentralised-casetype';
 
 const TEMPLATE_PLACEHOLDER = '%s';
 
-export const getWebUrlForCaseType = (caseTypeMap?: DecentralisedCaseTypeMap, caseType?: string): string | null => {
+export const getWebUrlForCaseType = (
+  caseTypeMap?: CaseTypeMap<FrontendDecentralisedCaseType>,
+  caseType?: string
+): string | null => {
   const caseTypeMapEntry = getMapEntry(caseTypeMap, caseType);
   return augmentUrl(caseTypeMapEntry?.value.webUrl, caseTypeMapEntry?.key, caseType);
 };
 
-export const getNocBaseUrlForCaseType = (caseTypeMap?: DecentralisedCaseTypeMap, caseType?: string): string | null => {
+export const getNocBaseUrlForCaseType = (
+  caseTypeMap?: CaseTypeMap<BackendDecentralisedCaseType>,
+  caseType?: string
+): string | null => {
   const caseTypeMapEntry = getMapEntry(caseTypeMap, caseType);
   return augmentUrl(caseTypeMapEntry?.value.nocBaseUrl, caseTypeMapEntry?.key, caseType);
 };
 
-export const getMapEntry = (caseTypeMap?: DecentralisedCaseTypeMap, caseType?: string): CaseTypeMapEntry | null => {
+export const getMapEntry = <T>(caseTypeMap?: CaseTypeMap<T>, caseType?: string): CaseTypeMapEntry<T> | null => {
   if (!caseTypeMap || !caseType) {
     return null;
   }
@@ -32,7 +43,7 @@ export const augmentUrl = (url?: string, configuredCaseType?: string, caseType?:
   return url && configuredCaseType && caseType ? resolveUrl(url, configuredCaseType, caseType) : null;
 };
 
-const getConfiguredCaseType = (caseTypeMap: DecentralisedCaseTypeMap, caseType: string): string | null => {
+const getConfiguredCaseType = <T>(caseTypeMap: CaseTypeMap<T>, caseType: string): string | null => {
   const lowerCaseType = caseType.toLowerCase();
   return (
     Object.keys(caseTypeMap)

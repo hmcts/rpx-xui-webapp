@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HMCTSServiceDetails } from '../../app/models';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class WASupportedJurisdictionsService {
   public static readonly jurisdictionUrl: string = '/api/wa-supported-jurisdiction';
   public constructor(private readonly http: HttpClient) {}

@@ -401,6 +401,8 @@ def secrets = [
   'rpx-${env}': [
     secret('mc-s2s-client-secret', 'S2S_SECRET'),
     secret('mc-idam-client-secret', 'IDAM_SECRET'),
+    secret('idam-api-url', 'IDAM_API_URL'),
+    secret('s2s-url', 'S2S_URL'),
     secret('webapp-redis6-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
@@ -466,6 +468,10 @@ def secrets = [
     secret('e2e-fpl-global-search-password', 'FPL_GLOBAL_SEARCH_PASSWORD'),
     secret('e2e-probate-find-case-username', 'PROBATE_FIND_CASE_USERNAME'),
     secret('e2e-probate-find-case-password', 'PROBATE_FIND_CASE_PASSWORD'),
+    secret('e2e-probate-caseworker-username', 'PROBATE_CASEWORKER_USERNAME'),
+    secret('e2e-probate-caseworker-password', 'PROBATE_CASEWORKER_PASSWORD'),
+    secret('e2e-probate-solicitor-username', 'PROBATE_SOLICITOR_USERNAME'),
+    secret('e2e-probate-solicitor-password', 'PROBATE_SOLICITOR_PASSWORD'),
     secret('e2e-user-with-flags-username', 'USER_WITH_FLAGS_USERNAME'),
     secret('e2e-user-with-flags-password', 'USER_WITH_FLAGS_PASSWORD'),
     secret('e2e-search-employment-case-username', 'SEARCH_EMPLOYMENT_CASE_USERNAME'),
@@ -503,6 +509,7 @@ withPipeline(type, product, component) {
 
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE

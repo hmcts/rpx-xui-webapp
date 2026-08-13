@@ -2517,13 +2517,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.28.4":
-  version: 7.28.4
-  resolution: "@babel/runtime@npm:7.28.4"
-  checksum: 10/6c9a70452322ea80b3c9b2a412bcf60771819213a67576c8cec41e88a95bb7bf01fc983754cda35dc19603eef52df22203ccbf7777b9d6316932f9fb77c25163
-  languageName: node
-  linkType: hard
-
 "@babel/runtime@npm:^7.29.7":
   version: 7.29.7
   resolution: "@babel/runtime@npm:7.29.7"
@@ -2723,22 +2716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dr.pogodin/csurf@npm:^1.16.5":
-  version: 1.16.6
-  resolution: "@dr.pogodin/csurf@npm:1.16.6"
-  dependencies:
-    "@babel/runtime": "npm:^7.28.4"
-    cookie: "npm:^1.0.2"
-    cookie-signature: "npm:^1.2.2"
-    http-errors: "npm:^2.0.0"
-    rndm: "npm:1.2.0"
-    tsscmp: "npm:1.0.6"
-    uid-safe: "npm:2.1.5"
-  checksum: 10/87290809819dcf10890160d49af971aae047d6d5d87e185ce3f4560525b29f7edf9ecde2e2c0f277b313f53bee39a1fe691471b62de3dbbea3866266b0731d3e
-  languageName: node
-  linkType: hard
-
-"@dr.pogodin/csurf@npm:^1.17.1":
+"@dr.pogodin/csurf@npm:^1.16.5, @dr.pogodin/csurf@npm:^1.17.1":
   version: 1.17.1
   resolution: "@dr.pogodin/csurf@npm:1.17.1"
   dependencies:
@@ -3199,14 +3177,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.84":
-  version: 7.3.84
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.84"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.85":
+  version: 7.3.85
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.85"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/media-viewer": "npm:4.2.27"
-    file-saver: "npm:^2.0.2"
+    file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
@@ -3241,7 +3219,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/256ad5686aef35201254f24da39beae1437b51d5bcdcd8a4996da366e6811369d0b679f957990454b688cb6ec11a208a28e829b942b5cabbf66c5a3a24e59fcb
+  checksum: 10/193dc2a7dd1b2fb319e9a2ddae740d114de4de9f4806e676a9f43f6ba0c187375f4d1e6fcd3590c27558234d8ff7bf1be1f77ffc2458ca1179dd51ac5fd8dd51
   languageName: node
   linkType: hard
 
@@ -5751,7 +5729,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^2.2.0":
+"@noble/hashes@npm:^2.0.1":
   version: 2.2.0
   resolution: "@noble/hashes@npm:2.2.0"
   checksum: 10/b1b78bedc2a01394be047429f3d888905015fe8a09f1b7e43e0b5736b54133df62f73dcc73ede43af38e96e86156afb45b86973fdeaa95d9f0880333c3fc0907
@@ -6369,60 +6347,60 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@otplib/core@npm:13.4.1":
-  version: 13.4.1
-  resolution: "@otplib/core@npm:13.4.1"
-  checksum: 10/76d56107d702869cbc34724a442e35ee89cd8cf253ce9c75e167b73d27fc2a2f767e96db7d579ff0c03424a4f11b45212261358d73c5bc2be4879a71581c7cb9
+"@otplib/core@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/core@npm:13.4.0"
+  checksum: 10/2dbb85c7647af1eea7f16eecf38455428499a90e2708720a9e9940b4f5104945b4b45989f222a3eeb6045b269a6dc2b31867ede1462a97b1ce1566a4fcd9e930
   languageName: node
   linkType: hard
 
-"@otplib/hotp@npm:13.4.1":
-  version: 13.4.1
-  resolution: "@otplib/hotp@npm:13.4.1"
+"@otplib/hotp@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/hotp@npm:13.4.0"
   dependencies:
-    "@otplib/core": "npm:13.4.1"
-    "@otplib/uri": "npm:13.4.1"
-  checksum: 10/7949f664eac400b9a50b480fec839d930d5d0b99a1b81abc4fa30a659f952af02825ee4b43634d92505be548d5f3fe88f0bae28e09945494bb99ea5cd99c7f46
+    "@otplib/core": "npm:13.4.0"
+    "@otplib/uri": "npm:13.4.0"
+  checksum: 10/4e2ca48076387a09deb7d11e0b62beddd2bc2f2eb2a3d1a869f77c54519e4ccb674060b99fcc13e210138a673e6fe1eb361ccab9d63a552b8e2ecfa3a1eab33b
   languageName: node
   linkType: hard
 
-"@otplib/plugin-base32-scure@npm:13.4.1":
-  version: 13.4.1
-  resolution: "@otplib/plugin-base32-scure@npm:13.4.1"
+"@otplib/plugin-base32-scure@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/plugin-base32-scure@npm:13.4.0"
   dependencies:
-    "@otplib/core": "npm:13.4.1"
-    "@scure/base": "npm:^2.2.0"
-  checksum: 10/bc2ae6d86499d86e6dbb6d30c12ea28d16165cf8ae60b1d9676cddb115fa9d4090947506d59c90390e6d8e54bcadcd4ac1dc97ea0f74d62a7636fd5a4eb5911b
+    "@otplib/core": "npm:13.4.0"
+    "@scure/base": "npm:^2.0.0"
+  checksum: 10/8325a8ba6055c6166131cdb8e3b0f473c2a7d8821640d26b43ac15ed7085baf494c4c9950f8ee56bccc07546da5c305d78f93b80b15505d97f15ea55311646f7
   languageName: node
   linkType: hard
 
-"@otplib/plugin-crypto-noble@npm:13.4.1":
-  version: 13.4.1
-  resolution: "@otplib/plugin-crypto-noble@npm:13.4.1"
+"@otplib/plugin-crypto-noble@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/plugin-crypto-noble@npm:13.4.0"
   dependencies:
-    "@noble/hashes": "npm:^2.2.0"
-    "@otplib/core": "npm:13.4.1"
-  checksum: 10/e89cccfd2243de778ba5eb32efe15b3e111bda9f860d40e54a7ff543fb421f121a9a347df8772cc5137a38f6f9af30b0949de43a2ce07cb30971e8d9f7c865c9
+    "@noble/hashes": "npm:^2.0.1"
+    "@otplib/core": "npm:13.4.0"
+  checksum: 10/7fdba4f95afb526d2cfcc12009b134ab0142f354b2713cb817715ae88bd432e470a1e3f64bd77901d9b7d22c148b62964d82237dfe4515530d1e1b984f1679f3
   languageName: node
   linkType: hard
 
-"@otplib/totp@npm:13.4.1":
-  version: 13.4.1
-  resolution: "@otplib/totp@npm:13.4.1"
+"@otplib/totp@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/totp@npm:13.4.0"
   dependencies:
-    "@otplib/core": "npm:13.4.1"
-    "@otplib/hotp": "npm:13.4.1"
-    "@otplib/uri": "npm:13.4.1"
-  checksum: 10/88b53f3c96dc1a7b2790e606945bc855cdd17e913df70248fa8aa413ef28899907536e90c699bafd8eb3ef680ef08467c58a7fef915b3ab701fb254d254ab160
+    "@otplib/core": "npm:13.4.0"
+    "@otplib/hotp": "npm:13.4.0"
+    "@otplib/uri": "npm:13.4.0"
+  checksum: 10/c5e8e3696a82cd43ac1b478c2cd47dd63ad30cdb1cdeb575451e50a1905690b59403b8587d22807160e4e9f39c4cb63925675570d68c5f62a936cc1d302bc3a6
   languageName: node
   linkType: hard
 
-"@otplib/uri@npm:13.4.1":
-  version: 13.4.1
-  resolution: "@otplib/uri@npm:13.4.1"
+"@otplib/uri@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/uri@npm:13.4.0"
   dependencies:
-    "@otplib/core": "npm:13.4.1"
-  checksum: 10/d9b2e230f6558e6c76daa8466b1373195c9f9055a7c5061e395e79894326ebc3d6bd04e1db5ad2be6d110b193d91d1d14f2caecd42b77cbba414c797b4568e63
+    "@otplib/core": "npm:13.4.0"
+  checksum: 10/0bf659e7b81747f76a7d85eddee2d6b7a14368e7c5edcf246d58c56a3bb7c6c7d5a7eacc2dfcda799089c43c397ac75b28d5be2e77147d71caf5ae918756c3ed
   languageName: node
   linkType: hard
 
@@ -7373,7 +7351,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:^2.2.0":
+"@scure/base@npm:^2.0.0":
   version: 2.2.0
   resolution: "@scure/base@npm:2.2.0"
   checksum: 10/b52ec9cd54bad77e22f881b6924ccab692dc1c6dd10287d1787bf263e9f1e560d6d2bda906538fb9a39615d61a1b5c2f53f57a511667fd10e93b9cdaa6fb5d2a
@@ -11102,11 +11080,11 @@ __metadata:
   linkType: hard
 
 "config@npm:^4.4.1":
-  version: 4.4.2
-  resolution: "config@npm:4.4.2"
+  version: 4.4.1
+  resolution: "config@npm:4.4.1"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/57c321f94d8893f3748daefc62923b806d8d79f1da12f448f5ee190c25aa75aed5c6e31f206c3dd0ea7a8f2d11d6737d24f92019509a5d2f4773156ede16e7de
+  checksum: 10/b237298b107111f88f8b4226c6412298a93052642c8e67a352e36f64be02fb4644351890f57e518338d1491e83064c6fb8fe31f676c7355491ef969e174ec9f1
   languageName: node
   linkType: hard
 
@@ -13732,7 +13710,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-saver@npm:^2.0.2":
+"file-saver@npm:^2.0.2, file-saver@npm:^2.0.5":
   version: 2.0.5
   resolution: "file-saver@npm:2.0.5"
   checksum: 10/fbba443d9b682fec0be6676c048a7ac688b9bd33b105c02e8e1a1cb3e354ed441198dc1f15dcbc137fa044bea73f8a7549f2617e3a952fa7d96390356d54a7c3
@@ -16868,10 +16846,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^11.1.0, lru-cache@npm:^11.2.1, lru-cache@npm:^11.2.4, lru-cache@npm:^11.2.5, lru-cache@npm:^11.2.6":
+"lru-cache@npm:^11.1.0, lru-cache@npm:^11.2.1":
   version: 11.5.2
   resolution: "lru-cache@npm:11.5.2"
   checksum: 10/122789c66605ddf29df58ff279e9e2c9499499d0b80b895ec524496f14bcde045d1582e3e38008f3457226d98067556719573b352119d6be8bdb1f8849f85681
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:^11.2.4, lru-cache@npm:^11.2.5, lru-cache@npm:^11.2.6":
+  version: 11.3.5
+  resolution: "lru-cache@npm:11.3.5"
+  checksum: 10/3701b77e87765a3aea453402a7850bdbf7e02445210f35bd5ba1561f601f605f488bf9932be4a3851a6664073924f671a1ec99c4a1a98c457e0d126872a3e04f
   languageName: node
   linkType: hard
 
@@ -17589,11 +17574,11 @@ __metadata:
   linkType: hard
 
 "moment-timezone@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "moment-timezone@npm:0.6.2"
+  version: 0.6.3
+  resolution: "moment-timezone@npm:0.6.3"
   dependencies:
     moment: "npm:^2.29.4"
-  checksum: 10/021f908742a392ff7234b3814fb20c786cb086d0fa3f98a58f6810181c71a305244e908e913d8bd6750c4a7e09300eda2c869cd77ef0b3f83e58028fa75f84de
+  checksum: 10/55ae516386b87fc2207d7911ef61ecef240ba4b21aece36d0b9f33802e1457db0c21b197ae4fde3b6d819d4bde3d835da0ba3c08de740b158e067c874d16082a
   languageName: node
   linkType: hard
 
@@ -18626,16 +18611,16 @@ __metadata:
   linkType: hard
 
 "otplib@npm:^13.4.0":
-  version: 13.4.1
-  resolution: "otplib@npm:13.4.1"
+  version: 13.4.0
+  resolution: "otplib@npm:13.4.0"
   dependencies:
-    "@otplib/core": "npm:13.4.1"
-    "@otplib/hotp": "npm:13.4.1"
-    "@otplib/plugin-base32-scure": "npm:13.4.1"
-    "@otplib/plugin-crypto-noble": "npm:13.4.1"
-    "@otplib/totp": "npm:13.4.1"
-    "@otplib/uri": "npm:13.4.1"
-  checksum: 10/4556ffba3796894b5497c639b274f0ca7a7974b788138f881a5ca496a2bbbee1d6c22bf872e2af59015e5edca1fbf139ffe3167836f58afe036989bae4800133
+    "@otplib/core": "npm:13.4.0"
+    "@otplib/hotp": "npm:13.4.0"
+    "@otplib/plugin-base32-scure": "npm:13.4.0"
+    "@otplib/plugin-crypto-noble": "npm:13.4.0"
+    "@otplib/totp": "npm:13.4.0"
+    "@otplib/uri": "npm:13.4.0"
+  checksum: 10/0c9b81a288f5dec35ab53b621138fe462ebea4a155bd76e019ffbe15d755b5f4931bc405a3a81c22fa3e01a3bc9a00999703608227e51f3e23875c9dd3af00c8
   languageName: node
   linkType: hard
 
@@ -19468,11 +19453,11 @@ __metadata:
   linkType: hard
 
 "prettier@npm:^3.9.5":
-  version: 3.9.5
-  resolution: "prettier@npm:3.9.5"
+  version: 3.9.6
+  resolution: "prettier@npm:3.9.6"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/b6587f1582ba653ce5207ee227aff646500e5098646931088f176d1ab090b1f47d5a333f1facd634e9aa7dcb15c45940e2cec13a5962534cf0200617517b67b6
+  checksum: 10/1dd1a1e0e40ec3b91cda9d294c4a95022aef61880ca3f441aad99b1252279f58a766c4cece81132c01550dcff1fd445efbd8812ea4a2374313e7fc6c8136f11f
   languageName: node
   linkType: hard
 
@@ -19757,9 +19742,9 @@ __metadata:
   linkType: hard
 
 "pvutils@npm:^1.1.3, pvutils@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "pvutils@npm:1.1.5"
-  checksum: 10/9a5a71603c72bf9ea3a4501e8251e3f7a56026ed059bf63a18bd9a30cac6c35cc8250b39eb6291c1cb204cdeb6660663ab9bb2c74e85a512919bb2d614e340ea
+  version: 1.2.0
+  resolution: "pvutils@npm:1.2.0"
+  checksum: 10/30e2c6a5410a445e0dcbf6fd68d3a7725324d59acc4dd2b8ac8fa85fecfc591648b602a1e703287b9d8b07a2bbb80e4286d167d064647f542d5d966a45b314d7
   languageName: node
   linkType: hard
 
@@ -20311,13 +20296,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rndm@npm:1.2.0":
-  version: 1.2.0
-  resolution: "rndm@npm:1.2.0"
-  checksum: 10/ff0c54a12357267108d7de17b762869e388215e2e3c8147b5bba80d8454ee490c5fdaa40020b8b52ca52b86f13ad6171b4845dd5b7f627e5e2b6195908117c07
-  languageName: node
-  linkType: hard
-
 "robots-parser@npm:^3.0.1":
   version: 3.0.1
   resolution: "robots-parser@npm:3.0.1"
@@ -20564,7 +20542,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.84"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.85"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.28"
@@ -20627,7 +20605,7 @@ __metadata:
     exceljs: "npm:^4.4.0"
     exception-formatter: "npm:^2.1.2"
     express: "npm:^5.2.1"
-    file-saver: "npm:^2.0.2"
+    file-saver: "npm:^2.0.5"
     get-port: "npm:^7.0.0"
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^4.1.3"
@@ -22460,13 +22438,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsscmp@npm:1.0.6":
-  version: 1.0.6
-  resolution: "tsscmp@npm:1.0.6"
-  checksum: 10/850405080ea3ecb158e9e01bc4e87c9edb94a829d8ad8747f30ba103fcc41a287d7949ab84d7b27c36294036a2c9878f050db15b73a1a1961abfb7688b82ac53
-  languageName: node
-  linkType: hard
-
 "tsyringe@npm:^4.10.0":
   version: 4.10.0
   resolution: "tsyringe@npm:4.10.0"
@@ -22664,7 +22635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uid-safe@npm:2.1.5, uid-safe@npm:~2.1.5":
+"uid-safe@npm:~2.1.5":
   version: 2.1.5
   resolution: "uid-safe@npm:2.1.5"
   dependencies:
@@ -22726,9 +22697,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^6.25.0":
-  version: 6.27.0
-  resolution: "undici@npm:6.27.0"
-  checksum: 10/30c18cdb235edf4dd36f8aa3ace1ffaf44060289a7d62ad44c33180d2d74a224015d25574812f62ce9c625b5beb1b0b766495b650fedf356aca11eed7ce2c816
+  version: 6.26.0
+  resolution: "undici@npm:6.26.0"
+  checksum: 10/a1715ee4304f58fecd61e0a8c3bd7064435cfbc98b3ec1414dba5e89de97d436b7e88dd094b06ff8440428bf36b56163fc88972118890826039865edf58bdfcf
   languageName: node
   linkType: hard
 

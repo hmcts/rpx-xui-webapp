@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { SessionStorageService } from '../app/services';
 import { EnvironmentService } from '../app/shared/services/environment.service';
-import { getUrlForCaseType } from '../../common/decentralisation/decentralised-redirect.util';
+import { getWebUrlForCaseType } from '../../common/decentralisation/decentralised-redirect.util';
 import { UserInfo } from '../app/models/user-details.model';
 import { Params } from '@angular/router';
 import { BuildDecentralisedEventUrlInput } from './event-url-types';
@@ -60,7 +60,7 @@ export class DecentralisedRedirectService {
       return null;
     }
 
-    const webUrl = getUrlForCaseType(caseTypeConfig, params.caseType);
+    const webUrl = getWebUrlForCaseType(caseTypeConfig, params.caseType);
     if (!webUrl) {
       return null;
     }

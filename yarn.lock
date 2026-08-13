@@ -3199,14 +3199,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.84":
-  version: 7.3.84
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.84"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.85-exui-5069":
+  version: 7.3.85-exui-5069
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.85-exui-5069"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/media-viewer": "npm:4.2.27"
-    file-saver: "npm:^2.0.2"
+    file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
@@ -3241,7 +3241,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/256ad5686aef35201254f24da39beae1437b51d5bcdcd8a4996da366e6811369d0b679f957990454b688cb6ec11a208a28e829b942b5cabbf66c5a3a24e59fcb
+  checksum: 10/3758f51615bb875e41d995ea12e03d974a3ec724aa0b3efc16f3d833fca3dccd0600cc0a1e08a791835ca0db865d1cfe96f980b3cb9a4260ee1a258416e6c6a4
   languageName: node
   linkType: hard
 
@@ -13703,7 +13703,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-saver@npm:^2.0.2":
+"file-saver@npm:^2.0.2, file-saver@npm:^2.0.5":
   version: 2.0.5
   resolution: "file-saver@npm:2.0.5"
   checksum: 10/fbba443d9b682fec0be6676c048a7ac688b9bd33b105c02e8e1a1cb3e354ed441198dc1f15dcbc137fa044bea73f8a7549f2617e3a952fa7d96390356d54a7c3
@@ -20535,7 +20535,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.84"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.85-exui-5069"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.27"

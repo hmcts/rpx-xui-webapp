@@ -3105,9 +3105,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.85":
-  version: 7.3.85
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.85"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.76-minimist-bump":
+  version: 7.3.76-minimist-bump
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.76-minimist-bump"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3147,7 +3147,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/193dc2a7dd1b2fb319e9a2ddae740d114de4de9f4806e676a9f43f6ba0c187375f4d1e6fcd3590c27558234d8ff7bf1be1f77ffc2458ca1179dd51ac5fd8dd51
+  checksum: 10/74595656c09cb850fca2a479e0900bc8136a8a3f3495cac7b4a7c08720ab28702444df1f91c5f5f33d2c2788fa5508a44513e505e7e537836b1138026f3636be
   languageName: node
   linkType: hard
 
@@ -3169,6 +3169,35 @@ __metadata:
   version: 0.0.50-alpha
   resolution: "@hmcts/frontend@npm:0.0.50-alpha"
   checksum: 10/a2c4a74f831c87d7a6510d17c64793117ce7fb577f19a74f62fb7a58694f87fbc0bc30b1448cfa7dfc32ecc872f6e58571df9f141090845895f1686b056647af
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.26-minimist-update":
+  version: 4.2.26-minimist-update
+  resolution: "@hmcts/media-viewer@npm:4.2.26-minimist-update"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^23.0.1"
+    moment-timezone: "npm:^0.6.2"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.0.3"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.7
+    rxjs: ^7.8.2
+  checksum: 10/e9d4047671c56e84375354b6e9d5221905129cfc779248cd11b4a9506e942248da5d61ba75f7b5b95384904c750af8f3f9e1c465e80ddefe44bebf23f97c2cac
   languageName: node
   linkType: hard
 
@@ -3198,35 +3227,6 @@ __metadata:
     rpx-xui-translation: 1.2.7
     rxjs: ^7.8.2
   checksum: 10/31ef99ab45c738237db6bfab48dae32f09d397d10de48b12bb3a521c0cad6bd0506255c064967be78191cb4d51b8e501fc2283e179a336faaad1eefacac57594
-  languageName: node
-  linkType: hard
-
-"@hmcts/media-viewer@npm:4.2.29":
-  version: 4.2.29
-  resolution: "@hmcts/media-viewer@npm:4.2.29"
-  dependencies:
-    "@swimlane/ngx-datatable": "npm:^23.0.1"
-    moment-timezone: "npm:^0.6.2"
-    mutable-div: "npm:^2.0.0"
-    pdfjs-dist: "npm:^4.10.38"
-    socket.io-client: "npm:^4.8.0"
-    tslib: "npm:^2.3.0"
-    uuid: "npm:^11.0.3"
-  peerDependencies:
-    "@angular/animations": ^20.0.0
-    "@angular/cdk": ^17.3.8
-    "@angular/common": ^20.0.0
-    "@angular/core": ^20.0.0
-    "@angular/forms": ^20.0.0
-    "@angular/platform-browser": ^20.0.0
-    "@angular/router": ^20.0.0
-    "@ngrx/effects": ^20
-    "@ngrx/store": ^20
-    "@ngrx/store-devtools": ^20
-    ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.7
-    rxjs: ^7.8.2
-  checksum: 10/4059ccdda4699fe5d323b58a9ca78d3e9832fc618d901a45764eb715d1bf272182001d7f5e2e287d0dae8cce3fd89aed641d00a7cc2d75cc2b45d0b8293c15cc
   languageName: node
   linkType: hard
 
@@ -3324,9 +3324,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.23":
-  version: 2.30.23
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.23"
+"@hmcts/rpx-xui-node-lib@npm:2.30.21-minimist-bump":
+  version: 2.30.21-minimist-bump
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.21-minimist-bump"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.18.1"
@@ -3345,7 +3345,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/a5e88212dd8223a37129c0f90f9d4602ef72d9f6f9d90d052395001c075e7febb71b0e565bce367f88389f4981f3de8342465ca1b2d6839f8290ca6bfd6cc59b
+  checksum: 10/d5e883c9d085944978b590e1bbee3cc11152f7ff45f2d5563a084d1f6e5720a1c39873de681bc8addc7a28cdb1415d9811e7d3dea25374be59a8fc53f07b0443
   languageName: node
   linkType: hard
 
@@ -19965,15 +19965,15 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.85"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.76-minimist-bump"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.29"
+    "@hmcts/media-viewer": "npm:4.2.26-minimist-update"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.16"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.23"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.21-minimist-bump"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

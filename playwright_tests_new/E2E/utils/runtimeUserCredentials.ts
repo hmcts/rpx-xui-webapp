@@ -158,6 +158,18 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'FPL_GLOBAL_SEARCH_USERNAME',
     password: 'FPL_GLOBAL_SEARCH_PASSWORD',
   },
+  PROBATE_FIND_CASE: {
+    username: 'PROBATE_FIND_CASE_USERNAME',
+    password: 'PROBATE_FIND_CASE_PASSWORD',
+  },
+  PROBATE_CASEWORKER: {
+    username: 'PROBATE_CASEWORKER_USERNAME',
+    password: 'PROBATE_CASEWORKER_PASSWORD',
+  },
+  PROBATE_SOLICITOR: {
+    username: 'PROBATE_SOLICITOR_USERNAME',
+    password: 'PROBATE_SOLICITOR_PASSWORD',
+  },
   NOC_SOLICITOR: {
     username: 'NOC_SOLICITOR_USERNAME',
     password: 'NOC_SOLICITOR_PASSWORD',
@@ -184,7 +196,7 @@ const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.Pr
   },
   FPL_GLOBAL_SEARCH: [],
   USER_WITH_FLAGS: [],
-  IAC_JUDGE_WA_R1: ['IAC_CASEOFFICER_R1', 'IAC_CASEOFFICER_R2'],
+  IAC_JUDGE_WA_R1: [],
   IAC_CASEOFFICER_R2: ['IAC_CASEOFFICER_R1'],
   IAC_CASEOFFICER_R1: [],
 };

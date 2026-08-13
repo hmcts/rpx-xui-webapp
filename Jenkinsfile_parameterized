@@ -19,7 +19,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.4")
+@Library("Infrastructure@2.4.9")
 
 def type      = "nodejs"
 def product   = "xui"
@@ -48,6 +48,14 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    def reportPath = "${reportDir}/${reportFile}"
+    if (fileExists(reportPath)) {
+        echo "[playwright-report] Reusing generated report at ${reportPath}"
+        return
+    }
+    if (!fileExists('scripts/ensure-odhin-report.js')) {
+        error("Cannot create fallback report for ${suiteName}: scripts/ensure-odhin-report.js is missing from the workspace")
+    }
     withEnv([
         "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
         "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
@@ -96,6 +104,12 @@ def runManualPlaywrightAccessibility = { String environmentName ->
                     sh 'yarn test:accessibility:playwright'
                 }
             } catch (Exception e) {
+                if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                    throw e
+                }
+                if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                    throw e
+                }
                 echo "[playwright-accessibility] Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
             } finally {
                 try {
@@ -106,6 +120,12 @@ def runManualPlaywrightAccessibility = { String environmentName ->
                         'functional-output/tests/playwright-accessibility/**'
                     )
                 } catch (Exception publishException) {
+                    if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                        throw publishException
+                    }
+                    if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                        throw publishException
+                    }
                     echo "[playwright-accessibility] Report/evidence publish failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
                 }
             }

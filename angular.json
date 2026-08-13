@@ -42,6 +42,11 @@
                 "ignore": ["**/*.sass"],
                 "output": "/assets"
               },
+              {
+                "glob": "separator*.png",
+                "input": "node_modules/govuk_frontend_toolkit/images",
+                "output": "/assets"
+              },
               "src/favicon.ico",
               "src/assets"
             ],

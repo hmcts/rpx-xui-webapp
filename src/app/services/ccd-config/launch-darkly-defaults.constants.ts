@@ -243,6 +243,7 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
        "serviceName": "PROBATE"
+    }
     ]
   }`;
 

@@ -512,10 +512,12 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
         richTextReadValue: RICH_TEXT_READ_VALUE,
       });
       await expect(page.getByRole('tab', { name: 'Case data' })).toBeVisible();
-      await expect(page.locator('ccd-read-rich-text-area-field')).toHaveCount(2);
-      await expect(page.locator('.ccd-rich-text-area-read').first()).toContainText('formatted');
-      await expect(page.locator('.ccd-rich-text-area-read').first().locator('ul')).toBeVisible();
-      await expect(page.locator('.ccd-rich-text-area-read').first().locator('ol')).toBeVisible();
+      const richTextValue = page.locator('ccd-read-rich-text-area-field');
+      await expect(richTextValue).toHaveCount(1);
+      await expect(page.locator('ccd-read-text-area-field')).toHaveCount(1);
+      await expect(richTextValue).toContainText('formatted');
+      await expect(richTextValue.locator('ul')).toBeVisible();
+      await expect(richTextValue.locator('ol')).toBeVisible();
     },
   },
   {
@@ -561,7 +563,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
       });
       const editor = page.getByRole('textbox', { name: 'Outcome note' });
       await editor.focus();
-      await editor.press('Control+b');
+      await editor.press('ControlOrMeta+b');
       await editor.pressSequentially('Accessible formatted content');
       await expect(editor.locator('strong')).toContainText('Accessible formatted content');
     },

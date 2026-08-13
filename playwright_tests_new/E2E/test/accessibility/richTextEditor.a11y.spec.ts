@@ -49,7 +49,7 @@ test.describe('rich text editor accessibility interactions @accessibility @a11y 
       .getByRole('button', { name: 'Bold' });
 
     await editor.focus();
-    await editor.press('Control+b');
+    await editor.press('ControlOrMeta+b');
     await editor.pressSequentially('Formatted outcome note');
 
     await expect(boldButton).toHaveAttribute('aria-pressed', 'true');
@@ -72,8 +72,8 @@ test.describe('rich text editor accessibility interactions @accessibility @a11y 
     const toolbar = page.getByRole('toolbar', { name: 'Outcome note formatting options' });
 
     await editor.focus();
-    await editor.press('Control+i');
-    await editor.press('Control+u');
+    await editor.press('ControlOrMeta+i');
+    await editor.press('ControlOrMeta+u');
     await editor.pressSequentially('Emphasised and underlined');
 
     await expect(toolbar.getByRole('button', { name: 'Italic' })).toHaveAttribute('aria-pressed', 'true');

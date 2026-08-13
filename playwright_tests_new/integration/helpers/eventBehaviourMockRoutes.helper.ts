@@ -1,6 +1,7 @@
 import type { Page, Route } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { applySessionCookies } from '../../common/sessionCapture';
+import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 import { setupXuiAppShellBaseRoutes } from './xuiAppShellMockRoutes.helper';
 import {
   buildEventBehaviourCaseDetails,
@@ -55,25 +56,30 @@ function buildValidationResponse(route: Route) {
 }
 
 export async function setupEventBehaviourMockRoutes(page: Page, config: EventBehaviourMockConfig = {}): Promise<void> {
+  const userDetails = {
+    userId: 'event-behaviour-user',
+    forename: 'Event',
+    surname: 'Tester',
+    email: 'event.behaviour@justice.gov.uk',
+    roleCategory: 'LEGAL_OPERATIONS',
+    roles: ['caseworker-event-behaviour'],
+  };
   await setupXuiAppShellBaseRoutes(page, {
-    userDetails: {
-      userId: 'event-behaviour-user',
-      forename: 'Event',
-      surname: 'Tester',
-      email: 'event.behaviour@justice.gov.uk',
-      roleCategory: 'LEGAL_OPERATIONS',
-      roles: ['caseworker-event-behaviour'],
-    },
+    userDetails,
   });
+  await setupCaseworkerJurisdictionsRoute(page, [EVENT_BEHAVIOUR_JURISDICTION]);
 
   await page.route('**/auth/isAuthenticated*', async (route) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(true) });
   });
-  await page.route('**/api/configuration*', async (route) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({}) });
+  await page.route(/\/api\/configuration\?configurationKey=termsAndConditionsEnabled(?:&|$)/, async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(false) });
   });
   await page.route('**/api/monitoring-tools*', async (route) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+  });
+  await page.route('**/data/internal/profile*', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(userDetails) });
   });
 
   let eventRecorded = false;
@@ -141,7 +147,11 @@ export async function openEventBehaviourJourney(
   caseDetailsPage: CaseDetailsPage,
   config: EventBehaviourMockConfig = {}
 ): Promise<void> {
-  await applySessionCookies(page, 'STAFF_ADMIN');
+  const targetUrl = process.env.EXUI_BASE_URL ?? process.env.TEST_URL;
+  const targetHostname = targetUrl ? new URL(targetUrl).hostname : '';
+  if (targetHostname !== 'localhost' && targetHostname !== '127.0.0.1') {
+    await applySessionCookies(page, 'STAFF_ADMIN');
+  }
   await setupEventBehaviourMockRoutes(page, config);
   await caseDetailsPage.openCaseDetails(EVENT_BEHAVIOUR_JURISDICTION, EVENT_BEHAVIOUR_CASE_TYPE, EVENT_BEHAVIOUR_CASE_REFERENCE);
   if (config.eventReturnedByCaseView === false) {

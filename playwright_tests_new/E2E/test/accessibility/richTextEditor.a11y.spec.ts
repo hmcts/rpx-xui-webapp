@@ -6,7 +6,6 @@ test.describe('rich text editor accessibility interactions @accessibility @a11y 
   test.beforeEach(async ({ page, caseDetailsPage }) => {
     await openEventBehaviourJourney(page, caseDetailsPage, {
       trigger: buildRichTextAccessibilityTrigger(),
-      skipSessionCookies: true,
     });
     await caseDetailsPage.selectCaseAction('Record outcome', {
       expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),

@@ -496,7 +496,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     setup: async ({ page, caseDetailsPage }) => {
       await openEventBehaviourJourney(page, caseDetailsPage, {
         trigger: buildRichTextAccessibilityTrigger(),
-        skipSessionCookies: true,
       });
       await caseDetailsPage.selectCaseAction('Record outcome', {
         expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),
@@ -511,7 +510,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     setup: async ({ page, caseDetailsPage }) => {
       await openEventBehaviourJourney(page, caseDetailsPage, {
         richTextReadValue: RICH_TEXT_READ_VALUE,
-        skipSessionCookies: true,
       });
       await expect(page.getByRole('tab', { name: 'Case data' })).toBeVisible();
       await expect(page.locator('ccd-read-rich-text-area-field')).toHaveCount(2);
@@ -526,7 +524,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     setup: async ({ page, caseDetailsPage }) => {
       await openEventBehaviourJourney(page, caseDetailsPage, {
         trigger: buildRichTextAccessibilityTrigger(),
-        skipSessionCookies: true,
       });
       await caseDetailsPage.selectCaseAction('Record outcome', {
         expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),
@@ -541,7 +538,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     setup: async ({ page, caseDetailsPage }) => {
       await openEventBehaviourJourney(page, caseDetailsPage, {
         trigger: buildRichTextAccessibilityTrigger(),
-        skipSessionCookies: true,
       });
       await caseDetailsPage.selectCaseAction('Record outcome', {
         expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),
@@ -559,7 +555,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     setup: async ({ page, caseDetailsPage }) => {
       await openEventBehaviourJourney(page, caseDetailsPage, {
         trigger: buildRichTextAccessibilityTrigger(),
-        skipSessionCookies: true,
       });
       await caseDetailsPage.selectCaseAction('Record outcome', {
         expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),

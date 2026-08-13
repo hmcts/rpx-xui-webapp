@@ -22,7 +22,6 @@ export type EventBehaviourSubmitOverride = {
 export type EventBehaviourMockConfig = {
   trigger?: ReturnType<typeof buildEventBehaviourTrigger>;
   richTextReadValue?: string;
-  skipSessionCookies?: boolean;
   eventReturnedByCaseView?: boolean;
   submit?: EventBehaviourSubmitOverride;
   midEventValidation?: {
@@ -142,17 +141,7 @@ export async function openEventBehaviourJourney(
   caseDetailsPage: CaseDetailsPage,
   config: EventBehaviourMockConfig = {}
 ): Promise<void> {
-  if (!config.skipSessionCookies) {
-    await applySessionCookies(page, 'STAFF_ADMIN');
-  } else {
-    await page.context().addCookies([
-      {
-        name: 'hmcts-exui-cookies-event-behaviour-user-mc-accepted',
-        value: 'true',
-        url: process.env.TEST_URL ?? 'http://localhost:3000',
-      },
-    ]);
-  }
+  await applySessionCookies(page, 'STAFF_ADMIN');
   await setupEventBehaviourMockRoutes(page, config);
   await caseDetailsPage.openCaseDetails(EVENT_BEHAVIOUR_JURISDICTION, EVENT_BEHAVIOUR_CASE_TYPE, EVENT_BEHAVIOUR_CASE_REFERENCE);
   if (config.eventReturnedByCaseView === false) {

@@ -37,6 +37,10 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
+### Angular and NgRx DevTools with production settings
+
+Use `yarn start:ng:production-debug` when you need the production browser environment values locally while inspecting state with Angular DevTools or Redux DevTools. This is a local debugging profile: it disables Angular production mode and build optimisation, and must not be used for a deployed build.
+
 ## Playwright integration local setup
 
 Use Playwright integration tests for local UI coverage with mocked backend routes. The old Codecept-backed `test_codecept` mock runner has been retired from this repository, so new local test work should use the Playwright route mocks under `playwright_tests_new/integration/`.

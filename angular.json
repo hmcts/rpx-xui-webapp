@@ -94,6 +94,19 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": false
+            },
+            "production-debug": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod-debug.ts"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": true,
+              "extractLicenses": false
             }
           }
         },
@@ -106,6 +119,9 @@
           "configurations": {
             "production": {
               "buildTarget": "rpx-exui:build:production"
+            },
+            "production-debug": {
+              "buildTarget": "rpx-exui:build:production-debug"
             }
           }
         },

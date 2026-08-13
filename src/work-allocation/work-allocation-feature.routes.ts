@@ -45,6 +45,7 @@ export const ROUTES: Routes = [
           {
             path: '',
             redirectTo: 'list',
+            pathMatch: 'full',
           },
           {
             path: 'list',
@@ -92,6 +93,7 @@ export const ROUTES: Routes = [
           {
             path: '',
             redirectTo: 'tasks',
+            pathMatch: 'full',
           },
           {
             path: 'tasks',

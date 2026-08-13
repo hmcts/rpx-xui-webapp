@@ -17,31 +17,19 @@ export const ROUTES: Routes = [
       {
         path: 'specific-access',
         component: SpecificAccessHomeComponent,
-        children: [
-          {
-            path: '',
-            component: null,
-            // canActivate: [HealthCheckGuard],
-            data: {
-              title: 'HMCTS Manage cases | Role and access | Specific access',
-            },
-          },
-        ],
+        // canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Role and access | Specific access',
+        },
       },
     ],
   },
   {
     path: 'add-exclusion',
     component: AddExclusionHomeComponent,
-    children: [
-      {
-        path: '',
-        component: null,
-        data: {
-          title: 'HMCTS Manage cases | Role and access | Add Exclusion',
-        },
-      },
-    ],
+    data: {
+      title: 'HMCTS Manage cases | Role and access | Add Exclusion',
+    },
   },
   {
     path: 'delete-exclusion',

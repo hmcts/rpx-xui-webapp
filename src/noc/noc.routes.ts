@@ -6,16 +6,10 @@ export const ROUTES: Routes = [
   {
     path: '',
     component: NocHomeComponent,
-    children: [
-      {
-        path: '',
-        component: null,
-        data: {
-          title: 'HMCTS Manage cases | Notice of Change',
-          featureDisabledRedirect: '/',
-        },
-      },
-    ],
+    data: {
+      title: 'HMCTS Manage cases | Notice of Change',
+      featureDisabledRedirect: '/',
+    },
   },
 ];
 

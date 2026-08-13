@@ -61,6 +61,7 @@ export const ROUTES: Routes = [
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks',
     redirectTo: 'work/my-work/list',
+    pathMatch: 'full',
   },
   {
     path: 'role-access',

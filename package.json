@@ -47,6 +47,7 @@
     "start:node:stub": "NODE_CONFIG_ENV=stub && cd api && yarn watch",
     "test:node": "cd api && yarn coverage",
     "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
+    "start:ng:production-debug": "ng serve --configuration production-debug --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "test": "cd api && yarn coverage",
     "test:node:local": "cd api && NODE_CONFIG_DIR=../config NODE_CONFIG_ENV=development ALLOW_CONFIG_MUTATIONS=1 npx mocha --config ./test/.mocharc.json -r dotenv-extended/config",
     "test:api": "PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-api/odhin-report PLAYWRIGHT_REPORT_INDEX_FILENAME=xui-playwright-api.html npx playwright test --project node-api && node ./scripts/copy-odhin-report.js",

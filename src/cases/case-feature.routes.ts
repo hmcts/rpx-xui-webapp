@@ -19,6 +19,26 @@ import { RestrictedCaseAccessContainerComponent } from './containers/restricted-
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
+const caseViewerRouting: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    component: CaseViewerContainerComponent,
+  },
+  {
+    path: 'tasks',
+    component: CaseViewerContainerComponent,
+  },
+  {
+    path: 'roles-and-access',
+    component: CaseViewerContainerComponent,
+  },
+  {
+    path: 'hearings',
+    component: CaseViewerContainerComponent,
+  },
+];
+
 export const ROUTES: Routes = [
   {
     path: '',
@@ -99,28 +119,7 @@ export const ROUTES: Routes = [
         component: CaseDetailsHomeComponent,
         resolve: { case: CaseResolver },
         runGuardsAndResolvers: 'always',
-        children: [
-          {
-            path: '',
-            component: CaseViewerContainerComponent,
-            children: [
-              {
-                path: '',
-                pathMatch: 'full',
-              },
-              {
-                path: 'tasks',
-              },
-              {
-                path: 'roles-and-access',
-              },
-              {
-                path: 'hearings',
-              },
-            ],
-          },
-          ...caseViewRouting,
-        ],
+        children: [...caseViewerRouting, ...caseViewRouting],
         data: {
           title: 'Case Details',
         },
@@ -130,28 +129,7 @@ export const ROUTES: Routes = [
         component: CaseDetailsHomeComponent,
         resolve: { case: CaseResolver },
         runGuardsAndResolvers: 'always',
-        children: [
-          {
-            path: '',
-            component: CaseViewerContainerComponent,
-            children: [
-              {
-                path: '',
-                pathMatch: 'full',
-              },
-              {
-                path: 'tasks',
-              },
-              {
-                path: 'roles-and-access',
-              },
-              {
-                path: 'hearings',
-              },
-            ],
-          },
-          ...caseViewRouting,
-        ],
+        children: [...caseViewerRouting, ...caseViewRouting],
         data: {
           title: 'Case Details',
         },

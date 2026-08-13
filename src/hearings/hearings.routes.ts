@@ -73,16 +73,8 @@ export const ROUTES: Routes = [
     canActivate: [HearingsEditGuard],
     data: {
       category: HearingCategory.CancelHearingReason,
+      title: 'HMCTS Hearings | Cancel Hearing',
     },
-    children: [
-      {
-        path: '',
-        component: null,
-        data: {
-          title: 'HMCTS Hearings | Cancel Hearing',
-        },
-      },
-    ],
   },
   {
     path: 'link/:caseId/:hearingId',
@@ -255,6 +247,7 @@ export const ROUTES: Routes = [
       {
         path: '',
         redirectTo: 'hearing-requirements',
+        pathMatch: 'full',
         data: {
           title: 'HMCTS Hearings | Request Hearing',
         },
@@ -481,14 +474,10 @@ export const ROUTES: Routes = [
     path: 'view',
     component: ViewHearingComponent,
     canActivate: [HearingsViewGuard],
+    data: {
+      title: 'HMCTS Hearings | View Hearing',
+    },
     children: [
-      {
-        path: '',
-        component: null,
-        data: {
-          title: 'HMCTS Hearings | View Hearing',
-        },
-      },
       {
         path: 'hearing-cancellation-summary',
         resolve: {

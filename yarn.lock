@@ -3105,14 +3105,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.84":
-  version: 7.3.84
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.84"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.85":
+  version: 7.3.85
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.85"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/media-viewer": "npm:4.2.27"
-    file-saver: "npm:^2.0.2"
+    file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
@@ -3147,7 +3147,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/256ad5686aef35201254f24da39beae1437b51d5bcdcd8a4996da366e6811369d0b679f957990454b688cb6ec11a208a28e829b942b5cabbf66c5a3a24e59fcb
+  checksum: 10/193dc2a7dd1b2fb319e9a2ddae740d114de4de9f4806e676a9f43f6ba0c187375f4d1e6fcd3590c27558234d8ff7bf1be1f77ffc2458ca1179dd51ac5fd8dd51
   languageName: node
   linkType: hard
 
@@ -13468,7 +13468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-saver@npm:^2.0.2":
+"file-saver@npm:^2.0.2, file-saver@npm:^2.0.5":
   version: 2.0.5
   resolution: "file-saver@npm:2.0.5"
   checksum: 10/fbba443d9b682fec0be6676c048a7ac688b9bd33b105c02e8e1a1cb3e354ed441198dc1f15dcbc137fa044bea73f8a7549f2617e3a952fa7d96390356d54a7c3
@@ -16477,6 +16477,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lru-cache@npm:^11.1.0, lru-cache@npm:^11.2.1":
+  version: 11.5.2
+  resolution: "lru-cache@npm:11.5.2"
+  checksum: 10/122789c66605ddf29df58ff279e9e2c9499499d0b80b895ec524496f14bcde045d1582e3e38008f3457226d98067556719573b352119d6be8bdb1f8849f85681
+  languageName: node
+  linkType: hard
+
 "lru-cache@npm:^11.2.4, lru-cache@npm:^11.2.5, lru-cache@npm:^11.2.6":
   version: 11.3.5
   resolution: "lru-cache@npm:11.3.5"
@@ -17137,11 +17144,11 @@ __metadata:
   linkType: hard
 
 "moment-timezone@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "moment-timezone@npm:0.6.2"
+  version: 0.6.3
+  resolution: "moment-timezone@npm:0.6.3"
   dependencies:
     moment: "npm:^2.29.4"
-  checksum: 10/021f908742a392ff7234b3814fb20c786cb086d0fa3f98a58f6810181c71a305244e908e913d8bd6750c4a7e09300eda2c869cd77ef0b3f83e58028fa75f84de
+  checksum: 10/55ae516386b87fc2207d7911ef61ecef240ba4b21aece36d0b9f33802e1457db0c21b197ae4fde3b6d819d4bde3d835da0ba3c08de740b158e067c874d16082a
   languageName: node
   linkType: hard
 
@@ -19190,8 +19197,24 @@ __metadata:
     puppeteer-core: "npm:25.1.0"
     typed-query-selector: "npm:^2.12.2"
   bin:
-    puppeteer: lib/puppeteer/node/cli.js
-  checksum: 10/fd79fda2a45f9ee43f4594782249ac9d2113af5f38bed15542d404b875097f825245d99c0ae20f78b9b29a0ba28a40caa17357ca1377fb3c42acae9f33c1da15
+    puppeteer: lib/esm/puppeteer/node/cli.js
+  checksum: 10/500ea99250e2a48ef3e943c82b5d3983db846e0083863dd57086874db19d6e9ac0bf03c31bc80fa1154e795e3904820e1fe0a9052a454206cfb411f0b57ff70f
+  languageName: node
+  linkType: hard
+
+"pvtsutils@npm:^1.3.6":
+  version: 1.3.6
+  resolution: "pvtsutils@npm:1.3.6"
+  dependencies:
+    tslib: "npm:^2.8.1"
+  checksum: 10/d45b12f8526e13ecf15fe09b30cde65501f3300fd2a07c11b28a966d434d1f767c8a61597ecba2e19c7eb19ca0c740341a6babc67a4f741e08b1ef1095c71663
+  languageName: node
+  linkType: hard
+
+"pvutils@npm:^1.1.3, pvutils@npm:^1.1.5":
+  version: 1.2.0
+  resolution: "pvutils@npm:1.2.0"
+  checksum: 10/30e2c6a5410a445e0dcbf6fd68d3a7725324d59acc4dd2b8ac8fa85fecfc591648b602a1e703287b9d8b07a2bbb80e4286d167d064647f542d5d966a45b314d7
   languageName: node
   linkType: hard
 
@@ -19958,7 +19981,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.84"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.85"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.28-nodejs-healthcheck-update"
@@ -20021,7 +20044,7 @@ __metadata:
     exceljs: "npm:^4.4.0"
     exception-formatter: "npm:^2.1.2"
     express: "npm:^5.2.1"
-    file-saver: "npm:^2.0.2"
+    file-saver: "npm:^2.0.5"
     get-port: "npm:^7.0.0"
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^4.1.3"
@@ -21799,6 +21822,15 @@ __metadata:
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
   checksum: 10/9a5b47ddac65874fa011c20ff76db69f97cf90c78cff5934799ab8894a5342db2d17b4e7613a087046bc1d133d21547ddff87ac558abeec31ffa929c88b7fce6
+  languageName: node
+  linkType: hard
+
+"tsyringe@npm:^4.10.0":
+  version: 4.10.0
+  resolution: "tsyringe@npm:4.10.0"
+  dependencies:
+    tslib: "npm:^1.9.3"
+  checksum: 10/b42660dc112cee2db02b3d69f2ef6a6a9d185afd96b18d8f88e47c1e62be94b69a9f5a58fcfdb2a3fbb7c6c175b8162ea00f7db6499bf333ce945e570e31615c
   languageName: node
   linkType: hard
 

@@ -3201,9 +3201,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.28-nodejs-healthcheck-update":
-  version: 4.2.28-nodejs-healthcheck-update
-  resolution: "@hmcts/media-viewer@npm:4.2.28-nodejs-healthcheck-update"
+"@hmcts/media-viewer@npm:4.2.29":
+  version: 4.2.29
+  resolution: "@hmcts/media-viewer@npm:4.2.29"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3226,7 +3226,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.7
     rxjs: ^7.8.2
-  checksum: 10/ba14bd7fe5a3644109586667430f4576f152f04457bacae29e2604dcfaa644e9ba3b54b84348b72f3893e2ffb6e19e9cf6cf9b1755ac8a9ff80130dec73d546a
+  checksum: 10/4059ccdda4699fe5d323b58a9ca78d3e9832fc618d901a45764eb715d1bf272182001d7f5e2e287d0dae8cce3fd89aed641d00a7cc2d75cc2b45d0b8293c15cc
   languageName: node
   linkType: hard
 
@@ -16470,7 +16470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^11.0.0, lru-cache@npm:^11.1.0, lru-cache@npm:^11.2.1":
+"lru-cache@npm:^11.0.0":
   version: 11.5.1
   resolution: "lru-cache@npm:11.5.1"
   checksum: 10/02c4f73967d91fb101f4accf8ebac9e0541e08e16d987bdb9e9737f13e5f2c4bc33c593b98ec30e4486bf899bc97edb36fbd133684b36087336559e41edafdea
@@ -19197,24 +19197,8 @@ __metadata:
     puppeteer-core: "npm:25.1.0"
     typed-query-selector: "npm:^2.12.2"
   bin:
-    puppeteer: lib/esm/puppeteer/node/cli.js
-  checksum: 10/500ea99250e2a48ef3e943c82b5d3983db846e0083863dd57086874db19d6e9ac0bf03c31bc80fa1154e795e3904820e1fe0a9052a454206cfb411f0b57ff70f
-  languageName: node
-  linkType: hard
-
-"pvtsutils@npm:^1.3.6":
-  version: 1.3.6
-  resolution: "pvtsutils@npm:1.3.6"
-  dependencies:
-    tslib: "npm:^2.8.1"
-  checksum: 10/d45b12f8526e13ecf15fe09b30cde65501f3300fd2a07c11b28a966d434d1f767c8a61597ecba2e19c7eb19ca0c740341a6babc67a4f741e08b1ef1095c71663
-  languageName: node
-  linkType: hard
-
-"pvutils@npm:^1.1.3, pvutils@npm:^1.1.5":
-  version: 1.2.0
-  resolution: "pvutils@npm:1.2.0"
-  checksum: 10/30e2c6a5410a445e0dcbf6fd68d3a7725324d59acc4dd2b8ac8fa85fecfc591648b602a1e703287b9d8b07a2bbb80e4286d167d064647f542d5d966a45b314d7
+    puppeteer: lib/puppeteer/node/cli.js
+  checksum: 10/fd79fda2a45f9ee43f4594782249ac9d2113af5f38bed15542d404b875097f825245d99c0ae20f78b9b29a0ba28a40caa17357ca1377fb3c42acae9f33c1da15
   languageName: node
   linkType: hard
 
@@ -19984,7 +19968,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.85"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.28-nodejs-healthcheck-update"
+    "@hmcts/media-viewer": "npm:4.2.29"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
@@ -21822,15 +21806,6 @@ __metadata:
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
   checksum: 10/9a5b47ddac65874fa011c20ff76db69f97cf90c78cff5934799ab8894a5342db2d17b4e7613a087046bc1d133d21547ddff87ac558abeec31ffa929c88b7fce6
-  languageName: node
-  linkType: hard
-
-"tsyringe@npm:^4.10.0":
-  version: 4.10.0
-  resolution: "tsyringe@npm:4.10.0"
-  dependencies:
-    tslib: "npm:^1.9.3"
-  checksum: 10/b42660dc112cee2db02b3d69f2ef6a6a9d185afd96b18d8f88e47c1e62be94b69a9f5a58fcfdb2a3fbb7c6c175b8162ea00f7db6499bf333ce945e570e31615c
   languageName: node
   linkType: hard
 

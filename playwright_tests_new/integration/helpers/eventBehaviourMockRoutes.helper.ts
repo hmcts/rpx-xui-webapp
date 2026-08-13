@@ -20,6 +20,9 @@ export type EventBehaviourSubmitOverride = {
 };
 
 export type EventBehaviourMockConfig = {
+  trigger?: ReturnType<typeof buildEventBehaviourTrigger>;
+  richTextReadValue?: string;
+  skipSessionCookies?: boolean;
   eventReturnedByCaseView?: boolean;
   submit?: EventBehaviourSubmitOverride;
   midEventValidation?: {
@@ -64,8 +67,18 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
     },
   });
 
+  await page.route('**/auth/isAuthenticated*', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(true) });
+  });
+  await page.route('**/api/configuration*', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({}) });
+  });
+  await page.route('**/api/monitoring-tools*', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+  });
+
   let eventRecorded = false;
-  const trigger = buildEventBehaviourTrigger();
+  const trigger = config.trigger ?? buildEventBehaviourTrigger();
 
   await page.route(`**/data/internal/cases/${EVENT_BEHAVIOUR_CASE_REFERENCE}*`, async (route) => {
     await fulfil(
@@ -74,6 +87,7 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
       buildEventBehaviourCaseDetails({
         eventRecorded,
         eventReturnedByCaseView: config.eventReturnedByCaseView !== false,
+        richTextReadValue: config.richTextReadValue,
       })
     );
   });
@@ -116,6 +130,7 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
         buildEventBehaviourCaseDetails({
           eventRecorded,
           eventReturnedByCaseView: config.eventReturnedByCaseView !== false,
+          richTextReadValue: config.richTextReadValue,
         }),
       submit?.abortErrorCode
     );
@@ -127,7 +142,17 @@ export async function openEventBehaviourJourney(
   caseDetailsPage: CaseDetailsPage,
   config: EventBehaviourMockConfig = {}
 ): Promise<void> {
-  await applySessionCookies(page, 'STAFF_ADMIN');
+  if (!config.skipSessionCookies) {
+    await applySessionCookies(page, 'STAFF_ADMIN');
+  } else {
+    await page.context().addCookies([
+      {
+        name: 'hmcts-exui-cookies-event-behaviour-user-mc-accepted',
+        value: 'true',
+        url: process.env.TEST_URL ?? 'http://localhost:3000',
+      },
+    ]);
+  }
   await setupEventBehaviourMockRoutes(page, config);
   await caseDetailsPage.openCaseDetails(EVENT_BEHAVIOUR_JURISDICTION, EVENT_BEHAVIOUR_CASE_TYPE, EVENT_BEHAVIOUR_CASE_REFERENCE);
   if (config.eventReturnedByCaseView === false) {

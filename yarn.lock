@@ -3273,6 +3273,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/media-viewer@npm:4.2.28":
+  version: 4.2.28
+  resolution: "@hmcts/media-viewer@npm:4.2.28"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^23.0.1"
+    moment-timezone: "npm:^0.6.2"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.0.3"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.7
+    rxjs: ^7.8.2
+  checksum: 10/094bce236f312c9a2f0ffbc904e5584955d70f73f0a1538525f5aa7b24d6016adfcdced2446c7dcb11cc2d24a0729c44a94c4f1903559c98a80dec85d5a7d08b
+  languageName: node
+  linkType: hard
+
 "@hmcts/nodejs-healthcheck@npm:1.8.5":
   version: 1.8.5
   resolution: "@hmcts/nodejs-healthcheck@npm:1.8.5"
@@ -19733,7 +19762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.15.0":
+"qs@npm:^6.15.3":
   version: 6.15.3
   resolution: "qs@npm:6.15.3"
   dependencies:
@@ -20516,7 +20545,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.85"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.27"
+    "@hmcts/media-viewer": "npm:4.2.28"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"

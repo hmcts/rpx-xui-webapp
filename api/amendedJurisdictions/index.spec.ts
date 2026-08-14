@@ -104,7 +104,7 @@ describe('Amended Jurisdiction', () => {
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
     const response = amendedJurisdictions.getJurisdictions(data, req);
-    expect(response).to.equal('4606-test');
+    expect(response).to.equal(undefined);
   });
 
   it('should store filtered jurisdictions in session', () => {

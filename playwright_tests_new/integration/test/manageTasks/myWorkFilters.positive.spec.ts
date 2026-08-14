@@ -13,6 +13,14 @@ type SearchRequestPayload = {
   };
 };
 
+const getSearchParameterValues = (request: SearchRequestPayload, key: string): string[] =>
+  request.searchRequest?.search_parameters?.find((parameter) => parameter.key === key)?.values ?? [];
+
+const hasExactSearchParameterValues = (request: SearchRequestPayload, key: string, expectedValues: string[]): boolean => {
+  const actualValues = getSearchParameterValues(request, key);
+  return actualValues.length === expectedValues.length && expectedValues.every((expectedValue) => actualValues.includes(expectedValue));
+};
+
 const authenticatedUserIdentifier = 'STAFF_ADMIN';
 const myWorkFilterTabs = [
   {
@@ -198,13 +206,8 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
       myCasesRouteHandler: async (route) => {
         const request = route.request().postDataJSON() as SearchRequestPayload;
         myCasesRequests.push(request);
-        const searchParameters = request.searchRequest?.search_parameters ?? [];
-        const hasIaServiceFilter = searchParameters.some(
-          (parameter) => parameter.key === 'services' && parameter.values?.includes('IA')
-        );
-        const hasIaLocationFilter = searchParameters.some(
-          (parameter) => parameter.key === 'locations' && parameter.values?.includes('20001')
-        );
+        const hasIaServiceFilter = hasExactSearchParameterValues(request, 'services', ['IA']);
+        const hasIaLocationFilter = hasExactSearchParameterValues(request, 'locations', ['20001']);
 
         await route.fulfill({
           status: 200,
@@ -252,19 +255,21 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
       await expect
         .poll(
           () =>
-            myCasesRequests.some((request) => {
-              const searchParameters = request.searchRequest?.search_parameters ?? [];
-              return (
-                searchParameters.some((parameter) => parameter.key === 'services' && parameter.values?.includes('IA')) &&
-                searchParameters.some((parameter) => parameter.key === 'locations' && parameter.values?.includes('20001'))
-              );
-            }),
+            myCasesRequests.find(
+              (request) =>
+                hasExactSearchParameterValues(request, 'services', ['IA']) &&
+                hasExactSearchParameterValues(request, 'locations', ['20001'])
+            ) ?? null,
           { message: 'filtered My cases request was sent' }
         )
-        .toBe(true);
+        .not.toBeNull();
 
-      const latestRequest = myCasesRequests.at(-1);
-      expect(latestRequest?.searchRequest?.search_parameters).toEqual(
+      const filteredRequest = myCasesRequests.find(
+        (request) =>
+          hasExactSearchParameterValues(request, 'services', ['IA']) &&
+          hasExactSearchParameterValues(request, 'locations', ['20001'])
+      );
+      expect(filteredRequest?.searchRequest?.search_parameters).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ key: 'services', values: ['IA'] }),
           expect.objectContaining({ key: 'locations', values: ['20001'] }),

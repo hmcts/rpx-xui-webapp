@@ -45,8 +45,8 @@ export const myCasesAllocatorActions: MyCaseActionMock[] = [
 export const myCasesNoActions: MyCaseActionMock[] = [];
 
 const myCaseStateDefinitions = [
-  { caseRole: 'lead-judge', role: 'Lead Judge', roleCategory: 'JUDICIAL' },
-  { caseRole: 'case-manager', role: 'Case Manager', roleCategory: 'LEGAL_OPERATIONS' },
+  { caseRole: 'lead-judge', role: 'Lead judge', roleCategory: 'JUDICIAL' },
+  { caseRole: 'case-manager', role: 'Case manager', roleCategory: 'LEGAL_OPERATIONS' },
 ] as const;
 
 type MyCaseStateDefinition = (typeof myCaseStateDefinitions)[number];

@@ -6,8 +6,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 const { NODE_ENV = 'production' } = process.env;
 const isProduction = NODE_ENV === 'production';
-const telemetryExternalPattern =
-  /^(applicationinsights|@azure\/monitor-opentelemetry|@azure\/monitor-opentelemetry-exporter|@azure\/opentelemetry-instrumentation-azure-sdk|@opentelemetry\/)/;
 
 module.exports = {
   optimization: {
@@ -37,17 +35,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    mainFields: ['main', 'module'],
   },
-  externals: [
-    ({ request }, callback) => {
-      if (telemetryExternalPattern.test(request)) {
-        return callback(null, `commonjs ${request}`);
-      }
-
-      callback();
-    },
-    nodeExternals(),
-  ],
+  externals: [nodeExternals()],
   module: {
     rules: [
       {

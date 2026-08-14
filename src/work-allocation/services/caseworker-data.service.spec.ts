@@ -39,5 +39,23 @@ describe('WorkAllocation service', () => {
       service.getDetails('123456');
       expect(mockHttpService.get).toHaveBeenCalledWith(`${CaseworkerDataService.caseWorkerUrl}/123456`);
     });
+
+    it('getUserByIdamId should make correct api call', () => {
+      const service = new CaseworkerDataService(mockHttpService);
+      service.getUserByIdamId('123456');
+      expect(mockHttpService.post).toHaveBeenCalledWith(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, {
+        idamId: '123456',
+        silentNotFound: false,
+      });
+    });
+
+    it('getUserByIdamId should support silent not found', () => {
+      const service = new CaseworkerDataService(mockHttpService);
+      service.getUserByIdamId('123456', true);
+      expect(mockHttpService.post).toHaveBeenCalledWith(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, {
+        idamId: '123456',
+        silentNotFound: true,
+      });
+    });
   });
 });

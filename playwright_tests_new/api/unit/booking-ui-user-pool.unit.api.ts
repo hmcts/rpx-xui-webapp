@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+import { setupBookableBookingUiRoutesForTest } from '../../integration/helpers/bookingUiMockRoutes.helper.js';
 import {
   BOOKING_UI_LEGACY_USER_IDENTIFIER,
   getConfiguredBookingUiUserIdentifiers,
+  resolveBookingUiSessionCandidates,
   resolveBookingUiUserIdentifier,
 } from '../../integration/helpers/bookingUiUserPool.helper.js';
 
@@ -34,11 +36,55 @@ test.describe('Booking UI user pool unit tests', { tag: '@svc-internal' }, () =>
     expect(getConfiguredBookingUiUserIdentifiers(env)).toEqual(['BOOKING_UI-FT-ON-1']);
   });
 
-  test('selects configured pooled users by Playwright parallel index', () => {
+  test('distributes configured users by parallel index', () => {
     expect(resolveBookingUiUserIdentifier({ parallelIndex: 0 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-1');
     expect(resolveBookingUiUserIdentifier({ parallelIndex: 1 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-2');
-    expect(resolveBookingUiUserIdentifier({ parallelIndex: 2 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-3');
-    expect(resolveBookingUiUserIdentifier({ parallelIndex: 3 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-4');
     expect(resolveBookingUiUserIdentifier({ parallelIndex: 4 }, configuredEnv)).toBe('BOOKING_UI-FT-ON-1');
+  });
+
+  test('orders fallback candidates after the worker-selected identity', () => {
+    expect(resolveBookingUiSessionCandidates({ parallelIndex: 1 }, configuredEnv)).toEqual([
+      'BOOKING_UI-FT-ON-2',
+      'BOOKING_UI-FT-ON-1',
+      'BOOKING_UI-FT-ON-3',
+      'BOOKING_UI-FT-ON-4',
+    ]);
+  });
+
+  test('uses the deadline-aware Booking UI pool once and annotates its selected identity', async () => {
+    const envOverrides = configuredEnv;
+    const previousValues = Object.fromEntries(Object.keys(envOverrides).map((key) => [key, process.env[key]]));
+    const poolCalls: string[][] = [];
+    const testInfo = { parallelIndex: 0, annotations: [] as Array<{ type: string; description?: string }> };
+    const page = {
+      addInitScript: async () => undefined,
+      route: async () => undefined,
+    } as never;
+
+    try {
+      Object.assign(process.env, envOverrides);
+      const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo, {}, async (_page, candidates) => {
+        poolCalls.push(candidates.map((candidate) => (typeof candidate === 'string' ? candidate : candidate.userIdentifier)));
+        return {
+          userIdentifier: 'BOOKING_UI-FT-ON-2',
+          session: {
+            cookies: [{ name: '__userid__', value: 'fallback-booking-user-id' }],
+          },
+        };
+      });
+
+      expect(poolCalls).toEqual([['BOOKING_UI-FT-ON-1', 'BOOKING_UI-FT-ON-2', 'BOOKING_UI-FT-ON-3', 'BOOKING_UI-FT-ON-4']]);
+      expect(routeState.sessionUserIdentifier).toBe('BOOKING_UI-FT-ON-2');
+      expect(routeState.sessionUserId).toBe('fallback-booking-user-id');
+      expect(testInfo.annotations).toEqual([{ type: 'session-user', description: 'BOOKING_UI-FT-ON-2' }]);
+    } finally {
+      for (const [key, value] of Object.entries(previousValues)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+    }
   });
 });

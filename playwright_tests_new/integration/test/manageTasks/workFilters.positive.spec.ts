@@ -39,7 +39,9 @@ const getSearchParameterValues = (request: SearchRequestPayload, key: string): s
 
 const hasExactSearchParameterValues = (request: SearchRequestPayload, key: string, expectedValues: string[]): boolean => {
   const actualValues = getSearchParameterValues(request, key);
-  return actualValues.length === expectedValues.length && expectedValues.every((expectedValue) => actualValues.includes(expectedValue));
+  return (
+    actualValues.length === expectedValues.length && expectedValues.every((expectedValue) => actualValues.includes(expectedValue))
+  );
 };
 
 const WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS =

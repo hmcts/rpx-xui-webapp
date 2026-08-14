@@ -66,8 +66,8 @@ describe('HearingAnswersPipe', () => {
       is_hearing_location: '',
     },
   ];
-  initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
   const STATE: State = _.cloneDeep(initialState.hearings);
+  STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
   let hearingAnswersPipe: HearingAnswersPipe;
   let router: any;
   const locationsDataService = jasmine.createSpyObj('LocationsDataService', ['getLocationById']);

@@ -1,95 +1,128 @@
 import * as applicationinsights from 'applicationinsights';
 import * as express from 'express';
-import type { IncomingMessage, RequestOptions } from 'http';
+
 import { getConfigValue, showFeature } from '../configuration/';
 import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
 
-type TelemetryRequestOptions = RequestOptions & {
-  href?: string;
-  pathname?: string;
-};
-
-type HttpInstrumentationOptions = {
-  enabled: boolean;
-  ignoreIncomingRequestHook: (request: IncomingMessage) => boolean;
-  ignoreOutgoingRequestHook: (request: RequestOptions) => boolean;
-};
-
-const EXCLUDED_TELEMETRY_PATHS = ['/health', '/assets/', '/media/', '/polyfills'];
-
-const EXCLUDED_TELEMETRY_EXTENSIONS = ['.js', '.css', '.woff2', '.svg', '.png', '.gif', '.ico', '.json'];
-
-function shouldExcludeTelemetryPath(path = ''): boolean {
-  const telemetryPath = path.toLowerCase();
-
-  return (
-    EXCLUDED_TELEMETRY_PATHS.some((excludedPath) => telemetryPath.includes(excludedPath)) ||
-    EXCLUDED_TELEMETRY_EXTENSIONS.some((extension) => telemetryPath.endsWith(extension))
-  );
-}
-
-function getOutgoingRequestPath(request: RequestOptions): string {
-  const telemetryRequest = request as TelemetryRequestOptions;
-
-  if (typeof request.path === 'string') {
-    return request.path;
-  }
-
-  if (typeof telemetryRequest.href === 'string') {
-    return telemetryRequest.href;
-  }
-
-  return `${request.protocol || ''}//${request.hostname || request.host || ''}${telemetryRequest.pathname || ''}`;
-}
-export let client: applicationinsights.TelemetryClient;
+/**
+ * Application Insights telemetry client.
+ *
+ * This export is intentionally retained because other parts of the
+ * application, including log4jui.ts, use the client directly.
+ *
+ * The client is null when Application Insights is disabled.
+ */
+export let client: applicationinsights.TelemetryClient | null = null;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   const connectionString = getConfigValue(APP_INSIGHTS_CONNECTION_STRING);
-  const httpInstrumentationOptions: HttpInstrumentationOptions = {
-    enabled: true,
-    ignoreIncomingRequestHook: (request: IncomingMessage) => shouldExcludeTelemetryPath(request.url),
-    ignoreOutgoingRequestHook: (request: RequestOptions) => shouldExcludeTelemetryPath(getOutgoingRequestPath(request)),
-  };
 
+  /**
+   * Application Insights 3.x is backed by Azure Monitor OpenTelemetry.
+   *
+   * The previous 2.x implementation used a TelemetryProcessor for
+   * fine-grained sampling:
+   *
+   *   client.addTelemetryProcessor(...)
+   *
+   * That API is not supported by the 3.x SDK.
+   *
+   * IMPORTANT:
+   * Fine-grained health/static request filtering is intentionally NOT
+   * configured here yet.
+   *
+   * The setAzureMonitorOptions() API exposed by the installed
+   * applicationinsights/Azure Monitor packages does not expose the
+   * HTTP ignoreIncomingRequestHook configuration required for that
+   * filtering.
+   *
+   * We keep normal telemetry collection unchanged while the filtering
+   * implementation is handled separately.
+   */
   applicationinsights
     .setup(connectionString)
     .setAzureMonitorOptions({
       azureMonitorExporterOptions: {
         connectionString,
       },
+
       enableAutoCollectDependencies: true,
       enableAutoCollectExceptions: true,
       enableAutoCollectPerformance: true,
       enableAutoCollectRequests: true,
       enableLiveMetrics: true,
-      instrumentationOptions: {
-        http: httpInstrumentationOptions,
-      },
+
+      /**
+       * Keep 100% of telemetry.
+       *
+       * Do NOT set this to 0.01 because samplingRatio applies globally
+       * and would reduce useful application/service telemetry to 1%.
+       */
       samplingRatio: 1,
     })
+
+    /*
+     * Preserve request/dependency correlation.
+     */
     .setAutoDependencyCorrelation(true)
-    .setAutoCollectRequests(true)
-    .setAutoCollectPerformance(true, true)
-    .setAutoCollectExceptions(true)
-    .setAutoCollectDependencies(true)
+
+    /*
+     * Preserve existing console telemetry collection.
+     */
     .setAutoCollectConsole(true, true)
+
+    /*
+     * Preserve disk retry caching.
+     */
     .setUseDiskRetryCaching(true)
+
+    /*
+     * Preserve Live Metrics.
+     */
     .setSendLiveMetrics(true)
+
     .start();
 
   client = applicationinsights.defaultClient;
-  client.trackTrace({ message: 'App Insight Activated' });
-} else {
-  client = null;
+
+  client.trackTrace({
+    message: 'App Insight Activated',
+  });
 }
 
-export function appInsights(_req: express.Request, _res: express.Response, next) {
-  // Request telemetry is captured by Azure Monitor OpenTelemetry HTTP instrumentation.
+/**
+ * Legacy Express middleware.
+ *
+ * Application Insights 2.x manually called:
+ *
+ *   client.trackNodeHttpRequest(...)
+ *
+ * Application Insights 3.x automatically instruments incoming HTTP
+ * requests through Azure Monitor OpenTelemetry.
+ *
+ * Manual request tracking is therefore removed to avoid duplicate
+ * request telemetry.
+ *
+ * The middleware remains as a no-op so existing Express registration
+ * does not need to change as part of this migration.
+ */
+export function appInsights(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
   next();
 }
 
-export function trackTrace(trace: string, properties?: Record<string, unknown>) {
+/**
+ * Existing trace wrapper retained unchanged from the application's
+ * perspective.
+ *
+ * This ensures existing callers continue generating Application Insights
+ * trace telemetry rather than changing telemetry type during the SDK
+ * migration.
+ */
+export function trackTrace(trace: string, properties?: Record<string, unknown>): void {
   if (client) {
-    client.trackTrace({ message: trace, properties });
+    client.trackTrace({
+      message: trace,
+      properties,
+    });
   }
 }

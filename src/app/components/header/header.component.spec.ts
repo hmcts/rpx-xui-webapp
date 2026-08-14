@@ -65,7 +65,7 @@ describe('Header Component', () => {
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('.govuk-skip-link')).nativeElement;
     expect(element.getAttribute('href')).toEqual('http://localhost:8080/A/B#content');
-    expect(element.textContent).toEqual('Skip to main content-4606-test');
+    expect(element.textContent).toEqual('Skip to main content');
     expect(translatePipeSpy).toHaveBeenCalledWith('Skip to main content');
   });
 

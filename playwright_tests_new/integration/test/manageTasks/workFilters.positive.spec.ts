@@ -67,17 +67,17 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     await test.step('My tasks filter opens, shows controls, and hides after apply', async () => {
       await taskListPage.gotoAndWaitForTaskRow('opening My tasks filters');
-      await expect(taskListPage.taskListFilterToggle).toContainText('Show work filter');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Show work filter');
 
       await taskListPage.openFilterPanel();
 
-      await expect(taskListPage.taskListFilterToggle).toContainText('Hide work filter');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Hide work filter');
       await taskListPage.expectWorkFilterControls();
 
       await taskListPage.applyCurrentFilters();
 
       await expect(taskListPage.filterPanel).toBeHidden();
-      await expect(taskListPage.taskListFilterToggle).toContainText('Show work filter');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Show work filter');
     });
 
     await test.step('Available tasks keeps the same services, location, and work type controls', async () => {

@@ -38,7 +38,7 @@ export const LOCATION_ERROR: ErrorMessage = {
   encapsulation: ViewEncapsulation.None,
 })
 export class MyWorkFilterComponent implements OnInit, OnDestroy {
-  public static readonly FILTER_NAME = 'my-work-tasks-filter';
+  public static readonly FILTER_NAME = 'my-work-filter';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public allowTypesOfWorkFilter = true;

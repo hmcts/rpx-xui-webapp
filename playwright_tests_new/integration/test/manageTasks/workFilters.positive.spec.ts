@@ -46,6 +46,7 @@ const hasExactSearchParameterValues = (request: SearchRequestPayload, key: strin
 
 const WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS =
   Number.parseInt(process.env.PW_WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 180_000;
+const MY_WORK_FILTER_STORAGE_KEY = 'my-work-filter';
 
 test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
   testInfo.setTimeout(WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS);
@@ -237,17 +238,18 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     await setupWorkFiltersUser(page);
 
-    await page.addInitScript(() => {
+    await page.addInitScript((myWorkFilterStorageKey) => {
       window.localStorage.setItem(
-        'locations',
+        myWorkFilterStorageKey,
         JSON.stringify({
+          id: myWorkFilterStorageKey,
           fields: [
             { name: 'services', value: ['IA'] },
             { name: 'locations', value: [{ epimms_id: '765324' }] },
           ],
         })
       );
-    });
+    }, MY_WORK_FILTER_STORAGE_KEY);
 
     await setupManageTasksBaseRoutes(page, {
       taskListResponse: buildTaskListMock(6, workFiltersUserId, myActionsList),

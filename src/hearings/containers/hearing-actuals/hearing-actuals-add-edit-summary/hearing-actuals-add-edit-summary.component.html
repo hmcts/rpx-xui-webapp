@@ -141,14 +141,16 @@
                     <dd class="govuk-summary-list__value"></dd>
                     <dd class="govuk-summary-list__actions">
                       <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                        <button
-                          type="button"
-                          (click)="confirmActualHearingTimeForDay(actualHearingDay)"
-                          id="hearing-timing-result-confirm-link"
-                          class="govuk-js-link"
-                        >
-                          {{ 'Confirm' | rpxTranslate }}</button
-                        >&nbsp;
+                        <ng-container *ngIf="!hideConfirmButtons">
+                          <button
+                            type="button"
+                            (click)="confirmActualHearingTimeForDay(actualHearingDay)"
+                            id="hearing-timing-result-confirm-link"
+                            class="govuk-js-link"
+                          >
+                            {{ 'Confirm' | rpxTranslate }}</button
+                          >&nbsp;
+                        </ng-container>
                         <a
                           [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-timing', actualHearingDay.hearingDate]"
                           class="govuk-link"
@@ -204,15 +206,17 @@
                     <ng-container *ngIf="!actualHearingDay.notRequired">
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <button
-                            type="button"
-                            (click)="confirmActualPartiesForDay(actualHearingDay)"
-                            *ngIf="!haveParticipantsBeenAdded(actualHearingDay)"
-                            id="hearing-parties-result-confirm-link"
-                            class="govuk-js-link"
-                          >
-                            {{ 'Confirm' | rpxTranslate }}</button
-                          >&nbsp;
+                          <ng-container *ngIf="!hideConfirmButtons">
+                            <button
+                              type="button"
+                              (click)="confirmActualPartiesForDay(actualHearingDay)"
+                              *ngIf="!haveParticipantsBeenAdded(actualHearingDay)"
+                              id="hearing-parties-result-confirm-link"
+                              class="govuk-js-link"
+                            >
+                              {{ 'Confirm' | rpxTranslate }}</button
+                            >&nbsp;
+                          </ng-container>
                           <a
                             *ngIf="!isPaperHearing"
                             [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"

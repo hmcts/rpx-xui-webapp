@@ -145,6 +145,7 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   const hearingId = req.params.hearingId;
   const caseId = req.query.caseRef as string;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
+  console.log('getHearingActuals - markupPath:', markupPath);
   try {
     const { status, data }: { status: number; data: HearingActualsMainModel } = await handleGet(
       `${hmcHearingsUrl}/hearingActuals/${hearingId}`,
@@ -164,10 +165,14 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const caseId = req.query.caseId as string;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
+  console.log('updateHearingActuals - reqBody:', reqBody);
+  console.log('updateHearingActuals - markupPath:', markupPath);
   try {
     const { status, data }: { status: number; data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
+    console.log('updateHearingActuals - status:', status, 'data:', data);
   } catch (error) {
+    console.log('updateHearingActuals - error:', error);
     handleHearingError(error, caseId, 'updateHearingActuals', req, markupPath, next);
   }
 }

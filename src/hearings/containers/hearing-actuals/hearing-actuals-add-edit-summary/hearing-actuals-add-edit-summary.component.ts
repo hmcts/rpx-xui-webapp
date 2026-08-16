@@ -20,6 +20,7 @@ import { SessionStorageService } from 'src/app/services';
 })
 export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   public successBanner = false;
+  public hideConfirmButtons = false;
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -32,6 +33,12 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   ) {
     super(hearingStore, hearingsService, route, router, ccdDatePipe);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
+  }
+
+  public ngOnInit(): void {
+    const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
+    this.hideConfirmButtons = !!navState?.hideConfirmButtons;
+    super.ngOnInit();
   }
 
   public onSubmitHearingDetails(): void {

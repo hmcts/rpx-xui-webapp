@@ -105,8 +105,10 @@ export async function sendPut<T>(path: string, body: T, req: EnhancedRequest): P
   try {
     logger.info('send put request to:', path);
     const headers = setHeaders(req);
+    console.log('sendPut - path:', path);
     return await http.put(path, body, { headers });
   } catch (e) {
+    console.log('sendPut - error:', e);
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;
   }

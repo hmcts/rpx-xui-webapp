@@ -163,6 +163,7 @@
     "ngx-markdown": "^20.1.0",
     "ngx-pagination": "^6.0.3",
     "otplib": "^13.4.0",
+    "pdfjs-dist": "4.10.38",
     "pegjs": "^0.10.0",
     "prettier": "^3.9.5",
     "rpx-xui-translation": "1.2.12",

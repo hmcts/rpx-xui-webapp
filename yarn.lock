@@ -18453,7 +18453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pdfjs-dist@npm:^4.10.38":
+"pdfjs-dist@npm:4.10.38, pdfjs-dist@npm:^4.10.38":
   version: 4.10.38
   resolution: "pdfjs-dist@npm:4.10.38"
   dependencies:
@@ -19985,6 +19985,7 @@ __metadata:
     npm-run-all2: "npm:^7.0.0"
     odhin-reports-playwright: "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch"
     otplib: "npm:^13.4.0"
+    pdfjs-dist: "npm:4.10.38"
     pegjs: "npm:^0.10.0"
     playwright: "npm:1.61.1"
     playwright-core: "npm:1.61.1"

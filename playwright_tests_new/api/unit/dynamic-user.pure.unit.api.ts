@@ -314,6 +314,8 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       password: 'legacy-iac-caseofficer-r2-secret',
     });
 
+    delete process.env.IAC_JUDGE_WA_R1_USERNAME;
+    delete process.env.IAC_JUDGE_WA_R1_PASSWORD;
     process.env.PW_IAC_CASEOFFICER_R1_EMAIL = 'iac-caseofficer-r1@example.test';
     process.env.PW_IAC_CASEOFFICER_R1_PASSWORD = 'iac-caseofficer-r1-secret';
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();

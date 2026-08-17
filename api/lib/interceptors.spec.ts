@@ -12,16 +12,27 @@ chai.use(sinonChai);
 describe('interceptors', () => {
   const response = {
     config: {
+      data: JSON.stringify({
+        caseId: 'case-123',
+        jurisdiction: 'IA',
+        taskId: 'task-456',
+      }),
       metadata: {
         startTime: new Date(),
       },
       method: 'POST',
       url: 'http://test2.com',
     },
+    status: 200,
   };
   const request = {
+    data: JSON.stringify({
+      processVariables: {
+        jurisdiction: { value: 'SSCS' },
+      },
+    }),
     method: 'GET',
-    url: 'http://test.com',
+    url: 'http://test.com/task/task-123?caseId=case-999',
   };
   const error = {
     config: {
@@ -51,7 +62,15 @@ describe('interceptors', () => {
       const getLoggerStub = sinon.stub(log4js, 'getLogger');
       getLoggerStub.returns({ info: spy, addContext: sinon.spy(), level: 'debug' } as unknown as log4js.Logger);
       requestInterceptor(request);
-      expect(spy).to.be.calledWith('GET to http://test.com');
+      expect(spy.firstCall.args[0]).to.contain('GET to http://test.com/task/task-123?caseId=case-999');
+      expect(spy.firstCall.args[0]).to.contain('event=request');
+      expect(spy.firstCall.args[0]).to.contain('datetime=');
+      expect(spy.firstCall.args[0]).to.contain('outboundId=');
+      expect(spy.firstCall.args[0]).to.contain('service=test');
+      expect(spy.firstCall.args[0]).to.contain('host=test.com');
+      expect(spy.firstCall.args[0]).to.contain('jurisdiction=SSCS');
+      expect(spy.firstCall.args[0]).to.contain('taskId=task-123');
+      expect(spy.firstCall.args[0]).to.contain('caseId=case-999');
       getLoggerStub.restore();
     });
 
@@ -71,7 +90,18 @@ describe('interceptors', () => {
       getLoggerStub.returns({ info: spy, addContext: sinon.spy(), level: 'debug' } as unknown as log4js.Logger);
       successInterceptor(response);
 
-      expect(spy).to.be.called;
+      expect(spy.firstCall.args[0]).to.contain('Success on POST to http://test2.com');
+      expect(spy.firstCall.args[0]).to.contain('event=response');
+      expect(spy.firstCall.args[0]).to.contain('datetime=');
+      expect(spy.firstCall.args[0]).to.contain('outboundId=');
+      expect(spy.firstCall.args[0]).to.contain('method=POST');
+      expect(spy.firstCall.args[0]).to.contain('status=');
+      expect(spy.firstCall.args[0]).to.contain('durationMs=');
+      expect(spy.firstCall.args[0]).to.contain('service=test2');
+      expect(spy.firstCall.args[0]).to.contain('host=test2.com');
+      expect(spy.firstCall.args[0]).to.contain('jurisdiction=IA');
+      expect(spy.firstCall.args[0]).to.contain('taskId=task-456');
+      expect(spy.firstCall.args[0]).to.contain('caseId=case-123');
       getLoggerStub.restore();
     });
 
@@ -91,6 +121,10 @@ describe('interceptors', () => {
       getLoggerStub.returns({ error: spy, addContext: sinon.spy(), level: 'debug' } as unknown as log4js.Logger);
       errorInterceptor(error).catch(() => {
         expect(spy).to.be.called;
+        expect(spy.firstCall.args[0]).to.contain('event=error');
+        expect(spy.firstCall.args[0]).to.contain('datetime=');
+        expect(spy.firstCall.args[0]).to.contain('outboundId=');
+        expect(spy.firstCall.args[0]).to.contain('durationMs=');
         getLoggerStub.restore();
       });
     });

@@ -5,14 +5,25 @@ import { UserUtils } from './user.utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sessionPath = path.resolve(__dirname, '../../.sessions/');
+const workspaceEnvPath = path.resolve(__dirname, '../../../.env');
 
-// This needs to be placed somewhere before attempting to access any environment variables
+// Load the workspace root .env regardless of the process working directory.
+dotenv.config({ path: workspaceEnvPath });
+// Preserve compatibility for ad-hoc runs that provide a local .env in the current directory.
 dotenv.config();
 
 // This should be removed when we move to API based user creation
 const userUtils = new UserUtils();
-const caseManager = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
-const judge = userUtils.getUserCredentials('IAC_Judge_WA_R1');
+
+function resolveUserConfig(userIdentifier: string): UserCredentials {
+  const credentials = userUtils.getUserCredentials(userIdentifier);
+  return {
+    username: credentials.email,
+    password: credentials.password,
+    sessionFile: sessionPath + `${credentials.email}.json`,
+    cookieName: 'xui-webapp',
+  };
+}
 
 export interface UserCredentials {
   username: string;
@@ -41,17 +52,11 @@ export interface Config {
 
 export const config: Config = {
   users: {
-    caseManager: {
-      username: caseManager.email,
-      password: caseManager.password,
-      sessionFile: sessionPath + `${caseManager.email}.json`,
-      cookieName: 'xui-webapp',
+    get caseManager() {
+      return resolveUserConfig('IAC_CaseOfficer_R1');
     },
-    judge: {
-      username: judge.email,
-      password: judge.password,
-      sessionFile: sessionPath + `${judge.email}.json`,
-      cookieName: 'xui-webapp',
+    get judge() {
+      return resolveUserConfig('IAC_Judge_WA_R1');
     },
   },
   urls: {

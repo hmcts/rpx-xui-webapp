@@ -8,7 +8,7 @@ const caseType = 'XUI Case PoC';
 let caseNumber: string;
 const logger = createLogger({ serviceName: 'create-case-e2e', format: 'pretty' });
 
-test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-create-case'] }, () => {
+test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-create-case', '@e2e-data-loss'] }, () => {
   let caseData;
   let person1Data;
 
@@ -65,7 +65,7 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
       expect.soft(page.url()).toContain(`/${jurisdiction}/xuiTestJurisdiction/`);
     });
 
-    await test.step('Check the case tab Data, matches previously entered data', async () => {
+    await test.step('Check the case tab Data, matches previously entered data (EXUI-848/EXUI-811/EXUI-433)', async () => {
       const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
       expect.soft(table1).toMatchObject({
         'Text Field 0': caseData.textField0,
@@ -82,7 +82,7 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
       expect.soft(table2).toMatchObject({ Title: person1Data.jobTitle, Description: person1Data.jobDescription });
     });
 
-    await test.step('Check the History tab shows the case creation event', async () => {
+    await test.step('Check the History tab shows the case creation event (EXUI-942)', async () => {
       await caseDetailsPage.selectCaseDetailsTab('History');
 
       const { updateRow, updateDate, updateAuthor } = await caseDetailsPage.getCaseHistoryByEvent('Create a case');

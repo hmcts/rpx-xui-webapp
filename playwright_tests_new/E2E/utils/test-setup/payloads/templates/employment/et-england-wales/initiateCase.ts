@@ -9,6 +9,7 @@ import {
   formatCcdDate,
   mergePayloadValues,
 } from '../../../core/helpers';
+import { firstNonEmpty, resolveDynamicOrganisationRunId } from '../../../../../dynamicOrganisationRunId.js';
 
 const EMPLOYMENT_JURISDICTION = 'EMPLOYMENT';
 const EMPLOYMENT_CASE_TYPE = 'ET_EnglandWales';
@@ -18,22 +19,37 @@ const DEFAULT_CASE_TYPE = 'Single';
 const DEFAULT_TRACK = 'Open Track';
 const DEFAULT_POSITION_TYPE = 'ET1 Online submission';
 const DEFAULT_CLAIM_TYPE = 'discrimination';
+const DEFAULT_AUTOMATION_RUN_LABEL = 'local';
 
 type EmploymentInitiateCaseFieldValues = Record<string, unknown>;
+
+function resolveAutomationRunLabel(contextScenario?: string): string {
+  const rawRunId =
+    firstNonEmpty(
+      process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
+      process.env.BUILD_TAG,
+      process.env.GITHUB_RUN_ID,
+      process.env.PW_TEST_RUN_ID,
+      contextScenario
+    ) ?? DEFAULT_AUTOMATION_RUN_LABEL;
+  return resolveDynamicOrganisationRunId({ explicitRunId: rawRunId, maxLength: 32 });
+}
 
 export function buildEmploymentEtEnglandWalesInitiateCasePayload(
   options: CasePayloadBuildOptions<EmploymentInitiateCaseFieldValues> = {}
 ) {
   const payloadFaker = createPayloadFaker(options.seed ?? options.context?.seed);
+  const automationRunLabel = resolveAutomationRunLabel(options.context?.scenario);
+  const automationCaseLabel = `EXUI Auto ${automationRunLabel}`;
   const receiptDate = payloadFaker.date.recent({ days: 30 });
-  const claimantFirstName = payloadFaker.person.firstName();
-  const claimantLastName = payloadFaker.person.lastName();
+  const claimantFirstName = 'EXUI';
+  const claimantLastName = `Auto ${automationRunLabel} ${payloadFaker.person.lastName()}`;
   const claimantTitle = payloadFaker.helpers.arrayElement(['Mr', 'Mrs', 'Ms', 'Dr']);
   const claimantGender = payloadFaker.helpers.arrayElement(['Male', 'Female']);
   const claimantDateOfBirth = payloadFaker.date.birthdate({ min: 18, max: 68, mode: 'age' });
   const claimantAddress = buildUkAddress(payloadFaker);
   const claimantWorkAddress = buildUkAddress(payloadFaker);
-  const respondentName = payloadFaker.company.name();
+  const respondentName = `${automationCaseLabel} ${payloadFaker.company.name()} Respondent`;
   const respondentAddress = buildUkAddress(payloadFaker);
   const respondentAcas = buildAcasCertificateNumber(payloadFaker, receiptDate);
   const claimantEmail = payloadFaker.internet.email({

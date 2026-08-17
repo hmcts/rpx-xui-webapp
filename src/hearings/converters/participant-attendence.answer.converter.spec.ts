@@ -50,6 +50,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
       hearingList: null,
       hearingValues: {
         serviceHearingValuesModel: {
+          caseId: '1234567890',
           hmctsServiceID: 'BBA3',
           hmctsInternalCaseName: 'Jane vs DWP',
           publicCaseName: 'Jane vs DWP',
@@ -206,6 +207,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
       hearingList: null,
       hearingValues: {
         serviceHearingValuesModel: {
+          caseId: '1234567890',
           hmctsServiceID: 'BBA3',
           hmctsInternalCaseName: 'Jane vs DWP',
           publicCaseName: 'Jane vs DWP',

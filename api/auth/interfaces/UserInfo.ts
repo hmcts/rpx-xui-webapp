@@ -9,7 +9,7 @@ export interface UserInfo {
   id?: string;
   uid?: string;
   roles?: string[];
-  roleCategory?: string;
+  roleCategories?: string[];
   ssoProvider?: string;
   identity?: string;
   sub?: string;

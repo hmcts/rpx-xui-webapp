@@ -1,9 +1,10 @@
 /**
  * Local.ts used to run the application locally.
  */
+// App Insights must patch console before application imports initialise node-lib loggers.
+import { appInsights } from './lib/appInsights';
 import { createApp } from './application';
 import { applicationConfiguration } from './configuration/appConfig';
-import { appInsights } from './lib/appInsights';
 import errorHandler from './lib/error.handler';
 
 /**
@@ -15,5 +16,10 @@ createApp().then((app) => {
   app.use(appInsights);
   app.use(errorHandler);
 
-  app.listen(3001, () => console.log('Dev server listening on port 3001!'));
+  app.listen(3001, (error) => {
+    if (error) {
+      throw error;
+    }
+    console.log('Dev server listening on port 3001!');
+  });
 });

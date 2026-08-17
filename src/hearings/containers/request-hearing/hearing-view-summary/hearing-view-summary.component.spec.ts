@@ -143,7 +143,7 @@ describe('HearingViewSummaryComponent', () => {
       'case-details',
       'JURIS',
       'CASETYPE',
-      '1234123412341234',
+      '1234567890',
       'hearings',
     ]);
   });

@@ -9,6 +9,7 @@ import { ScreenNavigationModel } from './screenNavigation.model';
 import { VocabularyModel } from './vocabulary.model';
 
 export interface ServiceHearingValuesModel {
+  caseId: string;
   hmctsServiceID: string;
   hmctsInternalCaseName: string;
   publicCaseName: string;

@@ -1,4 +1,5 @@
 import { withXsrf } from './apiTestUtils';
+import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from '../data/testIds';
 import { extractCaseShareEntries } from './types';
 
 /**
@@ -9,12 +10,21 @@ type WithXsrfFn = typeof withXsrf;
 
 export async function seedRoleAccessCaseId(
   apiClient: any,
-  options: { withXsrfFn?: WithXsrfFn } = {}
+  options: { withXsrfFn?: WithXsrfFn; caseId?: string } = {}
 ): Promise<string | undefined> {
   const withXsrfFn = options.withXsrfFn ?? withXsrf;
+  const candidateCaseId = options.caseId ?? ROLE_ACCESS_CASE_ID;
+  if (!candidateCaseId) {
+    return undefined;
+  }
   try {
     return await withXsrfFn('solicitor', async (headers) => {
-      const res = await apiClient.get('caseshare/cases', { headers, throwOnError: false });
+      const caseId = resolveRoleAccessCaseId(candidateCaseId);
+      const res = await apiClient.get('api/caseshare/cases', {
+        headers,
+        query: { case_ids: caseId },
+        throwOnError: false,
+      });
       const cases = extractCaseShareEntries(res.data, 'cases');
       const first = Array.isArray(cases) && cases.length > 0 ? (cases[0] as any) : undefined;
       const id = first?.caseId ?? first?.case_id;

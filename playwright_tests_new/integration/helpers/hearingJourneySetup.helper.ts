@@ -1,12 +1,11 @@
-import { expect, type Page, type Response } from '@playwright/test';
+import { expect, test, type Page, type Response, type TestInfo } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
-import { applySessionCookies } from '../../common/sessionCapture';
+import { applySessionCookiesFromPool } from '../../common/sessionCapture';
 import {
-  HEARING_MANAGER_CR84_OFF_USER,
   HEARING_MANAGER_CR84_ON_USER,
-  resolveHearingManagerUserIdentifier,
   type HearingManagerUserIdentifier,
+  resolveHearingManagerSessionCandidates,
 } from './hearingManagerUserPool.helper';
 import { setupHearingsMockRoutes, type HearingsMockRoutesConfig } from './hearingsMockRoutes.helper';
 import {
@@ -93,7 +92,7 @@ export async function openHearingsTab(
     caseReference?: string;
   }
 ): Promise<void> {
-  await applySessionCookies(page, resolveHearingManagerUserIdentifier(options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER));
+  await applyHearingManagerSessionCookies(page, options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, options.routeConfig);
   const route = resolveHearingsCaseRoute(options);
   await gotoCaseDetailsWithRetry(page, caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference));
@@ -109,7 +108,7 @@ export async function openHearingsTabForScenario(
     waitForGetHearingsResponse?: boolean;
   }
 ): Promise<Response | null> {
-  await applySessionCookies(page, resolveHearingManagerUserIdentifier(options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER));
+  await applyHearingManagerSessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, config);
   const route = resolveHearingsCaseRoute({ routeConfig: config });
   const targetUrl = caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference);
@@ -133,6 +132,23 @@ export async function openHearingsTabForScenario(
   const getHearingsResponse = page.waitForResponse((response) => response.url().includes('/api/hearings/getHearings'));
   await caseDetailsPage.selectCaseDetailsTab('Hearings');
   return getHearingsResponse;
+}
+
+export function annotateHearingManagerSessionUser(testInfo: Pick<TestInfo, 'annotations'>, selectedUserIdentifier: string): void {
+  testInfo.annotations.push({ type: 'session-user', description: selectedUserIdentifier });
+}
+
+export async function applyHearingManagerSessionCookies(
+  page: Page,
+  userIdentifier: HearingManagerUserIdentifier,
+  testInfo: Pick<TestInfo, 'annotations'> & Partial<Pick<TestInfo, 'parallelIndex'>> = test.info(),
+  applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
+): Promise<string> {
+  const candidates = resolveHearingManagerSessionCandidates(userIdentifier, { parallelIndex: testInfo.parallelIndex });
+  const { userIdentifier: selectedUserIdentifier } = await applyFromPool(page, candidates);
+
+  annotateHearingManagerSessionUser(testInfo, selectedUserIdentifier);
+  return selectedUserIdentifier;
 }
 
 export function buildLargeListedHearings(total: number): HearingScenario[] {

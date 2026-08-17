@@ -58,7 +58,7 @@ describe('Hearings Services', () => {
   describe('mapDataByDefault', () => {
     it('should return data unchanged when no caseFlags exist', () => {
       const data = createTestData({ caseFlags: undefined });
-      const result = servicesIndex.mapDataByDefault(data);
+      const result = servicesIndex.mapDataByDefault(data, '1234567890');
 
       expect(result).to.deep.equal(data);
     });
@@ -70,7 +70,7 @@ describe('Hearings Services', () => {
           flagAmendURL: '/flag/amend',
         },
       });
-      const result = servicesIndex.mapDataByDefault(data);
+      const result = servicesIndex.mapDataByDefault(data, '1234567890');
 
       expect(result).to.deep.equal(data);
     });
@@ -91,7 +91,7 @@ describe('Hearings Services', () => {
         },
       });
 
-      const result = servicesIndex.mapDataByDefault(data);
+      const result = servicesIndex.mapDataByDefault(data, '1234567890');
 
       expect(result.caseFlags.flags[0].partyId).to.equal('P1');
       expect(result.caseFlags.flags[0].partyID).to.equal('P1'); // Original preserved
@@ -113,7 +113,7 @@ describe('Hearings Services', () => {
         },
       });
 
-      const result = servicesIndex.mapDataByDefault(data);
+      const result = servicesIndex.mapDataByDefault(data, '1234567890');
 
       expect(result.caseFlags.flags[0].partyId).to.equal('P1');
       expect(result.caseFlags.flags[0].partyID).to.be.undefined;
@@ -150,7 +150,7 @@ describe('Hearings Services', () => {
         },
       });
 
-      const result = servicesIndex.mapDataByDefault(data);
+      const result = servicesIndex.mapDataByDefault(data, '1234567890');
 
       // First flag: partyID should be copied to partyId
       expect(result.caseFlags.flags[0].partyId).to.equal('P1');

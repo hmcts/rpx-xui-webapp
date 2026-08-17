@@ -1,6 +1,6 @@
 import { test, expect, request } from '@playwright/test';
 
-import { config } from '../common/apiTestConfig';
+import { config } from './utils/apiTestRuntimeConfig';
 import { expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
 import { assertCorsHeaders, shouldIgnoreCorsError } from './utils/corsUtils';
 

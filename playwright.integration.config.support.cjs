@@ -10,9 +10,15 @@ const { cpus, totalmem } = require('node:os');
 const path = require('node:path');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
+const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
+  const normalizedRoot = rootDir.replace(/\\/g, '/').replace(/\/$/, '');
+  return [`${normalizedRoot}/.worktrees/**`, `${normalizedRoot}/worktrees/**`];
+};
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
+const INTEGRATION_TEST_TIMEOUT_MS = 180_000;
+const POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS = 30_000;
 const appVersion = (() => {
   try {
     return JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version ?? 'unknown';
@@ -38,7 +44,7 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  return 4;
+  return 7;
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -170,6 +176,7 @@ const buildConfig = (env = process.env) => {
   const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? defaultOdhinOutputFolder;
   const baseUrl = env.TEST_URL || defaultBaseUrl;
   const workerCount = resolveWorkerCount(env);
+  const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const browserChannel = resolveBrowserChannel(env);
   const enableOdhinReporter = resolveFlag(env.PW_INTEGRATION_ODHIN, true);
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
@@ -177,6 +184,7 @@ const buildConfig = (env = process.env) => {
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
+  reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
 
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';
@@ -221,16 +229,16 @@ const buildConfig = (env = process.env) => {
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: [temporaryProbePattern],
+    testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     retries: 2,
-    timeout: 120_000,
+    timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },
     workers: workerCount,
     reporter,
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'on-first-retry',
+      trace: 'retain-on-failure',
       screenshot: {
         mode: 'only-on-failure',
         fullPage: true,
@@ -266,4 +274,6 @@ module.exports = {
   resolveOdhinTimeoutExitCode,
   resolveOdhinCompletionExitDelayMs,
   resolveOdhinForceExitOnCompletion,
+  INTEGRATION_TEST_TIMEOUT_MS,
+  POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS,
 };

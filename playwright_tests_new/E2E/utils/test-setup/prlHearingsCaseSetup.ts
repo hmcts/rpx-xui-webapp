@@ -18,7 +18,7 @@ export type PrlHearingsCaseSetupConfig = {
   idamTestingSupportUrl?: string;
   ccdDataStoreUrl?: string;
   prlCosApiUrl?: string;
-  ccdClientId?: string;
+  idamClientId?: string;
   idamSecret?: string;
   redirectUri?: string;
   s2sUrl?: string;
@@ -50,8 +50,7 @@ const PRL_CASE_TYPE = 'PRLAPPS';
 const ISSUE_AND_SEND_TO_LOCAL_COURT_EVENT_ID = 'issueAndSendToLocalCourtCallback';
 const DEFAULT_SERVICE_MICROSERVICE = 'ccd_data';
 const REQUIRED_ENV_MESSAGE =
-  'PRL hearings setup requires CCD_DATA_STORE_URL, PRL_COS_API_URL, CCD_DATA_STORE_CLIENT_ID, ' +
-  'PRL_HEARINGS_IDAM_SECRET or IDAM_SECRET, ' +
+  'PRL hearings setup requires CCD_DATA_STORE_URL, PRL_COS_API_URL, IDAM_SECRET, ' +
   'S2S_URL or PRL_HEARINGS_S2S_TOKEN, a redirect URI, citizen credentials, and court admin credentials.';
 const DEFAULT_HEARING_MANAGER_COURT_LOCATION = {
   code: '898213:',
@@ -86,8 +85,8 @@ export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = proce
     idamTestingSupportUrl: firstNonEmpty(env.IDAM_TESTING_SUPPORT_URL, env.IDAM_TESTING_SUPPORT_USERS_URL),
     ccdDataStoreUrl: firstNonEmpty(env.CCD_DATA_STORE_URL),
     prlCosApiUrl: firstNonEmpty(env.PRL_COS_API_URL, env.PRL_HEARINGS_PRL_COS_API_URL, env.PRL_COS_API),
-    ccdClientId: firstNonEmpty(env.IDAM_CLIENT_ID, env.CCD_DATA_STORE_CLIENT_ID),
-    idamSecret: firstNonEmpty(env.PRL_HEARINGS_IDAM_SECRET, env.IDAM_SECRET),
+    idamClientId: firstNonEmpty(env.IDAM_CLIENT_ID, env.SERVICES_IDAM_CLIENT_ID, 'xuiwebapp'),
+    idamSecret: firstNonEmpty(env.IDAM_SECRET),
     redirectUri: firstNonEmpty(
       env.MANAGE_CASE_REDIRECT_URI,
       env.ORG_USER_ASSIGNMENT_REDIRECT_URI,
@@ -114,8 +113,7 @@ export function validatePrlHearingsCaseSetupConfig(config: PrlHearingsCaseSetupC
   if (!config.idamTestingSupportUrl?.trim()) missing.push('IDAM_TESTING_SUPPORT_URL or IDAM_TESTING_SUPPORT_USERS_URL');
   if (!config.ccdDataStoreUrl?.trim()) missing.push('CCD_DATA_STORE_URL');
   if (!config.prlCosApiUrl?.trim()) missing.push('PRL_COS_API_URL');
-  if (!config.ccdClientId?.trim()) missing.push('CCD_DATA_STORE_CLIENT_ID');
-  if (!config.idamSecret?.trim()) missing.push('PRL_HEARINGS_IDAM_SECRET or IDAM_SECRET');
+  if (!config.idamSecret?.trim()) missing.push('IDAM_SECRET');
   if (!config.redirectUri?.trim()) missing.push('MANAGE_CASE_REDIRECT_URI or ORG_USER_ASSIGNMENT_REDIRECT_URI');
   if (!config.s2sUrl?.trim() && !config.s2sToken?.trim()) missing.push('S2S_URL or PRL_HEARINGS_S2S_TOKEN');
   if (!config.serviceMicroservice?.trim()) missing.push('PRL_HEARINGS_SERVICE_MICROSERVICE');
@@ -214,7 +212,7 @@ async function getBearerToken(credentials: UserCredentials, config: Required<Prl
       username: credentials.username,
       password: credentials.password,
       scope: 'openid profile roles',
-      clientId: config.ccdClientId,
+      clientId: config.idamClientId,
       clientSecret: config.idamSecret,
       redirectUri: config.redirectUri,
     });

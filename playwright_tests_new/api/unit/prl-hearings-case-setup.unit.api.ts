@@ -10,7 +10,7 @@ test.describe('PRL hearings case setup', () => {
       CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
       PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
       IDAM_CLIENT_ID: 'xuiwebapp',
-      IDAM_SECRET: 'secret',
+      IDAM_SECRET: 'xui-webapp-secret',
       ORG_USER_ASSIGNMENT_REDIRECT_URI: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       S2S_URL: 'http://service-auth/testing-support/lease',
       CITIZEN_USERNAME: 'citizen@example.test',
@@ -24,7 +24,8 @@ test.describe('PRL hearings case setup', () => {
       idamWebUrl: 'https://idam-web-public.aat.platform.hmcts.net',
       idamTestingSupportUrl: 'https://idam-testing-support-api.aat.platform.hmcts.net',
       prlCosApiUrl: 'https://prl-cos-api.aat.platform.hmcts.net',
-      ccdClientId: 'xuiwebapp',
+      idamClientId: 'xuiwebapp',
+      idamSecret: 'xui-webapp-secret',
       redirectUri: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       serviceMicroservice: 'ccd_data',
       s2sUrl: 'http://service-auth/testing-support/lease',
@@ -34,13 +35,17 @@ test.describe('PRL hearings case setup', () => {
     expect(__test__.validatePrlHearingsCaseSetupConfig(config)).toEqual([]);
   });
 
-  test('prefers the PRL hearings IDAM secret alias without overwriting the app IDAM secret', () => {
+  test('uses the XUI IDAM secret without falling back to the PRL COS secret', () => {
+    const defaultClient = __test__.resolvePrlHearingsCaseSetupConfig({ IDAM_SECRET: 'xui-webapp-secret' });
     const config = __test__.resolvePrlHearingsCaseSetupConfig({
+      IDAM_CLIENT_ID: 'configured-xui-client',
       IDAM_SECRET: 'xui-webapp-secret',
       PRL_HEARINGS_IDAM_SECRET: 'prl-cos-secret',
     });
 
-    expect(config.idamSecret).toBe('prl-cos-secret');
+    expect(defaultClient.idamClientId).toBe('xuiwebapp');
+    expect(config.idamClientId).toBe('configured-xui-client');
+    expect(config.idamSecret).toBe('xui-webapp-secret');
   });
 
   test('allows a PRL-specific pre-issued S2S token instead of requiring a locally reachable S2S URL', () => {
@@ -49,8 +54,7 @@ test.describe('PRL hearings case setup', () => {
       IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
       CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
       PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
-      IDAM_CLIENT_ID: 'xuiwebapp',
-      IDAM_SECRET: 'secret',
+      IDAM_SECRET: 'xui-webapp-secret',
       ORG_USER_ASSIGNMENT_REDIRECT_URI: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       PRL_HEARINGS_S2S_TOKEN: 'pre-issued-s2s-token',
       CITIZEN_USERNAME: 'citizen@example.test',
@@ -88,8 +92,7 @@ test.describe('PRL hearings case setup', () => {
       IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
       CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
       PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
-      IDAM_CLIENT_ID: 'xuiwebapp',
-      IDAM_SECRET: 'secret',
+      IDAM_SECRET: 'xui-webapp-secret',
       ORG_USER_ASSIGNMENT_REDIRECT_URI: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       S2S_URL: 'http://service-auth/testing-support/lease',
       CITIZEN_USERNAME: 'citizen@example.test',
@@ -115,8 +118,7 @@ test.describe('PRL hearings case setup', () => {
       'IDAM_TESTING_SUPPORT_URL or IDAM_TESTING_SUPPORT_USERS_URL',
       'CCD_DATA_STORE_URL',
       'PRL_COS_API_URL',
-      'CCD_DATA_STORE_CLIENT_ID',
-      'PRL_HEARINGS_IDAM_SECRET or IDAM_SECRET',
+      'IDAM_SECRET',
       'MANAGE_CASE_REDIRECT_URI or ORG_USER_ASSIGNMENT_REDIRECT_URI',
       'S2S_URL or PRL_HEARINGS_S2S_TOKEN',
       'PRL_HEARINGS_SERVICE_MICROSERVICE',

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { WAVerificationService } from '../../../work-allocation/services';
 import { AppConstants } from '../../app.constants';
 import { UserDetails } from '../../models';
 import { HeaderConfigService } from '../../services/header-config/header-config.service';
-import { filterNavigationItemsByAccess } from '../utils/navigation-access.utils';
 import * as fromAppStore from '../../store';
+import { filterNavigationItemsByAccess } from '../utils/navigation-access.utils';
 
 interface NavigationAccessGuardData {
   accessDeniedRedirectUrl: string;
@@ -21,7 +22,8 @@ export class NavigationAccessGuard {
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromAppStore.State>,
-    private readonly headerConfigService: HeaderConfigService
+    private readonly headerConfigService: HeaderConfigService,
+    private readonly waVerificationService: WAVerificationService
   ) {}
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -32,8 +34,16 @@ export class NavigationAccessGuard {
       filter((userDetails: UserDetails) => !!userDetails?.userInfo),
       switchMap((userDetails) => {
         const userRoles = userDetails.userInfo.roles ?? [];
-        return this.headerConfigService.constructHeaderConfig(userRoles).pipe(
-          map((headerItems) => filterNavigationItemsByAccess(headerItems, userRoles, AppConstants.MENU_FLAGS)),
+        return combineLatest([
+          this.headerConfigService.constructHeaderConfig(userRoles),
+          this.waVerificationService.getWAVerification(),
+        ]).pipe(
+          map(([headerItems, waVerification]) =>
+            filterNavigationItemsByAccess(headerItems, userRoles, AppConstants.MENU_FLAGS, {
+              userDetails,
+              waVerification,
+            })
+          ),
           map((headerItems) => headerItems.some((item) => item.href === requiredNavigationHref))
         );
       }),

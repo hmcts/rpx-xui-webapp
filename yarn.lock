@@ -16343,6 +16343,8 @@ __metadata:
 "jui@workspace:api":
   version: 0.0.0-use.local
   resolution: "jui@workspace:api"
+  dependencies:
+    applicationinsights: "npm:^3.16.0"
   languageName: unknown
   linkType: soft
 

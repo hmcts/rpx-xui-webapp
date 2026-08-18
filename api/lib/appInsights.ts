@@ -10,7 +10,7 @@ import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '..
  * This export is intentionally retained because other parts of the
  * application, including log4jui.ts, use the client directly.
  *
- * The client is null when Application Insights is disabled.
+ * The client remains null when Application Insights is disabled.
  */
 export let client: applicationinsights.TelemetryClient | null = null;
 
@@ -25,19 +25,34 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
    *
    *   client.addTelemetryProcessor(...)
    *
-   * That API is not supported by the 3.x SDK.
+   * and set:
+   *
+   *   envelope.sampleRate = 1;
+   *
+   * for high-volume health/static requests.
+   *
+   * That allowed approximately 1% of those requests to be retained while
+   * normal application telemetry continued to be collected at 100%.
+   * The previous TelemetryProcessor approach is not supported by the
+   * Application Insights 3.x SDK.
    *
    * IMPORTANT:
-   * Fine-grained health/static request filtering is intentionally NOT
-   * configured here yet.
+   * Selective health/static sampling is intentionally NOT implemented here.
    *
-   * The setAzureMonitorOptions() API exposed by the installed
-   * applicationinsights/Azure Monitor packages does not expose the
-   * HTTP ignoreIncomingRequestHook configuration required for that
-   * filtering.
+   * samplingRatio cannot be used because it applies globally. Setting it
+   * to 0.01 would also reduce useful application/service telemetry to 1%.
    *
-   * We keep normal telemetry collection unchanged while the filtering
-   * implementation is handled separately.
+   * We also investigated HTTP instrumentation filtering, but the
+   * instrumentation configuration exposed through the installed
+   * applicationinsights/Azure Monitor compatibility API does not expose
+   * the required HTTP hooks.
+   *
+   * In addition, filtering would result in 0% collection rather than
+   * preserving the original 1% sampling behaviour.
+   *
+   * If retaining 1% of health/static telemetry remains mandatory,
+   * selective sampling will need to be investigated separately using
+   * the supported OpenTelemetry extensibility APIs.
    */
   applicationinsights
     .setup(connectionString)
@@ -46,6 +61,9 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
         connectionString,
       },
 
+      /*
+       * Continue collecting existing useful application telemetry.
+       */
       enableAutoCollectDependencies: true,
       enableAutoCollectExceptions: true,
       enableAutoCollectPerformance: true,

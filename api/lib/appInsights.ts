@@ -1,8 +1,124 @@
 import * as applicationinsights from 'applicationinsights';
 import * as express from 'express';
 
+import { SpanKind, TraceFlags } from '@opentelemetry/api';
+import type { ReadableSpan, Span, SpanProcessor } from '@opentelemetry/sdk-trace-base';
+
 import { getConfigValue, showFeature } from '../configuration/';
 import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
+
+/**
+ * High-volume, low-value incoming requests that should not be exported
+ * to Application Insights.
+ *
+ * These requests were previously sampled at approximately 1% by the
+ * Application Insights 2.x TelemetryProcessor.
+ *
+ * They are no longer required in Application Insights and are therefore
+ * excluded completely (0%).
+ */
+const EXCLUDED_TELEMETRY_PATHS = ['/health', '/liveness', '/readiness', '/assets/', '/media/', '/polyfills'];
+
+/**
+ * Static resource types identified as high-volume Application Insights
+ * ingestion contributors.
+ */
+const EXCLUDED_TELEMETRY_EXTENSIONS = ['.js', '.css', '.woff2', '.svg', '.png', '.gif', '.ico', '.json'];
+
+/**
+ * Determines whether a URL/path belongs to the high-volume health/static
+ * telemetry that should not be exported.
+ *
+ * Query strings are removed so URLs such as:
+ *
+ *   /main-123.js?v=1
+ *   /styles-123.css?cache=456
+ *
+ * are still correctly identified.
+ */
+function shouldExcludeTelemetryPath(path = ''): boolean {
+  const telemetryPath = path.toLowerCase().split('?')[0];
+
+  return (
+    EXCLUDED_TELEMETRY_PATHS.some((excludedPath) => telemetryPath.includes(excludedPath)) ||
+    EXCLUDED_TELEMETRY_EXTENSIONS.some((extension) => telemetryPath.endsWith(extension))
+  );
+}
+
+/**
+ * Extract the HTTP path/URL from an OpenTelemetry HTTP server span.
+ *
+ * Different OpenTelemetry semantic-convention versions can expose the
+ * request target under different attribute names, so check the relevant
+ * current and legacy HTTP attributes.
+ */
+function getSpanRequestPath(span: ReadableSpan): string {
+  const attributes = span.attributes;
+
+  const path = attributes['url.path'] ?? attributes['http.target'] ?? attributes['http.route'] ?? attributes['url.full'];
+
+  return typeof path === 'string' ? path : span.name;
+}
+
+/**
+ * Replaces the Application Insights 2.x fine-grained TelemetryProcessor
+ * used for health/static request telemetry.
+ *
+ * Previous behaviour:
+ *
+ *   health/static request -> approximately 1%
+ *
+ * New behaviour:
+ *
+ *   health/static request -> 0%
+ *
+ * Normal application requests are left untouched.
+ *
+ * The processor only evaluates SERVER spans. This is intentional:
+ * outgoing service GET/POST dependency telemetry must continue to be
+ * collected.
+ *
+ * Azure Monitor's documented filtering approach marks matching spans as
+ * not sampled by setting their trace flags to NONE/DEFAULT, preventing
+ * them from being exported.
+ */
+class HealthStaticFilteringProcessor implements SpanProcessor {
+  forceFlush(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  shutdown(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  onStart(_span: Span): void {
+    // No processing required when the span starts.
+  }
+
+  onEnd(span: ReadableSpan): void {
+    /*
+     * Only filter incoming HTTP/server request telemetry.
+     *
+     * Do not filter CLIENT spans because those represent outgoing
+     * dependencies such as service GET/POST calls that we want to keep.
+     */
+    if (span.kind !== SpanKind.SERVER) {
+      return;
+    }
+
+    const requestPath = getSpanRequestPath(span);
+
+    if (shouldExcludeTelemetryPath(requestPath)) {
+      /*
+       * Mark this span as not sampled so Azure Monitor does not export it.
+       *
+       * This intentionally changes the previous ~1% health/static
+       * retention to 0%.
+       */
+      span.spanContext().traceFlags = TraceFlags.NONE;
+    }
+  }
+}
 
 /**
  * Application Insights telemetry client.
@@ -17,43 +133,33 @@ export let client: applicationinsights.TelemetryClient | null = null;
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   const connectionString = getConfigValue(APP_INSIGHTS_CONNECTION_STRING);
 
+  const healthStaticFilteringProcessor = new HealthStaticFilteringProcessor();
+
   /**
-   * Application Insights 3.x is backed by Azure Monitor OpenTelemetry.
+   * Application Insights 3.x uses Azure Monitor OpenTelemetry.
    *
-   * The previous 2.x implementation used a TelemetryProcessor for
-   * fine-grained sampling:
+   * The previous Application Insights 2.x implementation used:
    *
    *   client.addTelemetryProcessor(...)
    *
-   * and set:
+   * to reduce health/static telemetry to approximately 1%.
    *
-   *   envelope.sampleRate = 1;
+   * Application Insights 3.x no longer supports TelemetryProcessor.
+   * The equivalent extensibility mechanism is an OpenTelemetry
+   * SpanProcessor.
    *
-   * for high-volume health/static requests.
+   * Health/static requests are now excluded completely (0%) because
+   * this telemetry is not required in Application Insights.
    *
-   * That allowed approximately 1% of those requests to be retained while
-   * normal application telemetry continued to be collected at 100%.
+   * All other telemetry continues to follow the existing environment
+   * sampling configuration:
    *
-   * The previous TelemetryProcessor approach is not supported by the
-   * Application Insights 3.x SDK.
+   *   lower environments -> 1%
+   *   production         -> 100%
+   *   performance        -> 100%
    *
-   * IMPORTANT:
-   * Selective health/static sampling is intentionally NOT implemented here.
-   *
-   * samplingRatio cannot be used because it applies globally. Setting it
-   * to 0.01 would also reduce useful application/service telemetry to 1%.
-   *
-   * We also investigated HTTP instrumentation filtering, but the
-   * instrumentation configuration exposed through the installed
-   * applicationinsights/Azure Monitor compatibility API does not expose
-   * the required HTTP hooks.
-   *
-   * In addition, filtering would result in 0% collection rather than
-   * preserving the original 1% sampling behaviour.
-   *
-   * If retaining 1% of health/static telemetry remains mandatory,
-   * selective sampling will need to be investigated separately using
-   * the supported OpenTelemetry extensibility APIs.
+   * Those environment percentages remain managed by the existing
+   * Terraform/Application Insights resource configuration.
    */
   applicationinsights
     .setup(connectionString)
@@ -63,7 +169,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
       },
 
       /*
-       * Continue collecting existing useful application telemetry.
+       * Continue collecting useful application telemetry.
        */
       enableAutoCollectDependencies: true,
       enableAutoCollectExceptions: true,
@@ -72,12 +178,12 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
       enableLiveMetrics: true,
 
       /**
-       * Keep 100% of telemetry.
+       * Filter health/static SERVER spans before Azure Monitor exports
+       * them.
        *
-       * Do NOT set this to 0.01 because samplingRatio applies globally
-       * and would reduce useful application/service telemetry to 1%.
+       * Outgoing CLIENT/dependency spans are deliberately unaffected.
        */
-      samplingRatio: 1,
+      spanProcessors: [healthStaticFilteringProcessor],
     })
 
     /*
@@ -117,7 +223,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
  *   client.trackNodeHttpRequest(...)
  *
  * Application Insights 3.x automatically instruments incoming HTTP
- * requests through Azure Monitor OpenTelemetry.
+ * requests through OpenTelemetry.
  *
  * Manual request tracking is therefore removed to avoid duplicate
  * request telemetry.
@@ -130,12 +236,10 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
 }
 
 /**
- * Existing trace wrapper retained unchanged from the application's
- * perspective.
+ * Existing trace wrapper retained unchanged.
  *
- * This ensures existing callers continue generating Application Insights
- * trace telemetry rather than changing telemetry type during the SDK
- * migration.
+ * Existing callers continue generating Application Insights trace
+ * telemetry without needing to migrate to OpenTelemetry APIs directly.
  */
 export function trackTrace(trace: string, properties?: Record<string, unknown>): void {
   if (client) {

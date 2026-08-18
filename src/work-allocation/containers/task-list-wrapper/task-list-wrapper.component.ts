@@ -14,7 +14,7 @@ import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
-import { TaskListFilterComponent } from '../../components';
+import { MyWorkFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
 import { SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
@@ -178,7 +178,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public loadCaseWorkersAndLocations() {
     this.myWorkSubscription = this.filterService
-      .getStream(TaskListFilterComponent.FILTER_NAME)
+      .getStream(MyWorkFilterComponent.FILTER_NAME)
       .pipe(
         debounceTime(200),
         filter((f: FilterSetting) => f?.hasOwnProperty('fields'))

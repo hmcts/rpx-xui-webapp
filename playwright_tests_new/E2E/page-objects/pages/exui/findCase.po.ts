@@ -119,25 +119,35 @@ export class FindCasePage extends Base {
    * @param caseType - Case type display label
    * @param jurisdiction - Jurisdiction display label
    */
-  public async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
+  public async startFindCaseJourney(
+    caseNumber: string,
+    caseType: string,
+    jurisdiction: string,
+    retryTransientSearchFailures = false
+  ): Promise<void> {
     let lastError: unknown;
 
-    for (let attempt = 1; attempt <= MAX_NAVIGATION_RETRY_ATTEMPTS; attempt += 1) {
+    const maxAttempts = retryTransientSearchFailures ? MAX_NAVIGATION_RETRY_ATTEMPTS : 1;
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       try {
         await this.navigateToFindCase();
         await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
         await this.page.waitForTimeout(EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE);
-        await this.submitSearch();
+        if (retryTransientSearchFailures) {
+          await this.submitSearchWithTransientResponseCheck();
+        } else {
+          await this.submitSearch();
+        }
         return;
       } catch (error) {
         lastError = error;
-        if (!this.isTransientSearchFailure(error) || attempt === MAX_NAVIGATION_RETRY_ATTEMPTS) {
+        if (!retryTransientSearchFailures || !this.isTransientSearchFailure(error) || attempt === maxAttempts) {
           throw error;
         }
 
         this.logger.warn('Find case search failed with a transient downstream status; retrying', {
           attempt,
-          maxAttempts: MAX_NAVIGATION_RETRY_ATTEMPTS,
+          maxAttempts,
           error: error instanceof Error ? error.message : JSON.stringify(error),
         });
         await this.page.goto('/cases/case-search');
@@ -165,6 +175,11 @@ export class FindCasePage extends Base {
   }
 
   public async applyFilters(): Promise<void> {
+    await this.exuiCaseListComponent.filters.applyFilterBtn.click();
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  private async submitSearchWithTransientResponseCheck(): Promise<void> {
     const searchResponsePromise = this.page.waitForResponse(
       (response) => response.request().method() === 'POST' && response.url().includes('/searchCases'),
       { timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK }

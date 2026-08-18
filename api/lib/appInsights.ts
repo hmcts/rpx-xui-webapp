@@ -7,8 +7,8 @@ import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '..
 /**
  * Application Insights telemetry client.
  *
- * This export is intentionally retained because other parts of the
- * application, including log4jui.ts, use the client directly.
+ * This export is retained because other parts of the application,
+ * including log4jui.ts, use the client directly.
  *
  * The client remains null when Application Insights is disabled.
  */
@@ -33,6 +33,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
    *
    * That allowed approximately 1% of those requests to be retained while
    * normal application telemetry continued to be collected at 100%.
+   *
    * The previous TelemetryProcessor approach is not supported by the
    * Application Insights 3.x SDK.
    *

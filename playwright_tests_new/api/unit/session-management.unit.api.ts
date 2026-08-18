@@ -20,8 +20,8 @@ function fakeSessionPage() {
   };
 
   return {
-    locator: () => locator,
     getByRole: () => locator,
+    locator: () => locator,
     url: () => 'https://idam-web-public.aat.platform.hmcts.net/login',
   };
 }
@@ -30,9 +30,50 @@ function hiddenLocator() {
   const locator = {
     first: () => locator,
     click: async () => undefined,
+    fill: async () => undefined,
     isVisible: async () => false,
+    press: async () => undefined,
   };
   return locator;
+}
+
+function visibleLocator(actions: string[], name: string, visible: () => boolean = () => true, onClick?: () => void) {
+  const locator = {
+    first: () => locator,
+    click: async () => {
+      actions.push(`${name}:click`);
+      onClick?.();
+    },
+    fill: async (value: string) => {
+      actions.push(`${name}:fill:${value}`);
+    },
+    isVisible: async () => visible(),
+    press: async (key: string) => {
+      actions.push(`${name}:press:${key}`);
+    },
+    textContent: async () => '',
+    waitFor: async () => undefined,
+  };
+  return locator;
+}
+
+function fakeIdamPageObject({
+  page,
+  usernameInput,
+  passwordInput,
+  submitButton,
+}: {
+  page: unknown;
+  usernameInput: unknown;
+  passwordInput: unknown;
+  submitButton: unknown;
+}) {
+  return {
+    page,
+    usernameInput,
+    passwordInput,
+    submitBtn: submitButton,
+  };
 }
 
 function sessionUserIdentifier(identity: SessionIdentity | string): string {
@@ -120,7 +161,8 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
-  test('uses the active Playwright test index for staff admin pool selection', ({}, testInfo) => {
+  test('uses the active Playwright test index for staff admin pool selection', ({ browserName: _browserName }, testInfo) => {
+    void _browserName;
     const envOverrides = {
       STAFF_ADMIN_POOL_ENABLED: 'true',
       STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
@@ -608,6 +650,95 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         }
       )
     ).rejects.toThrow('IDAM page message: Incorrect email or password');
+  });
+
+  test('completeIdamCredentialFlow submits legacy combined email and password surface', async () => {
+    const actions: string[] = [];
+    const usernameInput = visibleLocator(actions, 'email');
+    const passwordInput = visibleLocator(actions, 'password');
+    const submitButton = visibleLocator(actions, 'submit');
+    const hiddenFallback = hiddenLocator();
+    const page = {
+      getByRole: () => submitButton,
+      locator: () => hiddenFallback,
+      waitForLoadState: async () => undefined,
+      waitForTimeout: async () => undefined,
+    };
+    const idamPage = fakeIdamPageObject({ page, usernameInput, passwordInput, submitButton });
+
+    await sessionCaptureTest.completeIdamCredentialFlow(
+      page as never,
+      idamPage as never,
+      usernameInput as never,
+      'legacy@example.test',
+      'secret'
+    );
+
+    expect(actions).toEqual(['email:fill:legacy@example.test', 'password:fill:secret', 'submit:click']);
+  });
+
+  test('completeIdamCredentialFlow submits progressive email then password surfaces', async () => {
+    const actions: string[] = [];
+    let step: 'email' | 'password' | 'submitted' = 'email';
+    const usernameInput = visibleLocator(actions, 'email', () => step === 'email');
+    const passwordInput = visibleLocator(actions, 'password', () => step === 'password');
+    const submitButton = visibleLocator(
+      actions,
+      'submit',
+      () => step !== 'submitted',
+      () => {
+        step = step === 'email' ? 'password' : 'submitted';
+      }
+    );
+    const hiddenFallback = hiddenLocator();
+    const page = {
+      getByRole: () => submitButton,
+      locator: () => hiddenFallback,
+      waitForLoadState: async () => undefined,
+      waitForTimeout: async () => undefined,
+    };
+    const idamPage = fakeIdamPageObject({ page, usernameInput, passwordInput, submitButton });
+
+    await sessionCaptureTest.completeIdamCredentialFlow(
+      page as never,
+      idamPage as never,
+      usernameInput as never,
+      'progressive@example.test',
+      'secret'
+    );
+
+    expect(actions).toEqual(['email:fill:progressive@example.test', 'submit:click', 'password:fill:secret', 'submit:click']);
+  });
+
+  test('completeIdamCredentialFlow uses the page object primary submit before broad shared selectors', async () => {
+    const actions: string[] = [];
+    const usernameInput = visibleLocator(actions, 'email');
+    const passwordInput = visibleLocator(actions, 'password');
+    const primarySubmitButton = visibleLocator(actions, 'primary-submit');
+    const broadSharedSubmitButton = visibleLocator(actions, 'broad-shared-submit');
+    const hiddenFallback = hiddenLocator();
+    const page = {
+      getByRole: () => primarySubmitButton,
+      locator: () => hiddenFallback,
+      waitForLoadState: async () => undefined,
+      waitForTimeout: async () => undefined,
+    };
+    const idamPage = fakeIdamPageObject({
+      page,
+      usernameInput,
+      passwordInput,
+      submitButton: broadSharedSubmitButton,
+    });
+
+    await sessionCaptureTest.completeIdamCredentialFlow(
+      page as never,
+      idamPage as never,
+      usernameInput as never,
+      'primary-submit@example.test',
+      'secret'
+    );
+
+    expect(actions).toEqual(['email:fill:primary-submit@example.test', 'password:fill:secret', 'primary-submit:click']);
   });
 
   test('waitForAuthenticatedShell rejects service-down even when the app header is visible', async () => {

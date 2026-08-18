@@ -1,4 +1,5 @@
-import { chromium, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { chromium, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { createHash, randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
@@ -9,15 +10,132 @@ import { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
 import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
 import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
-import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorageKey } from './sessionIdentity.js';
+import {
+  type SessionIdentity,
+  type SessionIdentityInput,
+  resolveSessionIdentity,
+  resolveSessionStorageKey,
+} from './sessionIdentity.js';
+import { sanitizeUrl } from './failureClassification.js';
+import {
+  SESSION_CAPTURE_LOGIN_ATTEMPTS,
+  SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
+  UNEXPLAINED_IDAM_LOGIN_FAILURE,
+  isTransientSessionCaptureError,
+  isUnexplainedIdamLoginRejection,
+} from './sessionCaptureRetry.js';
+import { withOrderedSessionFallback } from './orderedSessionFallback.js';
+import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdminUserPool.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
+const AUTH_COOKIE_MIN_REMAINING_SECONDS = 60;
 const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
 const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
+const SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS = 10_000;
+const SESSION_CAPTURE_CONTEXT_CREATE_BUDGET_MS = 5_000;
+const SESSION_CAPTURE_TARGET_BUDGET_MS = 45_000;
+const SESSION_CAPTURE_PERSIST_BUDGET_MS = 10_000;
+const SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS = 5_000;
+const SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS = 5_000;
+const SESSION_CAPTURE_RETRY_BACKOFF_MIN_MS = 1_000;
+const SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS = 5_000;
+const SESSION_CAPTURE_SINGLE_ATTEMPT_BUDGET_MS =
+  SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS +
+  SESSION_CAPTURE_TARGET_BUDGET_MS +
+  SESSION_CAPTURE_PERSIST_BUDGET_MS +
+  SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS +
+  SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS;
+const SESSION_CAPTURE_OWNER_BUDGET_MS =
+  SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS +
+  SESSION_CAPTURE_LOGIN_ATTEMPTS * (SESSION_CAPTURE_TARGET_BUDGET_MS + SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS) +
+  SESSION_CAPTURE_PERSIST_BUDGET_MS +
+  SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS +
+  SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS;
+const SESSION_CAPTURE_LOCK_HEADROOM_MS = 15_000;
+const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_CAPTURE_LOCK_HEADROOM_MS;
+const SESSION_CAPTURE_LOCK_START_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
+// The integration timeout reserves its final 30 seconds for the journey after lazy capture.
+const SESSION_CAPTURE_POOL_BUDGET_MS = 150_000;
+const SESSION_CAPTURE_LOCK_UPDATE_MS = 5_000;
+// Automatic takeover inside a test run can let a suspended owner resume and overwrite
+// a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
+const SESSION_CAPTURE_LOCK_STALE_MS = 24 * 60 * 60_000;
+
+function resolveCaptureAttemptLimit(remainingCaptureBudgetMs: number | undefined): number {
+  if (remainingCaptureBudgetMs === undefined || remainingCaptureBudgetMs >= SESSION_CAPTURE_OWNER_BUDGET_MS) {
+    return SESSION_CAPTURE_LOGIN_ATTEMPTS;
+  }
+  return remainingCaptureBudgetMs >= SESSION_CAPTURE_SINGLE_ATTEMPT_BUDGET_MS ? 1 : 0;
+}
+
+async function withOperationTimeout<T>(
+  operation: () => Promise<T>,
+  timeoutMs: number,
+  message: string,
+  onTimeout?: () => Promise<void> | void
+): Promise<T> {
+  let timedOut = false;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      operation().then(
+        (value) => (timedOut ? new Promise<T>(() => undefined) : value),
+        (error) => (timedOut ? new Promise<T>(() => undefined) : Promise.reject(error))
+      ),
+      new Promise<T>((_resolve, reject) => {
+        timeout = setTimeout(async () => {
+          timedOut = true;
+          const error = new Error(message);
+          error.name = 'TimeoutError';
+          try {
+            await onTimeout?.();
+          } catch (cleanupError) {
+            const evidence = sessionCaptureFailureEvidence(cleanupError as Error);
+            logger.warn('Timed operation cleanup failed', {
+              error: evidence,
+              operation: 'session-capture',
+            });
+            const cancellationError = new Error(`${message}; timeout cleanup failed: ${evidence}`);
+            cancellationError.name = 'SessionCancellationError';
+            reject(cancellationError);
+            return;
+          }
+          reject(error);
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+  }
+}
+
+async function waitForTransientRetry(): Promise<void> {
+  const delayMs =
+    SESSION_CAPTURE_RETRY_BACKOFF_MIN_MS +
+    Math.floor(Math.random() * (SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS - SESSION_CAPTURE_RETRY_BACKOFF_MIN_MS + 1));
+  await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+}
+
+function sessionCaptureFailureEvidence(error: Error): string {
+  return error.message
+    .replace(/https?:\/\/[^\s)]+/g, (url) => sanitizeUrl(url))
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 500);
+}
+
+function sanitizedSessionCaptureError(error: unknown): Error {
+  const original = toError(error);
+  const sanitized = new Error(sessionCaptureFailureEvidence(original));
+  sanitized.name = original.name;
+  return sanitized;
+}
 
 function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return new SessionCapturePage(page).idamUsernameCandidates(idamPage);
@@ -78,34 +196,61 @@ function resolveSessionCaptureFailureTtlMs(env: NodeJS.ProcessEnv = process.env)
   return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
 }
 
-function recentSessionCaptureFailureMessage(
+type SessionCaptureFailureRecord = {
+  message: string;
+  failureKind?: string;
+  storageStateFingerprint?: string | null;
+};
+
+function recentSessionCaptureFailure(
   fsApi: typeof fs,
   failurePath: string,
   ttlMs: number,
   now: number = Date.now()
-): string | null {
+): SessionCaptureFailureRecord | null {
   if (ttlMs === 0 || !fsApi.existsSync(failurePath)) {
     return null;
   }
 
   try {
-    const parsed = JSON.parse(fsApi.readFileSync(failurePath, 'utf8')) as { timestamp?: number; message?: string };
+    const parsed = JSON.parse(fsApi.readFileSync(failurePath, 'utf8')) as {
+      timestamp?: number;
+      message?: string;
+      failureKind?: string;
+      storageStateFingerprint?: unknown;
+    };
     if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
       return null;
     }
-    return parsed.message?.trim() || 'previous session capture failed';
+    return {
+      message: parsed.message?.trim() || 'previous session capture failed',
+      failureKind: parsed.failureKind,
+      storageStateFingerprint:
+        parsed.storageStateFingerprint === null || typeof parsed.storageStateFingerprint === 'string'
+          ? parsed.storageStateFingerprint
+          : undefined,
+    };
   } catch {
     return null;
   }
 }
 
-function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, error: Error): void {
+function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, sessionPath: string, error: Error): void {
   try {
+    const context = 'context' in error ? (error as Error & { context?: { failureKind?: unknown } }).context : undefined;
+    const failureKind =
+      typeof context?.failureKind === 'string'
+        ? context.failureKind
+        : isUnexplainedIdamLoginRejection(error)
+          ? UNEXPLAINED_IDAM_LOGIN_FAILURE
+          : undefined;
     fsApi.writeFileSync(
       failurePath,
       JSON.stringify({
         timestamp: Date.now(),
         message: error.message,
+        failureKind,
+        storageStateFingerprint: readStorageStateFingerprint(fsApi, sessionPath) ?? null,
       })
     );
   } catch {
@@ -123,12 +268,6 @@ function clearSessionCaptureFailure(fsApi: typeof fs, failurePath: string): void
   }
 }
 
-function isIdamLoginRejection(error: Error): boolean {
-  return (
-    error.message.includes('IDAM login did not establish authenticated session') && error.message.includes('idam-web-public')
-  );
-}
-
 function currentPageUrl(page: Page): string {
   try {
     return typeof page.url === 'function' ? page.url() : 'unknown';
@@ -137,9 +276,19 @@ function currentPageUrl(page: Page): string {
   }
 }
 
-function normalizeCookieDomain(domain: string | undefined): string | null {
-  const value = domain?.trim().replace(/^\./, '');
-  return value ? value.toLowerCase() : null;
+function sanitizedPageUrl(page: Page): string {
+  return sanitizeUrl(currentPageUrl(page));
+}
+
+function parseCookieDomain(domain: string | undefined): { host: string; includesSubdomains: boolean } | null {
+  const value = domain?.trim().toLowerCase();
+  if (!value) {
+    return null;
+  }
+  return {
+    host: value.replace(/^\./, ''),
+    includesSubdomains: value.startsWith('.'),
+  };
 }
 
 function resolveTargetHost(targetUrl: string | undefined): string | null {
@@ -155,26 +304,40 @@ function resolveTargetHost(targetUrl: string | undefined): string | null {
 }
 
 function isCookieCompatibleWithHost(cookie: Cookie, targetHost: string): boolean {
-  const cookieDomain = normalizeCookieDomain(cookie.domain);
+  const cookieDomain = parseCookieDomain(cookie.domain);
   if (!cookieDomain) {
     return false;
   }
 
-  return targetHost === cookieDomain || targetHost.endsWith(`.${cookieDomain}`) || cookieDomain.endsWith(`.${targetHost}`);
+  return targetHost === cookieDomain.host || (cookieDomain.includesSubdomains && targetHost.endsWith(`.${cookieDomain.host}`));
 }
 
-function hasTargetCompatibleAuthCookies(cookies: Cookie[], targetUrl: string | undefined): boolean {
+function isCookieUsable(cookie: Cookie, nowSeconds: number): boolean {
+  return (
+    typeof cookie.value === 'string' &&
+    cookie.value.trim().length > 0 &&
+    Number.isFinite(cookie.expires) &&
+    (cookie.expires <= 0 || cookie.expires > nowSeconds + AUTH_COOKIE_MIN_REMAINING_SECONDS)
+  );
+}
+
+function hasReusableAuthCookies(
+  cookies: Cookie[],
+  targetUrl: string | undefined,
+  idamUrl: string | undefined,
+  nowSeconds = Math.floor(Date.now() / 1_000)
+): boolean {
   const targetHost = resolveTargetHost(targetUrl);
-  if (!targetHost) {
-    return true;
-  }
+  const idamHost = resolveTargetHost(idamUrl);
+  const hasUsableCookie = (name: 'Idam.Session' | '__auth__', expectedHost: string | null) =>
+    cookies.some(
+      (cookie) =>
+        cookie.name === name &&
+        isCookieUsable(cookie, nowSeconds) &&
+        (!expectedHost || isCookieCompatibleWithHost(cookie, expectedHost))
+    );
 
-  const authCookies = cookies.filter((cookie) => cookie.name === 'Idam.Session' || cookie.name === '__auth__');
-  if (authCookies.length === 0) {
-    return false;
-  }
-
-  return authCookies.some((cookie) => isCookieCompatibleWithHost(cookie, targetHost));
+  return hasUsableCookie('Idam.Session', idamHost) && hasUsableCookie('__auth__', targetHost);
 }
 
 function toError(error: unknown): Error {
@@ -201,6 +364,7 @@ function isTransientNavigationFailure(error: unknown, currentUrl: string): boole
   const message = toError(error).message;
   return (
     isChromeErrorNavigationFailure(error, currentUrl) ||
+    message.includes('ERR_CERT_VERIFIER_CHANGED') ||
     message.includes('ERR_NAME_NOT_RESOLVED') ||
     message.includes('ERR_INTERNET_DISCONNECTED') ||
     message.includes('ERR_NETWORK_CHANGED') ||
@@ -220,26 +384,26 @@ async function gotoAppTarget(page: Page, userIdentifier: string, targetUrl: stri
       await page.goto(targetUrl);
       const currentUrl = currentPageUrl(page);
       if (currentUrl.startsWith(CHROME_ERROR_URL_PREFIX)) {
-        throw new Error(`Navigation landed on ${CHROME_ERROR_URL_PREFIX} while opening ${targetUrl}`);
+        throw new Error(`Navigation landed on ${CHROME_ERROR_URL_PREFIX} while opening ${sanitizeUrl(targetUrl)}`);
       }
       return;
     } catch (error) {
       const currentUrl = currentPageUrl(page);
       const parsedError = toError(error);
       const canRetry = navigationAttempt < maxNavigationAttempts && isTransientNavigationFailure(parsedError, currentUrl);
-      lastError = parsedError;
+      lastError = sanitizedSessionCaptureError(parsedError);
       logger.warn('Authenticated app navigation failed', {
         userIdentifier,
-        targetUrl,
+        targetUrl: sanitizeUrl(targetUrl),
         navigationAttempt,
         maxNavigationAttempts,
         canRetry,
-        currentUrl,
-        error: parsedError.message,
+        currentUrl: sanitizeUrl(currentUrl),
+        error: sessionCaptureFailureEvidence(parsedError),
         operation: 'ensure-authenticated-page',
       });
       if (!canRetry) {
-        throw parsedError;
+        throw lastError;
       }
       await new Promise<void>((resolve) => setTimeout(resolve, 1_000 * navigationAttempt));
     }
@@ -259,26 +423,26 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
       await page.goto(loginTarget, { waitUntil: 'domcontentloaded' });
       const currentUrl = currentPageUrl(page);
       if (currentUrl.startsWith(CHROME_ERROR_URL_PREFIX)) {
-        throw new Error(`Navigation landed on ${CHROME_ERROR_URL_PREFIX} while opening ${loginTarget}`);
+        throw new Error(`Navigation landed on ${CHROME_ERROR_URL_PREFIX} while opening ${sanitizeUrl(loginTarget)}`);
       }
       return;
     } catch (error) {
       const currentUrl = currentPageUrl(page);
       const parsedError = toError(error);
       const canRetry = navigationAttempt < maxNavigationAttempts && isChromeErrorNavigationFailure(parsedError, currentUrl);
-      lastError = parsedError;
+      lastError = sanitizedSessionCaptureError(parsedError);
       logger.warn('Login navigation failed', {
         userIdentifier,
-        loginTarget,
+        loginTarget: sanitizeUrl(loginTarget),
         navigationAttempt,
         maxNavigationAttempts,
         canRetry,
-        currentUrl,
-        error: parsedError.message,
+        currentUrl: sanitizeUrl(currentUrl),
+        error: sessionCaptureFailureEvidence(parsedError),
         operation: 'session-capture',
       });
       if (!canRetry) {
-        throw parsedError;
+        throw lastError;
       }
       await new Promise<void>((resolve) => setTimeout(resolve, 1_000 * navigationAttempt));
     }
@@ -296,11 +460,6 @@ export async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
   }
 }
 
-function hasRequiredAuthCookies(cookies: Cookie[]): boolean {
-  const names = new Set(cookies.map((cookie) => cookie.name));
-  return names.has('Idam.Session') && names.has('__auth__');
-}
-
 async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promise<boolean> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -308,7 +467,7 @@ async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promis
       .context()
       .cookies()
       .catch(() => []);
-    if (hasRequiredAuthCookies(cookies)) {
+    if (hasReusableAuthCookies(cookies, undefined, undefined)) {
       return true;
     }
     await new Promise<void>((resolve) => setTimeout(resolve, Math.min(500, deadline - Date.now())));
@@ -317,15 +476,47 @@ async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promis
 }
 
 export interface LoadedSession {
+  userIdentifier?: string;
   email: string;
   cookies: Cookie[];
   storageFile: string;
+  storageStateFingerprint?: string;
 }
 
 type PersistDeps = {
   cookieUtils?: CookieUtils;
   fs?: typeof fs;
+  signal?: AbortSignal;
+  assertLockOwned?: () => void;
 };
+
+type SessionLockRelease = (() => Promise<void>) & {
+  assertOwned: () => void;
+};
+
+type ErrorWithSessionLockReleaseError = Error & {
+  sessionLockReleaseError?: Error;
+};
+
+type ErrorWithBrowserCloseError = Error & {
+  browserCloseError?: Error;
+};
+
+function isSessionLockCompromisedError(error: Error): boolean {
+  return error.name === 'SessionLockCompromisedError';
+}
+
+function toSessionLockReleaseError(userIdentifier: string, error: unknown): Error {
+  const releaseError = toError(error);
+  if (isSessionLockCompromisedError(releaseError)) {
+    return releaseError;
+  }
+  const wrapped = new Error(`Failed to release session lock for ${userIdentifier}: ${releaseError.message}`, {
+    cause: releaseError,
+  });
+  wrapped.name = 'SessionLockReleaseError';
+  return wrapped;
+}
 
 export type StorageStateContext = Pick<BrowserContext, 'addCookies' | 'storageState'>;
 
@@ -336,11 +527,16 @@ type SessionCaptureDeps = {
   idamPageFactory?: (page: Page) => IdamPage;
   isSessionFresh?: typeof isSessionFresh;
   persistSession?: typeof persistSession;
+  loginAndPersistSession?: typeof loginAndPersistSession;
   fs?: typeof fs;
   config?: typeof config;
   env?: NodeJS.ProcessEnv;
   lockfile?: typeof lockfile;
   force?: boolean;
+  now?: () => number;
+  expectedStaleSession?: Pick<LoadedSession, 'storageFile' | 'storageStateFingerprint'>;
+  lockWaitMs?: number;
+  captureDeadlineAt?: number;
 };
 
 const setupMarkerByPage = new WeakMap<Page, string>();
@@ -353,6 +549,7 @@ const setupMarkerValues = [
   'waiting-shell',
   'shell-ready',
   'shell-timeout',
+  'service-down',
   'session-refresh',
   'idam-login',
   'setup-ready',
@@ -388,14 +585,17 @@ function resolveSessionMaxAgeMs(env: NodeJS.ProcessEnv = process.env): number {
  * Ensure session is captured for a given userIdentifier before tests run.
  * Call this in test.beforeAll() to lazily capture only needed sessions.
  */
-export async function ensureSession(userIdentifier: SessionIdentityInput): Promise<void> {
+async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput, captureDeadlineAt?: number): Promise<void> {
   const identity = resolveSessionIdentity(userIdentifier);
   const email = identity.email;
   const sessionStorageKey = resolveSessionStorageKey(identity);
   const sessionPath = path.join(process.cwd(), '.sessions', `${sessionStorageKey}.storage.json`);
   const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
 
-  const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs(), { targetUrl });
+  const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs(), {
+    targetUrl,
+    idamUrl: config.urls.idamWebUrl,
+  });
   if (isFresh) {
     logger.info('Session is fresh, skipping capture', {
       userIdentifier: identity.userIdentifier,
@@ -413,7 +613,141 @@ export async function ensureSession(userIdentifier: SessionIdentityInput): Promi
   });
   // Do not force recapture here: when many workers race on a stale session,
   // lock waiters should be able to reuse the freshly captured session.
-  await sessionCapture([identity]);
+  await sessionCaptureWith([identity], { captureDeadlineAt });
+}
+
+function resolveCurrentPlaywrightParallelIndex(): number | undefined {
+  try {
+    return test.info().parallelIndex;
+  } catch {
+    return undefined;
+  }
+}
+
+function resolveSessionCandidates(
+  userIdentifier: SessionIdentityInput,
+  parallelIndex = resolveCurrentPlaywrightParallelIndex()
+): readonly SessionIdentityInput[] {
+  const normalizedIdentifier = typeof userIdentifier === 'string' ? userIdentifier.trim().toUpperCase() : undefined;
+  return normalizedIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionCandidates({ parallelIndex }) : [userIdentifier];
+}
+
+type SessionSelectionRecord = {
+  selectedUserIdentifier: string;
+  selectedEmail: string;
+};
+
+function normaliseSessionEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function resolveSessionSelectionPath(
+  candidates: readonly SessionIdentityInput[],
+  parallelIndex = resolveCurrentPlaywrightParallelIndex()
+): string | undefined {
+  if (candidates.length < 2) {
+    return undefined;
+  }
+
+  const primaryStorageKey = resolveSessionStorageKey(resolveSessionIdentity(candidates[0]));
+  const workerSuffix = Number.isInteger(parallelIndex) && Number(parallelIndex) >= 0 ? `.worker-${parallelIndex}` : '';
+  return path.join(process.cwd(), '.sessions', `${primaryStorageKey}${workerSuffix}.selection.json`);
+}
+
+function persistSessionSelection(candidates: readonly SessionIdentityInput[], selectedIdentity: SessionIdentity): void {
+  const selectionPath = resolveSessionSelectionPath(candidates);
+  if (!selectionPath) {
+    return;
+  }
+
+  const stagingPath = `${selectionPath}.${process.pid}.${randomUUID()}.tmp`;
+  const record: SessionSelectionRecord = {
+    selectedUserIdentifier: selectedIdentity.userIdentifier,
+    selectedEmail: normaliseSessionEmail(selectedIdentity.email),
+  };
+
+  fs.mkdirSync(path.dirname(selectionPath), { recursive: true });
+  try {
+    fs.writeFileSync(stagingPath, JSON.stringify(record), 'utf8');
+    fs.renameSync(stagingPath, selectionPath);
+  } finally {
+    if (fs.existsSync(stagingPath)) {
+      fs.rmSync(stagingPath, { force: true });
+    }
+  }
+}
+
+function resolveSessionIdentityForLoad(userIdentifier: SessionIdentityInput): SessionIdentity {
+  const candidates = resolveSessionCandidates(userIdentifier);
+  const primaryIdentity = resolveSessionIdentity(candidates[0]);
+  const selectionPath = resolveSessionSelectionPath(candidates);
+  if (!selectionPath) {
+    return primaryIdentity;
+  }
+
+  try {
+    const record = JSON.parse(fs.readFileSync(selectionPath, 'utf8')) as Partial<SessionSelectionRecord>;
+    if (typeof record.selectedUserIdentifier !== 'string' || typeof record.selectedEmail !== 'string') {
+      throw new TypeError('Session selection must contain a user identifier and email');
+    }
+
+    const selectedIdentity = candidates
+      .map((candidate) => resolveSessionIdentity(candidate))
+      .find(
+        (candidate) =>
+          candidate.userIdentifier === record.selectedUserIdentifier &&
+          normaliseSessionEmail(candidate.email) === record.selectedEmail
+      );
+    if (selectedIdentity) {
+      return selectedIdentity;
+    }
+
+    logger.warn('Ignoring session selection for an unconfigured identity', {
+      userIdentifier: primaryIdentity.userIdentifier,
+      selectionPath,
+      operation: 'load-session',
+    });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      logger.warn('Ignoring unreadable session selection', {
+        userIdentifier: primaryIdentity.userIdentifier,
+        selectionPath,
+        error: (error as Error).message,
+        operation: 'load-session',
+      });
+    }
+  }
+
+  return primaryIdentity;
+}
+
+function storageStateFingerprint(contents: string): string {
+  return createHash('sha256').update(contents).digest('hex');
+}
+
+function readStorageStateFingerprint(fsApi: typeof fs, storageFile: string): string | undefined {
+  try {
+    return storageStateFingerprint(fsApi.readFileSync(storageFile, 'utf8'));
+  } catch {
+    return undefined;
+  }
+}
+
+async function ensureSessionWith(
+  userIdentifier: SessionIdentityInput,
+  ensureCandidate: (identity: SessionIdentity, captureDeadlineAt: number) => Promise<void> = ensureSessionForIdentity,
+  candidates = resolveSessionCandidates(userIdentifier)
+): Promise<void> {
+  const captureDeadlineAt = Date.now() + SESSION_CAPTURE_POOL_BUDGET_MS;
+  const selection = await withOrderedSessionFallback(candidates, async (identity) => {
+    await ensureCandidate(identity, captureDeadlineAt);
+    return identity;
+  });
+  persistSessionSelection(candidates, selection.value);
+}
+
+export async function ensureSession(userIdentifier: SessionIdentityInput): Promise<void> {
+  await ensureSessionWith(userIdentifier);
 }
 
 /**
@@ -421,49 +755,37 @@ export async function ensureSession(userIdentifier: SessionIdentityInput): Promi
  * Throws if session doesn't exist. Use ensureSession() first.
  */
 export function loadSessionCookies(userIdentifier: SessionIdentityInput): LoadedSession {
-  const identity = resolveSessionIdentity(userIdentifier);
+  const identity = resolveSessionIdentityForLoad(userIdentifier);
   const email = identity.email;
   const storageKey = resolveSessionStorageKey(identity);
   const storageFile = path.join(process.cwd(), '.sessions', `${storageKey}.storage.json`);
 
   let cookies: Cookie[] = [];
+  let fingerprint: string | undefined;
   if (fs.existsSync(storageFile)) {
     try {
-      const state = JSON.parse(fs.readFileSync(storageFile, 'utf8'));
-      if (Array.isArray(state.cookies)) {
-        cookies = state.cookies as Cookie[];
-        logger.info('Loaded session cookies', {
-          userIdentifier: identity.userIdentifier,
-          email,
-          cookieCount: cookies.length,
-          operation: 'load-session',
-        });
-      } else {
-        logger.warn('Cookies missing or invalid in storage file', {
-          storageFile,
-          userIdentifier: identity.userIdentifier,
-          operation: 'load-session',
-        });
+      const storageStateContents = fs.readFileSync(storageFile, 'utf8');
+      fingerprint = storageStateFingerprint(storageStateContents);
+      const state: unknown = JSON.parse(storageStateContents);
+      if (!state || typeof state !== 'object' || !Array.isArray((state as { cookies?: unknown }).cookies)) {
+        throw new TypeError('Storage state must contain a cookies array');
       }
+      cookies = (state as { cookies: Cookie[] }).cookies;
+      logger.info('Loaded session cookies', {
+        userIdentifier: identity.userIdentifier,
+        email,
+        cookieCount: cookies.length,
+        operation: 'load-session',
+      });
     } catch (e) {
-      logger.error('Failed parsing storage state - cleaning up and throwing', {
+      logger.error('Failed parsing storage state', {
         userIdentifier: identity.userIdentifier,
         storageFile,
         error: (e as Error).message,
         operation: 'load-session',
       });
-      // Auto-clean corrupted session file
-      try {
-        fs.unlinkSync(storageFile);
-        logger.info('Deleted corrupted session file', { storageFile });
-      } catch (cleanupError) {
-        logger.warn('Failed to delete corrupted session file', {
-          storageFile,
-          error: (cleanupError as Error).message,
-        });
-      }
       throw new StorageStateCorruptedError(
-        `Storage file corrupted for ${userIdentifier} - file has been deleted. Re-run test to capture fresh session.`,
+        `Storage file corrupted for ${identity.userIdentifier}. A fresh session will replace it under the identity lock.`,
         storageFile,
         { userIdentifier: identity.userIdentifier },
         e as Error
@@ -479,35 +801,85 @@ export function loadSessionCookies(userIdentifier: SessionIdentityInput): Loaded
       userIdentifier: identity.userIdentifier,
     });
   }
-  return { email, cookies, storageFile };
+  if (!fingerprint) {
+    throw new StorageStateCorruptedError(`Failed reading storage file for ${identity.userIdentifier}`, storageFile, {
+      userIdentifier: identity.userIdentifier,
+    });
+  }
+  return { userIdentifier: identity.userIdentifier, email, cookies, storageFile, storageStateFingerprint: fingerprint };
 }
 
 /**
  * Ensure a session is captured and return the loaded cookies.
  * Retries once if the session file is missing or corrupted.
  */
-export async function ensureSessionCookies(userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
-  await ensureSession(userIdentifier);
+async function ensureSessionCookiesForIdentity(
+  userIdentifier: SessionIdentityInput,
+  captureDeadlineAt?: number
+): Promise<LoadedSession> {
+  await ensureSessionForIdentity(userIdentifier, captureDeadlineAt);
   try {
     return loadSessionCookies(userIdentifier);
   } catch (error) {
     if (error instanceof StorageStateCorruptedError) {
-      await ensureSession(userIdentifier);
+      await ensureSessionForIdentity(userIdentifier, captureDeadlineAt);
       return loadSessionCookies(userIdentifier);
     }
     throw error;
   }
 }
 
+export async function ensureSessionCookies(userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
+  const captureDeadlineAt = Date.now() + SESSION_CAPTURE_POOL_BUDGET_MS;
+  const selection = await withOrderedSessionFallback(resolveSessionCandidates(userIdentifier), (identity) =>
+    ensureSessionCookiesForIdentity(identity, captureDeadlineAt)
+  );
+  return selection.value;
+}
+
 /**
  * Ensure a session exists and add its cookies to the provided page context.
  */
-export async function applySessionCookies(page: Page, userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
-  const session = await ensureSessionCookies(userIdentifier);
+async function applySessionCookiesForIdentity(
+  page: Page,
+  userIdentifier: SessionIdentityInput,
+  captureDeadlineAt?: number
+): Promise<LoadedSession> {
+  const session = captureDeadlineAt
+    ? await ensureSessionCookiesForIdentity(userIdentifier, captureDeadlineAt)
+    : await ensureSessionCookies(userIdentifier);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
   }
   return session;
+}
+
+export async function applySessionCookies(page: Page, userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
+  return applySessionCookiesForIdentity(page, userIdentifier);
+}
+
+async function applySessionCookiesFromPoolWith(
+  page: Page,
+  candidates: readonly SessionIdentityInput[],
+  applyCandidate: (page: Page, identity: SessionIdentityInput) => Promise<LoadedSession>
+): Promise<{ userIdentifier: string; session: LoadedSession }> {
+  const expandedCandidates = candidates.flatMap((candidate) => resolveSessionCandidates(candidate));
+  const selection = await withOrderedSessionFallback(expandedCandidates, (identity) => applyCandidate(page, identity));
+  logger.info('Applied session from ordered identity pool', {
+    userIdentifier: selection.selectedUserIdentifier,
+    operation: 'apply-session-pool',
+  });
+  return { userIdentifier: selection.selectedUserIdentifier, session: selection.value };
+}
+
+export async function applySessionCookiesFromPool(
+  page: Page,
+  candidates: readonly SessionIdentityInput[]
+): Promise<{ userIdentifier: string; session: LoadedSession }> {
+  const captureDeadlineAt = Date.now() + SESSION_CAPTURE_POOL_BUDGET_MS;
+  return applySessionCookiesFromPoolWith(page, candidates, (candidatePage, identity) =>
+    applySessionCookiesForIdentity(candidatePage, identity, captureDeadlineAt)
+  );
 }
 
 async function isIdamLoginPage(page: Page): Promise<boolean> {
@@ -550,7 +922,7 @@ async function waitForAuthenticatedShell(
     if (await isIdamLoginPage(page)) {
       setSetupMarker(page, 'idam-login');
       throw new SessionCaptureError(`Login page detected while waiting for app shell for ${userIdentifier}`, userIdentifier, {
-        currentUrl: page.url(),
+        currentUrl: sanitizedPageUrl(page),
         preferredSelector: preferredSelector ?? 'none',
       });
     }
@@ -561,8 +933,9 @@ async function waitForAuthenticatedShell(
         `Service down page detected while waiting for app shell for ${userIdentifier}`,
         userIdentifier,
         {
-          currentUrl: page.url(),
+          currentUrl: sanitizedPageUrl(page),
           preferredSelector: preferredSelector ?? 'none',
+          failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
         }
       );
     }
@@ -583,10 +956,34 @@ async function waitForAuthenticatedShell(
 
   setSetupMarker(page, 'shell-timeout');
   throw new Error(
-    `App shell not detected within ${timeoutMs}ms (preferred=${preferredSelector ?? 'none'}, url=${page.url()}, markers=${markers
+    `App shell not detected within ${timeoutMs}ms (preferred=${preferredSelector ?? 'none'}, url=${sanitizedPageUrl(page)}, markers=${markers
       .map((marker) => marker.name)
       .join(',')})`
   );
+}
+
+function isExpectedUnauthenticatedShellProbeFailure(error: unknown): boolean {
+  const message = toError(error).message;
+  return (
+    message.startsWith('Login page detected while waiting for app shell') || message.startsWith('App shell not detected within')
+  );
+}
+
+async function probeAuthenticatedShell(
+  page: Page,
+  userIdentifier: string,
+  preferredSelector: string | undefined,
+  timeoutMs: number,
+  waitForShell: typeof waitForAuthenticatedShell = waitForAuthenticatedShell
+): Promise<string | null> {
+  try {
+    return await waitForShell(page, userIdentifier, preferredSelector, timeoutMs);
+  } catch (error) {
+    if (isExpectedUnauthenticatedShellProbeFailure(error)) {
+      return null;
+    }
+    throw error;
+  }
 }
 
 /**
@@ -598,12 +995,21 @@ export async function ensureAuthenticatedPage(
   userIdentifier: SessionIdentityInput,
   options: { targetUrl?: string; waitForSelector?: string; timeoutMs?: number } = {}
 ): Promise<LoadedSession> {
-  const identity = resolveSessionIdentity(userIdentifier);
+  const resolveLoadedIdentity = (loadedSession: LoadedSession) => {
+    if (
+      typeof userIdentifier !== 'string' &&
+      (!loadedSession.userIdentifier || loadedSession.userIdentifier === userIdentifier.userIdentifier)
+    ) {
+      return resolveSessionIdentity(userIdentifier);
+    }
+    return resolveSessionIdentity(loadedSession.userIdentifier ?? userIdentifier);
+  };
   const markSetup = (marker: string) => setSetupMarker(page, marker);
   markSetup('setup-start');
   const targetUrl = options.targetUrl ?? process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
   const timeoutMs = options.timeoutMs ?? 60_000;
-  let session = await ensureSessionCookies(identity);
+  let session = await ensureSessionCookies(userIdentifier);
+  let identity = resolveLoadedIdentity(session);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
     markSetup('cookies-ready');
@@ -620,25 +1026,16 @@ export async function ensureAuthenticatedPage(
     logger.warn('Session appears invalid; refreshing', {
       userIdentifier: identity.userIdentifier,
       email: session.email,
-      targetUrl,
+      targetUrl: sanitizeUrl(targetUrl),
       operation: 'session-refresh',
     });
-    try {
-      if (fs.existsSync(session.storageFile)) {
-        fs.unlinkSync(session.storageFile);
-      }
-    } catch (error) {
-      logger.warn('Failed to delete stale session file', {
-        userIdentifier: identity.userIdentifier,
-        storageFile: session.storageFile,
-        error: (error as Error).message,
-        operation: 'session-refresh',
-      });
-    }
-
-    await sessionCapture([identity]);
+    await sessionCaptureWith([identity], {
+      force: true,
+      expectedStaleSession: session,
+    });
+    session = await ensureSessionCookiesForIdentity(identity);
+    identity = resolveLoadedIdentity(session);
     markSetup('session-refresh');
-    session = loadSessionCookies(identity);
     await page.context().clearCookies();
     if (session.cookies.length) {
       await page.context().addCookies(session.cookies);
@@ -651,7 +1048,7 @@ export async function ensureAuthenticatedPage(
       markSetup('idam-login');
       throw new SessionCaptureError(`Login failed for ${identity.userIdentifier}`, identity.userIdentifier, {
         email: session.email,
-        targetUrl,
+        targetUrl: sanitizeUrl(targetUrl),
       });
     }
   }
@@ -669,7 +1066,7 @@ export async function ensureAuthenticatedPage(
         marker,
         selector: selectors,
         timeoutMs,
-        currentUrl: page.url(),
+        currentUrl: sanitizedPageUrl(page),
         operation: 'wait-for-shell',
       });
     };
@@ -680,7 +1077,7 @@ export async function ensureAuthenticatedPage(
         userIdentifier: identity.userIdentifier,
         selector: selectors,
         timeoutMs,
-        error: (error as Error).message,
+        error: sessionCaptureFailureEvidence(toError(error)),
         operation: 'wait-for-shell',
       });
       throw error;
@@ -696,7 +1093,7 @@ export async function ensureAuthenticatedPage(
 export function isSessionFresh(
   sessionPath: string,
   maxAgeMs = DEFAULT_SESSION_MAX_AGE_MS,
-  deps: { fs?: typeof fs; now?: () => number; targetUrl?: string } = {}
+  deps: { fs?: typeof fs; now?: () => number; targetUrl?: string; idamUrl?: string } = {}
 ): boolean {
   const fsApi = deps.fs ?? fs;
   const now = deps.now ?? Date.now;
@@ -714,22 +1111,8 @@ export function isSessionFresh(
         return false;
       }
 
-      // Treat session as stale if all cookies are expired or nearly expired.
       const nowSeconds = Math.floor(now() / 1_000);
-      const hasValidCookie = cookies.some((cookie: Cookie) => {
-        if (typeof cookie.expires !== 'number') {
-          return true;
-        }
-        if (cookie.expires <= 0) {
-          return true; // session cookie (no explicit expiry)
-        }
-        return cookie.expires > nowSeconds + 60;
-      });
-      if (!hasValidCookie) {
-        return false;
-      }
-
-      return hasTargetCompatibleAuthCookies(cookies, deps.targetUrl);
+      return hasReusableAuthCookies(cookies, deps.targetUrl, deps.idamUrl, nowSeconds);
     }
     return false;
   } catch (err) {
@@ -742,40 +1125,35 @@ export function isSessionFresh(
   }
 }
 
-function clearSessionCaptureFailureIfReusableSession({
+function hasReusableSessionSupersedingFailure({
   fsApi,
-  failurePath,
   force,
   isFresh,
   maxAgeMs,
   sessionPath,
   targetUrl,
-  userIdentifier,
-  waitContext,
+  idamUrl,
+  recentFailure,
 }: {
   fsApi: typeof fs;
-  failurePath: string;
   force: boolean;
   isFresh: typeof isSessionFresh;
   maxAgeMs: number;
   sessionPath: string;
   targetUrl: string;
-  userIdentifier: string;
-  waitContext: 'before-lock' | 'after-lock';
+  idamUrl: string;
+  recentFailure: SessionCaptureFailureRecord;
 }): boolean {
-  if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl })) {
+  if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl, idamUrl })) {
     return false;
   }
 
-  logger.warn('Clearing session capture failure marker because a reusable session is already present', {
-    userIdentifier,
-    sessionPath,
-    failurePath,
-    waitContext,
-    operation: 'session-capture',
-  });
-  clearSessionCaptureFailure(fsApi, failurePath);
-  return true;
+  const currentFingerprint = readStorageStateFingerprint(fsApi, sessionPath);
+  return (
+    Boolean(currentFingerprint) &&
+    recentFailure.storageStateFingerprint !== undefined &&
+    currentFingerprint !== recentFailure.storageStateFingerprint
+  );
 }
 
 // local helper to persist session: write session file, add cookies to context and save storageState
@@ -788,11 +1166,25 @@ async function persistSession(
 ) {
   const cookieUtils = deps.cookieUtils ?? new CookieUtils();
   const fsApi = deps.fs ?? fs;
+  const stagingPath = `${localSessionPath}.${process.pid}.${Date.now()}.tmp`;
+  const assertNotAborted = () => {
+    if (deps.signal?.aborted) {
+      const error = new Error(`Session persistence aborted for ${uid}`);
+      error.name = 'AbortError';
+      throw error;
+    }
+  };
   try {
-    cookieUtils.writeManageCasesSession(localSessionPath, localCookies);
-    const augmented = JSON.parse(fsApi.readFileSync(localSessionPath, 'utf8')).cookies;
+    assertNotAborted();
+    cookieUtils.writeManageCasesSession(stagingPath, localCookies);
+    assertNotAborted();
+    const augmented = JSON.parse(fsApi.readFileSync(stagingPath, 'utf8')).cookies;
     await ctx.addCookies(augmented);
-    await ctx.storageState({ path: localSessionPath });
+    assertNotAborted();
+    await ctx.storageState({ path: stagingPath });
+    assertNotAborted();
+    deps.assertLockOwned?.();
+    fsApi.renameSync(stagingPath, localSessionPath);
     logger.info('Stored storage state', {
       userIdentifier: uid,
       sessionPath: localSessionPath,
@@ -807,6 +1199,10 @@ async function persistSession(
       operation: 'persist-session',
     });
     throw err;
+  } finally {
+    if (fsApi.existsSync(stagingPath)) {
+      fsApi.rmSync(stagingPath, { force: true });
+    }
   }
 }
 
@@ -823,23 +1219,21 @@ function ensureLockFile(fsApi: typeof fs, lockFilePath: string) {
 }
 
 async function acquireSessionLock({
-  fsApi,
   lockfileApi,
   lockFilePath,
   userIdentifier,
   isSessionReusable,
   force,
+  maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS,
 }: {
-  fsApi: typeof fs;
   lockfileApi: typeof lockfile;
   lockFilePath: string;
   userIdentifier: string;
   isSessionReusable: () => boolean;
   force: boolean;
-}): Promise<(() => Promise<void>) | null> {
+  maxWaitMs?: number;
+}): Promise<SessionLockRelease | null> {
   const pollIntervalMs = 1_000;
-  const maxWaitMs = 90_000;
-  const staleLockWindowMs = 65_000;
   const startedAt = Date.now();
   let attempt = 0;
 
@@ -855,10 +1249,29 @@ async function acquireSessionLock({
     }
 
     try {
-      return await lockfileApi.lock(lockFilePath, {
+      let compromisedError: Error | undefined;
+      const releaseLock = await lockfileApi.lock(lockFilePath, {
         retries: 0,
-        stale: 60_000,
+        stale: SESSION_CAPTURE_LOCK_STALE_MS,
+        update: SESSION_CAPTURE_LOCK_UPDATE_MS,
+        onCompromised: (error) => {
+          compromisedError = error;
+        },
       });
+
+      const assertOwned = () => {
+        if (compromisedError) {
+          const error = new Error(`Session lock ownership was lost for ${userIdentifier}`);
+          error.name = 'SessionLockCompromisedError';
+          throw error;
+        }
+      };
+      const release = async () => {
+        assertOwned();
+        await releaseLock();
+        assertOwned();
+      };
+      return Object.assign(release, { assertOwned });
     } catch (error) {
       if (!isLockAlreadyHeldError(error)) {
         throw error;
@@ -866,17 +1279,6 @@ async function acquireSessionLock({
 
       attempt += 1;
       const elapsedMs = Date.now() - startedAt;
-      const recovered = tryRecoverAbandonedSessionLock(fsApi, lockFilePath, staleLockWindowMs);
-      if (recovered) {
-        logger.warn('Recovered abandoned session lock artifact', {
-          userIdentifier,
-          lockFilePath,
-          attempt,
-          elapsedMs,
-          operation: 'session-capture',
-        });
-        continue;
-      }
       if (elapsedMs >= maxWaitMs) {
         throw new Error(`Timed out waiting for session lock for ${userIdentifier} after ${elapsedMs}ms (${lockFilePath})`);
       }
@@ -893,23 +1295,6 @@ async function acquireSessionLock({
   }
 }
 
-function tryRecoverAbandonedSessionLock(fsApi: typeof fs, lockFilePath: string, staleLockWindowMs: number): boolean {
-  const lockArtifactPath = `${lockFilePath}.lock`;
-  try {
-    if (!fsApi.existsSync(lockArtifactPath)) {
-      return false;
-    }
-    const ageMs = Date.now() - fsApi.statSync(lockArtifactPath).mtimeMs;
-    if (ageMs < staleLockWindowMs) {
-      return false;
-    }
-    fsApi.rmSync(lockArtifactPath, { recursive: true, force: true });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function executeLoginAttempt(
   page: Page,
   idamPage: IdamPage,
@@ -921,12 +1306,12 @@ async function executeLoginAttempt(
 ): Promise<void> {
   await gotoLoginTarget(page, userIdentifier, loginTarget);
   await acceptAccessCookiesIfPresent(page);
-  const shellMarker = await waitForAuthenticatedShell(page, userIdentifier, undefined, 5_000).catch(() => null);
+  const shellMarker = await probeAuthenticatedShell(page, userIdentifier, undefined, 5_000);
   if (shellMarker) {
     logger.info('Authenticated shell detected without IDAM form login', {
       userIdentifier,
       email,
-      loginTarget,
+      loginTarget: sanitizeUrl(loginTarget),
       marker: shellMarker,
       attempt: attemptIndex,
       operation: 'session-capture',
@@ -1012,20 +1397,20 @@ async function confirmAuthenticatedLogin(
 
   await acceptCookies(page);
   const [postLoginShell, hasAuthCookies] = await Promise.all([
-    waitForShell(page, userIdentifier, undefined, POST_LOGIN_AUTH_TIMEOUT_MS).catch(() => null),
+    probeAuthenticatedShell(page, userIdentifier, undefined, POST_LOGIN_AUTH_TIMEOUT_MS, waitForShell),
     waitForAuthCookies(page, POST_LOGIN_AUTH_TIMEOUT_MS),
   ]);
   if (!postLoginShell && !hasAuthCookies) {
     const idamErrorText = await getIdamLoginErrorText(page);
     const idamMessage = idamErrorText ? ` IDAM page message: ${idamErrorText}` : '';
     throw new Error(
-      `IDAM login did not establish authenticated session for ${userIdentifier} (url=${currentPageUrl(page)}).${idamMessage}`
+      `IDAM login did not establish authenticated session for ${userIdentifier} (url=${sanitizedPageUrl(page)}).${idamMessage}`
     );
   }
   info('IDAM login successful', {
     userIdentifier,
     email,
-    loginTarget,
+    loginTarget: sanitizeUrl(loginTarget),
     attempt: attemptIndex,
     marker: postLoginShell ?? 'auth-cookies',
     operation: 'session-capture',
@@ -1041,8 +1426,11 @@ async function loginAndPersistSession({
   password,
   sessionPath,
   persist,
+  assertLockOwned,
   userIdentifier,
+  maxAttempts = SESSION_CAPTURE_LOGIN_ATTEMPTS,
   executeLoginAttemptFn = executeLoginAttempt,
+  waitForRetry = waitForTransientRetry,
 }: {
   chromiumLauncher: typeof chromium;
   idamFactory: (page: Page) => IdamPage;
@@ -1052,109 +1440,229 @@ async function loginAndPersistSession({
   password: string;
   sessionPath: string;
   persist: typeof persistSession;
+  assertLockOwned?: () => void;
   userIdentifier: string;
+  maxAttempts?: number;
   executeLoginAttemptFn?: typeof executeLoginAttempt;
+  waitForRetry?: () => Promise<void>;
 }) {
-  const browser = await chromiumLauncher.launch();
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
-  const idamLoginUrl = activeConfig.urls.idamWebUrl ? new URL('/login', activeConfig.urls.idamWebUrl).toString() : undefined;
-  const loginTargets = [targetUrl, idamLoginUrl].filter((candidate): candidate is string => Boolean(candidate));
   logger.info('Logging in to EXUI', {
     userIdentifier,
     email,
-    targetUrl,
+    targetUrl: sanitizeUrl(targetUrl),
     operation: 'session-capture',
   });
+  const browser = await withOperationTimeout(
+    () => chromiumLauncher.launch({ timeout: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS }),
+    SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,
+    `Browser launch timed out after ${SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS}ms`
+  );
+  let browserClosePromise: Promise<void> | undefined;
+  const closeBrowser = () => {
+    browserClosePromise ??= withOperationTimeout(
+      () => browser.close(),
+      SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS,
+      `Browser close timed out after ${SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS}ms`
+    );
+    return browserClosePromise;
+  };
+  let captureError: unknown;
+  let sessionPersisted = false;
   try {
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    const idamPage = idamFactory(page);
-    try {
-      let loginError: Error | null = null;
-      for (let attempt = 0; attempt < loginTargets.length; attempt += 1) {
-        const loginTarget = loginTargets[attempt];
+    for (let captureAttempt = 1; captureAttempt <= maxAttempts; captureAttempt += 1) {
+      const abortController = new AbortController();
+      let context: BrowserContext | undefined;
+      let contextClosePromise: Promise<void> | undefined;
+      let retryPending = false;
+      let retryCleanupError: SessionCaptureError | undefined;
+      const closeContext = () => {
+        if (!context) {
+          return Promise.resolve();
+        }
+        contextClosePromise ??= withOperationTimeout(
+          () => context!.close(),
+          SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS,
+          `Browser context close timed out after ${SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS}ms`
+        );
+        return contextClosePromise;
+      };
+      const cancelAttempt = async () => {
+        abortController.abort();
+        await closeContext();
+      };
+      try {
+        const cookies = await withOperationTimeout(
+          async () => {
+            context = await withOperationTimeout(
+              () => browser.newContext(),
+              SESSION_CAPTURE_CONTEXT_CREATE_BUDGET_MS,
+              `Browser context creation timed out after ${SESSION_CAPTURE_CONTEXT_CREATE_BUDGET_MS}ms`,
+              closeBrowser
+            );
+            abortController.signal.throwIfAborted();
+            const page = await context.newPage();
+            const idamPage = idamFactory(page);
+            await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, targetUrl, captureAttempt);
+            return requirePersistableSessionCookies(context, userIdentifier, currentPageUrl(page), activeConfig.urls.idamWebUrl);
+          },
+          SESSION_CAPTURE_TARGET_BUDGET_MS,
+          `Session capture attempt timed out after ${SESSION_CAPTURE_TARGET_BUDGET_MS}ms`,
+          cancelAttempt
+        );
         try {
-          await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, loginTarget, attempt + 1);
-          loginError = null;
-          break;
-        } catch (attemptError) {
-          loginError = attemptError as Error;
-          logger.warn('IDAM login attempt failed', {
+          await withOperationTimeout(
+            () =>
+              persist(sessionPath, cookies, context!, userIdentifier, {
+                signal: abortController.signal,
+                assertLockOwned,
+              }),
+            SESSION_CAPTURE_PERSIST_BUDGET_MS,
+            `Session persistence timed out after ${SESSION_CAPTURE_PERSIST_BUDGET_MS}ms`,
+            cancelAttempt
+          );
+          sessionPersisted = true;
+        } catch (error) {
+          if (isSessionLockCompromisedError(error as Error)) {
+            throw error;
+          }
+          const evidence = sessionCaptureFailureEvidence(error as Error);
+          const persistenceError = new Error(`Session persistence failed for ${userIdentifier}: ${evidence}`);
+          persistenceError.name = 'SessionPersistenceError';
+          throw persistenceError;
+        }
+        break;
+      } catch (error) {
+        const loginError = error as Error;
+        if (isSessionLockCompromisedError(loginError)) {
+          throw loginError;
+        }
+        const shouldRetry = captureAttempt < maxAttempts && isTransientSessionCaptureError(loginError);
+        if (!shouldRetry) {
+          const evidence = sessionCaptureFailureEvidence(loginError);
+          const sanitizedCause = new Error(evidence);
+          sanitizedCause.name = loginError.name;
+          logger.error('Login failed', {
             userIdentifier,
-            email,
-            loginTarget,
-            attempt: attempt + 1,
-            totalAttempts: loginTargets.length,
-            currentUrl: currentPageUrl(page),
-            error: loginError.message,
+            targetUrl: sanitizeUrl(targetUrl),
+            captureAttempt,
+            error: evidence,
             operation: 'session-capture',
           });
-          if (isIdamLoginRejection(loginError)) {
-            break;
+          const failureKind =
+            (loginError as { context?: { failureKind?: string } }).context?.failureKind ??
+            (isUnexplainedIdamLoginRejection(loginError) ? UNEXPLAINED_IDAM_LOGIN_FAILURE : undefined);
+          throw new SessionCaptureError(
+            `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${maxAttempts} capture attempts: ${evidence}`,
+            userIdentifier,
+            { targetUrl: sanitizeUrl(targetUrl), appTargetUrl: sanitizeUrl(targetUrl), captureAttempt, evidence, failureKind },
+            sanitizedCause
+          );
+        }
+        logger.warn('Transient session capture failure; retrying once with a fresh browser context', {
+          userIdentifier,
+          targetUrl: sanitizeUrl(targetUrl),
+          captureAttempt,
+          error: sessionCaptureFailureEvidence(loginError),
+          operation: 'session-capture',
+        });
+        retryPending = true;
+      } finally {
+        try {
+          await closeContext();
+        } catch (closeError) {
+          const evidence = sessionCaptureFailureEvidence(closeError as Error);
+          logger.warn('Failed to close browser context after session capture attempt', {
+            userIdentifier,
+            captureAttempt,
+            error: evidence,
+            operation: 'session-capture',
+          });
+          if (retryPending) {
+            const sanitizedCause = new Error(evidence);
+            sanitizedCause.name = 'SessionCancellationError';
+            retryCleanupError = new SessionCaptureError(
+              `Login failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)} after ${captureAttempt} of ${maxAttempts} capture attempts: browser context cleanup failed before retry: ${evidence}`,
+              userIdentifier,
+              {
+                targetUrl: sanitizeUrl(targetUrl),
+                appTargetUrl: sanitizeUrl(targetUrl),
+                captureAttempt,
+                evidence,
+              },
+              sanitizedCause
+            );
           }
         }
       }
-
-      if (loginError) {
-        throw loginError;
+      if (retryCleanupError) {
+        throw retryCleanupError;
       }
-
-      try {
-        await new SessionCapturePage(page).header.waitFor({ timeout: 60_000 });
-        logger.info('EXUI header detected', {
-          userIdentifier,
-          operation: 'session-capture',
-        });
-      } catch (error_) {
-        logger.warn('EXUI header not detected within timeout', {
-          userIdentifier,
-          timeout: 60_000,
-          error: (error_ as Error).message,
-          operation: 'session-capture',
-        });
+      if (retryPending) {
+        await waitForRetry();
       }
+    }
+  } catch (error) {
+    captureError = error;
+  }
 
-      const cookies = await requirePersistableSessionCookies(context, userIdentifier, currentPageUrl(page));
-      await persist(sessionPath, cookies, context, userIdentifier);
-    } catch (e) {
-      logger.error('Login failed', {
-        userIdentifier,
-        email,
-        targetUrl,
-        error: (e as Error).message,
-        operation: 'session-capture',
-      });
-      throw new SessionCaptureError(`Login failed for ${userIdentifier}`, userIdentifier, { email, targetUrl }, e as Error);
+  try {
+    await closeBrowser();
+  } catch (closeError) {
+    const evidence = sessionCaptureFailureEvidence(toError(closeError));
+    const sanitizedCause = new Error(evidence);
+    sanitizedCause.name = 'SessionCancellationError';
+    const browserCloseError = new SessionCaptureError(
+      `Session capture cleanup failed for ${userIdentifier} at ${sanitizeUrl(targetUrl)}: ${evidence}`,
+      userIdentifier,
+      { targetUrl: sanitizeUrl(targetUrl), appTargetUrl: sanitizeUrl(targetUrl), evidence },
+      sanitizedCause
+    );
+    logger.warn('Failed to close browser after session capture', {
+      userIdentifier,
+      targetUrl: sanitizeUrl(targetUrl),
+      error: evidence,
+      operation: 'session-capture',
+    });
+    if (captureError instanceof Error) {
+      (captureError as ErrorWithBrowserCloseError).browserCloseError = browserCloseError;
+    } else if (!sessionPersisted && captureError === undefined) {
+      captureError = browserCloseError;
     }
-  } finally {
-    try {
-      await browser.close();
-    } catch (closeError) {
-      logger.warn('Failed to close browser after session capture', {
-        userIdentifier,
-        email,
-        targetUrl,
-        error: (closeError as Error).message,
-        operation: 'session-capture',
-      });
-    }
+  }
+
+  if (captureError !== undefined) {
+    throw captureError;
   }
 }
 
 async function requirePersistableSessionCookies(
   context: Pick<BrowserContext, 'cookies'>,
   userIdentifier: string,
-  currentUrl: string
+  currentUrl: string,
+  idamUrl?: string
 ): Promise<Cookie[]> {
   const cookies = await context.cookies();
-  if (!hasRequiredAuthCookies(cookies)) {
-    throw new Error(`Cannot persist unauthenticated session for ${userIdentifier} (url=${currentUrl}).`);
+  if (!hasReusableAuthCookies(cookies, currentUrl, idamUrl)) {
+    throw new Error(`Cannot persist unauthenticated session for ${userIdentifier} (url=${sanitizeUrl(currentUrl)}).`);
   }
   return cookies;
 }
 
 export async function sessionCapture(identifiers: SessionIdentityInput[], options: { force?: boolean } = {}) {
-  return sessionCaptureWith(identifiers, { force: options.force });
+  return sessionCaptureWith(identifiers, {
+    force: options.force,
+  });
+}
+
+export async function refreshRejectedSession(
+  identifier: SessionIdentityInput,
+  rejectedSession: Pick<LoadedSession, 'storageFile' | 'storageStateFingerprint'>
+): Promise<void> {
+  await sessionCaptureWith([identifier], {
+    force: true,
+    expectedStaleSession: rejectedSession,
+  });
 }
 
 async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: SessionCaptureDeps = {}) {
@@ -1165,10 +1673,13 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const activeConfig = deps.config ?? config;
   const isFresh = deps.isSessionFresh ?? isSessionFresh;
   const persist = deps.persistSession ?? persistSession;
+  const loginAndPersist = deps.loginAndPersistSession ?? loginAndPersistSession;
   const chromiumLauncher = deps.chromiumLauncher ?? chromium;
   const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
   const lockfileApi = deps.lockfile ?? lockfile;
   const force = deps.force ?? false;
+  const expectedStaleSession = deps.expectedStaleSession;
+  const now = deps.now ?? Date.now;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
   const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
 
@@ -1186,150 +1697,264 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     ensureLockFile(fsApi, lockFilePath);
 
     // Acquire filesystem lock (blocks across all workers)
-    let release: (() => Promise<void>) | null = null;
+    let release: SessionLockRelease | null = null;
+    let captureError: unknown;
     try {
-      const recentFailureMessage = recentSessionCaptureFailureMessage(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
-      if (recentFailureMessage) {
-        if (
-          clearSessionCaptureFailureIfReusableSession({
+      await (async () => {
+        let requiresLockedFailureClear = false;
+        const recentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
+        if (recentFailure) {
+          requiresLockedFailureClear = hasReusableSessionSupersedingFailure({
             fsApi,
-            failurePath,
             force,
             isFresh,
             maxAgeMs: sessionMaxAgeMs,
             sessionPath,
             targetUrl,
-            userIdentifier: identity.userIdentifier,
-            waitContext: 'before-lock',
-          })
-        ) {
-          continue;
+            idamUrl: activeConfig.urls.idamWebUrl,
+            recentFailure,
+          });
+          if (!requiresLockedFailureClear) {
+            throw new SessionCaptureError(
+              `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
+              identity.userIdentifier,
+              { sessionPath, failureKind: recentFailure.failureKind }
+            );
+          }
         }
-        throw new SessionCaptureError(
-          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailureMessage}`,
-          identity.userIdentifier,
-          { sessionPath }
-        );
-      }
 
-      logger.info('Attempting to acquire lock for user', {
-        userIdentifier: identity.userIdentifier,
-        lockFilePath,
-        operation: 'session-capture',
-      });
-
-      release = await acquireSessionLock({
-        fsApi,
-        lockfileApi,
-        lockFilePath,
-        userIdentifier: identity.userIdentifier,
-        isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl }),
-        force,
-      });
-
-      if (!release) {
-        logger.info('Skipping session capture because another worker refreshed the session', {
+        logger.info('Attempting to acquire lock for user', {
           userIdentifier: identity.userIdentifier,
-          email: identity.email,
-          sessionPath,
+          lockFilePath,
           operation: 'session-capture',
         });
-        continue;
-      }
 
-      logger.info('Lock acquired', {
-        userIdentifier: identity.userIdentifier,
-        operation: 'session-capture',
-      });
+        const lockStartedAt = now();
+        const remainingCaptureBudgetMsBeforeLock =
+          deps.captureDeadlineAt === undefined ? undefined : Math.max(0, deps.captureDeadlineAt - lockStartedAt);
+        const maxLockWaitMs =
+          remainingCaptureBudgetMsBeforeLock === undefined
+            ? deps.lockWaitMs
+            : Math.min(deps.lockWaitMs ?? SESSION_CAPTURE_LOCK_WAIT_MS, remainingCaptureBudgetMsBeforeLock);
+        release = await acquireSessionLock({
+          lockfileApi,
+          lockFilePath,
+          userIdentifier: identity.userIdentifier,
+          isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl: activeConfig.urls.idamWebUrl }),
+          force: force || requiresLockedFailureClear,
+          maxWaitMs: maxLockWaitMs,
+        });
+        const lockWaitMs = Math.max(0, now() - lockStartedAt);
 
-      const lockedRecentFailureMessage = recentSessionCaptureFailureMessage(
-        fsApi,
-        failurePath,
-        resolveSessionCaptureFailureTtlMs(env)
-      );
-      if (lockedRecentFailureMessage) {
-        if (
-          clearSessionCaptureFailureIfReusableSession({
-            fsApi,
-            failurePath,
-            force,
-            isFresh,
-            maxAgeMs: sessionMaxAgeMs,
+        if (!release) {
+          logger.info('Skipping session capture because another worker refreshed the session', {
+            userIdentifier: identity.userIdentifier,
+            email: identity.email,
             sessionPath,
-            targetUrl,
-            userIdentifier: identity.userIdentifier,
-            waitContext: 'after-lock',
-          })
-        ) {
-          continue;
+            operation: 'session-capture',
+          });
+          return;
         }
-        throw new SessionCaptureError(
-          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailureMessage}`,
-          identity.userIdentifier,
-          { sessionPath }
-        );
-      }
 
-      // Recheck freshness after acquiring lock (another worker may have logged in)
-      if (!force && isFresh(sessionPath, sessionMaxAgeMs, { targetUrl })) {
-        logger.info('Session became fresh while waiting for lock', {
+        logger.info('Lock acquired', {
           userIdentifier: identity.userIdentifier,
-          email: identity.email,
-          sessionPath,
           operation: 'session-capture',
         });
-        continue;
-      }
 
-      await loginAndPersistSession({
-        chromiumLauncher,
-        idamFactory,
-        env,
-        activeConfig,
-        email: identity.email,
-        password: identity.password,
-        sessionPath,
-        persist,
-        userIdentifier: identity.userIdentifier,
-      })
-        .then(() => clearSessionCaptureFailure(fsApi, failurePath))
-        .catch((error: Error) => {
-          writeSessionCaptureFailure(fsApi, failurePath, error);
-          throw error;
+        const lockedRecentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
+        if (lockedRecentFailure) {
+          if (
+            hasReusableSessionSupersedingFailure({
+              fsApi,
+              force,
+              isFresh,
+              maxAgeMs: sessionMaxAgeMs,
+              sessionPath,
+              targetUrl,
+              idamUrl: activeConfig.urls.idamWebUrl,
+              recentFailure: lockedRecentFailure,
+            })
+          ) {
+            logger.warn('Clearing session capture failure marker because a reusable session is already present', {
+              userIdentifier: identity.userIdentifier,
+              sessionPath,
+              failurePath,
+              waitContext: 'after-lock',
+              operation: 'session-capture',
+            });
+            release.assertOwned();
+            clearSessionCaptureFailure(fsApi, failurePath);
+            return;
+          }
+          throw new SessionCaptureError(
+            `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
+            identity.userIdentifier,
+            { sessionPath, failureKind: lockedRecentFailure.failureKind }
+          );
+        }
+
+        if (expectedStaleSession) {
+          if (path.resolve(expectedStaleSession.storageFile) !== path.resolve(sessionPath)) {
+            throw new SessionCaptureError(
+              `Rejected session path does not match resolved identity for ${identity.userIdentifier}`,
+              identity.userIdentifier,
+              { sessionPath }
+            );
+          }
+
+          if (!expectedStaleSession.storageStateFingerprint) {
+            throw new SessionCaptureError(
+              `Rejected session fingerprint is unavailable for ${identity.userIdentifier}`,
+              identity.userIdentifier,
+              { sessionPath }
+            );
+          }
+
+          const currentFingerprint = readStorageStateFingerprint(fsApi, sessionPath);
+          if (currentFingerprint && currentFingerprint !== expectedStaleSession.storageStateFingerprint) {
+            logger.info('Reusing session refreshed by another worker after server-side rejection', {
+              userIdentifier: identity.userIdentifier,
+              email: identity.email,
+              sessionPath,
+              operation: 'session-refresh',
+            });
+            return;
+          }
+
+          if (currentFingerprint === expectedStaleSession.storageStateFingerprint) {
+            release.assertOwned();
+            fsApi.unlinkSync(sessionPath);
+            logger.info('Deleted server-rejected session under identity lock', {
+              userIdentifier: identity.userIdentifier,
+              sessionPath,
+              operation: 'session-refresh',
+            });
+          }
+        }
+
+        // Recheck freshness after acquiring lock (another worker may have logged in)
+        if (!force && isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl: activeConfig.urls.idamWebUrl })) {
+          logger.info('Session became fresh while waiting for lock', {
+            userIdentifier: identity.userIdentifier,
+            email: identity.email,
+            sessionPath,
+            operation: 'session-capture',
+          });
+          return;
+        }
+
+        const remainingCaptureBudgetMs = deps.captureDeadlineAt === undefined ? undefined : deps.captureDeadlineAt - now();
+        const maxAttempts = resolveCaptureAttemptLimit(remainingCaptureBudgetMs);
+        if (maxAttempts === 0 || (remainingCaptureBudgetMs === undefined && lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS)) {
+          throw new SessionCaptureError(
+            `Session capture cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget`,
+            identity.userIdentifier,
+            { sessionPath, lockWaitMs, remainingCaptureBudgetMs }
+          );
+        }
+
+        await loginAndPersist({
+          chromiumLauncher,
+          idamFactory,
+          env,
+          activeConfig,
+          email: identity.email,
+          password: identity.password,
+          sessionPath,
+          persist,
+          assertLockOwned: release.assertOwned,
+          userIdentifier: identity.userIdentifier,
+          maxAttempts,
+        })
+          .then(() => {
+            release!.assertOwned();
+            clearSessionCaptureFailure(fsApi, failurePath);
+          })
+          .catch((error: Error) => {
+            release!.assertOwned();
+            const reusableSessionWasPersisted = isFresh(sessionPath, sessionMaxAgeMs, {
+              targetUrl,
+              idamUrl: activeConfig.urls.idamWebUrl,
+            });
+            if (!isSessionLockCompromisedError(error) && !reusableSessionWasPersisted) {
+              writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error);
+            }
+            throw error;
+          });
+      })();
+    } catch (error) {
+      captureError = error;
+    }
+
+    if (release) {
+      try {
+        await release();
+        logger.info('Lock released', {
+          userIdentifier: identity.userIdentifier,
+          operation: 'session-capture',
         });
-    } finally {
-      // Always release lock
-      if (release) {
-        try {
-          await release();
-          logger.info('Lock released', {
-            userIdentifier: identity.userIdentifier,
-            operation: 'session-capture',
-          });
-        } catch (e) {
-          logger.warn('Failed to release lock', {
-            userIdentifier: identity.userIdentifier,
-            lockFilePath,
-            error: (e as Error).message,
-            operation: 'session-capture',
-          });
+      } catch (e) {
+        const releaseError = toSessionLockReleaseError(identity.userIdentifier, e);
+        logger.warn('Failed to release lock', {
+          userIdentifier: identity.userIdentifier,
+          lockFilePath,
+          error: releaseError.message,
+          operation: 'session-capture',
+        });
+        if (captureError instanceof Error) {
+          (captureError as ErrorWithSessionLockReleaseError).sessionLockReleaseError = releaseError;
+        } else if (captureError === undefined) {
+          captureError = releaseError;
         }
       }
+    }
+
+    if (captureError !== undefined) {
+      throw captureError;
     }
   }
 }
 
 export const __test__ = {
+  sessionCaptureLockWaitMs: SESSION_CAPTURE_LOCK_WAIT_MS,
+  sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
+  sessionCaptureLockStartBudgetMs: SESSION_CAPTURE_LOCK_START_BUDGET_MS,
+  sessionCapturePoolBudgetMs: SESSION_CAPTURE_POOL_BUDGET_MS,
+  sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
+  sessionCaptureLockUpdateMs: SESSION_CAPTURE_LOCK_UPDATE_MS,
+  sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
+  sessionCaptureSingleAttemptBudgetMs: SESSION_CAPTURE_SINGLE_ATTEMPT_BUDGET_MS,
+  sessionCaptureBrowserLaunchBudgetMs: SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS,
+  sessionCaptureTargetBudgetMs: SESSION_CAPTURE_TARGET_BUDGET_MS,
+  sessionCapturePersistBudgetMs: SESSION_CAPTURE_PERSIST_BUDGET_MS,
+  sessionCaptureContextCloseBudgetMs: SESSION_CAPTURE_CONTEXT_CLOSE_BUDGET_MS,
+  sessionCaptureBrowserCloseBudgetMs: SESSION_CAPTURE_BROWSER_CLOSE_BUDGET_MS,
+  sessionCaptureRetryBackoffMaxMs: SESSION_CAPTURE_RETRY_BACKOFF_MAX_MS,
+  withOperationTimeout,
+  applySessionCookiesFromPoolWith,
+  resolveSessionCandidates,
+  ensureSessionWith,
+  resolveSessionIdentityForLoad,
+  resolveSessionSelectionPath,
+  persistSessionSelection,
   resolveSessionMaxAgeMs,
-  hasTargetCompatibleAuthCookies,
+  storageStateFingerprint,
+  readStorageStateFingerprint,
+  hasReusableAuthCookies,
+  isTransientNavigationFailure,
+  gotoAppTarget,
+  gotoLoginTarget,
   resolveTargetHost,
   acquireSessionLock,
   sessionCaptureWith,
+  resolveCaptureAttemptLimit,
   persistSession,
   confirmAuthenticatedLogin,
   completeIdamCredentialFlow,
   ensureAuthenticatedPage,
   loginAndPersistSession,
+  executeLoginAttempt,
   requirePersistableSessionCookies,
   waitForAuthenticatedShell,
+  probeAuthenticatedShell,
 };

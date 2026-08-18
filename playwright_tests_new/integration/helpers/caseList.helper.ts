@@ -13,8 +13,9 @@ export type SearchCasesRequestDetails = {
   view: string;
   page: string;
   state?: string;
+  caseFilters: Record<string, string>;
 };
-type ExpectedSearchCasesRequestDetails = Omit<SearchCasesRequestDetails, 'state'> & {
+type ExpectedSearchCasesRequestDetails = Omit<SearchCasesRequestDetails, 'state' | 'caseFilters'> & {
   state?: string | null;
 };
 
@@ -31,6 +32,7 @@ export async function setupCaseListMocks(
     searchResponseHandler?: (route: Route) => Promise<void>;
     jurisdictions?: unknown;
     workbasketInputs?: { workbasketInputs?: unknown[]; searchInputs?: unknown[] };
+    workbasketInputsHandler?: (route: Route) => Promise<void>;
   }
 ): Promise<void> {
   const jurisdictions = options.jurisdictions ?? defaultJurisdictionsMock;
@@ -52,10 +54,20 @@ export async function setupCaseListMocks(
   });
 
   await page.route('**/data/internal/case-types/**/work-basket-inputs*', async (route) => {
+    if (options.workbasketInputsHandler) {
+      await options.workbasketInputsHandler(route);
+      return;
+    }
+
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(workbasketInputs) });
   });
 
   await page.route('**/caseworkers/**/jurisdictions/**/case-types/**/work-basket-inputs*', async (route) => {
+    if (options.workbasketInputsHandler) {
+      await options.workbasketInputsHandler(route);
+      return;
+    }
+
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(workbasketInputs) });
   });
 
@@ -88,6 +100,7 @@ export async function waitForSearchCasesRequest(
   page: Page,
   expected: {
     page: number;
+    ctid?: string;
     state?: string;
     allowEmptyState?: boolean;
   }
@@ -95,6 +108,10 @@ export async function waitForSearchCasesRequest(
   const request = await page.waitForRequest((candidate) => {
     const requestUrl = new URL(candidate.url());
     if (requestUrl.pathname !== '/data/internal/searchCases' || requestUrl.searchParams.get('page') !== String(expected.page)) {
+      return false;
+    }
+
+    if (expected.ctid !== undefined && requestUrl.searchParams.get('ctid') !== expected.ctid) {
       return false;
     }
 
@@ -116,6 +133,12 @@ export async function waitForSearchCasesRequest(
     view: requestUrl.searchParams.get('view') ?? '',
     page: requestUrl.searchParams.get('page') ?? '',
     state: requestUrl.searchParams.get('state') ?? undefined,
+    caseFilters: Array.from(requestUrl.searchParams.entries()).reduce<Record<string, string>>((filters, [key, value]) => {
+      if (key.startsWith('case.')) {
+        filters[key] = value;
+      }
+      return filters;
+    }, {}),
   };
 }
 

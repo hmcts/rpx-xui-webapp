@@ -50,6 +50,7 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/cases\/\d+\/event-triggers\//,
   /\/cases\/\d+\/events/,
   /\/event-triggers\/[^/]+\/validate/,
+  /\/data\/case-types\/[^/]+\/validate/,
 ];
 
 export class CreateCasePage extends Base {
@@ -949,12 +950,18 @@ export class CreateCasePage extends Base {
         await this.addRespondentButton.click();
         await this.respondentOneNameInput.waitFor({ state: 'visible' });
         await this.respondentOneNameInput.fill('Respondent One');
-        await this.respondentOrganisation.waitFor({ state: 'visible' });
-        await this.respondentOrganisation.check();
+
+        const respondentTypeAvailable = await this.respondentOrganisation.isEnabled().catch(() => false);
+        if (respondentTypeAvailable) {
+          await this.respondentOrganisation.check({ force: true });
+        }
+
         await this.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
         await this.respondentAcasCertifcateSelectYes.check();
         await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
-        await this.respondentCompanyNameInput.fill('Respondent Company');
+        if (await this.respondentCompanyNameInput.isVisible().catch(() => false)) {
+          await this.respondentCompanyNameInput.fill('Respondent Company');
+        }
         await this.manualEntryLink.waitFor({ state: 'visible' });
         await this.manualEntryLink.click();
         await this.respondentAddressLine1Input.waitFor({ state: 'visible' });
@@ -1184,12 +1191,12 @@ export class CreateCasePage extends Base {
     if (options.textFields?.textField3 !== undefined) {
       await this.textField3Input.fill(options.textFields.textField3);
     }
-    if (options.textFields?.textField0 !== undefined) {
-      await this.textField0Input.fill(options.textFields.textField0);
-    }
-
     if (options.divorceReasons?.length) {
       await this.selectDivorceReasons(options.divorceReasons);
+    }
+
+    if (options.textFields?.textField0 !== undefined) {
+      await this.textField0Input.fill(options.textFields.textField0);
     }
 
     const hiddenFieldDetailsUrl = this.page.url();

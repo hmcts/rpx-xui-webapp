@@ -1,0 +1,18 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper govuk-main-wrapper--l" id="content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">{{ 'You cannot use Manage Cases with this account' | rpxTranslate }}</h1>
+        <p class="govuk-body">
+          {{ 'You signed in successfully, but this account is not authorised to use Manage Cases.' | rpxTranslate }}
+        </p>
+        <p class="govuk-body">
+          <a class="govuk-link" href="/auth/login">{{ 'Sign in with a different account' | rpxTranslate }}</a>
+          {{ 'or contact your service/onboarding support team if you need access.' | rpxTranslate }}
+        </p>
+      </div>
+    </div>
+  </main>
+</div>
+<exui-app-footer></exui-app-footer>

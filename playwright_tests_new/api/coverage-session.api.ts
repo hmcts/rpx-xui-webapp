@@ -483,6 +483,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         case 'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]':
           return usernameLocator;
         case '[data-testid="idam-password-input"], #password, input[name="password"], input[type="password"]':
+        case 'input#password, input[name="password"], input[type="password"]':
           return passwordLocator;
         case 'button:has-text("Sign in"), button:has-text("Continue")':
         case '[data-testid="idam-submit-button"], [name="save"], button[type="submit"], input[type="submit"]':
@@ -504,6 +505,9 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     const resolveRoleLocator = (role: string, name: string) => {
       if (role === 'button' && name === '/accept (additional|analytics) cookies/i') {
         return acceptCookiesLocator;
+      }
+      if (role === 'button' && name === '/^(continue|sign in)$/i') {
+        return submitLocator;
       }
       if (role === 'link' && name === 'Create case') {
         return createCaseLinkLocator;

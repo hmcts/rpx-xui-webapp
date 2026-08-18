@@ -57,7 +57,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     return parsed;
   };
 
-  const retries = parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
+  const retries = parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 0;
   const globalTimeoutMs = parsePositiveInt(env.PW_E2E_GLOBAL_TIMEOUT_MS);
   const isAccessibilityRun = env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true';
   const disableGenericFailureArtifacts = env.PLAYWRIGHT_DISABLE_GENERIC_FAILURE_ARTIFACTS === 'true';

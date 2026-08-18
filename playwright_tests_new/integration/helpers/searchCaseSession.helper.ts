@@ -2,7 +2,7 @@ import type { Page, TestInfo } from '@playwright/test';
 import { applySessionCookiesFromPool } from '../../common/sessionCapture';
 import { resolveSearchCaseSessionUsers } from './integrationSessionUsers.helper';
 
-const probateFindCaseSessionUsers = ['PROBATE_FIND_CASE'] as const;
+const probateFindCaseSessionUsers = ['PROBATE_CASEWORKER'] as const;
 
 export { resolveIntegrationSessionUsers, resolveSearchCaseSessionUsers } from './integrationSessionUsers.helper';
 

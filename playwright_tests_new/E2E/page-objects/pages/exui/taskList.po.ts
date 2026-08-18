@@ -16,7 +16,7 @@ const PRIORITY_LIMIT_HIGH = 5000;
 
 export class TaskListPage extends Base {
   readonly myWorkHeading = this.page.getByRole('heading', { name: /my work/i }).first();
-  readonly taskListFilterToggle = this.page.locator('exui-task-list-filter .govuk-button.hmcts-button--secondary').first();
+  readonly myWorkFilterToggle = this.page.locator('exui-my-work-filter .govuk-button.hmcts-button--secondary').first();
   readonly filterPanel = this.page.locator('xuilib-generic-filter');
   readonly selectAllServicesFilter = this.filterPanel.locator('input#checkbox_servicesservices_all').first();
   readonly serviceFilterCheckboxes = this.filterPanel.locator(
@@ -439,7 +439,7 @@ export class TaskListPage extends Base {
       [
         ['heading', this.myWorkHeading],
         ['tabs', this.taskTableTabs.first()],
-        ['filter-toggle', this.taskListFilterToggle],
+        ['filter-toggle', this.myWorkFilterToggle],
         ['table', this.taskListTable],
         ['table-header', this.taskTableHeader],
         ['table-footer', this.taskTableFooter],
@@ -504,7 +504,7 @@ export class TaskListPage extends Base {
     await this.waitForVisibleSignal(
       [
         ['apply-filter-button', this.applyFilterButton],
-        ['filter-toggle', this.taskListFilterToggle],
+        ['filter-toggle', this.myWorkFilterToggle],
       ],
       `filter controls (${context})`,
       timeoutMs
@@ -635,7 +635,7 @@ export class TaskListPage extends Base {
         });
         return;
       }
-      await this.taskListFilterToggle.click();
+      await this.myWorkFilterToggle.click();
       await this.filterPanel
         .waitFor({ state: 'visible', timeout: this.resolveInteractionTimeout(panelDeadlineMs, 1_000) })
         .catch(() => undefined);

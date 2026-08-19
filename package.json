@@ -115,10 +115,10 @@
     "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.79-exui-4919-rc-8",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.89",
     "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.2.32",
+    "@hmcts/media-viewer": "4.2.33",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.4.1",
     "@hmcts/rpx-xui-common-lib": "3.2.16",
@@ -296,7 +296,8 @@
     "body-parser": "^2.3.0",
     "path-to-regexp": "^8.4.2",
     "@opentelemetry/core": "^2.8.0",
-    "mermaid": "^11.16.1"
+    "mermaid": "^11.16.1",
+    "socket.io-parser": "4.2.7"
   },
   "packageManager": "yarn@4.17.1"
 }

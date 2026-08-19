@@ -33,6 +33,7 @@ const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
 const AUTH_COOKIE_MIN_REMAINING_SECONDS = 60;
 const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
+const DEFAULT_SESSION_CAPTURE_STAGGER_MS = 0;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
 const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
 const SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS = 10_000;
@@ -194,6 +195,11 @@ async function getIdamLoginErrorText(page: Page): Promise<string | null> {
 function resolveSessionCaptureFailureTtlMs(env: NodeJS.ProcessEnv = process.env): number {
   const configured = Number(env.PW_SESSION_CAPTURE_FAILURE_TTL_MS);
   return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
+}
+
+function resolveSessionCaptureStaggerMs(env: NodeJS.ProcessEnv = process.env): number {
+  const configured = Number(env.PW_SESSION_CAPTURE_STAGGER_MS);
+  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_CAPTURE_STAGGER_MS;
 }
 
 type SessionCaptureFailureRecord = {
@@ -611,6 +617,17 @@ async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput, ca
     operation: 'lazy-capture',
     metric: 'session-miss',
   });
+  const staggerMs = resolveSessionCaptureStaggerMs();
+  const parallelIndex = resolveCurrentPlaywrightParallelIndex();
+  if (staggerMs > 0 && parallelIndex !== undefined && parallelIndex > 0) {
+    const delayMs = parallelIndex * staggerMs;
+    logger.info('Staggering lazy session capture for worker', {
+      parallelIndex,
+      delayMs,
+      operation: 'lazy-capture',
+    });
+    await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+  }
   // Do not force recapture here: when many workers race on a stale session,
   // lock waiters should be able to reuse the freshly captured session.
   await sessionCaptureWith([identity], { captureDeadlineAt });
@@ -1938,6 +1955,7 @@ export const __test__ = {
   resolveSessionSelectionPath,
   persistSessionSelection,
   resolveSessionMaxAgeMs,
+  resolveSessionCaptureStaggerMs,
   storageStateFingerprint,
   readStorageStateFingerprint,
   hasReusableAuthCookies,

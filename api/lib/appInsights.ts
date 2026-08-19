@@ -1,8 +1,8 @@
 import * as applicationinsights from 'applicationinsights';
 import * as express from 'express';
 
-import { SpanKind, TraceFlags, type Context } from '@opentelemetry/api';
-import type { ReadableSpan, Span, SpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { SpanKind, TraceFlags } from '@opentelemetry/api';
+import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
 import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
@@ -96,7 +96,7 @@ class HealthStaticFilteringProcessor implements SpanProcessor {
     return Promise.resolve();
   }
 
-  onStart(_span: Span, _parentContext: Context): void {
+  onStart(): void {
     // No processing required when the span starts.
   }
 

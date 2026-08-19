@@ -76,16 +76,24 @@ type TokenBootstrapDeps = {
 
 type FormLoginDeps = {
   requestFactory?: AuthRequestFactory;
-  extractCsrf?: typeof extractCsrf;
   authCheckAttempts?: number;
   authCheckDelayMs?: number;
 };
 
 type AuthCheckResponse = {
   status: () => number;
+  url?: () => string;
   headers?: () => Record<string, string>;
   text?: () => Promise<string>;
   json?: () => Promise<unknown>;
+};
+
+type LoginForm = {
+  action: string;
+  hiddenFields: Record<string, string>;
+  hasEmail: boolean;
+  hasUsername: boolean;
+  hasPassword: boolean;
 };
 
 type AuthCheckResult = {
@@ -286,7 +294,6 @@ async function createStorageStateViaForm(
   deps: FormLoginDeps = {}
 ): Promise<void> {
   const requestFactory = deps.requestFactory ?? ((options) => request.newContext(options));
-  const extract = deps.extractCsrf ?? extractCsrf;
   const context = await requestFactory({
     baseURL: baseUrl,
     ignoreHTTPSErrors: true,
@@ -302,24 +309,28 @@ async function createStorageStateViaForm(
       });
     }
 
-    const loginUrl = loginPage.url();
-    const csrfToken = extract(await loginPage.text());
-    const formPayload: Record<string, string> = {
-      username: credentials.username,
-      password: credentials.password,
-      save: 'Sign in',
-    };
-    if (csrfToken) {
-      formPayload._csrf = csrfToken;
-    }
+    const loginUrl = loginPage.url?.() ?? `${baseUrl}/auth/login`;
+    const loginForm = parseLoginForm(await loginPage.text(), loginUrl);
+    const loginResponse = await submitLoginForm(context, loginForm, credentials, role);
 
-    const loginResponse = await context.post(loginUrl, { form: formPayload });
-    if (loginResponse.status() >= 400) {
-      throw new AuthenticationError(`POST ${loginUrl} responded with ${loginResponse.status()}`, role, {
-        endpoint: loginUrl,
-        status: loginResponse.status(),
-        method: 'POST',
-      });
+    if (loginForm.hasEmail && !loginForm.hasPassword) {
+      const passwordPageUrl = loginResponse.url?.() ?? loginUrl;
+      const passwordHtml = await loginResponse.text?.();
+      if (!passwordHtml) {
+        throw new AuthenticationError('Progressive IDAM password page was empty', role, {
+          endpoint: passwordPageUrl,
+          status: loginResponse.status(),
+        });
+      }
+
+      const passwordForm = parseLoginForm(passwordHtml, passwordPageUrl);
+      if (!passwordForm.hasPassword) {
+        throw new AuthenticationError('Progressive IDAM password form was not found', role, {
+          endpoint: passwordPageUrl,
+          status: loginResponse.status(),
+        });
+      }
+      await submitLoginForm(context, passwordForm, credentials, role);
     }
 
     // Ensure XSRF/session cookies are refreshed on the application domain
@@ -351,6 +362,29 @@ async function createStorageStateViaForm(
   }
 }
 
+async function submitLoginForm(
+  context: AuthRequestContext,
+  form: LoginForm,
+  credentials: { username: string; password: string },
+  role: ApiUserRole
+): Promise<AuthCheckResponse> {
+  const formPayload: Record<string, string> = { ...form.hiddenFields };
+  if (form.hasEmail) formPayload.email = credentials.username;
+  if (form.hasUsername) formPayload.username = credentials.username;
+  if (form.hasPassword) formPayload.password = credentials.password;
+  formPayload.save = form.hasPassword ? 'Sign in' : 'Continue';
+
+  const response = await context.post(form.action, { form: formPayload });
+  if (response.status() >= 400) {
+    throw new AuthenticationError(`POST ${form.action} responded with ${response.status()}`, role, {
+      endpoint: form.action,
+      status: response.status(),
+      method: 'POST',
+    });
+  }
+  return response;
+}
+
 function getCredentials(role: ApiUserRole): { username: string; password: string } {
   const envUsers = config.users[config.testEnv as keyof typeof config.users];
   const userConfig = envUsers?.[role];
@@ -371,6 +405,28 @@ function getCredentials(role: ApiUserRole): { username: string; password: string
 function extractCsrf(html: string): string | undefined {
   const match = /name="_csrf"\s+value="([^"]+)"/i.exec(html);
   return match?.[1];
+}
+
+function parseLoginForm(html: string, pageUrl: string): LoginForm {
+  const formMatch = /<form\b([^>]*)>/i.exec(html);
+  const formAttributes = formMatch?.[1] ?? '';
+  const actionMatch = /\baction=["']([^"']*)["']/i.exec(formAttributes);
+  const action = new URL(actionMatch?.[1] || pageUrl, pageUrl).toString();
+  const formEnd = formMatch ? html.indexOf('</form>', formMatch.index) : -1;
+  const formHtml = formMatch && formEnd >= 0 ? html.slice(formMatch.index, formEnd) : html;
+  const hiddenFields: Record<string, string> = {};
+  for (const input of formHtml.match(/<input\b[^>]*type=["']hidden["'][^>]*>/gi) ?? []) {
+    const name = /\bname=["']([^"']+)["']/i.exec(input)?.[1];
+    const value = /\bvalue=["']([^"']*)["']/i.exec(input)?.[1];
+    if (name && value !== undefined) hiddenFields[name] = value;
+  }
+  return {
+    action,
+    hiddenFields,
+    hasEmail: /<input\b[^>]*(?:name|id)=["'](?:email|emailAddress)["'][^>]*>/i.test(formHtml),
+    hasUsername: /<input\b[^>]*(?:name|id)=["']username["'][^>]*>/i.test(formHtml),
+    hasPassword: /<input\b[^>]*type=["']password["'][^>]*>/i.test(formHtml),
+  };
 }
 
 async function readAuthCheck(response: AuthCheckResponse): Promise<AuthCheckResult> {
@@ -526,6 +582,7 @@ function isStorageStateFresh(storagePath: string, ttlMs: number = 15 * 60 * 1000
 
 export const __test__ = {
   extractCsrf,
+  parseLoginForm,
   stripTrailingSlash,
   getCacheKey,
   isTokenBootstrapEnabled,

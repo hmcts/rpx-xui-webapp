@@ -34,10 +34,21 @@ type SearchRequestPayload = {
   view?: string;
 };
 
+const getSearchParameterValues = (request: SearchRequestPayload, key: string): string[] =>
+  request.searchRequest?.search_parameters?.find((parameter) => parameter.key === key)?.values ?? [];
+
+const hasExactSearchParameterValues = (request: SearchRequestPayload, key: string, expectedValues: string[]): boolean => {
+  const actualValues = getSearchParameterValues(request, key);
+  return (
+    actualValues.length === expectedValues.length && expectedValues.every((expectedValue) => actualValues.includes(expectedValue))
+  );
+};
+
 const WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS =
   Number.parseInt(process.env.PW_WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 180_000;
+const MY_WORK_FILTER_STORAGE_KEY = 'my-work-filter';
 
-test.beforeAll(async ({}, testInfo) => {
+test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
   testInfo.setTimeout(WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS);
   await warmWorkFiltersSession();
 });
@@ -67,17 +78,17 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     await test.step('My tasks filter opens, shows controls, and hides after apply', async () => {
       await taskListPage.gotoAndWaitForTaskRow('opening My tasks filters');
-      await expect(taskListPage.taskListFilterToggle).toContainText('Show work filter');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Show work filter');
 
       await taskListPage.openFilterPanel();
 
-      await expect(taskListPage.taskListFilterToggle).toContainText('Hide work filter');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Hide work filter');
       await taskListPage.expectWorkFilterControls();
 
       await taskListPage.applyCurrentFilters();
 
       await expect(taskListPage.filterPanel).toBeHidden();
-      await expect(taskListPage.taskListFilterToggle).toContainText('Show work filter');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Show work filter');
     });
 
     await test.step('Available tasks keeps the same services, location, and work type controls', async () => {
@@ -227,17 +238,18 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     await setupWorkFiltersUser(page);
 
-    await page.addInitScript(() => {
+    await page.addInitScript((myWorkFilterStorageKey) => {
       window.localStorage.setItem(
-        'locations',
+        myWorkFilterStorageKey,
         JSON.stringify({
+          id: myWorkFilterStorageKey,
           fields: [
             { name: 'services', value: ['IA'] },
             { name: 'locations', value: [{ epimms_id: '765324' }] },
           ],
         })
       );
-    });
+    }, MY_WORK_FILTER_STORAGE_KEY);
 
     await setupManageTasksBaseRoutes(page, {
       taskListResponse: buildTaskListMock(6, workFiltersUserId, myActionsList),
@@ -248,10 +260,9 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     await page.route(myCasesRoutePattern, async (route) => {
       const request = route.request().postDataJSON() as SearchRequestPayload;
       myCasesRequests.push(request);
-      const searchParameters = request.searchRequest?.search_parameters ?? [];
       const usesPersistedFilters =
-        searchParameters.some((parameter) => parameter.key === 'services' && parameter.values?.includes('IA')) &&
-        searchParameters.some((parameter) => parameter.key === 'locations' && parameter.values?.includes('765324'));
+        hasExactSearchParameterValues(request, 'services', ['IA']) &&
+        hasExactSearchParameterValues(request, 'locations', ['765324']);
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -260,10 +271,24 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     });
 
     await taskListPage.gotoMyCases();
-    await expect.poll(() => myCasesRequests.length).toBeGreaterThan(0);
+    await expect
+      .poll(
+        () =>
+          myCasesRequests.find(
+            (request) =>
+              hasExactSearchParameterValues(request, 'services', ['IA']) &&
+              hasExactSearchParameterValues(request, 'locations', ['765324'])
+          ) ?? null,
+        { message: 'persisted My cases filters were sent' }
+      )
+      .not.toBeNull();
 
-    const latestRequest = myCasesRequests.at(-1);
-    expect(latestRequest?.searchRequest?.search_parameters).toEqual(
+    const filteredRequest = myCasesRequests.find(
+      (request) =>
+        hasExactSearchParameterValues(request, 'services', ['IA']) &&
+        hasExactSearchParameterValues(request, 'locations', ['765324'])
+    );
+    expect(filteredRequest?.searchRequest?.search_parameters).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ key: 'services', values: ['IA'] }),
         expect.objectContaining({ key: 'locations', values: ['765324'] }),

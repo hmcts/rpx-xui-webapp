@@ -122,7 +122,7 @@
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.4.1",
     "@hmcts/rpx-xui-common-lib": "3.2.16",
-    "@hmcts/rpx-xui-node-lib": "2.30.25",
+    "@hmcts/rpx-xui-node-lib": "2.30.24",
     "@microsoft/applicationinsights-web": "^3.4.3",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",

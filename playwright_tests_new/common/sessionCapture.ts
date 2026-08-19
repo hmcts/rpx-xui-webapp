@@ -1701,9 +1701,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
 
   const sessionsDir = path.join(process.cwd(), '.sessions');
-  const captureConcurrencyLockPath = path.join(sessionsDir, '.capture.lock');
   ensureDirectory(fsApi, sessionsDir);
-  ensureLockFile(fsApi, captureConcurrencyLockPath);
 
   for (const id of identifiers) {
     const identity = resolveIdentity(id, { userUtils });
@@ -1717,7 +1715,6 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 
     // Acquire filesystem lock (blocks across all workers)
     let release: SessionLockRelease | null = null;
-    let captureConcurrencyRelease: SessionLockRelease | null = null;
     let captureError: unknown;
     try {
       await (async () => {
@@ -1863,81 +1860,44 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           return;
         }
 
-        const remainingCaptureBudgetMsBeforeConcurrencyLock =
-          deps.captureDeadlineAt === undefined ? undefined : deps.captureDeadlineAt - now();
-        if (remainingCaptureBudgetMsBeforeConcurrencyLock !== undefined && remainingCaptureBudgetMsBeforeConcurrencyLock <= 0) {
+        const remainingCaptureBudgetMs = deps.captureDeadlineAt === undefined ? undefined : deps.captureDeadlineAt - now();
+        const maxAttempts = resolveCaptureAttemptLimit(remainingCaptureBudgetMs);
+        if (maxAttempts === 0 || (remainingCaptureBudgetMs === undefined && lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS)) {
           throw new SessionCaptureError(
             `Session capture cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget`,
             identity.userIdentifier,
-            { sessionPath, lockWaitMs, remainingCaptureBudgetMs: remainingCaptureBudgetMsBeforeConcurrencyLock }
+            { sessionPath, lockWaitMs, remainingCaptureBudgetMs }
           );
         }
 
-        captureConcurrencyRelease = await acquireSessionLock({
-          lockfileApi,
-          lockFilePath: captureConcurrencyLockPath,
-          userIdentifier: `${identity.userIdentifier} (global capture slot)`,
-          isSessionReusable: () => false,
-          force: false,
-          maxWaitMs: remainingCaptureBudgetMsBeforeConcurrencyLock ?? SESSION_CAPTURE_LOCK_WAIT_MS,
-        });
-
-        if (!captureConcurrencyRelease) {
-          throw new SessionCaptureError(
-            `Session capture concurrency slot became unavailable for ${identity.userIdentifier}`,
-            identity.userIdentifier,
-            { sessionPath }
-          );
-        }
-
-        try {
-          const remainingCaptureBudgetMs = deps.captureDeadlineAt === undefined ? undefined : deps.captureDeadlineAt - now();
-          const maxAttempts = resolveCaptureAttemptLimit(remainingCaptureBudgetMs);
-          if (
-            maxAttempts === 0 ||
-            (remainingCaptureBudgetMs === undefined && lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS)
-          ) {
-            throw new SessionCaptureError(
-              `Session capture cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget`,
-              identity.userIdentifier,
-              { sessionPath, lockWaitMs, remainingCaptureBudgetMs }
-            );
-          }
-
-          await loginAndPersist({
-            chromiumLauncher,
-            idamFactory,
-            env,
-            activeConfig,
-            email: identity.email,
-            password: identity.password,
-            sessionPath,
-            persist,
-            assertLockOwned: release.assertOwned,
-            userIdentifier: identity.userIdentifier,
-            maxAttempts,
+        await loginAndPersist({
+          chromiumLauncher,
+          idamFactory,
+          env,
+          activeConfig,
+          email: identity.email,
+          password: identity.password,
+          sessionPath,
+          persist,
+          assertLockOwned: release.assertOwned,
+          userIdentifier: identity.userIdentifier,
+          maxAttempts,
+        })
+          .then(() => {
+            release!.assertOwned();
+            clearSessionCaptureFailure(fsApi, failurePath);
           })
-            .then(() => {
-              release!.assertOwned();
-              clearSessionCaptureFailure(fsApi, failurePath);
-            })
-            .catch((error: Error) => {
-              release!.assertOwned();
-              const reusableSessionWasPersisted = isFresh(sessionPath, sessionMaxAgeMs, {
-                targetUrl,
-                idamUrl: activeConfig.urls.idamWebUrl,
-              });
-              if (!isSessionLockCompromisedError(error) && !reusableSessionWasPersisted) {
-                writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error);
-              }
-              throw error;
+          .catch((error: Error) => {
+            release!.assertOwned();
+            const reusableSessionWasPersisted = isFresh(sessionPath, sessionMaxAgeMs, {
+              targetUrl,
+              idamUrl: activeConfig.urls.idamWebUrl,
             });
-        } finally {
-          if (captureConcurrencyRelease) {
-            await captureConcurrencyRelease();
-            captureConcurrencyRelease = null;
-          }
-        }
+            if (!isSessionLockCompromisedError(error) && !reusableSessionWasPersisted) {
+              writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error);
+            }
+            throw error;
+          });
       })();
     } catch (error) {
       captureError = error;

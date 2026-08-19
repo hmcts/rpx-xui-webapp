@@ -1,7 +1,7 @@
 import * as applicationinsights from 'applicationinsights';
 import * as express from 'express';
 
-import { SpanKind, TraceFlags } from '@opentelemetry/api';
+import { SpanKind, TraceFlags, type Context } from '@opentelemetry/api';
 import type { ReadableSpan, Span, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
@@ -55,7 +55,12 @@ function shouldExcludeTelemetryPath(path = ''): boolean {
 function getSpanRequestPath(span: ReadableSpan): string {
   const attributes = span.attributes;
 
-  const path = attributes['url.path'] ?? attributes['http.target'] ?? attributes['http.route'] ?? attributes['url.full'];
+  const path =
+    attributes['url.path'] ??
+    attributes['url.full'] ??
+    attributes['http.target'] ??
+    attributes['http.url'] ??
+    attributes['http.route'];
 
   return typeof path === 'string' ? path : span.name;
 }
@@ -91,7 +96,7 @@ class HealthStaticFilteringProcessor implements SpanProcessor {
     return Promise.resolve();
   }
 
-  onStart(_span: Span): void {
+  onStart(_span: Span, _parentContext: Context): void {
     // No processing required when the span starts.
   }
 

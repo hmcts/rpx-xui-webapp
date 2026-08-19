@@ -33,7 +33,7 @@ export const prlHearingHappyPathScenario = {
     numberOfPeopleAttendingHearing: '2',
   },
   hearingVenue: {
-    searchTerm: 'Southampton',
+    searchTerm: 'basingstoke',
   },
   hearingDetails: {
     hearingInWelsh: 'No',

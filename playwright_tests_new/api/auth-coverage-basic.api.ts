@@ -36,4 +36,14 @@ test.describe('Auth helper coverage - basic utilities', { tag: '@svc-auth' }, ()
     expect(creds.password).toBeTruthy();
     expect(() => authTest.getCredentials('unknown' as any)).toThrow('No credentials configured');
   });
+
+  test('required users fail instead of using placeholder credentials', () => {
+    expect(runtimeConfigTest.resolveRequiredUser('solicitor', ['configured@example.com'], ['configured-password'])).toEqual({
+      e: 'configured@example.com',
+      sec: 'configured-password',
+    });
+    expect(() => runtimeConfigTest.resolveRequiredUser('solicitor', [undefined], [undefined])).toThrow(
+      'Required solicitor credentials are not configured'
+    );
+  });
 });

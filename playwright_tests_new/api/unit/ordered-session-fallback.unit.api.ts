@@ -62,6 +62,23 @@ test.describe('ordered session fallback', { tag: '@svc-internal' }, () => {
     expect(result).toEqual({ selectedUserIdentifier: 'FALLBACK', value: 'fallback@example.test' });
   });
 
+  test('probes one fallback identity after an identity-scoped capture timeout', async () => {
+    const attempts: string[] = [];
+    const timeout = new SessionCaptureError(
+      'Login failed for PRIMARY after 2 of 2 capture attempts: Session capture attempt timed out after 45000ms',
+      'PRIMARY'
+    );
+
+    const result = await withOrderedSessionFallback([primary, fallback], async (identity) => {
+      attempts.push(identity.userIdentifier);
+      if (identity.userIdentifier === 'PRIMARY') throw timeout;
+      return 'fallback-session';
+    });
+
+    expect(attempts).toEqual(['PRIMARY', 'FALLBACK']);
+    expect(result).toEqual({ selectedUserIdentifier: 'FALLBACK', value: 'fallback-session' });
+  });
+
   test('does not rotate for service or navigation failures', async () => {
     for (const error of [new Error('503 Service Unavailable'), new Error('page.goto: Timeout 30000ms exceeded')]) {
       const attempts: string[] = [];

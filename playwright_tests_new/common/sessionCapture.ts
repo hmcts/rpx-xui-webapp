@@ -72,6 +72,7 @@ const SESSION_CAPTURE_LOCK_UPDATE_MS = 5_000;
 // Automatic takeover inside a test run can let a suspended owner resume and overwrite
 // a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
 const SESSION_CAPTURE_LOCK_STALE_MS = 24 * 60 * 60_000;
+const SESSION_CAPTURE_STALE_LOCK_RECOVERY_MS = 3 * 60_000;
 
 function resolveCaptureAttemptLimit(remainingCaptureBudgetMs: number | undefined): number {
   if (remainingCaptureBudgetMs === undefined || remainingCaptureBudgetMs >= SESSION_CAPTURE_OWNER_BUDGET_MS) {
@@ -207,6 +208,18 @@ function resolveSessionCaptureFailureTtlMs(env: NodeJS.ProcessEnv = process.env)
 function resolveSessionCaptureStaggerMs(env: NodeJS.ProcessEnv = process.env): number {
   const configured = Number(env.PW_SESSION_CAPTURE_STAGGER_MS);
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_CAPTURE_STAGGER_MS;
+}
+
+function shouldRecoverStaleSessionLocks(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.PW_SESSION_CAPTURE_RECOVER_STALE_LOCKS === 'true';
+}
+
+function isStaleSessionLock(fsApi: typeof fs, lockFilePath: string, now: number = Date.now()): boolean {
+  try {
+    return now - fsApi.statSync(`${lockFilePath}.lock`).mtimeMs >= SESSION_CAPTURE_STALE_LOCK_RECOVERY_MS;
+  } catch {
+    return false;
+  }
 }
 
 function resolveSessionCaptureDelayMs(parallelIndex: number | undefined, env: NodeJS.ProcessEnv = process.env): number {
@@ -1298,6 +1311,8 @@ async function acquireSessionLock({
   isSessionReusable,
   force,
   maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS,
+  fsApi = fs,
+  recoverStaleLock = false,
 }: {
   lockfileApi: typeof lockfile;
   lockFilePath: string;
@@ -1305,6 +1320,8 @@ async function acquireSessionLock({
   isSessionReusable: () => boolean;
   force: boolean;
   maxWaitMs?: number;
+  fsApi?: typeof fs;
+  recoverStaleLock?: boolean;
 }): Promise<SessionLockRelease | null> {
   const pollIntervalMs = 1_000;
   const startedAt = Date.now();
@@ -1322,6 +1339,14 @@ async function acquireSessionLock({
     }
 
     try {
+      if (recoverStaleLock && isStaleSessionLock(fsApi, lockFilePath)) {
+        fsApi.rmSync(`${lockFilePath}.lock`, { recursive: true, force: true });
+        logger.warn('Recovered an abandoned session lock before capture', {
+          userIdentifier,
+          lockFilePath,
+          operation: 'session-capture',
+        });
+      }
       let compromisedError: Error | undefined;
       const releaseLock = await lockfileApi.lock(lockFilePath, {
         retries: 0,
@@ -1817,6 +1842,8 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl: activeConfig.urls.idamWebUrl }),
           force: force || requiresLockedFailureClear,
           maxWaitMs: maxLockWaitMs,
+          fsApi,
+          recoverStaleLock: shouldRecoverStaleSessionLocks(env),
         });
         const lockWaitMs = Math.max(0, now() - lockStartedAt);
 
@@ -2007,6 +2034,7 @@ export const __test__ = {
   sessionCapturePoolBudgetMs: SESSION_CAPTURE_POOL_BUDGET_MS,
   sessionCaptureMaxStaggerMs: SESSION_CAPTURE_MAX_STAGGER_MS,
   sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
+  sessionCaptureStaleLockRecoveryMs: SESSION_CAPTURE_STALE_LOCK_RECOVERY_MS,
   sessionCaptureLockUpdateMs: SESSION_CAPTURE_LOCK_UPDATE_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
   sessionCaptureSingleAttemptBudgetMs: SESSION_CAPTURE_SINGLE_ATTEMPT_BUDGET_MS,

@@ -1,5 +1,6 @@
 import { promises as fs } from 'node:fs';
 import * as fsSync from 'node:fs';
+import { createHash } from 'node:crypto';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
 
@@ -51,6 +52,7 @@ type StorageDeps = {
   createStorageState: (role: ApiUserRole) => Promise<string>;
   tryReadState: (storagePath: string) => Promise<StorageState | undefined>;
   unlink: (path: string) => Promise<void>;
+  validateStorageState?: (storagePath: string) => Promise<StorageValidationResult>;
   lockfile?: typeof lockfile;
 };
 
@@ -76,16 +78,24 @@ type TokenBootstrapDeps = {
 
 type FormLoginDeps = {
   requestFactory?: AuthRequestFactory;
-  extractCsrf?: typeof extractCsrf;
   authCheckAttempts?: number;
   authCheckDelayMs?: number;
 };
 
 type AuthCheckResponse = {
   status: () => number;
+  url?: () => string;
   headers?: () => Record<string, string>;
   text?: () => Promise<string>;
   json?: () => Promise<unknown>;
+};
+
+type LoginForm = {
+  action: string;
+  hiddenFields: Record<string, string>;
+  hasEmail: boolean;
+  hasUsername: boolean;
+  hasPassword: boolean;
 };
 
 type AuthCheckResult = {
@@ -95,6 +105,8 @@ type AuthCheckResult = {
   bodyPreview?: string;
 };
 
+type StorageValidationResult = 'authenticated' | 'unauthenticated' | 'unavailable';
+
 type AuthCheckContext = {
   get: (url: string, options?: Record<string, unknown>) => Promise<AuthCheckResponse>;
 };
@@ -103,8 +115,13 @@ const defaultStorageDeps: StorageDeps = {
   createStorageState,
   tryReadState,
   unlink: fs.unlink,
+  validateStorageState: validateStorageState,
   lockfile,
 };
+
+const validatedStorageStates = new Map<string, { mtimeMs: number; validUntil: number }>();
+// A logout invalidates the server-side session without changing the storage-state file.
+const STORAGE_VALIDATION_CACHE_MS = 15_000;
 
 export async function ensureStorageState(role: ApiUserRole): Promise<string> {
   return ensureStorageStateWith(role);
@@ -135,12 +152,23 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
 
   try {
     // Double-check freshness after acquiring lock (another worker/test suite may have logged in)
-    const storagePath = path.join(storageRoot, `api-${config.testEnv}-${role}.storage.json`);
+    const storagePath = getStoragePath(storageRoot, role);
     let state = await deps.tryReadState(storagePath);
 
     if (state && isStorageStateFresh(storagePath)) {
-      logger.info('Storage state is fresh (another worker logged in)', { role, cacheKey });
-      return storagePath;
+      const validation = await (deps.validateStorageState ?? validateStorageState)(storagePath);
+      if (validation === 'authenticated') {
+        logger.info('Storage state is fresh and authenticated (another worker logged in)', { role, cacheKey });
+        return storagePath;
+      }
+      if (validation === 'unavailable') {
+        logger.warn('Unable to validate fresh storage state; preserving it rather than amplifying a downstream outage', {
+          role,
+          cacheKey,
+        });
+        return storagePath;
+      }
+      logger.info('Storage state was rejected by auth/isAuthenticated, refreshing', { role, cacheKey });
     }
 
     // State missing, stale, or corrupted - create new one
@@ -194,7 +222,7 @@ async function createStorageStateWith(role: ApiUserRole, deps: CreateStorageDeps
   const loginViaForm = deps.createStorageStateViaForm ?? createStorageStateViaForm;
 
   // Use 'api-' prefix to distinguish from E2E browser sessions in same directory
-  const storagePath = path.join(root, `api-${config.testEnv}-${role}.storage.json`);
+  const storagePath = getStoragePath(root, role);
   await mkdir(path.dirname(storagePath), { recursive: true });
 
   const tokenLoginSucceeded = shouldTokenBootstrap ? await tryBootstrap(role, credentials, storagePath) : false;
@@ -286,7 +314,6 @@ async function createStorageStateViaForm(
   deps: FormLoginDeps = {}
 ): Promise<void> {
   const requestFactory = deps.requestFactory ?? ((options) => request.newContext(options));
-  const extract = deps.extractCsrf ?? extractCsrf;
   const context = await requestFactory({
     baseURL: baseUrl,
     ignoreHTTPSErrors: true,
@@ -302,24 +329,28 @@ async function createStorageStateViaForm(
       });
     }
 
-    const loginUrl = loginPage.url();
-    const csrfToken = extract(await loginPage.text());
-    const formPayload: Record<string, string> = {
-      username: credentials.username,
-      password: credentials.password,
-      save: 'Sign in',
-    };
-    if (csrfToken) {
-      formPayload._csrf = csrfToken;
-    }
+    const loginUrl = loginPage.url?.() ?? `${baseUrl}/auth/login`;
+    const loginForm = parseLoginForm(await loginPage.text(), loginUrl);
+    const loginResponse = await submitLoginForm(context, loginForm, credentials, role);
 
-    const loginResponse = await context.post(loginUrl, { form: formPayload });
-    if (loginResponse.status() >= 400) {
-      throw new AuthenticationError(`POST ${loginUrl} responded with ${loginResponse.status()}`, role, {
-        endpoint: loginUrl,
-        status: loginResponse.status(),
-        method: 'POST',
-      });
+    if (loginForm.hasEmail && !loginForm.hasPassword) {
+      const passwordPageUrl = loginResponse.url?.() ?? loginUrl;
+      const passwordHtml = await loginResponse.text?.();
+      if (!passwordHtml) {
+        throw new AuthenticationError('Progressive IDAM password page was empty', role, {
+          endpoint: passwordPageUrl,
+          status: loginResponse.status(),
+        });
+      }
+
+      const passwordForm = parseLoginForm(passwordHtml, passwordPageUrl);
+      if (!passwordForm.hasPassword) {
+        throw new AuthenticationError('Progressive IDAM password form was not found', role, {
+          endpoint: passwordPageUrl,
+          status: loginResponse.status(),
+        });
+      }
+      await submitLoginForm(context, passwordForm, credentials, role);
     }
 
     // Ensure XSRF/session cookies are refreshed on the application domain
@@ -351,6 +382,29 @@ async function createStorageStateViaForm(
   }
 }
 
+async function submitLoginForm(
+  context: AuthRequestContext,
+  form: LoginForm,
+  credentials: { username: string; password: string },
+  role: ApiUserRole
+): Promise<AuthCheckResponse> {
+  const formPayload: Record<string, string> = { ...form.hiddenFields };
+  if (form.hasEmail) formPayload.email = credentials.username;
+  if (form.hasUsername) formPayload.username = credentials.username;
+  if (form.hasPassword) formPayload.password = credentials.password;
+  formPayload.save = form.hasPassword ? 'Sign in' : 'Continue';
+
+  const response = await context.post(form.action, { form: formPayload });
+  if (response.status() >= 400) {
+    throw new AuthenticationError(`POST ${form.action} responded with ${response.status()}`, role, {
+      endpoint: form.action,
+      status: response.status(),
+      method: 'POST',
+    });
+  }
+  return response;
+}
+
 function getCredentials(role: ApiUserRole): { username: string; password: string } {
   const envUsers = config.users[config.testEnv as keyof typeof config.users];
   const userConfig = envUsers?.[role];
@@ -371,6 +425,28 @@ function getCredentials(role: ApiUserRole): { username: string; password: string
 function extractCsrf(html: string): string | undefined {
   const match = /name="_csrf"\s+value="([^"]+)"/i.exec(html);
   return match?.[1];
+}
+
+function parseLoginForm(html: string, pageUrl: string): LoginForm {
+  const formMatch = /<form\b([^>]*)>/i.exec(html);
+  const formAttributes = formMatch?.[1] ?? '';
+  const actionMatch = /\baction=["']([^"']*)["']/i.exec(formAttributes);
+  const action = new URL(actionMatch?.[1] || pageUrl, pageUrl).toString();
+  const formEnd = formMatch ? html.indexOf('</form>', formMatch.index) : -1;
+  const formHtml = formMatch && formEnd >= 0 ? html.slice(formMatch.index, formEnd) : html;
+  const hiddenFields: Record<string, string> = {};
+  for (const input of formHtml.match(/<input\b[^>]*type=["']hidden["'][^>]*>/gi) ?? []) {
+    const name = /\bname=["']([^"']+)["']/i.exec(input)?.[1];
+    const value = /\bvalue=["']([^"']*)["']/i.exec(input)?.[1];
+    if (name && value !== undefined) hiddenFields[name] = value;
+  }
+  return {
+    action,
+    hiddenFields,
+    hasEmail: /<input\b[^>]*(?:name|id)=["'](?:email|emailAddress)["'][^>]*>/i.test(formHtml),
+    hasUsername: /<input\b[^>]*(?:name|id)=["']username["'][^>]*>/i.test(formHtml),
+    hasPassword: /<input\b[^>]*type=["']password["'][^>]*>/i.test(formHtml),
+  };
 }
 
 async function readAuthCheck(response: AuthCheckResponse): Promise<AuthCheckResult> {
@@ -480,7 +556,17 @@ function stripTrailingSlash(value: string): string {
 }
 
 function getCacheKey(role: ApiUserRole): string {
-  return `${config.testEnv}-${role}`;
+  return getCacheKeyForIdentity(config.testEnv, role, getCredentials(role).username);
+}
+
+function getCacheKeyForIdentity(testEnvironment: string, role: ApiUserRole, username: string): string {
+  const normalizedUsername = username.trim().toLowerCase();
+  const identityHash = createHash('sha256').update(normalizedUsername).digest('hex').slice(0, 16);
+  return `${testEnvironment}-${role}-${identityHash}`;
+}
+
+function getStoragePath(root: string, role: ApiUserRole): string {
+  return path.join(root, `api-${getCacheKey(role)}.storage.json`);
 }
 
 async function tryReadState(storagePath: string): Promise<{ cookies?: Array<{ name?: string }> } | undefined> {
@@ -524,12 +610,57 @@ function isStorageStateFresh(storagePath: string, ttlMs: number = 15 * 60 * 1000
   }
 }
 
+async function validateStorageState(storagePath: string): Promise<StorageValidationResult> {
+  let stat: fsSync.Stats;
+  try {
+    stat = fsSync.statSync(storagePath);
+  } catch {
+    return 'unauthenticated';
+  }
+
+  const cached = validatedStorageStates.get(storagePath);
+  if (cached?.mtimeMs === stat.mtimeMs && cached.validUntil > Date.now()) {
+    return 'authenticated';
+  }
+
+  let context: AuthRequestContext | undefined;
+  try {
+    context = await request.newContext({
+      baseURL: baseUrl,
+      ignoreHTTPSErrors: true,
+      storageState: storagePath,
+    });
+    const result = await waitForAuthenticated(context, { attempts: 1, delayMs: 0 });
+    if (!result.isAuthenticated) {
+      return 'unauthenticated';
+    }
+    validatedStorageStates.set(storagePath, {
+      mtimeMs: stat.mtimeMs,
+      validUntil: Date.now() + STORAGE_VALIDATION_CACHE_MS,
+    });
+    return 'authenticated';
+  } catch (error) {
+    logger.warn(`Unable to validate cached API storage state: ${formatUnknownError(error)}`);
+    return 'unavailable';
+  } finally {
+    try {
+      await context?.dispose();
+    } catch {
+      // A cleanup failure must not discard a completed authentication check.
+    }
+  }
+}
+
 export const __test__ = {
   extractCsrf,
+  parseLoginForm,
   stripTrailingSlash,
   getCacheKey,
+  getCacheKeyForIdentity,
+  getStoragePath,
   isTokenBootstrapEnabled,
   isStorageStateFresh,
+  validateStorageState,
   tryReadState,
   ensureStorageStateWith,
   getStoredCookieWith,

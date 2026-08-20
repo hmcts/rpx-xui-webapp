@@ -478,13 +478,13 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       sessionCaptureTest.resolveSessionCaptureDelayMs(3, {
         PW_SESSION_CAPTURE_STAGGER_MS: '10000',
       })
-    ).toBe(sessionCaptureTest.sessionCapturePoolBudgetMs - sessionCaptureTest.sessionCaptureOwnerBudgetMs);
+    ).toBe(sessionCaptureTest.sessionCaptureMaxStaggerMs);
 
     expect(
       sessionCaptureTest.resolveSessionCaptureDelayMs(1, {
-        PW_SESSION_CAPTURE_STAGGER_MS: '10000',
+        PW_SESSION_CAPTURE_STAGGER_MS: '3000',
       })
-    ).toBe(10_000);
+    ).toBe(3_000);
   });
 
   test('does not start a fallback capture when even one bounded attempt cannot finish', async () => {
@@ -1627,6 +1627,54 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       expect(lockCalled).toBe(false);
       expect(loginCalled).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('retries after a recent transient capture failure while retaining deterministic cooldowns', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-transient-cooldown-retry-unit-'));
+    const previousCwd = process.cwd();
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'IAC_Judge_WA_R1',
+      email: 'judge@example.test',
+      password: 'not-used',
+    });
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
+    let loginCalled = false;
+
+    try {
+      process.chdir(tempDir);
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'Session capture attempt timed out after 45000ms',
+          retryable: true,
+        })
+      );
+
+      await sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+        chromiumLauncher: {} as never,
+        config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+        env: {},
+        isSessionFresh: () => false,
+        lockfile: fakeLockfile(),
+        loginAndPersistSession: async () => {
+          loginCalled = true;
+        },
+        resolveSessionIdentity: () => ({
+          userIdentifier: 'IAC_Judge_WA_R1',
+          email: 'judge@example.test',
+          password: 'not-used',
+        }),
+      });
+
+      expect(loginCalled).toBe(true);
+      expect(fs.existsSync(failurePath)).toBe(false);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });

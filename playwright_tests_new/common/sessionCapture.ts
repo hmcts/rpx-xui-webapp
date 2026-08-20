@@ -62,7 +62,11 @@ const SESSION_CAPTURE_LOCK_START_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
 // The integration timeout reserves its final 30 seconds for the journey after lazy capture.
 const SESSION_CAPTURE_POOL_BUDGET_MS = 150_000;
 // Worker staggering must not consume the time reserved for a complete capture retry cycle.
-const SESSION_CAPTURE_MAX_STAGGER_MS = Math.max(0, SESSION_CAPTURE_POOL_BUDGET_MS - SESSION_CAPTURE_OWNER_BUDGET_MS);
+// Keep lock headroom so timer/scheduling drift cannot reduce the cycle to one attempt.
+const SESSION_CAPTURE_MAX_STAGGER_MS = Math.max(
+  0,
+  SESSION_CAPTURE_POOL_BUDGET_MS - SESSION_CAPTURE_OWNER_BUDGET_MS - SESSION_CAPTURE_LOCK_HEADROOM_MS
+);
 const SESSION_CAPTURE_LOCK_UPDATE_MS = 5_000;
 // Automatic takeover inside a test run can let a suspended owner resume and overwrite
 // a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
@@ -216,6 +220,7 @@ function resolveSessionCaptureDelayMs(parallelIndex: number | undefined, env: No
 type SessionCaptureFailureRecord = {
   message: string;
   failureKind?: string;
+  retryable?: boolean;
   storageStateFingerprint?: string | null;
 };
 
@@ -234,6 +239,7 @@ function recentSessionCaptureFailure(
       timestamp?: number;
       message?: string;
       failureKind?: string;
+      retryable?: boolean;
       storageStateFingerprint?: unknown;
     };
     if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
@@ -242,6 +248,7 @@ function recentSessionCaptureFailure(
     return {
       message: parsed.message?.trim() || 'previous session capture failed',
       failureKind: parsed.failureKind,
+      retryable: parsed.retryable === true,
       storageStateFingerprint:
         parsed.storageStateFingerprint === null || typeof parsed.storageStateFingerprint === 'string'
           ? parsed.storageStateFingerprint
@@ -267,6 +274,8 @@ function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, sessi
         timestamp: Date.now(),
         message: error.message,
         failureKind,
+        // Semantic IDAM failures coordinate fallback identity selection and must not be retried by every worker.
+        retryable: !failureKind && isTransientSessionCaptureError(error),
         storageStateFingerprint: readStorageStateFingerprint(fsApi, sessionPath) ?? null,
       })
     );
@@ -1741,7 +1750,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             idamUrl: activeConfig.urls.idamWebUrl,
             recentFailure,
           });
-          if (!requiresLockedFailureClear) {
+          if (!requiresLockedFailureClear && !recentFailure.retryable) {
             throw new SessionCaptureError(
               `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
               identity.userIdentifier,
@@ -1813,11 +1822,21 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             clearSessionCaptureFailure(fsApi, failurePath);
             return;
           }
-          throw new SessionCaptureError(
-            `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
-            identity.userIdentifier,
-            { sessionPath, failureKind: lockedRecentFailure.failureKind }
-          );
+          if (!lockedRecentFailure.retryable) {
+            throw new SessionCaptureError(
+              `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
+              identity.userIdentifier,
+              { sessionPath, failureKind: lockedRecentFailure.failureKind }
+            );
+          }
+
+          logger.info('Clearing transient session capture failure marker before bounded retry', {
+            userIdentifier: identity.userIdentifier,
+            failurePath,
+            operation: 'session-capture',
+          });
+          release.assertOwned();
+          clearSessionCaptureFailure(fsApi, failurePath);
         }
 
         if (expectedStaleSession) {
@@ -1947,6 +1966,7 @@ export const __test__ = {
   sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
   sessionCaptureLockStartBudgetMs: SESSION_CAPTURE_LOCK_START_BUDGET_MS,
   sessionCapturePoolBudgetMs: SESSION_CAPTURE_POOL_BUDGET_MS,
+  sessionCaptureMaxStaggerMs: SESSION_CAPTURE_MAX_STAGGER_MS,
   sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
   sessionCaptureLockUpdateMs: SESSION_CAPTURE_LOCK_UPDATE_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,

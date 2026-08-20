@@ -79,6 +79,42 @@ test.describe('ordered session fallback', { tag: '@svc-internal' }, () => {
     expect(result).toEqual({ selectedUserIdentifier: 'FALLBACK', value: 'fallback-session' });
   });
 
+  test('probes one fallback identity after an IDAM login-surface timeout', async () => {
+    const attempts: string[] = [];
+    const timeout = new SessionCaptureError(
+      'Login failed for PRIMARY after 1 of 2 capture attempts: locator.waitFor: Timeout 10000ms exceeded. Call log: waiting for locator([data-testid="idam-username-input"])',
+      'PRIMARY'
+    );
+
+    const result = await withOrderedSessionFallback([primary, fallback], async (identity) => {
+      attempts.push(identity.userIdentifier);
+      if (identity.userIdentifier === 'PRIMARY') throw timeout;
+      return 'fallback-session';
+    });
+
+    expect(attempts).toEqual(['PRIMARY', 'FALLBACK']);
+    expect(result).toEqual({ selectedUserIdentifier: 'FALLBACK', value: 'fallback-session' });
+  });
+
+  test('continues through identity-scoped login-surface failures until a pool identity succeeds', async () => {
+    const third = { userIdentifier: 'THIRD', email: 'third@example.test', password: 'not-used' };
+    const attempts: string[] = [];
+    const loginSurfaceTimeout = (userIdentifier: string) =>
+      new SessionCaptureError(
+        `Login failed for ${userIdentifier} after 1 of 2 capture attempts: locator.waitFor: Timeout 10000ms exceeded. Call log: waiting for locator([data-testid="idam-username-input"])`,
+        userIdentifier
+      );
+
+    const result = await withOrderedSessionFallback([primary, fallback, third], async (identity) => {
+      attempts.push(identity.userIdentifier);
+      if (identity.userIdentifier !== 'THIRD') throw loginSurfaceTimeout(identity.userIdentifier);
+      return 'third-session';
+    });
+
+    expect(attempts).toEqual(['PRIMARY', 'FALLBACK', 'THIRD']);
+    expect(result).toEqual({ selectedUserIdentifier: 'THIRD', value: 'third-session' });
+  });
+
   test('does not rotate for service or navigation failures', async () => {
     for (const error of [new Error('503 Service Unavailable'), new Error('page.goto: Timeout 30000ms exceeded')]) {
       const attempts: string[] = [];

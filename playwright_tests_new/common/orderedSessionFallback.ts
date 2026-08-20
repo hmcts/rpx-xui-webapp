@@ -3,6 +3,7 @@ import { type SessionIdentity, type SessionIdentityInput, resolveSessionIdentity
 import {
   isExplicitIdamLoginRejection,
   isIdentityScopedCaptureTimeout,
+  isIdentityScopedLoginSurfaceTimeout,
   isUnexplainedIdamLoginRejection,
 } from './sessionCaptureRetry.js';
 
@@ -41,6 +42,10 @@ export async function withOrderedSessionFallback<T>(
         throw error;
       }
       if (isExplicitIdamLoginRejection(error)) {
+        lastIdentityError = error;
+        continue;
+      }
+      if (isIdentityScopedLoginSurfaceTimeout(error)) {
         lastIdentityError = error;
         continue;
       }

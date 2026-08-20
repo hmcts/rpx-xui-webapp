@@ -2,10 +2,12 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { expect, test } from '@playwright/test';
+import { expect, request, test } from '@playwright/test';
 
 import { __test__ as sessionStorageTest } from '../../E2E/utils/session-storage.utils.js';
 import { __test__ as sessionCaptureTest, loadSessionCookies, refreshRejectedSession } from '../../common/sessionCapture.js';
+import { __test__ as sessionReuseValidationTest } from '../../common/sessionReuseValidation.js';
+import { validateStoredSession } from '../../common/sessionReuseValidation.js';
 import { withOrderedSessionFallback } from '../../common/orderedSessionFallback.js';
 import { resolveSessionStorageKey, type SessionIdentity } from '../../common/sessionIdentity.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
@@ -106,6 +108,75 @@ function releaseCompromisedLockfile() {
 }
 
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
+  test('accepts only the documented auth/isAuthenticated response shapes', () => {
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('true')).toBe(true);
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('{"isAuthenticated":true}')).toBe(true);
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('false')).toBe(false);
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('{"isAuthenticated":false}')).toBe(false);
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('<html>login</html>')).toBe(false);
+  });
+
+  test('validates a reusable session once per storage fingerprint before reusing it', async () => {
+    let contextCreations = 0;
+    let authRequests = 0;
+    let disposals = 0;
+    const createRequestContext = async (options: Parameters<typeof request.newContext>[0]) => {
+      contextCreations += 1;
+      expect(options).toMatchObject({
+        baseURL: 'https://manage-case.example.test',
+        storageState: '/tmp/unit-session.storage.json',
+      });
+      return {
+        get: async (url: string) => {
+          authRequests += 1;
+          expect(url).toBe('/auth/isAuthenticated');
+          return {
+            status: () => 200,
+            text: async () => 'true',
+          };
+        },
+        dispose: async () => {
+          disposals += 1;
+          throw new Error('request context close failed');
+        },
+      } as never;
+    };
+    const session = {
+      storageFile: '/tmp/unit-session.storage.json',
+      storageStateFingerprint: 'unit-authenticated-fingerprint',
+    };
+
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'authenticated'
+    );
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'authenticated'
+    );
+
+    expect(contextCreations).toBe(1);
+    expect(authRequests).toBe(1);
+    expect(disposals).toBe(1);
+  });
+
+  test('rejects a reusable session when auth/isAuthenticated is not authenticated', async () => {
+    await expect(
+      validateStoredSession(
+        {
+          storageFile: '/tmp/unit-rejected-session.storage.json',
+          storageStateFingerprint: 'unit-rejected-fingerprint',
+        },
+        'https://manage-case.example.test',
+        {
+          createRequestContext: async () =>
+            ({
+              get: async () => ({ status: () => 200, text: async () => 'false' }),
+              dispose: async () => undefined,
+            }) as never,
+        }
+      )
+    ).resolves.toBe('unauthenticated');
+  });
+
   test('expands a staff admin alias to the worker-selected pool before applying cookies', async () => {
     const envOverrides = {
       STAFF_ADMIN_POOL_ENABLED: 'true',
@@ -471,6 +542,20 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
+  });
+
+  test('caps worker staggering so a complete transient retry cycle remains available', () => {
+    expect(
+      sessionCaptureTest.resolveSessionCaptureDelayMs(3, {
+        PW_SESSION_CAPTURE_STAGGER_MS: '10000',
+      })
+    ).toBe(sessionCaptureTest.sessionCaptureMaxStaggerMs);
+
+    expect(
+      sessionCaptureTest.resolveSessionCaptureDelayMs(1, {
+        PW_SESSION_CAPTURE_STAGGER_MS: '3000',
+      })
+    ).toBe(3_000);
   });
 
   test('does not start a fallback capture when even one bounded attempt cannot finish', async () => {
@@ -1613,6 +1698,105 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       expect(lockCalled).toBe(false);
       expect(loginCalled).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('retries after a recent transient capture failure while retaining deterministic cooldowns', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-transient-cooldown-retry-unit-'));
+    const previousCwd = process.cwd();
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'IAC_Judge_WA_R1',
+      email: 'judge@example.test',
+      password: 'not-used',
+    });
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
+    let loginCalled = false;
+
+    try {
+      process.chdir(tempDir);
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'Session capture attempt timed out after 45000ms',
+          retryable: true,
+        })
+      );
+
+      await sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+        chromiumLauncher: {} as never,
+        config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+        env: {},
+        isSessionFresh: () => false,
+        lockfile: fakeLockfile(),
+        loginAndPersistSession: async () => {
+          loginCalled = true;
+        },
+        resolveSessionIdentity: () => ({
+          userIdentifier: 'IAC_Judge_WA_R1',
+          email: 'judge@example.test',
+          password: 'not-used',
+        }),
+      });
+
+      expect(loginCalled).toBe(true);
+      expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('allows only one shared recovery capture after a transient marker', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-single-recovery-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'TRANSIENT_RECOVERY_USER',
+      email: 'transient-recovery@example.test',
+      password: 'not-used',
+    };
+    const storageKey = resolveSessionStorageKey(identity);
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
+    let captures = 0;
+
+    try {
+      process.chdir(tempDir);
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'Session capture attempt timed out after 45000ms',
+          retryable: true,
+        })
+      );
+
+      const attempts = await Promise.allSettled(
+        Array.from({ length: 8 }, () =>
+          sessionCaptureTest.sessionCaptureWith([identity], {
+            chromiumLauncher: {} as never,
+            config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+            env: {},
+            isSessionFresh: () => false,
+            loginAndPersistSession: async () => {
+              captures += 1;
+              throw new Error('Session capture attempt timed out after 45000ms');
+            },
+            resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+          })
+        )
+      );
+
+      const marker = JSON.parse(fs.readFileSync(failurePath, 'utf8'));
+      expect(captures).toBe(1);
+      expect(attempts.every((attempt) => attempt.status === 'rejected')).toBe(true);
+      expect(marker.recoveryAttempted).toBe(true);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });

@@ -10,6 +10,7 @@ import {
   createGlobalSearchResultsRouteHandler,
   gotoCaseDetailsWithRetry,
   hearingManagerRoles,
+  openEventBehaviourJourney,
   setupFastCaseRetrievalConfigRoute,
   setupAllWorkCasesRoutes,
   setupBookingUiMockRoutes,
@@ -53,6 +54,7 @@ import {
   VALID_SEARCH_CASE_REFERENCE,
 } from '../../../integration/mocks/search.mock';
 import { TEST_USERS } from '../../../integration/testData';
+import { buildRichTextAccessibilityTrigger, RICH_TEXT_READ_VALUE } from '../../../integration/mocks/richTextAccessibility.mock';
 import { buildMyTaskListMock } from '../../../integration/mocks/taskList.mock';
 import type { AccessibilityEngine } from './accessibilityAudit';
 import { setupAccessibilityMockSession } from './accessibilityMockSession';
@@ -486,6 +488,84 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
       await expect(page.getByRole('heading', { name: /hearing requirements/i })).toBeVisible();
       await continueHearingsFlow(page);
       await expect(page.getByRole('heading', { name: /do you require any additional facilities\?/i })).toBeVisible();
+    },
+  },
+  {
+    title: 'rich text editor write state',
+    feature: 'rich text editor',
+    setup: async ({ page, caseDetailsPage }) => {
+      await openEventBehaviourJourney(page, caseDetailsPage, {
+        trigger: buildRichTextAccessibilityTrigger(),
+      });
+      await caseDetailsPage.selectCaseAction('Record outcome', {
+        expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),
+      });
+      await expect(page.getByRole('textbox', { name: 'Outcome note' })).toBeVisible();
+      await expect(page.getByRole('textbox', { name: 'Legacy text area note' })).toBeVisible();
+    },
+  },
+  {
+    title: 'rich text editor read state',
+    feature: 'rich text editor',
+    setup: async ({ page, caseDetailsPage }) => {
+      await openEventBehaviourJourney(page, caseDetailsPage, {
+        richTextReadValue: RICH_TEXT_READ_VALUE,
+      });
+      await expect(page.getByRole('tab', { name: 'Case data' })).toBeVisible();
+      const richTextValue = page.locator('ccd-read-rich-text-area-field');
+      await expect(richTextValue).toHaveCount(1);
+      await expect(page.locator('ccd-read-text-area-field')).toHaveCount(1);
+      await expect(richTextValue).toContainText('formatted');
+      await expect(richTextValue.locator('ul')).toBeVisible();
+      await expect(richTextValue.locator('ol')).toBeVisible();
+    },
+  },
+  {
+    title: 'rich text editor focused state',
+    feature: 'rich text editor',
+    setup: async ({ page, caseDetailsPage }) => {
+      await openEventBehaviourJourney(page, caseDetailsPage, {
+        trigger: buildRichTextAccessibilityTrigger(),
+      });
+      await caseDetailsPage.selectCaseAction('Record outcome', {
+        expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),
+      });
+      await page.getByRole('textbox', { name: 'Outcome note' }).focus();
+      await expect(page.getByRole('textbox', { name: 'Outcome note' })).toBeFocused();
+    },
+  },
+  {
+    title: 'rich text editor validation state',
+    feature: 'rich text editor',
+    setup: async ({ page, caseDetailsPage }) => {
+      await openEventBehaviourJourney(page, caseDetailsPage, {
+        trigger: buildRichTextAccessibilityTrigger(),
+      });
+      await caseDetailsPage.selectCaseAction('Record outcome', {
+        expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),
+      });
+      const editor = page.getByRole('textbox', { name: 'Outcome note' });
+      await editor.focus();
+      await editor.blur();
+      await expect(editor).toHaveAttribute('aria-invalid', 'true');
+      await expect(page.getByText('Outcome note is required')).toBeVisible();
+    },
+  },
+  {
+    title: 'rich text editor formatted state',
+    feature: 'rich text editor',
+    setup: async ({ page, caseDetailsPage }) => {
+      await openEventBehaviourJourney(page, caseDetailsPage, {
+        trigger: buildRichTextAccessibilityTrigger(),
+      });
+      await caseDetailsPage.selectCaseAction('Record outcome', {
+        expectedLocator: page.getByRole('toolbar', { name: 'Outcome note formatting options' }),
+      });
+      const editor = page.getByRole('textbox', { name: 'Outcome note' });
+      await editor.focus();
+      await editor.press('ControlOrMeta+b');
+      await editor.pressSequentially('Accessible formatted content');
+      await expect(editor.locator('strong')).toContainText('Accessible formatted content');
     },
   },
   {

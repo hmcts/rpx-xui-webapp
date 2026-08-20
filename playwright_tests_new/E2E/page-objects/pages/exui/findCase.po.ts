@@ -247,7 +247,14 @@ export class FindCasePage extends Base {
       return;
     }
 
-    await this.openFromTopRight();
+    if (await this.findCaseLinkOnTopRight.isVisible({ timeout: 1_000 }).catch(() => false)) {
+      await this.openFromTopRight();
+      return;
+    }
+
+    // Global search replaces the top-right link with the case-reference search box.
+    await this.page.goto('/cases/case-search');
+    await this.exuiSpinnerComponent.wait();
   }
 
   /**

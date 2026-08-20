@@ -21,8 +21,8 @@ if (/--inspect(?:-brk)?(?:=|\b)/.test(process.env.NODE_OPTIONS ?? '')) {
 
 for (const pool of requiredPools) {
   const capacity = poolCapacities[pool] ?? 0;
-  if (capacity < requestedWorkers) {
-    issues.push(`${pool} has ${capacity} configured credential pair(s), but ${requestedWorkers} workers were requested.`);
+  if (capacity === 0) {
+    issues.push(`${pool} has no configured credential identities.`);
   }
 }
 
@@ -34,6 +34,7 @@ console.log(
       .join(',') || 'none'
   }`
 );
+console.log('[playwright-preflight] pool capacity is advisory; configured identities may be reused across workers.');
 console.log(
   `[playwright-preflight] validation=${process.env.PW_SESSION_REUSE_VALIDATION_MODE ?? (process.env.CI ? 'strict' : 'best-effort')}`
 );

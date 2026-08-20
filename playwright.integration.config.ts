@@ -8,7 +8,6 @@ const {
   resolveOdhinForceExitOnCompletion,
   resolveOdhinLightweight,
   resolveOdhinRuntimeHookTimeoutMs,
-  resolveHearingManagerWorkerCount,
   resolveWorkerCount,
 } = integrationConfigSupport as {
   buildConfig: (env: NodeJS.ProcessEnv) => {
@@ -30,7 +29,6 @@ const {
   resolveOdhinHardTimeoutMs: (env: NodeJS.ProcessEnv) => number;
   resolveOdhinLightweight: (env: NodeJS.ProcessEnv) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: NodeJS.ProcessEnv) => number;
-  resolveHearingManagerWorkerCount: (env: NodeJS.ProcessEnv) => number;
   resolveWorkerCount: (env: NodeJS.ProcessEnv) => number;
 };
 
@@ -50,26 +48,6 @@ const resolveIntegrationTagFilters = (env: NodeJS.ProcessEnv = process.env) =>
 const buildConfig = (env: NodeJS.ProcessEnv = process.env) => {
   const integrationTagFilters = resolveIntegrationTagFilters(env);
   const config = buildSupportConfig(env);
-  const chromiumProject = config.projects[0];
-
-  if (!chromiumProject) {
-    throw new Error('Integration Chromium project is not configured.');
-  }
-
-  config.projects = [
-    {
-      ...chromiumProject,
-      testIgnore: [...config.testIgnore, '**/test/hearings/**'],
-    },
-    {
-      ...chromiumProject,
-      name: 'chromium-hearings',
-      workers: resolveHearingManagerWorkerCount(env),
-      testMatch: ['**/test/hearings/**/*.spec.ts'],
-      testIgnore: config.testIgnore,
-    },
-  ];
-
   logResolvedTagFilters('Integration', integrationTagFilters, env);
 
   for (const project of config.projects ?? []) {
@@ -85,7 +63,6 @@ const config = buildConfig(process.env);
   buildConfig,
   resolveWorkerCount,
   resolveIntegrationTagFilters,
-  resolveHearingManagerWorkerCount,
   resolveOdhinHardTimeoutMs,
   resolveOdhinForceExitOnCompletion,
   resolveOdhinConsoleCapture,

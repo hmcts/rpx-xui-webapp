@@ -47,45 +47,39 @@ const resolveWorkerCount = (env = process.env) => {
   return 7;
 };
 
-const pooledCredentialPrefixes = [
-  { prefix: 'STAFF_ADMIN', enabledBy: 'STAFF_ADMIN_POOL_ENABLED' },
-  { prefix: 'BOOKING_UI_FT_ON' },
-  { prefix: 'HEARING_MANAGER_CR84_ON' },
-  { prefix: 'HEARING_MANAGER_CR84_OFF' },
+const pooledCredentialPools = [
+  {
+    name: 'STAFF_ADMIN',
+    usernamePattern: /^STAFF_ADMIN(?:_\d+)?_USERNAME$/,
+    enabledBy: 'STAFF_ADMIN_POOL_ENABLED',
+  },
+  { name: 'BOOKING_UI_FT_ON', usernamePattern: /^BOOKING_UI_FT_ON(?:_\d+)?_USERNAME$/ },
+  { name: 'HEARING_MANAGER_CR84_ON', usernamePattern: /^HEARING_MANAGER_CR84_ON(?:_\d+)?_USERNAME$/ },
+  { name: 'HEARING_MANAGER_CR84_OFF', usernamePattern: /^HEARING_MANAGER_CR84_OFF(?:_\d+)?_USERNAME$/ },
+  { name: 'PRL_SOLICITOR', usernamePattern: /^PRL_SOLICITOR\d*_USERNAME$/ },
 ];
 
 const resolveConfiguredSessionPoolCapacities = (env = process.env) => {
   const poolCapacities = {};
 
-  for (const { prefix, enabledBy } of pooledCredentialPrefixes) {
+  for (const { name, usernamePattern, enabledBy } of pooledCredentialPools) {
     if (enabledBy && env[enabledBy] !== 'true') {
       continue;
     }
 
-    const members = new Set();
+    const emails = new Set();
     for (const key of Object.keys(env)) {
-      const match = new RegExp(`^${prefix}_(\\d+)_USERNAME$`).exec(key);
-      const passwordKey = match ? `${prefix}_${match[1]}_PASSWORD` : undefined;
-      if (match && env[key]?.trim() && passwordKey && env[passwordKey]) {
-        members.add(match[1]);
+      if (usernamePattern.test(key) && env[key]?.trim() && env[key.replace(/_USERNAME$/, '_PASSWORD')]) {
+        emails.add(env[key].trim().toLowerCase());
       }
     }
 
-    if (members.size > 0) {
-      poolCapacities[prefix] = members.size;
+    if (emails.size > 0) {
+      poolCapacities[name] = emails.size;
     }
   }
 
   return poolCapacities;
-};
-
-const resolveHearingManagerWorkerCount = (env = process.env) => {
-  const requestedWorkers = resolveWorkerCount(env);
-  const poolCapacities = resolveConfiguredSessionPoolCapacities(env);
-
-  // A missing numbered pool uses the legacy singleton identity, so keep the
-  // hearing lane runnable without concurrently sharing that account.
-  return Math.min(requestedWorkers, poolCapacities.HEARING_MANAGER_CR84_ON ?? 1, poolCapacities.HEARING_MANAGER_CR84_OFF ?? 1);
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -307,7 +301,6 @@ module.exports = {
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
   resolveConfiguredSessionPoolCapacities,
-  resolveHearingManagerWorkerCount,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,

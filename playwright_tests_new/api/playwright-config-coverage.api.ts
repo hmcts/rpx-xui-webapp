@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 
 import {
@@ -12,7 +13,6 @@ import {
 const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
   resolveConfiguredSessionPoolCapacities: (env: EnvMap) => Record<string, number>;
-  resolveHearingManagerWorkerCount: (env: EnvMap) => number;
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
   resolveOdhinForceExitOnCompletion: (env: EnvMap) => boolean;
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
@@ -603,9 +603,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.expect.timeout).toBe(60_000);
     expect(config.use.trace).toBe('retain-on-failure');
     expect(config.use.timezoneId).toBe('Europe/London');
-    expect(config.projects.map((project) => project.name)).toEqual(['chromium', 'chromium-hearings']);
+    expect(config.projects.map((project) => project.name)).toEqual(['chromium']);
     expect(config.projects[0]?.workers).toBeUndefined();
-    expect(config.projects[1]?.workers).toBe(1);
   });
 
   test('integration config applies shared tag filters to the integration project', async () => {
@@ -615,7 +614,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
 
-    expect(config.projects).toHaveLength(2);
+    expect(config.projects).toHaveLength(1);
     for (const project of config.projects) {
       expect(project.grep).toBeInstanceOf(RegExp);
       expect(project.grep?.test('@integration-search-case')).toBe(true);
@@ -637,7 +636,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
 
-    expect(config.projects).toHaveLength(2);
+    expect(config.projects).toHaveLength(1);
     for (const project of config.projects) {
       expect(project.grep).toBeInstanceOf(RegExp);
       expect(project.grep?.test('@integration-data-loss')).toBe(true);
@@ -661,7 +660,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(7);
   });
 
-  test('integration config keeps seven workers outside the capacity-limited hearing lane', async () => {
+  test('integration config runs mocked hearing journeys in the shared seven-worker project', async () => {
     const env = {
       CI: 'true',
       FUNCTIONAL_TESTS_WORKERS: '7',
@@ -707,11 +706,63 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     });
     const config = buildIntegrationConfig(env);
     expect(config.workers).toBe(7);
-    expect(config.projects.find((project) => project.name === 'chromium')?.testIgnore).toContain('**/test/hearings/**');
-    const hearingProject = config.projects.find((project) => project.name === 'chromium-hearings');
-    expect(hearingProject?.workers).toBe(4);
-    expect(hearingProject?.testMatch).toEqual(['**/test/hearings/**/*.spec.ts']);
-    expect(integrationConfigSupport.resolveHearingManagerWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '7' })).toBe(1);
+    expect(config.projects).toHaveLength(1);
+    expect(config.projects[0]).toMatchObject({ name: 'chromium' });
+    expect(config.projects[0]?.testIgnore).toBeUndefined();
+  });
+
+  test('session pool capacity deduplicates emails and includes the PRL solicitor family', () => {
+    expect(
+      integrationConfigSupport.resolveConfiguredSessionPoolCapacities({
+        STAFF_ADMIN_POOL_ENABLED: 'true',
+        STAFF_ADMIN_1_USERNAME: 'shared-staff@example.test',
+        STAFF_ADMIN_1_PASSWORD: 'secret-1',
+        STAFF_ADMIN_2_USERNAME: ' SHARED-STAFF@example.test ',
+        STAFF_ADMIN_2_PASSWORD: 'secret-2',
+        PRL_SOLICITOR_USERNAME: 'prl-1@example.test',
+        PRL_SOLICITOR_PASSWORD: 'secret-1',
+        PRL_SOLICITOR2_USERNAME: 'prl-2@example.test',
+        PRL_SOLICITOR2_PASSWORD: 'secret-2',
+        PRL_SOLICITOR3_USERNAME: 'PRL-2@example.test',
+        PRL_SOLICITOR3_PASSWORD: 'secret-3',
+      })
+    ).toEqual({ STAFF_ADMIN: 1, PRL_SOLICITOR: 2 });
+  });
+
+  test('strict preflight does not reject a configured pool that is smaller than the worker count', () => {
+    const result = spawnSync(
+      process.execPath,
+      ['scripts/playwright-session-preflight.cjs', '--strict', '--require=HEARING_MANAGER_CR84_ON'],
+      {
+        cwd: process.cwd(),
+        encoding: 'utf8',
+        env: {
+          NODE_OPTIONS: '',
+          FUNCTIONAL_TESTS_WORKERS: '7',
+          HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on@example.test',
+          HEARING_MANAGER_CR84_ON_1_PASSWORD: 'not-a-real-password',
+        },
+      }
+    );
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('HEARING_MANAGER_CR84_ON:1');
+    expect(result.stdout).toContain('pool capacity is advisory');
+  });
+
+  test('strict preflight rejects a required pool with no configured identity', () => {
+    const result = spawnSync(
+      process.execPath,
+      ['scripts/playwright-session-preflight.cjs', '--strict', '--require=HEARING_MANAGER_CR84_ON'],
+      {
+        cwd: process.cwd(),
+        encoding: 'utf8',
+        env: { NODE_OPTIONS: '', FUNCTIONAL_TESTS_WORKERS: '7' },
+      }
+    );
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('HEARING_MANAGER_CR84_ON has no configured credential identities.');
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {

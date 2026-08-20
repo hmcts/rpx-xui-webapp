@@ -852,9 +852,9 @@ Browser sessions managed by `common/sessionCapture.ts` are captured lazily under
 
 Cached browser and API sessions are checked through `auth/isAuthenticated` before reuse. `PW_SESSION_REUSE_VALIDATION_MODE=strict` fails with the classified `AAT_AUTH_UNAVAILABLE` setup error if that endpoint cannot be reached; `best-effort` retains the local-diagnosis behaviour of logging and reusing the cache. CI defaults to `strict` and local runs default to `best-effort` unless explicitly overridden.
 
-The integration suite keeps the normal worker count for non-hearing tests, while the `chromium-hearings` project uses the lowest available CR84-on/off pool capacity. With only four CR84-off users it therefore runs hearings with four workers, rather than failing or concurrently sharing a hearing account.
+Integration journeys use the configured worker count, including hearings. The hearing suite mocks user details, case data, and hearing APIs per page, so its existing authenticated sessions can be shared safely without requiring one permanent hearing-manager account per worker.
 
-Before a live browser lane, run `yarn test:playwright:preflight -- --require=STAFF_ADMIN,HEARING_MANAGER_CR84_ON`. It reports only credential-pair counts, never secret values, and warns about capacity or inherited Node inspector settings. Add `--strict` only when the selected lane must be rejected for those conditions.
+Before a live browser lane, run `yarn test:playwright:preflight -- --require=STAFF_ADMIN,HEARING_MANAGER_CR84_ON`. It reports distinct configured identities, never secret values, and warns about inherited Node inspector settings. Pool capacity is advisory: a configured identity can be reused across workers. Add `--strict` only when a selected lane has no configured identity at all.
 
 ### Session Capture Storage
 

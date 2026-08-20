@@ -32,7 +32,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.4")
+@Library("Infrastructure@2.4.9")
 
 def type      = "nodejs"
 def product   = "xui"
@@ -57,7 +57,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*',
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,test-results/**/trace.zip',
         excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
@@ -72,6 +72,14 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
 }
 
 def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    def reportPath = "${reportDir}/${reportFile}"
+    if (fileExists(reportPath)) {
+        echo "[playwright-report] Reusing generated report at ${reportPath}"
+        return
+    }
+    if (!fileExists('scripts/ensure-odhin-report.js')) {
+        error("Cannot create fallback report for ${suiteName}: scripts/ensure-odhin-report.js is missing from the workspace")
+    }
     withEnv([
         "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
         "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
@@ -102,6 +110,12 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
             reportName           : reportName
         ])
     } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+            throw e
+        }
         echo "[playwright-accessibility] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
@@ -109,39 +123,47 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
 def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
     def safeReportName = reportName.replaceAll(/[^A-Za-z0-9._-]/, '-')
     def slimReportDir = "functional-output/tests/playwright-published-reports/load-profile/${safeReportName}"
-    steps.sh """
-      set +e
-      node scripts/ensure-load-profile-report.js \\
-        --report-dir '${reportDir}' \\
-        --report-file '${playwrightLoadProfileReportFile}' \\
-        --report-name '${reportName}'
-    """
-    steps.sh """
-      set +e
-      mkdir -p '${slimReportDir}'
-      if [ -f '${reportDir}/${playwrightLoadProfileReportFile}' ]; then
+    try {
+      steps.sh """
+        node scripts/ensure-load-profile-report.js \\
+          --report-dir '${reportDir}' \\
+          --report-file '${playwrightLoadProfileReportFile}' \\
+          --report-name '${reportName}' \\
+          --wait-ms 30000
+        if [ -f '${reportDir}/monitor.log' ]; then
+          cat '${reportDir}/monitor.log'
+        fi
+        mkdir -p '${slimReportDir}'
         cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
-      fi
-    """
-    steps.archiveArtifacts(
-      allowEmptyArchive: true,
-      artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}"
-    )
-    publishHTML([
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "${slimReportDir}/",
-      reportFiles          : playwrightLoadProfileReportFile,
-      reportName           : reportName
-    ])
+      """
+      steps.archiveArtifacts(allowEmptyArchive: false, artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}")
+      publishHTML([
+        allowMissing         : false,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "${slimReportDir}/",
+        reportFiles          : playwrightLoadProfileReportFile,
+        reportName           : reportName
+      ])
+    } catch (Exception publishException) {
+      if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+        throw publishException
+      }
+      if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+        throw publishException
+      }
+      currentBuild.result = 'UNSTABLE'
+      echo "[playwright-load-profile] Report publication failed; marking build unstable: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
+    }
 }
 
 def startPlaywrightLoadProfile = { String reportDir, String label, String eventsFile ->
     steps.sh """
       set +e
       mkdir -p '${reportDir}'
-      rm -f '${reportDir}/stop' '${reportDir}/monitor.pid'
+      rm -f '${reportDir}/stop' '${reportDir}/monitor.pid' \\
+        '${reportDir}/${playwrightLoadProfileReportFile}' '${reportDir}/summary.json' '${reportDir}/samples.json' \\
+        '${eventsFile}'
       JENKINS_NODE_COOKIE=dontKillMe nohup node scripts/playwright-load-monitor.js \\
         --output-folder '${reportDir}' \\
         --label '${label}' \\
@@ -155,26 +177,41 @@ def startPlaywrightLoadProfile = { String reportDir, String label, String events
 def stopPlaywrightLoadProfile = { String reportDir ->
     steps.sh """
       set +e
-      if [ -f '${reportDir}/monitor.pid' ]; then
-        pid=\$(cat '${reportDir}/monitor.pid')
-        touch '${reportDir}/stop'
-        for i in \$(seq 1 30); do
-          kill -0 "\${pid}" 2>/dev/null || break
-          sleep 1
-        done
-        if kill -0 "\${pid}" 2>/dev/null; then
-          kill -TERM "\${pid}" 2>/dev/null || true
-          sleep 2
-        fi
-      fi
-      if [ -f '${reportDir}/monitor.log' ]; then
-        cat '${reportDir}/monitor.log'
+      touch '${reportDir}/stop'
+      if [ -s '${reportDir}/monitor.pid' ]; then
+        monitorPid=\$(cat '${reportDir}/monitor.pid')
+        case "\$monitorPid" in
+          ''|*[!0-9]*)
+            echo "[playwright-load-profile] ignoring invalid monitor PID: \$monitorPid"
+            ;;
+          *)
+            monitorCommand=\$(ps -p "\$monitorPid" -o args= 2>/dev/null || true)
+            case "\$monitorCommand" in
+              *"scripts/playwright-load-monitor.js"*"--output-folder ${reportDir}"*)
+                deadline=\$((\$(date +%s) + 5))
+                while kill -0 "\$monitorPid" 2>/dev/null && [ "\$(date +%s)" -lt "\$deadline" ]; do
+                  sleep 1
+                done
+                if kill -0 "\$monitorPid" 2>/dev/null; then
+                  kill -TERM "\$monitorPid" 2>/dev/null
+                  sleep 1
+                fi
+                if kill -0 "\$monitorPid" 2>/dev/null; then
+                  kill -KILL "\$monitorPid" 2>/dev/null
+                fi
+                ;;
+              *)
+                echo "[playwright-load-profile] ignoring PID that does not own ${reportDir}: \$monitorPid"
+                ;;
+            esac
+            ;;
+        esac
       fi
     """
 }
 
-def ciLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/ci'
-def ciLoadProfileEventsFile = 'functional-output/tests/playwright-integration/load-profile/ci-stage-events.jsonl'
+def ciLoadProfileDir = "functional-output/tests/playwright-integration/load-profile/ci-${env.BUILD_NUMBER ?: 'local'}"
+def ciLoadProfileEventsFile = "${ciLoadProfileDir}/stage-events.jsonl"
 def ciLoadProfilePublished = false
 
 def playwrightLoadProfileEventsFile = { ->
@@ -185,6 +222,12 @@ def recordPlaywrightLoadEvent = { String label, String eventType ->
     try {
         steps.sh "node scripts/playwright-load-event.js '${playwrightLoadProfileEventsFile()}' '${label}' '${eventType}'"
     } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+            throw e
+        }
         echo "[load-profile] failed to record ${label} ${eventType}: ${e.getMessage()}"
     }
 }
@@ -245,6 +288,8 @@ def runPlaywrightIntegrationProfileMatrix = {
     def failures = []
     resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
         def runConfig = integrationProfileRunConfig(spec)
+        def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
+        sh "rm -f -- '${sessionConfigCompleteFile}'"
         try {
             withEnv([
               "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
@@ -252,6 +297,7 @@ def runPlaywrightIntegrationProfileMatrix = {
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+              "PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE=${sessionConfigCompleteFile}",
               "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
               yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
@@ -266,23 +312,39 @@ def runPlaywrightIntegrationProfileMatrix = {
             if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
                 throw e
             }
+            if (!fileExists(sessionConfigCompleteFile)) {
+                echo "[playwright-integration] Session configuration validation did not complete for ${runConfig.displayName}; aborting before another profile starts"
+                throw e
+            }
             failures << "${runConfig.displayName}: ${e.getMessage()}"
         } finally {
-            echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
-            ensureHtmlReportForPublishing(
-              runConfig.reportDir,
-              playwrightIntegrationReportFile,
-              "Playwright Integration Tests"
-            )
-            publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "${runConfig.reportDir}/",
-              reportFiles          : playwrightIntegrationReportFile,
-              reportName           : "Playwright Integration Tests"
-            ])
-            echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
+            try {
+                echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
+                ensureHtmlReportForPublishing(
+                  runConfig.reportDir,
+                  playwrightIntegrationReportFile,
+                  "Playwright Integration Tests"
+                )
+                publishHTML([
+                  allowMissing         : true,
+                  alwaysLinkToLastBuild: true,
+                  keepAll              : true,
+                  reportDir            : "${runConfig.reportDir}/",
+                  reportFiles          : playwrightIntegrationReportFile,
+                  reportName           : "Playwright Integration Tests"
+                ])
+                echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
+            } catch (Exception publishException) {
+                if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                    throw publishException
+                }
+                if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                    throw publishException
+                }
+                def publishFailure = "${runConfig.displayName} report publication: ${publishException.getMessage()}"
+                failures << publishFailure
+                echo "[playwright-integration] ${publishFailure}"
+            }
         }
     }
     if (failures) {
@@ -294,6 +356,8 @@ def secrets = [
   'rpx-${env}': [
     secret('mc-s2s-client-secret', 'S2S_SECRET'),
     secret('mc-idam-client-secret', 'IDAM_SECRET'),
+    secret('idam-api-url', 'IDAM_API_URL'),
+    secret('s2s-url', 'S2S_URL'),
     secret('webapp-redis6-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
@@ -355,6 +419,12 @@ def secrets = [
     secret('e2e-hearing-manager-cr84-on-4-password', 'HEARING_MANAGER_CR84_ON_4_PASSWORD'),
     secret('e2e-fpl-global-search-username', 'FPL_GLOBAL_SEARCH_USERNAME'),
     secret('e2e-fpl-global-search-password', 'FPL_GLOBAL_SEARCH_PASSWORD'),
+    secret('e2e-probate-find-case-username', 'PROBATE_FIND_CASE_USERNAME'),
+    secret('e2e-probate-find-case-password', 'PROBATE_FIND_CASE_PASSWORD'),
+    secret('e2e-probate-caseworker-username', 'PROBATE_CASEWORKER_USERNAME'),
+    secret('e2e-probate-caseworker-password', 'PROBATE_CASEWORKER_PASSWORD'),
+    secret('e2e-probate-solicitor-username', 'PROBATE_SOLICITOR_USERNAME'),
+    secret('e2e-probate-solicitor-password', 'PROBATE_SOLICITOR_PASSWORD'),
     secret('e2e-user-with-flags-username', 'USER_WITH_FLAGS_USERNAME'),
     secret('e2e-user-with-flags-password', 'USER_WITH_FLAGS_PASSWORD'),
     secret('e2e-search-employment-case-username', 'SEARCH_EMPLOYMENT_CASE_USERNAME'),
@@ -379,11 +449,12 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableFortifyScan('rpx-aat')
-    
+
       afterSuccess('checkout') {
         startCiLoadProfile()
         env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
@@ -556,12 +627,24 @@ withNightlyPipeline(type, product, component) {
                                 playwrightAccessibilityReportFile
                             )
                         } catch (Exception e) {
+                            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                throw e
+                            }
+                            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                throw e
+                            }
                             echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
                         } finally {
                             recordPlaywrightLoadEvent('Accessibility', 'finish')
                             try {
                                 publishPlaywrightAccessibilityReport('Nightly Playwright Accessibility Test Report')
                             } catch (Exception publishException) {
+                                if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                    throw publishException
+                                }
+                                if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                    throw publishException
+                                }
                                 echo "[playwright-accessibility] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
                             }
                         }

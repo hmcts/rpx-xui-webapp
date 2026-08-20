@@ -54,3 +54,8 @@ export interface LocationApi {
   is_primary: boolean;
   services: string[];
 }
+
+export interface RoleCategoryRule {
+  matches: (roles: string[]) => boolean;
+  result: string;
+}

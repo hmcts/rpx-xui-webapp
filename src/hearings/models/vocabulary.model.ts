@@ -1,3 +1,1 @@
-export interface VocabularyModel {
-  word1: string;
-}
+export { VocabularyModel } from './hearing-payload-support.model';

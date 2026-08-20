@@ -61,6 +61,8 @@ const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_C
 const SESSION_CAPTURE_LOCK_START_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
 // The integration timeout reserves its final 30 seconds for the journey after lazy capture.
 const SESSION_CAPTURE_POOL_BUDGET_MS = 150_000;
+// Worker staggering must not consume the time reserved for a complete capture retry cycle.
+const SESSION_CAPTURE_MAX_STAGGER_MS = Math.max(0, SESSION_CAPTURE_POOL_BUDGET_MS - SESSION_CAPTURE_OWNER_BUDGET_MS);
 const SESSION_CAPTURE_LOCK_UPDATE_MS = 5_000;
 // Automatic takeover inside a test run can let a suspended owner resume and overwrite
 // a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
@@ -200,6 +202,15 @@ function resolveSessionCaptureFailureTtlMs(env: NodeJS.ProcessEnv = process.env)
 function resolveSessionCaptureStaggerMs(env: NodeJS.ProcessEnv = process.env): number {
   const configured = Number(env.PW_SESSION_CAPTURE_STAGGER_MS);
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_CAPTURE_STAGGER_MS;
+}
+
+function resolveSessionCaptureDelayMs(parallelIndex: number | undefined, env: NodeJS.ProcessEnv = process.env): number {
+  const staggerMs = resolveSessionCaptureStaggerMs(env);
+  if (staggerMs <= 0 || parallelIndex === undefined || parallelIndex <= 0) {
+    return 0;
+  }
+
+  return Math.min(parallelIndex * staggerMs, SESSION_CAPTURE_MAX_STAGGER_MS);
 }
 
 type SessionCaptureFailureRecord = {
@@ -617,10 +628,9 @@ async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput, ca
     operation: 'lazy-capture',
     metric: 'session-miss',
   });
-  const staggerMs = resolveSessionCaptureStaggerMs();
   const parallelIndex = resolveCurrentPlaywrightParallelIndex();
-  if (staggerMs > 0 && parallelIndex !== undefined && parallelIndex > 0) {
-    const delayMs = parallelIndex * staggerMs;
+  const delayMs = resolveSessionCaptureDelayMs(parallelIndex);
+  if (delayMs > 0) {
     logger.info('Staggering lazy session capture for worker', {
       parallelIndex,
       delayMs,
@@ -1956,6 +1966,7 @@ export const __test__ = {
   persistSessionSelection,
   resolveSessionMaxAgeMs,
   resolveSessionCaptureStaggerMs,
+  resolveSessionCaptureDelayMs,
   storageStateFingerprint,
   readStorageStateFingerprint,
   hasReusableAuthCookies,

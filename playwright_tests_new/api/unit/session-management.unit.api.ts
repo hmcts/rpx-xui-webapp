@@ -473,6 +473,20 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('caps worker staggering so a complete transient retry cycle remains available', () => {
+    expect(
+      sessionCaptureTest.resolveSessionCaptureDelayMs(3, {
+        PW_SESSION_CAPTURE_STAGGER_MS: '10000',
+      })
+    ).toBe(sessionCaptureTest.sessionCapturePoolBudgetMs - sessionCaptureTest.sessionCaptureOwnerBudgetMs);
+
+    expect(
+      sessionCaptureTest.resolveSessionCaptureDelayMs(1, {
+        PW_SESSION_CAPTURE_STAGGER_MS: '10000',
+      })
+    ).toBe(10_000);
+  });
+
   test('does not start a fallback capture when even one bounded attempt cannot finish', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-pool-deadline-unit-'));
     const previousCwd = process.cwd();

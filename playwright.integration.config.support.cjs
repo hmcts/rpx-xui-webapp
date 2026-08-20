@@ -54,8 +54,8 @@ const pooledCredentialPrefixes = [
   { prefix: 'HEARING_MANAGER_CR84_OFF' },
 ];
 
-const resolveConfiguredSessionPoolCapacity = (env = process.env) => {
-  const poolSizes = [];
+const resolveConfiguredSessionPoolCapacities = (env = process.env) => {
+  const poolCapacities = {};
 
   for (const { prefix, enabledBy } of pooledCredentialPrefixes) {
     if (enabledBy && env[enabledBy] !== 'true') {
@@ -72,11 +72,20 @@ const resolveConfiguredSessionPoolCapacity = (env = process.env) => {
     }
 
     if (members.size > 0) {
-      poolSizes.push(members.size);
+      poolCapacities[prefix] = members.size;
     }
   }
 
-  return poolSizes.length > 0 ? Math.min(...poolSizes) : undefined;
+  return poolCapacities;
+};
+
+const resolveHearingManagerWorkerCount = (env = process.env) => {
+  const requestedWorkers = resolveWorkerCount(env);
+  const poolCapacities = resolveConfiguredSessionPoolCapacities(env);
+
+  // A missing numbered pool uses the legacy singleton identity, so keep the
+  // hearing lane runnable without concurrently sharing that account.
+  return Math.min(requestedWorkers, poolCapacities.HEARING_MANAGER_CR84_ON ?? 1, poolCapacities.HEARING_MANAGER_CR84_OFF ?? 1);
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -297,7 +306,8 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
-  resolveConfiguredSessionPoolCapacity,
+  resolveConfiguredSessionPoolCapacities,
+  resolveHearingManagerWorkerCount,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,

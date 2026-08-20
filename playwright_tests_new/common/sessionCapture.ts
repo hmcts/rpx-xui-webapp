@@ -25,6 +25,8 @@ import {
   isUnexplainedIdamLoginRejection,
 } from './sessionCaptureRetry.js';
 import { withOrderedSessionFallback } from './orderedSessionFallback.js';
+import { PRL_SOLICITOR_USER, resolvePrlSolicitorSessionCandidates } from './prlSolicitorUserPool.js';
+import { AAT_AUTH_UNAVAILABLE_FAILURE, shouldRejectUnavailableSessionValidation } from './sessionReusePolicy.js';
 import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdminUserPool.js';
 import { validateStoredSession } from './sessionReuseValidation.js';
 
@@ -689,7 +691,13 @@ function resolveSessionCandidates(
   parallelIndex = resolveCurrentPlaywrightParallelIndex()
 ): readonly SessionIdentityInput[] {
   const normalizedIdentifier = typeof userIdentifier === 'string' ? userIdentifier.trim().toUpperCase() : undefined;
-  return normalizedIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionCandidates({ parallelIndex }) : [userIdentifier];
+  if (normalizedIdentifier === STAFF_ADMIN_USER) {
+    return resolveStaffAdminSessionCandidates({ parallelIndex });
+  }
+  if (normalizedIdentifier === PRL_SOLICITOR_USER) {
+    return resolvePrlSolicitorSessionCandidates({ parallelIndex });
+  }
+  return [userIdentifier];
 }
 
 type SessionSelectionRecord = {
@@ -909,14 +917,7 @@ async function applySessionCookiesForIdentity(
     ? await ensureSessionCookiesForIdentity(userIdentifier, captureDeadlineAt)
     : await ensureSessionCookies(userIdentifier);
   const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
-  const validation = await validateStoredSession(session, targetUrl);
-  if (validation === 'unavailable') {
-    logger.warn('Unable to validate cached session state; reusing it without a refresh', {
-      userIdentifier: session.userIdentifier,
-      sessionPath: session.storageFile,
-      operation: 'validate-session-reuse',
-    });
-  }
+  const validation = await validateLoadedSessionForReuse(session, targetUrl);
   if (validation === 'unauthenticated') {
     logger.warn('Cached session was rejected by auth/isAuthenticated; refreshing once', {
       userIdentifier: session.userIdentifier,
@@ -938,6 +939,28 @@ async function applySessionCookiesForIdentity(
     await page.context().addCookies(session.cookies);
   }
   return session;
+}
+
+async function validateLoadedSessionForReuse(session: LoadedSession, targetUrl: string) {
+  const validation = await validateStoredSession(session, targetUrl);
+  if (validation !== 'unavailable') {
+    return validation;
+  }
+
+  if (shouldRejectUnavailableSessionValidation(validation)) {
+    throw new SessionCaptureError(
+      `Unable to validate cached session for ${session.userIdentifier}; auth/isAuthenticated is unavailable`,
+      session.userIdentifier,
+      { sessionPath: session.storageFile, failureKind: AAT_AUTH_UNAVAILABLE_FAILURE }
+    );
+  }
+
+  logger.warn('Unable to validate cached session state; reusing it without a refresh', {
+    userIdentifier: session.userIdentifier,
+    sessionPath: session.storageFile,
+    operation: 'validate-session-reuse',
+  });
+  return validation;
 }
 
 export async function applySessionCookies(page: Page, userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
@@ -1079,7 +1102,7 @@ async function probeAuthenticatedShell(
 export async function ensureAuthenticatedPage(
   page: Page,
   userIdentifier: SessionIdentityInput,
-  options: { targetUrl?: string; waitForSelector?: string; timeoutMs?: number } = {}
+  options: { targetUrl?: string; waitForSelector?: string | false; timeoutMs?: number } = {}
 ): Promise<LoadedSession> {
   const resolveLoadedIdentity = (loadedSession: LoadedSession) => {
     if (
@@ -1096,6 +1119,7 @@ export async function ensureAuthenticatedPage(
   const timeoutMs = options.timeoutMs ?? 60_000;
   let session = await ensureSessionCookies(userIdentifier);
   let identity = resolveLoadedIdentity(session);
+  await validateLoadedSessionForReuse(session, targetUrl);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
     markSetup('cookies-ready');
@@ -1139,8 +1163,8 @@ export async function ensureAuthenticatedPage(
     }
   }
 
-  if (options.waitForSelector) {
-    const selectors = options.waitForSelector;
+  const selectors = options.waitForSelector === false ? undefined : (options.waitForSelector ?? 'exui-header');
+  if (selectors) {
     const waitForAppShell = async () => {
       markSetup('waiting-shell');
       await page.waitForLoadState('domcontentloaded');
@@ -2067,6 +2091,7 @@ export const __test__ = {
   confirmAuthenticatedLogin,
   completeIdamCredentialFlow,
   ensureAuthenticatedPage,
+  validateLoadedSessionForReuse,
   loginAndPersistSession,
   executeLoginAttempt,
   requirePersistableSessionCookies,

@@ -11,7 +11,8 @@ import {
 
 const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
-  resolveConfiguredSessionPoolCapacity: (env: EnvMap) => number | undefined;
+  resolveConfiguredSessionPoolCapacities: (env: EnvMap) => Record<string, number>;
+  resolveHearingManagerWorkerCount: (env: EnvMap) => number;
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
   resolveOdhinForceExitOnCompletion: (env: EnvMap) => boolean;
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
@@ -78,7 +79,15 @@ const buildIntegrationConfig = (env: EnvMap) =>
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { trace: string };
-    projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
+    projects: Array<{
+      name: string;
+      workers?: number;
+      testMatch?: string[];
+      testIgnore?: string[];
+      grep?: RegExp;
+      grepInvert?: RegExp;
+      use?: { channel?: string };
+    }>;
   };
 
 const resolveIntegrationTagFilters = (env: EnvMap) =>
@@ -594,9 +603,9 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.expect.timeout).toBe(60_000);
     expect(config.use.trace).toBe('retain-on-failure');
     expect(config.use.timezoneId).toBe('Europe/London');
-    expect(config.projects).toHaveLength(1);
-    expect(config.projects[0]?.name).toBe('chromium');
+    expect(config.projects.map((project) => project.name)).toEqual(['chromium', 'chromium-hearings']);
     expect(config.projects[0]?.workers).toBeUndefined();
+    expect(config.projects[1]?.workers).toBe(1);
   });
 
   test('integration config applies shared tag filters to the integration project', async () => {
@@ -606,10 +615,12 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
 
-    expect(config.projects).toHaveLength(1);
-    expect(config.projects[0]?.grep).toBeInstanceOf(RegExp);
-    expect(config.projects[0]?.grep?.test('@integration-search-case')).toBe(true);
-    expect(config.projects[0]?.grep?.test('@integration-manage-tasks')).toBe(false);
+    expect(config.projects).toHaveLength(2);
+    for (const project of config.projects) {
+      expect(project.grep).toBeInstanceOf(RegExp);
+      expect(project.grep?.test('@integration-search-case')).toBe(true);
+      expect(project.grep?.test('@integration-manage-tasks')).toBe(false);
+    }
 
     const filters = resolveIntegrationTagFilters({
       INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@integration-manage-tasks',
@@ -626,10 +637,12 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
 
-    expect(config.projects).toHaveLength(1);
-    expect(config.projects[0]?.grep).toBeInstanceOf(RegExp);
-    expect(config.projects[0]?.grep?.test('@integration-data-loss')).toBe(true);
-    expect(config.projects[0]?.grep?.test('@integration-search-case')).toBe(false);
+    expect(config.projects).toHaveLength(2);
+    for (const project of config.projects) {
+      expect(project.grep).toBeInstanceOf(RegExp);
+      expect(project.grep?.test('@integration-data-loss')).toBe(true);
+      expect(project.grep?.test('@integration-search-case')).toBe(false);
+    }
   });
 
   test('integration config applies only integration-scoped global exclusions', async () => {
@@ -648,7 +661,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(7);
   });
 
-  test('integration config caps workers to the configured session pool capacity', async () => {
+  test('integration config keeps seven workers outside the capacity-limited hearing lane', async () => {
     const env = {
       CI: 'true',
       FUNCTIONAL_TESTS_WORKERS: '7',
@@ -669,10 +682,36 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       STAFF_ADMIN_7_PASSWORD: 'secret-7',
       STAFF_ADMIN_8_USERNAME: 'staff-admin-8@example.test',
       STAFF_ADMIN_8_PASSWORD: 'secret-8',
+      HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
+      HEARING_MANAGER_CR84_ON_1_PASSWORD: 'secret-on-1',
+      HEARING_MANAGER_CR84_ON_2_USERNAME: 'hearing-on-2@example.test',
+      HEARING_MANAGER_CR84_ON_2_PASSWORD: 'secret-on-2',
+      HEARING_MANAGER_CR84_ON_3_USERNAME: 'hearing-on-3@example.test',
+      HEARING_MANAGER_CR84_ON_3_PASSWORD: 'secret-on-3',
+      HEARING_MANAGER_CR84_ON_4_USERNAME: 'hearing-on-4@example.test',
+      HEARING_MANAGER_CR84_ON_4_PASSWORD: 'secret-on-4',
+      HEARING_MANAGER_CR84_OFF_1_USERNAME: 'hearing-off-1@example.test',
+      HEARING_MANAGER_CR84_OFF_1_PASSWORD: 'secret-off-1',
+      HEARING_MANAGER_CR84_OFF_2_USERNAME: 'hearing-off-2@example.test',
+      HEARING_MANAGER_CR84_OFF_2_PASSWORD: 'secret-off-2',
+      HEARING_MANAGER_CR84_OFF_3_USERNAME: 'hearing-off-3@example.test',
+      HEARING_MANAGER_CR84_OFF_3_PASSWORD: 'secret-off-3',
+      HEARING_MANAGER_CR84_OFF_4_USERNAME: 'hearing-off-4@example.test',
+      HEARING_MANAGER_CR84_OFF_4_PASSWORD: 'secret-off-4',
     };
 
-    expect(integrationConfigSupport.resolveConfiguredSessionPoolCapacity(env)).toBe(8);
-    expect(buildIntegrationConfig(env).workers).toBe(7);
+    expect(integrationConfigSupport.resolveConfiguredSessionPoolCapacities(env)).toEqual({
+      STAFF_ADMIN: 8,
+      HEARING_MANAGER_CR84_ON: 4,
+      HEARING_MANAGER_CR84_OFF: 4,
+    });
+    const config = buildIntegrationConfig(env);
+    expect(config.workers).toBe(7);
+    expect(config.projects.find((project) => project.name === 'chromium')?.testIgnore).toContain('**/test/hearings/**');
+    const hearingProject = config.projects.find((project) => project.name === 'chromium-hearings');
+    expect(hearingProject?.workers).toBe(4);
+    expect(hearingProject?.testMatch).toEqual(['**/test/hearings/**/*.spec.ts']);
+    expect(integrationConfigSupport.resolveHearingManagerWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '7' })).toBe(1);
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {

@@ -9,6 +9,7 @@ import { request } from '@playwright/test';
 
 import { config } from './apiTestRuntimeConfig';
 import { AuthenticationError, ConfigurationError } from './errors';
+import { AAT_AUTH_UNAVAILABLE_FAILURE, shouldRejectUnavailableSessionValidation } from '../../common/sessionReusePolicy.js';
 type UsersConfig = (typeof config.users)[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 
@@ -162,6 +163,13 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
         return storagePath;
       }
       if (validation === 'unavailable') {
+        if (shouldRejectUnavailableSessionValidation(validation)) {
+          throw new AuthenticationError(
+            `Unable to validate cached API storage state for ${role}; auth/isAuthenticated is unavailable`,
+            role,
+            { failureKind: AAT_AUTH_UNAVAILABLE_FAILURE, storagePath }
+          );
+        }
         logger.warn('Unable to validate fresh storage state; preserving it rather than amplifying a downstream outage', {
           role,
           cacheKey,

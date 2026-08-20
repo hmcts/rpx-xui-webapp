@@ -2002,7 +2002,6 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       await expect(
         sessionCaptureTest.ensureAuthenticatedPage(page as never, identity, {
           targetUrl: 'https://manage-case.aat.platform.hmcts.net',
-          waitForSelector: 'exui-header',
           timeoutMs: 1,
         })
       ).rejects.toThrow(/App shell not detected within 1ms/);

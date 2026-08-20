@@ -850,6 +850,12 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 Browser sessions managed by `common/sessionCapture.ts` are captured lazily under `.sessions/`. E2E and integration callers of that helper deliberately share browser-session keys, while API state remains separately namespaced. Some E2E journeys use the separate UI storage helper under `test-results/storage-states/ui`.
 
+Cached browser and API sessions are checked through `auth/isAuthenticated` before reuse. `PW_SESSION_REUSE_VALIDATION_MODE=strict` fails with the classified `AAT_AUTH_UNAVAILABLE` setup error if that endpoint cannot be reached; `best-effort` retains the local-diagnosis behaviour of logging and reusing the cache. CI defaults to `strict` and local runs default to `best-effort` unless explicitly overridden.
+
+The integration suite keeps the normal worker count for non-hearing tests, while the `chromium-hearings` project uses the lowest available CR84-on/off pool capacity. With only four CR84-off users it therefore runs hearings with four workers, rather than failing or concurrently sharing a hearing account.
+
+Before a live browser lane, run `yarn test:playwright:preflight -- --require=STAFF_ADMIN,HEARING_MANAGER_CR84_ON`. It reports only credential-pair counts, never secret values, and warns about capacity or inherited Node inspector settings. Add `--strict` only when the selected lane must be rejected for those conditions.
+
 ### Session Capture Storage
 
 The shared session-capture helper and API authentication store state under `.sessions/`; the [file naming convention](#file-naming-convention) keeps browser and API state separate. E2E flows using `E2E/utils/storage-state.utils.ts` store their UI state under `test-results/storage-states/ui` instead.

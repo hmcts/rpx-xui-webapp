@@ -8,20 +8,29 @@ const {
   resolveOdhinForceExitOnCompletion,
   resolveOdhinLightweight,
   resolveOdhinRuntimeHookTimeoutMs,
-  resolveConfiguredSessionPoolCapacity,
+  resolveHearingManagerWorkerCount,
   resolveWorkerCount,
 } = integrationConfigSupport as {
   buildConfig: (env: NodeJS.ProcessEnv) => {
     reporter: [string, Record<string, unknown> | undefined][];
     workers?: number;
-    projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
+    testIgnore: string[];
+    projects: Array<{
+      name: string;
+      workers?: number;
+      testMatch?: string[];
+      testIgnore?: string[];
+      grep?: RegExp;
+      grepInvert?: RegExp;
+      use?: { channel?: string };
+    }>;
   };
   resolveOdhinConsoleCapture: (env: NodeJS.ProcessEnv) => { consoleLog: boolean; consoleError: boolean };
   resolveOdhinForceExitOnCompletion: (env: NodeJS.ProcessEnv) => boolean;
   resolveOdhinHardTimeoutMs: (env: NodeJS.ProcessEnv) => number;
   resolveOdhinLightweight: (env: NodeJS.ProcessEnv) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: NodeJS.ProcessEnv) => number;
-  resolveConfiguredSessionPoolCapacity: (env: NodeJS.ProcessEnv) => number | undefined;
+  resolveHearingManagerWorkerCount: (env: NodeJS.ProcessEnv) => number;
   resolveWorkerCount: (env: NodeJS.ProcessEnv) => number;
 };
 
@@ -40,19 +49,26 @@ const resolveIntegrationTagFilters = (env: NodeJS.ProcessEnv = process.env) =>
 
 const buildConfig = (env: NodeJS.ProcessEnv = process.env) => {
   const integrationTagFilters = resolveIntegrationTagFilters(env);
-  const requestedWorkers = resolveWorkerCount(env);
-  const sessionPoolCapacity = resolveConfiguredSessionPoolCapacity(env);
-  const effectiveEnv =
-    sessionPoolCapacity !== undefined && requestedWorkers > sessionPoolCapacity
-      ? { ...env, FUNCTIONAL_TESTS_WORKERS: String(sessionPoolCapacity) }
-      : env;
-  const config = buildSupportConfig(effectiveEnv);
+  const config = buildSupportConfig(env);
+  const chromiumProject = config.projects[0];
 
-  if (effectiveEnv !== env) {
-    console.warn(
-      `[Integration] Capping workers from ${requestedWorkers} to ${sessionPoolCapacity} to match the smallest active session pool (effective=${config.workers})`
-    );
+  if (!chromiumProject) {
+    throw new Error('Integration Chromium project is not configured.');
   }
+
+  config.projects = [
+    {
+      ...chromiumProject,
+      testIgnore: [...config.testIgnore, '**/test/hearings/**'],
+    },
+    {
+      ...chromiumProject,
+      name: 'chromium-hearings',
+      workers: resolveHearingManagerWorkerCount(env),
+      testMatch: ['**/test/hearings/**/*.spec.ts'],
+      testIgnore: config.testIgnore,
+    },
+  ];
 
   logResolvedTagFilters('Integration', integrationTagFilters, env);
 
@@ -68,8 +84,8 @@ const config = buildConfig(process.env);
 (config as { __test__?: unknown }).__test__ = {
   buildConfig,
   resolveWorkerCount,
-  resolveConfiguredSessionPoolCapacity,
   resolveIntegrationTagFilters,
+  resolveHearingManagerWorkerCount,
   resolveOdhinHardTimeoutMs,
   resolveOdhinForceExitOnCompletion,
   resolveOdhinConsoleCapture,

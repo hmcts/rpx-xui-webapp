@@ -119,11 +119,43 @@ export class FindCasePage extends Base {
    * @param caseType - Case type display label
    * @param jurisdiction - Jurisdiction display label
    */
-  public async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
-    await this.navigateToFindCase();
-    await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
-    await this.page.waitForTimeout(EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE);
-    await this.submitSearch();
+  public async startFindCaseJourney(
+    caseNumber: string,
+    caseType: string,
+    jurisdiction: string,
+    retryTransientSearchFailures = false
+  ): Promise<void> {
+    let lastError: unknown;
+
+    const maxAttempts = retryTransientSearchFailures ? MAX_NAVIGATION_RETRY_ATTEMPTS : 1;
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      try {
+        await this.navigateToFindCase();
+        await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
+        await this.page.waitForTimeout(EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE);
+        if (retryTransientSearchFailures) {
+          await this.submitSearchWithTransientResponseCheck();
+        } else {
+          await this.submitSearch();
+        }
+        return;
+      } catch (error) {
+        lastError = error;
+        if (!retryTransientSearchFailures || !this.isTransientSearchFailure(error) || attempt === maxAttempts) {
+          throw error;
+        }
+
+        this.logger.warn('Find case search failed with a transient downstream status; retrying', {
+          attempt,
+          maxAttempts,
+          error: error instanceof Error ? error.message : JSON.stringify(error),
+        });
+        await this.page.goto('/cases/case-search');
+        await this.exuiSpinnerComponent.wait();
+      }
+    }
+
+    throw lastError instanceof Error ? lastError : new Error(String(lastError));
   }
 
   public async startProbateFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
@@ -145,6 +177,24 @@ export class FindCasePage extends Base {
   public async applyFilters(): Promise<void> {
     await this.exuiCaseListComponent.filters.applyFilterBtn.click();
     await this.exuiSpinnerComponent.wait();
+  }
+
+  private async submitSearchWithTransientResponseCheck(): Promise<void> {
+    const searchResponsePromise = this.page.waitForResponse(
+      (response) => response.request().method() === 'POST' && response.url().includes('/searchCases'),
+      { timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK }
+    );
+    await this.exuiCaseListComponent.filters.applyFilterBtn.click();
+    const searchResponse = await searchResponsePromise;
+    if ([429, 502, 503, 504].includes(searchResponse.status())) {
+      throw new Error(`Find case search failed with HTTP ${searchResponse.status()}.`);
+    }
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  private isTransientSearchFailure(error: unknown): boolean {
+    const message = error instanceof Error ? error.message : (JSON.stringify(error) ?? '');
+    return /Find case search failed with HTTP (429|502|503|504)\./.test(message);
   }
 
   private parseBracketedList(value: string): string[] {

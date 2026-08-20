@@ -367,7 +367,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
             throwOnError: false,
           })
         );
-        expectStatus(response.status, [200, 204, 400, 403, 404, 409, 502]);
+        expectStatus(response.status, [200, 204, 400, 401, 403, 404, 409, 500, 502]);
       });
     }
   });

@@ -74,6 +74,22 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'BOOKING_UI_FT_ON_4_USERNAME',
     password: 'BOOKING_UI_FT_ON_4_PASSWORD',
   },
+  'BOOKING_UI-FT-ON-5': {
+    username: 'BOOKING_UI_FT_ON_5_USERNAME',
+    password: 'BOOKING_UI_FT_ON_5_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-6': {
+    username: 'BOOKING_UI_FT_ON_6_USERNAME',
+    password: 'BOOKING_UI_FT_ON_6_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-7': {
+    username: 'BOOKING_UI_FT_ON_7_USERNAME',
+    password: 'BOOKING_UI_FT_ON_7_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-8': {
+    username: 'BOOKING_UI_FT_ON_8_USERNAME',
+    password: 'BOOKING_UI_FT_ON_8_PASSWORD',
+  },
   STAFF_ADMIN: {
     username: 'STAFF_ADMIN_USERNAME',
     password: 'STAFF_ADMIN_PASSWORD',
@@ -93,6 +109,22 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   'STAFF_ADMIN-4': {
     username: 'STAFF_ADMIN_4_USERNAME',
     password: 'STAFF_ADMIN_4_PASSWORD',
+  },
+  'STAFF_ADMIN-5': {
+    username: 'STAFF_ADMIN_5_USERNAME',
+    password: 'STAFF_ADMIN_5_PASSWORD',
+  },
+  'STAFF_ADMIN-6': {
+    username: 'STAFF_ADMIN_6_USERNAME',
+    password: 'STAFF_ADMIN_6_PASSWORD',
+  },
+  'STAFF_ADMIN-7': {
+    username: 'STAFF_ADMIN_7_USERNAME',
+    password: 'STAFF_ADMIN_7_PASSWORD',
+  },
+  'STAFF_ADMIN-8': {
+    username: 'STAFF_ADMIN_8_USERNAME',
+    password: 'STAFF_ADMIN_8_PASSWORD',
   },
   HEARING_MANAGER_CR84_OFF: {
     username: 'HEARING_MANAGER_CR84_OFF_USERNAME',
@@ -114,6 +146,22 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'HEARING_MANAGER_CR84_OFF_4_USERNAME',
     password: 'HEARING_MANAGER_CR84_OFF_4_PASSWORD',
   },
+  'HEARING_MANAGER_CR84_OFF-5': {
+    username: 'HEARING_MANAGER_CR84_OFF_5_USERNAME',
+    password: 'HEARING_MANAGER_CR84_OFF_5_PASSWORD',
+  },
+  'HEARING_MANAGER_CR84_OFF-6': {
+    username: 'HEARING_MANAGER_CR84_OFF_6_USERNAME',
+    password: 'HEARING_MANAGER_CR84_OFF_6_PASSWORD',
+  },
+  'HEARING_MANAGER_CR84_OFF-7': {
+    username: 'HEARING_MANAGER_CR84_OFF_7_USERNAME',
+    password: 'HEARING_MANAGER_CR84_OFF_7_PASSWORD',
+  },
+  'HEARING_MANAGER_CR84_OFF-8': {
+    username: 'HEARING_MANAGER_CR84_OFF_8_USERNAME',
+    password: 'HEARING_MANAGER_CR84_OFF_8_PASSWORD',
+  },
   HEARING_MANAGER_CR84_ON: {
     username: 'HEARING_MANAGER_CR84_ON_USERNAME',
     password: 'HEARING_MANAGER_CR84_ON_PASSWORD',
@@ -133,6 +181,22 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   'HEARING_MANAGER_CR84_ON-4': {
     username: 'HEARING_MANAGER_CR84_ON_4_USERNAME',
     password: 'HEARING_MANAGER_CR84_ON_4_PASSWORD',
+  },
+  'HEARING_MANAGER_CR84_ON-5': {
+    username: 'HEARING_MANAGER_CR84_ON_5_USERNAME',
+    password: 'HEARING_MANAGER_CR84_ON_5_PASSWORD',
+  },
+  'HEARING_MANAGER_CR84_ON-6': {
+    username: 'HEARING_MANAGER_CR84_ON_6_USERNAME',
+    password: 'HEARING_MANAGER_CR84_ON_6_PASSWORD',
+  },
+  'HEARING_MANAGER_CR84_ON-7': {
+    username: 'HEARING_MANAGER_CR84_ON_7_USERNAME',
+    password: 'HEARING_MANAGER_CR84_ON_7_PASSWORD',
+  },
+  'HEARING_MANAGER_CR84_ON-8': {
+    username: 'HEARING_MANAGER_CR84_ON_8_USERNAME',
+    password: 'HEARING_MANAGER_CR84_ON_8_PASSWORD',
   },
   RESTRICTED_CASE_FILE_VIEW_ON: {
     username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME',
@@ -178,9 +242,46 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'PRL_SOLICITOR_USERNAME',
     password: 'PRL_SOLICITOR_PASSWORD',
   },
+  PRL_SOLICITOR2: {
+    username: 'PRL_SOLICITOR2_USERNAME',
+    password: 'PRL_SOLICITOR2_PASSWORD',
+  },
+  PRL_SOLICITOR3: {
+    username: 'PRL_SOLICITOR3_USERNAME',
+    password: 'PRL_SOLICITOR3_PASSWORD',
+  },
+  PRL_SOLICITOR4: {
+    username: 'PRL_SOLICITOR4_USERNAME',
+    password: 'PRL_SOLICITOR4_PASSWORD',
+  },
+  PRL_SOLICITOR5: {
+    username: 'PRL_SOLICITOR5_USERNAME',
+    password: 'PRL_SOLICITOR5_PASSWORD',
+  },
+  PRL_SOLICITOR6: {
+    username: 'PRL_SOLICITOR6_USERNAME',
+    password: 'PRL_SOLICITOR6_PASSWORD',
+  },
+  PRL_SOLICITOR7: {
+    username: 'PRL_SOLICITOR7_USERNAME',
+    password: 'PRL_SOLICITOR7_PASSWORD',
+  },
+  PRL_SOLICITOR8: {
+    username: 'PRL_SOLICITOR8_USERNAME',
+    password: 'PRL_SOLICITOR8_PASSWORD',
+  },
 };
 
-const staffAdminPoolIdentifiers = ['STAFF_ADMIN-1', 'STAFF_ADMIN-2', 'STAFF_ADMIN-3', 'STAFF_ADMIN-4'] as const;
+const staffAdminPoolIdentifiers = [
+  'STAFF_ADMIN-1',
+  'STAFF_ADMIN-2',
+  'STAFF_ADMIN-3',
+  'STAFF_ADMIN-4',
+  'STAFF_ADMIN-5',
+  'STAFF_ADMIN-6',
+  'STAFF_ADMIN-7',
+  'STAFF_ADMIN-8',
+] as const;
 
 const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.ProcessEnv) => string[])> = {
   STAFF_ADMIN: (env) => {

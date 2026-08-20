@@ -188,6 +188,14 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       STAFF_ADMIN_3_PASSWORD: 'secret-3',
       STAFF_ADMIN_4_USERNAME: 'staff-admin-4@example.test',
       STAFF_ADMIN_4_PASSWORD: 'secret-4',
+      STAFF_ADMIN_5_USERNAME: 'staff-admin-5@example.test',
+      STAFF_ADMIN_5_PASSWORD: 'secret-5',
+      STAFF_ADMIN_6_USERNAME: 'staff-admin-6@example.test',
+      STAFF_ADMIN_6_PASSWORD: 'secret-6',
+      STAFF_ADMIN_7_USERNAME: 'staff-admin-7@example.test',
+      STAFF_ADMIN_7_PASSWORD: 'secret-7',
+      STAFF_ADMIN_8_USERNAME: 'staff-admin-8@example.test',
+      STAFF_ADMIN_8_PASSWORD: 'secret-8',
     };
     const previousValues = Object.fromEntries(Object.keys(envOverrides).map((key) => [key, process.env[key]]));
     const attempts: string[] = [];
@@ -244,6 +252,14 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       STAFF_ADMIN_3_PASSWORD: '',
       STAFF_ADMIN_4_USERNAME: '',
       STAFF_ADMIN_4_PASSWORD: '',
+      STAFF_ADMIN_5_USERNAME: '',
+      STAFF_ADMIN_5_PASSWORD: '',
+      STAFF_ADMIN_6_USERNAME: '',
+      STAFF_ADMIN_6_PASSWORD: '',
+      STAFF_ADMIN_7_USERNAME: '',
+      STAFF_ADMIN_7_PASSWORD: '',
+      STAFF_ADMIN_8_USERNAME: '',
+      STAFF_ADMIN_8_PASSWORD: '',
     };
     const previousValues = Object.fromEntries(Object.keys(envOverrides).map((key) => [key, process.env[key]]));
 

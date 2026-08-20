@@ -137,10 +137,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(configuredInCi).toBe(2);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(4);
+    expect(ciCount).toBe(7);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBe(4);
+    expect(defaultCount).toBe(7);
 
     const defaultApiCount = resolveApiProjectWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
     expect(defaultApiCount).toBe(6);
@@ -645,7 +645,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
   test('integration config exposes the documented resolveWorkerCount test helper', async () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
-    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(4);
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(7);
   });
 
   test('integration config caps workers to the configured session pool capacity', async () => {
@@ -661,10 +661,18 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       STAFF_ADMIN_3_PASSWORD: 'secret-3',
       STAFF_ADMIN_4_USERNAME: 'staff-admin-4@example.test',
       STAFF_ADMIN_4_PASSWORD: 'secret-4',
+      STAFF_ADMIN_5_USERNAME: 'staff-admin-5@example.test',
+      STAFF_ADMIN_5_PASSWORD: 'secret-5',
+      STAFF_ADMIN_6_USERNAME: 'staff-admin-6@example.test',
+      STAFF_ADMIN_6_PASSWORD: 'secret-6',
+      STAFF_ADMIN_7_USERNAME: 'staff-admin-7@example.test',
+      STAFF_ADMIN_7_PASSWORD: 'secret-7',
+      STAFF_ADMIN_8_USERNAME: 'staff-admin-8@example.test',
+      STAFF_ADMIN_8_PASSWORD: 'secret-8',
     };
 
-    expect(integrationConfigSupport.resolveConfiguredSessionPoolCapacity(env)).toBe(4);
-    expect(buildIntegrationConfig(env).workers).toBe(4);
+    expect(integrationConfigSupport.resolveConfiguredSessionPoolCapacity(env)).toBe(8);
+    expect(buildIntegrationConfig(env).workers).toBe(7);
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {

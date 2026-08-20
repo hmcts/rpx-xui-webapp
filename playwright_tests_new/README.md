@@ -350,7 +350,7 @@ The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_n
 - Executes API, integration, and E2E functional suites in parallel with `failFast: false` so sibling suite reports still publish if one suite fails.
 - API runs `yarn test:api:pw:raw` with `FUNCTIONAL_TESTS_WORKERS=6`.
 - Integration runs `yarn test:playwright:integration:raw -- --workers=<n>` through `INTEGRATION_PW_PROFILE_RUNS`; default is `workers=7`.
-- E2E runs `yarn test:playwrightE2E:raw` with `FUNCTIONAL_TESTS_WORKERS=6`.
+- E2E runs `yarn test:playwrightE2E:raw` with `FUNCTIONAL_TESTS_WORKERS=7`.
 - Accessibility is manual-only on CNP and runs when `RUN_PLAYWRIGHT_ACCESSIBILITY=true`. This can be set for ad-hock runs on Jenkins, using build with parameters.
 - CNP exposes tag include/exclude parameters for API, E2E, and integration, plus `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES`.
 
@@ -585,7 +585,7 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - API, E2E, and local integration defaults are controlled by each Playwright config unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=6` for API, E2E, and cross-browser E2E, and CNP/nightly integration profiles default to 7 workers
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=6` for API and `FUNCTIONAL_TESTS_WORKERS=7` for E2E/cross-browser E2E; CNP/nightly integration profiles default to 7 workers, subject to the active session-pool safety cap
 - The worker defaults keep the XUI 8CPU Jenkins agent below full per-suite saturation while leaving integration as the longest lane; monitor preview/AAT backend behaviour through the published Odhín and CI System Load reports
 - Jenkins runs API, integration, and E2E in parallel report-gathering mode: a failed suite fails its branch, but sibling suites continue so their Odhín and load reports are still published
 - Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag

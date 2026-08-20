@@ -17,6 +17,14 @@ const configuredEnv = {
   HEARING_MANAGER_CR84_OFF_3_PASSWORD: 'secret-3',
   HEARING_MANAGER_CR84_OFF_4_USERNAME: 'hearing-off-4@example.test',
   HEARING_MANAGER_CR84_OFF_4_PASSWORD: 'secret-4',
+  HEARING_MANAGER_CR84_OFF_5_USERNAME: 'hearing-off-5@example.test',
+  HEARING_MANAGER_CR84_OFF_5_PASSWORD: 'secret-5',
+  HEARING_MANAGER_CR84_OFF_6_USERNAME: 'hearing-off-6@example.test',
+  HEARING_MANAGER_CR84_OFF_6_PASSWORD: 'secret-6',
+  HEARING_MANAGER_CR84_OFF_7_USERNAME: 'hearing-off-7@example.test',
+  HEARING_MANAGER_CR84_OFF_7_PASSWORD: 'secret-7',
+  HEARING_MANAGER_CR84_OFF_8_USERNAME: 'hearing-off-8@example.test',
+  HEARING_MANAGER_CR84_OFF_8_PASSWORD: 'secret-8',
   HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
   HEARING_MANAGER_CR84_ON_1_PASSWORD: 'secret-1',
   HEARING_MANAGER_CR84_ON_2_USERNAME: 'hearing-on-2@example.test',
@@ -25,6 +33,14 @@ const configuredEnv = {
   HEARING_MANAGER_CR84_ON_3_PASSWORD: 'secret-3',
   HEARING_MANAGER_CR84_ON_4_USERNAME: 'hearing-on-4@example.test',
   HEARING_MANAGER_CR84_ON_4_PASSWORD: 'secret-4',
+  HEARING_MANAGER_CR84_ON_5_USERNAME: 'hearing-on-5@example.test',
+  HEARING_MANAGER_CR84_ON_5_PASSWORD: 'secret-5',
+  HEARING_MANAGER_CR84_ON_6_USERNAME: 'hearing-on-6@example.test',
+  HEARING_MANAGER_CR84_ON_6_PASSWORD: 'secret-6',
+  HEARING_MANAGER_CR84_ON_7_USERNAME: 'hearing-on-7@example.test',
+  HEARING_MANAGER_CR84_ON_7_PASSWORD: 'secret-7',
+  HEARING_MANAGER_CR84_ON_8_USERNAME: 'hearing-on-8@example.test',
+  HEARING_MANAGER_CR84_ON_8_PASSWORD: 'secret-8',
 };
 
 test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, () => {
@@ -51,6 +67,9 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
   test('distributes configured CR84 ON users by parallel index', () => {
     expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 2 }, configuredEnv)).toBe(
       'HEARING_MANAGER_CR84_ON-3'
+    );
+    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 7 }, configuredEnv)).toBe(
+      'HEARING_MANAGER_CR84_ON-8'
     );
   });
 
@@ -88,6 +107,10 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
       'HEARING_MANAGER_CR84_OFF-1',
       'HEARING_MANAGER_CR84_OFF-2',
       'HEARING_MANAGER_CR84_OFF-3',
+      'HEARING_MANAGER_CR84_OFF-5',
+      'HEARING_MANAGER_CR84_OFF-6',
+      'HEARING_MANAGER_CR84_OFF-7',
+      'HEARING_MANAGER_CR84_OFF-8',
     ]);
   });
 });

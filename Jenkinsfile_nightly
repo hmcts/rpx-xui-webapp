@@ -11,7 +11,7 @@ properties([
     parameters([
       text(
         name: 'INTEGRATION_PW_PROFILE_RUNS',
-        defaultValue: '''workers=4''',
+        defaultValue: '''workers=7''',
         description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
       ),
       string(
@@ -254,7 +254,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=4'
+        configured = 'workers=7'
     }
     return configured
         .split(/[\r\n;]+/)
@@ -263,7 +263,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
 }
 
 def integrationProfileRunConfig = { String spec ->
-    def workers = '4'
+    def workers = '7'
     def shard = ''
     spec.split(/\s+/).each { token ->
         if (token.startsWith('workers=')) {
@@ -369,6 +369,20 @@ def secrets = [
     secret('mc-session-secret', 'SESSION_SECRET'),
     secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
     secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
+    secret('e2e-prl-solicitor-4-username', 'PRL_SOLICITOR4_USERNAME'),
+    secret('e2e-prl-solicitor-4-password', 'PRL_SOLICITOR4_PASSWORD'),
+    secret('e2e-prl-solicitor-2-username', 'PRL_SOLICITOR2_USERNAME'),
+    secret('e2e-prl-solicitor-2-password', 'PRL_SOLICITOR2_PASSWORD'),
+    secret('e2e-prl-solicitor-3-username', 'PRL_SOLICITOR3_USERNAME'),
+    secret('e2e-prl-solicitor-3-password', 'PRL_SOLICITOR3_PASSWORD'),
+    secret('e2e-prl-solicitor-5-username', 'PRL_SOLICITOR5_USERNAME'),
+    secret('e2e-prl-solicitor-5-password', 'PRL_SOLICITOR5_PASSWORD'),
+    secret('e2e-prl-solicitor-6-username', 'PRL_SOLICITOR6_USERNAME'),
+    secret('e2e-prl-solicitor-6-password', 'PRL_SOLICITOR6_PASSWORD'),
+    secret('e2e-prl-solicitor-7-username', 'PRL_SOLICITOR7_USERNAME'),
+    secret('e2e-prl-solicitor-7-password', 'PRL_SOLICITOR7_PASSWORD'),
+    secret('e2e-prl-solicitor-8-username', 'PRL_SOLICITOR8_USERNAME'),
+    secret('e2e-prl-solicitor-8-password', 'PRL_SOLICITOR8_PASSWORD'),
     secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
     secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
     secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
@@ -381,6 +395,14 @@ def secrets = [
     secret('e2e-booking-ui-ft-on-3-password', 'BOOKING_UI_FT_ON_3_PASSWORD'),
     secret('e2e-booking-ui-ft-on-4-username', 'BOOKING_UI_FT_ON_4_USERNAME'),
     secret('e2e-booking-ui-ft-on-4-password', 'BOOKING_UI_FT_ON_4_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-5-username', 'BOOKING_UI_FT_ON_5_USERNAME'),
+    secret('e2e-booking-ui-ft-on-5-password', 'BOOKING_UI_FT_ON_5_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-6-username', 'BOOKING_UI_FT_ON_6_USERNAME'),
+    secret('e2e-booking-ui-ft-on-6-password', 'BOOKING_UI_FT_ON_6_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-7-username', 'BOOKING_UI_FT_ON_7_USERNAME'),
+    secret('e2e-booking-ui-ft-on-7-password', 'BOOKING_UI_FT_ON_7_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-8-username', 'BOOKING_UI_FT_ON_8_USERNAME'),
+    secret('e2e-booking-ui-ft-on-8-password', 'BOOKING_UI_FT_ON_8_PASSWORD'),
     secret('e2e-staff-admin-1-username', 'STAFF_ADMIN_1_USERNAME'),
     secret('e2e-staff-admin-1-password', 'STAFF_ADMIN_1_PASSWORD'),
     secret('e2e-staff-admin-2-username', 'STAFF_ADMIN_2_USERNAME'),
@@ -389,6 +411,14 @@ def secrets = [
     secret('e2e-staff-admin-3-password', 'STAFF_ADMIN_3_PASSWORD'),
     secret('e2e-staff-admin-4-username', 'STAFF_ADMIN_4_USERNAME'),
     secret('e2e-staff-admin-4-password', 'STAFF_ADMIN_4_PASSWORD'),
+    secret('e2e-staff-admin-5-username', 'STAFF_ADMIN_5_USERNAME'),
+    secret('e2e-staff-admin-5-password', 'STAFF_ADMIN_5_PASSWORD'),
+    secret('e2e-staff-admin-6-username', 'STAFF_ADMIN_6_USERNAME'),
+    secret('e2e-staff-admin-6-password', 'STAFF_ADMIN_6_PASSWORD'),
+    secret('e2e-staff-admin-7-username', 'STAFF_ADMIN_7_USERNAME'),
+    secret('e2e-staff-admin-7-password', 'STAFF_ADMIN_7_PASSWORD'),
+    secret('e2e-staff-admin-8-username', 'STAFF_ADMIN_8_USERNAME'),
+    secret('e2e-staff-admin-8-password', 'STAFF_ADMIN_8_PASSWORD'),
     secret('staff-admin-username', 'STAFF_ADMIN_USERNAME'),
     secret('staff-admin-password', 'STAFF_ADMIN_PASSWORD'),
     secret('e2e-iac-caseofficer-r1-username', 'PW_IAC_CASEOFFICER_R1_EMAIL'),
@@ -407,6 +437,14 @@ def secrets = [
     secret('e2e-hearing-manager-cr84-off-3-password', 'HEARING_MANAGER_CR84_OFF_3_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-4-username', 'HEARING_MANAGER_CR84_OFF_4_USERNAME'),
     secret('e2e-hearing-manager-cr84-off-4-password', 'HEARING_MANAGER_CR84_OFF_4_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-5-username', 'HEARING_MANAGER_CR84_OFF_5_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-5-password', 'HEARING_MANAGER_CR84_OFF_5_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-6-username', 'HEARING_MANAGER_CR84_OFF_6_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-6-password', 'HEARING_MANAGER_CR84_OFF_6_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-7-username', 'HEARING_MANAGER_CR84_OFF_7_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-7-password', 'HEARING_MANAGER_CR84_OFF_7_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-8-username', 'HEARING_MANAGER_CR84_OFF_8_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-8-password', 'HEARING_MANAGER_CR84_OFF_8_PASSWORD'),
     secret('e2e-hearing-manager-cr84-on-username', 'HEARING_MANAGER_CR84_ON_USERNAME'),
     secret('e2e-hearing-manager-cr84-on-password', 'HEARING_MANAGER_CR84_ON_PASSWORD'),
     secret('e2e-hearing-manager-cr84-on-1-username', 'HEARING_MANAGER_CR84_ON_1_USERNAME'),
@@ -417,6 +455,14 @@ def secrets = [
     secret('e2e-hearing-manager-cr84-on-3-password', 'HEARING_MANAGER_CR84_ON_3_PASSWORD'),
     secret('e2e-hearing-manager-cr84-on-4-username', 'HEARING_MANAGER_CR84_ON_4_USERNAME'),
     secret('e2e-hearing-manager-cr84-on-4-password', 'HEARING_MANAGER_CR84_ON_4_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-5-username', 'HEARING_MANAGER_CR84_ON_5_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-5-password', 'HEARING_MANAGER_CR84_ON_5_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-6-username', 'HEARING_MANAGER_CR84_ON_6_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-6-password', 'HEARING_MANAGER_CR84_ON_6_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-7-username', 'HEARING_MANAGER_CR84_ON_7_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-7-password', 'HEARING_MANAGER_CR84_ON_7_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-8-username', 'HEARING_MANAGER_CR84_ON_8_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-8-password', 'HEARING_MANAGER_CR84_ON_8_PASSWORD'),
     secret('e2e-fpl-global-search-username', 'FPL_GLOBAL_SEARCH_USERNAME'),
     secret('e2e-fpl-global-search-password', 'FPL_GLOBAL_SEARCH_PASSWORD'),
     secret('e2e-probate-find-case-username', 'PROBATE_FIND_CASE_USERNAME'),
@@ -583,7 +629,7 @@ withNightlyPipeline(type, product, component) {
                             withEnv([
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                                'FUNCTIONAL_TESTS_WORKERS=4',
+                                'FUNCTIONAL_TESTS_WORKERS=7',
                                 'E2E_PW_INCLUDE_TAGS=@nightly',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',

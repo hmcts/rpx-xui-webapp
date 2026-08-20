@@ -4,7 +4,16 @@ import type { SessionIdentity } from './sessionIdentity.js';
 
 export const STAFF_ADMIN_USER = 'STAFF_ADMIN' as const;
 
-export const STAFF_ADMIN_POOLED_USER_IDENTIFIERS = ['STAFF_ADMIN-1', 'STAFF_ADMIN-2', 'STAFF_ADMIN-3', 'STAFF_ADMIN-4'] as const;
+export const STAFF_ADMIN_POOLED_USER_IDENTIFIERS = [
+  'STAFF_ADMIN-1',
+  'STAFF_ADMIN-2',
+  'STAFF_ADMIN-3',
+  'STAFF_ADMIN-4',
+  'STAFF_ADMIN-5',
+  'STAFF_ADMIN-6',
+  'STAFF_ADMIN-7',
+  'STAFF_ADMIN-8',
+] as const;
 
 export type StaffAdminUserIdentifier = typeof STAFF_ADMIN_USER | (typeof STAFF_ADMIN_POOLED_USER_IDENTIFIERS)[number];
 

@@ -90,7 +90,7 @@ export class AccessRequestPage extends Base {
 
     for (let attempt = 1; attempt <= AccessRequestPage.NAVIGATION_ATTEMPTS; attempt += 1) {
       try {
-        await this.page.goto(path, { waitUntil: 'domcontentloaded', timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS });
+        await this.page.goto(path, { waitUntil: 'commit', timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS });
         await this.page.waitForURL(targetPattern, { timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS }).catch(() => undefined);
 
         if (/chrome-error:\/\/chromewebdata/i.test(this.page.url()) || !targetPattern.test(this.page.url())) {
@@ -116,7 +116,7 @@ export class AccessRequestPage extends Base {
 
     for (let attempt = 1; attempt <= AccessRequestPage.NAVIGATION_ATTEMPTS; attempt += 1) {
       try {
-        await this.page.goto(path, { waitUntil: 'domcontentloaded', timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS });
+        await this.page.goto(path, { waitUntil: 'commit', timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS });
 
         if (/chrome-error:\/\/chromewebdata/i.test(this.page.url())) {
           throw new Error(`${label} navigation reached ${this.page.url()}`);

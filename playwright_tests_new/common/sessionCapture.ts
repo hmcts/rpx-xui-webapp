@@ -470,7 +470,7 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
 
   for (let navigationAttempt = 1; navigationAttempt <= maxNavigationAttempts; navigationAttempt += 1) {
     try {
-      await page.goto(loginTarget, { waitUntil: 'domcontentloaded' });
+      await page.goto(loginTarget, { waitUntil: 'commit' });
       const currentUrl = currentPageUrl(page);
       if (currentUrl.startsWith(CHROME_ERROR_URL_PREFIX)) {
         throw new Error(`Navigation landed on ${CHROME_ERROR_URL_PREFIX} while opening ${sanitizeUrl(loginTarget)}`);
@@ -1447,7 +1447,6 @@ async function clickOrSubmitActiveField(page: Page, submitButton: Locator, activ
   } else {
     await activeField.press('Enter');
   }
-  await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
 }
 
 async function completeIdamCredentialFlow(

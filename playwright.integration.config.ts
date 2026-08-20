@@ -13,6 +13,7 @@ const {
 } = integrationConfigSupport as {
   buildConfig: (env: NodeJS.ProcessEnv) => {
     reporter: [string, Record<string, unknown> | undefined][];
+    workers?: number;
     projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
   };
   resolveOdhinConsoleCapture: (env: NodeJS.ProcessEnv) => { consoleLog: boolean; consoleError: boolean };

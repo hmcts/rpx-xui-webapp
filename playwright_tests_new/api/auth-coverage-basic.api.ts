@@ -21,8 +21,18 @@ test.describe('Auth helper coverage - basic utilities', { tag: '@svc-auth' }, ()
     expect(authTest.stripTrailingSlash('https://example.com///')).toBe('https://example.com');
   });
 
-  test('getCacheKey includes test environment', () => {
-    expect(authTest.getCacheKey('solicitor')).toBe(`${config.testEnv}-solicitor`);
+  test('getCacheKey includes environment, role and identity hash', () => {
+    const cacheKey = authTest.getCacheKey('solicitor');
+    const identityHash = cacheKey.replace(`${config.testEnv}-solicitor-`, '');
+
+    expect(cacheKey.startsWith(`${config.testEnv}-solicitor-`)).toBe(true);
+    expect(identityHash).toMatch(/^[a-f0-9]{16}$/);
+    expect(authTest.getCacheKeyForIdentity('aat', 'solicitor', 'SOLICITOR@JUSTICE.GOV.UK')).toBe(
+      authTest.getCacheKeyForIdentity('aat', 'solicitor', ' solicitor@justice.gov.uk ')
+    );
+    expect(authTest.getCacheKeyForIdentity('aat', 'solicitor', 'other@justice.gov.uk')).not.toBe(
+      authTest.getCacheKeyForIdentity('aat', 'solicitor', 'solicitor@justice.gov.uk')
+    );
   });
 
   test('runtime config derives ITHC environment from explicit env or URL', () => {
@@ -34,6 +44,6 @@ test.describe('Auth helper coverage - basic utilities', { tag: '@svc-auth' }, ()
     const creds = authTest.getCredentials('solicitor');
     expect(creds.username).toContain('@');
     expect(creds.password).toBeTruthy();
-    expect(() => authTest.getCredentials('unknown' as any)).toThrow('No credentials configured');
+    expect(() => authTest.getCredentials('unknown' as never)).toThrow('No credentials configured');
   });
 });

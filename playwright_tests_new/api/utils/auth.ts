@@ -1,5 +1,6 @@
 import { promises as fs } from 'node:fs';
 import * as fsSync from 'node:fs';
+import { createHash } from 'node:crypto';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
 
@@ -135,8 +136,8 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
 
   try {
     // Double-check freshness after acquiring lock (another worker/test suite may have logged in)
-    const storagePath = path.join(storageRoot, `api-${config.testEnv}-${role}.storage.json`);
-    let state = await deps.tryReadState(storagePath);
+    const storagePath = getStoragePath(storageRoot, role);
+    const state = await deps.tryReadState(storagePath);
 
     if (state && isStorageStateFresh(storagePath)) {
       logger.info('Storage state is fresh (another worker logged in)', { role, cacheKey });
@@ -194,7 +195,7 @@ async function createStorageStateWith(role: ApiUserRole, deps: CreateStorageDeps
   const loginViaForm = deps.createStorageStateViaForm ?? createStorageStateViaForm;
 
   // Use 'api-' prefix to distinguish from E2E browser sessions in same directory
-  const storagePath = path.join(root, `api-${config.testEnv}-${role}.storage.json`);
+  const storagePath = getStoragePath(root, role);
   await mkdir(path.dirname(storagePath), { recursive: true });
 
   const tokenLoginSucceeded = shouldTokenBootstrap ? await tryBootstrap(role, credentials, storagePath) : false;
@@ -480,7 +481,17 @@ function stripTrailingSlash(value: string): string {
 }
 
 function getCacheKey(role: ApiUserRole): string {
-  return `${config.testEnv}-${role}`;
+  return getCacheKeyForIdentity(config.testEnv, role, getCredentials(role).username);
+}
+
+function getCacheKeyForIdentity(testEnvironment: string, role: ApiUserRole, username: string): string {
+  const normalizedUsername = username.trim().toLowerCase();
+  const identityHash = createHash('sha256').update(normalizedUsername).digest('hex').slice(0, 16);
+  return `${testEnvironment}-${role}-${identityHash}`;
+}
+
+function getStoragePath(root: string, role: ApiUserRole): string {
+  return path.join(root, `api-${getCacheKey(role)}.storage.json`);
 }
 
 async function tryReadState(storagePath: string): Promise<{ cookies?: Array<{ name?: string }> } | undefined> {
@@ -528,6 +539,8 @@ export const __test__ = {
   extractCsrf,
   stripTrailingSlash,
   getCacheKey,
+  getCacheKeyForIdentity,
+  getStoragePath,
   isTokenBootstrapEnabled,
   isStorageStateFresh,
   tryReadState,

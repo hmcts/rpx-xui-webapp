@@ -114,13 +114,6 @@ const STRONG_SLOW_CALL_COUNT = 2;
 const ANSI_ESCAPE = String.fromCodePoint(27);
 const ANSI_ESCAPE_PATTERN = new RegExp(String.raw`${ANSI_ESCAPE}\[[0-?]*[ -/]*[@-~]`, 'g');
 const TRUTHY_ENV_VALUES = new Set(['1', 'true', 'yes', 'on']);
-const DEFAULT_INTEGRATION_START_STAGGER_MS = 0;
-
-function resolveIntegrationStartStaggerMs(): number {
-  const configured = Number(process.env.PW_SESSION_CAPTURE_STAGGER_MS);
-  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_INTEGRATION_START_STAGGER_MS;
-}
-
 /**
  * Sanitize URL by removing query parameters to prevent logging sensitive data.
  * Query params may contain tokens, session IDs, or PII.
@@ -1147,7 +1140,6 @@ export interface TestFixtures extends CustomFixtures {
 
 interface WorkerFixtures {
   lighthousePort: number;
-  integrationStartStagger: void;
 }
 
 // Extend 'test' object using custom fixtures with enhanced failure diagnosis
@@ -1165,25 +1157,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     await use(benignApiErrorRuleRegistry.registerBenignApiErrorRule);
   },
 
-  integrationStartStagger: [
-    async ({}, use, workerInfo) => {
-      const staggerMs = resolveIntegrationStartStaggerMs();
-      const delayMs = workerInfo.parallelIndex * staggerMs;
-      if (delayMs > 0) {
-        logger.info('Staggering integration worker start', {
-          parallelIndex: workerInfo.parallelIndex,
-          delayMs,
-          operation: 'integration-startup',
-        });
-        await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
-      }
-      await use();
-    },
-    { scope: 'worker' },
-  ],
-
-  page: async ({ page, benignApiErrorRuleRegistry, integrationStartStagger }, use, testInfo) => {
-    void integrationStartStagger;
+  page: async ({ page, benignApiErrorRuleRegistry }, use, testInfo) => {
     const apiErrors: ApiError[] = [];
     const failedRequests: FailedRequest[] = [];
     const slowCalls: Array<{ url: string; duration: number; method: string }> = [];

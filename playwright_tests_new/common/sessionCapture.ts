@@ -26,6 +26,7 @@ import {
 } from './sessionCaptureRetry.js';
 import { withOrderedSessionFallback } from './orderedSessionFallback.js';
 import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdminUserPool.js';
+import { validateStoredSession } from './sessionReuseValidation.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
@@ -221,6 +222,7 @@ type SessionCaptureFailureRecord = {
   message: string;
   failureKind?: string;
   retryable?: boolean;
+  recoveryAttempted?: boolean;
   storageStateFingerprint?: string | null;
 };
 
@@ -240,6 +242,7 @@ function recentSessionCaptureFailure(
       message?: string;
       failureKind?: string;
       retryable?: boolean;
+      recoveryAttempted?: boolean;
       storageStateFingerprint?: unknown;
     };
     if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
@@ -249,6 +252,7 @@ function recentSessionCaptureFailure(
       message: parsed.message?.trim() || 'previous session capture failed',
       failureKind: parsed.failureKind,
       retryable: parsed.retryable === true,
+      recoveryAttempted: parsed.recoveryAttempted === true,
       storageStateFingerprint:
         parsed.storageStateFingerprint === null || typeof parsed.storageStateFingerprint === 'string'
           ? parsed.storageStateFingerprint
@@ -259,7 +263,13 @@ function recentSessionCaptureFailure(
   }
 }
 
-function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, sessionPath: string, error: Error): void {
+function writeSessionCaptureFailure(
+  fsApi: typeof fs,
+  failurePath: string,
+  sessionPath: string,
+  error: Error,
+  recoveryAttempted = false
+): void {
   try {
     const context = 'context' in error ? (error as Error & { context?: { failureKind?: unknown } }).context : undefined;
     const failureKind =
@@ -276,6 +286,7 @@ function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, sessi
         failureKind,
         // Semantic IDAM failures coordinate fallback identity selection and must not be retried by every worker.
         retryable: !failureKind && isTransientSessionCaptureError(error),
+        recoveryAttempted,
         storageStateFingerprint: readStorageStateFingerprint(fsApi, sessionPath) ?? null,
       })
     );
@@ -881,9 +892,35 @@ async function applySessionCookiesForIdentity(
   userIdentifier: SessionIdentityInput,
   captureDeadlineAt?: number
 ): Promise<LoadedSession> {
-  const session = captureDeadlineAt
+  let session = captureDeadlineAt
     ? await ensureSessionCookiesForIdentity(userIdentifier, captureDeadlineAt)
     : await ensureSessionCookies(userIdentifier);
+  const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
+  const validation = await validateStoredSession(session, targetUrl);
+  if (validation === 'unavailable') {
+    logger.warn('Unable to validate cached session state; reusing it without a refresh', {
+      userIdentifier: session.userIdentifier,
+      sessionPath: session.storageFile,
+      operation: 'validate-session-reuse',
+    });
+  }
+  if (validation === 'unauthenticated') {
+    logger.warn('Cached session was rejected by auth/isAuthenticated; refreshing once', {
+      userIdentifier: session.userIdentifier,
+      sessionPath: session.storageFile,
+      operation: 'session-refresh',
+    });
+    await refreshRejectedSession(session.userIdentifier, session);
+    session = await ensureSessionCookiesForIdentity(session.userIdentifier, captureDeadlineAt);
+    const refreshedValidation = await validateStoredSession(session, targetUrl);
+    if (refreshedValidation === 'unauthenticated') {
+      throw new SessionCaptureError(
+        `Refreshed session was rejected by auth/isAuthenticated for ${session.userIdentifier}`,
+        session.userIdentifier,
+        { sessionPath: session.storageFile }
+      );
+    }
+  }
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
   }
@@ -1738,6 +1775,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     try {
       await (async () => {
         let requiresLockedFailureClear = false;
+        let recoveryAttempted = false;
         const recentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
         if (recentFailure) {
           requiresLockedFailureClear = hasReusableSessionSupersedingFailure({
@@ -1750,7 +1788,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             idamUrl: activeConfig.urls.idamWebUrl,
             recentFailure,
           });
-          if (!requiresLockedFailureClear && !recentFailure.retryable) {
+          if (!requiresLockedFailureClear && (!recentFailure.retryable || recentFailure.recoveryAttempted)) {
             throw new SessionCaptureError(
               `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
               identity.userIdentifier,
@@ -1822,7 +1860,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             clearSessionCaptureFailure(fsApi, failurePath);
             return;
           }
-          if (!lockedRecentFailure.retryable) {
+          if (!lockedRecentFailure.retryable || lockedRecentFailure.recoveryAttempted) {
             throw new SessionCaptureError(
               `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
               identity.userIdentifier,
@@ -1837,6 +1875,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           });
           release.assertOwned();
           clearSessionCaptureFailure(fsApi, failurePath);
+          recoveryAttempted = true;
         }
 
         if (expectedStaleSession) {
@@ -1923,7 +1962,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
               idamUrl: activeConfig.urls.idamWebUrl,
             });
             if (!isSessionLockCompromisedError(error) && !reusableSessionWasPersisted) {
-              writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error);
+              writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error, recoveryAttempted);
             }
             throw error;
           });

@@ -26,6 +26,7 @@ import {
 } from './sessionCaptureRetry.js';
 import { withOrderedSessionFallback } from './orderedSessionFallback.js';
 import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdminUserPool.js';
+import { validateStoredSession } from './sessionReuseValidation.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
@@ -33,6 +34,7 @@ const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
 const AUTH_COOKIE_MIN_REMAINING_SECONDS = 60;
 const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
+const DEFAULT_SESSION_CAPTURE_STAGGER_MS = 0;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
 const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
 const SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS = 10_000;
@@ -60,10 +62,17 @@ const SESSION_CAPTURE_LOCK_WAIT_MS = SESSION_CAPTURE_OWNER_BUDGET_MS + SESSION_C
 const SESSION_CAPTURE_LOCK_START_BUDGET_MS = SESSION_CAPTURE_LOCK_HEADROOM_MS;
 // The integration timeout reserves its final 30 seconds for the journey after lazy capture.
 const SESSION_CAPTURE_POOL_BUDGET_MS = 150_000;
+// Worker staggering must not consume the time reserved for a complete capture retry cycle.
+// Keep lock headroom so timer/scheduling drift cannot reduce the cycle to one attempt.
+const SESSION_CAPTURE_MAX_STAGGER_MS = Math.max(
+  0,
+  SESSION_CAPTURE_POOL_BUDGET_MS - SESSION_CAPTURE_OWNER_BUDGET_MS - SESSION_CAPTURE_LOCK_HEADROOM_MS
+);
 const SESSION_CAPTURE_LOCK_UPDATE_MS = 5_000;
 // Automatic takeover inside a test run can let a suspended owner resume and overwrite
 // a replacement session. CI workspaces are isolated, so fail closed on orphaned locks.
 const SESSION_CAPTURE_LOCK_STALE_MS = 24 * 60 * 60_000;
+const SESSION_CAPTURE_STALE_LOCK_RECOVERY_MS = 3 * 60_000;
 
 function resolveCaptureAttemptLimit(remainingCaptureBudgetMs: number | undefined): number {
   if (remainingCaptureBudgetMs === undefined || remainingCaptureBudgetMs >= SESSION_CAPTURE_OWNER_BUDGET_MS) {
@@ -196,9 +205,37 @@ function resolveSessionCaptureFailureTtlMs(env: NodeJS.ProcessEnv = process.env)
   return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
 }
 
+function resolveSessionCaptureStaggerMs(env: NodeJS.ProcessEnv = process.env): number {
+  const configured = Number(env.PW_SESSION_CAPTURE_STAGGER_MS);
+  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_CAPTURE_STAGGER_MS;
+}
+
+function shouldRecoverStaleSessionLocks(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.PW_SESSION_CAPTURE_RECOVER_STALE_LOCKS === 'true';
+}
+
+function isStaleSessionLock(fsApi: typeof fs, lockFilePath: string, now: number = Date.now()): boolean {
+  try {
+    return now - fsApi.statSync(`${lockFilePath}.lock`).mtimeMs >= SESSION_CAPTURE_STALE_LOCK_RECOVERY_MS;
+  } catch {
+    return false;
+  }
+}
+
+function resolveSessionCaptureDelayMs(parallelIndex: number | undefined, env: NodeJS.ProcessEnv = process.env): number {
+  const staggerMs = resolveSessionCaptureStaggerMs(env);
+  if (staggerMs <= 0 || parallelIndex === undefined || parallelIndex <= 0) {
+    return 0;
+  }
+
+  return Math.min(parallelIndex * staggerMs, SESSION_CAPTURE_MAX_STAGGER_MS);
+}
+
 type SessionCaptureFailureRecord = {
   message: string;
   failureKind?: string;
+  retryable?: boolean;
+  recoveryAttempted?: boolean;
   storageStateFingerprint?: string | null;
 };
 
@@ -217,6 +254,8 @@ function recentSessionCaptureFailure(
       timestamp?: number;
       message?: string;
       failureKind?: string;
+      retryable?: boolean;
+      recoveryAttempted?: boolean;
       storageStateFingerprint?: unknown;
     };
     if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
@@ -225,6 +264,8 @@ function recentSessionCaptureFailure(
     return {
       message: parsed.message?.trim() || 'previous session capture failed',
       failureKind: parsed.failureKind,
+      retryable: parsed.retryable === true,
+      recoveryAttempted: parsed.recoveryAttempted === true,
       storageStateFingerprint:
         parsed.storageStateFingerprint === null || typeof parsed.storageStateFingerprint === 'string'
           ? parsed.storageStateFingerprint
@@ -235,7 +276,13 @@ function recentSessionCaptureFailure(
   }
 }
 
-function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, sessionPath: string, error: Error): void {
+function writeSessionCaptureFailure(
+  fsApi: typeof fs,
+  failurePath: string,
+  sessionPath: string,
+  error: Error,
+  recoveryAttempted = false
+): void {
   try {
     const context = 'context' in error ? (error as Error & { context?: { failureKind?: unknown } }).context : undefined;
     const failureKind =
@@ -250,6 +297,9 @@ function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, sessi
         timestamp: Date.now(),
         message: error.message,
         failureKind,
+        // Semantic IDAM failures coordinate fallback identity selection and must not be retried by every worker.
+        retryable: !failureKind && isTransientSessionCaptureError(error),
+        recoveryAttempted,
         storageStateFingerprint: readStorageStateFingerprint(fsApi, sessionPath) ?? null,
       })
     );
@@ -420,7 +470,7 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
 
   for (let navigationAttempt = 1; navigationAttempt <= maxNavigationAttempts; navigationAttempt += 1) {
     try {
-      await page.goto(loginTarget, { waitUntil: 'domcontentloaded' });
+      await page.goto(loginTarget, { waitUntil: 'commit' });
       const currentUrl = currentPageUrl(page);
       if (currentUrl.startsWith(CHROME_ERROR_URL_PREFIX)) {
         throw new Error(`Navigation landed on ${CHROME_ERROR_URL_PREFIX} while opening ${sanitizeUrl(loginTarget)}`);
@@ -611,6 +661,16 @@ async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput, ca
     operation: 'lazy-capture',
     metric: 'session-miss',
   });
+  const parallelIndex = resolveCurrentPlaywrightParallelIndex();
+  const delayMs = resolveSessionCaptureDelayMs(parallelIndex);
+  if (delayMs > 0) {
+    logger.info('Staggering lazy session capture for worker', {
+      parallelIndex,
+      delayMs,
+      operation: 'lazy-capture',
+    });
+    await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+  }
   // Do not force recapture here: when many workers race on a stale session,
   // lock waiters should be able to reuse the freshly captured session.
   await sessionCaptureWith([identity], { captureDeadlineAt });
@@ -845,9 +905,35 @@ async function applySessionCookiesForIdentity(
   userIdentifier: SessionIdentityInput,
   captureDeadlineAt?: number
 ): Promise<LoadedSession> {
-  const session = captureDeadlineAt
+  let session = captureDeadlineAt
     ? await ensureSessionCookiesForIdentity(userIdentifier, captureDeadlineAt)
     : await ensureSessionCookies(userIdentifier);
+  const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
+  const validation = await validateStoredSession(session, targetUrl);
+  if (validation === 'unavailable') {
+    logger.warn('Unable to validate cached session state; reusing it without a refresh', {
+      userIdentifier: session.userIdentifier,
+      sessionPath: session.storageFile,
+      operation: 'validate-session-reuse',
+    });
+  }
+  if (validation === 'unauthenticated') {
+    logger.warn('Cached session was rejected by auth/isAuthenticated; refreshing once', {
+      userIdentifier: session.userIdentifier,
+      sessionPath: session.storageFile,
+      operation: 'session-refresh',
+    });
+    await refreshRejectedSession(session.userIdentifier, session);
+    session = await ensureSessionCookiesForIdentity(session.userIdentifier, captureDeadlineAt);
+    const refreshedValidation = await validateStoredSession(session, targetUrl);
+    if (refreshedValidation === 'unauthenticated') {
+      throw new SessionCaptureError(
+        `Refreshed session was rejected by auth/isAuthenticated for ${session.userIdentifier}`,
+        session.userIdentifier,
+        { sessionPath: session.storageFile }
+      );
+    }
+  }
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
   }
@@ -1225,6 +1311,8 @@ async function acquireSessionLock({
   isSessionReusable,
   force,
   maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS,
+  fsApi = fs,
+  recoverStaleLock = false,
 }: {
   lockfileApi: typeof lockfile;
   lockFilePath: string;
@@ -1232,6 +1320,8 @@ async function acquireSessionLock({
   isSessionReusable: () => boolean;
   force: boolean;
   maxWaitMs?: number;
+  fsApi?: typeof fs;
+  recoverStaleLock?: boolean;
 }): Promise<SessionLockRelease | null> {
   const pollIntervalMs = 1_000;
   const startedAt = Date.now();
@@ -1249,6 +1339,14 @@ async function acquireSessionLock({
     }
 
     try {
+      if (recoverStaleLock && isStaleSessionLock(fsApi, lockFilePath)) {
+        fsApi.rmSync(`${lockFilePath}.lock`, { recursive: true, force: true });
+        logger.warn('Recovered an abandoned session lock before capture', {
+          userIdentifier,
+          lockFilePath,
+          operation: 'session-capture',
+        });
+      }
       let compromisedError: Error | undefined;
       const releaseLock = await lockfileApi.lock(lockFilePath, {
         retries: 0,
@@ -1349,7 +1447,6 @@ async function clickOrSubmitActiveField(page: Page, submitButton: Locator, activ
   } else {
     await activeField.press('Enter');
   }
-  await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
 }
 
 async function completeIdamCredentialFlow(
@@ -1702,6 +1799,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     try {
       await (async () => {
         let requiresLockedFailureClear = false;
+        let recoveryAttempted = false;
         const recentFailure = recentSessionCaptureFailure(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
         if (recentFailure) {
           requiresLockedFailureClear = hasReusableSessionSupersedingFailure({
@@ -1714,7 +1812,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             idamUrl: activeConfig.urls.idamWebUrl,
             recentFailure,
           });
-          if (!requiresLockedFailureClear) {
+          if (!requiresLockedFailureClear && (!recentFailure.retryable || recentFailure.recoveryAttempted)) {
             throw new SessionCaptureError(
               `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
               identity.userIdentifier,
@@ -1743,6 +1841,8 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl: activeConfig.urls.idamWebUrl }),
           force: force || requiresLockedFailureClear,
           maxWaitMs: maxLockWaitMs,
+          fsApi,
+          recoverStaleLock: shouldRecoverStaleSessionLocks(env),
         });
         const lockWaitMs = Math.max(0, now() - lockStartedAt);
 
@@ -1786,11 +1886,22 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             clearSessionCaptureFailure(fsApi, failurePath);
             return;
           }
-          throw new SessionCaptureError(
-            `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
-            identity.userIdentifier,
-            { sessionPath, failureKind: lockedRecentFailure.failureKind }
-          );
+          if (!lockedRecentFailure.retryable || lockedRecentFailure.recoveryAttempted) {
+            throw new SessionCaptureError(
+              `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
+              identity.userIdentifier,
+              { sessionPath, failureKind: lockedRecentFailure.failureKind }
+            );
+          }
+
+          logger.info('Clearing transient session capture failure marker before bounded retry', {
+            userIdentifier: identity.userIdentifier,
+            failurePath,
+            operation: 'session-capture',
+          });
+          release.assertOwned();
+          clearSessionCaptureFailure(fsApi, failurePath);
+          recoveryAttempted = true;
         }
 
         if (expectedStaleSession) {
@@ -1877,7 +1988,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
               idamUrl: activeConfig.urls.idamWebUrl,
             });
             if (!isSessionLockCompromisedError(error) && !reusableSessionWasPersisted) {
-              writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error);
+              writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error, recoveryAttempted);
             }
             throw error;
           });
@@ -1920,7 +2031,9 @@ export const __test__ = {
   sessionCaptureLockHeadroomMs: SESSION_CAPTURE_LOCK_HEADROOM_MS,
   sessionCaptureLockStartBudgetMs: SESSION_CAPTURE_LOCK_START_BUDGET_MS,
   sessionCapturePoolBudgetMs: SESSION_CAPTURE_POOL_BUDGET_MS,
+  sessionCaptureMaxStaggerMs: SESSION_CAPTURE_MAX_STAGGER_MS,
   sessionCaptureLockStaleMs: SESSION_CAPTURE_LOCK_STALE_MS,
+  sessionCaptureStaleLockRecoveryMs: SESSION_CAPTURE_STALE_LOCK_RECOVERY_MS,
   sessionCaptureLockUpdateMs: SESSION_CAPTURE_LOCK_UPDATE_MS,
   sessionCaptureOwnerBudgetMs: SESSION_CAPTURE_OWNER_BUDGET_MS,
   sessionCaptureSingleAttemptBudgetMs: SESSION_CAPTURE_SINGLE_ATTEMPT_BUDGET_MS,
@@ -1938,6 +2051,8 @@ export const __test__ = {
   resolveSessionSelectionPath,
   persistSessionSelection,
   resolveSessionMaxAgeMs,
+  resolveSessionCaptureStaggerMs,
+  resolveSessionCaptureDelayMs,
   storageStateFingerprint,
   readStorageStateFingerprint,
   hasReusableAuthCookies,

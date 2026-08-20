@@ -8,6 +8,7 @@ const {
   resolveOdhinForceExitOnCompletion,
   resolveOdhinLightweight,
   resolveOdhinRuntimeHookTimeoutMs,
+  resolveConfiguredSessionPoolCapacity,
   resolveWorkerCount,
 } = integrationConfigSupport as {
   buildConfig: (env: NodeJS.ProcessEnv) => {
@@ -19,6 +20,7 @@ const {
   resolveOdhinHardTimeoutMs: (env: NodeJS.ProcessEnv) => number;
   resolveOdhinLightweight: (env: NodeJS.ProcessEnv) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: NodeJS.ProcessEnv) => number;
+  resolveConfiguredSessionPoolCapacity: (env: NodeJS.ProcessEnv) => number | undefined;
   resolveWorkerCount: (env: NodeJS.ProcessEnv) => number;
 };
 
@@ -36,8 +38,21 @@ const resolveIntegrationTagFilters = (env: NodeJS.ProcessEnv = process.env) =>
   });
 
 const buildConfig = (env: NodeJS.ProcessEnv = process.env) => {
-  const config = buildSupportConfig(env);
   const integrationTagFilters = resolveIntegrationTagFilters(env);
+  const requestedWorkers = resolveWorkerCount(env);
+  const sessionPoolCapacity = resolveConfiguredSessionPoolCapacity(env);
+  const effectiveEnv =
+    sessionPoolCapacity !== undefined && requestedWorkers > sessionPoolCapacity
+      ? { ...env, FUNCTIONAL_TESTS_WORKERS: String(sessionPoolCapacity) }
+      : env;
+  const config = buildSupportConfig(effectiveEnv);
+
+  if (effectiveEnv !== env) {
+    console.warn(
+      `[Integration] Capping workers from ${requestedWorkers} to ${sessionPoolCapacity} to match the smallest active session pool (effective=${config.workers})`
+    );
+  }
+
   logResolvedTagFilters('Integration', integrationTagFilters, env);
 
   for (const project of config.projects ?? []) {
@@ -52,6 +67,7 @@ const config = buildConfig(process.env);
 (config as { __test__?: unknown }).__test__ = {
   buildConfig,
   resolveWorkerCount,
+  resolveConfiguredSessionPoolCapacity,
   resolveIntegrationTagFilters,
   resolveOdhinHardTimeoutMs,
   resolveOdhinForceExitOnCompletion,

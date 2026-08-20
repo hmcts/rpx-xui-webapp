@@ -44,7 +44,7 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  return 7;
+  return 4;
 };
 
 const pooledCredentialPrefixes = [

@@ -137,10 +137,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(configuredInCi).toBe(2);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(6);
+    expect(ciCount).toBe(4);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBe(6);
+    expect(defaultCount).toBe(4);
 
     const defaultApiCount = resolveApiProjectWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
     expect(defaultApiCount).toBe(6);
@@ -645,7 +645,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
   test('integration config exposes the documented resolveWorkerCount test helper', async () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
-    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(7);
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(4);
   });
 
   test('integration config caps workers to the configured session pool capacity', async () => {

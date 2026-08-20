@@ -9,7 +9,6 @@ import path from 'node:path';
 
 import { test, expect } from '@playwright/test';
 
-import { config } from './utils/apiTestRuntimeConfig';
 import { __test__ as authTest } from './utils/auth';
 
 test.describe.configure({ mode: 'serial' });
@@ -67,7 +66,7 @@ test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' },
         createCalls += 1;
         return `state-${createCalls}`;
       },
-      tryReadState: async (path: string) => {
+      tryReadState: async () => {
         readCalls += 1;
         // First read: state missing, second read after create: return cookies
         if (readCalls >= 2) {
@@ -99,7 +98,7 @@ test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' },
 
   test('createStorageStateWith honors token bootstrap and falls back to form login', async () => {
     const storageRoot = path.join(process.cwd(), 'test-results', 'auth-storage');
-    const expectedStorageStateSuffix = `api-${config.testEnv}-solicitor.storage.json`;
+    const expectedStorageStateSuffix = path.basename(authTest.getStoragePath(storageRoot, 'solicitor', mockCredentials.username));
     let formCalls = 0;
     const onForm = async () => {
       formCalls += 1;

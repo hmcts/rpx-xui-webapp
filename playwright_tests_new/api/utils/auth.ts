@@ -195,7 +195,7 @@ async function createStorageStateWith(role: ApiUserRole, deps: CreateStorageDeps
   const loginViaForm = deps.createStorageStateViaForm ?? createStorageStateViaForm;
 
   // Use 'api-' prefix to distinguish from E2E browser sessions in same directory
-  const storagePath = getStoragePath(root, role);
+  const storagePath = getStoragePath(root, role, credentials.username);
   await mkdir(path.dirname(storagePath), { recursive: true });
 
   const tokenLoginSucceeded = shouldTokenBootstrap ? await tryBootstrap(role, credentials, storagePath) : false;
@@ -490,8 +490,9 @@ function getCacheKeyForIdentity(testEnvironment: string, role: ApiUserRole, user
   return `${testEnvironment}-${role}-${identityHash}`;
 }
 
-function getStoragePath(root: string, role: ApiUserRole): string {
-  return path.join(root, `api-${getCacheKey(role)}.storage.json`);
+function getStoragePath(root: string, role: ApiUserRole, username = getCredentials(role).username): string {
+  const cacheKey = getCacheKeyForIdentity(config.testEnv, role, username);
+  return path.join(root, `api-${cacheKey}.storage.json`);
 }
 
 async function tryReadState(storagePath: string): Promise<{ cookies?: Array<{ name?: string }> } | undefined> {

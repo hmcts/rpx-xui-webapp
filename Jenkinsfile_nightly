@@ -369,6 +369,8 @@ def secrets = [
     secret('mc-session-secret', 'SESSION_SECRET'),
     secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
     secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
+    secret('prl-solicitor-username', 'PRL_SOLICITOR_USERNAME'),
+    secret('prl-solicitor-password', 'PRL_SOLICITOR_PASSWORD'),
     secret('e2e-prl-solicitor-4-username', 'PRL_SOLICITOR4_USERNAME'),
     secret('e2e-prl-solicitor-4-password', 'PRL_SOLICITOR4_PASSWORD'),
     secret('e2e-prl-solicitor-2-username', 'PRL_SOLICITOR2_USERNAME'),

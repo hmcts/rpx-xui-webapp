@@ -34,11 +34,7 @@ test.describe('PRL solicitor user pool', { tag: '@svc-internal' }, () => {
     ]);
 
     const candidates = resolvePrlSolicitorSessionCandidates({ parallelIndex: 4 }, configuredEnv);
-    expect(candidates.map((candidate) => resolveSessionIdentity(candidate).userIdentifier)).toEqual([
-      'PRL_SOLICITOR2',
-      'PRL_SOLICITOR',
-      'PRL_SOLICITOR3',
-    ]);
+    expect(candidates).toEqual(['PRL_SOLICITOR2', 'PRL_SOLICITOR', 'PRL_SOLICITOR3']);
   });
 
   test('falls back to the legacy PRL solicitor only when no pool credentials are configured', () => {

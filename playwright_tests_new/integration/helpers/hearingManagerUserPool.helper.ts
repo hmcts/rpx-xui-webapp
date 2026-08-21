@@ -1,35 +1,14 @@
 import { getRuntimeUserCredentialEnvMapping } from '../../E2E/utils/runtimeUserCredentials';
+import { resolveConfiguredPoolIdentities } from '../../common/identityPoolRegistry';
 
 export const HEARING_MANAGER_CR84_ON_USER = 'HEARING_MANAGER_CR84_ON' as const;
 export const HEARING_MANAGER_CR84_OFF_USER = 'HEARING_MANAGER_CR84_OFF' as const;
 
-export const HEARING_MANAGER_CR84_ON_POOLED_USER_IDENTIFIERS = [
-  'HEARING_MANAGER_CR84_ON-1',
-  'HEARING_MANAGER_CR84_ON-2',
-  'HEARING_MANAGER_CR84_ON-3',
-  'HEARING_MANAGER_CR84_ON-4',
-  'HEARING_MANAGER_CR84_ON-5',
-  'HEARING_MANAGER_CR84_ON-6',
-  'HEARING_MANAGER_CR84_ON-7',
-  'HEARING_MANAGER_CR84_ON-8',
-] as const;
-
-export const HEARING_MANAGER_CR84_OFF_POOLED_USER_IDENTIFIERS = [
-  'HEARING_MANAGER_CR84_OFF-1',
-  'HEARING_MANAGER_CR84_OFF-2',
-  'HEARING_MANAGER_CR84_OFF-3',
-  'HEARING_MANAGER_CR84_OFF-4',
-  'HEARING_MANAGER_CR84_OFF-5',
-  'HEARING_MANAGER_CR84_OFF-6',
-  'HEARING_MANAGER_CR84_OFF-7',
-  'HEARING_MANAGER_CR84_OFF-8',
-] as const;
-
 export type HearingManagerUserIdentifier =
   | typeof HEARING_MANAGER_CR84_ON_USER
   | typeof HEARING_MANAGER_CR84_OFF_USER
-  | (typeof HEARING_MANAGER_CR84_ON_POOLED_USER_IDENTIFIERS)[number]
-  | (typeof HEARING_MANAGER_CR84_OFF_POOLED_USER_IDENTIFIERS)[number];
+  | `HEARING_MANAGER_CR84_ON-${number}`
+  | `HEARING_MANAGER_CR84_OFF-${number}`;
 
 type ParallelIndexSource = {
   parallelIndex?: number;
@@ -37,7 +16,7 @@ type ParallelIndexSource = {
 
 type EnvMap = Record<string, string | undefined>;
 
-function hasConfiguredCredentials(userIdentifier: HearingManagerUserIdentifier, env: EnvMap): boolean {
+function hasSupportedRuntimeCredentials(userIdentifier: string, env: EnvMap): userIdentifier is HearingManagerUserIdentifier {
   const mapping = getRuntimeUserCredentialEnvMapping(userIdentifier);
   if (!mapping) {
     return false;
@@ -60,12 +39,11 @@ export function getConfiguredHearingManagerUserIdentifiers(
   baseUserIdentifier: typeof HEARING_MANAGER_CR84_ON_USER | typeof HEARING_MANAGER_CR84_OFF_USER,
   env: EnvMap = process.env
 ): HearingManagerUserIdentifier[] {
-  const pool =
-    baseUserIdentifier === HEARING_MANAGER_CR84_ON_USER
-      ? HEARING_MANAGER_CR84_ON_POOLED_USER_IDENTIFIERS
-      : HEARING_MANAGER_CR84_OFF_POOLED_USER_IDENTIFIERS;
-
-  return pool.filter((userIdentifier) => hasConfiguredCredentials(userIdentifier, env));
+  return resolveConfiguredPoolIdentities(env, { pool: baseUserIdentifier })
+    .map(({ userIdentifier }) => userIdentifier)
+    .filter((userIdentifier): userIdentifier is HearingManagerUserIdentifier =>
+      hasSupportedRuntimeCredentials(userIdentifier, env)
+    );
 }
 
 export function resolveHearingManagerUserIdentifier(

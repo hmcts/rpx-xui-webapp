@@ -2,13 +2,13 @@ import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 
 import { ApiClient as PlaywrightApiClient, type ApiClientError, type ApiLogEntry, createLogger } from '@hmcts/playwright-common';
-import { test as base, request } from '@playwright/test';
+import { test as base, request, type TestInfo } from '@playwright/test';
 
 export { expect } from '@playwright/test';
 export { buildApiAttachment } from '@hmcts/playwright-common';
 
 import { config } from './utils/apiTestRuntimeConfig';
-import { ensureStorageState, getStoredCookie, type ApiUserRole } from './utils/auth';
+import { describeLoginIdentity, ensureStorageState, getCredentials, getStoredCookie, type ApiUserRole } from './utils/auth';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;
@@ -22,7 +22,13 @@ export interface ApiFixtures {
 }
 
 type FailureType =
-  'DOWNSTREAM_API_5XX' | 'DOWNSTREAM_API_4XX' | 'SLOW_API_RESPONSE' | 'NETWORK_TIMEOUT' | 'ASSERTION_FAILURE' | 'UNKNOWN';
+  | 'AUTHENTICATION_ROUTE_UNAVAILABLE'
+  | 'DOWNSTREAM_API_5XX'
+  | 'DOWNSTREAM_API_4XX'
+  | 'SLOW_API_RESPONSE'
+  | 'NETWORK_TIMEOUT'
+  | 'ASSERTION_FAILURE'
+  | 'UNKNOWN';
 
 type ApiError = {
   url: string;
@@ -35,7 +41,9 @@ function sanitizeUrl(url: string): string {
 }
 
 function redactRequestContextDetails(message: string): string {
-  return message.replace(/^(\s*-\s*(?:authorization|cookie|x-xsrf-token):\s*).+$/gim, '$1[REDACTED]');
+  return message
+    .replace(/\u001B\[[0-?]*[ -/]*[@-~]/g, '')
+    .replace(/^(\s*-\s*(?:authorization|cookie|x-xsrf-token):\s*).+$/gim, '$1[REDACTED]');
 }
 
 function createRedactedApiLogger(logger: LoggerInstance): LoggerInstance {
@@ -95,6 +103,11 @@ function formatApiClientFailure(error: ApiClientError): string {
   return `${entry.method} ${sanitizeUrl(entry.url)} responded with ${error.status} (${details.join('; ')})`;
 }
 
+function recordApiClientFailure(entries: ApiLogEntry[], error: ApiClientError): void {
+  entries.push(error.logEntry);
+  error.message = formatApiClientFailure(error);
+}
+
 function classifyFailure(
   error: string,
   serverErrors: ApiError[],
@@ -102,6 +115,9 @@ function classifyFailure(
   slowCalls: Array<{ url: string; duration: number; method: string }>,
   networkTimeout: boolean
 ): FailureType {
+  if (/auth\/login responded with (?:502|503|504)/i.test(error)) {
+    return 'AUTHENTICATION_ROUTE_UNAVAILABLE';
+  }
   if (serverErrors.length > 0) {
     return 'DOWNSTREAM_API_5XX';
   }
@@ -109,12 +125,22 @@ function classifyFailure(
     return 'DOWNSTREAM_API_4XX';
   }
   if (error.toLowerCase().includes('timeout') || networkTimeout) {
-    return slowCalls.length > 0 ? 'SLOW_API_RESPONSE' : 'NETWORK_TIMEOUT';
+    return 'NETWORK_TIMEOUT';
+  }
+  if (slowCalls.length > 0) {
+    return 'SLOW_API_RESPONSE';
   }
   if (error.includes('expect') || error.includes('Expected') || error.includes('Received')) {
     return 'ASSERTION_FAILURE';
   }
   return 'UNKNOWN';
+}
+
+function annotateApiIdentity(testInfo: TestInfo, role: ApiUserRole): void {
+  testInfo.annotations.push({
+    type: 'API login identity',
+    description: describeLoginIdentity(role, getCredentials(role)),
+  });
 }
 
 export const test = base.extend<ApiFixtures>({
@@ -131,9 +157,9 @@ export const test = base.extend<ApiFixtures>({
     void _browserName;
     const entries: ApiLogEntry[] = [];
     await use(entries);
-    const isFailure = testInfo.status === 'failed' || testInfo.status === 'timedOut';
+    const needsDiagnostics = ['failed', 'timedOut', 'skipped'].includes(testInfo.status);
 
-    if (entries.length && isFailure) {
+    if (entries.length && needsDiagnostics) {
       const pretty = entries.map((entry) => JSON.stringify(entry, null, 2)).join('\n\n---\n\n');
       await fs.writeFile(testInfo.outputPath('node-api-calls.json'), JSON.stringify(entries, null, 2), 'utf8');
       await fs.writeFile(testInfo.outputPath('node-api-calls.pretty.txt'), pretty, 'utf8');
@@ -147,7 +173,7 @@ export const test = base.extend<ApiFixtures>({
       });
     }
 
-    if (isFailure) {
+    if (needsDiagnostics) {
       const errorMessage = testInfo.error?.message || '';
       const apiErrors = entries
         .filter((entry) => typeof entry.status === 'number' && entry.status >= 400)
@@ -170,13 +196,16 @@ export const test = base.extend<ApiFixtures>({
 
       const networkTimeout =
         /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(errorMessage) ||
-        entries.some((entry) => /timeout|timed out|ETIMEDOUT/i.test(entry.errorMessage || ''));
+        entries.some((entry) => /timeout|timed out|ETIMEDOUT/i.test(entry.errorMessage || entry.error || ''));
 
       const failureType = classifyFailure(errorMessage, serverErrors, clientErrors, slowCalls, networkTimeout);
 
       const diagnosis = [
-        `Test failed: ${testInfo.title}`,
+        `Test ${testInfo.status}: ${testInfo.title}`,
         `Failure type: ${failureType}`,
+        ...testInfo.annotations
+          .filter((annotation) => annotation.type === 'API login identity')
+          .map((annotation) => `Login identity: ${annotation.description ?? 'unknown'}`),
         errorMessage ? `Error: ${errorMessage.substring(0, 300)}` : '',
         `API summary: total=${apiErrors.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, slow>${slowCalls.length}`,
       ]
@@ -213,7 +242,8 @@ export const test = base.extend<ApiFixtures>({
       });
     }
   },
-  apiClient: async ({ logger, apiLogs }, use) => {
+  apiClient: async ({ logger, apiLogs }, use, testInfo) => {
+    annotateApiIdentity(testInfo, 'solicitor');
     const client = await createNodeApiClient('solicitor', logger, apiLogs);
     try {
       await use(client);
@@ -229,9 +259,10 @@ export const test = base.extend<ApiFixtures>({
       await client.dispose();
     }
   },
-  apiClientFor: async ({ logger, apiLogs }, use) => {
+  apiClientFor: async ({ logger, apiLogs }, use, testInfo) => {
     const clients: PlaywrightApiClient[] = [];
     const factory = async (role: ApiUserRole): Promise<PlaywrightApiClient> => {
+      annotateApiIdentity(testInfo, role);
       const client = await createNodeApiClient(role, logger, apiLogs);
       clients.push(client);
       return client;
@@ -296,7 +327,7 @@ async function createNodeApiClient(
       }
     },
     onError: (error) => {
-      error.message = formatApiClientFailure(error);
+      recordApiClientFailure(entries, error);
       logger.error('API request failed', {
         endpoint: sanitizeUrl(error.logEntry.url),
         method: error.logEntry.method,
@@ -388,11 +419,14 @@ async function buildRequestContext(
 }
 
 export const __test__ = {
+  annotateApiIdentity,
   buildDefaultHeaders,
   buildRequestContext,
   createRedactedApiLogger,
+  classifyFailure,
   describeApiTarget,
   formatApiClientFailure,
+  recordApiClientFailure,
   redactRequestContextDetails,
   shouldAutoInjectXsrf,
   stripTrailingSlash,

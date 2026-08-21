@@ -127,6 +127,10 @@ function describeLoginRouteFailure(response: AuthCheckResponse): string {
   return `XUI authentication route unavailable before IDAM form submission${gatewayDetail}`;
 }
 
+export function describeLoginIdentity(role: ApiUserRole, credentials: { username: string; password: string }): string {
+  return `role=${role}; username=${credentials.username.replace(/[\r\n]/g, '')}`;
+}
+
 const defaultStorageDeps: StorageDeps = {
   createStorageState,
   tryReadState,
@@ -347,12 +351,18 @@ async function createStorageStateViaForm(
     const loginPage = await context.get('auth/login');
     if (loginPage.status() >= 400) {
       const diagnosis = describeLoginRouteFailure(loginPage);
-      throw new AuthenticationError(`GET /auth/login responded with ${loginPage.status()} (${diagnosis})`, role, {
-        endpoint: 'auth/login',
-        status: loginPage.status(),
-        diagnosis,
-        gatewayReference: getGatewayReference(loginPage),
-      });
+      const loginIdentity = describeLoginIdentity(role, credentials);
+      throw new AuthenticationError(
+        `GET /auth/login responded with ${loginPage.status()} (${diagnosis}; login identity: ${loginIdentity})`,
+        role,
+        {
+          endpoint: 'auth/login',
+          status: loginPage.status(),
+          diagnosis,
+          gatewayReference: getGatewayReference(loginPage),
+          loginIdentity,
+        }
+      );
     }
 
     const loginUrl = loginPage.url?.() ?? `${baseUrl}/auth/login`;
@@ -431,7 +441,7 @@ async function submitLoginForm(
   return response;
 }
 
-function getCredentials(role: ApiUserRole): { username: string; password: string } {
+export function getCredentials(role: ApiUserRole): { username: string; password: string } {
   const envUsers = config.users[config.testEnv as keyof typeof config.users];
   const userConfig = envUsers?.[role];
   if (!userConfig) {
@@ -694,6 +704,7 @@ export const __test__ = {
   tryTokenBootstrap,
   createStorageStateViaForm,
   describeLoginRouteFailure,
+  describeLoginIdentity,
   getCredentials,
   readAuthCheck,
   waitForAuthenticated,

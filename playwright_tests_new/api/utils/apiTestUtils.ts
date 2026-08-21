@@ -38,6 +38,11 @@ export function isRequestTimeoutError(error: unknown): boolean {
   );
 }
 
+/** A contract cannot be verified when XUI has no transport response or is unavailable. */
+export function isRouteUnavailableStatus(status: number): boolean {
+  return [0, 502, 503, 504].includes(status);
+}
+
 export async function buildXsrfHeaders(role: ApiUserRole): Promise<Record<string, string>> {
   return buildXsrfHeadersWith(role);
 }

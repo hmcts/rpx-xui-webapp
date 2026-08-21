@@ -44,7 +44,39 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  return 7;
+  return 4;
+};
+
+const pooledCredentialPrefixes = [
+  { prefix: 'STAFF_ADMIN', enabledBy: 'STAFF_ADMIN_POOL_ENABLED' },
+  { prefix: 'BOOKING_UI_FT_ON' },
+  { prefix: 'HEARING_MANAGER_CR84_ON' },
+  { prefix: 'HEARING_MANAGER_CR84_OFF' },
+];
+
+const resolveConfiguredSessionPoolCapacity = (env = process.env) => {
+  const poolSizes = [];
+
+  for (const { prefix, enabledBy } of pooledCredentialPrefixes) {
+    if (enabledBy && env[enabledBy] !== 'true') {
+      continue;
+    }
+
+    const members = new Set();
+    for (const key of Object.keys(env)) {
+      const match = new RegExp(`^${prefix}_(\\d+)_USERNAME$`).exec(key);
+      const passwordKey = match ? `${prefix}_${match[1]}_PASSWORD` : undefined;
+      if (match && env[key]?.trim() && passwordKey && env[passwordKey]) {
+        members.add(match[1]);
+      }
+    }
+
+    if (members.size > 0) {
+      poolSizes.push(members.size);
+    }
+  }
+
+  return poolSizes.length > 0 ? Math.min(...poolSizes) : undefined;
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -265,6 +297,7 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
+  resolveConfiguredSessionPoolCapacity,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,

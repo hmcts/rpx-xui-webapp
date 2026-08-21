@@ -1,5 +1,6 @@
 import { promises as fs } from 'node:fs';
 import * as fsSync from 'node:fs';
+import { createHash } from 'node:crypto';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
 
@@ -51,6 +52,7 @@ type StorageDeps = {
   createStorageState: (role: ApiUserRole) => Promise<string>;
   tryReadState: (storagePath: string) => Promise<StorageState | undefined>;
   unlink: (path: string) => Promise<void>;
+  validateStorageState?: (storagePath: string) => Promise<StorageValidationResult>;
   lockfile?: typeof lockfile;
 };
 
@@ -103,6 +105,8 @@ type AuthCheckResult = {
   bodyPreview?: string;
 };
 
+type StorageValidationResult = 'authenticated' | 'unauthenticated' | 'unavailable';
+
 type AuthCheckContext = {
   get: (url: string, options?: Record<string, unknown>) => Promise<AuthCheckResponse>;
 };
@@ -111,8 +115,13 @@ const defaultStorageDeps: StorageDeps = {
   createStorageState,
   tryReadState,
   unlink: fs.unlink,
+  validateStorageState: validateStorageState,
   lockfile,
 };
+
+const validatedStorageStates = new Map<string, { mtimeMs: number; validUntil: number }>();
+// A logout invalidates the server-side session without changing the storage-state file.
+const STORAGE_VALIDATION_CACHE_MS = 15_000;
 
 export async function ensureStorageState(role: ApiUserRole): Promise<string> {
   return ensureStorageStateWith(role);
@@ -143,12 +152,23 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
 
   try {
     // Double-check freshness after acquiring lock (another worker/test suite may have logged in)
-    const storagePath = path.join(storageRoot, `api-${config.testEnv}-${role}.storage.json`);
+    const storagePath = getStoragePath(storageRoot, role);
     let state = await deps.tryReadState(storagePath);
 
     if (state && isStorageStateFresh(storagePath)) {
-      logger.info('Storage state is fresh (another worker logged in)', { role, cacheKey });
-      return storagePath;
+      const validation = await (deps.validateStorageState ?? validateStorageState)(storagePath);
+      if (validation === 'authenticated') {
+        logger.info('Storage state is fresh and authenticated (another worker logged in)', { role, cacheKey });
+        return storagePath;
+      }
+      if (validation === 'unavailable') {
+        logger.warn('Unable to validate fresh storage state; preserving it rather than amplifying a downstream outage', {
+          role,
+          cacheKey,
+        });
+        return storagePath;
+      }
+      logger.info('Storage state was rejected by auth/isAuthenticated, refreshing', { role, cacheKey });
     }
 
     // State missing, stale, or corrupted - create new one
@@ -202,7 +222,7 @@ async function createStorageStateWith(role: ApiUserRole, deps: CreateStorageDeps
   const loginViaForm = deps.createStorageStateViaForm ?? createStorageStateViaForm;
 
   // Use 'api-' prefix to distinguish from E2E browser sessions in same directory
-  const storagePath = path.join(root, `api-${config.testEnv}-${role}.storage.json`);
+  const storagePath = getStoragePath(root, role);
   await mkdir(path.dirname(storagePath), { recursive: true });
 
   const tokenLoginSucceeded = shouldTokenBootstrap ? await tryBootstrap(role, credentials, storagePath) : false;
@@ -536,7 +556,17 @@ function stripTrailingSlash(value: string): string {
 }
 
 function getCacheKey(role: ApiUserRole): string {
-  return `${config.testEnv}-${role}`;
+  return getCacheKeyForIdentity(config.testEnv, role, getCredentials(role).username);
+}
+
+function getCacheKeyForIdentity(testEnvironment: string, role: ApiUserRole, username: string): string {
+  const normalizedUsername = username.trim().toLowerCase();
+  const identityHash = createHash('sha256').update(normalizedUsername).digest('hex').slice(0, 16);
+  return `${testEnvironment}-${role}-${identityHash}`;
+}
+
+function getStoragePath(root: string, role: ApiUserRole): string {
+  return path.join(root, `api-${getCacheKey(role)}.storage.json`);
 }
 
 async function tryReadState(storagePath: string): Promise<{ cookies?: Array<{ name?: string }> } | undefined> {
@@ -580,13 +610,57 @@ function isStorageStateFresh(storagePath: string, ttlMs: number = 15 * 60 * 1000
   }
 }
 
+async function validateStorageState(storagePath: string): Promise<StorageValidationResult> {
+  let stat: fsSync.Stats;
+  try {
+    stat = fsSync.statSync(storagePath);
+  } catch {
+    return 'unauthenticated';
+  }
+
+  const cached = validatedStorageStates.get(storagePath);
+  if (cached?.mtimeMs === stat.mtimeMs && cached.validUntil > Date.now()) {
+    return 'authenticated';
+  }
+
+  let context: AuthRequestContext | undefined;
+  try {
+    context = await request.newContext({
+      baseURL: baseUrl,
+      ignoreHTTPSErrors: true,
+      storageState: storagePath,
+    });
+    const result = await waitForAuthenticated(context, { attempts: 1, delayMs: 0 });
+    if (!result.isAuthenticated) {
+      return 'unauthenticated';
+    }
+    validatedStorageStates.set(storagePath, {
+      mtimeMs: stat.mtimeMs,
+      validUntil: Date.now() + STORAGE_VALIDATION_CACHE_MS,
+    });
+    return 'authenticated';
+  } catch (error) {
+    logger.warn(`Unable to validate cached API storage state: ${formatUnknownError(error)}`);
+    return 'unavailable';
+  } finally {
+    try {
+      await context?.dispose();
+    } catch {
+      // A cleanup failure must not discard a completed authentication check.
+    }
+  }
+}
+
 export const __test__ = {
   extractCsrf,
   parseLoginForm,
   stripTrailingSlash,
   getCacheKey,
+  getCacheKeyForIdentity,
+  getStoragePath,
   isTokenBootstrapEnabled,
   isStorageStateFresh,
+  validateStorageState,
   tryReadState,
   ensureStorageStateWith,
   getStoredCookieWith,

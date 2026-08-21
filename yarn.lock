@@ -3203,9 +3203,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.33":
-  version: 4.2.33
-  resolution: "@hmcts/media-viewer@npm:4.2.33"
+"@hmcts/media-viewer@npm:4.2.33-4951":
+  version: 4.2.33-4951
+  resolution: "@hmcts/media-viewer@npm:4.2.33-4951"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"

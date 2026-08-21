@@ -135,9 +135,7 @@ test.describe('Verify rich text minimum length validation', { tag: ['@e2e', '@e2
       }
     );
   });
-});
 
-test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-create-case', '@e2e-data-loss'] }, () => {
   test('Enter a Rich text value below the minimum length and rejected', async ({ createCasePage }) => {
     await test.step('Enter a value shorter than the minimum and continue', async () => {
       await createCasePage.richTextMinArea.click();

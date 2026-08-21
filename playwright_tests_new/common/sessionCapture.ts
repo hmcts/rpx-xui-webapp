@@ -932,7 +932,7 @@ async function applySessionCookiesForIdentity(
     });
     await refreshRejectedSession(session.userIdentifier, session);
     session = await ensureSessionCookiesForIdentity(session.userIdentifier, captureDeadlineAt);
-    const refreshedValidation = await validateStoredSession(session, targetUrl);
+    const refreshedValidation = await validateLoadedSessionForReuse(session, targetUrl);
     if (refreshedValidation === 'unauthenticated') {
       throw new SessionCaptureError(
         `Refreshed session was rejected by auth/isAuthenticated for ${session.userIdentifier}`,
@@ -947,13 +947,18 @@ async function applySessionCookiesForIdentity(
   return session;
 }
 
-async function validateLoadedSessionForReuse(session: LoadedSession, targetUrl: string) {
-  const validation = await validateStoredSession(session, targetUrl);
+async function validateLoadedSessionForReuse(
+  session: LoadedSession,
+  targetUrl: string,
+  validateSession: typeof validateStoredSession = validateStoredSession,
+  env: NodeJS.ProcessEnv = process.env
+) {
+  const validation = await validateSession(session, targetUrl);
   if (validation !== 'unavailable') {
     return validation;
   }
 
-  if (shouldRejectUnavailableSessionValidation(validation)) {
+  if (shouldRejectUnavailableSessionValidation(validation, env)) {
     throw new SessionCaptureError(
       `Unable to validate cached session for ${session.userIdentifier}; auth/isAuthenticated is unavailable`,
       session.userIdentifier,
@@ -2121,6 +2126,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           userIdentifier: identity.userIdentifier,
           username: identity.email,
           password: identity.password,
+          captureDeadlineAt: deps.captureDeadlineAt,
         });
 
         if (

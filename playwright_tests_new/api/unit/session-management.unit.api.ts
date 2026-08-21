@@ -1216,6 +1216,25 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('rejects unavailable validation for a refreshed session under the strict reuse policy', async () => {
+    const session = {
+      userIdentifier: 'UNIT_REFRESHED_USER',
+      email: 'refreshed@example.test',
+      cookies: [],
+      storageFile: '/tmp/refreshed-session.storage.json',
+      storageStateFingerprint: 'fingerprint',
+    };
+
+    await expect(
+      sessionCaptureTest.validateLoadedSessionForReuse(
+        session,
+        'https://manage-case.example.test',
+        async () => 'unavailable',
+        { PW_SESSION_REUSE_VALIDATION_MODE: 'strict' }
+      )
+    ).rejects.toThrow('Unable to validate cached session for UNIT_REFRESHED_USER');
+  });
+
   test('persists an authenticated API session and skips browser login', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-api-first-unit-'));
     const previousCwd = process.cwd();

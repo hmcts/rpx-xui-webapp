@@ -1,13 +1,8 @@
 import { test, expect } from '../../fixtures';
-import { ensureSession } from '../../../common/sessionCapture';
 import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils';
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 
 test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
-  test.beforeAll(async () => {
-    await ensureSession('FPL_GLOBAL_SEARCH');
-  });
-
   test.beforeEach(async ({ page }) => {
     await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
   });
@@ -62,10 +57,6 @@ test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search
 });
 
 test.describe('Solicitor navigation to Find case (top-right)', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
-  test.beforeAll(async () => {
-    await ensureSession('SOLICITOR');
-  });
-
   test.beforeEach(async ({ page }) => {
     await openHomeWithCapturedSession(page, 'SOLICITOR');
   });

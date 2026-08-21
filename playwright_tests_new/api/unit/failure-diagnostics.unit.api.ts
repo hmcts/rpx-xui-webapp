@@ -260,6 +260,47 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     expect(failureType).toBe('UI_ELEMENT_MISSING');
   });
 
+  test('classifyFailure reports identity queue exhaustion as scheduling rather than a UI failure', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error:
+        'IdentityLeaseTimeoutError: Identity scheduling timed out after 900000ms waiting for a compatible configured account.',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('IDENTITY_SCHEDULING_TIMEOUT');
+    expect(
+      diagnosticsTest.deriveFailureSource(
+        failureType,
+        'IdentityLeaseTimeoutError: Identity scheduling timed out',
+        'No backend/API suspect identified'
+      )
+    ).toBe('Test identity lease scheduler');
+  });
+
+  test('classifyFailure keeps a missing create-case submit action as UI readiness despite unrelated slow calls', () => {
+    const error = 'Error: Submit button did not become available creating divorce test case. visibleActionButtons=Test submit';
+    const failureType = diagnosticsTest.classifyFailure({
+      error,
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [{ method: 'GET', url: 'https://example.test/api/user/details', duration: 6306 }],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+      failureLocation: '/tmp/createCase.flow.ts:160',
+      actionableErrorLine: error,
+    });
+
+    expect(failureType).toBe('UI_ELEMENT_MISSING');
+  });
+
   test('classifyFailure treats generic timeout plus task-list actionable line as a UI stall', () => {
     const failureType = diagnosticsTest.classifyFailure({
       error: 'Test timeout of 120000ms exceeded.',

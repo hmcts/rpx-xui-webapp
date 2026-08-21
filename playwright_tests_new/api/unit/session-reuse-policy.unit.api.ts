@@ -7,8 +7,8 @@ import {
 } from '../../common/sessionReusePolicy.js';
 
 test.describe('Session reuse validation policy', { tag: '@svc-internal' }, () => {
-  test('defaults CI to strict and local execution to best-effort', () => {
-    expect(resolveSessionReuseValidationMode({})).toBe('best-effort');
+  test('defaults live local and CI execution to strict validation', () => {
+    expect(resolveSessionReuseValidationMode({})).toBe('strict');
     expect(resolveSessionReuseValidationMode({ CI: 'true' })).toBe('strict');
   });
 
@@ -18,7 +18,10 @@ test.describe('Session reuse validation policy', { tag: '@svc-internal' }, () =>
     );
     expect(resolveSessionReuseValidationMode({ PW_SESSION_REUSE_VALIDATION_MODE: 'strict' })).toBe('strict');
     expect(shouldRejectUnavailableSessionValidation('unavailable', { CI: 'true' })).toBe(true);
-    expect(shouldRejectUnavailableSessionValidation('unavailable', {})).toBe(false);
+    expect(shouldRejectUnavailableSessionValidation('unavailable', {})).toBe(true);
+    expect(shouldRejectUnavailableSessionValidation('unavailable', { PW_SESSION_REUSE_VALIDATION_MODE: 'best-effort' })).toBe(
+      false
+    );
     expect(shouldRejectUnavailableSessionValidation('authenticated', { CI: 'true' })).toBe(false);
     expect(AAT_AUTH_UNAVAILABLE_FAILURE).toBe('AAT_AUTH_UNAVAILABLE');
   });

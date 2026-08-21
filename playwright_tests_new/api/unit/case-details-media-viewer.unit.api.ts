@@ -80,6 +80,7 @@ test.describe('Case details Media Viewer helper', { tag: '@svc-internal' }, () =
   });
 
   test('fails clearly when selecting the document does not open Media Viewer', async () => {
+    let clickAttempts = 0;
     const page = {
       waitForEvent: async () => {
         throw new Error('no popup');
@@ -94,9 +95,12 @@ test.describe('Case details Media Viewer helper', { tag: '@svc-internal' }, () =
     await expect(
       CaseDetailsPage.prototype.openDocumentOneInMediaViewer.call({
         getRecommendedTimeoutMs: () => 1,
-        openDocumentOne: async () => undefined,
+        openDocumentOne: async () => {
+          clickAttempts += 1;
+        },
         page,
       })
     ).rejects.toThrow(/Media Viewer did not open within 1ms after selecting Document 1 across 2 attempts/);
+    expect(clickAttempts).toBe(2);
   });
 });

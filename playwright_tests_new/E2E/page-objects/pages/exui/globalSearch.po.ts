@@ -1,6 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, MAX_NAVIGATION_RETRY_ATTEMPTS } from './exui-timeouts';
+import { runGlobalSearchWithOneServiceRetry } from './globalSearchRetry';
 
 export class GlobalSearchPage extends Base {
   // Locators
@@ -40,16 +41,7 @@ export class GlobalSearchPage extends Base {
   }
 
   async performGlobalSearchWithRetry(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
-    await this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName);
-    const isErrorPage = await this.errorPageHeading.isVisible().catch(() => false);
-    if (!isErrorPage) {
-      return;
-    }
-    // One retry only for transient backend failures in AAT.
-    await this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName);
-    if (await this.errorPageHeading.isVisible().catch(() => false)) {
-      throw new Error('Global search returned "Something went wrong" after retry.');
-    }
+    await runGlobalSearchWithOneServiceRetry(() => this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName));
   }
 
   async viewCaseDetails(caseId: string): Promise<void> {
@@ -91,7 +83,7 @@ export class GlobalSearchPage extends Base {
 
   private async waitForSearchResults(caseId: string): Promise<void> {
     if (await this.errorPageHeading.isVisible().catch(() => false)) {
-      return;
+      throw new Error(`Global search returned "Something went wrong" while searching for ${caseId}.`);
     }
 
     await this.searchResultsTable.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
@@ -114,7 +106,7 @@ export class GlobalSearchPage extends Base {
       await matchingCaseLink.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
     } catch {
       if (await this.errorPageHeading.isVisible().catch(() => false)) {
-        return;
+        throw new Error(`Global search returned "Something went wrong" while searching for ${caseId}.`);
       }
       throw new Error(
         `Global search results did not contain case reference ${caseId} within ${EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN}ms`

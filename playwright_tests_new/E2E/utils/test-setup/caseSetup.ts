@@ -57,10 +57,22 @@ const DEFAULT_EVENT_TOKEN_RETRY_WINDOW_MS = 60_000;
 const DEFAULT_EVENT_TOKEN_RETRY_INTERVAL_MS = 2_000;
 const DEFAULT_USER_DETAILS_RETRY_ATTEMPTS = 3;
 const DEFAULT_USER_DETAILS_RETRY_INTERVAL_MS = 2_000;
+const DEFAULT_MAX_GATE_WAIT_MS = 5 * 60_000;
+const DEFAULT_LIVE_CASE_JOURNEY_TIMEOUT_MS = 10 * 60_000;
 const TRANSIENT_VALIDATE_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 const TRANSIENT_EVENT_TOKEN_STATUS_CODES = new Set([404, 429, 500, 502, 503, 504]);
 const TRANSIENT_USER_DETAILS_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
-const TRANSIENT_API_REQUEST_ERROR_MARKERS = ['econnreset', 'econnrefused', 'etimedout', 'econnaborted', 'socket hang up'];
+const TRANSIENT_AGGREGATED_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
+const TRANSIENT_API_REQUEST_ERROR_MARKERS = [
+  'econnreset',
+  'econnrefused',
+  'etimedout',
+  'econnaborted',
+  'socket hang up',
+  'err_http2_protocol_error',
+  'err_aborted',
+  'decryption failed or bad record mac',
+];
 
 function isTruthy(value: string | undefined): boolean {
   return TRUTHY_VALUES.has((value ?? '').trim().toLowerCase());
@@ -150,6 +162,15 @@ function resolveUserDetailsRetryIntervalMs(): number {
   return parsed;
 }
 
+function resolveLiveCaseJourneyTimeoutMs(): number {
+  const parsed = Number.parseInt(process.env.PW_E2E_CASE_JOURNEY_TIMEOUT_MS ?? '', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_LIVE_CASE_JOURNEY_TIMEOUT_MS;
+}
+
+function resolveCaseSetupGateBudgetMs(): number {
+  return DEFAULT_MAX_GATE_WAIT_MS;
+}
+
 function isTransientApiRequestError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
   const normalised = message.toLowerCase();
@@ -169,7 +190,12 @@ async function backoffOrAbort(page: Page, baseDelayMs: number, scenario: string)
 }
 
 async function createCaseViaApi(request: SetupCaseRequest): Promise<string | undefined> {
-  return withDirectCcdSetupGate(() => createCaseViaDirectCcdApi(request));
+  if (request.testInfo) {
+    request.testInfo.setTimeout(Math.max(request.testInfo.timeout, resolveLiveCaseJourneyTimeoutMs()));
+  }
+  return withDirectCcdSetupGate(() => createCaseViaDirectCcdApi(request), process.env, undefined, {
+    maxWaitMs: resolveCaseSetupGateBudgetMs(),
+  });
 }
 
 type UserDetailsResponse = {
@@ -249,13 +275,12 @@ async function resolveApiIdsFromAggregatedJurisdictions({
     caseTypeId: requestedCaseTypeId,
   };
 
-  const response = await request.page.request.get(
-    `aggregated/caseworkers/${encodeURIComponent(userId)}/jurisdictions?access=create`,
-    {
-      failOnStatusCode: false,
-      timeout: effectiveTimeoutMs,
-    }
-  );
+  const route = `aggregated/caseworkers/${encodeURIComponent(userId)}/jurisdictions?access=create`;
+  const response = await requestAggregatedJurisdictionsWithRetry(request, route, effectiveTimeoutMs);
+
+  if (!response) {
+    return defaultIds;
+  }
 
   if (response.status() < 200 || response.status() >= 300) {
     return defaultIds;
@@ -300,6 +325,60 @@ async function resolveApiIdsFromAggregatedJurisdictions({
     jurisdictionId: matchedJurisdiction.id,
     caseTypeId: matchedCaseType.id,
   };
+}
+
+async function requestAggregatedJurisdictionsWithRetry(
+  request: SetupCaseRequest,
+  route: string,
+  effectiveTimeoutMs: number
+): Promise<APIResponse | undefined> {
+  const maxAttempts = resolveUserDetailsRetryAttempts();
+  const retryIntervalMs = resolveUserDetailsRetryIntervalMs();
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await request.page.request.get(route, {
+        failOnStatusCode: false,
+        timeout: effectiveTimeoutMs,
+      });
+
+      if (!TRANSIENT_AGGREGATED_STATUS_CODES.has(response.status()) || attempt >= maxAttempts) {
+        return response;
+      }
+
+      logger.warn('Transient aggregated jurisdictions response during direct CCD setup, retrying', {
+        scenario: request.scenario,
+        status: response.status(),
+        attempt: attempt + 1,
+        maxAttempts,
+        retryIntervalMs,
+      });
+    } catch (error) {
+      if (!isTransientApiRequestError(error)) {
+        throw error;
+      }
+
+      if (attempt >= maxAttempts) {
+        logger.warn('Aggregated jurisdictions lookup remained unavailable; using configured CCD identifiers', {
+          scenario: request.scenario,
+          attempt,
+          maxAttempts,
+        });
+        return undefined;
+      }
+
+      logger.warn('Transient aggregated jurisdictions request failure during direct CCD setup, retrying', {
+        scenario: request.scenario,
+        attempt: attempt + 1,
+        maxAttempts,
+        retryIntervalMs,
+      });
+    }
+
+    await backoffOrAbort(request.page, retryIntervalMs, request.scenario);
+  }
+
+  return undefined;
 }
 
 const CCD_API_JSON_HEADERS = {
@@ -591,12 +670,15 @@ export async function setupCaseForJourney(request: SetupCaseRequest): Promise<Se
 
 export const __test__ = {
   isTransientApiRequestError,
+  requestAggregatedJurisdictionsWithRetry,
   resolveCaseNumberFromCreateResponse,
+  resolveApiIdsFromAggregatedJurisdictions,
   resolveEventTokenRetryWindowMs,
   resolveValidateRetryWindowMs,
   summarizeDirectCcdValidationFailure,
   resolveUserDetailsRetryAttempts,
   resolveUserDetailsRetryIntervalMs,
+  resolveCaseSetupGateBudgetMs,
   resolveSetupMode,
   resolveUiFallbackFlag,
 };

@@ -24,8 +24,8 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
 
   test('keeps seven E2E workers while bounding concurrent direct CCD case setup', () => {
     expect(source.match(/"FUNCTIONAL_TESTS_WORKERS=7"/g)).toHaveLength(2);
-    expect(source.match(/"PW_E2E_CCD_SETUP_CONCURRENCY=3"/g)).toHaveLength(2);
+    expect(source.match(/"PW_E2E_CCD_SETUP_CONCURRENCY=1"/g)).toHaveLength(2);
     expect(nightlySource).toContain("'FUNCTIONAL_TESTS_WORKERS=7'");
-    expect(nightlySource).toContain("'PW_E2E_CCD_SETUP_CONCURRENCY=3'");
+    expect(nightlySource).toContain("'PW_E2E_CCD_SETUP_CONCURRENCY=1'");
   });
 });

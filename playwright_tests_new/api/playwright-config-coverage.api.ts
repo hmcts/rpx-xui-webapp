@@ -263,7 +263,6 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.outputFolder).toBe('functional-output/tests/playwright-a11y/odhin-report');
     expect(odhinOptions?.indexFilename).toBe('xui-playwright-a11y.html');
     expect(odhinOptions?.title).toBe('RPX-XUI-WEBAPP Accessibility');
-    expect(config.globalSetup).toBe('./playwright_tests_new/E2E/setup/a11ySession.global-setup.ts');
     expect(config.timeout).toBe(60_000);
     expect(config.expect.timeout).toBe(7_000);
   });
@@ -291,15 +290,27 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expectLocalWorktreeIgnores(nightlyConfig.testIgnore);
   });
 
-  test('E2E config can disable a11y session prewarm for list-only checks', async () => {
+
+  test('E2E mocked accessibility config does not prewarm a live session by default', async () => {
     const config = buildE2eConfig({
       PLAYWRIGHT_INCLUDE_A11Y: 'true',
-      PW_A11Y_PREWARM_SESSION: 'false',
       CI: undefined,
       TEST_URL: 'https://example.test',
     });
 
     expect(config.globalSetup).toBeUndefined();
+    expect(config.timeout).toBe(60_000);
+  });
+
+  test('E2E config enables a11y session prewarm only when explicitly requested', async () => {
+    const config = buildE2eConfig({
+      PLAYWRIGHT_INCLUDE_A11Y: 'true',
+      PW_A11Y_PREWARM_SESSION: 'true',
+      CI: undefined,
+      TEST_URL: 'https://example.test',
+    });
+
+    expect(config.globalSetup).toBe('./playwright_tests_new/E2E/setup/a11ySession.global-setup.ts');
     expect(config.timeout).toBe(60_000);
   });
 
@@ -441,14 +452,14 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults exclude nightly and browser Work Allocation until seeded task data exists', () => {
+  test('E2E tag defaults exclude only nightly coverage', () => {
     const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual(['@nightly', '@e2e-manage-tasks']);
+    expect(filters.excludedTags).toEqual(['@nightly']);
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
     expect(filters.grepInvert?.test('@nightly')).toBe(true);
-    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(true);
-    expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(true);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(false);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(false);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([
@@ -554,13 +565,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.ignoredGlobalExcludedTags).toEqual(['@e2e-smoke']);
   });
 
-  test('smoke runner allows empty runs only for the global smoke exclusion layer', () => {
+  test('smoke runner never turns an excluded smoke lane into an empty pass', () => {
     expect(
       smokeRunner.buildSmokePlaywrightArgs({
         PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke @svc-work-allocation',
         CI: undefined,
       })
-    ).toEqual(['test', '--project=smoke', '--pass-with-no-tests', '--reporter=list']);
+    ).toEqual(['test', '--project=smoke']);
 
     expect(
       smokeRunner.buildSmokePlaywrightArgs({
@@ -578,7 +589,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
         },
         ['--reporter=null', '--list']
       )
-    ).toEqual(['test', '--project=smoke', '--reporter=null', '--list', '--pass-with-no-tests']);
+    ).toEqual(['test', '--project=smoke', '--reporter=null', '--list']);
   });
 
   test('integration config keeps Odhin enabled locally with lightweight defaults', async () => {

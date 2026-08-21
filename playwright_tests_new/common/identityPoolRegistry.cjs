@@ -43,6 +43,36 @@ const poolRegistry = [
     concurrencyMode: 'reusable',
   },
   {
+    name: 'DIVORCE_SOLICITOR',
+    usernamePattern: /^DIVORCE_SOLICITOR_USERNAME$/,
+    userIdentifier: () => 'DIVORCE_SOLICITOR',
+    tags: ['e2e', 'divorce', 'solicitor', 'document-upload'],
+    role: 'solicitor',
+    organisation: 'divorce-professional',
+    jurisdictions: ['DIVORCE'],
+    concurrencyMode: 'exclusive',
+  },
+  {
+    name: 'SEARCH_EMPLOYMENT_CASE',
+    usernamePattern: /^SEARCH_EMPLOYMENT_CASE_USERNAME$/,
+    userIdentifier: () => 'SEARCH_EMPLOYMENT_CASE',
+    tags: ['e2e', 'employment', 'case-flags', 'document-upload'],
+    role: 'caseworker',
+    organisation: 'employment',
+    jurisdictions: ['EMPLOYMENT'],
+    concurrencyMode: 'exclusive',
+  },
+  {
+    name: 'USER_WITH_FLAGS',
+    usernamePattern: /^USER_WITH_FLAGS_USERNAME$/,
+    userIdentifier: () => 'USER_WITH_FLAGS',
+    tags: ['e2e', 'divorce', 'case-flags'],
+    role: 'caseworker',
+    organisation: 'case-flags',
+    jurisdictions: ['DIVORCE'],
+    concurrencyMode: 'exclusive',
+  },
+  {
     name: 'PRL_SOLICITOR',
     usernamePattern: /^PRL_SOLICITOR(\d*)_USERNAME$/,
     userIdentifier: (match) => `PRL_SOLICITOR${match[1]}`,
@@ -99,7 +129,6 @@ function resolveConfiguredPoolIdentities(env = process.env, requirements = {}) {
       const email = env[key]?.trim();
       if (!match || !email || !env[passwordKey]) continue;
       const normalisedEmail = normaliseEmail(email);
-      if (seenEmails.has(normalisedEmail)) continue;
       const identity = {
         pool: pool.name,
         userIdentifier: pool.userIdentifier(match),
@@ -110,8 +139,9 @@ function resolveConfiguredPoolIdentities(env = process.env, requirements = {}) {
         jurisdictions: pool.jurisdictions,
         concurrencyMode: pool.concurrencyMode,
       };
+      if (!isCompatible(identity, requirements) || seenEmails.has(normalisedEmail)) continue;
       seenEmails.add(normalisedEmail);
-      if (isCompatible(identity, requirements)) identities.push(identity);
+      identities.push(identity);
     }
   }
   return identities;

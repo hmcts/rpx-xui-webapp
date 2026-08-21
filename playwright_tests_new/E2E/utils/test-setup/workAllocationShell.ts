@@ -30,7 +30,7 @@ export function resolveWorkAllocationUser(): SessionIdentityInput {
   }
 
   throw new Error(
-    'Live Work Allocation E2E requires either PW_E2E_MANAGE_TASKS_USER, both PW_E2E_MANAGE_TASKS_EMAIL/PW_E2E_MANAGE_TASKS_PASSWORD, or both PW_IAC_CASEOFFICER_R1_EMAIL/PW_IAC_CASEOFFICER_R1_PASSWORD. The @e2e-manage-tasks lane is excluded by default until seeded live WA data is available.'
+    'Live Work Allocation E2E requires either PW_E2E_MANAGE_TASKS_USER, both PW_E2E_MANAGE_TASKS_EMAIL/PW_E2E_MANAGE_TASKS_PASSWORD, or both PW_IAC_CASEOFFICER_R1_EMAIL/PW_IAC_CASEOFFICER_R1_PASSWORD, plus seeded live WA data.'
   );
 }
 
@@ -49,8 +49,16 @@ export async function applyWorkAllocationSession(page: Page, identity: SessionId
   }
 }
 
-export async function bootstrapWorkAllocationShell({ page, taskListPage }: { page: Page; taskListPage: TaskListPage }) {
-  const workAllocationUser = resolveWorkAllocationUser();
+export async function bootstrapWorkAllocationShell({
+  page,
+  taskListPage,
+  identity = resolveWorkAllocationUser(),
+}: {
+  page: Page;
+  taskListPage: TaskListPage;
+  identity?: SessionIdentityInput;
+}) {
+  const workAllocationUser = identity;
   await applyWorkAllocationSession(page, workAllocationUser);
   await taskListPage.goto();
 

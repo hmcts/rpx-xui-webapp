@@ -28,4 +28,15 @@ test('interactive IDAM login establishes an XUI session', { tag: ['@e2e', '@e2e-
       { timeout: 30_000, message: 'Interactive IDAM login did not establish the required XUI session cookies' }
     )
     .toBe(true);
+
+  const authResponse = await page.request.get('/auth/isAuthenticated', { failOnStatusCode: false });
+  expect(authResponse.status(), 'Interactive login auth validation should return HTTP 200').toBe(200);
+  const authBody = (await authResponse.json()) as boolean | { isAuthenticated?: boolean };
+  expect(
+    authBody === true || (typeof authBody === 'object' && authBody?.isAuthenticated === true),
+    'Interactive IDAM login must be confirmed by /auth/isAuthenticated'
+  ).toBe(true);
+
+  await page.goto('/');
+  await expect(page.locator('exui-header')).toBeVisible();
 });

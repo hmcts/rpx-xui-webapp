@@ -47,6 +47,14 @@ test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, 
     expect(resolveAccessibilityEngines(['lighthouse'])).toEqual(['lighthouse']);
   });
 
+  test('rejects unknown engine names instead of silently running no audits', () => {
+    process.env.A11Y_ENGINES = 'axe,unknown-engine';
+
+    expect(() => resolveAccessibilityEngines(defaultEngines)).toThrow(
+      /Unsupported accessibility engine\(s\): unknown-engine/
+    );
+  });
+
   test('uses report-only mode unless strict mode is explicitly enabled', () => {
     process.env.A11Y_STRICT = 'false';
     expect(isAccessibilityStrictMode()).toBe(false);

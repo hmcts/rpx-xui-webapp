@@ -2,8 +2,8 @@ import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
 
-const DEFAULT_CONCURRENCY = 3;
-const DEFAULT_WAIT_MS = 120_000;
+const DEFAULT_CONCURRENCY = 1;
+const DEFAULT_WAIT_MS = 10 * 60_000;
 const DEFAULT_STALE_MS = 5 * 60_000;
 const POLL_INTERVAL_MS = 500;
 
@@ -39,10 +39,12 @@ function isContendedLock(error: unknown): boolean {
 
 export async function acquireDirectCcdSetupSlot(
   env: NodeJS.ProcessEnv = process.env,
-  deps: GateDeps = defaultDeps
+  deps: GateDeps = defaultDeps,
+  options: { maxWaitMs?: number } = {}
 ): Promise<{ slot: number; release: Release }> {
   const concurrency = parsePositiveInteger(env.PW_E2E_CCD_SETUP_CONCURRENCY, DEFAULT_CONCURRENCY);
-  const waitMs = parsePositiveInteger(env.PW_E2E_CCD_SETUP_WAIT_MS, DEFAULT_WAIT_MS);
+  const configuredWaitMs = parsePositiveInteger(env.PW_E2E_CCD_SETUP_WAIT_MS, DEFAULT_WAIT_MS);
+  const waitMs = Math.max(1, Math.min(configuredWaitMs, options.maxWaitMs ?? configuredWaitMs));
   const staleMs = parsePositiveInteger(env.PW_E2E_CCD_SETUP_STALE_MS, DEFAULT_STALE_MS);
   const directory = resolveGateDirectory(env);
   const deadline = deps.now() + waitMs;
@@ -77,9 +79,10 @@ export async function acquireDirectCcdSetupSlot(
 export async function withDirectCcdSetupGate<T>(
   run: () => Promise<T>,
   env: NodeJS.ProcessEnv = process.env,
-  deps: GateDeps = defaultDeps
+  deps: GateDeps = defaultDeps,
+  options: { maxWaitMs?: number } = {}
 ): Promise<T> {
-  const lease = await acquireDirectCcdSetupSlot(env, deps);
+  const lease = await acquireDirectCcdSetupSlot(env, deps, options);
   try {
     return await run();
   } finally {

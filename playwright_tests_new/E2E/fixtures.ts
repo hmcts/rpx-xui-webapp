@@ -4,8 +4,17 @@ import getPort from 'get-port';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
-import { acquireIdentityLease, type IdentityLease } from '../common/identityLease';
+import {
+  acquireIdentityLease,
+  acquireSessionIdentityLease,
+  resolveIdentityLeaseTestTimeouts,
+  resolveIdentityLeaseTiming,
+  type IdentityLease,
+  type SessionIdentityLease,
+  type SessionIdentityLeaseMetadata,
+} from '../common/identityLease';
 import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
+import type { SessionIdentityInput } from '../common/sessionIdentity';
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
 
@@ -15,6 +24,7 @@ type FailureType =
   | 'DOWNSTREAM_API_4XX'
   | 'SLOW_API_RESPONSE'
   | 'NETWORK_TIMEOUT'
+  | 'IDENTITY_SCHEDULING_TIMEOUT'
   | 'TIMEOUT_NO_API_ACTIVITY'
   | 'GLOBAL_TIMEOUT_UI_STALL'
   | 'UI_ELEMENT_MISSING'
@@ -306,6 +316,9 @@ function describeApiFailureSource(candidate: string): string | null {
 
 function deriveFailureSource(failureType: FailureType, error: string, topSuspect: string): string {
   const signal = `${error}\n${topSuspect}`;
+  if (failureType === 'IDENTITY_SCHEDULING_TIMEOUT') {
+    return 'Test identity lease scheduler';
+  }
   if (/Direct CCD case create failed/i.test(signal)) {
     return 'CCD Data Store direct case-create route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false';
   }
@@ -524,6 +537,9 @@ function derivePhaseMarker(
   if (failureType === 'AUTHENTICATION_SESSION_UNAVAILABLE') {
     return 'session-capture-authentication';
   }
+  if (failureType === 'IDENTITY_SCHEDULING_TIMEOUT') {
+    return 'identity-lease-scheduling';
+  }
   if (failureType === 'UI_ELEMENT_MISSING') {
     return backendWait === 'yes' ? 'ui-wait-post-backend' : 'ui-wait-pre-backend';
   }
@@ -712,6 +728,12 @@ function deriveLikelyRootCause({
     )}). No credentials were submitted; this is an authentication/session-capture infrastructure failure, not a journey assertion.`;
   }
 
+  if (failureType === 'IDENTITY_SCHEDULING_TIMEOUT') {
+    return `No compatible configured identity became free within the bounded scheduling window (${summarizeExecutionSignals(
+      executionSignals
+    )}). This is identity-pool contention or a leaked lease, not a missing credential or UI failure.`;
+  }
+
   if (/dynamicProvisioningFlow\.ts|Dynamic user provisioning (failed|timed out)/i.test(readinessSignal)) {
     return `Dynamic user provisioning exhausted its retry budget before the browser journey started (${summarizeExecutionSignals(
       executionSignals
@@ -739,6 +761,11 @@ function deriveLikelyRootCause({
     return `The /cases shell did not become interactive before the search journey started (${summarizeExecutionSignals(
       executionSignals
     )}). This points to case-list bootstrap readiness rather than the mocked backend response path.`;
+  }
+  if (/Submit button did not become available/i.test(readinessSignal)) {
+    return `The create-case review page rendered without a submit action matching the supported accessible labels (${summarizeExecutionSignals(
+      executionSignals
+    )}). Inspect the visible action labels and locator contract; unrelated slow calls are supporting telemetry, not the diagnosed cause.`;
   }
   if (
     /Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
@@ -857,7 +884,7 @@ function classifyFailure({
   const readinessSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
   const directCcdSetupFailureStatus = extractDirectCcdSetupFailureStatus(readinessSignal);
   const hasUiReadinessSignal =
-    /Cases page shell did not become ready|Task list shell did not become ready|Task list filter panel did not become ready|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+    /Submit button did not become available|Cases page shell did not become ready|Task list shell did not become ready|Task list filter panel did not become ready|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
       readinessSignal
     );
   const hasNetworkTimeoutFailure =
@@ -866,6 +893,10 @@ function classifyFailure({
     /SessionCaptureError|session capture|IDAM login|auth\/login|login surface|App shell not detected within/i.test(
       `${error} ${actionableErrorLine}`
     );
+
+  if (/IdentityLeaseTimeoutError|Identity scheduling timed out/i.test(error)) {
+    return 'IDENTITY_SCHEDULING_TIMEOUT';
+  }
 
   if (hasSessionCaptureFailure) {
     return 'AUTHENTICATION_SESSION_UNAVAILABLE';
@@ -887,6 +918,9 @@ function classifyFailure({
   }
   if (hasNetworkTimeoutFailure) {
     return slowCalls.length > 0 ? 'SLOW_API_RESPONSE' : 'NETWORK_TIMEOUT';
+  }
+  if (/Submit button did not become available/i.test(readinessSignal)) {
+    return 'UI_ELEMENT_MISSING';
   }
   if (testStatus !== 'timedOut' && (hasLocatorSignal || hasUiReadinessSignal) && !hasBackendFailureSignals) {
     return 'UI_ELEMENT_MISSING';
@@ -1214,7 +1248,10 @@ export type CustomFixtures = PageFixtures & UtilsFixtures;
 export interface TestFixtures extends CustomFixtures {
   benignApiErrorRuleRegistry: BenignApiErrorRuleRegistry;
   registerBenignApiErrorRule: BenignApiErrorRuleRegistry['registerBenignApiErrorRule'];
-  identityLease: { acquire: (requirements: IdentityCompatibilityRequirements) => Promise<IdentityLease> };
+  identityLease: {
+    acquire: (requirements: IdentityCompatibilityRequirements) => Promise<IdentityLease>;
+    acquireForSession: (identity: SessionIdentityInput, metadata?: SessionIdentityLeaseMetadata) => Promise<SessionIdentityLease>;
+  };
 }
 
 interface WorkerFixtures {
@@ -1235,15 +1272,26 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     await use(benignApiErrorRuleRegistry.registerBenignApiErrorRule);
   },
 
-  identityLease: async ({}, use) => {
+  identityLease: async ({}, use, testInfo) => {
     const releases: Array<() => Promise<void>> = [];
+    const timing = resolveIdentityLeaseTiming();
+    const originalTimeoutMs = testInfo.timeout;
+    const fixtureStartedAt = Date.now();
+    const acquire = async <T extends IdentityLease>(leaseFactory: () => Promise<T>): Promise<T> => {
+      const elapsedBeforeAcquireMs = Date.now() - fixtureStartedAt;
+      const timeouts = resolveIdentityLeaseTestTimeouts(originalTimeoutMs, elapsedBeforeAcquireMs, timing);
+      testInfo.setTimeout(timeouts.duringAcquireMs);
+      const lease = await leaseFactory();
+      releases.push(lease.release);
+      testInfo.setTimeout(
+        resolveIdentityLeaseTestTimeouts(originalTimeoutMs, Date.now() - fixtureStartedAt, timing).afterAcquireMs
+      );
+      return lease;
+    };
     try {
       await use({
-        acquire: async (requirements) => {
-          const lease = await acquireIdentityLease(requirements);
-          releases.push(lease.release);
-          return lease;
-        },
+        acquire: (requirements) => acquire(() => acquireIdentityLease(requirements)),
+        acquireForSession: (identity, metadata) => acquire(() => acquireSessionIdentityLease(identity, metadata)),
       });
     } finally {
       await Promise.all(releases.reverse().map((release) => release()));

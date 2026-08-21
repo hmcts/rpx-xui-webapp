@@ -20,7 +20,11 @@ import {
   setRuntimeUserCredentials,
 } from '../../E2E/utils/runtimeUserCredentials.js';
 import { getAliasBaselineRoles, resolveProvisionRoleNamesForAlias } from '../../E2E/utils/test-setup/provisionRoleResolution.js';
-import { isTransientWorkflowFailure } from '../../E2E/utils/transient-failure.utils.js';
+import {
+  isBrowserLifecycleFailure,
+  isDependencyEnvironmentFailure,
+  isTransientWorkflowFailure,
+} from '../../E2E/utils/transient-failure.utils.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -397,14 +401,22 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(caseSetupTest.resolveUiFallbackFlag(false)).toBe(false);
     expect(caseSetupTest.resolveCaseNumberFromCreateResponse({ case_reference: 1773065942199262 })).toBe('1773065942199262');
     expect(caseSetupTest.isTransientApiRequestError(new Error('api/user/details failed: read ECONNRESET'))).toBe(true);
+    expect(caseSetupTest.isTransientApiRequestError(new Error('net::ERR_HTTP2_PROTOCOL_ERROR'))).toBe(true);
+    expect(caseSetupTest.isTransientApiRequestError(new Error('SSL routines: decryption failed or bad record mac'))).toBe(true);
     expect(caseSetupTest.isTransientApiRequestError(new Error('Validation failed'))).toBe(false);
     expect(isTransientWorkflowFailure(new Error('Validation error after submit after updating case fields'))).toBe(false);
     expect(
       isTransientWorkflowFailure(new Error('Case event failed after PoC personal details: The event could not be created'))
     ).toBe(true);
     expect(isTransientWorkflowFailure(new Error('Task list showed service down while waiting for task row'))).toBe(true);
+    expect(
+      isTransientWorkflowFailure(new Error('Create case select "#cc-jurisdiction" did not become ready within 30000ms'))
+    ).toBe(true);
     expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
     expect(isTransientWorkflowFailure(new Error('Upload failed: server returned status 429 after 3 attempts'))).toBe(true);
+    const browserClosed = new Error('Target page, context or browser has been closed');
+    expect(isBrowserLifecycleFailure(browserClosed)).toBe(true);
+    expect(isDependencyEnvironmentFailure(browserClosed)).toBe(false);
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."
     );
@@ -413,6 +425,34 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
         overrides: { TextFieldd: 'typo' } as never,
       })
     ).toThrow(/Unknown override field 'TextFieldd'/);
+  });
+
+  test('uses configured CCD identifiers when aggregated jurisdictions remains unavailable', async () => {
+    let attempts = 0;
+    const request = {
+      scenario: 'configured identifier fallback',
+      jurisdiction: 'DIVORCE',
+      caseType: 'DIVORCE',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+        request: {
+          get: async () => {
+            attempts += 1;
+            throw new Error('net::ERR_HTTP2_PROTOCOL_ERROR');
+          },
+        },
+      },
+    } as never;
+
+    await expect(
+      caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({
+        request,
+        userId: 'user-1',
+        effectiveTimeoutMs: 100,
+      })
+    ).resolves.toEqual({ jurisdictionId: 'DIVORCE', caseTypeId: 'DIVORCE' });
+    expect(attempts).toBe(3);
   });
 
   test('employment dynamic case payload names identify EXUI automation-created cases', () => {

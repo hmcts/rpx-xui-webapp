@@ -575,6 +575,7 @@ withPipeline(type, product, component) {
         stage('Playwright Install Chromium') {
             try {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
+                yarnBuilder.yarn('playwright --version')
                 yarnBuilder.yarn('test:setup:playwright-install-chromium')
                 yarnBuilder.yarn('test:setup:playwright-verify-chromium')
                 env.PLAYWRIGHT_SKIP_INSTALL = 'true'
@@ -721,7 +722,7 @@ withPipeline(type, product, component) {
                                     "ORG_USER_ASSIGNMENT_MODE=external",
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=7",
-                                    "PW_E2E_CCD_SETUP_CONCURRENCY=3",
+                                    "PW_E2E_CCD_SETUP_CONCURRENCY=1",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
@@ -883,7 +884,7 @@ withPipeline(type, product, component) {
                                     "ORG_USER_ASSIGNMENT_MODE=external",
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=7",
-                                    "PW_E2E_CCD_SETUP_CONCURRENCY=3",
+                                    "PW_E2E_CCD_SETUP_CONCURRENCY=1",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",

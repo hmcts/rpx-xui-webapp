@@ -123,6 +123,51 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
     expect(currentUrl).toBe(buildTestAppUrl('/cases/case-details/1'));
   });
 
+  test('clickSubmitAndWaitFlow does not mistake the generic cases route for case details success', async () => {
+    let currentUrl = buildTestAppUrl('/cases');
+    const actionSequence: string[] = [];
+    const submitButton = createLocator();
+    const continueButton = createLocator();
+    const somethingWentWrongHeading = createLocator();
+    const page = {
+      isClosed: () => false,
+      url: () => currentUrl,
+      locator: (selector: string) => {
+        if (selector === '#next-step') {
+          return createLocator({ isVisible: async () => true });
+        }
+        throw new Error(`Unexpected selector: ${selector}`);
+      },
+      waitForTimeout: async () => undefined,
+      getByRole: () => ({ allInnerTexts: async () => ['Submit'] }),
+    };
+
+    await clickSubmitAndWaitFlow({
+      page: page as never,
+      context: 'generic cases route regression',
+      timeoutMs: 5_000,
+      maxAutoAdvanceAttempts: 1,
+      submitButton: submitButton as never,
+      continueButton: continueButton as never,
+      somethingWentWrongHeading: somethingWentWrongHeading as never,
+      getApiCalls: () => [],
+      getVisibleActionButton: async (locator) => (locator === (submitButton as never) ? (submitButton as never) : undefined),
+      clickSubmitButtonWithRetry: async () => {
+        actionSequence.push('submit');
+        currentUrl = buildTestAppUrl('/cases/case-details/DIVORCE/xuiTestJurisdiction/1234567890123456');
+      },
+      clickContinueAndWait: async () => undefined,
+      waitForSpinnerToComplete: async () => undefined,
+      assertNoEventCreationError: async () => undefined,
+      checkForErrorMessage: async () => false,
+      getValidationErrorText: async () => '',
+      failFastOnCriticalWizardEndpointFailure: () => undefined,
+      warn: () => undefined,
+    });
+
+    expect(actionSequence).toEqual(['submit']);
+  });
+
   test('startCreateCaseFlow retries case filter bootstrap failures and succeeds on the next attempt', async () => {
     let currentUrl = buildTestAppUrl('/cases/case-filter');
     let attempt = 0;

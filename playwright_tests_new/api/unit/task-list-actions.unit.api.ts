@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { TaskListPage } from '../../E2E/page-objects/pages/exui/taskList.po.js';
+import { reconcileClaimedTask } from '../../E2E/utils/test-setup/workAllocationTaskClaim.js';
 
 function createActionLocator(config: {
   waitResults: Array<'visible' | 'hidden'>;
@@ -99,6 +100,20 @@ function createButtonLocator(config: { clickFailures?: string[] }) {
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, () => {
+  test('resolves and finds the stable task identity from Manage button IDs', async () => {
+    const manageIds = ['manage_task-a', 'manage_task-b'];
+    const pageObject = {
+      taskRows: { count: async () => manageIds.length },
+      getManageButtonForRow: (rowIndex: number) => ({
+        getAttribute: async () => manageIds[rowIndex],
+      }),
+    };
+
+    await expect(TaskListPage.prototype.getTaskIdForRow.call(pageObject, 1)).resolves.toBe('task-b');
+    await expect(TaskListPage.prototype.findTaskRowIndexById.call(pageObject, 'task-b')).resolves.toBe(1);
+    await expect(TaskListPage.prototype.findTaskRowIndexById.call(pageObject, 'missing')).resolves.toBe(-1);
+  });
+
   test('waitForTaskRowReady fails fast when the task data API returns a server error', async () => {
     const waitIntervals: number[] = [];
     let apiCallsReadCount = 0;
@@ -179,6 +194,53 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
     ).rejects.toThrow('Timed out after 100ms waiting for task row (unit stale task api failure)');
 
     expect(waitIntervals.length).toBeGreaterThan(0);
+  });
+
+  test('waitForTaskDataResponse accepts a successful post-baseline task inspection', async () => {
+    const apiCalls = [
+      { method: 'POST', url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task', status: 503 },
+      { method: 'POST', url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task', status: 200 },
+    ];
+
+    await expect(
+      TaskListPage.prototype.waitForTaskDataResponse.call(
+        {
+          assertTaskListInteractive: async () => undefined,
+          getApiCalls: () => apiCalls,
+          isTaskDataCall: (url: string) => url.endsWith('/workallocation/task'),
+          page: {
+            waitForTimeout: async () => undefined,
+            url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/list',
+          },
+        },
+        'unit cleanup inspection',
+        1,
+        { timeoutMs: 100, pollMs: 1 }
+      )
+    ).resolves.toBeUndefined();
+  });
+
+  test('waitForTaskDataResponse rejects a failed cleanup inspection instead of treating the task as absent', async () => {
+    await expect(
+      TaskListPage.prototype.waitForTaskDataResponse.call(
+        {
+          assertTaskListInteractive: async () => undefined,
+          getApiCalls: () => [
+            { method: 'POST', url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task', status: 500 },
+          ],
+          isTaskDataCall: (url: string) => url.endsWith('/workallocation/task'),
+          page: {
+            waitForTimeout: async () => undefined,
+            url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/list',
+          },
+        },
+        'unit cleanup inspection',
+        0,
+        { timeoutMs: 100, pollMs: 1 }
+      )
+    ).rejects.toThrow(
+      'Task data inspection failed (unit cleanup inspection): POST https://manage-case.aat.platform.hmcts.net/workallocation/task returned HTTP 500'
+    );
   });
 
   test('clickTaskActionForRow reopens the same row when the row action is temporarily hidden', async () => {
@@ -272,6 +334,80 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
     );
 
     expect(action.attempts).toEqual({ waitAttempt: 1, clickAttempt: 2, dispatchAttempt: 0, evaluateAttempt: 0, focusAttempt: 0 });
+  });
+
+  test('clickTaskActionForRowOnce never repeats an ambiguous claim click', async () => {
+    const action = createActionLocator({
+      waitResults: ['visible'],
+      clickFailures: ['element was detached from the DOM'],
+    });
+
+    await expect(
+      TaskListPage.prototype.clickTaskActionForRowOnce.call(
+        {
+          assertTaskListInteractive: async () => undefined,
+          getTaskActionForRow: () => action,
+        },
+        0,
+        'claim',
+        'single claim dispatch',
+        { timeoutMs: 5_000 }
+      )
+    ).rejects.toThrow('element was detached from the DOM');
+    expect(action.attempts.clickAttempt).toBe(1);
+  });
+
+  test('reconciles and releases the exact task after an ambiguous claim outcome', async () => {
+    const releasedRows: number[] = [];
+    await expect(
+      reconcileClaimedTask({
+        claimAttempted: true,
+        claimConfirmed: true,
+        taskId: 'task-123',
+        findClaimedTask: async () => 4,
+        releaseClaimedTask: async (rowIndex) => releasedRows.push(rowIndex),
+      })
+    ).resolves.toBe('released');
+    expect(releasedRows).toEqual([4]);
+  });
+
+  test('does not release when a claim was not dispatched or was not applied', async () => {
+    let releases = 0;
+    await expect(
+      reconcileClaimedTask({
+        claimAttempted: false,
+        claimConfirmed: false,
+        taskId: 'task-123',
+        findClaimedTask: async () => 4,
+        releaseClaimedTask: async () => {
+          releases += 1;
+        },
+      })
+    ).resolves.toBe('not-attempted');
+    await expect(
+      reconcileClaimedTask({
+        claimAttempted: true,
+        claimConfirmed: false,
+        taskId: 'task-123',
+        findClaimedTask: async () => undefined,
+        releaseClaimedTask: async () => {
+          releases += 1;
+        },
+      })
+    ).resolves.toBe('not-claimed');
+    expect(releases).toBe(0);
+  });
+
+  test('fails cleanup when a confirmed claim cannot be reconciled', async () => {
+    await expect(
+      reconcileClaimedTask({
+        claimAttempted: true,
+        claimConfirmed: true,
+        taskId: 'task-123',
+        findClaimedTask: async () => undefined,
+        releaseClaimedTask: async () => undefined,
+      })
+    ).rejects.toThrow('Confirmed claimed task task-123 could not be found for cleanup.');
   });
 
   test('clickButtonAndWaitForRequest retries after a transient click failure and returns the observed request', async () => {

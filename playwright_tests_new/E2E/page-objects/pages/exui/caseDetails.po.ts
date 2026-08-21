@@ -815,7 +815,7 @@ export class CaseDetailsPage extends Base {
     const timeout = this.getRecommendedTimeoutMs({ max: 45_000, fallback: 45_000 });
     const maxAttempts = 2;
 
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       const popupPromise = this.page.waitForEvent('popup', { timeout }).then(async (popup) => {
         await popup.waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout });
         return popup;
@@ -833,14 +833,18 @@ export class CaseDetailsPage extends Base {
         .context()
         .pages()
         .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
-
       if (matchingPage) {
         return matchingPage;
       }
     }
 
     throw new Error(
-      `Media Viewer did not open within ${timeout}ms after selecting Document 1 across ${maxAttempts} attempts. Current URL: ${this.page.url()}`
+      `Media Viewer did not open within ${timeout}ms after selecting Document 1 across ${maxAttempts} attempts. ` +
+        `Current URL: ${this.page.url()}; open pages: ${this.page
+          .context()
+          .pages()
+          .map((candidate) => candidate.url())
+          .join(', ')}`
     );
   }
 

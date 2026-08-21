@@ -43,6 +43,51 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
     }
   });
 
+  test('retries the read-only aggregated jurisdiction lookup before case creation', async () => {
+    let attempts = 0;
+    const recoveredResponse = { status: () => 200 };
+    const request = {
+      scenario: 'direct-ccd-read-recovery',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+        request: {
+          get: async () => {
+            attempts += 1;
+            return attempts === 1 ? { status: () => 503 } : recoveredResponse;
+          },
+        },
+      },
+    } as never;
+
+    await expect(
+      caseSetupTest.requestAggregatedJurisdictionsWithRetry(request, 'aggregated/caseworkers/user/jurisdictions', 1000)
+    ).resolves.toBe(recoveredResponse);
+    expect(attempts).toBe(2);
+  });
+
+  test('falls back to configured CCD identifiers after bounded read-only transport failures', async () => {
+    let attempts = 0;
+    const request = {
+      scenario: 'direct-ccd-read-fallback',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+        request: {
+          get: async () => {
+            attempts += 1;
+            throw new Error('net::ERR_HTTP2_PROTOCOL_ERROR');
+          },
+        },
+      },
+    } as never;
+
+    await expect(
+      caseSetupTest.requestAggregatedJurisdictionsWithRetry(request, 'aggregated/caseworkers/user/jurisdictions', 1000)
+    ).resolves.toBeUndefined();
+    expect(attempts).toBe(3);
+  });
+
   test('uses an available slot and always releases it after the case setup', async () => {
     const lockedPaths: string[] = [];
     let releases = 0;
@@ -95,5 +140,27 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
 
     expect(slot.slot).toBe(1);
     expect(attempts).toBe(3);
+  });
+
+  test('caps the gate wait so case setup retains its execution budget', async () => {
+    expect(caseSetupTest.resolveCaseSetupGateBudgetMs()).toBe(5 * 60_000);
+    let now = 0;
+    await expect(
+      acquireDirectCcdSetupSlot(
+        { PW_E2E_CCD_SETUP_CONCURRENCY: '1', PW_E2E_CCD_SETUP_WAIT_MS: '120000' },
+        {
+          appendFile: async () => undefined,
+          lock: async () => {
+            throw Object.assign(new Error('locked'), { code: 'ELOCKED' });
+          },
+          mkdir: async () => undefined,
+          now: () => now,
+          sleep: async () => {
+            now += 500;
+          },
+        },
+        { maxWaitMs: 1_000 }
+      )
+    ).rejects.toThrow('Timed out waiting 1000ms');
   });
 });

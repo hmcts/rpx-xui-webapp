@@ -1096,6 +1096,34 @@ export class TaskListPage extends Base {
     );
   }
 
+  async waitForTaskDataResponse(
+    context: string,
+    baselineIndex: number,
+    options: { timeoutMs?: number; pollMs?: number } = {}
+  ): Promise<void> {
+    const timeoutMs = options.timeoutMs ?? 60_000;
+    const pollMs = options.pollMs ?? 250;
+    const deadline = Date.now() + timeoutMs;
+
+    while (Date.now() < deadline) {
+      await this.assertTaskListInteractive(`waiting for task data (${context})`);
+      const taskDataResponse = this.getApiCalls()
+        .slice(baselineIndex)
+        .find((call) => this.isTaskDataCall(call.url));
+      if (taskDataResponse) {
+        if (taskDataResponse.status >= 400) {
+          throw new Error(
+            `Task data inspection failed (${context}): ${taskDataResponse.method} ${taskDataResponse.url} returned HTTP ${taskDataResponse.status}`
+          );
+        }
+        return;
+      }
+      await this.page.waitForTimeout(Math.min(pollMs, Math.max(1, deadline - Date.now())));
+    }
+
+    throw new Error(`Timed out after ${timeoutMs}ms waiting for task data response (${context}). url=${this.page.url()}`);
+  }
+
   async waitForTaskActionsRowReady(
     rowIndex: number,
     context: string,
@@ -1302,6 +1330,49 @@ export class TaskListPage extends Base {
     return this.getTaskRow(rowIndex).getByRole('button', { name: 'Manage' }).first();
   }
 
+  async getTaskIdForRow(rowIndex: number): Promise<string> {
+    const manageId = await this.getManageButtonForRow(rowIndex).getAttribute('id');
+    const taskId = manageId?.replace(/^manage_/, '').trim();
+    if (!taskId) {
+      throw new Error(`Unable to resolve the task identity for row ${rowIndex + 1}. manageId=${manageId ?? 'missing'}`);
+    }
+    return taskId;
+  }
+
+  async findTaskRowIndexById(taskId: string): Promise<number> {
+    const rowCount = await this.taskRows.count();
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+      const manageId = await this.getManageButtonForRow(rowIndex)
+        .getAttribute('id')
+        .catch(() => null);
+      if (manageId === `manage_${taskId}`) {
+        return rowIndex;
+      }
+    }
+    return -1;
+  }
+
+  async waitForTaskRowById(
+    taskId: string,
+    context: string,
+    options: { timeoutMs?: number; pollMs?: number } = {}
+  ): Promise<number> {
+    const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
+    const pollMs = options.pollMs ?? 500;
+    const deadline = Date.now() + timeoutMs;
+
+    while (Date.now() < deadline) {
+      const rowIndex = await this.findTaskRowIndexById(taskId);
+      if (rowIndex >= 0) {
+        return rowIndex;
+      }
+      await this.assertTaskListInteractive(`waiting for task ${taskId} (${context})`);
+      await this.page.waitForTimeout(Math.min(pollMs, Math.max(1, deadline - Date.now())));
+    }
+
+    throw new Error(`Timed out after ${timeoutMs}ms waiting for task ${taskId} (${context}). url=${this.page.url()}`);
+  }
+
   getTaskActionsRow(rowIndex: number): Locator {
     return this.taskListTable.locator('tbody > tr.actions-row').nth(rowIndex);
   }
@@ -1433,6 +1504,41 @@ export class TaskListPage extends Base {
       `${context} for row ${rowIndex + 1}`,
       options
     );
+  }
+
+  async clickTaskActionForRowOnce(
+    rowIndex: number,
+    actionId: string,
+    context: string,
+    options: { timeoutMs?: number } = {}
+  ): Promise<void> {
+    const timeoutMs = options.timeoutMs ?? 15_000;
+    await this.assertTaskListInteractive(`clicking task action once (${context})`);
+    const action = this.getTaskActionForRow(rowIndex, actionId).first();
+    await action.waitFor({ state: 'visible', timeout: timeoutMs });
+    await action.scrollIntoViewIfNeeded({ timeout: Math.min(1_500, timeoutMs) });
+    await action.click({ noWaitAfter: true, timeout: timeoutMs });
+  }
+
+  async submitActionOnceAndWaitForRequest(
+    requestMatcher: (request: Request) => boolean,
+    context: string,
+    options: { timeoutMs?: number } = {}
+  ): Promise<Request> {
+    const timeoutMs = options.timeoutMs ?? 15_000;
+    const button = this.submitButton.first();
+    await button.waitFor({ state: 'visible', timeout: Math.min(5_000, timeoutMs) });
+    await button.scrollIntoViewIfNeeded({ timeout: Math.min(1_500, timeoutMs) });
+    const requestPromise = this.page.waitForRequest(requestMatcher, { timeout: timeoutMs });
+    void requestPromise.catch(() => undefined);
+    await button.click({ noWaitAfter: true, timeout: Math.min(5_000, timeoutMs) });
+    try {
+      return await requestPromise;
+    } catch (error) {
+      throw new Error(`No submit request was observed after the single action while ${context}. url=${this.page.url()}`, {
+        cause: error,
+      });
+    }
   }
 
   async submitActionAndWaitForRequest(

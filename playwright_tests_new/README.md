@@ -268,7 +268,7 @@ Notes:
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
 - Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run.
 - This framework does not create live Work Allocation tasks. A previous experimental `@e2e-live-wa` lane was removed because local validation failed before the browser journey when Manage Org invite returned `403` with `{"message":"Internal Server Error"}`. Reintroduce live WA task materialisation only in a separate PR with direct AAT proof.
-- `@e2e-manage-tasks` remains excluded by default because it depends on live seeded Work Allocation data. It currently covers only the live Available Tasks lane with an internal WA-capable user. Override the user with `PW_E2E_MANAGE_TASKS_USER` or with `PW_E2E_MANAGE_TASKS_EMAIL` and `PW_E2E_MANAGE_TASKS_PASSWORD` for targeted opt-in runs. Assigned My Tasks action coverage remains under `@e2e-manage-tasks-assigned` until a seeded assigned-task user or supported task materialisation flow exists.
+- `@e2e-manage-tasks` uses live seeded Work Allocation data and is included in the default E2E run. Override the user with `PW_E2E_MANAGE_TASKS_USER` or with `PW_E2E_MANAGE_TASKS_EMAIL` and `PW_E2E_MANAGE_TASKS_PASSWORD` when validating a different WA identity.
 - Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
 - `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers use a process-run `local-<parent-pid>` identifier instead of the shared literal `local`; CI runs with no recognised unique identifier fail fast instead of sharing a local organisation.
@@ -696,7 +696,7 @@ rm -rf .sessions && npx playwright test --config=playwright.e2e.config.ts
 ### E2E Tag Filtering
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
-- `@e2e-manage-tasks` is excluded by default because the live WA lane depends on seeded task data. Use `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-manage-tasks` only for targeted opt-in runs with a configured WA user and known data.
+- `@e2e-manage-tasks` is included by default and requires a configured WA-capable user plus seeded task data.
 - Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
 - Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
@@ -850,13 +850,13 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 Browser sessions managed by `common/sessionCapture.ts` are captured lazily under `.sessions/`. E2E and integration callers of that helper deliberately share browser-session keys, while API state remains separately namespaced. Some E2E journeys use the separate UI storage helper under `test-results/storage-states/ui`.
 
-Cached browser and API sessions are checked through `auth/isAuthenticated` before reuse. `PW_SESSION_REUSE_VALIDATION_MODE=strict` fails with the classified `AAT_AUTH_UNAVAILABLE` setup error if that endpoint cannot be reached; `best-effort` retains the local-diagnosis behaviour of logging and reusing the cache. CI defaults to `strict` and local runs default to `best-effort` unless explicitly overridden.
+Cached browser and API sessions are checked through `auth/isAuthenticated` before reuse. `PW_SESSION_REUSE_VALIDATION_MODE=strict` is the default and fails with the classified `AAT_AUTH_UNAVAILABLE` setup error if that endpoint cannot be reached. `best-effort` is an explicit local-diagnosis override that logs and reuses the cache; do not enable it in CI because it permits an unverified session.
 
 Integration journeys use the configured worker count, including hearings. The hearing suite mocks user details, case data, and hearing APIs per page, so its existing authenticated sessions can be shared safely without requiring one permanent hearing-manager account per worker.
 
 Before a live browser lane, run `yarn test:playwright:preflight -- --require=STAFF_ADMIN,HEARING_MANAGER_CR84_ON`. It reports distinct configured identities, never secret values, and warns about inherited Node inspector settings. Add `--tag=e2e,solicitor` to report only the compatibility pools selected by those tags. Pool capacity is advisory: a configured identity can be reused across workers. Add `--strict` only when a selected lane has no configured identity at all.
 
-State-changing live E2E journeys can opt into `identityLease` from `E2E/fixtures`. Call `await identityLease.acquire({ pool: 'PRL_SOLICITOR' })` before authentication, then use `lease.identity.userIdentifier` for session setup. Configure the approved cross-executor coordinator in `PW_IDENTITY_LEASE_ENDPOINT`; the fixture polls for a compatible exclusive account and always releases it in teardown. It never sends email addresses or passwords to the coordinator. Do not use this fixture for mocked integration tests or read-only journeys.
+State-changing live E2E journeys can opt into `identityLease` from `E2E/fixtures`. Call `await identityLease.acquire({ pool: 'PRL_SOLICITOR' })` before authentication, then use `lease.identity.userIdentifier` for session setup. Within one executor the fixture uses filesystem leases under `.sessions/identity-leases`; configure the approved cross-executor coordinator in `PW_IDENTITY_LEASE_ENDPOINT` when multiple executors share an identity pool. The fixture waits for a compatible exclusive account, always releases it in teardown, and never sends email addresses or passwords to the coordinator. Do not use this fixture for mocked integration tests or read-only journeys.
 
 ### Session Capture Storage
 
@@ -877,7 +877,7 @@ The shared session-capture helper and API authentication store state under `.ses
 
 #### 1. Lazy Loading
 
-- Normal E2E and integration sessions are not pre-captured during global setup. Accessibility E2E runs prewarm their configured session unless `PW_A11Y_PREWARM_SESSION=false`
+- Normal E2E and integration sessions are not pre-captured during global setup. Accessibility E2E runs only prewarm their configured session when `PW_A11Y_PREWARM_SESSION=true`.
 - Each test specifies which user it needs via `ensureSession()` (E2E) or fixtures (API)
 - Sessions are captured only when first requested
 - Cached sessions are reused across tests and workers

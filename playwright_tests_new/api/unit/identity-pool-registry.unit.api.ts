@@ -46,6 +46,16 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
     });
   });
 
+  test('discovers configured staff administrators by default and supports an explicit opt-out', () => {
+    const withoutFlag = { ...env };
+    delete withoutFlag.STAFF_ADMIN_POOL_ENABLED;
+
+    expect(resolveConfiguredPoolIdentities(withoutFlag, { pool: 'STAFF_ADMIN' })).toHaveLength(1);
+    expect(
+      resolveConfiguredPoolIdentities({ ...withoutFlag, STAFF_ADMIN_POOL_ENABLED: 'false' }, { pool: 'STAFF_ADMIN' })
+    ).toEqual([]);
+  });
+
   test('leases an exclusive identity locally when no cross-executor coordinator is configured', async () => {
     const leaseDirectory = `/tmp/exui-identity-lease-${process.pid}-${Date.now()}`;
     const localEnv = {

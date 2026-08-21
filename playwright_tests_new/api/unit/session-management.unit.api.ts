@@ -1226,12 +1226,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     };
 
     await expect(
-      sessionCaptureTest.validateLoadedSessionForReuse(
-        session,
-        'https://manage-case.example.test',
-        async () => 'unavailable',
-        { PW_SESSION_REUSE_VALIDATION_MODE: 'strict' }
-      )
+      sessionCaptureTest.validateLoadedSessionForReuse(session, 'https://manage-case.example.test', async () => 'unavailable', {
+        PW_SESSION_REUSE_VALIDATION_MODE: 'strict',
+      })
     ).rejects.toThrow('Unable to validate cached session for UNIT_REFRESHED_USER');
   });
 

@@ -99,7 +99,7 @@ function normaliseEmail(value) {
 }
 
 function isEnabled(pool, env) {
-  return !pool.enabledBy || env[pool.enabledBy] === 'true';
+  return !pool.enabledBy || env[pool.enabledBy]?.trim().toLowerCase() !== 'false';
 }
 
 function isCompatible(identity, requirements = {}) {

@@ -290,7 +290,6 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expectLocalWorktreeIgnores(nightlyConfig.testIgnore);
   });
 
-
   test('E2E mocked accessibility config does not prewarm a live session by default', async () => {
     const config = buildE2eConfig({
       PLAYWRIGHT_INCLUDE_A11Y: 'true',

@@ -72,8 +72,19 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     expect(getConfiguredStaffAdminUserIdentifiers(env)).toEqual(['STAFF_ADMIN-1']);
   });
 
-  test('keeps the legacy staff admin user unless the pool is explicitly enabled', () => {
+  test('uses configured pooled users without requiring an enable flag', () => {
     const env = {
+      STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+      STAFF_ADMIN_1_PASSWORD: 'secret-1',
+    };
+
+    expect(getConfiguredStaffAdminUserIdentifiers(env)).toEqual(['STAFF_ADMIN-1']);
+    expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 0 }, env)).toBe('STAFF_ADMIN-1');
+  });
+
+  test('honours an explicit pool opt-out', () => {
+    const env = {
+      STAFF_ADMIN_POOL_ENABLED: 'false',
       STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
       STAFF_ADMIN_1_PASSWORD: 'secret-1',
     };

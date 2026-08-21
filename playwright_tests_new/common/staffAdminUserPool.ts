@@ -33,7 +33,7 @@ function hasConfiguredCredentials(userIdentifier: StaffAdminUserIdentifier, env:
 }
 
 function isStaffAdminPoolEnabled(env: EnvMap): boolean {
-  return env.STAFF_ADMIN_POOL_ENABLED === 'true';
+  return env.STAFF_ADMIN_POOL_ENABLED?.trim().toLowerCase() !== 'false';
 }
 
 function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = process.env): number {

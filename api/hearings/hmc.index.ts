@@ -18,6 +18,8 @@ import { trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 
 export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
+// TEMPORARY: keep enabled while testing submit retry behavior; remove after testing.
+const forceHearingSubmitFailure = true;
 const logger: JUILogger = log4jui.getLogger('hmc-index');
 
 /**
@@ -99,6 +101,11 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
+    // TEMPORARY: remove this block after testing; it forces a 400 response.
+    if (forceHearingSubmitFailure) {
+      return res.status(400).send({ message: 'Temporary forced failure for submit hearing request testing' });
+    }
+
     trackTrace('submitting hearing request');
     const { status, data }: { status: number; data: any } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);

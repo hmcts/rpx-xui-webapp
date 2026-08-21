@@ -85,14 +85,14 @@ class OdhinAdaptiveReporter {
       return;
     }
 
-    let nextResult = result;
+    let nextResult = addFailureSource(test, result);
     const passedOrSkipped = result?.status === 'passed' || result?.status === 'skipped';
     const shouldTrimHeavyArtifacts = this.lightweight && (passedOrSkipped || (this.trimFailedArtifacts && !passedOrSkipped));
 
     const shouldDropTestOutput = this.testOutputMode === false || (this.testOutputMode === 'only-on-failure' && passedOrSkipped);
 
     if (shouldTrimHeavyArtifacts || shouldDropTestOutput) {
-      nextResult = { ...result };
+      nextResult = { ...nextResult };
 
       if (shouldDropTestOutput) {
         nextResult.stdout = [];
@@ -243,6 +243,75 @@ class OdhinAdaptiveReporter {
   }
 }
 
+function addFailureSource(test, result) {
+  if (!result || !['failed', 'timedOut', 'interrupted'].includes(result.status)) {
+    return result;
+  }
+
+  const errors = Array.isArray(result.errors) ? result.errors : result.error ? [result.error] : [];
+  const errorText = errors.map((error) => `${error?.message ?? ''}\n${error?.stack ?? ''}`).join('\n');
+  const source = deriveFailureSource(`${test?.title ?? ''}\n${errorText}`);
+  if (!source || errors.some((error) => String(error?.stack ?? error?.message ?? '').startsWith('[Failure source:'))) {
+    return result;
+  }
+
+  return {
+    ...result,
+    ...(result.error ? { error: prefixFailureSource(result.error, source) } : {}),
+    ...(Array.isArray(result.errors)
+      ? {
+          // Odhín renders result.errors (and its stack), not result.error.
+          errors: result.errors.map((error) => prefixFailureSource(error, source)),
+        }
+      : {}),
+  };
+}
+
+function prefixFailureSource(error, source) {
+  return {
+    ...error,
+    message: `[Failure source: ${source}]\n${error?.message ?? ''}`,
+    stack: error?.stack ? `[Failure source: ${source}]\n${error.stack}` : error?.stack,
+  };
+}
+
+function deriveFailureSource(errorMessage) {
+  const message = String(errorMessage);
+  const normalized = message.toLowerCase();
+
+  if (/sessioncaptureerror|session capture|idam login|login surface|app shell not detected within/.test(normalized)) {
+    return 'XUI/IDAM authentication session capture';
+  }
+  if (/direct ccd case create failed/.test(normalized)) {
+    return 'CCD Data Store direct case-create route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false';
+  }
+  if (/direct ccd case validate failed/.test(normalized)) {
+    return 'CCD Data Store direct case-validation route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/validate';
+  }
+  if (/failed to fetch direct ccd event token/.test(normalized)) {
+    return 'CCD Data Store direct event-token route: GET /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/event-triggers/:eventId/token';
+  }
+  if (/\/auth\/login/.test(normalized)) {
+    return 'XUI authentication route /auth/login';
+  }
+  if (/\/external\/(?:config\/ui|configuration-ui)/.test(normalized)) {
+    return 'XUI external configuration route';
+  }
+  if (/serves external (?:configuration|config\/ui alias)/.test(normalized)) {
+    return 'XUI external configuration route';
+  }
+  if (/\/aggregated\/caseworkers\//.test(normalized)) {
+    return 'XUI aggregated caseworker route';
+  }
+  if (/\/workallocation\//.test(normalized)) {
+    return 'Work Allocation API';
+  }
+  if (/\/data\/(?:cases|caseworkers)|\/caseworkers\//.test(normalized)) {
+    return 'CCD Data Store route';
+  }
+  return null;
+}
+
 const normalizeRuntimeHookTimeoutMs = (raw, fallbackMs) => {
   const parsed = Number.parseInt(String(raw ?? ''), 10);
   if (Number.isFinite(parsed) && parsed >= 0) {
@@ -317,6 +386,8 @@ const formatHookContext = ({ test } = {}) => {
 
 const exportedReporter = OdhinAdaptiveReporter;
 exportedReporter.__test__ = {
+  addFailureSource,
+  deriveFailureSource,
   isFinalResult,
   normalizeFinalStatus,
   normalizeTestOutputMode(raw) {

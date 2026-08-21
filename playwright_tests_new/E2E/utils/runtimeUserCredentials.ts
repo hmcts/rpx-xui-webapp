@@ -94,6 +94,10 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'STAFF_ADMIN_USERNAME',
     password: 'STAFF_ADMIN_PASSWORD',
   },
+  COURT_ADMIN: {
+    username: 'COURT_ADMIN_USERNAME',
+    password: 'COURT_ADMIN_PASSWORD',
+  },
   'STAFF_ADMIN-1': {
     username: 'STAFF_ADMIN_1_USERNAME',
     password: 'STAFF_ADMIN_1_PASSWORD',

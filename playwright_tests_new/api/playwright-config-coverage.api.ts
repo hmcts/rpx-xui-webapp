@@ -365,6 +365,17 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
   });
 
+  test('node-api can exclude only the unstable Work Allocation myaccess check', () => {
+    const filters = resolveApiTagFilters({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation-myaccess',
+      CI: undefined,
+    });
+
+    expect(filters.excludedTags).toEqual(['@svc-work-allocation-myaccess']);
+    expect(filters.grepInvert?.test('@svc-work-allocation-myaccess')).toBe(true);
+    expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
+  });
+
   test('node-api keeps suite overrides replacement-style while adding global exclusions', () => {
     const filters = resolveApiTagFilters({
       API_PW_EXCLUDED_TAGS_OVERRIDE: '@svc-ccd',

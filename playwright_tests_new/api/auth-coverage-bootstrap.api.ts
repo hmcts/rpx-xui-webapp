@@ -172,6 +172,14 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
     });
   });
 
+  test('labels unavailable login routes as a shared XUI authentication prerequisite', () => {
+    expect(
+      authTest.describeLoginRouteFailure({
+        headers: () => ({ 'x-azure-ref': 'safe-gateway-reference' }),
+      })
+    ).toBe('XUI authentication route unavailable before IDAM form submission; gatewayRef=safe-gateway-reference');
+  });
+
   test('createStorageStateViaForm waits for post-login authentication readiness', async () => {
     const authChecks: string[] = [];
     const context = createFormLoginContext(200, 200, '<html></html>', [false, false, true]);

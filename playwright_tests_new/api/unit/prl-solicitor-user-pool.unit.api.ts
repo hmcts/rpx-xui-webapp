@@ -16,6 +16,15 @@ const configuredEnv = {
   PRL_SOLICITOR3_PASSWORD: 'secret-3',
 } as const;
 
+const prlSolicitorPoolCredentialEnvKeys = [
+  'PRL_SOLICITOR_USERNAME',
+  'PRL_SOLICITOR_PASSWORD',
+  ...Array.from({ length: 7 }, (_, index) => {
+    const userNumber = index + 2;
+    return [`PRL_SOLICITOR${userNumber}_USERNAME`, `PRL_SOLICITOR${userNumber}_PASSWORD`];
+  }).flat(),
+] as const;
+
 test.describe('PRL solicitor user pool', { tag: '@svc-internal' }, () => {
   test('selects a distinct configured PRL solicitor per worker and preserves fallback order', () => {
     expect(getConfiguredPrlSolicitorUserIdentifiers(configuredEnv)).toEqual([
@@ -42,8 +51,11 @@ test.describe('PRL solicitor user pool', { tag: '@svc-internal' }, () => {
   });
 
   test('expands the PRL solicitor alias through the shared session-capture resolver', () => {
-    const originalValues = Object.fromEntries(Object.keys(configuredEnv).map((key) => [key, process.env[key]]));
+    const originalValues = Object.fromEntries(prlSolicitorPoolCredentialEnvKeys.map((key) => [key, process.env[key]]));
     try {
+      for (const key of prlSolicitorPoolCredentialEnvKeys) {
+        delete process.env[key];
+      }
       Object.assign(process.env, configuredEnv);
       expect(
         sessionCaptureTest

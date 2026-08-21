@@ -140,6 +140,7 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     const previousEnv: Record<string, string | undefined> = {
       STAFF_ADMIN_POOL_ENABLED: process.env.STAFF_ADMIN_POOL_ENABLED,
       TEST_PARALLEL_INDEX: process.env.TEST_PARALLEL_INDEX,
+      PW_SESSION_REUSE_VALIDATION_MODE: process.env.PW_SESSION_REUSE_VALIDATION_MODE,
     };
     for (const key of staffAdminPoolCredentialEnvKeys) {
       previousEnv[key] = process.env[key];
@@ -200,6 +201,8 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
       process.env.STAFF_ADMIN_2_USERNAME = 'staff-admin-2@example.test';
       process.env.STAFF_ADMIN_2_PASSWORD = 'secret-2';
       process.env.TEST_PARALLEL_INDEX = '1';
+      // This is a storage-state/cookie unit contract, not an auth endpoint test.
+      process.env.PW_SESSION_REUSE_VALIDATION_MODE = 'best-effort';
       process.chdir(tempDir);
 
       const identity = resolveSessionIdentity('STAFF_ADMIN');

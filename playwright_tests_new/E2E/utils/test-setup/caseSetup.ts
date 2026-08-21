@@ -3,6 +3,7 @@ import type { APIResponse, Page, TestInfo } from '@playwright/test';
 
 import type { CaseDetailsPage } from '../../page-objects/pages/exui/caseDetails.po';
 import type { CreateCasePage } from '../../page-objects/pages/exui/createCase.po';
+import { withDirectCcdSetupGate } from './directCcdSetupGate';
 
 type SetupMode = 'api-required' | 'api-first' | 'ui-only';
 
@@ -45,16 +46,17 @@ const logger = createLogger({
 const TRUTHY_VALUES = new Set(['1', 'true', 'yes', 'on']);
 const DEFAULT_CASE_SETUP_TIMEOUT_MS = 60_000;
 const DEFAULT_EVENT_ID = 'initiateCase';
-const DEFAULT_CREATE_RETRY_ATTEMPTS = 2;
-const DEFAULT_CREATE_RETRY_WINDOW_MS = 10_000;
-const DEFAULT_CREATE_RETRY_INTERVAL_MS = 2_000;
-const DEFAULT_VALIDATE_RETRY_WINDOW_MS = 10_000;
+const CCD_EVENT_TOKEN_ROUTE_TEMPLATE =
+  '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/event-triggers/:eventId/token';
+const CCD_CASE_VALIDATE_ROUTE_TEMPLATE = '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/validate';
+const CCD_CASE_CREATE_ROUTE_TEMPLATE =
+  '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false';
+const DEFAULT_VALIDATE_RETRY_WINDOW_MS = 60_000;
 const DEFAULT_VALIDATE_RETRY_INTERVAL_MS = 2_000;
-const DEFAULT_EVENT_TOKEN_RETRY_WINDOW_MS = 10_000;
+const DEFAULT_EVENT_TOKEN_RETRY_WINDOW_MS = 60_000;
 const DEFAULT_EVENT_TOKEN_RETRY_INTERVAL_MS = 2_000;
 const DEFAULT_USER_DETAILS_RETRY_ATTEMPTS = 3;
 const DEFAULT_USER_DETAILS_RETRY_INTERVAL_MS = 2_000;
-const TRANSIENT_CREATE_STATUS_CODES = new Set([429, 502, 503, 504]);
 const TRANSIENT_VALIDATE_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 const TRANSIENT_EVENT_TOKEN_STATUS_CODES = new Set([404, 429, 500, 502, 503, 504]);
 const TRANSIENT_USER_DETAILS_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
@@ -62,6 +64,21 @@ const TRANSIENT_API_REQUEST_ERROR_MARKERS = ['econnreset', 'econnrefused', 'etim
 
 function isTruthy(value: string | undefined): boolean {
   return TRUTHY_VALUES.has((value ?? '').trim().toLowerCase());
+}
+
+function summarizeDirectCcdValidationFailure(responseText: string): string {
+  try {
+    const validationJson = JSON.parse(responseText) as DirectCaseValidateResponse;
+    const fieldIds = (validationJson.details?.field_errors ?? [])
+      .map((fieldError) => fieldError.id?.trim())
+      .filter((fieldId): fieldId is string => Boolean(fieldId));
+    if (fieldIds.length > 0) {
+      return `CCD reported validation errors for: ${fieldIds.join(', ').slice(0, 500)}`;
+    }
+  } catch {
+    // Gateway HTML and unstructured bodies are intentionally not copied into test output.
+  }
+  return 'CCD did not provide structured validation errors.';
 }
 
 function resolveSetupMode(mode: SetupMode | undefined): SetupMode {
@@ -83,30 +100,6 @@ function resolveUiFallbackFlag(value: boolean | undefined): boolean {
     return value;
   }
   return isTruthy(process.env.PW_E2E_CASE_SETUP_ALLOW_UI_FALLBACK);
-}
-
-function resolveCreateRetryAttempts(): number {
-  const parsed = Number.parseInt(process.env.PW_E2E_CASE_SETUP_CREATE_RETRY_ATTEMPTS ?? '', 10);
-  if (!Number.isFinite(parsed) || parsed < 1) {
-    return DEFAULT_CREATE_RETRY_ATTEMPTS;
-  }
-  return parsed;
-}
-
-function resolveCreateRetryWindowMs(): number {
-  const parsed = Number.parseInt(process.env.PW_E2E_CASE_SETUP_CREATE_RETRY_WINDOW_MS ?? '', 10);
-  if (!Number.isFinite(parsed) || parsed < 0) {
-    return DEFAULT_CREATE_RETRY_WINDOW_MS;
-  }
-  return parsed;
-}
-
-function resolveCreateRetryIntervalMs(): number {
-  const parsed = Number.parseInt(process.env.PW_E2E_CASE_SETUP_CREATE_RETRY_INTERVAL_MS ?? '', 10);
-  if (!Number.isFinite(parsed) || parsed < 1) {
-    return DEFAULT_CREATE_RETRY_INTERVAL_MS;
-  }
-  return parsed;
 }
 
 function resolveValidateRetryWindowMs(): number {
@@ -176,7 +169,7 @@ async function backoffOrAbort(page: Page, baseDelayMs: number, scenario: string)
 }
 
 async function createCaseViaApi(request: SetupCaseRequest): Promise<string | undefined> {
-  return createCaseViaDirectCcdApi(request);
+  return withDirectCcdSetupGate(() => createCaseViaDirectCcdApi(request));
 }
 
 type UserDetailsResponse = {
@@ -435,7 +428,9 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
   }
 
   if (tokenResponse.status() < 200 || tokenResponse.status() >= 300) {
-    throw new Error(`Failed to fetch direct CCD event token (HTTP ${tokenResponse.status()}) for '${request.scenario}'.`);
+    throw new Error(
+      `Failed to fetch direct CCD event token (HTTP ${tokenResponse.status()}) from GET ${CCD_EVENT_TOKEN_ROUTE_TEMPLATE} for '${request.scenario}'.`
+    );
   }
   const eventTokenPayload = (await tokenResponse.json()) as EventTokenResponse;
   const eventToken = eventTokenPayload.token?.trim();
@@ -499,70 +494,27 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
   }
   if (validateResponse.status() < 200 || validateResponse.status() >= 300) {
     const responseText = await validateResponse.text().catch(() => '');
-    let validationSummary = responseText.slice(0, 500);
-    try {
-      const validationJson = JSON.parse(responseText) as DirectCaseValidateResponse;
-      const fieldErrors = validationJson.details?.field_errors ?? [];
-      if (fieldErrors.length > 0) {
-        validationSummary = fieldErrors
-          .map((fieldError) => `${fieldError.id ?? 'unknown-field'}: ${fieldError.message ?? 'Validation failed'}`)
-          .join('; ')
-          .slice(0, 500);
-      }
-    } catch {
-      // Keep the raw response excerpt when CCD does not return structured field errors.
-    }
+    const validationSummary = summarizeDirectCcdValidationFailure(responseText);
 
     throw new Error(
       `Direct CCD case validate failed with HTTP ${validateResponse.status()} for '${request.scenario}'. ` +
-        `Path='${validatePath}'. Details='${validationSummary}'`
+        `Route='POST ${CCD_CASE_VALIDATE_ROUTE_TEMPLATE}'. Details='${validationSummary}'`
     );
   }
 
   const createPath = `data/caseworkers/${encodeURIComponent(userId)}/jurisdictions/${encodeURIComponent(
     resolvedIds.jurisdictionId
   )}/case-types/${encodeURIComponent(resolvedIds.caseTypeId)}/cases?ignore-warning=false`;
-  const createRetryAttempts = resolveCreateRetryAttempts();
-  const createRetryWindowMs = resolveCreateRetryWindowMs();
-  const createRetryIntervalMs = resolveCreateRetryIntervalMs();
-  const createRetryDeadline = Date.now() + createRetryWindowMs;
-  let createResponse = await request.page.request.post(createPath, {
+  const createResponse = await request.page.request.post(createPath, {
     data: createCaseBody,
     failOnStatusCode: false,
     timeout: effectiveTimeoutMs,
     headers: CCD_API_JSON_HEADERS,
   });
-  for (let attempt = 1; attempt < createRetryAttempts; attempt += 1) {
-    const status = createResponse.status();
-    const now = Date.now();
-    const withinRetryWindow = now < createRetryDeadline;
-    if (!TRANSIENT_CREATE_STATUS_CODES.has(status) || !withinRetryWindow) {
-      break;
-    }
-    logger.warn('Transient direct CCD create failure, retrying', {
-      scenario: request.scenario,
-      status,
-      attempt: attempt + 1,
-      maxAttempts: createRetryAttempts,
-      retryWindowMs: createRetryWindowMs,
-      retryIntervalMs: createRetryIntervalMs,
-      jurisdiction: request.jurisdiction,
-      caseType: request.caseType,
-    });
-    const remainingMs = createRetryDeadline - now;
-    await backoffOrAbort(request.page, Math.min(createRetryIntervalMs, Math.max(remainingMs, 0)), request.scenario);
-    createResponse = await request.page.request.post(createPath, {
-      data: createCaseBody,
-      failOnStatusCode: false,
-      timeout: effectiveTimeoutMs,
-      headers: CCD_API_JSON_HEADERS,
-    });
-  }
   if (createResponse.status() < 200 || createResponse.status() >= 300) {
-    const responseText = await createResponse.text().catch(() => '');
     throw new Error(
       `Direct CCD case create failed with HTTP ${createResponse.status()} for '${request.scenario}'. ` +
-        `Path='${createPath}'. Body='${responseText.slice(0, 500)}'`
+        `Route='POST ${CCD_CASE_CREATE_ROUTE_TEMPLATE}'. The gateway did not provide a usable CCD API response.`
     );
   }
 
@@ -640,6 +592,9 @@ export async function setupCaseForJourney(request: SetupCaseRequest): Promise<Se
 export const __test__ = {
   isTransientApiRequestError,
   resolveCaseNumberFromCreateResponse,
+  resolveEventTokenRetryWindowMs,
+  resolveValidateRetryWindowMs,
+  summarizeDirectCcdValidationFailure,
   resolveUserDetailsRetryAttempts,
   resolveUserDetailsRetryIntervalMs,
   resolveSetupMode,

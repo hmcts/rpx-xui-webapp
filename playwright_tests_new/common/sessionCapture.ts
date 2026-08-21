@@ -299,8 +299,11 @@ function writeSessionCaptureFailure(
         timestamp: Date.now(),
         message: error.message,
         failureKind,
-        // Semantic IDAM failures coordinate fallback identity selection and must not be retried by every worker.
-        retryable: !failureKind && isTransientSessionCaptureError(error),
+        // Explicit or unexplained identity failures remain terminal. A service-down
+        // marker is transient, so one later lock owner may retry it without every
+        // worker fanning out.
+        retryable:
+          failureKind === SERVICE_DOWN_SESSION_CAPTURE_FAILURE || (!failureKind && isTransientSessionCaptureError(error)),
         recoveryAttempted,
         storageStateFingerprint: readStorageStateFingerprint(fsApi, sessionPath) ?? null,
       })
@@ -1454,15 +1457,33 @@ async function executeLoginAttempt(
   if (loginSurface === 'app') return;
 
   if (loginSurface !== 'login') {
-    await idamPage.usernameInput.first().waitFor({ state: 'visible', timeout: 10_000 });
-    await idamPage.login({ username: email, password });
-    await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
-    return;
+    if (await isServiceDownPage(page)) {
+      throw new SessionCaptureError(`Service down page detected while opening IDAM login for ${userIdentifier}`, userIdentifier, {
+        currentUrl: sanitizedPageUrl(page),
+        failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
+      });
+    }
+
+    throw unavailableIdamLoginSurfaceError(page, userIdentifier);
   }
 
   const usernameInput = (await waitForFirstVisibleLocator(page, usernameCandidates, 1_000)) ?? idamPage.usernameInput.first();
   await completeIdamCredentialFlow(page, idamPage, usernameInput, email, password);
   await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
+}
+
+// A successful navigation which renders neither IDAM nor XUI is an unavailable
+// login surface. Retrying with a fresh browser context is safe because no
+// credentials have been submitted yet.
+function unavailableIdamLoginSurfaceError(page: Page, userIdentifier: string): SessionCaptureError {
+  return new SessionCaptureError(
+    `IDAM login surface did not render within ${IDAM_LOGIN_SURFACE_TIMEOUT_MS}ms for ${userIdentifier}`,
+    userIdentifier,
+    {
+      currentUrl: sanitizedPageUrl(page),
+      failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
+    }
+  );
 }
 
 async function clickOrSubmitActiveField(page: Page, submitButton: Locator, activeField: Locator): Promise<void> {
@@ -2094,6 +2115,7 @@ export const __test__ = {
   validateLoadedSessionForReuse,
   loginAndPersistSession,
   executeLoginAttempt,
+  unavailableIdamLoginSurfaceError,
   requirePersistableSessionCookies,
   waitForAuthenticatedShell,
   probeAuthenticatedShell,

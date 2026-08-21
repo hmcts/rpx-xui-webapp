@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 
-import { ApiClient as PlaywrightApiClient, type ApiLogEntry, createLogger } from '@hmcts/playwright-common';
+import { ApiClient as PlaywrightApiClient, type ApiClientError, type ApiLogEntry, createLogger } from '@hmcts/playwright-common';
 import { test as base, request } from '@playwright/test';
 
 export { expect } from '@playwright/test';
@@ -32,6 +32,67 @@ type ApiError = {
 
 function sanitizeUrl(url: string): string {
   return url.split('?')[0];
+}
+
+function redactRequestContextDetails(message: string): string {
+  return message.replace(/^(\s*-\s*(?:authorization|cookie|x-xsrf-token):\s*).+$/gim, '$1[REDACTED]');
+}
+
+function createRedactedApiLogger(logger: LoggerInstance): LoggerInstance {
+  const safeLogger = Object.create(logger) as LoggerInstance;
+  safeLogger.error = ((message: string, metadata?: Record<string, unknown>) => {
+    const apiCall = metadata?.apiCall;
+    if (!apiCall || typeof apiCall !== 'object' || !('error' in apiCall)) {
+      return logger.error(message, metadata);
+    }
+
+    const entry = apiCall as ApiLogEntry;
+    return logger.error(message, {
+      ...metadata,
+      apiCall: {
+        ...entry,
+        error: entry.error ? redactRequestContextDetails(entry.error) : entry.error,
+      },
+    });
+  }) as LoggerInstance['error'];
+  return safeLogger;
+}
+
+function describeApiTarget(url: string): string {
+  try {
+    const pathname = new URL(url).pathname.replace(/\/+$/, '') || '/';
+    if (pathname.startsWith('/workallocation/')) {
+      return `Work Allocation API route ${pathname}`;
+    }
+    if (pathname === '/external/config/ui' || pathname === '/external/configuration-ui') {
+      return 'XUI external UI configuration route';
+    }
+    if (pathname.startsWith('/auth/')) {
+      return 'XUI authentication route';
+    }
+    return `XUI API route ${pathname}`;
+  } catch {
+    return 'XUI API route';
+  }
+}
+
+function formatApiClientFailure(error: ApiClientError): string {
+  const entry = error.logEntry;
+  const target = describeApiTarget(entry.url);
+  const transportFailure =
+    error.status === 0
+      ? /timeout|timed out|ETIMEDOUT/i.test(entry.error ?? '')
+        ? 'transport: timeout'
+        : 'transport: request failure'
+      : '';
+  const details = [
+    `target: ${target}`,
+    transportFailure,
+    entry.correlationId ? `correlationId: ${entry.correlationId}` : '',
+    typeof error.elapsedMs === 'number' ? `elapsed: ${error.elapsedMs}ms` : '',
+  ].filter(Boolean);
+
+  return `${entry.method} ${sanitizeUrl(entry.url)} responded with ${error.status} (${details.join('; ')})`;
 }
 
 function classifyFailure(
@@ -193,11 +254,12 @@ async function createNodeApiClient(
 
   const defaultHeaders = await buildDefaultHeaders(role);
   const context = await buildRequestContext(role, storageState, defaultHeaders);
+  const apiLogger = createRedactedApiLogger(logger);
 
   return new PlaywrightApiClient({
     baseUrl,
     name: `node-api-${role}`,
-    logger,
+    logger: apiLogger,
     redaction: {
       patterns: ['responseBody'],
     },
@@ -232,6 +294,19 @@ async function createNodeApiClient(
           operation: 'api-call',
         });
       }
+    },
+    onError: (error) => {
+      error.message = formatApiClientFailure(error);
+      logger.error('API request failed', {
+        endpoint: sanitizeUrl(error.logEntry.url),
+        method: error.logEntry.method,
+        status: error.status,
+        target: describeApiTarget(error.logEntry.url),
+        correlationId: error.correlationId,
+        elapsedMs: error.elapsedMs,
+        role,
+        operation: 'api-failure-diagnosis',
+      });
     },
     requestFactory: async () => context,
   });
@@ -315,6 +390,10 @@ async function buildRequestContext(
 export const __test__ = {
   buildDefaultHeaders,
   buildRequestContext,
+  createRedactedApiLogger,
+  describeApiTarget,
+  formatApiClientFailure,
+  redactRequestContextDetails,
   shouldAutoInjectXsrf,
   stripTrailingSlash,
 };

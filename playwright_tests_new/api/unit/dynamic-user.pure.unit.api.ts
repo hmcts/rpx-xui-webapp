@@ -55,6 +55,8 @@ const ENV_KEYS = [
   'BOOKING_UI_FT_ON_8_PASSWORD',
   'STAFF_ADMIN_USERNAME',
   'STAFF_ADMIN_PASSWORD',
+  'COURT_ADMIN_USERNAME',
+  'COURT_ADMIN_PASSWORD',
   'STAFF_ADMIN_1_USERNAME',
   'STAFF_ADMIN_1_PASSWORD',
   'STAFF_ADMIN_2_USERNAME',
@@ -276,6 +278,10 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(getRuntimeUserCredentialEnvMapping(' staff_admin ')).toEqual({
       username: 'STAFF_ADMIN_USERNAME',
       password: 'STAFF_ADMIN_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' court_admin ')).toEqual({
+      username: 'COURT_ADMIN_USERNAME',
+      password: 'COURT_ADMIN_PASSWORD',
     });
     expect(getRuntimeUserCredentialEnvMapping(' staff_admin-1 ')).toEqual({
       username: 'STAFF_ADMIN_1_USERNAME',

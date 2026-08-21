@@ -9,6 +9,7 @@ import { __test__ as sessionCaptureTest, loadSessionCookies, refreshRejectedSess
 import { __test__ as sessionReuseValidationTest } from '../../common/sessionReuseValidation.js';
 import { validateStoredSession } from '../../common/sessionReuseValidation.js';
 import { withOrderedSessionFallback } from '../../common/orderedSessionFallback.js';
+import { SERVICE_DOWN_SESSION_CAPTURE_FAILURE } from '../../common/sessionCaptureRetry.js';
 import { resolveSessionStorageKey, type SessionIdentity } from '../../common/sessionIdentity.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
 import { SessionCaptureError } from '../utils/errors.js';
@@ -1768,6 +1769,54 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('allows one recovery capture after an unavailable IDAM surface marker', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-service-down-retry-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'SERVICE_DOWN_RETRY_USER',
+      email: 'service-down-retry@example.test',
+      password: 'not-used',
+    };
+    let captures = 0;
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: {},
+          isSessionFresh: () => false,
+          lockfile: fakeLockfile(),
+          loginAndPersistSession: async () => {
+            captures += 1;
+            throw new SessionCaptureError('IDAM login surface was unavailable', identity.userIdentifier, {
+              failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
+            });
+          },
+          resolveSessionIdentity: () => identity,
+        })
+      ).rejects.toThrow('IDAM login surface was unavailable');
+
+      await sessionCaptureTest.sessionCaptureWith([identity], {
+        chromiumLauncher: {} as never,
+        config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+        env: {},
+        isSessionFresh: () => false,
+        lockfile: fakeLockfile(),
+        loginAndPersistSession: async () => {
+          captures += 1;
+        },
+        resolveSessionIdentity: () => identity,
+      });
+
+      expect(captures).toBe(2);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('allows only one shared recovery capture after a transient marker', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-single-recovery-unit-'));
     const previousCwd = process.cwd();
@@ -1950,6 +1999,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-shell-unit-'));
     const previousCwd = process.cwd();
     const previousTestUrl = process.env.TEST_URL;
+    const previousSessionReuseValidationMode = process.env.PW_SESSION_REUSE_VALIDATION_MODE;
     const identity: SessionIdentity = {
       userIdentifier: 'UNIT_SHELL_USER',
       email: 'unit-shell-user@example.test',
@@ -1984,6 +2034,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       );
       process.chdir(tempDir);
       process.env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net';
+      // The contract under test starts after cached-session validation. Avoid a
+      // CI-only network validation failure masking the missing-shell assertion.
+      process.env.PW_SESSION_REUSE_VALIDATION_MODE = 'best-effort';
 
       const page = {
         context: () => ({
@@ -2013,6 +2066,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         delete process.env.TEST_URL;
       } else {
         process.env.TEST_URL = previousTestUrl;
+      }
+      if (previousSessionReuseValidationMode === undefined) {
+        delete process.env.PW_SESSION_REUSE_VALIDATION_MODE;
+      } else {
+        process.env.PW_SESSION_REUSE_VALIDATION_MODE = previousSessionReuseValidationMode;
       }
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

@@ -112,6 +112,21 @@ type AuthCheckContext = {
   get: (url: string, options?: Record<string, unknown>) => Promise<AuthCheckResponse>;
 };
 
+function getGatewayReference(response: AuthCheckResponse): string | undefined {
+  const headers = response.headers?.();
+  if (!headers) {
+    return undefined;
+  }
+
+  return headers['x-azure-ref'] ?? headers['x-request-id'] ?? headers['x-correlation-id'];
+}
+
+function describeLoginRouteFailure(response: AuthCheckResponse): string {
+  const gatewayReference = getGatewayReference(response);
+  const gatewayDetail = gatewayReference ? `; gatewayRef=${gatewayReference}` : '';
+  return `XUI authentication route unavailable before IDAM form submission${gatewayDetail}`;
+}
+
 const defaultStorageDeps: StorageDeps = {
   createStorageState,
   tryReadState,
@@ -154,7 +169,7 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
   try {
     // Double-check freshness after acquiring lock (another worker/test suite may have logged in)
     const storagePath = getStoragePath(storageRoot, role);
-    let state = await deps.tryReadState(storagePath);
+    const state = await deps.tryReadState(storagePath);
 
     if (state && isStorageStateFresh(storagePath)) {
       const validation = await (deps.validateStorageState ?? validateStorageState)(storagePath);
@@ -331,9 +346,12 @@ async function createStorageStateViaForm(
   try {
     const loginPage = await context.get('auth/login');
     if (loginPage.status() >= 400) {
-      throw new AuthenticationError(`GET /auth/login responded with ${loginPage.status()}`, role, {
+      const diagnosis = describeLoginRouteFailure(loginPage);
+      throw new AuthenticationError(`GET /auth/login responded with ${loginPage.status()} (${diagnosis})`, role, {
         endpoint: 'auth/login',
         status: loginPage.status(),
+        diagnosis,
+        gatewayReference: getGatewayReference(loginPage),
       });
     }
 
@@ -675,6 +693,7 @@ export const __test__ = {
   createStorageStateWith,
   tryTokenBootstrap,
   createStorageStateViaForm,
+  describeLoginRouteFailure,
   getCredentials,
   readAuthCheck,
   waitForAuthenticated,

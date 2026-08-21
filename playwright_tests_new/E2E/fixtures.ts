@@ -1157,25 +1157,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     await use(benignApiErrorRuleRegistry.registerBenignApiErrorRule);
   },
 
-  integrationStartStagger: [
-    async ({}, use, workerInfo) => {
-      const staggerMs = resolveIntegrationStartStaggerMs();
-      const delayMs = workerInfo.parallelIndex * staggerMs;
-      if (delayMs > 0) {
-        logger.info('Staggering integration worker start', {
-          parallelIndex: workerInfo.parallelIndex,
-          delayMs,
-          operation: 'integration-startup',
-        });
-        await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
-      }
-      await use();
-    },
-    { scope: 'worker' },
-  ],
-
-  page: async ({ page, benignApiErrorRuleRegistry, integrationStartStagger }, use, testInfo) => {
-    void integrationStartStagger;
+  page: async ({ page, benignApiErrorRuleRegistry }, use, testInfo) => {
     const apiErrors: ApiError[] = [];
     const failedRequests: FailedRequest[] = [];
     const slowCalls: Array<{ url: string; duration: number; method: string }> = [];

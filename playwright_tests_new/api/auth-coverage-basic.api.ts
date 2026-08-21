@@ -21,8 +21,12 @@ test.describe('Auth helper coverage - basic utilities', { tag: '@svc-auth' }, ()
     expect(authTest.stripTrailingSlash('https://example.com///')).toBe('https://example.com');
   });
 
-  test('getCacheKey includes test environment', () => {
-    expect(authTest.getCacheKey('solicitor')).toBe(`${config.testEnv}-solicitor`);
+  test('getCacheKey includes environment, role and identity hash', () => {
+    const cacheKey = authTest.getCacheKey('solicitor');
+    const identityHash = cacheKey.replace(`${config.testEnv}-solicitor-`, '');
+
+    expect(cacheKey.startsWith(`${config.testEnv}-solicitor-`)).toBe(true);
+    expect(identityHash).toMatch(/^[a-f0-9]{16}$/);
   });
 
   test('runtime config derives ITHC environment from explicit env or URL', () => {
@@ -35,5 +39,15 @@ test.describe('Auth helper coverage - basic utilities', { tag: '@svc-auth' }, ()
     expect(creds.username).toContain('@');
     expect(creds.password).toBeTruthy();
     expect(() => authTest.getCredentials('unknown' as any)).toThrow('No credentials configured');
+  });
+
+  test('required users fail instead of using placeholder credentials', () => {
+    expect(runtimeConfigTest.resolveRequiredUser('solicitor', ['configured@example.com'], ['configured-password'])).toEqual({
+      e: 'configured@example.com',
+      sec: 'configured-password',
+    });
+    expect(() => runtimeConfigTest.resolveRequiredUser('solicitor', [undefined], [undefined])).toThrow(
+      'Required solicitor credentials are not configured'
+    );
   });
 });

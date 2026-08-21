@@ -1098,6 +1098,267 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('reuses an authenticated session beyond the local refresh age and clears its failure marker', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-validated-reuse-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_VALIDATED_STALE_USER',
+      email: 'validated-stale@example.test',
+      password: 'not-used',
+    };
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const storageKey = resolveSessionStorageKey(identity);
+    const sessionPath = path.join(sessionsDir, `${storageKey}.storage.json`);
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
+    let loginCount = 0;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(
+        sessionPath,
+        JSON.stringify({
+          cookies: [
+            {
+              name: 'Idam.Session',
+              value: 'session',
+              domain: 'idam.example.test',
+              expires: Math.floor(Date.now() / 1_000) + 600,
+            },
+            {
+              name: '__auth__',
+              value: 'auth',
+              domain: 'manage-case.example.test',
+              expires: Math.floor(Date.now() / 1_000) + 600,
+            },
+          ],
+        })
+      );
+      fs.utimesSync(sessionPath, new Date(Date.now() - 3_600_000), new Date(Date.now() - 3_600_000));
+      fs.writeFileSync(failurePath, JSON.stringify({ timestamp: Date.now(), message: 'previous AAT login outage' }));
+      process.chdir(tempDir);
+
+      await sessionCaptureTest.sessionCaptureWith([identity], {
+        config: {
+          urls: { exuiDefaultUrl: 'https://manage-case.example.test', idamWebUrl: 'https://idam.example.test' },
+        } as never,
+        env: { PW_SESSION_MAX_AGE_MS: '1000' },
+        loginAndPersistSession: async () => {
+          loginCount += 1;
+        },
+        resolveSessionIdentity: () => identity,
+        validateStoredSession: async () => 'authenticated',
+      });
+
+      expect(loginCount).toBe(0);
+      expect(fs.existsSync(failurePath)).toBe(false);
+      expect(Date.now() - fs.statSync(sessionPath).mtimeMs).toBeLessThan(5_000);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('does not reuse a stale session unless the server confirms authentication', async () => {
+    for (const validation of ['unauthenticated', 'unavailable'] as const) {
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-unverified-reuse-unit-'));
+      const previousCwd = process.cwd();
+      const identity: SessionIdentity = {
+        userIdentifier: `UNIT_${validation.toUpperCase()}_STALE_USER`,
+        email: `unit-${validation}-stale@example.test`,
+        password: 'not-used',
+      };
+      const sessionsDir = path.join(tempDir, '.sessions');
+      const sessionPath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.storage.json`);
+      let loginCount = 0;
+
+      try {
+        fs.mkdirSync(sessionsDir, { recursive: true });
+        fs.writeFileSync(
+          sessionPath,
+          JSON.stringify({
+            cookies: [
+              {
+                name: 'Idam.Session',
+                value: 'session',
+                domain: 'idam.example.test',
+                expires: Math.floor(Date.now() / 1_000) + 600,
+              },
+              {
+                name: '__auth__',
+                value: 'auth',
+                domain: 'manage-case.example.test',
+                expires: Math.floor(Date.now() / 1_000) + 600,
+              },
+            ],
+          })
+        );
+        fs.utimesSync(sessionPath, new Date(Date.now() - 3_600_000), new Date(Date.now() - 3_600_000));
+        process.chdir(tempDir);
+
+        await sessionCaptureTest.sessionCaptureWith([identity], {
+          config: {
+            urls: { exuiDefaultUrl: 'https://manage-case.example.test', idamWebUrl: 'https://idam.example.test' },
+          } as never,
+          env: { PW_SESSION_MAX_AGE_MS: '1000' },
+          lockfile: fakeLockfile(),
+          loginAndPersistSession: async () => {
+            loginCount += 1;
+          },
+          resolveSessionIdentity: () => identity,
+          validateStoredSession: async () => validation,
+        });
+
+        expect(loginCount).toBe(1);
+      } finally {
+        process.chdir(previousCwd);
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    }
+  });
+
+  test('persists an authenticated API session and skips browser login', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-api-first-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_API_FIRST_USER',
+      email: 'api-first@example.test',
+      password: 'not-used',
+    };
+    let browserLoginCount = 0;
+
+    try {
+      process.chdir(tempDir);
+      await sessionCaptureTest.sessionCaptureWith([identity], {
+        bootstrapApiSession: async () => ({
+          status: 'authenticated',
+          storageState: {
+            cookies: [
+              {
+                name: 'Idam.Session',
+                value: 'idam-session',
+                domain: 'idam.example.test',
+                path: '/',
+                expires: Math.floor(Date.now() / 1_000) + 600,
+                httpOnly: true,
+                secure: true,
+                sameSite: 'Lax',
+              },
+              {
+                name: '__auth__',
+                value: 'xui-session',
+                domain: 'manage-case.example.test',
+                path: '/',
+                expires: Math.floor(Date.now() / 1_000) + 600,
+                httpOnly: true,
+                secure: true,
+                sameSite: 'Lax',
+              },
+            ],
+            origins: [],
+          },
+        }),
+        config: {
+          urls: { exuiDefaultUrl: 'https://manage-case.example.test', idamWebUrl: 'https://idam.example.test' },
+        } as never,
+        env: { TEST_URL: 'https://manage-case.example.test' },
+        isSessionFresh: () => false,
+        lockfile: fakeLockfile(),
+        loginAndPersistSession: async () => {
+          browserLoginCount += 1;
+        },
+        resolveSessionIdentity: () => identity,
+      });
+
+      const sessionPath = path.join(tempDir, '.sessions', `${resolveSessionStorageKey(identity)}.storage.json`);
+      expect(browserLoginCount).toBe(0);
+      expect(JSON.parse(fs.readFileSync(sessionPath, 'utf8')).cookies).toHaveLength(2);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('uses browser login once when API bootstrap is unavailable', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-api-fallback-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_API_FALLBACK_USER',
+      email: 'api-fallback@example.test',
+      password: 'not-used',
+    };
+    let browserLoginCount = 0;
+
+    try {
+      process.chdir(tempDir);
+      await sessionCaptureTest.sessionCaptureWith([identity], {
+        bootstrapApiSession: async () => ({
+          status: 'unavailable',
+          stage: 'xui-auth-login',
+          reason: 'XUI auth/login responded with 503',
+          statusCode: 503,
+        }),
+        config: {
+          urls: { exuiDefaultUrl: 'https://manage-case.example.test', idamWebUrl: 'https://idam.example.test' },
+        } as never,
+        isSessionFresh: () => false,
+        lockfile: fakeLockfile(),
+        loginAndPersistSession: async () => {
+          browserLoginCount += 1;
+        },
+        resolveSessionIdentity: () => identity,
+      });
+
+      expect(browserLoginCount).toBe(1);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('does not start browser fallback after API bootstrap consumes the remaining capture budget', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-api-budget-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'UNIT_API_BUDGET_USER',
+      email: 'api-budget@example.test',
+      password: 'not-used',
+    };
+    let now = 0;
+    let browserLoginCount = 0;
+
+    try {
+      process.chdir(tempDir);
+      await expect(
+        sessionCaptureTest.sessionCaptureWith([identity], {
+          bootstrapApiSession: async () => {
+            now = 100;
+            return {
+              status: 'unavailable',
+              stage: 'xui-auth-login',
+              reason: 'request budget exhausted',
+            };
+          },
+          captureDeadlineAt: 100,
+          config: {
+            urls: { exuiDefaultUrl: 'https://manage-case.example.test', idamWebUrl: 'https://idam.example.test' },
+          } as never,
+          isSessionFresh: () => false,
+          lockfile: fakeLockfile(),
+          loginAndPersistSession: async () => {
+            browserLoginCount += 1;
+          },
+          now: () => now,
+          resolveSessionIdentity: () => identity,
+        })
+      ).rejects.toThrow('Browser session fallback cannot start');
+
+      expect(browserLoginCount).toBe(0);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('does not clear a superseded cooldown marker after lock ownership is compromised', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-compromised-marker-clear-'));
     const previousCwd = process.cwd();
@@ -1117,7 +1378,6 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       storageStateFingerprint: sessionCaptureTest.storageStateFingerprint('rejected-session'),
     });
     let onCompromised: ((error: Error) => void) | undefined;
-    let freshnessChecks = 0;
 
     try {
       fs.mkdirSync(sessionsDir, { recursive: true });
@@ -1131,9 +1391,10 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
           config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
           env: {},
           isSessionFresh: () => {
-            freshnessChecks += 1;
-            if (freshnessChecks === 2) {
-              onCompromised!(new Error('proper-lockfile ownership lost before marker clear'));
+            if (onCompromised) {
+              const compromise = onCompromised;
+              onCompromised = undefined;
+              compromise(new Error('proper-lockfile ownership lost before marker clear'));
             }
             return true;
           },

@@ -29,6 +29,7 @@ import { PRL_SOLICITOR_USER, resolvePrlSolicitorSessionCandidates } from './prlS
 import { AAT_AUTH_UNAVAILABLE_FAILURE, shouldRejectUnavailableSessionValidation } from './sessionReusePolicy.js';
 import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdminUserPool.js';
 import { validateStoredSession } from './sessionReuseValidation.js';
+import { bootstrapApiSession, type ApiSessionStorageState } from './apiSessionBootstrap.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
@@ -592,6 +593,8 @@ type SessionCaptureDeps = {
   expectedStaleSession?: Pick<LoadedSession, 'storageFile' | 'storageStateFingerprint'>;
   lockWaitMs?: number;
   captureDeadlineAt?: number;
+  validateStoredSession?: typeof validateStoredSession;
+  bootstrapApiSession?: typeof bootstrapApiSession;
 };
 
 const setupMarkerByPage = new WeakMap<Page, string>();
@@ -1254,7 +1257,7 @@ function hasReusableSessionSupersedingFailure({
   maxAgeMs: number;
   sessionPath: string;
   targetUrl: string;
-  idamUrl: string;
+  idamUrl?: string;
   recentFailure: SessionCaptureFailureRecord;
 }): boolean {
   if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl, idamUrl })) {
@@ -1267,6 +1270,66 @@ function hasReusableSessionSupersedingFailure({
     recentFailure.storageStateFingerprint !== undefined &&
     currentFingerprint !== recentFailure.storageStateFingerprint
   );
+}
+
+async function reuseAuthenticatedSessionBeyondRefreshAge({
+  fsApi,
+  identity,
+  isFresh,
+  sessionMaxAgeMs,
+  sessionPath,
+  targetUrl,
+  idamUrl,
+  validateSession,
+}: {
+  fsApi: typeof fs;
+  identity: SessionIdentity;
+  isFresh: typeof isSessionFresh;
+  sessionMaxAgeMs: number;
+  sessionPath: string;
+  targetUrl: string;
+  idamUrl?: string;
+  validateSession: typeof validateStoredSession;
+}): Promise<boolean> {
+  if (
+    isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl }) ||
+    !isFresh(sessionPath, Number.MAX_SAFE_INTEGER, { targetUrl, idamUrl })
+  ) {
+    return false;
+  }
+
+  let session: LoadedSession;
+  try {
+    session = loadSessionCookies(identity);
+  } catch {
+    return false;
+  }
+
+  if ((await validateSession(session, targetUrl)) !== 'authenticated') {
+    return false;
+  }
+
+  if (readStorageStateFingerprint(fsApi, sessionPath) !== session.storageStateFingerprint) {
+    return false;
+  }
+
+  try {
+    fsApi.utimesSync(sessionPath, new Date(), new Date());
+  } catch (error) {
+    logger.warn('Authenticated stale session could not be refreshed locally', {
+      userIdentifier: identity.userIdentifier,
+      sessionPath,
+      error: (error as Error).message,
+      operation: 'session-reuse',
+    });
+  }
+
+  logger.info('Reused server-validated session beyond local refresh age', {
+    userIdentifier: identity.userIdentifier,
+    sessionPath,
+    operation: 'session-reuse',
+  });
+  return true;
 }
 
 // local helper to persist session: write session file, add cookies to context and save storageState
@@ -1312,6 +1375,32 @@ async function persistSession(
       operation: 'persist-session',
     });
     throw err;
+  } finally {
+    if (fsApi.existsSync(stagingPath)) {
+      fsApi.rmSync(stagingPath, { force: true });
+    }
+  }
+}
+
+function persistApiSessionState(
+  localSessionPath: string,
+  storageState: ApiSessionStorageState,
+  userIdentifier: string,
+  fsApi: typeof fs,
+  assertLockOwned: () => void
+): void {
+  const stagingPath = `${localSessionPath}.${process.pid}.${Date.now()}.api.tmp`;
+  try {
+    assertLockOwned();
+    fsApi.writeFileSync(stagingPath, JSON.stringify(storageState), { encoding: 'utf8', mode: 0o600 });
+    assertLockOwned();
+    fsApi.renameSync(stagingPath, localSessionPath);
+    logger.info('Stored API-bootstrapped storage state', {
+      userIdentifier,
+      sessionPath: localSessionPath,
+      cookieCount: storageState.cookies.length,
+      operation: 'persist-api-session',
+    });
   } finally {
     if (fsApi.existsSync(stagingPath)) {
       fsApi.rmSync(stagingPath, { force: true });
@@ -1824,6 +1913,16 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const now = deps.now ?? Date.now;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
   const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
+  const validateSession = deps.validateStoredSession ?? validateStoredSession;
+  const bootstrapSession =
+    deps.bootstrapApiSession ??
+    (deps.loginAndPersistSession
+      ? async () => ({
+          status: 'unavailable' as const,
+          stage: 'configuration' as const,
+          reason: 'API bootstrap was not supplied with the injected browser-login test double',
+        })
+      : bootstrapApiSession);
 
   const sessionsDir = path.join(process.cwd(), '.sessions');
   ensureDirectory(fsApi, sessionsDir);
@@ -1837,6 +1936,23 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 
     ensureDirectory(fsApi, sessionsDir);
     ensureLockFile(fsApi, lockFilePath);
+
+    if (
+      !force &&
+      (await reuseAuthenticatedSessionBeyondRefreshAge({
+        fsApi,
+        identity,
+        isFresh,
+        sessionMaxAgeMs,
+        sessionPath,
+        targetUrl,
+        idamUrl: activeConfig.urls.idamWebUrl,
+        validateSession,
+      }))
+    ) {
+      clearSessionCaptureFailure(fsApi, failurePath);
+      continue;
+    }
 
     // Acquire filesystem lock (blocks across all workers)
     let release: SessionLockRelease | null = null;
@@ -1999,13 +2115,46 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           return;
         }
 
+        const apiBootstrap = await bootstrapSession({
+          env,
+          targetUrl,
+          userIdentifier: identity.userIdentifier,
+          username: identity.email,
+          password: identity.password,
+        });
+
+        if (
+          apiBootstrap.status === 'authenticated' &&
+          hasReusableAuthCookies(apiBootstrap.storageState.cookies as Cookie[], targetUrl, activeConfig.urls.idamWebUrl)
+        ) {
+          release.assertOwned();
+          persistApiSessionState(sessionPath, apiBootstrap.storageState, identity.userIdentifier, fsApi, release.assertOwned);
+          clearSessionCaptureFailure(fsApi, failurePath);
+          return;
+        }
+
+        logger.warn('API session bootstrap unavailable; using browser login fallback', {
+          userIdentifier: identity.userIdentifier,
+          stage: apiBootstrap.status === 'unavailable' ? apiBootstrap.stage : 'session-cookies',
+          reason:
+            apiBootstrap.status === 'unavailable'
+              ? apiBootstrap.reason
+              : 'API storage state did not contain reusable cookies for the configured hosts',
+          operation: 'session-capture',
+        });
+
         const remainingCaptureBudgetMs = deps.captureDeadlineAt === undefined ? undefined : deps.captureDeadlineAt - now();
         const maxAttempts = resolveCaptureAttemptLimit(remainingCaptureBudgetMs);
         if (maxAttempts === 0 || (remainingCaptureBudgetMs === undefined && lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS)) {
           throw new SessionCaptureError(
-            `Session capture cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget`,
+            `Browser session fallback cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget after API bootstrap failed`,
             identity.userIdentifier,
-            { sessionPath, lockWaitMs, remainingCaptureBudgetMs }
+            {
+              sessionPath,
+              lockWaitMs,
+              remainingCaptureBudgetMs,
+              apiBootstrapStage: apiBootstrap.status === 'unavailable' ? apiBootstrap.stage : 'session-cookies',
+            }
           );
         }
 

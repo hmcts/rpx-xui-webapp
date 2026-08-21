@@ -3,7 +3,16 @@
 const integrationConfigSupport = require('../playwright.integration.config.support.cjs');
 
 const requestedWorkers = integrationConfigSupport.resolveWorkerCount(process.env);
-const poolCapacities = integrationConfigSupport.resolveConfiguredSessionPoolCapacities(process.env);
+const requiredTagsArgument = process.argv.find((argument) => argument.startsWith('--tag='));
+const requiredTags = requiredTagsArgument
+  ? requiredTagsArgument
+      .replace('--tag=', '')
+      .split(',')
+      .map((tag) => tag.trim().toLowerCase())
+      .filter(Boolean)
+  : [];
+const requirements = requiredTags.length > 0 ? { tags: requiredTags } : undefined;
+const poolCapacities = integrationConfigSupport.resolveConfiguredSessionPoolCapacities(process.env, requirements);
 const strict = process.argv.includes('--strict');
 const requiredPoolsArgument = process.argv.find((argument) => argument.startsWith('--require='));
 const requiredPools = requiredPoolsArgument
@@ -35,6 +44,9 @@ console.log(
   }`
 );
 console.log('[playwright-preflight] pool capacity is advisory; configured identities may be reused across workers.');
+if (requiredTags.length > 0) {
+  console.log(`[playwright-preflight] selected-tags=${requiredTags.join(',')}`);
+}
 console.log(
   `[playwright-preflight] validation=${process.env.PW_SESSION_REUSE_VALIDATION_MODE ?? (process.env.CI ? 'strict' : 'best-effort')}`
 );

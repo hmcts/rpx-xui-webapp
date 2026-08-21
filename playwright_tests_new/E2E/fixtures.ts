@@ -4,6 +4,8 @@ import getPort from 'get-port';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
+import { acquireIdentityLease, type IdentityLease } from '../common/identityLease';
+import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
 
@@ -1136,6 +1138,7 @@ export type CustomFixtures = PageFixtures & UtilsFixtures;
 export interface TestFixtures extends CustomFixtures {
   benignApiErrorRuleRegistry: BenignApiErrorRuleRegistry;
   registerBenignApiErrorRule: BenignApiErrorRuleRegistry['registerBenignApiErrorRule'];
+  identityLease: { acquire: (requirements: IdentityCompatibilityRequirements) => Promise<IdentityLease> };
 }
 
 interface WorkerFixtures {
@@ -1148,13 +1151,27 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
   ...utilsFixtures,
 
   // Playwright fixture functions must use object destructuring here.
-  // eslint-disable-next-line no-empty-pattern
-  benignApiErrorRuleRegistry: async ({}, use) => {
+  benignApiErrorRuleRegistry: async (_unused, use) => {
     await use(createBenignApiErrorRuleRegistry());
   },
 
   registerBenignApiErrorRule: async ({ benignApiErrorRuleRegistry }, use) => {
     await use(benignApiErrorRuleRegistry.registerBenignApiErrorRule);
+  },
+
+  identityLease: async (_unused, use) => {
+    const releases: Array<() => Promise<void>> = [];
+    try {
+      await use({
+        acquire: async (requirements) => {
+          const lease = await acquireIdentityLease(requirements);
+          releases.push(lease.release);
+          return lease;
+        },
+      });
+    } finally {
+      await Promise.all(releases.reverse().map((release) => release()));
+    }
   },
 
   page: async ({ page, benignApiErrorRuleRegistry }, use, testInfo) => {

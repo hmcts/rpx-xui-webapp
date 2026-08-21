@@ -8,6 +8,11 @@ const { readFileSync } = require('node:fs');
 const { cpus, totalmem } = require('node:os');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const {
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
+} = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
 const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
@@ -45,41 +50,6 @@ const resolveWorkerCount = (env = process.env) => {
   }
 
   return 7;
-};
-
-const pooledCredentialPools = [
-  {
-    name: 'STAFF_ADMIN',
-    usernamePattern: /^STAFF_ADMIN(?:_\d+)?_USERNAME$/,
-    enabledBy: 'STAFF_ADMIN_POOL_ENABLED',
-  },
-  { name: 'BOOKING_UI_FT_ON', usernamePattern: /^BOOKING_UI_FT_ON(?:_\d+)?_USERNAME$/ },
-  { name: 'HEARING_MANAGER_CR84_ON', usernamePattern: /^HEARING_MANAGER_CR84_ON(?:_\d+)?_USERNAME$/ },
-  { name: 'HEARING_MANAGER_CR84_OFF', usernamePattern: /^HEARING_MANAGER_CR84_OFF(?:_\d+)?_USERNAME$/ },
-  { name: 'PRL_SOLICITOR', usernamePattern: /^PRL_SOLICITOR\d*_USERNAME$/ },
-];
-
-const resolveConfiguredSessionPoolCapacities = (env = process.env) => {
-  const poolCapacities = {};
-
-  for (const { name, usernamePattern, enabledBy } of pooledCredentialPools) {
-    if (enabledBy && env[enabledBy] !== 'true') {
-      continue;
-    }
-
-    const emails = new Set();
-    for (const key of Object.keys(env)) {
-      if (usernamePattern.test(key) && env[key]?.trim() && env[key.replace(/_USERNAME$/, '_PASSWORD')]) {
-        emails.add(env[key].trim().toLowerCase());
-      }
-    }
-
-    if (emails.size > 0) {
-      poolCapacities[name] = emails.size;
-    }
-  }
-
-  return poolCapacities;
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -301,6 +271,7 @@ module.exports = {
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
   resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,

@@ -252,8 +252,11 @@ export class FindCasePage extends Base {
       return;
     }
 
-    // Global search replaces the top-right link with the case-reference search box.
-    await this.page.goto('/cases/case-search');
+    // Header navigation is not part of the Find Case journey contract. Some
+    // authenticated layouts do not render either header link, so use the
+    // route directly and let ensureFiltersVisible validate the page state.
+    await this.page.goto('/cases/case-search', { waitUntil: 'domcontentloaded' });
+    await this.page.waitForURL(/\/cases\/case-search/, { timeout: EXUI_TIMEOUTS.GLOBAL_SEARCH_NAVIGATION });
     await this.exuiSpinnerComponent.wait();
   }
 

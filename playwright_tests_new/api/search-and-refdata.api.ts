@@ -231,11 +231,13 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
 
   test('exclusions/confirm responds with XSRF header', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.post<RoleAssignmentContainer>('api/role-access/exclusions/confirm', {
-        data: {},
-        headers,
-        throwOnError: false,
-      });
+      const res = await guardedRequest(() =>
+        apiClient.post<RoleAssignmentContainer>('api/role-access/exclusions/confirm', {
+          data: {},
+          headers,
+          throwOnError: false,
+        })
+      );
       expectStatus(res.status, StatusSets.allocateRole);
       assertRoleAssignmentsIfPresent(res.status, res.data);
     });

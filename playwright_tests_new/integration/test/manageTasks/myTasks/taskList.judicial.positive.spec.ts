@@ -122,11 +122,7 @@ test.describe('Task List as IAC_Judge_WA_R1', { tag: ['@integration', '@integrat
     taskListMockResponse = buildTaskListMock(6, userId, myActionsList);
   });
 
-  test('Judicial user searches My tasks and identifies assigned tasks', async ({
-    taskListPage,
-    page,
-    tableUtils,
-  }) => {
+  test('Judicial user searches My tasks and identifies assigned tasks', async ({ taskListPage, page, tableUtils }) => {
     await verifyJudicialTaskListSearch(page, taskListPage, tableUtils, userId, taskListMockResponse);
   });
 });

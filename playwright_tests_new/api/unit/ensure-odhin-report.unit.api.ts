@@ -44,6 +44,8 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
     expect(html).toContain('AAT Playwright Integration Test');
     expect(html).toContain('Odhín HTML report was not generated before Jenkins publishing.');
     expect(html).toContain('xui-playwright-integration.html');
+    expect(html).toContain('The Playwright command failed or was interrupted');
+    expect(html).not.toContain('Playwright integration command');
   });
 
   test('parses Jenkins CLI arguments', () => {

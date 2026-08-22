@@ -31,6 +31,20 @@ const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
 };
 
 test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
+  test('externalises attachments by default and preserves an explicit embedding override', () => {
+    const receivedOptions: Array<Record<string, unknown>> = [];
+    const createInnerReporter = (options: Record<string, unknown>) => {
+      receivedOptions.push(options);
+      return {};
+    };
+
+    new OdhinAdaptiveReporter({ createInnerReporter });
+    new OdhinAdaptiveReporter({ createInnerReporter, embedAttachments: true });
+
+    expect(receivedOptions[0]?.embedAttachments).toBe(false);
+    expect(receivedOptions[1]?.embedAttachments).toBe(true);
+  });
+
   test('adds an explicit source to session-capture setup failures before Odhín renders them', () => {
     const result = odhinAdaptiveTest.addFailureSource(
       { title: 'searches a global case' },

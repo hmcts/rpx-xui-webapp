@@ -9,9 +9,11 @@ const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
-    this.options = options;
-    this.outputFolder = options.outputFolder;
-    const configuredLightweight = options.lightweight;
+    // Odhín embeds attachments by default, which can exceed V8's string limit after retried browser failures.
+    // Keep the files beside the published report; callers can explicitly opt back into embedding for a small local run.
+    const reporterOptions = { embedAttachments: false, ...options };
+    this.outputFolder = reporterOptions.outputFolder;
+    const configuredLightweight = reporterOptions.lightweight;
     const envLightweight = process.env.PW_ODHIN_LIGHTWEIGHT;
     this.lightweight =
       typeof configuredLightweight === 'boolean'
@@ -37,18 +39,21 @@ class OdhinAdaptiveReporter {
     };
 
     // Keep stdout/stderr only for failed tests in default mode.
-    this.testOutputMode = normalizeTestOutputMode(options.testOutput);
+    this.testOutputMode = normalizeTestOutputMode(reporterOptions.testOutput);
     this.profileEnabled =
-      typeof options.profile === 'boolean'
-        ? options.profile
+      typeof reporterOptions.profile === 'boolean'
+        ? reporterOptions.profile
         : process.env.PW_ODHIN_PROFILE
           ? process.env.PW_ODHIN_PROFILE.toLowerCase() === 'true'
           : true;
-    const configuredRuntimeHookTimeoutMs = options.runtimeHookTimeoutMs ?? process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS;
+    const configuredRuntimeHookTimeoutMs = reporterOptions.runtimeHookTimeoutMs ?? process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS;
     this.runtimeHookTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredRuntimeHookTimeoutMs, process.env.CI ? 0 : 15000);
-    const configuredFinalizationTimeoutMs = options.finalizationTimeoutMs ?? process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS;
+    const configuredFinalizationTimeoutMs = reporterOptions.finalizationTimeoutMs ?? process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS;
     this.finalizationTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredFinalizationTimeoutMs, 30000);
-    this.trimFailedArtifacts = normalizeBoolean(options.trimFailedArtifacts ?? process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS, false);
+    this.trimFailedArtifacts = normalizeBoolean(
+      reporterOptions.trimFailedArtifacts ?? process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS,
+      false
+    );
     this.statusCounts = {
       passed: 0,
       failed: 0,
@@ -71,7 +76,9 @@ class OdhinAdaptiveReporter {
     this.finalizationStartedAt = 0;
     this.pendingInnerCallbacks = Promise.resolve();
     this.inner =
-      typeof options.createInnerReporter === 'function' ? options.createInnerReporter(options) : new OdhinReporter(options);
+      typeof reporterOptions.createInnerReporter === 'function'
+        ? reporterOptions.createInnerReporter(reporterOptions)
+        : new OdhinReporter(reporterOptions);
   }
 
   async onBegin(config, suite) {

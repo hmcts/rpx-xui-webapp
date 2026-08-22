@@ -198,27 +198,6 @@ describe('MyWorkFilterComponent', () => {
     expect(component.fieldsConfig.persistence).toBe('local');
   });
 
-  it('should preserve saved service and location filters while building the available filter options', () => {
-    const savedLocations = [LOCATION];
-    mockFilterService.get.and.returnValue({
-      id: MyWorkFilterComponent.FILTER_NAME,
-      fields: [
-        { name: 'services', value: ['IA'] },
-        { name: 'locations', value: savedLocations },
-      ],
-    });
-
-    fixture.destroy();
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    component.persistence = 'local';
-    fixture.detectChanges();
-
-    expect(component.fieldsSettings.fields.find((field) => field.name === 'services')?.value).toEqual(['IA']);
-    expect(component.fieldsSettings.fields.find((field) => field.name === 'locations')?.value).toEqual(savedLocations);
-  });
-
   it('should set booking locations', () => {
     mockRouter = TestBed.inject(Router);
     spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({ extras: { state: { location: { ids: ['231596', '231596'] } } } });

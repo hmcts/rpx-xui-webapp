@@ -5,6 +5,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const DEFAULT_REPORT_FILE = 'xui-playwright-integration.html';
+const RUNNER_FAILURE_DIAGNOSTIC =
+  'Integration session configuration did not complete before Playwright started. See the Jenkins console log for the configuration error.';
 
 function parseArgs(argv) {
   const options = {
@@ -50,7 +52,7 @@ function buildFallbackReportHtml(options) {
   const generatedAt = new Date().toISOString();
   const reportDir = options.reportDir || '';
   const reportFiles = listFiles(reportDir);
-  const diagnostics = collectDiagnostics();
+  const diagnostics = collectDiagnostics(reportDir);
 
   return `<!doctype html>
 <html lang="en">
@@ -70,9 +72,9 @@ function buildFallbackReportHtml(options) {
     <h1>${escapeHtml(options.suiteName)}</h1>
     <div class="warning">
       <strong>Odhín HTML report was not generated before Jenkins publishing.</strong>
-      <p>The Playwright integration command failed or was interrupted before the Odhín reporter wrote
+      <p>The Playwright command failed or was interrupted before the Odhín reporter wrote
       <code>${escapeHtml(options.reportFile || DEFAULT_REPORT_FILE)}</code>. Jenkins generated this fallback so the build
-      always exposes a report artifact for failed integration runs.</p>
+      always exposes a report artifact for failed runs.</p>
     </div>
     <div class="meta">
       <p><strong>Generated:</strong> ${escapeHtml(generatedAt)}</p>
@@ -97,14 +99,21 @@ function listFiles(directory) {
     .sort();
 }
 
-function collectDiagnostics() {
+function collectDiagnostics(reportDir) {
   const candidates = [
+    reportDir,
     'functional-output/tests/playwright-diagnostics/failure-data',
     'functional-output/tests/playwright-integration/load-profile',
     'test-results',
   ];
 
-  return candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => `${candidate}/${file}`));
+  return candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => formatDiagnostic(candidate, file)));
+}
+
+function formatDiagnostic(directory, file) {
+  const diagnosticPath = `${directory}/${file}`;
+  if (file !== 'runner-failure.txt') return diagnosticPath;
+  return `${diagnosticPath}: ${RUNNER_FAILURE_DIAGNOSTIC}`;
 }
 
 function listInterestingFiles(directory) {
@@ -122,7 +131,11 @@ function listInterestingFiles(directory) {
         }
         return;
       }
-      if (/(failure-data\.json|error-context\.md|trace\.zip|summary\.json|load-profile\.html)$/i.test(entry.name)) {
+      if (
+        /(failure-data\.json|error-context\.md|trace\.zip|summary\.json|load-profile\.html|runner-failure\.txt)$/i.test(
+          entry.name
+        )
+      ) {
         found.push(relativePath);
       }
     });

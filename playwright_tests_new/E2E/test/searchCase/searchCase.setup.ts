@@ -8,8 +8,9 @@ export const PUBLIC_LAW_CASE_REFERENCE_OPTIONS: ResolveCaseReferenceOptions = {
   preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
 };
 
-export async function openHomeWithCapturedSession(page: Page, userIdentifier: string): Promise<void> {
+export async function openHomeWithCapturedSession(page: Page, userIdentifier: string, targetUrl?: string): Promise<void> {
   await ensureAuthenticatedPage(page, userIdentifier, {
+    targetUrl,
     waitForSelector: 'exui-header',
     timeoutMs: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE,
   });

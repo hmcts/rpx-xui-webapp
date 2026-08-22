@@ -25,8 +25,11 @@ import {
   isUnexplainedIdamLoginRejection,
 } from './sessionCaptureRetry.js';
 import { withOrderedSessionFallback } from './orderedSessionFallback.js';
+import { PRL_SOLICITOR_USER, resolvePrlSolicitorSessionCandidates } from './prlSolicitorUserPool.js';
+import { AAT_AUTH_UNAVAILABLE_FAILURE, shouldRejectUnavailableSessionValidation } from './sessionReusePolicy.js';
 import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdminUserPool.js';
 import { validateStoredSession } from './sessionReuseValidation.js';
+import { bootstrapApiSession, type ApiSessionStorageState } from './apiSessionBootstrap.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
@@ -297,8 +300,11 @@ function writeSessionCaptureFailure(
         timestamp: Date.now(),
         message: error.message,
         failureKind,
-        // Semantic IDAM failures coordinate fallback identity selection and must not be retried by every worker.
-        retryable: !failureKind && isTransientSessionCaptureError(error),
+        // Explicit or unexplained identity failures remain terminal. A service-down
+        // marker is transient, so one later lock owner may retry it without every
+        // worker fanning out.
+        retryable:
+          failureKind === SERVICE_DOWN_SESSION_CAPTURE_FAILURE || (!failureKind && isTransientSessionCaptureError(error)),
         recoveryAttempted,
         storageStateFingerprint: readStorageStateFingerprint(fsApi, sessionPath) ?? null,
       })
@@ -587,6 +593,8 @@ type SessionCaptureDeps = {
   expectedStaleSession?: Pick<LoadedSession, 'storageFile' | 'storageStateFingerprint'>;
   lockWaitMs?: number;
   captureDeadlineAt?: number;
+  validateStoredSession?: typeof validateStoredSession;
+  bootstrapApiSession?: typeof bootstrapApiSession;
 };
 
 const setupMarkerByPage = new WeakMap<Page, string>();
@@ -689,7 +697,13 @@ function resolveSessionCandidates(
   parallelIndex = resolveCurrentPlaywrightParallelIndex()
 ): readonly SessionIdentityInput[] {
   const normalizedIdentifier = typeof userIdentifier === 'string' ? userIdentifier.trim().toUpperCase() : undefined;
-  return normalizedIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionCandidates({ parallelIndex }) : [userIdentifier];
+  if (normalizedIdentifier === STAFF_ADMIN_USER) {
+    return resolveStaffAdminSessionCandidates({ parallelIndex });
+  }
+  if (normalizedIdentifier === PRL_SOLICITOR_USER) {
+    return resolvePrlSolicitorSessionCandidates({ parallelIndex });
+  }
+  return [userIdentifier];
 }
 
 type SessionSelectionRecord = {
@@ -909,14 +923,7 @@ async function applySessionCookiesForIdentity(
     ? await ensureSessionCookiesForIdentity(userIdentifier, captureDeadlineAt)
     : await ensureSessionCookies(userIdentifier);
   const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
-  const validation = await validateStoredSession(session, targetUrl);
-  if (validation === 'unavailable') {
-    logger.warn('Unable to validate cached session state; reusing it without a refresh', {
-      userIdentifier: session.userIdentifier,
-      sessionPath: session.storageFile,
-      operation: 'validate-session-reuse',
-    });
-  }
+  const validation = await validateLoadedSessionForReuse(session, targetUrl);
   if (validation === 'unauthenticated') {
     logger.warn('Cached session was rejected by auth/isAuthenticated; refreshing once', {
       userIdentifier: session.userIdentifier,
@@ -925,7 +932,7 @@ async function applySessionCookiesForIdentity(
     });
     await refreshRejectedSession(session.userIdentifier, session);
     session = await ensureSessionCookiesForIdentity(session.userIdentifier, captureDeadlineAt);
-    const refreshedValidation = await validateStoredSession(session, targetUrl);
+    const refreshedValidation = await validateLoadedSessionForReuse(session, targetUrl);
     if (refreshedValidation === 'unauthenticated') {
       throw new SessionCaptureError(
         `Refreshed session was rejected by auth/isAuthenticated for ${session.userIdentifier}`,
@@ -938,6 +945,33 @@ async function applySessionCookiesForIdentity(
     await page.context().addCookies(session.cookies);
   }
   return session;
+}
+
+async function validateLoadedSessionForReuse(
+  session: LoadedSession,
+  targetUrl: string,
+  validateSession: typeof validateStoredSession = validateStoredSession,
+  env: NodeJS.ProcessEnv = process.env
+) {
+  const validation = await validateSession(session, targetUrl);
+  if (validation !== 'unavailable') {
+    return validation;
+  }
+
+  if (shouldRejectUnavailableSessionValidation(validation, env)) {
+    throw new SessionCaptureError(
+      `Unable to validate cached session for ${session.userIdentifier}; auth/isAuthenticated is unavailable`,
+      session.userIdentifier,
+      { sessionPath: session.storageFile, failureKind: AAT_AUTH_UNAVAILABLE_FAILURE }
+    );
+  }
+
+  logger.warn('Unable to validate cached session state; reusing it without a refresh', {
+    userIdentifier: session.userIdentifier,
+    sessionPath: session.storageFile,
+    operation: 'validate-session-reuse',
+  });
+  return validation;
 }
 
 export async function applySessionCookies(page: Page, userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
@@ -1079,7 +1113,7 @@ async function probeAuthenticatedShell(
 export async function ensureAuthenticatedPage(
   page: Page,
   userIdentifier: SessionIdentityInput,
-  options: { targetUrl?: string; waitForSelector?: string; timeoutMs?: number } = {}
+  options: { targetUrl?: string; waitForSelector?: string | false; timeoutMs?: number } = {}
 ): Promise<LoadedSession> {
   const resolveLoadedIdentity = (loadedSession: LoadedSession) => {
     if (
@@ -1096,6 +1130,7 @@ export async function ensureAuthenticatedPage(
   const timeoutMs = options.timeoutMs ?? 60_000;
   let session = await ensureSessionCookies(userIdentifier);
   let identity = resolveLoadedIdentity(session);
+  await validateLoadedSessionForReuse(session, targetUrl);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
     markSetup('cookies-ready');
@@ -1139,8 +1174,8 @@ export async function ensureAuthenticatedPage(
     }
   }
 
-  if (options.waitForSelector) {
-    const selectors = options.waitForSelector;
+  const selectors = options.waitForSelector === false ? undefined : (options.waitForSelector ?? 'exui-header');
+  if (selectors) {
     const waitForAppShell = async () => {
       markSetup('waiting-shell');
       await page.waitForLoadState('domcontentloaded');
@@ -1227,7 +1262,7 @@ function hasReusableSessionSupersedingFailure({
   maxAgeMs: number;
   sessionPath: string;
   targetUrl: string;
-  idamUrl: string;
+  idamUrl?: string;
   recentFailure: SessionCaptureFailureRecord;
 }): boolean {
   if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl, idamUrl })) {
@@ -1240,6 +1275,66 @@ function hasReusableSessionSupersedingFailure({
     recentFailure.storageStateFingerprint !== undefined &&
     currentFingerprint !== recentFailure.storageStateFingerprint
   );
+}
+
+async function reuseAuthenticatedSessionBeyondRefreshAge({
+  fsApi,
+  identity,
+  isFresh,
+  sessionMaxAgeMs,
+  sessionPath,
+  targetUrl,
+  idamUrl,
+  validateSession,
+}: {
+  fsApi: typeof fs;
+  identity: SessionIdentity;
+  isFresh: typeof isSessionFresh;
+  sessionMaxAgeMs: number;
+  sessionPath: string;
+  targetUrl: string;
+  idamUrl?: string;
+  validateSession: typeof validateStoredSession;
+}): Promise<boolean> {
+  if (
+    isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl }) ||
+    !isFresh(sessionPath, Number.MAX_SAFE_INTEGER, { targetUrl, idamUrl })
+  ) {
+    return false;
+  }
+
+  let session: LoadedSession;
+  try {
+    session = loadSessionCookies(identity);
+  } catch {
+    return false;
+  }
+
+  if ((await validateSession(session, targetUrl)) !== 'authenticated') {
+    return false;
+  }
+
+  if (readStorageStateFingerprint(fsApi, sessionPath) !== session.storageStateFingerprint) {
+    return false;
+  }
+
+  try {
+    fsApi.utimesSync(sessionPath, new Date(), new Date());
+  } catch (error) {
+    logger.warn('Authenticated stale session could not be refreshed locally', {
+      userIdentifier: identity.userIdentifier,
+      sessionPath,
+      error: (error as Error).message,
+      operation: 'session-reuse',
+    });
+  }
+
+  logger.info('Reused server-validated session beyond local refresh age', {
+    userIdentifier: identity.userIdentifier,
+    sessionPath,
+    operation: 'session-reuse',
+  });
+  return true;
 }
 
 // local helper to persist session: write session file, add cookies to context and save storageState
@@ -1285,6 +1380,32 @@ async function persistSession(
       operation: 'persist-session',
     });
     throw err;
+  } finally {
+    if (fsApi.existsSync(stagingPath)) {
+      fsApi.rmSync(stagingPath, { force: true });
+    }
+  }
+}
+
+function persistApiSessionState(
+  localSessionPath: string,
+  storageState: ApiSessionStorageState,
+  userIdentifier: string,
+  fsApi: typeof fs,
+  assertLockOwned: () => void
+): void {
+  const stagingPath = `${localSessionPath}.${process.pid}.${Date.now()}.api.tmp`;
+  try {
+    assertLockOwned();
+    fsApi.writeFileSync(stagingPath, JSON.stringify(storageState), { encoding: 'utf8', mode: 0o600 });
+    assertLockOwned();
+    fsApi.renameSync(stagingPath, localSessionPath);
+    logger.info('Stored API-bootstrapped storage state', {
+      userIdentifier,
+      sessionPath: localSessionPath,
+      cookieCount: storageState.cookies.length,
+      operation: 'persist-api-session',
+    });
   } finally {
     if (fsApi.existsSync(stagingPath)) {
       fsApi.rmSync(stagingPath, { force: true });
@@ -1430,15 +1551,33 @@ async function executeLoginAttempt(
   if (loginSurface === 'app') return;
 
   if (loginSurface !== 'login') {
-    await idamPage.usernameInput.first().waitFor({ state: 'visible', timeout: 10_000 });
-    await idamPage.login({ username: email, password });
-    await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
-    return;
+    if (await isServiceDownPage(page)) {
+      throw new SessionCaptureError(`Service down page detected while opening IDAM login for ${userIdentifier}`, userIdentifier, {
+        currentUrl: sanitizedPageUrl(page),
+        failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
+      });
+    }
+
+    throw unavailableIdamLoginSurfaceError(page, userIdentifier);
   }
 
   const usernameInput = (await waitForFirstVisibleLocator(page, usernameCandidates, 1_000)) ?? idamPage.usernameInput.first();
   await completeIdamCredentialFlow(page, idamPage, usernameInput, email, password);
   await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
+}
+
+// A successful navigation which renders neither IDAM nor XUI is an unavailable
+// login surface. Retrying with a fresh browser context is safe because no
+// credentials have been submitted yet.
+function unavailableIdamLoginSurfaceError(page: Page, userIdentifier: string): SessionCaptureError {
+  return new SessionCaptureError(
+    `IDAM login surface did not render within ${IDAM_LOGIN_SURFACE_TIMEOUT_MS}ms for ${userIdentifier}`,
+    userIdentifier,
+    {
+      currentUrl: sanitizedPageUrl(page),
+      failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
+    }
+  );
 }
 
 async function clickOrSubmitActiveField(page: Page, submitButton: Locator, activeField: Locator): Promise<void> {
@@ -1779,6 +1918,16 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const now = deps.now ?? Date.now;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
   const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
+  const validateSession = deps.validateStoredSession ?? validateStoredSession;
+  const bootstrapSession =
+    deps.bootstrapApiSession ??
+    (deps.loginAndPersistSession
+      ? async () => ({
+          status: 'unavailable' as const,
+          stage: 'configuration' as const,
+          reason: 'API bootstrap was not supplied with the injected browser-login test double',
+        })
+      : bootstrapApiSession);
 
   const sessionsDir = path.join(process.cwd(), '.sessions');
   ensureDirectory(fsApi, sessionsDir);
@@ -1792,6 +1941,23 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 
     ensureDirectory(fsApi, sessionsDir);
     ensureLockFile(fsApi, lockFilePath);
+
+    if (
+      !force &&
+      (await reuseAuthenticatedSessionBeyondRefreshAge({
+        fsApi,
+        identity,
+        isFresh,
+        sessionMaxAgeMs,
+        sessionPath,
+        targetUrl,
+        idamUrl: activeConfig.urls.idamWebUrl,
+        validateSession,
+      }))
+    ) {
+      clearSessionCaptureFailure(fsApi, failurePath);
+      continue;
+    }
 
     // Acquire filesystem lock (blocks across all workers)
     let release: SessionLockRelease | null = null;
@@ -1954,13 +2120,47 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           return;
         }
 
+        const apiBootstrap = await bootstrapSession({
+          env,
+          targetUrl,
+          userIdentifier: identity.userIdentifier,
+          username: identity.email,
+          password: identity.password,
+          captureDeadlineAt: deps.captureDeadlineAt,
+        });
+
+        if (
+          apiBootstrap.status === 'authenticated' &&
+          hasReusableAuthCookies(apiBootstrap.storageState.cookies as Cookie[], targetUrl, activeConfig.urls.idamWebUrl)
+        ) {
+          release.assertOwned();
+          persistApiSessionState(sessionPath, apiBootstrap.storageState, identity.userIdentifier, fsApi, release.assertOwned);
+          clearSessionCaptureFailure(fsApi, failurePath);
+          return;
+        }
+
+        logger.warn('API session bootstrap unavailable; using browser login fallback', {
+          userIdentifier: identity.userIdentifier,
+          stage: apiBootstrap.status === 'unavailable' ? apiBootstrap.stage : 'session-cookies',
+          reason:
+            apiBootstrap.status === 'unavailable'
+              ? apiBootstrap.reason
+              : 'API storage state did not contain reusable cookies for the configured hosts',
+          operation: 'session-capture',
+        });
+
         const remainingCaptureBudgetMs = deps.captureDeadlineAt === undefined ? undefined : deps.captureDeadlineAt - now();
         const maxAttempts = resolveCaptureAttemptLimit(remainingCaptureBudgetMs);
         if (maxAttempts === 0 || (remainingCaptureBudgetMs === undefined && lockWaitMs > SESSION_CAPTURE_LOCK_START_BUDGET_MS)) {
           throw new SessionCaptureError(
-            `Session capture cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget`,
+            `Browser session fallback cannot start for ${identity.userIdentifier}; refusing to start a capture that cannot complete within the integration test budget after API bootstrap failed`,
             identity.userIdentifier,
-            { sessionPath, lockWaitMs, remainingCaptureBudgetMs }
+            {
+              sessionPath,
+              lockWaitMs,
+              remainingCaptureBudgetMs,
+              apiBootstrapStage: apiBootstrap.status === 'unavailable' ? apiBootstrap.stage : 'session-cookies',
+            }
           );
         }
 
@@ -2067,8 +2267,10 @@ export const __test__ = {
   confirmAuthenticatedLogin,
   completeIdamCredentialFlow,
   ensureAuthenticatedPage,
+  validateLoadedSessionForReuse,
   loginAndPersistSession,
   executeLoginAttempt,
+  unavailableIdamLoginSurfaceError,
   requirePersistableSessionCookies,
   waitForAuthenticatedShell,
   probeAuthenticatedShell,

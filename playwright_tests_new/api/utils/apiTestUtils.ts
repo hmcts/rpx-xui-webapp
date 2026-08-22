@@ -33,9 +33,14 @@ export function expectStatus(actual: number, allowed: ReadonlyArray<number>, mes
 
 export function isRequestTimeoutError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
-  return /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up|Request context disposed|apiRequestContext\.fetch: aborted/i.test(
+  return /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up|Request context disposed|apiRequestContext\.fetch: aborted|transport: request failure/i.test(
     message
   );
+}
+
+/** A contract cannot be verified when XUI has no transport response or is unavailable. */
+export function isRouteUnavailableStatus(status: number): boolean {
+  return [0, 502, 503, 504].includes(status);
 }
 
 export async function buildXsrfHeaders(role: ApiUserRole): Promise<Record<string, string>> {

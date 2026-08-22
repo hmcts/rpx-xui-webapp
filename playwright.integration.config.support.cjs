@@ -8,6 +8,11 @@ const { readFileSync } = require('node:fs');
 const { cpus, totalmem } = require('node:os');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const {
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
+} = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
 const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
@@ -44,39 +49,7 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  return 4;
-};
-
-const pooledCredentialPrefixes = [
-  { prefix: 'STAFF_ADMIN', enabledBy: 'STAFF_ADMIN_POOL_ENABLED' },
-  { prefix: 'BOOKING_UI_FT_ON' },
-  { prefix: 'HEARING_MANAGER_CR84_ON' },
-  { prefix: 'HEARING_MANAGER_CR84_OFF' },
-];
-
-const resolveConfiguredSessionPoolCapacity = (env = process.env) => {
-  const poolSizes = [];
-
-  for (const { prefix, enabledBy } of pooledCredentialPrefixes) {
-    if (enabledBy && env[enabledBy] !== 'true') {
-      continue;
-    }
-
-    const members = new Set();
-    for (const key of Object.keys(env)) {
-      const match = new RegExp(`^${prefix}_(\\d+)_USERNAME$`).exec(key);
-      const passwordKey = match ? `${prefix}_${match[1]}_PASSWORD` : undefined;
-      if (match && env[key]?.trim() && passwordKey && env[passwordKey]) {
-        members.add(match[1]);
-      }
-    }
-
-    if (members.size > 0) {
-      poolSizes.push(members.size);
-    }
-  }
-
-  return poolSizes.length > 0 ? Math.min(...poolSizes) : undefined;
+  return 7;
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -297,7 +270,8 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
-  resolveConfiguredSessionPoolCapacity,
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,

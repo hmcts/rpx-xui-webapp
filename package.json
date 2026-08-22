@@ -217,7 +217,7 @@
     "axe-html-reporter": "^2.2.3",
     "c8": "^9.1.0",
     "chai": "^4.3.10",
-    "chai-as-promised": "7.1.2",
+    "chai-as-promised": "8.0.2",
     "cross-env": "^10.0.0",
     "eslint": "^9.39.2",
     "eslint-plugin-eslint-comments": "^3.2.0",

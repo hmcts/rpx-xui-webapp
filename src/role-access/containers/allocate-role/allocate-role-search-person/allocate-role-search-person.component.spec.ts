@@ -172,6 +172,78 @@ describe('AllocateRolePersonComponent', () => {
     expect(component.userIncluded).toEqual(false);
   });
 
+  it('should set data in ngOnInit for Enforcement data', () => {
+    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
+      caseId: '1111111111111111',
+      jurisdiction: 'New jurisdiction',
+      assignmentId: 'a123456',
+      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      typeOfRole: { id: 'enforcer_id', name: 'enforcer' },
+      allocateTo: AllocateTo.ALLOCATE_TO_ME,
+      personToBeRemoved: {
+        id: 'p111111',
+        name: 'test1',
+        domain: '',
+      },
+      person: {
+        id: 'p222222',
+        name: 'test2',
+        domain: '',
+      },
+      durationOfRole: DurationOfRole.SEVEN_DAYS,
+      action: Actions.Allocate,
+      period: {
+        startDate: new Date(),
+        endDate: new Date(),
+      },
+      roleCategory: RoleCategory.ENFORCEMENT,
+    };
+    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
+    component.ngOnInit();
+    expect(component.domain).toBe(PersonRole.ENFORCEMENT);
+    expect(component.title).toBe('Allocate an enforcer');
+    expect(component.personName).toBe('test2');
+    expect(component.roleType).toEqual({ id: 'enforcer_id', name: 'enforcer' });
+    expect(component.assignedUser).toEqual('p111111');
+    expect(component.userIncluded).toEqual(false);
+  });
+
+  it('should set data in ngOnInit using the Enforcement category', () => {
+    const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
+      caseId: '1111111111111111',
+      jurisdiction: 'New jurisdiction',
+      assignmentId: 'a123456',
+      state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      typeOfRole: { id: 'enforcer_id' },
+      allocateTo: AllocateTo.ALLOCATE_TO_ME,
+      personToBeRemoved: {
+        id: 'p111111',
+        name: 'test1',
+        domain: '',
+      },
+      person: {
+        id: 'p222222',
+        name: 'test2',
+        domain: '',
+      },
+      durationOfRole: DurationOfRole.SEVEN_DAYS,
+      action: Actions.Allocate,
+      period: {
+        startDate: new Date(),
+        endDate: new Date(),
+      },
+      roleCategory: RoleCategory.ENFORCEMENT,
+    };
+    mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
+    component.ngOnInit();
+    expect(component.domain).toBe(PersonRole.ENFORCEMENT);
+    expect(component.title).toBe('Allocate a ENFORCEMENT role');
+    expect(component.personName).toBe('test2');
+    expect(component.roleType).toEqual({ id: 'enforcer_id' });
+    expect(component.assignedUser).toEqual('p111111');
+    expect(component.userIncluded).toEqual(false);
+  });
+
   it('should set data in ngOnInit', () => {
     const ALLOCATE_ROLE_STATE_DATA: AllocateRoleStateData = {
       caseId: '1111111111111111',

@@ -4,6 +4,7 @@ import { HMCTSServiceDetails, UserInfo } from '../../app/models';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../app/services';
 import { OptionsModel } from '../../role-access/models/options-model';
+import { getIndefiniteArticle } from '../../role-access/utils/role-access-utils';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { Task, TaskPermission, TaskRole } from '../models/tasks';
@@ -219,6 +220,17 @@ export function getRoleCategoryToBeSelectedByDefault(
       getCurrentUserRoleCategories(sessionStorageService)?.[0] || RoleCategory.ALL;
 }
 
+// 'Allocate an enforcement role'
+export function getRoleAllocationCaption(roleCategory: RoleCategory) {
+  if (roleCategory === RoleCategory.CTSC) {
+    return 'Allocate a CTSC role';
+  } else {
+    const personRole = getLabel(roleCategory);
+    return `Allocate ${getIndefiniteArticle(personRole)} ${personRole.toLowerCase()} role`;
+  }
+}
+
+// TODO Move into common-lib
 export function getLabel(roleCategory: RoleCategory): PersonRole {
   switch (roleCategory) {
     case RoleCategory.ADMIN:
@@ -229,6 +241,8 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
       return PersonRole.LEGAL_OPERATIONS;
     case RoleCategory.CTSC:
       return PersonRole.CTSC;
+    case RoleCategory.ENFORCEMENT:
+      return PersonRole.ENFORCEMENT;
     default:
       throw new Error(`Invalid roleCategory ${roleCategory}`);
   }
@@ -243,6 +257,8 @@ export function getRoleCategory(role: string): RoleCategory {
     return RoleCategory.ADMIN;
   } else if (role === PersonRole.CTSC) {
     return RoleCategory.CTSC;
+  } else if (role === PersonRole.ENFORCEMENT) {
+    return RoleCategory.ENFORCEMENT;
   }
   return null;
 }

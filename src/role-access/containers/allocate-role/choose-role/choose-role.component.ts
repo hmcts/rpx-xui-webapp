@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { getLabel } from '../../../../work-allocation/utils';
+import { getRoleAllocationCaption } from '../../../../work-allocation/utils';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, SpecificRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
@@ -54,14 +54,9 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction
         ? this.route.snapshot.queryParams.jurisdiction
         : '';
-    const userTypePlaceHolder = getLabel(this.roleCategory as RoleCategory).toLowerCase();
-    if (this.roleCategory === RoleCategory.ADMIN) {
-      this.caption = 'Allocate an admin role';
-    } else if (this.roleCategory === RoleCategory.CTSC) {
-      this.caption = 'Allocate a CTSC role';
-    } else {
-      this.caption = `Allocate a ${userTypePlaceHolder} role`;
-    }
+
+    this.caption = getRoleAllocationCaption(this.roleCategory as RoleCategory);
+
     this.allocateRoleStateDataSub = this.store
       .pipe(select(fromFeature.getAllocateRoleState))
       .subscribe((allocateRoleStateData) => {

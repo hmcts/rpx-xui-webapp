@@ -32,11 +32,12 @@ test.describe('PRL solicitor user pool', { tag: '@svc-internal' }, () => {
     expect(getConfiguredPrlSolicitorUserIdentifiers(configuredEnv)).toEqual([
       'PRL_SOLICITOR',
       'PRL_SOLICITOR2',
+      'PRL_SOLICITOR3',
       'PRL_SOLICITOR4',
     ]);
 
-    const candidates = resolvePrlSolicitorSessionCandidates({ parallelIndex: 4 }, configuredEnv);
-    expect(candidates).toEqual(['PRL_SOLICITOR2', 'PRL_SOLICITOR', 'PRL_SOLICITOR4']);
+    const candidates = resolvePrlSolicitorSessionCandidates({ parallelIndex: 5 }, configuredEnv);
+    expect(candidates).toEqual(['PRL_SOLICITOR2', 'PRL_SOLICITOR', 'PRL_SOLICITOR3', 'PRL_SOLICITOR4']);
   });
 
   test('falls back to the legacy PRL solicitor only when no pool credentials are configured', () => {
@@ -59,7 +60,7 @@ test.describe('PRL solicitor user pool', { tag: '@svc-internal' }, () => {
         sessionCaptureTest
           .resolveSessionCandidates('PRL_SOLICITOR', 2)
           .map((candidate) => resolveSessionIdentity(candidate).userIdentifier)
-      ).toEqual(['PRL_SOLICITOR4', 'PRL_SOLICITOR', 'PRL_SOLICITOR2']);
+      ).toEqual(['PRL_SOLICITOR3', 'PRL_SOLICITOR', 'PRL_SOLICITOR2', 'PRL_SOLICITOR4']);
     } finally {
       for (const [key, value] of Object.entries(originalValues)) {
         if (value === undefined) {

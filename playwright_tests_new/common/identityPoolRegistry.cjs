@@ -73,6 +73,16 @@ const poolRegistry = [
     concurrencyMode: 'exclusive',
   },
   {
+    name: 'FPL_GLOBAL_SEARCH',
+    usernamePattern: /^FPL_GLOBAL_SEARCH_USERNAME$/,
+    userIdentifier: () => 'FPL_GLOBAL_SEARCH',
+    tags: ['e2e', 'search', 'global-search'],
+    role: 'caseworker',
+    organisation: 'public-law',
+    jurisdictions: ['PUBLICLAW'],
+    concurrencyMode: 'exclusive',
+  },
+  {
     name: 'PRL_SOLICITOR',
     usernamePattern: /^PRL_SOLICITOR(\d*)_USERNAME$/,
     userIdentifier: (match) => `PRL_SOLICITOR${match[1]}`,

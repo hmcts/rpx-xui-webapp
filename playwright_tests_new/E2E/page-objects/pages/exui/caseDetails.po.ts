@@ -515,6 +515,10 @@ export class CaseDetailsPage extends Base {
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
       await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
+    const caseActionSpinner = this.page.locator('xuilib-loading-spinner').first();
+    if (await caseActionSpinner.isVisible().catch(() => false)) {
+      await this.waitForSpinnerToComplete(`before submitting case action "${action}"`);
+    }
     await this.caseActionGoButton.click();
     await this.waitForSpinnerToComplete('after selecting case action');
     await this.page.waitForLoadState('domcontentloaded');
@@ -541,6 +545,12 @@ export class CaseDetailsPage extends Base {
       }
       if (options.retry === false) {
         throw error;
+      }
+      const spinner = this.page.locator('xuilib-loading-spinner').first();
+      if (await spinner.isVisible().catch(() => false)) {
+        await this.waitForSpinnerToComplete(`before retrying case action "${action}"`, timeoutMs);
+        await waitForExpected();
+        return;
       }
       this.logger.warn('Expected locator not visible after case action; retrying action', { action });
       try {

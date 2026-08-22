@@ -47,9 +47,7 @@ console.log('[playwright-preflight] pool capacity is advisory; configured identi
 if (requiredTags.length > 0) {
   console.log(`[playwright-preflight] selected-tags=${requiredTags.join(',')}`);
 }
-console.log(
-  `[playwright-preflight] validation=${process.env.PW_SESSION_REUSE_VALIDATION_MODE ?? (process.env.CI ? 'strict' : 'best-effort')}`
-);
+console.log(`[playwright-preflight] validation=${process.env.PW_SESSION_REUSE_VALIDATION_MODE ?? 'best-effort'}`);
 
 if (issues.length > 0) {
   for (const issue of issues) {

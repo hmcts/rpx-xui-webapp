@@ -647,11 +647,6 @@ withPipeline(type, product, component) {
 
     afterAlways('smoketest:preview') {
         recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'PREVIEW smoke report publish', 'start')
-        ensureHtmlReportForPublishing(
-            'functional-output/tests/playwright-e2e/odhin-report',
-            'xui-playwright-e2e.html',
-            'PREVIEW Playwright E2E'
-        )
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -688,6 +683,11 @@ withPipeline(type, product, component) {
                                     throw e
                                 } finally {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'finish')
+                                    ensureHtmlReportForPublishing(
+                                        'functional-output/tests/api_functional/odhin-report',
+                                        'xui-playwright-api.html',
+                                        'PREVIEW API Functional Test'
+                                    )
                                     publishHTML([
                                         allowMissing         : true,
                                         alwaysLinkToLastBuild: true,
@@ -850,6 +850,11 @@ withPipeline(type, product, component) {
                                     throw e
                                 } finally {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'finish')
+                                    ensureHtmlReportForPublishing(
+                                        'functional-output/tests/api_functional/odhin-report',
+                                        'xui-playwright-api.html',
+                                        'AAT API Functional Test'
+                                    )
                                     publishHTML([
                                         allowMissing         : true,
                                         alwaysLinkToLastBuild: true,
@@ -897,6 +902,11 @@ withPipeline(type, product, component) {
                                 throw e
                             } finally {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'finish')
+                                ensureHtmlReportForPublishing(
+                                    'functional-output/tests/playwright-e2e/odhin-report',
+                                    'xui-playwright-e2e.html',
+                                    'AAT Playwright E2E'
+                                )
                                 publishHTML([
                                     allowMissing         : true,
                                     alwaysLinkToLastBuild: true,

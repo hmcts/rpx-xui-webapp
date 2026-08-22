@@ -4,8 +4,9 @@ import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from '
 import { CCD_CASE_REFERENCE_LENGTH } from '../../page-objects/pages/exui/exui-timeouts';
 
 test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
-  test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH', '/search');
+  test.beforeEach(async ({ page, identityLease }) => {
+    const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });
+    await openHomeWithCapturedSession(page, lease.identity.userIdentifier, '/search');
   });
 
   test('Global Search - using case id and FPL jurisdiction', async ({
@@ -58,7 +59,7 @@ test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', 
     const wildcardCaseReference = `${availableCaseReference.substring(0, 5)}*`;
     const wildcardPrefix = wildcardCaseReference.replace('*', '');
     await test.step('Initiate wildcard Global Search', async () => {
-      await globalSearchPage.performGlobalSearchWithCase(wildcardCaseReference, 'PUBLICLAW');
+      await globalSearchPage.performGlobalSearchWithRetry(wildcardCaseReference, 'PUBLICLAW');
     });
 
     await test.step('Verify wildcard (*) search results', async () => {

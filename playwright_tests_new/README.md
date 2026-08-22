@@ -850,7 +850,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 Browser sessions managed by `common/sessionCapture.ts` are captured lazily under `.sessions/`. E2E and integration callers of that helper deliberately share browser-session keys, while API state remains separately namespaced. Some E2E journeys use the separate UI storage helper under `test-results/storage-states/ui`.
 
-Cached browser and API sessions are checked through `auth/isAuthenticated` before reuse. `PW_SESSION_REUSE_VALIDATION_MODE=strict` is the default and fails with the classified `AAT_AUTH_UNAVAILABLE` setup error if that endpoint cannot be reached. `best-effort` is an explicit local-diagnosis override that logs and reuses the cache; do not enable it in CI because it permits an unverified session.
+Cached browser and API sessions are checked through `auth/isAuthenticated` before reuse. `PW_SESSION_REUSE_VALIDATION_MODE=best-effort` is the default: an unavailable validation route is logged and the unexpired cache is reused. Set `strict` when a lane must reject an unverified cached session.
 
 Integration journeys use the configured worker count, including hearings. The hearing suite mocks user details, case data, and hearing APIs per page, so its existing authenticated sessions can be shared safely without requiring one permanent hearing-manager account per worker.
 

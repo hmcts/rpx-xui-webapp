@@ -255,9 +255,13 @@ const staffAdminPoolIdentifiers = [
   'STAFF_ADMIN-8',
 ] as const;
 
+export function isStaffAdminPoolEnabled(env: Record<string, string | undefined> = process.env): boolean {
+  return env.STAFF_ADMIN_POOL_ENABLED?.trim().toLowerCase() !== 'false';
+}
+
 const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.ProcessEnv) => string[])> = {
   STAFF_ADMIN: (env) => {
-    if (env.STAFF_ADMIN_POOL_ENABLED !== 'true') {
+    if (!isStaffAdminPoolEnabled(env)) {
       return [];
     }
 

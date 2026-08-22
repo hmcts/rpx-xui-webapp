@@ -7,9 +7,9 @@ import {
 } from '../../common/sessionReusePolicy.js';
 
 test.describe('Session reuse validation policy', { tag: '@svc-internal' }, () => {
-  test('defaults live local and CI execution to strict validation', () => {
-    expect(resolveSessionReuseValidationMode({})).toBe('strict');
-    expect(resolveSessionReuseValidationMode({ CI: 'true' })).toBe('strict');
+  test('defaults local and CI execution to best-effort validation', () => {
+    expect(resolveSessionReuseValidationMode({})).toBe('best-effort');
+    expect(resolveSessionReuseValidationMode({ CI: 'true' })).toBe('best-effort');
   });
 
   test('honours explicit validation modes and only rejects unavailable validation in strict mode', () => {
@@ -17,8 +17,8 @@ test.describe('Session reuse validation policy', { tag: '@svc-internal' }, () =>
       'best-effort'
     );
     expect(resolveSessionReuseValidationMode({ PW_SESSION_REUSE_VALIDATION_MODE: 'strict' })).toBe('strict');
-    expect(shouldRejectUnavailableSessionValidation('unavailable', { CI: 'true' })).toBe(true);
-    expect(shouldRejectUnavailableSessionValidation('unavailable', {})).toBe(true);
+    expect(shouldRejectUnavailableSessionValidation('unavailable', { CI: 'true' })).toBe(false);
+    expect(shouldRejectUnavailableSessionValidation('unavailable', {})).toBe(false);
     expect(shouldRejectUnavailableSessionValidation('unavailable', { PW_SESSION_REUSE_VALIDATION_MODE: 'best-effort' })).toBe(
       false
     );

@@ -6,6 +6,7 @@ import { expect, test } from '@playwright/test';
 
 import config from '../../E2E/utils/config.utils.js';
 import { applySessionCookiesAndExtractUserId } from '../../integration/helpers/sessionUser.helper.js';
+import { resolveRuntimeUserCredentialsForIdentifier } from '../../E2E/utils/runtimeUserCredentials.js';
 import {
   getConfiguredStaffAdminUserIdentifiers,
   getLegacyStaffAdminSessionIdentity,
@@ -80,6 +81,13 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
 
     expect(getConfiguredStaffAdminUserIdentifiers(env)).toEqual(['STAFF_ADMIN-1']);
     expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 0 }, env)).toBe('STAFF_ADMIN-1');
+    expect(resolveRuntimeUserCredentialsForIdentifier(STAFF_ADMIN_USER, env)).toEqual({
+      email: 'staff-admin-1@example.test',
+      password: 'secret-1',
+    });
+    expect(
+      resolveRuntimeUserCredentialsForIdentifier(STAFF_ADMIN_USER, { ...env, STAFF_ADMIN_POOL_ENABLED: 'false' })
+    ).toBeUndefined();
   });
 
   test('honours an explicit pool opt-out', () => {

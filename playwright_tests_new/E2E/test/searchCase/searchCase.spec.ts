@@ -4,8 +4,9 @@ import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from '
 
 test.describe('FPL global search user - 16-digit case search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
   let availableCaseReference = '';
-  test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
+  test.beforeEach(async ({ page, identityLease }) => {
+    const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });
+    await openHomeWithCapturedSession(page, lease.identity.userIdentifier);
     availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
   });
 

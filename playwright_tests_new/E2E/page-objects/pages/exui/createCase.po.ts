@@ -915,7 +915,7 @@ export class CreateCasePage extends Base {
 
       break;
     }
-    await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: uploadResponseTimeoutMs });
+    await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.UPLOAD_STATUS_SETTLE });
   }
   async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;

@@ -25,12 +25,14 @@ const env = {
   SEARCH_EMPLOYMENT_CASE_PASSWORD: 'secret',
   USER_WITH_FLAGS_USERNAME: 'flags@example.test',
   USER_WITH_FLAGS_PASSWORD: 'secret',
+  FPL_GLOBAL_SEARCH_USERNAME: 'global-search@example.test',
+  FPL_GLOBAL_SEARCH_PASSWORD: 'secret',
 } as NodeJS.ProcessEnv;
 
 test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
   test('uses complete credentials only, normalises duplicate emails, and retains compatibility metadata', () => {
     const identities = resolveConfiguredPoolIdentities(env);
-    expect(identities).toHaveLength(6);
+    expect(identities).toHaveLength(7);
     expect(identities.find((identity) => identity.pool === 'PRL_SOLICITOR')).toMatchObject({
       role: 'solicitor',
       organisation: 'private-law-professional',
@@ -96,6 +98,15 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
     ]);
   });
 
+  test('keeps the shared FPL global-search identity exclusive', () => {
+    expect(resolveConfiguredPoolIdentities(env, { pool: 'FPL_GLOBAL_SEARCH' })).toMatchObject([
+      {
+        userIdentifier: 'FPL_GLOBAL_SEARCH',
+        concurrencyMode: 'exclusive',
+      },
+    ]);
+  });
+
   test('state-changing E2E journeys acquire their registered exclusive identity', () => {
     const expectedLeases = new Map<string, string[]>([
       ['playwright_tests_new/E2E/test/createCase/createCase.spec.ts', ['DIVORCE_SOLICITOR']],
@@ -108,6 +119,9 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
       ],
       ['playwright_tests_new/E2E/test/caseFileView/caseFileView.spec.ts', ['SEARCH_EMPLOYMENT_CASE']],
       ['playwright_tests_new/E2E/test/caseFlags/caseFlags.positive.spec.ts', ['SEARCH_EMPLOYMENT_CASE', 'USER_WITH_FLAGS']],
+      ['playwright_tests_new/E2E/test/searchCase/globalSearch.spec.ts', ['FPL_GLOBAL_SEARCH']],
+      ['playwright_tests_new/E2E/test/searchCase/searchCase.spec.ts', ['FPL_GLOBAL_SEARCH']],
+      ['playwright_tests_new/E2E/test/searchCase/findCase.spec.ts', ['FPL_GLOBAL_SEARCH']],
     ]);
 
     for (const [relativePath, pools] of expectedLeases) {

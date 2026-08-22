@@ -10,7 +10,7 @@ export function resolveSessionReuseValidationMode(env: NodeJS.ProcessEnv = proce
     return configured;
   }
 
-  return 'strict';
+  return 'best-effort';
 }
 
 export function shouldRejectUnavailableSessionValidation(

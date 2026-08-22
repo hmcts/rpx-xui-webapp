@@ -1232,6 +1232,20 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     ).rejects.toThrow('Unable to validate cached session for UNIT_REFRESHED_USER');
   });
 
+  test('reuses an unavailable refreshed session under the default reuse policy', async () => {
+    const session = {
+      userIdentifier: 'UNIT_REFRESHED_USER',
+      email: 'refreshed@example.test',
+      cookies: [],
+      storageFile: '/tmp/refreshed-session.storage.json',
+      storageStateFingerprint: 'fingerprint',
+    };
+
+    await expect(
+      sessionCaptureTest.validateLoadedSessionForReuse(session, 'https://manage-case.example.test', async () => 'unavailable', {})
+    ).resolves.toBe('unavailable');
+  });
+
   test('persists an authenticated API session and skips browser login', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-api-first-unit-'));
     const previousCwd = process.cwd();

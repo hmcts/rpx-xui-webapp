@@ -53,6 +53,8 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/data\/case-types\/[^/]+\/validate/,
 ];
 
+export type RichTextField = 'richTextArea' | 'richTextMinArea';
+
 export class CreateCasePage extends Base {
   readonly container!: Locator;
   readonly caseDetailsContainer!: Locator;
@@ -199,6 +201,16 @@ export class CreateCasePage extends Base {
   readonly eventCreationErrorHeading!: Locator;
   readonly somethingWentWrongHeading!: Locator;
   readonly validationErrorMessage!: Locator;
+
+  readonly richTextArea!: Locator;
+  readonly richTextToolbar!: Locator;
+  readonly richTextMinArea!: Locator;
+  readonly richTextMinToolbar!: Locator;
+  readonly richTextMinFieldError!: Locator;
+  readonly organisationSearchInputs!: Locator;
+  readonly organisationSelectLinks!: Locator;
+  readonly orgPolicy1CaseAssignedRoleInput!: Locator;
+  readonly orgPolicy2CaseAssignedRoleInput!: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -748,6 +760,78 @@ export class CreateCasePage extends Base {
     await this.postCodeSearchInput.fill(postCode);
     await this.postCodeSearchButton.click();
     await this.addressSelect.selectOption(addressOption);
+  }
+
+  /**
+   * Fills one Organisation Policy field: the case assigned role, then searches for and
+   * selects an organisation.
+   * @param fieldIndex zero-based index of the Organisation Policy field on the page.
+   */
+  async fillOrganisationPolicy(fieldIndex: number, caseAssignedRole: string, organisationSearchTerm: string) {
+    const roleInput = fieldIndex === 0 ? this.orgPolicy1CaseAssignedRoleInput : this.orgPolicy2CaseAssignedRoleInput;
+    await roleInput.fill(caseAssignedRole);
+
+    await this.organisationSearchInputs.nth(fieldIndex).fill(organisationSearchTerm);
+    const selectLink = this.organisationSelectLinks.first();
+    await expect(selectLink, `No organisation matched "${organisationSearchTerm}"`).toBeVisible();
+    await selectLink.click();
+  }
+
+  /**
+   * Types into the Rich Text Area, applying bold and italic via the editor toolbar so the
+   * saved value contains real `<strong>` / `<em>` markup rather than plain text.
+   */
+  async enterFormattedRichText(
+    { plain, bold, italic }: { plain: string; bold: string; italic: string },
+    field: RichTextField = 'richTextArea'
+  ) {
+    const { area, toolbar } = this.richTextTarget(field);
+
+    await area.click();
+    await area.fill(plain);
+
+    await this.applyRichTextFormat(toolbar, 'Bold', bold);
+    await this.applyRichTextFormat(toolbar, 'Italic', italic);
+  }
+
+  /**
+   * The page renders two independent editors, each with its own toolbar. Resolving both
+   * together keeps callers from pairing one editor with the other's toolbar.
+   */
+  private richTextTarget(field: RichTextField) {
+    return field === 'richTextArea'
+      ? { area: this.richTextArea, toolbar: this.richTextToolbar }
+      : { area: this.richTextMinArea, toolbar: this.richTextMinToolbar };
+  }
+
+  /**
+   * Toggles a toolbar format on, types the text, then toggles it back off. The editor
+   * reflects the toggle through aria-pressed, so waiting on that keeps the sequence
+   * deterministic rather than relying on the click having already taken effect.
+   */
+  private async applyRichTextFormat(toolbar: Locator, formatName: 'Bold' | 'Italic', text: string) {
+    const button = toolbar.getByRole('button', { name: formatName });
+
+    await button.click();
+    await expect(button, `${formatName} should be active before typing`).toHaveAttribute('aria-pressed', 'true');
+
+    await this.typeIntoRichTextEditor(text);
+
+    await button.click();
+    await expect(button, `${formatName} should be inactive after typing`).toHaveAttribute('aria-pressed', 'false');
+  }
+
+  /**
+   * The Rich Text Area is an NgxEditor/ProseMirror instance which keeps its own document
+   * model and a "pending mark" for the next character typed. `keyboard.type()` and
+   * `locator.pressSequentially()` both lose that pending mark - the latter because it
+   * calls focus() first - so the text arrives unformatted or not at all. Discrete key
+   * presses preserve it.
+   */
+  private async typeIntoRichTextEditor(text: string) {
+    for (const character of text) {
+      await this.page.keyboard.press(character === ' ' ? 'Space' : character);
+    }
   }
 
   async uploadFile(

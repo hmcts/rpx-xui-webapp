@@ -160,6 +160,27 @@ export function buildCreateCaseLocators(page: Page) {
     eventCreationErrorHeading: page.getByRole('heading', { name: 'The event could not be created' }),
     somethingWentWrongHeading: page.getByRole('heading', { name: /something went wrong/i }),
     validationErrorMessage: page.locator('.validation-error'),
+
+    //richTextArea: page.getByRole('textbox', { name: 'Rich Text Area (Optional)' }),
+    //richTextMinArea: page.getByRole('textbox', { name: 'Rich Text Area with minimum length (Optional)' }),
+
+    richTextArea: page.locator('ccd-field-write[field_id="RichTextAreaField"] div.ProseMirror[contenteditable="true"]'),
+    richTextMinArea: page.locator(
+      'ccd-field-write[field_id="RichTextAreaMinLengthField"] div.ProseMirror[contenteditable="true"]'
+    ),
+
+    richTextToolbar: page.getByRole('toolbar', { name: 'Rich Text Area formatting options' }),
+    richTextMinToolbar: page.getByRole('toolbar', {
+      name: 'Rich Text Area with minimum length formatting options',
+    }),
+    richTextMinFieldError: page.locator('#RichTextAreaMinField_error'),
+    // NOTE: the organisation search input renders with a duplicated id, once per
+    // Organisation Policy field, so this is deliberately a multi-element locator
+    // and callers must index into it rather than relying on strict mode.
+    organisationSearchInputs: page.locator('#search-org-text'),
+    organisationSelectLinks: page.getByRole('link', { name: 'Select', exact: true }),
+    orgPolicy1CaseAssignedRoleInput: page.locator('#OrganisationPolicyField1_OrgPolicyCaseAssignedRole'),
+    orgPolicy2CaseAssignedRoleInput: page.locator('#OrganisationPolicyField2_OrgPolicyCaseAssignedRole'),
   };
 }
 

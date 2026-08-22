@@ -1,7 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, MAX_NAVIGATION_RETRY_ATTEMPTS } from './exui-timeouts';
-import { runGlobalSearchWithOneServiceRetry } from './globalSearchRetry';
 
 export class GlobalSearchPage extends Base {
   // Locators
@@ -38,10 +37,6 @@ export class GlobalSearchPage extends Base {
     await this.searchButton.click();
     await this.exuiSpinnerComponent.wait();
     await this.waitForSearchResults(caseId);
-  }
-
-  async performGlobalSearchWithRetry(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
-    await runGlobalSearchWithOneServiceRetry(() => this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName));
   }
 
   async viewCaseDetails(caseId: string): Promise<void> {

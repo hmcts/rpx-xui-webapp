@@ -3,7 +3,6 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import {
   acquireIdentityLease,
-  acquireSessionIdentityLease,
   IdentityLeaseTimeoutError,
   resolveIdentityLeaseTestTimeouts,
   resolveIdentityLeaseTiming,
@@ -117,14 +116,6 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
         expect(source, `${relativePath} must lease ${pool}`).toContain(`identityLease.acquire({ pool: '${pool}' })`);
       }
     }
-
-    const workAllocationSource = readFileSync(
-      path.resolve(process.cwd(), 'playwright_tests_new/E2E/test/manageTasks/myTasks.positive.spec.ts'),
-      'utf8'
-    );
-    expect(workAllocationSource, 'Work Allocation mutations must lease the selected configured session identity').toContain(
-      'identityLease.acquireForSession(selectedIdentity'
-    );
   });
 
   test('filters compatibility before deduplicating the same physical identity', () => {
@@ -188,41 +179,6 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
     const fixtureSource = readFileSync(path.resolve(process.cwd(), 'playwright_tests_new/E2E/fixtures.ts'), 'utf8');
     expect(fixtureSource).toContain('const fixtureStartedAt = Date.now()');
     expect(fixtureSource).not.toContain('testInfo.startTime');
-  });
-
-  test('leases an explicitly selected session identity by its physical email', async () => {
-    const leaseDirectory = `/tmp/exui-selected-session-lease-${process.pid}-${Date.now()}`;
-    const localEnv = {
-      ...env,
-      PW_IDENTITY_LEASE_DIR: leaseDirectory,
-      PW_IDENTITY_LEASE_WAIT_MS: '25',
-      PW_IDENTITY_LEASE_POLL_MS: '1',
-    };
-    const divorceLease = await acquireIdentityLease({ pool: 'DIVORCE_SOLICITOR' }, localEnv);
-    const selectedSessionLease = acquireSessionIdentityLease(
-      {
-        userIdentifier: 'PW_E2E_MANAGE_TASKS',
-        email: 'divorce@example.test',
-        password: 'secret',
-      },
-      { pool: 'WORK_ALLOCATION_CASEOFFICER', role: 'caseworker' },
-      localEnv
-    );
-
-    await expect(selectedSessionLease).rejects.toBeInstanceOf(IdentityLeaseTimeoutError);
-    await divorceLease.release();
-
-    const lease = await acquireSessionIdentityLease(
-      {
-        userIdentifier: 'PW_E2E_MANAGE_TASKS',
-        email: 'divorce@example.test',
-        password: 'secret',
-      },
-      { pool: 'WORK_ALLOCATION_CASEOFFICER', role: 'caseworker' },
-      localEnv
-    );
-    expect(lease.sessionIdentity.userIdentifier).toBe('PW_E2E_MANAGE_TASKS');
-    await lease.release();
   });
 
   test('reports selected-tag capacity without treating capacity as a worker requirement', () => {

@@ -186,12 +186,17 @@ async function submitLoginForm(
 }
 
 function parseLoginForm(html: string, pageUrl: string): LoginForm {
-  const formMatch = /<form\b([^>]*)>/i.exec(html);
-  const formAttributes = formMatch?.[1] ?? '';
+  const firstFormMatch = /<form\b([^>]*)>/i.exec(html);
+  const credentialForm = [...html.matchAll(/<form\b([^>]*)>([\s\S]*?)<\/form>/gi)].find((match) =>
+    /<input\b[^>]*(?:name|id)=["'](?:email|emailAddress|username)["'][^>]*>|<input\b[^>]*type=["']password["'][^>]*>/i.test(
+      match[2]
+    )
+  );
+  const formAttributes = credentialForm?.[1] ?? firstFormMatch?.[1] ?? '';
   const actionMatch = /\baction=["']([^"']*)["']/i.exec(formAttributes);
   const action = new URL(decodeHtmlAttribute(actionMatch?.[1] || pageUrl), pageUrl).toString();
-  const formEnd = formMatch ? html.indexOf('</form>', formMatch.index) : -1;
-  const formHtml = formMatch && formEnd >= 0 ? html.slice(formMatch.index, formEnd) : html;
+  const formEnd = firstFormMatch ? html.indexOf('</form>', firstFormMatch.index) : -1;
+  const formHtml = credentialForm?.[2] ?? (firstFormMatch && formEnd >= 0 ? html.slice(firstFormMatch.index, formEnd) : html);
   const hiddenFields: Record<string, string> = {};
   for (const input of formHtml.match(/<input\b[^>]*type=["']hidden["'][^>]*>/gi) ?? []) {
     const name = /\bname=["']([^"']+)["']/i.exec(input)?.[1];

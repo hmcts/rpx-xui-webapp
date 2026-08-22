@@ -6,15 +6,11 @@ import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
 import {
   acquireIdentityLease,
-  acquireSessionIdentityLease,
   resolveIdentityLeaseTestTimeouts,
   resolveIdentityLeaseTiming,
   type IdentityLease,
-  type SessionIdentityLease,
-  type SessionIdentityLeaseMetadata,
 } from '../common/identityLease';
 import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
-import type { SessionIdentityInput } from '../common/sessionIdentity';
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
 
@@ -1250,7 +1246,6 @@ export interface TestFixtures extends CustomFixtures {
   registerBenignApiErrorRule: BenignApiErrorRuleRegistry['registerBenignApiErrorRule'];
   identityLease: {
     acquire: (requirements: IdentityCompatibilityRequirements) => Promise<IdentityLease>;
-    acquireForSession: (identity: SessionIdentityInput, metadata?: SessionIdentityLeaseMetadata) => Promise<SessionIdentityLease>;
   };
 }
 
@@ -1291,7 +1286,6 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     try {
       await use({
         acquire: (requirements) => acquire(() => acquireIdentityLease(requirements)),
-        acquireForSession: (identity, metadata) => acquire(() => acquireSessionIdentityLease(identity, metadata)),
       });
     } finally {
       await Promise.all(releases.reverse().map((release) => release()));

@@ -4,7 +4,6 @@ import path from 'node:path';
 import * as lockfile from 'proper-lockfile';
 import type { IdentityCompatibilityRequirements, IdentityPoolIdentity } from './identityPoolRegistry.js';
 import { resolveConfiguredPoolIdentities } from './identityPoolRegistry.js';
-import { resolveSessionIdentity, type SessionIdentity, type SessionIdentityInput } from './sessionIdentity.js';
 
 const DEFAULT_WAIT_MS = 15 * 60_000;
 const DEFAULT_EXECUTION_BUDGET_MS = 5 * 60_000;
@@ -12,15 +11,7 @@ const DEFAULT_POLL_MS = 1_000;
 const DEFAULT_TTL_MS = 15 * 60_000;
 
 export type IdentityLease = { identity: IdentityPoolIdentity; release: () => Promise<void> };
-export type SessionIdentityLease = IdentityLease & { sessionIdentity: SessionIdentity };
 export type IdentityLeaseTiming = { waitMs: number; executionBudgetMs: number };
-export type SessionIdentityLeaseMetadata = {
-  pool?: string;
-  tags?: string[];
-  role?: string;
-  organisation?: string;
-  jurisdictions?: string[];
-};
 type LeaseResponse = { status: 'acquired'; leaseId: string; userIdentifier: string } | { status: 'pending' };
 type FetchLike = typeof fetch;
 
@@ -178,29 +169,4 @@ export async function acquireIdentityLease(
 ): Promise<IdentityLease> {
   const candidates = resolveConfiguredPoolIdentities(env, { ...requirements, concurrencyMode: 'exclusive' });
   return acquireCompatibleIdentityLease(candidates, requirements, env, fetchApi);
-}
-
-export async function acquireSessionIdentityLease(
-  input: SessionIdentityInput,
-  metadata: SessionIdentityLeaseMetadata = {},
-  env: NodeJS.ProcessEnv = process.env,
-  fetchApi: FetchLike = fetch
-): Promise<SessionIdentityLease> {
-  const sessionIdentity = resolveSessionIdentity(input);
-  const identity: IdentityPoolIdentity = {
-    pool: metadata.pool ?? 'SESSION_IDENTITY',
-    userIdentifier: sessionIdentity.userIdentifier,
-    email: sessionIdentity.email.trim().toLowerCase(),
-    tags: metadata.tags ?? ['e2e'],
-    role: metadata.role ?? 'unspecified',
-    organisation: metadata.organisation ?? 'unspecified',
-    jurisdictions: metadata.jurisdictions ?? [],
-    concurrencyMode: 'exclusive',
-  };
-  const requirements: IdentityCompatibilityRequirements = {
-    pool: identity.pool,
-    concurrencyMode: 'exclusive',
-  };
-  const lease = await acquireCompatibleIdentityLease([identity], requirements, env, fetchApi);
-  return { ...lease, sessionIdentity };
 }

@@ -14,6 +14,8 @@ const configuredEnv = {
   PRL_SOLICITOR2_PASSWORD: 'secret-2',
   PRL_SOLICITOR3_USERNAME: 'prl-3@example.test',
   PRL_SOLICITOR3_PASSWORD: 'secret-3',
+  PRL_SOLICITOR4_USERNAME: 'prl-4@example.test',
+  PRL_SOLICITOR4_PASSWORD: 'secret-4',
 } as const;
 
 const prlSolicitorPoolCredentialEnvKeys = [
@@ -26,15 +28,15 @@ const prlSolicitorPoolCredentialEnvKeys = [
 ] as const;
 
 test.describe('PRL solicitor user pool', { tag: '@svc-internal' }, () => {
-  test('selects a distinct configured PRL solicitor per worker and preserves fallback order', () => {
+  test('selects only the PRL aliases verified against the shared organisation', () => {
     expect(getConfiguredPrlSolicitorUserIdentifiers(configuredEnv)).toEqual([
       'PRL_SOLICITOR',
       'PRL_SOLICITOR2',
-      'PRL_SOLICITOR3',
+      'PRL_SOLICITOR4',
     ]);
 
     const candidates = resolvePrlSolicitorSessionCandidates({ parallelIndex: 4 }, configuredEnv);
-    expect(candidates).toEqual(['PRL_SOLICITOR2', 'PRL_SOLICITOR', 'PRL_SOLICITOR3']);
+    expect(candidates).toEqual(['PRL_SOLICITOR2', 'PRL_SOLICITOR', 'PRL_SOLICITOR4']);
   });
 
   test('falls back to the legacy PRL solicitor only when no pool credentials are configured', () => {
@@ -57,8 +59,7 @@ test.describe('PRL solicitor user pool', { tag: '@svc-internal' }, () => {
         sessionCaptureTest
           .resolveSessionCandidates('PRL_SOLICITOR', 2)
           .map((candidate) => resolveSessionIdentity(candidate).userIdentifier)
-          .slice(0, 3)
-      ).toEqual(['PRL_SOLICITOR3', 'PRL_SOLICITOR', 'PRL_SOLICITOR2']);
+      ).toEqual(['PRL_SOLICITOR4', 'PRL_SOLICITOR', 'PRL_SOLICITOR2']);
     } finally {
       for (const [key, value] of Object.entries(originalValues)) {
         if (value === undefined) {

@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Page } from '@playwright/test';
 import { expect, test } from '../../fixtures';
-import { acceptAccessCookiesIfPresent, applySessionCookies } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { CaseFileViewPage } from '../../page-objects/pages/exui/caseFileView.po';
 import {
   MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN,
@@ -43,16 +43,8 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
 
     page.context().on('response', backendMonitor.onResponse);
     try {
-      await test.step('Apply solicitor session and open the app shell', async () => {
-        await backendMonitor.failFastOnCriticalBackendFailure(
-          'app-shell setup',
-          (async () => {
-            await applySessionCookies(page, lease.identity.userIdentifier);
-            await page.goto('/');
-            await acceptAccessCookiesIfPresent(page);
-            await expect(caseDetailsPage.exuiHeader.header).toBeVisible();
-          })()
-        );
+      await test.step('Apply solicitor session', async () => {
+        await applySessionCookies(page, lease.identity.userIdentifier);
       });
 
       await test.step('Create a case with a document for this test run', async () => {

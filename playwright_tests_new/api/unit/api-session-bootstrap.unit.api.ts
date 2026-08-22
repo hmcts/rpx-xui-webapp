@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { bootstrapApiSession } from '../../common/apiSessionBootstrap.js';
+import { __test__ as apiSessionBootstrapTestApi, bootstrapApiSession } from '../../common/apiSessionBootstrap.js';
 
 const options = {
   env: {} as NodeJS.ProcessEnv,
@@ -17,6 +17,15 @@ function response(status: number, url: string, body = '', headers: Record<string
 }
 
 test.describe('API-first session bootstrap', { tag: '@svc-internal' }, () => {
+  test('selects the credential form when a preceding form is unrelated', () => {
+    expect(
+      apiSessionBootstrapTestApi.parseLoginForm(
+        '<form action="/cookies"><input name="analytics"></form><form action="/login"><input name="email"></form>',
+        'https://idam.example.test/login'
+      )
+    ).toMatchObject({ action: 'https://idam.example.test/login', hasEmail: true, hasPassword: false });
+  });
+
   test('follows progressive IDAM forms and publishes only an authenticated session', async () => {
     const calls: string[] = [];
     const requestTimeouts: number[] = [];

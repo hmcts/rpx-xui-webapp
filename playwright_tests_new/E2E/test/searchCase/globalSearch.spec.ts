@@ -5,7 +5,7 @@ import { CCD_CASE_REFERENCE_LENGTH } from '../../page-objects/pages/exui/exui-ti
 
 test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
   test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
+    await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH', '/search');
   });
 
   test('Global Search - using case id and FPL jurisdiction', async ({
@@ -17,7 +17,7 @@ test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', 
     const caseNumber = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
 
     await test.step('Initiate Global Search', async () => {
-      await globalSearchPage.performGlobalSearchWithRetry(caseNumber, 'PUBLICLAW');
+      await globalSearchPage.performGlobalSearchWithCase(caseNumber, 'PUBLICLAW');
       const searchResultsTable = await tableUtils.parseDataTable(globalSearchPage.searchResultTable);
 
       expect(searchResultsTable.length).toBeGreaterThan(0);
@@ -58,7 +58,7 @@ test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', 
     const wildcardCaseReference = `${availableCaseReference.substring(0, 5)}*`;
     const wildcardPrefix = wildcardCaseReference.replace('*', '');
     await test.step('Initiate wildcard Global Search', async () => {
-      await globalSearchPage.performGlobalSearchWithRetry(wildcardCaseReference, 'PUBLICLAW');
+      await globalSearchPage.performGlobalSearchWithCase(wildcardCaseReference, 'PUBLICLAW');
     });
 
     await test.step('Verify wildcard (*) search results', async () => {

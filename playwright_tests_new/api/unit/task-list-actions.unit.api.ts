@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 
 import { TaskListPage } from '../../E2E/page-objects/pages/exui/taskList.po.js';
-import { reconcileClaimedTask } from '../../E2E/utils/test-setup/workAllocationTaskClaim.js';
 
 function createActionLocator(config: {
   waitResults: Array<'visible' | 'hidden'>;
@@ -99,7 +98,78 @@ function createButtonLocator(config: { clickFailures?: string[] }) {
 
 test.describe.configure({ mode: 'serial' });
 
+type TaskListShellNavigationHarness = {
+  page: { url: () => string };
+  isBlankTaskListDocument?: (urlPattern: RegExp) => Promise<boolean>;
+  reloadBlankTaskListDocumentIfNeeded?: (urlPattern: RegExp, context: string, timeoutMs: number) => Promise<void>;
+  waitForTaskListShellReady: (context: string, timeoutMs: number) => Promise<void>;
+  waitForTaskListSpinnerToSettle?: (timeoutMs: number) => Promise<void>;
+};
+
+type TaskListShellNavigationMethod = (
+  this: TaskListShellNavigationHarness,
+  urlPattern: RegExp,
+  context: string,
+  timeoutMs: number
+) => Promise<void>;
+
+const waitForTaskListShellReadyAfterNavigation = (
+  TaskListPage.prototype as unknown as {
+    waitForTaskListShellReadyAfterNavigation: TaskListShellNavigationMethod;
+  }
+).waitForTaskListShellReadyAfterNavigation;
+
 test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, () => {
+  test('keeps the caller readiness budget after task-list navigation', async () => {
+    const observedTimeouts: number[] = [];
+
+    await waitForTaskListShellReadyAfterNavigation.call(
+      {
+        page: { url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/list' },
+        waitForTaskListShellReady: async (_context, timeoutMs) => {
+          observedTimeouts.push(timeoutMs);
+        },
+      },
+      /\/work\/my-work\/list$/,
+      'unit task-list shell',
+      30_000
+    );
+
+    expect(observedTimeouts).toEqual([30_000]);
+  });
+
+  test('shares the readiness budget with blank-document recovery', async () => {
+    const observedTimeouts: number[] = [];
+    const originalNow = Date.now;
+    let now = 0;
+    Date.now = () => now;
+
+    try {
+      await waitForTaskListShellReadyAfterNavigation.call(
+        {
+          page: { url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/list' },
+          isBlankTaskListDocument: async () => true,
+          reloadBlankTaskListDocumentIfNeeded: async () => undefined,
+          waitForTaskListSpinnerToSettle: async () => undefined,
+          waitForTaskListShellReady: async (_context, timeoutMs) => {
+            observedTimeouts.push(timeoutMs);
+            if (observedTimeouts.length === 1) {
+              now = 20_000;
+              throw new Error('blank document');
+            }
+          },
+        },
+        /\/work\/my-work\/list$/,
+        'unit task-list blank recovery',
+        30_000
+      );
+    } finally {
+      Date.now = originalNow;
+    }
+
+    expect(observedTimeouts).toEqual([30_000, 10_000]);
+  });
+
   test('resolves and finds the stable task identity from Manage button IDs', async () => {
     const manageIds = ['manage_task-a', 'manage_task-b'];
     const pageObject = {
@@ -355,59 +425,6 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
       )
     ).rejects.toThrow('element was detached from the DOM');
     expect(action.attempts.clickAttempt).toBe(1);
-  });
-
-  test('reconciles and releases the exact task after an ambiguous claim outcome', async () => {
-    const releasedRows: number[] = [];
-    await expect(
-      reconcileClaimedTask({
-        claimAttempted: true,
-        claimConfirmed: true,
-        taskId: 'task-123',
-        findClaimedTask: async () => 4,
-        releaseClaimedTask: async (rowIndex) => releasedRows.push(rowIndex),
-      })
-    ).resolves.toBe('released');
-    expect(releasedRows).toEqual([4]);
-  });
-
-  test('does not release when a claim was not dispatched or was not applied', async () => {
-    let releases = 0;
-    await expect(
-      reconcileClaimedTask({
-        claimAttempted: false,
-        claimConfirmed: false,
-        taskId: 'task-123',
-        findClaimedTask: async () => 4,
-        releaseClaimedTask: async () => {
-          releases += 1;
-        },
-      })
-    ).resolves.toBe('not-attempted');
-    await expect(
-      reconcileClaimedTask({
-        claimAttempted: true,
-        claimConfirmed: false,
-        taskId: 'task-123',
-        findClaimedTask: async () => undefined,
-        releaseClaimedTask: async () => {
-          releases += 1;
-        },
-      })
-    ).resolves.toBe('not-claimed');
-    expect(releases).toBe(0);
-  });
-
-  test('fails cleanup when a confirmed claim cannot be reconciled', async () => {
-    await expect(
-      reconcileClaimedTask({
-        claimAttempted: true,
-        claimConfirmed: true,
-        taskId: 'task-123',
-        findClaimedTask: async () => undefined,
-        releaseClaimedTask: async () => undefined,
-      })
-    ).rejects.toThrow('Confirmed claimed task task-123 could not be found for cleanup.');
   });
 
   test('clickButtonAndWaitForRequest retries after a transient click failure and returns the observed request', async () => {

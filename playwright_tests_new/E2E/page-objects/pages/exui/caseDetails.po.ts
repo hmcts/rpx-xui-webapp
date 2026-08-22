@@ -870,15 +870,7 @@ export class CaseDetailsPage extends Base {
   }
 
   private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
-    await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
-      if (!/\/cases\/case-details\//.test(this.page.url())) {
-        throw error;
-      }
-      await this.page.goto(this.page.url(), { waitUntil: 'domcontentloaded' });
-      await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
-        throw error;
-      });
-    });
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
     await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
 
     const deadline = Date.now() + timeoutMs;

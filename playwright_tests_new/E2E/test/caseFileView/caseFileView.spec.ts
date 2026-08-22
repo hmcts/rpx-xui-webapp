@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 import { uploadEmploymentDraftDocumentViaApi } from '../../utils/test-setup/journeys/employmentJourneys';
@@ -31,7 +31,7 @@ test.describe('Case file view', { tag: ['@e2e', '@e2e-case-file-view'] }, () => 
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     try {
       const lease = await identityLease.acquire({ pool: 'SEARCH_EMPLOYMENT_CASE' });
-      await ensureAuthenticatedPage(page, lease.identity.userIdentifier, { waitForSelector: 'exui-header' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
       const setup = await setupCaseForJourney({
         scenario: 'case-file-view-employment',
         jurisdiction,

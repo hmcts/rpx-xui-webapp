@@ -88,6 +88,32 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
     expect(attempts).toBe(3);
   });
 
+  test('retries transient pre-write CCD transport failures', async () => {
+    let attempts = 0;
+    const request = {
+      scenario: 'direct-ccd-pre-write-recovery',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+      },
+    } as never;
+
+    await expect(
+      caseSetupTest.retryTransientApiRequest(
+        request,
+        async () => {
+          attempts += 1;
+          if (attempts === 1) throw new Error('SSL routines: decryption failed or bad record mac');
+          return 'recovered';
+        },
+        Date.now() + 1000,
+        1,
+        'direct CCD event token'
+      )
+    ).resolves.toBe('recovered');
+    expect(attempts).toBe(2);
+  });
+
   test('uses an available slot and always releases it after the case setup', async () => {
     const lockedPaths: string[] = [];
     let releases = 0;

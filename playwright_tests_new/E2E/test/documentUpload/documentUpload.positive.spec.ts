@@ -1,6 +1,6 @@
 import { Response } from '@playwright/test';
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { TEST_DATA } from './constants';
 import { expectCaseBanner } from '../../utils';
 import { createLogger } from '@hmcts/playwright-common';
@@ -53,7 +53,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
       const testValue = `document-v2-${testInfo.parallelIndex}-${testInfo.retry}-${Date.now()}`;
       logger.info('Generated test value', { testValue, worker: testInfo.workerIndex });
 
-      await ensureAuthenticatedPage(page, lease.identity.userIdentifier, { waitForSelector: 'exui-header' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
       const setup = await setupCaseForJourney({
         scenario: 'document-upload-v2-divorce',
         jurisdiction: TEST_DATA.V2.JURISDICTION,
@@ -199,7 +199,7 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
     const testFileName = `${testValue}.pdf`;
     logger.info('Generated test values', { testValue, testFileName, worker: testInfo.workerIndex });
 
-    await ensureAuthenticatedPage(page, lease.identity.userIdentifier, { waitForSelector: 'exui-header' });
+    await applySessionCookies(page, lease.identity.userIdentifier);
     const setup = await setupCaseForJourney({
       scenario: 'document-upload-v1-employment',
       jurisdiction: TEST_DATA.V1.JURISDICTION,

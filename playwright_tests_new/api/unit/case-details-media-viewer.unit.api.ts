@@ -15,6 +15,23 @@ function mediaViewerPage(): Page {
 }
 
 test.describe('Case details Media Viewer helper', { tag: '@svc-internal' }, () => {
+  test('does not reload a slow case-details page after its readiness timeout', async () => {
+    let reloads = 0;
+    const readinessError = new Error('case details remained unavailable');
+    const caseDetailsPage = Object.assign(Object.create(CaseDetailsPage.prototype), {
+      container: { waitFor: async () => Promise.reject(readinessError) },
+      page: {
+        url: () => 'https://xui.example/cases/case-details/DIVORCE/xuiTestCaseType/1234',
+        goto: async () => {
+          reloads += 1;
+        },
+      },
+    });
+
+    await expect(CaseDetailsPage.prototype.waitForCaseDetailsReady.call(caseDetailsPage)).rejects.toThrow(readinessError);
+    expect(reloads).toBe(0);
+  });
+
   test('returns same page when the document opens Media Viewer without a popup', async () => {
     const page = {
       waitForEvent: () => never<Page>(),

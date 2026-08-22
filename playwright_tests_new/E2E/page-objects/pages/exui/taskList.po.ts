@@ -340,15 +340,16 @@ export class TaskListPage extends Base {
   }
 
   private async waitForTaskListShellReadyAfterNavigation(urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
-    const shellReadyAttemptTimeoutMs = Math.min(timeoutMs, 15_000);
+    const deadlineMs = Date.now() + timeoutMs;
     let lastError: unknown;
 
     for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
       try {
-        await this.waitForTaskListShellReady(
-          attempt === 1 ? context : `${context} after blank-page reload`,
-          shellReadyAttemptTimeoutMs
-        );
+        const remainingTimeoutMs = deadlineMs - Date.now();
+        if (remainingTimeoutMs <= 0) {
+          break;
+        }
+        await this.waitForTaskListShellReady(attempt === 1 ? context : `${context} after blank-page reload`, remainingTimeoutMs);
         if (!urlPattern.test(this.page.url())) {
           throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after shell bootstrap.`);
         }
@@ -359,8 +360,15 @@ export class TaskListPage extends Base {
           throw error;
         }
 
-        await this.reloadBlankTaskListDocumentIfNeeded(urlPattern, `${context} shell attempt ${attempt}`, timeoutMs);
-        await this.waitForTaskListSpinnerToSettle(10_000);
+        const remainingTimeoutMs = deadlineMs - Date.now();
+        if (remainingTimeoutMs <= 0) {
+          break;
+        }
+        await this.reloadBlankTaskListDocumentIfNeeded(urlPattern, `${context} shell attempt ${attempt}`, remainingTimeoutMs);
+        const spinnerTimeoutMs = Math.min(10_000, deadlineMs - Date.now());
+        if (spinnerTimeoutMs > 0) {
+          await this.waitForTaskListSpinnerToSettle(spinnerTimeoutMs);
+        }
       }
     }
 

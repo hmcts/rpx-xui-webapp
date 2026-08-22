@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { filterEmptyRows } from '../../utils';
 import { caseBannerMatches } from '../../utils/banner.utils';
 import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
@@ -19,7 +19,7 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     try {
       const lease = await identityLease.acquire({ pool: 'SEARCH_EMPLOYMENT_CASE' });
-      await ensureAuthenticatedPage(page, lease.identity.userIdentifier, { waitForSelector: 'exui-header' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
       const setup = await setupCaseForJourney({
         scenario: 'case-flags-employment-case-level',
         jurisdiction,
@@ -121,7 +121,7 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, ()
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     try {
       const lease = await identityLease.acquire({ pool: 'USER_WITH_FLAGS' });
-      await ensureAuthenticatedPage(page, lease.identity.userIdentifier, { waitForSelector: 'exui-header' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
       const setup = await setupCaseForJourney({
         scenario: 'case-flags-divorce-party-level',
         jurisdiction,

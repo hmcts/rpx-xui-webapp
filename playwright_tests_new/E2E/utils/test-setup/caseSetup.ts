@@ -38,6 +38,12 @@ type SetupCaseResult = {
   mode: 'api' | 'ui';
 };
 
+type DirectCaseSetupResult = {
+  caseNumber: string;
+  jurisdictionId: string;
+  caseTypeId: string;
+};
+
 const logger = createLogger({
   serviceName: 'e2e-case-setup',
   format: 'pretty',
@@ -45,6 +51,7 @@ const logger = createLogger({
 
 const TRUTHY_VALUES = new Set(['1', 'true', 'yes', 'on']);
 const DEFAULT_CASE_SETUP_TIMEOUT_MS = 60_000;
+const DEFAULT_CASE_DETAILS_READY_TIMEOUT_MS = 90_000;
 const DEFAULT_EVENT_ID = 'initiateCase';
 const CCD_EVENT_TOKEN_ROUTE_TEMPLATE =
   '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/event-triggers/:eventId/token';
@@ -189,13 +196,47 @@ async function backoffOrAbort(page: Page, baseDelayMs: number, scenario: string)
   await page.waitForTimeout(Math.max(0, safeBaseMs + jitterMs));
 }
 
+async function retryTransientApiRequest<T>(
+  request: SetupCaseRequest,
+  action: () => Promise<T>,
+  deadline: number,
+  retryIntervalMs: number,
+  operation: string
+): Promise<T> {
+  let attempt = 0;
+  while (true) {
+    try {
+      return await action();
+    } catch (error) {
+      if (!isTransientApiRequestError(error) || Date.now() >= deadline) {
+        throw error;
+      }
+      attempt += 1;
+      logger.warn(`Transient ${operation} transport failure, retrying`, {
+        scenario: request.scenario,
+        attempt: attempt + 1,
+        retryIntervalMs,
+      });
+      await backoffOrAbort(request.page, Math.min(retryIntervalMs, Math.max(0, deadline - Date.now())), request.scenario);
+    }
+  }
+}
+
 async function createCaseViaApi(request: SetupCaseRequest): Promise<string | undefined> {
   if (request.testInfo) {
     request.testInfo.setTimeout(Math.max(request.testInfo.timeout, resolveLiveCaseJourneyTimeoutMs()));
   }
-  return withDirectCcdSetupGate(() => createCaseViaDirectCcdApi(request), process.env, undefined, {
+  const created = await withDirectCcdSetupGate(() => createCaseViaDirectCcdApi(request), process.env, undefined, {
     maxWaitMs: resolveCaseSetupGateBudgetMs(),
   });
+  if (!created) {
+    return undefined;
+  }
+
+  await request.page.goto(`/cases/case-details/${created.jurisdictionId}/${created.caseTypeId}/${created.caseNumber}`);
+  await request.caseDetailsPage.exuiSpinnerComponent.wait();
+  await request.caseDetailsPage.waitForCaseDetailsReady(DEFAULT_CASE_DETAILS_READY_TIMEOUT_MS);
+  return request.caseDetailsPage.getCaseNumberFromUrl();
 }
 
 type UserDetailsResponse = {
@@ -431,7 +472,7 @@ async function requestUserDetailsWithRetry(request: SetupCaseRequest, effectiveT
   throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
-async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<string | undefined> {
+async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<DirectCaseSetupResult | undefined> {
   const timeoutMs = Number.parseInt(process.env.PW_E2E_CASE_SETUP_TIMEOUT_MS ?? '', 10);
   const effectiveTimeoutMs = Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : DEFAULT_CASE_SETUP_TIMEOUT_MS;
 
@@ -481,7 +522,13 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
   const tokenRetryIntervalMs = resolveEventTokenRetryIntervalMs();
   const tokenRetryDeadline = Date.now() + tokenRetryWindowMs;
   let tokenAttempt = 0;
-  let tokenResponse = await requestEventToken();
+  let tokenResponse = await retryTransientApiRequest(
+    request,
+    requestEventToken,
+    tokenRetryDeadline,
+    tokenRetryIntervalMs,
+    'direct CCD event token'
+  );
 
   while (tokenResponse.status() < 200 || tokenResponse.status() >= 300) {
     const status = tokenResponse.status();
@@ -503,7 +550,13 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
     });
     const remainingMs = tokenRetryDeadline - now;
     await backoffOrAbort(request.page, Math.min(tokenRetryIntervalMs, Math.max(remainingMs, 0)), request.scenario);
-    tokenResponse = await requestEventToken();
+    tokenResponse = await retryTransientApiRequest(
+      request,
+      requestEventToken,
+      tokenRetryDeadline,
+      tokenRetryIntervalMs,
+      'direct CCD event token'
+    );
   }
 
   if (tokenResponse.status() < 200 || tokenResponse.status() >= 300) {
@@ -549,7 +602,13 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
   const validateRetryIntervalMs = resolveValidateRetryIntervalMs();
   const validateRetryDeadline = Date.now() + validateRetryWindowMs;
   let validateAttempt = 0;
-  let validateResponse = await requestValidate();
+  let validateResponse = await retryTransientApiRequest(
+    request,
+    requestValidate,
+    validateRetryDeadline,
+    validateRetryIntervalMs,
+    'direct CCD validate'
+  );
   while (validateResponse.status() < 200 || validateResponse.status() >= 300) {
     const status = validateResponse.status();
     const now = Date.now();
@@ -569,7 +628,13 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
     });
     const remainingMs = validateRetryDeadline - now;
     await backoffOrAbort(request.page, Math.min(validateRetryIntervalMs, Math.max(remainingMs, 0)), request.scenario);
-    validateResponse = await requestValidate();
+    validateResponse = await retryTransientApiRequest(
+      request,
+      requestValidate,
+      validateRetryDeadline,
+      validateRetryIntervalMs,
+      'direct CCD validate'
+    );
   }
   if (validateResponse.status() < 200 || validateResponse.status() >= 300) {
     const responseText = await validateResponse.text().catch(() => '');
@@ -605,10 +670,11 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
     );
   }
 
-  await request.page.goto(`/cases/case-details/${resolvedIds.jurisdictionId}/${resolvedIds.caseTypeId}/${caseNumber}`);
-  await request.caseDetailsPage.exuiSpinnerComponent.wait();
-  await request.caseDetailsPage.waitForCaseDetailsReady();
-  return request.caseDetailsPage.getCaseNumberFromUrl();
+  return {
+    caseNumber,
+    jurisdictionId: resolvedIds.jurisdictionId,
+    caseTypeId: resolvedIds.caseTypeId,
+  };
 }
 
 export async function setupCaseForJourney(request: SetupCaseRequest): Promise<SetupCaseResult> {
@@ -670,6 +736,7 @@ export async function setupCaseForJourney(request: SetupCaseRequest): Promise<Se
 
 export const __test__ = {
   isTransientApiRequestError,
+  retryTransientApiRequest,
   requestAggregatedJurisdictionsWithRetry,
   resolveCaseNumberFromCreateResponse,
   resolveApiIdsFromAggregatedJurisdictions,

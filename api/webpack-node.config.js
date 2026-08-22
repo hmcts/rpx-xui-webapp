@@ -6,6 +6,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 const { NODE_ENV = 'production' } = process.env;
 const isProduction = NODE_ENV === 'production';
+const runtimeExternals = new Set(['applicationinsights']);
 
 module.exports = {
   optimization: {
@@ -35,8 +36,18 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    mainFields: ['main', 'module'],
   },
-  externals: [nodeExternals()],
+  externals: [
+    ({ request }, callback) => {
+      if (runtimeExternals.has(request)) {
+        return callback(null, `commonjs ${request}`);
+      }
+
+      callback();
+    },
+    nodeExternals(),
+  ],
   module: {
     rules: [
       {

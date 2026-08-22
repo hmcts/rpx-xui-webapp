@@ -38,6 +38,7 @@ type LoginForm = {
   action: string;
   hiddenFields: Record<string, string>;
   hasEmail: boolean;
+  emailFieldName?: 'email' | 'emailAddress';
   hasUsername: boolean;
   hasPassword: boolean;
 };
@@ -178,7 +179,7 @@ async function submitLoginForm(
   budget: BootstrapBudget
 ): Promise<BootstrapResponse> {
   const formPayload: Record<string, string> = { ...form.hiddenFields };
-  if (form.hasEmail) formPayload.email = credentials.username;
+  if (form.hasEmail) formPayload[form.emailFieldName ?? 'email'] = credentials.username;
   if (form.hasUsername) formPayload.username = credentials.username;
   if (form.hasPassword) formPayload.password = credentials.password;
   formPayload.save = form.hasPassword ? 'Sign in' : 'Continue';
@@ -197,6 +198,8 @@ function parseLoginForm(html: string, pageUrl: string): LoginForm {
   const action = new URL(decodeHtmlAttribute(actionMatch?.[1] || pageUrl), pageUrl).toString();
   const formEnd = firstFormMatch ? html.indexOf('</form>', firstFormMatch.index) : -1;
   const formHtml = credentialForm?.[2] ?? (firstFormMatch && formEnd >= 0 ? html.slice(firstFormMatch.index, formEnd) : html);
+  const emailField = /<input\b[^>]*\bname=["'](email|emailAddress)["'][^>]*>/i.exec(formHtml)?.[1].toLowerCase();
+  const emailFieldName = emailField === 'emailaddress' ? 'emailAddress' : emailField === 'email' ? 'email' : undefined;
   const hiddenFields: Record<string, string> = {};
   for (const input of formHtml.match(/<input\b[^>]*type=["']hidden["'][^>]*>/gi) ?? []) {
     const name = /\bname=["']([^"']+)["']/i.exec(input)?.[1];
@@ -207,6 +210,7 @@ function parseLoginForm(html: string, pageUrl: string): LoginForm {
     action,
     hiddenFields,
     hasEmail: /<input\b[^>]*(?:name|id)=["'](?:email|emailAddress)["'][^>]*>/i.test(formHtml),
+    emailFieldName,
     hasUsername: /<input\b[^>]*(?:name|id)=["']username["'][^>]*>/i.test(formHtml),
     hasPassword: /<input\b[^>]*type=["']password["'][^>]*>/i.test(formHtml),
   };

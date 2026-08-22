@@ -48,6 +48,18 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
     expect(html).not.toContain('Playwright integration command');
   });
 
+  test('explains a lane-local pre-Playwright configuration failure without exposing marker content', () => {
+    const reportDir = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-runner-failure-'));
+    fs.writeFileSync(path.join(reportDir, 'runner-failure.txt'), 'do not publish this marker content');
+
+    const result = ensureReport.ensureOdhinReport({ reportDir, suiteName: 'Integration' });
+    const html = fs.readFileSync(result.reportPath, 'utf8');
+
+    expect(html).toContain(`${reportDir}/runner-failure.txt`);
+    expect(html).toContain('Integration session configuration did not complete before Playwright started.');
+    expect(html).not.toContain('do not publish this marker content');
+  });
+
   test('parses Jenkins CLI arguments', () => {
     expect(
       ensureReport.parseArgs([

@@ -313,6 +313,11 @@ def runPlaywrightIntegrationProfileMatrix = {
                 throw e
             }
             if (!fileExists(sessionConfigCompleteFile)) {
+                steps.sh "mkdir -p '${runConfig.reportDir}'"
+                writeFile(
+                    file: "${runConfig.reportDir}/runner-failure.txt",
+                    text: 'Integration session configuration did not complete before Playwright started. See the Jenkins console log for the configuration error.\n'
+                )
                 echo "[playwright-integration] Session configuration validation did not complete for ${runConfig.displayName}; aborting before another profile starts"
                 throw e
             }

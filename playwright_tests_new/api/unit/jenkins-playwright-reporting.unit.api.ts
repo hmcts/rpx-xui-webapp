@@ -30,9 +30,11 @@ function assertPostRunFallback(jenkinsfile: string, stage: string, runnerCommand
 
 test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' }, () => {
   test('keeps an integration configuration failure in the published report directory', () => {
-    expect(source).toContain('runner-failure.txt');
-    expect(source).toContain('Integration session configuration did not complete before Playwright started.');
-    expect(source).toContain('steps.sh "mkdir -p \'${runConfig.reportDir}\'"');
+    for (const jenkinsfile of [source, nightlySource]) {
+      expect(jenkinsfile).toContain('runner-failure.txt');
+      expect(jenkinsfile).toContain('Integration session configuration did not complete before Playwright started.');
+      expect(jenkinsfile).toContain('steps.sh "mkdir -p \'${runConfig.reportDir}\'"');
+    }
   });
 
   test('creates each API and E2E fallback only in its post-run lane', () => {

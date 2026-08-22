@@ -20,6 +20,7 @@ const integrationConfigSupport = require('../../playwright.integration.config.su
   resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
 };
 const smokeRunner = require('../../scripts/run-playwright-smoke.cjs') as {
+  buildSmokeEnvironment: (env: EnvMap) => EnvMap;
   buildSmokePlaywrightArgs: (env: EnvMap, extraArgs?: string[]) => string[];
 };
 
@@ -564,13 +565,23 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.ignoredGlobalExcludedTags).toEqual(['@e2e-smoke']);
   });
 
-  test('smoke runner never turns an excluded smoke lane into an empty pass', () => {
+  test('smoke runner allows empty runs only for the global smoke exclusion layer', () => {
+    expect(
+      smokeRunner.buildSmokeEnvironment({
+        PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke',
+        PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'false',
+      })
+    ).toMatchObject({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke',
+      PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'false',
+    });
+
     expect(
       smokeRunner.buildSmokePlaywrightArgs({
         PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke @svc-work-allocation',
         CI: undefined,
       })
-    ).toEqual(['test', '--project=smoke']);
+    ).toEqual(['test', '--project=smoke', '--pass-with-no-tests', '--reporter=list']);
 
     expect(
       smokeRunner.buildSmokePlaywrightArgs({
@@ -588,7 +599,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
         },
         ['--reporter=null', '--list']
       )
-    ).toEqual(['test', '--project=smoke', '--reporter=null', '--list']);
+    ).toEqual(['test', '--project=smoke', '--reporter=null', '--list', '--pass-with-no-tests']);
   });
 
   test('integration config keeps Odhin enabled locally with lightweight defaults', async () => {

@@ -44,7 +44,7 @@ test.describe('API-first session bootstrap', { tag: '@svc-internal' }, () => {
                 return response(
                   200,
                   'https://idam.example.test/login',
-                  '<form action="/login"><input type="hidden" name="_csrf" value="abc&amp;123"><input name="email"></form>'
+                  '<form action="/login"><input type="hidden" name="_csrf" value="abc&amp;123"><input name="emailAddress"></form>'
                 );
               }
               return response(200, `https://manage-case.example.test/${url}`, url === 'auth/isAuthenticated' ? 'true' : '');
@@ -54,7 +54,7 @@ test.describe('API-first session bootstrap', { tag: '@svc-internal' }, () => {
               calls.push(`POST ${url}`);
               requestTimeouts.push(requestOptions.timeout);
               if (postCount === 1) {
-                expect(requestOptions.form).toMatchObject({ _csrf: 'abc&123', email: options.username, save: 'Continue' });
+                expect(requestOptions.form).toEqual({ _csrf: 'abc&123', emailAddress: options.username, save: 'Continue' });
                 return response(
                   200,
                   'https://idam.example.test/login/password',

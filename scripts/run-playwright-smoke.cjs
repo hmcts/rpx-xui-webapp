@@ -28,17 +28,34 @@ const splitTagInput = (raw) => {
   return tags;
 };
 
-const buildSmokePlaywrightArgs = (_env = process.env, extraArgs = process.argv.slice(2)) => [
-  'test',
-  '--project=smoke',
-  ...extraArgs,
-];
+const resolveBooleanEnvFlag = (rawValue) =>
+  ['1', 'true', 'yes', 'on'].includes(
+    String(rawValue ?? '')
+      .trim()
+      .toLowerCase()
+  );
+
+const hasCliOption = (args, optionName) => args.some((arg) => arg === optionName || arg.startsWith(`${optionName}=`));
+
+const buildSmokePlaywrightArgs = (env = process.env, extraArgs = process.argv.slice(2)) => {
+  const args = ['test', '--project=smoke', ...extraArgs];
+  const smokeGloballyExcluded =
+    !resolveBooleanEnvFlag(env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES) &&
+    splitTagInput(env.PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS).includes('@e2e-smoke');
+
+  if (!smokeGloballyExcluded) return args;
+  if (!hasCliOption(args, '--pass-with-no-tests')) args.push('--pass-with-no-tests');
+  if (!hasCliOption(args, '--reporter')) args.push('--reporter=list');
+  return args;
+};
+
+const buildSmokeEnvironment = (env = process.env) => ({ ...env });
 
 const run = () => {
   const playwrightCli = path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js');
   const result = spawnSync(process.execPath, [playwrightCli, ...buildSmokePlaywrightArgs()], {
     stdio: 'inherit',
-    env: { ...process.env, PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'true' },
+    env: buildSmokeEnvironment(),
   });
   if (result.error) {
     throw result.error;
@@ -51,6 +68,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  buildSmokeEnvironment,
   buildSmokePlaywrightArgs,
   splitTagInput,
 };

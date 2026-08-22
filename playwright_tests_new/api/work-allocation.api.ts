@@ -278,7 +278,8 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
   test.describe('my-work dashboards', () => {
     const endpoints = ['workallocation/my-work/cases', 'workallocation/my-work/myaccess'];
     for (const endpoint of endpoints) {
-      test(`${endpoint} returns data or guarded status`, async ({ apiClient }) => {
+      const tags = endpoint.endsWith('/myaccess') ? ['@svc-work-allocation-myaccess'] : [];
+      test(`${endpoint} returns data or guarded status`, { tag: tags }, async ({ apiClient }) => {
         const response = await withXsrf('solicitor', (headers) =>
           guardedRequest(() =>
             apiClient.get(endpoint, {

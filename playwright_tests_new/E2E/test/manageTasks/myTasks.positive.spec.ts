@@ -60,7 +60,8 @@ test.describe(
           void claimResponse.catch(() => undefined);
           claimAttempted = true;
           await taskListPage.clickTaskActionForRowOnce(0, 'claim', `claiming task ${claimedTaskId}`, { timeoutMs: 30_000 });
-          expect((await claimResponse).status()).toBeLessThan(400);
+          const response = await claimResponse;
+          expect(response.status(), `Work Allocation claim failed: ${response.url()}`).toBeLessThan(400);
           claimConfirmed = true;
 
           await taskListPage.clickTaskTabAndWaitForView('My tasks', 'MyTasks', 'opening claimed My tasks', {

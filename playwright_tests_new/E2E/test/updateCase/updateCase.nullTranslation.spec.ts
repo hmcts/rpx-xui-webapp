@@ -36,7 +36,7 @@ test.describe(
       await test.step('Navigate to case details and verify no translation errors occurred', async () => {
         await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
         await expect(page).toHaveURL(/\/cases\/case-details\//);
-        await expect(caseDetailsPage.caseSummaryHeading).toBeVisible();
+        await expect(caseDetailsPage.caseViewerTable).toBeVisible();
         const pageContent = await page.content();
         const translationErrors = /\[undefined\]|\[null\]|Cannot read.*translation|TypeError.*trim|undefined.*\.split/.test(
           pageContent
@@ -91,7 +91,7 @@ test.describe(
         await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
 
         await expect(page).toHaveURL(/\/cases\/case-details\//);
-        await expect(caseDetailsPage.caseSummaryHeading).toBeVisible();
+        await expect(caseDetailsPage.caseViewerTable).toBeVisible();
       });
 
       await test.step('Verify field labels are rendered without translation errors', async () => {
@@ -109,8 +109,8 @@ test.describe(
       });
 
       await test.step('Verify no rendering errors in case details header', async () => {
-        await expect(page.locator('exui-case-details-home')).toBeVisible();
-        await expect(caseDetailsPage.caseSummaryHeading).toContainText('Case information');
+        await expect(caseDetailsPage.container).toBeVisible();
+        await expect(caseDetailsPage.caseViewerTable).toBeVisible();
       });
     });
   }

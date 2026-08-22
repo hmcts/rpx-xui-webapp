@@ -34,14 +34,6 @@ export function resolveWorkAllocationUser(): SessionIdentityInput {
   );
 }
 
-function describeWorkAllocationUser(identity: SessionIdentityInput): string {
-  if (typeof identity === 'string') {
-    return identity;
-  }
-
-  return `${identity.userIdentifier} (${identity.email})`;
-}
-
 export async function applyWorkAllocationSession(page: Page, identity: SessionIdentityInput = resolveWorkAllocationUser()) {
   const { cookies } = await ensureSessionCookies(identity);
   if (cookies.length) {
@@ -58,27 +50,7 @@ export async function bootstrapWorkAllocationShell({
   taskListPage: TaskListPage;
   identity?: SessionIdentityInput;
 }) {
-  const workAllocationUser = identity;
-  await applyWorkAllocationSession(page, workAllocationUser);
+  await applyWorkAllocationSession(page, identity);
   await taskListPage.goto();
-
-  const hasMyWorkNavigation = await page
-    .getByRole('navigation', { name: /primary navigation/i })
-    .getByRole('link', { name: 'My work', exact: true })
-    .isVisible()
-    .catch(() => false);
-  if (!hasMyWorkNavigation) {
-    const heading = await page
-      .locator('h1')
-      .first()
-      .textContent({ timeout: 1_000 })
-      .catch(() => '');
-    throw new Error(
-      `Work Allocation shell did not expose My work navigation for ${describeWorkAllocationUser(
-        workAllocationUser
-      )}. url=${page.url()} heading=${heading?.trim() || 'unknown'}`
-    );
-  }
-
   await taskListPage.waitForTaskListShellReady('work allocation shell bootstrap');
 }

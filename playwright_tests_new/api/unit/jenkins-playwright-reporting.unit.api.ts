@@ -28,6 +28,23 @@ function assertPostRunFallback(jenkinsfile: string, stage: string, runnerCommand
   expect(publishIndex).toBeGreaterThan(fallbackIndex);
 }
 
+function expectInterruptedOutcomesToBypassFailure(jenkinsfile: string, expectedFailureOutcomes: number): void {
+  const failureOutcomes = [
+    ...jenkinsfile.matchAll(/(?:outcome = runnerCompleted \? 'completed' : |(?:apiOutcome|e2eOutcome) = )'test-failure'/g),
+  ];
+
+  expect(failureOutcomes).toHaveLength(expectedFailureOutcomes);
+  for (const failureOutcome of failureOutcomes) {
+    const failurePosition = failureOutcome.index ?? -1;
+    const catchPosition = jenkinsfile.lastIndexOf('catch (Exception e) {', failurePosition);
+    const catchBlock = jenkinsfile.slice(catchPosition, failurePosition);
+
+    expect(catchPosition).toBeGreaterThanOrEqual(0);
+    expect(catchBlock).toContain('FlowInterruptedException');
+    expect(catchBlock).toContain('hudson.AbortException');
+  }
+}
+
 test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' }, () => {
   test('keeps an integration configuration failure in the published report directory', () => {
     for (const jenkinsfile of [source, nightlySource]) {
@@ -80,12 +97,34 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
     expect(source).toContain('test-results/**/*.png');
     expect(source).toContain('test-results/**/failure-data.json');
-    expect(source).toContain('junit allowEmptyResults: false');
+    expect(source).toContain('def publishPlaywrightAccessibilityJUnit = {');
+    expect(source).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
+    expect(source.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(2);
     expect(nightlySource).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
     expect(nightlySource).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
     expect(nightlySource).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
-    expect(source).toContain('playwright-accessibility/playwright-accessibility-junit.xml');
-    expect(nightlySource).toContain('playwright-accessibility/playwright-accessibility-junit.xml');
+    expect(nightlySource).toContain('def publishPlaywrightAccessibilityJUnit = {');
+    expect(nightlySource).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
+    expect(nightlySource.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(1);
+  });
+
+  test('preserves interrupted outcomes before creating fallback failure reports', () => {
+    expectInterruptedOutcomesToBypassFailure(source, 5);
+    expectInterruptedOutcomesToBypassFailure(nightlySource, 3);
+  });
+
+  test('fails if an integration cancellation is classified as a test failure first', () => {
+    const interruptionFirst = `if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                throw e
+            }
+            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\\s+(129|137|143)/).find()) {
+                throw e
+            }
+            outcome = runnerCompleted ? 'completed' : 'test-failure'`;
+    const failureFirst = `outcome = runnerCompleted ? 'completed' : 'test-failure'
+            ${interruptionFirst}`;
+
+    expect(() => expectInterruptedOutcomesToBypassFailure(source.replace(interruptionFirst, failureFirst), 5)).toThrow();
   });
 
   test('clears the smoke report directory before Playwright starts', () => {

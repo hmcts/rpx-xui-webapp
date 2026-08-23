@@ -66,6 +66,7 @@ def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
 def playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
 def playwrightAccessibilityReportFile = 'xui-playwright-accessibility.html'
+def playwrightAccessibilityJunitFile = 'functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -119,6 +120,23 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
             throw e
         }
         echo "[playwright-accessibility] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+}
+
+def publishPlaywrightAccessibilityJUnit = {
+    if (!fileExists(playwrightAccessibilityJunitFile)) {
+        return
+    }
+    try {
+        junit allowEmptyResults: false, testResults: playwrightAccessibilityJunitFile
+    } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+            throw e
+        }
+        echo "[playwright-accessibility] JUnit publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
 
@@ -315,13 +333,13 @@ def runPlaywrightIntegrationProfileMatrix = {
             assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
             echo "[playwright-integration] Odhín report exists for ${runConfig.displayName}"
         } catch (Exception e) {
-            outcome = runnerCompleted ? 'completed' : 'test-failure'
             if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                 throw e
             }
             if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
                 throw e
             }
+            outcome = runnerCompleted ? 'completed' : 'test-failure'
             if (!fileExists(sessionConfigCompleteFile)) {
                 steps.sh "mkdir -p '${runConfig.reportDir}'"
                 writeFile(
@@ -603,6 +621,12 @@ withNightlyPipeline(type, product, component) {
                                 apiOutcome = 'completed'
                             }
                         } catch (Exception e) {
+                            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                throw e
+                            }
+                            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                throw e
+                            }
                             apiOutcome = 'test-failure'
                             echo "[parallel-report-gathering] API Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
                             throw e
@@ -661,6 +685,12 @@ withNightlyPipeline(type, product, component) {
                                 e2eOutcome = 'completed'
                             }
                         } catch (Exception e) {
+                            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                throw e
+                            }
+                            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                throw e
+                            }
                             e2eOutcome = 'test-failure'
                             echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
                             throw e
@@ -703,7 +733,6 @@ withNightlyPipeline(type, product, component) {
                                 playwrightAccessibilityReportDir,
                                 playwrightAccessibilityReportFile
                             )
-                            junit allowEmptyResults: false, testResults: 'functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml'
                         } catch (Exception e) {
                             if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                                 throw e
@@ -714,6 +743,7 @@ withNightlyPipeline(type, product, component) {
                             echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
                         } finally {
                             recordPlaywrightLoadEvent('Accessibility', 'finish')
+                            publishPlaywrightAccessibilityJUnit()
                             try {
                                 publishPlaywrightAccessibilityReport('Nightly Playwright Accessibility Test Report')
                             } catch (Exception publishException) {

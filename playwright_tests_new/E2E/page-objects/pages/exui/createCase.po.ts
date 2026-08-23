@@ -853,7 +853,7 @@ export class CreateCasePage extends Base {
 
   private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {
     const maxRetries = 3;
-    const baseDelayMs = 1000;
+    const baseDelayMs = 2000;
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
       min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       max: 30_000,
@@ -899,13 +899,18 @@ export class CreateCasePage extends Base {
       }
 
       if (uploadResponse.status() !== 200) {
-        if (attempt < maxRetries) {
+        if (uploadResponse.status() === 429 && attempt < maxRetries) {
+          const retryAfterSeconds = Number.parseFloat(uploadResponse.headers()['retry-after'] ?? '');
+          const retryDelayMs = Number.isFinite(retryAfterSeconds)
+            ? Math.max(baseDelayMs, retryAfterSeconds * 1000)
+            : baseDelayMs * Math.pow(2, attempt - 1);
           logger.warn(`Document ${uploadActionDescription} returned non-200 response; retrying upload`, {
             attempt,
             maxRetries,
             status: uploadResponse.status(),
+            retryDelayMs,
           });
-          await safeBackoff(attempt);
+          await this.page.waitForTimeout(retryDelayMs);
           continue;
         }
         throw new Error(

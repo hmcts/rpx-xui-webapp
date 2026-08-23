@@ -614,7 +614,7 @@ withNightlyPipeline(type, product, component) {
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
                                 'FUNCTIONAL_TESTS_WORKERS=6',
                                 'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/api_functional/odhin-report/test-results',
-                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/api_functional/odhin-report/playwright-junit.xml',
+                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
                                 yarnBuilder.yarn('test:api:pw:coverage:raw')

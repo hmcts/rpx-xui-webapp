@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
-import { guardedRequest, isRouteUnavailableStatus, withXsrf } from './utils/apiTestUtils';
+import { allowUnavailableRouteSkip, guardedRequest, isRouteUnavailableStatus, withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { assertCaseShareEntries, resolveEntries } from './utils/caseShareUtils';
 import { resolveHeader } from './utils/nodeAppUtils';
@@ -59,7 +59,7 @@ test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
           })
         );
         testInfo.skip(
-          isRouteUnavailableStatus(response.status),
+          isRouteUnavailableStatus(response.status) && allowUnavailableRouteSkip(),
           `Case Share did not respond through XUI while verifying ${path}; contract was not verified`
         );
         if (requiresConfiguredCaseIds && !configuredCaseShareCaseIds) {

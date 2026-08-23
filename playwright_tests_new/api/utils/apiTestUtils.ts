@@ -43,6 +43,11 @@ export function isRouteUnavailableStatus(status: number): boolean {
   return [0, 502, 503, 504].includes(status);
 }
 
+/** Skipping an unavailable route is for explicitly requested diagnostic runs only. */
+export function allowUnavailableRouteSkip(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.PW_ALLOW_UNAVAILABLE_ROUTE_SKIP === '1';
+}
+
 export async function buildXsrfHeaders(role: ApiUserRole): Promise<Record<string, string>> {
   return buildXsrfHeadersWith(role);
 }

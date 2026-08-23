@@ -196,22 +196,30 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     } as NodeJS.ProcessEnv;
     const attempts: string[] = [];
     const testInfo = { parallelIndex: 0, annotations: [] as Array<{ type: string; description?: string }> };
-
     const selectedUserIdentifier = await applySearchCaseSessionCookies({} as never, testInfo, env, (page, candidates) =>
-      sessionCaptureTest.applySessionCookiesFromPoolWith(page, candidates, async (_page, identity) => {
-        const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
-        attempts.push(userIdentifier);
-        if (userIdentifier === 'FPL_GLOBAL_SEARCH') {
-          throw new SessionCaptureError('Login failed: IDAM page message: Email or password is incorrect', userIdentifier);
-        }
-        return {
+      sessionCaptureTest.applySessionCookiesFromPoolWith(
+        page,
+        candidates.map((userIdentifier) => ({
           userIdentifier,
-          email: typeof identity === 'string' ? `${identity.toLowerCase()}@example.test` : identity.email,
-          cookies: [],
-          storageFile: `${userIdentifier}.storage.json`,
-          storageStateFingerprint: `${userIdentifier}-fingerprint`,
-        };
-      })
+          email: `${userIdentifier.toLowerCase()}@example.test`,
+          password: 'unit-password',
+        })),
+        async (_page, identity) => {
+          const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
+          attempts.push(userIdentifier);
+          if (userIdentifier === 'FPL_GLOBAL_SEARCH') {
+            throw new SessionCaptureError('Login failed: IDAM page message: Email or password is incorrect', userIdentifier);
+          }
+          return {
+            userIdentifier,
+            email: typeof identity === 'string' ? `${userIdentifier.toLowerCase()}@example.test` : identity.email,
+            password: typeof identity === 'string' ? 'unit-password' : identity.password,
+            cookies: [],
+            storageFile: `${userIdentifier}.storage.json`,
+            storageStateFingerprint: `${userIdentifier}-fingerprint`,
+          };
+        }
+      )
     );
 
     expect(attempts).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR']);

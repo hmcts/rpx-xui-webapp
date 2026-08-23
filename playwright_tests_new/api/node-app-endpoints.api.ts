@@ -5,7 +5,13 @@ import { request } from '@playwright/test';
 import { config as testConfig } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState } from './utils/auth';
 import { test, expect, buildApiAttachment } from './fixtures';
-import { expectStatus, guardedRequest, isRouteUnavailableStatus, StatusSets } from './utils/apiTestUtils';
+import {
+  allowUnavailableRouteSkip,
+  expectStatus,
+  guardedRequest,
+  isRouteUnavailableStatus,
+  StatusSets,
+} from './utils/apiTestUtils';
 import {
   applyExpiredCookies,
   assertSecurityHeaders,
@@ -64,7 +70,10 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
       apiClient.get<any>('api/user/details', { timeoutMs: 20_000, throwOnError: false })
     );
 
-    testInfo.skip(isRouteUnavailableStatus(response.status), 'XUI user-details route was unavailable; contract was not verified');
+    testInfo.skip(
+      isRouteUnavailableStatus(response.status) && allowUnavailableRouteSkip(),
+      'XUI user-details route was unavailable; contract was not verified'
+    );
     expectStatus(response.status, [200]);
     if (!shouldProcessUserDetails(response.status)) {
       return;

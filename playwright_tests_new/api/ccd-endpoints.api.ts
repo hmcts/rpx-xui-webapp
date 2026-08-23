@@ -1,6 +1,12 @@
 import { test, expect } from './fixtures';
 import { config as testConfig } from './utils/apiTestRuntimeConfig';
-import { withXsrf, expectStatus, guardedRequest, isRouteUnavailableStatus } from './utils/apiTestUtils';
+import {
+  allowUnavailableRouteSkip,
+  withXsrf,
+  expectStatus,
+  guardedRequest,
+  isRouteUnavailableStatus,
+} from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
 
@@ -13,9 +19,10 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
     const expectedNames = testConfig.jurisdictionNames[testConfig.testEnv] ?? [];
     const result = await assertJurisdictionsForUser(apiClient, expectedNames);
     testInfo.skip(
-      result === 'unavailable',
+      result === 'unavailable' && allowUnavailableRouteSkip(),
       'XUI user-details or CCD jurisdictions route was unavailable; contract was not verified'
     );
+    expect(result).toBe('verified');
   });
 
   const jurisdictions = testConfig.jurisdictions[testConfig.testEnv] ?? [];
@@ -49,7 +56,7 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
           })
         );
         testInfo.skip(
-          isRouteUnavailableStatus(response.status),
+          isRouteUnavailableStatus(response.status) && allowUnavailableRouteSkip(),
           `XUI work-basket route was unavailable for ${caseTypeIdText}; contract was not verified`
         );
         expectStatus(response.status, [200]);
@@ -95,7 +102,7 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
     );
 
     testInfo.skip(
-      isRouteUnavailableStatus(response.status),
+      isRouteUnavailableStatus(response.status) && allowUnavailableRouteSkip(),
       'XUI internal-profile route was unavailable; contract was not verified'
     );
     expectStatus(response.status, [200]);

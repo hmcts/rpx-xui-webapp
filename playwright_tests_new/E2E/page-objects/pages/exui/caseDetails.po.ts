@@ -516,11 +516,7 @@ export class CaseDetailsPage extends Base {
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
       await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
-    const caseActionSpinner = this.page.locator('xuilib-loading-spinner:visible').first();
-    if (await caseActionSpinner.isVisible().catch(() => false)) {
-      await this.waitForSpinnerToComplete(`before submitting case action "${action}"`, timeoutMs);
-    }
-    await this.caseActionGoButton.click();
+    await this.clickCaseActionGoButton(timeoutMs);
     await this.waitForSpinnerToComplete('after selecting case action', options.timeoutMs);
     await this.page.waitForLoadState('domcontentloaded');
     if (!options.expectedLocator && !options.expectedPath) {
@@ -564,7 +560,7 @@ export class CaseDetailsPage extends Base {
         this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
         await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
-      await this.caseActionGoButton.click();
+      await this.clickCaseActionGoButton(timeoutMs);
       await this.waitForSpinnerToComplete('after retrying case action', timeoutMs);
       await this.page.waitForLoadState('domcontentloaded');
       await waitForExpected();
@@ -582,6 +578,20 @@ export class CaseDetailsPage extends Base {
         throw new Error(`Spinner still visible ${context}`);
       }
       this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });
+    }
+  }
+
+  private async clickCaseActionGoButton(timeoutMs: number): Promise<void> {
+    await this.waitForSpinnerToComplete('before submitting case action', timeoutMs);
+    try {
+      await this.caseActionGoButton.click();
+    } catch (error) {
+      const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+      if (!(await spinner.isVisible().catch(() => false))) {
+        throw error;
+      }
+      await this.waitForSpinnerToComplete('after case action click was blocked by spinner', timeoutMs);
+      await this.caseActionGoButton.click();
     }
   }
 

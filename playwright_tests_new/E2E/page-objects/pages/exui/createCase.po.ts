@@ -852,38 +852,58 @@ export class CreateCasePage extends Base {
   }
 
   private async runDocumentUpload(uploadActionDescription: string, uploadAction: () => Promise<void>) {
+    const maxAttempts = 3;
+    const baseRetryDelayMs = 2_000;
+    const maxRetryDelayMs = 10_000;
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
       min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       max: 30_000,
       fallback: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       multiplier: 2,
     });
-    if (this.page.isClosed()) {
-      throw new Error(`Page closed before ${uploadActionDescription}`);
-    }
-    const responsePromise = this.page
-      .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
-        timeout: uploadResponseTimeoutMs,
-      })
-      .catch((error: Error) => error);
-
-    await uploadAction();
-
-    const uploadResponse = await responsePromise;
-
-    if (uploadResponse instanceof Error) {
-      if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
-        throw uploadResponse;
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      if (this.page.isClosed()) {
+        throw new Error(`Page closed before ${uploadActionDescription}`);
       }
-      throw new Error(
-        `Document ${uploadActionDescription} response was not observed within ${uploadResponseTimeoutMs}ms: ${uploadResponse.message}`
-      );
-    }
 
-    if (uploadResponse.status() !== 200) {
+      const responsePromise = this.page
+        .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
+          timeout: uploadResponseTimeoutMs,
+        })
+        .catch((error: Error) => error);
+      await uploadAction();
+      const uploadResponse = await responsePromise;
+
+      if (uploadResponse instanceof Error) {
+        if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
+          throw uploadResponse;
+        }
+        throw new Error(
+          `Document ${uploadActionDescription} response was not observed within ${uploadResponseTimeoutMs}ms: ${uploadResponse.message}`
+        );
+      }
+
+      if (uploadResponse.status() === 200) {
+        await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.UPLOAD_STATUS_SETTLE });
+        return;
+      }
+
+      if (uploadResponse.status() === 429 && attempt < maxAttempts) {
+        const retryAfterSeconds = Number.parseFloat(uploadResponse.headers()['retry-after'] ?? '');
+        const retryDelayMs = Number.isFinite(retryAfterSeconds)
+          ? Math.min(maxRetryDelayMs, Math.max(baseRetryDelayMs, retryAfterSeconds * 1_000))
+          : baseRetryDelayMs * 2 ** (attempt - 1);
+        logger.warn(`Document ${uploadActionDescription} was rate-limited; retrying`, {
+          attempt,
+          maxAttempts,
+          retryDelayMs,
+        });
+        await this.page.waitForTimeout(retryDelayMs);
+        continue;
+      }
+
       throw new Error(`Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()}`);
     }
-    await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.UPLOAD_STATUS_SETTLE });
   }
   async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;

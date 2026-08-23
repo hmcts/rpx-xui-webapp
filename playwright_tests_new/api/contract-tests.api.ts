@@ -4,7 +4,13 @@
  */
 
 import { test, expect } from './fixtures';
-import { expectStatus, guardedRequest, isRouteUnavailableStatus, StatusSets } from './utils/apiTestUtils';
+import {
+  allowUnavailableRouteSkip,
+  expectStatus,
+  guardedRequest,
+  isRouteUnavailableStatus,
+  StatusSets,
+} from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
 import { z } from 'zod';
@@ -97,7 +103,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     );
 
     testInfo.skip(
-      isRouteUnavailableStatus(response.status),
+      isRouteUnavailableStatus(response.status) && allowUnavailableRouteSkip(),
       'XUI work-allocation types-of-work route was unavailable; contract was not verified'
     );
     expectStatus(response.status, [200]);

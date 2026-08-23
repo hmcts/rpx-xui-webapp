@@ -5,7 +5,13 @@ import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState, getStoredCookie } from './utils/auth';
 import { test, expect } from './fixtures';
 import { EM_DOC_ID } from './data/testIds';
-import { expectStatus, guardedRequest, isRouteUnavailableStatus, withXsrf } from './utils/apiTestUtils';
+import {
+  allowUnavailableRouteSkip,
+  expectStatus,
+  guardedRequest,
+  isRouteUnavailableStatus,
+  withXsrf,
+} from './utils/apiTestUtils';
 import {
   assertAnnotationResponse,
   assertBinaryResponse,
@@ -87,7 +93,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
         })
       );
       testInfo.skip(
-        isRouteUnavailableStatus(annotationSet.status),
+        isRouteUnavailableStatus(annotationSet.status) && allowUnavailableRouteSkip(),
         'Evidence Manager annotation-set route was unavailable; annotation contract was not verified'
       );
       const annotationSetId =
@@ -151,7 +157,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
         })
       );
       testInfo.skip(
-        isRouteUnavailableStatus(profile.status),
+        isRouteUnavailableStatus(profile.status) && allowUnavailableRouteSkip(),
         'XUI user-details route was unavailable; bookmark lifecycle contract was not verified'
       );
       expectStatus(profile.status, [200]);

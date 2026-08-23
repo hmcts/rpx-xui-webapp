@@ -259,6 +259,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       taskListResponse: buildTaskListMock(6, workFiltersUserId, myActionsList),
       supportedJurisdictions: workFiltersSupportedJurisdictions,
       supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
+      user: { userId: expectedUserId },
     });
 
     await page.route(myCasesRoutePattern, async (route) => {
@@ -301,6 +302,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     const persistedServiceFilter = await taskListPage.waitForServiceFilterOptionVisible(expectedIaServiceLabel);
     await expect(persistedServiceFilter).toBeChecked();
+    await expect(taskListPage.waitForServiceFilterOptionVisible('Civil')).not.toBeChecked();
 
     await expect
       .poll(

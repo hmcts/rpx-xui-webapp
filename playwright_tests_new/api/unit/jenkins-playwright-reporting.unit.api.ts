@@ -73,6 +73,26 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source).toContain("reportName           : 'PREVIEW Playwright E2E'");
   });
 
+  test('keeps report diagnostics and JUnit output lane-local', () => {
+    expect(source).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
+    expect(source).toContain('PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}');
+    expect(source).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
+    expect(source).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
+    expect(source).toContain('test-results/**/*.png');
+    expect(source).toContain('test-results/**/failure-data.json');
+    expect(source).toContain('junit allowEmptyResults: false');
+    expect(nightlySource).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
+    expect(nightlySource).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
+    expect(nightlySource).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
+    expect(source).toContain('playwright-accessibility/playwright-accessibility-junit.xml');
+    expect(nightlySource).toContain('playwright-accessibility/playwright-accessibility-junit.xml');
+  });
+
+  test('clears the smoke report directory before Playwright starts', () => {
+    const smokeRunner = fs.readFileSync(path.join(repositoryRoot, 'scripts/run-playwright-smoke.cjs'), 'utf8');
+    expect(smokeRunner).toContain('fs.rmSync(reportDir, { recursive: true, force: true });');
+  });
+
   test('reports best-effort session reuse when CI has no explicit policy', () => {
     const output = childProcess.execFileSync(process.execPath, ['scripts/playwright-session-preflight.cjs'], {
       cwd: repositoryRoot,

@@ -8,11 +8,11 @@ const require = createRequire(import.meta.url);
 
 const ensureReport = require('../../../scripts/ensure-odhin-report.js') as {
   collectDiagnostics: (reportDir: string) => string[];
-  ensureOdhinReport: (options: { reportDir: string; reportFile?: string; suiteName?: string }) => {
+  ensureOdhinReport: (options: { reportDir: string; reportFile?: string; suiteName?: string; outcome?: string }) => {
     created: boolean;
     reportPath: string;
   };
-  parseArgs: (argv: string[]) => { reportDir: string; reportFile: string; suiteName: string };
+  parseArgs: (argv: string[]) => { reportDir: string; reportFile: string; suiteName: string; outcome: string };
 };
 
 test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
@@ -38,6 +38,7 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
       reportDir,
       reportFile: 'xui-playwright-integration.html',
       suiteName: 'AAT Playwright Integration Test',
+      outcome: 'completed',
     });
 
     expect(result.created).toBe(true);
@@ -45,7 +46,7 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
     expect(html).toContain('AAT Playwright Integration Test');
     expect(html).toContain('Odhín HTML report was not generated before Jenkins publishing.');
     expect(html).toContain('xui-playwright-integration.html');
-    expect(html).toContain('The Playwright command failed or was interrupted');
+    expect(html).toContain('The Playwright command completed but the Odhín reporter did not write');
     expect(html).not.toContain('Playwright integration command');
   });
 
@@ -68,6 +69,9 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
     fs.mkdirSync(reportDir, { recursive: true });
     fs.mkdirSync(staleIntegrationDir, { recursive: true });
     fs.writeFileSync(path.join(reportDir, 'failure-data.json'), '{}');
+    fs.mkdirSync(path.join(reportDir, 'test-results', 'failure'), { recursive: true });
+    fs.writeFileSync(path.join(reportDir, 'test-results', 'failure', 'test-failed-1.png'), 'screenshot');
+    fs.writeFileSync(path.join(reportDir, 'test-results', 'failure', 'trace.zip'), 'trace');
     fs.writeFileSync(path.join(staleIntegrationDir, 'load-profile.html'), '<html>stale integration profile</html>');
 
     const originalCwd = process.cwd();
@@ -75,6 +79,8 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
       process.chdir(root);
       const diagnostics = ensureReport.collectDiagnostics(reportDir);
       expect(diagnostics).toContain(`${reportDir}/failure-data.json`);
+      expect(diagnostics).toContain(`${reportDir}/test-results/failure/test-failed-1.png`);
+      expect(diagnostics).toContain(`${reportDir}/test-results/failure/trace.zip`);
       expect(diagnostics.join('\n')).not.toContain('playwright-integration/load-profile');
     } finally {
       process.chdir(originalCwd);
@@ -91,11 +97,14 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
         'xui-playwright-integration.html',
         '--suite-name',
         'AAT Playwright Integration Test (7 workers)',
+        '--outcome',
+        'test-failure',
       ])
     ).toEqual({
       reportDir: 'functional-output/tests/playwright-integration/odhin-report/aat-workers-7',
       reportFile: 'xui-playwright-integration.html',
       suiteName: 'AAT Playwright Integration Test (7 workers)',
+      outcome: 'test-failure',
     });
   });
 });

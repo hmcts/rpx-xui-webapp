@@ -204,6 +204,7 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
 
     const fixtureSource = readFileSync(path.resolve(process.cwd(), 'playwright_tests_new/E2E/fixtures.ts'), 'utf8');
     expect(fixtureSource).toContain('const fixtureStartedAt = Date.now()');
+    expect(fixtureSource).toContain('acquireIdentityLease(requirements, process.env, fetch, originalTimeoutMs)');
     expect(fixtureSource).not.toContain('testInfo.startTime');
   });
 
@@ -216,10 +217,10 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
   });
 
   test('waits for a coordinator lease and releases the leased compatible identity', async () => {
-    const calls: Array<{ url: string; method?: string }> = [];
+    const calls: Array<{ url: string; method?: string; body?: string }> = [];
     let acquireAttempts = 0;
     const fetchApi = async (url: string, init?: RequestInit) => {
-      calls.push({ url, method: init?.method });
+      calls.push({ url, method: init?.method, body: init?.body ? String(init.body) : undefined });
       if (url.endsWith('/acquire')) {
         acquireAttempts += 1;
         return new Response(
@@ -245,15 +246,17 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
         PW_IDENTITY_LEASE_POLL_MS: '1',
         PW_IDENTITY_LEASE_WAIT_MS: '1000',
       },
-      fetchApi
+      fetchApi,
+      35 * 60_000
     );
     expect(lease.identity.userIdentifier).toBe('PRL_SOLICITOR');
     await lease.release();
-    expect(calls).toEqual([
+    expect(calls.map(({ url, method }) => ({ url, method }))).toEqual([
       { url: 'https://lease.example.test/acquire', method: 'POST' },
       { url: 'https://lease.example.test/acquire', method: 'POST' },
       { url: 'https://lease.example.test/release/lease-1', method: 'DELETE' },
     ]);
+    expect(JSON.parse(calls[0].body ?? '{}').ttlMs).toBe(35 * 60_000);
   });
 
   test('gives coordinator aliases of one physical account the same opaque lease key', async () => {

@@ -1285,7 +1285,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     };
     try {
       await use({
-        acquire: (requirements) => acquire(() => acquireIdentityLease(requirements)),
+        acquire: (requirements) => acquire(() => acquireIdentityLease(requirements, process.env, fetch, originalTimeoutMs)),
       });
     } finally {
       await Promise.all(releases.reverse().map((release) => release()));

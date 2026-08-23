@@ -224,6 +224,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             email: identity.email,
             cookies: [],
             storageFile: `${identity.userIdentifier}.json`,
+            storageStateFingerprint: `${identity.userIdentifier}-fingerprint`,
           };
         }
       );

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const { spawnSync } = require('node:child_process');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const ensureTagPrefix = (value) => {
@@ -52,6 +53,8 @@ const buildSmokePlaywrightArgs = (env = process.env, extraArgs = process.argv.sl
 const buildSmokeEnvironment = (env = process.env) => ({ ...env });
 
 const run = () => {
+  const reportDir = process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-e2e/odhin-report';
+  fs.rmSync(reportDir, { recursive: true, force: true });
   const playwrightCli = path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js');
   const result = spawnSync(process.execPath, [playwrightCli, ...buildSmokePlaywrightArgs()], {
     stdio: 'inherit',

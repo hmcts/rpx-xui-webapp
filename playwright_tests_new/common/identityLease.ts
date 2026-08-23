@@ -12,6 +12,7 @@ const DEFAULT_TTL_MS = 15 * 60_000;
 
 export type IdentityLease = { identity: IdentityPoolIdentity; release: () => Promise<void> };
 export type IdentityLeaseTiming = { waitMs: number; executionBudgetMs: number };
+export type IdentityLeaseRuntimeSettings = IdentityLeaseTiming & { pollMs: number; ttlMs: number };
 type LeaseResponse = { status: 'acquired'; leaseId: string; userIdentifier: string } | { status: 'pending' };
 type FetchLike = typeof fetch;
 
@@ -33,6 +34,21 @@ export function resolveIdentityLeaseTiming(env: NodeJS.ProcessEnv = process.env)
   return {
     waitMs: positiveDuration(env.PW_IDENTITY_LEASE_WAIT_MS, DEFAULT_WAIT_MS),
     executionBudgetMs: positiveDuration(env.PW_IDENTITY_LEASE_EXECUTION_BUDGET_MS, DEFAULT_EXECUTION_BUDGET_MS),
+  };
+}
+
+export function resolveIdentityLeaseRuntimeSettings(
+  env: NodeJS.ProcessEnv = process.env,
+  requiredExecutionMs = 0
+): IdentityLeaseRuntimeSettings {
+  const timing = resolveIdentityLeaseTiming(env);
+  const executionBudgetMs = Math.max(timing.executionBudgetMs, requiredExecutionMs);
+  const ttlMs = Math.max(positiveDuration(env.PW_IDENTITY_LEASE_TTL_MS, DEFAULT_TTL_MS), executionBudgetMs);
+  return {
+    ...timing,
+    executionBudgetMs,
+    pollMs: positiveDuration(env.PW_IDENTITY_LEASE_POLL_MS, DEFAULT_POLL_MS),
+    ttlMs,
   };
 }
 
@@ -96,16 +112,15 @@ async function acquireCompatibleIdentityLease(
   candidates: IdentityPoolIdentity[],
   requirements: IdentityCompatibilityRequirements,
   env: NodeJS.ProcessEnv,
-  fetchApi: FetchLike
+  fetchApi: FetchLike,
+  requiredExecutionMs: number
 ): Promise<IdentityLease> {
   if (candidates.length === 0) {
     throw new Error(`No configured exclusive identity matches ${JSON.stringify(requirements)}.`);
   }
   const endpoint = leaseEndpoint(env);
-  const { waitMs } = resolveIdentityLeaseTiming(env);
+  const { waitMs, pollMs, ttlMs } = resolveIdentityLeaseRuntimeSettings(env, requiredExecutionMs);
   const deadline = Date.now() + waitMs;
-  const pollMs = Number(env.PW_IDENTITY_LEASE_POLL_MS ?? DEFAULT_POLL_MS);
-  const ttlMs = Number(env.PW_IDENTITY_LEASE_TTL_MS ?? DEFAULT_TTL_MS);
   if (!endpoint) {
     return acquireLocalIdentityLease(candidates, requirements, deadline, waitMs, pollMs, ttlMs, env);
   }
@@ -165,8 +180,9 @@ async function acquireCompatibleIdentityLease(
 export async function acquireIdentityLease(
   requirements: IdentityCompatibilityRequirements,
   env: NodeJS.ProcessEnv = process.env,
-  fetchApi: FetchLike = fetch
+  fetchApi: FetchLike = fetch,
+  requiredExecutionMs = 0
 ): Promise<IdentityLease> {
   const candidates = resolveConfiguredPoolIdentities(env, { ...requirements, concurrencyMode: 'exclusive' });
-  return acquireCompatibleIdentityLease(candidates, requirements, env, fetchApi);
+  return acquireCompatibleIdentityLease(candidates, requirements, env, fetchApi, requiredExecutionMs);
 }

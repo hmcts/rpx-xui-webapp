@@ -13,6 +13,7 @@ function parseArgs(argv) {
     reportDir: process.env.PLAYWRIGHT_REPORT_FOLDER || '',
     reportFile: process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || DEFAULT_REPORT_FILE,
     suiteName: process.env.PW_ODHIN_FALLBACK_SUITE_NAME || 'Playwright Integration Test',
+    outcome: process.env.PW_ODHIN_FALLBACK_OUTCOME || 'unknown',
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -26,6 +27,9 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg === '--suite-name' && next) {
       options.suiteName = next;
+      index += 1;
+    } else if (arg === '--outcome' && next) {
+      options.outcome = next;
       index += 1;
     }
   }
@@ -72,7 +76,7 @@ function buildFallbackReportHtml(options) {
     <h1>${escapeHtml(options.suiteName)}</h1>
     <div class="warning">
       <strong>Odhín HTML report was not generated before Jenkins publishing.</strong>
-      <p>The Playwright command failed or was interrupted before the Odhín reporter wrote
+      <p>${escapeHtml(fallbackExplanation(options, diagnostics))}
       <code>${escapeHtml(options.reportFile || DEFAULT_REPORT_FILE)}</code>. Jenkins generated this fallback so the build
       always exposes a report artifact for failed runs.</p>
     </div>
@@ -89,6 +93,17 @@ function buildFallbackReportHtml(options) {
 `;
 }
 
+function fallbackExplanation(options, diagnostics) {
+  if (diagnostics.some((diagnostic) => diagnostic.endsWith(`runner-failure.txt: ${RUNNER_FAILURE_DIAGNOSTIC}`))) {
+    return 'Integration session configuration did not complete before Playwright started.';
+  }
+  if (options.outcome === 'test-failure') return 'The Playwright command failed before the Odhín reporter wrote';
+  if (options.outcome === 'completed') return 'The Playwright command completed but the Odhín reporter did not write';
+  if (options.outcome === 'no-tests') return 'No Playwright tests were selected, so the Odhín reporter did not write';
+  if (options.outcome === 'interrupted') return 'The Playwright command was interrupted before the Odhín reporter wrote';
+  return 'The Odhín reporter did not write';
+}
+
 function listFiles(directory) {
   if (!directory || !fs.existsSync(directory)) {
     return [];
@@ -100,7 +115,7 @@ function listFiles(directory) {
 }
 
 function collectDiagnostics(reportDir) {
-  const candidates = [reportDir, 'functional-output/tests/playwright-diagnostics/failure-data', 'test-results'];
+  const candidates = [reportDir, path.join(reportDir, 'test-results')];
 
   return candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => formatDiagnostic(candidate, file)));
 }
@@ -127,7 +142,7 @@ function listInterestingFiles(directory) {
         return;
       }
       if (
-        /(failure-data\.json|error-context\.md|trace\.zip|summary\.json|load-profile\.html|runner-failure\.txt)$/i.test(
+        /(failure-data\.json|error-context\.md|trace\.zip|summary\.json|load-profile\.html|runner-failure\.txt|[^/]+\.(png|jpe?g))$/i.test(
           entry.name
         )
       ) {

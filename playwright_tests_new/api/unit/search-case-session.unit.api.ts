@@ -209,6 +209,7 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
           email: typeof identity === 'string' ? `${identity.toLowerCase()}@example.test` : identity.email,
           cookies: [],
           storageFile: `${userIdentifier}.storage.json`,
+          storageStateFingerprint: `${userIdentifier}-fingerprint`,
         };
       })
     );

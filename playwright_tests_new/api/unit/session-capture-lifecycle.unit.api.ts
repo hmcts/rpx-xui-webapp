@@ -50,4 +50,15 @@ test.describe('session capture lifecycle', { tag: '@svc-internal' }, () => {
 
     expect(release).toBeNull();
   });
+
+  test('discards a malformed failure-marker fingerprint', () => {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-lifecycle-'));
+    const failurePath = path.join(directory, 'capture-failed.json');
+    try {
+      fs.writeFileSync(failurePath, JSON.stringify({ timestamp: Date.now(), message: 'failed', storageStateFingerprint: 1 }));
+      expect(recentSessionCaptureFailure(fs, failurePath, 1_000)?.storageStateFingerprint).toBeUndefined();
+    } finally {
+      fs.rmSync(directory, { recursive: true, force: true });
+    }
+  });
 });

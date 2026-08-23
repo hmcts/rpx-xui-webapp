@@ -18,7 +18,7 @@ export interface LoadedSession {
   email: string;
   cookies: Cookie[];
   storageFile: string;
-  storageStateFingerprint?: string;
+  storageStateFingerprint: string;
 }
 
 export type StorageStateContext = Pick<BrowserContext, 'addCookies' | 'storageState'>;

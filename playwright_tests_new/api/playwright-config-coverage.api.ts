@@ -268,15 +268,22 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.expect.timeout).toBe(7_000);
   });
 
-  test('E2E config adds JUnit reporter when a JUnit output path is requested', async () => {
-    const config = buildE2eConfig({
+  test('each Playwright config adds JUnit and isolates output when requested', async () => {
+    const env = {
       PLAYWRIGHT_JUNIT_OUTPUT: 'functional-output/tests/playwright-a11y/playwright-a11y-junit.xml',
+      PLAYWRIGHT_OUTPUT_DIR: 'functional-output/tests/playwright-a11y/test-results',
       CI: undefined,
       TEST_URL: 'https://example.test',
-    });
-
-    const [, junitOptions] = getReporterTuple(config.reporter, 'junit');
-    expect(junitOptions?.outputFile).toBe('functional-output/tests/playwright-a11y/playwright-a11y-junit.xml');
+    };
+    const configs = [buildConfig(env), buildE2eConfig(env), buildIntegrationConfig(env), buildNightlyConfig(env)] as Array<{
+      reporter: [string, Record<string, unknown> | undefined][];
+      outputDir?: string;
+    }>;
+    for (const config of configs) {
+      const [, junitOptions] = getReporterTuple(config.reporter, 'junit');
+      expect(junitOptions?.outputFile).toBe(env.PLAYWRIGHT_JUNIT_OUTPUT);
+      expect(config.outputDir).toBe(env.PLAYWRIGHT_OUTPUT_DIR);
+    }
   });
 
   test('Playwright configs ignore nested local worktrees', async () => {

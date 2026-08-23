@@ -168,6 +168,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       timeout: expectTimeoutMs,
     },
     ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     workers: workerCount,
     reporter,
     use: {

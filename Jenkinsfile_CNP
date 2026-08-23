@@ -96,8 +96,8 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,test-results/**/trace.zip',
-        excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg',
+        excludes: 'functional-output/tests/**/test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
 
@@ -110,7 +110,7 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
 }
 
-def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName, String outcome = 'unknown' ->
     def reportPath = "${reportDir}/${reportFile}"
     if (fileExists(reportPath)) {
         echo "[playwright-report] Reusing generated report at ${reportPath}"
@@ -122,13 +122,15 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
     withEnv([
         "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
         "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
-        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}"
+        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}",
+        "PW_ODHIN_ENSURE_OUTCOME=${outcome}"
     ]) {
         steps.sh '''
             node scripts/ensure-odhin-report.js \
               --report-dir "$PW_ODHIN_ENSURE_REPORT_DIR" \
               --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
-              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
+              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME" \
+              --outcome "$PW_ODHIN_ENSURE_OUTCOME"
         '''
     }
 }
@@ -329,10 +331,15 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
     resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
         def runConfig = integrationProfileRunConfig(spec, testType)
         def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
+        def junitFile = "${runConfig.reportDir}/playwright-junit.xml"
+        def outcome = 'interrupted'
+        def runnerCompleted = false
         sh "rm -f -- '${sessionConfigCompleteFile}'"
         try {
             withEnv([
                 "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
+                "PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results",
+                "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
                 "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
                 "TEST_TYPE=${testType}",
                 "ORG_USER_ASSIGNMENT_MODE=external",
@@ -345,10 +352,13 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
             ]) {
                 yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
             }
+            runnerCompleted = true
+            outcome = 'completed'
             echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
             assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
             echo "[playwright-integration] Odhín report exists for ${runConfig.displayName}"
         } catch (Exception e) {
+            outcome = runnerCompleted ? 'completed' : 'test-failure'
             if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                 throw e
             }
@@ -371,7 +381,8 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 ensureHtmlReportForPublishing(
                     runConfig.reportDir,
                     playwrightIntegrationReportFile,
-                    "${reportNamePrefix} Playwright Integration Tests"
+                    "${reportNamePrefix} Playwright Integration Tests",
+                    outcome
                 )
                 publishHTML([
                     allowMissing         : true,
@@ -381,6 +392,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                     reportFiles          : playwrightIntegrationReportFile,
                     reportName           : "${reportNamePrefix} Playwright Integration Tests"
                 ])
+                junit allowEmptyResults: false, testResults: junitFile
                 echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
             } catch (Exception publishException) {
                 if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
@@ -667,18 +679,23 @@ withPipeline(type, product, component) {
                     failFast: false,
                     api: {
                         stage('API Tests') {
+                            def apiOutcome = 'interrupted'
                             withEnv([
                                 "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                                 "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=6"
+                                "FUNCTIONAL_TESTS_WORKERS=6",
+                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/api_functional/odhin-report/test-results',
+                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/api_functional/odhin-report/playwright-junit.xml'
                             ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
                                     yarnBuilder.yarn('test:api:pw:raw')
+                                    apiOutcome = 'completed'
                                 } catch (Exception e) {
+                                    apiOutcome = 'test-failure'
                                     echo "[parallel-report-gathering] API Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
                                     throw e
                                 } finally {
@@ -686,7 +703,8 @@ withPipeline(type, product, component) {
                                     ensureHtmlReportForPublishing(
                                         'functional-output/tests/api_functional/odhin-report',
                                         'xui-playwright-api.html',
-                                        'PREVIEW API Functional Test'
+                                        'PREVIEW API Functional Test',
+                                        apiOutcome
                                     )
                                     publishHTML([
                                         allowMissing         : true,
@@ -696,6 +714,7 @@ withPipeline(type, product, component) {
                                         reportFiles          : 'xui-playwright-api.html',
                                         reportName           : 'PREVIEW API Functional Test'
                                     ])
+                                    junit allowEmptyResults: false, testResults: 'functional-output/tests/api_functional/odhin-report/playwright-junit.xml'
                                 }
                             }
                         }
@@ -716,6 +735,7 @@ withPipeline(type, product, component) {
                     },
                     playwrightE2E: {
                         stage('Playwright E2E') {
+                            def e2eOutcome = 'interrupted'
                             try {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'start')
                                 withEnv([
@@ -726,11 +746,15 @@ withPipeline(type, product, component) {
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
-                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
+                                    'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/odhin-report/test-results',
+                                    'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                                 ]) {
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
+                                    e2eOutcome = 'completed'
                                 }
                             } catch (Exception e) {
+                                e2eOutcome = 'test-failure'
                                 echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
                                 throw e
                             } finally {
@@ -738,7 +762,8 @@ withPipeline(type, product, component) {
                                 ensureHtmlReportForPublishing(
                                     'functional-output/tests/playwright-e2e/odhin-report',
                                     'xui-playwright-e2e.html',
-                                    'PREVIEW Playwright E2E'
+                                    'PREVIEW Playwright E2E',
+                                    e2eOutcome
                                 )
                                 publishHTML([
                                     allowMissing         : true,
@@ -748,6 +773,7 @@ withPipeline(type, product, component) {
                                     reportFiles          : 'xui-playwright-e2e.html',
                                     reportName           : 'PREVIEW Playwright E2E'
                                 ])
+                                junit allowEmptyResults: false, testResults: 'functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                             }
                         }
                     }
@@ -774,6 +800,7 @@ withPipeline(type, product, component) {
                                     playwrightAccessibilityReportDir,
                                     playwrightAccessibilityReportFile
                                 )
+                                junit allowEmptyResults: false, testResults: 'functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml'
                             } catch (Exception e) {
                                 if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                                     throw e
@@ -834,18 +861,23 @@ withPipeline(type, product, component) {
                     failFast: false,
                     api: {
                         stage('API Tests') {
+                            def apiOutcome = 'interrupted'
                             withEnv([
                                 "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                                 "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=6"
+                                "FUNCTIONAL_TESTS_WORKERS=6",
+                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/api_functional/odhin-report/test-results',
+                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/api_functional/odhin-report/playwright-junit.xml'
                             ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
                                     yarnBuilder.yarn('test:api:pw:raw')
+                                    apiOutcome = 'completed'
                                 } catch (Exception e) {
+                                    apiOutcome = 'test-failure'
                                     echo "[parallel-report-gathering] API Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
                                     throw e
                                 } finally {
@@ -853,7 +885,8 @@ withPipeline(type, product, component) {
                                     ensureHtmlReportForPublishing(
                                         'functional-output/tests/api_functional/odhin-report',
                                         'xui-playwright-api.html',
-                                        'AAT API Functional Test'
+                                        'AAT API Functional Test',
+                                        apiOutcome
                                     )
                                     publishHTML([
                                         allowMissing         : true,
@@ -863,6 +896,7 @@ withPipeline(type, product, component) {
                                         reportFiles          : 'xui-playwright-api.html',
                                         reportName           : 'AAT API Functional Test'
                                     ])
+                                    junit allowEmptyResults: false, testResults: 'functional-output/tests/api_functional/odhin-report/playwright-junit.xml'
                                 }
                             }
                         }
@@ -883,6 +917,7 @@ withPipeline(type, product, component) {
                     },
                     playwrightE2E: {
                         stage('Playwright E2E') {
+                            def e2eOutcome = 'interrupted'
                             try {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'start')
                                 withEnv([
@@ -893,11 +928,15 @@ withPipeline(type, product, component) {
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
-                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
+                                    'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/odhin-report/test-results',
+                                    'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                                 ]) {
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
+                                    e2eOutcome = 'completed'
                                 }
                             } catch (Exception e) {
+                                e2eOutcome = 'test-failure'
                                 echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
                                 throw e
                             } finally {
@@ -905,7 +944,8 @@ withPipeline(type, product, component) {
                                 ensureHtmlReportForPublishing(
                                     'functional-output/tests/playwright-e2e/odhin-report',
                                     'xui-playwright-e2e.html',
-                                    'AAT Playwright E2E'
+                                    'AAT Playwright E2E',
+                                    e2eOutcome
                                 )
                                 publishHTML([
                                     allowMissing         : true,
@@ -915,6 +955,7 @@ withPipeline(type, product, component) {
                                     reportFiles          : 'xui-playwright-e2e.html',
                                     reportName           : 'AAT Playwright E2E'
                                 ])
+                                junit allowEmptyResults: false, testResults: 'functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                             }
                         }
                     }
@@ -941,6 +982,7 @@ withPipeline(type, product, component) {
                                     playwrightAccessibilityReportDir,
                                     playwrightAccessibilityReportFile
                                 )
+                                junit allowEmptyResults: false, testResults: 'functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml'
                             } catch (Exception e) {
                                 if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                                     throw e

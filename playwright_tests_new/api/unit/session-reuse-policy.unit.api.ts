@@ -22,6 +22,7 @@ test.describe('Session reuse validation policy', { tag: '@svc-internal' }, () =>
     expect(shouldRejectUnavailableSessionValidation('unavailable', { PW_SESSION_REUSE_VALIDATION_MODE: 'best-effort' })).toBe(
       false
     );
+    expect(shouldRejectUnavailableSessionValidation('unavailable', { PW_SESSION_REUSE_VALIDATION_MODE: 'strict' })).toBe(true);
     expect(shouldRejectUnavailableSessionValidation('authenticated', { CI: 'true' })).toBe(false);
     expect(AAT_AUTH_UNAVAILABLE_FAILURE).toBe('AAT_AUTH_UNAVAILABLE');
   });

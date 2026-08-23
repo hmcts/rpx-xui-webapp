@@ -40,15 +40,15 @@ export function recentSessionCaptureFailure(
       storageStateFingerprint?: unknown;
     };
     if (!parsed.timestamp || now - parsed.timestamp > ttlMs) return null;
+    const fingerprintValue = parsed.storageStateFingerprint;
+    const storageStateFingerprint: string | null | undefined =
+      fingerprintValue === null ? null : typeof fingerprintValue === 'string' ? fingerprintValue : undefined;
     return {
       message: parsed.message?.trim() || 'previous session capture failed',
       failureKind: parsed.failureKind,
       retryable: parsed.retryable === true,
       recoveryAttempted: parsed.recoveryAttempted === true,
-      storageStateFingerprint:
-        parsed.storageStateFingerprint === null || typeof parsed.storageStateFingerprint === 'string'
-          ? parsed.storageStateFingerprint
-          : undefined,
+      storageStateFingerprint,
     };
   } catch {
     return null;

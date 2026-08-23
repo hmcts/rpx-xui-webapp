@@ -237,8 +237,18 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
     const filterService = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
+    const hasBookingLocation = this.bookingLocations.length > 0 || !!history.state?.location?.id;
+    if (filterService?.fields && !hasBookingLocation) {
+      this.fieldsSettings = {
+        id: MyWorkFilterComponent.FILTER_NAME,
+        fields: filterService.fields.map((field) => ({ ...field })),
+      };
+    }
     const availableLocations =
-      filterService && filterService.fields && filterService.fields.find((field) => field.name === 'locations');
+      !hasBookingLocation &&
+      filterService &&
+      filterService.fields &&
+      filterService.fields.find((field) => field.name === 'locations');
     const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
     const regionLocations = safeJsonParse<any[]>(this.sessionStorageService.getItem('regionLocations'), []);
     const bookableServices = safeJsonParse<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
@@ -285,8 +295,9 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
 
   private persistFirstSetting(): void {
     const savedFilterSetting = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
-    // if there are bookings we have been led to this by or if there is no saved filter
-    if ((this.defaultLocations && this.defaultLocations.length > 0) || !savedFilterSetting) {
+    const hasBookingLocation = this.bookingLocations.length > 0 || !!history.state?.location?.id;
+    // Persist a booking navigation override or the initial default, never overwrite a saved filter with base locations.
+    if (hasBookingLocation || !savedFilterSetting) {
       this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
       this.filterService.isInitialSetting = true;
     }
@@ -327,13 +338,15 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
       baseLocation = this.route.snapshot.data.locations;
     }
 
-    this.fieldsSettings.fields = [
-      ...this.fieldsSettings.fields,
-      {
-        name: 'locations',
-        value: baseLocation ? baseLocation : locations,
-      },
-    ];
+    if (!this.fieldsSettings.fields.find((fieldSetting) => fieldSetting.name === 'locations')) {
+      this.fieldsSettings.fields = [
+        ...this.fieldsSettings.fields,
+        {
+          name: 'locations',
+          value: baseLocation ? baseLocation : locations,
+        },
+      ];
+    }
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
   }
@@ -361,13 +374,15 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
       type: 'checkbox',
     };
     const defaultFields = typesOfWork.map((typeOfWork) => typeOfWork.key);
-    this.fieldsSettings.fields = [
-      ...this.fieldsSettings.fields,
-      {
-        name: 'types-of-work',
-        value: ['types_of_work_all', ...defaultFields],
-      },
-    ];
+    if (!this.fieldsSettings.fields.find((fieldSetting) => fieldSetting.name === 'types-of-work')) {
+      this.fieldsSettings.fields = [
+        ...this.fieldsSettings.fields,
+        {
+          name: 'types-of-work',
+          value: ['types_of_work_all', ...defaultFields],
+        },
+      ];
+    }
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
   }
@@ -413,9 +428,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
       };
 
       const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
-      if (fieldSetting) {
-        fieldSetting.value = ['services_all', ...filteredServices];
-      } else {
+      if (!fieldSetting) {
         this.fieldsSettings.fields = [
           ...this.fieldsSettings.fields,
           {

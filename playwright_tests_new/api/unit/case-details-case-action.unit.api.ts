@@ -9,13 +9,17 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
     let optionSelections = 0;
     let spinnerVisible = false;
     let spinnerWaits = 0;
+    const spinnerTimeouts: number[] = [];
     let expectedWaits = 0;
 
     const spinner = {
       first: () => ({
         isVisible: async () => spinnerVisible,
-        waitFor: async ({ state }: { state: 'hidden' | 'visible' }) => {
+        waitFor: async ({ state, timeout }: { state: 'hidden' | 'visible'; timeout?: number }) => {
           spinnerWaits += 1;
+          if (timeout !== undefined) {
+            spinnerTimeouts.push(timeout);
+          }
           if (state === 'hidden') {
             spinnerVisible = false;
           }
@@ -68,6 +72,7 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
     expect(goClicks).toBe(1);
     expect(optionSelections).toBe(1);
     expect(spinnerWaits).toBe(3);
+    expect(spinnerTimeouts).toEqual([50, 50, 50]);
     expect(expectedWaits).toBe(2);
   });
 });

@@ -218,6 +218,7 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
     await test.step('Start document upload process', async () => {
       await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
         expectedLocator: createCasePage.documentCollectionButton,
+        timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
       });
     });
 

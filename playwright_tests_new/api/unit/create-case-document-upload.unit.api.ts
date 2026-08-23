@@ -1,0 +1,67 @@
+import { expect, test } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+
+import { CreateCasePage } from '../../E2E/page-objects/pages/exui/createCase.po.js';
+
+function uploadPage(outcomes: Array<number | Error>) {
+  return {
+    isClosed: () => false,
+    waitForResponse: async () => {
+      const outcome = outcomes.shift() ?? 200;
+      if (outcome instanceof Error) {
+        throw outcome;
+      }
+      return { status: () => outcome };
+    },
+  } as unknown as Page;
+}
+
+test.describe('Create case document upload helper', { tag: '@svc-internal' }, () => {
+  test('does not replay an upload after a non-rate-limit response', async () => {
+    let uploads = 0;
+    const page = uploadPage([500]);
+    const createCasePage = Object.assign(Object.create(CreateCasePage.prototype), {
+      page,
+      fileUploadStatusLabel: { waitFor: async () => undefined },
+      getRecommendedTimeoutMs: () => 1,
+    });
+    const input = { setInputFiles: async () => (uploads += 1) } as unknown as Locator;
+
+    await expect(
+      CreateCasePage.prototype.uploadFile.call(createCasePage, 'test.pdf', 'application/pdf', 'test', input)
+    ).rejects.toThrow('Document file input upload failed: server returned status 500');
+    expect(uploads).toBe(1);
+  });
+
+  test('does not replay an upload when no response is observed', async () => {
+    let uploads = 0;
+    const page = uploadPage([new Error('Timeout 1ms exceeded')]);
+    const createCasePage = Object.assign(Object.create(CreateCasePage.prototype), {
+      page,
+      fileUploadStatusLabel: { waitFor: async () => undefined },
+      getRecommendedTimeoutMs: () => 1,
+    });
+    const input = { setInputFiles: async () => (uploads += 1) } as unknown as Locator;
+
+    await expect(
+      CreateCasePage.prototype.uploadFile.call(createCasePage, 'test.pdf', 'application/pdf', 'test', input)
+    ).rejects.toThrow(/Document file input upload response was not observed within \d+ms: Timeout 1ms exceeded/);
+    expect(uploads).toBe(1);
+  });
+
+  test('does not replay a rate-limited upload', async () => {
+    let uploads = 0;
+    const page = uploadPage([429]);
+    const createCasePage = Object.assign(Object.create(CreateCasePage.prototype), {
+      page,
+      fileUploadStatusLabel: { waitFor: async () => undefined },
+      getRecommendedTimeoutMs: () => 1,
+    });
+    const input = { setInputFiles: async () => (uploads += 1) } as unknown as Locator;
+
+    await expect(
+      CreateCasePage.prototype.uploadFile.call(createCasePage, 'test.pdf', 'application/pdf', 'test', input)
+    ).rejects.toThrow('Document file input upload failed: server returned status 429');
+    expect(uploads).toBe(1);
+  });
+});

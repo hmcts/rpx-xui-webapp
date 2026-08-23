@@ -488,6 +488,7 @@ export class CaseDetailsPage extends Base {
       retry?: boolean;
     } = {}
   ) {
+    const timeoutMs = options.timeoutMs ?? 30000;
     await this.caseActionGoButton.waitFor({ state: 'visible' });
     await this.caseActionsDropdown.waitFor({ state: 'visible' });
     const availableOptions = await this.caseActionsDropdown.locator('option').evaluateAll((options) =>
@@ -515,14 +516,16 @@ export class CaseDetailsPage extends Base {
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
       await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
-    await this.waitForSpinnerToComplete(`before submitting case action "${action}"`);
+    const caseActionSpinner = this.page.locator('xuilib-loading-spinner:visible').first();
+    if (await caseActionSpinner.isVisible().catch(() => false)) {
+      await this.waitForSpinnerToComplete(`before submitting case action "${action}"`, timeoutMs);
+    }
     await this.caseActionGoButton.click();
-    await this.waitForSpinnerToComplete('after selecting case action');
+    await this.waitForSpinnerToComplete('after selecting case action', options.timeoutMs);
     await this.page.waitForLoadState('domcontentloaded');
     if (!options.expectedLocator && !options.expectedPath) {
       return;
     }
-    const timeoutMs = options.timeoutMs ?? 30000;
     const waitForExpected = async () => {
       if (options.expectedPath) {
         const matcher =
@@ -543,7 +546,7 @@ export class CaseDetailsPage extends Base {
       if (options.retry === false) {
         throw error;
       }
-      const spinner = this.page.locator('xuilib-loading-spinner').first();
+      const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
       const spinnerWasVisible = await spinner.isVisible().catch(() => false);
       await this.waitForSpinnerToComplete(`before retrying case action "${action}"`, timeoutMs);
       if (spinnerWasVisible) {
@@ -562,7 +565,7 @@ export class CaseDetailsPage extends Base {
         await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
       await this.caseActionGoButton.click();
-      await this.waitForSpinnerToComplete('after retrying case action');
+      await this.waitForSpinnerToComplete('after retrying case action', timeoutMs);
       await this.page.waitForLoadState('domcontentloaded');
       await waitForExpected();
     }
@@ -570,7 +573,7 @@ export class CaseDetailsPage extends Base {
 
   private async waitForSpinnerToComplete(context: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
-    const spinner = this.page.locator('xuilib-loading-spinner').first();
+    const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
     try {
       await spinner.waitFor({ state: 'hidden', timeout: effectiveTimeoutMs });
     } catch (error) {

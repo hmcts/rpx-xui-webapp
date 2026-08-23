@@ -130,6 +130,15 @@ export class TaskListPage extends Base {
     await this.navigateToTaskListView('/work/my-work/list', /\/work\/my-work\/list(?:\?.*)?$/, 'task list navigation');
   }
 
+  async gotoExpectingServiceDown() {
+    await this.navigateToTerminalTaskListView(
+      '/work/my-work/list',
+      /\/service-down$/,
+      this.serviceDownHeading,
+      'task list service down navigation'
+    );
+  }
+
   async gotoAndWaitForTaskRow(
     context: string,
     options: {

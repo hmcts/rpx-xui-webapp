@@ -1259,7 +1259,8 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
   ...utilsFixtures,
 
   // Playwright fixture functions must use object destructuring here.
-  benignApiErrorRuleRegistry: async (_fixtures, use) => {
+  // eslint-disable-next-line no-empty-pattern
+  benignApiErrorRuleRegistry: async ({}, use) => {
     await use(createBenignApiErrorRuleRegistry());
   },
 
@@ -1267,7 +1268,8 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     await use(benignApiErrorRuleRegistry.registerBenignApiErrorRule);
   },
 
-  identityLease: async (_fixtures, use, testInfo) => {
+  // eslint-disable-next-line no-empty-pattern
+  identityLease: async ({}, use, testInfo) => {
     const releases: Array<() => Promise<void>> = [];
     let testFailed = false;
     let teardownFailure: Error | undefined;

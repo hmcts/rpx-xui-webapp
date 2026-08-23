@@ -302,7 +302,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     const persistedServiceFilter = await taskListPage.waitForServiceFilterOptionVisible(expectedIaServiceLabel);
     await expect(persistedServiceFilter).toBeChecked();
-    await expect(taskListPage.waitForServiceFilterOptionVisible('Civil')).not.toBeChecked();
+    await expect(await taskListPage.waitForServiceFilterOptionVisible('Civil')).not.toBeChecked();
 
     await expect
       .poll(

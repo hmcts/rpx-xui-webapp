@@ -795,7 +795,7 @@ export class CreateCasePage extends Base {
         try {
           cdpSession = await this.page.context().newCDPSession(this.page);
         } catch (error) {
-          throw new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.', {
+          throw Object.assign(new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.'), {
             cause: error,
           });
         }
@@ -877,6 +877,16 @@ export class CreateCasePage extends Base {
       if (uploadResponse instanceof Error) {
         if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
           throw uploadResponse;
+        }
+        if (attempt < maxAttempts) {
+          logger.warn(`Document ${uploadActionDescription} response was not observed; retrying upload`, {
+            attempt,
+            maxAttempts,
+            timeoutMs: uploadResponseTimeoutMs,
+            errorMessage: uploadResponse.message,
+          });
+          await this.page.waitForTimeout(baseRetryDelayMs * 2 ** (attempt - 1));
+          continue;
         }
         throw new Error(
           `Document ${uploadActionDescription} response was not observed within ${uploadResponseTimeoutMs}ms: ${uploadResponse.message}`

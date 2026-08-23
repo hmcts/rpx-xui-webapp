@@ -42,9 +42,10 @@ test.describe('Create case document upload helper', { tag: '@svc-internal' }, ()
     expect(uploads).toBe(1);
   });
 
-  test('does not replay an upload when no response is observed', async () => {
+  test('replays an upload when a transient response timeout is observed', async () => {
     let uploads = 0;
-    const page = uploadPage([new Error('Timeout 1ms exceeded')]);
+    const retryDelays: number[] = [];
+    const page = uploadPage([new Error('Timeout 1ms exceeded'), 200], retryDelays);
     const createCasePage = Object.assign(Object.create(CreateCasePage.prototype), {
       page,
       fileUploadStatusLabel: { waitFor: async () => undefined },
@@ -52,10 +53,9 @@ test.describe('Create case document upload helper', { tag: '@svc-internal' }, ()
     });
     const input = { setInputFiles: async () => (uploads += 1) } as unknown as Locator;
 
-    await expect(
-      CreateCasePage.prototype.uploadFile.call(createCasePage, 'test.pdf', 'application/pdf', 'test', input)
-    ).rejects.toThrow(/Document file input upload response was not observed within \d+ms: Timeout 1ms exceeded/);
-    expect(uploads).toBe(1);
+    await CreateCasePage.prototype.uploadFile.call(createCasePage, 'test.pdf', 'application/pdf', 'test', input);
+    expect(uploads).toBe(2);
+    expect(retryDelays).toEqual([2_000]);
   });
 
   test('replays a rate-limited upload and honours Retry-After', async () => {

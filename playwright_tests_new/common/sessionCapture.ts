@@ -402,7 +402,7 @@ function toSessionLockReleaseError(userIdentifier: string, error: unknown): Erro
   if (isSessionLockCompromisedError(releaseError)) {
     return releaseError;
   }
-  const wrapped = new Error(`Failed to release session lock for ${userIdentifier}: ${releaseError.message}`, {
+  const wrapped = Object.assign(new Error(`Failed to release session lock for ${userIdentifier}: ${releaseError.message}`), {
     cause: releaseError,
   });
   wrapped.name = 'SessionLockReleaseError';

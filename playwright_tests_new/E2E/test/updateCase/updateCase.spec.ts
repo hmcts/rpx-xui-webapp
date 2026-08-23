@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { caseBannerMatches, getTodayFormats, matchesToday } from '../../utils';
+import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 let caseNumber: string;
 const updatedFirstName = faker.person.firstName();
@@ -13,15 +14,27 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
   test.describe.configure({ timeout: 240_000 });
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }) => {
     const lease = await identityLease.acquire({ pool: 'DIVORCE_SOLICITOR' });
-    await ensureAuthenticatedPage(page, lease.identity.userIdentifier, {
-      waitForSelector: 'exui-header',
-      timeoutMs: 30_000,
-    });
-    await createDivorceCase(createCasePage, 'DIVORCE', 'XUI Case PoC', testField, {
-      maxAttempts: 1,
-      createCaseMaxAttempts: 2,
-    });
-    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+    await retryOnTransientFailure(
+      async () => {
+        await ensureAuthenticatedPage(page, lease.identity.userIdentifier, {
+          waitForSelector: 'exui-header',
+          timeoutMs: 30_000,
+        });
+        await createDivorceCase(createCasePage, 'DIVORCE', 'XUI Case PoC', testField, {
+          maxAttempts: 1,
+          createCaseMaxAttempts: 2,
+        });
+        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+      },
+      {
+        maxAttempts: 2,
+        onRetry: async () => {
+          if (!page.isClosed()) {
+            await page.goto('/').catch(() => undefined);
+          }
+        },
+      }
+    );
   });
 
   test('Create, update and verify case history', async ({ page, createCasePage, caseDetailsPage }) => {
@@ -37,17 +50,35 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
     });
 
     await test.step('Update case fields', async () => {
-      await createCasePage.person2FirstNameInput.fill(updatedFirstName);
-      await createCasePage.person2LastNameInput.fill(updatedLastName);
-      await createCasePage.clickContinueAndEnsureWizardAdvanced('after updating person 2 fields', {
-        expectedLocator: createCasePage.doYouAgreeGroup,
-        timeoutMs: 30_000,
-      });
-      await createCasePage.ensureDoYouAgreeAnswered();
-      await createCasePage.clickSubmitAndWait('after updating case fields', {
-        timeoutMs: 60_000,
-        maxAutoAdvanceAttempts: 0,
-      });
+      await retryOnTransientFailure(
+        async () => {
+          await createCasePage.person2FirstNameInput.fill(updatedFirstName);
+          await createCasePage.person2LastNameInput.fill(updatedLastName);
+          await createCasePage.clickContinueAndEnsureWizardAdvanced('after updating person 2 fields', {
+            expectedLocator: createCasePage.doYouAgreeGroup,
+            timeoutMs: 30_000,
+          });
+          await createCasePage.ensureDoYouAgreeAnswered();
+          await createCasePage.clickSubmitAndWait('after updating case fields', {
+            timeoutMs: 60_000,
+            maxAutoAdvanceAttempts: 0,
+          });
+        },
+        {
+          onRetry: async () => {
+            if (!page.isClosed()) {
+              await caseDetailsPage.reopenCaseDetails(caseDetailsUrl).catch(async () => {
+                await page.goto(caseDetailsUrl).catch(() => undefined);
+              });
+              await caseDetailsPage.selectCaseAction('Update case', {
+                expectedLocator: createCasePage.person2FirstNameInput,
+                timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
+                retry: false,
+              });
+            }
+          },
+        }
+      );
 
       await caseDetailsPage.exuiSpinnerComponent.wait();
       // Soft assertion - visibility verified by poll below, but helps with debugging if banner missing

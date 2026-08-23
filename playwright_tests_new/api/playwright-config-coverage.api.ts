@@ -893,5 +893,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleLog);
     expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleError);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' }));
+    expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' })).toBe(15_000);
+    expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true', PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS: '0' })).toBe(0);
   });
 });

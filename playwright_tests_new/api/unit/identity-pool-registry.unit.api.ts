@@ -27,12 +27,14 @@ const env = {
   USER_WITH_FLAGS_PASSWORD: 'secret',
   FPL_GLOBAL_SEARCH_USERNAME: 'global-search@example.test',
   FPL_GLOBAL_SEARCH_PASSWORD: 'secret',
+  CIVIL_COURT_STAFF_USERNAME: 'civil-court-staff@example.test',
+  CIVIL_COURT_STAFF_PASSWORD: 'secret',
 } as NodeJS.ProcessEnv;
 
 test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
   test('uses complete credentials only, normalises duplicate emails, and retains compatibility metadata', () => {
     const identities = resolveConfiguredPoolIdentities(env);
-    expect(identities).toHaveLength(7);
+    expect(identities).toHaveLength(8);
     expect(identities.find((identity) => identity.pool === 'PRL_SOLICITOR')).toMatchObject({
       role: 'solicitor',
       organisation: 'private-law-professional',
@@ -43,6 +45,12 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
       role: 'caseworker',
       organisation: 'employment',
       jurisdictions: ['EMPLOYMENT'],
+      concurrencyMode: 'exclusive',
+    });
+    expect(identities.find((identity) => identity.pool === 'CIVIL_COURT_STAFF')).toMatchObject({
+      role: 'court-staff',
+      organisation: 'civil',
+      jurisdictions: ['CIVIL'],
       concurrencyMode: 'exclusive',
     });
   });
@@ -122,6 +130,10 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
       ['playwright_tests_new/E2E/test/searchCase/globalSearch.spec.ts', ['FPL_GLOBAL_SEARCH']],
       ['playwright_tests_new/E2E/test/searchCase/searchCase.spec.ts', ['FPL_GLOBAL_SEARCH']],
       ['playwright_tests_new/E2E/test/searchCase/findCase.spec.ts', ['FPL_GLOBAL_SEARCH']],
+      [
+        'playwright_tests_new/E2E/test/dataLossCivilCasesCreateCaseFlags/dataLossCivilCasesCreateCaseFlags.spec.ts',
+        ['CIVIL_COURT_STAFF'],
+      ],
     ]);
 
     for (const [relativePath, pools] of expectedLeases) {

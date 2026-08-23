@@ -44,7 +44,8 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
     await configureCivilCaseFlagsRuntimeUsers(browser);
   });
 
-  test.beforeEach(async ({ page }, testInfo) => {
+  test.beforeEach(async ({ identityLease, page }, testInfo) => {
+    await identityLease.acquire({ pool: 'CIVIL_COURT_STAFF' });
     await ensureAuthenticatedPage(page, COURT_STAFF_ALIAS, { waitForSelector: 'exui-header' });
 
     await createCivilLipCaseInMediationViaApi({

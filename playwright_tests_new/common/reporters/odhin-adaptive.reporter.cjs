@@ -47,7 +47,7 @@ class OdhinAdaptiveReporter {
           ? process.env.PW_ODHIN_PROFILE.toLowerCase() === 'true'
           : true;
     const configuredRuntimeHookTimeoutMs = reporterOptions.runtimeHookTimeoutMs ?? process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS;
-    this.runtimeHookTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredRuntimeHookTimeoutMs, process.env.CI ? 0 : 15000);
+    this.runtimeHookTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredRuntimeHookTimeoutMs, 15000);
     const configuredFinalizationTimeoutMs = reporterOptions.finalizationTimeoutMs ?? process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS;
     this.finalizationTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredFinalizationTimeoutMs, 30000);
     this.trimFailedArtifacts = normalizeBoolean(

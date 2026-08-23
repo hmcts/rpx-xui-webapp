@@ -1,15 +1,14 @@
 import { chromium, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
-import { CookieUtils } from '../E2E/utils/cookie.utils.js';
 import { UserUtils } from '../E2E/utils/user.utils.js';
 import { IdamPage, createLogger } from '@hmcts/playwright-common';
-import { Cookie } from 'playwright-core';
+import type { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
 import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
-import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
+import { SessionCaptureError, StorageStateCorruptedError } from '../api/utils/errors';
 import {
   type SessionIdentity,
   type SessionIdentityInput,
@@ -29,12 +28,34 @@ import { PRL_SOLICITOR_USER, resolvePrlSolicitorSessionCandidates } from './prlS
 import { AAT_AUTH_UNAVAILABLE_FAILURE, shouldRejectUnavailableSessionValidation } from './sessionReusePolicy.js';
 import { STAFF_ADMIN_USER, resolveStaffAdminSessionCandidates } from './staffAdminUserPool.js';
 import { validateStoredSession } from './sessionReuseValidation.js';
-import { bootstrapApiSession, type ApiSessionStorageState } from './apiSessionBootstrap.js';
+import { bootstrapApiSession } from './apiSessionBootstrap.js';
+import {
+  acquireSessionLock,
+  clearSessionCaptureFailure,
+  ensureDirectory,
+  ensureLockFile,
+  recentSessionCaptureFailure,
+  type SessionCaptureFailureRecord,
+  type SessionLockRelease,
+  writeSessionCaptureFailure,
+} from './sessionCaptureLifecycle.js';
+import {
+  hasReusableAuthCookies,
+  isStoredSessionFresh,
+  loadStoredSession,
+  persistApiSessionState,
+  persistSession,
+  readStorageStateFingerprint,
+  resolveTargetHost,
+  storageStateFingerprint,
+  type LoadedSession,
+} from './sessionStorageState.js';
+
+export type { LoadedSession, StorageStateContext } from './sessionStorageState.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
-const AUTH_COOKIE_MIN_REMAINING_SECONDS = 60;
 const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const DEFAULT_SESSION_CAPTURE_STAGGER_MS = 0;
@@ -217,14 +238,6 @@ function shouldRecoverStaleSessionLocks(env: NodeJS.ProcessEnv = process.env): b
   return env.PW_SESSION_CAPTURE_RECOVER_STALE_LOCKS === 'true';
 }
 
-function isStaleSessionLock(fsApi: typeof fs, lockFilePath: string, now: number = Date.now()): boolean {
-  try {
-    return now - fsApi.statSync(`${lockFilePath}.lock`).mtimeMs >= SESSION_CAPTURE_STALE_LOCK_RECOVERY_MS;
-  } catch {
-    return false;
-  }
-}
-
 function resolveSessionCaptureDelayMs(parallelIndex: number | undefined, env: NodeJS.ProcessEnv = process.env): number {
   const staggerMs = resolveSessionCaptureStaggerMs(env);
   if (staggerMs <= 0 || parallelIndex === undefined || parallelIndex <= 0) {
@@ -232,96 +245,6 @@ function resolveSessionCaptureDelayMs(parallelIndex: number | undefined, env: No
   }
 
   return Math.min(parallelIndex * staggerMs, SESSION_CAPTURE_MAX_STAGGER_MS);
-}
-
-type SessionCaptureFailureRecord = {
-  message: string;
-  failureKind?: string;
-  retryable?: boolean;
-  recoveryAttempted?: boolean;
-  storageStateFingerprint?: string | null;
-};
-
-function recentSessionCaptureFailure(
-  fsApi: typeof fs,
-  failurePath: string,
-  ttlMs: number,
-  now: number = Date.now()
-): SessionCaptureFailureRecord | null {
-  if (ttlMs === 0 || !fsApi.existsSync(failurePath)) {
-    return null;
-  }
-
-  try {
-    const parsed = JSON.parse(fsApi.readFileSync(failurePath, 'utf8')) as {
-      timestamp?: number;
-      message?: string;
-      failureKind?: string;
-      retryable?: boolean;
-      recoveryAttempted?: boolean;
-      storageStateFingerprint?: unknown;
-    };
-    if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
-      return null;
-    }
-    return {
-      message: parsed.message?.trim() || 'previous session capture failed',
-      failureKind: parsed.failureKind,
-      retryable: parsed.retryable === true,
-      recoveryAttempted: parsed.recoveryAttempted === true,
-      storageStateFingerprint:
-        parsed.storageStateFingerprint === null || typeof parsed.storageStateFingerprint === 'string'
-          ? parsed.storageStateFingerprint
-          : undefined,
-    };
-  } catch {
-    return null;
-  }
-}
-
-function writeSessionCaptureFailure(
-  fsApi: typeof fs,
-  failurePath: string,
-  sessionPath: string,
-  error: Error,
-  recoveryAttempted = false
-): void {
-  try {
-    const context = 'context' in error ? (error as Error & { context?: { failureKind?: unknown } }).context : undefined;
-    const failureKind =
-      typeof context?.failureKind === 'string'
-        ? context.failureKind
-        : isUnexplainedIdamLoginRejection(error)
-          ? UNEXPLAINED_IDAM_LOGIN_FAILURE
-          : undefined;
-    fsApi.writeFileSync(
-      failurePath,
-      JSON.stringify({
-        timestamp: Date.now(),
-        message: error.message,
-        failureKind,
-        // Explicit or unexplained identity failures remain terminal. A service-down
-        // marker is transient, so one later lock owner may retry it without every
-        // worker fanning out.
-        retryable:
-          failureKind === SERVICE_DOWN_SESSION_CAPTURE_FAILURE || (!failureKind && isTransientSessionCaptureError(error)),
-        recoveryAttempted,
-        storageStateFingerprint: readStorageStateFingerprint(fsApi, sessionPath) ?? null,
-      })
-    );
-  } catch {
-    // Best-effort only: the original login failure is the actionable error.
-  }
-}
-
-function clearSessionCaptureFailure(fsApi: typeof fs, failurePath: string): void {
-  try {
-    if (fsApi.existsSync(failurePath)) {
-      fsApi.rmSync(failurePath, { force: true });
-    }
-  } catch {
-    // Best-effort only.
-  }
 }
 
 function currentPageUrl(page: Page): string {
@@ -336,79 +259,10 @@ function sanitizedPageUrl(page: Page): string {
   return sanitizeUrl(currentPageUrl(page));
 }
 
-function parseCookieDomain(domain: string | undefined): { host: string; includesSubdomains: boolean } | null {
-  const value = domain?.trim().toLowerCase();
-  if (!value) {
-    return null;
-  }
-  return {
-    host: value.replace(/^\./, ''),
-    includesSubdomains: value.startsWith('.'),
-  };
-}
-
-function resolveTargetHost(targetUrl: string | undefined): string | null {
-  if (!targetUrl?.trim()) {
-    return null;
-  }
-
-  try {
-    return new URL(targetUrl).hostname.toLowerCase();
-  } catch {
-    return null;
-  }
-}
-
-function isCookieCompatibleWithHost(cookie: Cookie, targetHost: string): boolean {
-  const cookieDomain = parseCookieDomain(cookie.domain);
-  if (!cookieDomain) {
-    return false;
-  }
-
-  return targetHost === cookieDomain.host || (cookieDomain.includesSubdomains && targetHost.endsWith(`.${cookieDomain.host}`));
-}
-
-function isCookieUsable(cookie: Cookie, nowSeconds: number): boolean {
-  return (
-    typeof cookie.value === 'string' &&
-    cookie.value.trim().length > 0 &&
-    Number.isFinite(cookie.expires) &&
-    (cookie.expires <= 0 || cookie.expires > nowSeconds + AUTH_COOKIE_MIN_REMAINING_SECONDS)
-  );
-}
-
-function hasReusableAuthCookies(
-  cookies: Cookie[],
-  targetUrl: string | undefined,
-  idamUrl: string | undefined,
-  nowSeconds = Math.floor(Date.now() / 1_000)
-): boolean {
-  const targetHost = resolveTargetHost(targetUrl);
-  const idamHost = resolveTargetHost(idamUrl);
-  const hasUsableCookie = (name: 'Idam.Session' | '__auth__', expectedHost: string | null) =>
-    cookies.some(
-      (cookie) =>
-        cookie.name === name &&
-        isCookieUsable(cookie, nowSeconds) &&
-        (!expectedHost || isCookieCompatibleWithHost(cookie, expectedHost))
-    );
-
-  return hasUsableCookie('Idam.Session', idamHost) && hasUsableCookie('__auth__', targetHost);
-}
-
 function toError(error: unknown): Error {
   if (error instanceof Error) return error;
   if (typeof error === 'string') return new Error(error);
   return new Error('[non-Error thrown]');
-}
-
-function isLockAlreadyHeldError(error: unknown): boolean {
-  const candidate = error as { code?: string; message?: string };
-  return (
-    candidate?.code === 'ELOCKED' ||
-    candidate?.message?.includes('already being held') === true ||
-    candidate?.message?.includes('Lock file is already being held') === true
-  );
 }
 
 function isChromeErrorNavigationFailure(error: unknown, currentUrl: string): boolean {
@@ -531,25 +385,6 @@ async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promis
   return false;
 }
 
-export interface LoadedSession {
-  userIdentifier?: string;
-  email: string;
-  cookies: Cookie[];
-  storageFile: string;
-  storageStateFingerprint?: string;
-}
-
-type PersistDeps = {
-  cookieUtils?: CookieUtils;
-  fs?: typeof fs;
-  signal?: AbortSignal;
-  assertLockOwned?: () => void;
-};
-
-type SessionLockRelease = (() => Promise<void>) & {
-  assertOwned: () => void;
-};
-
 type ErrorWithSessionLockReleaseError = Error & {
   sessionLockReleaseError?: Error;
 };
@@ -573,8 +408,6 @@ function toSessionLockReleaseError(userIdentifier: string, error: unknown): Erro
   wrapped.name = 'SessionLockReleaseError';
   return wrapped;
 }
-
-export type StorageStateContext = Pick<BrowserContext, 'addCookies' | 'storageState'>;
 
 type SessionCaptureDeps = {
   chromiumLauncher?: typeof chromium;
@@ -795,18 +628,6 @@ function resolveSessionIdentityForLoad(userIdentifier: SessionIdentityInput): Se
   return primaryIdentity;
 }
 
-function storageStateFingerprint(contents: string): string {
-  return createHash('sha256').update(contents).digest('hex');
-}
-
-function readStorageStateFingerprint(fsApi: typeof fs, storageFile: string): string | undefined {
-  try {
-    return storageStateFingerprint(fsApi.readFileSync(storageFile, 'utf8'));
-  } catch {
-    return undefined;
-  }
-}
-
 async function ensureSessionWith(
   userIdentifier: SessionIdentityInput,
   ensureCandidate: (identity: SessionIdentity, captureDeadlineAt: number) => Promise<void> = ensureSessionForIdentity,
@@ -830,57 +651,9 @@ export async function ensureSession(userIdentifier: SessionIdentityInput): Promi
  */
 export function loadSessionCookies(userIdentifier: SessionIdentityInput): LoadedSession {
   const identity = resolveSessionIdentityForLoad(userIdentifier);
-  const email = identity.email;
   const storageKey = resolveSessionStorageKey(identity);
   const storageFile = path.join(process.cwd(), '.sessions', `${storageKey}.storage.json`);
-
-  let cookies: Cookie[] = [];
-  let fingerprint: string | undefined;
-  if (fs.existsSync(storageFile)) {
-    try {
-      const storageStateContents = fs.readFileSync(storageFile, 'utf8');
-      fingerprint = storageStateFingerprint(storageStateContents);
-      const state: unknown = JSON.parse(storageStateContents);
-      if (!state || typeof state !== 'object' || !Array.isArray((state as { cookies?: unknown }).cookies)) {
-        throw new TypeError('Storage state must contain a cookies array');
-      }
-      cookies = (state as { cookies: Cookie[] }).cookies;
-      logger.info('Loaded session cookies', {
-        userIdentifier: identity.userIdentifier,
-        email,
-        cookieCount: cookies.length,
-        operation: 'load-session',
-      });
-    } catch (e) {
-      logger.error('Failed parsing storage state', {
-        userIdentifier: identity.userIdentifier,
-        storageFile,
-        error: (e as Error).message,
-        operation: 'load-session',
-      });
-      throw new StorageStateCorruptedError(
-        `Storage file corrupted for ${identity.userIdentifier}. A fresh session will replace it under the identity lock.`,
-        storageFile,
-        { userIdentifier: identity.userIdentifier },
-        e as Error
-      );
-    }
-  } else {
-    logger.warn('Storage file does not exist', {
-      userIdentifier: identity.userIdentifier,
-      storageFile,
-      operation: 'load-session',
-    });
-    throw new StorageStateCorruptedError(`Failed parsing storage file for ${identity.userIdentifier}`, storageFile, {
-      userIdentifier: identity.userIdentifier,
-    });
-  }
-  if (!fingerprint) {
-    throw new StorageStateCorruptedError(`Failed reading storage file for ${identity.userIdentifier}`, storageFile, {
-      userIdentifier: identity.userIdentifier,
-    });
-  }
-  return { userIdentifier: identity.userIdentifier, email, cookies, storageFile, storageStateFingerprint: fingerprint };
+  return loadStoredSession(identity, storageFile);
 }
 
 /**
@@ -1216,34 +989,7 @@ export function isSessionFresh(
   maxAgeMs = DEFAULT_SESSION_MAX_AGE_MS,
   deps: { fs?: typeof fs; now?: () => number; targetUrl?: string; idamUrl?: string } = {}
 ): boolean {
-  const fsApi = deps.fs ?? fs;
-  const now = deps.now ?? Date.now;
-  try {
-    if (fsApi.existsSync(sessionPath)) {
-      const stat = fsApi.statSync(sessionPath);
-      const ageMs = now() - stat.mtimeMs;
-      if (ageMs >= maxAgeMs) {
-        return false;
-      }
-
-      const state = JSON.parse(fsApi.readFileSync(sessionPath, 'utf8'));
-      const cookies = Array.isArray(state.cookies) ? state.cookies : [];
-      if (cookies.length === 0) {
-        return false;
-      }
-
-      const nowSeconds = Math.floor(now() / 1_000);
-      return hasReusableAuthCookies(cookies, deps.targetUrl, deps.idamUrl, nowSeconds);
-    }
-    return false;
-  } catch (err) {
-    logger.warn('Failed to stat session file', {
-      sessionPath,
-      error: (err as Error).message,
-      operation: 'check-session-freshness',
-    });
-    return false;
-  }
+  return isStoredSessionFresh(sessionPath, maxAgeMs, deps);
 }
 
 function hasReusableSessionSupersedingFailure({
@@ -1335,183 +1081,6 @@ async function reuseAuthenticatedSessionBeyondRefreshAge({
     operation: 'session-reuse',
   });
   return true;
-}
-
-// local helper to persist session: write session file, add cookies to context and save storageState
-async function persistSession(
-  localSessionPath: string,
-  localCookies: Cookie[],
-  ctx: StorageStateContext,
-  uid: string,
-  deps: PersistDeps = {}
-) {
-  const cookieUtils = deps.cookieUtils ?? new CookieUtils();
-  const fsApi = deps.fs ?? fs;
-  const stagingPath = `${localSessionPath}.${process.pid}.${Date.now()}.tmp`;
-  const assertNotAborted = () => {
-    if (deps.signal?.aborted) {
-      const error = new Error(`Session persistence aborted for ${uid}`);
-      error.name = 'AbortError';
-      throw error;
-    }
-  };
-  try {
-    assertNotAborted();
-    cookieUtils.writeManageCasesSession(stagingPath, localCookies);
-    assertNotAborted();
-    const augmented = JSON.parse(fsApi.readFileSync(stagingPath, 'utf8')).cookies;
-    await ctx.addCookies(augmented);
-    assertNotAborted();
-    await ctx.storageState({ path: stagingPath });
-    assertNotAborted();
-    deps.assertLockOwned?.();
-    fsApi.renameSync(stagingPath, localSessionPath);
-    logger.info('Stored storage state', {
-      userIdentifier: uid,
-      sessionPath: localSessionPath,
-      cookieCount: augmented.length,
-      operation: 'persist-session',
-    });
-  } catch (err) {
-    logger.error('Failed to persist storage state', {
-      userIdentifier: uid,
-      sessionPath: localSessionPath,
-      error: (err as Error).message,
-      operation: 'persist-session',
-    });
-    throw err;
-  } finally {
-    if (fsApi.existsSync(stagingPath)) {
-      fsApi.rmSync(stagingPath, { force: true });
-    }
-  }
-}
-
-function persistApiSessionState(
-  localSessionPath: string,
-  storageState: ApiSessionStorageState,
-  userIdentifier: string,
-  fsApi: typeof fs,
-  assertLockOwned: () => void
-): void {
-  const stagingPath = `${localSessionPath}.${process.pid}.${Date.now()}.api.tmp`;
-  try {
-    assertLockOwned();
-    fsApi.writeFileSync(stagingPath, JSON.stringify(storageState), { encoding: 'utf8', mode: 0o600 });
-    assertLockOwned();
-    fsApi.renameSync(stagingPath, localSessionPath);
-    logger.info('Stored API-bootstrapped storage state', {
-      userIdentifier,
-      sessionPath: localSessionPath,
-      cookieCount: storageState.cookies.length,
-      operation: 'persist-api-session',
-    });
-  } finally {
-    if (fsApi.existsSync(stagingPath)) {
-      fsApi.rmSync(stagingPath, { force: true });
-    }
-  }
-}
-
-function ensureDirectory(fsApi: typeof fs, dirPath: string) {
-  if (!fsApi.existsSync(dirPath)) {
-    fsApi.mkdirSync(dirPath, { recursive: true });
-  }
-}
-
-function ensureLockFile(fsApi: typeof fs, lockFilePath: string) {
-  if (!fsApi.existsSync(lockFilePath)) {
-    fsApi.writeFileSync(lockFilePath, '', 'utf8');
-  }
-}
-
-async function acquireSessionLock({
-  lockfileApi,
-  lockFilePath,
-  userIdentifier,
-  isSessionReusable,
-  force,
-  maxWaitMs = SESSION_CAPTURE_LOCK_WAIT_MS,
-  fsApi = fs,
-  recoverStaleLock = false,
-}: {
-  lockfileApi: typeof lockfile;
-  lockFilePath: string;
-  userIdentifier: string;
-  isSessionReusable: () => boolean;
-  force: boolean;
-  maxWaitMs?: number;
-  fsApi?: typeof fs;
-  recoverStaleLock?: boolean;
-}): Promise<SessionLockRelease | null> {
-  const pollIntervalMs = 1_000;
-  const startedAt = Date.now();
-  let attempt = 0;
-
-  while (true) {
-    if (!force && isSessionReusable()) {
-      logger.info('Fresh session detected while waiting for lock', {
-        userIdentifier,
-        lockFilePath,
-        waitMs: Date.now() - startedAt,
-        operation: 'session-capture',
-      });
-      return null;
-    }
-
-    try {
-      if (recoverStaleLock && isStaleSessionLock(fsApi, lockFilePath)) {
-        fsApi.rmSync(`${lockFilePath}.lock`, { recursive: true, force: true });
-        logger.warn('Recovered an abandoned session lock before capture', {
-          userIdentifier,
-          lockFilePath,
-          operation: 'session-capture',
-        });
-      }
-      let compromisedError: Error | undefined;
-      const releaseLock = await lockfileApi.lock(lockFilePath, {
-        retries: 0,
-        stale: SESSION_CAPTURE_LOCK_STALE_MS,
-        update: SESSION_CAPTURE_LOCK_UPDATE_MS,
-        onCompromised: (error) => {
-          compromisedError = error;
-        },
-      });
-
-      const assertOwned = () => {
-        if (compromisedError) {
-          const error = new Error(`Session lock ownership was lost for ${userIdentifier}`);
-          error.name = 'SessionLockCompromisedError';
-          throw error;
-        }
-      };
-      const release = async () => {
-        assertOwned();
-        await releaseLock();
-        assertOwned();
-      };
-      return Object.assign(release, { assertOwned });
-    } catch (error) {
-      if (!isLockAlreadyHeldError(error)) {
-        throw error;
-      }
-
-      attempt += 1;
-      const elapsedMs = Date.now() - startedAt;
-      if (elapsedMs >= maxWaitMs) {
-        throw new Error(`Timed out waiting for session lock for ${userIdentifier} after ${elapsedMs}ms (${lockFilePath})`);
-      }
-
-      logger.info('Session lock currently held by another worker', {
-        userIdentifier,
-        lockFilePath,
-        attempt,
-        elapsedMs,
-        operation: 'session-capture',
-      });
-      await new Promise<void>((resolve) => setTimeout(resolve, Math.min(pollIntervalMs, maxWaitMs - elapsedMs)));
-    }
-  }
 }
 
 async function executeLoginAttempt(
@@ -2007,6 +1576,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl, idamUrl: activeConfig.urls.idamWebUrl }),
           force: force || requiresLockedFailureClear,
           maxWaitMs: maxLockWaitMs,
+          staleMs: SESSION_CAPTURE_LOCK_STALE_MS,
+          updateMs: SESSION_CAPTURE_LOCK_UPDATE_MS,
+          staleRecoveryMs: SESSION_CAPTURE_STALE_LOCK_RECOVERY_MS,
           fsApi,
           recoverStaleLock: shouldRecoverStaleSessionLocks(env),
         });
@@ -2188,7 +1760,14 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
               idamUrl: activeConfig.urls.idamWebUrl,
             });
             if (!isSessionLockCompromisedError(error) && !reusableSessionWasPersisted) {
-              writeSessionCaptureFailure(fsApi, failurePath, sessionPath, error, recoveryAttempted);
+              writeSessionCaptureFailure({
+                fsApi,
+                failurePath,
+                sessionPath,
+                error,
+                recoveryAttempted,
+                readStorageStateFingerprint,
+              });
             }
             throw error;
           });

@@ -7,6 +7,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
 const ensureReport = require('../../../scripts/ensure-odhin-report.js') as {
+  collectDiagnostics: (reportDir: string) => string[];
   ensureOdhinReport: (options: { reportDir: string; reportFile?: string; suiteName?: string }) => {
     created: boolean;
     reportPath: string;
@@ -58,6 +59,27 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
     expect(html).toContain(`${reportDir}/runner-failure.txt`);
     expect(html).toContain('Integration session configuration did not complete before Playwright started.');
     expect(html).not.toContain('do not publish this marker content');
+  });
+
+  test('does not include integration-only diagnostics in another report lane', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-lane-local-'));
+    const reportDir = path.join(root, 'playwright-e2e', 'odhin-report');
+    const staleIntegrationDir = path.join(root, 'functional-output/tests/playwright-integration/load-profile');
+    fs.mkdirSync(reportDir, { recursive: true });
+    fs.mkdirSync(staleIntegrationDir, { recursive: true });
+    fs.writeFileSync(path.join(reportDir, 'failure-data.json'), '{}');
+    fs.writeFileSync(path.join(staleIntegrationDir, 'load-profile.html'), '<html>stale integration profile</html>');
+
+    const originalCwd = process.cwd();
+    try {
+      process.chdir(root);
+      const diagnostics = ensureReport.collectDiagnostics(reportDir);
+      expect(diagnostics).toContain(`${reportDir}/failure-data.json`);
+      expect(diagnostics.join('\n')).not.toContain('playwright-integration/load-profile');
+    } finally {
+      process.chdir(originalCwd);
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   });
 
   test('parses Jenkins CLI arguments', () => {

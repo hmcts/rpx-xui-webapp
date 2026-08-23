@@ -137,7 +137,7 @@ const resolveOdhinRuntimeHookTimeoutMs = (env = process.env) => {
       return parsed;
     }
   }
-  return env.CI ? 0 : 15000;
+  return 15000;
 };
 
 const resolveOdhinHardTimeoutMs = (env = process.env) => {

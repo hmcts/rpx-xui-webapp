@@ -83,6 +83,16 @@ const poolRegistry = [
     concurrencyMode: 'exclusive',
   },
   {
+    name: 'CIVIL_COURT_STAFF',
+    usernamePattern: /^CIVIL_COURT_STAFF_USERNAME$/,
+    userIdentifier: () => 'CIVIL_COURT_STAFF',
+    tags: ['e2e', 'civil', 'case-flags', 'data-loss'],
+    role: 'court-staff',
+    organisation: 'civil',
+    jurisdictions: ['CIVIL'],
+    concurrencyMode: 'exclusive',
+  },
+  {
     name: 'PRL_SOLICITOR',
     usernamePattern: /^PRL_SOLICITOR(\d*)_USERNAME$/,
     userIdentifier: (match) => `PRL_SOLICITOR${match[1]}`,

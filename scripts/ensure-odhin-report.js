@@ -100,12 +100,7 @@ function listFiles(directory) {
 }
 
 function collectDiagnostics(reportDir) {
-  const candidates = [
-    reportDir,
-    'functional-output/tests/playwright-diagnostics/failure-data',
-    'functional-output/tests/playwright-integration/load-profile',
-    'test-results',
-  ];
+  const candidates = [reportDir, 'functional-output/tests/playwright-diagnostics/failure-data', 'test-results'];
 
   return candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => formatDiagnostic(candidate, file)));
 }
@@ -169,6 +164,7 @@ if (require.main === module) {
 
 module.exports = {
   buildFallbackReportHtml,
+  collectDiagnostics,
   ensureOdhinReport,
   parseArgs,
 };

@@ -138,14 +138,29 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(smokeRunner).toContain('fs.rmSync(reportDir, { recursive: true, force: true });');
   });
 
-  test('reports best-effort session reuse when CI has no explicit policy', () => {
+  test('reports strict session reuse when CI has no explicit policy', () => {
     const output = childProcess.execFileSync(process.execPath, ['scripts/playwright-session-preflight.cjs'], {
       cwd: repositoryRoot,
       encoding: 'utf8',
       env: { CI: 'true' },
     });
 
-    expect(output).toContain('[playwright-preflight] validation=best-effort');
+    expect(output).toContain('[playwright-preflight] validation=strict');
+  });
+
+  test('does not let a missing JUnit file replace the Playwright runner outcome', () => {
+    for (const jenkinsfile of [source, nightlySource]) {
+      expect(jenkinsfile).toContain('def publishPlaywrightJUnit = { String junitFile, String outcome ->');
+      expect(jenkinsfile).toContain('if (!fileExists(junitFile))');
+      expect(jenkinsfile).toContain("if (outcome == 'completed')");
+      expect(jenkinsfile).toContain('preserving the runner result');
+      expect(jenkinsfile).not.toContain(
+        "junit allowEmptyResults: false, testResults: 'functional-output/tests/api_functional/odhin-report/playwright-junit.xml'"
+      );
+      expect(jenkinsfile).not.toContain(
+        "junit allowEmptyResults: false, testResults: 'functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'"
+      );
+    }
   });
 
   test('keeps seven E2E workers while bounding concurrent direct CCD case setup', () => {

@@ -140,6 +140,24 @@ def publishPlaywrightAccessibilityJUnit = {
     }
 }
 
+def publishPlaywrightJUnit = { String junitFile, String outcome ->
+    if (!fileExists(junitFile)) {
+        if (outcome == 'completed') {
+            error "Playwright completed without producing JUnit results: ${junitFile}"
+        }
+        echo "[playwright-reporting] JUnit file absent after ${outcome}; preserving the runner result: ${junitFile}"
+        return
+    }
+    try {
+        junit allowEmptyResults: false, testResults: junitFile
+    } catch (Exception e) {
+        if (outcome == 'completed') {
+            throw e
+        }
+        echo "[playwright-reporting] JUnit publication failed after ${outcome}; preserving the runner result: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+}
+
 def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
     def safeReportName = reportName.replaceAll(/[^A-Za-z0-9._-]/, '-')
     def slimReportDir = "functional-output/tests/playwright-published-reports/load-profile/${safeReportName}"
@@ -646,7 +664,7 @@ withNightlyPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright-api.html',
                                 reportName           : 'Nightly API Functional Test'
                             ])
-                            junit allowEmptyResults: false, testResults: 'functional-output/tests/api_functional/odhin-report/playwright-junit.xml'
+                            publishPlaywrightJUnit('functional-output/tests/api_functional/odhin-report/playwright-junit.xml', apiOutcome)
                         }
                     }
                 },
@@ -710,7 +728,7 @@ withNightlyPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright-e2e.html',
                                 reportName           : 'Nightly Playwright E2E Cross Browser'
                             ])
-                            junit allowEmptyResults: false, testResults: 'functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
+                            publishPlaywrightJUnit('functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml', e2eOutcome)
                         }
                     }
                 },

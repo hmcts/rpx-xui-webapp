@@ -1259,7 +1259,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
   ...utilsFixtures,
 
   // Playwright fixture functions must use object destructuring here.
-  benignApiErrorRuleRegistry: async ({}, use) => {
+  benignApiErrorRuleRegistry: async (_fixtures, use) => {
     await use(createBenignApiErrorRuleRegistry());
   },
 
@@ -1267,8 +1267,10 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     await use(benignApiErrorRuleRegistry.registerBenignApiErrorRule);
   },
 
-  identityLease: async ({}, use, testInfo) => {
+  identityLease: async (_fixtures, use, testInfo) => {
     const releases: Array<() => Promise<void>> = [];
+    let testFailed = false;
+    let teardownFailure: Error | undefined;
     const timing = resolveIdentityLeaseTiming();
     const originalTimeoutMs = testInfo.timeout;
     const fixtureStartedAt = Date.now();
@@ -1287,8 +1289,23 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
       await use({
         acquire: (requirements) => acquire(() => acquireIdentityLease(requirements, process.env, fetch, originalTimeoutMs)),
       });
+    } catch (error) {
+      testFailed = true;
+      throw error;
     } finally {
-      await Promise.all(releases.reverse().map((release) => release()));
+      const releaseResults = await Promise.allSettled(releases.reverse().map((release) => release()));
+      const releaseFailures = releaseResults.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+      if (releaseFailures.length > 0) {
+        releaseFailures.forEach(({ reason }) => {
+          console.warn('[identity-lease] lease release failed during test teardown', reason);
+        });
+        if (!testFailed) {
+          teardownFailure = new Error(`Failed to release ${releaseFailures.length} identity lease(s) during test teardown`);
+        }
+      }
+    }
+    if (teardownFailure) {
+      throw teardownFailure;
     }
   },
 

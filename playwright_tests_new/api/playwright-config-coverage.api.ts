@@ -420,6 +420,17 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert).toBeUndefined();
   });
 
+  test('node-api can exclude only the unstable Work Allocation myaccess check', () => {
+    const filters = resolveApiTagFilters({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation-myaccess',
+      CI: undefined,
+    });
+
+    expect(filters.excludedTags).toEqual(['@svc-work-allocation-myaccess']);
+    expect(filters.grepInvert?.test('@svc-work-allocation-myaccess')).toBe(true);
+    expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
+  });
+
   test('node-api treats @none as the global Key Vault no-op sentinel', () => {
     const filters = resolveApiTagFilters({
       PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@none',

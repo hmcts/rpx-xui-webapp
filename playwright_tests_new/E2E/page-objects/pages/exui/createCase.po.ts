@@ -878,16 +878,6 @@ export class CreateCasePage extends Base {
         if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
           throw uploadResponse;
         }
-        if (attempt < maxAttempts) {
-          logger.warn(`Document ${uploadActionDescription} response was not observed; retrying upload`, {
-            attempt,
-            maxAttempts,
-            timeoutMs: uploadResponseTimeoutMs,
-            errorMessage: uploadResponse.message,
-          });
-          await this.page.waitForTimeout(baseRetryDelayMs * 2 ** (attempt - 1));
-          continue;
-        }
         throw new Error(
           `Document ${uploadActionDescription} response was not observed within ${uploadResponseTimeoutMs}ms: ${uploadResponse.message}`
         );

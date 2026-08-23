@@ -18,11 +18,16 @@ test.describe(
       nullTranslationResponses = 0;
       await page.route('**/api/translation/**', async (route) => {
         nullTranslationResponses += 1;
+        const response = await route.fetch();
+        const body = (await response.json()) as {
+          translations?: Record<string, { translation?: string | null }>;
+        };
         await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
+          response,
           body: JSON.stringify({
+            ...body,
             translations: {
+              ...body.translations,
               'Update case': { translation: null },
               'Case details': { translation: null },
               History: { translation: null },

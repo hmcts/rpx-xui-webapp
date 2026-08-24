@@ -159,6 +159,27 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     expect(disposals).toBe(1);
   });
 
+  test('does not reuse auth validation across target origins', async () => {
+    let authRequests = 0;
+    const session = {
+      storageFile: '/tmp/unit-origin-session.storage.json',
+      storageStateFingerprint: 'unit-origin-fingerprint',
+    };
+    const createRequestContext = async () =>
+      ({
+        get: async () => {
+          authRequests += 1;
+          return { status: () => 200, text: async () => 'true' };
+        },
+        dispose: async () => undefined,
+      }) as never;
+
+    await validateStoredSession(session, 'https://manage-case-a.example.test', { createRequestContext });
+    await validateStoredSession(session, 'https://manage-case-b.example.test', { createRequestContext });
+
+    expect(authRequests).toBe(2);
+  });
+
   test('rejects a reusable session when auth/isAuthenticated is not authenticated', async () => {
     await expect(
       validateStoredSession(
@@ -176,6 +197,77 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         }
       )
     ).resolves.toBe('unauthenticated');
+  });
+
+  test('retries transient auth/isAuthenticated responses without caching the outage', async () => {
+    let authRequests = 0;
+    const session = {
+      storageFile: '/tmp/unit-transient-session.storage.json',
+      storageStateFingerprint: 'unit-transient-fingerprint',
+    };
+    const createRequestContext = async () =>
+      ({
+        get: async () => {
+          authRequests += 1;
+          return authRequests === 1
+            ? { status: () => 503, text: async () => '' }
+            : { status: () => 200, text: async () => 'true' };
+        },
+        dispose: async () => undefined,
+      }) as never;
+
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'authenticated'
+    );
+    expect(authRequests).toBe(2);
+  });
+
+  test('does not treat an auth service failure as an invalid session', async () => {
+    const session = {
+      storageFile: '/tmp/unit-unavailable-session.storage.json',
+      storageStateFingerprint: 'unit-unavailable-fingerprint',
+    };
+    let authRequests = 0;
+    const createRequestContext = async () =>
+      ({
+        get: async () => {
+          authRequests += 1;
+          return { status: () => 503, text: async () => '' };
+        },
+        dispose: async () => undefined,
+      }) as never;
+
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'unavailable'
+    );
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'unavailable'
+    );
+    expect(authRequests).toBe(4);
+  });
+
+  test('retries transport failures without caching unavailable validation', async () => {
+    let authRequests = 0;
+    const session = {
+      storageFile: '/tmp/unit-transport-session.storage.json',
+      storageStateFingerprint: 'unit-transport-fingerprint',
+    };
+    const createRequestContext = async () =>
+      ({
+        get: async () => {
+          authRequests += 1;
+          throw new Error('network unavailable');
+        },
+        dispose: async () => undefined,
+      }) as never;
+
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'unavailable'
+    );
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'unavailable'
+    );
+    expect(authRequests).toBe(4);
   });
 
   test('expands a staff admin alias to the worker-selected pool before applying cookies', async () => {

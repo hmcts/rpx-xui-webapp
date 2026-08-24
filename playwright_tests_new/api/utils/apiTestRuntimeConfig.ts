@@ -1,3 +1,5 @@
+import 'dotenv-extended/config';
+
 type TestEnvironment = 'aat' | 'demo' | 'ithc';
 
 type UserCredentials = {
@@ -37,15 +39,19 @@ function resolveCredential(...candidates: Array<string | undefined>): string | u
 }
 
 function resolveRequiredUser(
-  fallbackUsername: string,
-  fallbackPassword: string,
+  userLabel: string,
   usernameCandidates: Array<string | undefined>,
   passwordCandidates: Array<string | undefined>
 ): UserCredentials {
-  return {
-    e: resolveCredential(...usernameCandidates) ?? fallbackUsername,
-    sec: resolveCredential(...passwordCandidates) ?? fallbackPassword,
-  };
+  const username = resolveCredential(...usernameCandidates);
+  const password = resolveCredential(...passwordCandidates);
+  if (!username || !password) {
+    throw new Error(
+      `Required ${userLabel} credentials are not configured. Set SOLICITOR_USERNAME/DIVORCE_SOLICITOR_USERNAME/WA_SOLICITOR_USERNAME and the matching password variable.`
+    );
+  }
+
+  return { e: username, sec: password };
 }
 
 function resolveOptionalUser(
@@ -94,10 +100,9 @@ const solicitorPassword = resolveCredential(
 
 const users = {
   aat: {
-    solicitor: resolveRequiredUser('solicitor@example.test', 'not-configured', [solicitorUsername], [solicitorPassword]),
+    solicitor: resolveRequiredUser('solicitor', [solicitorUsername], [solicitorPassword]),
     waSolicitor: resolveRequiredUser(
-      'wa.solicitor@example.test',
-      'not-configured',
+      'WA solicitor',
       [process.env.WA_SOLICITOR_USERNAME, process.env.SOLICITOR_USERNAME, process.env.DIVORCE_SOLICITOR_USERNAME],
       [process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD, process.env.DIVORCE_SOLICITOR_PASSWORD]
     ),
@@ -111,10 +116,9 @@ const users = {
     ),
   },
   demo: {
-    solicitor: resolveRequiredUser('solicitor@example.test', 'not-configured', [solicitorUsername], [solicitorPassword]),
+    solicitor: resolveRequiredUser('solicitor', [solicitorUsername], [solicitorPassword]),
     waSolicitor: resolveRequiredUser(
-      'wa.solicitor@example.test',
-      'not-configured',
+      'WA solicitor',
       [process.env.WA_SOLICITOR_USERNAME, process.env.SOLICITOR_USERNAME, process.env.DIVORCE_SOLICITOR_USERNAME],
       [process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD, process.env.DIVORCE_SOLICITOR_PASSWORD]
     ),
@@ -128,10 +132,9 @@ const users = {
     ),
   },
   ithc: {
-    solicitor: resolveRequiredUser('solicitor@example.test', 'not-configured', [solicitorUsername], [solicitorPassword]),
+    solicitor: resolveRequiredUser('solicitor', [solicitorUsername], [solicitorPassword]),
     waSolicitor: resolveRequiredUser(
-      'wa.solicitor@example.test',
-      'not-configured',
+      'WA solicitor',
       [process.env.WA_SOLICITOR_USERNAME, process.env.SOLICITOR_USERNAME, process.env.DIVORCE_SOLICITOR_USERNAME],
       [process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD, process.env.DIVORCE_SOLICITOR_PASSWORD]
     ),
@@ -227,5 +230,6 @@ export const __test__ = {
   resolveBaseUrl,
   resolveTestEnv,
   resolveCredential,
+  resolveRequiredUser,
   resolveOptionalUser,
 };

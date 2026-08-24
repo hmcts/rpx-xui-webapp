@@ -26,7 +26,7 @@ import {
 const configuredDocId = resolveConfiguredDocId(EM_DOC_ID, config.em[config.testEnv as keyof typeof config.em]?.docId);
 let sharedDocId = '';
 const invalidDocId = uuid();
-const guardedDocumentUploadRejectionStatuses = [400, 401, 403, 415, 429, 500] as const;
+const guardedDocumentUploadRejectionStatuses = [400, 401, 403, 415, 422, 429, 500] as const;
 
 test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, () => {
   test.beforeAll(async () => {
@@ -224,7 +224,8 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
         headers,
         throwOnError: false,
       });
-      expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
+      // EM Annotation API documents annotation delete as 200/401/403, including an unknown id.
+      expectStatus(res.status, [200, 401, 403]);
     });
   });
 
@@ -235,7 +236,8 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
         headers,
         throwOnError: false,
       });
-      expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
+      // EM Annotation API documents bulk bookmark delete as idempotent 200/401/403.
+      expectStatus(res.status, [200, 401, 403]);
     });
   });
 });

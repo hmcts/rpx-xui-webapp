@@ -2,10 +2,12 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { expect, test } from '@playwright/test';
+import { expect, request, test } from '@playwright/test';
 
 import { __test__ as sessionStorageTest } from '../../E2E/utils/session-storage.utils.js';
 import { __test__ as sessionCaptureTest, loadSessionCookies, refreshRejectedSession } from '../../common/sessionCapture.js';
+import { __test__ as sessionReuseValidationTest } from '../../common/sessionReuseValidation.js';
+import { validateStoredSession } from '../../common/sessionReuseValidation.js';
 import { withOrderedSessionFallback } from '../../common/orderedSessionFallback.js';
 import { resolveSessionStorageKey, type SessionIdentity } from '../../common/sessionIdentity.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
@@ -20,8 +22,8 @@ function fakeSessionPage() {
   };
 
   return {
-    locator: () => locator,
     getByRole: () => locator,
+    locator: () => locator,
     url: () => 'https://idam-web-public.aat.platform.hmcts.net/login',
   };
 }
@@ -30,9 +32,50 @@ function hiddenLocator() {
   const locator = {
     first: () => locator,
     click: async () => undefined,
+    fill: async () => undefined,
     isVisible: async () => false,
+    press: async () => undefined,
   };
   return locator;
+}
+
+function visibleLocator(actions: string[], name: string, visible: () => boolean = () => true, onClick?: () => void) {
+  const locator = {
+    first: () => locator,
+    click: async () => {
+      actions.push(`${name}:click`);
+      onClick?.();
+    },
+    fill: async (value: string) => {
+      actions.push(`${name}:fill:${value}`);
+    },
+    isVisible: async () => visible(),
+    press: async (key: string) => {
+      actions.push(`${name}:press:${key}`);
+    },
+    textContent: async () => '',
+    waitFor: async () => undefined,
+  };
+  return locator;
+}
+
+function fakeIdamPageObject({
+  page,
+  usernameInput,
+  passwordInput,
+  submitButton,
+}: {
+  page: unknown;
+  usernameInput: unknown;
+  passwordInput: unknown;
+  submitButton: unknown;
+}) {
+  return {
+    page,
+    usernameInput,
+    passwordInput,
+    submitBtn: submitButton,
+  };
 }
 
 function sessionUserIdentifier(identity: SessionIdentity | string): string {
@@ -65,6 +108,75 @@ function releaseCompromisedLockfile() {
 }
 
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
+  test('accepts only the documented auth/isAuthenticated response shapes', () => {
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('true')).toBe(true);
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('{"isAuthenticated":true}')).toBe(true);
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('false')).toBe(false);
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('{"isAuthenticated":false}')).toBe(false);
+    expect(sessionReuseValidationTest.parseAuthenticatedResponse('<html>login</html>')).toBe(false);
+  });
+
+  test('validates a reusable session once per storage fingerprint before reusing it', async () => {
+    let contextCreations = 0;
+    let authRequests = 0;
+    let disposals = 0;
+    const createRequestContext = async (options: Parameters<typeof request.newContext>[0]) => {
+      contextCreations += 1;
+      expect(options).toMatchObject({
+        baseURL: 'https://manage-case.example.test',
+        storageState: '/tmp/unit-session.storage.json',
+      });
+      return {
+        get: async (url: string) => {
+          authRequests += 1;
+          expect(url).toBe('/auth/isAuthenticated');
+          return {
+            status: () => 200,
+            text: async () => 'true',
+          };
+        },
+        dispose: async () => {
+          disposals += 1;
+          throw new Error('request context close failed');
+        },
+      } as never;
+    };
+    const session = {
+      storageFile: '/tmp/unit-session.storage.json',
+      storageStateFingerprint: 'unit-authenticated-fingerprint',
+    };
+
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'authenticated'
+    );
+    await expect(validateStoredSession(session, 'https://manage-case.example.test', { createRequestContext })).resolves.toBe(
+      'authenticated'
+    );
+
+    expect(contextCreations).toBe(1);
+    expect(authRequests).toBe(1);
+    expect(disposals).toBe(1);
+  });
+
+  test('rejects a reusable session when auth/isAuthenticated is not authenticated', async () => {
+    await expect(
+      validateStoredSession(
+        {
+          storageFile: '/tmp/unit-rejected-session.storage.json',
+          storageStateFingerprint: 'unit-rejected-fingerprint',
+        },
+        'https://manage-case.example.test',
+        {
+          createRequestContext: async () =>
+            ({
+              get: async () => ({ status: () => 200, text: async () => 'false' }),
+              dispose: async () => undefined,
+            }) as never,
+        }
+      )
+    ).resolves.toBe('unauthenticated');
+  });
+
   test('expands a staff admin alias to the worker-selected pool before applying cookies', async () => {
     const envOverrides = {
       STAFF_ADMIN_POOL_ENABLED: 'true',
@@ -120,7 +232,8 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
-  test('uses the active Playwright test index for staff admin pool selection', ({}, testInfo) => {
+  test('uses the active Playwright test index for staff admin pool selection', ({ browserName: _browserName }, testInfo) => {
+    void _browserName;
     const envOverrides = {
       STAFF_ADMIN_POOL_ENABLED: 'true',
       STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
@@ -431,6 +544,20 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('caps worker staggering so a complete transient retry cycle remains available', () => {
+    expect(
+      sessionCaptureTest.resolveSessionCaptureDelayMs(3, {
+        PW_SESSION_CAPTURE_STAGGER_MS: '10000',
+      })
+    ).toBe(sessionCaptureTest.sessionCaptureMaxStaggerMs);
+
+    expect(
+      sessionCaptureTest.resolveSessionCaptureDelayMs(1, {
+        PW_SESSION_CAPTURE_STAGGER_MS: '3000',
+      })
+    ).toBe(3_000);
+  });
+
   test('does not start a fallback capture when even one bounded attempt cannot finish', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-pool-deadline-unit-'));
     const previousCwd = process.cwd();
@@ -608,6 +735,95 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         }
       )
     ).rejects.toThrow('IDAM page message: Incorrect email or password');
+  });
+
+  test('completeIdamCredentialFlow submits legacy combined email and password surface', async () => {
+    const actions: string[] = [];
+    const usernameInput = visibleLocator(actions, 'email');
+    const passwordInput = visibleLocator(actions, 'password');
+    const submitButton = visibleLocator(actions, 'submit');
+    const hiddenFallback = hiddenLocator();
+    const page = {
+      getByRole: () => submitButton,
+      locator: () => hiddenFallback,
+      waitForLoadState: async () => undefined,
+      waitForTimeout: async () => undefined,
+    };
+    const idamPage = fakeIdamPageObject({ page, usernameInput, passwordInput, submitButton });
+
+    await sessionCaptureTest.completeIdamCredentialFlow(
+      page as never,
+      idamPage as never,
+      usernameInput as never,
+      'legacy@example.test',
+      'secret'
+    );
+
+    expect(actions).toEqual(['email:fill:legacy@example.test', 'password:fill:secret', 'submit:click']);
+  });
+
+  test('completeIdamCredentialFlow submits progressive email then password surfaces', async () => {
+    const actions: string[] = [];
+    let step: 'email' | 'password' | 'submitted' = 'email';
+    const usernameInput = visibleLocator(actions, 'email', () => step === 'email');
+    const passwordInput = visibleLocator(actions, 'password', () => step === 'password');
+    const submitButton = visibleLocator(
+      actions,
+      'submit',
+      () => step !== 'submitted',
+      () => {
+        step = step === 'email' ? 'password' : 'submitted';
+      }
+    );
+    const hiddenFallback = hiddenLocator();
+    const page = {
+      getByRole: () => submitButton,
+      locator: () => hiddenFallback,
+      waitForLoadState: async () => undefined,
+      waitForTimeout: async () => undefined,
+    };
+    const idamPage = fakeIdamPageObject({ page, usernameInput, passwordInput, submitButton });
+
+    await sessionCaptureTest.completeIdamCredentialFlow(
+      page as never,
+      idamPage as never,
+      usernameInput as never,
+      'progressive@example.test',
+      'secret'
+    );
+
+    expect(actions).toEqual(['email:fill:progressive@example.test', 'submit:click', 'password:fill:secret', 'submit:click']);
+  });
+
+  test('completeIdamCredentialFlow uses the page object primary submit before broad shared selectors', async () => {
+    const actions: string[] = [];
+    const usernameInput = visibleLocator(actions, 'email');
+    const passwordInput = visibleLocator(actions, 'password');
+    const primarySubmitButton = visibleLocator(actions, 'primary-submit');
+    const broadSharedSubmitButton = visibleLocator(actions, 'broad-shared-submit');
+    const hiddenFallback = hiddenLocator();
+    const page = {
+      getByRole: () => primarySubmitButton,
+      locator: () => hiddenFallback,
+      waitForLoadState: async () => undefined,
+      waitForTimeout: async () => undefined,
+    };
+    const idamPage = fakeIdamPageObject({
+      page,
+      usernameInput,
+      passwordInput,
+      submitButton: broadSharedSubmitButton,
+    });
+
+    await sessionCaptureTest.completeIdamCredentialFlow(
+      page as never,
+      idamPage as never,
+      usernameInput as never,
+      'primary-submit@example.test',
+      'secret'
+    );
+
+    expect(actions).toEqual(['email:fill:primary-submit@example.test', 'password:fill:secret', 'primary-submit:click']);
   });
 
   test('waitForAuthenticatedShell rejects service-down even when the app header is visible', async () => {
@@ -1482,6 +1698,105 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       expect(lockCalled).toBe(false);
       expect(loginCalled).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('retries after a recent transient capture failure while retaining deterministic cooldowns', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-transient-cooldown-retry-unit-'));
+    const previousCwd = process.cwd();
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const storageKey = resolveSessionStorageKey({
+      userIdentifier: 'IAC_Judge_WA_R1',
+      email: 'judge@example.test',
+      password: 'not-used',
+    });
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
+    let loginCalled = false;
+
+    try {
+      process.chdir(tempDir);
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'Session capture attempt timed out after 45000ms',
+          retryable: true,
+        })
+      );
+
+      await sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+        chromiumLauncher: {} as never,
+        config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+        env: {},
+        isSessionFresh: () => false,
+        lockfile: fakeLockfile(),
+        loginAndPersistSession: async () => {
+          loginCalled = true;
+        },
+        resolveSessionIdentity: () => ({
+          userIdentifier: 'IAC_Judge_WA_R1',
+          email: 'judge@example.test',
+          password: 'not-used',
+        }),
+      });
+
+      expect(loginCalled).toBe(true);
+      expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('allows only one shared recovery capture after a transient marker', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-single-recovery-unit-'));
+    const previousCwd = process.cwd();
+    const identity: SessionIdentity = {
+      userIdentifier: 'TRANSIENT_RECOVERY_USER',
+      email: 'transient-recovery@example.test',
+      password: 'not-used',
+    };
+    const storageKey = resolveSessionStorageKey(identity);
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const failurePath = path.join(sessionsDir, `${storageKey}.capture-failed.json`);
+    let captures = 0;
+
+    try {
+      process.chdir(tempDir);
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'Session capture attempt timed out after 45000ms',
+          retryable: true,
+        })
+      );
+
+      const attempts = await Promise.allSettled(
+        Array.from({ length: 8 }, () =>
+          sessionCaptureTest.sessionCaptureWith([identity], {
+            chromiumLauncher: {} as never,
+            config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+            env: {},
+            isSessionFresh: () => false,
+            loginAndPersistSession: async () => {
+              captures += 1;
+              throw new Error('Session capture attempt timed out after 45000ms');
+            },
+            resolveSessionIdentity: (candidate) => candidate as SessionIdentity,
+          })
+        )
+      );
+
+      const marker = JSON.parse(fs.readFileSync(failurePath, 'utf8'));
+      expect(captures).toBe(1);
+      expect(attempts.every((attempt) => attempt.status === 'rejected')).toBe(true);
+      expect(marker.recoveryAttempted).toBe(true);
     } finally {
       process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });

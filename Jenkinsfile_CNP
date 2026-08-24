@@ -52,7 +52,7 @@ properties([
         ),
         text(
             name: 'INTEGRATION_PW_PROFILE_RUNS',
-            defaultValue: '''workers=7''',
+            defaultValue: '''workers=4''',
             description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
         ),
         string(
@@ -69,7 +69,7 @@ properties([
 ])
 
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
-@Library("Infrastructure@2.4.9")
+@Library("Infrastructure@2.5.1")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 
@@ -294,7 +294,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=7'
+        configured = 'workers=4'
     }
     return configured
         .split(/[\r\n;]+/)
@@ -303,7 +303,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
 }
 
 def integrationProfileRunConfig = { String spec, String testType ->
-    def workers = '7'
+    def workers = '4'
     def shard = ''
     spec.split(/\s+/).each { token ->
         if (token.startsWith('workers=')) {
@@ -401,6 +401,8 @@ def secrets = [
   'rpx-${env}': [
     secret('mc-s2s-client-secret', 'S2S_SECRET'),
     secret('mc-idam-client-secret', 'IDAM_SECRET'),
+    secret('idam-api-url', 'IDAM_API_URL'),
+    secret('s2s-url', 'S2S_URL'),
     secret('webapp-redis6-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
@@ -466,6 +468,10 @@ def secrets = [
     secret('e2e-fpl-global-search-password', 'FPL_GLOBAL_SEARCH_PASSWORD'),
     secret('e2e-probate-find-case-username', 'PROBATE_FIND_CASE_USERNAME'),
     secret('e2e-probate-find-case-password', 'PROBATE_FIND_CASE_PASSWORD'),
+    secret('e2e-probate-caseworker-username', 'PROBATE_CASEWORKER_USERNAME'),
+    secret('e2e-probate-caseworker-password', 'PROBATE_CASEWORKER_PASSWORD'),
+    secret('e2e-probate-solicitor-username', 'PROBATE_SOLICITOR_USERNAME'),
+    secret('e2e-probate-solicitor-password', 'PROBATE_SOLICITOR_PASSWORD'),
     secret('e2e-user-with-flags-username', 'USER_WITH_FLAGS_USERNAME'),
     secret('e2e-user-with-flags-password', 'USER_WITH_FLAGS_PASSWORD'),
     secret('e2e-search-employment-case-username', 'SEARCH_EMPLOYMENT_CASE_USERNAME'),
@@ -503,6 +509,7 @@ withPipeline(type, product, component) {
 
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
@@ -669,7 +676,7 @@ withPipeline(type, product, component) {
                                 withEnv([
                                     "ORG_USER_ASSIGNMENT_MODE=external",
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "FUNCTIONAL_TESTS_WORKERS=4",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
@@ -825,7 +832,7 @@ withPipeline(type, product, component) {
                                 withEnv([
                                     "ORG_USER_ASSIGNMENT_MODE=external",
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "FUNCTIONAL_TESTS_WORKERS=4",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",

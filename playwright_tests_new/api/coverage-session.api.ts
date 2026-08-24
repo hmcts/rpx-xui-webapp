@@ -11,8 +11,6 @@ import { resolveSessionStorageKey } from '../common/sessionIdentity.js';
 import type { BrowserContext, Cookie } from 'playwright-core';
 import { withEnv } from './utils/testEnv';
 
-test.describe.configure({ mode: 'serial' });
-
 const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
 const unavailableApiBootstrap = async () => ({
   status: 'unavailable' as const,

@@ -21,6 +21,7 @@
     "@e2e-media-viewer",
     "@e2e-search-case",
     "@e2e-smoke",
+    "@e2e-reliability",
     "@e2e-translation",
     "@e2e-update-case"
   ]

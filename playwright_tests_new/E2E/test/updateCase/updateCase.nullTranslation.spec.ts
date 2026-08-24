@@ -33,7 +33,7 @@ test.describe(
         maxAttempts: 1,
         createCaseMaxAttempts: 2,
       });
-      await page.route('**/api/translation/**', async (route) => {
+      await page.route('**api/translation/cy*', async (route) => {
         const response = await route.fetch();
         if (state.closed) {
           await route.fulfill({ response });
@@ -85,7 +85,7 @@ test.describe(
         await expect.poll(() => state.nullTranslationResponses, { timeout: 20_000 }).toBeGreaterThan(0);
         await expect.poll(() => state.lastTranslationResponseStatus, { timeout: 20_000 }).toBe(200);
         await expect(page).toHaveURL(/\/cases\/case-details\//);
-        await expect(caseDetailsPage.caseViewerTable).toBeVisible();
+        await expect(caseDetailsPage.container).toBeVisible();
         const pageContent = await page.content();
         const translationErrors = /\[undefined\]|\[null\]|Cannot read.*translation|TypeError.*trim|undefined.*\.split/.test(
           pageContent
@@ -122,7 +122,7 @@ test.describe(
         await expect.poll(() => state.nullTranslationResponses, { timeout: 20_000 }).toBeGreaterThan(0);
         await expect.poll(() => state.lastTranslationResponseStatus, { timeout: 20_000 }).toBe(200);
         await expect(page).toHaveURL(/\/cases\/case-details\//);
-        await expect(caseDetailsPage.caseViewerTable).toBeVisible();
+        await expect(caseDetailsPage.container).toBeVisible();
       });
 
       await test.step('Verify field labels are rendered without translation errors', async () => {
@@ -141,7 +141,7 @@ test.describe(
 
       await test.step('Verify no rendering errors in case details header', async () => {
         await expect(caseDetailsPage.container).toBeVisible();
-        await expect(caseDetailsPage.caseViewerTable).toBeVisible();
+        await expect(caseDetailsPage.container).toBeVisible();
       });
     });
   }

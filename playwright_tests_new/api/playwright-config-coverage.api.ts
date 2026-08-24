@@ -481,6 +481,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
         '@e2e-manage-tasks-assigned',
         '@e2e-media-viewer',
         '@e2e-search-case',
+        '@e2e-reliability',
         '@e2e-update-case',
       ])
     );

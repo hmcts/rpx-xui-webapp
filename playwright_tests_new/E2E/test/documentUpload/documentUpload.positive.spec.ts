@@ -155,11 +155,11 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
               }
 
               await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME).catch(() => undefined);
-              const tableVisible = await caseDetailsPage.caseViewerTable.isVisible().catch(() => false);
+              const tableVisible = await caseDetailsPage.caseTab1Table.isVisible().catch(() => false);
               if (!tableVisible) {
                 return false;
               }
-              const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
+              const documentRow = caseDetailsPage.caseTab1Table.getByRole('row', { name: TEST_DATA.V2.DOCUMENT_FIELD_LABEL });
               const documentText = await documentRow.innerText().catch(() => '');
               return documentText.includes(TEST_DATA.V2.FILE_NAME);
             },
@@ -174,74 +174,78 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
         }
 
         await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
-        const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
+        await caseDetailsPage.caseTab1Table.waitFor({ state: 'visible' });
+        const textFieldRow = caseDetailsPage.caseTab1Table.getByRole('row', { name: TEST_DATA.V2.TEXT_FIELD_LABEL });
         await expect(textFieldRow).toContainText(testValue);
 
-        const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
+        const documentRow = caseDetailsPage.caseTab1Table.getByRole('row', { name: TEST_DATA.V2.DOCUMENT_FIELD_LABEL });
         await expect(documentRow).toContainText(TEST_DATA.V2.FILE_NAME);
       });
     });
   }
 });
 
-test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2e-document-upload-v1'] }, () => {
-  test('Check the documentV1 upload works as expected', async ({
-    page,
-    createCasePage,
-    caseDetailsPage,
-    tableUtils,
-    identityLease,
-  }, testInfo) => {
-    assertDocumentUploadRuntimeAliasConfigured(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
-    const lease = await identityLease.acquire({ pool: 'SEARCH_EMPLOYMENT_CASE' });
-    const testValue = `document-v1-${testInfo.parallelIndex}-${testInfo.retry}-${Date.now()}`;
-    const testFileName = `${testValue}.pdf`;
-    logger.info('Generated test values', { testValue, testFileName, worker: testInfo.workerIndex });
-
-    await applySessionCookies(page, lease.identity.userIdentifier);
-    const setup = await setupCaseForJourney({
-      scenario: 'document-upload-v1-employment',
-      jurisdiction: TEST_DATA.V1.JURISDICTION,
-      caseType: TEST_DATA.V1.CASE_TYPE,
-      apiEventId: 'initiateCase',
-      mode: 'api-required',
-      apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+test.describe(
+  'Document upload V1',
+  { tag: ['@e2e', '@e2e-document-upload', '@e2e-document-upload-v1', '@e2e-reliability', '@nightly'] },
+  () => {
+    test('Check the documentV1 upload works as expected', async ({
       page,
       createCasePage,
       caseDetailsPage,
-      testInfo,
-    });
-    const caseNumber = setup.caseNumber;
-    logger.info('Created employment case', { caseNumber, testValue });
+      tableUtils,
+      identityLease,
+    }, testInfo) => {
+      assertDocumentUploadRuntimeAliasConfigured(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
+      const lease = await identityLease.acquire({ pool: 'SEARCH_EMPLOYMENT_CASE' });
+      const testValue = `document-v1-${testInfo.parallelIndex}-${testInfo.retry}-${Date.now()}`;
+      const testFileName = `${testValue}.pdf`;
+      logger.info('Generated test values', { testValue, testFileName, worker: testInfo.workerIndex });
 
-    await test.step('Start document upload process', async () => {
-      await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
-        expectedLocator: createCasePage.documentCollectionButton,
-        timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
+      await applySessionCookies(page, lease.identity.userIdentifier);
+      const setup = await setupCaseForJourney({
+        scenario: 'document-upload-v1-employment',
+        jurisdiction: TEST_DATA.V1.JURISDICTION,
+        caseType: TEST_DATA.V1.CASE_TYPE,
+        apiEventId: 'initiateCase',
+        mode: 'api-required',
+        apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+        page,
+        createCasePage,
+        caseDetailsPage,
+        testInfo,
+      });
+      const caseNumber = setup.caseNumber;
+      logger.info('Created employment case', { caseNumber, testValue });
+
+      await test.step('Start document upload process', async () => {
+        await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
+          expectedLocator: createCasePage.documentCollectionButton,
+          timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
+        });
+      });
+
+      await test.step('Upload a document to the case', async () => {
+        await uploadEmploymentDraftDocument(createCasePage, testFileName, TEST_DATA.V1.FILE_TYPE, TEST_DATA.V1.FILE_CONTENT);
+      });
+
+      await test.step('Verify document was uploaded successfully', async () => {
+        await caseDetailsPage.selectCaseDetailsTab('Documents');
+        await caseDetailsPage.caseActionGoButton.waitFor({ state: 'visible' });
+        const table = await caseDetailsPage.getDocumentsList();
+        expect(table.length, 'Documents table should contain at least 1 row').toBeGreaterThan(0);
+        expect(table[0]).toMatchObject({
+          Number: '1',
+          Document: testFileName,
+          'Document Category': 'Misc',
+          'Type of Document': 'Other',
+        });
+
+        const documentsTable = caseDetailsPage.caseDocumentsTable.first();
+        const parsedRows = await tableUtils.parseDataTable(documentsTable, caseDetailsPage.page);
+        const hasUploadedDocument = parsedRows.some((row) => row.Document === testFileName);
+        expect(hasUploadedDocument, 'TableUtils should find the uploaded document row').toBe(true);
       });
     });
-
-    await test.step('Upload a document to the case', async () => {
-      await uploadEmploymentDraftDocument(createCasePage, testFileName, TEST_DATA.V1.FILE_TYPE, TEST_DATA.V1.FILE_CONTENT);
-    });
-
-    await test.step('Verify document was uploaded successfully', async () => {
-      await caseDetailsPage.selectCaseDetailsTab('Documents');
-      await caseDetailsPage.caseActionGoButton.waitFor({ state: 'visible' });
-      const table = await caseDetailsPage.getDocumentsList();
-      expect(table.length, 'Documents table should contain at least 1 row').toBeGreaterThan(0);
-      expect(table[0]).toMatchObject({
-        Number: '1',
-        Document: testFileName,
-        'Document Category': 'Misc',
-        'Type of Document': 'Other',
-      });
-
-      const documentsTable = caseDetailsPage.caseDocumentsTable.first();
-      const parsedRows = await tableUtils.parseDataTable(documentsTable, caseDetailsPage.page);
-      const hasUploadedDocument = parsedRows.some((row) => row.Document === testFileName);
-      expect(hasUploadedDocument, 'TableUtils should find the uploaded document row').toBe(true);
-    });
-  });
-});
+  }
+);

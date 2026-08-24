@@ -369,12 +369,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
     const body = this.formGroup.get('body');
     if (!body.valid) {
-      const raiseQueryErrorMessage =
-        body.hasError('markDownPattern')
-          ? this.queryCreateContext === QueryCreateContext.RESPOND
-            ? RaiseQueryErrorMessage.RESPOND_QUERY_BODY_INVALID_MARKUP
-            : RaiseQueryErrorMessage.QUERY_BODY_INVALID_MARKUP
-          : this.queryCreateContext === QueryCreateContext.RESPOND
+      const raiseQueryErrorMessage = body.hasError('markDownPattern')
+        ? this.queryCreateContext === QueryCreateContext.RESPOND
+          ? RaiseQueryErrorMessage.RESPOND_QUERY_BODY_INVALID_MARKUP
+          : RaiseQueryErrorMessage.QUERY_BODY_INVALID_MARKUP
+        : this.queryCreateContext === QueryCreateContext.RESPOND
           ? RaiseQueryErrorMessage.RESPOND_QUERY_BODY
           : RaiseQueryErrorMessage.QUERY_BODY;
       this.addError(raiseQueryErrorMessage, 'body');

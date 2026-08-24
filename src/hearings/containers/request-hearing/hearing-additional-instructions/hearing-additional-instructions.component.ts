@@ -50,7 +50,10 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
       });
     } else {
       this.instructionsForm = this.formBuilder.group({
-        instructions: [this.hearingRequestMainModel.hearingDetails.listingComments, FormValidatorsService.markDownPatternValidator()],
+        instructions: [
+          this.hearingRequestMainModel.hearingDetails.listingComments,
+          FormValidatorsService.markDownPatternValidator(),
+        ],
       });
     }
   }

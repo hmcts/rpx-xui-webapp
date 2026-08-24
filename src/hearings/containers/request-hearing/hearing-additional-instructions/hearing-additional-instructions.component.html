@@ -59,7 +59,10 @@
         <form class="form" [formGroup]="instructionsForm">
           <p class="govuk-error-message" *ngIf="submitted && instructionsForm.get('instructions')?.hasError('markDownPattern')">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-            {{ 'The data entered is not valid for additional instructions. Link mark up characters are not allowed in this field' | rpxTranslate }}
+            {{
+              'The data entered is not valid for additional instructions. Link mark up characters are not allowed in this field'
+                | rpxTranslate
+            }}
           </p>
           <textarea
             class="govuk-textarea govuk-!-margin-bottom-1"

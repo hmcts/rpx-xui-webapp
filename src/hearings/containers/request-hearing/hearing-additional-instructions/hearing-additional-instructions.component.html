@@ -1,6 +1,6 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <div class="govuk-form-group">
+    <div class="govuk-form-group" [class.govuk-form-group--error]="submitted && instructionsForm?.get('instructions')?.invalid">
       <exui-hearing-parties-title></exui-hearing-parties-title>
       <h1 class="govuk-label-wrapper">
         <label class="govuk-label govuk-label--l" for="additionalInstructionsTextarea">{{
@@ -57,6 +57,10 @@
           </div>
         </div>
         <form class="form" [formGroup]="instructionsForm">
+          <p class="govuk-error-message" *ngIf="submitted && instructionsForm.get('instructions')?.hasError('markDownPattern')">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+            {{ 'The data entered is not valid for additional instructions. Link mark up characters are not allowed in this field' | rpxTranslate }}
+          </p>
           <textarea
             class="govuk-textarea govuk-!-margin-bottom-1"
             id="additionalInstructionsTextarea"
@@ -64,6 +68,7 @@
             name="additional-instructions-text"
             rows="10"
             [attr.maxlength]="instructionLength"
+            [class.govuk-textarea--error]="submitted && instructionsForm.get('instructions')?.invalid"
           ></textarea>
           <div id="with-hint-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-7" aria-live="polite">
             {{ 'You can enter up to ' | rpxTranslate }} {{ instructionLength | number: '' : 'en' }}

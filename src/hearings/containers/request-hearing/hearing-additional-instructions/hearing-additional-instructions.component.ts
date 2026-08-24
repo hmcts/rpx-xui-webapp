@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { FormValidatorsService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { ACTION, HearingInstructionsEnum, Mode } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -19,6 +20,7 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   public instructionsFormViewOnly: FormGroup;
   public instructionLength: number = HearingInstructionsEnum.InstructionLength;
   public showReviewBox: boolean = false;
+  public submitted: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -41,20 +43,21 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
     ) {
       this.showReviewBox = true;
       this.instructionsForm = this.formBuilder.group({
-        instructions: [this.serviceHearingValuesModel?.listingComments],
+        instructions: [this.serviceHearingValuesModel?.listingComments, FormValidatorsService.markDownPatternValidator()],
       });
       this.instructionsFormViewOnly = this.formBuilder.group({
         instructionsViewOnly: [this.hearingRequestMainModel.hearingDetails.listingComments],
       });
     } else {
       this.instructionsForm = this.formBuilder.group({
-        instructions: [this.hearingRequestMainModel.hearingDetails.listingComments],
+        instructions: [this.hearingRequestMainModel.hearingDetails.listingComments, FormValidatorsService.markDownPatternValidator()],
       });
     }
   }
 
   public executeAction(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
+      this.submitted = true;
       if (this.isFormValid()) {
         this.prepareHearingRequestData();
         super.navigateAction(action);

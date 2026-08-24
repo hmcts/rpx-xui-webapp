@@ -245,6 +245,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   private processFormSubmission(): void {
+    this.triggerQueryDataSubmission = false;
     // Show error message for follow up, new query submission
     if (this.eventDataError) {
       this.getEventTrigger();
@@ -257,7 +258,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.submitted = true;
     this.validateForm();
 
-    if (this.errorMessages?.length === 0 && this.eventData) {
+    if (this.formGroup.valid && this.errorMessages?.length === 0 && this.eventData) {
       this.triggerQueryDataSubmission = true;
     }
 
@@ -356,13 +357,24 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public validateForm(): void {
     this.errorMessages = [];
 
-    if (!this.formGroup.get('subject').valid) {
-      this.addError(RaiseQueryErrorMessage.QUERY_SUBJECT, 'subject');
+    const subject = this.formGroup.get('subject');
+    if (!subject.valid) {
+      this.addError(
+        subject.hasError('markDownPattern')
+          ? RaiseQueryErrorMessage.QUERY_SUBJECT_INVALID_MARKUP
+          : RaiseQueryErrorMessage.QUERY_SUBJECT,
+        'subject'
+      );
     }
 
-    if (!this.formGroup.get('body').valid) {
+    const body = this.formGroup.get('body');
+    if (!body.valid) {
       const raiseQueryErrorMessage =
-        this.queryCreateContext === QueryCreateContext.RESPOND
+        body.hasError('markDownPattern')
+          ? this.queryCreateContext === QueryCreateContext.RESPOND
+            ? RaiseQueryErrorMessage.RESPOND_QUERY_BODY_INVALID_MARKUP
+            : RaiseQueryErrorMessage.QUERY_BODY_INVALID_MARKUP
+          : this.queryCreateContext === QueryCreateContext.RESPOND
           ? RaiseQueryErrorMessage.RESPOND_QUERY_BODY
           : RaiseQueryErrorMessage.QUERY_BODY;
       this.addError(raiseQueryErrorMessage, 'body');

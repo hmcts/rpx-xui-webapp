@@ -13,6 +13,7 @@ import type { SessionIdentity } from '../../common/sessionIdentity.js';
 import {
   SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
   isExplicitIdamLoginRejection,
+  isIdentityScopedLoginSurfaceTimeout,
   isTransientSessionCaptureError,
 } from '../../common/sessionCaptureRetry.js';
 
@@ -163,6 +164,15 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
   test('does not retry a typed locator timeout that can indicate a wrong or changed page', () => {
     const error = new Error('locator.waitFor: Timeout 10000ms exceeded');
     error.name = 'TimeoutError';
+    expect(isTransientSessionCaptureError(error)).toBe(false);
+  });
+
+  test('recognises a wrapped IDAM login-surface timeout as identity-scoped', () => {
+    const error = new Error(
+      'Login failed for STAFF_ADMIN-2 after 1 of 2 capture attempts: locator.waitFor: Timeout 10000ms exceeded. Call log: waiting for locator([data-testid="idam-username-input"])'
+    );
+
+    expect(isIdentityScopedLoginSurfaceTimeout(error)).toBe(true);
     expect(isTransientSessionCaptureError(error)).toBe(false);
   });
 

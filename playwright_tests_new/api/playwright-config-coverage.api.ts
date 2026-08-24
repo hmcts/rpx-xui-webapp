@@ -11,6 +11,7 @@ import {
 
 const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
+  resolveConfiguredSessionPoolCapacity: (env: EnvMap) => number | undefined;
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
   resolveOdhinForceExitOnCompletion: (env: EnvMap) => boolean;
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
@@ -73,6 +74,7 @@ const buildE2eConfig = (env: EnvMap) =>
 
 const buildIntegrationConfig = (env: EnvMap) =>
   integrationConfigModule.__test__.buildConfig(env) as {
+    workers?: number;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { trace: string };
@@ -135,10 +137,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(configuredInCi).toBe(2);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(6);
+    expect(ciCount).toBe(4);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBe(6);
+    expect(defaultCount).toBe(4);
 
     const defaultApiCount = resolveApiProjectWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
     expect(defaultApiCount).toBe(6);
@@ -378,6 +380,17 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.globalExcludedTags).toEqual([]);
     expect(filters.ignoredGlobalExcludedTags).toEqual(['@svc-work-allocation']);
     expect(filters.grepInvert).toBeUndefined();
+  });
+
+  test('node-api can exclude only the unstable Work Allocation myaccess check', () => {
+    const filters = resolveApiTagFilters({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation-myaccess',
+      CI: undefined,
+    });
+
+    expect(filters.excludedTags).toEqual(['@svc-work-allocation-myaccess']);
+    expect(filters.grepInvert?.test('@svc-work-allocation-myaccess')).toBe(true);
+    expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
   });
 
   test('node-api treats @none as the global Key Vault no-op sentinel', () => {
@@ -643,7 +656,26 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
   test('integration config exposes the documented resolveWorkerCount test helper', async () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
-    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(7);
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(4);
+  });
+
+  test('integration config caps workers to the configured session pool capacity', async () => {
+    const env = {
+      CI: 'true',
+      FUNCTIONAL_TESTS_WORKERS: '7',
+      STAFF_ADMIN_POOL_ENABLED: 'true',
+      STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+      STAFF_ADMIN_1_PASSWORD: 'secret-1',
+      STAFF_ADMIN_2_USERNAME: 'staff-admin-2@example.test',
+      STAFF_ADMIN_2_PASSWORD: 'secret-2',
+      STAFF_ADMIN_3_USERNAME: 'staff-admin-3@example.test',
+      STAFF_ADMIN_3_PASSWORD: 'secret-3',
+      STAFF_ADMIN_4_USERNAME: 'staff-admin-4@example.test',
+      STAFF_ADMIN_4_PASSWORD: 'secret-4',
+    };
+
+    expect(integrationConfigSupport.resolveConfiguredSessionPoolCapacity(env)).toBe(4);
+    expect(buildIntegrationConfig(env).workers).toBe(4);
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {

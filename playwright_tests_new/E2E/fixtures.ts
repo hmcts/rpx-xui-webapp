@@ -114,7 +114,6 @@ const STRONG_SLOW_CALL_COUNT = 2;
 const ANSI_ESCAPE = String.fromCodePoint(27);
 const ANSI_ESCAPE_PATTERN = new RegExp(String.raw`${ANSI_ESCAPE}\[[0-?]*[ -/]*[@-~]`, 'g');
 const TRUTHY_ENV_VALUES = new Set(['1', 'true', 'yes', 'on']);
-
 /**
  * Sanitize URL by removing query parameters to prevent logging sensitive data.
  * Query params may contain tokens, session IDs, or PII.
@@ -1139,8 +1138,12 @@ export interface TestFixtures extends CustomFixtures {
   registerBenignApiErrorRule: BenignApiErrorRuleRegistry['registerBenignApiErrorRule'];
 }
 
+interface WorkerFixtures {
+  lighthousePort: number;
+}
+
 // Extend 'test' object using custom fixtures with enhanced failure diagnosis
-export const test = baseTest.extend<TestFixtures, { lighthousePort: number }>({
+export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
   ...pageFixtures,
   ...utilsFixtures,
 

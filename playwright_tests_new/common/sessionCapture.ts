@@ -441,6 +441,7 @@ const setupMarkerValues = [
   'shell-ready',
   'shell-timeout',
   'service-down',
+  'error-page',
   'session-refresh',
   'idam-login',
   'setup-ready',
@@ -724,16 +725,23 @@ async function validateLoadedSessionForReuse(
   session: LoadedSession,
   targetUrl: string,
   validateSession: typeof validateStoredSession = validateStoredSession,
-  env: NodeJS.ProcessEnv = process.env
+  env: NodeJS.ProcessEnv = process.env,
+  isFresh: typeof isSessionFresh = isSessionFresh
 ) {
   const validation = await validateSession(session, targetUrl);
   if (validation !== 'unavailable') {
     return validation;
   }
 
-  if (shouldRejectUnavailableSessionValidation(validation, env)) {
+  const reusable = isFresh(session.storageFile, resolveSessionMaxAgeMs(env), {
+    targetUrl,
+    idamUrl: config.urls.idamWebUrl,
+  });
+  if (shouldRejectUnavailableSessionValidation(validation, env) || !reusable) {
     throw new SessionCaptureError(
-      `Unable to validate cached session for ${session.userIdentifier}; auth/isAuthenticated is unavailable`,
+      `Unable to validate cached session for ${session.userIdentifier}; auth/isAuthenticated is unavailable${
+        reusable ? '' : ' and the cached session is no longer reusable'
+      }`,
       session.userIdentifier,
       { sessionPath: session.storageFile, failureKind: AAT_AUTH_UNAVAILABLE_FAILURE }
     );
@@ -798,6 +806,13 @@ async function isServiceDownPage(page: Page): Promise<boolean> {
   );
 }
 
+async function isErrorPage(page: Page): Promise<boolean> {
+  return await page
+    .getByRole('heading', { name: /something went wrong/i })
+    .isVisible()
+    .catch(() => false);
+}
+
 function getAppShellMarkers(page: Page, preferredSelector?: string): Array<{ name: string; locator: Locator }> {
   return new SessionCapturePage(page).appShellMarkers(preferredSelector);
 }
@@ -831,6 +846,14 @@ async function waitForAuthenticatedShell(
           failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
         }
       );
+    }
+
+    if (await isErrorPage(page)) {
+      setSetupMarker(page, 'error-page');
+      throw new SessionCaptureError(`Error page detected while waiting for app shell for ${userIdentifier}`, userIdentifier, {
+        currentUrl: sanitizedPageUrl(page),
+        preferredSelector: preferredSelector ?? 'none',
+      });
     }
 
     for (const marker of markers) {

@@ -974,6 +974,32 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     ).rejects.toBe(capturedError);
   });
 
+  test('waitForAuthenticatedShell rejects an error page even when the app header is visible', async () => {
+    const locatorFor = (selector: string) => {
+      const visible = selector === 'exui-header';
+      const locator = {
+        first: () => locator,
+        isVisible: async () => visible,
+      };
+      return locator;
+    };
+    const errorHeading = {
+      first: () => errorHeading,
+      isVisible: async () => true,
+    };
+    const page = {
+      url: () => 'https://manage-case.aat.platform.hmcts.net/error?code=secret&state=secret',
+      locator: (selector: string) => locatorFor(selector),
+      getByRole: (_role: string, options?: { name?: string | RegExp }) =>
+        options?.name instanceof RegExp ? errorHeading : locatorFor(''),
+      waitForTimeout: async () => undefined,
+    };
+
+    await expect(sessionCaptureTest.waitForAuthenticatedShell(page as never, 'SOLICITOR', 'exui-header', 1)).rejects.toThrow(
+      'Error page detected while waiting for app shell'
+    );
+  });
+
   test('does not suppress a later unexpected shell failure after an IDAM probe', async () => {
     const hidden = hiddenLocator();
     const page = {
@@ -1325,7 +1351,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     ).rejects.toThrow('Unable to validate cached session for UNIT_REFRESHED_USER');
   });
 
-  test('reuses an unavailable refreshed session under the default reuse policy', async () => {
+  test('reuses an unavailable fresh session under the default CI reuse policy', async () => {
     const session = {
       userIdentifier: 'UNIT_REFRESHED_USER',
       email: 'refreshed@example.test',
@@ -1335,8 +1361,34 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     };
 
     await expect(
-      sessionCaptureTest.validateLoadedSessionForReuse(session, 'https://manage-case.example.test', async () => 'unavailable', {})
+      sessionCaptureTest.validateLoadedSessionForReuse(
+        session,
+        'https://manage-case.example.test',
+        async () => 'unavailable',
+        { CI: 'true' },
+        () => true
+      )
     ).resolves.toBe('unavailable');
+  });
+
+  test('rejects an unavailable stale session even under the default CI reuse policy', async () => {
+    const session = {
+      userIdentifier: 'UNIT_STALE_USER',
+      email: 'stale@example.test',
+      cookies: [],
+      storageFile: '/tmp/stale-session.storage.json',
+      storageStateFingerprint: 'fingerprint',
+    };
+
+    await expect(
+      sessionCaptureTest.validateLoadedSessionForReuse(
+        session,
+        'https://manage-case.example.test',
+        async () => 'unavailable',
+        { CI: 'true' },
+        () => false
+      )
+    ).rejects.toThrow('cached session is no longer reusable');
   });
 
   test('persists an authenticated API session and skips browser login', async () => {

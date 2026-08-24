@@ -138,14 +138,14 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(smokeRunner).toContain('fs.rmSync(reportDir, { recursive: true, force: true });');
   });
 
-  test('reports strict session reuse when CI has no explicit policy', () => {
+  test('reports best-effort session reuse when CI has no explicit policy', () => {
     const output = childProcess.execFileSync(process.execPath, ['scripts/playwright-session-preflight.cjs'], {
       cwd: repositoryRoot,
       encoding: 'utf8',
       env: { CI: 'true' },
     });
 
-    expect(output).toContain('[playwright-preflight] validation=strict');
+    expect(output).toContain('[playwright-preflight] validation=best-effort');
   });
 
   test('does not let a missing JUnit file replace the Playwright runner outcome', () => {

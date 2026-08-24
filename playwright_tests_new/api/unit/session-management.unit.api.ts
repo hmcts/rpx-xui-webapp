@@ -2417,7 +2417,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         })
       );
       process.chdir(tempDir);
-      process.env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net';
+      process.env.TEST_URL = '';
       // The contract under test starts after cached-session validation. Avoid a
       // CI-only network validation failure masking the missing-shell assertion.
       process.env.PW_SESSION_REUSE_VALIDATION_MODE = 'best-effort';
@@ -2436,12 +2436,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         waitForTimeout: async () => undefined,
       };
 
-      await expect(
-        sessionCaptureTest.ensureAuthenticatedPage(page as never, identity, {
-          targetUrl: 'https://manage-case.aat.platform.hmcts.net',
-          timeoutMs: 1,
-        })
-      ).rejects.toThrow(/App shell not detected within 1ms/);
+      await expect(sessionCaptureTest.ensureAuthenticatedPage(page as never, identity, { timeoutMs: 1 })).rejects.toThrow(
+        /App shell not detected within 1ms/
+      );
 
       expect(gotoCount).toBe(1);
     } finally {

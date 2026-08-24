@@ -481,7 +481,7 @@ async function ensureSessionForIdentity(userIdentifier: SessionIdentityInput, ca
   const email = identity.email;
   const sessionStorageKey = resolveSessionStorageKey(identity);
   const sessionPath = path.join(process.cwd(), '.sessions', `${sessionStorageKey}.storage.json`);
-  const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
+  const targetUrl = process.env.TEST_URL?.trim() || config.urls.exuiDefaultUrl;
 
   const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs(), {
     targetUrl,
@@ -695,7 +695,7 @@ async function applySessionCookiesForIdentity(
   let session = captureDeadlineAt
     ? await ensureSessionCookiesForIdentity(userIdentifier, captureDeadlineAt)
     : await ensureSessionCookies(userIdentifier);
-  const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
+  const targetUrl = process.env.TEST_URL?.trim() || config.urls.exuiDefaultUrl;
   const validation = await validateLoadedSessionForReuse(session, targetUrl);
   if (validation === 'unauthenticated') {
     logger.warn('Cached session was rejected by auth/isAuthenticated; refreshing once', {
@@ -899,7 +899,9 @@ export async function ensureAuthenticatedPage(
   };
   const markSetup = (marker: string) => setSetupMarker(page, marker);
   markSetup('setup-start');
-  const targetUrl = options.targetUrl ?? process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
+  const configuredTargetUrl = process.env.TEST_URL?.trim() || config.urls.exuiDefaultUrl;
+  const requestedTargetUrl = options.targetUrl?.trim();
+  const targetUrl = requestedTargetUrl ? new URL(requestedTargetUrl, configuredTargetUrl).toString() : configuredTargetUrl;
   const timeoutMs = options.timeoutMs ?? 60_000;
   let session = await ensureSessionCookies(userIdentifier);
   let identity = resolveLoadedIdentity(session);

@@ -6,7 +6,7 @@ import { CCD_CASE_REFERENCE_LENGTH } from '../../page-objects/pages/exui/exui-ti
 test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
   test.beforeEach(async ({ page, identityLease }) => {
     const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });
-    await openHomeWithCapturedSession(page, lease.identity.userIdentifier, '/search');
+    await openHomeWithCapturedSession(page, lease.identity.userIdentifier);
   });
 
   test('Global Search - using case id and FPL jurisdiction', async ({

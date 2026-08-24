@@ -523,6 +523,9 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       if (role === 'heading' && name === 'Sign in or create an account') {
         return signInHeadingLocator;
       }
+      if (role === 'heading' && name === '/something went wrong/i') {
+        return hiddenFallbackLocator;
+      }
       throw new Error(`Unexpected role locator ${role}:${name}`);
     };
     const page = {

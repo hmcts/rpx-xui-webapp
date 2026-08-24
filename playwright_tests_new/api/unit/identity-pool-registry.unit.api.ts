@@ -163,7 +163,7 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
       DIVORCE_SOLICITOR_USERNAME: 'shared-solicitor@example.test',
       PRL_SOLICITOR_USERNAME: 'shared-solicitor@example.test',
       PW_IDENTITY_LEASE_DIR: leaseDirectory,
-      PW_IDENTITY_LEASE_WAIT_MS: '25',
+      PW_IDENTITY_LEASE_WAIT_MS: '250',
       PW_IDENTITY_LEASE_POLL_MS: '1',
     };
     const divorceLease = await acquireIdentityLease({ pool: 'DIVORCE_SOLICITOR' }, sharedSolicitorEnv);

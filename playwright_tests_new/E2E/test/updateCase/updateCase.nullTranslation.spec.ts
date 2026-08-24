@@ -1,10 +1,15 @@
+import type { Page } from '@playwright/test';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 
-let caseNumber: string;
-let nullTranslationResponses = 0;
-let lastTranslationResponseStatus = 0;
+type TranslationTestState = {
+  nullTranslationResponses: number;
+  lastTranslationResponseStatus: number;
+  closed: boolean;
+};
+
+const translationTestStates = new WeakMap<Page, TranslationTestState>();
 
 test.describe(
   'Verify case events handle null/undefined translation labels correctly',
@@ -13,8 +18,12 @@ test.describe(
     test.describe.configure({ timeout: 240_000 });
 
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }) => {
-      nullTranslationResponses = 0;
-      lastTranslationResponseStatus = 0;
+      const state: TranslationTestState = {
+        nullTranslationResponses: 0,
+        lastTranslationResponseStatus: 0,
+        closed: false,
+      };
+      translationTestStates.set(page, state);
       const lease = await identityLease.acquire({ pool: 'DIVORCE_SOLICITOR' });
       await ensureAuthenticatedPage(page, lease.identity.userIdentifier, {
         waitForSelector: 'exui-header',
@@ -24,10 +33,13 @@ test.describe(
         maxAttempts: 1,
         createCaseMaxAttempts: 2,
       });
-      caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
       await page.route('**/api/translation/**', async (route) => {
         const response = await route.fetch();
-        lastTranslationResponseStatus = response.status();
+        if (state.closed) {
+          await route.fulfill({ response });
+          return;
+        }
+        state.lastTranslationResponseStatus = response.status();
         const body = (await response.json()) as {
           translations?: Record<string, { translation?: string | null }>;
         };
@@ -43,26 +55,35 @@ test.describe(
             },
           }),
         });
-        nullTranslationResponses += 1;
+        state.nullTranslationResponses += 1;
       });
     });
 
     test.afterEach(async ({ page }) => {
+      const state = translationTestStates.get(page);
+      if (state) {
+        state.closed = true;
+      }
       await page.unrouteAll({ behavior: 'ignoreErrors' });
+      translationTestStates.delete(page);
     });
 
-    test('Case event submission should not fail when translation labels are missing or null', async ({
+    test('Case details remain stable when translation labels are missing or null', async ({
       page,
       createCasePage,
       caseDetailsPage,
     }) => {
+      const state = translationTestStates.get(page);
+      if (!state) {
+        throw new Error('Translation test state was not initialised');
+      }
       const caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
 
       await test.step('Navigate to case details and verify no translation errors occurred', async () => {
         await page.goto(caseDetailsUrl);
         await createCasePage.exuiHeader.switchLanguage('Cymraeg', { waitForTranslatedContent: false });
-        await expect.poll(() => nullTranslationResponses, { timeout: 20_000 }).toBeGreaterThan(0);
-        await expect.poll(() => lastTranslationResponseStatus, { timeout: 20_000 }).toBe(200);
+        await expect.poll(() => state.nullTranslationResponses, { timeout: 20_000 }).toBeGreaterThan(0);
+        await expect.poll(() => state.lastTranslationResponseStatus, { timeout: 20_000 }).toBe(200);
         await expect(page).toHaveURL(/\/cases\/case-details\//);
         await expect(caseDetailsPage.caseViewerTable).toBeVisible();
         const pageContent = await page.content();
@@ -87,15 +108,19 @@ test.describe(
       });
     });
 
-    test('Page should remain stable when loading labels with special characters or null values', async ({
-      page,
-      caseDetailsPage,
-    }) => {
+    test('Page remains stable when translation labels are null', async ({ page, createCasePage, caseDetailsPage }) => {
+      const state = translationTestStates.get(page);
+      if (!state) {
+        throw new Error('Translation test state was not initialised');
+      }
       const caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
 
       await test.step('Navigate to case details and verify page stability', async () => {
         await page.goto(caseDetailsUrl);
+        await createCasePage.exuiHeader.switchLanguage('Cymraeg', { waitForTranslatedContent: false });
 
+        await expect.poll(() => state.nullTranslationResponses, { timeout: 20_000 }).toBeGreaterThan(0);
+        await expect.poll(() => state.lastTranslationResponseStatus, { timeout: 20_000 }).toBe(200);
         await expect(page).toHaveURL(/\/cases\/case-details\//);
         await expect(caseDetailsPage.caseViewerTable).toBeVisible();
       });

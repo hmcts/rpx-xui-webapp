@@ -386,6 +386,7 @@ async function requestAggregatedJurisdictionsWithRetry(
       const response = await request.page.request.get(route, {
         failOnStatusCode: false,
         timeout: effectiveTimeoutMs,
+        headers: CCD_API_JSON_HEADERS,
       });
 
       if (!TRANSIENT_AGGREGATED_STATUS_CODES.has(response.status()) || attempt >= maxAttempts) {

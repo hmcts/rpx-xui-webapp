@@ -45,6 +45,7 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
 
   test('retries the read-only aggregated jurisdiction lookup before case creation', async () => {
     let attempts = 0;
+    let requestOptions: { headers?: Record<string, string> } | undefined;
     const recoveredResponse = { status: () => 200 };
     const request = {
       scenario: 'direct-ccd-read-recovery',
@@ -52,8 +53,9 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
         isClosed: () => false,
         waitForTimeout: async () => undefined,
         request: {
-          get: async () => {
+          get: async (_route: string, options: { headers?: Record<string, string> }) => {
             attempts += 1;
+            requestOptions = options;
             return attempts === 1 ? { status: () => 503 } : recoveredResponse;
           },
         },
@@ -64,6 +66,11 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
       caseSetupTest.requestAggregatedJurisdictionsWithRetry(request, 'aggregated/caseworkers/user/jurisdictions', 1000)
     ).resolves.toBe(recoveredResponse);
     expect(attempts).toBe(2);
+    expect(requestOptions?.headers).toMatchObject({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      experimental: 'true',
+    });
   });
 
   test('falls back to configured CCD identifiers after bounded read-only transport failures', async () => {

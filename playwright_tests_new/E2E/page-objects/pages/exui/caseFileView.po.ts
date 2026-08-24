@@ -5,8 +5,8 @@ const CASE_FILE_VIEW_FOLDER_TIMEOUT_MS = 10_000;
 const CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS = 200;
 const CASE_FILE_VIEW_DOCUMENT_TIMEOUT_MS = 15_000;
 const DIRECT_CHILD_FOLDER_NODE = ':scope > cdk-nested-tree-node.document-tree-container__folder';
-const DIRECT_CHILD_FOLDER_LABEL = ':scope > button .node__name--folder:not(.document-tree-invisible)';
-const ROOT_DIRECT_CHILD_FOLDER_LABEL = `${DIRECT_CHILD_FOLDER_NODE} > button .node__name--folder:not(.document-tree-invisible)`;
+const DIRECT_CHILD_FOLDER_LABEL = ':scope > button .node__name--folder';
+const ROOT_DIRECT_CHILD_FOLDER_LABEL = `${DIRECT_CHILD_FOLDER_NODE} > button .node__name--folder`;
 
 export class CaseFileViewPage extends Base {
   readonly container = this.page.locator('#case-file-view');
@@ -33,10 +33,10 @@ export class CaseFileViewPage extends Base {
   readonly documentHeader = this.container.locator('.document-folders-header .document-folders-header__title');
   readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort button').first();
   readonly sortMenu = this.page.locator('.cdk-overlay-pane').filter({ hasText: 'Sort documents by name' }).first();
-  readonly sortAscendingOption = this.sortMenu.getByText('A to Z ascending', { exact: true });
-  readonly sortDescendingOption = this.sortMenu.getByText('Z to A descending', { exact: true });
-  readonly sortRecentFirstOption = this.sortMenu.getByText('Recent first', { exact: true });
-  readonly sortOldestFirstOption = this.sortMenu.getByText('Oldest first', { exact: true });
+  readonly sortAscendingOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: /^A to Z ascending$/ });
+  readonly sortDescendingOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: /^Z to A descending$/ });
+  readonly sortRecentFirstOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: /^Recent first$/ });
+  readonly sortOldestFirstOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: /^Oldest first$/ });
 
   constructor(page: Page) {
     super(page);

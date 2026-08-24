@@ -11,8 +11,10 @@ import {
   resolveTagFilters,
   resolveWorkerCount,
 } from './playwright-config-utils';
-
 type EnvMap = NodeJS.ProcessEnv;
+
+const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
+  env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
 
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultApiTagFilterConfigPath = 'playwright_tests_new/api/service-tag-filter.json';
@@ -130,6 +132,7 @@ const resolveE2eTagFilters = (env: EnvMap = process.env) =>
   });
 
 const buildConfig = (env: EnvMap = process.env) => {
+  const e2eEnv = withPlaywrightTagsAlias(env);
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const workerCount = resolveWorkerCount(env);
@@ -137,9 +140,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
   const reportBranch = resolveBranchName(env);
   const apiTagFilters = resolveApiTagFilters(env);
-  const e2eTagFilters = resolveE2eTagFilters(env);
+  const e2eTagFilters = resolveE2eTagFilters(e2eEnv);
   logResolvedTagFilters('API', apiTagFilters, env);
-  logResolvedTagFilters('E2E smoke', e2eTagFilters, env);
+  logResolvedTagFilters('E2E smoke', e2eTagFilters, e2eEnv);
   const apiRetries = resolveApiRetries(env);
 
   return defineConfig({

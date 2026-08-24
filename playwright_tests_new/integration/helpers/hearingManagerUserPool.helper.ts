@@ -39,7 +39,7 @@ function hasConfiguredCredentials(userIdentifier: HearingManagerUserIdentifier, 
 }
 
 function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = process.env): number {
-  if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) > 0) {
+  if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) >= 0) {
     return Number(source?.parallelIndex);
   }
 
@@ -75,4 +75,18 @@ export function resolveHearingManagerUserIdentifier(
   }
 
   return configuredUserIdentifiers[resolveParallelIndex(source, env) % configuredUserIdentifiers.length];
+}
+
+export function resolveHearingManagerSessionCandidates(
+  userIdentifier: HearingManagerUserIdentifier,
+  source?: ParallelIndexSource,
+  env: EnvMap = process.env
+): HearingManagerUserIdentifier[] {
+  const selected = resolveHearingManagerUserIdentifier(userIdentifier, source, env);
+  if (userIdentifier !== HEARING_MANAGER_CR84_ON_USER && userIdentifier !== HEARING_MANAGER_CR84_OFF_USER) {
+    return [selected];
+  }
+
+  const configuredUserIdentifiers = getConfiguredHearingManagerUserIdentifiers(userIdentifier, env);
+  return configuredUserIdentifiers.length > 0 ? Array.from(new Set([selected, ...configuredUserIdentifiers])) : [userIdentifier];
 }

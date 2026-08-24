@@ -17,6 +17,8 @@ const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
+const INTEGRATION_TEST_TIMEOUT_MS = 180_000;
+const POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS = 30_000;
 const appVersion = (() => {
   try {
     return JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version ?? 'unknown';
@@ -42,7 +44,39 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  return 7;
+  return 4;
+};
+
+const pooledCredentialPrefixes = [
+  { prefix: 'STAFF_ADMIN', enabledBy: 'STAFF_ADMIN_POOL_ENABLED' },
+  { prefix: 'BOOKING_UI_FT_ON' },
+  { prefix: 'HEARING_MANAGER_CR84_ON' },
+  { prefix: 'HEARING_MANAGER_CR84_OFF' },
+];
+
+const resolveConfiguredSessionPoolCapacity = (env = process.env) => {
+  const poolSizes = [];
+
+  for (const { prefix, enabledBy } of pooledCredentialPrefixes) {
+    if (enabledBy && env[enabledBy] !== 'true') {
+      continue;
+    }
+
+    const members = new Set();
+    for (const key of Object.keys(env)) {
+      const match = new RegExp(`^${prefix}_(\\d+)_USERNAME$`).exec(key);
+      const passwordKey = match ? `${prefix}_${match[1]}_PASSWORD` : undefined;
+      if (match && env[key]?.trim() && passwordKey && env[passwordKey]) {
+        members.add(match[1]);
+      }
+    }
+
+    if (members.size > 0) {
+      poolSizes.push(members.size);
+    }
+  }
+
+  return poolSizes.length > 0 ? Math.min(...poolSizes) : undefined;
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -229,14 +263,14 @@ const buildConfig = (env = process.env) => {
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     retries: 2,
-    timeout: 120_000,
+    timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },
     workers: workerCount,
     reporter,
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'on-first-retry',
+      trace: 'retain-on-failure',
       screenshot: {
         mode: 'only-on-failure',
         fullPage: true,
@@ -263,6 +297,7 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
+  resolveConfiguredSessionPoolCapacity,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,
@@ -272,4 +307,6 @@ module.exports = {
   resolveOdhinTimeoutExitCode,
   resolveOdhinCompletionExitDelayMs,
   resolveOdhinForceExitOnCompletion,
+  INTEGRATION_TEST_TIMEOUT_MS,
+  POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS,
 };

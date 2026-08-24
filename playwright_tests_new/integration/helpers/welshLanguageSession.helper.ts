@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
 import type { SessionIdentityInput } from '../../common/sessionIdentity';
-import { applySessionCookies } from '../../common/sessionCapture';
+import { applySessionCookies, ensureSession } from '../../common/sessionCapture';
 import config from '../../E2E/utils/config.utils';
 
 type SolicitorCredentialMapping = {
@@ -155,6 +155,17 @@ export function resolveWelshLanguageSessionUser(
 ): SessionIdentityInput {
   const users = resolveWelshLanguageSessionUsers(env);
   return users[testInfo.workerIndex % users.length];
+}
+
+export async function warmWelshLanguageSessions(env: NodeJS.ProcessEnv = process.env): Promise<void> {
+  await Promise.all(resolveWelshLanguageSessionUsers(env).map((userIdentifier) => ensureSession(userIdentifier)));
+}
+
+export async function warmWelshLanguageSessionForWorker(
+  testInfo: Pick<TestInfo, 'workerIndex'>,
+  env: NodeJS.ProcessEnv = process.env
+): Promise<void> {
+  await ensureSession(resolveWelshLanguageSessionUser(testInfo, env));
 }
 
 export async function setupWelshLanguageSession(

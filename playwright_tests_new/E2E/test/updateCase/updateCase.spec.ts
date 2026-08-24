@@ -10,7 +10,6 @@ const updatedFirstName = faker.person.firstName();
 const updatedLastName = faker.person.lastName();
 const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
-const UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS = 1;
 
 test.describe('Verify creating and updating a case works as expected', { tag: ['@e2e', '@e2e-update-case'] }, () => {
   test.describe.configure({ timeout: 240_000 });
@@ -22,8 +21,8 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
           timeoutMs: 30_000,
         });
         await createDivorceCase(createCasePage, 'DIVORCE', 'XUI Case PoC', testField, {
-          maxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
-          createCaseMaxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
+          maxAttempts: 1,
+          createCaseMaxAttempts: 2,
         });
         // Always collect case number from URL for consistency
         caseNumber = await caseDetailsPage.getCaseNumberFromUrl();

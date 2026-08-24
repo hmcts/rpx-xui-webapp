@@ -1,33 +1,15 @@
 const menuConfig = {
-  '(judge)|(judiciary)': [
+  '(judge)|(judiciary)|(panelmember)': [
     {
       active: true,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
-      roles: [
-        'caseworker-civil',
-        'caseworker-ia-iacjudge',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-employment-etjudge',
-      ],
+      roles: ['hmcts-judiciary'],
       text: 'My work',
     },
     {
       active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/all-work/tasks',
       roles: ['task-supervisor'],
       text: 'All work',
@@ -71,15 +53,7 @@ const menuConfig = {
       active: false,
       flags: ['feature-global-search'],
       href: '/search',
-      roles: [
-        'caseworker-civil',
-        'caseworker-ia-iacjudge',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-st_cic-judge',
-        'caseworker-st_cic-senior-judge',
-        'caseworker-employment-etjudge',
-      ],
+      roles: ['hmcts-judiciary'],
       text: 'Search',
     },
     {
@@ -134,63 +108,17 @@ const menuConfig = {
   '.+': [
     {
       active: true,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
-      roles: [
-        'caseworker-civil',
-        'caseworker-civil-staff',
-        'caseworker-ia-caseofficer',
-        'caseworker-ia-admofficer',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-employment',
-      ],
+      roles: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'My work',
     },
     {
       active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/all-work/tasks',
       roles: ['task-supervisor'],
       text: 'All work',
-    },
-    {
-      active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease1',
-        },
-      ],
-      href: '/tasks',
-      roles: ['caseworker-ia-caseofficer'],
-      text: 'Task list',
-    },
-    {
-      active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease1',
-        },
-      ],
-      href: '/tasks/task-manager',
-      roles: ['caseworker-ia-caseofficer', 'task-supervisor'],
-      text: 'Task manager',
     },
     {
       active: false,
@@ -243,20 +171,7 @@ const menuConfig = {
       active: false,
       flags: ['feature-global-search'],
       href: '/search',
-      roles: [
-        'caseworker-civil',
-        'caseworker-ia-caseofficer',
-        'senior-tribunal-caseworker',
-        'tribunal-caseworker',
-        'caseworker-ia-admofficer',
-        'caseworker-befta_master',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-st_cic',
-        'caseworker-st_cic-senior-caseworker',
-        'caseworker-sscs',
-        'caseworker-employment',
-      ],
+      roles: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'Search',
     },
     {

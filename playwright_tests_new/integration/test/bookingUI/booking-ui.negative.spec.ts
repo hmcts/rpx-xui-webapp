@@ -15,7 +15,6 @@ const createBookingErrorCases = [
   { status: 400, expectedUrlPattern: /\/booking-service-down$/ },
   { status: 500, expectedUrlPattern: /\/service-down$/ },
 ];
-
 createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
   test.describe(
     `Booking UI create booking error ${status} with lazy pooled session users`,

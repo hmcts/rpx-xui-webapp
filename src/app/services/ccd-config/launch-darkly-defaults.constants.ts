@@ -84,7 +84,8 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "PCS"
+        "PCS",
+        "PCS-staging"
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"

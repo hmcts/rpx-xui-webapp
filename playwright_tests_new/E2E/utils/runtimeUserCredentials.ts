@@ -162,6 +162,14 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'PROBATE_FIND_CASE_USERNAME',
     password: 'PROBATE_FIND_CASE_PASSWORD',
   },
+  PROBATE_CASEWORKER: {
+    username: 'PROBATE_CASEWORKER_USERNAME',
+    password: 'PROBATE_CASEWORKER_PASSWORD',
+  },
+  PROBATE_SOLICITOR: {
+    username: 'PROBATE_SOLICITOR_USERNAME',
+    password: 'PROBATE_SOLICITOR_PASSWORD',
+  },
   NOC_SOLICITOR: {
     username: 'NOC_SOLICITOR_USERNAME',
     password: 'NOC_SOLICITOR_PASSWORD',

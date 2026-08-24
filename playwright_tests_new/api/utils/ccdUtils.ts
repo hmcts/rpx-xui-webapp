@@ -1,7 +1,7 @@
 import type { ApiClient as PlaywrightApiClient } from '@hmcts/playwright-common';
 import { expect } from '@playwright/test';
 
-import { expectStatus, guardedRequest, isRouteUnavailableStatus } from './apiTestUtils';
+import { expectStatus, guardedRequest } from './apiTestUtils';
 
 type JurisdictionResponse = {
   name?: string;
@@ -16,14 +16,8 @@ type Jurisdiction = {
   [key: string]: unknown;
 };
 
-export async function assertJurisdictionsForUser(
-  apiClient: PlaywrightApiClient,
-  expectedNames: string[]
-): Promise<'verified' | 'unavailable'> {
+export async function assertJurisdictionsForUser(apiClient: PlaywrightApiClient, expectedNames: string[]): Promise<void> {
   const user = await guardedRequest(() => apiClient.get('api/user/details', { timeoutMs: 20_000, throwOnError: false }));
-  if (isRouteUnavailableStatus(user.status)) {
-    return 'unavailable';
-  }
   expectStatus(user.status, [200]);
   const uid = resolveUserId(user.data as { userInfo?: { uid?: string; id?: string } });
   expect(typeof uid).toBe('string');
@@ -34,16 +28,13 @@ export async function assertJurisdictionsForUser(
       throwOnError: false,
     })
   );
-  if (isRouteUnavailableStatus(response.status)) {
-    return 'unavailable';
-  }
   expectStatus(response.status, [200, 404]);
   expect(Array.isArray(response.data)).toBe(true);
 
   if (response.status === 404) {
     expect(response.data).toHaveLength(0);
     expect(expectedNames).toHaveLength(0);
-    return 'verified';
+    return;
   }
 
   const actualNames = (response.data as JurisdictionResponse[]).map((entry) => entry?.name).filter(Boolean);
@@ -61,7 +52,6 @@ export async function assertJurisdictionsForUser(
       })
     );
   });
-  return 'verified';
 }
 
 function resolveUserId(data: { userInfo?: { uid?: string; id?: string } } | undefined): string | undefined {

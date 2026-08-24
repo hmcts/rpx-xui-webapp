@@ -4,13 +4,7 @@
  */
 
 import { test, expect } from './fixtures';
-import {
-  allowUnavailableRouteSkip,
-  expectStatus,
-  guardedRequest,
-  isRouteUnavailableStatus,
-  StatusSets,
-} from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, StatusSets } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
 import { z } from 'zod';
@@ -91,7 +85,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
 
   test('GET /workallocation/task/types-of-work contract: returns array of work type classifications', async ({
     apiClientFor,
-  }, testInfo) => {
+  }) => {
     const apiClient = await apiClientFor('waSolicitor');
     // Given: An authenticated user
     // When: Fetching types of work catalogue
@@ -102,10 +96,6 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
       })
     );
 
-    testInfo.skip(
-      isRouteUnavailableStatus(response.status) && allowUnavailableRouteSkip(),
-      'XUI work-allocation types-of-work route was unavailable; contract was not verified'
-    );
     expectStatus(response.status, [200]);
 
     // And: Response is an array or object containing work types

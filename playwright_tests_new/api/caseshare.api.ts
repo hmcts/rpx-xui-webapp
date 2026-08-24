@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
-import { allowUnavailableRouteSkip, guardedRequest, isRouteUnavailableStatus, withXsrf } from './utils/apiTestUtils';
+import { guardedRequest, withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { assertCaseShareEntries, resolveEntries } from './utils/caseShareUtils';
 import { resolveHeader } from './utils/nodeAppUtils';
@@ -48,7 +48,7 @@ const CASESHARE_ENDPOINTS = [
 
 test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
   for (const { path, query, requiresConfiguredCaseIds, property, schema } of CASESHARE_ENDPOINTS) {
-    test(`GET ${path} returns a usable contract`, async ({ apiClient }, testInfo) => {
+    test(`GET ${path} returns a usable contract`, async ({ apiClient }) => {
       await withXsrf('solicitor', async (headers) => {
         const response = await guardedRequest(() =>
           apiClient.get(path, {
@@ -57,10 +57,6 @@ test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
             timeoutMs: 20_000,
             throwOnError: false,
           })
-        );
-        testInfo.skip(
-          isRouteUnavailableStatus(response.status) && allowUnavailableRouteSkip(),
-          `Case Share did not respond through XUI while verifying ${path}; contract was not verified`
         );
         if (requiresConfiguredCaseIds && !configuredCaseShareCaseIds) {
           expect(response.status).toBe(400);

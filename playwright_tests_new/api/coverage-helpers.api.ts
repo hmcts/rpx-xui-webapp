@@ -1,13 +1,6 @@
 import { test, expect, type APIRequestContext } from '@playwright/test';
 
-import {
-  expectStatus,
-  allowUnavailableRouteSkip,
-  guardedRequest,
-  isRouteUnavailableStatus,
-  withRetry,
-  __test__ as apiTestUtilsTest,
-} from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
@@ -90,16 +83,6 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
         throw new Error('invalid payload');
       })
     ).rejects.toThrow('invalid payload');
-  });
-
-  test('isRouteUnavailableStatus identifies transport and availability responses', () => {
-    expect([0, 502, 503, 504].every(isRouteUnavailableStatus)).toBe(true);
-    expect([200, 400, 401, 403, 404, 500].some(isRouteUnavailableStatus)).toBe(false);
-  });
-
-  test('requires explicit opt-in before skipping unavailable routes', () => {
-    expect(allowUnavailableRouteSkip({})).toBe(false);
-    expect(allowUnavailableRouteSkip({ PW_ALLOW_UNAVAILABLE_ROUTE_SKIP: '1' })).toBe(true);
   });
 
   test('buildXsrfHeadersWith covers token present and missing', async () => {

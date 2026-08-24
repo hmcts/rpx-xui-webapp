@@ -225,13 +225,11 @@ export class CaseFileViewPage extends Base {
       const label = candidate.locator(DIRECT_CHILD_FOLDER_LABEL).first();
       const text = (await label.textContent())?.trim();
 
-      if (text) {
+      if (text && (await label.isVisible())) {
         visibleFolderNames.push(text);
-      }
-
-      if (text === folderName) {
-        await label.waitFor({ state: 'visible' });
-        return candidate;
+        if (text === folderName) {
+          return candidate;
+        }
       }
     }
 

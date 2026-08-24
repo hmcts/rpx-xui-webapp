@@ -5,13 +5,7 @@ import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState, getStoredCookie } from './utils/auth';
 import { test, expect } from './fixtures';
 import { EM_DOC_ID } from './data/testIds';
-import {
-  allowUnavailableRouteSkip,
-  expectStatus,
-  guardedRequest,
-  isRouteUnavailableStatus,
-  withXsrf,
-} from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, withXsrf } from './utils/apiTestUtils';
 import {
   assertAnnotationResponse,
   assertBinaryResponse,
@@ -83,7 +77,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
     });
   });
 
-  test('creates and deletes annotation with valid XSRF', async ({ apiClient }, testInfo) => {
+  test('creates and deletes annotation with valid XSRF', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const annotationSet = await guardedRequest(() =>
         apiClient.get(`em-anno/annotation-sets/filter?documentId=${sharedDocId}`, {
@@ -92,10 +86,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
           throwOnError: false,
         })
       );
-      testInfo.skip(
-        isRouteUnavailableStatus(annotationSet.status) && allowUnavailableRouteSkip(),
-        'Evidence Manager annotation-set route was unavailable; annotation contract was not verified'
-      );
+      expectStatus(annotationSet.status, [200]);
       const annotationSetId =
         typeof annotationSet.data === 'object' && annotationSet.data !== null && 'id' in annotationSet.data
           ? (annotationSet.data as { id?: unknown }).id
@@ -142,7 +133,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
     });
   });
 
-  test('bookmarks lifecycle', async ({ apiClient }, testInfo) => {
+  test('bookmarks lifecycle', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const listRes = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
         headers,
@@ -155,10 +146,6 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
           timeoutMs: 20_000,
           throwOnError: false,
         })
-      );
-      testInfo.skip(
-        isRouteUnavailableStatus(profile.status) && allowUnavailableRouteSkip(),
-        'XUI user-details route was unavailable; bookmark lifecycle contract was not verified'
       );
       expectStatus(profile.status, [200]);
       const userId = resolveUserInfoId(profile.data as { userInfo?: { uid?: string; id?: string } });

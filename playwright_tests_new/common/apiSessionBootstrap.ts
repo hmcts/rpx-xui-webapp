@@ -70,7 +70,8 @@ export async function bootstrapApiSession(
     return unavailable('configuration', 'API session bootstrap is disabled by PW_SESSION_BOOTSTRAP_MODE');
   }
 
-  const requestFactory = deps.requestFactory ?? ((requestOptions) => request.newContext(requestOptions));
+  const requestFactory: NonNullable<BootstrapDeps['requestFactory']> =
+    deps.requestFactory ?? ((requestOptions) => request.newContext(requestOptions));
   const wait = deps.wait ?? ((delayMs) => new Promise<void>((resolve) => setTimeout(resolve, delayMs)));
   const bootstrapTimeoutMs = positiveInteger(
     options.bootstrapTimeoutMs,
@@ -95,7 +96,6 @@ export async function bootstrapApiSession(
       () =>
         requestFactory({
           baseURL: stripTrailingSlash(targetUrl),
-          ignoreHTTPSErrors: true,
           maxRedirects: 20,
           timeout: requestTimeoutMs,
         }),

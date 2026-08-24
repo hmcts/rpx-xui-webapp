@@ -76,7 +76,6 @@ export async function validateStoredSession(
   try {
     context = await createRequestContext({
       baseURL: targetUrl,
-      ignoreHTTPSErrors: true,
       storageState: session.storageFile,
     });
     for (let attempt = 1; attempt <= AUTH_STATUS_MAX_ATTEMPTS; attempt += 1) {

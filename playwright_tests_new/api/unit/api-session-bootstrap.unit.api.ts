@@ -30,12 +30,14 @@ test.describe('API-first session bootstrap', { tag: '@svc-internal' }, () => {
     const calls: string[] = [];
     const requestTimeouts: number[] = [];
     let contextTimeout: number | undefined;
+    let ignoresHttpsErrors: boolean | undefined;
     let postCount = 0;
     const result = await bootstrapApiSession(
       { ...options, requestTimeoutMs: 200 },
       {
         requestFactory: async (contextOptions) => {
           contextTimeout = contextOptions?.timeout;
+          ignoresHttpsErrors = contextOptions?.ignoreHTTPSErrors;
           return {
             get: async (url: string, requestOptions: { timeout: number }) => {
               calls.push(`GET ${url}`);
@@ -87,6 +89,7 @@ test.describe('API-first session bootstrap', { tag: '@svc-internal' }, () => {
       'GET auth/isAuthenticated',
     ]);
     expect(contextTimeout).toBe(200);
+    expect(ignoresHttpsErrors).toBeUndefined();
     expect(requestTimeouts).toHaveLength(5);
     expect(requestTimeouts.every((timeout) => timeout > 0 && timeout <= 200)).toBe(true);
   });

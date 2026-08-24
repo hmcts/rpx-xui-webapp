@@ -127,6 +127,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         baseURL: 'https://manage-case.example.test',
         storageState: '/tmp/unit-session.storage.json',
       });
+      expect(options?.ignoreHTTPSErrors).toBeUndefined();
       return {
         get: async (url: string) => {
           authRequests += 1;

@@ -324,12 +324,15 @@ async function resolveApiIdsFromAggregatedJurisdictions({
   }
 
   if (response.status() < 200 || response.status() >= 300) {
-    return defaultIds;
+    throw new Error(
+      `Direct CCD identity preflight failed with HTTP ${response.status()} for '${request.scenario}': ` +
+        `the selected user did not return create-access jurisdictions.`
+    );
   }
 
   const jurisdictions = (await response.json()) as AggregatedJurisdiction[];
   if (!Array.isArray(jurisdictions) || jurisdictions.length === 0) {
-    return defaultIds;
+    throw new Error(`Direct CCD identity preflight returned no create-access jurisdictions for '${request.scenario}'.`);
   }
 
   const requestedJurisdiction = normalizeLookupValue(request.jurisdiction);
@@ -337,7 +340,9 @@ async function resolveApiIdsFromAggregatedJurisdictions({
     jurisdictions.find((entry) => normalizeLookupValue(entry.id) === requestedJurisdiction) ??
     jurisdictions.find((entry) => normalizeLookupValue(entry.name) === requestedJurisdiction);
   if (!matchedJurisdiction?.id) {
-    return defaultIds;
+    throw new Error(
+      `Direct CCD identity preflight did not grant '${request.jurisdiction}' create access for '${request.scenario}'.`
+    );
   }
 
   const requestedCaseType = normalizeLookupValue(requestedCaseTypeId);
@@ -346,10 +351,10 @@ async function resolveApiIdsFromAggregatedJurisdictions({
     caseTypes.find((entry) => normalizeLookupValue(entry.id) === requestedCaseType) ??
     caseTypes.find((entry) => normalizeLookupValue(entry.name) === requestedCaseType);
   if (!matchedCaseType?.id) {
-    return {
-      jurisdictionId: matchedJurisdiction.id,
-      caseTypeId: requestedCaseTypeId,
-    };
+    throw new Error(
+      `Direct CCD identity preflight did not grant case type '${requestedCaseTypeId}' create access in ` +
+        `'${request.jurisdiction}' for '${request.scenario}'.`
+    );
   }
 
   if (matchedJurisdiction.id !== request.jurisdiction || matchedCaseType.id !== request.caseType) {

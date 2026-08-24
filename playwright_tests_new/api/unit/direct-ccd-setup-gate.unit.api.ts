@@ -88,6 +88,67 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
     expect(attempts).toBe(3);
   });
 
+  test('fails closed when the selected identity lacks create-access jurisdictions', async () => {
+    const request = {
+      scenario: 'identity-permission-denied',
+      jurisdiction: 'DIVORCE',
+      caseType: 'XUI Case PoC',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+        request: { get: async () => ({ status: () => 404 }) },
+      },
+    } as never;
+
+    await expect(
+      caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({ request, userId: 'user-1', effectiveTimeoutMs: 100 })
+    ).rejects.toThrow(/identity preflight failed with HTTP 404/);
+  });
+
+  test('fails closed when create access does not include the requested jurisdiction and case type', async () => {
+    const request = {
+      scenario: 'identity-permission-mismatch',
+      jurisdiction: 'DIVORCE',
+      caseType: 'XUI Case PoC',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+        request: {
+          get: async () => ({
+            status: () => 200,
+            json: async () => [{ id: 'EMPLOYMENT', caseTypes: [{ id: 'ET_EnglandWales' }] }],
+          }),
+        },
+      },
+    } as never;
+
+    await expect(
+      caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({ request, userId: 'user-1', effectiveTimeoutMs: 100 })
+    ).rejects.toThrow(/did not grant 'DIVORCE' create access/);
+  });
+
+  test('fails closed when the requested case type is not granted', async () => {
+    const request = {
+      scenario: 'identity-case-type-mismatch',
+      jurisdiction: 'DIVORCE',
+      caseType: 'XUI Case PoC',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+        request: {
+          get: async () => ({
+            status: () => 200,
+            json: async () => [{ id: 'DIVORCE', caseTypes: [{ id: 'xuiTestCaseType' }] }],
+          }),
+        },
+      },
+    } as never;
+
+    await expect(
+      caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({ request, userId: 'user-1', effectiveTimeoutMs: 100 })
+    ).rejects.toThrow(/did not grant case type 'XUI Case PoC'/);
+  });
+
   test('retries transient pre-write CCD transport failures', async () => {
     let attempts = 0;
     const request = {

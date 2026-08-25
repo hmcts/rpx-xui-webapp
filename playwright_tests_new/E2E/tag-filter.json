@@ -22,8 +22,8 @@
     "@e2e-search-case",
     "@e2e-smoke",
     "@e2e-update-case",
-    "@e2e-hearings"
+    "@e2e-hearings",
     "@e2e-reliability",
-    "@e2e-translation",
+    "@e2e-translation"
   ]
 }

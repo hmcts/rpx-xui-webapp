@@ -174,11 +174,14 @@ async function withLighthousePage(
     const lighthousePage = context.pages()[0] ?? (await context.newPage());
     await run(lighthousePage, new LighthouseUtils(lighthousePage, lighthousePort));
   } finally {
-    await context.close();
     try {
-      fs.rmSync(userDataDir, { recursive: true, force: true });
-    } catch {
-      // Best-effort cleanup; test evidence is more important than temp-dir cleanup.
+      await context.close();
+    } finally {
+      try {
+        fs.rmSync(userDataDir, { recursive: true, force: true });
+      } catch {
+        // Best-effort cleanup; test evidence is more important than temp-dir cleanup.
+      }
     }
   }
 }

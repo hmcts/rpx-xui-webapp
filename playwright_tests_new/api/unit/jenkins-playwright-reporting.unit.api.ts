@@ -111,6 +111,7 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(nightlySource).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
     expect(nightlySource).toContain('def publishPlaywrightAccessibilityJUnit = {');
     expect(nightlySource).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
+    expect(nightlySource).toContain('skipMarkingBuildUnstable: true, testResults: playwrightAccessibilityJunitFile');
     expect(nightlySource.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(1);
   });
 

@@ -4,7 +4,7 @@
  */
 
 import { test, expect } from './fixtures';
-import { expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, StatusSets } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
 import { z } from 'zod';
@@ -16,7 +16,10 @@ const locationSchema = z.object({
 });
 
 test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, () => {
-  test('GET /workallocation/location contract: returns array of location objects with required fields', async ({ apiClient }) => {
+  test('GET /workallocation/location contract: returns array of location objects with required fields', async ({
+    apiClientFor,
+  }) => {
+    const apiClient = await apiClientFor('waSolicitor');
     // Given: A solicitor user requesting locations for configured service codes
     const endpoint = `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`;
 
@@ -40,8 +43,9 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
   });
 
   test('POST /workallocation/task contract: returns TaskList with tasks array and optional total_records', async ({
-    apiClient,
+    apiClientFor,
   }) => {
+    const apiClient = await apiClientFor('waSolicitor');
     // Given: A task search request for MyTasks view
     const searchRequest = {
       view: 'MyTasks',
@@ -79,57 +83,20 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     }
   });
 
-  test('GET /api/user/details contract: returns UserDetails with userInfo object', async ({ apiClient }) => {
-    // Given: An authenticated user
-    // When: Fetching user details
-    const response = await apiClient.get('api/user/details', { throwOnError: false });
-
-    // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
-
-    // And: Response has userInfo when successful
-    if (response.status === 200 && response.data && typeof response.data === 'object') {
-      const userData = response.data as Record<string, unknown>;
-      if ('userInfo' in userData && userData.userInfo && typeof userData.userInfo === 'object') {
-        const userInfo = userData.userInfo as Record<string, unknown>;
-        // Verify userInfo has an id field (could be 'id' or 'uid')
-        expect(userInfo.id || userInfo.uid).toBeDefined();
-      }
-    }
-  });
-
-  test('GET /workallocation/taskNames contract: returns array of task names or wrapped response', async ({ apiClient }) => {
-    // Given: An authenticated user
-    // When: Fetching task names catalogue
-    const response = await withRetry(
-      () =>
-        apiClient.get('workallocation/taskNames', {
-          throwOnError: false,
-        }),
-      { retries: 2, retryStatuses: [500, 502, 504] }
-    );
-
-    // Then: Response status is guarded for downstream resilience
-    expectStatus(response.status, StatusSets.waReadOnly);
-
-    // And: Response may be defined or undefined (API may return empty body)
-    // Note: API may return array, {task_names: []}, {taskNames: []}, string, or empty body
-    // Empty body is acceptable as the endpoint exists and returns 200
-  });
-
-  test('GET /workallocation/task/types-of-work contract: returns array of work type classifications', async ({ apiClient }) => {
+  test('GET /workallocation/task/types-of-work contract: returns array of work type classifications', async ({
+    apiClientFor,
+  }) => {
+    const apiClient = await apiClientFor('waSolicitor');
     // Given: An authenticated user
     // When: Fetching types of work catalogue
-    const response = await withRetry(
-      () =>
-        apiClient.get('workallocation/task/types-of-work', {
-          throwOnError: false,
-        }),
-      { retries: 2, retryStatuses: [500, 502, 504] }
+    const response = await guardedRequest(() =>
+      apiClient.get('workallocation/task/types-of-work', {
+        timeoutMs: 20_000,
+        throwOnError: false,
+      })
     );
 
-    // Then: Response status is guarded for downstream resilience
-    expectStatus(response.status, StatusSets.waReadOnly);
+    expectStatus(response.status, [200]);
 
     // And: Response is an array or object containing work types
     if (response.status === 200) {

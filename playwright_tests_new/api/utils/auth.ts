@@ -9,6 +9,7 @@ import { request } from '@playwright/test';
 
 import { config } from './apiTestRuntimeConfig';
 import { AuthenticationError, ConfigurationError } from './errors';
+import { AAT_AUTH_UNAVAILABLE_FAILURE, shouldRejectUnavailableSessionValidation } from '../../common/sessionReusePolicy.js';
 type UsersConfig = (typeof config.users)[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 
@@ -111,6 +112,25 @@ type AuthCheckContext = {
   get: (url: string, options?: Record<string, unknown>) => Promise<AuthCheckResponse>;
 };
 
+function getGatewayReference(response: AuthCheckResponse): string | undefined {
+  const headers = response.headers?.();
+  if (!headers) {
+    return undefined;
+  }
+
+  return headers['x-azure-ref'] ?? headers['x-request-id'] ?? headers['x-correlation-id'];
+}
+
+function describeLoginRouteFailure(response: AuthCheckResponse): string {
+  const gatewayReference = getGatewayReference(response);
+  const gatewayDetail = gatewayReference ? `; gatewayRef=${gatewayReference}` : '';
+  return `XUI authentication route unavailable before IDAM form submission${gatewayDetail}`;
+}
+
+export function describeLoginIdentity(role: ApiUserRole, credentials: { username: string; password: string }): string {
+  return `role=${role}; username=${credentials.username.replace(/[\r\n]/g, '')}`;
+}
+
 const defaultStorageDeps: StorageDeps = {
   createStorageState,
   tryReadState,
@@ -153,7 +173,7 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
   try {
     // Double-check freshness after acquiring lock (another worker/test suite may have logged in)
     const storagePath = getStoragePath(storageRoot, role);
-    let state = await deps.tryReadState(storagePath);
+    const state = await deps.tryReadState(storagePath);
 
     if (state && isStorageStateFresh(storagePath)) {
       const validation = await (deps.validateStorageState ?? validateStorageState)(storagePath);
@@ -162,6 +182,13 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
         return storagePath;
       }
       if (validation === 'unavailable') {
+        if (shouldRejectUnavailableSessionValidation(validation)) {
+          throw new AuthenticationError(
+            `Unable to validate cached API storage state for ${role}; auth/isAuthenticated is unavailable`,
+            role,
+            { failureKind: AAT_AUTH_UNAVAILABLE_FAILURE, storagePath }
+          );
+        }
         logger.warn('Unable to validate fresh storage state; preserving it rather than amplifying a downstream outage', {
           role,
           cacheKey,
@@ -323,10 +350,19 @@ async function createStorageStateViaForm(
   try {
     const loginPage = await context.get('auth/login');
     if (loginPage.status() >= 400) {
-      throw new AuthenticationError(`GET /auth/login responded with ${loginPage.status()}`, role, {
-        endpoint: 'auth/login',
-        status: loginPage.status(),
-      });
+      const diagnosis = describeLoginRouteFailure(loginPage);
+      const loginIdentity = describeLoginIdentity(role, credentials);
+      throw new AuthenticationError(
+        `GET /auth/login responded with ${loginPage.status()} (${diagnosis}; login identity: ${loginIdentity})`,
+        role,
+        {
+          endpoint: 'auth/login',
+          status: loginPage.status(),
+          diagnosis,
+          gatewayReference: getGatewayReference(loginPage),
+          loginIdentity,
+        }
+      );
     }
 
     const loginUrl = loginPage.url?.() ?? `${baseUrl}/auth/login`;
@@ -405,7 +441,7 @@ async function submitLoginForm(
   return response;
 }
 
-function getCredentials(role: ApiUserRole): { username: string; password: string } {
+export function getCredentials(role: ApiUserRole): { username: string; password: string } {
   const envUsers = config.users[config.testEnv as keyof typeof config.users];
   const userConfig = envUsers?.[role];
   if (!userConfig) {
@@ -667,6 +703,8 @@ export const __test__ = {
   createStorageStateWith,
   tryTokenBootstrap,
   createStorageStateViaForm,
+  describeLoginRouteFailure,
+  describeLoginIdentity,
   getCredentials,
   readAuthCheck,
   waitForAuthenticated,

@@ -842,7 +842,7 @@ export class CreateCasePage extends Base {
     fileContentEncoding?: BufferEncoding
   ) {
     const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
-    await this.runDocumentUploadWithRetry('file input upload', async () => {
+    await this.runDocumentUpload('file input upload', async () => {
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
@@ -873,13 +873,13 @@ export class CreateCasePage extends Base {
     await writeFile(filePath, Buffer.from(fileContent, options.fileContentEncoding ?? 'utf8'));
 
     try {
-      await this.runDocumentUploadWithRetry('browser file drag-and-drop upload', async () => {
+      await this.runDocumentUpload('browser file drag-and-drop upload', async () => {
         const { x, y } = await this.resolveDocumentDragDropPoint(resolvedFileInput, resolvedDropTarget, fileName);
         let cdpSession;
         try {
           cdpSession = await this.page.context().newCDPSession(this.page);
         } catch (error) {
-          throw new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.', {
+          throw Object.assign(new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.'), {
             cause: error,
           });
         }
@@ -935,71 +935,59 @@ export class CreateCasePage extends Base {
     return { x, y };
   }
 
-  private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {
-    const maxRetries = 3;
-    const baseDelayMs = 1000;
+  private async runDocumentUpload(uploadActionDescription: string, uploadAction: () => Promise<void>) {
+    const maxAttempts = 3;
+    const baseRetryDelayMs = 2_000;
+    const maxRetryDelayMs = 10_000;
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
       min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       max: 30_000,
       fallback: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       multiplier: 2,
     });
-    const safeBackoff = async (attempt: number) => {
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       if (this.page.isClosed()) {
-        throw new Error(`Page closed during ${uploadActionDescription} retry backoff`);
+        throw new Error(`Page closed before ${uploadActionDescription}`);
       }
-      await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
-    };
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      if (this.page.isClosed()) {
-        throw new Error(`Page closed before ${uploadActionDescription} retry attempt`);
-      }
       const responsePromise = this.page
         .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
           timeout: uploadResponseTimeoutMs,
         })
         .catch((error: Error) => error);
-
       await uploadAction();
-
       const uploadResponse = await responsePromise;
 
       if (uploadResponse instanceof Error) {
         if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
           throw uploadResponse;
         }
-        if (attempt < maxRetries) {
-          logger.warn(`Document ${uploadActionDescription} response was not observed; retrying upload`, {
-            attempt,
-            maxRetries,
-            timeoutMs: uploadResponseTimeoutMs,
-            errorMessage: uploadResponse.message,
-          });
-          await safeBackoff(attempt);
-          continue;
-        }
-        throw new Error(`Document ${uploadActionDescription} timed out after ${maxRetries} attempts: ${uploadResponse.message}`);
-      }
-
-      if (uploadResponse.status() !== 200) {
-        if (attempt < maxRetries) {
-          logger.warn(`Document ${uploadActionDescription} returned non-200 response; retrying upload`, {
-            attempt,
-            maxRetries,
-            status: uploadResponse.status(),
-          });
-          await safeBackoff(attempt);
-          continue;
-        }
         throw new Error(
-          `Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()} after ${maxRetries} attempts`
+          `Document ${uploadActionDescription} response was not observed within ${uploadResponseTimeoutMs}ms: ${uploadResponse.message}`
         );
       }
 
-      break;
+      if (uploadResponse.status() === 200) {
+        await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.UPLOAD_STATUS_SETTLE });
+        return;
+      }
+
+      if (uploadResponse.status() === 429 && attempt < maxAttempts) {
+        const retryAfterSeconds = Number.parseFloat(uploadResponse.headers()['retry-after'] ?? '');
+        const retryDelayMs = Number.isFinite(retryAfterSeconds)
+          ? Math.min(maxRetryDelayMs, Math.max(baseRetryDelayMs, retryAfterSeconds * 1_000))
+          : baseRetryDelayMs * 2 ** (attempt - 1);
+        logger.warn(`Document ${uploadActionDescription} was rate-limited; retrying`, {
+          attempt,
+          maxAttempts,
+          retryDelayMs,
+        });
+        await this.page.waitForTimeout(retryDelayMs);
+        continue;
+      }
+
+      throw new Error(`Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()}`);
     }
-    await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: uploadResponseTimeoutMs });
   }
   async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;

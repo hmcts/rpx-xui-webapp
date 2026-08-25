@@ -161,13 +161,8 @@ export function buildCreateCaseLocators(page: Page) {
     somethingWentWrongHeading: page.getByRole('heading', { name: /something went wrong/i }),
     validationErrorMessage: page.locator('.validation-error'),
 
-    //richTextArea: page.getByRole('textbox', { name: 'Rich Text Area (Optional)' }),
-    //richTextMinArea: page.getByRole('textbox', { name: 'Rich Text Area with minimum length (Optional)' }),
-
     richTextArea: page.locator('ccd-field-write[field_id="RichTextAreaField"] div.ProseMirror[contenteditable="true"]'),
-    richTextMinArea: page.locator(
-      'ccd-field-write[field_id="RichTextAreaMinLengthField"] div.ProseMirror[contenteditable="true"]'
-    ),
+    richTextMinArea: page.locator('ccd-field-write[field_id="RichTextAreaMinField"] div.ProseMirror[contenteditable="true"]'),
 
     richTextToolbar: page.getByRole('toolbar', { name: 'Rich Text Area formatting options' }),
     richTextMinToolbar: page.getByRole('toolbar', {

@@ -253,8 +253,8 @@ export class CreateCasePage extends Base {
   }
 
   // CCD mixes option values and labels, so selection needs tolerant matching.
-  private async selectOptionSmart(selectLocator: Locator, option: string) {
-    await selectLocator.waitFor({ state: 'visible' });
+  private async selectOptionSmart(selectLocator: Locator, option: string, timeoutMs?: number) {
+    await selectLocator.waitFor({ state: 'visible', timeout: timeoutMs });
     const options = await selectLocator.evaluate((el) =>
       Array.from((el as HTMLSelectElement).options).map((o) => ({
         value: o.value,
@@ -715,6 +715,7 @@ export class CreateCasePage extends Base {
     eventType: string | undefined,
     options: {
       maxAttempts?: number;
+      loadTimeoutMs?: number;
     } = {}
   ) {
     const maxAttempts = options.maxAttempts ?? 2;
@@ -724,6 +725,7 @@ export class CreateCasePage extends Base {
       caseType,
       eventType,
       maxAttempts,
+      loadTimeoutMs: options.loadTimeoutMs,
       createCaseButton: this.createCaseButton,
       jurisdictionSelect: this.jurisdictionSelect,
       caseTypeSelect: this.caseTypeSelect,
@@ -732,7 +734,7 @@ export class CreateCasePage extends Base {
       somethingWentWrongHeading: this.somethingWentWrongHeading,
       getApiCalls: () => this.getApiCalls(),
       waitForSelectReady: (selector, timeoutMs) => this.waitForSelectReady(selector, timeoutMs),
-      selectOptionSmart: (selectLocator, option) => this.selectOptionSmart(selectLocator, option),
+      selectOptionSmart: (selectLocator, option, timeoutMs) => this.selectOptionSmart(selectLocator, option, timeoutMs),
       normalizeUnknownError: (error) => this.normalizeUnknownError(error),
       warn: (message, meta) => logger.warn(message, meta),
       debug: (message, meta) => logger.debug(message, meta),

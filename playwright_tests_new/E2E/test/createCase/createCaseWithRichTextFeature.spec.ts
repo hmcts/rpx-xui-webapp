@@ -1,7 +1,5 @@
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
-import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
-import { createLogger } from '@hmcts/playwright-common';
 import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 const jurisdiction = 'BEFTA_MASTER';
 const caseType = 'FT_MasterCaseType';
@@ -13,46 +11,36 @@ const organisationSearchTerm = '201';
 const richText = { plain: 'Plain ', bold: 'Bold', italic: 'Italic' };
 const richTextMin = { plain: 'Minimum ', bold: 'Bold', italic: 'Italic' };
 const tooShortForMinLength = 'ab';
+const configuredCreateCaseLoadTimeoutMs = Number(process.env.PW_CREATE_CASE_LOAD_TIMEOUT_MS);
+const createCaseLoadTimeoutMs =
+  Number.isInteger(configuredCreateCaseLoadTimeoutMs) && configuredCreateCaseLoadTimeoutMs > 0
+    ? configuredCreateCaseLoadTimeoutMs
+    : undefined;
 
 let caseNumber: string;
-const logger = createLogger({ serviceName: 'create-case-e2e', format: 'pretty' });
 
 test.describe(
   'Verify creating a case with rich text and organisation policy fields',
   { tag: ['@e2e', '@e2e-create-case', '@e2e-data-loss'] },
   () => {
     test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {
-      await retryOnTransientFailure(
-        async () => {
-          await ensureAuthenticatedPage(page, RuntimeUserAlias.BEFTA_MASTER_CASE, { waitForSelector: 'exui-header' });
-          await createCasePage.createCase(jurisdiction, caseType, 'createCase');
-          await createCasePage.fillOrganisationPolicy(0, claimantCaseRole, organisationSearchTerm);
-          await createCasePage.fillOrganisationPolicy(1, defendantCaseRole, organisationSearchTerm);
-          await createCasePage.enterFormattedRichText(richText, 'richTextArea');
-          await createCasePage.enterFormattedRichText(richTextMin, 'richTextMinArea');
+      await ensureAuthenticatedPage(page, RuntimeUserAlias.BEFTA_MASTER_CASE, { waitForSelector: 'exui-header' });
+      await createCasePage.createCase(jurisdiction, caseType, 'createCase', {
+        maxAttempts: 1,
+        loadTimeoutMs: createCaseLoadTimeoutMs,
+      });
+      await expect(createCasePage.richTextMinArea, 'Create-case form did not render the rich-text fields').toBeVisible();
+      await createCasePage.fillOrganisationPolicy(0, claimantCaseRole, organisationSearchTerm);
+      await createCasePage.fillOrganisationPolicy(1, defendantCaseRole, organisationSearchTerm);
+      await createCasePage.enterFormattedRichText(richText, 'richTextArea');
+      await createCasePage.enterFormattedRichText(richTextMin, 'richTextMinArea');
 
-          await createCasePage.continueButton.click();
-          await createCasePage.assertNoEventCreationError('after submitting the create case form');
+      await createCasePage.continueButton.click();
+      await createCasePage.assertNoEventCreationError('after submitting the create case form');
 
-          await createCasePage.testSubmitButton.click();
-          await expect(createCasePage.caseAlertSuccessMessage).toBeVisible();
-          caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            if (page.isClosed()) {
-              return;
-            }
-            try {
-              await page.goto('/');
-            } catch (error) {
-              logger.warn('Retry reset navigation failed before create-case beforeEach retry', { error });
-              throw error;
-            }
-          },
-        }
-      );
+      await createCasePage.testSubmitButton.click();
+      await expect(createCasePage.caseAlertSuccessMessage).toBeVisible();
+      caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
     });
 
     test('Verify rich text formatting is retained after the case is created', async ({
@@ -117,23 +105,12 @@ test.describe(
 
 test.describe('Verify rich text minimum length validation', { tag: ['@e2e', '@e2e-create-case'] }, () => {
   test.beforeEach(async ({ page, createCasePage }) => {
-    await retryOnTransientFailure(
-      async () => {
-        await ensureAuthenticatedPage(page, RuntimeUserAlias.BEFTA_MASTER_CASE, { waitForSelector: 'exui-header' });
-        await createCasePage.createCase(jurisdiction, caseType, 'createCase');
-      },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          try {
-            await page.goto('/');
-          } catch (error) {
-            logger.warn('Retry reset navigation failed before min-length check', { error });
-            throw error;
-          }
-        },
-      }
-    );
+    await ensureAuthenticatedPage(page, RuntimeUserAlias.BEFTA_MASTER_CASE, { waitForSelector: 'exui-header' });
+    await createCasePage.createCase(jurisdiction, caseType, 'createCase', {
+      maxAttempts: 1,
+      loadTimeoutMs: createCaseLoadTimeoutMs,
+    });
+    await expect(createCasePage.richTextMinArea, 'Create-case form did not render the rich-text fields').toBeVisible();
   });
 
   test('Enter a Rich text value below the minimum length and rejected', async ({ createCasePage }) => {

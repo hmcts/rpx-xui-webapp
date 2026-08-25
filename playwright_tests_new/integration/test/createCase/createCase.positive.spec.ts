@@ -240,7 +240,7 @@ test.describe(
       });
     });
 
-    // EXUI-4317 - Skipped until the related bug is resolved, and the expected behaviour can be tested reliably
+    // EXUI-4317: the journey still stalls after changing gender and cannot reach check-your-answers reliably.
     test.skip(`When you change the gender of Person 1, the previously filled 'maiden name' field is hidden, and not sent in the API request`, async ({
       createCasePage,
       caseDetailsPage,

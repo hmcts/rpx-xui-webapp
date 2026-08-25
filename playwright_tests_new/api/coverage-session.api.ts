@@ -11,9 +11,12 @@ import { resolveSessionStorageKey } from '../common/sessionIdentity.js';
 import type { BrowserContext, Cookie } from 'playwright-core';
 import { withEnv } from './utils/testEnv';
 
-test.describe.configure({ mode: 'serial' });
-
 const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
+const unavailableApiBootstrap = async () => ({
+  status: 'unavailable' as const,
+  stage: 'configuration' as const,
+  reason: 'browser fallback coverage',
+});
 const baseCookie = (name: string, value: string): Cookie => ({
   name,
   value,
@@ -522,6 +525,9 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       if (role === 'heading' && name === 'Sign in or create an account') {
         return signInHeadingLocator;
       }
+      if (role === 'heading' && name === '/something went wrong/i') {
+        return hiddenFallbackLocator;
+      }
       throw new Error(`Unexpected role locator ${role}:${name}`);
     };
     const page = {
@@ -569,6 +575,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       fs: fsStub,
       userUtils,
       isSessionFresh: () => false,
+      bootstrapApiSession: unavailableApiBootstrap,
       chromiumLauncher: chromiumOk,
       idamPageFactory,
       persistSession: async () => {
@@ -603,6 +610,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         fs: fsStub,
         userUtils,
         isSessionFresh: () => false,
+        bootstrapApiSession: unavailableApiBootstrap,
         chromiumLauncher,
         lockfile: lockfileStub,
       })
@@ -715,6 +723,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         fs: fsStub,
         userUtils,
         isSessionFresh: () => false,
+        bootstrapApiSession: unavailableApiBootstrap,
         chromiumLauncher: chromiumOk,
         idamPageFactory,
         persistSession: async () => {},
@@ -728,7 +737,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
   test('sessionCaptureWith reuses a freshly written session instead of waiting on a held lock', async () => {
     let lockAttempts = 0;
     let launchAttempts = 0;
-    let freshnessChecks = 0;
+    let freshSessionAvailable = false;
 
     const fsStub = {
       existsSync: () => true,
@@ -740,6 +749,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       lock: async () => {
         lockAttempts += 1;
         if (lockAttempts === 1) {
+          freshSessionAvailable = true;
           const error = new Error('Lock file is already being held');
           (error as Error & { code?: string }).code = 'ELOCKED';
           throw error;
@@ -755,10 +765,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
       fs: fsStub,
       userUtils,
-      isSessionFresh: () => {
-        freshnessChecks += 1;
-        return freshnessChecks >= 2;
-      },
+      isSessionFresh: () => freshSessionAvailable,
       chromiumLauncher: {
         launch: async () => {
           launchAttempts += 1;

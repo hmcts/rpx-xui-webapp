@@ -1,5 +1,5 @@
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
+import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { filterEmptyRows } from '../../utils';
 import { CaseFlagPage } from '../../page-objects/pages/exui/caseFlag.po';
 import {
@@ -21,20 +21,15 @@ import {
 } from '../../utils/test-setup/civil/civilCaseFlagsSetup';
 import { resolvePositiveInt } from '../../utils/test-setup/journeys/civilConfig';
 import { getCivilLipMediationApiMissingConfiguration } from '../../utils/test-setup/journeys/civilCaseJourneys';
-import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { formatErrorMessage, isDependencyEnvironmentFailure } from '../../utils/transient-failure.utils';
 
 const COURT_STAFF_ALIAS = getCivilCaseFlagsCourtStaffAlias();
 const MEDIATION_STATE = process.env.PW_CIVIL_MEDIATION_CASE_STATE?.trim() || 'IN_MEDIATION';
 const TEST_FLAG_COMMENT = 'Data loss Civil Create Case Flag';
 const CASE_FLAG_SUCCESS_POLL_INTERVALS = [1_000, 2_000, 3_000];
-const DATA_LOSS_TEST_TAGS = ['@e2e', '@e2e-case-flags', '@e2e-civil-data-loss', '@e2e-data-loss'];
+const DATA_LOSS_TEST_TAGS = ['@e2e', '@e2e-case-flags', '@e2e-civil-data-loss', '@e2e-data-loss', '@nightly'];
 const DATA_LOSS_TEST_TIMEOUT_MS = resolvePositiveInt(process.env.PW_CIVIL_DATA_LOSS_TEST_TIMEOUT_MS, 35 * 60_000);
 const missingCivilConfig = getCivilLipMediationApiMissingConfiguration({ allowMissingCitizenUsers: true });
-
-test.skip(
-  missingCivilConfig.length > 0,
-  `Skipping Civil create case flag data-loss regression because ${missingCivilConfig.join(', ')}`
-);
 
 test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TEST_TAGS }, () => {
   test.describe.configure({ timeout: DATA_LOSS_TEST_TIMEOUT_MS });
@@ -43,38 +38,32 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
   let baselineCaseDetails: CcdCaseDetails;
 
   test.beforeAll(async ({ browser }) => {
+    if (missingCivilConfig.length > 0) {
+      throw new Error(`Civil create case flag data-loss configuration is missing: ${missingCivilConfig.join(', ')}`);
+    }
     await configureCivilCaseFlagsRuntimeUsers(browser);
-    await ensureSession(COURT_STAFF_ALIAS);
   });
 
-  test.beforeEach(async ({ page }, testInfo) => {
-    await retryOnTransientFailure(
-      async () => {
-        await ensureAuthenticatedPage(page, COURT_STAFF_ALIAS, { waitForSelector: 'exui-header' });
+  test.beforeEach(async ({ identityLease, page }, testInfo) => {
+    await identityLease.acquire({ pool: 'CIVIL_COURT_STAFF' });
+    await ensureAuthenticatedPage(page, COURT_STAFF_ALIAS, { waitForSelector: 'exui-header' });
 
-        const setup = await createCivilLipCaseInMediationViaApi({
-          expectedState: MEDIATION_STATE,
-          page,
-          useGeneratedUsers: true,
-        });
+    await createCivilLipCaseInMediationViaApi({
+      expectedState: MEDIATION_STATE,
+      page,
+      useGeneratedUsers: true,
+    })
+      .then((setup) => {
         caseNumber = setup.caseNumber;
         baselineCaseDetails = setup.caseDetails;
         expect(resolveCcdCaseStateId(baselineCaseDetails)).toBe(MEDIATION_STATE);
-      },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          if (!page.isClosed()) {
-            await page.goto('/').catch(() => undefined);
-          }
-        },
-      }
-    ).catch((error) => {
-      if (isDependencyEnvironmentFailure(error)) {
-        throw new Error(`Civil mediation data-loss setup failed due to dependency instability: ${formatErrorMessage(error)}`);
-      }
-      throw error;
-    });
+      })
+      .catch((error) => {
+        if (isDependencyEnvironmentFailure(error)) {
+          throw new Error(`Civil mediation data-loss setup failed due to dependency instability: ${formatErrorMessage(error)}`);
+        }
+        throw error;
+      });
   });
 
   test('Create Case Flag event does not modify or remove existing case data', async ({

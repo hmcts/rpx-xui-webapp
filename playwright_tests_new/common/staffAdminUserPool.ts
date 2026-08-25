@@ -1,10 +1,19 @@
-import { getRuntimeUserCredentialEnvMapping } from '../E2E/utils/runtimeUserCredentials';
+import { getRuntimeUserCredentialEnvMapping, isStaffAdminPoolEnabled } from '../E2E/utils/runtimeUserCredentials';
 import { UserUtils } from '../E2E/utils/user.utils.js';
 import type { SessionIdentity } from './sessionIdentity.js';
 
 export const STAFF_ADMIN_USER = 'STAFF_ADMIN' as const;
 
-export const STAFF_ADMIN_POOLED_USER_IDENTIFIERS = ['STAFF_ADMIN-1', 'STAFF_ADMIN-2', 'STAFF_ADMIN-3', 'STAFF_ADMIN-4'] as const;
+export const STAFF_ADMIN_POOLED_USER_IDENTIFIERS = [
+  'STAFF_ADMIN-1',
+  'STAFF_ADMIN-2',
+  'STAFF_ADMIN-3',
+  'STAFF_ADMIN-4',
+  'STAFF_ADMIN-5',
+  'STAFF_ADMIN-6',
+  'STAFF_ADMIN-7',
+  'STAFF_ADMIN-8',
+] as const;
 
 export type StaffAdminUserIdentifier = typeof STAFF_ADMIN_USER | (typeof STAFF_ADMIN_POOLED_USER_IDENTIFIERS)[number];
 
@@ -21,10 +30,6 @@ function hasConfiguredCredentials(userIdentifier: StaffAdminUserIdentifier, env:
   }
 
   return Boolean(env[mapping.username]?.trim() && env[mapping.password]);
-}
-
-function isStaffAdminPoolEnabled(env: EnvMap): boolean {
-  return env.STAFF_ADMIN_POOL_ENABLED === 'true';
 }
 
 function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = process.env): number {

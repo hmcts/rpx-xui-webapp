@@ -66,7 +66,6 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.gotoExpectingServiceDown();
-      await taskListPage.exuiSpinnerComponent.wait();
     });
     await test.step('Verify the service down message is shown ', async () => {
       expect(await taskListPage.exuiBodyComponent.serviceDownError.textContent()).toContain(

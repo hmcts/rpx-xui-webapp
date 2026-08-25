@@ -79,8 +79,10 @@ export async function clickSubmitAndWaitFlow({
       throw new Error(`Case event failed ${context}: Something went wrong page was displayed.`);
     }
 
+    const currentPath = new URL(page.url()).pathname;
     const onCaseDetailsSummaryPage =
-      !page.url().includes('/trigger/') &&
+      /\/cases\/case-details\/[^/]+/.test(currentPath) &&
+      !currentPath.includes('/trigger/') &&
       (await page
         .locator('#next-step')
         .isVisible()

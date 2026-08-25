@@ -62,6 +62,13 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     });
     expect(abortedResult).toEqual({ data: undefined, status: 504 });
 
+    const wrappedTransportResult = await guardedRequest(async () => {
+      throw new Error(
+        'POST https://xui.example/api/role-access/exclusions/confirm responded with 0 (transport: request failure)'
+      );
+    });
+    expect(wrappedTransportResult).toEqual({ data: undefined, status: 504 });
+
     await expect(
       guardedRequest(
         async () => {

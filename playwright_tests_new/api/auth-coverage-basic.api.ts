@@ -38,7 +38,7 @@ test.describe('Auth helper coverage - basic utilities', { tag: '@svc-auth' }, ()
     const creds = authTest.getCredentials('solicitor');
     expect(creds.username).toContain('@');
     expect(creds.password).toBeTruthy();
-    expect(() => authTest.getCredentials('unknown' as any)).toThrow('No credentials configured');
+    expect(() => authTest.getCredentials('unknown' as never)).toThrow('No credentials configured');
   });
 
   test('required users fail instead of using placeholder credentials', () => {

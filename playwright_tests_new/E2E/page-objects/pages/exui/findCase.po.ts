@@ -2,6 +2,7 @@ import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, MAX_NAVIGATION_RETRY_ATTEMPTS } from './exui-timeouts';
 import { expect } from '../../../fixtures.ts';
+import { acceptAccessCookiesIfPresent } from '../../../../common/sessionCapture';
 
 export class FindCasePage extends Base {
   // Locators
@@ -60,6 +61,7 @@ export class FindCasePage extends Base {
   public async navigateToFindCase(): Promise<void> {
     for (let attempt = 1; attempt <= MAX_NAVIGATION_RETRY_ATTEMPTS; attempt++) {
       await this.openFromAvailableNavigationLink();
+      await acceptAccessCookiesIfPresent(this.page);
       try {
         await this.ensureFiltersVisible();
         return;

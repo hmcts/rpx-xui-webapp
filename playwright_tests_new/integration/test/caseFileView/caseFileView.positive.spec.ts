@@ -5,7 +5,7 @@ import {
   setupCaseFileViewUserDetailsRoute,
 } from '../../helpers';
 import { CASE_FILE_VIEW_DOC_IDS, CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF } from '../../mocks/caseFileView.mock';
-import { applySessionCookies } from '../../../common/sessionCapture';
+import { acceptAccessCookiesIfPresent, applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
 const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
@@ -121,6 +121,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Open the Case File View tab', async () => {
       await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
+      await acceptAccessCookiesIfPresent(page);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');

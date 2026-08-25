@@ -236,25 +236,30 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     };
     const myCasesRequests: SearchRequestPayload[] = [];
 
-    await setupWorkFiltersUser(page);
+    const expectedUserId = await setupWorkFiltersUser(page);
 
-    await page.addInitScript((myWorkFilterStorageKey) => {
-      window.localStorage.setItem(
-        myWorkFilterStorageKey,
-        JSON.stringify({
-          id: myWorkFilterStorageKey,
-          fields: [
-            { name: 'services', value: ['IA'] },
-            { name: 'locations', value: [{ epimms_id: '765324' }] },
-          ],
-        })
-      );
-    }, MY_WORK_FILTER_STORAGE_KEY);
+    await page.addInitScript(
+      ({ myWorkFilterStorageKey, userId }) => {
+        window.localStorage.setItem(
+          myWorkFilterStorageKey,
+          JSON.stringify({
+            id: myWorkFilterStorageKey,
+            idamId: userId,
+            fields: [
+              { name: 'services', value: ['IA'] },
+              { name: 'locations', value: [{ epimms_id: '765324' }] },
+            ],
+          })
+        );
+      },
+      { myWorkFilterStorageKey: MY_WORK_FILTER_STORAGE_KEY, userId: expectedUserId }
+    );
 
     await setupManageTasksBaseRoutes(page, {
       taskListResponse: buildTaskListMock(6, workFiltersUserId, myActionsList),
       supportedJurisdictions: workFiltersSupportedJurisdictions,
       supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
+      user: { userId: expectedUserId },
     });
 
     await page.route(myCasesRoutePattern, async (route) => {
@@ -295,11 +300,29 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       ])
     );
 
-    await expect(taskListPage.myCasesResultsAmount).toContainText('Showing 1 results');
-    const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-    expect(table).toHaveLength(1);
-    expect(table[0]['Case name']).toBe(filteredMyCasesResponse.cases[0].case_name);
-    expect(table[0]['Service']).toBe(filteredMyCasesResponse.cases[0].expectedServiceLabel);
+    const persistedServiceFilter = await taskListPage.waitForServiceFilterOptionVisible(expectedIaServiceLabel);
+    await expect(persistedServiceFilter).toBeChecked();
+    await expect(await taskListPage.waitForServiceFilterOptionVisible('Civil')).not.toBeChecked();
+
+    await expect
+      .poll(
+        async () => {
+          const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+          return {
+            caseName: table[0]?.['Case name'],
+            rowCount: table.length,
+            service: table[0]?.['Service'],
+            summary: await taskListPage.myCasesResultsAmount.textContent(),
+          };
+        },
+        { message: 'My cases renders the persisted service and location filter result' }
+      )
+      .toEqual({
+        caseName: filteredMyCasesResponse.cases[0].case_name,
+        rowCount: 1,
+        service: filteredMyCasesResponse.cases[0].expectedServiceLabel,
+        summary: 'Showing 1 results',
+      });
   });
 
   test('My tasks restores default base locations using organisation service codes', async ({ taskListPage, page }) => {

@@ -144,6 +144,26 @@ const buildConfig = (env: EnvMap = process.env) => {
   logResolvedTagFilters('API', apiTagFilters, env);
   logResolvedTagFilters('E2E smoke', e2eTagFilters, e2eEnv);
   const apiRetries = resolveApiRetries(env);
+  const reporter: [string, Record<string, unknown> | undefined][] = [
+    [resolveDefaultReporter(env), undefined],
+    ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs', undefined],
+    [
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
+      {
+        outputFolder: odhinOutputFolder,
+        indexFilename: resolveOdhinIndexFilename(env),
+        title: 'RPX XUI Playwright',
+        testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
+        project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+        release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+        startServer: false,
+        consoleLog: true,
+        consoleError: true,
+        testOutput: 'only-on-failure',
+      },
+    ],
+  ];
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
 
   return defineConfig({
     use: {
@@ -164,26 +184,9 @@ const buildConfig = (env: EnvMap = process.env) => {
       timeout: 60_000,
     },
     reportSlowTests: null,
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     workers: workerCount,
-    reporter: [
-      [resolveDefaultReporter(env)],
-      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
-      [
-        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
-        {
-          outputFolder: odhinOutputFolder,
-          indexFilename: resolveOdhinIndexFilename(env),
-          title: 'RPX XUI Playwright',
-          testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
-          project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
-          startServer: false,
-          consoleLog: true,
-          consoleError: true,
-          testOutput: 'only-on-failure',
-        },
-      ],
-    ],
+    reporter,
     projects: [
       {
         name: 'chromium',

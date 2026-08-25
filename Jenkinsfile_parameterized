@@ -144,6 +144,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
     after('checkout') {sh 'yarn cache clean'}
     after('checkout') {
         if (params.RUN_PLAYWRIGHT_ACCESSIBILITY) {
+            sh 'yarn playwright --version'
             sh 'yarn test:setup:playwright-install-chromium'
             sh 'yarn test:setup:playwright-verify-chromium'
         }

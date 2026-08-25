@@ -155,7 +155,7 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
       authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
         requestFactory: async () => createFormLoginContext(400, 200, ''),
       })
-    ).rejects.toThrow('GET /auth/login');
+    ).rejects.toThrow('login identity: role=solicitor; username=test-user');
 
     await expect(
       authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
@@ -170,6 +170,18 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
     await authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
       requestFactory: async () => createFormLoginContext(200, 200, '<html></html>'),
     });
+  });
+
+  test('labels unavailable login routes as a shared XUI authentication prerequisite', () => {
+    expect(
+      authTest.describeLoginRouteFailure({
+        headers: () => ({ 'x-azure-ref': 'safe-gateway-reference' }),
+      })
+    ).toBe('XUI authentication route unavailable before IDAM form submission; gatewayRef=safe-gateway-reference');
+  });
+
+  test('includes the selected login identity without exposing its password', () => {
+    expect(authTest.describeLoginIdentity('solicitor', mockCredentials)).toBe('role=solicitor; username=test-user');
   });
 
   test('createStorageStateViaForm waits for post-login authentication readiness', async () => {

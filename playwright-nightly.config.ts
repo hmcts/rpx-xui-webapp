@@ -76,6 +76,25 @@ const buildConfig = (env: EnvMap = process.env) => {
     globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
   });
   logResolvedTagFilters('Cross-browser E2E', e2eTagFilters, e2eEnv);
+  const reporter: [string, Record<string, unknown> | undefined][] = [
+    [env.CI ? 'dot' : 'list', undefined],
+    [
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
+      {
+        outputFolder: resolveOdhinOutputFolder(env),
+        indexFilename: resolveOdhinIndexFilename(env),
+        title: 'RPX XUI Playwright',
+        testEnvironment,
+        project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+        release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
+        startServer: false,
+        consoleLog: true,
+        consoleError: true,
+        testOutput: 'only-on-failure',
+      },
+    ],
+  ];
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
@@ -103,26 +122,10 @@ const buildConfig = (env: EnvMap = process.env) => {
 
     /* Control the number of parallel test workers. */
     workers: workerCount,
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
 
-    reporter: [
-      [env.CI ? 'dot' : 'list'],
-      [
-        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
-        {
-          outputFolder: resolveOdhinOutputFolder(env),
-          indexFilename: resolveOdhinIndexFilename(env),
-          title: 'RPX XUI Playwright',
-          testEnvironment,
-          project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
-          startServer: false,
-          consoleLog: true,
-          consoleError: true,
-          testOutput: 'only-on-failure',
-        },
-      ],
-    ],
+    reporter,
 
     projects: [
       {

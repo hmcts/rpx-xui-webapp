@@ -9,7 +9,6 @@ import path from 'node:path';
 
 import { test, expect } from '@playwright/test';
 
-import { config } from './utils/apiTestRuntimeConfig';
 import { __test__ as authTest } from './utils/auth';
 
 test.describe.configure({ mode: 'serial' });
@@ -77,7 +76,7 @@ test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' },
         createCalls += 1;
         return `state-${createCalls}`;
       },
-      tryReadState: async (path: string) => {
+      tryReadState: async () => {
         readCalls += 1;
         // First read: state missing, second read after create: return cookies
         if (readCalls >= 2) {

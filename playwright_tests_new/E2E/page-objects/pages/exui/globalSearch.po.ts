@@ -41,11 +41,9 @@ export class GlobalSearchPage extends Base {
 
   async performGlobalSearchWithRetry(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
     await this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName);
-    const isErrorPage = await this.errorPageHeading.isVisible().catch(() => false);
-    if (!isErrorPage) {
+    if (!(await this.errorPageHeading.isVisible().catch(() => false))) {
       return;
     }
-    // One retry only for transient backend failures in AAT.
     await this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName);
     if (await this.errorPageHeading.isVisible().catch(() => false)) {
       throw new Error('Global search returned "Something went wrong" after retry.');
@@ -90,9 +88,7 @@ export class GlobalSearchPage extends Base {
   }
 
   private async waitForSearchResults(caseId: string): Promise<void> {
-    if (await this.errorPageHeading.isVisible().catch(() => false)) {
-      return;
-    }
+    if (await this.errorPageHeading.isVisible().catch(() => false)) return;
 
     await this.searchResultsTable.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
     await this.searchResultRows.first().waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });

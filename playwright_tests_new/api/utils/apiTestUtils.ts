@@ -33,7 +33,7 @@ export function expectStatus(actual: number, allowed: ReadonlyArray<number>, mes
 
 export function isRequestTimeoutError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
-  return /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up|Request context disposed|apiRequestContext\.fetch: aborted/i.test(
+  return /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up|Request context disposed|apiRequestContext\.fetch: aborted|transport: request failure/i.test(
     message
   );
 }

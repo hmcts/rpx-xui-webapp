@@ -268,7 +268,7 @@ Notes:
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
 - Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run.
 - This framework does not create live Work Allocation tasks. A previous experimental `@e2e-live-wa` lane was removed because local validation failed before the browser journey when Manage Org invite returned `403` with `{"message":"Internal Server Error"}`. Reintroduce live WA task materialisation only in a separate PR with direct AAT proof.
-- `@e2e-manage-tasks` remains excluded by default because it depends on live seeded Work Allocation data. It currently covers only the live Available Tasks lane with an internal WA-capable user. Override the user with `PW_E2E_MANAGE_TASKS_USER` or with `PW_E2E_MANAGE_TASKS_EMAIL` and `PW_E2E_MANAGE_TASKS_PASSWORD` for targeted opt-in runs. Assigned My Tasks action coverage remains under `@e2e-manage-tasks-assigned` until a seeded assigned-task user or supported task materialisation flow exists.
+- `@e2e-manage-tasks` uses live seeded Work Allocation data and is included in the default E2E run. Override the user with `PW_E2E_MANAGE_TASKS_USER` or with `PW_E2E_MANAGE_TASKS_EMAIL` and `PW_E2E_MANAGE_TASKS_PASSWORD` when validating a different WA identity.
 - Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
 - `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers use a process-run `local-<parent-pid>` identifier instead of the shared literal `local`; CI runs with no recognised unique identifier fail fast instead of sharing a local organisation.
@@ -350,7 +350,7 @@ The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_n
 - Executes API, integration, and E2E functional suites in parallel with `failFast: false` so sibling suite reports still publish if one suite fails.
 - API runs `yarn test:api:pw:raw` with `FUNCTIONAL_TESTS_WORKERS=6`.
 - Integration runs `yarn test:playwright:integration:raw -- --workers=<n>` through `INTEGRATION_PW_PROFILE_RUNS`; default is `workers=7`.
-- E2E runs `yarn test:playwrightE2E:raw` with `FUNCTIONAL_TESTS_WORKERS=6`.
+- E2E runs `yarn test:playwrightE2E:raw` with `FUNCTIONAL_TESTS_WORKERS=7`.
 - Accessibility is manual-only on CNP and runs when `RUN_PLAYWRIGHT_ACCESSIBILITY=true`. This can be set for ad-hock runs on Jenkins, using build with parameters.
 - CNP exposes tag include/exclude parameters for API, E2E, and integration, plus `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES`.
 
@@ -585,7 +585,7 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - API, E2E, and local integration defaults are controlled by each Playwright config unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=6` for API, E2E, and cross-browser E2E, and CNP/nightly integration profiles default to 7 workers
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=6` for API and `FUNCTIONAL_TESTS_WORKERS=7` for E2E/cross-browser E2E; CNP/nightly integration profiles default to 7 workers, subject to the active session-pool safety cap
 - The worker defaults keep the XUI 8CPU Jenkins agent below full per-suite saturation while leaving integration as the longest lane; monitor preview/AAT backend behaviour through the published Odhín and CI System Load reports
 - Jenkins runs API, integration, and E2E in parallel report-gathering mode: a failed suite fails its branch, but sibling suites continue so their Odhín and load reports are still published
 - Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
@@ -696,7 +696,7 @@ rm -rf .sessions && npx playwright test --config=playwright.e2e.config.ts
 ### E2E Tag Filtering
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
-- `@e2e-manage-tasks` is excluded by default because the live WA lane depends on seeded task data. Use `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-manage-tasks` only for targeted opt-in runs with a configured WA user and known data.
+- `@e2e-manage-tasks` is included by default and requires a configured WA-capable user plus seeded task data.
 - Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
 - Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
@@ -782,11 +782,11 @@ Notes:
 
 - Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
 - Integration global setup validates that every selected feature tag declares its authenticated identities and that their configured credentials can be resolved. It does not log users in or create session files
-- Integration workers capture sessions lazily. Concurrent non-forced requests for the same resolved identity share the filesystem lock and reuse the first successful capture. Public `sessionCapture(..., { force: true })` calls are excluded from that single-flight claim and may recapture serially; forced refresh after server-side rejection coalesces only when the internal `expectedStaleSession` fingerprint shows that another worker already replaced the rejected state. Ordered pools keep their primary identity unless IDAM explicitly rejects it. An unexplained post-submit return to the IDAM login page receives the single same-identity retry and, if still unauthenticated, may probe one additional identity before stopping. Service, navigation, configuration, storage, lock, and other unknown failures do not rotate accounts
+- Integration workers capture sessions lazily. Concurrent non-forced requests for the same resolved identity share the filesystem lock and reuse the first successful capture. Public `sessionCapture(..., { force: true })` calls are excluded from that single-flight claim and may recapture serially; forced refresh after server-side rejection coalesces only when the internal `expectedStaleSession` fingerprint shows that another worker already replaced the rejected state. Ordered pools keep their primary identity unless IDAM explicitly rejects it. An unexplained pre-journey IDAM return receives the single same-identity retry and, if still unauthenticated, may probe one additional identity before stopping. This recovery only occurs while session capture is preparing the journey; no login recovery is performed after a test begins mutating data. Service, navigation, configuration, storage, lock, and other unknown failures do not rotate accounts.
 - Integration specs continue to run on the default 7-worker `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
-- Local integration Odhin also bounds runtime reporter hooks by default; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the local safeguard
+- Odhin bounds runtime reporter hooks by default in every lane; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the safeguard explicitly
 - Local integration Odhin disables browser console capture by default; opt in with `PW_ODHIN_CONSOLE_LOG=1 PW_ODHIN_CONSOLE_ERROR=1`
 - Odhin finalization progress is suppressed for quick completions and only starts printing after the grace window set by `PW_ODHIN_PROGRESS_GRACE_MS`
 
@@ -850,6 +850,16 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 Browser sessions managed by `common/sessionCapture.ts` are captured lazily under `.sessions/`. E2E and integration callers of that helper deliberately share browser-session keys, while API state remains separately namespaced. Some E2E journeys use the separate UI storage helper under `test-results/storage-states/ui`.
 
+Cached browser and API sessions are checked through `auth/isAuthenticated` before reuse. `PW_SESSION_REUSE_VALIDATION_MODE=best-effort` is the default: an unavailable validation route is logged and the unexpired cache is reused. Set `strict` when a lane must reject an unverified cached session.
+
+Integration journeys use the configured worker count, including hearings. The hearing suite mocks user details, case data, and hearing APIs per page, so its existing authenticated sessions can be shared safely without requiring one permanent hearing-manager account per worker.
+
+Configured `STAFF_ADMIN_1` to `STAFF_ADMIN_8` credentials are discovered automatically and distributed by Playwright `parallelIndex`. Set `STAFF_ADMIN_POOL_ENABLED=false` only when a diagnostic run must use the legacy `STAFF_ADMIN` identity exclusively.
+
+Before a live browser lane, run `yarn test:playwright:preflight -- --require=STAFF_ADMIN,HEARING_MANAGER_CR84_ON`. It reports distinct configured identities, never secret values, and warns about inherited Node inspector settings. Add `--tag=e2e,solicitor` to report only the compatibility pools selected by those tags. Pool capacity is advisory: a configured identity can be reused across workers. Add `--strict` only when a selected lane has no configured identity at all.
+
+State-changing live E2E journeys can opt into `identityLease` from `E2E/fixtures`. Call `await identityLease.acquire({ pool: 'PRL_SOLICITOR' })` before authentication, then use `lease.identity.userIdentifier` for session setup. Within one executor the fixture uses filesystem leases under `.sessions/identity-leases`; configure the approved cross-executor coordinator in `PW_IDENTITY_LEASE_ENDPOINT` when multiple executors share an identity pool. The fixture waits for a compatible exclusive account, always releases it in teardown, and never sends email addresses or passwords to the coordinator. Do not use this fixture for mocked integration tests or read-only journeys.
+
 ### Session Capture Storage
 
 The shared session-capture helper and API authentication store state under `.sessions/`; the [file naming convention](#file-naming-convention) keeps browser and API state separate. E2E flows using `E2E/utils/storage-state.utils.ts` store their UI state under `test-results/storage-states/ui` instead.
@@ -869,7 +879,7 @@ The shared session-capture helper and API authentication store state under `.ses
 
 #### 1. Lazy Loading
 
-- Normal E2E and integration sessions are not pre-captured during global setup. Accessibility E2E runs prewarm their configured session unless `PW_A11Y_PREWARM_SESSION=false`
+- Normal E2E and integration sessions are not pre-captured during global setup. Accessibility E2E runs only prewarm their configured session when `PW_A11Y_PREWARM_SESSION=true`.
 - Each test specifies which user it needs via `ensureSession()` (E2E) or fixtures (API)
 - Sessions are captured only when first requested
 - Cached sessions are reused across tests and workers

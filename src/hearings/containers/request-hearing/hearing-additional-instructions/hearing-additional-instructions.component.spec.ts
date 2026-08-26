@@ -67,6 +67,18 @@ describe('HearingAdditionalInstructionsComponent', () => {
     expect(component.isFormValid()).toBeTruthy();
   });
 
+  it('should reject markdown links in additional instructions and not continue', () => {
+    fixture.detectChanges();
+    const navigateSpy = spyOn<any>(component, 'navigateAction');
+    component.instructionsForm.controls.instructions.setValue('[[Test]](www.google.com)');
+
+    component.executeAction(ACTION.CONTINUE);
+
+    expect(component.instructionsForm.controls.instructions.hasError('markDownPattern')).toBeTrue();
+    expect(component.submitted).toBeTrue();
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
   it('should check AutoListFlag', () => {
     fixture.detectChanges();
     component.initForm();

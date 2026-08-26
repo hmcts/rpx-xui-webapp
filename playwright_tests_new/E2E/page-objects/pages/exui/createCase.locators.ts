@@ -19,7 +19,7 @@ export function buildCreateCaseLocators(page: Page) {
     caseTypeSelect: page.locator('#cc-case-type'),
     eventTypeSelect: page.locator('#cc-event'),
     startButton: page.locator('button[type="submit"]'),
-    submitButton: page.getByRole('button', { name: /^(submit|cyflwyno)\b/i }),
+    submitButton: page.getByRole('button', { name: /\b(submit|cyflwyno)\b/i }),
     continueButton: page.getByRole('button', { name: /^(continue|parhau)\b/i }),
 
     legalRepParty1Block: page.locator('#LegalRepParty1Flags_LegalRepParty1Flags'),

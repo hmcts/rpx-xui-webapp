@@ -61,7 +61,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const globalTimeoutMs = parsePositiveInt(env.PW_E2E_GLOBAL_TIMEOUT_MS);
   const isAccessibilityRun = env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true';
   const disableGenericFailureArtifacts = env.PLAYWRIGHT_DISABLE_GENERIC_FAILURE_ARTIFACTS === 'true';
-  const prewarmAccessibilitySession = isAccessibilityRun && env.PW_A11Y_PREWARM_SESSION !== 'false';
+  const prewarmAccessibilitySession = isAccessibilityRun && env.PW_A11Y_PREWARM_SESSION === 'true';
   const testTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_TEST_TIMEOUT_MS) ?? 60_000) : 180_000;
   const expectTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_EXPECT_TIMEOUT_MS) ?? 7_000) : 60_000;
 
@@ -168,6 +168,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       timeout: expectTimeoutMs,
     },
     ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     workers: workerCount,
     reporter,
     use: {

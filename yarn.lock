@@ -3131,13 +3131,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.89-4951":
-  version: 7.3.89-4951
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.89-4951"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.94":
+  version: 7.3.94
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.94"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.33-4951"
+    "@hmcts/media-viewer": "npm:4.2.36"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
@@ -3178,7 +3178,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/ab10a4cd057d669b46d184346a17caf494d045edca4639366a34678866d123da9d4b5bc22f1ce36c7db841dba69b58248e046e605a177ec43f4c4b6fe2e1c898
+  checksum: 10/9ed4d5deb18db5a0aec771378fc454ed1de360a91592ae76fa3b8d7d48ea69eef2a6af0e699da4b2b775439ae2ec613928ac873a019aa75dab3ca1e6cf409156
   languageName: node
   linkType: hard
 
@@ -3203,9 +3203,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.33-4951":
-  version: 4.2.33-4951
-  resolution: "@hmcts/media-viewer@npm:4.2.33-4951"
+"@hmcts/media-viewer@npm:4.2.36":
+  version: 4.2.36
+  resolution: "@hmcts/media-viewer@npm:4.2.36"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3228,7 +3228,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.12
     rxjs: ^7.8.2
-  checksum: 10/4537ca9b56236b40b8dce82c3e4159e4a609fb884e8db8254252c5310e1579b63b4d90d609372369bb1cbb2dd7a6d15d3ac7a137ea459481abc7d4fef2e2db96
+  checksum: 10/213a7ae40cbc97c8f46885e4776e6e7afa8b630c58e19b81849b645648f46e7b283eaeb7100735e4b793a6772e66d065e71863259f2a2634b0f54533976d5c98
   languageName: node
   linkType: hard
 
@@ -20063,10 +20063,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.89-4951"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.94"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.33-4951"
+    "@hmcts/media-viewer": "npm:4.2.36"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"

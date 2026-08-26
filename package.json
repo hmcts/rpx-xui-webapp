@@ -131,7 +131,7 @@
     "@ngrx/router-store": "^20",
     "@ngrx/store": "^20",
     "@ngrx/store-devtools": "^20",
-    "applicationinsights": "2.9.8",
+    "applicationinsights": "3.16.0",
     "axios": "^1.18.1",
     "axios-mock-adapter": "^1.22.0",
     "class-transformer": "^0.5.1",

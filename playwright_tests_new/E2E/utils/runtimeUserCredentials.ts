@@ -74,9 +74,29 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'BOOKING_UI_FT_ON_4_USERNAME',
     password: 'BOOKING_UI_FT_ON_4_PASSWORD',
   },
+  'BOOKING_UI-FT-ON-5': {
+    username: 'BOOKING_UI_FT_ON_5_USERNAME',
+    password: 'BOOKING_UI_FT_ON_5_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-6': {
+    username: 'BOOKING_UI_FT_ON_6_USERNAME',
+    password: 'BOOKING_UI_FT_ON_6_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-7': {
+    username: 'BOOKING_UI_FT_ON_7_USERNAME',
+    password: 'BOOKING_UI_FT_ON_7_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-8': {
+    username: 'BOOKING_UI_FT_ON_8_USERNAME',
+    password: 'BOOKING_UI_FT_ON_8_PASSWORD',
+  },
   STAFF_ADMIN: {
     username: 'STAFF_ADMIN_USERNAME',
     password: 'STAFF_ADMIN_PASSWORD',
+  },
+  COURT_ADMIN: {
+    username: 'COURT_ADMIN_USERNAME',
+    password: 'COURT_ADMIN_PASSWORD',
   },
   'STAFF_ADMIN-1': {
     username: 'STAFF_ADMIN_1_USERNAME',
@@ -93,6 +113,22 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   'STAFF_ADMIN-4': {
     username: 'STAFF_ADMIN_4_USERNAME',
     password: 'STAFF_ADMIN_4_PASSWORD',
+  },
+  'STAFF_ADMIN-5': {
+    username: 'STAFF_ADMIN_5_USERNAME',
+    password: 'STAFF_ADMIN_5_PASSWORD',
+  },
+  'STAFF_ADMIN-6': {
+    username: 'STAFF_ADMIN_6_USERNAME',
+    password: 'STAFF_ADMIN_6_PASSWORD',
+  },
+  'STAFF_ADMIN-7': {
+    username: 'STAFF_ADMIN_7_USERNAME',
+    password: 'STAFF_ADMIN_7_PASSWORD',
+  },
+  'STAFF_ADMIN-8': {
+    username: 'STAFF_ADMIN_8_USERNAME',
+    password: 'STAFF_ADMIN_8_PASSWORD',
   },
   HEARING_MANAGER_CR84_OFF: {
     username: 'HEARING_MANAGER_CR84_OFF_USERNAME',
@@ -158,6 +194,18 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'FPL_GLOBAL_SEARCH_USERNAME',
     password: 'FPL_GLOBAL_SEARCH_PASSWORD',
   },
+  PROBATE_FIND_CASE: {
+    username: 'PROBATE_FIND_CASE_USERNAME',
+    password: 'PROBATE_FIND_CASE_PASSWORD',
+  },
+  PROBATE_CASEWORKER: {
+    username: 'PROBATE_CASEWORKER_USERNAME',
+    password: 'PROBATE_CASEWORKER_PASSWORD',
+  },
+  PROBATE_SOLICITOR: {
+    username: 'PROBATE_SOLICITOR_USERNAME',
+    password: 'PROBATE_SOLICITOR_PASSWORD',
+  },
   NOC_SOLICITOR: {
     username: 'NOC_SOLICITOR_USERNAME',
     password: 'NOC_SOLICITOR_PASSWORD',
@@ -166,13 +214,54 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'PRL_SOLICITOR_USERNAME',
     password: 'PRL_SOLICITOR_PASSWORD',
   },
+  PRL_SOLICITOR2: {
+    username: 'PRL_SOLICITOR2_USERNAME',
+    password: 'PRL_SOLICITOR2_PASSWORD',
+  },
+  PRL_SOLICITOR3: {
+    username: 'PRL_SOLICITOR3_USERNAME',
+    password: 'PRL_SOLICITOR3_PASSWORD',
+  },
+  PRL_SOLICITOR4: {
+    username: 'PRL_SOLICITOR4_USERNAME',
+    password: 'PRL_SOLICITOR4_PASSWORD',
+  },
+  PRL_SOLICITOR5: {
+    username: 'PRL_SOLICITOR5_USERNAME',
+    password: 'PRL_SOLICITOR5_PASSWORD',
+  },
+  PRL_SOLICITOR6: {
+    username: 'PRL_SOLICITOR6_USERNAME',
+    password: 'PRL_SOLICITOR6_PASSWORD',
+  },
+  PRL_SOLICITOR7: {
+    username: 'PRL_SOLICITOR7_USERNAME',
+    password: 'PRL_SOLICITOR7_PASSWORD',
+  },
+  PRL_SOLICITOR8: {
+    username: 'PRL_SOLICITOR8_USERNAME',
+    password: 'PRL_SOLICITOR8_PASSWORD',
+  },
 };
 
-const staffAdminPoolIdentifiers = ['STAFF_ADMIN-1', 'STAFF_ADMIN-2', 'STAFF_ADMIN-3', 'STAFF_ADMIN-4'] as const;
+const staffAdminPoolIdentifiers = [
+  'STAFF_ADMIN-1',
+  'STAFF_ADMIN-2',
+  'STAFF_ADMIN-3',
+  'STAFF_ADMIN-4',
+  'STAFF_ADMIN-5',
+  'STAFF_ADMIN-6',
+  'STAFF_ADMIN-7',
+  'STAFF_ADMIN-8',
+] as const;
+
+export function isStaffAdminPoolEnabled(env: Record<string, string | undefined> = process.env): boolean {
+  return env.STAFF_ADMIN_POOL_ENABLED?.trim().toLowerCase() !== 'false';
+}
 
 const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.ProcessEnv) => string[])> = {
   STAFF_ADMIN: (env) => {
-    if (env.STAFF_ADMIN_POOL_ENABLED !== 'true') {
+    if (!isStaffAdminPoolEnabled(env)) {
       return [];
     }
 
@@ -184,7 +273,7 @@ const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.Pr
   },
   FPL_GLOBAL_SEARCH: [],
   USER_WITH_FLAGS: [],
-  IAC_JUDGE_WA_R1: ['IAC_CASEOFFICER_R1', 'IAC_CASEOFFICER_R2'],
+  IAC_JUDGE_WA_R1: [],
   IAC_CASEOFFICER_R2: ['IAC_CASEOFFICER_R1'],
   IAC_CASEOFFICER_R1: [],
 };

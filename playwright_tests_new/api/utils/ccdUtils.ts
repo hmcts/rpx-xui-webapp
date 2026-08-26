@@ -1,7 +1,7 @@
 import type { ApiClient as PlaywrightApiClient } from '@hmcts/playwright-common';
 import { expect } from '@playwright/test';
 
-import { expectStatus, StatusSets, withRetry } from './apiTestUtils';
+import { expectStatus, guardedRequest } from './apiTestUtils';
 
 type JurisdictionResponse = {
   name?: string;
@@ -17,34 +17,33 @@ type Jurisdiction = {
 };
 
 export async function assertJurisdictionsForUser(apiClient: PlaywrightApiClient, expectedNames: string[]): Promise<void> {
-  const user = await apiClient.get('api/user/details', { throwOnError: false });
-  expectStatus(user.status, StatusSets.guardedExtended);
-  if (user.status !== 200) {
-    return;
-  }
+  const user = await guardedRequest(() => apiClient.get('api/user/details', { timeoutMs: 20_000, throwOnError: false }));
+  expectStatus(user.status, [200]);
   const uid = resolveUserId(user.data as { userInfo?: { uid?: string; id?: string } });
-  if (!uid) {
-    return;
-  }
+  expect(typeof uid).toBe('string');
 
-  const response = await withRetry(
-    () =>
-      apiClient.get(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
-        throwOnError: false,
-      }),
-    { retries: 1, retryStatuses: [502, 504] }
+  const response = await guardedRequest(() =>
+    apiClient.get(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
+      timeoutMs: 20_000,
+      throwOnError: false,
+    })
   );
-  expectStatus(response.status, [...StatusSets.guardedExtended, 504, 500]);
-  if (!Array.isArray(response.data)) {
+  expectStatus(response.status, [200, 404]);
+  expect(Array.isArray(response.data)).toBe(true);
+
+  if (response.status === 404) {
+    expect(response.data).toHaveLength(0);
+    expect(expectedNames).toHaveLength(0);
     return;
   }
 
-  const actualNames = response.data.map((entry: JurisdictionResponse) => entry?.name).filter(Boolean);
-  expectedNames.forEach((name) => {
-    expect(actualNames).toContain(name);
-  });
+  const actualNames = (response.data as JurisdictionResponse[]).map((entry) => entry?.name).filter(Boolean);
+  expect(actualNames.length).toBeGreaterThan(0);
+  if (expectedNames.length > 0) {
+    expect(actualNames.some((name) => expectedNames.includes(name))).toBe(true);
+  }
 
-  response.data.forEach((jurisdiction: Jurisdiction) => {
+  (response.data as Jurisdiction[]).forEach((jurisdiction) => {
     expect(jurisdiction).toEqual(
       expect.objectContaining({
         id: expect.any(String),

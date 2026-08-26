@@ -16,12 +16,14 @@ describe('StaffUser search contract', () => {
   };
 
   it('should accept the public request contract and trim its string fields', () => {
-    expect(validateStaffUserSearchRequest({
-      ...VALID_REQUEST,
-      searchTerm: '  Alex  ',
-      caseType: ' PRLAPPS ',
-      jurisdiction: ' PRIVATELAW ',
-    })).to.deep.equal({
+    expect(
+      validateStaffUserSearchRequest({
+        ...VALID_REQUEST,
+        searchTerm: '  Alex  ',
+        caseType: ' PRLAPPS ',
+        jurisdiction: ' PRIVATELAW ',
+      })
+    ).to.deep.equal({
       valid: true,
       request: VALID_REQUEST,
     });
@@ -51,33 +53,33 @@ describe('StaffUser search contract', () => {
     { ...VALID_REQUEST, searchTerm: 123 },
   ];
 
-  invalidSearchTermRequests
-    .forEach((request) => {
-      it('should reject an invalid search term', () => {
-        expect(validateStaffUserSearchRequest(request)).to.deep.equal({
-          valid: false,
-          errorCode: StaffUserSearchErrorCode.INVALID_SEARCH_TERM,
-        });
+  invalidSearchTermRequests.forEach((request) => {
+    it('should reject an invalid search term', () => {
+      expect(validateStaffUserSearchRequest(request)).to.deep.equal({
+        valid: false,
+        errorCode: StaffUserSearchErrorCode.INVALID_SEARCH_TERM,
       });
     });
+  });
 
-  [{ ...VALID_REQUEST, caseType: '' }, { ...VALID_REQUEST, jurisdiction: '  ' }]
-    .forEach((request) => {
-      it('should reject missing search context', () => {
-        expect(validateStaffUserSearchRequest(request)).to.deep.equal({
-          valid: false,
-          errorCode: StaffUserSearchErrorCode.INVALID_SEARCH_CONTEXT,
-        });
+  [
+    { ...VALID_REQUEST, caseType: '' },
+    { ...VALID_REQUEST, jurisdiction: '  ' },
+  ].forEach((request) => {
+    it('should reject missing search context', () => {
+      expect(validateStaffUserSearchRequest(request)).to.deep.equal({
+        valid: false,
+        errorCode: StaffUserSearchErrorCode.INVALID_SEARCH_CONTEXT,
       });
     });
+  });
 
-  [[], ['ALL'], ['PROFESSIONAL'], ['CITIZEN'], ['admin'], ['ADMIN', 'UNKNOWN'], 'ADMIN']
-    .forEach((roleCategories) => {
-      it(`should reject unsupported role categories ${String(roleCategories)}`, () => {
-        expect(validateStaffUserSearchRequest({ ...VALID_REQUEST, roleCategories })).to.deep.equal({
-          valid: false,
-          errorCode: StaffUserSearchErrorCode.INVALID_ROLE_CATEGORIES,
-        });
+  [[], ['ALL'], ['PROFESSIONAL'], ['CITIZEN'], ['admin'], ['ADMIN', 'UNKNOWN'], 'ADMIN'].forEach((roleCategories) => {
+    it(`should reject unsupported role categories ${String(roleCategories)}`, () => {
+      expect(validateStaffUserSearchRequest({ ...VALID_REQUEST, roleCategories })).to.deep.equal({
+        valid: false,
+        errorCode: StaffUserSearchErrorCode.INVALID_ROLE_CATEGORIES,
       });
     });
+  });
 });

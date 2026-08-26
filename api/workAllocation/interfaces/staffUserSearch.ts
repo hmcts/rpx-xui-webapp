@@ -1,6 +1,6 @@
 export const STAFF_USER_ROLE_CATEGORIES = ['ADMIN', 'CTSC', 'LEGAL_OPERATIONS', 'JUDICIAL'] as const;
 
-export type StaffUserRoleCategory = typeof STAFF_USER_ROLE_CATEGORIES[number];
+export type StaffUserRoleCategory = (typeof STAFF_USER_ROLE_CATEGORIES)[number];
 
 export interface StaffUserSearchRequest {
   searchTerm: string;
@@ -22,8 +22,7 @@ export enum StaffUserSearchErrorCode {
 }
 
 export type StaffUserSearchRequestValidationResult =
-  | { valid: true; request: StaffUserSearchRequest }
-  | { valid: false; errorCode: StaffUserSearchErrorCode };
+  { valid: true; request: StaffUserSearchRequest } | { valid: false; errorCode: StaffUserSearchErrorCode };
 
 export function validateStaffUserSearchRequest(request: unknown): StaffUserSearchRequestValidationResult {
   if (!isRecord(request)) {
@@ -65,9 +64,9 @@ function normaliseRequiredString(value: unknown): string | undefined {
 }
 
 function isStaffUserRoleCategories(value: unknown): value is StaffUserRoleCategory[] {
-  return Array.isArray(value)
-    && value.length > 0
-    && value.every((roleCategory) => STAFF_USER_ROLE_CATEGORIES.includes(roleCategory));
+  return (
+    Array.isArray(value) && value.length > 0 && value.every((roleCategory) => STAFF_USER_ROLE_CATEGORIES.includes(roleCategory))
+  );
 }
 
 function invalidRequest(errorCode: StaffUserSearchErrorCode): StaffUserSearchRequestValidationResult {

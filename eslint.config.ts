@@ -24,7 +24,7 @@ export default defineConfig(
           message: 'Avoid DomSanitizer bypassSecurityTrust* calls. Sanitize untrusted HTML before rendering it.',
         },
         {
-          selector: 'MemberExpression[property.name="innerHTML"]',
+          selector: 'AssignmentExpression[left.property.name="innerHTML"]',
           message: 'Avoid direct innerHTML usage. Prefer Angular interpolation or sanitized rendering.',
         },
       ],

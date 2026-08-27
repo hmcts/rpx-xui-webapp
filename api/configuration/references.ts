@@ -82,6 +82,7 @@ export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 export const SERVICES_TRANSLATION_API_URL = 'services.translation';
 
 export const PROTOCOL = 'protocol';
+export const DYNATRACE_CDN = 'dynatraceCdn';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';
 
@@ -105,6 +106,8 @@ export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
 
 export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles';
 
+export const DECENTRALISED_CASE_TYPE_CONFIG = 'decentralisedCaseTypeConfig';
+
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret';
 
 export const SYSTEM_USER_NAME = 'secrets.rpx.system-user-name';
@@ -127,6 +130,7 @@ export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 export const FEATURE_DOCS_ENABLED = 'docsEnabled';
 export const FEATURE_QUERY_IDAM_SERVICE_OVERRIDE = 'queryIdamServiceOverride';
+export const FEATURE_DYNATRACE_ENABLED = 'dynatraceEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 

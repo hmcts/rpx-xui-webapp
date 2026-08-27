@@ -57,6 +57,10 @@ export class HearingActualSummaryComponent implements OnInit {
       : this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingDate;
   }
 
+  public actualHearingDayDate(actualHearingDay: ActualHearingDayModel): string {
+    return actualHearingDay?.hearingStartTime || actualHearingDay?.hearingDate;
+  }
+
   private convertUTCDateToLocalDate(date): Date {
     return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
   }
@@ -86,6 +90,18 @@ export class HearingActualSummaryComponent implements OnInit {
   }
 
   public actualMultiDaysHearingDates(): string {
-    return `${moment.tz(this.convertUTCDateToLocalDate(new Date(this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0].hearingStartTime)), moment.tz.guess()).format('DD MMM YYYY')} - ${moment.tz(this.convertUTCDateToLocalDate(new Date(this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[this.hearingActualsMainModel?.hearingActuals?.actualHearingDays.length - 1].hearingStartTime)), moment.tz.guess()).format('DD MMM YYYY')}`;
+    const actualHearingDays = this.hearingActualsMainModel?.hearingActuals?.actualHearingDays;
+    const firstHearingDay = actualHearingDays[0];
+    const lastHearingDay = actualHearingDays[actualHearingDays.length - 1];
+    const firstHearingDate = moment.tz(
+      this.convertUTCDateToLocalDate(new Date(this.actualHearingDayDate(firstHearingDay))),
+      moment.tz.guess()
+    );
+    const lastHearingDate = moment.tz(
+      this.convertUTCDateToLocalDate(new Date(this.actualHearingDayDate(lastHearingDay))),
+      moment.tz.guess()
+    );
+
+    return `${firstHearingDate.format('DD MMM YYYY')} - ${lastHearingDate.format('DD MMM YYYY')}`;
   }
 }

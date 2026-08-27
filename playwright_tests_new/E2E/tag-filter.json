@@ -1,5 +1,5 @@
 {
-  "excludedTags": ["@e2e-manage-tasks"],
+  "excludedTags": ["@nightly"],
   "availableTags": [
     "@a11y",
     "@accessibility",
@@ -8,21 +8,21 @@
     "@e2e",
     "@nightly",
     "@validation",
-    "@e2e-access-requests",
     "@e2e-case-file-view",
-    "@e2e-case-list",
     "@e2e-case-flags",
+    "@e2e-civil-data-loss",
     "@e2e-create-case",
     "@e2e-data-loss",
     "@e2e-document-upload",
     "@e2e-document-upload-v1",
-    "@e2e-footer",
+    "@e2e-find-case-public-law",
     "@e2e-manage-tasks",
     "@e2e-manage-tasks-assigned",
     "@e2e-media-viewer",
     "@e2e-search-case",
-    "@e2e-system",
     "@e2e-smoke",
+    "@e2e-reliability",
+    "@e2e-translation",
     "@e2e-update-case"
   ]
 }

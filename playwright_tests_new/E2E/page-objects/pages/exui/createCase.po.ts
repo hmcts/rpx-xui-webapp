@@ -50,6 +50,7 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/cases\/\d+\/event-triggers\//,
   /\/cases\/\d+\/events/,
   /\/event-triggers\/[^/]+\/validate/,
+  /\/data\/case-types\/[^/]+\/validate/,
 ];
 
 export class CreateCasePage extends Base {
@@ -757,7 +758,7 @@ export class CreateCasePage extends Base {
     fileContentEncoding?: BufferEncoding
   ) {
     const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
-    await this.runDocumentUploadWithRetry('file input upload', async () => {
+    await this.runDocumentUpload('file input upload', async () => {
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
@@ -788,13 +789,13 @@ export class CreateCasePage extends Base {
     await writeFile(filePath, Buffer.from(fileContent, options.fileContentEncoding ?? 'utf8'));
 
     try {
-      await this.runDocumentUploadWithRetry('browser file drag-and-drop upload', async () => {
+      await this.runDocumentUpload('browser file drag-and-drop upload', async () => {
         const { x, y } = await this.resolveDocumentDragDropPoint(resolvedFileInput, resolvedDropTarget, fileName);
         let cdpSession;
         try {
           cdpSession = await this.page.context().newCDPSession(this.page);
         } catch (error) {
-          throw new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.', {
+          throw Object.assign(new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.'), {
             cause: error,
           });
         }
@@ -850,71 +851,59 @@ export class CreateCasePage extends Base {
     return { x, y };
   }
 
-  private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {
-    const maxRetries = 3;
-    const baseDelayMs = 1000;
+  private async runDocumentUpload(uploadActionDescription: string, uploadAction: () => Promise<void>) {
+    const maxAttempts = 3;
+    const baseRetryDelayMs = 2_000;
+    const maxRetryDelayMs = 10_000;
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
       min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       max: 30_000,
       fallback: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       multiplier: 2,
     });
-    const safeBackoff = async (attempt: number) => {
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       if (this.page.isClosed()) {
-        throw new Error(`Page closed during ${uploadActionDescription} retry backoff`);
+        throw new Error(`Page closed before ${uploadActionDescription}`);
       }
-      await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
-    };
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      if (this.page.isClosed()) {
-        throw new Error(`Page closed before ${uploadActionDescription} retry attempt`);
-      }
       const responsePromise = this.page
         .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
           timeout: uploadResponseTimeoutMs,
         })
         .catch((error: Error) => error);
-
       await uploadAction();
-
       const uploadResponse = await responsePromise;
 
       if (uploadResponse instanceof Error) {
         if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
           throw uploadResponse;
         }
-        if (attempt < maxRetries) {
-          logger.warn(`Document ${uploadActionDescription} response was not observed; retrying upload`, {
-            attempt,
-            maxRetries,
-            timeoutMs: uploadResponseTimeoutMs,
-            errorMessage: uploadResponse.message,
-          });
-          await safeBackoff(attempt);
-          continue;
-        }
-        throw new Error(`Document ${uploadActionDescription} timed out after ${maxRetries} attempts: ${uploadResponse.message}`);
-      }
-
-      if (uploadResponse.status() !== 200) {
-        if (attempt < maxRetries) {
-          logger.warn(`Document ${uploadActionDescription} returned non-200 response; retrying upload`, {
-            attempt,
-            maxRetries,
-            status: uploadResponse.status(),
-          });
-          await safeBackoff(attempt);
-          continue;
-        }
         throw new Error(
-          `Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()} after ${maxRetries} attempts`
+          `Document ${uploadActionDescription} response was not observed within ${uploadResponseTimeoutMs}ms: ${uploadResponse.message}`
         );
       }
 
-      break;
+      if (uploadResponse.status() === 200) {
+        await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.UPLOAD_STATUS_SETTLE });
+        return;
+      }
+
+      if (uploadResponse.status() === 429 && attempt < maxAttempts) {
+        const retryAfterSeconds = Number.parseFloat(uploadResponse.headers()['retry-after'] ?? '');
+        const retryDelayMs = Number.isFinite(retryAfterSeconds)
+          ? Math.min(maxRetryDelayMs, Math.max(baseRetryDelayMs, retryAfterSeconds * 1_000))
+          : baseRetryDelayMs * 2 ** (attempt - 1);
+        logger.warn(`Document ${uploadActionDescription} was rate-limited; retrying`, {
+          attempt,
+          maxAttempts,
+          retryDelayMs,
+        });
+        await this.page.waitForTimeout(retryDelayMs);
+        continue;
+      }
+
+      throw new Error(`Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()}`);
     }
-    await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: uploadResponseTimeoutMs });
   }
   async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;
@@ -949,12 +938,18 @@ export class CreateCasePage extends Base {
         await this.addRespondentButton.click();
         await this.respondentOneNameInput.waitFor({ state: 'visible' });
         await this.respondentOneNameInput.fill('Respondent One');
-        await this.respondentOrganisation.waitFor({ state: 'visible' });
-        await this.respondentOrganisation.check();
+
+        const respondentTypeAvailable = await this.respondentOrganisation.isEnabled().catch(() => false);
+        if (respondentTypeAvailable) {
+          await this.respondentOrganisation.check({ force: true });
+        }
+
         await this.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
         await this.respondentAcasCertifcateSelectYes.check();
         await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
-        await this.respondentCompanyNameInput.fill('Respondent Company');
+        if (await this.respondentCompanyNameInput.isVisible().catch(() => false)) {
+          await this.respondentCompanyNameInput.fill('Respondent Company');
+        }
         await this.manualEntryLink.waitFor({ state: 'visible' });
         await this.manualEntryLink.click();
         await this.respondentAddressLine1Input.waitFor({ state: 'visible' });
@@ -1098,6 +1093,12 @@ export class CreateCasePage extends Base {
     for (const reason of reasons) {
       const divorceReasonCheckbox = divorceReasonField.getByLabel(reason, { exact: true }).first();
       const divorceReasonLabel = divorceReasonField.locator('label').filter({ hasText: reason }).first();
+      if (!(await divorceReasonLabel.isVisible().catch(() => false))) {
+        if ((await divorceReasonField.locator('label:visible').count()) === 0) {
+          return;
+        }
+        throw new Error(`Divorce reason "${reason}" is not visible`);
+      }
       await divorceReasonLabel.click({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
       if (!(await divorceReasonCheckbox.isChecked({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE }).catch(() => false))) {
         throw new Error(`Divorce reason "${reason}" was not checked after clicking its label`);
@@ -1178,12 +1179,12 @@ export class CreateCasePage extends Base {
     if (options.textFields?.textField3 !== undefined) {
       await this.textField3Input.fill(options.textFields.textField3);
     }
-    if (options.textFields?.textField0 !== undefined) {
-      await this.textField0Input.fill(options.textFields.textField0);
-    }
-
     if (options.divorceReasons?.length) {
       await this.selectDivorceReasons(options.divorceReasons);
+    }
+
+    if (options.textFields?.textField0 !== undefined) {
+      await this.textField0Input.fill(options.textFields.textField0);
     }
 
     const hiddenFieldDetailsUrl = this.page.url();

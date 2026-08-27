@@ -25,7 +25,7 @@ export const currentFilterPerson = {
     locationName: 'Birmingham',
     services: ['IA', 'SSCS'],
   },
-  roleCategory: 'LEGAL_OPERATIONS',
+  roleCategories: ['LEGAL_OPERATIONS'],
   service: 'IA',
 };
 
@@ -39,7 +39,7 @@ export const emptyFilterPerson = {
     locationName: 'Birmingham',
     services: ['IA', 'SSCS'],
   },
-  roleCategory: 'LEGAL_OPERATIONS',
+  roleCategories: ['LEGAL_OPERATIONS'],
   service: 'IA',
 };
 

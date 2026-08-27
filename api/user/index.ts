@@ -10,8 +10,8 @@ import { exists } from '../lib/util';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
 import {
   getOrganisationRoles,
-  getRoleCategoryFromRoleAssignments,
-  getUserRoleCategory,
+  getRoleCategoriesFromRoleAssignments,
+  getUserRoleCategories,
   isCurrentUserCaseAllocator,
   userDetailsValid,
 } from './utils';
@@ -40,8 +40,20 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const userInfo = { ...rawUserInfo, token: `Bearer ${bearerToken}` };
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
     const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
-    trackTrace(`User ${userInfo?.id} roles: ${JSON.stringify(allRoles)}`, { functionCall: 'getUserDetails' });
-    trackTrace(`User ${userInfo?.id} has ${userInfo?.roleCategory} roleCategory`, { functionCall: 'getUserDetails' });
+    /**
+     * Only emit user role telemetry when a valid user ID is available.
+     *
+     * Previously these traces were also emitted when userInfo.id was undefined,
+     * generating millions of low-value "User undefined..." entries in
+     * Application Insights and contributing to unnecessary telemetry costs.
+     *
+     * The traces are retained for valid users to preserve the existing
+     * diagnostic behaviour while preventing the known unnecessary telemetry.
+     */
+    if (userInfo.id) {
+      trackTrace(`User ${userInfo.id} roles: ${JSON.stringify(allRoles)}`, { functionCall: 'getUserDetails' });
+      trackTrace(`User ${userInfo.id} has ${userInfo?.roleCategories} roleCategories`, { functionCall: 'getUserDetails' });
+    }
     userInfo.roles = allRoles;
     res.send({
       canShareCases,
@@ -129,12 +141,14 @@ export function setUserRoles(userInfo: UserInfo, req: any, userId: string): any[
   trackTrace(`user ${userId} roles: ${JSON.stringify(amRoles.slice(0, 50))}`, { functionCall: 'refreshRoleAssignmentForUser' });
   addUserRolesIfUnique(userInfo, amRoles);
   trackTrace(`user ${userId} roles ${JSON.stringify(userInfo.roles.slice(0, 50))} added to userInfo`);
-  if (!userInfo.roleCategory) {
+  if (!userInfo.roleCategories || userInfo.roleCategories.length === 0) {
     // only set the role category if not already set
     // this means user will not have to log out and log in to be assigned it properly
     const roleCategories = extractRoleCategories(userRoleAssignments);
     // We assign the role category via the role assignments assigned to user. If not we try IDAM roles
-    userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleCategories) || getUserRoleCategory(userInfo.roles);
+    // getUserRoleCategories is a fallback that appears to rarely, if ever, be used
+    const userRoleCategories = getRoleCategoriesFromRoleAssignments(roleCategories);
+    userInfo.roleCategories = userRoleCategories.length > 0 ? userRoleCategories : getUserRoleCategories(userInfo.roles);
   }
   return userRoleAssignments;
 }
@@ -148,8 +162,11 @@ export function addUserRolesIfUnique(userInfo: UserInfo, amRoles: string[]): voi
   }
 }
 
+// EXUI-4758 - get all unique role categories from userInfo.roles
 export function extractRoleCategories(userRoleAssignments: any[]): string[] {
-  return userRoleAssignments?.filter((role) => role && !!role.roleCategory).map((role) => role.roleCategory);
+  return userRoleAssignments
+    ? [...new Set(userRoleAssignments.filter((role) => role && !!role.roleCategory).map((role) => role.roleCategory))]
+    : [];
 }
 
 export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filterDate: Date): RoleAssignment[] {

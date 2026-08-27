@@ -5,7 +5,7 @@
   "private": true,
   "packageManager": "yarn@4.7.0",
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=24.18.0"
   },
   "scripts": {
     "ng": "ng",
@@ -17,5 +17,8 @@
     "test": "mocha --config ./test/.mocharc.json -r dotenv-extended/config",
     "test:watch": "mocha --watch --recursive --watch-extensions ts -r ts-node/register",
     "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
+  },
+  "dependencies": {
+    "applicationinsights": "^3.16.0"
   }
 }

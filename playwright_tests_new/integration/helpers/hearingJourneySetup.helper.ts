@@ -1,7 +1,12 @@
-import { expect, type Page, type Response } from '@playwright/test';
+import { expect, test, type Page, type Response, type TestInfo } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
-import type { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
-import { applySessionCookies } from '../../common/sessionCapture';
+import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
+import { applySessionCookiesFromPool } from '../../common/sessionCapture';
+import {
+  HEARING_MANAGER_CR84_ON_USER,
+  type HearingManagerUserIdentifier,
+  resolveHearingManagerSessionCandidates,
+} from './hearingManagerUserPool.helper';
 import { setupHearingsMockRoutes, type HearingsMockRoutesConfig } from './hearingsMockRoutes.helper';
 import {
   HEARINGS_CASE_JURISDICTION,
@@ -11,11 +16,10 @@ import {
   type HearingScenario,
 } from '../mocks/hearings.mock';
 
-export const HEARING_MANAGER_CR84_ON_USER = 'HEARING_MANAGER_CR84_ON';
-export const HEARING_MANAGER_CR84_OFF_USER = 'HEARING_MANAGER_CR84_OFF';
 export const HEARINGS_TERMINAL_STATE_TIMEOUT_MS = 15_000;
 export const HEARINGS_ROWS_HIDDEN_TIMEOUT_MS = 10_000;
 export const HEARINGS_SLOW_RESPONSE_DELAY_MS = 4_000;
+const HEARINGS_NAVIGATION_ATTEMPTS = 3;
 
 export const hearingManagerRoles = [
   'caseworker-privatelaw',
@@ -30,6 +34,37 @@ export const caseDetailsUrl = (
   caseTypeId = HEARINGS_CASE_TYPE,
   caseReference = HEARINGS_CASE_REFERENCE
 ) => `/cases/case-details/${jurisdictionId}/${caseTypeId}/${caseReference}`;
+
+function isTransientNavigationError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    /ERR_SOCKET_NOT_CONNECTED|ERR_ABORTED|net::ERR|Navigation failed|interrupted.*navigation|chrome-error:\/\/chromewebdata|did not reach/i.test(
+      error.message
+    )
+  );
+}
+
+export async function gotoCaseDetailsWithRetry(page: Page, targetUrl: string): Promise<void> {
+  const targetPath = targetUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const targetPattern = new RegExp(`${targetPath}(?:[/?#]|$)`);
+
+  for (let attempt = 1; attempt <= HEARINGS_NAVIGATION_ATTEMPTS; attempt += 1) {
+    try {
+      await page.goto(targetUrl, {
+        waitUntil: 'domcontentloaded',
+      });
+      await page.waitForURL(targetPattern, { timeout: 30_000 }).catch(() => undefined);
+      if (!targetPattern.test(page.url())) {
+        throw new Error(`Hearings case-details navigation did not reach ${targetUrl}; current URL is ${page.url()}`);
+      }
+      return;
+    } catch (error) {
+      if (attempt >= HEARINGS_NAVIGATION_ATTEMPTS || !isTransientNavigationError(error)) {
+        throw error;
+      }
+    }
+  }
+}
 
 export function resolveHearingsCaseRoute(options: {
   routeConfig: HearingsMockRoutesConfig;
@@ -50,19 +85,17 @@ export async function openHearingsTab(
   page: Page,
   caseDetailsPage: CaseDetailsPage,
   options: {
-    userIdentifier?: string;
+    userIdentifier?: HearingManagerUserIdentifier;
     routeConfig: HearingsMockRoutesConfig;
     jurisdictionId?: string;
     caseTypeId?: string;
     caseReference?: string;
   }
 ): Promise<void> {
-  await applySessionCookies(page, options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
+  await applyHearingManagerSessionCookies(page, options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, options.routeConfig);
   const route = resolveHearingsCaseRoute(options);
-  await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference), {
-    waitUntil: 'domcontentloaded',
-  });
+  await gotoCaseDetailsWithRetry(page, caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference));
   await caseDetailsPage.selectCaseDetailsTab('Hearings');
 }
 
@@ -71,16 +104,25 @@ export async function openHearingsTabForScenario(
   caseDetailsPage: CaseDetailsPage,
   config: HearingsMockRoutesConfig,
   options?: {
-    userIdentifier?: string;
+    userIdentifier?: HearingManagerUserIdentifier;
     waitForGetHearingsResponse?: boolean;
   }
 ): Promise<Response | null> {
-  await applySessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
+  await applyHearingManagerSessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, config);
   const route = resolveHearingsCaseRoute({ routeConfig: config });
-  await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference), {
-    waitUntil: 'domcontentloaded',
-  });
+  const targetUrl = caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference);
+  await gotoCaseDetailsWithRetry(page, targetUrl);
+  await expect(caseDetailsPage.container)
+    .toBeVisible({ timeout: 30_000 })
+    .catch(async (error: Error) => {
+      await gotoCaseDetailsWithRetry(page, targetUrl);
+      await expect(caseDetailsPage.container)
+        .toBeVisible({ timeout: 30_000 })
+        .catch(() => {
+          throw error;
+        });
+    });
 
   if (options?.waitForGetHearingsResponse === false) {
     await caseDetailsPage.selectCaseDetailsTab('Hearings');
@@ -92,6 +134,23 @@ export async function openHearingsTabForScenario(
   return getHearingsResponse;
 }
 
+export function annotateHearingManagerSessionUser(testInfo: Pick<TestInfo, 'annotations'>, selectedUserIdentifier: string): void {
+  testInfo.annotations.push({ type: 'session-user', description: selectedUserIdentifier });
+}
+
+export async function applyHearingManagerSessionCookies(
+  page: Page,
+  userIdentifier: HearingManagerUserIdentifier,
+  testInfo: Pick<TestInfo, 'annotations'> & Partial<Pick<TestInfo, 'parallelIndex'>> = test.info(),
+  applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
+): Promise<string> {
+  const candidates = resolveHearingManagerSessionCandidates(userIdentifier, { parallelIndex: testInfo.parallelIndex });
+  const { userIdentifier: selectedUserIdentifier } = await applyFromPool(page, candidates);
+
+  annotateHearingManagerSessionUser(testInfo, selectedUserIdentifier);
+  return selectedUserIdentifier;
+}
+
 export function buildLargeListedHearings(total: number): HearingScenario[] {
   return Array.from({ length: total }, (_value, index) => ({
     ...LISTED_HEARING_SCENARIO,
@@ -100,14 +159,14 @@ export function buildLargeListedHearings(total: number): HearingScenario[] {
   }));
 }
 
-export async function waitForHearingsTerminalState(page: Page, hearingsTabPage: HearingsTabPage): Promise<void> {
+export async function waitForHearingsTerminalState(hearingsTabPage: HearingsTabPage): Promise<void> {
   await expect
     .poll(
       async () => {
         if (await hearingsTabPage.reloadButton.isVisible()) {
           return 'reload';
         }
-        if (await page.getByText('No current and upcoming hearings found').isVisible()) {
+        if (await hearingsTabPage.emptyState.isVisible()) {
           return 'empty';
         }
         return 'pending';
@@ -118,27 +177,17 @@ export async function waitForHearingsTerminalState(page: Page, hearingsTabPage: 
 }
 
 export async function expectHearingsRowsHiddenBeforeResponse(page: Page): Promise<void> {
-  await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0, {
-    timeout: HEARINGS_ROWS_HIDDEN_TIMEOUT_MS,
-  });
+  await new HearingsTabPage(page).expectNoViewDetailsButtons(HEARINGS_ROWS_HIDDEN_TIMEOUT_MS);
 }
 
 export async function continueHearingsFlow(page: Page): Promise<void> {
-  await page.getByRole('button', { name: /^continue$/i }).click();
+  await new HearingsTabPage(page).continueFlow();
 }
 
 export async function goBackInHearingsFlow(page: Page): Promise<void> {
-  await page.getByRole('link', { name: /^back$/i }).click();
+  await new HearingsTabPage(page).goBack();
 }
 
 export async function selectOrderedLinkedHearings(page: Page): Promise<void> {
-  await page.locator('#linked-form input[type="radio"]').first().check();
-  await continueHearingsFlow(page);
-  await page.locator('#particularOrder').check();
-
-  const orderSelects = page.locator('select[id^="hearingsOrder"]');
-  const orderCount = await orderSelects.count();
-  for (let index = 0; index < orderCount; index += 1) {
-    await orderSelects.nth(index).selectOption(String(index + 1));
-  }
+  await new HearingsTabPage(page).selectOrderedLinkedHearings();
 }

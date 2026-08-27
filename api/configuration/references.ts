@@ -60,7 +60,6 @@ export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID';
 export const SERVICES_IDAM_LOGIN_URL = 'services.idam.idamLoginUrl';
 export const SERVICES_IDAM_ISS_URL = 'services.idam.iss';
 export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl';
-export const SERVICES_IDAM_SERVICE_OVERRIDE = 'services.idam.serviceOverride';
 
 export const SERVICE_S2S_PATH = 'services.s2s';
 export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions';
@@ -83,6 +82,7 @@ export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 export const SERVICES_TRANSLATION_API_URL = 'services.translation';
 
 export const PROTOCOL = 'protocol';
+export const DYNATRACE_CDN = 'dynatraceCdn';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';
 
@@ -106,6 +106,8 @@ export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
 
 export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles';
 
+export const DECENTRALISED_CASE_TYPE_CONFIG = 'decentralisedCaseTypeConfig';
+
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret';
 
 export const SYSTEM_USER_NAME = 'secrets.rpx.system-user-name';
@@ -128,6 +130,7 @@ export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 export const FEATURE_DOCS_ENABLED = 'docsEnabled';
 export const FEATURE_QUERY_IDAM_SERVICE_OVERRIDE = 'queryIdamServiceOverride';
+export const FEATURE_DYNATRACE_ENABLED = 'dynatraceEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 

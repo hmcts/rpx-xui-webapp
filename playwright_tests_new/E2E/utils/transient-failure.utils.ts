@@ -3,20 +3,24 @@ export const DEFAULT_TRANSIENT_MAX_ATTEMPTS = 2;
 const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /DOWNSTREAM_API_5\d\d/,
   /status\s+5\d\d/i,
+  /status\s+429/i,
+  /HTTP\s+429/i,
   /NETWORK_TIMEOUT/,
   /SLOW_API_RESPONSE/,
   /The event could not be created/i,
-  /Validation error after/i,
   /Something went wrong page was displayed/i,
+  /Task list showed service down while/i,
   /callback data failed validation/i,
   /timeout of \d+ms exceeded/i,
   /timeout \d+ms exceeded/i,
   /ECONNRESET/i,
+  /ENOTFOUND|getaddrinfo/i,
   /ETIMEDOUT/i,
   /Exceeded \d+ auto-advance attempts before submit/i,
   /Submit button did not become available/i,
   /Submit button not visible/i,
   /Continue button not visible while retrying wizard advance/i,
+  /Create case select "#[^"]+" did not become ready within \d+ms/i,
   /Critical wizard endpoint failure/i,
   /Transient dependency instability after submit/i,
   /Test ended/i,
@@ -42,10 +46,13 @@ export function isDependencyEnvironmentFailure(error: unknown): boolean {
     /status\s+5\d\d/i.test(message) ||
     /something went wrong page/i.test(message) ||
     /network timeout/i.test(message) ||
-    /ECONNRESET|ETIMEDOUT/i.test(message) ||
-    /Target page, context or browser has been closed/i.test(message) ||
+    /ECONNRESET|ENOTFOUND|ETIMEDOUT|getaddrinfo/i.test(message) ||
     /setup exceeded \d+ms/i.test(message)
   );
+}
+
+export function isBrowserLifecycleFailure(error: unknown): boolean {
+  return FATAL_PAGE_CLOSED_PATTERNS.some((pattern) => pattern.test(asErrorMessage(error)));
 }
 
 export function isTransientWorkflowFailure(error: unknown): boolean {

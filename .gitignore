@@ -117,6 +117,7 @@ ignore/
 
 #playwright
 test-results/
+.cache/
 
 # Accidental duplicates (do not commit)
 /.c8rc.json
@@ -141,3 +142,4 @@ Fortify Scan/
 /docs/PLAN.md
 /docs/RESULT.md
 /docs/TODO.md
+/test/java/.gradle

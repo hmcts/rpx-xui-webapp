@@ -4,11 +4,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { AlertService, CaseField, CaseNotifier, CasesService, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
-import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
+import { getAssignedMockTask, getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -129,7 +129,7 @@ const cv = {
 describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
-  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getUsersFromServices']);
+  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getUsersByIdamIds']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -182,9 +182,14 @@ describe('TasksContainerComponent', () => {
     fixture = TestBed.createComponent(TasksContainerComponent);
     component = fixture.componentInstance;
     mockWACaseService.getTasksByCaseId.and.returnValue(of(getMockTasks()));
-    mockCaseworkerService.getUsersFromServices.and.returnValue([]);
+    mockCaseworkerService.getUsersByIdamIds.and.returnValue(of([]));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(getMockTasks()));
     fixture.detectChanges();
+    mockWACaseService.getTasksByCaseId.calls.reset();
+    mockCaseworkerService.getUsersByIdamIds.calls.reset();
+    mockRoleService.getCaseRolesUserDetails.calls.reset();
+    mockLoadingService.register.calls.reset();
+    mockLoadingService.unregister.calls.reset();
   });
 
   it('should correctly show task alert when warnings are present', () => {
@@ -198,6 +203,68 @@ describe('TasksContainerComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.tasks.length).toEqual(0);
+  });
+
+  // to be changed/amended when EXUI-2645 implementation is complete
+  it('should get assigned names when tasks exist', () => {
+    const tasks = [getAssignedMockTask()];
+    const getAssignedNamesForTasksSpy = spyOn<any>(component, 'getAssignedNamesForTasks').and.returnValue(of(tasks));
+    mockWACaseService.getTasksByCaseId.and.returnValue(of(tasks));
+    mockCaseworkerService.getUsersByIdamIds.and.returnValue(of([]));
+
+    component.ngOnInit();
+
+    expect(mockCaseworkerService.getUsersByIdamIds).toHaveBeenCalledWith([tasks[0].assignee], [tasks[0].jurisdiction]);
+    expect(getAssignedNamesForTasksSpy).toHaveBeenCalled();
+    expect(component.tasks).toEqual(tasks);
+  });
+
+  it('should not get assigned names when there are no tasks', () => {
+    const getAssignedNamesForTasksSpy = spyOn<any>(component, 'getAssignedNamesForTasks').and.returnValue(of([]));
+    mockWACaseService.getTasksByCaseId.and.returnValue(of([]));
+
+    component.ngOnInit();
+
+    expect(mockCaseworkerService.getUsersByIdamIds).not.toHaveBeenCalled();
+    expect(getAssignedNamesForTasksSpy).not.toHaveBeenCalled();
+    expect(component.tasks).toEqual([]);
+  });
+
+  it('should unregister loading token when tasks load successfully', () => {
+    const loadingToken = 'tasks-loading-token';
+    mockLoadingService.register.and.returnValue(loadingToken);
+    mockWACaseService.getTasksByCaseId.and.returnValue(of([]));
+
+    component.ngOnInit();
+
+    expect(mockLoadingService.unregister).toHaveBeenCalledWith(loadingToken);
+  });
+
+  it('should unregister loading token when tasks fail to load', () => {
+    const loadingToken = 'tasks-loading-token';
+    mockLoadingService.register.and.returnValue(loadingToken);
+    mockWACaseService.getTasksByCaseId.and.returnValue(throwError(() => new Error('Task load failed')));
+
+    component.ngOnInit();
+
+    expect(mockLoadingService.unregister).toHaveBeenCalledWith(loadingToken);
+  });
+
+  it('should request judicial user details when task assignee name is not found', () => {
+    component.caseworkers = [];
+    component.tasks = [
+      {
+        ...getMockTasks()[0],
+        assignee: 'judicial-user-id',
+        assigneeName: null,
+        jurisdiction: 'IA',
+      },
+    ];
+    mockRoleService.getCaseRolesUserDetails.and.returnValue(of([]));
+
+    (component as any).getAssignedNamesForTasks().subscribe();
+
+    expect(mockRoleService.getCaseRolesUserDetails).toHaveBeenCalledWith(['judicial-user-id'], ['IA']);
   });
 
   it('should return task with corect name when getJudicialNamedTasks called', () => {

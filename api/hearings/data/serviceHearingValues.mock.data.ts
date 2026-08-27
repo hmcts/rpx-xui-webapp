@@ -9,6 +9,7 @@ import {
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 
 export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+  caseId: '1234567890',
   hmctsServiceID: 'BBA3',
   hmctsInternalCaseName: 'Jane and Smith vs DWP',
   publicCaseName: 'Jane and Smith vs DWP',

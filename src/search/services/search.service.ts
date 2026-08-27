@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HMCTSServiceDetails } from '../../app/models/hmcts-service-details.model';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SearchStatePersistenceKey } from '../enums';
 import { SearchParameters, SearchRequest, SearchRequestCriteria, SearchResult } from '../models';
 import { SearchRequestParty } from '../models/search-request-party.model';
@@ -39,7 +40,7 @@ export class SearchService {
 
   public retrieveState(key: string): any {
     const sessionStorageObj = globalThis?.sessionStorage;
-    return sessionStorageObj?.getItem(key) ? JSON.parse(sessionStorageObj.getItem(key)) : null;
+    return sessionStorageObj?.getItem(key) ? safeJsonParse(sessionStorageObj.getItem(key), null) : null;
   }
 
   public decrementStartRecord(): number {

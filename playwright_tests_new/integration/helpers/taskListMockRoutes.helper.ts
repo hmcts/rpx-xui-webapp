@@ -1,18 +1,233 @@
 import type { Page } from '@playwright/test';
+import nodeAppDataModels from '../../api/data/nodeAppDataModels';
+import {
+  assertValidWorkAllocationCaseTaskMock,
+  assertValidWorkAllocationTaskListMock,
+} from './workAllocationMockValidation.helper';
+import { setupCaseworkerJurisdictionsRoute, type SupportedJurisdictionDetail } from './caseworkerJurisdictionMockRoutes.helper';
+import {
+  buildXuiAppShellAppConfigMock,
+  buildXuiAppShellClientContextMock,
+  buildXuiAppShellEnvironmentConfigMock,
+} from './xuiAppShellMockRoutes.helper';
+import {
+  type AMMenuRoleName,
+  buildSupportedAMRoleAssignments,
+  defaultAMSupportedRoleCategories,
+  defaultAMSupportedRoleTypes,
+  defaultStaffAMMenuRole,
+  ensureSupportedAMRoleAssignment,
+  uniqueRoles,
+} from './amRoleAssignmentMock.helper';
 
 export const taskListRoutePattern = /\/workallocation\/task(?:\?.*)?$/;
-const defaultSupportedJurisdictionsMock = ['IA', 'SSCS'];
-type SupportedJurisdictionDetail = { serviceId: string; serviceName: string };
+const defaultSupportedJurisdictionsMock = ['IA', 'SSCS', 'Other'];
+type TaskMockRouteOptions = {
+  bootstrapUser?: TaskListBootstrapUserOptions;
+  skipValidation?: boolean;
+  status?: number;
+};
 
-const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionsMock.map(
-  (serviceId) => ({ serviceId, serviceName: serviceId })
+export type TaskListBootstrapRoleAssignment = Record<string, unknown> & {
+  baseLocation?: string;
+  bookable?: boolean | string;
+  jurisdiction: string;
+  region?: string;
+  roleCategory?: string;
+  roleName?: string;
+  roleType: string;
+  substantive?: boolean | string;
+};
+
+export type TaskListBootstrapUserOptions = {
+  amMenuRole?: AMMenuRoleName;
+  replaceRoleAssignments?: boolean;
+  roleAssignments?: TaskListBootstrapRoleAssignment[];
+  roleCategory?: string;
+  roles?: string[];
+  userId?: string;
+};
+
+const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const supportedJurisdictionDisplayNames: Record<string, string> = {
+  CIVIL: 'Civil',
+  EMPLOYMENT: 'Employment',
+  IA: 'Immigration and Asylum',
+  PRIVATELAW: 'Private Law',
+  PUBLICLAW: 'Public Law',
+  SSCS: 'Social security and child support',
+};
+
+export function buildSupportedJurisdictionDetails(
+  supportedJurisdictions: string[],
+  supportedJurisdictionDetails: SupportedJurisdictionDetail[] = []
+): SupportedJurisdictionDetail[] {
+  return supportedJurisdictions.map((serviceId) => {
+    const explicitDetail = supportedJurisdictionDetails.find((detail) => detail.serviceId === serviceId);
+    return explicitDetail ?? { serviceId, serviceName: supportedJurisdictionDisplayNames[serviceId] ?? serviceId };
+  });
+}
+
+export const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetail[] = buildSupportedJurisdictionDetails(
+  defaultSupportedJurisdictionsMock
 );
+
+const defaultTaskListLocationMock = {
+  epimms_id: '765324',
+  site_name: 'Taylor House',
+  region_id: '1',
+  region: 'London',
+  postcode: 'EC1R 4QU',
+  court_address: '88 Rosebery Avenue, London',
+  is_case_management_location: 'Y',
+  is_hearing_location: 'Y',
+};
+const defaultStaffWorkAllocationRoles = ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
 
 export async function setupTaskListBootstrapRoutes(
   page: Page,
   supportedJurisdictions: string[] = defaultSupportedJurisdictionsMock,
-  supportedJurisdictionDetails: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionDetailsMock
+  supportedJurisdictionDetails: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionDetailsMock,
+  userOptions: TaskListBootstrapUserOptions = {}
 ): Promise<void> {
+  const resolvedSupportedJurisdictionDetails = buildSupportedJurisdictionDetails(
+    supportedJurisdictions,
+    supportedJurisdictionDetails
+  );
+  const appConfig = {
+    ...buildXuiAppShellAppConfigMock(),
+    wa_supported_role_categories: defaultAMSupportedRoleCategories.join(','),
+    wa_supported_role_types: defaultAMSupportedRoleTypes.join(','),
+  };
+  const environmentConfig = buildXuiAppShellEnvironmentConfigMock();
+  const clientContext = buildXuiAppShellClientContextMock();
+  const userDetails = nodeAppDataModels.getUserDetails_oauth();
+  if (userOptions.userId) {
+    userDetails.userInfo.id = userOptions.userId;
+    userDetails.userInfo.uid = userOptions.userId;
+  }
+  const amMenuRole = userOptions.amMenuRole ?? defaultStaffAMMenuRole;
+  userDetails.userInfo.roles = uniqueRoles([
+    ...(userOptions.roles ?? defaultStaffWorkAllocationRoles),
+    'task-supervisor',
+    amMenuRole,
+  ]);
+  userDetails.userInfo.roleCategories = [userOptions.roleCategory ?? 'LEGAL_OPERATIONS'];
+  const routeRoleAssignments = userOptions.roleAssignments
+    ? ensureSupportedAMRoleAssignment(userOptions.roleAssignments, amMenuRole, supportedJurisdictions)
+    : [
+        ...supportedJurisdictions.map((jurisdiction) => ({
+          jurisdiction,
+          roleCategory: userOptions.roleCategory ?? 'LEGAL_OPERATIONS',
+          roleName: 'task-supervisor',
+          roleType: 'ORGANISATION',
+          substantive: 'Y',
+        })),
+        ...buildSupportedAMRoleAssignments([amMenuRole], supportedJurisdictions),
+      ];
+  userDetails.roleAssignmentInfo = [
+    ...(userOptions.replaceRoleAssignments
+      ? []
+      : Array.isArray(userDetails.roleAssignmentInfo)
+        ? userDetails.roleAssignmentInfo
+        : []),
+    ...routeRoleAssignments,
+  ];
+
+  await page.addInitScript(
+    ([seededUserInfo, seededClientContext]) => {
+      window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
+      window.sessionStorage.setItem('clientContext', JSON.stringify(seededClientContext));
+    },
+    [userDetails.userInfo, clientContext]
+  );
+
+  await page.route('**/auth/isAuthenticated*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(true),
+    });
+  });
+
+  await page.route('**/api/user/details*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(userDetails),
+    });
+  });
+
+  await page.route('**/assets/config/config.json*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(appConfig),
+    });
+  });
+
+  await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(environmentConfig),
+    });
+  });
+
+  await page.route('**/api/organisation*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        name: 'Playwright Organisation',
+        organisationIdentifier: 'PLAYWRIGHT_ORG',
+        status: 'ACTIVE',
+        contactInformation: [],
+        paymentAccount: [],
+      }),
+    });
+  });
+
+  await page.route('**/api/role-access/roles/getJudicialUsers*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
+  await page.route('**/api/role-access/roles/get-my-access-new-count*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ count: 0 }),
+    });
+  });
+
+  await page.route('**/api/role-access/allocate-role/valid-roles*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          serviceId: 'IA',
+          roles: [{ roleId: 'lead-judge', roleName: 'Lead judge' }],
+        },
+      ]),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
+  await setupCaseworkerJurisdictionsRoute(page, supportedJurisdictions, resolvedSupportedJurisdictionDetails);
+
   await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
     await route.fulfill({
       status: 200,
@@ -25,7 +240,23 @@ export async function setupTaskListBootstrapRoutes(
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(supportedJurisdictionDetails),
+      body: JSON.stringify(resolvedSupportedJurisdictionDetails),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleCategories*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(defaultAMSupportedRoleCategories),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleTypes*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(defaultAMSupportedRoleTypes),
     });
   });
 
@@ -46,6 +277,14 @@ export async function setupTaskListBootstrapRoutes(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ healthState: true }),
+    });
+  });
+
+  await page.route('**/workallocation/location*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([defaultTaskListLocationMock]),
     });
   });
 
@@ -81,14 +320,50 @@ export async function setupTaskListBootstrapRoutes(
  * await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 160));
  * ```
  */
-export async function setupTaskListMockRoutes(page: Page, taskListResponse: unknown): Promise<void> {
-  await setupTaskListBootstrapRoutes(page);
+export async function setupTaskListMockRoutes(
+  page: Page,
+  taskListResponse: unknown,
+  options: TaskMockRouteOptions = {}
+): Promise<void> {
+  if (!options.skipValidation) {
+    assertValidWorkAllocationTaskListMock(taskListResponse);
+  }
+
+  await setupTaskListBootstrapRoutes(
+    page,
+    defaultSupportedJurisdictionsMock,
+    defaultSupportedJurisdictionDetailsMock,
+    options.bootstrapUser
+  );
 
   await page.route(taskListRoutePattern, async (route) => {
     await route.fulfill({
-      status: 200,
+      status: options.status ?? 200,
       contentType: 'application/json',
       body: JSON.stringify(taskListResponse),
+    });
+  });
+}
+
+export function buildCaseTaskListRoutePattern(caseId: string): RegExp {
+  return new RegExp(`/workallocation/case/task/${escapeRegex(caseId)}(?:\\?.*)?$`);
+}
+
+export async function setupCaseTaskListMockRoute(
+  page: Page,
+  caseId: string,
+  caseTaskResponse: unknown,
+  options: TaskMockRouteOptions = {}
+): Promise<void> {
+  if (!options.skipValidation) {
+    assertValidWorkAllocationCaseTaskMock(caseTaskResponse);
+  }
+
+  await page.route(buildCaseTaskListRoutePattern(caseId), async (route) => {
+    await route.fulfill({
+      status: options.status ?? 200,
+      contentType: 'application/json',
+      body: JSON.stringify(caseTaskResponse),
     });
   });
 }

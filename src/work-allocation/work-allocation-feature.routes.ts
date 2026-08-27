@@ -2,6 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TaskSupervisorGuard } from '../app/guards/task-supervisor.guard';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { NavigationAccessGuard } from '../app/shared/guards/navigation-access.guard';
 import { TaskActionConstants } from './components/constants';
 import {
   AllWorkCaseComponent,
@@ -32,7 +33,11 @@ export const ROUTES: Routes = [
       {
         path: 'my-work',
         component: TaskHomeComponent,
-        canActivate: [HealthCheckGuard],
+        canActivate: [HealthCheckGuard, NavigationAccessGuard],
+        data: {
+          accessDeniedRedirectUrl: '/cases',
+          requiredNavigationHref: '/work/my-work/list',
+        },
         resolve: {
           locations: LocationResolver,
         },
@@ -108,7 +113,7 @@ export const ROUTES: Routes = [
       },
       {
         path: ':taskId',
-        resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService },
+        resolve: { taskAndCaseworker: TaskResolver, roles: TaskRoleResolverService },
         children: [
           {
             path: 'assign',

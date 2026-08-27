@@ -37,64 +37,33 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
-## Fully mocked local setup (no downstream environments)
+## Playwright integration local setup
 
-Use this mode when AAT/downstream services are unavailable and you want local integration development.
+Use Playwright integration tests for local UI coverage with mocked backend routes. The old Codecept-backed `test_codecept` mock runner has been retired from this repository, so new local test work should use the Playwright route mocks under `playwright_tests_new/integration/`.
 
-### Ports used
-
-- `3000` Angular UI
-- `3001` Node API
-- `8080` Backend mock (includes local IDAM/OAuth routes)
-
-### 1) Prerequisites
+### Prerequisites
 
 ```bash
-node -v   # requires >= 20.19.0
+node -v   # requires >= 24.18.0
 yarn install
 ```
 
-### 2) Start services (three terminals)
+### Run Playwright integration tests against a local UI
 
-Terminal A (mock backend + local IDAM on `8080`):
-
-```bash
-yarn test:backendMock
-```
-
-Terminal B (Node API on `3001`):
+Start the Angular and Node services in separate terminals when the scenario needs the local app shell:
 
 ```bash
 yarn start:node
-```
-
-Terminal C (Angular UI on `3000`):
-
-```bash
 yarn start:ng
 ```
 
-### 3) Quick health checks
-
-```bash
-curl -sS -D - -o /dev/null http://localhost:3000/auth/login | grep -i '^location:'
-curl -sS -D - -o /dev/null http://localhost:3000/ | grep -Ei 'HTTP/|location:|set-cookie:'
-```
-
-Expected:
-
-- `/auth/login` redirects to `http://localhost:8080/o/authorize...` (not AAT IDAM).
-- `/` returns `HTTP/1.1 200 OK`.
-
-### 4) Run Playwright integration tests in local mocked mode
+Then run the integration suite with the local URL overrides:
 
 ```bash
 TEST_URL=http://localhost:3000 \
 EXUI_BASE_URL=http://localhost:3000 \
 MANAGE_CASES_BASE_URL=http://localhost:3000/cases \
-IDAM_WEB_URL=http://localhost:8080 \
-IDAM_TESTING_SUPPORT_URL=http://localhost:8080 \
-FUNCTIONAL_TESTS_WORKERS=4 \
+FUNCTIONAL_TESTS_WORKERS=7 \
 PLAYWRIGHT_SKIP_INSTALL=true \
 yarn test:playwright:integration
 ```
@@ -102,7 +71,11 @@ yarn test:playwright:integration
 Why these env vars are required:
 
 - `TEST_URL` / `EXUI_BASE_URL` force Playwright target to local UI.
-- `IDAM_WEB_URL` / `IDAM_TESTING_SUPPORT_URL` prevent session capture from attempting AAT IDAM login.
+- The integration suite uses Playwright route mocks and session cookies for browser coverage. Only set `IDAM_WEB_URL` / `IDAM_TESTING_SUPPORT_URL` when a supported local IDAM substitute is running.
+
+### Legacy rollback note
+
+Do not reintroduce the retired Codecept backend mock for normal development or CI. If an emergency rollback genuinely needs the old runner, restore the `test_codecept` assets and the removed `test:backendMock` / `patch:static` scripts from git history on a dedicated rollback branch, document the reason in the PR, and remove the rollback again once the incident is resolved.
 
 ### Troubleshooting
 
@@ -110,24 +83,15 @@ Why these env vars are required:
   - Another Node API process is running. Stop it, then restart `yarn start:node`.
 - Browser says `ERR_TOO_MANY_REDIRECTS`:
   - Clear site cookies for `localhost`.
-  - Verify `/auth/login` points to `localhost:8080` and not `idam-web-public.aat...`.
+  - Verify the scenario is using the Playwright integration route mocks and not falling back to an AAT IDAM login.
 
 ## Local mock/auth changes implemented
 
 The following code changes were made to support fully mocked local auth + integration flow:
 
-1. `test_codecept/backendMock/services/idam/index.js`
-   - OIDC discovery metadata now points to local mock endpoints on `http://localhost:8080`.
+Refer to `api/test/pact/pact-mocks/` for Pact-only mock service implementations.
 
-2. `test_codecept/backendMock/services/idam/routes.js`
-   - Added `/login` route to redirect to local `/o/authorize`.
-   - Added `/details` endpoint with role-bearing mock user profile.
-   - Added shared token responder for both `/o/token` and `/oauth2/token`.
-   - Corrected token response shape (`token_type: Bearer`, numeric `expires_in`, JWT `exp` in seconds).
-   - Updated OAuth callback `iss` to local `http://localhost:8080/o`.
-
-3. `test_codecept/backendMock/services/userApiData.js`
-   - Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
+- Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
 
 4. `api/user/index.ts`
    - Hardened active role-assignment extraction to handle undefined role arrays without crashing.
@@ -148,6 +112,62 @@ Node API test commands (complementary):
 - `yarn coverage:node` – full Mocha + c8 coverage run for the Node layer (uses `api` scripts and generates coverage reports). Use when you need coverage numbers.
 - `yarn test:node:local` – quick Mocha run for Node with dev config (`NODE_CONFIG_DIR=../config`, `NODE_CONFIG_ENV=development`, `ALLOW_CONFIG_MUTATIONS=1`) and stubs for external calls; good for local iteration.
 - `yarn test:api:pw:coverage` – Playwright API functional tests with `c8` coverage over live API flows; complements the unit coverage above by exercising end-to-end routes.
+
+## Playwright test automation (E2E, integration, reporting)
+
+Use this section as the quick entry point for Playwright testing in this repo.
+
+Detailed suite documentation and architecture:
+
+- [`playwright_tests_new/README.md`](./playwright_tests_new/README.md)
+- [`playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md`](./playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md)
+
+### Test layers and commands
+
+- **E2E UI journeys (browser + backend):**
+  - AAT: `yarn test:playwrightE2E`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:playwrightE2E`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:playwrightE2E`
+  - Local app target: `TEST_URL=http://localhost:3000 yarn test:playwrightE2E`
+- **Integration tests (UI with mocked backend routes):**
+  - AAT: `yarn test:playwright:integration`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:playwright:integration`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:playwright:integration`
+  - Local app target with Playwright route mocks: `TEST_URL=http://localhost:3000 EXUI_BASE_URL=http://localhost:3000 PLAYWRIGHT_SKIP_INSTALL=true yarn test:playwright:integration`
+- **API functional tests (Playwright node-api project):**
+  - `yarn test:api:pw`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:api:pw`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:api:pw`
+  - With coverage/report copy: `yarn test:api:pw:coverage`
+
+For AAT and DEMO, generate and source the local Playwright env first with `yarn env:populate:playwright:aat` or `yarn env:populate:playwright:demo`, then `set -a; source .env; set +a`. For ITHC, export the required credentials through an approved local secret mechanism and keep passwords out of command history.
+
+### How tests operate
+
+- **Session management:** Playwright uses lazy session capture and shared `.sessions/` storage to avoid repeated logins during parallel runs.
+- **Integration mocking model:** Integration specs in `playwright_tests_new/integration/test/` mock backend APIs with route interception and builders in `playwright_tests_new/integration/mocks/`.
+- **Tag-based execution:** Suites support include/exclude tag filters via environment variables (`E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS` and corresponding `*_EXCLUDED_TAGS_OVERRIDE`). The emergency global exclusion switch is documented in [Playwright global test exclusions](./docs/playwright-global-exclusions.md).
+- **Parallelism:** worker count auto-scales unless overridden with `FUNCTIONAL_TESTS_WORKERS`.
+
+### Reporting and diagnostics
+
+- **Odhin HTML reports:**
+  - E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
+  - Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+  - API: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
+- **Playwright diagnostics:**
+  - Trace/screenshot outputs for failed and timed-out browser tests: `test-results/`
+  - Additional failure payloads: `functional-output/tests/playwright-diagnostics/failure-data/`
+- **CI publishing:** Jenkins archives Odhin reports and Playwright diagnostics artifacts for troubleshooting.
+- **Migration closure:** the Playwright parity matrix, Codecept retirement gate, closure checklist, and ticket coverage snapshot live in [Playwright parity matrix and migration closure gate](./docs/playwright-parity-matrix.md).
+
+### Key considerations for developers
+
+- Use Playwright route mocks for local browser coverage. Only add local IDAM or service substitutes when they are explicitly running and documented for the scenario.
+- Treat the default local setup as **mixed mode**: unless Node is explicitly configured for mock service endpoints, many calls still go to test downstream services.
+- If auth behavior looks incorrect or stale, clear sessions and rerun: `rm -rf .sessions`.
+- Prefer running targeted subsets first (file path or tags), then full suites.
+- For locator hygiene in E2E code, run `yarn lint:playwright:locators`.
 
 ## Linting
 
@@ -296,6 +316,23 @@ az keyvault secret set \
 
 Then regenerate your local env file:
 
+For the Work Allocation solicitor used by Playwright API/E2E tests, store the
+long-lived dashboard-created user as:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name e2e-wa-solicitor-username \
+  --value '<dashboard-created-wa-solicitor-email>' \
+  --tags e2e=WA_SOLICITOR_USERNAME
+
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name e2e-wa-solicitor-password \
+  --value '<dashboard-created-wa-solicitor-password>' \
+  --tags e2e=WA_SOLICITOR_PASSWORD
+```
+
 ```bash
 yarn env:populate:aat
 yarn env:populate:demo
@@ -376,7 +413,7 @@ Key behaviour:
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
 - Run info shows project, release, environment, branch and worker count. Branch defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) and can be overridden via `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`. Other overrides: `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `FUNCTIONAL_TESTS_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
-- Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.
+- Browser runs retain the Playwright trace and failure screenshot when a test fails or times out; successful runs discard these artefacts to limit noise.
 - A flake summary is printed at the end of Playwright runs by `playwright_tests_new/common/reporters/flake-gate.reporter.cjs` (counts flaky, retry-pass and failed tests).
 - Flake gate is currently report-only in all environments; it does not fail the run.
 - `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
@@ -386,13 +423,13 @@ Key behaviour:
 
 Playwright-capable pipeline stages archive diagnostics for troubleshooting and triage:
 
-- `functional-output/tests/**/odhin-report/**/*`
-- `test-results/**/*`
 - `functional-output/tests/playwright-diagnostics/failure-data/**/*`
-- `**/failure-data.json`
+- `test-results/**/trace.zip`
 
 `failure-data.json` files attached by Playwright tests are also copied into
 `functional-output/tests/playwright-diagnostics/failure-data/` with flattened filenames so they are easier to find in Jenkins artifacts.
+Retained trace bundles keep their original test-results path, including the retry attempt, so a timed-out test can be opened with `npx playwright show-trace <trace.zip>`.
+Odhín HTML reports and standalone system-load reports are published through Jenkins HTML Publisher links rather than archived as raw build artifacts.
 
 ### Playwright locator audit
 
@@ -429,8 +466,9 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count scales with available CPU cores in both local and CI runs (approx. half of the logical cores, capped at 8).
+Playwright worker count defaults are 6 workers for E2E/API and 7 workers for integration on the XUI 8CPU agent.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
+Jenkins CNP and nightly keep API, integration, and E2E/cross-browser suites parallel, but use report-gathering fan-out so a failed suite does not abort sibling Odhín and load-report publication. Default PR timing runs do not shard integration because split shard reports are harder to compare.
 
 ### Integration local progress timer
 

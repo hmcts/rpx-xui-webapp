@@ -33,6 +33,7 @@ describe('Hearing Values Effects', () => {
 
   describe('loadHearingValue$', () => {
     const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+      caseId: '1234567890',
       hmctsServiceID: 'BBA3',
       hmctsInternalCaseName: 'Jane Smith vs DWP',
       publicCaseName: 'Jane Smith vs DWP',

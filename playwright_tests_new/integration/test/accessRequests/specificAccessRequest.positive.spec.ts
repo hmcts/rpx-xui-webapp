@@ -3,7 +3,7 @@ import {
   ACCESS_REQUEST_CASE_DETAILS_PATH,
   ACCESS_REQUEST_CASE_ID,
   ACCESS_REQUEST_SERVICE_NAME,
-  applySessionCookies,
+  applySessionCookiesFromPool,
   summaryRow,
   setupSpecificAccessRequestMockRoutes,
   SPECIFIC_ACCESS_PATH,
@@ -13,14 +13,14 @@ const userIdentifier = 'STAFF_ADMIN';
 const specificAccessReason = 'Urgent linked case review required.';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  await applySessionCookiesFromPool(page, [userIdentifier]);
 });
 
 test.describe(`Specific Access Request as ${userIdentifier}`, { tag: ['@integration', '@integration-access-requests'] }, () => {
   test('User can open Specific Access Request from case details', async ({ accessRequestPage, page }) => {
     await setupSpecificAccessRequestMockRoutes(page);
 
-    await page.goto(ACCESS_REQUEST_CASE_DETAILS_PATH, { waitUntil: 'domcontentloaded' });
+    await accessRequestPage.gotoSpecificAccessCaseDetails(ACCESS_REQUEST_CASE_DETAILS_PATH);
 
     await expect(page.getByText('Authorisation is needed to access this case')).toBeVisible();
     await expect(summaryRow(page, 'Service')).toContainText(ACCESS_REQUEST_SERVICE_NAME);
@@ -36,7 +36,7 @@ test.describe(`Specific Access Request as ${userIdentifier}`, { tag: ['@integrat
 
   test('User can submit a specific access request and reach the success page', async ({ accessRequestPage, page }) => {
     await setupSpecificAccessRequestMockRoutes(page);
-    await page.goto(SPECIFIC_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+    await accessRequestPage.gotoSpecificAccessRequest(SPECIFIC_ACCESS_PATH);
 
     await accessRequestPage.specificAccessReasonInput.fill(specificAccessReason);
 

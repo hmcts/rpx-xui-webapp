@@ -2,6 +2,7 @@ import { divorcePocCaseData } from '../../mocks/createCase.mock';
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { TEST_USERS } from '../../testData';
+import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
 
 const userIdentifier = TEST_USERS.SOLICITOR;
 const jurisdiction = 'DIVORCE';
@@ -21,12 +22,41 @@ test.describe(
     test.beforeEach(async ({ page, createCasePage }) => {
       // Lazy capture: only log in SOLICITOR when this test suite runs
       await applySessionCookies(page, userIdentifier);
+      const userDetails = buildHearingsUserDetailsMock(['caseworker-divorce', 'caseworker-divorce-solicitor']);
+      userDetails.userInfo.id = 'solicitor-create-case-integration-user';
+      userDetails.userInfo.uid = 'solicitor-create-case-integration-user';
+      userDetails.userInfo.email = 'solicitor-create-case-integration-user@example.com';
+
+      await page.addInitScript((seededUserInfo) => {
+        window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
+      }, userDetails.userInfo);
+
+      await page.route('**/api/user/details*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(userDetails),
+        });
+      });
       await page.route(`**/data/internal/case-types/${caseType}/event-triggers/createCase*`, async (route) => {
         const body = JSON.stringify(divorcePocCaseData());
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
+      await page.route(`**/data/case-types/${caseType}/validate*`, async (route) => {
+        const request = route.request();
+        const requestBody = request.postDataJSON?.() as { data?: unknown } | undefined;
+        const responseBody = {
+          data: requestBody?.data ?? {},
+          _links: {
+            self: {
+              href: request.url(),
+            },
+          },
+        };
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(responseBody) });
+      });
       await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/`);
-      await expect(createCasePage.person1TitleInput).toBeVisible();
+      await createCasePage.waitForCreateCaseFormReady('negative create-case setup');
     });
     test(`User should see a page refreshed modal when attempting to skip to the submit case page, without filling in required fields`, async ({
       createCasePage,

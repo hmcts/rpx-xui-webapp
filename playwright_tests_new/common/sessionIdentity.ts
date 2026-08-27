@@ -1,4 +1,7 @@
+import { createHash } from 'node:crypto';
+
 import { UserUtils } from '../E2E/utils/user.utils.js';
+import { resolveStaffAdminUserIdentifier } from './staffAdminUserPool.js';
 
 export type SessionIdentity = {
   userIdentifier: string;
@@ -17,6 +20,11 @@ function normaliseSessionStorageKey(value: string): string {
   return value.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
 }
 
+function collisionSafeSessionStorageKey(readableValue: string, canonicalValue: string): string {
+  const discriminator = createHash('sha256').update(canonicalValue).digest('hex').slice(0, 12);
+  return `${normaliseSessionStorageKey(readableValue)}-${discriminator}`;
+}
+
 export function resolveSessionIdentity(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): SessionIdentity {
   if (typeof input !== 'string') {
     return {
@@ -28,9 +36,10 @@ export function resolveSessionIdentity(input: SessionIdentityInput, deps: Sessio
   }
 
   const userUtils = deps.userUtils ?? new UserUtils();
-  const credentials = userUtils.getUserCredentials(input);
+  const userIdentifier = resolveStaffAdminUserIdentifier(input);
+  const credentials = userUtils.getUserCredentials(userIdentifier);
   return {
-    userIdentifier: input,
+    userIdentifier,
     email: credentials.email,
     password: credentials.password,
   };
@@ -38,5 +47,10 @@ export function resolveSessionIdentity(input: SessionIdentityInput, deps: Sessio
 
 export function resolveSessionStorageKey(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): string {
   const identity = resolveSessionIdentity(input, deps);
-  return normaliseSessionStorageKey(identity.sessionKey?.trim() || identity.email);
+  const explicitSessionKey = identity.sessionKey?.trim();
+  if (explicitSessionKey) {
+    return collisionSafeSessionStorageKey(explicitSessionKey, `explicit\0${explicitSessionKey}`);
+  }
+  const canonicalEmail = identity.email.trim().toLowerCase();
+  return collisionSafeSessionStorageKey(canonicalEmail, canonicalEmail);
 }

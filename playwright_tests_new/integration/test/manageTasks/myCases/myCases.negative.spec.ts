@@ -17,7 +17,7 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
       });
 
       await test.step('Navigate to My cases', async () => {
-        await taskListPage.gotoMyCases();
+        await taskListPage.gotoMyCasesExpectingServiceDown();
       });
 
       await test.step('Verify the service down page is shown', async () => {
@@ -35,7 +35,7 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
       });
 
       await test.step('Navigate to My cases', async () => {
-        await page.goto('/work/my-work/my-cases', { waitUntil: 'domcontentloaded' });
+        await taskListPage.gotoMyCasesExpectingNotAuthorised();
       });
 
       await test.step('Verify the not authorised page is shown', async () => {
@@ -54,7 +54,7 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
     });
 
     await test.step('Navigate to My cases', async () => {
-      await taskListPage.gotoMyCases();
+      await taskListPage.gotoMyCasesExpectingServiceDown();
     });
 
     await test.step('Verify the service down page is shown', async () => {

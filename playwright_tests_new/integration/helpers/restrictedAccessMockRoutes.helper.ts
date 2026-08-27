@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 import { faker } from '@faker-js/faker';
 
 export const DEFAULT_ROLE_ACCESS_USERS_OPS = [
@@ -128,6 +129,8 @@ export type RestrictedAccessMockOverrides = {
   supportedJurisdictions?: object;
   judicialUsersStatus?: number;
   judicialUsersBody?: object;
+  defaultWASupportedRoleCategories?: object;
+  defaultWASupportedRoleTypes?: object;
 };
 
 export async function setupRestrictedAccessMocks(page: Page, overrides: RestrictedAccessMockOverrides = {}): Promise<void> {
@@ -140,7 +143,11 @@ export async function setupRestrictedAccessMocks(page: Page, overrides: Restrict
     supportedJurisdictions = ['PUBLICLAW'],
     judicialUsersStatus = 200,
     judicialUsersBody = DEFAULT_JUDICIAL_USERS,
+    defaultWASupportedRoleCategories = ['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL'],
+    defaultWASupportedRoleTypes = ['ORGANISATION'],
   } = overrides;
+
+  await setupCaseworkerJurisdictionsRoute(page, supportedJurisdictions, undefined, supportedJurisdictionsStatus);
 
   await page.route('**/api/role-access/roles/access-get-by-caseId*', async (route) => {
     await route.fulfill({
@@ -158,11 +165,43 @@ export async function setupRestrictedAccessMocks(page: Page, overrides: Restrict
     });
   });
 
+  await page.route('**/api/wa-supported-role-details/getRoleCategories*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(defaultWASupportedRoleCategories),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleTypes*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(defaultWASupportedRoleTypes),
+    });
+  });
+
   await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
     await route.fulfill({
       status: caseworkersStatus,
       contentType: 'application/json',
       body: JSON.stringify(caseworkersBody),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route) => {
+    await route.fulfill({
+      status: caseworkersStatus,
+      contentType: 'application/json',
+      body: JSON.stringify(caseworkersBody),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUserByIdamId*', async (route) => {
+    await route.fulfill({
+      status: caseworkersStatus,
+      contentType: 'application/json',
+      body: JSON.stringify(caseworkersBody[0]),
     });
   });
 

@@ -1,8 +1,11 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { first } from 'rxjs/operators';
 
-import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseworkerDataService } from '../../../work-allocation/services';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 
@@ -28,9 +31,9 @@ export class RejectedRequestViewComponent implements OnInit {
   public caseType: string;
 
   constructor(
+    private readonly location: Location,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     private readonly caseworkerDataService: CaseworkerDataService,
     private readonly allocateRoleService: AllocateRoleService
   ) {
@@ -66,7 +69,7 @@ export class RejectedRequestViewComponent implements OnInit {
     this.reviewReason =
       this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired
         ? this.getRejectReason(
-            JSON.parse(this.route.snapshot.queryParams.infoRequired),
+            safeJsonParse(this.route.snapshot.queryParams.infoRequired, null),
             this.route.snapshot.queryParams.infoRequiredComment
           )
         : 'No reason for rejection found';
@@ -85,19 +88,19 @@ export class RejectedRequestViewComponent implements OnInit {
         this.reviewerName = caseRoleUserDetails[0].full_name;
       });
     } else {
-      this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
-        this.caseworkerDataService.getUsersFromServices(services).subscribe((caseworkers) => {
-          const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.reviewer);
+      this.caseworkerDataService
+        .getUserByIdamId(this.reviewer)
+        .pipe(first())
+        .subscribe((caseworker) => {
           if (caseworker) {
             this.reviewerName = `${caseworker.firstName} ${caseworker.lastName}`;
           }
         });
-      });
     }
   }
 
   public onBack(): void {
-    window.history.back();
+    this.location.back();
   }
 
   public async goToRequest(): Promise<void> {

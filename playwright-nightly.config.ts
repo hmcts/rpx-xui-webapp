@@ -2,14 +2,27 @@ import { defineConfig, devices } from '@playwright/test';
 
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { resolveWorkerCount } from './playwright-config-utils';
+import {
+  logResolvedTagFilters,
+  resolveLocalWorktreeTestIgnorePatterns,
+  resolveTagFilters,
+  resolveWorkerCount,
+} from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
+const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
+  env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
+
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
+const defaultOdhinOutputFolder = 'functional-output/tests/playwright-e2e/odhin-report';
+const defaultOdhinIndexFilename = 'xui-playwright-e2e.html';
 
 const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBaseUrl;
+const resolveOdhinOutputFolder = (env: EnvMap = process.env) => env.PLAYWRIGHT_REPORT_FOLDER || defaultOdhinOutputFolder;
+const resolveOdhinIndexFilename = (env: EnvMap = process.env) =>
+  env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || defaultOdhinIndexFilename;
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 const resolveEnvironmentFromUrl = (url: string): string => {
@@ -43,17 +56,54 @@ const resolveAgentHardware = () => {
 };
 
 const buildConfig = (env: EnvMap = process.env) => {
+  const e2eEnv = withPlaywrightTagsAlias(env);
   const headlessMode = resolveHeadlessMode(env);
+  const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const baseUrl = resolveBaseUrl(env);
   const workerCount = resolveWorkerCount(env);
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const e2eTagFilters = resolveTagFilters({
+    env: e2eEnv,
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+    suiteTag: '@e2e',
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
+  });
+  logResolvedTagFilters('Cross-browser E2E', e2eTagFilters, e2eEnv);
+  const reporter: [string, Record<string, unknown> | undefined][] = [
+    [env.CI ? 'dot' : 'list', undefined],
+    [
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
+      {
+        outputFolder: resolveOdhinOutputFolder(env),
+        indexFilename: resolveOdhinIndexFilename(env),
+        title: 'RPX XUI Playwright',
+        testEnvironment,
+        project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+        release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
+        startServer: false,
+        consoleLog: true,
+        consoleError: true,
+        testOutput: 'only-on-failure',
+      },
+    ],
+  ];
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
+    testIgnore: [
+      '**/test/smoke/smokeTest.spec.ts',
+      ...localWorktreeTestIgnorePatterns,
+      ...(env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true' ? [] : ['**/*.a11y.spec.ts']),
+    ],
     use: {
       baseURL: baseUrl,
     },
@@ -72,34 +122,20 @@ const buildConfig = (env: EnvMap = process.env) => {
 
     /* Control the number of parallel test workers. */
     workers: workerCount,
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
 
-    reporter: [
-      [env.CI ? 'dot' : 'list'],
-      [
-        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
-        {
-          outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
-          indexFilename: 'xui-playwright-e2e.html',
-          title: 'RPX XUI Playwright',
-          testEnvironment,
-          project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
-          startServer: false,
-          consoleLog: true,
-          consoleError: true,
-          testOutput: 'only-on-failure',
-        },
-      ],
-    ],
+    reporter,
 
     projects: [
       {
         name: 'firefox',
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
         use: {
           ...devices['Desktop Firefox'],
           headless: headlessMode,
-          trace: 'on-first-retry',
+          trace: 'retain-on-failure',
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -109,9 +145,11 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
       {
         name: 'webkit',
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
         use: {
           headless: headlessMode,
-          trace: 'on-first-retry',
+          trace: 'retain-on-failure',
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -127,6 +165,8 @@ const config = buildConfig(process.env);
 
 (config as { __test__?: unknown }).__test__ = {
   buildConfig,
+  resolveOdhinIndexFilename,
+  resolveOdhinOutputFolder,
   resolveWorkerCount,
 };
 

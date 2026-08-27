@@ -1,7 +1,11 @@
 import { createLogger } from '@hmcts/playwright-common';
-import { expect } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
 
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
+import type { Page } from '@playwright/test';
+import { uploadDocumentViaApi } from '../uploadDocumentViaApi';
+import { firstNonEmpty, resolveDynamicOrganisationRunId } from '../../dynamicOrganisationRunId.js';
+import { createPayloadFaker } from '../payloads/core/helpers';
 
 const logger = createLogger({
   serviceName: 'employment-case-journeys',
@@ -12,22 +16,127 @@ type CreateEmploymentCaseOptions = {
   allowDraftClaimFallback?: boolean;
 };
 
+type InternalEventTriggerResponse = {
+  event_token?: string;
+};
+
+const CCD_INTERNAL_START_EVENT_HEADERS = {
+  experimental: 'true',
+  Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json',
+} as const;
+
+const CCD_CREATE_EVENT_HEADERS = {
+  experimental: 'true',
+  Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json',
+  'Content-Type': 'application/json',
+} as const;
+const DEFAULT_AUTOMATION_RUN_LABEL = 'local';
+
+function resolveAutomationRunLabel(): string {
+  const rawRunId =
+    firstNonEmpty(
+      process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
+      process.env.BUILD_TAG,
+      process.env.GITHUB_RUN_ID,
+      process.env.PW_TEST_RUN_ID
+    ) ?? DEFAULT_AUTOMATION_RUN_LABEL;
+  return resolveDynamicOrganisationRunId({ explicitRunId: rawRunId, maxLength: 32 });
+}
+
 export async function uploadEmploymentDraftDocument(
   createCasePage: CreateCasePage,
   fileName: string,
   mimeType: string,
-  fileContent: string
+  fileContent: string | Buffer
 ): Promise<void> {
   await prepareEmploymentDraftUploadPage(createCasePage);
-  await createCasePage.page.locator('#documentCollection button').click();
+  await clickEmploymentDocumentCollectionAddButton(createCasePage);
   await createCasePage.uploadFile(fileName, mimeType, fileContent);
-  await createCasePage.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc');
-  await createCasePage.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
+  await createCasePage.selectEmploymentDocumentCategory('Misc', 'Other');
   await createCasePage.clickSubmitAndWait('after uploading employment document', {
     timeoutMs: 60_000,
     maxAutoAdvanceAttempts: 1,
   });
   await createCasePage.waitForCaseDetails('after uploading employment document');
+}
+
+export async function uploadEmploymentDraftDocumentViaApi(options: {
+  page: Page;
+  caseNumber: string;
+  fileName: string;
+  mimeType: string;
+  fileContent: string | Buffer;
+  topLevelDocuments?: string;
+  miscDocuments?: string;
+}): Promise<void> {
+  const uploadedDocument = await uploadDocumentViaApi({
+    page: options.page,
+    jurisdictionId: 'EMPLOYMENT',
+    caseTypeId: 'ET_EnglandWales',
+    fileName: options.fileName,
+    mimeType: options.mimeType,
+    fileContent: options.fileContent,
+  });
+
+  const eventId = 'uploadDocument';
+  const eventTriggerPath = `data/internal/cases/${encodeURIComponent(options.caseNumber)}/event-triggers/${encodeURIComponent(
+    eventId
+  )}?ignore-warning=false`;
+  const eventTriggerResponse = await options.page.request.get(eventTriggerPath, {
+    failOnStatusCode: false,
+    headers: CCD_INTERNAL_START_EVENT_HEADERS,
+    timeout: 60_000,
+  });
+  if (!eventTriggerResponse.ok()) {
+    const body = await eventTriggerResponse.text().catch(() => '');
+    throw new Error(
+      `Employment document setup failed to fetch event trigger (HTTP ${eventTriggerResponse.status()}). ` +
+        `Path='${eventTriggerPath}'. Body='${body.slice(0, 500)}'`
+    );
+  }
+
+  const eventTrigger = (await eventTriggerResponse.json()) as InternalEventTriggerResponse;
+  const eventToken = eventTrigger.event_token?.trim();
+  if (!eventToken) {
+    throw new Error('Employment document setup event trigger did not include event_token.');
+  }
+
+  const eventBody = {
+    data: {
+      documentCollection: [
+        {
+          id: randomUUID(),
+          value: {
+            uploadedDocument: uploadedDocument,
+            topLevelDocuments: options.topLevelDocuments ?? 'Misc',
+            miscDocuments: options.miscDocuments ?? 'Other',
+          },
+        },
+      ],
+    },
+    event: {
+      id: eventId,
+      summary: 'Upload document for case file view',
+      description: 'Uploaded via Playwright CCD API helper',
+    },
+    event_token: eventToken,
+    ignore_warning: false,
+  };
+
+  const submitPath = `data/cases/${encodeURIComponent(options.caseNumber)}/events`;
+  const submitResponse = await options.page.request.post(submitPath, {
+    data: eventBody,
+    failOnStatusCode: false,
+    headers: CCD_CREATE_EVENT_HEADERS,
+    timeout: 60_000,
+  });
+  if (!submitResponse.ok()) {
+    const body = await submitResponse.text().catch(() => '');
+    throw new Error(
+      `Employment document setup submit failed (HTTP ${submitResponse.status()}). ` +
+        `Path='${submitPath}'. Body='${body.slice(0, 500)}'`
+    );
+  }
 }
 
 export async function createEmploymentCase(
@@ -156,12 +265,14 @@ export async function createEmploymentCase(
         url: createCasePage.page.url(),
       });
       await createCasePage.claimantIndividualRadio.check();
-      await createCasePage.claimantIndividualFirstNameInput.fill('Test ');
-      await createCasePage.claimantIndividualLastNameInput.fill('Person');
+      const automationRunLabel = resolveAutomationRunLabel();
+      const journeyFaker = createPayloadFaker();
+      await createCasePage.claimantIndividualFirstNameInput.fill('EXUI');
+      await createCasePage.claimantIndividualLastNameInput.fill(`Auto ${automationRunLabel} ${journeyFaker.person.lastName()}`);
       await createCasePage.manualEntryLink.waitFor({ state: 'visible' });
       await createCasePage.manualEntryLink.click();
       await createCasePage.claimantAddressLine1Input.waitFor({ state: 'visible' });
-      await createCasePage.claimantAddressLine1Input.fill('1 Test Street');
+      await createCasePage.claimantAddressLine1Input.fill(`1 EXUI Auto ${automationRunLabel} ${journeyFaker.location.street()}`);
 
       await createCasePage.clickContinueAndWaitForNext('after claimant address');
       logger.info('Employment create: respondent details page ready', {
@@ -172,17 +283,29 @@ export async function createEmploymentCase(
       await createCasePage.addRespondentButton.waitFor({ state: 'visible' });
       await createCasePage.addRespondentButton.click();
       await createCasePage.respondentOneNameInput.waitFor({ state: 'visible' });
-      await createCasePage.respondentOneNameInput.fill('Respondent One');
-      await createCasePage.respondentOrganisation.waitFor({ state: 'visible' });
-      await createCasePage.respondentOrganisation.check();
+      await createCasePage.respondentOneNameInput.fill(
+        `EXUI Auto ${automationRunLabel} ${journeyFaker.company.name()} Respondent`
+      );
+
+      const respondentTypeAvailable =
+        (await createCasePage.respondentOrganisation.isVisible().catch(() => false)) &&
+        (await createCasePage.respondentOrganisation.isEnabled().catch(() => false));
+      if (respondentTypeAvailable) {
+        await createCasePage.respondentOrganisation.check({ force: true });
+      }
+
       await createCasePage.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
       await createCasePage.respondentAcasCertifcateSelectYes.check();
       await createCasePage.respondentAcasCertificateNumberInput.fill('ACAS123456');
-      await createCasePage.respondentCompanyNameInput.fill('Respondent Company');
+      if (await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false)) {
+        await createCasePage.respondentCompanyNameInput.fill(`EXUI Auto ${automationRunLabel} ${journeyFaker.company.name()}`);
+      }
       await createCasePage.manualEntryLink.waitFor({ state: 'visible' });
       await createCasePage.manualEntryLink.click();
       await createCasePage.respondentAddressLine1Input.waitFor({ state: 'visible' });
-      await createCasePage.respondentAddressLine1Input.fill('1 Respondent Street');
+      await createCasePage.respondentAddressLine1Input.fill(
+        `1 EXUI Auto ${automationRunLabel} ${journeyFaker.location.street()}`
+      );
       await createCasePage.respondentAddressPostcodeInput.waitFor({ state: 'visible' });
       await createCasePage.respondentAddressPostcodeInput.fill('SW1A 1AA');
 
@@ -256,8 +379,7 @@ export async function createEmploymentCase(
 async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage): Promise<void> {
   const maxAdvanceAttempts = 8;
   for (let attempt = 1; attempt <= maxAdvanceAttempts; attempt += 1) {
-    const documentCollectionButton = createCasePage.page.locator('#documentCollection button');
-    if (await documentCollectionButton.isVisible().catch(() => false)) {
+    if (await createCasePage.isEmploymentDocumentUploadReady()) {
       logger.info('Employment draft update: document upload controls ready', {
         attempt,
         url: createCasePage.page.url(),
@@ -269,8 +391,7 @@ async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage):
     await ensureEmploymentDraftRespondentCollectionItem(createCasePage);
     await ensureEmploymentDraftClaimantRepresentationAnswered(createCasePage);
 
-    const visibleContinueButton = createCasePage.page.getByRole('button', { name: /^continue\b/i }).first();
-    if (!(await visibleContinueButton.isVisible().catch(() => false))) {
+    if (!(await createCasePage.hasVisibleContinueButton())) {
       throw new Error(
         `Employment draft update did not reach a document upload page; no Continue button visible at ${createCasePage.page.url()}`
       );
@@ -281,19 +402,22 @@ async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage):
   throw new Error(`Employment draft update did not reach the document upload page after ${maxAdvanceAttempts} steps`);
 }
 
+async function clickEmploymentDocumentCollectionAddButton(createCasePage: CreateCasePage): Promise<void> {
+  await createCasePage.clickEmploymentDocumentCollectionAddButton();
+}
+
 async function ensureEmploymentDraftRespondentCollectionItem(createCasePage: CreateCasePage): Promise<void> {
   if (!createCasePage.page.url().includes('/UPDATE_CASE_DRAFT3')) {
     return;
   }
 
-  const existingCollectionItem = createCasePage.page.locator('[id^="respondentCollection_0"]').first();
-  if ((await existingCollectionItem.count()) > 0) {
+  if (await createCasePage.hasEmploymentDraftRespondentCollectionItem()) {
     return;
   }
 
   await createCasePage.addRespondentButton.waitFor({ state: 'visible' });
   await createCasePage.addRespondentButton.click();
-  await expect(createCasePage.page.locator('[id^="respondentCollection_0"]').first()).toBeAttached();
+  await createCasePage.expectEmploymentDraftRespondentCollectionItemAttached();
   logger.info('Employment draft update: added minimal respondent collection item', {
     url: createCasePage.page.url(),
   });
@@ -304,17 +428,10 @@ async function ensureEmploymentDraftClaimantRepresentationAnswered(createCasePag
     return;
   }
 
-  const claimantRepresentationGroup = createCasePage.page.getByRole('group', { name: 'Is the Claimant Represented?' });
-  if (!(await claimantRepresentationGroup.isVisible().catch(() => false))) {
+  if (!(await createCasePage.answerEmploymentClaimantRepresentationNoIfVisible())) {
     return;
   }
 
-  const noRadio = claimantRepresentationGroup.getByRole('radio', { name: 'No' });
-  if (await noRadio.isChecked().catch(() => false)) {
-    return;
-  }
-
-  await noRadio.check();
   logger.info('Employment draft update: answered claimant representation question', {
     answer: 'No',
     url: createCasePage.page.url(),

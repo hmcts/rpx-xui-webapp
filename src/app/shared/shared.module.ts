@@ -2,7 +2,13 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  SessionErrorPageComponent,
+  SessionErrorRoute,
+  SessionJsonErrorLogger,
+  WindowService,
+  FocusService,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationModule } from 'rpx-xui-translation';
@@ -10,6 +16,7 @@ import * as fromAppComponents from '../components';
 import * as fromAppContainers from '../containers';
 import * as fromAppDirectives from '../directives';
 import { TaskSupervisorGuard } from '../guards/task-supervisor.guard';
+import { LoggerService } from '../services/logger/logger.service';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
 import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
@@ -27,6 +34,7 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     MediaViewerModule,
     ExuiCommonLibModule,
     ReactiveFormsModule,
+    SessionErrorPageComponent,
     RpxTranslationModule.forChild(),
   ],
   declarations: [...fromAppComponents.components, ...fromAppContainers.containers, ...fromAppDirectives.directives],
@@ -36,6 +44,24 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     ...fromAppDirectives.directives,
     RpxTranslationModule,
   ],
-  providers: [HealthCheckGuard, HealthCheckService, WindowService, McLaunchDarklyService, TaskSupervisorGuard],
+  providers: [
+    HealthCheckGuard,
+    HealthCheckService,
+    WindowService,
+    McLaunchDarklyService,
+    TaskSupervisorGuard,
+    {
+      provide: SessionErrorRoute,
+      useValue: '/session-error',
+    },
+    {
+      provide: SessionJsonErrorLogger,
+      useFactory: (loggerService: LoggerService) => (error: unknown) => {
+        loggerService.error('Invalid userDetails in session storage', error);
+      },
+      deps: [LoggerService],
+    },
+    FocusService,
+  ],
 })
 export class SharedModule {}

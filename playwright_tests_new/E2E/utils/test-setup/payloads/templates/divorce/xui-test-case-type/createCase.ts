@@ -19,6 +19,7 @@ type DivorceXuiTestCaseTypeFieldValues = {
   YesOrNoField: string;
   AppicantPostcodeField: string;
   TestFixedListField: string | null;
+  DocumentUrl: CcdDocumentValue | null;
   ComplexType_1: {
     judgeLevelRadio: string;
     proposal: string;
@@ -73,6 +74,7 @@ export function buildDivorceXuiTestCaseTypeCreateCasePayload(
     YesOrNoField: 'Yes',
     AppicantPostcodeField: 'SW1A 1AA',
     TestFixedListField: null,
+    DocumentUrl: null,
     ComplexType_1: {
       judgeLevelRadio: 'No',
       proposal: 'item_1',

@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
@@ -30,6 +30,8 @@ export interface CaseFlagItem {
   status: string;
 }
 
+const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
+
 export class CaseDetailsPage extends Base {
   readonly container = this.page.locator('exui-case-details-home');
 
@@ -55,8 +57,9 @@ export class CaseDetailsPage extends Base {
   readonly tabList = this.page.locator('div[role="tablist"]');
   readonly tablist2 = this.page.getByRole('tab');
 
-  //Case flags
   // Case flags
+  readonly caseFlagsHeading = this.page.getByRole('heading', { name: 'Case flags', exact: true });
+
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
 
   readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');
@@ -70,6 +73,11 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
 
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
+  readonly documentOneRow = this.page
+    .getByRole('table', { name: 'case viewer table' })
+    .getByRole('row', { name: /^Document 1\b/i })
+    .first();
+  readonly documentOneAction = this.documentOneRow.locator('a,button').first();
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
   readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
@@ -480,6 +488,7 @@ export class CaseDetailsPage extends Base {
       retry?: boolean;
     } = {}
   ) {
+    const timeoutMs = options.timeoutMs ?? 30000;
     await this.caseActionGoButton.waitFor({ state: 'visible' });
     await this.caseActionsDropdown.waitFor({ state: 'visible' });
     const availableOptions = await this.caseActionsDropdown.locator('option').evaluateAll((options) =>
@@ -507,13 +516,12 @@ export class CaseDetailsPage extends Base {
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
       await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
-    await this.caseActionGoButton.click();
-    await this.waitForSpinnerToComplete('after selecting case action');
+    await this.clickCaseActionGoButton(timeoutMs);
+    await this.waitForSpinnerToComplete('after selecting case action', options.timeoutMs);
     await this.page.waitForLoadState('domcontentloaded');
     if (!options.expectedLocator && !options.expectedPath) {
       return;
     }
-    const timeoutMs = options.timeoutMs ?? 30000;
     const waitForExpected = async () => {
       if (options.expectedPath) {
         const matcher =
@@ -534,6 +542,13 @@ export class CaseDetailsPage extends Base {
       if (options.retry === false) {
         throw error;
       }
+      const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+      const spinnerWasVisible = await spinner.isVisible().catch(() => false);
+      await this.waitForSpinnerToComplete(`before retrying case action "${action}"`, timeoutMs);
+      if (spinnerWasVisible) {
+        await waitForExpected();
+        return;
+      }
       this.logger.warn('Expected locator not visible after case action; retrying action', { action });
       try {
         if (matchingOption.label === action) {
@@ -545,8 +560,8 @@ export class CaseDetailsPage extends Base {
         this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
         await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
-      await this.caseActionGoButton.click();
-      await this.waitForSpinnerToComplete('after retrying case action');
+      await this.clickCaseActionGoButton(timeoutMs);
+      await this.waitForSpinnerToComplete('after retrying case action', timeoutMs);
       await this.page.waitForLoadState('domcontentloaded');
       await waitForExpected();
     }
@@ -554,7 +569,7 @@ export class CaseDetailsPage extends Base {
 
   private async waitForSpinnerToComplete(context: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
-    const spinner = this.page.locator('xuilib-loading-spinner').first();
+    const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
     try {
       await spinner.waitFor({ state: 'hidden', timeout: effectiveTimeoutMs });
     } catch (error) {
@@ -563,6 +578,20 @@ export class CaseDetailsPage extends Base {
         throw new Error(`Spinner still visible ${context}`);
       }
       this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });
+    }
+  }
+
+  private async clickCaseActionGoButton(timeoutMs: number): Promise<void> {
+    await this.waitForSpinnerToComplete('before submitting case action', timeoutMs);
+    try {
+      await this.caseActionGoButton.click();
+    } catch (error) {
+      const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+      if (!(await spinner.isVisible().catch(() => false))) {
+        throw error;
+      }
+      await this.waitForSpinnerToComplete('after case action click was blocked by spinner', timeoutMs);
+      await this.caseActionGoButton.click();
     }
   }
 
@@ -664,6 +693,10 @@ export class CaseDetailsPage extends Base {
     return callbackValidationAlert.isVisible({ timeout: timeoutMs }).catch(() => false);
   }
 
+  caseViewerRow(label: string): Locator {
+    return this.caseViewerTable.getByRole('row', { name: label });
+  }
+
   async selectCaseDetailsTab(tabName: string) {
     const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
       min: TIMEOUTS.TAB_LOAD,
@@ -689,6 +722,167 @@ export class CaseDetailsPage extends Base {
 
     const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+  }
+
+  async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {
+    await this.waitForCaseDetailsTabsReady(timeoutMs);
+  }
+
+  async openCaseDetails(jurisdiction: string, caseType: string, caseId: string, timeoutMs = 30_000): Promise<void> {
+    await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}`, timeoutMs);
+    await this.waitForCaseDetailsReady(timeoutMs);
+  }
+
+  async openTasksTab(jurisdiction: string, caseType: string, caseId: string, timeoutMs = 30_000): Promise<void> {
+    await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`, timeoutMs);
+    await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
+      await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`, timeoutMs);
+      await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
+        throw error;
+      });
+    });
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  private async gotoCaseDetailsPath(targetUrl: string, timeoutMs: number): Promise<void> {
+    let lastError: unknown;
+    const targetPath = targetUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const targetPattern = new RegExp(`${targetPath}(?:[/?#]|$)`);
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        await this.page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+        await this.page.waitForURL(targetPattern, { timeout: timeoutMs }).catch(() => undefined);
+        if (!targetPattern.test(this.page.url())) {
+          throw new Error(`Case details navigation did not reach ${targetUrl}; current URL is ${this.page.url()}`);
+        }
+        if (/chrome-error:\/\/chromewebdata/i.test(this.page.url())) {
+          throw new Error(`Case details navigation reached ${this.page.url()}`);
+        }
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt >= 3 || !this.isTransientNavigationError(error)) {
+          throw error;
+        }
+        await this.page.waitForTimeout(Math.min(1_000, timeoutMs));
+      }
+    }
+
+    throw new Error(`Case details navigation failed for ${targetUrl}: ${String(lastError)}`);
+  }
+
+  private isTransientNavigationError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      /ERR_SOCKET_NOT_CONNECTED|ERR_ABORTED|net::ERR|Navigation failed|interrupted.*navigation|chrome-error:\/\/chromewebdata|did not reach/i.test(
+        error.message
+      )
+    );
+  }
+
+  getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.page.locator('exui-role-access-section').filter({
+      has: this.page.getByRole('heading', { level: 2, name: title }),
+    });
+  }
+
+  getAddExclusionLink(): Locator {
+    return this.page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
+  }
+
+  getAllocateJudicialRoleLink(): Locator {
+    return this.getRoleAccessSection('Judiciary').getByRole('link', { name: 'Allocate a judicial role' });
+  }
+
+  getAllocateLegalOpsRoleLink(): Locator {
+    return this.getRoleAccessSection('Legal Ops').getByRole('link', { name: 'Allocate a legal ops role' });
+  }
+
+  getManageRoleLink(sectionTitle: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: 'Manage' });
+  }
+
+  async openRoleActions(sectionTitle: 'Judiciary' | 'Legal Ops'): Promise<void> {
+    await this.getManageRoleLink(sectionTitle).click();
+  }
+
+  getRoleActionLink(sectionTitle: 'Judiciary' | 'Legal Ops', action: 'Reallocate' | 'Remove Allocation'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: action });
+  }
+
+  getDeleteExclusionLink(): Locator {
+    return this.page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' });
+  }
+
+  getExclusionsTable(): Locator {
+    return this.page.locator('exui-exclusions-table table.govuk-table').first();
+  }
+
+  async openRolesAndAccessTab(caseId: string): Promise<void> {
+    await this.openCaseDetails('IA', 'Asylum', caseId);
+
+    await this.selectCaseDetailsTab('Roles and access');
+    await this.page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access)?(?:#.*)?$`));
+    await expect(this.page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+  }
+
+  async openDocumentOne() {
+    await this.documentOneAction.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+    await this.documentOneAction.click();
+  }
+
+  async openDocumentOneInMediaViewer(): Promise<Page> {
+    const timeout = this.getRecommendedTimeoutMs({ max: 45_000, fallback: 45_000 });
+    const maxAttempts = 2;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      const popupPromise = this.page.waitForEvent('popup', { timeout }).then(async (popup) => {
+        await popup.waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout });
+        return popup;
+      });
+      const samePagePromise = this.page.waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout }).then(() => this.page);
+
+      await this.openDocumentOne();
+
+      const openedPage = await Promise.any([popupPromise, samePagePromise]).catch(() => undefined);
+      if (openedPage) {
+        return openedPage;
+      }
+
+      const matchingPage = this.page
+        .context()
+        .pages()
+        .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+      if (matchingPage) {
+        return matchingPage;
+      }
+    }
+
+    throw new Error(
+      `Media Viewer did not open within ${timeout}ms after selecting Document 1 across ${maxAttempts} attempts. ` +
+        `Current URL: ${this.page.url()}; open pages: ${this.page
+          .context()
+          .pages()
+          .map((candidate) => candidate.url())
+          .join(', ')}`
+    );
+  }
+
+  async waitForDocumentOneRowToContain(expectedText: string, timeoutMs = 45_000): Promise<void> {
+    await expect
+      .poll(
+        async () => {
+          await this.selectCaseDetailsTab('Tab 1').catch(() => undefined);
+          const rowVisible = await this.documentOneRow.isVisible().catch(() => false);
+          if (!rowVisible) {
+            return '';
+          }
+          return await this.documentOneRow.innerText().catch(() => '');
+        },
+        { timeout: timeoutMs, intervals: [1_000, 2_000, 3_000] }
+      )
+      .toContain(expectedText);
   }
 
   async getTabCount() {

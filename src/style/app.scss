@@ -497,6 +497,41 @@ button:focus {
   color: #fff;
 }
 
+.qm-qualifying-question__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+
+  thead th {
+    background-color: #1a1a8f;
+    color: #ffffff;
+    text-align: left;
+    padding: 12px;
+    font-size: 1.2em;
+  }
+
+  tbody {
+    th,
+    td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      font-weight: bold;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #e6e6e6;
+    }
+  }
+}
+
 /**
  * The "Manage +" button should mirror the GDS accordion functionality. However,
  * it still needs to be in keeping with the styling within the table.

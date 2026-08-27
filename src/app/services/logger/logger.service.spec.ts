@@ -142,6 +142,20 @@ describe('Logger service', () => {
     expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
   });
 
+  it('should be able to get a message when userDetails is invalid JSON', () => {
+    mockedSessionStorageService.getItem.and.returnValue('{not-json}');
+    const service = new LoggerService(
+      mockedMonitoringService,
+      mockedNgxLogger,
+      mockedSessionStorageService,
+      mockEnvironmentService
+    );
+    const expectedMessage = `Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
+    const returnedMessage = service.getMessage('message');
+    expect(returnedMessage).not.toBeNull();
+    expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
+  });
+
   it('should log the correct environment type to the console', () => {
     mockEnvironmentService.config$ = of(true);
     mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);

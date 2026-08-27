@@ -1,12 +1,9 @@
-// This code block will need to be removed when the frameworks supports creating users on the fly
-import testConfig from '../../common/appTestConfig';
-import { getRuntimeUserCredentialEnvMapping, getRuntimeUserCredentials } from './runtimeUserCredentials';
-
-type StaticUser = {
-  userIdentifier: string;
-  email: string;
-  key: string;
-};
+import {
+  getRuntimeUserCredentialEnvMapping,
+  getRuntimeUserCredentials,
+  resolveRuntimeUserCredentialsForIdentifier,
+  resolveRuntimeUserCredentialsFromEnv,
+} from './runtimeUserCredentials';
 
 export class UserUtils {
   public getUserCredentials(userIdentifier: string) {
@@ -15,17 +12,22 @@ export class UserUtils {
       return dynamicCredentials;
     }
 
-    const envUsers = testConfig.users[testConfig.testEnv] as StaticUser[];
-    const user = envUsers.find((u) => u.userIdentifier === userIdentifier);
-
-    if (!user) {
+    const mapping = getRuntimeUserCredentialEnvMapping(userIdentifier);
+    if (!mapping) {
       throw new Error(`User "${userIdentifier}" not found`);
     }
 
-    return { email: user.email, password: user.key };
+    throw new Error(
+      `User "${userIdentifier}" credentials are missing. Populate env vars "${mapping.username}" and "${mapping.password}" from Azure Key Vault.`
+    );
   }
 
   private getDynamicCredentials(userIdentifier: string): { email: string; password: string } | undefined {
+    const fallbackResolvedCredentials = resolveRuntimeUserCredentialsForIdentifier(userIdentifier);
+    if (fallbackResolvedCredentials) {
+      return fallbackResolvedCredentials;
+    }
+
     const runtimeCredentials = getRuntimeUserCredentials(userIdentifier);
     if (runtimeCredentials) {
       return runtimeCredentials;
@@ -36,12 +38,6 @@ export class UserUtils {
       return undefined;
     }
 
-    const email = process.env[mapping.username]?.trim();
-    const password = process.env[mapping.password];
-    if (!email || !password) {
-      return undefined;
-    }
-
-    return { email, password };
+    return resolveRuntimeUserCredentialsFromEnv(mapping);
   }
 }

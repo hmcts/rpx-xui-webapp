@@ -2,12 +2,12 @@ import { Location as StateLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, Jurisdiction, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
-import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
+import { HMCTSServiceDetails } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -15,20 +15,15 @@ import * as fromActions from '../../../app/store';
 import { Actions, Role } from '../../../role-access/models';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
+import { MyWorkFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
 import { CaseService, SortOrder } from '../../enums';
-import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import {
-  CaseworkerDataService,
-  LocationDataService,
-  WASupportedJurisdictionsService,
-  WorkAllocationCaseService,
-} from '../../services';
+import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { getAssigneeName, handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   standalone: false,
@@ -36,20 +31,18 @@ import { getAssigneeName, handleFatalErrors, servicesMap, setServiceList, WILDCA
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public specificPage: string = '';
-  public caseworkers: Caseworker[] = [];
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public locations$: Observable<Location[]>;
   public waSupportedJurisdictions$: Observable<string[]>;
   public waSupportedDetailedServices$: Observable<HMCTSServiceDetails[]>;
   public supportedJurisdictions: string[];
-  public selectedServices: string[] = ['IA'];
+  public selectedServices: string[] = [];
   public pagination: PaginationParameter;
   public backUrl: string = null;
   public supportedRoles$: Observable<Role[]>;
   protected allJurisdictions: Jurisdiction[];
   protected allRoles: Role[];
-  protected defaultLocation: string = 'all';
   private pCases: Case[];
   public selectedLocations: string[] = [];
 
@@ -81,7 +74,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly infoMessageCommService: InfoMessageCommService,
     protected readonly sessionStorageService: SessionStorageService,
     protected readonly alertService: AlertService,
-    protected readonly caseworkerService: CaseworkerDataService,
     protected readonly loadingService: LoadingService,
     protected readonly locationService: LocationDataService,
     protected readonly featureToggleService: FeatureToggleService,
@@ -157,11 +149,13 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     return !!state?.badRequest;
   }
 
+  // only used for my work cases, all work cases has its own onInit method
   public ngOnInit(): void {
     this.loadSupportedJurisdictions();
     this.setupCaseWorkers();
+    this.setSelectedFiltersFromFilterSetting(this.filterService.get(MyWorkFilterComponent.FILTER_NAME));
     this.loadCases();
-    this.addSelectedLocationsSubscriber();
+    this.addFilterChangeSubscriber();
   }
 
   public loadSupportedJurisdictions(): void {
@@ -203,58 +197,48 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     }
   }
 
-  public addSelectedLocationsSubscriber() {
+  // only present for my work cases
+  public addFilterChangeSubscriber() {
     this.selectedLocationsSubscription = this.filterService
-      .getStream('locations')
+      .getStream(MyWorkFilterComponent.FILTER_NAME)
       .pipe(
         debounceTime(200),
         filter((f: FilterSetting) => f?.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        const newLocations = f.fields.find((field) => field.name === 'locations').value;
-        this.selectedLocations = newLocations.map((l) => l.epimms_id);
-        if (this.selectedLocations.length) {
+        const { selectedLocations, selectedServices } = this.getSelectedFiltersFromFilterSetting(f);
+        const filtersChanged =
+          !this.listsEqual(selectedLocations, this.selectedLocations) ||
+          !this.listsEqual(selectedServices, this.selectedServices);
+
+        this.selectedLocations = selectedLocations;
+        this.selectedServices = selectedServices;
+
+        // The if below stops cases reloading when filter is applied with no changes
+        // Also stops duplicate calls to the API when initialising the component
+        if (filtersChanged) {
           this.doLoad();
         }
       });
   }
 
   public setupCaseWorkers(): void {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(
-      switchMap((jurisdictions) => this.caseworkerService.getUsersFromServices(jurisdictions))
-    );
     this.waSupportedJurisdictions$
       .pipe(switchMap((jurisdictions) => this.rolesService.getValidRoles(jurisdictions)))
       .subscribe((roles) => (this.allRoles = roles));
-    // currently get caseworkers for all supported services
-    // in future change, could get caseworkers by specific service from filter changes
-    // however regrdless would likely need this initialisation
-    caseworkersByService$.subscribe(
-      (caseworkers) => {
-        this.caseworkers = caseworkers;
-        const userInfoStr = this.sessionStorageService.getItem('userDetails');
-        if (userInfoStr) {
-          const userInfo: UserInfo = JSON.parse(userInfoStr);
-          const userId = userInfo.id ? userInfo.id : userInfo.uid;
-          const currentCW = this.caseworkers.find((cw) => cw.idamId === userId);
-          if (currentCW?.location?.id) {
-            this.defaultLocation = currentCW.location.id;
-          }
-        }
-      },
-      (error) => {
-        handleFatalErrors(error.status, this.router);
-      }
-    );
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
-      const { fieldName, order } = JSON.parse(stored);
-      this.sortedBy = {
-        fieldName,
-        order: order as SortOrder,
-      };
-    } else {
+      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(stored, null);
+      if (parsed) {
+        const { fieldName, order } = parsed;
+        this.sortedBy = {
+          fieldName,
+          order: order as SortOrder,
+        };
+      }
+    }
+    if (!this.sortedBy?.fieldName) {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.caseServiceConfig.defaultSortFieldName,
@@ -416,9 +400,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         this.casesTotal = result.total_records;
         this.uniqueCases = result.unique_cases;
         this.cases.forEach((item) => {
-          if (item.role_category !== RoleCategory.JUDICIAL) {
-            item.actorName = getAssigneeName(this.caseworkers, item.assignee);
-          }
           if (this.allJurisdictions?.find((jur) => jur.id === item.jurisdiction)) {
             item.jurisdiction = this.allJurisdictions.find((jur) => jur.id === item.jurisdiction).name;
           } else if (servicesMap[item.jurisdiction]) {
@@ -442,5 +423,37 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     this.locations$ = this.waSupportedJurisdictions$.pipe(
       switchMap((jurisdictions) => this.locationService.getLocations(jurisdictions))
     );
+  }
+
+  // check lists are equal, regardless of order
+  private listsEqual(newList: string[], currentList: string[]): boolean {
+    if (newList.length !== currentList.length) {
+      return false;
+    }
+    return newList.every((item) => currentList.includes(item));
+  }
+
+  // Set the selected filters from the filter setting on initialisation of the component
+  private setSelectedFiltersFromFilterSetting(filterSetting: FilterSetting | null): void {
+    if (!filterSetting?.fields) {
+      return;
+    }
+    const { selectedLocations, selectedServices } = this.getSelectedFiltersFromFilterSetting(filterSetting);
+    this.selectedLocations = selectedLocations;
+    this.selectedServices = selectedServices;
+  }
+
+  // Get the selected filters from the filter setting
+  private getSelectedFiltersFromFilterSetting(filterSetting: FilterSetting): {
+    selectedLocations: string[];
+    selectedServices: string[];
+  } {
+    const locations = filterSetting.fields.find((field) => field.name === 'locations')?.value || [];
+    const services = filterSetting.fields.find((field) => field.name === 'services')?.value || [];
+
+    return {
+      selectedLocations: locations.map((location) => location.epimms_id),
+      selectedServices: services.filter((service) => service !== 'services_all'),
+    };
   }
 }

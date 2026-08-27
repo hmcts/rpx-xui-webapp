@@ -54,15 +54,17 @@ const publish = async (): Promise<void> => {
     const configuredConsumerVersion = getConfigValue(PACT_CONSUMER_VERSION);
     const consumerVersion =
       configuredConsumerVersion && configuredConsumerVersion.trim() !== '' ? configuredConsumerVersion : resolveConsumerVersion();
+    const pactBrokerPassword = getConfigValue<string | null>(PACT_BROKER_PASSWORD);
+    const pactBrokerUsername = getConfigValue<string | null>(PACT_BROKER_USERNAME);
 
     const opts = {
       consumerVersion,
       pactBroker,
-      pactBrokerPassword: getConfigValue(PACT_BROKER_PASSWORD),
-      pactBrokerUsername: getConfigValue(PACT_BROKER_USERNAME),
       pactFilesOrDirs: [path.resolve(__dirname, '../pacts/')],
       publishVerificationResult: true,
       tags: [pactTag],
+      ...(pactBrokerPassword ? { pactBrokerPassword } : {}),
+      ...(pactBrokerUsername ? { pactBrokerUsername } : {}),
     };
     await pact.publishPacts(opts);
     console.log('Pact contract publishing complete!');

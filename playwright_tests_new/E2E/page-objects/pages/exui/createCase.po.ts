@@ -1,10 +1,12 @@
+import { mkdtemp, rm, writeFile } from 'fs/promises';
+import os from 'os';
+import path from 'path';
 import { Page, Locator, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
-import { extractCaseNumberFromUrl } from './caseDetails.po';
 import { clickSubmitAndWaitFlow, findCreateCaseBootstrapFailure, startCreateCaseFlow } from './createCase.flow.js';
 import { buildCreateCaseLocators } from './createCase.locators.js';
 
@@ -34,6 +36,11 @@ type CreateDivorceCaseOptions = {
   createCaseMaxAttempts?: number;
 };
 
+type DocumentDragDropPoint = {
+  x: number;
+  y: number;
+};
+
 const logger = createLogger({
   serviceName: 'create-case',
   format: 'pretty',
@@ -43,6 +50,7 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/cases\/\d+\/event-triggers\//,
   /\/cases\/\d+\/events/,
   /\/event-triggers\/[^/]+\/validate/,
+  /\/data\/case-types\/[^/]+\/validate/,
 ];
 
 export class CreateCasePage extends Base {
@@ -128,6 +136,7 @@ export class CreateCasePage extends Base {
   readonly doYouAgreeYesRadio!: Locator;
   readonly doYouAgreeNoRadio!: Locator;
 
+  readonly fileUploadComponent!: Locator;
   readonly fileUploadInput!: Locator;
   readonly fileUploadStatusLabel!: Locator;
   readonly textField0Input!: Locator;
@@ -163,6 +172,13 @@ export class CreateCasePage extends Base {
   readonly sameAsClaimantWorkAddressYes!: Locator;
   readonly claimantRepresentedNo!: Locator;
   readonly hearingPreferenceVideo!: Locator;
+  readonly documentCollectionButton!: Locator;
+  readonly employmentDocumentCollectionButton!: Locator;
+  readonly employmentDocumentTypeSelect!: Locator;
+  readonly employmentDocumentMiscTypeSelect!: Locator;
+  readonly fileUploadCancelButton!: Locator;
+  readonly employmentRespondentCollectionItem!: Locator;
+  readonly employmentClaimantRepresentationGroup!: Locator;
 
   readonly manualEntryLink!: Locator;
   readonly claimantAddressLine1Input!: Locator;
@@ -287,30 +303,7 @@ export class CreateCasePage extends Base {
 
   async waitForCaseDetails(context: string) {
     await this.assertNoEventCreationError(context);
-    try {
-      await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
-    } catch (error) {
-      const recovered = await this.recoverCaseDetailsFromCreatedBanner(context, error);
-      if (recovered) {
-        return;
-      }
-      throw error;
-    }
-  }
-
-  private async extractCreatedCaseNumberFromBanner(): Promise<string | null> {
-    const bannerVisible = await this.caseAlertSuccessMessage.isVisible().catch(() => false);
-    if (!bannerVisible) {
-      return null;
-    }
-
-    const bannerText = await this.caseAlertSuccessMessage.innerText().catch(() => '');
-    if (!/has been created/i.test(bannerText)) {
-      return null;
-    }
-
-    const numericMatch = /\d{16}/.exec(bannerText.replace(/\D/g, '')); // NOSONAR typescript:S5852 — replaceAll requires ES2021; tsconfig targets ES2020
-    return numericMatch?.[0] ?? null;
+    await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
   }
 
   private normalizeUnknownError(error: unknown): string {
@@ -325,42 +318,6 @@ export class CreateCasePage extends Base {
       return serialized ?? '[Unable to stringify error]';
     } catch {
       return '[Unstringifiable error object]';
-    }
-  }
-
-  private async recoverCaseDetailsFromCreatedBanner(context: string, initialError: unknown): Promise<boolean> {
-    if (this.page.isClosed()) {
-      return false;
-    }
-
-    const caseNumber = extractCaseNumberFromUrl(this.page.url()) ?? (await this.extractCreatedCaseNumberFromBanner());
-    if (!caseNumber) {
-      return false;
-    }
-
-    const caseDetailsUrl = `/cases/case-details/${caseNumber}`;
-    const initialErrorMessage = this.normalizeUnknownError(initialError);
-    this.logger.warn('Case details did not render after submit; trying direct case details URL', {
-      context,
-      caseNumber,
-      caseDetailsUrl,
-      initialError: initialErrorMessage.slice(0, 220),
-    });
-
-    try {
-      await this.page.goto(caseDetailsUrl);
-      await this.assertNoEventCreationError(`${context} (after direct case details navigation)`);
-      await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
-      return true;
-    } catch (recoveryError) {
-      const recoveryErrorMessage = this.normalizeUnknownError(recoveryError);
-      this.logger.warn('Direct case details recovery failed', {
-        context,
-        caseNumber,
-        caseDetailsUrl,
-        recoveryError: recoveryErrorMessage.slice(0, 220),
-      });
-      return false;
     }
   }
 
@@ -384,10 +341,7 @@ export class CreateCasePage extends Base {
     return fallbackVisibleButton;
   }
 
-  private async clickContinueAndWait(
-    context: string,
-    options: { force?: boolean; timeoutMs?: number; continueButton?: Locator } = {}
-  ) {
+  private async clickContinueAndWait(context: string, options: { timeoutMs?: number; continueButton?: Locator } = {}) {
     const visibleContinueButton = options.continueButton ?? (await this.getVisibleActionButton(this.continueButton));
     if (!visibleContinueButton) {
       throw new Error(`Continue button not visible ${context}`);
@@ -397,7 +351,7 @@ export class CreateCasePage extends Base {
     const stepTimeout = options.timeoutMs ?? EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT;
     const clickTimeout = Math.min(stepTimeout, EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT);
     try {
-      await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
+      await visibleContinueButton.click({ timeout: clickTimeout });
     } catch (error) {
       const message = this.normalizeUnknownError(error);
       if (!message.includes('intercepts pointer events')) {
@@ -413,26 +367,87 @@ export class CreateCasePage extends Base {
           // Best-effort wait; retry click below handles residual spinner overlays.
         });
       try {
-        await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
+        await visibleContinueButton.click({ timeout: clickTimeout });
       } catch (retryError) {
         const retryMessage = this.normalizeUnknownError(retryError);
-        if (!retryMessage.includes('intercepts pointer events') || options.force === true) {
+        if (!retryMessage.includes('intercepts pointer events')) {
           throw retryError;
         }
-        this.logger.warn('Continue click still intercepted after wait; retrying with force', { context });
-        await visibleContinueButton.click({ force: true, timeout: clickTimeout });
+        throw new Error(`Continue click still intercepted after spinner wait ${context}: ${retryMessage.slice(0, 220)}`);
       }
     }
     await this.waitForSpinnerToComplete(`after ${context}`, stepTimeout);
     await this.assertNoEventCreationError(context);
     const hasValidationError = await this.checkForErrorMessage();
     if (hasValidationError) {
+      const validationText = await this.getValidationErrorText();
+      if (this.isEventCreationValidationText(validationText)) {
+        throw new Error(`Case event failed ${context}: ${validationText}`);
+      }
       throw new Error(`Validation error after ${context}`);
     }
   }
 
-  async clickContinueAndWaitForNext(context: string, options: { force?: boolean; timeoutMs?: number } = {}) {
+  async clickContinueAndWaitForNext(context: string, options: { timeoutMs?: number } = {}) {
     await this.clickContinueAndWait(context, options);
+  }
+
+  async hasVisibleContinueButton(): Promise<boolean> {
+    return Boolean(await this.getVisibleActionButton(this.continueButton));
+  }
+
+  async isEmploymentDocumentUploadReady(): Promise<boolean> {
+    return this.employmentDocumentCollectionButton.isVisible().catch(() => false);
+  }
+
+  async clickEmploymentDocumentCollectionAddButton(): Promise<void> {
+    const addButton = this.employmentDocumentCollectionButton.first();
+    const spinnerSettleTimeoutMs = 45_000;
+
+    await addButton.waitFor({ state: 'visible', timeout: 15_000 });
+    await this.waitForSpinnerToComplete('before clicking employment document collection add button', spinnerSettleTimeoutMs);
+
+    try {
+      await addButton.click({ timeout: 15_000 });
+    } catch (error) {
+      const message = this.normalizeUnknownError(error);
+      if (!message.includes('intercepts pointer events')) {
+        throw error;
+      }
+
+      this.logger.warn('Employment document collection add click intercepted by spinner; waiting and retrying click');
+      await this.waitForSpinnerToComplete('before retrying employment document collection add button', spinnerSettleTimeoutMs);
+      await addButton.click({ timeout: 15_000 });
+    }
+
+    await this.employmentDocumentTypeSelect.waitFor({ state: 'visible', timeout: 15_000 });
+  }
+
+  async selectEmploymentDocumentCategory(category: string, documentType: string): Promise<void> {
+    await this.employmentDocumentTypeSelect.selectOption(category);
+    await this.employmentDocumentMiscTypeSelect.selectOption(documentType);
+  }
+
+  async hasEmploymentDraftRespondentCollectionItem(): Promise<boolean> {
+    return (await this.employmentRespondentCollectionItem.count()) > 0;
+  }
+
+  async expectEmploymentDraftRespondentCollectionItemAttached(): Promise<void> {
+    await expect(this.employmentRespondentCollectionItem).toBeAttached();
+  }
+
+  async answerEmploymentClaimantRepresentationNoIfVisible(): Promise<boolean> {
+    if (!(await this.employmentClaimantRepresentationGroup.isVisible().catch(() => false))) {
+      return false;
+    }
+
+    const noRadio = this.employmentClaimantRepresentationGroup.getByRole('radio', { name: 'No' });
+    if (await noRadio.isChecked().catch(() => false)) {
+      return false;
+    }
+
+    await noRadio.check();
+    return true;
   }
 
   private async clickSubmitButtonWithRetry(context: string, submitButton?: Locator) {
@@ -449,8 +464,8 @@ export class CreateCasePage extends Base {
       if (!message.includes('intercepts pointer events')) {
         throw error;
       }
-      this.logger.warn('Submit click intercepted; retrying with force', { context });
-      await visibleSubmitButton.click({ force: true, timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
+      await this.waitForSpinnerToComplete(`before retrying submit ${context}`, EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MAX);
+      await visibleSubmitButton.click({ timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
     }
   }
 
@@ -542,6 +557,10 @@ export class CreateCasePage extends Base {
       }
       const hasValidationError = await this.checkForErrorMessage();
       if (hasValidationError) {
+        const validationText = await this.getValidationErrorText();
+        if (this.isEventCreationValidationText(validationText)) {
+          throw new Error(`Case event failed after ${context}: ${validationText}`);
+        }
         throw new Error(`Validation error after ${context}`);
       }
       if (this.page.isClosed()) {
@@ -559,7 +578,22 @@ export class CreateCasePage extends Base {
     }
   }
 
-  async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {
+  async clickContinueAndEnsureWizardAdvanced(
+    context: string,
+    options: {
+      expectedPathIncludes?: string;
+      expectedLocator?: Locator;
+      timeoutMs?: number;
+    } = {}
+  ) {
+    const initialUrl = this.page.url();
+    const timeoutMs = options.timeoutMs ?? EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT;
+    const quickClickTimeoutMs = Math.min(timeoutMs, EXUI_TIMEOUTS.CONTINUE_VISIBLE_BRIEF);
+    await this.clickContinueAndWait(context, { timeoutMs: quickClickTimeoutMs });
+    await this.ensureWizardAdvanced(context, initialUrl, options);
+  }
+
+  async clickContinueMultipleTimes(count: number) {
     for (let i = 0; i < count; i++) {
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
       if (!visibleContinueButton) {
@@ -571,7 +605,6 @@ export class CreateCasePage extends Base {
       }
       await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, {
         continueButton: visibleContinueButton,
-        force: options.force,
       });
       logger.info('Clicked continue button', { iteration: i + 1, total: count });
     }
@@ -644,6 +677,10 @@ export class CreateCasePage extends Base {
     return [errorText, summaryText].filter(Boolean).join(' | ');
   }
 
+  private isEventCreationValidationText(text: string): boolean {
+    return /the event could not be created|technical staff have been automatically notified/i.test(text);
+  }
+
   async ensureDoYouAgreeAnswered(answer: 'Yes' | 'No' = 'Yes') {
     const groupVisible = await this.doYouAgreeGroup
       .first()
@@ -690,61 +727,183 @@ export class CreateCasePage extends Base {
     });
   }
 
+  async waitForCreateCaseFormReady(context: string) {
+    const formVisible = await this.person1TitleInput
+      .waitFor({ state: 'visible', timeout: 10_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (formVisible) {
+      return;
+    }
+
+    this.logger.warn('Create case form did not render on first navigation, reloading once', {
+      context,
+      url: this.page.url(),
+    });
+    await this.page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(this.person1TitleInput, `Create case form did not render ${context}`).toBeVisible();
+  }
+
   async addressLookup(postCode: string, addressOption: string) {
     await this.postCodeSearchInput.fill(postCode);
     await this.postCodeSearchButton.click();
     await this.addressSelect.selectOption(addressOption);
   }
 
-  async uploadFile(fileName: string, mimeType: string, fileContent: string, fileInput?: Locator) {
-    const maxRetries = 3;
-    const baseDelayMs = 3000; // initial backoff
+  async uploadFile(
+    fileName: string,
+    mimeType: string,
+    fileContent: string,
+    fileInput?: Locator,
+    fileContentEncoding?: BufferEncoding
+  ) {
     const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
-    const safeBackoff = async (attempt: number) => {
-      if (this.page.isClosed()) {
-        throw new Error('Page closed during upload retry backoff');
-      }
-      await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
-    };
-
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      if (this.page.isClosed()) {
-        throw new Error('Page closed before upload retry attempt');
-      }
-      const responsePromise = this.page.waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
-        timeout: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
-      });
+    await this.runDocumentUpload('file input upload', async () => {
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
-        buffer: Buffer.from(fileContent),
+        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
       });
+    });
+  }
 
-      const res = await responsePromise.catch(() => null);
+  async dragAndDropFile(
+    fileName: string,
+    mimeType: string,
+    fileContent: string,
+    fileInput?: Locator,
+    options: {
+      fileContentEncoding?: BufferEncoding;
+      dropTarget?: Locator;
+    } = {}
+  ) {
+    const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
+    const resolvedDropTarget = options.dropTarget ?? resolvedFileInput;
+    await resolvedFileInput.waitFor({ state: 'visible' });
+    await resolvedDropTarget.waitFor({ state: 'visible' });
+    await resolvedFileInput.scrollIntoViewIfNeeded();
+    await resolvedDropTarget.scrollIntoViewIfNeeded();
 
-      if (!res) {
-        // no response within timeout — treat as failure or retry depending on policy
-        if (attempt < maxRetries) {
-          await safeBackoff(attempt);
-          continue;
-        } else {
-          throw new Error('Upload timed out after retries');
+    const tempDirectory = await mkdtemp(path.join(os.tmpdir(), 'xui-document-drag-drop-'));
+    const filePath = path.join(tempDirectory, path.basename(fileName));
+    await writeFile(filePath, Buffer.from(fileContent, options.fileContentEncoding ?? 'utf8'));
+
+    try {
+      await this.runDocumentUpload('browser file drag-and-drop upload', async () => {
+        const { x, y } = await this.resolveDocumentDragDropPoint(resolvedFileInput, resolvedDropTarget, fileName);
+        let cdpSession;
+        try {
+          cdpSession = await this.page.context().newCDPSession(this.page);
+        } catch (error) {
+          throw Object.assign(new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.'), {
+            cause: error,
+          });
         }
-      }
+        const dragData = {
+          items: [
+            {
+              mimeType,
+              data: '',
+              title: fileName,
+            },
+          ],
+          files: [filePath],
+          dragOperationsMask: 1,
+        };
 
-      if (res.status() !== 200) {
-        if (attempt < maxRetries) {
-          // exponential backoff before retrying
-          await safeBackoff(attempt);
-          continue;
-        } else {
-          throw new Error(`Upload failed: server returned status ${res.status()} after ${maxRetries} retries`);
+        try {
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'dragEnter', x, y, data: dragData });
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'dragOver', x, y, data: dragData });
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'drop', x, y, data: dragData });
+        } finally {
+          await cdpSession.detach().catch(() => undefined);
         }
-      }
-
-      break;
+      });
+    } finally {
+      await rm(tempDirectory, { recursive: true, force: true });
     }
-    await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
+  }
+
+  private async resolveDocumentDragDropPoint(
+    fileInput: Locator,
+    dropTarget: Locator,
+    fileName: string
+  ): Promise<DocumentDragDropPoint> {
+    const targetBox = await dropTarget.boundingBox();
+    if (!targetBox) {
+      throw new Error(`Document drag-and-drop target for "${fileName}" has no visible bounding box`);
+    }
+
+    const inputBox = await fileInput.boundingBox();
+    if (!inputBox) {
+      throw new Error(`Document drag-and-drop file input for "${fileName}" has no visible bounding box`);
+    }
+
+    const x = inputBox.x + inputBox.width / 2;
+    const y = inputBox.y + inputBox.height / 2;
+    const isInsideDropTarget =
+      x >= targetBox.x && x <= targetBox.x + targetBox.width && y >= targetBox.y && y <= targetBox.y + targetBox.height;
+
+    if (!isInsideDropTarget) {
+      throw new Error(`Document drag-and-drop file input for "${fileName}" is not inside the requested drop target`);
+    }
+
+    return { x, y };
+  }
+
+  private async runDocumentUpload(uploadActionDescription: string, uploadAction: () => Promise<void>) {
+    const maxAttempts = 3;
+    const baseRetryDelayMs = 2_000;
+    const maxRetryDelayMs = 10_000;
+    const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
+      min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
+      max: 30_000,
+      fallback: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
+      multiplier: 2,
+    });
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      if (this.page.isClosed()) {
+        throw new Error(`Page closed before ${uploadActionDescription}`);
+      }
+
+      const responsePromise = this.page
+        .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
+          timeout: uploadResponseTimeoutMs,
+        })
+        .catch((error: Error) => error);
+      await uploadAction();
+      const uploadResponse = await responsePromise;
+
+      if (uploadResponse instanceof Error) {
+        if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
+          throw uploadResponse;
+        }
+        throw new Error(
+          `Document ${uploadActionDescription} response was not observed within ${uploadResponseTimeoutMs}ms: ${uploadResponse.message}`
+        );
+      }
+
+      if (uploadResponse.status() === 200) {
+        await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.UPLOAD_STATUS_SETTLE });
+        return;
+      }
+
+      if (uploadResponse.status() === 429 && attempt < maxAttempts) {
+        const retryAfterSeconds = Number.parseFloat(uploadResponse.headers()['retry-after'] ?? '');
+        const retryDelayMs = Number.isFinite(retryAfterSeconds)
+          ? Math.min(maxRetryDelayMs, Math.max(baseRetryDelayMs, retryAfterSeconds * 1_000))
+          : baseRetryDelayMs * 2 ** (attempt - 1);
+        logger.warn(`Document ${uploadActionDescription} was rate-limited; retrying`, {
+          attempt,
+          maxAttempts,
+          retryDelayMs,
+        });
+        await this.page.waitForTimeout(retryDelayMs);
+        continue;
+      }
+
+      throw new Error(`Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()}`);
+    }
   }
   async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;
@@ -779,12 +938,18 @@ export class CreateCasePage extends Base {
         await this.addRespondentButton.click();
         await this.respondentOneNameInput.waitFor({ state: 'visible' });
         await this.respondentOneNameInput.fill('Respondent One');
-        await this.respondentOrganisation.waitFor({ state: 'visible' });
-        await this.respondentOrganisation.check();
+
+        const respondentTypeAvailable = await this.respondentOrganisation.isEnabled().catch(() => false);
+        if (respondentTypeAvailable) {
+          await this.respondentOrganisation.check({ force: true });
+        }
+
         await this.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
         await this.respondentAcasCertifcateSelectYes.check();
         await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
-        await this.respondentCompanyNameInput.fill('Respondent Company');
+        if (await this.respondentCompanyNameInput.isVisible().catch(() => false)) {
+          await this.respondentCompanyNameInput.fill('Respondent Company');
+        }
         await this.manualEntryLink.waitFor({ state: 'visible' });
         await this.manualEntryLink.click();
         await this.respondentAddressLine1Input.waitFor({ state: 'visible' });
@@ -927,8 +1092,17 @@ export class CreateCasePage extends Base {
 
     for (const reason of reasons) {
       const divorceReasonCheckbox = divorceReasonField.getByLabel(reason, { exact: true }).first();
-      await divorceReasonCheckbox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-      await divorceReasonCheckbox.check({ force: true });
+      const divorceReasonLabel = divorceReasonField.locator('label').filter({ hasText: reason }).first();
+      if (!(await divorceReasonLabel.isVisible().catch(() => false))) {
+        if ((await divorceReasonField.locator('label:visible').count()) === 0) {
+          return;
+        }
+        throw new Error(`Divorce reason "${reason}" is not visible`);
+      }
+      await divorceReasonLabel.click({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+      if (!(await divorceReasonCheckbox.isChecked({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE }).catch(() => false))) {
+        throw new Error(`Divorce reason "${reason}" was not checked after clicking its label`);
+      }
     }
   }
 
@@ -1005,12 +1179,12 @@ export class CreateCasePage extends Base {
     if (options.textFields?.textField3 !== undefined) {
       await this.textField3Input.fill(options.textFields.textField3);
     }
-    if (options.textFields?.textField0 !== undefined) {
-      await this.textField0Input.fill(options.textFields.textField0);
-    }
-
     if (options.divorceReasons?.length) {
       await this.selectDivorceReasons(options.divorceReasons);
+    }
+
+    if (options.textFields?.textField0 !== undefined) {
+      await this.textField0Input.fill(options.textFields.textField0);
     }
 
     const hiddenFieldDetailsUrl = this.page.url();

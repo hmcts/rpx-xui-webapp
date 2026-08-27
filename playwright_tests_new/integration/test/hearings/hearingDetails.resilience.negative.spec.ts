@@ -1,8 +1,9 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
 import {
+  applyHearingManagerSessionCookies,
   caseDetailsUrl,
   expectHearingsRowsHiddenBeforeResponse,
+  gotoCaseDetailsWithRetry,
   HEARING_MANAGER_CR84_ON_USER,
   HEARINGS_SLOW_RESPONSE_DELAY_MS,
   openHearingsTabForScenario,
@@ -73,7 +74,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
       },
     });
 
-    await waitForHearingsTerminalState(page, hearingsTabPage);
+    await waitForHearingsTerminalState(hearingsTabPage);
     await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
   });
 
@@ -104,8 +105,8 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
   test('Hearings - slow response does not render tab rows before the hearings response resolves', async ({
     page,
     hearingsTabPage,
-  }) => {
-    await applySessionCookies(page, userIdentifier);
+  }, testInfo) => {
+    await applyHearingManagerSessionCookies(page, userIdentifier, testInfo);
     await setupHearingsMockRoutes(page, {
       userRoles: hearingViewerRoles,
       hearings: [LISTED_HEARING_SCENARIO],
@@ -116,7 +117,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
       },
     });
 
-    await page.goto(caseDetailsUrl(), { waitUntil: 'domcontentloaded' });
+    await gotoCaseDetailsWithRetry(page, caseDetailsUrl());
     const hearingsTab = page.getByRole('tab', { name: /hearings/i }).first();
     const getHearingsResponse = page.waitForResponse((response) => response.url().includes('/api/hearings/getHearings'));
     await hearingsTab.click();

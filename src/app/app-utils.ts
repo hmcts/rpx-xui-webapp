@@ -1,5 +1,5 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { FilterPersistence, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import {
   ADMIN_ROLE_LIST,
   AppConstants,
@@ -10,7 +10,9 @@ import {
 } from './app.constants';
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
-import { UserDetails, UserRole } from './models/user-details.model';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { RoleAssignmentInfo, UserDetails, UserRole } from './models/user-details.model';
+import { WAVerificationModel } from './models';
 
 export class AppUtils {
   public static getEnvironment(url: string): string {
@@ -69,7 +71,7 @@ export class AppUtils {
    * @return - ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker', 'etc...']
    */
   public static getCookieRolesAsArray(userRoles: string): string[] {
-    return JSON.parse(userRoles);
+    return safeJsonParse<string[]>(userRoles, []);
   }
 
   /**
@@ -164,17 +166,80 @@ export class AppUtils {
     // check that userRoles do not have pui-case-manager
   }
 
-  public static getUserRole(userRoles: string[]): UserRole {
+  public static getAMRoleBuckets(
+    userRoles: string[] = [],
+    roleAssignmentInfo: RoleAssignmentInfo[] = []
+  ): { amRoles: string[]; nonAMRoles: string[] } {
+    const roleAssignmentRoleNames = new Set(
+      roleAssignmentInfo.map((roleAssignment) => roleAssignment.roleName).filter((roleName): roleName is string => !!roleName)
+    );
+
+    return userRoles.reduce<{ amRoles: string[]; nonAMRoles: string[] }>(
+      (roleBuckets, userRole) => {
+        if (roleAssignmentRoleNames.has(userRole)) {
+          roleBuckets.amRoles.push(userRole);
+        } else {
+          roleBuckets.nonAMRoles.push(userRole);
+        }
+        return roleBuckets;
+      },
+      { amRoles: [], nonAMRoles: [] }
+    );
+  }
+
+  public static isRoleAssignmentSupported(
+    waVerification: WAVerificationModel,
+    roleAssignment: RoleAssignmentInfo,
+    roleAssignmentInfo: RoleAssignmentInfo[] = []
+  ): boolean {
+    const jurisdictions = roleAssignment.jurisdiction
+      ? [roleAssignment.jurisdiction]
+      : AppUtils.getDistinctJurisdictionsForRoleAssignment(roleAssignmentInfo, roleAssignment);
+
+    return (
+      jurisdictions.some((jurisdiction) => waVerification.waSupportedJurisdictions.includes(jurisdiction)) &&
+      !!roleAssignment.roleCategory &&
+      waVerification.waSupportedCategories.includes(roleAssignment.roleCategory) &&
+      !!roleAssignment.roleType &&
+      waVerification.waSupportedRoleTypes.includes(roleAssignment.roleType)
+    );
+  }
+
+  public static getDistinctJurisdictionsForRoleAssignment(
+    roleAssignmentInfo: RoleAssignmentInfo[] = [],
+    roleAssignment: RoleAssignmentInfo
+  ): string[] {
+    return Array.from(
+      new Set(
+        roleAssignmentInfo
+          .filter(
+            (matchedRoleAssignment): matchedRoleAssignment is RoleAssignmentInfo & { jurisdiction: string } =>
+              !!matchedRoleAssignment.jurisdiction &&
+              matchedRoleAssignment.roleCategory === roleAssignment.roleCategory &&
+              matchedRoleAssignment.roleType === roleAssignment.roleType
+          )
+          .map((matchedRoleAssignment) => matchedRoleAssignment.jurisdiction)
+      )
+    );
+  }
+
+  // EXUI-4758 - We know user can have multiple role categories and we should return all of them
+  // Howwever, we shouldn't refer to them as role categories in code as they specify a different enum
+  public static getUserRoleNames(userRoles: string[]): UserRole[] {
+    const userRoleNames: UserRole[] = [];
     if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.includes(userRole))) {
-      return UserRole.Judicial;
-    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.includes(userRole))) {
-      return UserRole.Admin;
-    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.includes(userRole))) {
-      return UserRole.CTSC;
-    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.includes(userRole))) {
-      return UserRole.LegalOps;
+      userRoleNames.push(UserRole.Judicial);
     }
-    return null;
+    if (userRoles.some((userRole) => ADMIN_ROLE_LIST.includes(userRole))) {
+      userRoleNames.push(UserRole.Admin);
+    }
+    if (userRoles.some((userRole) => CTSC_ROLE_LIST.includes(userRole))) {
+      userRoleNames.push(UserRole.CTSC);
+    }
+    if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.includes(userRole))) {
+      userRoleNames.push(UserRole.LegalOps);
+    }
+    return userRoleNames;
   }
 
   public static convertDomainToLabel(userRole: string): string {
@@ -201,20 +266,6 @@ export class AppUtils {
     return userRole;
   }
 
-  public static getFilterPersistenceByRoleType(userDetails: UserDetails): FilterPersistence {
-    const userRole = AppUtils.getUserRole(userDetails.userInfo.roles);
-    const roleType = AppUtils.convertDomainToLabel(userRole);
-    switch (roleType) {
-      case 'LegalOps':
-        return 'session';
-      case 'Judicial':
-        return 'local';
-      default:
-        // admin and ctsc currently default unless specified
-        return 'session';
-    }
-  }
-
   public static setThemeBasedOnUserType(userType: string, theme: Theme) {
     switch (userType) {
       case 'Judicial':
@@ -239,8 +290,11 @@ export class AppUtils {
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
-    return (
-      userInfo?.roleCategory === RoleCategory.JUDICIAL &&
+    if (!roleAssignmentInfo || !userInfo) {
+      return false;
+    }
+    return !!(
+      userInfo?.roleCategories?.includes(RoleCategory.JUDICIAL) &&
       roleAssignmentInfo.some(
         (roleAssignment) =>
           'bookable' in roleAssignment && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
@@ -259,5 +313,22 @@ export class AppUtils {
     const msBetweenDates = Math.abs(dateTime.getTime() - currentDate.getTime());
     const hoursBetweenDates = msBetweenDates / (60 * 60 * 1000);
     return hoursBetweenDates <= 24;
+  }
+
+  public static checkRoleIsSupported(waVerification: WAVerificationModel, configRole: string, userDetails: UserDetails): boolean {
+    const userRoles = userDetails?.userInfo?.roles || [];
+    if (!userRoles.includes(configRole)) {
+      return false;
+    }
+
+    const { amRoles, nonAMRoles } = AppUtils.getAMRoleBuckets(userRoles, userDetails?.roleAssignmentInfo || []);
+    if (!amRoles.includes(configRole)) {
+      return nonAMRoles.includes(configRole);
+    }
+
+    const roleAssignmentInfo = userDetails?.roleAssignmentInfo || [];
+    return roleAssignmentInfo
+      .filter((roleAssignment) => roleAssignment.roleName === configRole)
+      .some((roleAssignment) => AppUtils.isRoleAssignmentSupported(waVerification, roleAssignment, roleAssignmentInfo));
   }
 }

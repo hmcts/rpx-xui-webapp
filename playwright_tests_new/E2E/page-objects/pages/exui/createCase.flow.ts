@@ -51,10 +51,7 @@ export async function clickSubmitAndWaitFlow({
   getApiCalls: () => Array<{ status: number; url: string; method: string }>;
   getVisibleActionButton: VisibleActionButtonResolver;
   clickSubmitButtonWithRetry: (context: string, submitButton?: Locator) => Promise<void>;
-  clickContinueAndWait: (
-    context: string,
-    options?: { continueButton?: Locator; force?: boolean; timeoutMs?: number }
-  ) => Promise<void>;
+  clickContinueAndWait: (context: string, options?: { continueButton?: Locator; timeoutMs?: number }) => Promise<void>;
   waitForSpinnerToComplete: (context: string, timeoutMs?: number) => Promise<void>;
   assertNoEventCreationError: (context: string) => Promise<void>;
   checkForErrorMessage: () => Promise<boolean>;
@@ -82,8 +79,10 @@ export async function clickSubmitAndWaitFlow({
       throw new Error(`Case event failed ${context}: Something went wrong page was displayed.`);
     }
 
+    const currentPath = new URL(page.url()).pathname;
     const onCaseDetailsSummaryPage =
-      !page.url().includes('/trigger/') &&
+      /\/cases\/case-details\/[^/]+/.test(currentPath) &&
+      !currentPath.includes('/trigger/') &&
       (await page
         .locator('#next-step')
         .isVisible()

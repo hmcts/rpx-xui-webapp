@@ -4,7 +4,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FilterError, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
-import { filterConfig } from '@stryker-mutator/mocha-runner/src/utils';
 import { BehaviorSubject } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
@@ -113,7 +112,7 @@ describe('StaffAdvFilterComponent', () => {
 
   it('should create and set filterConfig', () => {
     expect(component).toBeTruthy();
-    expect(filterConfig).toBeTruthy();
+    expect(component.filterConfig).toBeTruthy();
   });
 
   it('should have All by default in job title in filterConfig', () => {

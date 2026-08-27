@@ -5,11 +5,13 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule, combineReducers } from '@ngrx/store';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject, of } from 'rxjs';
+import { skip, switchMap, take } from 'rxjs/operators';
 import { UserService } from '../../../app/services/user/user.service';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
+import { WAVerificationService } from '../../../work-allocation/services';
+import { LoggerService } from '../../services/logger/logger.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -30,6 +32,8 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
 
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', ['dispatch', 'pipe']);
+  let waVerificationService: jasmine.SpyObj<WAVerificationService>;
+  let loggerService: jasmine.SpyObj<LoggerService>;
 
   const changesMock = {
     items: {
@@ -64,6 +68,15 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
 
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    waVerificationService = jasmine.createSpyObj<WAVerificationService>('waVerificationService', ['getWAVerification']);
+    loggerService = jasmine.createSpyObj('loggerService', ['log']);
+    waVerificationService.getWAVerification.and.returnValue(
+      of({
+        waSupportedCategories: [],
+        waSupportedRoleTypes: [],
+        waSupportedJurisdictions: [],
+      })
+    );
     TestBed.configureTestingModule({
       declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -96,6 +109,14 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
             isEnabled: (flag) => of(flags[flag]),
           },
         },
+        {
+          provide: WAVerificationService,
+          useValue: waVerificationService,
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerService,
+        },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -103,6 +124,8 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   }));
 
   beforeEach(() => {
+    userDetails.userInfo.roles = ['pui-case-manager'];
+    delete (userDetails as any).roleAssignmentInfo;
     mockRouter = TestBed.inject(Router);
     spyOnProperty(mockRouter, 'url').and.returnValues('/cases', '/tasks/list', '/tasks/task-manager');
     fixture = TestBed.createComponent(HmctsGlobalHeaderComponent);
@@ -282,6 +305,8 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
         roles: ['roleC'],
       },
     ];
+    userDetails.userInfo.roles = ['roleA', 'roleB'];
+    storeMock.pipe.and.returnValue(of(userDetails));
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
@@ -295,6 +320,85 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
       .subscribe((items) => {
         expect(items).toEqual([component.items[0]]);
       });
+  });
+
+  it('uses WA supported role checks when filtering AM role menu items', () => {
+    component.items = [
+      {
+        align: null,
+        text: 'Supported AM role',
+        href: '',
+        active: false,
+        roles: ['case-manager'],
+      },
+      {
+        align: null,
+        text: 'Unsupported AM role',
+        href: '',
+        active: false,
+        roles: ['unsupported-case-manager'],
+      },
+    ];
+    userDetails.userInfo.roles = ['case-manager', 'unsupported-case-manager'];
+    (userDetails as any).roleAssignmentInfo = [
+      {
+        jurisdiction: 'IA',
+        roleCategory: 'LEGAL_OPERATIONS',
+        roleName: 'case-manager',
+        roleType: 'ORGANISATION',
+      },
+      {
+        jurisdiction: 'SSCS',
+        roleCategory: 'LEGAL_OPERATIONS',
+        roleName: 'unsupported-case-manager',
+        roleType: 'ORGANISATION',
+      },
+    ];
+    waVerificationService.getWAVerification.and.returnValue(
+      of({
+        waSupportedCategories: ['LEGAL_OPERATIONS'],
+        waSupportedRoleTypes: ['ORGANISATION'],
+        waSupportedJurisdictions: ['IA'],
+      })
+    );
+    storeMock.pipe.and.returnValue(of(userDetails));
+
+    component.ngOnChanges(changesMock);
+
+    component.leftItems.subscribe((items) => {
+      expect(items).toEqual([component.items[0]]);
+      expect(loggerService.log).toHaveBeenCalledWith(
+        'HmctsGlobalHeaderComponent: matched navigation role case-manager for item Supported AM role'
+      );
+    });
+  });
+
+  it('waits for userInfo before filtering navigation items with WA verification details', (done) => {
+    const userDetails$ = new BehaviorSubject<any>({});
+    loggerService.log.calls.reset();
+    storeMock.pipe.and.returnValue(userDetails$.asObservable());
+    component.items = [
+      {
+        align: null,
+        text: 'My work',
+        href: '/work/my-work/list',
+        active: false,
+        roles: ['pui-case-manager'],
+      },
+    ];
+
+    component.ngOnChanges(changesMock);
+
+    component.leftItems.pipe(skip(1), take(1)).subscribe((items) => {
+      expect(items).toEqual([component.items[0]]);
+      expect(loggerService.log).toHaveBeenCalledWith(
+        'HmctsGlobalHeaderComponent: matched navigation role pui-case-manager for item My work'
+      );
+      done();
+    });
+
+    expect(loggerService.log).not.toHaveBeenCalled();
+    userDetails$.next(userDetails);
   });
 
   it('should call splitAndFilterNavItems on ngOnInit and set left/right items', (done) => {
@@ -499,6 +603,8 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
 
   let store: Store<fromRoot.State>;
   const storeMock = jasmine.createSpyObj('Store', ['dispatch', 'pipe']);
+  let waVerificationService: jasmine.SpyObj<WAVerificationService>;
+  let loggerService: jasmine.SpyObj<LoggerService>;
 
   const changesMock = {
     items: {
@@ -519,6 +625,15 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
 
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    waVerificationService = jasmine.createSpyObj<WAVerificationService>('waVerificationService', ['getWAVerification']);
+    loggerService = jasmine.createSpyObj('loggerService', ['log']);
+    waVerificationService.getWAVerification.and.returnValue(
+      of({
+        waSupportedCategories: [],
+        waSupportedRoleTypes: [],
+        waSupportedJurisdictions: [],
+      })
+    );
     TestBed.configureTestingModule({
       declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -545,6 +660,14 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
           useValue: {
             isEnabled: (flag) => of(flags[flag]),
           },
+        },
+        {
+          provide: WAVerificationService,
+          useValue: waVerificationService,
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerService,
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

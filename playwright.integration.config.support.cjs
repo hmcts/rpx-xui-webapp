@@ -8,11 +8,22 @@ const { readFileSync } = require('node:fs');
 const { cpus, totalmem } = require('node:os');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const {
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
+} = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
+const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
+  const normalizedRoot = rootDir.replace(/\\/g, '/').replace(/\/$/, '');
+  return [`${normalizedRoot}/.worktrees/**`, `${normalizedRoot}/worktrees/**`];
+};
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
+const INTEGRATION_TEST_TIMEOUT_MS = 180_000;
+const POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS = 30_000;
 const appVersion = (() => {
   try {
     return JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version ?? 'unknown';
@@ -29,31 +40,6 @@ const resolveDefaultReporter = (env = process.env) => {
   return env.CI ? 'dot' : 'list';
 };
 
-const resolveWorkerTargetEnvironment = (env = process.env) => {
-  const configuredTarget = env.TEST_TYPE?.trim().toLowerCase();
-  if (configuredTarget) {
-    return configuredTarget;
-  }
-
-  const configuredUrl = env.TEST_URL?.trim();
-  if (!configuredUrl) {
-    return undefined;
-  }
-
-  try {
-    const hostname = new URL(configuredUrl).hostname.toLowerCase();
-    if (hostname.includes('.aat.')) {
-      return 'aat';
-    }
-    if (hostname.includes('.demo.')) {
-      return 'demo';
-    }
-    return hostname;
-  } catch {
-    return undefined;
-  }
-};
-
 const resolveWorkerCount = (env = process.env) => {
   const configured = env.FUNCTIONAL_TESTS_WORKERS?.trim();
   if (configured) {
@@ -63,17 +49,7 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  if (env.CI) {
-    const targetEnv = resolveWorkerTargetEnvironment(env);
-    if (targetEnv === 'aat' || targetEnv === 'demo') {
-      return 2;
-    }
-    return 8;
-  }
-
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  return Math.min(8, Math.max(2, approxPhysical));
+  return 7;
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -161,7 +137,7 @@ const resolveOdhinRuntimeHookTimeoutMs = (env = process.env) => {
       return parsed;
     }
   }
-  return env.CI ? 0 : 15000;
+  return 15000;
 };
 
 const resolveOdhinHardTimeoutMs = (env = process.env) => {
@@ -186,11 +162,26 @@ const resolveOdhinTimeoutExitCode = (env = process.env) => {
   return 1;
 };
 
+const resolveOdhinCompletionExitDelayMs = (env = process.env) => {
+  const raw = env.PW_ODHIN_COMPLETION_EXIT_DELAY_MS;
+  if (raw !== undefined) {
+    const parsed = Number.parseInt(raw, 10);
+    if (Number.isFinite(parsed) && parsed >= 0) {
+      return parsed;
+    }
+  }
+  return env.CI ? 1000 : 0;
+};
+
+const resolveOdhinForceExitOnCompletion = (env = process.env) =>
+  resolveFlag(env.PW_ODHIN_FORCE_EXIT_ON_COMPLETION, Boolean(env.CI));
+
 const buildConfig = (env = process.env) => {
   const headlessMode = env.HEAD !== 'true';
   const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? defaultOdhinOutputFolder;
   const baseUrl = env.TEST_URL || defaultBaseUrl;
   const workerCount = resolveWorkerCount(env);
+  const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const browserChannel = resolveBrowserChannel(env);
   const enableOdhinReporter = resolveFlag(env.PW_INTEGRATION_ODHIN, true);
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
@@ -198,6 +189,7 @@ const buildConfig = (env = process.env) => {
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
+  reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
 
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';
@@ -215,6 +207,8 @@ const buildConfig = (env = process.env) => {
         intervalMs: Number.parseInt(env.PW_ODHIN_PROGRESS_INTERVAL_MS ?? '5000', 10) || 5000,
         hardTimeoutMs: resolveOdhinHardTimeoutMs(env),
         timeoutExitCode: resolveOdhinTimeoutExitCode(env),
+        completionExitDelayMs: resolveOdhinCompletionExitDelayMs(env),
+        forceExitOnCompletion: resolveOdhinForceExitOnCompletion(env),
       },
     ]);
     reporter.push([
@@ -236,20 +230,24 @@ const buildConfig = (env = process.env) => {
       },
     ]);
   }
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
+    reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
+  }
 
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: [temporaryProbePattern],
+    testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     retries: 2,
-    timeout: 120_000,
+    timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     workers: workerCount,
     reporter,
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'on-first-retry',
+      trace: 'retain-on-failure',
       screenshot: {
         mode: 'only-on-failure',
         fullPage: true,
@@ -276,6 +274,8 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,
@@ -283,4 +283,8 @@ module.exports = {
   resolveOdhinRuntimeHookTimeoutMs,
   resolveOdhinHardTimeoutMs,
   resolveOdhinTimeoutExitCode,
+  resolveOdhinCompletionExitDelayMs,
+  resolveOdhinForceExitOnCompletion,
+  INTEGRATION_TEST_TIMEOUT_MS,
+  POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS,
 };

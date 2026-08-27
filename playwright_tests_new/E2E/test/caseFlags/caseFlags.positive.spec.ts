@@ -1,17 +1,14 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { filterEmptyRows } from '../../utils';
 import { caseBannerMatches } from '../../utils/banner.utils';
 import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
-import { createDivorceCaseFlag } from '../../utils/test-setup/journeys/divorceCaseJourneys';
-import { createEmploymentCase } from '../../utils/test-setup/journeys/employmentJourneys';
-import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { formatErrorMessage, isDependencyEnvironmentFailure } from '../../utils/transient-failure.utils';
 
 const PARTY_LEVEL_SUITE_TIMEOUT_MS = 300_000;
-const SESSION_BOOTSTRAP_TIMEOUT_MS = 300_000;
 
 test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: 180000 });
@@ -19,45 +16,23 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';
 
-  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
-    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
-    await ensureSession('SEARCH_EMPLOYMENT_CASE');
-  });
-
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     try {
-      await retryOnTransientFailure(
-        async () => {
-          await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-          const setup = await setupCaseForJourney({
-            scenario: 'case-flags-employment-case-level',
-            jurisdiction,
-            caseType,
-            apiEventId: 'initiateCase',
-            mode: 'api-required',
-            apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
-            uiCreate: async () => {
-              await createEmploymentCase(createCasePage, jurisdiction, caseType, {
-                allowDraftClaimFallback: true,
-              });
-            },
-            page,
-            createCasePage,
-            caseDetailsPage,
-            testInfo,
-          });
-          caseNumber = setup.caseNumber;
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            if (page.isClosed()) {
-              return;
-            }
-            await page.goto('/').catch(() => undefined);
-          },
-        }
-      );
+      const lease = await identityLease.acquire({ pool: 'SEARCH_EMPLOYMENT_CASE' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
+      const setup = await setupCaseForJourney({
+        scenario: 'case-flags-employment-case-level',
+        jurisdiction,
+        caseType,
+        apiEventId: 'initiateCase',
+        mode: 'api-required',
+        apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+        page,
+        createCasePage,
+        caseDetailsPage,
+        testInfo,
+      });
+      caseNumber = setup.caseNumber;
     } catch (error) {
       if (isDependencyEnvironmentFailure(error)) {
         throw new Error(
@@ -69,12 +44,9 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
   });
 
   test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
-    await test.step('Record existing case level flags', async () => {
+    await test.step('Open case flags tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
-      const flagsTable = await caseDetailsPage.waitForTableByName('Case level flags');
-      const table = await tableUtils.parseDataTable(flagsTable);
-      const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      await expect(caseDetailsPage.caseFlagsHeading).toBeVisible();
     });
 
     await test.step('Create a new case level flag', async () => {
@@ -89,6 +61,9 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
           if (await caseDetailsPage.hasCallbackValidationErrorAlert()) {
             throw new Error('Callback data failed validation while creating case-level case flag.');
           }
+          if (await caseDetailsPage.eventCreationErrorHeading.isVisible().catch(() => false)) {
+            throw new Error('CCD event creation failed while creating case-level case flag.');
+          }
           const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
           if (!bannerVisible) {
             return false;
@@ -97,6 +72,7 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
           return caseBannerMatches(bannerText, caseNumber, 'has been updated with event: Create a case flag');
         })
         .toBe(true);
+      await caseDetailsPage.openCaseDetails(jurisdiction, caseType, caseNumber, 60_000);
       expect.soft(await caseDetailsPage.caseNotificationBannerTitle.isVisible()).toBe(true);
       expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
       expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
@@ -142,54 +118,34 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, ()
   const jurisdiction = 'DIVORCE';
   const caseType = 'xuiCaseFlagsV1';
 
-  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
-    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
-    await ensureSession('USER_WITH_FLAGS');
-  });
-
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     try {
-      await retryOnTransientFailure(
-        async () => {
-          await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
-          const setup = await setupCaseForJourney({
-            scenario: 'case-flags-divorce-party-level',
-            jurisdiction,
-            caseType,
-            apiEventId: 'createCase',
-            mode: 'api-required',
-            apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case-flags', {
-              overrides: {
-                LegalRepParty1Flags: {
-                  roleOnCase: testValue,
-                  partyName: testValue,
-                },
-                LegalRepParty2Flags: {
-                  roleOnCase: `${testValue}2`,
-                  partyName: `${testValue}2`,
-                },
-              },
-            }),
-            uiCreate: async () => {
-              await createDivorceCaseFlag(createCasePage, testValue, jurisdiction, caseType);
+      const lease = await identityLease.acquire({ pool: 'USER_WITH_FLAGS' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
+      const setup = await setupCaseForJourney({
+        scenario: 'case-flags-divorce-party-level',
+        jurisdiction,
+        caseType,
+        apiEventId: 'createCase',
+        mode: 'api-required',
+        apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case-flags', {
+          overrides: {
+            LegalRepParty1Flags: {
+              roleOnCase: testValue,
+              partyName: testValue,
             },
-            page,
-            createCasePage,
-            caseDetailsPage,
-            testInfo,
-          });
-          caseNumber = setup.caseNumber;
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            if (page.isClosed()) {
-              return;
-            }
-            await page.goto('/').catch(() => undefined);
+            LegalRepParty2Flags: {
+              roleOnCase: `${testValue}2`,
+              partyName: `${testValue}2`,
+            },
           },
-        }
-      );
+        }),
+        page,
+        createCasePage,
+        caseDetailsPage,
+        testInfo,
+      });
+      caseNumber = setup.caseNumber;
     } catch (error) {
       if (isDependencyEnvironmentFailure(error)) {
         throw new Error(
@@ -206,7 +162,7 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, ()
       const flagsTable = await caseDetailsPage.waitForTableByName(testValue);
       const table = await tableUtils.parseDataTable(flagsTable);
       const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      expect.soft(visibleRows.length).toBe(0);
     });
 
     await test.step('Create a new party level flag', async () => {

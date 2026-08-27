@@ -30,4 +30,11 @@ describe('Case Allocator guard', () => {
     expect(router.navigateByUrl).toHaveBeenCalled();
     expect(result).toBeFalsy();
   });
+
+  it('returns false when userDetails is invalid JSON', () => {
+    service.getItem.and.returnValue('{not-json}');
+    const result = guard.canActivate();
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(result).toBeFalsy();
+  });
 });

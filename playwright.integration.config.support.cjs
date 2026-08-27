@@ -8,6 +8,11 @@ const { readFileSync } = require('node:fs');
 const { cpus, totalmem } = require('node:os');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const {
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
+} = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
 const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
@@ -132,7 +137,7 @@ const resolveOdhinRuntimeHookTimeoutMs = (env = process.env) => {
       return parsed;
     }
   }
-  return env.CI ? 0 : 15000;
+  return 15000;
 };
 
 const resolveOdhinHardTimeoutMs = (env = process.env) => {
@@ -225,6 +230,9 @@ const buildConfig = (env = process.env) => {
       },
     ]);
   }
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
+    reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
+  }
 
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
@@ -233,6 +241,7 @@ const buildConfig = (env = process.env) => {
     retries: 2,
     timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     workers: workerCount,
     reporter,
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
@@ -265,6 +274,8 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,

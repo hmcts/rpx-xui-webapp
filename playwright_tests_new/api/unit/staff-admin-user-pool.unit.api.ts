@@ -6,6 +6,7 @@ import { expect, test } from '@playwright/test';
 
 import config from '../../E2E/utils/config.utils.js';
 import { applySessionCookiesAndExtractUserId } from '../../integration/helpers/sessionUser.helper.js';
+import { resolveRuntimeUserCredentialsForIdentifier } from '../../E2E/utils/runtimeUserCredentials.js';
 import {
   getConfiguredStaffAdminUserIdentifiers,
   getLegacyStaffAdminSessionIdentity,
@@ -24,6 +25,14 @@ const staffAdminPoolCredentialEnvKeys = [
   'STAFF_ADMIN_3_PASSWORD',
   'STAFF_ADMIN_4_USERNAME',
   'STAFF_ADMIN_4_PASSWORD',
+  'STAFF_ADMIN_5_USERNAME',
+  'STAFF_ADMIN_5_PASSWORD',
+  'STAFF_ADMIN_6_USERNAME',
+  'STAFF_ADMIN_6_PASSWORD',
+  'STAFF_ADMIN_7_USERNAME',
+  'STAFF_ADMIN_7_PASSWORD',
+  'STAFF_ADMIN_8_USERNAME',
+  'STAFF_ADMIN_8_PASSWORD',
 ] as const;
 
 const configuredEnv = {
@@ -36,6 +45,14 @@ const configuredEnv = {
   STAFF_ADMIN_3_PASSWORD: 'secret-3',
   STAFF_ADMIN_4_USERNAME: 'staff-admin-4@example.test',
   STAFF_ADMIN_4_PASSWORD: 'secret-4',
+  STAFF_ADMIN_5_USERNAME: 'staff-admin-5@example.test',
+  STAFF_ADMIN_5_PASSWORD: 'secret-5',
+  STAFF_ADMIN_6_USERNAME: 'staff-admin-6@example.test',
+  STAFF_ADMIN_6_PASSWORD: 'secret-6',
+  STAFF_ADMIN_7_USERNAME: 'staff-admin-7@example.test',
+  STAFF_ADMIN_7_PASSWORD: 'secret-7',
+  STAFF_ADMIN_8_USERNAME: 'staff-admin-8@example.test',
+  STAFF_ADMIN_8_PASSWORD: 'secret-8',
 };
 
 test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () => {
@@ -56,8 +73,26 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     expect(getConfiguredStaffAdminUserIdentifiers(env)).toEqual(['STAFF_ADMIN-1']);
   });
 
-  test('keeps the legacy staff admin user unless the pool is explicitly enabled', () => {
+  test('uses configured pooled users without requiring an enable flag', () => {
     const env = {
+      STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+      STAFF_ADMIN_1_PASSWORD: 'secret-1',
+    };
+
+    expect(getConfiguredStaffAdminUserIdentifiers(env)).toEqual(['STAFF_ADMIN-1']);
+    expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 0 }, env)).toBe('STAFF_ADMIN-1');
+    expect(resolveRuntimeUserCredentialsForIdentifier(STAFF_ADMIN_USER, env)).toEqual({
+      email: 'staff-admin-1@example.test',
+      password: 'secret-1',
+    });
+    expect(
+      resolveRuntimeUserCredentialsForIdentifier(STAFF_ADMIN_USER, { ...env, STAFF_ADMIN_POOL_ENABLED: 'false' })
+    ).toBeUndefined();
+  });
+
+  test('honours an explicit pool opt-out', () => {
+    const env = {
+      STAFF_ADMIN_POOL_ENABLED: 'false',
       STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
       STAFF_ADMIN_1_PASSWORD: 'secret-1',
     };
@@ -71,7 +106,9 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 1 }, configuredEnv)).toBe('STAFF_ADMIN-2');
     expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 2 }, configuredEnv)).toBe('STAFF_ADMIN-3');
     expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 3 }, configuredEnv)).toBe('STAFF_ADMIN-4');
-    expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 4 }, configuredEnv)).toBe('STAFF_ADMIN-1');
+    expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 4 }, configuredEnv)).toBe('STAFF_ADMIN-5');
+    expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 7 }, configuredEnv)).toBe('STAFF_ADMIN-8');
+    expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 8 }, configuredEnv)).toBe('STAFF_ADMIN-1');
   });
 
   test('honours an explicit zero parallel index over a configured environment index', () => {
@@ -111,6 +148,10 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
       'STAFF_ADMIN-1',
       'STAFF_ADMIN-2',
       'STAFF_ADMIN-4',
+      'STAFF_ADMIN-5',
+      'STAFF_ADMIN-6',
+      'STAFF_ADMIN-7',
+      'STAFF_ADMIN-8',
     ]);
   });
 
@@ -118,6 +159,7 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     const previousEnv: Record<string, string | undefined> = {
       STAFF_ADMIN_POOL_ENABLED: process.env.STAFF_ADMIN_POOL_ENABLED,
       TEST_PARALLEL_INDEX: process.env.TEST_PARALLEL_INDEX,
+      PW_SESSION_REUSE_VALIDATION_MODE: process.env.PW_SESSION_REUSE_VALIDATION_MODE,
     };
     for (const key of staffAdminPoolCredentialEnvKeys) {
       previousEnv[key] = process.env[key];
@@ -178,6 +220,8 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
       process.env.STAFF_ADMIN_2_USERNAME = 'staff-admin-2@example.test';
       process.env.STAFF_ADMIN_2_PASSWORD = 'secret-2';
       process.env.TEST_PARALLEL_INDEX = '1';
+      // This is a storage-state/cookie unit contract, not an auth endpoint test.
+      process.env.PW_SESSION_REUSE_VALIDATION_MODE = 'best-effort';
       process.chdir(tempDir);
 
       const identity = resolveSessionIdentity('STAFF_ADMIN');

@@ -1,5 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
@@ -68,16 +69,16 @@ describe('LegacyTermsAndConditionsComponent', () => {
     expect(fixture).not.toBeNull();
   });
 
-  it('should have introWithPrivacyPolicyText defined', () => {
-    expect(component.introWithPrivacyPolicyText).toBeTruthy();
-  });
-
-  it('should have privacyPolicyLinkHtml defined', () => {
-    expect(component.privacyPolicyLinkHtml).toBeTruthy();
-  });
-
   it('should have accessingServiceIntroKey defined', () => {
     expect(component.accessingServiceIntroKey).toBeTruthy();
+  });
+
+  it('should render the privacy policy as a template link', () => {
+    fixture.detectChanges();
+    const privacyPolicyLink = element.query(By.css('a[href="/privacy-policy"]'));
+
+    expect(privacyPolicyLink).toBeTruthy();
+    expect(privacyPolicyLink.nativeElement.textContent.trim()).toBe('privacy policy');
   });
 
   it('should have serviceIncludesKey defined', () => {

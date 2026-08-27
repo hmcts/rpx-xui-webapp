@@ -16,6 +16,18 @@ export default defineConfig(
       'no-prototype-builtins': 'warn',
       'eslint-comments/no-use': 'warn',
       '@typescript-eslint/no-duplicate-enum-values': 'warn',
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            'CallExpression[callee.property.name=/^bypassSecurityTrust/], CallExpression[callee.name=/^bypassSecurityTrust/]',
+          message: 'Avoid DomSanitizer bypassSecurityTrust* calls. Sanitize untrusted HTML before rendering it.',
+        },
+        {
+          selector: 'MemberExpression[property.name="innerHTML"]',
+          message: 'Avoid direct innerHTML usage. Prefer Angular interpolation or sanitized rendering.',
+        },
+      ],
     },
   },
   {

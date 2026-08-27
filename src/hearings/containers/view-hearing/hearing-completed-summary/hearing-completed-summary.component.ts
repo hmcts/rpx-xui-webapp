@@ -34,10 +34,7 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-    this.hearingId = this.route.snapshot.params.id;
-    this.caseRef = navState?.caseRef;
-    this.showEditButton = !!navState?.showEditButton;
+    this.setNavigationState();
 
     this.showSpinner$ = this.loadingService.isLoading as Observable<boolean>;
     const loadingToken = this.loadingService.register();
@@ -54,6 +51,13 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
         this.loadingService.unregister(loadingToken);
       }
     );
+  }
+
+  private setNavigationState(): void {
+    const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
+    this.hearingId = this.route.snapshot.params.id;
+    this.caseRef = navState?.caseRef;
+    this.showEditButton = !!navState?.showEditButton;
   }
 
   public ngOnDestroy(): void {

@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -44,6 +45,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public constructor(
     private readonly fb: FormBuilder,
     private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly location: Location,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly ngZone: NgZone,
@@ -201,6 +203,10 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
         this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
       });
     }
+  }
+
+  public onBack(): void {
+    this.location.back();
   }
 
   private getHearingTime(value: string, actualIndex: number): string {

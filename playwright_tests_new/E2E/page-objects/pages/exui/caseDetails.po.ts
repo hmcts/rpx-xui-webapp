@@ -57,8 +57,9 @@ export class CaseDetailsPage extends Base {
   readonly tabList = this.page.locator('div[role="tablist"]');
   readonly tablist2 = this.page.getByRole('tab');
 
-  //Case flags
   // Case flags
+  readonly caseFlagsHeading = this.page.getByRole('heading', { name: 'Case flags', exact: true });
+
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
 
   readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');
@@ -487,6 +488,7 @@ export class CaseDetailsPage extends Base {
       retry?: boolean;
     } = {}
   ) {
+    const timeoutMs = options.timeoutMs ?? 30000;
     await this.caseActionGoButton.waitFor({ state: 'visible' });
     await this.caseActionsDropdown.waitFor({ state: 'visible' });
     const availableOptions = await this.caseActionsDropdown.locator('option').evaluateAll((options) =>
@@ -514,13 +516,12 @@ export class CaseDetailsPage extends Base {
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
       await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
-    await this.caseActionGoButton.click();
-    await this.waitForSpinnerToComplete('after selecting case action');
+    await this.clickCaseActionGoButton(timeoutMs);
+    await this.waitForSpinnerToComplete('after selecting case action', options.timeoutMs);
     await this.page.waitForLoadState('domcontentloaded');
     if (!options.expectedLocator && !options.expectedPath) {
       return;
     }
-    const timeoutMs = options.timeoutMs ?? 30000;
     const waitForExpected = async () => {
       if (options.expectedPath) {
         const matcher =
@@ -541,6 +542,13 @@ export class CaseDetailsPage extends Base {
       if (options.retry === false) {
         throw error;
       }
+      const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+      const spinnerWasVisible = await spinner.isVisible().catch(() => false);
+      await this.waitForSpinnerToComplete(`before retrying case action "${action}"`, timeoutMs);
+      if (spinnerWasVisible) {
+        await waitForExpected();
+        return;
+      }
       this.logger.warn('Expected locator not visible after case action; retrying action', { action });
       try {
         if (matchingOption.label === action) {
@@ -552,8 +560,8 @@ export class CaseDetailsPage extends Base {
         this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
         await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
-      await this.caseActionGoButton.click();
-      await this.waitForSpinnerToComplete('after retrying case action');
+      await this.clickCaseActionGoButton(timeoutMs);
+      await this.waitForSpinnerToComplete('after retrying case action', timeoutMs);
       await this.page.waitForLoadState('domcontentloaded');
       await waitForExpected();
     }
@@ -561,7 +569,7 @@ export class CaseDetailsPage extends Base {
 
   private async waitForSpinnerToComplete(context: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
-    const spinner = this.page.locator('xuilib-loading-spinner').first();
+    const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
     try {
       await spinner.waitFor({ state: 'hidden', timeout: effectiveTimeoutMs });
     } catch (error) {
@@ -570,6 +578,20 @@ export class CaseDetailsPage extends Base {
         throw new Error(`Spinner still visible ${context}`);
       }
       this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });
+    }
+  }
+
+  private async clickCaseActionGoButton(timeoutMs: number): Promise<void> {
+    await this.waitForSpinnerToComplete('before submitting case action', timeoutMs);
+    try {
+      await this.caseActionGoButton.click();
+    } catch (error) {
+      const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+      if (!(await spinner.isVisible().catch(() => false))) {
+        throw error;
+      }
+      await this.waitForSpinnerToComplete('after case action click was blocked by spinner', timeoutMs);
+      await this.caseActionGoButton.click();
     }
   }
 
@@ -811,25 +833,40 @@ export class CaseDetailsPage extends Base {
   }
 
   async openDocumentOneInMediaViewer(): Promise<Page> {
-    await this.openDocumentOne();
+    const timeout = this.getRecommendedTimeoutMs({ max: 45_000, fallback: 45_000 });
+    const maxAttempts = 2;
 
-    await this.page
-      .waitForFunction(
-        (routePatternSource) => {
-          const routePattern = new RegExp(routePatternSource);
-          return window.location.href.match(routePattern) !== null;
-        },
-        MEDIA_VIEWER_ROUTE_PATTERN.source,
-        { timeout: this.getRecommendedTimeoutMs() }
-      )
-      .catch(() => undefined);
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      const popupPromise = this.page.waitForEvent('popup', { timeout }).then(async (popup) => {
+        await popup.waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout });
+        return popup;
+      });
+      const samePagePromise = this.page.waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout }).then(() => this.page);
 
-    const matchingPage = this.page
-      .context()
-      .pages()
-      .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+      await this.openDocumentOne();
 
-    return matchingPage ?? this.page;
+      const openedPage = await Promise.any([popupPromise, samePagePromise]).catch(() => undefined);
+      if (openedPage) {
+        return openedPage;
+      }
+
+      const matchingPage = this.page
+        .context()
+        .pages()
+        .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+      if (matchingPage) {
+        return matchingPage;
+      }
+    }
+
+    throw new Error(
+      `Media Viewer did not open within ${timeout}ms after selecting Document 1 across ${maxAttempts} attempts. ` +
+        `Current URL: ${this.page.url()}; open pages: ${this.page
+          .context()
+          .pages()
+          .map((candidate) => candidate.url())
+          .join(', ')}`
+    );
   }
 
   async waitForDocumentOneRowToContain(expectedText: string, timeoutMs = 45_000): Promise<void> {
@@ -854,15 +891,7 @@ export class CaseDetailsPage extends Base {
   }
 
   private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
-    await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
-      if (!/\/cases\/case-details\//.test(this.page.url())) {
-        throw error;
-      }
-      await this.page.goto(this.page.url(), { waitUntil: 'domcontentloaded' });
-      await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
-        throw error;
-      });
-    });
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
     await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
 
     const deadline = Date.now() + timeoutMs;

@@ -2,11 +2,10 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { UserInfo } from '../../../app/models';
+import { SessionStorageService } from '../../../app/services';
 import { OptionsModel } from '../../../role-access/models/options-model';
-import { getOptions } from '../../../work-allocation/utils';
+import { getCurrentUserRoleCategories, getOptions } from '../../../work-allocation/utils';
 import { TaskPermission, TaskRole } from '../../models/tasks';
 
 @Component({
@@ -58,7 +57,10 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     this.verb = this.route.snapshot.data.verb;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
-      role: [this.setUpDefaultRoleType(this.getCurrentUserRoleCategory(), this.taskRoles), Validators.required],
+      role: [
+        this.setUpDefaultRoleType(getCurrentUserRoleCategories(this.sessionStorageService), this.taskRoles),
+        Validators.required,
+      ],
       taskId: [taskId, Validators.required],
     });
   }
@@ -86,32 +88,24 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     }
   }
 
-  private getCurrentUserRoleCategory(): RoleCategory {
-    const userInfoStr = this.sessionStorageService.getItem(TaskAssignmentChooseRoleComponent.userDetails);
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return userInfo.roleCategory as RoleCategory;
-    }
-    return null;
-  }
-
-  private setUpDefaultRoleType(userRoleCategory: RoleCategory, roles: TaskRole[]): string {
+  private setUpDefaultRoleType(userRoleCategories: RoleCategory[], roles: TaskRole[]): string {
     const roleCategory = this.route.snapshot.queryParamMap.get('roleCategory');
     if (roleCategory && (roleCategory as RoleCategory) !== null) {
       return roleCategory as RoleCategory;
-    } else if (roles.length) {
+    } else if (roles.length > 0) {
       const roleCategories = this.taskWithOwnPermission(roles);
       // if there is only one role with relevant permissions, use that role
       if (roleCategories?.length === 1) {
         return roleCategories[0].toUpperCase();
         // if the user has a role that matches the relevant task role category
-      } else if (roleCategories.includes(userRoleCategory)) {
-        return userRoleCategory;
-        // else return simply the first role with an own permission
+      } else if (roleCategories.some((role) => userRoleCategories.includes(role as RoleCategory))) {
+        return userRoleCategories.find((role) => roleCategories.includes(role as RoleCategory)) as string;
+        // else return simply the first (found) role with an own permission
       }
 
       return roleCategories[0];
     }
+    return RoleCategory.ALL;
   }
 
   private taskWithOwnPermission(roles: TaskRole[]): string[] {

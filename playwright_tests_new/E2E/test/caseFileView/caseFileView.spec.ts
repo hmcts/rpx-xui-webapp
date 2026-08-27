@@ -2,11 +2,11 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 import { uploadEmploymentDraftDocumentViaApi } from '../../utils/test-setup/journeys/employmentJourneys';
-import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { formatErrorMessage, isDependencyEnvironmentFailure } from '../../utils/transient-failure.utils';
 
 const DOCUMENT_FILE_NAME = 'case-file-view-fixture.pdf';
 const DOCUMENT_VIEWER_TEXT = 'Case File View - Document Delivery Fixture';
@@ -15,58 +15,46 @@ const DOCUMENT_FILE_FOLDER_PATH = 'Miscellaneous.Other';
 const DOCUMENT_MIME_TYPE = 'application/pdf';
 const DOCUMENT_TOP_LEVEL_CATEGORY = 'Misc';
 const DOCUMENT_SUBCATEGORY = 'Other';
+const CASE_FILE_VIEW_DOCUMENT_TEST_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_CASE_FILE_VIEW_DOCUMENT_TEST_TIMEOUT_MS ?? '', 10) || 300_000;
 const DOCUMENT_BUFFER = readFileSync(
   path.resolve(process.cwd(), 'playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf')
 );
 
 test.describe('Case file view', { tag: ['@e2e', '@e2e-case-file-view'] }, () => {
+  test.describe.configure({ timeout: CASE_FILE_VIEW_DOCUMENT_TEST_TIMEOUT_MS });
+
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';
   let caseNumber: string;
 
-  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
-    await ensureSession('SEARCH_EMPLOYMENT_CASE');
-  });
-
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     try {
-      await retryOnTransientFailure(
-        async () => {
-          await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-          const setup = await setupCaseForJourney({
-            scenario: 'case-file-view-employment',
-            jurisdiction,
-            caseType,
-            apiEventId: 'initiateCase',
-            mode: 'api-required',
-            apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
-            page,
-            createCasePage,
-            caseDetailsPage,
-            testInfo,
-          });
-          caseNumber = setup.caseNumber;
-          await uploadEmploymentDraftDocumentViaApi({
-            page,
-            caseNumber,
-            fileName: DOCUMENT_FILE_NAME,
-            mimeType: DOCUMENT_MIME_TYPE,
-            fileContent: DOCUMENT_BUFFER,
-            topLevelDocuments: DOCUMENT_TOP_LEVEL_CATEGORY,
-            miscDocuments: DOCUMENT_SUBCATEGORY,
-          });
-          await caseDetailsPage.reopenCaseDetails(`/cases/case-details/${jurisdiction}/${caseType}/${caseNumber}`);
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            if (page.isClosed()) {
-              return;
-            }
-            await page.goto('/').catch(() => undefined);
-          },
-        }
-      );
+      const lease = await identityLease.acquire({ pool: 'SEARCH_EMPLOYMENT_CASE' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
+      const setup = await setupCaseForJourney({
+        scenario: 'case-file-view-employment',
+        jurisdiction,
+        caseType,
+        apiEventId: 'initiateCase',
+        mode: 'api-required',
+        apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+        page,
+        createCasePage,
+        caseDetailsPage,
+        testInfo,
+      });
+      caseNumber = setup.caseNumber;
+      await uploadEmploymentDraftDocumentViaApi({
+        page,
+        caseNumber,
+        fileName: DOCUMENT_FILE_NAME,
+        mimeType: DOCUMENT_MIME_TYPE,
+        fileContent: DOCUMENT_BUFFER,
+        topLevelDocuments: DOCUMENT_TOP_LEVEL_CATEGORY,
+        miscDocuments: DOCUMENT_SUBCATEGORY,
+      });
+      await caseDetailsPage.reopenCaseDetails(`/cases/case-details/${jurisdiction}/${caseType}/${caseNumber}`);
     } catch (error) {
       if (isDependencyEnvironmentFailure(error)) {
         throw new Error(`Case file view setup failed due to dependency environment instability: ${formatErrorMessage(error)}`);

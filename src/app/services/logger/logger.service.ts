@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { environment as config } from '../../../environments/environment';
 import { UserInfo } from '../../models/user-details.model';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { MonitoringService } from './monitoring.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
@@ -98,7 +99,10 @@ export class LoggerService implements ILoggerService {
   public getMessage(message: any): string {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return `Message - ${message}, Timestamp - ${Date.now()}`;
+      }
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
       return `User - ${userId.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
     }

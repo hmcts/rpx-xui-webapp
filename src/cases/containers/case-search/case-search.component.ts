@@ -1,6 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  CaseState,
+  CaseType,
+  Jurisdiction,
+  PaginationMetadata,
+  SearchResultView,
+  safeJsonParse,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { decompressFromUTF16 } from 'lz-string';
@@ -168,16 +175,16 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     };
   };
 
-  private getCompressedLSItem(key: string): string {
+  private getCompressedLSItem(key: string): any {
     const item = localStorage.getItem(key);
     if (item && item.length > 0) {
       if (item.startsWith('{')) {
         // probably not compressed
-        return item;
+        return safeJsonParse(item, null);
       }
       try {
         const decomp = decompressFromUTF16(item);
-        return JSON.parse(decomp);
+        return safeJsonParse(decomp, null);
       } catch (e) {
         console.log('error decompressing data of length' + item.length, e);
       }
@@ -187,10 +194,10 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   public getEvent() {
     let event = null;
-    const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
+    const formGroupFromLS = safeJsonParse(localStorage.getItem('search-form-group-value'), null);
     const jurisdictionFromLS = this.getCompressedLSItem('search-jurisdiction');
-    const caseTypeGroupFromLS = JSON.parse(localStorage.getItem('search-caseType'));
-    const metadataFieldsGroupFromLS = JSON.parse(localStorage.getItem('search-metadata-fields'));
+    const caseTypeGroupFromLS = safeJsonParse(localStorage.getItem('search-caseType'), null);
+    const metadataFieldsGroupFromLS = safeJsonParse(localStorage.getItem('search-metadata-fields'), null);
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
       event = {

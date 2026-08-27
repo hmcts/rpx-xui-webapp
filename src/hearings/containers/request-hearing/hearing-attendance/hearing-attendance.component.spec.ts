@@ -123,20 +123,25 @@ class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
+const hearingAttendanceInitialState = _.cloneDeep(initialState);
+
 describe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-  const hearingsService = new HearingsService(mockedHttpClient);
+  let hearingsService: HearingsService;
   const lovRefDataService = jasmine.createSpyObj('lovRefDataService', ['getListOfValues']);
-  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
+    hearingsService = new HearingsService(mockedHttpClient);
+    hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+    const testInitialState = _.cloneDeep(hearingAttendanceInitialState);
+
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [HearingAttendanceComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: testInitialState }),
         { provide: HearingsService, useValue: hearingsService },
         { provide: LovRefDataService, useValue: lovRefDataService },
         {
@@ -509,19 +514,19 @@ describe('HearingAttendanceComponent', () => {
   let component: HearingAttendanceComponent;
   let fixture: ComponentFixture<HearingAttendanceComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-  const hearingsService = new HearingsService(mockedHttpClient);
+  let hearingsService: HearingsService;
   const lovRefDataService = jasmine.createSpyObj('lovRefDataService', ['getListOfValues']);
-  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-
-  const updatedInitialState = _.cloneDeep(initialState);
-
-  updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels = [
-    'byPhone',
-    HearingChannelEnum.ONPPR,
-  ];
-  updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails = [];
 
   beforeEach(() => {
+    hearingsService = new HearingsService(mockedHttpClient);
+    hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+    const updatedInitialState = _.cloneDeep(hearingAttendanceInitialState);
+    updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels = [
+      'byPhone',
+      HearingChannelEnum.ONPPR,
+    ];
+    updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails = [];
+
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [HearingAttendanceComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],

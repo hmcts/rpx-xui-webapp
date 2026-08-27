@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -40,8 +41,13 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      // EXUI-4758 - Get first user role category, otherwise default to LegalOps
+      const userRole: UserRole = userRoleNames[0] || UserRole.LegalOps;
       const searchParameters: SearchTaskParameter[] = [{ key: 'jurisdiction', operator: 'IN', values: this.selectedServices }];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
@@ -55,6 +61,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [...this.getSortParameter()],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter(),
       };

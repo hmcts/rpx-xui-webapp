@@ -34,6 +34,9 @@ export const prlHearingHappyPathScenario = {
   },
   hearingVenue: {
     searchTerm: 'basingstoke',
+    // Court the case is issued to during setup, so it is already selected on the venue page.
+    // caseManagementVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL?.trim() || 'East London Family Court',
+    defaultHearingVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL?.trim() || 'East London Family Court',
   },
   hearingDetails: {
     hearingInWelsh: 'No',
@@ -72,6 +75,8 @@ export const prlHearingHappyPathScenario = {
   };
   hearingVenue: {
     searchTerm: string;
+    //caseManagementVenue: string;
+    defaultHearingVenue: string;
   };
   hearingDetails: {
     hearingInWelsh: YesNo;

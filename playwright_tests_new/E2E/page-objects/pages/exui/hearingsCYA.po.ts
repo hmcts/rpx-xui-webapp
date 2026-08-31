@@ -1,4 +1,5 @@
 import { Locator, Page } from '@playwright/test';
+import { normaliseWhitespace } from '../../../utils/text.utils.ts';
 
 export class HearingsCYAPage {
   constructor(private readonly page: Page) {}
@@ -29,6 +30,15 @@ export class HearingsCYAPage {
 
   rowListItems(sectionTitle: string, key: string): Locator {
     return this.rowValue(sectionTitle, key).locator('ul > li');
+  }
+
+  /**
+   * Reads a row's list values with the template whitespace collapsed, sorted so that
+   * assertions do not depend on the order the summary answer resolves them in.
+   */
+  async sortedRowListItems(sectionTitle: string, key: string): Promise<string[]> {
+    const listItems = await this.rowListItems(sectionTitle, key).allTextContents();
+    return listItems.map(normaliseWhitespace).sort();
   }
 
   rowChangeLink(sectionTitle: string, key: string): Locator {

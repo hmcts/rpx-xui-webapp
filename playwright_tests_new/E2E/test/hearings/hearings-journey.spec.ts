@@ -76,7 +76,12 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-venue$/);
       await expect(page.getByRole('heading', { name: /What are the hearing venue details?/i })).toBeVisible();
 
+      // The venue already on the case is seeded by an async location lookup that overwrites the
+      // selection list when it resolves, so wait for it before adding another venue.
+      await hearingsJourneyPage.waitForSeededVenues(scenario.hearingVenue.defaultHearingVenue);
+
       selectedHearingVenue = await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
+      await expect(hearingsJourneyPage.selectedVenueTags).toHaveCount(2);
       await expect(hearingsJourneyPage.removeLocationLink(selectedHearingVenue)).toBeVisible();
       await continueHearingsFlow(page);
     });
@@ -163,10 +168,14 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       await expect(hearingsCYAPage.sectionRows('Hearing Venue')).toHaveCount(1);
 
-      const venuesList = hearingsCYAPage.rowListItems('Hearing Venue', 'What are the hearing venue details?');
-      const venues = await venuesList.allTextContents();
-      expect(venues).toEqual(expect.arrayContaining(['East London Family Court', selectedHearingVenue]));
-      expect(venues).toHaveLength(2);
+      // The venue names are resolved by an async location lookup after the summary renders, so the
+      // list starts empty. Poll rather than take a single snapshot of the row.
+      const expectedVenues = [scenario.hearingVenue.defaultHearingVenue, selectedHearingVenue].sort();
+      await expect
+        .poll(async () => hearingsCYAPage.sortedRowListItems('Hearing Venue', 'What are the hearing venue details?'), {
+          message: `Hearing venue summary should list exactly ${expectedVenues.join(' and ')}`,
+        })
+        .toEqual(expectedVenues);
 
       const allJudges = hearingJourneyModel.get('hearingDetails', 'judgeType');
 
@@ -218,6 +227,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
         const submitBody = await submitHearingResponse.json();
         apiResponseHearingId = submitBody.hearingRequestID;
+        expect(apiResponseHearingId, 'submitHearingRequest should return a hearingRequestID').toBeTruthy();
       } catch (error) {
         if (submitHearingResponse) {
           const status = submitHearingResponse.status();

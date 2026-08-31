@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { AdditionalFacility, HearingJourneyModel, HearingMethod, TypeOfJudges } from '../../../utils/hearing-model.ts';
+import { normaliseWhitespace } from '../../../utils/text.utils.ts';
 
 export class HearingsJourneyPage {
   constructor(private readonly page: Page) {}
@@ -60,11 +61,9 @@ export class HearingsJourneyPage {
   readonly hearingPriorityStandard: Locator = this.page.locator('#hearing-priority .govuk-radios #Standard');
   readonly hearingPriorityUrgent: Locator = this.page.locator('#hearing-priority .govuk-radios #Urgent');
 
-  readonly linkedToOtherHearings = this.page.locator('#linkedToOtherHearings');
-
-  readonly overlayLocationPanel = this.page
-    .locator('.cdk-overlay-container .cdk-overlay-pane')
-    .filter({ has: this.page.locator('.mat-autocomplete-panel[role="listbox"]') });
+  // readonly overlayLocationPanel = this.page
+  //   .locator('.cdk-overlay-container .cdk-overlay-pane')
+  //   .filter({ has: this.page.locator('.mat-autocomplete-panel[role="listbox"]') });
 
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
   readonly selectedVenueTags = this.page.getByRole('link', { name: /^Click to remove:/ });
@@ -126,6 +125,18 @@ export class HearingsJourneyPage {
     await this.numberAttendingHearing.fill(noOfPeopleAttending);
   }
 
+  /**
+   * Waits for the venue page to finish seeding the locations already held on the case.
+   *
+   * The component loads them from an async `api/prd/location/getLocationById` lookup and
+   * assigns the response over its `selectedLocations` array. Adding a venue before that
+   * response lands means the assignment overwrites (and silently drops) the new selection,
+   * which is what makes the downstream check-your-answers venue assertions to be flaky.
+   */
+  async waitForSeededVenues(expectedSeededVenue: string, timeout = 30_000): Promise<void> {
+    await this.removeLocationLink(expectedSeededVenue).waitFor({ state: 'visible', timeout });
+  }
+
   async setHearingVenue(model: HearingJourneyModel): Promise<string> {
     const hearingVenue = model.get('hearingVenue', 'name') as string[];
     const venueSearchTerm = hearingVenue?.[0];
@@ -134,18 +145,39 @@ export class HearingsJourneyPage {
       throw new Error(`Expected a hearing venue search term, got: ${JSON.stringify(hearingVenue)}`);
     }
 
+    const seededVenueCount = await this.selectedVenueTags.count();
+
     await this.hearingVenue.pressSequentially(venueSearchTerm);
     const venueOption = this.page.getByRole('option').filter({ hasText: venueSearchTerm }).first();
     await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
-
-    const newSelectedVenue = (await venueOption.textContent())?.replace(/\s+/g, ' ').trim();
-
-    if (!newSelectedVenue) {
-      throw new Error(`Venue option matching "${venueSearchTerm}" did not expose visible text.`);
-    }
     await venueOption.click();
     await this.addLocationsButton.click();
+
+    // The autocomplete list is rebuilt every time the debounced search resolves, so the option
+    // text read before clicking can belong to a stale element. Take the name from the tag the
+    // page actually added instead, which is the value carried into the hearing request.
+    const addedVenueTag = this.selectedVenueTags.nth(seededVenueCount);
+    await addedVenueTag.waitFor({ state: 'visible', timeout: 30_000 });
+
+    const newSelectedVenue = await this.venueTagName(addedVenueTag);
+
+    if (!newSelectedVenue) {
+      throw new Error(`Venue selected for "${venueSearchTerm}" did not expose a location name.`);
+    }
     return newSelectedVenue;
+  }
+
+  /** Reads the location name from a selected venue tag, dropping its visually hidden prefix. */
+  private async venueTagName(venueTag: Locator): Promise<string> {
+    const [tagText, hiddenPrefix] = await Promise.all([
+      venueTag.textContent(),
+      venueTag
+        .locator('.sr-only')
+        .textContent()
+        .catch(() => ''),
+    ]);
+
+    return normaliseWhitespace(tagText).replace(normaliseWhitespace(hiddenPrefix), '').trim();
   }
 
   async isWelshHearing(model: HearingJourneyModel): Promise<void> {

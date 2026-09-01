@@ -48,10 +48,40 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_OFF_USER, env)).toEqual([]);
   });
 
-  test('distributes configured CR84 ON users by parallel index', () => {
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 2 }, configuredEnv)).toBe(
-      'HEARING_MANAGER_CR84_ON-3'
-    );
+  test('discovers, deduplicates, and only routes identities supported by the runtime credential map', () => {
+    const env = {
+      HEARING_MANAGER_CR84_ON_1_USERNAME: 'shared-hearing@example.test',
+      HEARING_MANAGER_CR84_ON_1_PASSWORD: 'secret-1',
+      HEARING_MANAGER_CR84_ON_2_USERNAME: 'SHARED-HEARING@example.test',
+      HEARING_MANAGER_CR84_ON_2_PASSWORD: 'secret-2',
+      HEARING_MANAGER_CR84_ON_4_USERNAME: 'hearing-on-4@example.test',
+      HEARING_MANAGER_CR84_ON_4_PASSWORD: 'secret-4',
+      HEARING_MANAGER_CR84_ON_5_USERNAME: 'unsupported@example.test',
+      HEARING_MANAGER_CR84_ON_5_PASSWORD: 'secret-5',
+    };
+
+    expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, env)).toEqual([
+      'HEARING_MANAGER_CR84_ON-1',
+      'HEARING_MANAGER_CR84_ON-4',
+    ]);
+  });
+
+  test('uses four distinct CR84 ON users before reusing the pool by parallel index', () => {
+    expect(
+      [0, 1, 2, 3].map((parallelIndex) =>
+        resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex }, configuredEnv)
+      )
+    ).toEqual([
+      'HEARING_MANAGER_CR84_ON-1',
+      'HEARING_MANAGER_CR84_ON-2',
+      'HEARING_MANAGER_CR84_ON-3',
+      'HEARING_MANAGER_CR84_ON-4',
+    ]);
+    expect(
+      [4, 5, 6].map((parallelIndex) =>
+        resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex }, configuredEnv)
+      )
+    ).toEqual(['HEARING_MANAGER_CR84_ON-1', 'HEARING_MANAGER_CR84_ON-2', 'HEARING_MANAGER_CR84_ON-3']);
   });
 
   test('uses the Playwright parallel index env when no source is provided', () => {

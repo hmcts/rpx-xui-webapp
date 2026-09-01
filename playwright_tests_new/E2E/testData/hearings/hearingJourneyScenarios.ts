@@ -33,7 +33,7 @@ export const prlHearingHappyPathScenario = {
     numberOfPeopleAttendingHearing: '2',
   },
   hearingVenue: {
-    searchTerm: 'basingstoke',
+    searchTerm: 'Basingstoke',
     // Court the case is issued to during setup, so it is already selected on the venue page.
     // caseManagementVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL?.trim() || 'East London Family Court',
     defaultHearingVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL?.trim() || 'East London Family Court',

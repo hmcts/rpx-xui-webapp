@@ -61,12 +61,27 @@ export class HearingsJourneyPage {
   readonly hearingPriorityStandard: Locator = this.page.locator('#hearing-priority .govuk-radios #Standard');
   readonly hearingPriorityUrgent: Locator = this.page.locator('#hearing-priority .govuk-radios #Urgent');
 
-  // readonly overlayLocationPanel = this.page
-  //   .locator('.cdk-overlay-container .cdk-overlay-pane')
-  //   .filter({ has: this.page.locator('.mat-autocomplete-panel[role="listbox"]') });
-
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
   readonly selectedVenueTags = this.page.getByRole('link', { name: /^Click to remove:/ });
+
+  /**
+   * The venue autocomplete renders into a CDK overlay outside the component's own markup, so it
+   * has to be reached through the overlay pane rather than the `.search-location` container.
+   *
+   * Matched on `role="listbox"` rather than a `mat-*` class: this app serves the legacy
+   * (non-MDC) Material autocomplete, so the panel is `.mat-autocomplete-panel`, not
+   * `.mat-mdc-autocomplete-panel`. The role is stable across both builds.
+   */
+  readonly venueAutocompletePanel = this.page.locator('.cdk-overlay-pane [role="listbox"]');
+  readonly venueOptions = this.venueAutocompletePanel.getByRole('option');
+
+  /** The placeholder option the component renders when a search comes back empty. */
+  readonly venueNoResultsOption = this.venueOptions.filter({ hasText: 'No results found' });
+
+  /** Real venue options matching the search term, excluding the "No results found" placeholder. */
+  venueOptionsMatching(searchTerm: string): Locator {
+    return this.venueOptions.filter({ hasText: searchTerm });
+  }
 
   // hearingConfirmationPAge
   readonly hearingPanel = this.page.locator('.govuk-panel.govuk-panel--confirmation');
@@ -148,8 +163,20 @@ export class HearingsJourneyPage {
     const seededVenueCount = await this.selectedVenueTags.count();
 
     await this.hearingVenue.pressSequentially(venueSearchTerm);
-    const venueOption = this.page.getByRole('option').filter({ hasText: venueSearchTerm }).first();
-    await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
+
+    // Every keystroke fires a fresh debounced l2okup that rebuilds the panel, so wait for an
+    // option that actually matches the search term rather than whatever the last in-flight
+    // response happened to render.
+    const venueOption = this.venueOptionsMatching(venueSearchTerm).first();
+    try {
+      await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
+    } catch (error) {
+      if (await this.venueNoResultsOption.isVisible()) {
+        throw new Error(`Location search for "${venueSearchTerm}" returned "No results found".`);
+      }
+      throw error;
+    }
+
     await venueOption.click();
     await this.addLocationsButton.click();
 
@@ -164,6 +191,13 @@ export class HearingsJourneyPage {
     if (!newSelectedVenue) {
       throw new Error(`Venue selected for "${venueSearchTerm}" did not expose a location name.`);
     }
+
+    // Guards against a mis-targeted click silently adding a different court: the tag the page
+    // added must be the venue that was searched for.
+    if (!newSelectedVenue.includes(venueSearchTerm)) {
+      throw new Error(`Expected the added venue to match "${venueSearchTerm}", but the page added "${newSelectedVenue}".`);
+    }
+
     return newSelectedVenue;
   }
 

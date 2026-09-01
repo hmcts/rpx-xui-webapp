@@ -81,7 +81,17 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await hearingsJourneyPage.waitForSeededVenues(scenario.hearingVenue.defaultHearingVenue);
 
       selectedHearingVenue = await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
+
+      expect(selectedHearingVenue, `Venue added should match the "${scenario.hearingVenue.searchTerm}" search`).toContain(
+        scenario.hearingVenue.searchTerm
+      );
+      expect(selectedHearingVenue, 'Venue added should not be the venue already seeded on the case').not.toBe(
+        scenario.hearingVenue.defaultHearingVenue
+      );
+
+      // Both the seeded venue and the newly added one must survive, and nothing else may be added.
       await expect(hearingsJourneyPage.selectedVenueTags).toHaveCount(2);
+      await expect(hearingsJourneyPage.removeLocationLink(scenario.hearingVenue.defaultHearingVenue)).toBeVisible();
       await expect(hearingsJourneyPage.removeLocationLink(selectedHearingVenue)).toBeVisible();
       await continueHearingsFlow(page);
     });

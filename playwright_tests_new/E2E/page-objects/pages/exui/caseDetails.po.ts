@@ -92,7 +92,7 @@ export class CaseDetailsPage extends Base {
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
   readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
-  readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
+  readonly divorceDataSubTable = this.caseViewerTable.locator('table.complex-panel-table table').first();
 
   // Task List tab
   readonly taskListContainer = this.page.locator('.active-tasks-container');

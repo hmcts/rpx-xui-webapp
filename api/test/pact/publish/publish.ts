@@ -28,8 +28,8 @@ const isBrokerReachable = async (brokerUrl: string): Promise<boolean> => {
 
 const publish = async (): Promise<void> => {
   try {
-    const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
-    const pactTag = getConfigValue(PACT_BRANCH_NAME) ? getConfigValue(PACT_BRANCH_NAME) : 'Dev';
+    const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:9292';
+    const pactBranch = getConfigValue(PACT_BRANCH_NAME) ? getConfigValue(PACT_BRANCH_NAME) : 'Dev';
     const brokerReachable = await isBrokerReachable(pactBroker);
 
     if (!brokerReachable) {
@@ -62,7 +62,8 @@ const publish = async (): Promise<void> => {
       pactBroker,
       pactFilesOrDirs: [path.resolve(__dirname, '../pacts/')],
       publishVerificationResult: true,
-      tags: [pactTag],
+      branch: pactBranch,
+      tags: [pactBranch],
       ...(pactBrokerPassword ? { pactBrokerPassword } : {}),
       ...(pactBrokerUsername ? { pactBrokerUsername } : {}),
     };
@@ -71,9 +72,10 @@ const publish = async (): Promise<void> => {
     console.log('');
     console.log(`Head over to ${pactBroker}`);
     console.log('to see your published contracts.');
-    console.log('Pact branchName is', pactTag);
+    console.log('Pact branchName is', pactBranch);
   } catch (e) {
     console.log('Pact contract publishing failed: ', e);
+    process.exitCode = 1;
   }
 };
 

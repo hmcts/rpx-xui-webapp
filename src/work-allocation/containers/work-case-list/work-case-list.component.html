@@ -63,7 +63,13 @@
       "
       [cdkColumnDef]="field.name"
     >
-      <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
+      <th
+        scope="col"
+        class="govuk-table__header"
+        [attr.aria-sort]="getColumnSortedSetting(field.sortName)"
+        cdk-header-cell
+        *cdkHeaderCellDef
+      >
         <button
           class="column-sort"
           *ngIf="field.columnLabel && !field.disableSort"
@@ -89,7 +95,13 @@
   <!-- Below container sets up initial case list headers when not yet populated as session storage of page number causing issues with above container -->
   <ng-container *ngIf="!casesTotal">
     <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-      <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
+      <th
+        scope="col"
+        class="govuk-table__header"
+        [attr.aria-sort]="getColumnSortedSetting(field.sortName)"
+        cdk-header-cell
+        *cdkHeaderCellDef
+      >
         <button
           class="column-sort"
           *ngIf="field.columnLabel && !field.disableSort"
@@ -115,7 +127,7 @@
 
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
-    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
+    <th scope="col" class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
     <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell">
       <div *ngIf="showManage[rowData.id]" class="xui-manage-container">
         <button

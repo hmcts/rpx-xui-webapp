@@ -57,7 +57,7 @@
               <tr class="govuk-table__row" [formGroupName]="pos" *ngFor="let hearing of case.caseHearings; let pos = index">
                 <ng-container *ngIf="case.caseRef == caseId; else noMatch">
                   <ng-container *ngIf="hearing.hearingID == hearingId">
-                    <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
+                    <td class="govuk-table__cell align-middle govuk-table-width-45-percent">
                       {{ hearing.hearingType | convertToValue: hearingStageOptions }}
                       <span *ngIf="!!hearing.hearingGroupRequestId">
                         &nbsp;&nbsp;
@@ -74,7 +74,7 @@
                         >
                       </span>
                     </td>
-                    <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
+                    <td class="govuk-table__cell align-middle govuk-table-width-45-percent">
                       <strong class="govuk-tag govuk-tag--grey" [ngClass]="hearing.exuiDisplayStatus | hearingsBadge">{{
                         hearing.exuiDisplayStatus
                       }}</strong>
@@ -99,7 +99,7 @@
                   </ng-container>
                 </ng-container>
                 <ng-template #noMatch>
-                  <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
+                  <td class="govuk-table__cell align-middle govuk-table-width-45-percent">
                     {{ hearing.hearingType | convertToValue: hearingStageOptions }}
                     <span *ngIf="!!hearing.hearingGroupRequestId">
                       &nbsp;&nbsp;
@@ -116,7 +116,7 @@
                       >
                     </span>
                   </td>
-                  <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
+                  <td class="govuk-table__cell align-middle govuk-table-width-45-percent">
                     <strong class="govuk-tag govuk-tag--grey" [ngClass]="hearing.exuiDisplayStatus | hearingsBadge">{{
                       hearing.exuiDisplayStatus
                     }}</strong>
@@ -142,8 +142,8 @@
               </tr>
             </ng-container>
 
-            <tr class="govuk-table__row" class="govuk-table__row" *ngIf="case.caseHearings.length === 0">
-              <td scope="row" class="govuk-table__cell align-middle">{{ 'No hearings requested' | rpxTranslate }}</td>
+            <tr class="govuk-table__row" *ngIf="case.caseHearings.length === 0">
+              <td class="govuk-table__cell align-middle">{{ 'No hearings requested' | rpxTranslate }}</td>
             </tr>
           </tbody>
         </table>
@@ -156,9 +156,11 @@
   {{ 'You do not have access to the following cases.' | rpxTranslate }}
   <div class="govuk-form-group govuk-!-margin-top-3">
     <table class="govuk-table">
-      <tr class="govuk-table__row" *ngFor="let case of linkedCasesWithNoAccessToLoggedInUser">
-        <td scope="col">{{ case.caseName }} &nbsp;{{ case.caseReference | caseReference }}</td>
-      </tr>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngFor="let case of linkedCasesWithNoAccessToLoggedInUser">
+          <td class="govuk-table__cell">{{ case.caseName }} &nbsp;{{ case.caseReference | caseReference }}</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>

@@ -860,27 +860,6 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
   }
 }
 
-// Badge
-.hmcts-badge {
-  @include govuk-font($size: 14);
-  border: 2px solid govuk-colour('blue');
-  color: govuk-colour('blue');
-  font-weight: bold;
-  padding: 0 govuk-spacing(1);
-  text-transform: uppercase;
-  vertical-align: middle;
-}
-
-.hmcts-badge--red {
-  border-color: govuk-colour('red');
-  color: govuk-colour('red');
-}
-
-.hmcts-badge--green {
-  border-color: govuk-colour('green');
-  color: govuk-colour('green');
-}
-
 // =============================================================================
 // Sub navigation
 // =============================================================================

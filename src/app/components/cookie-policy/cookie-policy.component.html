@@ -39,8 +39,8 @@
           <th class="govuk-table__header" scope="col">Expires</th>
         </tr>
       </thead>
-      <tbody>
-        <tr class="govuk-table__row" scope="col" *ngFor="let cookie of cookiesByCat(USAGE)">
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(USAGE)">
           <td class="govuk-table__cell">{{ cookie.name }}</td>
           <td class="govuk-table__cell">{{ cookie.purpose }}</td>
           <td class="govuk-table__cell">{{ cookie.cat }}</td>
@@ -56,12 +56,12 @@
     <table class="govuk-table">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th class="govuk-table__header">Name</th>
-          <th class="govuk-table__header">Purpose</th>
-          <th class="govuk-table__header">Expires</th>
+          <th class="govuk-table__header" scope="col">Name</th>
+          <th class="govuk-table__header" scope="col">Purpose</th>
+          <th class="govuk-table__header" scope="col">Expires</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(IDENTIFY)">
           <td class="govuk-table__cell">{{ cookie.name }}</td>
           <td class="govuk-table__cell">{{ cookie.purpose }}</td>
@@ -79,12 +79,12 @@
     <table class="govuk-table">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th class="govuk-table__header">Name</th>
-          <th class="govuk-table__header">Purpose</th>
-          <th class="govuk-table__header">Expires</th>
+          <th class="govuk-table__header" scope="col">Name</th>
+          <th class="govuk-table__header" scope="col">Purpose</th>
+          <th class="govuk-table__header" scope="col">Expires</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(SECURITY)">
           <td class="govuk-table__cell">{{ cookie.name }}</td>
           <td class="govuk-table__cell">{{ cookie.purpose }}</td>
@@ -124,8 +124,8 @@
           <th class="govuk-table__header" scope="col">Dyddiad dod i ben</th>
         </tr>
       </thead>
-      <tbody>
-        <tr class="govuk-table__row" scope="col" *ngFor="let cookie of cookiesByCat(USAGE)">
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(USAGE)">
           <td class="govuk-table__cell">{{ cookie.name }}</td>
           <td class="govuk-table__cell">{{ cookie.purpose }}</td>
           <td class="govuk-table__cell">{{ cookie.cat }}</td>
@@ -146,7 +146,7 @@
           <th class="govuk-table__header" scope="col">Dyddiad dod i ben</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(IDENTIFY)">
           <td class="govuk-table__cell">{{ cookie.name }}</td>
           <td class="govuk-table__cell">{{ cookie.purpose }}</td>
@@ -169,7 +169,7 @@
           <th class="govuk-table__header" scope="col">Dyddiad dod i ben</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let cookie of cookiesByCat(SECURITY)">
           <td class="govuk-table__cell">{{ cookie.name }}</td>
           <td class="govuk-table__cell">{{ cookie.purpose }}</td>

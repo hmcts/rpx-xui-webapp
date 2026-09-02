@@ -22,8 +22,8 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
 
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
-      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening available tasks list');
+      await taskListPage.waitForTaskRowReady('available tasks list');
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
@@ -66,8 +66,8 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
 
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
-      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening small available tasks list');
+      await taskListPage.waitForTaskRowReady('small available tasks list');
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
@@ -97,7 +97,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening empty available tasks list');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
@@ -116,7 +116,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening available tasks sorting list');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
@@ -145,8 +145,8 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
 
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
-      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening available tasks assign list');
+      await taskListPage.waitForTaskRowReady('available tasks assign list');
       await taskListPage.exuiSpinnerComponent.wait();
     });
 

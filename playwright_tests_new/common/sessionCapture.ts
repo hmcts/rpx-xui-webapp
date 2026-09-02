@@ -363,11 +363,13 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
   }
 }
 
-export async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
+export async function acceptAccessCookiesIfPresent(page: Page): Promise<boolean> {
   const sessionCapturePage = new SessionCapturePage(page);
   if (await sessionCapturePage.acceptCookiesButton.isVisible().catch(() => false)) {
     await sessionCapturePage.acceptCookiesButton.click({ timeout: 2_000 }).catch(() => undefined);
+    return true;
   }
+  return false;
 }
 
 async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promise<boolean> {

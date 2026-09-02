@@ -9,14 +9,6 @@ import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';
  * Manually creating Elastic search query
  */
 export function modifyRequest(proxyReq, req) {
-  // The underlying proxy emits 'proxyReq' from the socket event, so this handler can be
-  // invoked more than once for a single request (e.g. on socket reuse). The first
-  // invocation deletes req.body and ends the stream, so re-entering would previously
-  // throw on an undefined body and take the whole Node process down.
-  if (proxyReq.writableEnded || proxyReq.destroyed) {
-    return;
-  }
-
   const userInfo: UserInfo = getUserInfoFromRequest(req);
 
   if (userInfo) {

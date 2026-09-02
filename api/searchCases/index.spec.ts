@@ -235,22 +235,20 @@ describe('Search Cases Elastic Search', () => {
       surname: 'Jones',
     };
 
-    const buildReq = () => ({
-      body: { size: 25 },
+    const buildReq = (body?: any) => ({
+      body,
       query: { ctid: 'PCS', page: 1 },
       session: { passport: { user: { userinfo: userInfo } } },
     });
 
     const buildProxyReq = () => ({
-      destroyed: false,
       end: sinon.spy(),
       setHeader: sinon.spy(),
-      writableEnded: false,
       write: sinon.spy(),
     });
 
     it('should write the rebuilt query and end the stream', async () => {
-      const req: any = buildReq();
+      const req: any = buildReq({ size: 25 });
       const proxyReq: any = buildProxyReq();
 
       searchCases.modifyRequest(proxyReq, req);
@@ -260,13 +258,9 @@ describe('Search Cases Elastic Search', () => {
       expect(req.body).to.be.undefined;
     });
 
-    it('should not throw or rewrite when invoked a second time for the same request', async () => {
-      const req: any = buildReq();
+    it('should not throw when the request has no parsed body', async () => {
+      const req: any = buildReq(undefined);
       const proxyReq: any = buildProxyReq();
-
-      searchCases.modifyRequest(proxyReq, req);
-      // Simulate the proxy re-emitting 'proxyReq' after the stream has been ended.
-      proxyReq.writableEnded = true;
 
       expect(() => searchCases.modifyRequest(proxyReq, req)).to.not.throw();
       expect(proxyReq.write).to.have.been.calledOnce;

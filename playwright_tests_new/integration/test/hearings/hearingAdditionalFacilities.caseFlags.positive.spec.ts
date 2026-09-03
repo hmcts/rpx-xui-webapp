@@ -1,7 +1,7 @@
 import { type Page } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
 import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { ensureSessionCookies } from '../../../common/sessionCapture';
 import { caseFlagsRefData, serviceHearingValuesModel } from '../../../../src/hearings/hearing.test.data';
 import type { ServiceHearingValuesModel } from '../../../../src/hearings/models/serviceHearingValues.model';
 import { CaseFlagsUtils } from '../../../../src/hearings/utils/case-flags.utils';
@@ -71,8 +71,8 @@ function expectedLabelsFromFixture(predicate: (flag: ServiceFlag) => boolean): s
 }
 
 async function setupHearingsJourneyWithRealCaseFlags(page: Page, caseDetailsPage: CaseDetailsPage): Promise<void> {
-  const hearingLinkLocalSession = loadSessionCookies(HEARING_LINK_LOCAL_SESSION);
-  await page.context().addCookies(hearingLinkLocalSession.cookies);
+  const { cookies } = await ensureSessionCookies(HEARING_LINK_LOCAL_SESSION);
+  await page.context().addCookies(cookies);
   await setupHearingsMockRoutes(page, {
     userRoles: hearingManagerRoles,
     hearings: [LISTED_HEARING_SCENARIO],

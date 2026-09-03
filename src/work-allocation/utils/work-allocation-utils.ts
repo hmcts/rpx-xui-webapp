@@ -1,5 +1,5 @@
 import { NavigationExtras } from '@angular/router';
-import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { getPersonRoleForWorkAllocation, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { HMCTSServiceDetails, UserInfo } from '../../app/models';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../app/services';
@@ -182,7 +182,7 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: Session
     if (!options.find((option) => option.optionId === roleCategory)) {
       let label;
       try {
-        label = getLabel(roleCategory);
+        label = getPersonRoleForWorkAllocation(roleCategory);
         // eslint-disable-next-line no-empty, @typescript-eslint/no-unused-vars
       } catch (error) {}
       const option: OptionsModel = {
@@ -225,42 +225,9 @@ export function getRoleAllocationCaption(roleCategory: RoleCategory) {
   if (roleCategory === RoleCategory.CTSC) {
     return 'Allocate a CTSC role';
   } else {
-    const personRole = getLabel(roleCategory);
+    const personRole = getPersonRoleForWorkAllocation(roleCategory);
     return `Allocate ${getIndefiniteArticle(personRole)} ${personRole.toLowerCase()} role`;
   }
-}
-
-// TODO Move into common-lib
-export function getLabel(roleCategory: RoleCategory): PersonRole {
-  switch (roleCategory) {
-    case RoleCategory.ADMIN:
-      return PersonRole.ADMIN;
-    case RoleCategory.JUDICIAL:
-      return PersonRole.JUDICIAL;
-    case RoleCategory.LEGAL_OPERATIONS:
-      return PersonRole.LEGAL_OPERATIONS;
-    case RoleCategory.CTSC:
-      return PersonRole.CTSC;
-    case RoleCategory.ENFORCEMENT:
-      return PersonRole.ENFORCEMENT;
-    default:
-      throw new Error(`Invalid roleCategory ${roleCategory}`);
-  }
-}
-
-export function getRoleCategory(role: string): RoleCategory {
-  if (role === PersonRole.JUDICIAL) {
-    return RoleCategory.JUDICIAL;
-  } else if (role === PersonRole.LEGAL_OPERATIONS) {
-    return RoleCategory.LEGAL_OPERATIONS;
-  } else if (role === PersonRole.ADMIN) {
-    return RoleCategory.ADMIN;
-  } else if (role === PersonRole.CTSC) {
-    return RoleCategory.CTSC;
-  } else if (role === PersonRole.ENFORCEMENT) {
-    return RoleCategory.ENFORCEMENT;
-  }
-  return null;
 }
 
 export function roleIncludes(roles: string[], permission: string): boolean {

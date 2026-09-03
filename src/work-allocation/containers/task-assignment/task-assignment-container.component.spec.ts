@@ -595,38 +595,6 @@ describe('TaskAssignmentContainerComponent', () => {
     });
   });
 
-  describe('setDomain', () => {
-    it('should return JUDICIAL role for JUDICIAL category', () => {
-      const result = (component as any).setDomain('JUDICIAL' as any);
-
-      expect(result).toBe(PersonRole.JUDICIAL);
-    });
-
-    it('should return LEGAL_OPERATIONS role for LEGAL_OPERATIONS category', () => {
-      const result = (component as any).setDomain('LEGAL_OPERATIONS' as any);
-
-      expect(result).toBe(PersonRole.LEGAL_OPERATIONS);
-    });
-
-    it('should return ADMIN role for ADMIN category', () => {
-      const result = (component as any).setDomain('ADMIN' as any);
-
-      expect(result).toBe(PersonRole.ADMIN);
-    });
-
-    it('should return ALL role for unknown category', () => {
-      const result = (component as any).setDomain('UNKNOWN' as any);
-
-      expect(result).toBe(PersonRole.ALL);
-    });
-
-    it('should return ALL role for null category', () => {
-      const result = (component as any).setDomain(null);
-
-      expect(result).toBe(PersonRole.ALL);
-    });
-  });
-
   describe('ngOnDestroy', () => {
     it('should unsubscribe from assignTask subscription if it exists', () => {
       const mockSubscription = jasmine.createSpyObj('Subscription', ['unsubscribe']);

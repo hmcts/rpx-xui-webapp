@@ -51,7 +51,7 @@ function buildCaseFlagsFixture(): ServiceFlag[] {
 }
 
 function buildServiceHearingValuesWithFixtureFlags(): ServiceHearingValuesModel {
-  const serviceHearingValues = buildServiceHearingValuesMock(undefined, LISTED_HEARING_SCENARIO) as ServiceHearingValuesModel;
+  const serviceHearingValues = buildServiceHearingValuesMock(undefined, LISTED_HEARING_SCENARIO) as unknown as ServiceHearingValuesModel;
   serviceHearingValues.caseFlags = {
     ...deepClone(serviceHearingValuesModel.caseFlags),
     flags: buildCaseFlagsFixture(),

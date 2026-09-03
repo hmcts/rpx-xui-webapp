@@ -33,7 +33,7 @@ const mockCaseworker: Caseworker = {
   lastName: 'testing',
   email: 'test@test.com',
   location: null,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  roleCategories: [RoleCategory.LEGAL_OPERATIONS],
 };
 
 describe('RemoveRoleComponent', () => {
@@ -44,7 +44,7 @@ describe('RemoveRoleComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate', 'getCurrentNavigation']);
   routerMock.navigate.and.returnValue(Promise.resolve(true));
   const locationMock = jasmine.createSpyObj('Location', ['back']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll', 'getUsersFromServices']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll', 'getUserByIdamId']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
   window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
@@ -167,7 +167,7 @@ describe('RemoveRoleComponent', () => {
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
     sessionStorageServiceMock.getItem.and.returnValue(null);
     mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
-    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([mockCaseworker]));
+    mockCaseworkerDataService.getUserByIdamId.and.returnValue(of(mockCaseworker));
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -239,7 +239,7 @@ describe('RemoveRoleComponent', () => {
   it('should set email from cached caseworker when role has no email', () => {
     const allocateRoleService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
     sessionStorageServiceMock.getItem.and.returnValue(JSON.stringify([mockCaseworker]));
-    mockCaseworkerDataService.getUsersFromServices.calls.reset();
+    mockCaseworkerDataService.getUserByIdamId.calls.reset();
     spyOn(allocateRoleService, 'getCaseRoles').and.returnValue(
       of([
         {
@@ -263,7 +263,7 @@ describe('RemoveRoleComponent', () => {
 
     expect(localComponent.role.email).toBe(mockCaseworker.email);
     expect(localComponent.answers[1].value).toBe(`Mr Test\n${mockCaseworker.email}`);
-    expect(mockCaseworkerDataService.getUsersFromServices).not.toHaveBeenCalled();
+    expect(mockCaseworkerDataService.getUserByIdamId).not.toHaveBeenCalled();
 
     localFixture.destroy();
   });
@@ -291,14 +291,14 @@ describe('RemoveRoleComponent', () => {
     localComponent.assignmentId = '999999999';
     localFixture.detectChanges();
 
-    expect(mockCaseworkerDataService.getUsersFromServices).toHaveBeenCalledWith(['IA']);
-    expect(localComponent.role.name).toBe(`${mockCaseworker.firstName}-${mockCaseworker.lastName}`);
+    expect(mockCaseworkerDataService.getUserByIdamId).toHaveBeenCalledWith(mockCaseworker.idamId);
+    expect(localComponent.role.name).toBe(`${mockCaseworker.firstName} ${mockCaseworker.lastName}`);
     expect(localComponent.role.email).toBe(mockCaseworker.email);
     expect(localComponent.answers).toEqual([
       { label: 'Type of role', value: TypeOfRole.CaseManager },
       {
         label: 'Person',
-        value: `${mockCaseworker.firstName}-${mockCaseworker.lastName}\n${mockCaseworker.email}`,
+        value: `${mockCaseworker.firstName} ${mockCaseworker.lastName}\n${mockCaseworker.email}`,
       },
     ]);
 
@@ -330,6 +330,65 @@ describe('RemoveRoleComponent', () => {
 
     afterEach(() => {
       fixture.destroy();
+    });
+  });
+
+  describe('RemoveRoleComponent getNamesIfNeeded', () => {
+    let fixture: ComponentFixture<RemoveRoleComponent>;
+    let component: RemoveRoleComponent;
+    let mockCaseworkerService: jasmine.SpyObj<CaseworkerDataService>;
+
+    beforeEach(() => {
+      // Reuse existing TestBed (already configured in previous beforeEach(waitForAsync))
+      fixture = TestBed.createComponent(RemoveRoleComponent);
+      component = fixture.componentInstance;
+      mockCaseworkerService = TestBed.inject(CaseworkerDataService) as jasmine.SpyObj<CaseworkerDataService>;
+
+      // Role with missing name/email to trigger fetch logic
+      component.role = {
+        id: 'role123',
+        actorId: '999999999',
+        added: Date.UTC(2024, 0, 1),
+        roleName: TypeOfRole.CaseManager,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        name: undefined,
+        email: undefined,
+        notes: '',
+      } as any;
+
+      component.answers = [];
+      mockCaseworkerService.getUserByIdamId.calls.reset();
+      mockCaseworkerService.getUserByIdamId.and.returnValue(
+        of({
+          idamId: '999999999',
+          firstName: 'Fetch',
+          lastName: 'Target',
+          email: 'fetch.target@test.com',
+        } as Caseworker)
+      );
+
+      fixture.detectChanges();
+
+      // Invoke private method
+      component.role.name = undefined;
+      (component as any).getNamesIfNeeded();
+      fixture.detectChanges();
+    });
+
+    it('should fetch and populate name/email when missing', () => {
+      expect(mockCaseworkerService.getUserByIdamId).toHaveBeenCalledWith('999999999');
+      expect(component.role.name).toBe('Fetch Target');
+      expect(component.role.email).toBe('fetch.target@test.com');
+      expect(component.answers.length).toBe(2);
+      expect(component.answers[1].value).toContain('Fetch Target');
+      expect(component.answers[1].value).toContain('fetch.target@test.com');
+    });
+
+    it('should not call service when name already present', () => {
+      mockCaseworkerService.getUserByIdamId.calls.reset();
+      component.role.name = 'Already Present';
+      (component as any).getNamesIfNeeded();
+      expect(mockCaseworkerService.getUserByIdamId).not.toHaveBeenCalled();
     });
   });
 });

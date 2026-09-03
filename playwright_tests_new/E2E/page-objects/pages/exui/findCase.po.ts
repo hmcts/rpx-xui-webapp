@@ -1,6 +1,8 @@
 import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, MAX_NAVIGATION_RETRY_ATTEMPTS } from './exui-timeouts';
+import { expect } from '../../../fixtures.ts';
+import { acceptAccessCookiesIfPresent } from '../../../../common/sessionCapture';
 
 export class FindCasePage extends Base {
   // Locators
@@ -29,6 +31,16 @@ export class FindCasePage extends Base {
     .locator('.hmcts-primary-navigation__search .hmcts-primary-navigation__link[href*="case-search"]')
     .first();
 
+  readonly handOffReasonCollection = this.page.locator('ccd-write-collection-field #boHandoffReasonList');
+  readonly handOffReasonAddNewTop = this.handOffReasonCollection.locator('button.write-collection-add-item__top');
+
+  readonly handOffReasonAddNewButton = this.page.locator(
+    'ccd-write-collection-field #boHandoffReasonList button.write-collection-add-item__top'
+  );
+  readonly handOffReason = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_0_0').nth(0);
+  readonly handOffReason_1 = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_1_1').nth(0);
+  readonly handOffReason_2 = this.page.locator('ccd-field-write ccd-write-collection-field #boHandoffReasonList_2_2').nth(0);
+
   /**
    * Opens the Find Case page from the main navigation menu.
    */
@@ -49,6 +61,7 @@ export class FindCasePage extends Base {
   public async navigateToFindCase(): Promise<void> {
     for (let attempt = 1; attempt <= MAX_NAVIGATION_RETRY_ATTEMPTS; attempt++) {
       await this.openFromAvailableNavigationLink();
+      await acceptAccessCookiesIfPresent(this.page);
       try {
         await this.ensureFiltersVisible();
         return;
@@ -108,15 +121,115 @@ export class FindCasePage extends Base {
    * @param caseType - Case type display label
    * @param jurisdiction - Jurisdiction display label
    */
-  public async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
+  public async startFindCaseJourney(
+    caseNumber: string,
+    caseType: string,
+    jurisdiction: string,
+    retryTransientSearchFailures = false
+  ): Promise<void> {
+    let lastError: unknown;
+
+    const maxAttempts = retryTransientSearchFailures ? MAX_NAVIGATION_RETRY_ATTEMPTS : 1;
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      try {
+        await this.navigateToFindCase();
+        await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
+        await this.page.waitForTimeout(EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE);
+        if (retryTransientSearchFailures) {
+          await this.submitSearchWithTransientResponseCheck();
+        } else {
+          await this.submitSearch();
+        }
+        return;
+      } catch (error) {
+        lastError = error;
+        if (!retryTransientSearchFailures || !this.isTransientSearchFailure(error) || attempt === maxAttempts) {
+          throw error;
+        }
+
+        this.logger.warn('Find case search failed with a transient downstream status; retrying', {
+          attempt,
+          maxAttempts,
+          error: error instanceof Error ? error.message : JSON.stringify(error),
+        });
+        await this.page.goto('/cases/case-search');
+        await this.exuiSpinnerComponent.wait();
+      }
+    }
+
+    throw lastError instanceof Error ? lastError : new Error(String(lastError));
+  }
+
+  public async startProbateFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
     await this.navigateToFindCase();
     await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
-    await this.submitSearch();
+
+    // 'Add new' - Handoff reason.
+    for (let i = 1; i <= 3; i++) {
+      await this.handOffReasonAddNewButton.click();
+      await this.handOffReasonAddNewTop.scrollIntoViewIfNeeded();
+    }
+
+    // Choosing 'Handoff reason' option.
+    await this.handOffReason.locator('select.ccd-dropdown').selectOption({ label: 'Double Probate' });
+    await this.handOffReason_1.locator('select.ccd-dropdown').selectOption({ label: 'Horizon Scheme' });
+    await this.handOffReason_2.locator('select.ccd-dropdown').selectOption({ label: 'Literary Estate' });
   }
 
   public async applyFilters(): Promise<void> {
     await this.exuiCaseListComponent.filters.applyFilterBtn.click();
     await this.exuiSpinnerComponent.wait();
+  }
+
+  private async submitSearchWithTransientResponseCheck(): Promise<void> {
+    const searchResponsePromise = this.page.waitForResponse(
+      (response) => response.request().method() === 'POST' && response.url().includes('/searchCases'),
+      { timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK }
+    );
+    await this.exuiCaseListComponent.filters.applyFilterBtn.click();
+    const searchResponse = await searchResponsePromise;
+    if ([429, 502, 503, 504].includes(searchResponse.status())) {
+      throw new Error(`Find case search failed with HTTP ${searchResponse.status()}.`);
+    }
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  private isTransientSearchFailure(error: unknown): boolean {
+    const message = error instanceof Error ? error.message : (JSON.stringify(error) ?? '');
+    return /Find case search failed with HTTP (429|502|503|504)\./.test(message);
+  }
+
+  private parseBracketedList(value: string): string[] {
+    return value
+      .replace(/^\[|\]$/g, '')
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean);
+  }
+
+  public async checkApiCallQueryParameters(page, findCasePage) {
+    // const [request] = await Promise.all([
+    //   page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST'),
+    //   await findCasePage.applyFilters(),
+    // ]);
+    //
+    // const params = new URL(request.url()).searchParams;
+    // const requestPromise = page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST');
+
+    const requestPromise = page.waitForRequest((req) => req.url().includes('/searchCases') && req.method() === 'POST');
+    await findCasePage.applyFilters();
+
+    const request = await requestPromise;
+    const params = new URL(request.url()).searchParams;
+
+    const HANDOFF_REASON_PARAM = 'case.boHandoffReasonList.value.caseHandoffReason';
+    const EXPECTED_HANDOFF_REASONS = ['DoubleProbate', 'HorizonScheme', 'LiteraryEstate'];
+
+    const raw = params.get(HANDOFF_REASON_PARAM);
+    expect(raw, `${HANDOFF_REASON_PARAM} missing from query string`).not.toBeNull();
+
+    const reasons = this.parseBracketedList(raw!);
+    expect(reasons).toEqual(EXPECTED_HANDOFF_REASONS);
   }
 
   /**
@@ -186,7 +299,17 @@ export class FindCasePage extends Base {
       return;
     }
 
-    await this.openFromTopRight();
+    if (await this.findCaseLinkOnTopRight.isVisible({ timeout: 1_000 }).catch(() => false)) {
+      await this.openFromTopRight();
+      return;
+    }
+
+    // Header navigation is not part of the Find Case journey contract. Some
+    // authenticated layouts do not render either header link, so use the
+    // route directly and let ensureFiltersVisible validate the page state.
+    await this.page.goto('/cases/case-search', { waitUntil: 'domcontentloaded' });
+    await this.page.waitForURL(/\/cases\/case-search/, { timeout: EXUI_TIMEOUTS.GLOBAL_SEARCH_NAVIGATION });
+    await this.exuiSpinnerComponent.wait();
   }
 
   /**

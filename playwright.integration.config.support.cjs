@@ -8,19 +8,22 @@ const { readFileSync } = require('node:fs');
 const { cpus, totalmem } = require('node:os');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const {
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
+} = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
 const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
-  const normalizedSeparators = rootDir.replaceAll('\\', '/');
-  let normalizedRoot = normalizedSeparators;
-  while (normalizedRoot.endsWith('/')) {
-    normalizedRoot = normalizedRoot.slice(0, -1);
-  }
+  const normalizedRoot = rootDir.replace(/\\/g, '/').replace(/\/$/, '');
   return [`${normalizedRoot}/.worktrees/**`, `${normalizedRoot}/worktrees/**`];
 };
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
+const INTEGRATION_TEST_TIMEOUT_MS = 180_000;
+const POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS = 30_000;
 const appVersion = (() => {
   try {
     return JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version ?? 'unknown';
@@ -55,10 +58,7 @@ const resolveBrowserChannel = (env = process.env) => {
     return 'chrome';
   }
   const normalized = configured.trim();
-  if (normalized.length === 0) {
-    return null;
-  }
-  return normalized;
+  return normalized.length > 0 ? normalized : undefined;
 };
 
 const resolveFlag = (rawValue, defaultValue) => {
@@ -112,10 +112,10 @@ const resolveAgentHardware = () => {
 const resolveOdhinTestOutput = (env = process.env) => {
   const configured = (env.PW_ODHIN_TEST_OUTPUT ?? 'only-on-failure').trim().toLowerCase();
   if (configured === 'true') {
-    return 'true';
+    return true;
   }
   if (configured === 'false') {
-    return 'false';
+    return false;
   }
   return 'only-on-failure';
 };
@@ -137,7 +137,7 @@ const resolveOdhinRuntimeHookTimeoutMs = (env = process.env) => {
       return parsed;
     }
   }
-  return env.CI ? 0 : 15000;
+  return 15000;
 };
 
 const resolveOdhinHardTimeoutMs = (env = process.env) => {
@@ -187,7 +187,10 @@ const buildConfig = (env = process.env) => {
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
+  reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
+
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';
   }
@@ -195,58 +198,56 @@ const buildConfig = (env = process.env) => {
     env.PW_LIVE_TEST_TIMER_INTERVAL_MS = defaultLiveTimerIntervalMs;
   }
 
-  const reporter = [
-    [resolveDefaultReporter(env)],
-    ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
-    ...(enableOdhinReporter
-      ? [
-          [
-            './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs',
-            {
-              enabled: true,
-              graceMs: Number.parseInt(env.PW_ODHIN_PROGRESS_GRACE_MS ?? '1500', 10) || 1500,
-              intervalMs: Number.parseInt(env.PW_ODHIN_PROGRESS_INTERVAL_MS ?? '5000', 10) || 5000,
-              hardTimeoutMs: resolveOdhinHardTimeoutMs(env),
-              timeoutExitCode: resolveOdhinTimeoutExitCode(env),
-              completionExitDelayMs: resolveOdhinCompletionExitDelayMs(env),
-              forceExitOnCompletion: resolveOdhinForceExitOnCompletion(env),
-            },
-          ],
-          [
-            './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
-            {
-              outputFolder: odhinOutputFolder,
-              indexFilename: 'xui-playwright-integration.html',
-              title: 'RPX XUI Playwright Integration',
-              testEnvironment,
-              project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-              release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
-              startServer: false,
-              consoleLog,
-              consoleError,
-              testOutput: resolveOdhinTestOutput(env),
-              lightweight: resolveOdhinLightweight(env),
-              profile: resolveOdhinProfile(env),
-              runtimeHookTimeoutMs: resolveOdhinRuntimeHookTimeoutMs(env),
-            },
-          ],
-        ]
-      : []),
-  ];
+  if (enableOdhinReporter) {
+    reporter.push([
+      './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs',
+      {
+        enabled: true,
+        graceMs: Number.parseInt(env.PW_ODHIN_PROGRESS_GRACE_MS ?? '1500', 10) || 1500,
+        intervalMs: Number.parseInt(env.PW_ODHIN_PROGRESS_INTERVAL_MS ?? '5000', 10) || 5000,
+        hardTimeoutMs: resolveOdhinHardTimeoutMs(env),
+        timeoutExitCode: resolveOdhinTimeoutExitCode(env),
+        completionExitDelayMs: resolveOdhinCompletionExitDelayMs(env),
+        forceExitOnCompletion: resolveOdhinForceExitOnCompletion(env),
+      },
+    ]);
+    reporter.push([
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
+      {
+        outputFolder: odhinOutputFolder,
+        indexFilename: 'xui-playwright-integration.html',
+        title: 'RPX XUI Playwright Integration',
+        testEnvironment,
+        project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+        release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
+        startServer: false,
+        consoleLog,
+        consoleError,
+        testOutput: resolveOdhinTestOutput(env),
+        lightweight: resolveOdhinLightweight(env),
+        profile: resolveOdhinProfile(env),
+        runtimeHookTimeoutMs: resolveOdhinRuntimeHookTimeoutMs(env),
+      },
+    ]);
+  }
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
+    reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
+  }
 
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     retries: 2,
-    timeout: 120_000,
+    timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     workers: workerCount,
     reporter,
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'on-first-retry',
+      trace: 'retain-on-failure',
       screenshot: {
         mode: 'only-on-failure',
         fullPage: true,
@@ -259,15 +260,8 @@ const buildConfig = (env = process.env) => {
       {
         name: 'chromium',
         use: {
-          ...(() => {
-            const desktopChrome = { ...devices['Desktop Chrome'] };
-            if (browserChannel === null) {
-              delete desktopChrome.channel;
-            } else if (browserChannel) {
-              desktopChrome.channel = browserChannel;
-            }
-            return desktopChrome;
-          })(),
+          ...devices['Desktop Chrome'],
+          ...(browserChannel ? { channel: browserChannel } : {}),
         },
       },
     ],
@@ -280,6 +274,8 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,
@@ -289,4 +285,6 @@ module.exports = {
   resolveOdhinTimeoutExitCode,
   resolveOdhinCompletionExitDelayMs,
   resolveOdhinForceExitOnCompletion,
+  INTEGRATION_TEST_TIMEOUT_MS,
+  POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS,
 };

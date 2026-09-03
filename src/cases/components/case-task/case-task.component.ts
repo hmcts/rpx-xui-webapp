@@ -11,8 +11,8 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
-import { getExpectedSubFromUserDetails } from '../../../decentralisation/decentralised-redirect.util';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
+import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 @Component({
   standalone: false,
@@ -56,7 +56,9 @@ export class CaseTaskComponent implements OnInit {
 
   @Input()
   public set task(value: Task) {
-    const expectedSub = getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'));
+    const expectedSub = DecentralisedRedirectService.getExpectedSubFromUserDetails(
+      this.sessionStorageService.getItem('userDetails')
+    );
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value, expectedSub);
     this.pTask = value;
     this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;

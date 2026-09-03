@@ -5,16 +5,11 @@ import { EnhancedRequest } from '../lib/models';
 import { generateErrorMessageWithCode } from './errorCodeConverter';
 import { NoCQuestions } from './models/noCQuestions.interface';
 import { handleGet, handlePost } from './noCService';
+import { getNocBaseUrlForCaseType } from '../../common/decentralisation/decentralised-redirect.util';
+import { BackendDecentralisedCaseType, CaseTypeMap } from '../../common/decentralisation/decentralised-casetype';
 
 const caseAssignmentUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
 const NOC_CASE_TYPE_SESSION_KEY = 'nocCaseTypesByCaseId';
-const TEMPLATE_PLACEHOLDER = '%s';
-
-type DecentralisedCaseType = {
-  nocBaseUrl?: string;
-};
-
-type DecentralisedCaseTypeMap = Record<string, DecentralisedCaseType>;
 
 /**
  * getNoCQuestions
@@ -66,19 +61,9 @@ function getNoCBaseUrl(caseId: unknown, req: EnhancedRequest): string {
     return caseAssignmentUrl;
   }
 
-  const decentralisedNocBaseUrl = getDecentralisedNoCBaseUrl(caseType);
+  const caseTypeMap = getConfigValue<CaseTypeMap<BackendDecentralisedCaseType>>(DECENTRALISED_CASE_TYPE_CONFIG);
+  const decentralisedNocBaseUrl = getNocBaseUrlForCaseType(caseTypeMap, caseType);
   return decentralisedNocBaseUrl || caseAssignmentUrl;
-}
-
-function getDecentralisedNoCBaseUrl(caseType: string): string | null {
-  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeMap>(DECENTRALISED_CASE_TYPE_CONFIG) || {};
-  const configuredCaseType = getConfiguredCaseType(caseTypeConfig, caseType);
-  if (!configuredCaseType) {
-    return null;
-  }
-
-  const nocBaseUrl = caseTypeConfig[configuredCaseType].nocBaseUrl;
-  return nocBaseUrl ? resolveUrl(nocBaseUrl, configuredCaseType, caseType) : null;
 }
 
 function buildNoCQuestionsPath(baseUrl: string, caseId: unknown): string {
@@ -109,21 +94,4 @@ function getCachedNoCCaseType(req: EnhancedRequest, caseId: unknown): string | n
 
   const caseType = req.session[NOC_CASE_TYPE_SESSION_KEY]?.[String(caseId)];
   return caseType || null;
-}
-
-function getConfiguredCaseType(caseTypeConfig: DecentralisedCaseTypeMap, caseType: string): string | null {
-  const lowerCaseType = caseType.toLowerCase();
-  return (
-    Object.keys(caseTypeConfig)
-      .filter((configuredCaseType) => lowerCaseType.startsWith(configuredCaseType.toLowerCase()))
-      .sort((first, second) => second.length - first.length)[0] || null
-  );
-}
-
-function resolveUrl(url: string, configuredCaseType: string, caseType: string): string {
-  let resolvedUrl = url.replace(TEMPLATE_PLACEHOLDER, caseType.substring(configuredCaseType.length));
-  while (resolvedUrl.endsWith('/')) {
-    resolvedUrl = resolvedUrl.slice(0, -1);
-  }
-  return resolvedUrl;
 }

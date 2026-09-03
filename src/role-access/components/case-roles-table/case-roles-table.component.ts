@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { getRoleCategoryTitle, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseRole } from '../../models';
 
 interface Item extends CaseRole {
@@ -40,38 +40,7 @@ export class CaseRolesTableComponent implements OnInit {
 
   public ngOnInit(): void {
     this.backUrl = this.router.url;
-    this.roleCategoryTitle = this.getRoleCategoryTitle(this.roleCategory);
-  }
-
-  //  TODO Move into common-lib
-  public getRoleCategoryTitle(roleCategory: string): string {
-    switch (roleCategory) {
-      case RoleCategory.LEGAL_OPERATIONS: {
-        roleCategory = 'legal Ops';
-        break;
-      }
-      case RoleCategory.JUDICIAL: {
-        roleCategory = 'judicial';
-        break;
-      }
-      case RoleCategory.ADMIN: {
-        roleCategory = 'admin';
-        break;
-      }
-      case RoleCategory.CTSC: {
-        roleCategory = 'CTSC';
-        break;
-      }
-      case RoleCategory.ENFORCEMENT: {
-        roleCategory = 'enforcement';
-        break;
-      }
-
-      default:
-        roleCategory = 'legal Ops';
-        break;
-    }
-    return roleCategory;
+    this.roleCategoryTitle = getRoleCategoryTitle(this.roleCategory);
   }
 
   public queryParams(caseRole: CaseRole): any {

@@ -9,6 +9,10 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
+  "documentUploadThrottle": {
+    "initialMs": 5000,
+    "maxMs": 180000
+  },
   "stub": false,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",

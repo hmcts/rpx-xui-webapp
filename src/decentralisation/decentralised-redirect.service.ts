@@ -68,9 +68,10 @@ export class DecentralisedRedirectService {
         }
 
         // try not to add a double slash
-        return baseUrl?.endsWith('/') || relativeUrl.startsWith('/')
-          ? new URL(`${baseUrl}${relativeUrl}`)
-          : new URL(`${baseUrl}/${relativeUrl}`);
+        const newBaseUrl = baseUrl.replace(/\/$/, '');
+        const newRelativeUrl = relativeUrl.replace(/^\//, '');
+
+        return new URL(`${newBaseUrl}/${newRelativeUrl}`);
       }
     }
     return null;

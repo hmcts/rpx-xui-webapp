@@ -1,26 +1,21 @@
 import { type Page } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
 import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
-import { ensureSessionCookies } from '../../../common/sessionCapture';
 import { caseFlagsRefData, serviceHearingValuesModel } from '../../../../src/hearings/hearing.test.data';
 import type { ServiceHearingValuesModel } from '../../../../src/hearings/models/serviceHearingValues.model';
 import { CaseFlagsUtils } from '../../../../src/hearings/utils/case-flags.utils';
 import { LISTED_HEARING_SCENARIO, buildServiceHearingValuesMock } from '../../mocks/hearings.mock';
 import {
+  applyHearingManagerSessionCookies,
   continueHearingsFlow,
   caseDetailsUrl,
   gotoCaseDetailsWithRetry,
+  HEARING_MANAGER_CR84_ON_USER,
   hearingManagerRoles,
   setupHearingsMockRoutes,
 } from '../../helpers';
 
 type ServiceFlag = (typeof serviceHearingValuesModel.caseFlags.flags)[number];
-const HEARING_LINK_LOCAL_SESSION = {
-  userIdentifier: 'hearing-link-local',
-  email: 'hearing-link-local@example.com',
-  password: '',
-  sessionKey: 'hearing-link-local',
-} as const;
 
 function isReasonableAdjustmentFlag(flag: ServiceFlag): boolean {
   return flag.flagId.startsWith('RA') || flag.flagId === CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID;
@@ -71,8 +66,7 @@ function expectedLabelsFromFixture(predicate: (flag: ServiceFlag) => boolean): s
 }
 
 async function setupHearingsJourneyWithRealCaseFlags(page: Page, caseDetailsPage: CaseDetailsPage): Promise<void> {
-  const { cookies } = await ensureSessionCookies(HEARING_LINK_LOCAL_SESSION);
-  await page.context().addCookies(cookies);
+  await applyHearingManagerSessionCookies(page, HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, {
     userRoles: hearingManagerRoles,
     hearings: [LISTED_HEARING_SCENARIO],

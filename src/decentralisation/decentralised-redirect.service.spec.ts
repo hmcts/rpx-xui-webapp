@@ -91,10 +91,24 @@ describe('DecentralisedRedirectService', () => {
       expect(environmentService.get).toHaveBeenCalledWith(DecentralisedRedirectService.SERVICE_MAP_ENV_VAR_NAME);
     });
 
+    it('gets the absolute URL with only a single dividing / char', () => {
+      const baseUrl = 'http://localhost/';
+      const serviceUrl = '/service-path';
+
+      const serviceMap = {
+        S_ID: { id: 'S_ID', baseUrl: baseUrl },
+      };
+
+      environmentService.get.and.returnValue(serviceMap);
+
+      expect(decentralisedRedirectService.getUrl('S_ID', serviceUrl, userInfo)).toBe('http://localhost/service-path');
+      expect(environmentService.get).toHaveBeenCalledWith(DecentralisedRedirectService.SERVICE_MAP_ENV_VAR_NAME);
+    });
+
     it('gets the absolute URL including a parameter with the user ID', () => {
       userInfo = { id: 'U_ID' } as UserInfo;
 
-      const baseUrl = 'http://localhost';
+      const baseUrl = 'http://localhost/';
       const serviceUrl = 'service-path';
 
       const serviceMap = {

@@ -1,29 +1,24 @@
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { allContainOnlySafeCharacters, containsDangerousCode } from '../utils';
 import { CASE_ALLOCATOR_ROLE, ORGANISATION_ROLE_TYPE } from './constants';
 import { RoleAssignment, RoleCategoryRule } from './interfaces/roleAssignment';
 
 export const JUDGE_ROLE = 'judge';
-export const JUDGE_ROLE_CATEGORY = 'JUDICIAL';
 export const JUDGE_ROLE_NAME = 'judicial';
 export const JUDICIARY_ROLE_NAME = 'judiciary';
 export const ADMIN_ROLE = 'admin';
-export const ADMIN_ROLE_CATEGORY = 'ADMIN';
 export const ADMIN_ROLE_NAME = 'admin';
 export const PROFESSIONAL_ROLE = 'solicitor';
 export const PUI_CASE_MANAGER = 'pui-case-manager';
 export const PUI_ORG_MANAGER = 'pui-organisation-manager';
-export const PROFESSIONAL_ROLE_CATEGORY = 'PROFESSIONAL';
 export const PROFESSIONAL_ROLE_NAME = 'professional';
 export const LEGAL_OPERATIONS_ROLE = 'caseworker';
-export const LEGAL_OPERATIONS_ROLE_CATEGORY = 'LEGAL_OPERATIONS';
 export const LEGAL_OPERATIONS_ROLE_NAME = 'legal-operations';
 export const TASK_SUPERVISOR = 'task-supervisor';
 export const CITIZEN_ROLE = 'citizen';
-export const CITIZEN_ROLE_CATEGORY = 'CITIZEN';
 export const CITIZEN_ROLE_NAME = 'citizen';
 export const CTSC_ROLE = 'ctsc';
-export const CTSC_ROLE_CATEGORY = 'CTSC';
 export const CTSC_ROLE_NAME = 'ctsc';
 export const OTHER_GOV_DEPARTMENT_ROLE = 'other_gov_department';
 export const OTHER_GOV_DEPARTMENT_ROLE_CATEGORY = 'OTHER_GOV_DEPARTMENT';
@@ -33,13 +28,13 @@ export const SSCS_IBCA_RESPONSE_WRITER = 'caseworker-sscs-ibcaresponsewriter';
 
 // EXUI-4758 - Actually use RoleCateogry instead of non-capitalized name
 const roleCategoryRules: RoleCategoryRule[] = [
-  { matches: (roles) => hasRoleCategory(roles, CITIZEN_ROLE), result: CITIZEN_ROLE_CATEGORY },
+  { matches: (roles) => hasRoleCategory(roles, CITIZEN_ROLE), result: RoleCategory.CITIZEN },
   {
     matches: (roles) => includesRoleCategory(roles, JUDGE_ROLE) || includesRoleCategory(roles, JUDICIARY_ROLE_NAME),
-    result: JUDGE_ROLE_CATEGORY,
+    result: RoleCategory.JUDICIAL,
   },
-  { matches: (roles) => includesRoleCategory(roles, ADMIN_ROLE), result: ADMIN_ROLE_CATEGORY },
-  { matches: (roles) => includesRoleCategory(roles, CTSC_ROLE_NAME), result: CTSC_ROLE_CATEGORY },
+  { matches: (roles) => includesRoleCategory(roles, ADMIN_ROLE), result: RoleCategory.ADMIN },
+  { matches: (roles) => includesRoleCategory(roles, CTSC_ROLE_NAME), result: RoleCategory.CTSC },
   {
     matches: (roles) =>
       hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) ||
@@ -49,7 +44,7 @@ const roleCategoryRules: RoleCategoryRule[] = [
     // EXUI-4758 - Unsure whether this is correct but it is the current implementation.
     // Looks like legal-operations has been bundled in with solicitor
     // may just not have been noticed as is a fallback
-    result: PROFESSIONAL_ROLE_CATEGORY,
+    result: RoleCategory.PROFESSIONAL,
   },
   {
     matches: (roles) =>
@@ -57,6 +52,10 @@ const roleCategoryRules: RoleCategoryRule[] = [
       hasRoleCategory(roles, SSCS_HMRC_RESPONSE_WRITER) ||
       hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER),
     result: OTHER_GOV_DEPARTMENT_ROLE_CATEGORY,
+  },
+  {
+    matches: (roles) => hasRoleCategory(roles, RoleCategory.ENFORCEMENT),
+    result: RoleCategory.ENFORCEMENT,
   },
 ];
 
@@ -92,7 +91,13 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
 }
 
 export function getRoleCategoriesFromRoleAssignments(roleAssignments: string[]): string[] {
-  const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CTSC_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
+  const roleCategories = [
+    RoleCategory.JUDICIAL,
+    RoleCategory.LEGAL_OPERATIONS,
+    RoleCategory.CTSC,
+    RoleCategory.ADMIN,
+    RoleCategory.ENFORCEMENT,
+  ];
   const userRoleCategories = [];
   for (const roleCategory of roleCategories) {
     if (hasRoleCategory(roleAssignments, roleCategory)) {
@@ -107,7 +112,7 @@ export function getUserRoleCategories(roles: string[]): string[] {
   const userRoleCategories = roleCategoryRules.filter((rule) => rule.matches(roles)).map((rule) => rule.result);
   // as previous, default to legal operations if no role category found
   if (userRoleCategories.length === 0) {
-    return [LEGAL_OPERATIONS_ROLE_CATEGORY];
+    return [RoleCategory.LEGAL_OPERATIONS];
   }
   return userRoleCategories;
 }

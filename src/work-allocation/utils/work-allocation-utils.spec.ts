@@ -6,8 +6,8 @@ import {
   WILDCARD_SERVICE_DOWN,
   getCurrentUserRoleCategories,
   getDestinationUrl,
-  getLabel,
   getOptions,
+  getRoleAllocationCaption,
   getRoleCategoryToBeSelectedByDefault,
   handleFatalErrors,
   handleTasksFatalErrors,
@@ -211,21 +211,12 @@ describe('WorkAllocationUtils', () => {
     expect(currentUserRoleCategories).toEqual([RoleCategory.LEGAL_OPERATIONS]);
   });
 
-  it('getLabel', () => {
-    let label = getLabel(RoleCategory.LEGAL_OPERATIONS);
-    expect(label).toEqual('Legal Ops');
-
-    label = getLabel(RoleCategory.ADMIN);
-    expect(label).toEqual('Admin');
-
-    label = getLabel(RoleCategory.JUDICIAL);
-    expect(label).toEqual('Judicial');
-
-    try {
-      getLabel('some' as RoleCategory);
-    } catch (error) {
-      expect(error.message).toContain('Invalid roleCategory');
-    }
+  it('get the role allocation caption', () => {
+    expect(getRoleAllocationCaption(RoleCategory.CTSC)).toEqual('Allocate a CTSC role');
+    expect(getRoleAllocationCaption(RoleCategory.ENFORCEMENT)).toEqual('Allocate an enforcement role');
+    expect(getRoleAllocationCaption(RoleCategory.ADMIN)).toEqual('Allocate an admin role');
+    expect(getRoleAllocationCaption(RoleCategory.JUDICIAL)).toEqual('Allocate a judicial role');
+    expect(getRoleAllocationCaption(RoleCategory.LEGAL_OPERATIONS)).toEqual('Allocate a legal ops role');
   });
 
   it('should attempt to navigate to the correct error page for task related errors', () => {

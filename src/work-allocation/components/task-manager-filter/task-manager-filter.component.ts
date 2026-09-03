@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { BookingCheckType, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { BookingCheckType, FilterService, getRoleCategoryForWorkAllocation, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
@@ -9,7 +9,6 @@ import { AppUtils } from '../../../app/app-utils';
 import { HMCTSServiceDetails, UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
 import { WorkType } from '../../models/tasks';
-import { getRoleCategory } from '../../utils';
 
 @Component({
   standalone: false,
@@ -278,7 +277,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       this.fieldsConfig.cancelSetting.fields.push(
         {
           name: 'taskType',
-          value: [getRoleCategory(this.roleType)],
+          value: [getRoleCategoryForWorkAllocation(this.roleType as PersonRole)],
         },
         {
           name: 'role',

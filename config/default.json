@@ -119,7 +119,9 @@
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
   "staffSupportedJurisdictions": "ST_CIC,CIVIL,EMPLOYMENT,PRIVATELAW,PUBLICLAW,IA,SSCS,DIVORCE,FR,PROBATE,HRS",
   "decentralisedCaseTypeConfig": {},
-  "decentralisedServiceMap": {},
+  "decentralisedServiceMap": {
+    "PCS": { "id": "PCS", "baseUrl": "https://www.google.com" }
+  },
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW,PCS",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },

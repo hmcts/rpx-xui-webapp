@@ -9,6 +9,16 @@
   "logging": "LOGGING",
   "now": "NOW",
   "maxLogLine": "MAX_LOG_LINE",
+  "documentUploadThrottle": {
+    "initialMs": {
+      "__name": "DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS",
+      "__format": "json"
+    },
+    "maxMs": {
+      "__name": "DOCUMENT_UPLOAD_THROTTLE_MAX_MS",
+      "__format": "json"
+    }
+  },
   "stub": {
     "__name": "STUB",
     "__format": "json"

@@ -149,6 +149,9 @@ export const CASE_SHARE_PERMISSIONS = 'pui-case-manager';
 
 export const SESSION_TIMEOUTS = 'sessionTimeouts';
 
+export const DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS = 'documentUploadThrottle.initialMs';
+export const DOCUMENT_UPLOAD_THROTTLE_MAX_MS = 'documentUploadThrottle.maxMs';
+
 // PACT
 export const PACT_BROKER_URL = 'pact.brokerUrl';
 export const PACT_BRANCH_NAME = 'pact.branchName';

@@ -5,21 +5,21 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getCaseworkerRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-import { Matchers, V3Interaction } from '@pact-foundation/pact';
+import { MatchersV3, V3Interaction } from '@pact-foundation/pact';
 
-const { somethingLike } = Matchers;
+const { like } = MatchersV3;
 const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
 const MockApp = require('../../pact-mocks/app');
 
 describe('Caseworker ref data api, get all caseworkers for a specific service', () => {
-  const baseLocations = [{ location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }];
+  const baseLocations = [{ location_id: like(1), location: like('National'), is_primary: like(true) }];
   const RESPONSE_BODY = [
     {
-      email_id: somethingLike('test_person@test.gov.uk'),
-      first_name: somethingLike('testfn'),
-      last_name: somethingLike('testln'),
-      id: somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
+      email_id: like('test_person@test.gov.uk'),
+      first_name: like('testfn'),
+      last_name: like('testln'),
+      id: like('004b7164-0943-41b5-95fc-39794af4a9fe'),
       base_location: baseLocations,
     },
   ];

@@ -17,12 +17,7 @@ import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { PUI_CASE_MANAGER } from '../user/utils';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
-import {
-  handleCaseWorkerForLocation,
-  handleCaseWorkerForLocationAndService,
-  handleCaseWorkerForService,
-  handlePostSearch,
-} from './caseWorkerService';
+import { handlePostSearch } from './caseWorkerService';
 import {
   fetchNewUserData,
   fetchRoleAssignments,
@@ -57,10 +52,6 @@ import {
   handlePost,
   mapCasesFromData,
   paginate,
-  prepareCaseWorkerForLocation,
-  prepareCaseWorkerForLocationAndService,
-  prepareCaseWorkerForService,
-  prepareCaseWorkerSearchUrl,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
@@ -367,66 +358,6 @@ export async function postTaskCompletionForAccess(
     trackTrace(`Error calling complete on task Id: ${taskId} due to specific access processing`, traceProps);
     next(error);
     return error;
-  }
-}
-
-/**
- * Get CaseWorkers for Location
- */
-export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const locationId = req.params.locationId as string;
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocation(baseCaseWorkerRefUrl, locationId);
-    const jsonResponse = await handleCaseWorkerForLocation(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Get CaseWorkers for Service
- */
-export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const serviceId = req.params.serviceId as string;
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseCaseWorkerRefUrl, serviceId);
-    const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Get CaseWorkers for Location and Service
- */
-export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const locationId = req.params.locationId as string;
-  const serviceId = req.params.serviceId as string;
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, locationId, serviceId);
-    const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Post to search for a Caseworker.
- */
-export async function searchCaseWorker(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
-    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
-    res.status(status);
-    res.send(data);
-  } catch (error) {
-    next(error);
   }
 }
 

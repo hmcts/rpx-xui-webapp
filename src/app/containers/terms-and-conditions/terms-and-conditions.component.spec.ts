@@ -116,4 +116,14 @@ describe('TermsAndConditionsComponent', () => {
     const legacy = fixture.debugElement.query(By.css('#content'));
     expect(legacy).toBeTruthy();
   });
+
+  it('should render the privacy policy as a template link when displaying legacy terms', () => {
+    spyOn(termsConditionsService, 'isTermsConditionsFeatureEnabled').and.returnValue(of(false));
+    component.ngOnInit();
+    fixture.detectChanges();
+    const privacyPolicyLink = element.query(By.css('a[href="/privacy-policy"]'));
+
+    expect(privacyPolicyLink).toBeTruthy();
+    expect(privacyPolicyLink.nativeElement.textContent.trim()).toBe('privacy policy');
+  });
 });

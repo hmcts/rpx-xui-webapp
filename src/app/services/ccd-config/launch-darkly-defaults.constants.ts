@@ -233,6 +233,16 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"
+    },
+    {
+      "caseTypes": [
+        "GrantOfRepresentation",
+        "Caveat",
+        "StandingSearch",
+        "WillLodgement"
+      ],
+      "releaseVersion": "4",
+       "serviceName": "PROBATE"
     }
     ]
   }`;

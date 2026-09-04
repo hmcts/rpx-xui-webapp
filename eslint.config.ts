@@ -21,7 +21,8 @@ export default defineConfig(
         {
           selector:
             'CallExpression[callee.property.name=/^bypassSecurityTrust/], CallExpression[callee.name=/^bypassSecurityTrust/]',
-          message: 'Avoid bypassSecurityTrust* calls. Use DomSanitizer.sanitize(), DOMPurify, or another approved sanitizer before rendering untrusted HTML.',
+          message:
+            'Avoid bypassSecurityTrust* calls. Use DomSanitizer.sanitize(), DOMPurify, or another approved sanitizer before rendering untrusted HTML.',
         },
         {
           selector: 'AssignmentExpression[left.property.name="innerHTML"]',

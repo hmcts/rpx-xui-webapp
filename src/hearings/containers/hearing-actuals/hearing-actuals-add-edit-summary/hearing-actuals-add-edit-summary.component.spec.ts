@@ -1,5 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -145,8 +146,43 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     fixture.detectChanges();
   });
 
+  function setMatchingIndividualParties(): void {
+    component.individualParties = component.actualHearingDays[0].actualDayParties.map(
+      (party, index) =>
+        ({
+          partyID: party.actualPartyId,
+          partyType: PartyType.IND,
+          partyRole: party.partyRole,
+          partyName: `Party ${index}`,
+          individualDetails: {
+            title: '',
+            firstName: party.individualDetails?.firstName || '',
+            lastName: party.individualDetails?.lastName || '',
+            preferredHearingChannel: party.partyChannelSubType,
+          },
+        }) as PartyDetailsModel
+    );
+  }
+
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show confirm buttons by default', () => {
+    setMatchingIndividualParties();
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#hearing-timing-result-confirm-link'))).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('#hearing-parties-result-confirm-link'))).not.toBeNull();
+  });
+
+  it('should hide confirm buttons when redirected from completed or adjourned hearing details', () => {
+    component.hideConfirmButtons = true;
+    setMatchingIndividualParties();
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#hearing-timing-result-confirm-link'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('#hearing-parties-result-confirm-link'))).toBeNull();
   });
 
   it('should unsubscribe', () => {

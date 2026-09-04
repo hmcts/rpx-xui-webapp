@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
@@ -18,8 +18,9 @@ import { SessionStorageService } from 'src/app/services';
   styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],
   providers: [DatePipe],
 })
-export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent {
+export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent implements OnInit {
   public successBanner = false;
+  public hideConfirmButtons = false;
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -32,6 +33,12 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   ) {
     super(hearingStore, hearingsService, route, router, ccdDatePipe);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
+  }
+
+  public ngOnInit(): void {
+    const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
+    this.hideConfirmButtons = !!navState?.hideConfirmButtons;
+    super.ngOnInit();
   }
 
   public onSubmitHearingDetails(): void {

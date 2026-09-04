@@ -66,6 +66,25 @@ describe('RequestHearingComponent', () => {
     );
   });
 
+  it('should reset hearing actuals and hearing request when leaving the standard actuals journey', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+
+    component.ngOnDestroy();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(new hearingActualsActions.ResetHearingActuals());
+    expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.ResetHearingRequest());
+  });
+
+  it('should retain the hearing request when returning to an existing hearing summary', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    component['retainHearingRequestOnExit'] = true;
+
+    component.ngOnDestroy();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(new hearingActualsActions.ResetHearingActuals());
+    expect(dispatchSpy).not.toHaveBeenCalledWith(new hearingRequestActions.ResetHearingRequest());
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

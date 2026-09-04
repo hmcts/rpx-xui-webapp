@@ -15,6 +15,7 @@ import * as hearingRequestActions from '../../store/actions/hearing-request.acti
 })
 export class HearingActualsComponent implements OnInit, OnDestroy {
   private sub: Subscription;
+  private retainHearingRequestOnExit = false;
 
   public constructor(
     private readonly store: Store<fromHearingStore.State>,
@@ -23,6 +24,9 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    const navigationState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
+    this.retainHearingRequestOnExit = !!navigationState?.hideConfirmButtons;
+
     this.sub = this.route.params
       .pipe(withLatestFrom(this.store.pipe(select(fromHearingStore.getHearingValuesCaseInfo))))
       .subscribe(([params, caseInfo]) => {
@@ -37,6 +41,8 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
       this.sub.unsubscribe();
     }
     this.store.dispatch(new hearingActualsActions.ResetHearingActuals());
-    this.store.dispatch(new hearingRequestActions.ResetHearingRequest());
+    if (!this.retainHearingRequestOnExit) {
+      this.store.dispatch(new hearingRequestActions.ResetHearingRequest());
+    }
   }
 }

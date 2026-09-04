@@ -15,6 +15,7 @@ import { ScreenNavigationModel } from '../../models/screenNavigation.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
 import * as fromHearingSelectors from '../../store/selectors';
+import * as fromHearingStore from '../../store';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
@@ -182,8 +183,10 @@ export class HearingRequestEffects {
               this.router
                 .navigate(['hearings', 'request', 'hearing-confirmation'])
                 .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-confirmation', err));
+              this.resetHearingRequestState();
             }),
             catchError((error) => {
+              this.hearingsService.hearingRequestForSubmitValid = false;
               this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
               return of(error);
             })
@@ -217,8 +220,10 @@ export class HearingRequestEffects {
               this.router
                 .navigate(['hearings', 'request', 'hearing-confirmation'])
                 .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-confirmation', err));
+              this.resetHearingRequestState();
             }),
             catchError((error) => {
+              this.hearingsService.hearingRequestForSubmitValid = false;
               this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));
               return of(error);
             })
@@ -232,5 +237,13 @@ export class HearingRequestEffects {
     if (error && error.status) {
       return of(new fromAppStoreActions.Go({ path: ['/hearings/error'] }));
     }
+  }
+
+  private resetHearingRequestState(): void {
+    this.hearingStore.dispatch(new hearingRequestActions.ResetHearingRequest());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+    this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+    this.hearingsService.propertiesUpdatedOnPageVisit = null;
   }
 }

@@ -133,6 +133,13 @@ export const baseConfig = {
       ngClass: 'hmcts-search-toggle__button',
       text: 'Find case',
     },
+    {
+      active: false,
+      href: '/duty-advisor',
+      roles: ['caseworker-pcs-solicitor'],
+      text: 'Duty Advisor',
+      decentralisedServiceId: 'PCS',
+    },
   ],
   '.+': [
     {

@@ -44,7 +44,10 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       const userRole: UserRole = userRoleNames[0] || undefined;
 
       // get 'locations' key from the current browser session
-      const locationsFromSessionStorage = safeJsonParse<any>(this.sessionStorageService.getItem(MyWorkFilterComponent.FILTER_NAME), null);
+      const locationsFromSessionStorage = safeJsonParse<any>(
+        this.sessionStorageService.getItem(MyWorkFilterComponent.FILTER_NAME),
+        null
+      );
 
       // set service and location filters using data from session storage
       let serviceFilters = [];

@@ -335,7 +335,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     const metadataFieldsGroupFromSessionStorage = ['[CASE_REFERENCE]', '[CREATED_DATE]'];
 
-    if (jurisdictionFromSessionStorage && caseTypeGroupFromSessionStorage && caseStateGroupFromSessionStorage && metadataFieldsGroupFromSessionStorage) {
+    if (
+      jurisdictionFromSessionStorage &&
+      caseTypeGroupFromSessionStorage &&
+      caseStateGroupFromSessionStorage &&
+      metadataFieldsGroupFromSessionStorage
+    ) {
       return this.createEvent(
         jurisdictionFromSessionStorage,
         caseTypeGroupFromSessionStorage,

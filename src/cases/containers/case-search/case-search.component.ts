@@ -199,9 +199,17 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     const formGroupFromSessionStorage = safeJsonParse(this.sessionStorageService.getItem('search-form-group-value'), null);
     const jurisdictionFromSessionStorage = this.getCompressedSessionStorageItem('search-jurisdiction');
     const caseTypeGroupFromSessionStorage = safeJsonParse(this.sessionStorageService.getItem('search-caseType'), null);
-    const metadataFieldsGroupFromSessionStorage = safeJsonParse(this.sessionStorageService.getItem('search-metadata-fields'), null);
+    const metadataFieldsGroupFromSessionStorage = safeJsonParse(
+      this.sessionStorageService.getItem('search-metadata-fields'),
+      null
+    );
 
-    if (formGroupFromSessionStorage && jurisdictionFromSessionStorage && caseTypeGroupFromSessionStorage && metadataFieldsGroupFromSessionStorage) {
+    if (
+      formGroupFromSessionStorage &&
+      jurisdictionFromSessionStorage &&
+      caseTypeGroupFromSessionStorage &&
+      metadataFieldsGroupFromSessionStorage
+    ) {
       event = {
         selected: {
           jurisdiction: jurisdictionFromSessionStorage,

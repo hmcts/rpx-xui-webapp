@@ -1,5 +1,5 @@
 import * as applicationinsights from 'applicationinsights';
-import * as express from 'express';
+import type * as express from 'express';
 
 import { SpanKind, TraceFlags } from '@opentelemetry/api';
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';

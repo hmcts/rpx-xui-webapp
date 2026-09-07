@@ -120,7 +120,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
   public onExistingBookingSelected(locationId) {
     this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments(this.userId).subscribe(() => {
       this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
-      this.windowService.removeLocalStorage(MyWorkFilterComponent.FILTER_NAME);
+      this.windowService.removeSessionStorage(MyWorkFilterComponent.FILTER_NAME);
       this.router.navigate(['/work/my-work/list'], {
         state: {
           location: {

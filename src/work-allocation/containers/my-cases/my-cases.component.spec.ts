@@ -86,11 +86,11 @@ describe('MyCasesComponent', () => {
       };
 
       const userInfo = { roles: [UserRole.Admin], id: 'One' };
-      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
+      const sessionStorageGetItemSpy = spyOn(sessionStorage, 'getItem');
       const locations = { fields: [{ name: 'services', value: 'serviceValue' }] };
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
-      localStorageGetItemSpy.and.returnValue(JSON.stringify(locations));
+      sessionStorageGetItemSpy.and.returnValue(JSON.stringify(locations));
       spyOn(AppUtils, 'getUserRoleNames').and.returnValue([UserRole.Admin]);
 
       const actual = component.getSearchCaseRequestPagination();
@@ -113,7 +113,7 @@ describe('MyCasesComponent', () => {
       );
 
       mockSessionStorageService.getItem.calls.reset();
-      localStorageGetItemSpy.calls.reset();
+      sessionStorageGetItemSpy.calls.reset();
     });
 
     it("should return a SearchCaseRequest with user 'uid'", () => {
@@ -130,7 +130,7 @@ describe('MyCasesComponent', () => {
       const userInfo = { roles: [UserRole.Admin], uid: 'UID' };
       const locations = { fields: [{ name: 'locations', value: [{ epimms_id: 'locationID' }] }] };
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
-      spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(locations));
+      spyOn(sessionStorage, 'getItem').and.returnValue(JSON.stringify(locations));
       spyOn(AppUtils, 'getUserRoleNames').and.returnValue([UserRole.Admin]);
 
       const actual = component.getSearchCaseRequestPagination();

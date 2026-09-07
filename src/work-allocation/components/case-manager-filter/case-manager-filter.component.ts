@@ -21,7 +21,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   @Input() public jurisdictions: HMCTSServiceDetails[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
-    persistence: 'local',
+    persistence: 'session',
     enableDisabledButton: true,
     id: CaseManagerFilterComponent.FILTER_NAME,
     fields: [],

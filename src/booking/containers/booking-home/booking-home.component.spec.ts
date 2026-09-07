@@ -54,7 +54,7 @@ describe('BookingHomeComponent', () => {
     'getBookingLocation',
     'refreshRoleAssignments',
   ]);
-  const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
+  const mockWindowService = jasmine.createSpyObj('WindowService', ['removeSessionStorage']);
   const flags = {
     enabledFlag: true,
     disabledFlag: false,

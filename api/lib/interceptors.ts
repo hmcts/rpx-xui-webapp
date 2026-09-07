@@ -215,6 +215,10 @@ function buildTelemetryProperties(context: LogContext): TelemetryProperties {
   };
 }
 
+function toTelemetryResultCode(status?: number): string {
+  return typeof status === 'number' ? String(status) : '0';
+}
+
 export function requestInterceptor(request) {
   const logger = log4jui.getLogger('outgoing');
   const startTime = new Date();
@@ -246,7 +250,7 @@ export function successInterceptor(response) {
     duration: response.duration,
     name: `Service ${response.config.method.toUpperCase()} call`,
     properties: buildTelemetryProperties(logContext),
-    resultCode: status,
+    resultCode: toTelemetryResultCode(status),
     success: true,
     url: response.config.url,
   });
@@ -282,7 +286,7 @@ export function errorInterceptor(error) {
     duration: error.duration,
     name: `Service ${error.config.method.toUpperCase()} call`,
     properties: buildTelemetryProperties(logContext),
-    resultCode: status,
+    resultCode: toTelemetryResultCode(status),
     success: false,
     url: error.config.url,
   });

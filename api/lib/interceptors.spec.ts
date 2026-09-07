@@ -4,6 +4,8 @@ import * as log4js from 'log4js';
 import 'mocha';
 import * as sinon from 'sinon';
 import { errorInterceptor, requestInterceptor, successInterceptor } from './interceptors';
+import * as log4jui from './log4jui';
+import { JUILogger } from './models';
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
@@ -112,6 +114,25 @@ describe('interceptors', () => {
       expect(result).to.be.equal(response);
       getLoggerStub.restore();
     });
+
+    it('Should track successful outbound response status as a string resultCode', () => {
+      const trackRequest = sinon.spy();
+      const getLoggerStub = sinon.stub(log4jui, 'getLogger').returns({
+        info: sinon.spy(),
+        trackRequest,
+      } as unknown as JUILogger);
+
+      successInterceptor(response);
+
+      expect(trackRequest).to.have.been.calledOnce;
+      expect(trackRequest.firstCall.args[0]).to.include({
+        name: 'Service POST call',
+        resultCode: '200',
+        success: true,
+        url: 'http://test2.com',
+      });
+      getLoggerStub.restore();
+    });
   });
 
   describe('errorInterceptor', () => {
@@ -127,6 +148,38 @@ describe('interceptors', () => {
         expect(spy.firstCall.args[0]).to.contain('durationMs=');
         getLoggerStub.restore();
       });
+    });
+
+    it('Should track failed outbound response status as a string resultCode', async () => {
+      const trackRequest = sinon.spy();
+      const getLoggerStub = sinon.stub(log4jui, 'getLogger').returns({
+        error: sinon.spy(),
+        trackRequest,
+      } as unknown as JUILogger);
+      const failedRequest = {
+        config: {
+          metadata: {},
+          method: 'GET',
+          url: 'http://test.com',
+        },
+        response: {
+          data: {
+            message: 'Forbidden',
+          },
+          status: 403,
+        },
+      };
+
+      await errorInterceptor(failedRequest).catch(() => undefined);
+
+      expect(trackRequest).to.have.been.calledOnce;
+      expect(trackRequest.firstCall.args[0]).to.include({
+        name: 'Service GET call',
+        resultCode: '403',
+        success: false,
+        url: 'http://test.com',
+      });
+      getLoggerStub.restore();
     });
   });
 });

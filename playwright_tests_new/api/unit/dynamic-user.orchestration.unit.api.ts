@@ -805,10 +805,12 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
   test('ProfessionalUserUtils defaults service-token microservice name to xui_webapp when env is unset', async () => {
     const originalS2sMicroserviceName = process.env.S2S_MICROSERVICE_NAME;
     const originalMicroservice = process.env.MICROSERVICE;
+    const originalS2sToken = process.env.S2S_TOKEN;
     const retrieveTokenCalls: string[] = [];
 
     delete process.env.S2S_MICROSERVICE_NAME;
     delete process.env.MICROSERVICE;
+    delete process.env.S2S_TOKEN;
 
     try {
       const utils = new ProfessionalUserUtils(
@@ -836,6 +838,12 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         process.env.MICROSERVICE = originalMicroservice;
       } else {
         delete process.env.MICROSERVICE;
+      }
+
+      if (typeof originalS2sToken === 'string') {
+        process.env.S2S_TOKEN = originalS2sToken;
+      } else {
+        delete process.env.S2S_TOKEN;
       }
     }
   });

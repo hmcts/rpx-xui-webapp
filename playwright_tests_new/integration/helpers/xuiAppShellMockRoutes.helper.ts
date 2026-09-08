@@ -8,7 +8,7 @@ import {
   defaultStaffAMMenuRole,
   uniqueRoles,
 } from './amRoleAssignmentMock.helper';
-import headerConfigTemplate from '../mocks/xuiAppShellHeaderConfig.mock.js';
+import headerConfigTemplate from '../mocks/xuiAppShellHeaderConfig.mock.mjs';
 
 const require = createRequire(import.meta.url);
 

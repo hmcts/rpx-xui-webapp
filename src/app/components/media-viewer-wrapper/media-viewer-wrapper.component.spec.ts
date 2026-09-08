@@ -109,7 +109,7 @@ describe('MediaViewerWrapperComponent', () => {
       ...MEDIA_VIEWER_DATA,
       annotation_api_url: '/em-anno',
       case_id: '1111111111111111',
-      case_jurisdiction: 'DIVORCE'
+      case_jurisdiction: 'DIVORCE',
     });
 
     function handoffEvent(data: any, origin = window.location.origin, source = window): MessageEvent {
@@ -125,11 +125,13 @@ describe('MediaViewerWrapperComponent', () => {
     it('should accept valid metadata, store it in session storage, and render the viewer', () => {
       const replaceStateSpy = spyOn(window.history, 'replaceState');
 
-      (component as any).receiveHandoff(handoffEvent({
-        type: 'MEDIA_VIEWER_HANDOFF',
-        token,
-        payload
-      }));
+      (component as any).receiveHandoff(
+        handoffEvent({
+          type: 'MEDIA_VIEWER_HANDOFF',
+          token,
+          payload,
+        })
+      );
       fixture.detectChanges();
 
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('media-viewer-info', payload);
@@ -146,11 +148,16 @@ describe('MediaViewerWrapperComponent', () => {
     });
 
     it('should ignore metadata from an unexpected origin', () => {
-      (component as any).receiveHandoff(handoffEvent({
-        type: 'MEDIA_VIEWER_HANDOFF',
-        token,
-        payload
-      }, 'https://unexpected.example'));
+      (component as any).receiveHandoff(
+        handoffEvent(
+          {
+            type: 'MEDIA_VIEWER_HANDOFF',
+            token,
+            payload,
+          },
+          'https://unexpected.example'
+        )
+      );
 
       expect(sessionStorageService.setItem).not.toHaveBeenCalled();
       expect(component.mediaReady).toBeFalse();

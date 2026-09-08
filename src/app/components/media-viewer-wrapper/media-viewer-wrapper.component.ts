@@ -70,9 +70,15 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     const data = event.data;
     const token = this.route.snapshot.queryParamMap.get('mvToken');
 
-    if (event.origin !== window.location.origin || event.source !== window.opener ||
-      !data || data.type !== 'MEDIA_VIEWER_HANDOFF' || data.token !== token ||
-      typeof data.payload !== 'string' || this.handoffConsumed) {
+    if (
+      event.origin !== window.location.origin ||
+      event.source !== window.opener ||
+      !data ||
+      data.type !== 'MEDIA_VIEWER_HANDOFF' ||
+      data.token !== token ||
+      typeof data.payload !== 'string' ||
+      this.handoffConsumed
+    ) {
       return;
     }
 
@@ -85,8 +91,12 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
       case_jurisdiction?: string;
     }>(data.payload, null);
 
-    if (!media || typeof media.document_binary_url !== 'string' ||
-      typeof media.document_filename !== 'string' || typeof media.content_type !== 'string') {
+    if (
+      !media ||
+      typeof media.document_binary_url !== 'string' ||
+      typeof media.document_filename !== 'string' ||
+      typeof media.content_type !== 'string'
+    ) {
       return;
     }
 

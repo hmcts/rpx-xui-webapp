@@ -268,7 +268,7 @@ export function successInterceptor(response) {
         statusText: response.statusText,
         telemetryRequest,
         url: response.config.url,
-        response: response
+        response: response,
       })}`
     );
   }
@@ -321,7 +321,7 @@ export function errorInterceptor(error) {
         status,
         telemetryRequest,
         url: error.config.url,
-        response: error.response
+        response: error.response,
       })}`
     );
   }

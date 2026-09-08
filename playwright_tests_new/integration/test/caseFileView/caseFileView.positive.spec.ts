@@ -12,7 +12,7 @@ const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
 const sortedDocumentOrderTimeoutMs = 15_000;
 const evidenceDocumentsAscending = ['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf'];
 const evidenceDocumentsDescending = ['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf'];
-const orderDocumentsOldestFirst = ['Approved order.pdf', 'Root order.pdf'];
+const orderDocumentsInTreeOrder = ['Root order.pdf', 'Approved order.pdf'];
 const fileViewV1ModeUser = {
   idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
   email: 'xui_casefileview_v11_off@mailinator.com',
@@ -168,10 +168,10 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(evidenceDocumentsAscending);
 
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Orders', orderDocumentsOldestFirst.length);
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Orders', orderDocumentsInTreeOrder.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'), { timeout: sortedDocumentOrderTimeoutMs })
-        .toEqual(orderDocumentsOldestFirst);
+        .toEqual(orderDocumentsInTreeOrder);
     });
   });
 });

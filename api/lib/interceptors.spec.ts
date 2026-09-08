@@ -139,9 +139,9 @@ describe('interceptors', () => {
     it('Should log returned response', () => {
       const spy = sinon.spy();
       const getLoggerStub = sinon.stub(log4js, 'getLogger');
-      getLoggerStub.returns({ error: spy, addContext: sinon.spy(), level: 'debug' } as unknown as log4js.Logger);
-      errorInterceptor(error).catch(() => {
-        expect(spy).to.be.called;
+      getLoggerStub.returns({ error: spy, info: sinon.spy(), addContext: sinon.spy(), level: 'debug' } as unknown as log4js.Logger);
+      return errorInterceptor(error).catch(() => {
+        expect(spy).to.have.been.called;
         expect(spy.firstCall.args[0]).to.contain('event=error');
         expect(spy.firstCall.args[0]).to.contain('datetime=');
         expect(spy.firstCall.args[0]).to.contain('outboundId=');
@@ -154,6 +154,7 @@ describe('interceptors', () => {
       const trackRequest = sinon.spy();
       const getLoggerStub = sinon.stub(log4jui, 'getLogger').returns({
         error: sinon.spy(),
+        info: sinon.spy(),
         trackRequest,
       } as unknown as JUILogger);
       const failedRequest = {

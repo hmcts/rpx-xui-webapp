@@ -219,10 +219,6 @@ function toTelemetryResultCode(status?: number): string {
   return typeof status === 'number' ? String(status) : '0';
 }
 
-function shouldLogOutboundTelemetry(): boolean {
-  return process.env.LOG_APPINSIGHTS_OUTBOUND_TELEMETRY === 'true';
-}
-
 export function requestInterceptor(request) {
   const logger = log4jui.getLogger('outgoing');
   const startTime = new Date();
@@ -259,19 +255,17 @@ export function successInterceptor(response) {
     url: response.config.url,
   };
 
-  if (shouldLogOutboundTelemetry()) {
-    logger.info(
-      `AppInsights outbound response: ${JSON.stringify({
-        duration: response.duration,
-        method: response.config.method,
-        status: response.status,
-        statusText: response.statusText,
-        telemetryRequest,
-        url: response.config.url,
-        response: response,
-      })}`
-    );
-  }
+  logger.info(
+    `AppInsights outbound response: ${JSON.stringify({
+      duration: response.duration,
+      method: response.config.method,
+      status: response.status,
+      statusText: response.statusText,
+      telemetryRequest,
+      url: response.config.url,
+      response: response,
+    })}`
+  );
 
   logger.trackRequest(telemetryRequest);
   return response;
@@ -311,20 +305,18 @@ export function errorInterceptor(error) {
     url: error.config.url,
   };
 
-  if (shouldLogOutboundTelemetry()) {
-    logger.info(
-      `AppInsights outbound error response: ${JSON.stringify({
-        duration: error.duration,
-        errorStatus: error.status,
-        method: error.config.method,
-        responseStatus: error.response?.status,
-        status,
-        telemetryRequest,
-        url: error.config.url,
-        response: error.response,
-      })}`
-    );
-  }
+  logger.info(
+    `AppInsights outbound error response: ${JSON.stringify({
+      duration: error.duration,
+      errorStatus: error.status,
+      method: error.config.method,
+      responseStatus: error.response?.status,
+      status,
+      telemetryRequest,
+      url: error.config.url,
+      response: error.response,
+    })}`
+  );
 
   logger.trackRequest(telemetryRequest);
 

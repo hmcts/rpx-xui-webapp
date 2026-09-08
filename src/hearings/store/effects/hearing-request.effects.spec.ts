@@ -124,6 +124,7 @@ describe('Hearing Request Effects', () => {
   describe('submitHearingRequest$', () => {
     it('should submit hearing request', () => {
       const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.hearingRequestForSubmitValid = true;
       hearingsServiceMock.submitHearingRequest.and.returnValue(of(hearingRequestMainModel));
       const action = new hearingRequestActions.SubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', { a: action });
@@ -131,7 +132,8 @@ describe('Hearing Request Effects', () => {
       expect(effects.submitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.submitHearingRequest).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-confirmation']);
-      expect(dispatchSpy).toHaveBeenCalledTimes(0);
+      expect(dispatchSpy).toHaveBeenCalledTimes(3);
+      expect(hearingsServiceMock.hearingRequestForSubmitValid).toBeTrue();
     });
 
     it('should error submitting hearing request', () => {
@@ -144,6 +146,7 @@ describe('Hearing Request Effects', () => {
         path: '',
       };
       const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.hearingRequestForSubmitValid = true;
       hearingsServiceMock.submitHearingRequest.and.returnValue(throwError(error));
       const action = new hearingRequestActions.SubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', { a: action });
@@ -151,11 +154,13 @@ describe('Hearing Request Effects', () => {
       expect(effects.submitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.submitHearingRequest).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.SubmitHearingRequestFailure(error));
+      expect(hearingsServiceMock.hearingRequestForSubmitValid).toBeFalse();
     });
   });
 
   describe('ViewEditSubmitHearingRequest$', () => {
     it('should update hearing request', () => {
+      hearingsServiceMock.hearingRequestForSubmitValid = true;
       hearingsServiceMock.updateHearingRequest.and.returnValue(of(hearingRequestMainModel));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', { a: action });
@@ -163,6 +168,7 @@ describe('Hearing Request Effects', () => {
       expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-confirmation']);
+      expect(hearingsServiceMock.hearingRequestForSubmitValid).toBeTrue();
     });
 
     it('should error update hearing request failed', () => {
@@ -175,6 +181,7 @@ describe('Hearing Request Effects', () => {
         path: '',
       };
       const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.hearingRequestForSubmitValid = true;
       hearingsServiceMock.updateHearingRequest.and.returnValue(throwError(error));
       const action = new hearingRequestActions.ViewEditSubmitHearingRequest(hearingRequestMainModel);
       actions$ = cold('-a', { a: action });
@@ -182,6 +189,7 @@ describe('Hearing Request Effects', () => {
       expect(effects.viewEditSubmitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.updateHearingRequest).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.UpdateHearingRequestFailure(error));
+      expect(hearingsServiceMock.hearingRequestForSubmitValid).toBeFalse();
     });
   });
 

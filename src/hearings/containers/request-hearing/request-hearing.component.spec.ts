@@ -88,6 +88,13 @@ describe('RequestHearingComponent', () => {
     expect(buttonDisabled).toEqual(false);
   });
 
+  it('should enable the submit button after a request failure', () => {
+    hearingsService.hearingRequestForSubmitValid = true;
+    (component as any).submitRequestFailed = true;
+
+    expect(component.buttonDisabled(ACTION.SUBMIT)).toBeFalse();
+  });
+
   it('should check buttonDisabled returns a true for a VIEW_EDIT_SUBMIT with successful validation', () => {
     spyOn(hearingsService, 'navigateAction');
     hearingsService.hearingRequestForSubmitValid = true;

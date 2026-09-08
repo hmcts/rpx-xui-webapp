@@ -21,11 +21,7 @@ export const aatDifferences = {
       text: 'My work',
     },
     {
-      roles: [
-        'caseworker-befta_master',
-        'caseworker-probate',
-        'caseworker-divorce-financialremedy',
-      ],
+      roles: ['caseworker-befta_master', 'caseworker-probate', 'caseworker-divorce-financialremedy'],
       text: 'Search',
     },
   ],

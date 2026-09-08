@@ -56,7 +56,6 @@ const convertUserToCCDFormat = (user: any): CCDRawUserModel => ({
 // Convert stub case data to CCD format
 const convertCaseToCCDFormat = (sharedCase: any): CCDRawCaseUserModel => ({
   case_id: sharedCase.caseId,
-  case_title: sharedCase.caseTitle,
   shared_with: sharedCase.sharedWith.map((user: any) => convertUserToCCDFormat(user)),
 });
 
@@ -262,7 +261,6 @@ describe('Case Share Real API', () => {
       // Verify first case from stub data
       expect(sentCases[0]).to.deep.equal({
         caseId: '1573922332670942',
-        caseTitle: 'Paul Saddlebrook Vs Jennifer Saddlebrook',
         sharedWith: [
           {
             idamId: 'u111111',
@@ -282,7 +280,7 @@ describe('Case Share Real API', () => {
       });
 
       // Verify third case has users from different organisation
-      expect(sentCases[2].caseTitle).to.equal('Sam Green Vs Williams Lee');
+      expect(sentCases[2]).to.not.have.property('caseTitle');
       expect(sentCases[2].sharedWith).to.have.lengthOf(3);
       expect(sentCases[2].sharedWith[0].email).to.include('lambbrooks.com');
       expect(next).to.not.have.been.called;
@@ -307,7 +305,6 @@ describe('Case Share Real API', () => {
         case_assignments: [
           {
             case_id: 'case-123',
-            case_title: 'Test Case',
             shared_with: [],
           },
         ],
@@ -324,7 +321,6 @@ describe('Case Share Real API', () => {
       expect(res.send).to.have.been.calledWith([
         {
           caseId: 'case-123',
-          caseTitle: 'Test Case',
           sharedWith: [],
         },
       ]);

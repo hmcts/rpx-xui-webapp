@@ -37,7 +37,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     for (const caseUser of caseUsers) {
       const sharedCase: SharedCase = {
         caseId: caseUser.case_id,
-        caseTitle: caseUser.case_title,
         sharedWith: caseUser.shared_with.map((rawSharedWith) => ccdToUserDetails(rawSharedWith)),
       };
       sharedCases.push(sharedCase);

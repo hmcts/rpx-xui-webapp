@@ -139,7 +139,12 @@ describe('interceptors', () => {
     it('Should log returned response', () => {
       const spy = sinon.spy();
       const getLoggerStub = sinon.stub(log4js, 'getLogger');
-      getLoggerStub.returns({ error: spy, info: sinon.spy(), addContext: sinon.spy(), level: 'debug' } as unknown as log4js.Logger);
+      getLoggerStub.returns({
+        error: spy,
+        info: sinon.spy(),
+        addContext: sinon.spy(),
+        level: 'debug',
+      } as unknown as log4js.Logger);
       return errorInterceptor(error).catch(() => {
         expect(spy).to.have.been.called;
         expect(spy.firstCall.args[0]).to.contain('event=error');

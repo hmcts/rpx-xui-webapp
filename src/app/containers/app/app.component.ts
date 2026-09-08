@@ -8,7 +8,6 @@ import {
   GoogleTagManagerService,
   TimeoutNotificationsService,
 } from '@hmcts/rpx-xui-common-lib';
-import { WindowService as ToolkitWindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, fromEvent, merge, Subscription, debounceTime } from 'rxjs';
 import { propsExist } from '../../../../api/lib/objectUtilities';
@@ -57,8 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly cookieService: CookieService,
     private readonly environmentService: EnvironmentService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly initialisationSyncService: InitialisationSyncService,
-    private readonly windowService: ToolkitWindowService = new ToolkitWindowService()
+    private readonly initialisationSyncService: InitialisationSyncService
   ) {
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
@@ -82,7 +80,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.clearLegacyLocalStorage();
     this.setupForegroundSessionCheck();
     this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe((useIdleTimeout) => {
       if (useIdleTimeout) {
@@ -97,22 +94,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
 
     this.handleCookieBannerFeatureToggle();
-  }
-
-  private clearLegacyLocalStorage(): void {
-    [
-      'search-form-group-value',
-      'search-caseType',
-      'search-jurisdiction',
-      'search-metadata-fields',
-      'workbasket-filter-form-group-value',
-      'savedQueryParams',
-      'my-work-filter',
-      'all-work-cases-filter',
-      'all-work-tasks-filter',
-      'staff-advanced-filters',
-      'staff-search-filter',
-    ].forEach((key) => this.windowService.removeLocalStorage(key));
   }
 
   public ngOnDestroy() {

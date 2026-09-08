@@ -1,5 +1,5 @@
 <div class="js-enabled">
-  <mv-media-viewer
+  <mv-media-viewer *ngIf="mediaReady"
     [annotationApiUrl]="mediaAnnotationApiUrl"
     [url]="mediaURL"
     [downloadFileName]="mediaFilename"

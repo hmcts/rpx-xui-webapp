@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AbstractAppConfig, DocumentUrlPipe, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, DocumentUrlPipe } from '@hmcts/ccd-case-ui-toolkit';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -23,18 +24,17 @@ const MEDIA_VIEWER_DATA = {
 describe('MediaViewerWrapperComponent', () => {
   let component: MediaViewerWrapperComponent;
   let fixture: ComponentFixture<MediaViewerWrapperComponent>;
-  let windowService;
   let sessionStorageService;
   let activatedRoute;
   let mockAppConfig: any;
   let featureToggleService;
   let titleService;
+  let postMessageSpy: jasmine.Spy;
 
   beforeEach(waitForAsync(() => {
     mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
     mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
     mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_URL);
-    windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
     featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
     titleService = createSpyObj('titleService', ['setTitle']);
@@ -61,7 +61,6 @@ describe('MediaViewerWrapperComponent', () => {
       declarations: [MediaViewerWrapperComponent, DocumentUrlPipe],
       providers: [
         { provide: AbstractAppConfig, useValue: mockAppConfig },
-        { provide: WindowService, useValue: windowService },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: FeatureToggleService, useValue: featureToggleService },
         { provide: SessionStorageService, useValue: sessionStorageService },
@@ -82,27 +81,9 @@ describe('MediaViewerWrapperComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('should load media viewer data from local storage using mvToken', () => {
-      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: 'token-1' });
-      windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-      component.ngOnInit();
-      expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
-      expect(component.mediaFilename).toBe('sample.pdf');
-      expect(component.mediaContentType).toBe('pdf');
-    });
-
-    it('should move media viewer data from local to session storage and clean url', () => {
-      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: 'token-1' });
-      windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
-      const replaceStateSpy = spyOn(window.history, 'replaceState');
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-      component.ngOnInit();
-      expect(sessionStorageService.setItem).toHaveBeenCalledTimes(1);
-      expect(windowService.removeLocalStorage).toHaveBeenCalledWith('media-viewer-info:token-1');
-      expect(replaceStateSpy).toHaveBeenCalled();
+    it('should not render the media viewer before metadata is received', () => {
+      expect(component.mediaReady).toBeFalse();
+      expect(fixture.debugElement.query(By.css('mv-media-viewer'))).toBeNull();
     });
 
     it('should not set the session or remove the local storage media viewer data if there is already media viewer data in session storage', () => {
@@ -111,16 +92,79 @@ describe('MediaViewerWrapperComponent', () => {
       expect(component).toBeTruthy();
       component.ngOnInit();
       expect(sessionStorageService.setItem).toHaveBeenCalledTimes(0);
-      expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(0);
     });
 
     it('should set default title when no media data found', () => {
       sessionStorageService.getItem.and.returnValues(null);
       activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: null });
-      windowService.getLocalStorage.and.returnValues(null);
       fixture.detectChanges();
       component.ngOnInit();
       expect(titleService.setTitle).toHaveBeenCalledWith('View Document');
+    });
+  });
+
+  describe('Media Viewer hand-off', () => {
+    const token = 'test-token';
+    const payload = JSON.stringify({
+      ...MEDIA_VIEWER_DATA,
+      annotation_api_url: '/em-anno',
+      case_id: '1111111111111111',
+      case_jurisdiction: 'DIVORCE'
+    });
+
+    function handoffEvent(data: any, origin = window.location.origin, source = window): MessageEvent {
+      return { data, origin, source } as unknown as MessageEvent;
+    }
+
+    beforeEach(() => {
+      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: token });
+      spyOnProperty(window, 'opener', 'get').and.returnValue(window);
+      postMessageSpy = spyOn(window, 'postMessage');
+    });
+
+    it('should accept valid metadata, store it in session storage, and render the viewer', () => {
+      const replaceStateSpy = spyOn(window.history, 'replaceState');
+
+      (component as any).receiveHandoff(handoffEvent({
+        type: 'MEDIA_VIEWER_HANDOFF',
+        token,
+        payload
+      }));
+      fixture.detectChanges();
+
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('media-viewer-info', payload);
+      expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
+      expect(component.mediaFilename).toBe('sample.pdf');
+      expect(component.mediaContentType).toBe('pdf');
+      expect(component.mediaReady).toBeTrue();
+      expect(fixture.debugElement.query(By.css('mv-media-viewer'))).not.toBeNull();
+      expect(replaceStateSpy).toHaveBeenCalled();
+      expect(postMessageSpy as any).toHaveBeenCalledWith(
+        { type: 'MEDIA_VIEWER_HANDOFF_RECEIVED', token },
+        window.location.origin
+      );
+    });
+
+    it('should ignore metadata from an unexpected origin', () => {
+      (component as any).receiveHandoff(handoffEvent({
+        type: 'MEDIA_VIEWER_HANDOFF',
+        token,
+        payload
+      }, 'https://unexpected.example'));
+
+      expect(sessionStorageService.setItem).not.toHaveBeenCalled();
+      expect(component.mediaReady).toBeFalse();
+      expect(postMessageSpy as any).not.toHaveBeenCalled();
+    });
+
+    it('should ignore a replayed hand-off after the first valid message', () => {
+      const event = handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload });
+
+      (component as any).receiveHandoff(event);
+      (component as any).receiveHandoff(event);
+
+      expect(sessionStorageService.setItem).toHaveBeenCalledTimes(1);
+      expect(postMessageSpy as any).toHaveBeenCalledTimes(1);
     });
   });
 

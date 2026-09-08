@@ -128,7 +128,7 @@ def publishPlaywrightAccessibilityJUnit = {
         return
     }
     try {
-        junit allowEmptyResults: false, testResults: playwrightAccessibilityJunitFile
+        junit allowEmptyResults: false, skipMarkingBuildUnstable: true, testResults: playwrightAccessibilityJunitFile
     } catch (Exception e) {
         if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
             throw e

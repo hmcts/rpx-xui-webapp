@@ -5,7 +5,7 @@ export const aatDifferences = {
       text: 'My work',
     },
     {
-      roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember', 'caseworker-divorce-financialremedy-judiciary'],
+      roles: ['caseworker-divorce-financialremedy-judiciary'],
       text: 'Search',
     },
   ],
@@ -17,14 +17,12 @@ export const aatDifferences = {
   ],
   '.+': [
     {
-      roles: ['caseworker-sscs-clerk', 'caseworker-sscs-registrar', 'caseworker-divorce-financialremedy'],
+      roles: ['caseworker-divorce-financialremedy'],
       text: 'My work',
     },
     {
       roles: [
         'caseworker-befta_master',
-        'caseworker-sscs-clerk',
-        'caseworker-sscs-registrar',
         'caseworker-probate',
         'caseworker-divorce-financialremedy',
       ],

@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(160, userId, myActionsList);
 });
 
-// EXUI-4318 - Skipped until the related bug is resolved, and the expected behaviour can be tested reliably
+// EXUI-4318: case details opens, but the required task-details error message is not rendered.
 test.describe.skip(
   `Task Go To negative scenarios as ${userIdentifier}`,
   { tag: ['@integration', '@integration-manage-tasks'] },
@@ -74,7 +74,7 @@ test.describe.skip(
                   id: 227101,
                   locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
                 },
-                roleCategory: 'LEGAL_OPERATIONS',
+                roleCategories: ['LEGAL_OPERATIONS'],
                 service: 'IA',
               },
             ]);

@@ -13,11 +13,14 @@ import {
 } from '../../helpers';
 import {
   buildCaseListJurisdictionsMock,
+  buildCaseListJurisdictionsWithProbateMock,
   buildCaseListMock,
   buildCaseListMockForDefaultState,
   buildCaseListMockForPage,
   buildCaseListMockWithOptionalFieldsForPage,
+  buildCaseListProbateFilterInputsMock,
   buildCaseListStateFilterInputsMock,
+  buildCaseListTextFilterInputsMock,
   CASE_LIST_STATE_FILTER_OPTIONS,
 } from '../../mocks/caseList.mock';
 
@@ -317,5 +320,62 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     await expect(caseListPage.unselectableCasesInfoContent).toHaveText(
       "You might not be able to select and share some cases in your current case list. However, you'll be able to select any new cases you create and share them."
     );
+  });
+
+  test(`User ${userIdentifier} does not carry hidden dynamic filters across jurisdiction and case type changes`, async ({
+    caseListPage,
+    page,
+  }) => {
+    const divorceCaseTypeId = 'xuiTestJurisdiction';
+    const probateCaseTypeId = 'GrantOfRepresentation';
+    const staleDivorceFilterValue = 'divorce-hidden-filter';
+    const divorceWorkbasketInputs = buildCaseListTextFilterInputsMock();
+    const probateWorkbasketInputs = buildCaseListProbateFilterInputsMock();
+
+    await clearPersistedCaseListState(page);
+    await setupCaseListMocks(page, {
+      jurisdictions: buildCaseListJurisdictionsWithProbateMock(),
+      searchResponse: buildCaseListMock(2),
+      workbasketInputsHandler: async (route) => {
+        const requestUrl = route.request().url();
+        const body = requestUrl.includes(probateCaseTypeId) ? probateWorkbasketInputs : divorceWorkbasketInputs;
+
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(body),
+        });
+      },
+    });
+
+    await caseListPage.navigateTo();
+    await caseListPage.searchByJurisdiction('Family Divorce');
+    await caseListPage.searchByCaseType('XUI Case PoC');
+    expect(await caseListPage.searchByTextField0(staleDivorceFilterValue)).toEqual(true);
+
+    const divorceSearchRequestPromise = waitForSearchCasesRequest(page, {
+      page: 1,
+      ctid: divorceCaseTypeId,
+    });
+
+    await caseListPage.applyFilters();
+    const divorceSearchRequest = await divorceSearchRequestPromise;
+
+    expect(divorceSearchRequest.caseFilters['case.TextField0']).toEqual(staleDivorceFilterValue);
+
+    await caseListPage.searchByJurisdiction('Probate');
+    await caseListPage.searchByCaseType('Grant of representation');
+
+    const probateSearchRequestPromise = waitForSearchCasesRequest(page, {
+      page: 1,
+      ctid: probateCaseTypeId,
+    });
+
+    await caseListPage.applyFilters();
+    const probateSearchRequest = await probateSearchRequestPromise;
+
+    expect(probateSearchRequest.ctid).toEqual(probateCaseTypeId);
+    expect(probateSearchRequest.caseFilters['case.TextField0']).toBeUndefined();
+    expect(Object.keys(probateSearchRequest.caseFilters)).not.toContain('case.TextField0');
   });
 });

@@ -49,7 +49,6 @@ import {
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
@@ -128,7 +127,6 @@ import { WorkAllocationComponentsModule } from '../work-allocation/components/wo
       provide: AbstractAppConfig,
       useExisting: AppConfig,
     },
-    ScrollToService,
     ...fromServices.services,
     CreateCaseEventTriggerResolver,
     CaseResolver,

@@ -15,7 +15,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
-import { mergeMap, takeUntil } from 'rxjs/operators';
+import { filter, mergeMap, take, takeUntil } from 'rxjs/operators';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromRoot from '../../../app/store';
@@ -25,6 +25,9 @@ import * as converters from '../../converters/case-converter';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
+
+const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
+const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 
 /**
  * Entry component wrapper for Case List
@@ -184,32 +187,53 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public setCaseListFilterDefaults = () => {
-    this.jurisdictionsBehaviourSubject$.asObservable().subscribe((jurisdictions) => {
-      if (jurisdictions.length > 0) {
-        this.savedQueryParams = safeJsonParse(localStorage.getItem('savedQueryParams'), null);
-        if (
-          this.savedQueryParams &&
-          this.savedQueryParams.jurisdiction &&
-          !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)
-        ) {
-          this.windowService.removeLocalStorage('savedQueryParams');
-        }
-        if (this.savedQueryParams) {
-          this.defaults = {
-            jurisdiction_id: this.savedQueryParams.jurisdiction,
-            case_type_id: this.savedQueryParams['case-type'],
-            state_id: null,
-          };
-        } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
-          this.defaults = {
-            jurisdiction_id: jurisdictions[0].id,
-            case_type_id: jurisdictions[0].caseTypes[0].id,
-            state_id: null,
-          };
-        }
-      }
-    });
+    this.jurisdictionsBehaviourSubject$
+      .pipe(
+        filter((jurisdictions) => jurisdictions.length > 0),
+        take(1)
+      )
+      .subscribe((jurisdictions) => this.applyCaseListFilterDefaults(jurisdictions));
   };
+
+  public applyCaseListFilterDefaults(jurisdictions: Jurisdiction[]): void {
+    this.savedQueryParams = this.getSavedQueryParams();
+    if (this.savedQueryParams && !this.areSavedQueryParamsValid(jurisdictions, this.savedQueryParams)) {
+      this.clearSavedCaseListFilters();
+      this.savedQueryParams = null;
+    }
+    if (this.savedQueryParams) {
+      this.defaults = {
+        jurisdiction_id: this.savedQueryParams.jurisdiction,
+        case_type_id: this.savedQueryParams['case-type'],
+        state_id: null,
+      };
+    } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
+      this.defaults = {
+        jurisdiction_id: jurisdictions[0].id,
+        case_type_id: jurisdictions[0].caseTypes[0].id,
+        state_id: null,
+      };
+    }
+  }
+
+  public getSavedQueryParams(): any {
+    return safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);
+  }
+
+  public areSavedQueryParamsValid(jurisdictions: Jurisdiction[], savedQueryParams): boolean {
+    const jurisdiction = jurisdictions.find((item) => item.id === savedQueryParams?.jurisdiction);
+
+    if (!jurisdiction) {
+      return false;
+    }
+
+    return jurisdiction.caseTypes?.some((caseType) => caseType.id === savedQueryParams['case-type']) || false;
+  }
+
+  public clearSavedCaseListFilters(): void {
+    this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
+    this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
+  }
 
   /**
    * result
@@ -302,8 +326,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
       caseStateGroupFromLS = { id: this.selected.caseState ? this.selected.caseState.id : null };
     } else if (this.savedQueryParams) {
-      this.savedQueryParams = safeJsonParse(localStorage.getItem('savedQueryParams'), null);
-      formGroupFromLS = safeJsonParse(localStorage.getItem('workbasket-filter-form-group-value'), null);
+      this.savedQueryParams = safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);
+      formGroupFromLS = safeJsonParse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE), null);
       jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction };
       caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };

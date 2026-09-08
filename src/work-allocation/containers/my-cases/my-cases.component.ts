@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { MyWorkFilterComponent } from '../../components';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
@@ -39,10 +40,11 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
         return;
       }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      const userRole: UserRole = userRoleNames[0] || undefined;
 
       // get 'locations' key from local storage
-      const locationsFromLS = safeJsonParse<any>(localStorage.getItem('locations'), null);
+      const locationsFromLS = safeJsonParse<any>(localStorage.getItem(MyWorkFilterComponent.FILTER_NAME), null);
 
       // set service and location filters using data from local storage
       let serviceFilters = [];
@@ -66,6 +68,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
           { key: 'locations', operator: 'IN', values: locationFilters },
         ],
         sorting_parameters: [this.getSortParameter()],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole,
       };
     }

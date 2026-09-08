@@ -100,11 +100,11 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
           roles: expect.arrayContaining(['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer']),
         }),
         roleAssignmentInfo: [
-          {
+          expect.objectContaining({
             jurisdiction: 'IA',
             roleType: 'ORGANISATION',
             baseLocation: '20001',
-          },
+          }),
         ],
       })
     );

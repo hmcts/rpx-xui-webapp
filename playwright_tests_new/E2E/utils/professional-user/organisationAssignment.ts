@@ -112,9 +112,7 @@ const MAX_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 20;
 const MANAGE_ORG_ASSIGNMENT_PRINCIPAL_ROLES = new Set(SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE['manage-org']);
 
 type RdModeAttemptOutcome =
-  | { kind: 'success'; result: OrganisationAssignmentResult }
-  | { kind: 'retry' }
-  | { kind: 'break-mode'; lastError: unknown };
+  { kind: 'success'; result: OrganisationAssignmentResult } | { kind: 'retry' } | { kind: 'break-mode'; lastError: unknown };
 
 type ModeAttemptsLoopOutcome = { kind: 'success'; result: OrganisationAssignmentResult } | { kind: 'broken'; lastError: unknown };
 

@@ -76,7 +76,8 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "Possession"
+        "PCS",
+        "PCS-staging"
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"
@@ -228,7 +229,7 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "Possession"
+        "PCS"
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"

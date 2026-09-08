@@ -24,7 +24,7 @@ export function getMockCaseworkers(): Caseworker[] {
       idamId: '1',
       email: 'j.s@caseworkers.gov.uk',
       location: LOCATION_A,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS,
+      roleCategories: [RoleCategory.LEGAL_OPERATIONS],
     },
     {
       firstName: 'Jane',
@@ -32,7 +32,7 @@ export function getMockCaseworkers(): Caseworker[] {
       idamId: '2',
       email: 'j.doe@caseworkers.gov.uk',
       location: LOCATION_B,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS,
+      roleCategories: [RoleCategory.LEGAL_OPERATIONS],
     },
   ];
 }
@@ -170,6 +170,46 @@ export function getMockTasks(): Task[] {
       ],
     },
   ];
+}
+
+/**
+ * Assigned mock task
+ */
+export function getAssignedMockTask(): Task {
+  return {
+    assignee: '123456789',
+    assigneeName: 'Test User',
+    id: '1549476532065586',
+    jurisdiction: 'IA',
+    case_type_id: 'Appeal-864',
+    description: null,
+    case_id: '1549476532065586',
+    taskId: '1549476532065586',
+    caseName: 'Kili Muso',
+    caseCategory: 'Protection',
+    location: 'Taylor House',
+    taskName: 'Review respondent evidence',
+    dueDate: new Date(628021800000),
+    warnings: true,
+    warning_list: {
+      values: [
+        {
+          code: '125',
+          warningText: 'this is a warning message 3',
+        },
+      ],
+    },
+    actions: [
+      {
+        id: 'actionId1',
+        title: 'Reassign task',
+      },
+      {
+        id: 'actionId2',
+        title: 'Release this task',
+      },
+    ],
+  };
 }
 
 /**

@@ -4,7 +4,7 @@ import { TaskPermission } from '../models/tasks';
 import {
   REDIRECTS,
   WILDCARD_SERVICE_DOWN,
-  getCurrentUserRoleCategory,
+  getCurrentUserRoleCategories,
   getDestinationUrl,
   getLabel,
   getOptions,
@@ -62,7 +62,7 @@ describe('WorkAllocationUtils', () => {
     surname: 'User',
     email: 'testuser@test.com',
     roles: null,
-    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+    roleCategories: [RoleCategory.LEGAL_OPERATIONS],
   };
 
   beforeEach(() => {
@@ -205,10 +205,10 @@ describe('WorkAllocationUtils', () => {
     expect(defaultRoleCategory).toEqual('LEGAL_OPERATIONS');
   });
 
-  it('should get current user role category', () => {
-    const currentUserRoleCategory = getCurrentUserRoleCategory(sessionStorageService);
+  it('should get current user role categories', () => {
+    const currentUserRoleCategories = getCurrentUserRoleCategories(sessionStorageService);
     expect(sessionStorageService.getItem).toHaveBeenCalled();
-    expect(currentUserRoleCategory).toEqual('LEGAL_OPERATIONS');
+    expect(currentUserRoleCategories).toEqual([RoleCategory.LEGAL_OPERATIONS]);
   });
 
   it('getLabel', () => {

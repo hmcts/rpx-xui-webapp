@@ -138,7 +138,7 @@ describe('CaseTaskComponent', () => {
         firstName: 'Some',
         lastName: 'Name',
         email: 'test@test.com',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        roleCategories: [RoleCategory.LEGAL_OPERATIONS],
         location: {
           id: '1',
           locationName: 'TestLocation',
@@ -181,6 +181,25 @@ describe('CaseTaskComponent', () => {
     expect(result).toBe(
       `[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`
     );
+  });
+
+  [
+    { userDetails: JSON.stringify({ id: 'user-123' }), expectedFragment: 'expected_sub=user-123', id: 'task-1' },
+    { userDetails: JSON.stringify({ uid: 'user-456' }), expectedFragment: 'expected_sub=user-456', id: 'task-2' },
+    { userDetails: null, expectedFragment: 'expected_sub=${[EXPECTED_SUB]}', id: 'task-3' },
+  ].forEach(({ userDetails, expectedFragment, id }) => {
+    it(`should render task description with ${expectedFragment}`, () => {
+      mockSessionStorage.getItem.and.returnValue(userDetails);
+      const task: Task = {
+        actions: [],
+        id,
+        case_id: '1620409659381330',
+        description: '[Next step](https://service.example/cases/123/event/ext%3Afoo?expected_sub=${[EXPECTED_SUB]})',
+      } as any;
+
+      component.task = task;
+      expect(component.task.description).toContain(expectedFragment);
+    });
   });
 
   it('should set isTaskUrgent based on the task priority', () => {

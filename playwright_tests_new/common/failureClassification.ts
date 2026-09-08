@@ -3,6 +3,7 @@ export type FailureType =
   | 'DOWNSTREAM_API_4XX'
   | 'SLOW_API_RESPONSE'
   | 'NETWORK_TIMEOUT'
+  | 'IDENTITY_SCHEDULING_TIMEOUT'
   | 'UI_ELEMENT_MISSING'
   | 'ASSERTION_FAILURE'
   | 'UNKNOWN';
@@ -98,6 +99,9 @@ export function classifyFailure(
   failedRequests: FailedRequest[],
   networkFailureSignal: boolean
 ): FailureType {
+  if (/IdentityLeaseTimeoutError|Identity scheduling timed out/i.test(error)) {
+    return 'IDENTITY_SCHEDULING_TIMEOUT';
+  }
   if (serverErrors.length > 0) {
     return 'DOWNSTREAM_API_5XX';
   }

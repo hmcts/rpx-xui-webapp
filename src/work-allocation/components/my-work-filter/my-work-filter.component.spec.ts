@@ -13,20 +13,20 @@ import { of } from 'rxjs';
 import * as fromAppStore from '../../../app/store';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
-import { TaskListFilterComponent } from './task-list-filter.component';
+import { MyWorkFilterComponent } from './my-work-filter.component';
 import { servicesMap } from '../../utils';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   standalone: false,
-  template: ` <exui-task-list-filter></exui-task-list-filter>`,
+  template: ` <exui-my-work-filter></exui-my-work-filter>`,
 })
 class WrapperComponent {
-  @ViewChild(TaskListFilterComponent, { static: true }) public appComponentRef: TaskListFilterComponent;
+  @ViewChild(MyWorkFilterComponent, { static: true }) public appComponentRef: MyWorkFilterComponent;
 }
 
-describe('TaskListFilterComponent', () => {
-  let component: TaskListFilterComponent;
+describe('MyWorkFilterComponent', () => {
+  let component: MyWorkFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   const typesOfWork = [
@@ -144,7 +144,7 @@ describe('TaskListFilterComponent', () => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     storeMock.pipe.and.returnValue(of(roleAssignmentInfo));
     TestBed.configureTestingModule({
-      declarations: [TaskListFilterComponent, WrapperComponent],
+      declarations: [MyWorkFilterComponent, WrapperComponent],
       imports: [CdkTableModule, ExuiCommonLibModule, RouterTestingModule, ExuiCommonLibModule, StoreModule],
       providers: [
         { provide: Store, useValue: mockStore },

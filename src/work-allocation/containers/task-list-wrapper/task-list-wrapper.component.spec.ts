@@ -173,13 +173,13 @@ describe('TaskListWrapperComponent', () => {
     });
 
     it('User should be Judicial', () => {
-      component.userRoleCategory = RoleCategory.JUDICIAL;
+      component.userRoleCategories = [RoleCategory.JUDICIAL];
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeTruthy();
     });
 
     it('User should not be Judicial', () => {
-      component.userRoleCategory = RoleCategory.LEGAL_OPERATIONS;
+      component.userRoleCategories = [RoleCategory.LEGAL_OPERATIONS];
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeFalsy();
     });
@@ -191,11 +191,11 @@ describe('TaskListWrapperComponent', () => {
         surname: 'Smith',
         email: 'john.smith@email.com',
         roles: [AppTestConstants.IA_JUDGE_ROLE],
-        roleCategory: RoleCategory.JUDICIAL,
+        roleCategories: [RoleCategory.JUDICIAL],
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
-      const roleCategory = component.getCurrentUserRoleCategory();
-      expect(roleCategory).toBe(RoleCategory.JUDICIAL);
+      const roleCategories = component.getCurrentUserRoleCategories();
+      expect(roleCategories).toContain(RoleCategory.JUDICIAL);
     });
 
     it('Non-judicial role category should be received', () => {
@@ -205,11 +205,11 @@ describe('TaskListWrapperComponent', () => {
         surname: 'Smith',
         email: 'john.smith@email.com',
         roles: [AppTestConstants.IA_JUDGE_ROLE],
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        roleCategories: [RoleCategory.LEGAL_OPERATIONS],
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
-      const roleCategory = component.getCurrentUserRoleCategory();
-      expect(roleCategory).not.toBe(RoleCategory.JUDICIAL);
+      const roleCategories = component.getCurrentUserRoleCategories();
+      expect(roleCategories).not.toContain(RoleCategory.JUDICIAL);
     });
   });
 

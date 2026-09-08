@@ -56,7 +56,7 @@ describe('Index', () => {
         },
       },
     ];
-    mockUserInfo = { roles: ['caseworker-test', 'caseworker-test2'], roleCategory: null };
+    mockUserInfo = { roles: ['caseworker-test', 'caseworker-test2'] };
     mockRoleAssignments = [
       {
         id: '1',
@@ -182,7 +182,7 @@ describe('Index', () => {
         },
       ];
       expect(setUserRoles(mockUserInfo, mockReqData, mockUserId)).to.deep.equal(mockUserRoles);
-      expect(mockUserInfo.roleCategory).to.equal('ADMIN');
+      expect(mockUserInfo.roleCategories).to.deep.equal(['ADMIN']);
       expect(mockUserInfo.roles).to.deep.equal(['caseworker-test', 'caseworker-test2', 'test role', 'test role 2']);
     });
   });
@@ -630,14 +630,14 @@ describe('Index', () => {
   });
 
   describe('extractRoleCategories', () => {
-    it('should return undefined when input is null', () => {
-      const result = extractRoleCategories(null);
-      expect(result).to.be.undefined;
+    it('should return empty set when input is empty set', () => {
+      const result = extractRoleCategories([]);
+      expect(result).to.deep.equal([]);
     });
 
-    it('should return undefined when input is undefined', () => {
-      const result = extractRoleCategories(undefined);
-      expect(result).to.be.undefined;
+    it('should return empty set when input is undefined', () => {
+      const result = extractRoleCategories([undefined]);
+      expect(result).to.deep.equal([]);
     });
 
     it('should return empty array when input is empty array', () => {

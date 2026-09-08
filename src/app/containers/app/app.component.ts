@@ -184,7 +184,19 @@ export class AppComponent implements OnInit, OnDestroy {
       // check if cookie selection has been made *after* user id is available
       this.cookieName = `hmcts-exui-cookies-${this.userId}-mc-accepted`;
       this.setCookieBannerVisibility();
+      // If the user has not previously accepted cookies, suppress Dynatrace
+      // until dtrum.enable() is called by the cookie banner on acceptance
+      if (!this.cookieService.checkCookie(this.cookieName)) {
+        this.disableDynatrace();
+      }
     }
+  }
+
+  private disableDynatrace(): void {
+    const dtrum = (window as any).dtrum;
+
+    dtrum?.disable?.();
+    dtrum?.disableSessionReplay?.();
   }
 
   public notifyAcceptance() {
@@ -193,6 +205,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public notifyRejection() {
+    // Disable Dynatrace monitoring
+    this.disableDynatrace();
     // AppInsights
     this.cookieService.deleteCookieByPartialMatch('ai_');
     // Google Analytics

@@ -1,4 +1,3 @@
-import { NextFunction } from 'express';
 import { createGuardrails, generate, ScureBase32Plugin } from 'otplib';
 
 import { getConfigValue } from '../configuration';
@@ -14,14 +13,8 @@ import {
   SYSTEM_USER_PASSWORD,
 } from '../configuration/references';
 import { http } from '../lib/http';
-import { EnhancedRequest } from '../lib/models';
 import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
-import {
-  handleNewUsersGet,
-  handlePostRoleAssignments,
-  handlePostRoleAssignmentsWithNewUsers,
-  handleUsersGet,
-} from './caseWorkerService';
+import { handleNewUsersGet, handlePostRoleAssignmentsWithNewUsers } from './caseWorkerService';
 import { FullUserDetailCache } from './fullUserDetailCache';
 import { baseCaseWorkerRefUrl, baseRoleAssignmentUrl } from './index';
 import { CachedCaseworker, LocationApi } from './interfaces/common';
@@ -52,24 +45,24 @@ function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
+export async function fetchUserData(): Promise<StaffUserDetails[]> {
   try {
     // cache needs refreshing if TTl expired or cache empty
     const shouldRefreshCache = hasTTLExpired() || !cachedUsers || cachedUsers.length === 0;
 
     if (shouldRefreshCache) {
       refreshRoles = true;
-      cachedUsers = await getOrRefreshCachedUsers(req);
+      cachedUsers = await getOrRefreshCachedUsers();
     } else {
       refreshRoles = false;
     }
     // always return cached users (even if error)
     return cachedUsers;
   } catch (error) {
-    if (cachedUsers) {
+    if (cachedUsers?.length) {
       return cachedUsers;
     }
-    next(error);
+    throw error;
   }
 }
 
@@ -92,25 +85,22 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
   }
 }
 
-export async function fetchRoleAssignments(
-  cachedUserData: StaffUserDetails[],
-  req: EnhancedRequest,
-  next: NextFunction
-): Promise<CachedCaseworker[]> {
+export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
   try {
     if (refreshRoles || !cachedUsersWithRoles) {
       // refreshRoles to determine whether roles require refreshing
       // cachedUsersWithRoles to ensure rerun if user restarts request early
-      cachedUsersWithRoles = await getOrRefreshCachedUsersWithRoles(cachedUserData, req);
+      cachedUsersWithRoles = await getOrRefreshCachedUsersWithRoles(cachedUserData);
     }
     return FullUserDetailCache.getAllUserDetails();
   } catch (error) {
-    if (FullUserDetailCache.getAllUserDetails()) {
-      return FullUserDetailCache.getAllUserDetails();
+    const fullUserDetails = FullUserDetailCache.getAllUserDetails();
+    if (fullUserDetails?.length) {
+      return fullUserDetails;
     }
-    next(error);
+    throw error;
   }
 }
 
@@ -132,7 +122,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
   }
 }
 
-export async function getOrRefreshCachedUsers(req?: EnhancedRequest): Promise<StaffUserDetails[]> {
+export async function getOrRefreshCachedUsers(): Promise<StaffUserDetails[]> {
   // first check redis cache, if not there then acquire lock and check again before refreshing from backend
   const redisUsers = await getCachedUsers().catch(() => null);
   if (redisUsers?.length) {
@@ -167,7 +157,7 @@ export async function getOrRefreshCachedUsers(req?: EnhancedRequest): Promise<St
       }
 
       // refresh cache from backend and set in redis, local cache as fallback
-      const freshUsers = await refreshUsersFromBackend(req);
+      const freshUsers = await refreshUsersFromBackend();
       await setCachedUsers(freshUsers).catch(() => undefined);
       return setLocalCachedUsers(freshUsers);
     } finally {
@@ -179,30 +169,25 @@ export async function getOrRefreshCachedUsers(req?: EnhancedRequest): Promise<St
   // if redis is unavailable, just get from backend without caching
   // should only happen on startup if redis is unavailable, as cache will be used until TTL expires even if redis goes down after
   // note: also for local environments where redis is not used
-  return setLocalCachedUsers(await refreshUsersFromBackend(req));
+  return setLocalCachedUsers(await refreshUsersFromBackend());
 }
 
 // actually make backend calls to get user data
-export async function refreshUsersFromBackend(req?: EnhancedRequest): Promise<StaffUserDetails[]> {
+export async function refreshUsersFromBackend(): Promise<StaffUserDetails[]> {
   const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
   const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-  const userResponse = req ? await handleUsersGet(getUsersPath, req) : await handleNewUsersGet(getUsersPath, getRequestHeaders());
-
+  const userResponse = await handleNewUsersGet(getUsersPath, await getSystemRequestHeaders());
   return getUniqueUsersFromResponse(userResponse);
 }
 
 // reset local cache
 export function setLocalCachedUsers(users: StaffUserDetails[]): StaffUserDetails[] {
   cachedUsers = users;
-  console.log(`Setting local cached users with ${users.length} users`);
   return cachedUsers;
 }
 
 // see above getOrRefreshCachedUsers
-export async function getOrRefreshCachedUsersWithRoles(
-  cachedUserData: StaffUserDetails[],
-  req?: EnhancedRequest
-): Promise<CachedCaseworker[]> {
+export async function getOrRefreshCachedUsersWithRoles(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
   const redisUsersWithRoles = await getCachedUsersWithRoles().catch(() => null);
   if (!refreshRoles && redisUsersWithRoles?.length) {
     return setLocalCachedUsersWithRoles(redisUsersWithRoles);
@@ -228,7 +213,7 @@ export async function getOrRefreshCachedUsersWithRoles(
         return setLocalCachedUsersWithRoles(usersWithRolesAfterLock);
       }
 
-      const freshUsersWithRoles = await refreshUsersWithRolesFromBackend(cachedUserData, req);
+      const freshUsersWithRoles = await refreshUsersWithRolesFromBackend(cachedUserData);
       await setCachedUsersWithRoles(freshUsersWithRoles).catch(() => undefined);
       return setLocalCachedUsersWithRoles(freshUsersWithRoles);
     } finally {
@@ -236,32 +221,25 @@ export async function getOrRefreshCachedUsersWithRoles(
     }
   }
 
-  return setLocalCachedUsersWithRoles(await refreshUsersWithRolesFromBackend(cachedUserData, req));
+  return setLocalCachedUsersWithRoles(await refreshUsersWithRolesFromBackend(cachedUserData));
 }
 
-export async function refreshUsersWithRolesFromBackend(
-  cachedUserData: StaffUserDetails[],
-  req?: EnhancedRequest
-): Promise<CachedCaseworker[]> {
+export async function refreshUsersWithRolesFromBackend(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const jurisdictions = getStaffSupportedJurisdictionsList();
   const payload = prepareRoleApiRequest(jurisdictions);
-  const roleAssignments = req
-    ? (await handlePostRoleAssignments(roleApiPath, payload, req)).data.roleAssignmentResponse
-    : (
-        await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, {
-          ...getRequestHeaders(),
-          pageNumber: 0,
-          size: 10000,
-        })
-      ).data.roleAssignmentResponse;
-
+  const roleAssignments = (
+    await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, {
+      ...(await getSystemRequestHeaders()),
+      pageNumber: 0,
+      size: 100000,
+    })
+  ).data.roleAssignmentResponse;
   return mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
 }
 
 export function setLocalCachedUsersWithRoles(usersWithRoles: CachedCaseworker[]): CachedCaseworker[] {
   cachedUsersWithRoles = usersWithRoles;
-  console.log(`Setting local cached users with roles with ${usersWithRoles.length} users`);
   FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
   return cachedUsersWithRoles;
 }
@@ -319,6 +297,20 @@ export async function getAuthTokens(): Promise<void> {
   } catch {
     console.log('Cannot get auth tokens');
   }
+}
+
+// EXUI-2645 - The getUsersByIdamIds can be used within the API layer task searches
+// If this happens without caching then we need to get the auth tokens
+export async function getSystemRequestHeaders(): Promise<any> {
+  if (!initialServiceAuthToken || !initialAuthToken) {
+    await getAuthTokens();
+  }
+
+  if (!initialServiceAuthToken || !initialAuthToken) {
+    throw new Error('Unable to generate system auth headers for work allocation cache refresh');
+  }
+
+  return getRequestHeaders();
 }
 
 export function hasTTLExpired(): boolean {

@@ -104,6 +104,12 @@ describe('uiConfigRouter', () => {
           nocBaseUrl: 'http://pcs-api.service.core-compute.internal',
         },
       });
+      getConfigValueStub.withArgs('decentralisedServiceMap').returns({
+        PCS: {
+          id: 'PCS',
+          baseUrl: 'http://pcs-api.service.core-compute.internal',
+        },
+      });
       getConfigValueStub.withArgs('services.waWorkflowApi').returns('https://wa.workflow.api');
       getConfigValueStub.withArgs('services.judicialBookingApi').returns('https://judicial.booking.api');
 
@@ -129,6 +135,12 @@ describe('uiConfigRouter', () => {
           PCS: {
             webUrl: 'https://pcs-frontend.service.gov.uk',
             nocBaseUrl: 'http://pcs-api.service.core-compute.internal',
+          },
+        },
+        decentralisedServiceMap: {
+          PCS: {
+            id: 'PCS',
+            baseUrl: 'http://pcs-api.service.core-compute.internal',
           },
         },
         waWorkflowApi: 'https://wa.workflow.api',
@@ -162,6 +174,7 @@ describe('uiConfigRouter', () => {
       expect(responseData).to.have.property('judicialBookingApi', undefined);
       expect(responseData).to.have.property('headerConfig', mockMenuConfig);
       expect(responseData).to.have.property('hearingJurisdictionConfig', mockHearingConfig);
+      expect(responseData).to.have.property('decentralisedServiceMap', undefined);
     });
 
     it('should handle errors in setupMenuConfig', async () => {

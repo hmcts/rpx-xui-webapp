@@ -244,30 +244,16 @@ export function successInterceptor(response) {
   const status = response.status;
 
   logger.info(
-    `${buildLogPrefix(logContext, { durationMs: response.duration, event: 'response', status })} Success on ${response.config.method.toUpperCase()} to ${url}`
+    `${JSON.stringify(response)}, ${buildLogPrefix(logContext, { durationMs: response.duration, event: 'response', status })} Success on ${response.config.method.toUpperCase()} to ${url}`
   );
-  const telemetryRequest = {
+  logger.trackRequest({
     duration: response.duration,
     name: `Service ${response.config.method.toUpperCase()} call`,
     properties: buildTelemetryProperties(logContext),
     resultCode: toTelemetryResultCode(status),
     success: true,
     url: response.config.url,
-  };
-
-  logger.info(
-    `AppInsights outbound response: ${JSON.stringify({
-      duration: response.duration,
-      method: response.config.method,
-      status: response.status,
-      statusText: response.statusText,
-      telemetryRequest,
-      url: response.config.url,
-      response: response,
-    })}`
-  );
-
-  logger.trackRequest(telemetryRequest);
+  });
   return response;
 }
 
@@ -296,29 +282,15 @@ export function errorInterceptor(error) {
     ${exceptionFormatter(data, exceptionOptions)}`);
   }
 
-  const telemetryRequest = {
+  
+  logger.trackRequest({
     duration: error.duration,
     name: `Service ${error.config.method.toUpperCase()} call`,
     properties: buildTelemetryProperties(logContext),
     resultCode: toTelemetryResultCode(status),
     success: false,
     url: error.config.url,
-  };
-
-  logger.info(
-    `AppInsights outbound error response: ${JSON.stringify({
-      duration: error.duration,
-      errorStatus: error.status,
-      method: error.config.method,
-      responseStatus: error.response?.status,
-      status,
-      telemetryRequest,
-      url: error.config.url,
-      response: error.response,
-    })}`
-  );
-
-  logger.trackRequest(telemetryRequest);
+  });
 
   return Promise.reject(error.response);
 }

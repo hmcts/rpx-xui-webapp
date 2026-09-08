@@ -282,7 +282,6 @@ export function errorInterceptor(error) {
     ${exceptionFormatter(data, exceptionOptions)}`);
   }
 
-  
   logger.trackRequest({
     duration: error.duration,
     name: `Service ${error.config.method.toUpperCase()} call`,

@@ -180,8 +180,15 @@ export async function expectHearingsRowsHiddenBeforeResponse(page: Page): Promis
   await new HearingsTabPage(page).expectNoViewDetailsButtons(HEARINGS_ROWS_HIDDEN_TIMEOUT_MS);
 }
 
-export async function continueHearingsFlow(page: Page): Promise<void> {
-  await new HearingsTabPage(page).continueFlow();
+export async function continueHearingsFlow(page: Page, expectedUrl?: RegExp): Promise<void> {
+  const hearingsTabPage = new HearingsTabPage(page);
+
+  if (!expectedUrl) {
+    await hearingsTabPage.continueFlow();
+    return;
+  }
+
+  await Promise.all([page.waitForURL(expectedUrl, { timeout: 60_000 }), hearingsTabPage.continueFlow()]);
 }
 
 export async function goBackInHearingsFlow(page: Page): Promise<void> {

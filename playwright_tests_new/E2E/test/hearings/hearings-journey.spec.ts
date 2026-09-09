@@ -136,11 +136,10 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-additional-instructions$/);
       await expect(page.getByRole('heading', { name: /Enter any additional instructions for the hearing/i })).toBeVisible();
       await hearingsJourneyPage.additionalInstructions.fill(scenario.additionalInstructions);
-      await continueHearingsFlow(page);
+      await continueHearingsFlow(page, /\/hearings\/request\/hearing-create-edit-summary$/);
     });
 
     await test.step('CYA page Hearings ', async () => {
-      await expect(page).toHaveURL(/\/hearings\/request\/hearing-create-edit-summary$/);
       await expect(hearingsJourneyPage.submitRequestButton).toBeVisible();
 
       const additionalFacilitiesValue = hearingJourneyModel.get(

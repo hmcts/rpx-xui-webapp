@@ -272,6 +272,7 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
 }
 
 export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  console.log('***** getTasksByCaseIdAndEventId called with params:', req.params);
   const caseId = getRouteParam(req.params.caseId);
   const eventId = getRouteParam(req.params.eventId);
   const caseType = getRouteParam(req.params.caseType);
@@ -285,8 +286,10 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
     const { status, data } = jurisdictions.includes(jurisdiction)
       ? await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
       : { status: 200, data: [] };
+    console.log('Work allocation search-for-completable response:', { status, data });
     return res.status(status).send(data);
   } catch (e) {
+    console.log(`In error calling search for completable task of eventId and caseId: ${eventId} ${caseId} ${e.toString()}`);
     trackTrace(
       `Error calling search for completable task of eventId and caseId: ${eventId} ${caseId} ${e.toString()}`,
       traceProps

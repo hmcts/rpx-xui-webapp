@@ -16,7 +16,7 @@ import {
   partySubChannelsRefData,
 } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { ACTION, HearingResult, PartyType } from '../../../models/hearings.enum';
+import { ACTION, HearingResult, HMCStatus, PartyType } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
@@ -177,7 +177,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
   });
 
   it('should hide confirm buttons when redirected from completed or adjourned hearing details', () => {
-    component.hideConfirmButtons = true;
+    component.isFinalisedEditMode = true;
     setMatchingIndividualParties();
     fixture.detectChanges();
 
@@ -214,6 +214,32 @@ describe('HearingActualsAddEditSummaryComponent', () => {
 
     component.onBack();
     expect(historyBackSpy).toHaveBeenCalled();
+  });
+
+  [
+    { status: HMCStatus.CANCELLED, route: 'hearing-cancelled-summary' },
+    { status: HMCStatus.COMPLETED, route: 'hearing-completed-summary' },
+    { status: HMCStatus.ADJOURNED, route: 'hearing-adjourned-summary' },
+  ].forEach(({ status, route }) => {
+    it(`should return to the ${status} summary from the finalised edit journey`, () => {
+      component.isFinalisedEditMode = true;
+      component.hearingActualsMainModel = { ...hearingActualsMainModel, hmcStatus: status };
+      component.hearingActualsCaseRef = '1111222233334444';
+      component.id = 'h100001';
+      const navigateSpy = spyOn(component.router, 'navigate');
+      const historyBackSpy = spyOn(component.location, 'back');
+
+      component.onBack();
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', route, 'h100001'], {
+        state: {
+          caseRef: '1111222233334444',
+          returnToCaseHearings: true,
+          showEditButton: true,
+        },
+      });
+      expect(historyBackSpy).not.toHaveBeenCalled();
+    });
   });
 
   it('should return correct hearing type from the hearing types', () => {

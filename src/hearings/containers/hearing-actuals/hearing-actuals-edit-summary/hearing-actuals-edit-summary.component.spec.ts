@@ -184,6 +184,24 @@ describe('HearingActualSummaryComponent', () => {
     );
   });
 
+  it('should include the draft when submitting a finalised hearing edit', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.id = '1111222233334444';
+    component.isFinalisedEditMode = true;
+    component.hearingActualsMainModel = hearingActualsMainModel;
+    component.hearingActualsCaseRef = '1234';
+
+    component.onSubmitHearingDetails();
+
+    expect(storeDispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.SubmitHearingActuals({
+        id: component.id,
+        caseRef: '1234',
+        hearingActuals: hearingActualsMainModel.hearingActuals,
+      })
+    );
+  });
+
   it('should return only one date if only one hearing date', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const actualHearingDays = [mainModel.hearingActuals.actualHearingDays[0]];
@@ -238,6 +256,7 @@ describe('HearingActualSummaryComponent', () => {
     const router = TestBed.inject(Router);
     const backSpy = spyOn((component as any).location, 'back').and.stub();
     const navSpy = spyOn(router, 'navigate').and.stub();
+    const dispatchSpy = spyOn(store, 'dispatch');
 
     // same-origin referrer
     Object.defineProperty(document, 'referrer', {
@@ -252,6 +271,7 @@ describe('HearingActualSummaryComponent', () => {
 
     expect(backSpy).toHaveBeenCalled();
     expect(navSpy).not.toHaveBeenCalled();
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.ResetHearingActualsLastError());
 
     // clean up referrer for other tests
     Object.defineProperty(document, 'referrer', { value: '', configurable: true });

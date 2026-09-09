@@ -141,7 +141,7 @@
                     <dd class="govuk-summary-list__value"></dd>
                     <dd class="govuk-summary-list__actions">
                       <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                        <ng-container *ngIf="!hideConfirmButtons">
+                        <ng-container *ngIf="!isFinalisedEditMode">
                           <button
                             type="button"
                             (click)="confirmActualHearingTimeForDay(actualHearingDay)"
@@ -206,7 +206,7 @@
                     <ng-container *ngIf="!actualHearingDay.notRequired">
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <ng-container *ngIf="!hideConfirmButtons">
+                          <ng-container *ngIf="!isFinalisedEditMode">
                             <button
                               type="button"
                               (click)="confirmActualPartiesForDay(actualHearingDay)"

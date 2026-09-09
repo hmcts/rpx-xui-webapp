@@ -25,7 +25,8 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     const navigationState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-    this.retainHearingRequestOnExit = !!navigationState?.hideConfirmButtons;
+    this.retainHearingRequestOnExit = !!navigationState?.isFinalisedEditMode;
+    this.store.dispatch(new hearingActualsActions.SetHearingActualsEditMode(this.retainHearingRequestOnExit));
 
     this.sub = this.route.params
       .pipe(withLatestFrom(this.store.pipe(select(fromHearingStore.getHearingValuesCaseInfo))))

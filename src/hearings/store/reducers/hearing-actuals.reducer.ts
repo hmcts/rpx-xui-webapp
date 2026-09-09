@@ -1,8 +1,10 @@
 import { HearingActualsStateData } from '../../models/hearingActualsStateData.model';
+import { HMCStatus } from '../../models/hearings.enum';
 import * as fromActions from '../actions';
 
 export const initialHearingActualsState: HearingActualsStateData = {
   hearingActualsMainModel: null,
+  isFinalisedEditMode: false,
   lastError: null,
 };
 
@@ -16,6 +18,12 @@ export function hearingActualsReducer(
         ...initialHearingActualsState,
       };
     }
+    case fromActions.SET_HEARING_ACTUALS_EDIT_MODE: {
+      return {
+        ...currentState,
+        isFinalisedEditMode: action.isFinalisedEditMode,
+      };
+    }
     case fromActions.GET_HEARING_ACTUALS: {
       return {
         ...currentState,
@@ -24,9 +32,11 @@ export function hearingActualsReducer(
       };
     }
     case fromActions.GET_HEARING_ACTUALS_SUCCESS: {
+      const finalisedStatuses = [HMCStatus.CANCELLED, HMCStatus.COMPLETED, HMCStatus.ADJOURNED];
       return {
         ...currentState,
         hearingActualsMainModel: action.payload,
+        isFinalisedEditMode: !!currentState.isFinalisedEditMode && finalisedStatuses.includes(action.payload?.hmcStatus),
       };
     }
     case fromActions.SAVE_HEARING_ACTUALS_PLANNED_DAYS: {
@@ -51,6 +61,12 @@ export function hearingActualsReducer(
       };
     }
     case fromActions.SUBMIT_HEARING_ACTUALS: {
+      if (currentState.isFinalisedEditMode) {
+        return {
+          ...currentState,
+          lastError: null,
+        };
+      }
       return {
         ...initialHearingActualsState,
         lastError: null,
@@ -63,7 +79,7 @@ export function hearingActualsReducer(
     }
     case fromActions.SUBMIT_HEARING_ACTUALS_FAILURE: {
       return {
-        ...initialHearingActualsState,
+        ...currentState,
         lastError: action.payload,
       };
     }

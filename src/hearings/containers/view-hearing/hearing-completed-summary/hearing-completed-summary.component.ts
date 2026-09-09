@@ -68,7 +68,11 @@ export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
 
   public onEdit(): void {
     this.router.navigate(['/', 'hearings', 'actuals', this.hearingId, 'hearing-actual-add-edit-summary'], {
-      state: { caseId: this.caseRef || this.hearingActualsMainModel?.caseDetails?.caseRef, hideConfirmButtons: true },
+      state: {
+        caseId: this.caseRef || this.hearingActualsMainModel?.caseDetails?.caseRef,
+        hideConfirmButtons: true,
+        isFinalisedEditMode: true,
+      },
     });
   }
 }

@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -51,6 +51,7 @@ describe('RequestHearingComponent', () => {
 
     component.ngOnInit();
 
+    expect(dispatchSpy).toHaveBeenCalledWith(new hearingActualsActions.SetHearingActualsEditMode(false));
     expect(dispatchSpy).toHaveBeenCalledWith(
       new hearingRequestActions.LoadHearingRequest({
         hearingID: 'h100001',
@@ -83,6 +84,17 @@ describe('RequestHearingComponent', () => {
 
     expect(dispatchSpy).toHaveBeenCalledWith(new hearingActualsActions.ResetHearingActuals());
     expect(dispatchSpy).not.toHaveBeenCalledWith(new hearingRequestActions.ResetHearingRequest());
+  });
+
+  it('should enable deferred updates for a finalised hearing edit journey', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+    spyOn(TestBed.inject(Router), 'getCurrentNavigation').and.returnValue({
+      extras: { state: { isFinalisedEditMode: true } },
+    } as any);
+
+    component.ngOnInit();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(new hearingActualsActions.SetHearingActualsEditMode(true));
   });
 
   afterEach(() => {

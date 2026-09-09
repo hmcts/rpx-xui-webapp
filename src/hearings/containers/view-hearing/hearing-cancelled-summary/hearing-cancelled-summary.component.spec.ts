@@ -117,7 +117,7 @@ describe('HearingCancelledSummaryComponent', () => {
     component.onEdit();
 
     expect(router.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100008', 'hearing-actual-add-edit-summary'], {
-      state: { caseId: '1111222233334444', hideConfirmButtons: true },
+      state: { caseId: '1111222233334444', hideConfirmButtons: true, isFinalisedEditMode: true },
     });
   });
 

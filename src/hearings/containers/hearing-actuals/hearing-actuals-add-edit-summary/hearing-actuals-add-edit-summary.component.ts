@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
+import { HearingActualAddEditSummaryEnum, HearingResult, HMCStatus } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
@@ -18,9 +18,8 @@ import { SessionStorageService } from 'src/app/services';
   styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],
   providers: [DatePipe],
 })
-export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent implements OnInit {
+export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   public successBanner = false;
-  public hideConfirmButtons = false;
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -33,12 +32,6 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   ) {
     super(hearingStore, hearingsService, route, router, ccdDatePipe);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
-  }
-
-  public ngOnInit(): void {
-    const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-    this.hideConfirmButtons = !!navState?.hideConfirmButtons;
-    super.ngOnInit();
   }
 
   public onSubmitHearingDetails(): void {
@@ -160,7 +153,34 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public onBack(): void {
+    const summaryRoute = this.getFinalisedHearingSummaryRoute();
+    if (summaryRoute) {
+      this.router.navigate(['/', 'hearings', 'view', summaryRoute, this.id], {
+        state: {
+          caseRef: this.hearingActualsCaseRef,
+          returnToCaseHearings: true,
+          showEditButton: true,
+        },
+      });
+      return;
+    }
     this.location.back();
+  }
+
+  private getFinalisedHearingSummaryRoute(): string | null {
+    if (!this.isFinalisedEditMode) {
+      return null;
+    }
+    switch (this.hearingActualsMainModel?.hmcStatus) {
+      case HMCStatus.CANCELLED:
+        return 'hearing-cancelled-summary';
+      case HMCStatus.COMPLETED:
+        return 'hearing-completed-summary';
+      case HMCStatus.ADJOURNED:
+        return 'hearing-adjourned-summary';
+      default:
+        return null;
+    }
   }
 
   public haveParticipantsBeenAdded(hearingDay: ActualHearingDayModel): boolean {

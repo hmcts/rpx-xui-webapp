@@ -216,6 +216,8 @@ function buildTelemetryProperties(context: LogContext): TelemetryProperties {
 }
 
 function toTelemetryResultCode(status?: number): string {
+  const logger = log4jui.getLogger('outgoing');
+  logger.info(`Converting status ${status} to telemetry result code. Type: ${typeof status}`);
   return typeof status === 'number' ? String(status) : '0';
 }
 

@@ -81,7 +81,10 @@ export async function createApp() {
     app.use(helmet.noSniff());
     app.use(helmet.frameguard({ action: 'deny' }));
     app.use(helmet.referrerPolicy({ policy: ['origin'] }));
-    app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
+    app.use(helmet({
+      crossOriginResourcePolicy: { policy: 'same-site' },
+      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }
+    }));
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));
     const cspMiddleware = csp({

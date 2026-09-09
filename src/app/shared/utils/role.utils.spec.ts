@@ -17,5 +17,3 @@ describe('role utils', () => {
     expect(getUserRolesExcludingSpecificAccessApprover(null as unknown as string[])).toEqual([]);
   });
 });
-
-

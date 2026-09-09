@@ -584,7 +584,7 @@ withNightlyPipeline(type, product, component) {
 
     afterAlways('fortify-scan') {
         recordPlaywrightLoadEvent('Fortify artifact archive', 'start')
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test/java/Fortify Scan/**/*'
+        steps.archiveArtifacts allowEmptyArchive: false, artifacts: 'test/java/Fortify Scan/**/*'
         recordPlaywrightLoadEvent('Fortify artifact archive', 'finish')
     }
 

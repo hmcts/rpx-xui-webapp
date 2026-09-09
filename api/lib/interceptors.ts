@@ -244,7 +244,7 @@ export function successInterceptor(response) {
   const status = response.status;
 
   logger.info(
-    `${JSON.stringify(response)}, ${buildLogPrefix(logContext, { durationMs: response.duration, event: 'response', status })} Success on ${response.config.method.toUpperCase()} to ${url}`
+    `${buildLogPrefix(logContext, { durationMs: response.duration, event: 'response', status })} Success on ${response.config.method.toUpperCase()} to ${url}`
   );
   logger.trackRequest({
     duration: response.duration,

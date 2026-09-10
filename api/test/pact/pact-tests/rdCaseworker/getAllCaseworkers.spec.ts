@@ -1,29 +1,29 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getCaseworkerRefDataAPIOverrides } from '../utils/configOverride';
-import { requireReloaded } from '../utils/moduleUtil';
+import { RealStaffRefDataAPI } from '../../../../staff-ref-data/real-staff-ref-data-api';
 
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+const { MatchersV3 } = require('@pact-foundation/pact');
+const { like } = MatchersV3;
 const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
 const MockApp = require('../../pact-mocks/app');
 
-xdescribe('Caseworker ref data api, get all caseworkers', () => {
+describe('Caseworker ref data api, get all caseworkers', () => {
   const REQUEST_BODY = {
-    userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')],
+    userIds: [like('004b7164-0943-41b5-95fc-39794af4a9fe'), like('004b7164-0943-41b5-95fc-39794af4a9fe')],
   };
 
-  const baseLocations = [{ location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }];
+  const baseLocations = [{ location_id: like(1), location: like('National'), is_primary: like(true) }];
   const RESPONSE_BODY = [
     {
-      email_id: somethingLike('test_person@test.gov.uk'),
-      first_name: somethingLike('testfn'),
-      last_name: somethingLike('testln'),
-      id: somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
+      email_id: like('test_person@test.gov.uk'),
+      first_name: like('testfn'),
+      last_name: like('testln'),
+      id: like('004b7164-0943-41b5-95fc-39794af4a9fe'),
       base_location: baseLocations,
     },
   ];
@@ -85,20 +85,15 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getCaseworkerRefDataAPIOverrides(mockServer.url);
         configValues['services.role_assignment.roleApi'] = 'http://localhost:9000';
-
         configValues.waSupportedJurisdictions = 'IA';
-        sandbox.stub(config, 'get').callsFake((prop) => {
-          return configValues[prop];
-        });
-
-        const { getAllCaseWorkers } = requireReloaded('../../../../workAllocation/index');
-
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop: string) => configValues[prop]);
         const req = mockReq({
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json',
           },
+          body: { userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9fe'] },
         });
         let returnedResponse = null;
         const response = mockRes();
@@ -107,7 +102,7 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
         };
 
         try {
-          await getAllCaseWorkers(req, response, next);
+          await new RealStaffRefDataAPI().fetchUsersById(req, response, next);
 
           assertResponses(returnedResponse);
         } catch (err) {
@@ -120,12 +115,13 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
 });
 
 function assertResponses(dto: any) {
-  console.log(JSON.stringify(dto));
-  expect(dto[0].email).to.be.equal('test_person@test.gov.uk');
-  expect(dto[0].firstName).to.be.equal('testfn');
-  expect(dto[0].lastName).to.be.equal('testln');
-  expect(dto[0].roleCategory).to.be.equal('case-worker');
-  expect(dto[0].idamId).to.be.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
-  expect(dto[0].location.id).to.be.equal(1);
-  expect(dto[0].location.locationName).to.be.equal('National');
+  expect(dto).to.be.an('array').with.length(1);
+  expect(dto[0].email_id).to.equal('test_person@test.gov.uk');
+  expect(dto[0].first_name).to.equal('testfn');
+  expect(dto[0].last_name).to.equal('testln');
+  expect(dto[0].id).to.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
+  expect(dto[0].base_location).to.be.an('array').with.length(1);
+  expect(dto[0].base_location[0].location_id).to.equal(1);
+  expect(dto[0].base_location[0].location).to.equal('National');
+  expect(dto[0].base_location[0].is_primary).to.equal(true);
 }

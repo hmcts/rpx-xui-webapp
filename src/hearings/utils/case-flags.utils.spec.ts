@@ -133,6 +133,58 @@ describe('CaseFlagsUtils', () => {
     expect(caseFlagGroup.length).toBe(3);
   });
 
+  it('should retain party and case flags when they share the same party name', () => {
+    const flags: PartyFlagsModel[] = [
+      {
+        partyId: 'P1',
+        partyName: 'Jane Smith vs DWP',
+        flagId: 'PF0002',
+        flagDescription: 'Vulnerable user',
+        flagStatus: 'ACTIVE',
+      },
+      {
+        partyId: 'P1',
+        partyName: 'Jane Smith vs DWP',
+        flagId: 'CF0002',
+        flagDescription: 'Complex Case',
+        flagStatus: 'ACTIVE',
+      },
+    ];
+
+    const caseFlagGroup = CaseFlagsUtils.displayCaseFlagsGroup(flags, caseFlagsRefData, CaseFlagType.NON_REASONABLE_ADJUSTMENT);
+
+    expect(caseFlagGroup.length).toBe(1);
+    expect(caseFlagGroup[0].partyFlags.map((flag) => flag.flagId)).toEqual(['PF0002', 'CF0002']);
+  });
+
+  it('should include non-reasonable-adjustment flags outside the party and case reference paths', () => {
+    const flags: PartyFlagsModel[] = [
+      {
+        partyId: 'P1',
+        partyName: 'Jane Smith',
+        flagId: 'OT0002',
+        flagDescription: 'Other hearing flag',
+        flagStatus: 'ACTIVE',
+      },
+    ];
+    const referenceData: CaseFlagReferenceModel[] = [
+      {
+        name: 'Other hearing flag',
+        hearingRelevant: true,
+        flagComment: true,
+        flagCode: 'OT0002',
+        isParent: false,
+        Path: ['Other'],
+        childFlags: [],
+      },
+    ];
+
+    const caseFlagGroup = CaseFlagsUtils.displayCaseFlagsGroup(flags, referenceData, CaseFlagType.NON_REASONABLE_ADJUSTMENT);
+
+    expect(caseFlagGroup.length).toBe(1);
+    expect(caseFlagGroup[0].partyFlags[0].flagId).toBe('OT0002');
+  });
+
   describe('Reasonable adjustments', () => {
     const partiesInHMC: PartyDetailsModel[] = [
       {

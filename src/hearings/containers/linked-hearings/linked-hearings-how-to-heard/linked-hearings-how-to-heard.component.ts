@@ -94,6 +94,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       this.fb.group({
         caseReference: [linkCase.caseRef],
         caseName: [linkCase.caseName],
+        hearingId: [linkCase.caseHearings?.[0]?.hearingID || ''],
         hearingStage: [linkCase.caseHearings?.[0]?.hearingType || ''],
         position: [this.getPosition(linkCase.caseHearings?.[0]), this.validators.mandatory('')],
       })

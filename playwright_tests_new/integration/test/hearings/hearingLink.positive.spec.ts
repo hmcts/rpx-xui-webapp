@@ -31,7 +31,7 @@ const linkedCasesWithHearingsForOrdering = [
     reasonsForLink: ['Linked for a hearing'],
     caseHearings: [
       {
-        hearingID: 'h100001',
+        hearingID: LISTED_HEARING_SCENARIO.hearingId,
         hearingType: 'Substantive',
         hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
         lastResponseReceivedDateTime: '',
@@ -231,8 +231,7 @@ test.describe('Hearings linked journeys integration', { tag: ['@integration', '@
     await expect(tableBody).not.toContainText('Not child');
   });
 
-  test.skip('shows hearing id on linked hearings pages', async ({ page, caseDetailsPage, hearingsTabPage }) => {
-    // TODO: Re-enable once the hearing ID column is delivered on the manage link and hearing link pages.
+  test('shows hearing id on linked hearings pages', async ({ page, caseDetailsPage, hearingsTabPage }) => {
     await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
     await expect(page.getByRole('columnheader', { name: /hearing id/i })).toBeVisible();
     await expect(page.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId })).toBeVisible();

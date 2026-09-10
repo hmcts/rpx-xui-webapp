@@ -14,6 +14,8 @@ import { PartyType } from 'api/hearings/models/hearings.enum';
 type DateOption = 'noDate' | 'specificDate' | 'dateRange';
 
 export class HearingsUtils {
+  // Code for hearing link reason
+  public static readonly HEARING_LINK_REASON_CODE = 'CLRC017';
   public static readonly DISCREPANCY_MESSAGE =
     'The Party IDs and/or case information for this request appear mismatched, please reload and start the request again.';
 

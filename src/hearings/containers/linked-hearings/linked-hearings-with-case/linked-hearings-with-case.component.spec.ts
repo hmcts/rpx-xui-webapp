@@ -81,7 +81,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
     {
       caseRef: '4652724902696213',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Linked for a hearing'],
+      reasonsForLink: ['CLRC017'],
       caseHearings: [
         {
           hearingID: 'h100010',
@@ -109,14 +109,14 @@ describe('LinkedHearingsWithCaseComponent', () => {
     {
       caseRef: '8254902572336147',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+      reasonsForLink: ['CLRC017', 'Familial', 'Guardian', 'Linked for a hearing'],
     },
   ];
   const linkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
     {
       caseRef: '4652724902696213',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Linked for a hearing'],
+      reasonsForLink: ['CLRC017'],
       caseHearings: [
         {
           hearingID: 'h100010',
@@ -144,7 +144,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
     {
       caseRef: '8254902572336147',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+      reasonsForLink: ['CLRC017', 'Familial', 'Guardian', 'Linked for a hearing'],
       caseHearings: [
         {
           hearingID: 'h1000002',
@@ -193,7 +193,18 @@ describe('LinkedHearingsWithCaseComponent', () => {
         RouterTestingModule.withRoutes([]),
       ],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({
+          initialState: {
+            ...initialState,
+            hearings: {
+              ...initialState.hearings,
+              hearingLinks: {
+                ...initialState.hearings.hearingLinks,
+                serviceLinkedCasesWithHearings: linkedCasesWithHearings,
+              },
+            },
+          },
+        }),
         { provide: HearingsService, useValue: hearingsService },
         { provide: Router, useValue: mockRouter },
         {
@@ -302,6 +313,9 @@ describe('LinkedHearingsWithCaseComponent', () => {
   });
 
   it('should check update linked cases', () => {
+    component.linkedCases = linkedCasesWithHearings;
+    component.initForm();
+
     component.updateLinkedCase(0, 0);
     expect(component.getHearingsFormValue(0).controls[0].get('isSelected').value).toBe(true);
   });
@@ -390,8 +404,31 @@ describe('LinkedHearingsWithCaseComponent', () => {
   });
 
   it('should check update linked cases when hearing position is mentioned', () => {
+    component.linkedCases = linkedCasesWithHearings;
+    component.initForm();
+
     component.updateLinkedCase(0, 0);
     expect(component.getHearingsFormValue(0, 0).controls[0].get('isSelected').value).toBe(true);
+  });
+
+  it('should pre-select the current hearing without requiring user selection', () => {
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h1000002';
+    component.linkedCases = linkedCasesWithHearings;
+
+    component.initForm();
+
+    expect(component.isCurrentHearing('8254902572336147', 'h1000002')).toBe(true);
+    expect(component.getHearingsFormValue(1).controls[0].get('isSelected').value).toBe(true);
+  });
+
+  it('should only add cases with CLRC017 to the cases form array', () => {
+    component.linkedCases = linkedCasesWithHearings;
+
+    const formArray = component.getCasesFormArray;
+
+    expect(formArray.length).toBe(2);
+    expect(formArray.controls.map((control) => control.get('caseRef').value)).toEqual(['4652724902696213', '8254902572336147']);
   });
 
   afterEach(() => {

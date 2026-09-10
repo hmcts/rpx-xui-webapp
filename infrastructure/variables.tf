@@ -48,8 +48,8 @@ variable "redis_capacity" {
 }
 
 variable "managed_redis_sku_name" {
-  default     = "Balanced_B1"
-  description = "The SKU to use for Azure Managed Redis. Balanced_B1 matches the legacy Basic C1 cache used by environments without a tfvars override."
+  default     = "Balanced_B0"
+  description = "The SKU to use for Azure Managed Redis."
   type        = string
 }
 

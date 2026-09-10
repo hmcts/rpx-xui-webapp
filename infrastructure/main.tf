@@ -34,11 +34,14 @@ resource "azurerm_key_vault_secret" "redis6_connection_string" {
 }
 
 resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
-  for_each = toset(var.env == "demo" ? [var.env] : [])
-
   name         = "${var.component}-managed-redis-connection-string"
-  value        = "redis://ignore:${urlencode(module.managed_redis[each.key].primary_access_key)}@${module.managed_redis[each.key].hostname}:${module.managed_redis[each.key].port}?tls=true"
+  value        = "rediss://:${urlencode(module.managed_redis.primary_access_key)}@${module.managed_redis.hostname}:${module.managed_redis.port}"
   key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+moved {
+  from = azurerm_key_vault_secret.managed_redis_connection_string["demo"]
+  to   = azurerm_key_vault_secret.managed_redis_connection_string
 }
 
 module "redis6-cache" {
@@ -58,11 +61,9 @@ module "redis6-cache" {
   sku_name                      = var.redis_sku_name
 }
 
-# Deploy Azure Managed Redis alongside the legacy cache until lower-environment
-# validation and the application cutover have completed.
+# Deploy Azure Managed Redis alongside the legacy cache until the application
+# cutover has completed.
 module "managed_redis" {
-  for_each = toset(var.env == "demo" ? [var.env] : [])
-
   source = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
 
   product     = var.product
@@ -82,6 +83,13 @@ module "managed_redis" {
 
   access_keys_authentication_enabled = true
   persistence_rdb_backup_frequency   = "6h"
+
+  clustering_policy = "EnterpriseCluster"
+}
+
+moved {
+  from = module.managed_redis["demo"]
+  to   = module.managed_redis
 }
 
 module "application_insights" {

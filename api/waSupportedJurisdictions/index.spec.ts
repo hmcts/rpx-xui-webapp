@@ -41,7 +41,7 @@ describe('WA Supported Jurisdictions', () => {
     config = require('../configuration');
     getConfigValueStub = sandbox.stub(config, 'getConfigValue');
     getConfigValueStub.withArgs('services.locationref.api').returns('http://test-api');
-    getConfigValueStub.withArgs('waSupportedJurisdictions').returns('IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC');
+    getConfigValueStub.withArgs('waSupportedJurisdictions').returns('IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC,PROBATE');
 
     // require the modules after stubbing
     http = require('../lib/http');
@@ -146,7 +146,7 @@ describe('WA Supported Jurisdictions', () => {
     it('should get supported jurisdictions', async () => {
       await waSupportedJurisdictions.getWASupportedJurisdictions(req, res, next);
 
-      const response = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC'];
+      const response = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC', 'PROBATE'];
       expect(res.send).to.have.been.calledWith(response);
       expect(res.status).to.have.been.calledWith(200);
       expect(next).not.to.have.been.called;
@@ -176,7 +176,7 @@ describe('WA Supported Jurisdictions', () => {
     it('should get only the list of supported jurisdictions', () => {
       const jurisdictionList = waSupportedJurisdictions.getWASupportedJurisdictionsList();
 
-      expect(jurisdictionList).to.deep.equal(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC']);
+      expect(jurisdictionList).to.deep.equal(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC', 'PROBATE']);
       expect(consoleLogStub).not.to.have.been.called;
     });
 

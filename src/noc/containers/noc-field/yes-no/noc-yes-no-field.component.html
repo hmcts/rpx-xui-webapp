@@ -1,18 +1,17 @@
-<div class="govuk-form-group" [id]="id()" [ngClass]="{ 'form-group-error': !yesNoControl.valid }">
-  <fieldset class="inline">
-    <legend>
-      <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
-        questionField.question_text | rpxTranslate
-      }}</span>
-      <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{
-        yesNoControl.errors | nocError | rpxTranslate
-      }}</span>
+<div class="govuk-form-group" [id]="id()" [ngClass]="{ 'govuk-form-group--error': yesNoControl.errors && yesNoControl.touched }">
+  <fieldset class="govuk-fieldset" [attr.aria-describedby]="yesNoControl.errors && yesNoControl.touched ? id() + '-error' : null">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s govuk-!-font-weight-bold">
+      <ng-container *ngIf="questionField.question_text">{{ questionField.question_text | rpxTranslate }}</ng-container>
     </legend>
+    <span class="govuk-error-message" *ngIf="yesNoControl.errors && yesNoControl.touched" [id]="id() + '-error'">
+      <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+      {{ yesNoControl.errors | nocError | rpxTranslate }}
+    </span>
 
-    <div class="form-group" [id]="id()">
-      <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{ selected: yesNoControl.value === value }">
+    <div class="govuk-radios govuk-radios--inline">
+      <div class="govuk-radios__item" *ngFor="let value of yesNoValues">
         <input
-          class="form-control"
+          class="govuk-radios__input"
           [id]="id() + '-' + value"
           [attr.name]="id()"
           [name]="id()"
@@ -20,7 +19,7 @@
           [formControl]="yesNoControl"
           [value]="value"
         />
-        <label class="form-label" [for]="id() + '-' + value">{{ value | rpxTranslate }}</label>
+        <label class="govuk-label govuk-radios__label" [for]="id() + '-' + value">{{ value | rpxTranslate }}</label>
       </div>
     </div>
   </fieldset>

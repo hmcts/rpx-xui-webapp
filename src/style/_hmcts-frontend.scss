@@ -1528,76 +1528,6 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 // =============================================================================
-// Rich text editor
-// =============================================================================
-
-.hmcts-rich-text-editor__toolbar {
-  @include govuk-clearfix;
-  margin-bottom: govuk-spacing(2);
-}
-
-.hmcts-rich-text-editor__toolbar-button {
-  background-color: govuk-colour('white');
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: 40px 40px;
-  border: 2px solid govuk-colour('black');
-  color: govuk-colour('black');
-  cursor: pointer;
-  float: left;
-  text-decoration: none;
-  height: 40px;
-  margin-left: -2px;
-  outline: 0;
-  vertical-align: top;
-  width: 40px;
-
-  &:first-child {
-    margin-left: 0;
-  }
-
-  &::-moz-focus-inner {
-    padding: 0;
-    border: 0;
-  }
-
-  &:focus {
-    outline: 3px solid $govuk-focus-colour;
-    position: relative;
-    z-index: 2;
-  }
-}
-
-.hmcts-rich-text-editor__toolbar-button--bold {
-  background-image: url(#{$hmcts-images-path}icon-wysiwyg-bold.svg);
-}
-
-.hmcts-rich-text-editor__toolbar-button--italic {
-  background-image: url(#{$hmcts-images-path}icon-wysiwyg-italic.svg);
-}
-
-.hmcts-rich-text-editor__toolbar-button--underline {
-  background-image: url(#{$hmcts-images-path}icon-wysiwyg-underline.svg);
-}
-
-.hmcts-rich-text-editor__toolbar-button--unordered-list {
-  background-image: url(#{$hmcts-images-path}icon-wysiwyg-unordered-list.svg);
-  margin-left: govuk-spacing(2);
-}
-
-.hmcts-rich-text-editor__toolbar-button--ordered-list {
-  background-image: url(#{$hmcts-images-path}icon-wysiwyg-ordered-list.svg);
-}
-
-.hmcts-rich-text-editor__content {
-  @extend .govuk-textarea;
-  min-height: 130px;
-  outline: none;
-  overflow: auto;
-  resize: vertical;
-}
-
-// =============================================================================
 // Currency input
 // =============================================================================
 
@@ -2042,57 +1972,6 @@ textarea {
   }
 }
 
-.form-label,
-.form-label-bold {
-  display: block;
-  color: #0b0c0c;
-  padding-bottom: 2px;
-}
-
-.form-label {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 400;
-  text-transform: none;
-  font-size: 16px;
-  line-height: 1.25;
-}
-
-@media (min-width: 641px) {
-  .form-label {
-    font-size: 19px;
-    line-height: 1.3157894737;
-  }
-}
-
-.form-label-bold {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 700;
-  text-transform: none;
-  font-size: 16px;
-  line-height: 1.25;
-}
-
-@media (min-width: 641px) {
-  .form-label-bold {
-    font-size: 19px;
-    line-height: 1.3157894737;
-  }
-}
-
-.form-block {
-  float: left;
-  clear: left;
-  margin-top: -5px;
-  margin-bottom: 5px;
-}
-
-@media (min-width: 641px) {
-  .form-block {
-    margin-top: 0;
-    margin-bottom: 10px;
-  }
-}
-
 .form-hint {
   font-family: nta, Arial, sans-serif;
   text-transform: none;
@@ -2110,12 +1989,6 @@ textarea {
     font-size: 19px;
     line-height: 1.3157894737;
   }
-}
-
-.form-label .form-hint,
-.form-label-bold .form-hint {
-  margin-top: 0;
-  padding-bottom: 0;
 }
 
 .form-control {
@@ -2385,28 +2258,6 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
-.form-date .form-group {
-  float: left;
-  width: 50px;
-  margin-right: 20px;
-  margin-bottom: 0;
-  clear: none;
-  overflow: visible; // counteracts app.scss .form-group{overflow:hidden} which breaks float layout
-}
-
-.form-date .form-group label {
-  display: block;
-  padding-bottom: 2px;
-}
-
-.form-date .form-group input {
-  width: 100%;
-}
-
-.form-date .form-group-year {
-  width: 70px;
-}
-
 .form-group-error {
   margin-right: 15px;
   border-left: 4px solid #b10e1e;
@@ -2418,36 +2269,6 @@ input[type='number'] {
     border-left: 5px solid #b10e1e;
     padding-left: 15px;
   }
-}
-
-.form-control-error {
-  border: 4px solid #b10e1e;
-}
-
-.error-message {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 700;
-  text-transform: none;
-  font-size: 16px;
-  line-height: 1.25;
-  color: #b10e1e;
-  display: block;
-  clear: both;
-  margin: 0;
-  padding: 2px 0;
-}
-
-@media (min-width: 641px) {
-  .error-message {
-    font-size: 19px;
-    line-height: 1.3157894737;
-  }
-}
-
-.form-label .error-message,
-.form-label-bold .error-message {
-  padding-top: 4px;
-  padding-bottom: 0;
 }
 
 .error-summary {
@@ -2623,6 +2444,7 @@ fieldset::after,
 
 // =============================================================================
 // govuk-elements typography — compatibility shim
+// Required by @hmcts/ccpay-web-component, which still renders these classes.
 // =============================================================================
 
 .heading-xlarge {
@@ -2734,61 +2556,6 @@ fieldset::after,
   }
 }
 
-.body-text {
-  display: block;
-  margin-top: 0.3125em;
-  margin-bottom: 1.25em;
-
-  @media (min-width: 641px) {
-    margin-top: 0.2631578947em;
-    margin-bottom: 1.0526315789em;
-  }
-}
-
-.lede {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 400;
-  text-transform: none;
-  font-size: 18px;
-  line-height: 1.2;
-
-  @media (min-width: 641px) {
-    font-size: 24px;
-    line-height: 1.25;
-  }
-}
-
-// =============================================================================
-// govuk-elements accessibility — compatibility shim
-// =============================================================================
-
-.visually-hidden,
-.visuallyhidden {
-  position: absolute;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  width: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-}
-
-// Capital-H variant used by some legacy components
-.visuallyHidden {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 0;
-  margin: 0;
-  padding: 0;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  font-size: 0;
-}
-
 // =============================================================================
 // govuk-elements phase banner — compatibility shim
 // =============================================================================
@@ -2884,13 +2651,6 @@ table.form-table td.form-cell .form-group {
 // These mirror the final compiled state of the working demo build.
 // =============================================================================
 
-// Reduce form-label padding; govuk-elements base sets padding-bottom:2px
-.form-label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  padding-bottom: 0;
-}
-
 // Tighten hint margins in app context
 .form-hint {
   font-size: 16px;
@@ -2907,6 +2667,13 @@ table.form-table td.form-cell .form-group {
 .form-control {
   border: 1px solid;
   font-size: 16px;
+  width: 100%;
+}
+
+// govuk-select only sets max-width: 100% by default — pin ccd-dropdown
+// selects (ccd-case-ui-toolkit) to full width, matching workbasket-filters'
+// own scoped rule, applied globally so every consumer of .ccd-dropdown gets it
+.ccd-dropdown {
   width: 100%;
 }
 
@@ -2962,12 +2729,6 @@ a:visited,
   margin-bottom: 15px;
 }
 
-.form-label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  padding-bottom: 0;
-}
-
 .form-hint {
   font-size: 16px;
   margin-top: 5px;
@@ -2985,20 +2746,11 @@ a:visited,
   width: 100%;
 }
 
-.dropdown-50 {
-  width: 50%;
-}
-
-.dropdown-100 {
-  width: 100%;
-}
-
 .width-50 {
   width: 50%;
 }
 
-.text-16,
-.error-message {
+.text-16 {
   font-size: 16px;
   font-family: nta, Arial, sans-serif;
   white-space: normal;
@@ -3012,42 +2764,9 @@ a:visited,
   height: 30px;
 }
 
-.markdown h1 {
-  font-size: 32px;
-}
-
-.markdown h2 {
-  font-size: 24px;
-}
-
-.markdown h3 {
-  font-size: 18px;
-}
-
-.markdown h4 {
-  font-size: 16px;
-}
-
-.markdown p {
-  font-size: 19px;
-  margin-bottom: 25px;
-  white-space: normal;
-}
-
 .markdown .qm-service-message strong {
   font-size: 19px;
   line-height: 25px;
-}
-
-.markdown ul {
-  font-size: 16px;
-  margin-bottom: 25px;
-  white-space: normal;
-}
-
-.markdown ul li {
-  margin-bottom: 5px;
-  list-style-type: disc;
 }
 
 tr.compound-field .markdown ul,
@@ -3061,19 +2780,6 @@ form.check-your-answers table td .markdown p {
   position: absolute;
   width: 50%;
   height: 41px;
-}
-
-.footer-menu {
-  float: left;
-  margin-bottom: 30px;
-  padding-right: 30px;
-  font-size: 16px;
-}
-
-.label-text {
-  font-size: 16px;
-  font-family: nta, Arial, sans-serif;
-  font-weight: 700;
 }
 
 .pagination-top {

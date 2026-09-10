@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../hearing.test.data';
+import * as fromHearingStore from '../../store';
 import { ViewHearingComponent } from './view-hearing.component';
 
 describe('ViewHearingComponent', () => {
@@ -22,7 +23,19 @@ describe('ViewHearingComponent', () => {
           useValue: mockLocation,
         },
         { provide: Router, useValue: mockRouter },
-        provideMockStore({ initialState }),
+        provideMockStore({
+          initialState,
+          selectors: [
+            {
+              selector: fromHearingStore.getHearingValuesCaseInfo,
+              value: {
+                jurisdictionId: 'IA',
+                caseType: 'Asylum',
+                caseReference: '1111222233334444',
+              },
+            },
+          ],
+        }),
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();

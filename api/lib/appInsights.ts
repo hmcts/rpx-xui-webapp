@@ -1,8 +1,6 @@
 import * as applicationinsights from 'applicationinsights';
 import type * as express from 'express';
-
-import { SpanKind, TraceFlags } from '@opentelemetry/api';
-import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
+import type { IncomingMessage } from 'node:http';
 
 import { getConfigValue, showFeature } from '../configuration/';
 import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
@@ -45,84 +43,9 @@ function shouldExcludeTelemetryPath(path = ''): boolean {
   );
 }
 
-/**
- * Extract the HTTP path/URL from an OpenTelemetry HTTP server span.
- *
- * Different OpenTelemetry semantic-convention versions can expose the
- * request target under different attribute names, so check the relevant
- * current and legacy HTTP attributes.
- */
-function getSpanRequestPath(span: ReadableSpan): string {
-  const attributes = span.attributes;
-
-  const path =
-    attributes['url.path'] ??
-    attributes['url.full'] ??
-    attributes['http.target'] ??
-    attributes['http.url'] ??
-    attributes['http.route'];
-
-  return typeof path === 'string' ? path : span.name;
-}
-
-/**
- * Replaces the Application Insights 2.x fine-grained TelemetryProcessor
- * used for health/static request telemetry.
- *
- * Previous behaviour:
- *
- *   health/static request -> approximately 1%
- *
- * New behaviour:
- *
- *   health/static request -> 0%
- *
- * Normal application requests are left untouched.
- *
- * The processor only evaluates SERVER spans. This is intentional:
- * outgoing service GET/POST dependency telemetry must continue to be
- * collected.
- *
- * Azure Monitor's documented filtering approach marks matching spans as
- * not sampled by setting their trace flags to NONE/DEFAULT, preventing
- * them from being exported.
- */
-class HealthStaticFilteringProcessor implements SpanProcessor {
-  forceFlush(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  shutdown(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  onStart(): void {
-    // No processing required when the span starts.
-  }
-
-  onEnd(span: ReadableSpan): void {
-    /*
-     * Only filter incoming HTTP/server request telemetry.
-     *
-     * Do not filter CLIENT spans because those represent outgoing
-     * dependencies such as service GET/POST calls that we want to keep.
-     */
-    if (span.kind !== SpanKind.SERVER) {
-      return;
-    }
-
-    const requestPath = getSpanRequestPath(span);
-
-    if (shouldExcludeTelemetryPath(requestPath)) {
-      /*
-       * Mark this span as not sampled so Azure Monitor does not export it.
-       *
-       * This intentionally changes the previous ~1% health/static
-       * retention to 0%.
-       */
-      span.spanContext().traceFlags = TraceFlags.NONE;
-    }
-  }
+function shouldExcludeIncomingRequest(request: IncomingMessage): boolean {
+  // Filter before OpenTelemetry creates the SERVER span; changing span flags in onEnd is too late to reliably suppress export.
+  return shouldExcludeTelemetryPath(request.url);
 }
 
 /**
@@ -138,8 +61,6 @@ export let client: applicationinsights.TelemetryClient | null = null;
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   const connectionString = getConfigValue(APP_INSIGHTS_CONNECTION_STRING);
 
-  const healthStaticFilteringProcessor = new HealthStaticFilteringProcessor();
-
   /**
    * Application Insights 3.x uses Azure Monitor OpenTelemetry.
    *
@@ -149,15 +70,13 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
    *
    * to reduce health/static telemetry to approximately 1%.
    *
-   * Application Insights 3.x no longer supports TelemetryProcessor.
-   * The equivalent extensibility mechanism is an OpenTelemetry
-   * SpanProcessor.
+   * Request/dependency/exception/performance collection remains on the
+   * compatibility SDK chain. Azure Monitor OpenTelemetry options are used
+   * for HTTP instrumentation filtering before health/static request spans
+   * are created.
    *
-   * Health/static requests are now excluded completely (0%) because
-   * this telemetry is not required in Application Insights.
-   *
-   * All other telemetry continues to follow the existing environment
-   * sampling configuration:
+   * Telemetry continues to follow the existing environment sampling
+   * configuration:
    *
    *   lower environments -> 1%
    *   production         -> 100%
@@ -166,30 +85,27 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
    * Those environment percentages remain managed by the existing
    * Terraform/Application Insights resource configuration.
    */
-  applicationinsights
-    .setup(connectionString)
-    .setAzureMonitorOptions({
-      azureMonitorExporterOptions: {
-        connectionString,
+  const appInsightsSetup = applicationinsights.setup(connectionString);
+
+  appInsightsSetup.setAzureMonitorOptions({
+    instrumentationOptions: {
+      http: {
+        enabled: true,
+        // Keep normal incoming request telemetry, but drop high-volume health/static requests at instrumentation time.
+        ignoreIncomingRequestHook: shouldExcludeIncomingRequest,
       },
+    },
+  });
 
-      /*
-       * Continue collecting useful application telemetry.
-       */
-      enableAutoCollectDependencies: true,
-      enableAutoCollectExceptions: true,
-      enableAutoCollectPerformance: true,
-      enableAutoCollectRequests: true,
-      enableLiveMetrics: true,
+  appInsightsSetup
 
-      /**
-       * Filter health/static SERVER spans before Azure Monitor exports
-       * them.
-       *
-       * Outgoing CLIENT/dependency spans are deliberately unaffected.
-       */
-      spanProcessors: [healthStaticFilteringProcessor],
-    })
+    /*
+     * Continue collecting useful application telemetry.
+     */
+    .setAutoCollectRequests(true)
+    .setAutoCollectDependencies(true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectPerformance(true, true)
 
     /*
      * Preserve request/dependency correlation.
@@ -207,7 +123,9 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     .setUseDiskRetryCaching(true)
 
     /*
-     * Preserve Live Metrics.
+     * Preserve Live Metrics through the compatibility SDK chain.
+     * Do not move this to setAzureMonitorOptions as enableLiveMetrics;
+     * the compatibility API exposes it as setSendLiveMetrics.
      */
     .setSendLiveMetrics(true)
 

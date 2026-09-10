@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
-import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { getPersonRoleForTaskAssignment, Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 
 import { ErrorMessage, UserInfo } from '../../../app/models';
@@ -94,7 +94,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     this.taskId = this.route.snapshot.paramMap.get('taskId');
     this.role = this.route.snapshot.queryParamMap.get('role') as RoleCategory;
     this.service = this.route.snapshot.queryParamMap.get('service');
-    this.domain = this.setDomain(this.role);
+    this.domain = getPersonRoleForTaskAssignment(this.role);
     this.rootPath = this.router.url.split('/')[1];
   }
 
@@ -144,16 +144,5 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public setFocusOn(eId: string): void {
     document.getElementById(eId).focus();
-  }
-
-  private setDomain(role: RoleCategory): PersonRole {
-    if (role === RoleCategory.JUDICIAL) {
-      return PersonRole.JUDICIAL;
-    } else if (role === RoleCategory.LEGAL_OPERATIONS) {
-      return PersonRole.LEGAL_OPERATIONS;
-    } else if (role === RoleCategory.ADMIN) {
-      return PersonRole.ADMIN;
-    }
-    return PersonRole.ALL;
   }
 }

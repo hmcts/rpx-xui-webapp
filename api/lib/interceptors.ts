@@ -28,9 +28,11 @@ interface TelemetryProperties {
   taskId?: string;
   callDateTime: string;
   host?: string;
+  'http.host'?: string;
   'http.method'?: string;
+  'http.scheme'?: string;
   'http.status_code'?: string;
-  'http.url'?: string;
+  'http.target'?: string;
   outboundId: string;
   service?: string;
 }
@@ -145,6 +147,23 @@ function extractRequestTarget(url?: string): { host?: string; service?: string }
   }
 }
 
+function extractTelemetryUrlAttributes(url?: string): { 'http.host'?: string; 'http.scheme'?: string; 'http.target'?: string } {
+  if (!url) {
+    return {};
+  }
+
+  try {
+    const parsedUrl = new URL(url, 'http://localhost');
+    return {
+      'http.host': parsedUrl.host || undefined,
+      'http.scheme': parsedUrl.protocol ? parsedUrl.protocol.replace(':', '') : undefined,
+      'http.target': `${parsedUrl.pathname}${parsedUrl.search}`,
+    };
+  } catch {
+    return {};
+  }
+}
+
 function extractFromBody(data: any): { caseId?: string; jurisdiction?: string; taskId?: string } {
   const parsedData = tryParseJson(data);
   if (!parsedData || typeof parsedData !== 'object') {
@@ -207,13 +226,17 @@ function buildLogPrefix(context: LogContext, extras: { durationMs?: number; even
 }
 
 function buildTelemetryProperties(context: LogContext, resultCode?: string, url?: string): TelemetryProperties {
+  const telemetryUrlAttributes = extractTelemetryUrlAttributes(url);
+
   return {
     callDateTime: context.callDateTime,
     caseId: context.caseId,
     host: context.host,
+    'http.host': telemetryUrlAttributes['http.host'],
     'http.method': context.method,
+    'http.scheme': telemetryUrlAttributes['http.scheme'],
     'http.status_code': resultCode,
-    'http.url': url,
+    'http.target': telemetryUrlAttributes['http.target'],
     jurisdiction: context.jurisdiction,
     outboundId: context.outboundId,
     service: context.service,
@@ -261,7 +284,6 @@ export function successInterceptor(response) {
     properties: buildTelemetryProperties(logContext, resultCode, response.config.url),
     resultCode,
     success: true,
-    url: response.config.url,
   });
   return response;
 }
@@ -298,7 +320,6 @@ export function errorInterceptor(error) {
     properties: buildTelemetryProperties(logContext, resultCode, error.config.url),
     resultCode,
     success: false,
-    url: error.config.url,
   });
 
   return Promise.reject(error.response);

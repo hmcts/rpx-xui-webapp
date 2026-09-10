@@ -129,12 +129,14 @@ describe('interceptors', () => {
         name: 'Service POST call',
         resultCode: '200',
         success: true,
-        url: 'http://test2.com',
       });
+      expect(trackRequest.firstCall.args[0]).not.to.have.property('url');
       expect(trackRequest.firstCall.args[0].properties).to.include({
+        'http.host': 'test2.com',
         'http.method': 'POST',
+        'http.scheme': 'http',
         'http.status_code': '200',
-        'http.url': 'http://test2.com',
+        'http.target': '/',
       });
       getLoggerStub.restore();
     });
@@ -188,12 +190,14 @@ describe('interceptors', () => {
         name: 'Service GET call',
         resultCode: '403',
         success: false,
-        url: 'http://test.com',
       });
+      expect(trackRequest.firstCall.args[0]).not.to.have.property('url');
       expect(trackRequest.firstCall.args[0].properties).to.include({
+        'http.host': 'test.com',
         'http.method': 'GET',
+        'http.scheme': 'http',
         'http.status_code': '403',
-        'http.url': 'http://test.com',
+        'http.target': '/',
       });
       getLoggerStub.restore();
     });

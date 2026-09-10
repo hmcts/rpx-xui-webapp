@@ -94,7 +94,10 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-    onReq: amendedJurisdictions.checkCachedJurisdictions,
+    onReq: (proxyReq, req) => {
+      amendedJurisdictions.rewriteCaseworkerUid(proxyReq, req);
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req);
+    },
     onRes: amendedJurisdictions.getJurisdictions,
     rewrite: false,
     source: '/aggregated',

@@ -6,7 +6,7 @@ type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit';
 export class HearingsTabPage {
   constructor(private readonly page: Page) {}
 
-  readonly container = this.page.locator('exui-case-hearings-ce');
+  readonly container = this.page.locator('exui-case-hearings');
   readonly emptyState = this.page.getByText('No current and upcoming hearings found', { exact: false });
   readonly reloadButton = this.page.locator('#reload-hearing-tab');
   readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });
@@ -20,7 +20,7 @@ export class HearingsTabPage {
   readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
 
   sectionHeading(name: string): Locator {
-    return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
+    return this.page.getByText(name, { exact: true }).first();
   }
 
   currentAndUpcomingHeading(name: string): Locator {
@@ -73,7 +73,7 @@ export class HearingsTabPage {
   }
 
   async waitForReady(hearingId?: string, action: HearingAction = 'view-details'): Promise<void> {
-    await expect(this.container).toBeVisible();
+    await expect(this.requestHearingButton).toBeVisible({ timeout: 30_000 });
     await expect(this.currentAndUpcomingHeading('Current and upcoming')).toBeVisible();
 
     if (!hearingId) {

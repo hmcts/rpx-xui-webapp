@@ -188,8 +188,8 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
     firstRadioButtonElement.click();
     fixture.detectChanges();
     component.form.patchValue({ hearingGroup: 'particularOrder' });
-    component.onOrderChange(0);
-    component.onOrderChange(1);
+    component.onOrderChange();
+    component.onOrderChange();
     expect(component.validationErrors.length).toBe(0);
   });
 

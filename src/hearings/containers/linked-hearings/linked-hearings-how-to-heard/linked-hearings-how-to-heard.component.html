@@ -100,7 +100,7 @@
                         }"
                       >
                         <option value=""></option>
-                        <option *ngFor="let pos of positionDropdownValues" [selected]="hasPosToBePreSelected(i) == pos">
+                        <option *ngFor="let pos of positionDropdownValues" [value]="pos">
                           {{ pos }}
                         </option>
                       </select>

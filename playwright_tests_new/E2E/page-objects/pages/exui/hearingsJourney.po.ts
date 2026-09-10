@@ -177,7 +177,12 @@ export class HearingsJourneyPage {
       throw error;
     }
 
-    await venueOption.click();
+    try {
+      await venueOption.click({ timeout: 5_000 });
+    } catch {
+      await this.hearingVenue.press('Enter');
+    }
+
     await this.addLocationsButton.click();
 
     // The autocomplete list is rebuilt every time the debounced search resolves, so the option

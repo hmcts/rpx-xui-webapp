@@ -92,6 +92,11 @@ describe('HearingAdditionalInstructionsComponent', () => {
     expect(sanitisedString).toBe('this is a test');
   });
 
+  it('should remove HTML with event handlers from instructions', () => {
+    const sanitisedString = component.santiseHTML('<img src=x onerror=alert(1)>keep this');
+    expect(sanitisedString).toBe('keep this');
+  });
+
   describe('initForm with VIEW_EDIT mode and additionalInsructionsChangesRequired', () => {
     it('should set showReviewBox to true when in VIEW_EDIT mode with additionalInsructionsChangesRequired', () => {
       // Set up the service properties BEFORE component initialization

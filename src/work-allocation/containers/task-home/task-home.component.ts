@@ -16,7 +16,7 @@ import { SortField } from '../../models/common';
   styleUrls: ['task-home.component.scss'],
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {
-  public persistence$: Observable<FilterPersistence> = of('local' as FilterPersistence);
+  public persistence$: Observable<FilterPersistence> = of('session');
   public sortedBy: SortField;
   public pageTitle: string;
   public error: ErrorMessage = null;

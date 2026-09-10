@@ -1,6 +1,8 @@
 import * as applicationinsights from 'applicationinsights';
 import type * as express from 'express';
-import type { IncomingMessage } from 'node:http';
+
+import { SpanKind, TraceFlags } from '@opentelemetry/api';
+import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
 import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
@@ -43,9 +45,56 @@ function shouldExcludeTelemetryPath(path = ''): boolean {
   );
 }
 
-function shouldExcludeIncomingRequest(request: IncomingMessage): boolean {
-  // Filter before OpenTelemetry creates the SERVER span; changing span flags in onEnd is too late to reliably suppress export.
-  return shouldExcludeTelemetryPath(request.url);
+/**
+ * Extract the HTTP path/URL from an OpenTelemetry HTTP server span.
+ *
+ * Different OpenTelemetry semantic-convention versions can expose the
+ * request target under different attribute names, so check the relevant
+ * current and legacy HTTP attributes.
+ */
+function getSpanRequestPath(span: ReadableSpan): string {
+  const attributes = span.attributes;
+
+  const path =
+    attributes['url.path'] ??
+    attributes['url.full'] ??
+    attributes['http.target'] ??
+    attributes['http.url'] ??
+    attributes['http.route'];
+
+  return typeof path === 'string' ? path : span.name;
+}
+
+/**
+ * Replaces the Application Insights 2.x fine-grained TelemetryProcessor
+ * used for health/static request telemetry.
+ *
+ * The compatibility SDK exposes Azure Monitor span processors, but not
+ * the lower-level HTTP ignoreIncomingRequestHook type. Keep this scoped
+ * to SERVER spans so outgoing service telemetry is not affected.
+ */
+class HealthStaticFilteringProcessor implements SpanProcessor {
+  forceFlush(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  shutdown(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  onStart(): void {
+    // No processing required when the span starts.
+  }
+
+  onEnd(span: ReadableSpan): void {
+    if (span.kind !== SpanKind.SERVER) {
+      return;
+    }
+
+    if (shouldExcludeTelemetryPath(getSpanRequestPath(span))) {
+      span.spanContext().traceFlags = TraceFlags.NONE;
+    }
+  }
 }
 
 /**
@@ -60,6 +109,7 @@ export let client: applicationinsights.TelemetryClient | null = null;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   const connectionString = getConfigValue(APP_INSIGHTS_CONNECTION_STRING);
+  const healthStaticFilteringProcessor = new HealthStaticFilteringProcessor();
 
   /**
    * Application Insights 3.x uses Azure Monitor OpenTelemetry.
@@ -72,8 +122,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
    *
    * Request/dependency/exception/performance collection remains on the
    * compatibility SDK chain. Azure Monitor OpenTelemetry options are used
-   * for HTTP instrumentation filtering before health/static request spans
-   * are created.
+   * only for exporter configuration and the health/static SpanProcessor.
    *
    * Telemetry continues to follow the existing environment sampling
    * configuration:
@@ -88,13 +137,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   const appInsightsSetup = applicationinsights.setup(connectionString);
 
   appInsightsSetup.setAzureMonitorOptions({
-    instrumentationOptions: {
-      http: {
-        enabled: true,
-        // Keep normal incoming request telemetry, but drop high-volume health/static requests at instrumentation time.
-        ignoreIncomingRequestHook: shouldExcludeIncomingRequest,
-      },
-    },
+    spanProcessors: [healthStaticFilteringProcessor],
   });
 
   appInsightsSetup

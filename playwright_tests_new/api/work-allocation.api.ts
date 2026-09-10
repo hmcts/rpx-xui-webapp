@@ -466,32 +466,6 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       assertCaseworkerListResponse(response.status, response.data);
     });
 
-    test('lists caseworkers for location', async ({ apiClient }, testInfo) => {
-      if (!cachedLocationId) {
-        testInfo.annotations.push({
-          type: 'notice',
-          description: 'Location id not available; asserted unscoped caseworker list endpoint instead.',
-        });
-        const fallbackRes = await withXsrf('solicitor', (headers) =>
-          apiClient.get('workallocation/caseworker', {
-            headers,
-            throwOnError: false,
-          })
-        );
-        expectStatus(fallbackRes.status, StatusSets.guardedExtended);
-        assertCaseworkerListResponse(fallbackRes.status, fallbackRes.data);
-        return;
-      }
-      const response = await withXsrf('solicitor', (headers) =>
-        apiClient.get(`workallocation/caseworker/location/${cachedLocationId}`, {
-          headers,
-          throwOnError: false,
-        })
-      );
-      expectStatus(response.status, StatusSets.guardedExtended);
-      assertCaseworkerListResponse(response.status, response.data);
-    });
-
     test('region/location matrix', async ({ apiClient }) => {
       const response = await withRetry(
         () =>

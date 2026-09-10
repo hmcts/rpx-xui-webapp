@@ -70,14 +70,20 @@ export const initProxy = (app: Express) => {
     onRes: searchCases.handleElasticSearchResponse,
     rewrite: false,
     source: '/data/internal/searchCases',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/print',
     target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });
 
   applyProxy(app, {
     filter: ['!/data/internal/searchCases'],
     rewrite: false,
-    source: ['/print', '/data'],
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+    source: '/data',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {
@@ -92,7 +98,7 @@ export const initProxy = (app: Express) => {
     onRes: amendedJurisdictions.getJurisdictions,
     rewrite: false,
     source: '/aggregated',
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {

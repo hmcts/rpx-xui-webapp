@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { NavigationItem } from 'src/app/models';
+import { getUserRolesExcludingSpecificAccessApprover } from '../../shared/utils/role.utils';
 
 @Injectable({ providedIn: 'root' })
 export class HeaderConfigService {
@@ -11,9 +12,10 @@ export class HeaderConfigService {
   roleCfg: NavigationItem[] | undefined;
 
   constructHeaderConfig(userRoles: string[]): Observable<NavigationItem[]> {
+    const sanitisedUserRoles = getUserRolesExcludingSpecificAccessApprover(userRoles);
     return this.environmentService.config$.pipe(
       map((config) => config.headerConfig),
-      switchMap((headerCfg) => this.getRoleConfig(userRoles, headerCfg))
+      switchMap((headerCfg) => this.getRoleConfig(sanitisedUserRoles, headerCfg))
     );
   }
 

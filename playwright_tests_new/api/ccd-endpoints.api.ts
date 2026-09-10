@@ -1,11 +1,14 @@
 import { test, expect } from './fixtures';
 import { config as testConfig } from './utils/apiTestRuntimeConfig';
-import { withXsrf, expectStatus, withRetry } from './utils/apiTestUtils';
+import { withXsrf, expectStatus, guardedRequest } from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
 
 test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
-  test('lists jurisdictions for current user', async ({ apiClient }) => {
+  test('lists jurisdictions for dedicated work-allocation solicitor', async ({ apiClientFor }, testInfo) => {
+    // Two bounded, sequential route calls are required under AAT load.
+    testInfo.setTimeout(90_000);
+    const apiClient = await apiClientFor('waSolicitor');
     const expectedNames = testConfig.jurisdictionNames[testConfig.testEnv] ?? [];
     await assertJurisdictionsForUser(apiClient, expectedNames);
   });
@@ -33,17 +36,14 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
           [key: string]: unknown;
         }
 
-        const response = await apiClient.get<WorkbasketData>(
-          `data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`,
-          {
+        const response = await guardedRequest(() =>
+          apiClient.get<WorkbasketData>(`data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`, {
             headers: { experimental: 'true' },
+            timeoutMs: 20_000,
             throwOnError: false,
-          }
+          })
         );
-        expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
-        if (response.status !== 200) {
-          return;
-        }
+        expectStatus(response.status, [200]);
 
         const data = response.data;
         expect(data).toBeTruthy();
@@ -70,25 +70,23 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
     }
   }
 
-  test('returns authenticated user profile data', async ({ apiClient }) => {
-    const response = await withXsrf('solicitor', (headers) =>
-      withRetry(
-        () =>
-          apiClient.get('data/internal/profile', {
-            headers: {
-              ...headers,
-              experimental: 'true',
-            },
-            throwOnError: false,
-          }),
-        { retries: 1, retryStatuses: [502, 504] }
+  test('returns authenticated profile data for dedicated work-allocation solicitor', async ({ apiClientFor }) => {
+    const apiClient = await apiClientFor('waSolicitor');
+    const response = await withXsrf('waSolicitor', (headers) =>
+      guardedRequest(() =>
+        apiClient.get('data/internal/profile', {
+          headers: {
+            ...headers,
+            experimental: 'true',
+          },
+          timeoutMs: 20_000,
+          throwOnError: false,
+        })
       )
     );
 
-    expectStatus(response.status, [200, 404, 500, 502, 504]);
-    if (response.status === 200) {
-      expect(response.data).toBeTruthy();
-    }
+    expectStatus(response.status, [200]);
+    expect(response.data).toBeTruthy();
   });
 });
 
@@ -101,14 +99,24 @@ test.describe('CCD helper coverage', { tag: '@svc-ccd' }, () => {
     expect(stringifyCaseTypeId(undefined)).toBe('');
   });
 
-  test('assertJurisdictionsForUser handles guarded status', async () => {
+  test('assertJurisdictionsForUser rejects a non-success profile response', async () => {
     const apiClient = {
       get: async () => ({ status: 403, data: undefined }),
     };
-    await assertJurisdictionsForUser(apiClient as any, []);
+    await expect(assertJurisdictionsForUser(apiClient as any, [])).rejects.toThrow();
   });
 
-  test('assertJurisdictionsForUser handles non-array payloads', async () => {
+  test('assertJurisdictionsForUser rejects an unavailable XUI route', async () => {
+    const apiClient = {
+      get: async () => {
+        throw new Error('Request timed out while calling XUI');
+      },
+    };
+
+    await expect(assertJurisdictionsForUser(apiClient as any, [])).rejects.toThrow();
+  });
+
+  test('assertJurisdictionsForUser rejects non-array jurisdiction payloads', async () => {
     let calls = 0;
     const apiClient = {
       get: async () => {
@@ -119,14 +127,26 @@ test.describe('CCD helper coverage', { tag: '@svc-ccd' }, () => {
         return { status: 200, data: { foo: 'bar' } };
       },
     };
-    await assertJurisdictionsForUser(apiClient as any, []);
+    await expect(assertJurisdictionsForUser(apiClient as any, [])).rejects.toThrow();
   });
 
-  test('assertJurisdictionsForUser handles missing user id', async () => {
+  test('assertJurisdictionsForUser accepts documented empty 404 response without expected jurisdictions', async () => {
+    let calls = 0;
+    const apiClient = {
+      get: async () => {
+        calls += 1;
+        return calls === 1 ? { status: 200, data: { userInfo: { uid: 'user-1' } } } : { status: 404, data: [] };
+      },
+    };
+
+    await expect(assertJurisdictionsForUser(apiClient as any, [])).resolves.toBeUndefined();
+  });
+
+  test('assertJurisdictionsForUser rejects missing user id', async () => {
     const apiClient = {
       get: async () => ({ status: 200, data: { userInfo: {} } }),
     };
-    await assertJurisdictionsForUser(apiClient as any, []);
+    await expect(assertJurisdictionsForUser(apiClient as any, [])).rejects.toThrow();
   });
 
   test('assertJurisdictionsForUser handles full payload', async () => {

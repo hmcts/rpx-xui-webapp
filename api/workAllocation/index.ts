@@ -727,6 +727,7 @@ export async function getUserByIdamId(req: EnhancedRequest, res: Response, next:
   try {
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const idamId = req.body.idamId;
+    const silentNotFound = req.body.silentNotFound;
     let idamUser = null;
     let firstEntry = true;
     if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
@@ -738,6 +739,10 @@ export async function getUserByIdamId(req: EnhancedRequest, res: Response, next:
         firstEntry = false;
         idamUser = FullUserDetailCache.getUserByIdamId(idamId);
         if (!idamUser) {
+          if (silentNotFound) {
+            res.status(200).send(null);
+            return;
+          }
           res.status(404).send('User not found');
           return;
         } else {
@@ -755,6 +760,10 @@ export async function getUserByIdamId(req: EnhancedRequest, res: Response, next:
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
         idamUser = FullUserDetailCache.getUserByIdamId(idamId);
         if (!idamUser) {
+          if (silentNotFound) {
+            res.status(200).send(null);
+            return;
+          }
           res.status(404).send('User not found');
           return;
         } else {

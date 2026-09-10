@@ -43,10 +43,12 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
   test('adds developer advice and DOM hints to WAVE-like evidence', async () => {
     const evidenceDir = await fs.mkdtemp(path.join(os.tmpdir(), 'webapp-wave-advice-'));
     const previousEvidenceDir = process.env.PW_A11Y_EVIDENCE_DIR;
+    const previousReportIndexFilename = process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME;
     const attachments: Array<{ name: string; body: Buffer | string | undefined }> = [];
     let evaluateCalls = 0;
 
     process.env.PW_A11Y_EVIDENCE_DIR = evidenceDir;
+    process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME = 'xui-playwright-a11y.html';
 
     const page = {
       evaluate: async () => {
@@ -94,11 +96,16 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
       } else {
         process.env.PW_A11Y_EVIDENCE_DIR = previousEvidenceDir;
       }
+      if (previousReportIndexFilename === undefined) {
+        delete process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME;
+      } else {
+        process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME = previousReportIndexFilename;
+      }
     }
 
     const htmlAttachment = attachments.find((attachment) => attachment.name === 'wave-accessibility-issues.html');
     expect(htmlAttachment?.body?.toString()).toContain('Developer advice');
-    expect(htmlAttachment?.body?.toString()).toContain('<a href="../xui-playwright-api.html">Back to Odhín report</a>');
+    expect(htmlAttachment?.body?.toString()).toContain('<a href="../xui-playwright-a11y.html">Back to Odhín report</a>');
     expect(htmlAttachment?.body?.toString()).toContain('What to fix');
     expect(htmlAttachment?.body?.toString()).toContain('DOM hints');
     expect(htmlAttachment?.body?.toString()).toContain('search selector #continue');

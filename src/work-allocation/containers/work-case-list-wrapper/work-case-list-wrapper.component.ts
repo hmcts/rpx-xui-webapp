@@ -15,6 +15,7 @@ import * as fromActions from '../../../app/store';
 import { Actions, Role } from '../../../role-access/models';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
+import { MyWorkFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
 import { CaseService, SortOrder } from '../../enums';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
@@ -36,7 +37,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public waSupportedJurisdictions$: Observable<string[]>;
   public waSupportedDetailedServices$: Observable<HMCTSServiceDetails[]>;
   public supportedJurisdictions: string[];
-  public selectedServices: string[] = ['IA'];
+  public selectedServices: string[] = [];
   public pagination: PaginationParameter;
   public backUrl: string = null;
   public supportedRoles$: Observable<Role[]>;
@@ -148,11 +149,13 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     return !!state?.badRequest;
   }
 
+  // only used for my work cases, all work cases has its own onInit method
   public ngOnInit(): void {
     this.loadSupportedJurisdictions();
     this.setupCaseWorkers();
+    this.setSelectedFiltersFromFilterSetting(this.filterService.get(MyWorkFilterComponent.FILTER_NAME));
     this.loadCases();
-    this.addSelectedLocationsSubscriber();
+    this.addFilterChangeSubscriber();
   }
 
   public loadSupportedJurisdictions(): void {
@@ -194,17 +197,26 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     }
   }
 
-  public addSelectedLocationsSubscriber() {
+  // only present for my work cases
+  public addFilterChangeSubscriber() {
     this.selectedLocationsSubscription = this.filterService
-      .getStream('locations')
+      .getStream(MyWorkFilterComponent.FILTER_NAME)
       .pipe(
         debounceTime(200),
         filter((f: FilterSetting) => f?.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        const newLocations = f.fields.find((field) => field.name === 'locations').value;
-        this.selectedLocations = newLocations.map((l) => l.epimms_id);
-        if (this.selectedLocations.length) {
+        const { selectedLocations, selectedServices } = this.getSelectedFiltersFromFilterSetting(f);
+        const filtersChanged =
+          !this.listsEqual(selectedLocations, this.selectedLocations) ||
+          !this.listsEqual(selectedServices, this.selectedServices);
+
+        this.selectedLocations = selectedLocations;
+        this.selectedServices = selectedServices;
+
+        // The if below stops cases reloading when filter is applied with no changes
+        // Also stops duplicate calls to the API when initialising the component
+        if (filtersChanged) {
           this.doLoad();
         }
       });
@@ -411,5 +423,37 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     this.locations$ = this.waSupportedJurisdictions$.pipe(
       switchMap((jurisdictions) => this.locationService.getLocations(jurisdictions))
     );
+  }
+
+  // check lists are equal, regardless of order
+  private listsEqual(newList: string[], currentList: string[]): boolean {
+    if (newList.length !== currentList.length) {
+      return false;
+    }
+    return newList.every((item) => currentList.includes(item));
+  }
+
+  // Set the selected filters from the filter setting on initialisation of the component
+  private setSelectedFiltersFromFilterSetting(filterSetting: FilterSetting | null): void {
+    if (!filterSetting?.fields) {
+      return;
+    }
+    const { selectedLocations, selectedServices } = this.getSelectedFiltersFromFilterSetting(filterSetting);
+    this.selectedLocations = selectedLocations;
+    this.selectedServices = selectedServices;
+  }
+
+  // Get the selected filters from the filter setting
+  private getSelectedFiltersFromFilterSetting(filterSetting: FilterSetting): {
+    selectedLocations: string[];
+    selectedServices: string[];
+  } {
+    const locations = filterSetting.fields.find((field) => field.name === 'locations')?.value || [];
+    const services = filterSetting.fields.find((field) => field.name === 'services')?.value || [];
+
+    return {
+      selectedLocations: locations.map((location) => location.epimms_id),
+      selectedServices: services.filter((service) => service !== 'services_all'),
+    };
   }
 }

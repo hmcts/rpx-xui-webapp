@@ -4,7 +4,7 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { throwError } from 'rxjs';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
-import { TaskListFilterComponent } from '../../../work-allocation/components';
+import { MyWorkFilterComponent } from '../../../work-allocation/components';
 import { BookingNavigationEvent, BookingProcess, BookingRequest } from '../../models';
 import { BookingService } from '../../services';
 import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/booking-error-handler';
@@ -80,8 +80,8 @@ export class BookingCheckComponent {
             return throwError({ ...err, case: 'refreshRoleAssignments' });
           }),
           tap(() => {
-            this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
-            this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
+            this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
+            this.windowService.removeLocalStorage(MyWorkFilterComponent.FILTER_NAME);
           }),
           switchMap(() =>
             this.router.navigate(['/work/my-work/list'], {

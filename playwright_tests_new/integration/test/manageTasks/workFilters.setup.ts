@@ -9,6 +9,7 @@ import {
   workFiltersSscsSearchLocation,
   workFiltersSscsSearchLocationSecondary,
 } from '../../mocks/workFiltersLocationSearch.mock';
+import { defaultStaffAMMenuRole, ensureSupportedAMRoleAssignment, uniqueRoles } from '../../helpers/amRoleAssignmentMock.helper';
 
 export const workFiltersUserIdentifier = 'STAFF_ADMIN';
 export const workFiltersUserId = 'staff-admin-integration-user';
@@ -55,6 +56,8 @@ export type WorkFilterRoleAssignment = {
   substantive: string;
   roleType: string;
   baseLocation?: string;
+  roleCategory?: string;
+  roleName?: string;
 };
 
 type SetupWorkFiltersUserOptions = {
@@ -75,16 +78,20 @@ export async function setupWorkFiltersUser(page: Page, options: SetupWorkFilters
   const sessionUserId = extractUserIdFromCookies(session.cookies) ?? workFiltersUserId;
 
   const userDetails = buildHearingsUserDetailsMock(
-    options.roles ?? ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-civil']
+    options.roles ?? uniqueRoles(['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-civil', defaultStaffAMMenuRole])
   );
 
   userDetails.userInfo.id = sessionUserId;
   userDetails.userInfo.uid = sessionUserId;
   userDetails.userInfo.roleCategory = 'LEGAL_OPERATIONS';
-  userDetails.roleAssignmentInfo = options.roleAssignments ?? [
-    { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
-    { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
-  ];
+  userDetails.roleAssignmentInfo = ensureSupportedAMRoleAssignment(
+    options.roleAssignments ?? [
+      { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
+      { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
+    ],
+    defaultStaffAMMenuRole,
+    workFiltersSupportedJurisdictions
+  );
 
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));

@@ -4,9 +4,9 @@ import { CaseNameFieldComponent } from './case-name-field/case-name-field.compon
 import { CaseReferenceFieldComponent } from './case-reference-field/case-reference-field.component';
 import { DerivedIconFieldComponent } from './derived-icon-field/derived-icon-field.component';
 import { ImageFieldComponent } from './image-field/image-field.component';
+import { MyWorkFilterComponent } from './my-work-filter/my-work-filter.component';
 import { PriorityFieldComponent } from './priority-field/priority-field.component';
 import { TaskFieldComponent } from './task-field/task-field.component';
-import { TaskListFilterComponent } from './task-list-filter/task-list-filter.component';
 import { TaskManagerFilterComponent } from './task-manager-filter/task-manager-filter.component';
 import { TaskNameFieldComponent } from './task-name-field/task-name-field.component';
 import { UrlFieldComponent } from './url-field/url-field.component';
@@ -21,7 +21,7 @@ export const components: any[] = [
   ImageFieldComponent,
   PriorityFieldComponent,
   TaskFieldComponent,
-  TaskListFilterComponent,
+  MyWorkFilterComponent,
   TaskManagerFilterComponent,
   TaskNameFieldComponent,
   UrlFieldComponent,
@@ -35,7 +35,7 @@ export * from './derived-icon-field/derived-icon-field.component';
 export * from './image-field/image-field.component';
 export * from './priority-field/priority-field.component';
 export * from './task-field/task-field.component';
-export * from './task-list-filter/task-list-filter.component';
+export * from './my-work-filter/my-work-filter.component';
 export * from './task-manager-filter/task-manager-filter.component';
 export * from './task-name-field/task-name-field.component';
 export * from './url-field/url-field.component';

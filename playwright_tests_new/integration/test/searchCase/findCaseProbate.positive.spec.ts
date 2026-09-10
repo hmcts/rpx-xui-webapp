@@ -44,7 +44,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   });
 });
 
-test.describe('Find Case with prewarmed search session', { tag: ['@integration', '@integration-probate-find-case'] }, () => {
+test.describe('Find Case with a lazy pooled session user', { tag: ['@integration', '@integration-probate-find-case'] }, () => {
   test('Probate Caseworker attempts to retrieve an existing case using work basket Filter', async ({
     caseListPage,
     findCasePage,

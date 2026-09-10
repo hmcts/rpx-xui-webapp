@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 
 import {
@@ -11,6 +12,7 @@ import {
 
 const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
+  resolveConfiguredSessionPoolCapacities: (env: EnvMap) => Record<string, number>;
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
   resolveOdhinForceExitOnCompletion: (env: EnvMap) => boolean;
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
@@ -18,6 +20,7 @@ const integrationConfigSupport = require('../../playwright.integration.config.su
   resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
 };
 const smokeRunner = require('../../scripts/run-playwright-smoke.cjs') as {
+  buildSmokeEnvironment: (env: EnvMap) => EnvMap;
   buildSmokePlaywrightArgs: (env: EnvMap, extraArgs?: string[]) => string[];
 };
 
@@ -73,9 +76,19 @@ const buildE2eConfig = (env: EnvMap) =>
 
 const buildIntegrationConfig = (env: EnvMap) =>
   integrationConfigModule.__test__.buildConfig(env) as {
+    workers?: number;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
-    projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
+    use: { trace: string };
+    projects: Array<{
+      name: string;
+      workers?: number;
+      testMatch?: string[];
+      testIgnore?: string[];
+      grep?: RegExp;
+      grepInvert?: RegExp;
+      use?: { channel?: string };
+    }>;
   };
 
 const resolveIntegrationTagFilters = (env: EnvMap) =>
@@ -95,7 +108,7 @@ const buildNightlyConfig = (env: EnvMap) =>
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { baseURL: string };
-    projects: Array<{ name: string; grep?: RegExp; grepInvert?: RegExp; use?: { headless?: boolean } }>;
+    projects: Array<{ name: string; grep?: RegExp; grepInvert?: RegExp; use?: { headless?: boolean; trace?: string } }>;
   };
 
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
@@ -134,10 +147,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(configuredInCi).toBe(2);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(6);
+    expect(ciCount).toBe(7);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBe(6);
+    expect(defaultCount).toBe(7);
 
     const defaultApiCount = resolveApiProjectWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
     expect(defaultApiCount).toBe(6);
@@ -251,20 +264,26 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.outputFolder).toBe('functional-output/tests/playwright-a11y/odhin-report');
     expect(odhinOptions?.indexFilename).toBe('xui-playwright-a11y.html');
     expect(odhinOptions?.title).toBe('RPX-XUI-WEBAPP Accessibility');
-    expect(config.globalSetup).toBe('./playwright_tests_new/E2E/setup/a11ySession.global-setup.ts');
     expect(config.timeout).toBe(60_000);
     expect(config.expect.timeout).toBe(7_000);
   });
 
-  test('E2E config adds JUnit reporter when a JUnit output path is requested', async () => {
-    const config = buildE2eConfig({
+  test('each Playwright config adds JUnit and isolates output when requested', async () => {
+    const env = {
       PLAYWRIGHT_JUNIT_OUTPUT: 'functional-output/tests/playwright-a11y/playwright-a11y-junit.xml',
+      PLAYWRIGHT_OUTPUT_DIR: 'functional-output/tests/playwright-a11y/test-results',
       CI: undefined,
       TEST_URL: 'https://example.test',
-    });
-
-    const [, junitOptions] = getReporterTuple(config.reporter, 'junit');
-    expect(junitOptions?.outputFile).toBe('functional-output/tests/playwright-a11y/playwright-a11y-junit.xml');
+    };
+    const configs = [buildConfig(env), buildE2eConfig(env), buildIntegrationConfig(env), buildNightlyConfig(env)] as Array<{
+      reporter: [string, Record<string, unknown> | undefined][];
+      outputDir?: string;
+    }>;
+    for (const config of configs) {
+      const [, junitOptions] = getReporterTuple(config.reporter, 'junit');
+      expect(junitOptions?.outputFile).toBe(env.PLAYWRIGHT_JUNIT_OUTPUT);
+      expect(config.outputDir).toBe(env.PLAYWRIGHT_OUTPUT_DIR);
+    }
   });
 
   test('Playwright configs ignore nested local worktrees', async () => {
@@ -279,15 +298,26 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expectLocalWorktreeIgnores(nightlyConfig.testIgnore);
   });
 
-  test('E2E config can disable a11y session prewarm for list-only checks', async () => {
+  test('E2E mocked accessibility config does not prewarm a live session by default', async () => {
     const config = buildE2eConfig({
       PLAYWRIGHT_INCLUDE_A11Y: 'true',
-      PW_A11Y_PREWARM_SESSION: 'false',
       CI: undefined,
       TEST_URL: 'https://example.test',
     });
 
     expect(config.globalSetup).toBeUndefined();
+    expect(config.timeout).toBe(60_000);
+  });
+
+  test('E2E config enables a11y session prewarm only when explicitly requested', async () => {
+    const config = buildE2eConfig({
+      PLAYWRIGHT_INCLUDE_A11Y: 'true',
+      PW_A11Y_PREWARM_SESSION: 'true',
+      CI: undefined,
+      TEST_URL: 'https://example.test',
+    });
+
+    expect(config.globalSetup).toBe('./playwright_tests_new/E2E/setup/a11ySession.global-setup.ts');
     expect(config.timeout).toBe(60_000);
   });
 
@@ -351,6 +381,17 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@wa-action')).toBe(false);
     expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(true);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
+  });
+
+  test('node-api can exclude only the unstable Work Allocation myaccess check', () => {
+    const filters = resolveApiTagFilters({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation-myaccess',
+      CI: undefined,
+    });
+
+    expect(filters.excludedTags).toEqual(['@svc-work-allocation-myaccess']);
+    expect(filters.grepInvert?.test('@svc-work-allocation-myaccess')).toBe(true);
+    expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
   });
 
   test('node-api keeps suite overrides replacement-style while adding global exclusions', () => {
@@ -418,14 +459,14 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults exclude nightly and browser Work Allocation until seeded task data exists', () => {
+  test('E2E tag defaults exclude only nightly coverage', () => {
     const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual(['@nightly', '@e2e-manage-tasks']);
+    expect(filters.excludedTags).toEqual(['@nightly']);
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
     expect(filters.grepInvert?.test('@nightly')).toBe(true);
-    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(true);
-    expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(true);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(false);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(false);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([
@@ -440,6 +481,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
         '@e2e-manage-tasks-assigned',
         '@e2e-media-viewer',
         '@e2e-search-case',
+        '@e2e-reliability',
         '@e2e-update-case',
       ])
     );
@@ -533,6 +575,16 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
   test('smoke runner allows empty runs only for the global smoke exclusion layer', () => {
     expect(
+      smokeRunner.buildSmokeEnvironment({
+        PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke',
+        PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'false',
+      })
+    ).toMatchObject({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke',
+      PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'false',
+    });
+
+    expect(
       smokeRunner.buildSmokePlaywrightArgs({
         PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke @svc-work-allocation',
         CI: undefined,
@@ -589,9 +641,9 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.profile).toBe(true);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
     expect(config.expect.timeout).toBe(60_000);
+    expect(config.use.trace).toBe('retain-on-failure');
     expect(config.use.timezoneId).toBe('Europe/London');
-    expect(config.projects).toHaveLength(1);
-    expect(config.projects[0]?.name).toBe('chromium');
+    expect(config.projects.map((project) => project.name)).toEqual(['chromium']);
     expect(config.projects[0]?.workers).toBeUndefined();
   });
 
@@ -603,9 +655,11 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     });
 
     expect(config.projects).toHaveLength(1);
-    expect(config.projects[0]?.grep).toBeInstanceOf(RegExp);
-    expect(config.projects[0]?.grep?.test('@integration-search-case')).toBe(true);
-    expect(config.projects[0]?.grep?.test('@integration-manage-tasks')).toBe(false);
+    for (const project of config.projects) {
+      expect(project.grep).toBeInstanceOf(RegExp);
+      expect(project.grep?.test('@integration-search-case')).toBe(true);
+      expect(project.grep?.test('@integration-manage-tasks')).toBe(false);
+    }
 
     const filters = resolveIntegrationTagFilters({
       INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@integration-manage-tasks',
@@ -623,9 +677,11 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     });
 
     expect(config.projects).toHaveLength(1);
-    expect(config.projects[0]?.grep).toBeInstanceOf(RegExp);
-    expect(config.projects[0]?.grep?.test('@integration-data-loss')).toBe(true);
-    expect(config.projects[0]?.grep?.test('@integration-search-case')).toBe(false);
+    for (const project of config.projects) {
+      expect(project.grep).toBeInstanceOf(RegExp);
+      expect(project.grep?.test('@integration-data-loss')).toBe(true);
+      expect(project.grep?.test('@integration-search-case')).toBe(false);
+    }
   });
 
   test('integration config applies only integration-scoped global exclusions', async () => {
@@ -642,6 +698,111 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test('integration config exposes the documented resolveWorkerCount test helper', async () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(7);
+  });
+
+  test('integration config runs mocked hearing journeys in the shared seven-worker project', async () => {
+    const env = {
+      CI: 'true',
+      FUNCTIONAL_TESTS_WORKERS: '7',
+      STAFF_ADMIN_POOL_ENABLED: 'true',
+      STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+      STAFF_ADMIN_1_PASSWORD: 'secret-1',
+      STAFF_ADMIN_2_USERNAME: 'staff-admin-2@example.test',
+      STAFF_ADMIN_2_PASSWORD: 'secret-2',
+      STAFF_ADMIN_3_USERNAME: 'staff-admin-3@example.test',
+      STAFF_ADMIN_3_PASSWORD: 'secret-3',
+      STAFF_ADMIN_4_USERNAME: 'staff-admin-4@example.test',
+      STAFF_ADMIN_4_PASSWORD: 'secret-4',
+      STAFF_ADMIN_5_USERNAME: 'staff-admin-5@example.test',
+      STAFF_ADMIN_5_PASSWORD: 'secret-5',
+      STAFF_ADMIN_6_USERNAME: 'staff-admin-6@example.test',
+      STAFF_ADMIN_6_PASSWORD: 'secret-6',
+      STAFF_ADMIN_7_USERNAME: 'staff-admin-7@example.test',
+      STAFF_ADMIN_7_PASSWORD: 'secret-7',
+      STAFF_ADMIN_8_USERNAME: 'staff-admin-8@example.test',
+      STAFF_ADMIN_8_PASSWORD: 'secret-8',
+      HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
+      HEARING_MANAGER_CR84_ON_1_PASSWORD: 'secret-on-1',
+      HEARING_MANAGER_CR84_ON_2_USERNAME: 'hearing-on-2@example.test',
+      HEARING_MANAGER_CR84_ON_2_PASSWORD: 'secret-on-2',
+      HEARING_MANAGER_CR84_ON_3_USERNAME: 'hearing-on-3@example.test',
+      HEARING_MANAGER_CR84_ON_3_PASSWORD: 'secret-on-3',
+      HEARING_MANAGER_CR84_ON_4_USERNAME: 'hearing-on-4@example.test',
+      HEARING_MANAGER_CR84_ON_4_PASSWORD: 'secret-on-4',
+      HEARING_MANAGER_CR84_OFF_1_USERNAME: 'hearing-off-1@example.test',
+      HEARING_MANAGER_CR84_OFF_1_PASSWORD: 'secret-off-1',
+      HEARING_MANAGER_CR84_OFF_2_USERNAME: 'hearing-off-2@example.test',
+      HEARING_MANAGER_CR84_OFF_2_PASSWORD: 'secret-off-2',
+      HEARING_MANAGER_CR84_OFF_3_USERNAME: 'hearing-off-3@example.test',
+      HEARING_MANAGER_CR84_OFF_3_PASSWORD: 'secret-off-3',
+      HEARING_MANAGER_CR84_OFF_4_USERNAME: 'hearing-off-4@example.test',
+      HEARING_MANAGER_CR84_OFF_4_PASSWORD: 'secret-off-4',
+    };
+
+    expect(integrationConfigSupport.resolveConfiguredSessionPoolCapacities(env)).toEqual({
+      STAFF_ADMIN: 8,
+      HEARING_MANAGER_CR84_ON: 4,
+      HEARING_MANAGER_CR84_OFF: 4,
+    });
+    const config = buildIntegrationConfig(env);
+    expect(config.workers).toBe(7);
+    expect(config.projects).toHaveLength(1);
+    expect(config.projects[0]).toMatchObject({ name: 'chromium' });
+    expect(config.projects[0]?.testIgnore).toBeUndefined();
+  });
+
+  test('session pool capacity deduplicates emails and includes the PRL solicitor family', () => {
+    expect(
+      integrationConfigSupport.resolveConfiguredSessionPoolCapacities({
+        STAFF_ADMIN_POOL_ENABLED: 'true',
+        STAFF_ADMIN_1_USERNAME: 'shared-staff@example.test',
+        STAFF_ADMIN_1_PASSWORD: 'secret-1',
+        STAFF_ADMIN_2_USERNAME: ' SHARED-STAFF@example.test ',
+        STAFF_ADMIN_2_PASSWORD: 'secret-2',
+        PRL_SOLICITOR_USERNAME: 'prl-1@example.test',
+        PRL_SOLICITOR_PASSWORD: 'secret-1',
+        PRL_SOLICITOR2_USERNAME: 'prl-2@example.test',
+        PRL_SOLICITOR2_PASSWORD: 'secret-2',
+        PRL_SOLICITOR3_USERNAME: 'PRL-2@example.test',
+        PRL_SOLICITOR3_PASSWORD: 'secret-3',
+      })
+    ).toEqual({ STAFF_ADMIN: 1, PRL_SOLICITOR: 2 });
+  });
+
+  test('strict preflight does not reject a configured pool that is smaller than the worker count', () => {
+    const result = spawnSync(
+      process.execPath,
+      ['scripts/playwright-session-preflight.cjs', '--strict', '--require=HEARING_MANAGER_CR84_ON'],
+      {
+        cwd: process.cwd(),
+        encoding: 'utf8',
+        env: {
+          NODE_OPTIONS: '',
+          FUNCTIONAL_TESTS_WORKERS: '7',
+          HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on@example.test',
+          HEARING_MANAGER_CR84_ON_1_PASSWORD: 'not-a-real-password',
+        },
+      }
+    );
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('HEARING_MANAGER_CR84_ON:1');
+    expect(result.stdout).toContain('pool capacity is advisory');
+  });
+
+  test('strict preflight rejects a required pool with no configured identity', () => {
+    const result = spawnSync(
+      process.execPath,
+      ['scripts/playwright-session-preflight.cjs', '--strict', '--require=HEARING_MANAGER_CR84_ON'],
+      {
+        cwd: process.cwd(),
+        encoding: 'utf8',
+        env: { NODE_OPTIONS: '', FUNCTIONAL_TESTS_WORKERS: '7' },
+      }
+    );
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('HEARING_MANAGER_CR84_ON has no configured credential identities.');
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {
@@ -680,6 +841,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
     expect(config.projects.find((project) => project.name === 'firefox')?.use?.headless).toBe(false);
     expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
+    expect(config.projects.find((project) => project.name === 'firefox')?.use?.trace).toBe('retain-on-failure');
+    expect(config.projects.find((project) => project.name === 'webkit')?.use?.trace).toBe('retain-on-failure');
   });
 
   test('nightly config honours report folder and file overrides', async () => {
@@ -738,5 +901,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleLog);
     expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleError);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' }));
+    expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' })).toBe(15_000);
+    expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true', PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS: '0' })).toBe(0);
   });
 });

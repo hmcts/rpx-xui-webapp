@@ -1,10 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies, setupSpecificAccessRequestMockRoutes, SPECIFIC_ACCESS_PATH } from '../../helpers';
+import { applySessionCookiesFromPool, setupSpecificAccessRequestMockRoutes, SPECIFIC_ACCESS_PATH } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  await applySessionCookiesFromPool(page, [userIdentifier]);
 });
 
 test.describe(

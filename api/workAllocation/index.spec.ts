@@ -1572,6 +1572,20 @@ describe('workAllocation', () => {
       expect(response.send).to.have.been.calledWith(refinedCaseworker);
     });
 
+    it('returns null with 200 for silent not found', async () => {
+      FullUserDetailCache.setUserDetails([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
+
+      const req = mockReq({
+        body: { idamId: 'judicial-user', silentNotFound: true },
+        session: { passport: { user: { userinfo: { roles: ['caseworker-role'] } } } },
+      });
+      const response = mockRes();
+      await getUserByIdamId(req, response, next);
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith(null);
+    });
+
     it('refreshes cache and returns user when firstEntry', async () => {
       FullUserDetailCache.setUserDetails([]);
       sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);

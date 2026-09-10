@@ -32,13 +32,13 @@ export const LOCATION_ERROR: ErrorMessage = {
 
 @Component({
   standalone: false,
-  selector: 'exui-task-list-filter',
-  templateUrl: './task-list-filter.component.html',
-  styleUrls: ['task-list-filter.component.scss'],
+  selector: 'exui-my-work-filter',
+  templateUrl: './my-work-filter.component.html',
+  styleUrls: ['my-work-filter.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class TaskListFilterComponent implements OnInit, OnDestroy {
-  public static readonly FILTER_NAME = 'my-work-tasks-filter';
+export class MyWorkFilterComponent implements OnInit, OnDestroy {
+  public static readonly FILTER_NAME = 'my-work-filter';
   @Input() public persistence: FilterPersistence;
   @Output() public errorChanged: EventEmitter<ErrorMessage> = new EventEmitter();
   public allowTypesOfWorkFilter = true;
@@ -48,7 +48,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public error: ErrorMessage;
   public fieldsConfig: FilterConfig = {
     persistence: 'session',
-    id: TaskListFilterComponent.FILTER_NAME,
+    id: MyWorkFilterComponent.FILTER_NAME,
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
@@ -62,7 +62,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public baseLocationServices: string[] = [];
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
-    id: TaskListFilterComponent.FILTER_NAME,
+    id: MyWorkFilterComponent.FILTER_NAME,
     fields: [],
   };
 
@@ -129,8 +129,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       return assignedTasks.length !== currentTasks.length;
     }
     return (
-      !_.isEqual(fieldsNoLocations, cancelFieldsNoLocations) ||
-      !TaskListFilterComponent.hasBaseLocations(locations, baseLocations)
+      !_.isEqual(fieldsNoLocations, cancelFieldsNoLocations) || !MyWorkFilterComponent.hasBaseLocations(locations, baseLocations)
     );
   }
 
@@ -207,14 +206,14 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   private subscribeToFilters(assignedTasks: Task[]): void {
     this.selectedLocationsSubscription = combineLatest([
-      this.filterService.getStream(TaskListFilterComponent.FILTER_NAME),
+      this.filterService.getStream(MyWorkFilterComponent.FILTER_NAME),
       this.taskService.currentTasks$,
     ])
       .pipe(
         map(([f, tasks]: [FilterSetting, Task[]]) => {
           if (!f) {
             f = {
-              id: TaskListFilterComponent.FILTER_NAME,
+              id: MyWorkFilterComponent.FILTER_NAME,
               reset: false,
               fields: this.fieldsConfig.cancelSetting.fields,
             };
@@ -224,7 +223,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         filter(([f]: [FilterSetting, Task[]]) => f?.hasOwnProperty('fields'))
       )
       .subscribe(([f, currentTasks]: [FilterSetting, Task[]]) => {
-        this.showFilteredText = TaskListFilterComponent.hasBeenFiltered(
+        this.showFilteredText = MyWorkFilterComponent.hasBeenFiltered(
           f,
           this.fieldsConfig.cancelSetting,
           assignedTasks,
@@ -237,7 +236,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
-    const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
+    const filterService = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
     const availableLocations =
       filterService && filterService.fields && filterService.fields.find((field) => field.name === 'locations');
     const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
@@ -255,7 +254,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         this.bookingLocations.length === 0 &&
         !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
       if (isFeePaidJudgeWithNoBooking) {
-        localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
+        localStorage.removeItem(MyWorkFilterComponent.FILTER_NAME);
       } else if (!isLocationsAvailable) {
         const baseLocations: string[] = [];
         userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
@@ -285,7 +284,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   private persistFirstSetting(): void {
-    const savedFilterSetting = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
+    const savedFilterSetting = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
     // if there are bookings we have been led to this by or if there is no saved filter
     if ((this.defaultLocations && this.defaultLocations.length > 0) || !savedFilterSetting) {
       this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);

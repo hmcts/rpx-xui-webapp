@@ -45,17 +45,16 @@ import {
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
-  filterByLocationId,
   getAssigneeIdsFromCases,
   getAssigneeIdsFromTasks,
-  getCaseIdListFromRoles,
+  getGSCases,
   getMyAccessMappedCaseList,
   getRoleAssignmentsByQuery,
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
   getUniqueCasesCount,
   handlePost,
-  mapCasesFromData,
+  mapGSCasesFromData,
   paginate,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -84,6 +83,13 @@ const logger: JUILogger = log4jui.getLogger('workallocation');
 type RouteParam = string | string[];
 
 const getRouteParam = (param: RouteParam): string => (Array.isArray(param) ? param[0] : param);
+
+const getSearchParameterValues = (searchParameters: SearchTaskParameter[], key: string): string[] => {
+  return searchParameters
+    .filter((param) => param.key === key)
+    .flatMap((param) => (Array.isArray(param.values) ? param.values : [param.values]))
+    .filter(Boolean);
+};
 
 /**
  * getTask
@@ -526,10 +532,11 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     const filteredRoleAssignments = roleAssignments.filter((roleAssignment) =>
       serviceIds.includes(roleAssignment.attributes.jurisdiction)
     );
-
-    // get cases using either filteredRoleAssignments array or roleAssignments array if no serviceId filters are applied
-    const cases = await getCaseIdListFromRoles(serviceIds?.length > 0 ? filteredRoleAssignments : roleAssignments, req);
-
+    const filteredRoleAssignmentsForCases = filteredRoleAssignments.filter((roleAssignment) => roleAssignment.attributes?.caseId);
+    const caseReferenceList = filteredRoleAssignmentsForCases
+      .map((roleAssignment) => roleAssignment.attributes?.caseId)
+      .filter((caseId): caseId is string => Boolean(caseId));
+    const cases = await getGSCases(caseReferenceList, serviceIds, locationIds, req);
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
     let checkedRoles = req?.session?.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
@@ -543,16 +550,12 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       unique_cases: 0,
     };
 
-    // filter cases by locationIds
-    const caseData = filterByLocationId(result.cases, locationIds);
-    logger.info('results filtered by location id', caseData.length, locationIds);
-
-    if (caseData) {
-      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles) : [];
-      result.total_records = mappedCases.length;
-      result.unique_cases = getUniqueCasesCount(mappedCases);
-      const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew ? 0 : a.isNew ? -1 : 1));
-      result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
+    if (cases) {
+      const mappedGSCases = checkedRoles ? mapGSCasesFromData(cases, checkedRoles) : [];
+      result.total_records = mappedGSCases.length;
+      result.unique_cases = getUniqueCasesCount(mappedGSCases);
+      const sortedGSCases = mappedGSCases.sort((a, b) => (a.isNew === b.isNew ? 0 : a.isNew ? -1 : 1));
+      result.cases = assignActionsToCases(sortedGSCases, userIsCaseAllocator);
     }
     return res.send(result).status(200);
   } catch (e) {
@@ -564,41 +567,36 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
+  const serviceIds = getSearchParameterValues(searchParameters, 'jurisdiction');
+  const locationIds = getSearchParameterValues(searchParameters, 'location_id');
 
   logger.info('getting all work cases', searchParameters);
 
   try {
-    // get case allocator locations
-    const locations = [];
-    searchParameters
-      .filter((param) => param.key === 'location_id')
-      .forEach((location) => {
-        if (location.values !== '') {
-          locations.push(location.values);
-        }
-      });
-
     // get all role assignments
     const query = constructRoleAssignmentQuery(searchParameters);
     logger.info('cases query', JSON.stringify(query, null, 2));
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
-    const cases = await getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse, req);
+    const filteredRoleAssignmentsForCases = roleAssignmentResult.roleAssignmentResponse.filter(
+      (roleAssignment: RoleAssignment) => roleAssignment.attributes?.caseId
+    );
+    const caseReferenceList = filteredRoleAssignmentsForCases
+      .map((roleAssignment: RoleAssignment) => roleAssignment.attributes?.caseId)
+      .filter((caseId: string): caseId is string => Boolean(caseId));
+    const cases = await getGSCases(caseReferenceList, serviceIds, locationIds, req);
     const result = {
       cases,
       total_records: 0,
       unique_cases: 0,
     };
 
-    const caseData = filterByLocationId(result.cases, locations);
-    logger.info('results filtered by location id', caseData.length);
-
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
     let checkedRoles = roleAssignmentResult.roleAssignmentResponse;
     if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
       checkedRoles = getSubstantiveRoles(roleAssignmentResult.roleAssignmentResponse);
     }
-    const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles) : [];
+    const mappedCases = checkedRoles ? mapGSCasesFromData(cases, checkedRoles) : [];
     result.total_records = mappedCases.length;
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;

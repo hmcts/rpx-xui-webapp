@@ -29,11 +29,14 @@ describe('proxy configuration', () => {
     expect(configs.find((config) => config.source === '/data/internal/searchCases')).to.include({
       source: '/data/internal/searchCases',
       target: SERVICES_CCD_DATA_STORE_API_PATH,
-      rewrite: false,
     });
+    const searchCasesConfig = configs.find((config) => config.source === '/data/internal/searchCases');
+    expect(searchCasesConfig.rewriteUrl('/?ctid=PCS&use_case=WORKBASKET&page=1')).to.equal(
+      '/internal/searchCases?ctid=PCS&use_case=WORKBASKET&page=1'
+    );
     expect(configs.find((config) => config.source === '/data')).to.include({
       target: SERVICES_CCD_DATA_STORE_API_PATH,
-      rewrite: false,
+      rewrite: true,
     });
     expect(configs.find((config) => config.source === '/aggregated')).to.include({
       source: '/aggregated',

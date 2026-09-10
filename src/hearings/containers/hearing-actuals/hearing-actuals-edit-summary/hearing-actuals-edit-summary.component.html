@@ -253,12 +253,13 @@
     <br />
     <h2 class="govuk-heading-m">{{ 'Submit your hearing details' | rpxTranslate }}</h2>
     <p class="govuk-body">{{ 'Once you have entered the hearing details, select Submit hearing details.' | rpxTranslate }}</p>
-    <p class="govuk-body">
-      {{
-        'Once submitted, you cannot change your answers again. The case will be saved and the ' +
-          'hearing will be marked as complete.' | rpxTranslate
-      }}
-    </p>
+    <p
+      class="govuk-body"
+      [textContent]="
+        'Once submitted, the case will be saved and the hearing will be marked as complete. ' +
+          'If an error has been made you can return and update your answers (if required).' | rpxTranslate
+      "
+    ></p>
     <br />
     <div class="govuk-button-group">
       <button class="govuk-button primary" data-module="govuk-button" (click)="onSubmitHearingDetails()">

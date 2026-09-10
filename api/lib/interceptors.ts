@@ -28,6 +28,9 @@ interface TelemetryProperties {
   taskId?: string;
   callDateTime: string;
   host?: string;
+  'http.method'?: string;
+  'http.status_code'?: string;
+  'http.url'?: string;
   outboundId: string;
   service?: string;
 }
@@ -203,11 +206,14 @@ function buildLogPrefix(context: LogContext, extras: { durationMs?: number; even
   return `${parts.join(' ')} |`;
 }
 
-function buildTelemetryProperties(context: LogContext): TelemetryProperties {
+function buildTelemetryProperties(context: LogContext, resultCode?: string, url?: string): TelemetryProperties {
   return {
     callDateTime: context.callDateTime,
     caseId: context.caseId,
     host: context.host,
+    'http.method': context.method,
+    'http.status_code': resultCode,
+    'http.url': url,
     jurisdiction: context.jurisdiction,
     outboundId: context.outboundId,
     service: context.service,
@@ -248,11 +254,12 @@ export function successInterceptor(response) {
   logger.info(
     `${buildLogPrefix(logContext, { durationMs: response.duration, event: 'response', status })} Success on ${response.config.method.toUpperCase()} to ${url}`
   );
+  const resultCode = toTelemetryResultCode(status);
   logger.trackRequest({
     duration: response.duration,
     name: `Service ${response.config.method.toUpperCase()} call`,
-    properties: buildTelemetryProperties(logContext),
-    resultCode: toTelemetryResultCode(status),
+    properties: buildTelemetryProperties(logContext, resultCode, response.config.url),
+    resultCode,
     success: true,
     url: response.config.url,
   });
@@ -284,11 +291,12 @@ export function errorInterceptor(error) {
     ${exceptionFormatter(data, exceptionOptions)}`);
   }
 
+  const resultCode = toTelemetryResultCode(status);
   logger.trackRequest({
     duration: error.duration,
     name: `Service ${error.config.method.toUpperCase()} call`,
-    properties: buildTelemetryProperties(logContext),
-    resultCode: toTelemetryResultCode(status),
+    properties: buildTelemetryProperties(logContext, resultCode, error.config.url),
+    resultCode,
     success: false,
     url: error.config.url,
   });

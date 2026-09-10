@@ -131,6 +131,11 @@ describe('interceptors', () => {
         success: true,
         url: 'http://test2.com',
       });
+      expect(trackRequest.firstCall.args[0].properties).to.include({
+        'http.method': 'POST',
+        'http.status_code': '200',
+        'http.url': 'http://test2.com',
+      });
       getLoggerStub.restore();
     });
   });
@@ -184,6 +189,11 @@ describe('interceptors', () => {
         resultCode: '403',
         success: false,
         url: 'http://test.com',
+      });
+      expect(trackRequest.firstCall.args[0].properties).to.include({
+        'http.method': 'GET',
+        'http.status_code': '403',
+        'http.url': 'http://test.com',
       });
       getLoggerStub.restore();
     });

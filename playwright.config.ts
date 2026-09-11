@@ -163,6 +163,9 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
     ],
   ];
+  if (env.CI && env.PLAYWRIGHT_INCLUDE_A11Y !== 'true' && env.PLAYWRIGHT_INCLUDE_WAVE_A11Y !== 'true') {
+    reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
+  }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
 
   return defineConfig({

@@ -4,24 +4,12 @@ $outlineColor: #bfc1c3;
   border-bottom: 0;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-.mat-tab-body-wrapper {
+.mat-mdc-tab-body-wrapper {
   border-top: 1px solid $outlineColor;
   margin-top: -1px;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-.mat-tab-label,
-.mat-mdc-tab-link {
-  font-family: 'GDS Transport', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  font-size: 16px;
-}
-
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-.mat-tab-label {
+.mat-mdc-tab {
   min-width: 80px !important;
   height: 42px !important;
   margin: 0 4px 7px 4px;
@@ -34,9 +22,7 @@ $outlineColor: #bfc1c3;
     border-top: 3px solid #ffdd00;
     border-bottom: 4px solid #000;
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  &.mat-tab-label-active {
+  &.mdc-tab--active {
     height: 48px !important;
     border-top: 1px solid $outlineColor;
     border-bottom: 0;
@@ -44,33 +30,28 @@ $outlineColor: #bfc1c3;
     border-right: 1px solid $outlineColor;
     background: #fff;
     margin: 1px 4px 0 4px;
-    &.cdk-focused {
-      border-top: 3px solid #ffdd00;
-      border-bottom: 4px solid #000;
-    }
-    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-    .mat-tab-label-content {
+    .mdc-tab__text-label {
       opacity: 1;
     }
   }
 }
 
-.mat-mdc-tab-group.mat-primary .mat-ink-bar,
-.mat-mdc-tab-nav-bar.mat-primary .mat-ink-bar {
-  height: 0px;
+.mat-mdc-tab-group .mdc-tab-indicator__content--underline,
+.mat-mdc-tab-nav-bar .mdc-tab-indicator__content--underline {
+  height: 0 !important;
+  border-top-width: 0 !important;
 }
 
-.mat-mdc-option.mat-active,
-.mat-option.mat-selected:not(.mat-mdc-option-multiple):not(.mat-option-disabled),
-.mat-option:focus:not(.mat-option-disabled),
-.mat-option:hover:not(.mat-option-disabled) {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-/* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
-.mat-autocomplete-panel {
-  background: #fff;
+.mat-mdc-autocomplete-panel {
+  background-color: #fff;
   color: rgba(0, 0, 0, 0.87);
+
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+
+  --mat-option-focus-state-layer-color: rgba(0, 0, 0, 0.04);
+  --mat-option-hover-state-layer-color: rgba(0, 0, 0, 0.04);
+  --mat-option-selected-state-layer-color: rgba(0, 0, 0, 0.04);
 
   &:not([class*='mat-elevation-z']) {
     box-shadow:
@@ -78,4 +59,48 @@ $outlineColor: #bfc1c3;
       0 4px 5px 0 rgba(0, 0, 0, 0.14),
       0 1px 10px 0 rgba(0, 0, 0, 0.12);
   }
+}
+
+.mat-mdc-tab-group-stretch-tabs
+> .mat-mdc-tab-header
+.mat-mdc-tab {
+  flex: 0 0 auto !important;
+  flex-grow: 0 !important;
+}
+
+.mat-mdc-tab-group
+> .mat-mdc-tab-header
+.mat-mdc-tab {
+  min-width: 80px !important;
+  height: 42px !important;
+  margin: 0 4px 7px 4px;
+  border-top: 3px solid #fff;
+  background-color: govuk-colour('light-grey');
+  color: govuk-colour('black');
+  opacity: 1 !important;
+}
+
+.mat-mdc-tab-group
+> .mat-mdc-tab-header
+.mat-mdc-tab.mdc-tab--active {
+  height: 48px !important;
+  margin: 1px 4px 0 4px;
+  border-top: 1px solid $outlineColor;
+  border-right: 1px solid $outlineColor;
+  border-left: 1px solid $outlineColor;
+  border-bottom: 0;
+  background-color: #fff;
+}
+
+.mat-mdc-tab
+.mdc-tab__text-label {
+  color: govuk-colour('black') !important;
+}
+
+.mat-mdc-tab
+  .mdc-tab__text-label {
+  font-family: 'GDS Transport', Arial, sans-serif;
+  font-size: 16px;
+  letter-spacing: normal;
+  font-weight: 400;
 }

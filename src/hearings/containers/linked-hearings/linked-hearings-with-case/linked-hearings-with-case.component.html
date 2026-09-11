@@ -34,13 +34,18 @@
             <tr class="govuk-table__row" *ngIf="case.caseHearings.length > 0">
               <th
                 scope="col"
-                [attr.colspan]="mode === pageMode.MANAGE_HEARINGS ? '2' : '3'"
+                [attr.colspan]="mode === pageMode.MANAGE_HEARINGS ? '3' : '4'"
                 class="govuk-table__header"
                 width="550px"
               >
                 {{ case.caseName }} &nbsp;{{ case.caseRef | caseReference }}
               </th>
-              <th scope="col" class="govuk-table__header" width="80px" *ngIf="mode === pageMode.MANAGE_HEARINGS">
+              <th
+                scope="col"
+                class="govuk-table__header"
+                width="80px"
+                *ngIf="mode === pageMode.MANAGE_HEARINGS && !hasCurrentHearing(case)"
+              >
                 <a href="#" class="clear-link" (click)="clearHearings(i); $event.preventDefault()">{{
                   'Clear' | rpxTranslate
                 }}</a>
@@ -51,13 +56,27 @@
                 {{ case.caseName }} &nbsp;{{ case.caseRef | caseReference }}
               </th>
             </tr>
+            <tr class="govuk-table__row" *ngIf="case.caseHearings.length > 0">
+              <th scope="col" class="govuk-table__header govuk-table-width-35-percent">
+                {{ 'Hearing Type' | rpxTranslate }}
+              </th>
+              <th scope="col" class="govuk-table__header govuk-table-width-20-percent">
+                {{ 'Hearing ID' | rpxTranslate }}
+              </th>
+              <th scope="col" class="govuk-table__header govuk-table-width-35-percent">
+                {{ 'Status' | rpxTranslate }}
+              </th>
+              <th scope="col" class="govuk-table__header govuk-table-width-10-percent">
+                <span class="govuk-visually-hidden">{{ 'Select' | rpxTranslate }}</span>
+              </th>
+            </tr>
           </thead>
           <tbody class="govuk-table__body">
             <ng-container formArrayName="caseHearings">
               <tr class="govuk-table__row" [formGroupName]="pos" *ngFor="let hearing of case.caseHearings; let pos = index">
                 <ng-container *ngIf="case.caseRef == caseId; else noMatch">
                   <ng-container *ngIf="hearing.hearingID == hearingId">
-                    <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
+                    <td scope="row" class="govuk-table__cell align-middle govuk-table-width-35-percent">
                       {{ hearing.hearingType | convertToValue: hearingStageOptions }}
                       <span *ngIf="!!hearing.hearingGroupRequestId">
                         &nbsp;&nbsp;
@@ -74,31 +93,21 @@
                         >
                       </span>
                     </td>
-                    <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
+                    <td scope="row" class="govuk-table__cell align-middle govuk-table-width-20-percent">
+                      {{ hearing.hearingID }}
+                    </td>
+                    <td scope="row" class="govuk-table__cell align-middle govuk-table-width-35-percent">
                       <strong class="govuk-tag govuk-tag--grey" [ngClass]="hearing.exuiDisplayStatus | hearingsBadge">{{
                         hearing.exuiDisplayStatus
                       }}</strong>
                     </td>
-                    <td class="govuk-table__cell govuk-table-width-10-percent">
-                      <div class="govuk-radios" data-module="govuk-radios">
-                        <div class="govuk-radios__item" *ngIf="isSelectable(hearing)">
-                          <input
-                            class="govuk-radios__input"
-                            id="{{ case.caseRef }}{{ hearing.hearingID }}"
-                            type="radio"
-                            [value]="true"
-                            (click)="updateLinkedCase(i, pos)"
-                            [formControlName]="'isSelected'"
-                            [checked]="getHearingsFormValue(i, pos).controls[pos].get('isSelected').value"
-                          />
-                          <label class="govuk-label govuk-radios__label" for="{{ case.caseRef }}{{ hearing.hearingID }}"></label>
-                        </div>
-                      </div>
+                    <td class="govuk-table__cell govuk-table-width-10-percent align-middle">
+                      <strong class="govuk-tag current-hearing-selected">{{ 'Selected' | rpxTranslate }}</strong>
                     </td>
                   </ng-container>
                 </ng-container>
                 <ng-template #noMatch>
-                  <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
+                  <td scope="row" class="govuk-table__cell align-middle govuk-table-width-35-percent">
                     {{ hearing.hearingType | convertToValue: hearingStageOptions }}
                     <span *ngIf="!!hearing.hearingGroupRequestId">
                       &nbsp;&nbsp;
@@ -115,12 +124,15 @@
                       >
                     </span>
                   </td>
-                  <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
+                  <td scope="row" class="govuk-table__cell align-middle govuk-table-width-20-percent">
+                    {{ hearing.hearingID }}
+                  </td>
+                  <td scope="row" class="govuk-table__cell align-middle govuk-table-width-35-percent">
                     <strong class="govuk-tag govuk-tag--grey" [ngClass]="hearing.exuiDisplayStatus | hearingsBadge">{{
                       hearing.exuiDisplayStatus
                     }}</strong>
                   </td>
-                  <td class="govuk-table__cell govuk-table-width-10-percent">
+                  <td class="govuk-table__cell">
                     <div class="govuk-radios" data-module="govuk-radios">
                       <div class="govuk-radios__item" *ngIf="isSelectable(hearing)">
                         <input
@@ -162,7 +174,7 @@
 </div>
 <br />
 
-<div *ngIf="!linkedCases?.length" class="no-linked-cases">
+<div *ngIf="!linkedCases?.length || (linkedCases?.length && !isHearingsAvailable)" class="no-linked-cases">
   <p>
     {{ 'You can only link to hearings from other linked cases.' | rpxTranslate }} <br />{{
       "Case links can be created from the 'Linked cases' tab" | rpxTranslate
@@ -173,7 +185,7 @@
   </div>
 </div>
 
-<div *ngIf="linkedCases?.length">
+<div *ngIf="linkedCases?.length && isHearingsAvailable">
   <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">{{ 'Continue' | rpxTranslate }}</button>
   <a href="#" class="link-cancel" (click)="onCancel(); $event.preventDefault()">{{ 'Cancel' | rpxTranslate }}</a>
 </div>

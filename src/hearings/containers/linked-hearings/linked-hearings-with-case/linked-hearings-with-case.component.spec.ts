@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -81,7 +81,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
     {
       caseRef: '4652724902696213',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Linked for a hearing'],
+      reasonsForLink: ['CLRC017'],
       caseHearings: [
         {
           hearingID: 'h100010',
@@ -109,14 +109,14 @@ describe('LinkedHearingsWithCaseComponent', () => {
     {
       caseRef: '8254902572336147',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+      reasonsForLink: ['CLRC017', 'Familial', 'Guardian', 'Linked for a hearing'],
     },
   ];
   const linkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
     {
       caseRef: '4652724902696213',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Linked for a hearing'],
+      reasonsForLink: ['CLRC017'],
       caseHearings: [
         {
           hearingID: 'h100010',
@@ -144,7 +144,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
     {
       caseRef: '8254902572336147',
       caseName: 'Smith vs Peterson',
-      reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+      reasonsForLink: ['CLRC017', 'Familial', 'Guardian', 'Linked for a hearing'],
       caseHearings: [
         {
           hearingID: 'h1000002',
@@ -193,7 +193,18 @@ describe('LinkedHearingsWithCaseComponent', () => {
         RouterTestingModule.withRoutes([]),
       ],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({
+          initialState: {
+            ...initialState,
+            hearings: {
+              ...initialState.hearings,
+              hearingLinks: {
+                ...initialState.hearings.hearingLinks,
+                serviceLinkedCasesWithHearings: linkedCasesWithHearings,
+              },
+            },
+          },
+        }),
         { provide: HearingsService, useValue: hearingsService },
         { provide: Router, useValue: mockRouter },
         {
@@ -288,6 +299,32 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(component.linkHearingForm.valid).toBe(true);
   });
 
+  it('should unlink hearings in manage link when only the current hearing is selected', () => {
+    spyOn(component, 'saveLinkedHearingInfo');
+    spyOn(component, 'onUnlinkHearings');
+    component.isManageLink = true;
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h1000002';
+    component.linkedHearingGroup = {
+      groupDetails: null,
+      hearingsInGroup: [],
+    };
+    component.linkedCases = linkedCasesWithHearings.map((caseInfo) => ({
+      ...caseInfo,
+      caseHearings: caseInfo.caseHearings?.map((hearingInfo) => ({
+        ...hearingInfo,
+        isSelected: caseInfo.caseRef === '8254902572336147' && hearingInfo.hearingID === 'h1000002',
+      })),
+    }));
+    component.initForm();
+
+    expect(component.isGetHearingsSelected()).toBe(false);
+    component.onSubmit();
+
+    expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
+    expect(component.onUnlinkHearings).toHaveBeenCalled();
+  });
+
   it('should navigate to case hearing page', () => {
     component.navigateToCaseHearing('8254902572336147');
     expect(mockRouter.navigate).toHaveBeenCalledWith([
@@ -302,6 +339,9 @@ describe('LinkedHearingsWithCaseComponent', () => {
   });
 
   it('should check update linked cases', () => {
+    component.linkedCases = linkedCasesWithHearings;
+    component.initForm();
+
     component.updateLinkedCase(0, 0);
     expect(component.getHearingsFormValue(0).controls[0].get('isSelected').value).toBe(true);
   });
@@ -390,8 +430,87 @@ describe('LinkedHearingsWithCaseComponent', () => {
   });
 
   it('should check update linked cases when hearing position is mentioned', () => {
+    component.linkedCases = linkedCasesWithHearings;
+    component.initForm();
+
     component.updateLinkedCase(0, 0);
     expect(component.getHearingsFormValue(0, 0).controls[0].get('isSelected').value).toBe(true);
+  });
+
+  it('should pre-select the current hearing without requiring user selection', () => {
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h1000002';
+    component.linkedCases = linkedCasesWithHearings;
+
+    component.initForm();
+
+    expect(component.isCurrentHearing('8254902572336147', 'h1000002')).toBe(true);
+    expect(component.getHearingsFormValue(1).controls[0].get('isSelected').value).toBe(true);
+  });
+
+  it('should only add cases with CLRC017 to the cases form array', () => {
+    component.linkedCases = linkedCasesWithHearings;
+
+    const formArray = component.getCasesFormArray;
+
+    expect(formArray.length).toBe(2);
+    expect(formArray.controls.map((control) => control.get('caseRef').value)).toEqual(['4652724902696213', '8254902572336147']);
+  });
+
+  it('should keep the current case in the cases form array even when it does not have CLRC017', () => {
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h1000002';
+    component.linkedCases = linkedCasesWithHearings.map((caseInfo) =>
+      caseInfo.caseRef === component.caseId
+        ? {
+            ...caseInfo,
+            reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+          }
+        : caseInfo
+    );
+
+    const formArray = component.getCasesFormArray;
+
+    expect(formArray.length).toBe(2);
+    expect(formArray.controls.map((control) => control.get('caseRef').value)).toEqual(['4652724902696213', '8254902572336147']);
+    expect((formArray.controls[1].get('caseHearings') as FormArray).controls[0].get('isSelected').value).toBe(true);
+  });
+
+  it('should set the current hearing selected in the form when hearing id types do not match', () => {
+    component.caseId = '8254902572336147';
+    component.hearingId = '1000002';
+    component.linkedCases = linkedCasesWithHearings.map((caseInfo) =>
+      caseInfo.caseRef === component.caseId
+        ? {
+            ...caseInfo,
+            caseHearings: caseInfo.caseHearings.map((hearingInfo) =>
+              hearingInfo.hearingID === 'h1000002'
+                ? {
+                    ...hearingInfo,
+                    hearingID: 1000002 as unknown as string,
+                    isSelected: false,
+                  }
+                : hearingInfo
+            ),
+          }
+        : caseInfo
+    );
+
+    component.initForm();
+
+    expect(component.getHearingsFormValue(1).controls[0].get('isSelected').value).toBe(true);
+  });
+
+  it('should not show the clear option for the current case hearing', () => {
+    component.mode = component.pageMode.MANAGE_HEARINGS;
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h1000002';
+    component.linkedCases = [linkedCasesWithHearings[0], linkedCasesWithHearings[2]];
+    component.initForm();
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelectorAll('.clear-link').length).toBe(1);
   });
 
   afterEach(() => {

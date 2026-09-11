@@ -65,13 +65,14 @@
                 </tr>
                 <tr class="govuk-table__row">
                   <th scope="col" class="govuk-table__header">{{ 'Case name and number' | rpxTranslate }}</th>
-                  <th scope="col" class="govuk-table__header">{{ 'Stage of hearing' | rpxTranslate }}</th>
+                  <th scope="col" class="govuk-table__header">{{ 'Hearing type' | rpxTranslate }}</th>
+                  <th scope="col" class="govuk-table__header">{{ 'Hearing ID' | rpxTranslate }}</th>
                   <th scope="col" class="govuk-table__header">{{ 'Position' | rpxTranslate }}</th>
                 </tr>
               </thead>
               <tbody class="govuk-table__body">
                 <tr class="govuk-table__row" *ngIf="selectedLinkedCases && selectedLinkedCases.length === 0">
-                  <td class="govuk-table__cell" colspan="3">{{ 'None' | rpxTranslate }}</td>
+                  <td class="govuk-table__cell" colspan="4">{{ 'None' | rpxTranslate }}</td>
                 </tr>
                 <ng-container *ngIf="selectedLinkedCases && selectedLinkedCases.length > 0" formArrayName="hearingOrder">
                   <tr
@@ -88,6 +89,9 @@
                     <td class="govuk-table__cell">
                       {{ group.get('hearingStage').value | convertToValue: hearingStageOptions }}
                     </td>
+                    <td class="govuk-table__cell">
+                      {{ group.get('hearingId').value }}
+                    </td>
                     <td *ngIf="hearingOrder">
                       <select
                         class="govuk-select"
@@ -100,7 +104,7 @@
                         }"
                       >
                         <option value=""></option>
-                        <option *ngFor="let pos of positionDropdownValues" [selected]="hasPosToBePreSelected(i) == pos">
+                        <option *ngFor="let pos of positionDropdownValues" [value]="pos">
                           {{ pos }}
                         </option>
                       </select>

@@ -31,7 +31,9 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-case-list': () => ['SOLICITOR'],
   '@integration-ccd-toolkit': () => ['SOLICITOR'],
   '@integration-create-case': () => ['SOLICITOR'],
+  '@integration-dynamic-field-config': () => ['SOLICITOR'],
   '@integration-data-loss': () => ['SOLICITOR'],
+  '@integration-event-behaviour': () => ['STAFF_ADMIN'],
   '@integration-hearings': (env) => [
     ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 0 }, env),
     ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 0 }, env),
@@ -39,7 +41,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-manage-tasks': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
   // Authentication and user details are route-mocked by this suite.
   '@integration-platform-services': () => [],
-  '@integration-probate-find-case': () => ['PROBATE_FIND_CASE'],
+  '@integration-probate-find-case': () => ['PROBATE_CASEWORKER'],
   '@integration-query-management': (env) => ['SOLICITOR', ...resolveStaffAdminSessionUsers(env)],
   '@integration-restricted-case': () => ['FPL_GLOBAL_SEARCH'],
   '@integration-search-case': (env) =>
@@ -47,6 +49,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
       userIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionUsers(env) : [userIdentifier]
     ),
   '@integration-share-case': () => ['SOLICITOR'],
+  '@integration-case-viewer': () => ['STAFF_ADMIN'],
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
 };
 

@@ -1,6 +1,6 @@
 import type { Browser } from '@playwright/test';
 
-import { setRuntimeUserCredentials } from '../../runtimeUserCredentials';
+import { resolveRuntimeUserCredentialsForIdentifier, setRuntimeUserCredentials } from '../../runtimeUserCredentials';
 import { createCivilCourtStaffAccountViaApi } from '../journeys/civilCaseJourneys';
 
 export {
@@ -22,7 +22,13 @@ export async function configureCivilCaseFlagsRuntimeUsers(browser: Browser): Pro
 }
 
 async function configureCivilCaseFlagsCourtStaffAliasCredentials(browser: Browser): Promise<void> {
-  if (getCivilCaseFlagsCourtStaffAlias() !== DEFAULT_CIVIL_COURT_STAFF_ALIAS) {
+  const alias = getCivilCaseFlagsCourtStaffAlias();
+  if (alias !== DEFAULT_CIVIL_COURT_STAFF_ALIAS) {
+    const credentials = resolveRuntimeUserCredentialsForIdentifier(alias);
+    if (!credentials) {
+      throw new Error(`Civil court staff alias ${alias} does not have configured credentials.`);
+    }
+    publishCivilCourtStaffLeaseCredentials(credentials);
     return;
   }
 
@@ -31,7 +37,9 @@ async function configureCivilCaseFlagsCourtStaffAliasCredentials(browser: Browse
     firstNonEmpty(process.env.CIVIL_COURT_STAFF_PASSWORD, process.env.PW_CIVIL_COURT_STAFF_PASSWORD) ??
     (email ? firstNonEmpty(process.env.DEFAULT_PASSWORD, process.env.TEST_PASSWORD) : undefined);
   if (email && password) {
-    setRuntimeUserCredentials(DEFAULT_CIVIL_COURT_STAFF_ALIAS, { email, password });
+    const credentials = { email, password };
+    setRuntimeUserCredentials(DEFAULT_CIVIL_COURT_STAFF_ALIAS, credentials);
+    publishCivilCourtStaffLeaseCredentials(credentials);
     return;
   }
 
@@ -46,12 +54,16 @@ async function configureCivilCaseFlagsCourtStaffAliasCredentials(browser: Browse
   const page = await context.newPage();
   try {
     const credentials = await createCivilCourtStaffAccountViaApi(page);
-    process.env.CIVIL_COURT_STAFF_USERNAME = credentials.email;
-    process.env.CIVIL_COURT_STAFF_PASSWORD = credentials.password;
+    publishCivilCourtStaffLeaseCredentials(credentials);
     setRuntimeUserCredentials(DEFAULT_CIVIL_COURT_STAFF_ALIAS, credentials);
   } finally {
     await context.close();
   }
+}
+
+function publishCivilCourtStaffLeaseCredentials(credentials: { email: string; password: string }): void {
+  process.env.CIVIL_COURT_STAFF_USERNAME = credentials.email;
+  process.env.CIVIL_COURT_STAFF_PASSWORD = credentials.password;
 }
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {

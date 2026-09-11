@@ -1,19 +1,42 @@
 import { test, expect } from '../../fixtures';
+import { SessionCapturePage } from '../../page-objects/pages/exui/sessionCapture.po';
+import { UserUtils } from '../../utils/user.utils';
 
-test(
-  'IDAM login page is up and displays username and password fields',
-  { tag: ['@e2e', '@e2e-smoke'] },
-  async ({ idamPage, page }) => {
-    await page.goto('');
+test('interactive IDAM login establishes an XUI session', { tag: ['@e2e', '@e2e-smoke'] }, async ({ idamPage, page }) => {
+  const credentials = new UserUtils().getUserCredentials('COURT_ADMIN');
+  const sessionCapturePage = new SessionCapturePage(page);
+  await page.goto('');
 
-    // Check page title contains expected text
-    await expect(idamPage.page).toHaveTitle(/HMCTS|Sign in/i);
+  await expect(idamPage.page).toHaveTitle(/HMCTS|Sign in/i);
+  await expect(idamPage.usernameInput).toBeVisible();
+  await idamPage.usernameInput.fill(credentials.email);
 
-    // Check for username and password input fields by ID
-    await expect(idamPage.usernameInput).toBeVisible();
+  if (!(await idamPage.passwordInput.isVisible().catch(() => false))) {
+    await sessionCapturePage.idamPrimarySubmitButton().click();
     await expect(idamPage.passwordInput).toBeVisible();
-
-    // Check for submit button
-    await expect(idamPage.submitBtn).toBeVisible();
   }
-);
+
+  await idamPage.passwordInput.fill(credentials.password);
+  await sessionCapturePage.idamPrimarySubmitButton().click();
+
+  await expect
+    .poll(
+      async () => {
+        const cookieNames = new Set((await page.context().cookies()).map((cookie) => cookie.name));
+        return cookieNames.has('Idam.Session') && cookieNames.has('__auth__');
+      },
+      { timeout: 30_000, message: 'Interactive IDAM login did not establish the required XUI session cookies' }
+    )
+    .toBe(true);
+
+  const authResponse = await page.request.get('/auth/isAuthenticated', { failOnStatusCode: false });
+  expect(authResponse.status(), 'Interactive login auth validation should return HTTP 200').toBe(200);
+  const authBody = (await authResponse.json()) as boolean | { isAuthenticated?: boolean };
+  expect(
+    authBody === true || (typeof authBody === 'object' && authBody?.isAuthenticated === true),
+    'Interactive IDAM login must be confirmed by /auth/isAuthenticated'
+  ).toBe(true);
+
+  await page.goto('/');
+  await expect(page.locator('exui-header')).toBeVisible();
+});

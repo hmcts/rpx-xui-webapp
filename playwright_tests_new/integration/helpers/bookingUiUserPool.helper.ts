@@ -7,6 +7,10 @@ export const BOOKING_UI_POOLED_USER_IDENTIFIERS = [
   'BOOKING_UI-FT-ON-2',
   'BOOKING_UI-FT-ON-3',
   'BOOKING_UI-FT-ON-4',
+  'BOOKING_UI-FT-ON-5',
+  'BOOKING_UI-FT-ON-6',
+  'BOOKING_UI-FT-ON-7',
+  'BOOKING_UI-FT-ON-8',
 ] as const;
 
 export type BookingUiUserIdentifier =

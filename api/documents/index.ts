@@ -1,6 +1,9 @@
+import { getConfigValue } from '../configuration';
+import { DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS, DOCUMENT_UPLOAD_THROTTLE_MAX_MS } from '../configuration/references';
+
 // Time configuration
-const INITIAL_TIMEOUT_PERIOD = 5000; // 5 seconds
-const MAX_TIMEOUT_PERIOD = 180000; // 180 seconds
+const INITIAL_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS);
+const MAX_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_MAX_MS);
 
 const LEGACY_BINARY_DOCUMENT_PATH = /^\/documents\/[^/]+\/binary\/?$/;
 const LEGACY_HTML_CSP = [

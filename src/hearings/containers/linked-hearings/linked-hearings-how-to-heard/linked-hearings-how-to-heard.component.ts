@@ -32,7 +32,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public selectedLinkedCases: ServiceLinkedCasesWithHearingsModel[];
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public validationErrors: { id: string; message: string }[] = [];
-  public positionDropdownValues = [];
+  public positionDropdownValues: number[] = [];
   public selectedOption: GroupLinkType;
   public selectionValid: boolean = true;
   public form: FormGroup;
@@ -140,7 +140,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       this.createForm();
       this.formInitialised = true;
     }
-
+    // Set the hearing group value in the form without emitting an event
     this.form.get('hearingGroup')?.setValue(this.selectedOption || '', { emitEvent: false });
   }
 

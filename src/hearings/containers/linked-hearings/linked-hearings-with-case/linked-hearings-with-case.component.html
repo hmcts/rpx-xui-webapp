@@ -40,7 +40,12 @@
               >
                 {{ case.caseName }} &nbsp;{{ case.caseRef | caseReference }}
               </th>
-              <th scope="col" class="govuk-table__header" width="80px" *ngIf="mode === pageMode.MANAGE_HEARINGS">
+              <th
+                scope="col"
+                class="govuk-table__header"
+                width="80px"
+                *ngIf="mode === pageMode.MANAGE_HEARINGS && !hasCurrentHearing(case)"
+              >
                 <a href="#" class="clear-link" (click)="clearHearings(i); $event.preventDefault()">{{
                   'Clear' | rpxTranslate
                 }}</a>

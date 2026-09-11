@@ -71,7 +71,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       if (state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings) {
         const serviceLinkedCasesWithHearings = state.hearingLinks.serviceLinkedCasesWithHearings;
         this.isHearingsSelected(serviceLinkedCasesWithHearings);
-        this.linkedCases = serviceLinkedCasesWithHearings.filter((caseInfo) => this.hasHearingLinkReason(caseInfo));
+        this.linkedCases = serviceLinkedCasesWithHearings.filter((caseInfo) => this.shouldIncludeCase(caseInfo));
         this.linkedCasesWithNoAccessToLoggedInUser =
           this.linkedCases &&
           state.hearingLinks.serviceLinkedCases?.filter(
@@ -110,7 +110,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     if (this.linkedCases) {
       return this.fb.array(
         this.linkedCases
-          .filter((caseInfo: ServiceLinkedCasesWithHearingsModel) => this.hasHearingLinkReason(caseInfo))
+          .filter((caseInfo: ServiceLinkedCasesWithHearingsModel) => this.shouldIncludeCase(caseInfo))
           .map((caseInfo: ServiceLinkedCasesWithHearingsModel) =>
             this.fb.group({
               caseRef: caseInfo.caseRef,
@@ -126,6 +126,19 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public hasHearingLinkReason(caseInfo: ServiceLinkedCasesWithHearingsModel): boolean {
     return caseInfo.reasonsForLink?.includes(HearingsUtils.HEARING_LINK_REASON_CODE);
+  }
+
+  // check if is the current hearing
+  public hasCurrentHearing(caseInfo: ServiceLinkedCasesWithHearingsModel): boolean {
+    return (
+      String(caseInfo.caseRef) === String(this.caseId) &&
+      !!caseInfo.caseHearings?.map((hearingInfo) => String(hearingInfo.hearingID)).includes(String(this.hearingId))
+    );
+  }
+
+  // should be included if hearing reason is linked for hearing or if it is the current hearing
+  public shouldIncludeCase(caseInfo: ServiceLinkedCasesWithHearingsModel): boolean {
+    return this.hasHearingLinkReason(caseInfo) || this.hasCurrentHearing(caseInfo);
   }
 
   public getHearingsFormArray(hearings: HearingDetailModel[] = [], caseRef?: string): FormArray {
@@ -157,12 +170,15 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     }
     return this.isManageLink
       ? !!this.linkedHearingGroup.hearingsInGroup &&
-          this.linkedHearingGroup.hearingsInGroup.some((x) => x.hearingId === hearingInfo.hearingID)
+          this.linkedHearingGroup.hearingsInGroup
+            .map((groupHearing) => String(groupHearing.hearingId))
+            .includes(String(hearingInfo.hearingID))
       : hearingInfo.isSelected;
   }
 
+  // Note: String checks because data can sometimes be numbers
   public isCurrentHearing(caseRef: string, hearingId: string): boolean {
-    return caseRef === this.caseId && hearingId === this.hearingId;
+    return String(caseRef) === String(this.caseId) && String(hearingId) === String(this.hearingId);
   }
 
   public initForm(): void {
@@ -172,9 +188,26 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       },
       { validator: this.validators.validateLinkedHearings() }
     );
+    this.setCurrentHearingSelected();
+  }
+
+  // Set the current hearing as selected in the form array
+  // This is so it shows in rest of journey and ordering can be chosen
+  public setCurrentHearingSelected(): void {
+    this.getCasesFormValue?.controls.forEach((caseControl) => {
+      if (String(caseControl.get('caseRef')?.value) === String(this.caseId)) {
+        const hearingsFormArray = caseControl.get('caseHearings') as FormArray;
+        hearingsFormArray?.controls.forEach((hearingControl) => {
+          if (String(hearingControl.get('hearingID')?.value) === String(this.hearingId)) {
+            hearingControl.get('isSelected')?.setValue(true);
+          }
+        });
+      }
+    });
   }
 
   public getHearingsAvailable() {
+    this.isHearingsAvailable = false;
     this.linkedCases.forEach((caseInfo) => {
       if (caseInfo.caseRef !== this.caseId && caseInfo.caseHearings?.length > 0) {
         this.isHearingsAvailable = true;
@@ -202,6 +235,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.navigate();
   }
 
+  // Note: Current case hearing will be unlinked when this action is performed
   public onUnlinkHearings(): void {
     this.hearingStore.dispatch(
       new fromHearingStore.ManageLinkedHearingGroup({
@@ -216,7 +250,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public isGetHearingsSelected(): boolean {
     let isHearingsSelected = false;
     this.linkHearingForm.value.linkedCasesWithHearings.forEach((caseInfo) => {
-      if (caseInfo.caseHearings && caseInfo.caseHearings.find((hearingInfo) => hearingInfo.isSelected === true)) {
+      if (
+        caseInfo.caseHearings &&
+        caseInfo.caseHearings.find(
+          // is selected and not current hearing
+          (hearingInfo: HearingDetailModel) =>
+            hearingInfo.isSelected === true && !this.isCurrentHearing(caseInfo.caseRef, hearingInfo.hearingID)
+        )
+      ) {
         isHearingsSelected = true;
       }
     });

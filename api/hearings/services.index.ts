@@ -28,8 +28,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
     if (serviceResponse) {
       const { status, data }: { status: number; data: ServiceHearingValuesModel } = serviceResponse;
       let dataByDefault = mapDataByDefault(data, reqBody.caseReference);
-      // TODO: Remove testing line
-      // if (process.env.FORCE_DEFAULT_HEARING_SCREEN_FLOW === 'true' || !data.screenFlow) {
       // If service don't supply the screenFlow pre-set the default screen flow from ExUI
       if (!data.screenFlow) {
         dataByDefault = {

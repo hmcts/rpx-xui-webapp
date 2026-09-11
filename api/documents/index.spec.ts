@@ -1,6 +1,8 @@
 import { expect, use } from 'chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { getConfigValue } from '../configuration';
+import { DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS } from '../configuration/references';
 import { handleRequest, handleResponse } from './index';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -48,6 +50,16 @@ describe('Documents Uploading', () => {
 
     const result = handleRequest(req, rateLimitedReq, proxyRes);
     expect(result).to.deep.equal(false);
+  });
+
+  it('should use the configured initial period when the session has no nextTimeout', () => {
+    const initialPeriod = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS);
+
+    const justInside = { method: 'POST', session: { lastUploadTime: Date.now() - initialPeriod + 500 } };
+    const justOutside = { method: 'POST', session: { lastUploadTime: Date.now() - initialPeriod - 500 } };
+
+    expect(handleRequest(req, justInside, proxyRes)).to.deep.equal(false);
+    expect(handleRequest(req, justOutside, proxyRes)).to.deep.equal(true);
   });
 
   it('should handle request and delete the cookie from the header', () => {

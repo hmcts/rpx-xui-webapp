@@ -8,6 +8,7 @@ const path = require('node:path');
 
 const SCHEMA_VERSION = 'xui-playwright-evidence/v1';
 const REPORT_FILE = 'xui-ci-evidence.json';
+const PRODUCER_VERSION = '2';
 const MAX_TEXT_LENGTH = 2000;
 const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
 const MAX_LOAD_SAMPLES = 600;
@@ -76,6 +77,16 @@ const sanitizeDiagnostic = (value) => {
 const sanitizeLabel = (value, maxLength = 200) => {
   const safe = sanitizeDiagnostic(value);
   return safe?.slice(0, maxLength);
+};
+
+const projectTransportError = (value) => {
+  if (typeof value !== 'string') return undefined;
+  const normalized = value.toUpperCase();
+  const code = normalized.match(
+    /\b(?:ECONNREFUSED|ECONNRESET|ETIMEDOUT|ENOTFOUND|EHOSTUNREACH|ENETUNREACH|EPIPE|UND_ERR_CONNECT_TIMEOUT|UND_ERR_HEADERS_TIMEOUT|UND_ERR_BODY_TIMEOUT|UND_ERR_SOCKET|UND_ERR_ABORTED|UND_ERR_RESPONSE_STATUS_CODE)\b/
+  )?.[0];
+  if (code) return code;
+  return /\b(?:TIMEOUT|TIMED\s+OUT)\b/.test(normalized) ? 'timeout' : undefined;
 };
 
 const sanitizeUrl = (value) => {
@@ -165,7 +176,7 @@ const projectApiEntries = (entries) => {
     if (!SAFE_METHODS.has(method) || !target) return [];
     const status = integer(entry.status);
     const duration = finiteNumber(entry.durationMs ?? entry.duration);
-    const transportError = sanitizeLabel(entry.error ?? entry.errorText, 300);
+    const transportError = projectTransportError(entry.error ?? entry.errorText);
     const signal = {
       type: 'network',
       method,
@@ -201,7 +212,7 @@ const projectFailureData = (value) => {
     const signal = {
       type: 'source_assessment',
       producer: 'xui-ci-evidence-reporter',
-      producer_version: '1',
+      producer_version: PRODUCER_VERSION,
       source_attachment: 'failure-data.json',
       ...(category ? { category } : {}),
       ...(phase ? { phase } : {}),
@@ -400,6 +411,20 @@ const readFirstExistingFile = (filePaths) => {
   return undefined;
 };
 
+const readCgroupCpuUsageNs = () => {
+  const cpuStat = readFirstExistingFile(['/sys/fs/cgroup/cpu.stat']);
+  const usageUsec = cpuStat?.match(/(?:^|\n)usage_usec\s+(\d+)/)?.[1];
+  if (usageUsec !== undefined) {
+    const parsed = Number(usageUsec);
+    if (Number.isFinite(parsed) && parsed >= 0) return parsed * 1000;
+  }
+  for (const filePath of ['/sys/fs/cgroup/cpuacct/cpuacct.usage', '/sys/fs/cgroup/cpu/cpuacct.usage']) {
+    const parsed = Number(readFirstExistingFile([filePath]));
+    if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+  }
+  return undefined;
+};
+
 const resolveLoadMetadata = () => {
   const logicalCpuCount = os.cpus().length || 1;
   const cpuMax = readFirstExistingFile(['/sys/fs/cgroup/cpu.max']);
@@ -412,7 +437,8 @@ const resolveLoadMetadata = () => {
   const cgroupMemoryLimit =
     rawMemoryLimit !== 'max' && parsedMemoryLimit > 0 && parsedMemoryLimit <= os.totalmem() * 2 ? parsedMemoryLimit : undefined;
   return {
-    effectiveCpuCount: round(cgroupCpuLimit ? Math.max(1, Math.min(logicalCpuCount, cgroupCpuLimit)) : logicalCpuCount),
+    effectiveCpuCount: round(cgroupCpuLimit ? Math.max(0.01, Math.min(logicalCpuCount, cgroupCpuLimit)) : logicalCpuCount),
+    logicalCpuCount,
     memoryLimitBytes: cgroupMemoryLimit ?? os.totalmem(),
     memoryLimitSource: cgroupMemoryLimit ? 'cgroup' : 'host',
   };
@@ -427,14 +453,39 @@ const getCpuTimes = () =>
     { idle: 0, all: 0 }
   );
 
-const createSystemSampler = (metadata) => {
+const createSystemSampler = (
+  metadata,
+  readCpuTimes = getCpuTimes,
+  readLoadAverage = () => os.loadavg()[0],
+  readCgroupCpuUsage = readCgroupCpuUsageNs,
+  readClock = () => process.hrtime.bigint()
+) => {
   let previousCpuTimes;
+  let previousCgroupCpuUsageNs;
+  let previousClockNs;
+  const effectiveCpuCount = Math.max(0.01, finiteNumber(metadata.effectiveCpuCount, 0.01) ?? 1);
+  const hostLogicalCpuCount = Math.max(1, finiteNumber(metadata.logicalCpuCount) ?? (os.cpus().length || 1));
   return (elapsedMs) => {
-    const currentCpuTimes = getCpuTimes();
+    const currentCpuTimes = readCpuTimes();
+    const currentCgroupCpuUsageNs = readCgroupCpuUsage();
+    const currentClockNs = readClock();
     const idleDelta = previousCpuTimes ? currentCpuTimes.idle - previousCpuTimes.idle : 0;
     const totalDelta = previousCpuTimes ? currentCpuTimes.all - previousCpuTimes.all : 0;
+    const wallDeltaNs = previousClockNs === undefined ? 0 : Number(currentClockNs - previousClockNs);
+    const usageDeltaNs = previousCgroupCpuUsageNs === undefined || currentCgroupCpuUsageNs === undefined
+      ? undefined
+      : currentCgroupCpuUsageNs - previousCgroupCpuUsageNs;
     previousCpuTimes = currentCpuTimes;
-    const cpuPercent = totalDelta > 0 ? Math.min(100, Math.max(0, ((totalDelta - idleDelta) / totalDelta) * 100)) : 0;
+    previousCgroupCpuUsageNs = currentCgroupCpuUsageNs;
+    previousClockNs = currentClockNs;
+    const scopedCpuPercent = usageDeltaNs !== undefined && usageDeltaNs >= 0 && wallDeltaNs > 0
+      ? Math.min(100, Math.max(0, (usageDeltaNs / wallDeltaNs / effectiveCpuCount) * 100))
+      : undefined;
+    // Schema v1 has no CPU source or availability fields. A missing scoped delta falls back to host CPU;
+    // the existing first-sample zero must not be interpreted as scoped zero usage by consumers.
+    const cpuPercent = scopedCpuPercent ?? (
+      totalDelta > 0 ? Math.min(100, Math.max(0, ((totalDelta - idleDelta) / totalDelta) * 100)) : 0
+    );
     const rawMemoryCurrent =
       metadata.memoryLimitSource === 'cgroup'
         ? readFirstExistingFile(['/sys/fs/cgroup/memory.current', '/sys/fs/cgroup/memory/memory.usage_in_bytes'])
@@ -446,7 +497,8 @@ const createSystemSampler = (metadata) => {
       elapsedMs,
       cpuPercent: round(cpuPercent),
       memoryUsedPercent: round(Math.min(100, Math.max(0, (usedMemory / metadata.memoryLimitBytes) * 100))),
-      load1PerCore: round(os.loadavg()[0] / metadata.effectiveCpuCount),
+      // v1 exposes no load scope marker: keep raw host load divided by host logical CPUs.
+      load1PerCore: round(Math.max(0, finiteNumber(readLoadAverage()) ?? 0) / hostLogicalCpuCount),
     };
   };
 };
@@ -544,12 +596,17 @@ const projectName = (testCase) => {
 
 const inferSuite = (outputFolder) => {
   const normalized = String(outputFolder).toLowerCase();
+  if (/(?:a11y|accessibility)/.test(normalized)) return 'accessibility';
+  if (normalized.includes('smoke')) return 'smoke';
   if (normalized.includes('integration-nightly')) return 'integration-nightly';
   if (normalized.includes('integration')) return 'integration';
   if (/(?:^|[/_-])api(?:[/_-]|$)/.test(normalized)) return 'api';
   if (/(?:^|[/_-])(?:playwright-)?(?:e2e|ui)(?:[/_-]|$)/.test(normalized)) return 'e2e';
   return 'playwright';
 };
+
+const isAccessibilityLabel = (label) => /(?:a11y|accessibility)/i.test(String(label));
+const isSmokeLabel = (label) => /smoke/i.test(String(label));
 
 const resolveRepository = (options, env) => {
   const configured = options.repository ?? env.GITHUB_REPOSITORY?.split('/').pop() ?? env.REPOSITORY_NAME;
@@ -706,6 +763,8 @@ class CiEvidenceReporter {
     const projects = [...new Set([...this.tests.values()].map((record) => record.project))].sort((left, right) =>
       left.localeCompare(right)
     );
+    if (isAccessibilityLabel(this.suite) || projects.some(isAccessibilityLabel)) return;
+    const suite = projects.some(isSmokeLabel) && !['api', 'integration', 'integration-nightly'].includes(this.suite) ? 'smoke' : this.suite;
     const shard =
       this.config?.shard && typeof this.config.shard === 'object'
         ? { current: integer(this.config.shard.current, 1), total: integer(this.config.shard.total, 1) }
@@ -713,7 +772,7 @@ class CiEvidenceReporter {
     const documentId = stableHash([
       SCHEMA_VERSION,
       correlation,
-      this.suite,
+      suite,
       startedAt.toISOString(),
       projects,
       shard,
@@ -724,12 +783,12 @@ class CiEvidenceReporter {
       document: {
         document_id: documentId,
         created_at: createdAt.toISOString(),
-        producer: { name: 'xui-ci-evidence-reporter', version: '1' },
+        producer: { name: 'xui-ci-evidence-reporter', version: PRODUCER_VERSION },
         redaction_policy: 'xui-ci-allowlist/v1',
       },
       correlation,
       run: {
-        suite: this.suite,
+        suite,
         projects,
         discovered_tests: this.discoveredTests ?? this.tests.size,
         attempt_count: [...this.tests.values()].reduce((sum, record) => sum + record.attempts.length, 0),

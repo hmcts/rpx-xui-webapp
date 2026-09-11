@@ -1,5 +1,1 @@
-export interface HearingWindowModel {
-  dateRangeStart?: string;
-  dateRangeEnd?: string;
-  firstDateTimeMustBe?: string;
-}
+export { HearingWindowModel } from './hearing-payload-support.model';

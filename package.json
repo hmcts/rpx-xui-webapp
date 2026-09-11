@@ -23,6 +23,7 @@
     "coverage:node": "cd api && yarn coverage",
     "fortifyScan": "./test/java/gradlew -p test/java resolveFortifyDependencies fortifyScan",
     "lint": "yarn lint:prettier && yarn lint:src && yarn lint:api",
+    "test:ci-evidence": "node --test test/ci-evidence.reporter.test.cjs",
     "lint:ng": "ng lint rpx-exui",
     "lint:test": "node ./node_modules/eslint/bin/eslint.js test",
     "lint:src": "node ./node_modules/eslint/bin/eslint.js src",

@@ -18,6 +18,11 @@ const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || 'xui-playwright-e2e.html';
 
+const shouldEmitCiEvidence = (env: EnvMap): boolean => {
+  const configured = env.PLAYWRIGHT_CI_EVIDENCE?.trim().toLowerCase();
+  return configured ? configured === 'true' : Boolean(env.CI || env.JENKINS_URL || env.BUILD_NUMBER);
+};
+
 const resolveOdhinTitle = (env: EnvMap = process.env): string => {
   const configured = env.PW_ODHIN_TITLE?.trim();
   if (configured) {
@@ -152,6 +157,12 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
     ],
   ];
+  if (shouldEmitCiEvidence(env)) {
+    reporter.push([
+      './playwright_tests_new/common/reporters/ci-evidence.reporter.cjs',
+      { outputFolder: odhinOutputFolder, repository: 'rpx-xui-webapp', suite: 'e2e' },
+    ]);
+  }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
     reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }

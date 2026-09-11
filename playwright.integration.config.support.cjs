@@ -75,6 +75,11 @@ const resolveFlag = (rawValue, defaultValue) => {
   return defaultValue;
 };
 
+const shouldEmitCiEvidence = (env) => {
+  const configured = env.PLAYWRIGHT_CI_EVIDENCE?.trim().toLowerCase();
+  return configured ? configured === 'true' : Boolean(env.CI || env.JENKINS_URL || env.BUILD_NUMBER);
+};
+
 const resolveEnvironmentFromUrl = (url) => {
   try {
     const hostname = new URL(url).hostname.toLowerCase();
@@ -228,6 +233,12 @@ const buildConfig = (env = process.env) => {
         profile: resolveOdhinProfile(env),
         runtimeHookTimeoutMs: resolveOdhinRuntimeHookTimeoutMs(env),
       },
+    ]);
+  }
+  if (shouldEmitCiEvidence(env)) {
+    reporter.push([
+      './playwright_tests_new/common/reporters/ci-evidence.reporter.cjs',
+      { outputFolder: odhinOutputFolder, repository: 'rpx-xui-webapp', suite: 'integration' },
     ]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {

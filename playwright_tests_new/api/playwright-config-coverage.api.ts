@@ -904,4 +904,16 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' })).toBe(15_000);
     expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true', PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS: '0' })).toBe(0);
   });
+
+  test('all Jenkins Playwright configs publish canonical evidence beside Odhín', () => {
+    const reporterPath = './playwright_tests_new/common/reporters/ci-evidence.reporter.cjs';
+    const containsEvidence = (config: { reporter: Array<[string, unknown?]> }) =>
+      config.reporter.some(([name]) => name === reporterPath);
+    const env = { BUILD_NUMBER: '42', PLAYWRIGHT_REPORT_FOLDER: 'functional-output/tests/proof/odhin-report' };
+
+    expect(containsEvidence(buildConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildE2eConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildNightlyConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildIntegrationConfig(env) as never)).toBe(true);
+  });
 });

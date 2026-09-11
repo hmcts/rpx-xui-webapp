@@ -26,6 +26,11 @@ const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBas
 
 const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 
+const shouldEmitCiEvidence = (env: EnvMap): boolean => {
+  const configured = env.PLAYWRIGHT_CI_EVIDENCE?.trim().toLowerCase();
+  return configured ? configured === 'true' : Boolean(env.CI || env.JENKINS_URL || env.BUILD_NUMBER);
+};
+
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
@@ -163,6 +168,12 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
     ],
   ];
+  if (shouldEmitCiEvidence(env)) {
+    reporter.push([
+      './playwright_tests_new/common/reporters/ci-evidence.reporter.cjs',
+      { outputFolder: odhinOutputFolder, repository: 'rpx-xui-webapp' },
+    ]);
+  }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
 
   return defineConfig({

@@ -9,6 +9,10 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
+  "documentUploadThrottle": {
+    "initialMs": 5000,
+    "maxMs": 180000
+  },
   "stub": false,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
@@ -119,6 +123,7 @@
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
   "staffSupportedJurisdictions": "ST_CIC,CIVIL,EMPLOYMENT,PRIVATELAW,PUBLICLAW,IA,SSCS,DIVORCE,FR,PROBATE,HRS",
   "decentralisedCaseTypeConfig": {},
+  "decentralisedServiceMap": {},
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW,PCS",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },

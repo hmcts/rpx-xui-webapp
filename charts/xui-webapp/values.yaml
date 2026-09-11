@@ -27,6 +27,7 @@ nodejs:
   environment:
     REFORM_TEAM: rpx
     REFORM_SERVICE_NAME: xui-webapp
+    OTEL_SERVICE_NAME: Web
     NODE_ENV: production
     NODE_CONFIG_ENV: production
     NODE_OPTIONS: --max-old-space-size=8192

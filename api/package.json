@@ -19,6 +19,7 @@
     "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
   },
   "dependencies": {
-    "applicationinsights": "^3.16.0"
+    "applicationinsights": "^3.16.0",
+    "express": "^5.2.1"
   }
 }

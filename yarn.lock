@@ -16657,6 +16657,7 @@ __metadata:
   resolution: "jui@workspace:api"
   dependencies:
     applicationinsights: "npm:^3.16.0"
+    express: "npm:^5.2.1"
   languageName: unknown
   linkType: soft
 

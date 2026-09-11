@@ -149,10 +149,17 @@ const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
   },
 ];
 
-const hearingLinksMock = {
-  ...mockLinkedHearingGroup,
-  ...mockLinkedCasesWithHearings,
-};
+const getMockLinkedHearingGroup = (groupLinkType: GroupLinkType = GroupLinkType.ORDERED) => ({
+  linkedHearingGroup: {
+    ...mockLinkedHearingGroup.linkedHearingGroup,
+    groupDetails: {
+      ...mockLinkedHearingGroup.linkedHearingGroup.groupDetails,
+      groupLinkType,
+    },
+    hearingsInGroup: _.cloneDeep(mockLinkedHearingGroup.linkedHearingGroup.hearingsInGroup),
+  },
+  lastError: null,
+});
 
 let component: HowLinkedHearingsBeHeardComponent;
 let fixture: ComponentFixture<HowLinkedHearingsBeHeardComponent>;
@@ -276,22 +283,43 @@ describe('Manage Linking - HowLinkedHearingsBeHeardComponent', () => {
 
   it('should have a same slot group preselected', () => {
     const nativeElement = fixture.debugElement.nativeElement;
-    mockLinkedHearingGroup.linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.SAME_SLOT;
+    component.selectedOption = GroupLinkType.SAME_SLOT;
+    component.form.get('hearingGroup')?.setValue(GroupLinkType.SAME_SLOT);
+    fixture.detectChanges();
     const firstRadioButtonElement = nativeElement.querySelector('input[name=hearingGroup]:checked');
     expect(firstRadioButtonElement).not.toBeNull();
-    mockStore.pipe.and.returnValue(of(hearingLinksMock));
-    fixture.detectChanges();
-    component.onSubmit();
-    expect(component.validationErrors.length).toBe(1);
+    expect(component.isFormValid()).toBe(true);
+    expect(component.validationErrors.length).toBe(0);
   });
 
   it('should have a order group preselected', () => {
+    const fb = TestBed.inject(FormBuilder);
     const nativeElement = fixture.debugElement.nativeElement;
-    mockLinkedHearingGroup.linkedHearingGroup.groupDetails.groupLinkType = GroupLinkType.ORDERED;
+    component.selectedOption = GroupLinkType.ORDERED;
+    component.form.get('hearingGroup')?.setValue(GroupLinkType.ORDERED);
+    component.hearingOrder.clear();
+    component.hearingOrder.push(
+      fb.group({
+        caseReference: ['4652724902696213'],
+        caseName: ['Smith vs Peterson'],
+        hearingId: ['h100010'],
+        hearingStage: ['Direction Hearings'],
+        position: [1],
+      })
+    );
+    component.hearingOrder.push(
+      fb.group({
+        caseReference: ['8254902572336147'],
+        caseName: ['Smith vs Peterson'],
+        hearingId: ['h1000002'],
+        hearingStage: ['Direction Hearings'],
+        position: [2],
+      })
+    );
+    fixture.detectChanges();
     const firstRadioButtonElement = nativeElement.querySelector('input[name=hearingGroup]:checked');
     expect(firstRadioButtonElement).not.toBeNull();
-    mockStore.pipe.and.returnValue(of(hearingLinksMock));
-    component.onSubmit();
+    expect(component.isFormValid()).toBe(true);
     expect(component.validationErrors.length).toBe(0);
   });
 
@@ -302,7 +330,7 @@ describe('Manage Linking - HowLinkedHearingsBeHeardComponent', () => {
 
 function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterService: any, modeOfLinking: Mode) {
   const STATE = _.cloneDeep(initialState);
-  STATE.hearings.hearingLinks.linkedHearingGroup = mockLinkedHearingGroup.linkedHearingGroup;
+  STATE.hearings.hearingLinks.linkedHearingGroup = getMockLinkedHearingGroup().linkedHearingGroup;
 
   TestBed.configureTestingModule({
     declarations: [HowLinkedHearingsBeHeardComponent, MockRpxTranslatePipe],

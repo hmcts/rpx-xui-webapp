@@ -84,9 +84,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
           if (hearingLinks.serviceLinkedCases) {
             this.linkedCases = [];
             hearingLinks.serviceLinkedCases.forEach((linkedCase) => {
-              const caseHearingsCanBeLinked = linkedCase.reasonsForLink?.some(
-                (reason) => reason === HearingsUtils.HEARING_LINK_REASON_CODE
-              );
+              const caseHearingsCanBeLinked = linkedCase.reasonsForLink?.includes(HearingsUtils.HEARING_LINK_REASON_CODE);
               if (caseHearingsCanBeLinked) {
                 const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter((reason) =>
                   linkedCase.reasonsForLink.some((reasonCode) => reason.key === reasonCode)

@@ -201,6 +201,39 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
     expect(component.validationErrors.length).toBe(0);
   });
 
+  it('should show a validation error when selected positions contain duplicates and the form selection is valid', () => {
+    const fb = TestBed.inject(FormBuilder);
+    component.form.patchValue({ hearingGroup: GroupLinkType.ORDERED });
+    component.hearingOrder.clear();
+    component.hearingOrder.push(fb.group({ position: [1] }));
+    component.hearingOrder.push(fb.group({ position: [1] }));
+
+    const result = component.isFormValid();
+
+    expect(result).toBe(false);
+    expect(component.form.valid).toBe(true);
+    expect(component.hearingOrder.valid).toBe(true);
+    expect(component.validationErrors).toEqual([
+      {
+        id: 'selection-error',
+        message: 'Check the position you have given to each hearing',
+      },
+    ]);
+  });
+
+  it('should return true when the form selection is valid and selected positions are unique', () => {
+    const fb = TestBed.inject(FormBuilder);
+    component.form.patchValue({ hearingGroup: GroupLinkType.ORDERED });
+    component.hearingOrder.clear();
+    component.hearingOrder.push(fb.group({ position: [1] }));
+    component.hearingOrder.push(fb.group({ position: [2] }));
+
+    const result = component.isFormValid();
+
+    expect(result).toBe(true);
+    expect(component.validationErrors.length).toBe(0);
+  });
+
   it('should navigate to previous page', () => {
     component.caseId = '8254902572336147';
     component.hearingId = 'h1000002';

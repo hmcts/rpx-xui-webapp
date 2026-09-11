@@ -24,6 +24,10 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   styleUrls: ['./linked-hearings-how-to-heard.component.scss'],
 })
 export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
+  private static readonly SELECTION_ERROR = {
+    id: 'selection-error',
+    message: 'Check the position you have given to each hearing',
+  };
   public caseId: string;
   public hearingGroupRequestId: string;
   public hearingId: string;
@@ -206,8 +210,10 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     const validSelection = this.hearingOrder.valid && this.form.valid;
     if (!validSelection) {
       this.validationErrors.push({
-        id: 'selection-error',
-        message: !this.form.value.hearingGroup ? 'Please make a selection' : 'Check the position you have given to each hearing',
+        id: HowLinkedHearingsBeHeardComponent.SELECTION_ERROR.id,
+        message: !this.form.value.hearingGroup
+          ? 'Please make a selection'
+          : HowLinkedHearingsBeHeardComponent.SELECTION_ERROR.message,
       });
       return false;
     }
@@ -217,10 +223,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       .filter((value) => value !== '');
     const hasDuplicatePositions = new Set(selectedPositions).size !== selectedPositions.length;
     if (hasDuplicatePositions) {
-      this.validationErrors.push({
-        id: 'selection-error',
-        message: 'Check the position you have given to each hearing',
-      });
+      this.validationErrors.push(HowLinkedHearingsBeHeardComponent.SELECTION_ERROR);
       return false;
     }
 

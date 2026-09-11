@@ -251,8 +251,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     let isHearingsSelected = false;
     this.linkHearingForm.value.linkedCasesWithHearings.forEach((caseInfo) => {
       if (
-        caseInfo.caseHearings &&
-        caseInfo.caseHearings.find(
+        caseInfo.caseHearings?.some(
           // is selected and not current hearing
           (hearingInfo: HearingDetailModel) =>
             hearingInfo.isSelected === true && !this.isCurrentHearing(caseInfo.caseRef, hearingInfo.hearingID)

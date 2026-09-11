@@ -1,4 +1,5 @@
 import { NavigationItem } from '../../models/theming.model';
+import { UserDetails, WAVerificationModel } from '../../models';
 import {
   filterNavigationItemsByAccess,
   filterNavigationItemsByFlags,
@@ -101,6 +102,69 @@ describe('navigation access utils', () => {
     expect(filterNavigationItemsByRoles(items, ['matched-role'])).toEqual([items[0]]);
   });
 
+  it('should filter navigation items using WA role verification options', () => {
+    const items: NavigationItem[] = [
+      {
+        href: '/work/my-work/list',
+        active: false,
+        roles: ['case-manager'],
+        text: 'My work',
+      },
+      {
+        href: '/work/all-work/tasks',
+        active: false,
+        roles: ['unsupported-case-manager'],
+        text: 'All work',
+      },
+      {
+        href: '/search',
+        active: false,
+        notRoles: ['blocked-role'],
+        text: 'Search',
+      },
+    ];
+    const userDetails = {
+      userInfo: {
+        roles: ['case-manager', 'unsupported-case-manager', 'blocked-role'],
+      },
+      roleAssignmentInfo: [
+        {
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'ORGANISATION',
+        },
+        {
+          jurisdiction: 'SSCS',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'unsupported-case-manager',
+          roleType: 'ORGANISATION',
+        },
+        {
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'blocked-role',
+          roleType: 'ORGANISATION',
+        },
+      ],
+    } as UserDetails;
+    const waVerification: WAVerificationModel = {
+      waSupportedCategories: ['LEGAL_OPERATIONS'],
+      waSupportedRoleTypes: ['ORGANISATION'],
+      waSupportedJurisdictions: ['IA'],
+    };
+    const onRoleMatched = jasmine.createSpy('onRoleMatched');
+
+    const filteredItems = filterNavigationItemsByRoles(items, [], {
+      userDetails,
+      waVerification,
+      onRoleMatched,
+    });
+
+    expect(filteredItems).toEqual([items[0]]);
+    expect(onRoleMatched).toHaveBeenCalledOnceWith('case-manager', items[0]);
+  });
+
   it('should handle omitted and nullish role inputs defensively', () => {
     const unrestrictedItem: NavigationItem = {
       href: '/cases',
@@ -184,6 +248,50 @@ describe('navigation access utils', () => {
     ];
 
     expect(filterNavigationItemsByAccess(items, ['matched-role'], menuFlags)).toEqual([items[0]]);
+  });
+
+  it('should filter navigation items by WA role verification options before applying flags', () => {
+    const items: NavigationItem[] = [
+      {
+        href: '/work/my-work/list',
+        active: false,
+        roles: ['case-manager'],
+        flags: ['enabledFlag'],
+        text: 'My work',
+      },
+      {
+        href: '/work/all-work/tasks',
+        active: false,
+        roles: ['case-manager'],
+        flags: ['disabledFlag'],
+        text: 'All work',
+      },
+    ];
+    const userDetails = {
+      userInfo: {
+        roles: ['case-manager'],
+      },
+      roleAssignmentInfo: [
+        {
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'ORGANISATION',
+        },
+      ],
+    } as UserDetails;
+    const waVerification: WAVerificationModel = {
+      waSupportedCategories: ['LEGAL_OPERATIONS'],
+      waSupportedRoleTypes: ['ORGANISATION'],
+      waSupportedJurisdictions: ['IA'],
+    };
+
+    expect(
+      filterNavigationItemsByAccess(items, [], menuFlags, {
+        userDetails,
+        waVerification,
+      })
+    ).toEqual([items[0]]);
   });
 
   it('should default access filtering inputs when arguments are omitted', () => {

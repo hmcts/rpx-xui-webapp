@@ -61,6 +61,48 @@ function createFormLoginContext(
   };
 }
 
+function createProgressiveFormLoginContext(): {
+  context: FakeRequestContext;
+  postedForms: Array<{ url: string; form: Record<string, string> }>;
+} {
+  const postedForms: Array<{ url: string; form: Record<string, string> }> = [];
+  const context: FakeRequestContext = {
+    get: async (url: string) => {
+      if (url === 'auth/login') {
+        return {
+          status: statusFn(200),
+          url: () => 'https://example.test/enter-email',
+          text: async () =>
+            '<form method="POST"><input name="email"><input type="hidden" name="_csrf" value="email-token"></form>',
+        };
+      }
+      if (url === 'auth/isAuthenticated') {
+        return {
+          status: statusFn(200),
+          headers: () => ({ 'content-type': 'application/json' }),
+          text: async () => 'true',
+        };
+      }
+      return { status: statusFn(200) };
+    },
+    post: async (url: string, options?: Record<string, unknown>) => {
+      postedForms.push({ url, form: options?.form as Record<string, string> });
+      if (postedForms.length === 1) {
+        return {
+          status: statusFn(200),
+          url: () => 'https://example.test/enter-password',
+          text: async () =>
+            '<form method="POST"><input type="password" name="password"><input type="hidden" name="_csrf" value="password-token"></form>',
+        };
+      }
+      return { status: statusFn(200) };
+    },
+    storageState: async () => {},
+    dispose: async () => {},
+  };
+  return { context, postedForms };
+}
+
 type AuthEnvironmentKey = 'API_AUTH_MODE' | 'IDAM_SECRET' | 'IDAM_WEB_URL' | 'IDAM_TESTING_SUPPORT_URL' | 'S2S_URL';
 
 type AuthEnvironmentConfig = Partial<Record<AuthEnvironmentKey, string>>;
@@ -113,7 +155,7 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
       authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
         requestFactory: async () => createFormLoginContext(400, 200, ''),
       })
-    ).rejects.toThrow('GET /auth/login');
+    ).rejects.toThrow('login identity: role=solicitor; username=test-user');
 
     await expect(
       authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
@@ -128,6 +170,18 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
     await authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
       requestFactory: async () => createFormLoginContext(200, 200, '<html></html>'),
     });
+  });
+
+  test('labels unavailable login routes as a shared XUI authentication prerequisite', () => {
+    expect(
+      authTest.describeLoginRouteFailure({
+        headers: () => ({ 'x-azure-ref': 'safe-gateway-reference' }),
+      })
+    ).toBe('XUI authentication route unavailable before IDAM form submission; gatewayRef=safe-gateway-reference');
+  });
+
+  test('includes the selected login identity without exposing its password', () => {
+    expect(authTest.describeLoginIdentity('solicitor', mockCredentials)).toBe('role=solicitor; username=test-user');
   });
 
   test('createStorageStateViaForm waits for post-login authentication readiness', async () => {
@@ -146,6 +200,22 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
     });
 
     expect(authChecks.filter((url) => url === 'auth/isAuthenticated')).toHaveLength(3);
+  });
+
+  test('createStorageStateViaForm supports progressive IDAM email and password forms', async () => {
+    const { context, postedForms } = createProgressiveFormLoginContext();
+    await authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
+      authCheckAttempts: 1,
+      requestFactory: async () => context,
+    });
+
+    expect(postedForms).toEqual([
+      { url: 'https://example.test/enter-email', form: { _csrf: 'email-token', email: 'test-user', save: 'Continue' } },
+      {
+        url: 'https://example.test/enter-password',
+        form: { _csrf: 'password-token', password: mockPassword, save: 'Sign in' },
+      },
+    ]);
   });
 
   test('waitForAuthenticated ignores invalid env retry values', async () => {

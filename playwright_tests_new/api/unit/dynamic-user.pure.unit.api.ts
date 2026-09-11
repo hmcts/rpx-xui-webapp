@@ -20,7 +20,11 @@ import {
   setRuntimeUserCredentials,
 } from '../../E2E/utils/runtimeUserCredentials.js';
 import { getAliasBaselineRoles, resolveProvisionRoleNamesForAlias } from '../../E2E/utils/test-setup/provisionRoleResolution.js';
-import { isTransientWorkflowFailure } from '../../E2E/utils/transient-failure.utils.js';
+import {
+  isBrowserLifecycleFailure,
+  isDependencyEnvironmentFailure,
+  isTransientWorkflowFailure,
+} from '../../E2E/utils/transient-failure.utils.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -45,8 +49,18 @@ const ENV_KEYS = [
   'BOOKING_UI_FT_ON_3_PASSWORD',
   'BOOKING_UI_FT_ON_4_USERNAME',
   'BOOKING_UI_FT_ON_4_PASSWORD',
+  'BOOKING_UI_FT_ON_5_USERNAME',
+  'BOOKING_UI_FT_ON_5_PASSWORD',
+  'BOOKING_UI_FT_ON_6_USERNAME',
+  'BOOKING_UI_FT_ON_6_PASSWORD',
+  'BOOKING_UI_FT_ON_7_USERNAME',
+  'BOOKING_UI_FT_ON_7_PASSWORD',
+  'BOOKING_UI_FT_ON_8_USERNAME',
+  'BOOKING_UI_FT_ON_8_PASSWORD',
   'STAFF_ADMIN_USERNAME',
   'STAFF_ADMIN_PASSWORD',
+  'COURT_ADMIN_USERNAME',
+  'COURT_ADMIN_PASSWORD',
   'STAFF_ADMIN_1_USERNAME',
   'STAFF_ADMIN_1_PASSWORD',
   'STAFF_ADMIN_2_USERNAME',
@@ -55,6 +69,14 @@ const ENV_KEYS = [
   'STAFF_ADMIN_3_PASSWORD',
   'STAFF_ADMIN_4_USERNAME',
   'STAFF_ADMIN_4_PASSWORD',
+  'STAFF_ADMIN_5_USERNAME',
+  'STAFF_ADMIN_5_PASSWORD',
+  'STAFF_ADMIN_6_USERNAME',
+  'STAFF_ADMIN_6_PASSWORD',
+  'STAFF_ADMIN_7_USERNAME',
+  'STAFF_ADMIN_7_PASSWORD',
+  'STAFF_ADMIN_8_USERNAME',
+  'STAFF_ADMIN_8_PASSWORD',
   'HEARING_MANAGER_CR84_OFF_USERNAME',
   'HEARING_MANAGER_CR84_OFF_PASSWORD',
   'HEARING_MANAGER_CR84_OFF_1_USERNAME',
@@ -67,6 +89,22 @@ const ENV_KEYS = [
   'HEARING_MANAGER_CR84_ON_1_PASSWORD',
   'HEARING_MANAGER_CR84_ON_4_USERNAME',
   'HEARING_MANAGER_CR84_ON_4_PASSWORD',
+  'PRL_SOLICITOR_USERNAME',
+  'PRL_SOLICITOR_PASSWORD',
+  'PRL_SOLICITOR2_USERNAME',
+  'PRL_SOLICITOR2_PASSWORD',
+  'PRL_SOLICITOR3_USERNAME',
+  'PRL_SOLICITOR3_PASSWORD',
+  'PRL_SOLICITOR4_USERNAME',
+  'PRL_SOLICITOR4_PASSWORD',
+  'PRL_SOLICITOR5_USERNAME',
+  'PRL_SOLICITOR5_PASSWORD',
+  'PRL_SOLICITOR6_USERNAME',
+  'PRL_SOLICITOR6_PASSWORD',
+  'PRL_SOLICITOR7_USERNAME',
+  'PRL_SOLICITOR7_PASSWORD',
+  'PRL_SOLICITOR8_USERNAME',
+  'PRL_SOLICITOR8_PASSWORD',
   'FPL_GLOBAL_SEARCH_USERNAME',
   'FPL_GLOBAL_SEARCH_PASSWORD',
   'USER_WITH_FLAGS_USERNAME',
@@ -77,6 +115,12 @@ const ENV_KEYS = [
   'PW_IAC_CASEOFFICER_R1_PASSWORD',
   'PW_IAC_CASEOFFICER_R2_EMAIL',
   'PW_IAC_CASEOFFICER_R2_PASSWORD',
+  'IAC_JUDGE_WA_R1_USERNAME',
+  'IAC_JUDGE_WA_R1_PASSWORD',
+  'IAC_CASEOFFICER_R1_USERNAME',
+  'IAC_CASEOFFICER_R1_PASSWORD',
+  'IAC_CASEOFFICER_R2_USERNAME',
+  'IAC_CASEOFFICER_R2_PASSWORD',
   'SEARCH_EMPLOYMENT_CASE_USERNAME',
   'SEARCH_EMPLOYMENT_CASE_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
@@ -221,9 +265,17 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       username: 'BOOKING_UI_FT_ON_4_USERNAME',
       password: 'BOOKING_UI_FT_ON_4_PASSWORD',
     });
+    expect(getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on-8 ')).toEqual({
+      username: 'BOOKING_UI_FT_ON_8_USERNAME',
+      password: 'BOOKING_UI_FT_ON_8_PASSWORD',
+    });
     expect(getRuntimeUserCredentialEnvMapping(' staff_admin ')).toEqual({
       username: 'STAFF_ADMIN_USERNAME',
       password: 'STAFF_ADMIN_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' court_admin ')).toEqual({
+      username: 'COURT_ADMIN_USERNAME',
+      password: 'COURT_ADMIN_PASSWORD',
     });
     expect(getRuntimeUserCredentialEnvMapping(' staff_admin-1 ')).toEqual({
       username: 'STAFF_ADMIN_1_USERNAME',
@@ -232,6 +284,10 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(getRuntimeUserCredentialEnvMapping(' staff_admin-4 ')).toEqual({
       username: 'STAFF_ADMIN_4_USERNAME',
       password: 'STAFF_ADMIN_4_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' staff_admin-8 ')).toEqual({
+      username: 'STAFF_ADMIN_8_USERNAME',
+      password: 'STAFF_ADMIN_8_PASSWORD',
     });
     expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_off ')).toEqual({
       username: 'HEARING_MANAGER_CR84_OFF_USERNAME',
@@ -248,6 +304,12 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_on-4 ')).toEqual({
       username: 'HEARING_MANAGER_CR84_ON_4_USERNAME',
       password: 'HEARING_MANAGER_CR84_ON_4_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_on-5 ')).toBeUndefined();
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_off-5 ')).toBeUndefined();
+    expect(getRuntimeUserCredentialEnvMapping(' prl_solicitor8 ')).toEqual({
+      username: 'PRL_SOLICITOR8_USERNAME',
+      password: 'PRL_SOLICITOR8_PASSWORD',
     });
 
     process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce@example.test';
@@ -293,12 +355,26 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R1')).toBeUndefined();
 
+    process.env.IAC_CASEOFFICER_R1_USERNAME = 'legacy-iac-caseofficer-r1@example.test';
+    process.env.IAC_CASEOFFICER_R1_PASSWORD = 'legacy-iac-caseofficer-r1-secret';
+    process.env.IAC_CASEOFFICER_R2_USERNAME = 'legacy-iac-caseofficer-r2@example.test';
+    process.env.IAC_CASEOFFICER_R2_PASSWORD = 'legacy-iac-caseofficer-r2-secret';
+    process.env.IAC_JUDGE_WA_R1_USERNAME = 'legacy-iac-judge-r1@example.test';
+    process.env.IAC_JUDGE_WA_R1_PASSWORD = 'legacy-iac-judge-r1-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toEqual({
+      email: 'legacy-iac-judge-r1@example.test',
+      password: 'legacy-iac-judge-r1-secret',
+    });
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R2')).toEqual({
+      email: 'legacy-iac-caseofficer-r2@example.test',
+      password: 'legacy-iac-caseofficer-r2-secret',
+    });
+
+    delete process.env.IAC_JUDGE_WA_R1_USERNAME;
+    delete process.env.IAC_JUDGE_WA_R1_PASSWORD;
     process.env.PW_IAC_CASEOFFICER_R1_EMAIL = 'iac-caseofficer-r1@example.test';
     process.env.PW_IAC_CASEOFFICER_R1_PASSWORD = 'iac-caseofficer-r1-secret';
-    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toEqual({
-      email: 'iac-caseofficer-r1@example.test',
-      password: 'iac-caseofficer-r1-secret',
-    });
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();
 
     process.env.PW_IAC_CASEOFFICER_R2_EMAIL = 'iac-caseofficer-r2@example.test';
     process.env.PW_IAC_CASEOFFICER_R2_PASSWORD = 'iac-caseofficer-r2-secret';
@@ -309,6 +385,8 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     delete process.env.PW_IAC_CASEOFFICER_R2_EMAIL;
     delete process.env.PW_IAC_CASEOFFICER_R2_PASSWORD;
+    delete process.env.IAC_CASEOFFICER_R2_USERNAME;
+    delete process.env.IAC_CASEOFFICER_R2_PASSWORD;
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R2')).toEqual({
       email: 'iac-caseofficer-r1@example.test',
       password: 'iac-caseofficer-r1-secret',
@@ -348,14 +426,22 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(caseSetupTest.resolveUiFallbackFlag(false)).toBe(false);
     expect(caseSetupTest.resolveCaseNumberFromCreateResponse({ case_reference: 1773065942199262 })).toBe('1773065942199262');
     expect(caseSetupTest.isTransientApiRequestError(new Error('api/user/details failed: read ECONNRESET'))).toBe(true);
+    expect(caseSetupTest.isTransientApiRequestError(new Error('net::ERR_HTTP2_PROTOCOL_ERROR'))).toBe(true);
+    expect(caseSetupTest.isTransientApiRequestError(new Error('SSL routines: decryption failed or bad record mac'))).toBe(true);
     expect(caseSetupTest.isTransientApiRequestError(new Error('Validation failed'))).toBe(false);
     expect(isTransientWorkflowFailure(new Error('Validation error after submit after updating case fields'))).toBe(false);
     expect(
       isTransientWorkflowFailure(new Error('Case event failed after PoC personal details: The event could not be created'))
     ).toBe(true);
     expect(isTransientWorkflowFailure(new Error('Task list showed service down while waiting for task row'))).toBe(true);
+    expect(
+      isTransientWorkflowFailure(new Error('Create case select "#cc-jurisdiction" did not become ready within 30000ms'))
+    ).toBe(true);
     expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
     expect(isTransientWorkflowFailure(new Error('Upload failed: server returned status 429 after 3 attempts'))).toBe(true);
+    const browserClosed = new Error('Target page, context or browser has been closed');
+    expect(isBrowserLifecycleFailure(browserClosed)).toBe(true);
+    expect(isDependencyEnvironmentFailure(browserClosed)).toBe(false);
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."
     );
@@ -364,6 +450,34 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
         overrides: { TextFieldd: 'typo' } as never,
       })
     ).toThrow(/Unknown override field 'TextFieldd'/);
+  });
+
+  test('uses configured CCD identifiers when aggregated jurisdictions remains unavailable', async () => {
+    let attempts = 0;
+    const request = {
+      scenario: 'configured identifier fallback',
+      jurisdiction: 'DIVORCE',
+      caseType: 'DIVORCE',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+        request: {
+          get: async () => {
+            attempts += 1;
+            throw new Error('net::ERR_HTTP2_PROTOCOL_ERROR');
+          },
+        },
+      },
+    } as never;
+
+    await expect(
+      caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({
+        request,
+        userId: 'user-1',
+        effectiveTimeoutMs: 100,
+      })
+    ).resolves.toEqual({ jurisdictionId: 'DIVORCE', caseTypeId: 'DIVORCE' });
+    expect(attempts).toBe(3);
   });
 
   test('employment dynamic case payload names identify EXUI automation-created cases', () => {

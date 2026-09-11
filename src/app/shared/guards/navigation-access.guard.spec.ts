@@ -3,6 +3,7 @@ import { MemoizedSelector, Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, lastValueFrom, of } from 'rxjs';
 import { HeaderConfigService } from '../../services/header-config/header-config.service';
 import * as fromAppStore from '../../store';
+import { WAVerificationService } from '../../../work-allocation/services';
 import { NavigationAccessGuard } from './navigation-access.guard';
 
 describe('NavigationAccessGuard', () => {
@@ -10,6 +11,7 @@ describe('NavigationAccessGuard', () => {
   let routerMock: jasmine.SpyObj<Router>;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
   let headerConfigServiceMock: jasmine.SpyObj<HeaderConfigService>;
+  let waVerificationServiceMock: jasmine.SpyObj<WAVerificationService>;
   let userDetailsSelector: MemoizedSelector<fromAppStore.State, any>;
 
   const createState = (userDetails: any) =>
@@ -34,9 +36,17 @@ describe('NavigationAccessGuard', () => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigateByUrl']);
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     headerConfigServiceMock = jasmine.createSpyObj<HeaderConfigService>('headerConfigService', ['constructHeaderConfig']);
+    waVerificationServiceMock = jasmine.createSpyObj<WAVerificationService>('waVerificationService', ['getWAVerification']);
+    waVerificationServiceMock.getWAVerification.and.returnValue(
+      of({
+        waSupportedCategories: [],
+        waSupportedRoleTypes: [],
+        waSupportedJurisdictions: [],
+      })
+    );
     userDetailsSelector = fromAppStore.getUserDetails as MemoizedSelector<fromAppStore.State, any>;
     userDetailsSelector.clearResult();
-    guard = new NavigationAccessGuard(routerMock, storeMock, headerConfigServiceMock);
+    guard = new NavigationAccessGuard(routerMock, storeMock, headerConfigServiceMock, waVerificationServiceMock);
   });
 
   afterEach(() => {
@@ -146,5 +156,85 @@ describe('NavigationAccessGuard', () => {
 
     expect(allowed).toBeTrue();
     expect(headerConfigServiceMock.constructHeaderConfig).toHaveBeenCalledWith(['caseworker-civil']);
+  });
+
+  it('allows access when an AM role has supported role assignment details', async () => {
+    mockStoreState(
+      of(
+        createState({
+          userInfo: { roles: ['case-manager'] },
+          roleAssignmentInfo: [
+            {
+              jurisdiction: 'IA',
+              roleCategory: 'LEGAL_OPERATIONS',
+              roleName: 'case-manager',
+              roleType: 'ORGANISATION',
+            },
+          ],
+        })
+      )
+    );
+    headerConfigServiceMock.constructHeaderConfig.and.returnValue(
+      of([
+        {
+          href: '/work/my-work/list',
+          active: false,
+          roles: ['case-manager'],
+          text: 'My work',
+        },
+      ])
+    );
+    waVerificationServiceMock.getWAVerification.and.returnValue(
+      of({
+        waSupportedCategories: ['LEGAL_OPERATIONS'],
+        waSupportedRoleTypes: ['ORGANISATION'],
+        waSupportedJurisdictions: ['IA'],
+      })
+    );
+
+    const allowed = await lastValueFrom(guard.canActivate(createRoute('/work/my-work/list', '/cases')));
+
+    expect(allowed).toBeTrue();
+    expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+  });
+
+  it('denies access when an AM role has unsupported role assignment details', async () => {
+    mockStoreState(
+      of(
+        createState({
+          userInfo: { roles: ['case-manager'] },
+          roleAssignmentInfo: [
+            {
+              jurisdiction: 'SSCS',
+              roleCategory: 'LEGAL_OPERATIONS',
+              roleName: 'case-manager',
+              roleType: 'ORGANISATION',
+            },
+          ],
+        })
+      )
+    );
+    headerConfigServiceMock.constructHeaderConfig.and.returnValue(
+      of([
+        {
+          href: '/work/my-work/list',
+          active: false,
+          roles: ['case-manager'],
+          text: 'My work',
+        },
+      ])
+    );
+    waVerificationServiceMock.getWAVerification.and.returnValue(
+      of({
+        waSupportedCategories: ['LEGAL_OPERATIONS'],
+        waSupportedRoleTypes: ['ORGANISATION'],
+        waSupportedJurisdictions: ['IA'],
+      })
+    );
+
+    const allowed = await lastValueFrom(guard.canActivate(createRoute('/work/my-work/list', '/cases')));
+
+    expect(allowed).toBeFalse();
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/cases');
   });
 });

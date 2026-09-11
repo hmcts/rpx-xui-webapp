@@ -472,20 +472,21 @@ const createSystemSampler = (
     const idleDelta = previousCpuTimes ? currentCpuTimes.idle - previousCpuTimes.idle : 0;
     const totalDelta = previousCpuTimes ? currentCpuTimes.all - previousCpuTimes.all : 0;
     const wallDeltaNs = previousClockNs === undefined ? 0 : Number(currentClockNs - previousClockNs);
-    const usageDeltaNs = previousCgroupCpuUsageNs === undefined || currentCgroupCpuUsageNs === undefined
-      ? undefined
-      : currentCgroupCpuUsageNs - previousCgroupCpuUsageNs;
+    const usageDeltaNs =
+      previousCgroupCpuUsageNs === undefined || currentCgroupCpuUsageNs === undefined
+        ? undefined
+        : currentCgroupCpuUsageNs - previousCgroupCpuUsageNs;
     previousCpuTimes = currentCpuTimes;
     previousCgroupCpuUsageNs = currentCgroupCpuUsageNs;
     previousClockNs = currentClockNs;
-    const scopedCpuPercent = usageDeltaNs !== undefined && usageDeltaNs >= 0 && wallDeltaNs > 0
-      ? Math.min(100, Math.max(0, (usageDeltaNs / wallDeltaNs / effectiveCpuCount) * 100))
-      : undefined;
+    const scopedCpuPercent =
+      usageDeltaNs !== undefined && usageDeltaNs >= 0 && wallDeltaNs > 0
+        ? Math.min(100, Math.max(0, (usageDeltaNs / wallDeltaNs / effectiveCpuCount) * 100))
+        : undefined;
     // Schema v1 has no CPU source or availability fields. A missing scoped delta falls back to host CPU;
     // the existing first-sample zero must not be interpreted as scoped zero usage by consumers.
-    const cpuPercent = scopedCpuPercent ?? (
-      totalDelta > 0 ? Math.min(100, Math.max(0, ((totalDelta - idleDelta) / totalDelta) * 100)) : 0
-    );
+    const cpuPercent =
+      scopedCpuPercent ?? (totalDelta > 0 ? Math.min(100, Math.max(0, ((totalDelta - idleDelta) / totalDelta) * 100)) : 0);
     const rawMemoryCurrent =
       metadata.memoryLimitSource === 'cgroup'
         ? readFirstExistingFile(['/sys/fs/cgroup/memory.current', '/sys/fs/cgroup/memory/memory.usage_in_bytes'])
@@ -764,7 +765,8 @@ class CiEvidenceReporter {
       left.localeCompare(right)
     );
     if (isAccessibilityLabel(this.suite) || projects.some(isAccessibilityLabel)) return;
-    const suite = projects.some(isSmokeLabel) && !['api', 'integration', 'integration-nightly'].includes(this.suite) ? 'smoke' : this.suite;
+    const suite =
+      projects.some(isSmokeLabel) && !['api', 'integration', 'integration-nightly'].includes(this.suite) ? 'smoke' : this.suite;
     const shard =
       this.config?.shard && typeof this.config.shard === 'object'
         ? { current: integer(this.config.shard.current, 1), total: integer(this.config.shard.total, 1) }

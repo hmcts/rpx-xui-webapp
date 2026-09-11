@@ -160,7 +160,11 @@ const buildConfig = (env: EnvMap = process.env) => {
   if (shouldEmitCiEvidence(env)) {
     reporter.push([
       './playwright_tests_new/common/reporters/ci-evidence.reporter.cjs',
-      { outputFolder: odhinOutputFolder, repository: 'rpx-xui-webapp', suite: env.PLAYWRIGHT_INCLUDE_A11Y === 'true' ? 'accessibility' : 'e2e' },
+      {
+        outputFolder: odhinOutputFolder,
+        repository: 'rpx-xui-webapp',
+        suite: env.PLAYWRIGHT_INCLUDE_A11Y === 'true' ? 'accessibility' : 'e2e',
+      },
     ]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {

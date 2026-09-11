@@ -132,17 +132,23 @@ test('keeps the observed pass separate from an incomplete collection', () => {
 test('does not retain transport-error prose', () => {
   assert.ok(reporterPath, 'CI evidence reporter was not found');
   const Reporter = require(reporterPath);
-  const projected = Reporter.__test__.projectApiEntries([{
-    method: 'GET',
-    url: 'https://service.test/health',
-    error: 'request failed for https://service.test/health?session=secret-value',
-  }, {
-    method: 'GET',
-    url: 'https://service.test/health',
-    error: 'UND_ERR_SECRET_VALUE',
-  }]);
+  const projected = Reporter.__test__.projectApiEntries([
+    {
+      method: 'GET',
+      url: 'https://service.test/health',
+      error: 'request failed for https://service.test/health?session=secret-value',
+    },
+    {
+      method: 'GET',
+      url: 'https://service.test/health',
+      error: 'UND_ERR_SECRET_VALUE',
+    },
+  ]);
 
-  assert.equal(projected.every((entry) => !Object.hasOwn(entry, 'transport_error')), true);
+  assert.equal(
+    projected.every((entry) => !Object.hasOwn(entry, 'transport_error')),
+    true
+  );
   assert.doesNotMatch(JSON.stringify(projected), /secret-value/);
 });
 
@@ -177,7 +183,13 @@ test('does not write evidence for an accessibility suite', () => {
 
   const projectOutputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'xui-ci-evidence-'));
   const projectReporter = new Reporter({ outputFolder: projectOutputFolder, repository: packageJson.name, suite: 'e2e' });
-  const projectTest = { id: 'a11y-project', title: 'normal journey', titlePath: () => ['normal journey'], location: { file: 'test.spec.js' }, parent: { project: () => ({ name: 'accessibility-chromium' }) } };
+  const projectTest = {
+    id: 'a11y-project',
+    title: 'normal journey',
+    titlePath: () => ['normal journey'],
+    location: { file: 'test.spec.js' },
+    parent: { project: () => ({ name: 'accessibility-chromium' }) },
+  };
   projectReporter.onBegin({}, { allTests: () => [projectTest] });
   projectReporter.onTestEnd(projectTest, { status: 'passed', retry: 0, duration: 1, errors: [], steps: [], attachments: [] });
   projectReporter.onEnd({ status: 'passed' });
@@ -200,7 +212,13 @@ test('classifies smoke output and smoke projects as the smoke suite', () => {
 
   const projectOutputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'xui-ci-evidence-'));
   const projectReporter = new Reporter({ outputFolder: projectOutputFolder, repository: packageJson.name, suite: 'e2e' });
-  const projectTest = { id: 'cross-browser-smoke', title: 'normal journey', titlePath: () => ['normal journey'], location: { file: 'test.spec.js' }, parent: { project: () => ({ name: 'cross-browser-smoke' }) } };
+  const projectTest = {
+    id: 'cross-browser-smoke',
+    title: 'normal journey',
+    titlePath: () => ['normal journey'],
+    location: { file: 'test.spec.js' },
+    parent: { project: () => ({ name: 'cross-browser-smoke' }) },
+  };
   projectReporter.onBegin({}, { allTests: () => [projectTest] });
   projectReporter.onTestEnd(projectTest, { status: 'passed', retry: 0, duration: 1, errors: [], steps: [], attachments: [] });
   projectReporter.onEnd({ status: 'passed' });

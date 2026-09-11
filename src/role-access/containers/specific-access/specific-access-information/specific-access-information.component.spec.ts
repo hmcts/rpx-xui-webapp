@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ErrorMessageComponent } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -12,11 +13,17 @@ import { SpecificAccessInformationComponent } from './specific-access-informatio
 describe('DescribeExclusionComponent', () => {
   const mockStore = jasmine.createSpyObj('mockFormBuilder', ['pipe', 'dispatch']);
   const mockFormBuilder = jasmine.createSpyObj('mockFormBuilder', ['group']);
+  const mockTitleService = jasmine.createSpyObj('Title', ['getTitle', 'setTitle']);
+  mockTitleService.getTitle.and.returnValue('Test Title');
   const formGroup = new FormBuilder().group({
     infoCtrl: 'test',
   });
   mockFormBuilder.group.and.returnValue(formGroup);
-  const component: SpecificAccessInformationComponent = new SpecificAccessInformationComponent(mockStore, mockFormBuilder);
+  const component: SpecificAccessInformationComponent = new SpecificAccessInformationComponent(
+    mockStore,
+    mockFormBuilder,
+    mockTitleService
+  );
   component.error = {};
   component.formGroup = formGroup;
   let fixture: ComponentFixture<SpecificAccessInformationComponent>;
@@ -25,13 +32,7 @@ describe('DescribeExclusionComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FormsModule, RouterModule, StoreModule.forRoot({})],
       declarations: [SpecificAccessInformationComponent, ErrorMessageComponent],
-      providers: [
-        FormBuilder,
-        {
-          provide: Store,
-          useValue: mockStore,
-        },
-      ],
+      providers: [FormBuilder, { provide: Store, useValue: mockStore }, { provide: Title, useValue: mockTitleService }],
     }).compileComponents();
     fixture = TestBed.createComponent(SpecificAccessInformationComponent);
     mockStore.pipe.and.returnValue(of({}));
@@ -64,15 +65,50 @@ describe('DescribeExclusionComponent', () => {
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalled();
     });
+
+    it('should prepend "Error: " to the title when the form is invalid and title does not already start with "Error:"', () => {
+      component.formGroup = new FormBuilder().group({ infoCtrl: [null, Validators.required] });
+      mockTitleService.getTitle.and.returnValue('Specific Access Information');
+      mockTitleService.setTitle.calls.reset();
+
+      component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
+
+      expect(mockTitleService.setTitle).toHaveBeenCalledWith('Error: Specific Access Information');
+    });
+
+    it('should not modify the title when the form is invalid and the title already starts with "Error:"', () => {
+      component.formGroup = new FormBuilder().group({ infoCtrl: [null, Validators.required] });
+      mockTitleService.getTitle.and.returnValue('Error: Specific Access Information');
+      mockTitleService.setTitle.calls.reset();
+
+      component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
+
+      expect(mockTitleService.setTitle).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getErrorObject()', () => {
+    it('should return the correct error object', () => {
+      expect(component.getErrorObject()).toEqual({
+        title: 'There is a problem',
+        description: 'Enter Details',
+        fieldId: 'more-detail',
+      });
+    });
   });
 
   describe('onDestroy()', () => {
-    it('should unsubscribe', () => {
+    it('should unsubscribe when a subscription exists', () => {
       mockStore.pipe.and.returnValue(of({}));
       component.subscription = new Observable().subscribe();
       spyOn(component.subscription, 'unsubscribe').and.callThrough();
       component.ngOnDestroy();
       expect(component.subscription.unsubscribe).toHaveBeenCalled();
+    });
+
+    it('should not throw when no subscription exists', () => {
+      (component as any).subscription = undefined;
+      expect(() => component.ngOnDestroy()).not.toThrow();
     });
   });
 });

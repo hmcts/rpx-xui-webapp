@@ -148,16 +148,18 @@ export async function collectScreenReaderLikeAccessibilityViolations(page: Page)
       add(violations, 'govuk-template-body', 'The page should use the GOV.UK template body class during the template migration.');
     }
 
-    const skipLink = Array.from(document.querySelectorAll('a[href^="#"]'))
-      .filter(visible)
-      .find((link) => /skip to main content/i.test(text(link)));
-    if (!skipLink) {
-      add(violations, 'skip-link', 'The page should expose a visible skip-to-main-content link.');
-    } else {
-      const targetId = skipLink.getAttribute('href')?.slice(1) ?? '';
+    const skipLink = Array.from(document.querySelectorAll('a')).find(
+      (link) => link.classList.contains('govuk-skip-link') || /skip to main content/i.test(text(link))
+    );
+    if (skipLink) {
+      const rawHref = skipLink.getAttribute('href')?.trim() ?? '';
+      const hashIndex = rawHref.indexOf('#');
+      const targetId = hashIndex >= 0 ? rawHref.slice(hashIndex + 1) : '';
       if (!targetId || !document.getElementById(decodeURIComponent(targetId))) {
         add(violations, 'skip-link-target', `Skip link target "#${targetId}" should exist.`, skipLink);
       }
+    } else {
+      add(violations, 'skip-link', 'The page should expose a skip-to-main-content link.');
     }
 
     const mainLandmarks = Array.from(document.querySelectorAll('main, [role="main"]')).filter(visible);

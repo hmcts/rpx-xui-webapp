@@ -22,10 +22,9 @@
       </div>
     </div>
 
-    <div class="hmcts-filter-layout__content">
+    <div class="hmcts-filter-layout__content" id="search-result">
       <ccd-search-result
         *ngIf="resultViewIsReady"
-        id="search-result"
         [jurisdiction]="jurisdiction"
         [caseType]="caseType"
         [caseState]="caseState"

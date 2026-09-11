@@ -703,7 +703,9 @@ class CiEvidenceReporter {
               ? 'PASSED_WITH_FLAKES'
               : 'CLEAN_PASS';
     const correlation = resolveCorrelation(this.repository, this.env);
-    const projects = [...new Set([...this.tests.values()].map((record) => record.project))].sort();
+    const projects = [...new Set([...this.tests.values()].map((record) => record.project))].sort((left, right) =>
+      left.localeCompare(right)
+    );
     const shard =
       this.config?.shard && typeof this.config.shard === 'object'
         ? { current: integer(this.config.shard.current, 1), total: integer(this.config.shard.total, 1) }
@@ -715,7 +717,7 @@ class CiEvidenceReporter {
       startedAt.toISOString(),
       projects,
       shard,
-      [...this.tests.keys()].sort(),
+      [...this.tests.keys()].sort((left, right) => left.localeCompare(right)),
     ]);
     const evidence = {
       schema_version: SCHEMA_VERSION,

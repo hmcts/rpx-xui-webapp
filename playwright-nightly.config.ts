@@ -23,10 +23,6 @@ const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBas
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) => env.PLAYWRIGHT_REPORT_FOLDER || defaultOdhinOutputFolder;
 const resolveOdhinIndexFilename = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || defaultOdhinIndexFilename;
-const shouldEmitCiEvidence = (env: EnvMap): boolean => {
-  const configured = env.PLAYWRIGHT_CI_EVIDENCE?.trim().toLowerCase();
-  return configured ? configured === 'true' : Boolean(env.CI || env.JENKINS_URL || env.BUILD_NUMBER);
-};
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 const resolveEnvironmentFromUrl = (url: string): string => {
@@ -98,10 +94,10 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
     ],
   ];
-  if (shouldEmitCiEvidence(env)) {
+  if (env.CI && env.PLAYWRIGHT_INCLUDE_A11Y !== 'true' && env.PLAYWRIGHT_INCLUDE_WAVE_A11Y !== 'true') {
     reporter.push([
-      './playwright_tests_new/common/reporters/ci-evidence.reporter.cjs',
-      { outputFolder: resolveOdhinOutputFolder(env), repository: 'rpx-xui-webapp', suite: 'e2e-nightly' },
+      'json',
+      { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${resolveOdhinOutputFolder(env)}/ci-evidence/playwright.json` },
     ]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);

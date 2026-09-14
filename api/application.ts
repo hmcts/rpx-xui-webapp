@@ -17,7 +17,6 @@ import {
   HELMET,
   PROTOCOL,
   SESSION_SECRET,
-  REDIS_CLOUD_URL,
 } from './configuration/references';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
@@ -32,7 +31,6 @@ import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 
 const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
-console.log('@@@@@@ REDISCLOUD_URL @@@@@@:-', getConfigValue(REDIS_CLOUD_URL));
 function resolveStaticRoot(): string {
   const buildRoot = path.join(__dirname, '..');
   const browserRoot = path.join(buildRoot, 'browser');

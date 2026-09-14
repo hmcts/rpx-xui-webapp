@@ -73,8 +73,8 @@ export class HearingsTabPage {
   }
 
   async waitForReady(hearingId?: string, action: HearingAction = 'view-details'): Promise<void> {
-    await expect(this.requestHearingButton).toBeVisible({ timeout: 30_000 });
-    await expect(this.currentAndUpcomingHeading('Current and upcoming')).toBeVisible();
+    await expect(this.container).toBeVisible({ timeout: 30_000 });
+    await expect(this.currentAndUpcomingHeading('Current and upcoming')).toBeVisible({ timeout: 30_000 });
 
     if (!hearingId) {
       return;
@@ -105,6 +105,7 @@ export class HearingsTabPage {
   }
 
   async openRequestHearing(): Promise<void> {
+    await expect(this.requestHearingButton).toBeVisible({ timeout: 30_000 });
     await this.requestHearingButton.click();
   }
 

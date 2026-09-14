@@ -27,7 +27,7 @@ const linkedCasesWithHearingsForOrdering = [
   {
     caseRef: '4652724902696213',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Linked for a hearing'],
+    reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE],
     caseHearings: [
       {
         hearingID: LISTED_HEARING_SCENARIO.hearingId,
@@ -50,7 +50,7 @@ const linkedCasesWithHearingsForOrdering = [
   {
     caseRef: '5283819672542864',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
+    reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE, 'Progressed as part of lead case'],
     caseHearings: [
       {
         hearingID: 'h100010',
@@ -73,7 +73,7 @@ const linkedCasesWithHearingsForOrdering = [
   {
     caseRef: '8254902572336147',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+    reasonsForLink: ['Familial', 'Guardian', CASE_LINKING_SECONDARY_REASON_CODE],
     caseHearings: [
       {
         hearingID: 'h100012',
@@ -115,7 +115,6 @@ function buildHearingLinkSessionCookies(
       name: '__userid__',
       value: 'hearing-link-local-user',
       url: origin,
-      path: '/',
       expires: -1,
       httpOnly: false,
       secure,
@@ -125,7 +124,6 @@ function buildHearingLinkSessionCookies(
       name: '__auth__',
       value: 'hearing-link-local-token',
       url: origin,
-      path: '/',
       expires: -1,
       httpOnly: false,
       secure,
@@ -135,7 +133,6 @@ function buildHearingLinkSessionCookies(
       name: 'exui-preferred-language',
       value: 'en',
       url: origin,
-      path: '/',
       expires: -1,
       httpOnly: false,
       secure,

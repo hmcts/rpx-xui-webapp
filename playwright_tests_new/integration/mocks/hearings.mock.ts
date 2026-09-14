@@ -592,10 +592,7 @@ function normalizeHearingLinkReasonCodes<T>(value: T): T {
     const normalizedRecord = Object.fromEntries(
       Object.entries(record).map(([key, entry]) => {
         if (key === 'reasonsForLink' && Array.isArray(entry)) {
-          return [
-            key,
-            entry.map((reason) => (reason === HEARING_LINK_REASON_LABEL ? HEARING_LINK_REASON_CODE : reason)),
-          ];
+          return [key, entry.map((reason) => (reason === HEARING_LINK_REASON_LABEL ? HEARING_LINK_REASON_CODE : reason))];
         }
 
         return [key, normalizeHearingLinkReasonCodes(entry)];

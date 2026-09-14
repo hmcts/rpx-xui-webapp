@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { getPersonRoleForAllocateRole, Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -56,13 +56,14 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
-    if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
-      this.domain = PersonRole.LEGAL_OPERATIONS;
-    } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {
-      this.domain = PersonRole.ADMIN;
-    } else if (allocateRoleStateData.roleCategory === RoleCategory.CTSC) {
-      this.domain = PersonRole.CTSC;
+
+    if (allocateRoleStateData.roleCategory) {
+      const personRole = getPersonRoleForAllocateRole(allocateRoleStateData.roleCategory);
+      if (personRole) {
+        this.domain = personRole;
+      }
     }
+
     this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
     this.personName =
       allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;

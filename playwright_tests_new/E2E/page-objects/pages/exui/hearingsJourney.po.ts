@@ -162,43 +162,61 @@ export class HearingsJourneyPage {
 
     const seededVenueCount = await this.selectedVenueTags.count();
 
-    await this.hearingVenue.pressSequentially(venueSearchTerm);
+    return this.selectVenueWithRetry(venueSearchTerm, seededVenueCount);
+  }
 
-    // Every keystroke fires a fresh debounced l2okup that rebuilds the panel, so wait for an
-    // option that actually matches the search term rather than whatever the last in-flight
-    // response happened to render.
-    const venueOption = this.venueOptionsMatching(venueSearchTerm).first();
-    try {
-      await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
-    } catch (error) {
-      if (await this.venueNoResultsOption.isVisible()) {
-        throw new Error(`Location search for "${venueSearchTerm}" returned "No results found".`);
+  private async selectVenueWithRetry(venueSearchTerm: string, seededVenueCount: number): Promise<string> {
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        await this.hearingVenue.fill('');
+        await this.hearingVenue.pressSequentially(venueSearchTerm);
+
+        // Every keystroke fires a fresh debounced lookup that rebuilds the panel, so wait for an
+        // option that actually matches the search term rather than whatever the last in-flight
+        // response happened to render.
+        const venueOption = this.venueOptionsMatching(venueSearchTerm).first();
+        try {
+          await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
+        } catch (error) {
+          if (await this.venueNoResultsOption.isVisible()) {
+            throw new Error(`Location search for "${venueSearchTerm}" returned "No results found".`);
+          }
+          throw error;
+        }
+
+        await this.hearingVenue.press('Enter');
+        await this.addLocationsButton.click();
+
+        // The autocomplete list is rebuilt every time the debounced search resolves, so the option
+        // text read before selection can belong to a stale element. Take the name from the tag the
+        // page actually added instead, which is the value carried into the hearing request.
+        const addedVenueTag = this.selectedVenueTags.nth(seededVenueCount);
+        await addedVenueTag.waitFor({ state: 'visible', timeout: 30_000 });
+
+        const newSelectedVenue = await this.venueTagName(addedVenueTag);
+
+        if (!newSelectedVenue) {
+          throw new Error(`Venue selected for "${venueSearchTerm}" did not expose a location name.`);
+        }
+
+        // Guards against a mis-targeted selection silently adding a different court: the tag the
+        // page added must be the venue that was searched for.
+        if (!newSelectedVenue.includes(venueSearchTerm)) {
+          throw new Error(`Expected the added venue to match "${venueSearchTerm}", but the page added "${newSelectedVenue}".`);
+        }
+
+        return newSelectedVenue;
+      } catch (error) {
+        lastError = error;
       }
-      throw error;
     }
 
-    await venueOption.click();
-    await this.addLocationsButton.click();
-
-    // The autocomplete list is rebuilt every time the debounced search resolves, so the option
-    // text read before clicking can belong to a stale element. Take the name from the tag the
-    // page actually added instead, which is the value carried into the hearing request.
-    const addedVenueTag = this.selectedVenueTags.nth(seededVenueCount);
-    await addedVenueTag.waitFor({ state: 'visible', timeout: 30_000 });
-
-    const newSelectedVenue = await this.venueTagName(addedVenueTag);
-
-    if (!newSelectedVenue) {
-      throw new Error(`Venue selected for "${venueSearchTerm}" did not expose a location name.`);
+    if (lastError instanceof Error) {
+      throw lastError;
     }
-
-    // Guards against a mis-targeted click silently adding a different court: the tag the page
-    // added must be the venue that was searched for.
-    if (!newSelectedVenue.includes(venueSearchTerm)) {
-      throw new Error(`Expected the added venue to match "${venueSearchTerm}", but the page added "${newSelectedVenue}".`);
-    }
-
-    return newSelectedVenue;
+    throw new Error(`Failed to select venue matching "${venueSearchTerm}".`);
   }
 
   /** Reads the location name from a selected venue tag, dropping its visually hidden prefix. */

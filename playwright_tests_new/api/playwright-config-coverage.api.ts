@@ -916,4 +916,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(containsEvidence(buildNightlyConfig(env) as never)).toBe(true);
     expect(containsEvidence(buildIntegrationConfig(env) as never)).toBe(true);
   });
+
+  test('separates CI smoke evidence from E2E evidence', () => {
+    expect(smokeRunner.buildSmokeEnvironment({ CI: 'true' }).PLAYWRIGHT_REPORT_FOLDER).toBe(
+      'functional-output/tests/playwright-smoke/odhin-report'
+    );
+    expect(smokeRunner.buildSmokeEnvironment({ CI: undefined }).PLAYWRIGHT_REPORT_FOLDER).toBe(
+      'functional-output/tests/playwright-e2e/odhin-report'
+    );
+  });
 });

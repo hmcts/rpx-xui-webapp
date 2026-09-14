@@ -263,8 +263,12 @@ test.describe('Hearings linked journeys integration', { tag: ['@integration', '@
 
   test('shows hearing id on linked hearings pages', async ({ page, caseDetailsPage, hearingsTabPage }) => {
     await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
-    await expect(page.getByRole('columnheader', { name: /hearing id/i })).toBeVisible();
-    await expect(page.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId })).toBeVisible();
+    const currentHearingTable = page
+      .locator('table.govuk-table')
+      .filter({ has: page.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId }) })
+      .first();
+    await expect(currentHearingTable.getByRole('columnheader', { name: /hearing id/i })).toBeVisible();
+    await expect(currentHearingTable.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId })).toBeVisible();
 
     await selectOrderedLinkedHearings(page);
     await continueHearingsFlow(page);

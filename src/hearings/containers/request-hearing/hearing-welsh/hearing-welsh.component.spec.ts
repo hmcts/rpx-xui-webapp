@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
@@ -33,15 +34,18 @@ class MockHearingPartiesComponent {
 describe('HearingWelshComponent', () => {
   let component: HearingWelshComponent;
   let fixture: ComponentFixture<HearingWelshComponent>;
+  let hearingsService: HearingsService;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-  const hearingsService = new HearingsService(mockedHttpClient);
-  hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
+    const state = _.cloneDeep(initialState);
+    state.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
+    hearingsService = new HearingsService(mockedHttpClient);
+    hearingsService.navigateAction$ = of(ACTION.CONTINUE);
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
       declarations: [HearingWelshComponent, MockTestComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
-      providers: [provideMockStore({ initialState }), { provide: HearingsService, useValue: hearingsService }],
+      providers: [provideMockStore({ initialState: state }), { provide: HearingsService, useValue: hearingsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingWelshComponent);

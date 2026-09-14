@@ -128,7 +128,7 @@ const buildCaseworkerResponse = (assigneeId: string) => [
       id: 227101,
       locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
     },
-    roleCategory: 'LEGAL_OPERATIONS',
+    roleCategories: ['LEGAL_OPERATIONS'],
     service: 'IA',
   },
 ];
@@ -168,6 +168,22 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
       expectedRequestJson: { services: ['IA'] },
       responseStatus: 200,
       responseJson: buildCaseworkerResponse(assigneeId),
+    },
+    {
+      purpose: 'Task action route resolver: load caseworkers for task jurisdiction',
+      method: 'POST',
+      urlPattern: '**/workallocation/caseworker/getUsersByIdamIds*',
+      expectedRequestJson: { idamIds: [assigneeId] },
+      responseStatus: 200,
+      responseJson: buildCaseworkerResponse(assigneeId),
+    },
+    {
+      purpose: 'Task action route resolver: load caseworkers for task jurisdiction',
+      method: 'POST',
+      urlPattern: '**/workallocation/caseworker/getUserByIdamId*',
+      expectedRequestJson: { idamId: assigneeId },
+      responseStatus: 200,
+      responseJson: buildCaseworkerResponse(assigneeId)[0],
     },
   ];
 
@@ -398,7 +414,7 @@ export const singleUsersGetByRoleMockResponse = [
       locationName: 'Birmingham',
       services: ['CIVIL', 'PUBLICLAW', 'PRIVATELAW', 'IA'],
     },
-    roleCategory: 'LEGAL_OPERATIONS',
+    roleCategories: ['LEGAL_OPERATIONS'],
     service: 'IA',
   },
   {
@@ -411,7 +427,7 @@ export const singleUsersGetByRoleMockResponse = [
       locationName: 'Birmingham',
       services: ['CIVIL', 'PUBLICLAW', 'PRIVATELAW', 'IA'],
     },
-    roleCategory: 'JUDICIARY',
+    roleCategories: ['JUDICIARY'],
     service: 'IA',
   },
 ];

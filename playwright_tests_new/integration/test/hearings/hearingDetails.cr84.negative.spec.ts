@@ -1,10 +1,9 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
 import {
+  applyHearingManagerSessionCookies,
   caseDetailsUrl,
   gotoCaseDetailsWithRetry,
   HEARING_MANAGER_CR84_ON_USER,
-  resolveHearingManagerUserIdentifier,
   setupHearingsMockRoutes,
 } from '../../helpers';
 import { HEARINGS_LISTED_HEARING_ID, LISTED_HEARING_SCENARIO } from '../../mocks/hearings.mock';
@@ -14,8 +13,8 @@ const hearingsTabUrl = `${caseDetailsUrl()}/hearings`;
 const hearingManagerRoles = ['caseworker-privatelaw', 'caseworker-privatelaw-courtadmin', 'case-allocator', 'hearing-manager'];
 
 test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integration', '@integration-hearings'] }, () => {
-  test('Hearings - hearings-disabled case does not render the Hearings tab', async ({ page }) => {
-    await applySessionCookies(page, resolveHearingManagerUserIdentifier(userIdentifier));
+  test('Hearings - hearings-disabled case does not render the Hearings tab', async ({ page }, testInfo) => {
+    await applyHearingManagerSessionCookies(page, userIdentifier, testInfo);
     await setupHearingsMockRoutes(page, {
       userRoles: hearingManagerRoles,
       hearings: [LISTED_HEARING_SCENARIO],
@@ -34,8 +33,8 @@ test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integr
   test('Hearings - user without hearing read rights cannot access LISTED hearing details entry points', async ({
     page,
     hearingsTabPage,
-  }) => {
-    await applySessionCookies(page, resolveHearingManagerUserIdentifier(userIdentifier));
+  }, testInfo) => {
+    await applyHearingManagerSessionCookies(page, userIdentifier, testInfo);
     await setupHearingsMockRoutes(page, {
       userRoles: ['caseworker-privatelaw', 'caseworker-privatelaw-courtadmin', 'case-allocator'],
       hearings: [LISTED_HEARING_SCENARIO],

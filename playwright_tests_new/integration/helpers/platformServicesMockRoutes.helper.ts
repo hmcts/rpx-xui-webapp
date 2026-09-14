@@ -1,7 +1,12 @@
 import type { Locator, Page } from '@playwright/test';
 import { buildCaseListJurisdictionsMock, buildCaseListMock } from '../mocks/caseList.mock';
 import { setupCaseListMocks } from './caseList.helper';
-import { setupXuiAppShellBaseRoutes, type XuiAppShellUserDetailsOptions } from './xuiAppShellMockRoutes.helper';
+import {
+  buildXuiAppShellUserDetailsMock,
+  setupXuiAppShellBaseRoutes,
+  type XuiAppShellUserDetailsOptions,
+} from './xuiAppShellMockRoutes.helper';
+import { buildSupportedAMRoleAssignments, judicialAMMenuRole } from './amRoleAssignmentMock.helper';
 
 type HeaderScenario = {
   name: string;
@@ -10,6 +15,8 @@ type HeaderScenario = {
   expectedLeft: string[];
   expectedRight: string[];
   quickSearchVisible: boolean;
+  roleCategory?: string;
+  roleAssignmentInfo?: XuiAppShellUserDetailsOptions['roleAssignmentInfo'];
 };
 
 export const platformServicesHeaderScenarios: HeaderScenario[] = [
@@ -24,7 +31,13 @@ export const platformServicesHeaderScenarios: HeaderScenario[] = [
   {
     name: 'caseworker work-allocation navigation',
     userIdentifier: 'IAC_CaseOfficer_R2',
-    roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer', 'task-supervisor'],
+    roles: [
+      'caseworker-ia',
+      'caseworker-ia-caseofficer',
+      'caseworker-ia-admofficer',
+      'task-supervisor',
+      'hmcts-legal-operations',
+    ],
     expectedLeft: ['My work', 'All work', 'Case list', 'Create case', 'Search'],
     expectedRight: [],
     quickSearchVisible: true,
@@ -40,7 +53,9 @@ export const platformServicesHeaderScenarios: HeaderScenario[] = [
   {
     name: 'judicial work-allocation navigation',
     userIdentifier: 'IAC_Judge_WA_R2',
-    roles: ['caseworker-ia-iacjudge', 'task-supervisor'],
+    roleCategory: 'JUDICIAL',
+    roles: ['caseworker-ia-iacjudge', 'task-supervisor', judicialAMMenuRole],
+    roleAssignmentInfo: buildSupportedAMRoleAssignments([judicialAMMenuRole]),
     expectedLeft: ['My work', 'All work', 'Case list', 'Search'],
     expectedRight: [],
     quickSearchVisible: true,
@@ -68,6 +83,16 @@ export async function visibleNavigationTexts(locator: Locator): Promise<string[]
 }
 
 export async function setupPlatformServicesCaseListRoutes(page: Page, userDetails: XuiAppShellUserDetailsOptions): Promise<void> {
+  const resolvedUserDetails = buildXuiAppShellUserDetailsMock(userDetails);
+
+  process.stdout.write(
+    [
+      `[navigationHeader] mock user: ${resolvedUserDetails.userInfo.uid ?? resolvedUserDetails.userInfo.id}`,
+      `[navigationHeader] roles: ${JSON.stringify(resolvedUserDetails.userInfo.roles)}`,
+      `[navigationHeader] roleAssignmentInfo: ${JSON.stringify(resolvedUserDetails.roleAssignmentInfo ?? [], null, 2)}`,
+    ].join('\n') + '\n'
+  );
+
   await setupXuiAppShellBaseRoutes(page, { userDetails });
   await page.route('**/auth/isAuthenticated*', async (route) => {
     await route.fulfill({

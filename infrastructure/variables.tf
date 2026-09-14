@@ -47,14 +47,62 @@ variable "redis_capacity" {
   description = "The size of the Redis cache to deploy. Valid values are 1, 2, 3, 4, 5"
 }
 
+variable "managed_redis_sku_name" {
+  default     = "Balanced_B0"
+  description = "The SKU to use for Azure Managed Redis."
+  type        = string
+}
+
+variable "private_dns_subscription_id" {
+  default     = "1baf5470-1c3e-40d3-a6f7-74bfbce4b348"
+  description = "Subscription ID containing the shared Azure Managed Redis private DNS zone."
+  type        = string
+}
+
 variable "welsh_reporting_enabled" {
   default     = false
   description = "Enable Welsh language usage reporting"
   type        = bool
 }
 
+variable "exui_weekly_stats_enabled" {
+  default     = false
+  description = "Enable ExUI weekly stats reporting"
+  type        = bool
+}
+
 variable "welsh_email_address_key" {
   default     = "welsh-report-email"
   description = "Email address key in azure Key Vault for Welsh reporting."
+  type        = string
+}
+
+variable "exui_weekly_stats_email_address_key" {
+  default     = "exui-weekly-stats-email"
+  description = "Email address key in azure Key Vault for ExUI weekly stats reporting."
+  type        = string
+}
+
+variable "exui_throughput_stats_email_address_key" {
+  default     = "exui-throughput-stats-email"
+  description = "Email address key in azure Key Vault for ExUI throughput stats reporting."
+  type        = string
+}
+
+variable "exui_throughput_stats_enabled" {
+  default     = false
+  description = "Enable ExUI request throughput stats reporting"
+  type        = bool
+}
+
+variable "exui_pui_activations_enabled" {
+  default     = false
+  description = "Enable ExUI PUI activations weekly reporting (daily unique IDAM activations via pui- clients)"
+  type        = bool
+}
+
+variable "exui_pui_activations_email_address_key" {
+  default     = "exui-pui-activations-email"
+  description = "Email address key in Azure Key Vault for ExUI PUI activations reporting."
   type        = string
 }

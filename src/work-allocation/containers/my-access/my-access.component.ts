@@ -41,10 +41,12 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
         return;
       }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      const userRole: UserRole = userRoleNames[0] || undefined;
       return {
         search_parameters: [{ key: 'user', operator: 'IN', values: [id] }],
         sorting_parameters: [this.getSortParameter()],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole,
       };
     }

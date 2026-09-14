@@ -7,3 +7,4 @@ export * from './TermsAndCondition';
 export * from './theming.model';
 export * from './user-details.model';
 export * from './user-nav.model';
+export * from './wa-verification-model';

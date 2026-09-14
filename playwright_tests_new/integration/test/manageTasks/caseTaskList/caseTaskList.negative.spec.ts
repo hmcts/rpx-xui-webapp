@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
           id: 227101,
           locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
         },
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategories: ['LEGAL_OPERATIONS'],
         service: 'IA',
       },
     ]);
@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
+function caseTaskListNegativeTests() {
   test(`An empty task response shows an empty task list`, async ({ caseDetailsPage, page }) => {
     await test.step('Setup route mock for an empty task details', async () => {
       await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
@@ -52,7 +52,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
   });
 
-  // EXUI-4276 - is currently the reason this test is skipped. The test is still valid and should be re-enabled once the underlying issue is resolved.
+  // EXUI-4276: the UI currently renders the malformed task instead of rejecting it safely.
   test.skip(`Sending an malformed API response for the task data should render the UI gracefully`, async ({
     caseDetailsPage,
     page,
@@ -108,4 +108,10 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       });
     });
   });
-});
+}
+
+test.describe(
+  `User ${userIdentifier} can see assigned tasks on a case`,
+  { tag: ['@integration', '@integration-manage-tasks'] },
+  caseTaskListNegativeTests
+);

@@ -2,6 +2,7 @@ locals {
   app_full_name     = "xui-${var.component}"
   ase_name          = "core-compute-${var.env}"
   local_env         = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview") ? "aat" : "saat" : var.env
+  reporting_enabled = var.welsh_reporting_enabled || var.exui_weekly_stats_enabled || var.exui_throughput_stats_enabled || var.exui_pui_activations_enabled
   shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
@@ -32,6 +33,17 @@ resource "azurerm_key_vault_secret" "redis6_connection_string" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
+  name         = "${var.component}-managed-redis-connection-string"
+  value        = "rediss://:${urlencode(module.managed_redis.primary_access_key)}@${module.managed_redis.hostname}:${module.managed_redis.port}"
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+moved {
+  from = azurerm_key_vault_secret.managed_redis_connection_string["demo"]
+  to   = azurerm_key_vault_secret.managed_redis_connection_string
+}
+
 module "redis6-cache" {
   source                        = "git@github.com:hmcts/cnp-module-redis?ref=4.x"
   product                       = "${var.shared_product_name}-mc-redis6"
@@ -47,6 +59,37 @@ module "redis6-cache" {
   family                        = var.redis_family
   capacity                      = var.redis_capacity
   sku_name                      = var.redis_sku_name
+}
+
+# Deploy Azure Managed Redis alongside the legacy cache until the application
+# cutover has completed.
+module "managed_redis" {
+  source = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
+
+  product     = var.product
+  component   = var.component
+  env         = var.env
+  location    = var.location
+  common_tags = var.common_tags
+
+  sku_name = var.managed_redis_sku_name
+
+  public_network_access   = "Disabled"
+  create_private_endpoint = true
+  subnet_id               = data.azurerm_subnet.core_infra_redis_subnet.id
+  private_dns_zone_ids = [
+    "/subscriptions/${var.private_dns_subscription_id}/resourceGroups/core-infra-intsvc-rg/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.net"
+  ]
+
+  access_keys_authentication_enabled = true
+  persistence_rdb_backup_frequency   = "6h"
+
+  clustering_policy = "EnterpriseCluster"
+}
+
+moved {
+  from = module.managed_redis["demo"]
+  to   = module.managed_redis
 }
 
 module "application_insights" {
@@ -89,6 +132,27 @@ data "azurerm_key_vault_secret" "welsh_report_email" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+data "azurerm_key_vault_secret" "exui_weekly_stats_email" {
+  count        = var.exui_weekly_stats_enabled ? 1 : 0
+  name         = var.exui_weekly_stats_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+data "azurerm_key_vault_secret" "exui_throughput_stats_email" {
+  count        = var.exui_throughput_stats_enabled ? 1 : 0
+  name         = var.exui_throughput_stats_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+data "azurerm_key_vault_secret" "exui_pui_activations_email" {
+  count        = var.exui_pui_activations_enabled ? 1 : 0
+  name         = var.exui_pui_activations_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
 locals {
-  welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+  welsh_emails                 = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+  exui_weekly_stats_emails     = var.exui_weekly_stats_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_weekly_stats_email.0.value)) : []
+  exui_throughput_stats_emails = var.exui_throughput_stats_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_throughput_stats_email.0.value)) : []
+  exui_pui_activations_emails  = var.exui_pui_activations_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_pui_activations_email.0.value)) : []
 }

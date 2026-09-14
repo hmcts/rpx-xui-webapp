@@ -4,6 +4,7 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
+// Note: Is this actually used or being intended for use anywhere?
 export async function createLabellingRole(
   req: EnhancedRequest,
   roleName: string,

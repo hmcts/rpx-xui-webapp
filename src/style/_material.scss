@@ -61,16 +61,12 @@ $outlineColor: #bfc1c3;
   }
 }
 
-.mat-mdc-tab-group-stretch-tabs
-> .mat-mdc-tab-header
-.mat-mdc-tab {
+.mat-mdc-tab-group-stretch-tabs > .mat-mdc-tab-header .mat-mdc-tab {
   flex: 0 0 auto !important;
   flex-grow: 0 !important;
 }
 
-.mat-mdc-tab-group
-> .mat-mdc-tab-header
-.mat-mdc-tab {
+.mat-mdc-tab-group > .mat-mdc-tab-header .mat-mdc-tab {
   min-width: 80px !important;
   height: 42px !important;
   margin: 0 4px 7px 4px;
@@ -80,9 +76,7 @@ $outlineColor: #bfc1c3;
   opacity: 1 !important;
 }
 
-.mat-mdc-tab-group
-> .mat-mdc-tab-header
-.mat-mdc-tab.mdc-tab--active {
+.mat-mdc-tab-group > .mat-mdc-tab-header .mat-mdc-tab.mdc-tab--active {
   height: 48px !important;
   margin: 1px 4px 0 4px;
   border-top: 1px solid $outlineColor;
@@ -92,13 +86,11 @@ $outlineColor: #bfc1c3;
   background-color: #fff;
 }
 
-.mat-mdc-tab
-.mdc-tab__text-label {
+.mat-mdc-tab .mdc-tab__text-label {
   color: govuk-colour('black') !important;
 }
 
-.mat-mdc-tab
-  .mdc-tab__text-label {
+.mat-mdc-tab .mdc-tab__text-label {
   font-family: 'GDS Transport', Arial, sans-serif;
   font-size: 16px;
   letter-spacing: normal;

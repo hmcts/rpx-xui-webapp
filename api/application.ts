@@ -31,6 +31,7 @@ import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 
 const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
+
 function resolveStaticRoot(): string {
   const buildRoot = path.join(__dirname, '..');
   const browserRoot = path.join(buildRoot, 'browser');

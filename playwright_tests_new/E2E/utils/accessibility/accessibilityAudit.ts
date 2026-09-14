@@ -67,6 +67,14 @@ export function resolveAccessibilityEngines(defaultEngines: AccessibilityEngine[
     return defaultEngines;
   }
 
+  const unknownEngines = requested.filter((engine) => !engineAliases[engine]);
+  if (unknownEngines.length > 0) {
+    throw new Error(
+      `Unsupported accessibility engine(s): ${Array.from(new Set(unknownEngines)).join(', ')}. ` +
+        `Supported values: all, ${Object.keys(engineAliases).join(', ')}.`
+    );
+  }
+
   const supportedEngines = new Set(defaultEngines);
   return Array.from(
     new Set(

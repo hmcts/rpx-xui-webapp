@@ -209,7 +209,7 @@ async function openLinkedHearingsJourney(
     { sessionCookies: hearingLinkSessionCookies }
   );
 
-  await hearingsTabPage.waitForReady(LISTED_HEARING_SCENARIO.hearingId);
+  await hearingsTabPage.waitForReady(LISTED_HEARING_SCENARIO.hearingId, 'link');
   await expect(hearingsTabPage.requestHearingButton).toBeVisible({ timeout: 60_000 });
   await hearingsTabPage.openLinkHearing(LISTED_HEARING_SCENARIO.hearingId);
   await expect(page.getByRole('heading', { name: /which hearings should be linked\?/i })).toBeVisible();

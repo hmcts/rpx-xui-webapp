@@ -1,7 +1,7 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { HearingJourneyModel } from '../../../utils/hearing-model.ts';
 
-type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit';
+type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit' | 'link';
 
 export class HearingsTabPage {
   constructor(private readonly page: Page) {}
@@ -59,6 +59,8 @@ export class HearingsTabPage {
         return this.cancelButton(hearingId);
       case 'add-or-edit':
         return this.addOrEditButton(hearingId);
+      case 'link':
+        return this.linkHearingButton(hearingId);
       case 'view-details':
       default:
         return this.viewDetailsButton(hearingId);

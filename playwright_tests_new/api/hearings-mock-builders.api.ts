@@ -350,9 +350,9 @@ test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
       '8254902572336147',
     ]);
     expect(linkedCases.map((linkedCase) => linkedCase.reasonsForLink)).toEqual([
-      ['Linked for a hearing'],
-      ['Linked for a hearing', 'Progressed as part of lead case'],
-      ['Familial', 'Guardian', 'Linked for a hearing'],
+      ['CLRC017'],
+      ['CLRC017', 'Progressed as part of lead case'],
+      ['Familial', 'Guardian', 'CLRC017'],
     ]);
 
     const casesWithHearings = linkedCases.filter((linkedCase) => linkedCase.caseHearings.length > 0);

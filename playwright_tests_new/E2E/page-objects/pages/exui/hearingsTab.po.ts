@@ -6,7 +6,7 @@ type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit';
 export class HearingsTabPage {
   constructor(private readonly page: Page) {}
 
-  readonly container = this.page.locator('exui-case-hearings');
+  readonly container = this.page.locator('exui-case-hearings, exui-case-hearings-ce');
   readonly emptyState = this.page.getByText('No current and upcoming hearings found', { exact: false });
   readonly reloadButton = this.page.locator('#reload-hearing-tab');
   readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });

@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Cookie, Page } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
 import {
   buildCaseLinkingReasonCodesMock,
@@ -14,7 +14,6 @@ import {
 } from '../../helpers';
 import type { HearingsTabPage } from '../../../E2E/page-objects/pages/exui/hearingsTab.po';
 import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
-import { loadSessionCookies } from '../../../common/sessionCapture';
 
 const linkedCasesWithHearingReason = [
   {
@@ -106,12 +105,46 @@ const judgeTypesForHearingLinkJourney = [
   },
 ];
 
-const hearingLinkSessionCookies = loadSessionCookies({
-  userIdentifier: 'HEARING_LINK_LOCAL',
-  email: 'hearing-link-local@example.com',
-  password: 'unused',
-  sessionKey: 'hearing-link-local',
-} as const).cookies;
+function buildHearingLinkSessionCookies(
+  baseUrl = process.env.TEST_URL?.trim() || 'https://manage-case.aat.platform.hmcts.net'
+): Cookie[] {
+  const origin = new URL(baseUrl).origin;
+  const secure = origin.startsWith('https:');
+  return [
+    {
+      name: '__userid__',
+      value: 'hearing-link-local-user',
+      url: origin,
+      path: '/',
+      expires: -1,
+      httpOnly: false,
+      secure,
+      sameSite: 'Strict',
+    },
+    {
+      name: '__auth__',
+      value: 'hearing-link-local-token',
+      url: origin,
+      path: '/',
+      expires: -1,
+      httpOnly: false,
+      secure,
+      sameSite: 'Strict',
+    },
+    {
+      name: 'exui-preferred-language',
+      value: 'en',
+      url: origin,
+      path: '/',
+      expires: -1,
+      httpOnly: false,
+      secure,
+      sameSite: 'Strict',
+    },
+  ];
+}
+
+const hearingLinkSessionCookies = buildHearingLinkSessionCookies();
 
 async function navigateToHearingLinkPage(page: Page, hearingsTabPage: HearingsTabPage): Promise<void> {
   await expect(hearingsTabPage.requestHearingButton).toBeVisible({ timeout: 60_000 });

@@ -96,7 +96,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg',
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg',
         excludes: 'functional-output/tests/**/test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
@@ -697,7 +697,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportDir            : "functional-output/tests/playwright-smoke/odhin-report/",
             reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'DEMO Playwright Smoke'
         ])
@@ -712,7 +712,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportDir            : "functional-output/tests/playwright-smoke/odhin-report/",
             reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'PREVIEW Playwright Smoke'
         ])
@@ -906,7 +906,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportDir            : "functional-output/tests/playwright-smoke/odhin-report/",
             reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'AAT Playwright Smoke'
         ])

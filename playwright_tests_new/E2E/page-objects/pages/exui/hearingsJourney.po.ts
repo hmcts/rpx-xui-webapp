@@ -67,7 +67,11 @@ export class HearingsJourneyPage {
   private async activeVenueOptions(): Promise<Locator> {
     // Material exposes aria-controls (MDC) or aria-owns (legacy) for this input's panel.
     const associatedInput = this.hearingVenue.and(this.page.locator('[aria-owns], [aria-controls]'));
-    await associatedInput.waitFor({ state: 'attached', timeout: 30_000 });
+    try {
+      await associatedInput.waitFor({ state: 'attached', timeout: 1_000 });
+    } catch {
+      throw new Error('Hearing venue input did not expose an associated autocomplete panel.');
+    }
     const panelId = (await associatedInput.getAttribute('aria-controls')) || (await associatedInput.getAttribute('aria-owns'));
     if (!panelId) throw new Error('Hearing venue input did not expose an associated autocomplete panel.');
     return this.page.locator(`[role="listbox"][id=${JSON.stringify(panelId)}]`).getByRole('option');

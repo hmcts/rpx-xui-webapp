@@ -1,11 +1,51 @@
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss' as *;
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/_typography' as *;
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/_shims' as *;
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals' as conditionals;
+
+@mixin core-font-generator(
+  $font-size: 19px,
+  $font-size-640: 16px,
+  $font-size-print: 14pt,
+  $line-height: calc(25 / 19),
+  $line-height-640: calc(20 / 16),
+  $tabular-numbers: false,
+  $font-weight: 400
+) {
+  @if $tabular-numbers {
+    font-family: $toolkit-font-stack-tabular;
+  } @else if $is-print {
+    font-family: $Print-reset;
+  } @else {
+    font-family: $toolkit-font-stack;
+
+    @if $toolkit-font-stack == '$NTA-Light' {
+      font-size-adjust: if($font-weight > 400, 0.525, 0.5);
+    }
+  }
+
+  font-weight: $font-weight;
+  text-transform: none;
+
+  @if $is-print {
+    font-size: $font-size-print;
+    line-height: $line-height;
+  } @else {
+    font-size: $font-size-640;
+    line-height: $line-height-640;
+
+    @include conditionals.media(tablet) {
+      font-size: $font-size;
+      line-height: $line-height;
+    }
+  }
+}
 
 @mixin core-24pt($line-height: calc(30 / 24), $line-height-640: calc(24 / 20), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 24pt;
   $font-size-640: 18pt;
   $font-size-print: 16pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,
@@ -20,7 +60,7 @@
   $font-size: 20pt;
   $font-size-640: 16pt;
   $font-size-print: 12pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,
@@ -35,7 +75,7 @@
   $font-size: 18pt;
   $font-size-640: 14pt;
   $font-size-print: 12pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,
@@ -50,7 +90,7 @@
   $font-size: 17pt;
   $font-size-640: 14pt;
   $font-size-print: 12pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,
@@ -65,7 +105,7 @@
   $font-size: 16pt;
   $font-size-640: 14pt;
   $font-size-print: 12pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,
@@ -80,7 +120,7 @@
   $font-size: 15pt;
   $font-size-640: 14pt;
   $font-size-print: 12pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,
@@ -95,7 +135,7 @@
   $font-size: 14pt;
   $font-size-640: 12pt;
   $font-size-print: 11pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,
@@ -110,7 +150,7 @@
   $font-size: 12pt;
   $font-size-640: 11pt;
   $font-size-print: 10pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,
@@ -125,7 +165,7 @@
   $font-size: 10pt;
   $font-size-640: 9pt;
   $font-size-print: 8pt;
-  @include _core-font-generator(
+  @include core-font-generator(
     $font-size,
     $font-size-640,
     $font-size-print,

@@ -1,5 +1,7 @@
 // TODO - needs to be clarified wehre the css is coming form
 
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss' as toolkit;
+
 /*
 Buttons
 */
@@ -8,10 +10,10 @@ $module: 'button';
 
 .#{$module} {
   &-secondary {
-    @include button($grey-3);
+    @include toolkit.button(toolkit.$grey-3);
   }
 
   &-tertiary {
-    @include button($grey-4);
+    @include toolkit.button(toolkit.$grey-4);
   }
 }

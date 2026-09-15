@@ -176,7 +176,9 @@ const buildConfig = (env: EnvMap = process.env) => {
     reporter,
     use: {
       baseURL: baseUrl,
-      trace: disableGenericFailureArtifacts ? 'off' : 'retain-on-failure',
+      trace: disableGenericFailureArtifacts
+        ? 'off'
+        : { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true } },
       screenshot: disableGenericFailureArtifacts
         ? 'off'
         : {

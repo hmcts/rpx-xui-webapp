@@ -38,7 +38,7 @@ export class ResetHearingValuesLastError implements Action {
 
 export class StoreJurisdictionAndCaseRef implements Action {
   public readonly type = STORE_JURISDICTION_AND_CASE_REF;
-  constructor(public payload: any) {}
+  constructor(public payload: HearingValuesCaseContext) {}
 }
 export class ResetJurisdictionAndCaseRef implements Action {
   public readonly type = RESET_JURISDICTION_AND_CASE_REF;

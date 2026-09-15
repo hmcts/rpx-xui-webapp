@@ -237,6 +237,10 @@ const buildConfig = (env = process.env) => {
     reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }
 
+  const trace = resolveFlag(env.PW_TRACE_RICH, false)
+    ? { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true } }
+    : 'retain-on-failure';
+
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
@@ -250,7 +254,7 @@ const buildConfig = (env = process.env) => {
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'retain-on-failure',
+      trace,
       screenshot: {
         mode: 'only-on-failure',
         fullPage: true,

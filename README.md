@@ -417,6 +417,8 @@ Key behaviour:
 - A flake summary is printed at the end of Playwright runs by `playwright_tests_new/common/reporters/flake-gate.reporter.cjs` (counts flaky, retry-pass and failed tests).
 - Flake gate is currently report-only in all environments; it does not fail the run.
 - `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
+
+Playwright 1.63 profiling can be enabled for a representative local run by adding `perfetto` to `PLAYWRIGHT_REPORTERS` (for example `PLAYWRIGHT_REPORTERS=list,odhin,perfetto`). The built-in reporter writes `test-results/perfetto.json` by default. Set `PW_TRACE_RICH=true` for retain-on-failure traces with DOM, ARIA and screen snapshots; measure artifact size before enabling it in CI.
 - Optional flake thresholds `PW_MAX_FLAKY_TESTS` (default `20`) and `PW_MAX_FLAKY_RATE` (default `0.2`, meaning 20%) are used for reporting output only.
 
 ### Playwright diagnostics artifacts in Jenkins

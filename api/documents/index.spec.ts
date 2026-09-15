@@ -2,6 +2,8 @@ import axios from 'axios';
 import { expect, use } from 'chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { getConfigValue } from '../configuration';
+import { DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS } from '../configuration/references';
 import { handleRequest, handleResponse, validateLegacyDocumentAccess } from './index';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -52,7 +54,7 @@ describe('Documents Uploading', () => {
   });
 
   it('should use the configured initial period when the session has no nextTimeout', () => {
-    const initialPeriod = 10000;
+    const initialPeriod = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS);
 
     const justInside = { method: 'POST', session: { lastUploadTime: Date.now() - initialPeriod + 500 } };
     const justOutside = { method: 'POST', session: { lastUploadTime: Date.now() - initialPeriod - 500 } };

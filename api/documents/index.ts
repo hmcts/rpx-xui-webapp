@@ -8,19 +8,8 @@ import {
 import { EnhancedRequest } from '../lib/models';
 
 // Time configuration
-const DEFAULT_INITIAL_TIMEOUT_PERIOD = 10000;
-const DEFAULT_MAX_TIMEOUT_PERIOD = 60000;
-
-function getConfigNumber(reference: string, fallback: number): number {
-  try {
-    return getConfigValue<number>(reference);
-  } catch {
-    return fallback;
-  }
-}
-
-const INITIAL_TIMEOUT_PERIOD = getConfigNumber(DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS, DEFAULT_INITIAL_TIMEOUT_PERIOD);
-const MAX_TIMEOUT_PERIOD = getConfigNumber(DOCUMENT_UPLOAD_THROTTLE_MAX_MS, DEFAULT_MAX_TIMEOUT_PERIOD);
+const INITIAL_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS);
+const MAX_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_MAX_MS);
 
 const LEGACY_BINARY_DOCUMENT_PATH = /^\/documents\/[^/]+\/binary\/?$/;
 const LEGACY_BINARY_DOCUMENT_PATH_WITH_ID = /^\/documents\/([^/]+)\/binary\/?$/;

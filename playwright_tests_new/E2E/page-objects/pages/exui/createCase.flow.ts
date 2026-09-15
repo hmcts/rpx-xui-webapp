@@ -2,7 +2,7 @@ import type { Locator, Page } from '@playwright/test';
 
 import { EXUI_TIMEOUTS } from './exui-timeouts.js';
 
-type VisibleActionButtonResolver = (locator: Locator) => Promise<Locator | undefined>;
+type VisibleActionButtonResolver = (locator: Locator) => Promise<Locator | null | undefined>;
 type ApiCall = { method: string; status: number; url: string };
 
 const CREATE_CASE_BOOTSTRAP_API_PATTERNS: RegExp[] = [
@@ -20,6 +20,11 @@ export function findCreateCaseBootstrapFailure(apiCalls: ApiCall[], baselineInde
 
 function buildCreateCaseBootstrapFailureMessage(context: string, failure: ApiCall): string {
   return `Create case bootstrap failed ${context}: ${failure.method} ${failure.url} returned HTTP ${failure.status}`;
+}
+
+function caseSummaryId(pathname: string): string | undefined {
+  if (pathname.includes('/trigger/')) return undefined;
+  return /^\/cases\/case-details\/(?:[^/]+\/[^/]+\/)?([^/]+)\/?$/.exec(pathname)?.[1];
 }
 
 export async function clickSubmitAndWaitFlow({
@@ -54,7 +59,7 @@ export async function clickSubmitAndWaitFlow({
   clickContinueAndWait: (context: string, options?: { continueButton?: Locator; timeoutMs?: number }) => Promise<void>;
   waitForSpinnerToComplete: (context: string, timeoutMs?: number) => Promise<void>;
   assertNoEventCreationError: (context: string) => Promise<void>;
-  checkForErrorMessage: () => Promise<boolean>;
+  checkForErrorMessage: (timeoutMs?: number) => Promise<boolean>;
   getValidationErrorText: () => Promise<string>;
   failFastOnCriticalWizardEndpointFailure: (context: string, baselineIndex?: number) => void;
   warn: (message: string, meta: Record<string, unknown>) => void;
@@ -93,19 +98,51 @@ export async function clickSubmitAndWaitFlow({
 
     const visibleSubmitButton = await getVisibleActionButton(submitButton);
     if (visibleSubmitButton) {
-      await clickSubmitButtonWithRetry(context, visibleSubmitButton);
-      await waitForSpinnerToComplete(`after submit ${context}`, timeoutMs);
-      await assertNoEventCreationError(`after submit ${context}`);
-      const submitFailedPage = await somethingWentWrongHeading.isVisible().catch(() => false);
-      if (submitFailedPage) {
-        throw new Error(`Case event failed after submit ${context}: Something went wrong page was displayed.`);
+      // The shared history is a capped FIFO; its last object remains a stable boundary when older calls are evicted.
+      const submitApiCallsBoundary = getApiCalls().slice(-1)[0];
+      const checkSubmitEndpointFailure = () =>
+        failFastOnCriticalWizardEndpointFailure(
+          `after submit ${context}`,
+          submitApiCallsBoundary ? getApiCalls().indexOf(submitApiCallsBoundary) + 1 : 0
+        );
+      const submitUrl = new URL(page.url());
+      const expectedCaseId = caseSummaryId(submitUrl.pathname.split('/trigger/')[0]);
+      try {
+        await clickSubmitButtonWithRetry(context, visibleSubmitButton);
+        await waitForSpinnerToComplete(`after submit ${context}`, Math.max(1, deadline - Date.now()));
+        while (Date.now() < deadline) {
+          if (page.isClosed()) throw new Error(`Page closed after submit ${context}`);
+          checkSubmitEndpointFailure();
+          await assertNoEventCreationError(`after submit ${context}`);
+          const submitFailedPage = await somethingWentWrongHeading.isVisible().catch(() => false);
+          if (submitFailedPage) {
+            throw new Error(`Case event failed after submit ${context}: Something went wrong page was displayed.`);
+          }
+          const hasValidationError = await checkForErrorMessage(
+            Math.max(1, Math.min(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL, deadline - Date.now()))
+          );
+          if (hasValidationError) {
+            const validationText = await getValidationErrorText();
+            throw new Error(`Validation error after submit ${context}: ${validationText || 'unknown validation error'}`);
+          }
+          if (page.isClosed()) throw new Error(`Page closed after submit ${context}`);
+          checkSubmitEndpointFailure();
+          const currentUrl = new URL(page.url());
+          const summaryCaseId = caseSummaryId(currentUrl.pathname);
+          const onExpectedSummary =
+            currentUrl.origin === submitUrl.origin &&
+            summaryCaseId !== undefined &&
+            (expectedCaseId === undefined || summaryCaseId === expectedCaseId);
+          if (onExpectedSummary && (await page.locator('#next-step').isVisible()) && Date.now() < deadline) return;
+          const remainingMs = deadline - Date.now();
+          if (remainingMs > 0) await page.waitForTimeout(Math.min(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL, remainingMs));
+        }
+        throw new Error(`Case details summary did not become usable after submit ${context}`);
+      } catch (error) {
+        // Prefer the observed endpoint failure when the UI only exposes a secondary error.
+        checkSubmitEndpointFailure();
+        throw error;
       }
-      const hasValidationError = await checkForErrorMessage();
-      if (hasValidationError) {
-        const validationText = await getValidationErrorText();
-        throw new Error(`Validation error after submit ${context}: ${validationText || 'unknown validation error'}`);
-      }
-      return;
     }
 
     const visibleContinueButton = await getVisibleActionButton(continueButton);

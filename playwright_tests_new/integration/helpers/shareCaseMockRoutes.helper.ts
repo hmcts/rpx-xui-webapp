@@ -47,7 +47,7 @@ export async function setupShareCaseBootstrapRoutes(page: Page): Promise<void> {
 
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
-    window.localStorage.setItem(
+    window.sessionStorage.setItem(
       'savedQueryParams',
       JSON.stringify({
         jurisdiction: shareableJurisdiction,
@@ -55,7 +55,7 @@ export async function setupShareCaseBootstrapRoutes(page: Page): Promise<void> {
         'case-state': null,
       })
     );
-    window.localStorage.setItem('workbasket-filter-form-group-value', JSON.stringify({}));
+    window.sessionStorage.setItem('workbasket-filter-form-group-value', JSON.stringify({}));
   }, userDetails.userInfo);
 
   await page.route('**/auth/isAuthenticated*', async (route) => fulfillJson(route, true));

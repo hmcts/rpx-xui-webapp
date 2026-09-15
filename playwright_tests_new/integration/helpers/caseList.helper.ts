@@ -91,8 +91,8 @@ export async function setupCaseListMocks(
 
 export async function clearPersistedCaseListState(page: Page): Promise<void> {
   await page.addInitScript(() => {
-    window.localStorage.removeItem('savedQueryParams');
-    window.localStorage.removeItem('workbasket-filter-form-group-value');
+    window.sessionStorage.removeItem('savedQueryParams');
+    window.sessionStorage.removeItem('workbasket-filter-form-group-value');
   });
 }
 

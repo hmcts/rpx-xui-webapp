@@ -14,6 +14,7 @@ import { decompressFromUTF16 } from 'lz-string';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
+import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import * as fromCasesFeature from '../../store';
 
 /**
@@ -72,7 +73,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   constructor(
     public store: Store<fromCasesFeature.State>,
     private readonly appConfig: AppConfig,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly sessionStorageService: SessionStorageService
   ) {}
 
   public ngOnInit(): void {
@@ -175,8 +177,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     };
   };
 
-  private getCompressedLSItem(key: string): any {
-    const item = localStorage.getItem(key);
+  private getCompressedSessionStorageItem(key: string): any {
+    const item = this.sessionStorageService.getItem(key);
     if (item && item.length > 0) {
       if (item.startsWith('{')) {
         // probably not compressed
@@ -194,19 +196,27 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   public getEvent() {
     let event = null;
-    const formGroupFromLS = safeJsonParse(localStorage.getItem('search-form-group-value'), null);
-    const jurisdictionFromLS = this.getCompressedLSItem('search-jurisdiction');
-    const caseTypeGroupFromLS = safeJsonParse(localStorage.getItem('search-caseType'), null);
-    const metadataFieldsGroupFromLS = safeJsonParse(localStorage.getItem('search-metadata-fields'), null);
+    const formGroupFromSessionStorage = safeJsonParse(this.sessionStorageService.getItem('search-form-group-value'), null);
+    const jurisdictionFromSessionStorage = this.getCompressedSessionStorageItem('search-jurisdiction');
+    const caseTypeGroupFromSessionStorage = safeJsonParse(this.sessionStorageService.getItem('search-caseType'), null);
+    const metadataFieldsGroupFromSessionStorage = safeJsonParse(
+      this.sessionStorageService.getItem('search-metadata-fields'),
+      null
+    );
 
-    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
+    if (
+      formGroupFromSessionStorage &&
+      jurisdictionFromSessionStorage &&
+      caseTypeGroupFromSessionStorage &&
+      metadataFieldsGroupFromSessionStorage
+    ) {
       event = {
         selected: {
-          jurisdiction: jurisdictionFromLS,
-          caseType: caseTypeGroupFromLS,
-          metadataFields: metadataFieldsGroupFromLS,
+          jurisdiction: jurisdictionFromSessionStorage,
+          caseType: caseTypeGroupFromSessionStorage,
+          metadataFields: metadataFieldsGroupFromSessionStorage,
           formGroup: {
-            value: formGroupFromLS,
+            value: formGroupFromSessionStorage,
           },
           page: this.page,
           view: 'SEARCH',

@@ -71,7 +71,7 @@ describe('CaseSearchComponent', () => {
     component.metadataFields$ = storePipeMock.and.returnValue(of([]));
     fixture.detectChanges();
     storeDispatchMock.calls.reset();
-    localStorage.clear();
+    sessionStorage.clear();
   }));
 
   describe('applyChangePage()', () => {
@@ -236,17 +236,17 @@ describe('CaseSearchComponent', () => {
   });
 
   describe('getEvent()', () => {
-    it('should build a search event from local storage.', () => {
+    it('should build a search event from session storage.', () => {
       const formGroupValue = { name: 'Smith' };
       const jurisdiction = { id: 'PROBATE' };
       const caseType = { id: 'GrantOfRepresentation' };
       const metadataFields = ['[STATE]'];
       component.page = 5;
       component.sortParameters = { column: 'name', order: 1, type: 'Text' };
-      localStorage.setItem('search-form-group-value', JSON.stringify(formGroupValue));
-      localStorage.setItem('search-jurisdiction', JSON.stringify(jurisdiction));
-      localStorage.setItem('search-caseType', JSON.stringify(caseType));
-      localStorage.setItem('search-metadata-fields', JSON.stringify(metadataFields));
+      sessionStorage.setItem('search-form-group-value', JSON.stringify(formGroupValue));
+      sessionStorage.setItem('search-jurisdiction', JSON.stringify(jurisdiction));
+      sessionStorage.setItem('search-caseType', JSON.stringify(caseType));
+      sessionStorage.setItem('search-metadata-fields', JSON.stringify(metadataFields));
 
       expect(component.getEvent()).toEqual({
         selected: {
@@ -263,33 +263,33 @@ describe('CaseSearchComponent', () => {
       });
     });
 
-    it('should return null when local storage is incomplete.', () => {
-      localStorage.setItem('search-form-group-value', JSON.stringify({ name: 'Smith' }));
+    it('should return null when session storage is incomplete.', () => {
+      sessionStorage.setItem('search-form-group-value', JSON.stringify({ name: 'Smith' }));
 
       expect(component.getEvent()).toBeNull();
     });
   });
 
-  describe('getCompressedLSItem()', () => {
-    it('should read compressed JSON from local storage.', () => {
-      localStorage.setItem('search-jurisdiction', compressToUTF16(JSON.stringify({ id: 'PROBATE' })));
+  describe('getCompressedSessionStorageItem()', () => {
+    it('should read compressed JSON from session storage.', () => {
+      sessionStorage.setItem('search-jurisdiction', compressToUTF16(JSON.stringify({ id: 'PROBATE' })));
 
-      expect((component as any).getCompressedLSItem('search-jurisdiction')).toEqual({ id: 'PROBATE' });
+      expect((component as any).getCompressedSessionStorageItem('search-jurisdiction')).toEqual({ id: 'PROBATE' });
     });
 
     it('should return null and log when compressed data cannot be read.', () => {
       const consoleLogSpy = jasmine.isSpy(console.log) ? (console.log as jasmine.Spy) : spyOn(console, 'log');
       spyOn(lzString, 'decompressFromUTF16').and.throwError('decompression failed');
-      localStorage.setItem('search-jurisdiction', 'not compressed json');
+      sessionStorage.setItem('search-jurisdiction', 'not compressed json');
 
-      expect((component as any).getCompressedLSItem('search-jurisdiction')).toBeNull();
+      expect((component as any).getCompressedSessionStorageItem('search-jurisdiction')).toBeNull();
       expect(consoleLogSpy).toHaveBeenCalled();
     });
 
-    it('should return null when local storage item is empty.', () => {
-      localStorage.setItem('search-jurisdiction', '');
+    it('should return null when session storage item is empty.', () => {
+      sessionStorage.setItem('search-jurisdiction', '');
 
-      expect((component as any).getCompressedLSItem('search-jurisdiction')).toBeNull();
+      expect((component as any).getCompressedSessionStorageItem('search-jurisdiction')).toBeNull();
     });
   });
 

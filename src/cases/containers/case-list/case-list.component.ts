@@ -26,8 +26,8 @@ import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 
-const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
-const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
+const SAVED_QUERY_PARAM_SES_STORAGE = 'savedQueryParams';
+const FORM_GROUP_VAL_SES_STORAGE = 'workbasket-filter-form-group-value';
 
 /**
  * Entry component wrapper for Case List
@@ -217,7 +217,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public getSavedQueryParams(): any {
-    return safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);
+    return safeJsonParse(this.windowService.getSessionStorage(SAVED_QUERY_PARAM_SES_STORAGE), null);
   }
 
   public areSavedQueryParamsValid(jurisdictions: Jurisdiction[], savedQueryParams): boolean {
@@ -231,8 +231,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public clearSavedCaseListFilters(): void {
-    this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
-    this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
+    this.windowService.removeSessionStorage(SAVED_QUERY_PARAM_SES_STORAGE);
+    this.windowService.removeSessionStorage(FORM_GROUP_VAL_SES_STORAGE);
   }
 
   /**
@@ -311,37 +311,42 @@ export class CaseListComponent implements OnInit, OnDestroy {
   };
 
   public getEvent() {
-    let formGroupFromLS = null;
-    let jurisdictionFromLS = null;
-    let caseStateGroupFromLS = null;
-    let caseTypeGroupFromLS = null;
+    let formGroupFromSessionStorage = null;
+    let jurisdictionFromSessionStorage = null;
+    let caseStateGroupFromSessionStorage = null;
+    let caseTypeGroupFromSessionStorage = null;
     this.setCaseListFilterDefaults();
     if (this.selected) {
-      formGroupFromLS = this.selected.formGroup
+      formGroupFromSessionStorage = this.selected.formGroup
         ? this.selected.formGroup.value
           ? this.selected.formGroup.value
           : this.selected.formGroup
         : null;
-      jurisdictionFromLS = { id: this.selected.jurisdiction.id };
-      caseTypeGroupFromLS = { id: this.selected.caseType.id };
-      caseStateGroupFromLS = { id: this.selected.caseState ? this.selected.caseState.id : null };
+      jurisdictionFromSessionStorage = { id: this.selected.jurisdiction.id };
+      caseTypeGroupFromSessionStorage = { id: this.selected.caseType.id };
+      caseStateGroupFromSessionStorage = { id: this.selected.caseState ? this.selected.caseState.id : null };
     } else if (this.savedQueryParams) {
-      this.savedQueryParams = safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);
-      formGroupFromLS = safeJsonParse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE), null);
-      jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction };
-      caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
-      caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
+      this.savedQueryParams = safeJsonParse(this.windowService.getSessionStorage(SAVED_QUERY_PARAM_SES_STORAGE), null);
+      formGroupFromSessionStorage = safeJsonParse(this.windowService.getSessionStorage(FORM_GROUP_VAL_SES_STORAGE), null);
+      jurisdictionFromSessionStorage = { id: this.savedQueryParams.jurisdiction };
+      caseTypeGroupFromSessionStorage = { id: this.savedQueryParams['case-type'] };
+      caseStateGroupFromSessionStorage = { id: this.savedQueryParams['case-state'] };
     }
 
-    const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]', '[CREATED_DATE]'];
+    const metadataFieldsGroupFromSessionStorage = ['[CASE_REFERENCE]', '[CREATED_DATE]'];
 
-    if (jurisdictionFromLS && caseTypeGroupFromLS && caseStateGroupFromLS && metadataFieldsGroupFromLS) {
+    if (
+      jurisdictionFromSessionStorage &&
+      caseTypeGroupFromSessionStorage &&
+      caseStateGroupFromSessionStorage &&
+      metadataFieldsGroupFromSessionStorage
+    ) {
       return this.createEvent(
-        jurisdictionFromLS,
-        caseTypeGroupFromLS,
-        caseStateGroupFromLS,
-        metadataFieldsGroupFromLS,
-        formGroupFromLS,
+        jurisdictionFromSessionStorage,
+        caseTypeGroupFromSessionStorage,
+        caseStateGroupFromSessionStorage,
+        metadataFieldsGroupFromSessionStorage,
+        formGroupFromSessionStorage,
         this.page,
         this.sortParameters
       );

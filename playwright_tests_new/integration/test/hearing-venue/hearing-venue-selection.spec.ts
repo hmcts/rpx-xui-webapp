@@ -2,14 +2,14 @@ import { expect, test } from '@playwright/test';
 import { build } from 'esbuild';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
-import { HearingsJourneyPage } from '../../E2E/page-objects/pages/exui/hearingsJourney.po';
-import { createHearingJourneyModel } from '../../E2E/testData/hearings/hearingJourneyScenarios';
+import { HearingsJourneyPage } from '../../../E2E/page-objects/pages/exui/hearingsJourney.po';
+import { createHearingJourneyModel } from '../../../E2E/testData/hearings/hearingJourneyScenarios';
 
 let fixture: string;
 test.beforeAll(async () => {
   const require = createRequire(import.meta.url);
   const result = await build({
-    entryPoints: [fileURLToPath(new URL('../../integration/mocks/hearing-venue/material.fixture.ts', import.meta.url))],
+    entryPoints: [fileURLToPath(new URL('../../mocks/hearing-venue/material.fixture.ts', import.meta.url))],
     bundle: true,
     write: false,
     platform: 'browser',
@@ -27,7 +27,7 @@ test.beforeAll(async () => {
   fixture = result.outputFiles[0].text;
 });
 
-test.describe('real hearing venue Material selection', { tag: '@svc-internal' }, () => {
+test.describe('real hearing venue Material selection', { tag: ['@integration', '@integration-hearings'] }, () => {
   test.use({ viewport: { width: 800, height: 480 }, actionTimeout: 1500 });
   for (const offscreen of [false, true]) {
     test(`preserves seeded and exact selected venue with panel ${offscreen ? 'offscreen' : 'onscreen'}`, async ({ page }) => {

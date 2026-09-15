@@ -3,6 +3,15 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <router-outlet></router-outlet>
+      <button
+        *ngIf="!isConfirmationPage"
+        type="button"
+        class="govuk-button govuk-button--secondary govuk-!-margin-left-3"
+        data-module="govuk-button"
+        (click)="onCancel()"
+      >
+        {{ 'Cancel' | rpxTranslate }}
+      </button>
     </div>
   </div>
 </div>

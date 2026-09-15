@@ -79,7 +79,7 @@ const buildIntegrationConfig = (env: EnvMap) =>
     workers?: number;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
-    use: { trace: string };
+    use: { trace: string | { mode: string; snapshots: { dom: boolean; aria: boolean; screen: boolean } } };
     projects: Array<{
       name: string;
       workers?: number;
@@ -641,7 +641,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.profile).toBe(true);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
     expect(config.expect.timeout).toBe(60_000);
-    expect(config.use.trace).toBe('retain-on-failure');
+    expect(config.use.trace).toEqual({
+      mode: 'retain-on-failure',
+      snapshots: { dom: true, aria: true, screen: true },
+    });
     expect(config.use.timezoneId).toBe('Europe/London');
     expect(config.projects.map((project) => project.name)).toEqual(['chromium']);
     expect(config.projects[0]?.workers).toBeUndefined();

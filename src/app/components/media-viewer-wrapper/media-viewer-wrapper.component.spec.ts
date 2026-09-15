@@ -19,6 +19,11 @@ const MEDIA_VIEWER_DATA = {
   document_filename: 'sample.pdf',
   content_type: 'pdf',
 };
+const LEGACY_MEDIA_VIEWER_DATA = {
+  ...MEDIA_VIEWER_DATA,
+  document_binary_url: '/documents/doc-123/binary',
+  case_id: 'case-123',
+};
 
 describe('MediaViewerWrapperComponent', () => {
   let component: MediaViewerWrapperComponent;
@@ -91,6 +96,16 @@ describe('MediaViewerWrapperComponent', () => {
       expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
       expect(component.mediaFilename).toBe('sample.pdf');
       expect(component.mediaContentType).toBe('pdf');
+    });
+
+    it('should add case context to legacy document binary media urls', () => {
+      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: 'token-1' });
+      windowService.getLocalStorage.and.returnValues(JSON.stringify(LEGACY_MEDIA_VIEWER_DATA));
+      fixture.detectChanges();
+
+      component.ngOnInit();
+
+      expect(component.mediaURL).toBe('/documents/doc-123/binary?caseId=case-123');
     });
 
     it('should move media viewer data from local to session storage and clean url', () => {

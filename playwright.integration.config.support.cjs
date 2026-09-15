@@ -190,6 +190,7 @@ const buildConfig = (env = process.env) => {
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
   reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
+  if (resolveFlag(env.PW_ENABLE_PERFETTO, false)) reporter.push(['perfetto']);
 
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';

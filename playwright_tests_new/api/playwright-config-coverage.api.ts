@@ -643,7 +643,9 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.expect.timeout).toBe(60_000);
     expect(config.use.trace).toEqual({
       mode: 'retain-on-failure',
-      snapshots: { dom: true, aria: true, screen: true },
+      snapshots: true,
+      screenshots: true,
+      sources: true,
     });
     expect(config.use.timezoneId).toBe('Europe/London');
     expect(config.projects.map((project) => project.name)).toEqual(['chromium']);

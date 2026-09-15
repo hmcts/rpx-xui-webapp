@@ -6,6 +6,7 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
+    OTEL_SERVICE_NAME: Web
     NODE_TLS_REJECT_UNAUTHORIZED: 1
     FEATURE_JRD_E_LINKS_V2_ENABLED: true
     SERVICES_IDAM_SERVICE_OVERRIDE: false

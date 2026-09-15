@@ -50,7 +50,7 @@
     list-style-type: decimal;
 
     strong {
-      @include bold-12pt();
+      @include typography.bold-12pt();
     }
   }
 
@@ -70,7 +70,7 @@
 .qm-qualifying-question {
   .markdown {
     ul li strong {
-      @include bold-12pt();
+      @include typography.bold-12pt();
     }
   }
 }

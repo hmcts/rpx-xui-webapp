@@ -176,7 +176,7 @@ export class HearingsJourneyPage {
     // when the associated CDK panel is outside the viewport; never select a different active result.
     const activeOptionId = await this.hearingVenue.getAttribute('aria-activedescendant');
     if (activeOptionId !== optionId) {
-      throw new Error(`Expected active hearing venue option "${optionId}", but found "${activeOptionId ?? 'none'}".`);
+      throw new Error(`aria-activedescendant mismatch: expected "${optionId}", but found "${activeOptionId ?? 'none'}".`);
     }
     await this.hearingVenue.press('Enter');
     const selectedInputValue = normaliseWhitespace(await this.hearingVenue.inputValue());

@@ -3,7 +3,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import {
   buildCaseLinkingReasonCodesMock,
   CASE_LINKING_REASON_CODE,
-  CASE_LINKING_SECONDARY_REASON_CODE,
+  CASE_LINKING_HEARING_REASON_CODE,
 } from '../../mocks/caseLinking.mock';
 import { LISTED_HEARING_SCENARIO } from '../../mocks/hearings.mock';
 import {
@@ -20,12 +20,12 @@ const linkedCasesWithHearingReason = [
   {
     caseReference: '1611573453599537',
     caseName: 'redacted redacted - appellantnamefordisplay',
-    reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE, CASE_LINKING_REASON_CODE],
+    reasonsForLink: [CASE_LINKING_HEARING_REASON_CODE, CASE_LINKING_REASON_CODE],
   },
   {
     caseReference: '1652112127295262',
     caseName: 'Case linked for consolidation only',
-    reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE],
+    reasonsForLink: [CASE_LINKING_REASON_CODE],
   },
 ];
 
@@ -33,7 +33,7 @@ const linkedCasesWithHearingsForOrdering = [
   {
     caseRef: '4652724902696213',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE],
+    reasonsForLink: [CASE_LINKING_HEARING_REASON_CODE],
     caseHearings: [
       {
         hearingID: LISTED_HEARING_SCENARIO.hearingId,
@@ -56,7 +56,7 @@ const linkedCasesWithHearingsForOrdering = [
   {
     caseRef: '5283819672542864',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE, 'Progressed as part of lead case'],
+    reasonsForLink: [CASE_LINKING_HEARING_REASON_CODE, 'Progressed as part of lead case'],
     caseHearings: [
       {
         hearingID: 'h100010',
@@ -79,7 +79,7 @@ const linkedCasesWithHearingsForOrdering = [
   {
     caseRef: '8254902572336147',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Familial', 'Guardian', CASE_LINKING_SECONDARY_REASON_CODE],
+    reasonsForLink: ['Familial', 'Guardian', CASE_LINKING_HEARING_REASON_CODE],
     caseHearings: [
       {
         hearingID: 'h100012',

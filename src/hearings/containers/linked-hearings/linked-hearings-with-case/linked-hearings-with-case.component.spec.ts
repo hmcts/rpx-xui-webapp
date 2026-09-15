@@ -365,7 +365,8 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.updateLinkedCase(0, 0);
     component.onSubmit();
 
-    const dispatchedAction = storeDispatchSpy.calls.mostRecent().args[0] as fromHearingStore.LoadServiceLinkedCasesWithHearingsSuccess;
+    const dispatchedAction = storeDispatchSpy.calls.mostRecent()
+      .args[0] as fromHearingStore.LoadServiceLinkedCasesWithHearingsSuccess;
     const selectedHearingIds = dispatchedAction.payload
       .flatMap((caseInfo) => caseInfo.caseHearings)
       .filter((hearingInfo) => hearingInfo?.isSelected)

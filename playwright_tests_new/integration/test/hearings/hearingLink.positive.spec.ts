@@ -23,8 +23,8 @@ const linkedCasesWithHearingReason = [
     reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE, CASE_LINKING_REASON_CODE],
   },
   {
-  caseReference: '1652112127295262',
-  caseName: 'Case linked for consolidation only',
+    caseReference: '1652112127295262',
+    caseName: 'Case linked for consolidation only',
     reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE],
   },
 ];

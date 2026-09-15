@@ -1,7 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
@@ -20,6 +20,8 @@ import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatTabGroupHarness } from '@angular/material/tabs/testing';
 @Component({
   standalone: false,
   selector: 'ccd-case-viewer',
@@ -295,13 +297,14 @@ describe('CaseViewerContainerComponent', () => {
     });
   });
 
-  it('should render two tabs', () => {
-    const matTabLabels: DebugElement = debug.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    const roleAndAccessTab: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
-    expect((roleAndAccessTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
+  it('should render two tabs', async () => {
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const tabGroup = await loader.getHarness(MatTabGroupHarness);
+    const tabs = await tabGroup.getTabs();
+
+    expect(tabs.length).toBe(2);
+    expect(await tabs[0].getLabel()).toBe('Tasks');
+    expect(await tabs[1].getLabel()).toBe('Roles and access');
   });
 });
 

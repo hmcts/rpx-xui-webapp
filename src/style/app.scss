@@ -66,6 +66,7 @@ main {
   padding-right: 210px;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version.*/
 .mat-autocomplete-panel-extend {
   max-height: 470px !important;
 }
@@ -115,6 +116,7 @@ table.form-table {
 }
 
 .dialog {
+  /* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version.*/
   mat-dialog-container {
     padding: 0;
     background: #cecccc;
@@ -475,7 +477,7 @@ button:focus {
   }
 }
 
-/** Error Summary 
+/** Error Summary
 * Make border color consistent with other error messages for HMCTS
 */
 .query-container .error-summary {

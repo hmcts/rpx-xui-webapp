@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
-import { withXsrf } from './utils/apiTestUtils';
+import { guardedRequest, withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { assertCaseShareEntries, resolveEntries } from './utils/caseShareUtils';
 import { resolveHeader } from './utils/nodeAppUtils';
@@ -50,11 +50,14 @@ test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
   for (const { path, query, requiresConfiguredCaseIds, property, schema } of CASESHARE_ENDPOINTS) {
     test(`GET ${path} returns a usable contract`, async ({ apiClient }) => {
       await withXsrf('solicitor', async (headers) => {
-        const response = await apiClient.get(path, {
-          headers: { ...headers, experimental: 'true' },
-          query,
-          throwOnError: false,
-        });
+        const response = await guardedRequest(() =>
+          apiClient.get(path, {
+            headers: { ...headers, experimental: 'true' },
+            query,
+            timeoutMs: 20_000,
+            throwOnError: false,
+          })
+        );
         if (requiresConfiguredCaseIds && !configuredCaseShareCaseIds) {
           expect(response.status).toBe(400);
           return;

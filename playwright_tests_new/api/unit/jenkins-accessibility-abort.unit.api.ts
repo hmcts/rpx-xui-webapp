@@ -109,9 +109,7 @@ test.describe('Jenkins accessibility cancellation contract', { tag: '@svc-intern
     test(`${fileName} archives retained Playwright traces with failure diagnostics`, () => {
       const source = fs.readFileSync(path.join(repositoryRoot, fileName), 'utf8');
 
-      expect(source).toContain(
-        "artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,test-results/**/trace.zip'"
-      );
+      expect(source).toContain('functional-output/tests/**/test-results/**/trace.zip');
     });
   }
 

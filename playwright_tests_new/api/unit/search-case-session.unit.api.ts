@@ -168,15 +168,26 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual(['STAFF_ADMIN', 'IAC_Judge_WA_R1']);
   });
 
-  test('distributes configured search users by worker index', () => {
+  test('distributes configured search users by stable parallel index', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH,SOLICITOR,STAFF_ADMIN',
     } as NodeJS.ProcessEnv;
 
-    expect(resolveSearchCaseUserIdentifier({ workerIndex: 0 }, env)).toBe('FPL_GLOBAL_SEARCH');
-    expect(resolveSearchCaseUserIdentifier({ workerIndex: 1 }, env)).toBe('SOLICITOR');
-    expect(resolveSearchCaseUserIdentifier({ workerIndex: 2 }, env)).toBe('STAFF_ADMIN');
-    expect(resolveSearchCaseUserIdentifier({ workerIndex: 3 }, env)).toBe('FPL_GLOBAL_SEARCH');
+    expect(resolveSearchCaseUserIdentifier({ parallelIndex: 0 }, env)).toBe('FPL_GLOBAL_SEARCH');
+    expect(resolveSearchCaseUserIdentifier({ parallelIndex: 1 }, env)).toBe('SOLICITOR');
+    expect(resolveSearchCaseUserIdentifier({ parallelIndex: 2 }, env)).toBe('STAFF_ADMIN');
+    expect(resolveSearchCaseUserIdentifier({ parallelIndex: 3 }, env)).toBe('FPL_GLOBAL_SEARCH');
+  });
+
+  test('keeps the selected search identity when a worker restarts in the same parallel slot', () => {
+    const env = {
+      PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH,SOLICITOR,STAFF_ADMIN',
+    } as NodeJS.ProcessEnv;
+    const initialWorker = { workerIndex: 1, parallelIndex: 1 };
+    const restartedWorker = { workerIndex: 8, parallelIndex: 1 };
+
+    expect(resolveSearchCaseUserIdentifier(initialWorker, env)).toBe('SOLICITOR');
+    expect(resolveSearchCaseUserIdentifier(restartedWorker, env)).toBe('SOLICITOR');
   });
 
   test('annotates the fallback search identity after the primary is explicitly rejected', async () => {
@@ -184,22 +195,31 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
       PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH,SOLICITOR',
     } as NodeJS.ProcessEnv;
     const attempts: string[] = [];
-    const testInfo = { workerIndex: 0, annotations: [] as Array<{ type: string; description?: string }> };
-
+    const testInfo = { parallelIndex: 0, annotations: [] as Array<{ type: string; description?: string }> };
     const selectedUserIdentifier = await applySearchCaseSessionCookies({} as never, testInfo, env, (page, candidates) =>
-      sessionCaptureTest.applySessionCookiesFromPoolWith(page, candidates, async (_page, identity) => {
-        const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
-        attempts.push(userIdentifier);
-        if (userIdentifier === 'FPL_GLOBAL_SEARCH') {
-          throw new SessionCaptureError('Login failed: IDAM page message: Email or password is incorrect', userIdentifier);
-        }
-        return {
+      sessionCaptureTest.applySessionCookiesFromPoolWith(
+        page,
+        candidates.map((userIdentifier) => ({
           userIdentifier,
-          email: typeof identity === 'string' ? `${identity.toLowerCase()}@example.test` : identity.email,
-          cookies: [],
-          storageFile: `${userIdentifier}.storage.json`,
-        };
-      })
+          email: `${userIdentifier.toLowerCase()}@example.test`,
+          password: 'unit-password',
+        })),
+        async (_page, identity) => {
+          const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
+          attempts.push(userIdentifier);
+          if (userIdentifier === 'FPL_GLOBAL_SEARCH') {
+            throw new SessionCaptureError('Login failed: IDAM page message: Email or password is incorrect', userIdentifier);
+          }
+          return {
+            userIdentifier,
+            email: typeof identity === 'string' ? `${userIdentifier.toLowerCase()}@example.test` : identity.email,
+            password: typeof identity === 'string' ? 'unit-password' : identity.password,
+            cookies: [],
+            storageFile: `${userIdentifier}.storage.json`,
+            storageStateFingerprint: `${userIdentifier}-fingerprint`,
+          };
+        }
+      )
     );
 
     expect(attempts).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR']);

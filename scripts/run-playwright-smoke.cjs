@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const { spawnSync } = require('node:child_process');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const ensureTagPrefix = (value) => {
@@ -43,23 +44,29 @@ const buildSmokePlaywrightArgs = (env = process.env, extraArgs = process.argv.sl
     !resolveBooleanEnvFlag(env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES) &&
     splitTagInput(env.PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS).includes('@e2e-smoke');
 
-  if (!smokeGloballyExcluded) {
-    return args;
-  }
-
-  if (!hasCliOption(args, '--pass-with-no-tests')) {
-    args.push('--pass-with-no-tests');
-  }
-  if (!hasCliOption(args, '--reporter')) {
-    args.push('--reporter=list');
-  }
+  if (!smokeGloballyExcluded) return args;
+  if (!hasCliOption(args, '--pass-with-no-tests')) args.push('--pass-with-no-tests');
+  if (!hasCliOption(args, '--reporter')) args.push('--reporter=list');
   return args;
 };
 
+const buildSmokeEnvironment = (env = process.env) => ({
+  ...env,
+  PLAYWRIGHT_REPORT_FOLDER:
+    env.PLAYWRIGHT_SMOKE_REPORT_FOLDER ||
+    (env.CI
+      ? 'functional-output/tests/playwright-smoke/odhin-report'
+      : env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-e2e/odhin-report'),
+});
+
 const run = () => {
+  const smokeEnvironment = buildSmokeEnvironment();
+  const reportDir = smokeEnvironment.PLAYWRIGHT_REPORT_FOLDER;
+  fs.rmSync(reportDir, { recursive: true, force: true });
   const playwrightCli = path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js');
   const result = spawnSync(process.execPath, [playwrightCli, ...buildSmokePlaywrightArgs()], {
     stdio: 'inherit',
+    env: smokeEnvironment,
   });
   if (result.error) {
     throw result.error;
@@ -72,6 +79,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  buildSmokeEnvironment,
   buildSmokePlaywrightArgs,
   splitTagInput,
 };

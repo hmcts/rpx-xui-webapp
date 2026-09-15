@@ -593,19 +593,36 @@ export class CreateCasePage extends Base {
     await this.ensureWizardAdvanced(context, initialUrl, options);
   }
 
-  async clickContinueMultipleTimes(count: number) {
+  async clickContinueMultipleTimes(count: number, finalStepLocator: Locator) {
     for (let i = 0; i < count; i++) {
+      const context = `after continue ${i + 1} of ${count}`;
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
       if (!visibleContinueButton) {
-        logger.info('Continue button not visible; stopping early', {
-          iteration: i + 1,
-          total: count,
-        });
-        break;
+        throw new Error(`Continue button not visible ${context}`);
       }
-      await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, {
-        continueButton: visibleContinueButton,
-      });
+      const initialPath = this.normalizePath(this.page.url());
+      const wizardPath = initialPath.slice(0, initialPath.lastIndexOf('/') + 1);
+      const apiCallsBaseline = this.getApiCalls().length;
+      try {
+        await this.clickContinueAndWait(context, { continueButton: visibleContinueButton });
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+        await this.page.waitForURL((url) => url.pathname.startsWith(wizardPath) && url.pathname !== initialPath, {
+          timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT,
+          waitUntil: 'commit',
+        });
+        if (i === count - 1) {
+          await finalStepLocator.waitFor({ state: 'attached', timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT });
+        } else {
+          await this.continueButton.filter({ visible: true }).first().waitFor({
+            state: 'visible',
+            timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT,
+          });
+        }
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+      } catch (error) {
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+        throw error;
+      }
       logger.info('Clicked continue button', { iteration: i + 1, total: count });
     }
   }
@@ -758,7 +775,7 @@ export class CreateCasePage extends Base {
     fileContentEncoding?: BufferEncoding
   ) {
     const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
-    await this.runDocumentUploadWithRetry('file input upload', async () => {
+    await this.runDocumentUpload('file input upload', async () => {
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
@@ -789,13 +806,13 @@ export class CreateCasePage extends Base {
     await writeFile(filePath, Buffer.from(fileContent, options.fileContentEncoding ?? 'utf8'));
 
     try {
-      await this.runDocumentUploadWithRetry('browser file drag-and-drop upload', async () => {
+      await this.runDocumentUpload('browser file drag-and-drop upload', async () => {
         const { x, y } = await this.resolveDocumentDragDropPoint(resolvedFileInput, resolvedDropTarget, fileName);
         let cdpSession;
         try {
           cdpSession = await this.page.context().newCDPSession(this.page);
         } catch (error) {
-          throw new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.', {
+          throw Object.assign(new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.'), {
             cause: error,
           });
         }
@@ -851,71 +868,59 @@ export class CreateCasePage extends Base {
     return { x, y };
   }
 
-  private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {
-    const maxRetries = 3;
-    const baseDelayMs = 1000;
+  private async runDocumentUpload(uploadActionDescription: string, uploadAction: () => Promise<void>) {
+    const maxAttempts = 3;
+    const baseRetryDelayMs = 2_000;
+    const maxRetryDelayMs = 10_000;
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
       min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       max: 30_000,
       fallback: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       multiplier: 2,
     });
-    const safeBackoff = async (attempt: number) => {
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       if (this.page.isClosed()) {
-        throw new Error(`Page closed during ${uploadActionDescription} retry backoff`);
+        throw new Error(`Page closed before ${uploadActionDescription}`);
       }
-      await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
-    };
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      if (this.page.isClosed()) {
-        throw new Error(`Page closed before ${uploadActionDescription} retry attempt`);
-      }
       const responsePromise = this.page
         .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
           timeout: uploadResponseTimeoutMs,
         })
         .catch((error: Error) => error);
-
       await uploadAction();
-
       const uploadResponse = await responsePromise;
 
       if (uploadResponse instanceof Error) {
         if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
           throw uploadResponse;
         }
-        if (attempt < maxRetries) {
-          logger.warn(`Document ${uploadActionDescription} response was not observed; retrying upload`, {
-            attempt,
-            maxRetries,
-            timeoutMs: uploadResponseTimeoutMs,
-            errorMessage: uploadResponse.message,
-          });
-          await safeBackoff(attempt);
-          continue;
-        }
-        throw new Error(`Document ${uploadActionDescription} timed out after ${maxRetries} attempts: ${uploadResponse.message}`);
-      }
-
-      if (uploadResponse.status() !== 200) {
-        if (attempt < maxRetries) {
-          logger.warn(`Document ${uploadActionDescription} returned non-200 response; retrying upload`, {
-            attempt,
-            maxRetries,
-            status: uploadResponse.status(),
-          });
-          await safeBackoff(attempt);
-          continue;
-        }
         throw new Error(
-          `Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()} after ${maxRetries} attempts`
+          `Document ${uploadActionDescription} response was not observed within ${uploadResponseTimeoutMs}ms: ${uploadResponse.message}`
         );
       }
 
-      break;
+      if (uploadResponse.status() === 200) {
+        await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.UPLOAD_STATUS_SETTLE });
+        return;
+      }
+
+      if (uploadResponse.status() === 429 && attempt < maxAttempts) {
+        const retryAfterSeconds = Number.parseFloat(uploadResponse.headers()['retry-after'] ?? '');
+        const retryDelayMs = Number.isFinite(retryAfterSeconds)
+          ? Math.min(maxRetryDelayMs, Math.max(baseRetryDelayMs, retryAfterSeconds * 1_000))
+          : baseRetryDelayMs * 2 ** (attempt - 1);
+        logger.warn(`Document ${uploadActionDescription} was rate-limited; retrying`, {
+          attempt,
+          maxAttempts,
+          retryDelayMs,
+        });
+        await this.page.waitForTimeout(retryDelayMs);
+        continue;
+      }
+
+      throw new Error(`Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()}`);
     }
-    await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: uploadResponseTimeoutMs });
   }
   async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;

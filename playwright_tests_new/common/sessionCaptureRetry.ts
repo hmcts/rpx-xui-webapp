@@ -19,6 +19,11 @@ const transientNavigationTimeoutPatterns = [
   /^Session capture attempt timed out after \d+ms$/i,
 ] as const;
 
+const identityScopedCaptureTimeoutPattern =
+  /Login failed for .* after \d+ of \d+ capture attempts: Session capture attempt timed out after \d+ms/i;
+const identityScopedLoginSurfaceTimeoutPattern =
+  /Login failed for .* after \d+ of \d+ capture attempts: locator\.waitFor: Timeout \d+ms exceeded[\s\S]*idam-username-input/i;
+
 export const SESSION_CAPTURE_LOGIN_ATTEMPTS = 2;
 export const UNEXPLAINED_IDAM_LOGIN_FAILURE = 'unexplained-idam-login-rejection';
 export const SERVICE_DOWN_SESSION_CAPTURE_FAILURE = 'service-down';
@@ -53,6 +58,14 @@ export function isUnexplainedIdamLoginRejection(error: unknown): boolean {
 
   const message = errorMessage(error);
   return message.includes('IDAM login did not establish authenticated session') && !message.includes('IDAM page message:');
+}
+
+export function isIdentityScopedCaptureTimeout(error: unknown): boolean {
+  return identityScopedCaptureTimeoutPattern.test(errorMessage(error));
+}
+
+export function isIdentityScopedLoginSurfaceTimeout(error: unknown): boolean {
+  return identityScopedLoginSurfaceTimeoutPattern.test(errorMessage(error));
 }
 
 export function isTransientSessionCaptureError(error: unknown): boolean {

@@ -247,7 +247,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           headless: true,
           screenshot: 'off',
           video: 'off',
-          trace: 'off',
+          trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true } },
         },
       },
     ],

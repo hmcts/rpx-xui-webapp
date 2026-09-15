@@ -73,14 +73,19 @@ export class HearingsJourneyPage {
    * `.mat-mdc-autocomplete-panel`. The role is stable across both builds.
    */
   readonly venueAutocompletePanel = this.page.locator('.cdk-overlay-pane [role="listbox"]');
-  readonly venueOptions = this.venueAutocompletePanel.getByRole('option');
-
-  /** The placeholder option the component renders when a search comes back empty. */
-  readonly venueNoResultsOption = this.venueOptions.filter({ hasText: 'No results found' });
-
-  /** Real venue options matching the search term, excluding the "No results found" placeholder. */
-  venueOptionsMatching(searchTerm: string): Locator {
-    return this.venueOptions.filter({ hasText: searchTerm });
+  private async activeVenueOptions(): Promise<Locator> {
+    // Legacy Material exposes aria-owns; MDC Material exposes aria-controls once the panel opens.
+    const associatedInput = this.hearingVenue.and(this.page.locator('[aria-owns], [aria-controls]'));
+    try {
+      await associatedInput.waitFor({ state: 'attached' });
+    } catch (error) {
+      throw Object.assign(new Error('Hearing venue input did not expose an associated autocomplete panel.'), { cause: error });
+    }
+    const panelId = (await associatedInput.getAttribute('aria-controls')) || (await associatedInput.getAttribute('aria-owns'));
+    if (!panelId) {
+      throw new Error('Hearing venue input did not expose an associated autocomplete panel.');
+    }
+    return this.venueAutocompletePanel.and(this.page.locator(`[id=${JSON.stringify(panelId)}]`)).getByRole('option');
   }
 
   // hearingConfirmationPAge
@@ -162,16 +167,19 @@ export class HearingsJourneyPage {
 
     const seededVenueCount = await this.selectedVenueTags.count();
 
+    // An already focused input can remain outside the viewport when sequential typing starts.
+    await this.hearingVenue.scrollIntoViewIfNeeded();
     await this.hearingVenue.pressSequentially(venueSearchTerm);
 
-    // Every keystroke fires a fresh debounced l2okup that rebuilds the panel, so wait for an
+    // Every keystroke fires a fresh debounced lookup that rebuilds the panel, so wait for an
     // option that actually matches the search term rather than whatever the last in-flight
     // response happened to render.
-    const venueOption = this.venueOptionsMatching(venueSearchTerm).first();
+    const venueOptions = await this.activeVenueOptions();
+    const venueOption = venueOptions.filter({ hasText: venueSearchTerm }).first();
     try {
       await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
     } catch (error) {
-      if (await this.venueNoResultsOption.isVisible()) {
+      if (await venueOptions.filter({ hasText: 'No results found' }).isVisible()) {
         throw new Error(`Location search for "${venueSearchTerm}" returned "No results found".`);
       }
       throw error;

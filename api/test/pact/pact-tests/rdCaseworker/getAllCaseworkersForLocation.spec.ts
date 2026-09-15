@@ -1,25 +1,26 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getCaseworkerRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+const { MatchersV3 } = require('@pact-foundation/pact');
+const { like } = MatchersV3;
 const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
 const MockApp = require('../../pact-mocks/app');
 
-xdescribe('Caseworker ref data api, get all caseworkers for a specific location', () => {
-  const baseLocations = [{ location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }];
+// TODO: Remove this Pact test once ticket EXUI-5159 is completed.
+describe('Caseworker ref data api, get all caseworkers for a specific location', () => {
+  const baseLocations = [{ location_id: like(1), location: like('National'), is_primary: like(true) }];
   const RESPONSE_BODY = [
     {
-      email_id: somethingLike('test_person@test.gov.uk'),
-      first_name: somethingLike('testfn'),
-      last_name: somethingLike('testln'),
-      id: somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
+      email_id: like('test_person@test.gov.uk'),
+      first_name: like('testfn'),
+      last_name: like('testln'),
+      id: like('004b7164-0943-41b5-95fc-39794af4a9fe'),
       base_location: baseLocations,
     },
   ];
@@ -81,12 +82,8 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location'
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getCaseworkerRefDataAPIOverrides(mockServer.url);
         configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
-
         configValues.waSupportedJurisdictions = 'IA';
-        sandbox.stub(config, 'get').callsFake((prop) => {
-          return configValues[prop];
-        });
-
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop: string) => configValues[prop]);
         const { getAllCaseWorkersForLocation } = requireReloaded('../../../../workAllocation/index');
 
         const req = mockReq({
@@ -117,12 +114,13 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location'
 });
 
 function assertResponses(dto: any) {
-  console.log(JSON.stringify(dto));
-  expect(dto[0].email_id).to.be.equal('test_person@test.gov.uk');
-  expect(dto[0].first_name).to.be.equal('testfn');
-  expect(dto[0].last_name).to.be.equal('testln');
-  expect(dto[0].id).to.be.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
-  expect(dto[0].base_location[0].location_id).to.be.equal(1);
-  expect(dto[0].base_location[0].location).to.be.equal('National');
-  expect(dto[0].base_location[0].is_primary).to.be.equal(true);
+  expect(dto).to.be.an('array').with.length(1);
+  expect(dto[0].email_id).to.equal('test_person@test.gov.uk');
+  expect(dto[0].first_name).to.equal('testfn');
+  expect(dto[0].last_name).to.equal('testln');
+  expect(dto[0].id).to.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
+  expect(dto[0].base_location).to.be.an('array').with.length(1);
+  expect(dto[0].base_location[0].location_id).to.equal(1);
+  expect(dto[0].base_location[0].location).to.equal('National');
+  expect(dto[0].base_location[0].is_primary).to.equal(true);
 }

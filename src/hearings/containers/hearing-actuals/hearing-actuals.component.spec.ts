@@ -23,6 +23,16 @@ describe('RequestHearingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const hearingActualsInitialState = {
+    ...initialState,
+    hearings: {
+      ...initialState.hearings,
+      hearingValues: {
+        ...initialState.hearings.hearingValues,
+        caseInfo: { caseReference: '1111222233334444', jurisdictionId: 'IA', caseType: 'Asylum' },
+      },
+    },
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -32,7 +42,7 @@ describe('RequestHearingComponent', () => {
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },
         { provide: ActivatedRoute, useValue: { params: of({ id: 'h100001' }) } },
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: hearingActualsInitialState }),
         { provide: HearingsService, useValue: hearingsService },
       ],
     }).compileComponents();
@@ -68,6 +78,7 @@ describe('RequestHearingComponent', () => {
 
   it('should navigate back to the case hearings page when cancelled', () => {
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    (component as any).caseInfo = { caseReference: '1111222233334444', jurisdictionId: 'IA', caseType: 'Asylum' };
 
     component.onCancel();
 

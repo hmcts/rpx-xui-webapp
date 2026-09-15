@@ -79,7 +79,7 @@ const buildIntegrationConfig = (env: EnvMap) =>
     workers?: number;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
-    use: { trace: string };
+    use: { trace: string | { mode: string; snapshots: { dom: boolean; aria: boolean; screen: boolean } } };
     projects: Array<{
       name: string;
       workers?: number;
@@ -641,7 +641,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.profile).toBe(true);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
     expect(config.expect.timeout).toBe(60_000);
-    expect(config.use.trace).toBe('retain-on-failure');
+    expect(config.use.trace).toEqual({
+      mode: 'retain-on-failure',
+      snapshots: { dom: true, aria: true, screen: true },
+    });
     expect(config.use.timezoneId).toBe('Europe/London');
     expect(config.projects.map((project) => project.name)).toEqual(['chromium']);
     expect(config.projects[0]?.workers).toBeUndefined();
@@ -903,5 +906,26 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' }));
     expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' })).toBe(15_000);
     expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true', PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS: '0' })).toBe(0);
+  });
+
+  test('all Jenkins Playwright configs publish native JSON beside Odhín', () => {
+    const expected = ['json', { outputFile: 'functional-output/tests/proof/odhin-report/ci-evidence/playwright.json' }];
+    const containsEvidence = (config: { reporter: Array<[string, unknown?]> }) =>
+      config.reporter.some(([name, options]) => JSON.stringify([name, options]) === JSON.stringify(expected));
+    const env = { CI: 'true', PLAYWRIGHT_REPORT_FOLDER: 'functional-output/tests/proof/odhin-report' };
+
+    expect(containsEvidence(buildConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildE2eConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildNightlyConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildIntegrationConfig(env) as never)).toBe(true);
+  });
+
+  test('separates CI smoke evidence from E2E evidence', () => {
+    expect(smokeRunner.buildSmokeEnvironment({ CI: 'true' }).PLAYWRIGHT_REPORT_FOLDER).toBe(
+      'functional-output/tests/playwright-smoke/odhin-report'
+    );
+    expect(smokeRunner.buildSmokeEnvironment({ CI: undefined }).PLAYWRIGHT_REPORT_FOLDER).toBe(
+      'functional-output/tests/playwright-e2e/odhin-report'
+    );
   });
 });

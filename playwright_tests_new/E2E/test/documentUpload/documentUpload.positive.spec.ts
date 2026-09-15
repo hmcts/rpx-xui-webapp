@@ -121,7 +121,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
               createCasePage.fileUploadInput
             );
           }
-          await createCasePage.clickContinueMultipleTimes(3);
+          await createCasePage.clickContinueMultipleTimes(3, createCasePage.complexType3FileUploadInput);
           await createCasePage.uploadFile(
             'complex-type-required-document.pdf',
             'application/pdf',

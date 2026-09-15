@@ -38,6 +38,8 @@ import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
 import { Task } from './interfaces/task';
+import { GlobalSearchRequest } from './interfaces/globalSearchRequest';
+import { GlobalCase } from './interfaces/globalCase';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -559,6 +561,38 @@ export async function getCaseIdListFromRoles(roleAssignmentList: RoleAssignment[
   return cases;
 }
 
+export async function getGSCases(
+  caseIdList: string[],
+  serviceIds: string[],
+  locationIds: string[],
+  req: EnhancedRequest
+): Promise<GlobalCase[]> {
+  if (!caseIdList || caseIdList.length === 0) {
+    return Promise.resolve([]);
+  }
+  const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalSearch`;
+  try {
+    const searchRequest: GlobalSearchRequest = {
+      searchCriteria: {
+        CCDJurisdictionIds: serviceIds,
+        caseReferences: caseIdList,
+        caseManagementBaseLocationIds: locationIds,
+      },
+      // no sorting currently implemented for WA cases
+      sortCriteria: null,
+      // presumed that the maximum return record count will be sufficient to retrieve all relevant cases
+      // especially as WA case searches are specific to one person
+      maxReturnRecordCount: 10000,
+      startRecordNumber: 1,
+    };
+    const response = await handlePost(path, searchRequest, req);
+    return response.data.results;
+  } catch (error) {
+    console.error(error);
+  }
+  return [];
+}
+
 export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment[]) {
   return roleAssignmentList.filter(
     (roleAssignment) =>
@@ -756,11 +790,32 @@ export function mapCasesFromData(
   if (!caseDetails) {
     return [];
   }
-  const roleCaseList = [];
+  const roleCaseList: RoleCaseData[] = [];
   caseDetails.forEach((caseDetail) => {
     const rolesForCaseId = roleAssignmentList.filter((role) => caseDetail.id.toString() === role.attributes?.caseId);
     rolesForCaseId.forEach((roleAssignment) => {
       const roleCase = mapRoleCaseData(roleAssignment, caseDetail, newRoleAssignmentList);
+      roleCaseList.push(roleCase);
+    });
+  });
+  // sorting case list by case name - no longer necessary as sorting by case id through elastic search
+  //const sortedCaseList = roleCaseList.sort((a, b) => a.case_name.toString().localeCompare(b.case_name));
+  return roleCaseList;
+}
+
+export function mapGSCasesFromData(
+  caseDetails: GlobalCase[],
+  roleAssignmentList: RoleAssignment[],
+  newRoleAssignmentList: RoleAssignment[] = []
+): RoleCaseData[] {
+  if (!caseDetails) {
+    return [];
+  }
+  const roleCaseList: RoleCaseData[] = [];
+  caseDetails.forEach((caseDetail) => {
+    const rolesForCaseId = roleAssignmentList.filter((role) => caseDetail.caseReference.toString() === role.attributes?.caseId);
+    rolesForCaseId.forEach((roleAssignment) => {
+      const roleCase = mapRoleGSCaseData(roleAssignment, caseDetail, newRoleAssignmentList);
       roleCaseList.push(roleCase);
     });
   });
@@ -805,6 +860,42 @@ export function mapRoleCaseData(
     next_hearing_date: caseDetail.case_data?.nextHearingDetails?.hearingDateTime
       ? caseDetail.case_data.nextHearingDetails.hearingDateTime
       : null,
+  };
+}
+
+export function mapRoleGSCaseData(
+  roleAssignment: RoleAssignment,
+  caseDetail: GlobalCase,
+  newRoleAssignmentList: RoleAssignment[]
+): RoleCaseData {
+  return {
+    assignee: roleAssignment.actorId ?? '',
+    // hmctsCaseCategory will be available only if an event has been triggered
+    case_category: caseDetail.caseManagementCategoryName?.trim(),
+    case_type: caseDetail.CCDCaseTypeName,
+    case_id: caseDetail.caseReference,
+    case_name: getGSCaseName(caseDetail),
+    case_role: roleAssignment.roleName ?? '',
+    role: roleAssignment.roleName,
+    endDate: getEndDate(roleAssignment),
+    id: roleAssignment.id,
+    jurisdiction: caseDetail.CCDJurisdictionId,
+    jurisdictionId: caseDetail.CCDJurisdictionName,
+    role_category: roleAssignment.roleCategory ?? '',
+    location_id: caseDetail.baseLocationId,
+    startDate: getStartDate(roleAssignment),
+    access: getGrantType(roleAssignment),
+    dateSubmitted: roleAssignment.created,
+    isNew: checkIsNew(roleAssignment, newRoleAssignmentList),
+    hasAccess: getAccessStatus(roleAssignment),
+    infoRequired: roleAssignment.attributes.infoRequired,
+    infoRequiredComment: roleAssignment.attributes.infoRequiredComment,
+    reviewer: roleAssignment.attributes.reviewer,
+    specificAccessReason: roleAssignment.attributes.specificAccessReason,
+    requestDate: roleAssignment.attributes.requestDate,
+    reviewerRoleCategory: roleAssignment.attributes.reviewerRoleCategory,
+    // need next hearing date to be provided by CCD
+    next_hearing_date: undefined,
   };
 }
 
@@ -909,6 +1000,18 @@ export function getCaseName(caseDetail: Case): string {
     caseName = caseDetail.case_data.caseNameHmctsInternal;
   } else {
     caseName = caseDetail.id;
+  }
+  return caseName;
+}
+
+export function getGSCaseName(caseDetail: any): string {
+  let caseName: string = '';
+  if (caseDetail?.hmctsCaseNameInternal) {
+    caseName = caseDetail.hmctsCaseNameInternal;
+  } else if (caseDetail?.caseNameHmctsInternal) {
+    caseName = caseDetail.caseNameHmctsInternal;
+  } else {
+    caseName = caseDetail.caseReference;
   }
   return caseName;
 }

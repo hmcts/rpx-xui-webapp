@@ -1098,45 +1098,36 @@ describe('workAllocation', () => {
     it('should get cases with search parameters', async () => {
       // Mock the required util functions
       const mockRoleAssignmentResult = {
-        roleAssignmentResponse: [{ id: 'role1', caseId: 'case123', roleName: 'judge' }],
+        roleAssignmentResponse: [{ id: 'role1', attributes: { caseId: 'case123' }, roleName: 'judge' }],
       };
 
       const mockCase = {
-        case_id: 'case123',
-        id: 'case123',
-        type: 'Family',
-        task_state: 'assigned',
-        task_system: 'WA',
-        security_classification: 'PUBLIC',
-        task_title: 'Test Task',
-        created_date: '2029-01-01',
-        due_date: '2029-01-31',
-        location: 'locase123',
-        jurisdiction: 'Family',
-        region: 'North',
-        case_type_id: 'FAM001',
-        case_category: 'Family',
-        case_name: 'Test Case',
-        auto_assigned: false,
-        actions: [],
-        execution_type: 'Case Management',
-        assignee: 'user123',
-        dueDate: '2029-01-31',
-        taskName: 'Test Task',
-        caseName: 'Test Case',
-        caseCategory: 'Family',
-        assigneeName: 'Test User',
-        name: 'Test Case',
+        CCDCaseTypeId: 'FAM001',
+        CCDCaseTypeName: 'Family',
+        CCDJurisdictionId: 'Family',
+        CCDJurisdictionName: 'Family',
+        HMCTSServiceId: 'Family',
+        HMCTSServiceShortDescription: 'Family',
+        baseLocationId: 'locase123',
+        baseLocationName: 'Test court',
+        caseManagementCategoryId: 'civil',
+        caseManagementCategoryName: 'Civil',
+        caseNameHmctsInternal: 'Test Case',
+        caseReference: 'case123',
+        otherReferences: [],
+        processForAccess: 'SPECIFIC',
+        regionId: '1',
+        regionName: 'North',
+        stateId: 'assigned',
       };
 
       sandbox.stub(utilModule, 'getRoleAssignmentsByQuery').resolves(mockRoleAssignmentResult);
-      sandbox.stub(utilModule, 'getCaseIdListFromRoles').resolves([mockCase]);
-      sandbox.stub(utilModule, 'filterByLocationId').returns([mockCase]);
-      sandbox.stub(utilModule, 'mapCasesFromData').returns([
+      const getGSCasesStub = sandbox.stub(utilModule, 'getGSCases').resolves([mockCase]);
+      sandbox.stub(utilModule, 'mapGSCasesFromData').returns([
         {
           case_id: 'case123',
           case_name: 'Test Case',
-          case_category: 'Family',
+          case_category: 'Civil',
           id: 'case123',
           case_role: 'judge',
           role_category: 'JUDICIAL',
@@ -1151,7 +1142,10 @@ describe('workAllocation', () => {
       const req = mockReq({
         body: {
           searchRequest: {
-            search_parameters: [{ key: 'location_id', values: 'locase123' }],
+            search_parameters: [
+              { key: 'jurisdiction', operator: 'EQUAL', values: 'Family' },
+              { key: 'location_id', operator: 'EQUAL', values: 'locase123' },
+            ],
             pagination_parameters: {
               page_number: 1,
               page_size: 10,
@@ -1163,6 +1157,7 @@ describe('workAllocation', () => {
 
       await getCases(req, response, next);
 
+      expect(getGSCasesStub).to.have.been.calledWith(['case123'], ['Family'], ['locase123'], req);
       expect(response.send).to.have.been.called;
       expect(response.status).to.have.been.calledWith(200);
     });

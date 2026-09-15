@@ -190,7 +190,7 @@ const buildConfig = (env = process.env) => {
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
   reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
-  if (resolveFlag(env.PW_ENABLE_PERFETTO, false)) reporter.push(['perfetto']);
+  if (resolveFlag(env.PW_ENABLE_PERFETTO, true)) reporter.push(['perfetto']);
 
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';
@@ -238,7 +238,7 @@ const buildConfig = (env = process.env) => {
     reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }
 
-  const trace = resolveFlag(env.PW_TRACE_RICH, false)
+  const trace = resolveFlag(env.PW_TRACE_RICH, true)
     ? { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true } }
     : 'retain-on-failure';
 

@@ -34,7 +34,7 @@ nodejs:
     FEATURE_OIDC_ENABLED: true
     FEATURE_DYNATRACE_ENABLED: false
     SERVICES_CCD_COMPONENT_API: https://gateway-civil-ccd-pr-6747.preview.platform.hmcts.net
-    SERVICES_CCD_DATA_STORE_API: https://ccd-data-store-api-civil-ccd-pr-6747.preview.platform.hmcts.net
+    SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-civil-ccd-pr-6747.preview.platform.hmcts.net
   keyVaults:
     rpx:
       secrets:

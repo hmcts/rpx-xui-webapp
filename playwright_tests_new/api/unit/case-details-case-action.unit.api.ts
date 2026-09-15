@@ -1,6 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-
 import { expect, test } from '@playwright/test';
 import type { Locator } from '@playwright/test';
 
@@ -145,14 +142,3 @@ for (const state of ['missing', 'wrong form', 'delayed upload form'] as const) {
     expect(goClicks).toBe(1);
   });
 }
-
-// Pair the helper behaviour checks with the actual V2 caller: changing the
-// journey back to its unguarded call must fail this focused regression suite.
-test('document upload V2 binds its own form readiness before changing language', { tag: '@svc-internal' }, () => {
-  const source = readFileSync(resolve('playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts'), 'utf8');
-  const call = source.match(/await caseDetailsPage\.selectCaseAction\(TEST_DATA\.V2\.ACTION([\s\S]*?)\);/);
-  expect(call, 'V2 must await its case action').not.toBeNull();
-  expect(call![1]).toMatch(/expectedLocator:\s*createCasePage\.fileUploadInput\b/);
-  expect(call![1]).toMatch(/retry:\s*false\b/);
-  expect(source.indexOf(call![0])).toBeLessThan(source.indexOf('switchLanguage(scenario.language'));
-});

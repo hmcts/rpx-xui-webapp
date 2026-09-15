@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { AdditionalFacility, HearingJourneyModel, HearingMethod, TypeOfJudges } from '../../../utils/hearing-model.ts';
 import { normaliseWhitespace } from '../../../utils/text.utils.ts';
 
@@ -174,9 +174,15 @@ export class HearingsJourneyPage {
     if (!optionId) throw new Error('Hearing venue option did not expose its keyboard selection identity.');
     // The component auto-activates its first result. Enter is a supported user interaction even
     // when the associated CDK panel is outside the viewport; never select a different active result.
-    await expect(this.hearingVenue).toHaveAttribute('aria-activedescendant', optionId);
+    const activeOptionId = await this.hearingVenue.getAttribute('aria-activedescendant');
+    if (activeOptionId !== optionId) {
+      throw new Error(`Expected active hearing venue option "${optionId}", but found "${activeOptionId ?? 'none'}".`);
+    }
     await this.hearingVenue.press('Enter');
-    await expect(this.hearingVenue).toHaveValue(expectedVenue);
+    const selectedInputValue = normaliseWhitespace(await this.hearingVenue.inputValue());
+    if (selectedInputValue !== expectedVenue) {
+      throw new Error(`Expected hearing venue input to contain "${expectedVenue}", but found "${selectedInputValue}".`);
+    }
     await this.addLocationsButton.click();
 
     // Read back the tag actually added: this is the value carried into the hearing request.

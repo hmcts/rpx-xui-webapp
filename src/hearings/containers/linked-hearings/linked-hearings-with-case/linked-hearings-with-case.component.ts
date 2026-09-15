@@ -166,6 +166,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public shouldSelected(hearingInfo: HearingDetailModel, caseRef?: string): boolean {
     if (caseRef && this.isCurrentHearing(caseRef, hearingInfo.hearingID)) {
+      // ensure current case hearing selected by default
       return true;
     }
     return this.isManageLink
@@ -188,22 +189,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       },
       { validator: this.validators.validateLinkedHearings() }
     );
-    this.setCurrentHearingSelected();
-  }
-
-  // Set the current hearing as selected in the form array
-  // This is so it shows in rest of journey and ordering can be chosen
-  public setCurrentHearingSelected(): void {
-    this.getCasesFormValue?.controls.forEach((caseControl) => {
-      if (String(caseControl.get('caseRef')?.value) === String(this.caseId)) {
-        const hearingsFormArray = caseControl.get('caseHearings') as FormArray;
-        hearingsFormArray?.controls.forEach((hearingControl) => {
-          if (String(hearingControl.get('hearingID')?.value) === String(this.hearingId)) {
-            hearingControl.get('isSelected')?.setValue(true);
-          }
-        });
-      }
-    });
   }
 
   public getHearingsAvailable() {
@@ -273,7 +258,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     } else {
       this.errors = [];
       this.linkedHearingSelectionError = null;
-      if (this.linkHearingForm.valid) {
+      if (this.linkHearingForm.valid && this.isGetHearingsSelected()) {
         this.saveLinkedHearingInfo();
       } else {
         this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;

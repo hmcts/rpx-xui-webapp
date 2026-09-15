@@ -325,6 +325,63 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(component.onUnlinkHearings).toHaveBeenCalled();
   });
 
+  it('should show an error when only the current hearing is selected', () => {
+    spyOn(component, 'saveLinkedHearingInfo');
+    component.isManageLink = false;
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h1000002';
+    component.linkedCases = linkedCasesWithHearings.map((caseInfo) => ({
+      ...caseInfo,
+      caseHearings: caseInfo.caseHearings?.map((hearingInfo) => ({
+        ...hearingInfo,
+        isSelected: false,
+      })),
+    }));
+    component.initForm();
+
+    component.onSubmit();
+
+    expect(component.linkHearingForm.valid).toBe(true);
+    expect(component.isGetHearingsSelected()).toBe(false);
+    expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
+    expect(component.linkedHearingSelectionError).toBe(component.linkedHearingEnum.ValidSelectionError);
+    expect(component.errors).toEqual([{ id: 'linked-form', message: component.linkedHearingEnum.ValidSelectionError }]);
+  });
+
+  it('should continue with the current hearing and the hearing selected via the form', () => {
+    const storeDispatchSpy = spyOn(store, 'dispatch');
+    component.isManageLink = false;
+    component.caseId = '8254902572336147';
+    component.hearingId = 'h1000002';
+    component.linkedCases = linkedCasesWithHearings.map((caseInfo) => ({
+      ...caseInfo,
+      caseHearings: caseInfo.caseHearings?.map((hearingInfo) => ({
+        ...hearingInfo,
+        isSelected: false,
+      })),
+    }));
+    component.initForm();
+
+    component.updateLinkedCase(0, 0);
+    component.onSubmit();
+
+    const dispatchedAction = storeDispatchSpy.calls.mostRecent().args[0] as fromHearingStore.LoadServiceLinkedCasesWithHearingsSuccess;
+    const selectedHearingIds = dispatchedAction.payload
+      .flatMap((caseInfo) => caseInfo.caseHearings)
+      .filter((hearingInfo) => hearingInfo?.isSelected)
+      .map((hearingInfo) => hearingInfo.hearingID);
+    expect(component.linkedHearingSelectionError).toBeNull();
+    expect(selectedHearingIds).toEqual(['h100010', 'h1000002']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'hearings',
+      'link',
+      '8254902572336147',
+      'h1000002',
+      'group-selection',
+    ]);
+  });
+
   it('should navigate to case hearing page', () => {
     component.navigateToCaseHearing('8254902572336147');
     expect(mockRouter.navigate).toHaveBeenCalledWith([

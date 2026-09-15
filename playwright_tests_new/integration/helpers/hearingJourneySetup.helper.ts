@@ -1,4 +1,4 @@
-import { expect, test, type Cookie, type Page, type Response, type TestInfo } from '@playwright/test';
+import { expect, test, BrowserContext, type Cookie, type Page, type Response, type TestInfo } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
 import { applySessionCookiesFromPool } from '../../common/sessionCapture';
@@ -15,6 +15,8 @@ import {
   LISTED_HEARING_SCENARIO,
   type HearingScenario,
 } from '../mocks/hearings.mock';
+
+export type SessionCookies = Parameters<BrowserContext['addCookies']>[0];
 
 export const HEARINGS_TERMINAL_STATE_TIMEOUT_MS = 15_000;
 export const HEARINGS_ROWS_HIDDEN_TIMEOUT_MS = 10_000;
@@ -111,11 +113,11 @@ export async function openHearingsTabForScenario(
   options?: {
     userIdentifier?: HearingManagerUserIdentifier;
     waitForGetHearingsResponse?: boolean;
-    sessionCookies?: Cookie[];
+    sessionCookies?: SessionCookies[];
   }
 ): Promise<Response | null> {
   if (options?.sessionCookies?.length) {
-    await page.context().addCookies(options.sessionCookies);
+    await page.context().addCookies(options.sessionCookies as any);
   } else {
     await applyHearingManagerSessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   }

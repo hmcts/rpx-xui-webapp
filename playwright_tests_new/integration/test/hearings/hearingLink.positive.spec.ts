@@ -1,4 +1,4 @@
-import type { Cookie, Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
 import {
   buildCaseLinkingReasonCodesMock,
@@ -11,6 +11,7 @@ import {
   hearingManagerRoles,
   openHearingsTabForScenario,
   selectOrderedLinkedHearings,
+  SessionCookies,
 } from '../../helpers';
 import type { HearingsTabPage } from '../../../E2E/page-objects/pages/exui/hearingsTab.po';
 import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
@@ -20,6 +21,11 @@ const linkedCasesWithHearingReason = [
     caseReference: '1611573453599537',
     caseName: 'redacted redacted - appellantnamefordisplay',
     reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE, CASE_LINKING_REASON_CODE],
+  },
+  {
+  caseReference: '1652112127295262',
+  caseName: 'Case linked for consolidation only',
+    reasonsForLink: [CASE_LINKING_SECONDARY_REASON_CODE],
   },
 ];
 
@@ -107,7 +113,7 @@ const judgeTypesForHearingLinkJourney = [
 
 function buildHearingLinkSessionCookies(
   baseUrl = process.env.TEST_URL?.trim() || 'https://manage-case.aat.platform.hmcts.net'
-): Cookie[] {
+): SessionCookies[] {
   const origin = new URL(baseUrl).origin;
   const secure = origin.startsWith('https:');
   return [
@@ -215,12 +221,6 @@ async function openLinkedHearingsJourney(
   await expect(page.getByRole('heading', { name: /which hearings should be linked\?/i })).toBeVisible();
 }
 
-async function setHearingPositions(page: Page, positions: string[]): Promise<void> {
-  for (const [index, position] of positions.entries()) {
-    await page.locator(`#hearingsOrder${index}`).selectOption(position);
-  }
-}
-
 test.describe('Hearings linked journeys integration', { tag: ['@integration', '@integration-hearing-link'] }, () => {
   test('shows only cases linked for a hearing on the hearing link page', async ({ page, caseDetailsPage, hearingsTabPage }) => {
     await page.route('**/refdata/commondata/lov/categories/CaseLinkingReasonCode*', async (route) => {
@@ -251,6 +251,8 @@ test.describe('Hearings linked journeys integration', { tag: ['@integration', '@
     await navigateToHearingLinkPage(page, hearingsTabPage);
 
     const linkedCases = page.locator('tbody.govuk-table__body tr.govuk-table__row');
+    // Ensure irrelevant linked cases are not displayed
+    await expect(linkedCases.filter({ hasText: 'Case linked for consolidation only' })).toHaveCount(0);
     const tableBody = page
       .locator('table.govuk-table')
       .filter({ hasText: 'redacted redacted - appellantnamefordisplay' })
@@ -290,7 +292,7 @@ test.describe('Hearings linked journeys integration', { tag: ['@integration', '@
     await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/group-selection$/);
     await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
 
-    await setHearingPositions(page, ['1', '1', '1']);
+    await hearingsTabPage.setHearingPositions(['1', '1', '1']);
     await expect(page.locator('#hearingsOrder0')).toHaveValue('1');
     await expect(page.locator('#hearingsOrder1')).toHaveValue('1');
     await expect(page.locator('#hearingsOrder2')).toHaveValue('1');
@@ -317,7 +319,7 @@ test.describe('Hearings linked journeys integration', { tag: ['@integration', '@
     await expect(page).toHaveURL(/\/hearings\/link\/.*\/.*\/group-selection$/);
     await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
 
-    await setHearingPositions(page, ['1', '2', '3']);
+    await hearingsTabPage.setHearingPositions(['1', '2', '3']);
     await expect(page.locator('#hearingsOrder0')).toHaveValue('1');
     await expect(page.locator('#hearingsOrder1')).toHaveValue('2');
     await expect(page.locator('#hearingsOrder2')).toHaveValue('3');

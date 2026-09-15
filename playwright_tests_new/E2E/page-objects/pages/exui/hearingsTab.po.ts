@@ -147,4 +147,10 @@ export class HearingsTabPage {
       await this.additionalSecurityNo.click();
     }
   }
+
+  async setHearingPositions(positions: string[]): Promise<void> {
+    for (const [index, position] of positions.entries()) {
+      await this.hearingOrderSelects.nth(index).selectOption(position);
+    }
+  }
 }

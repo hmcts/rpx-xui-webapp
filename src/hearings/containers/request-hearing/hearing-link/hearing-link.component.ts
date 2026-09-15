@@ -11,6 +11,7 @@ import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
@@ -83,18 +84,17 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
           if (hearingLinks.serviceLinkedCases) {
             this.linkedCases = [];
             hearingLinks.serviceLinkedCases.forEach((linkedCase) => {
-              const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter((reason) =>
-                linkedCase.reasonsForLink.some((reasonCode) => reason.key === reasonCode)
-              );
-              const caseLinkingReasonsValues = caseLinkingReasons.map((x) => x.value_en);
-              if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
+              const caseHearingsCanBeLinked = linkedCase.reasonsForLink?.includes(HearingsUtils.HEARING_LINK_REASON_CODE);
+              if (caseHearingsCanBeLinked) {
+                const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter((reason) =>
+                  linkedCase.reasonsForLink.some((reasonCode) => reason.key === reasonCode)
+                );
+                const caseLinkingReasonsValues = caseLinkingReasons.map((x) => x.value_en);
                 this.linkedCases.push({
                   caseName: linkedCase.caseName,
                   caseReference: linkedCase.caseReference,
                   reasonsForLink: caseLinkingReasonsValues,
                 });
-              } else {
-                this.linkedCases.push(linkedCase);
               }
             });
           }

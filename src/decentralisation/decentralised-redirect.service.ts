@@ -6,6 +6,7 @@ import { UserInfo } from '../app/models/user-details.model';
 import { Params } from '@angular/router';
 import { BuildDecentralisedEventUrlInput } from './event-url-types';
 import { CaseTypeMap, FrontendDecentralisedCaseType } from 'common/decentralisation/decentralised-casetype';
+import { DecentralisedEvent } from './decentralised-event';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,9 @@ import { CaseTypeMap, FrontendDecentralisedCaseType } from 'common/decentralisat
 export class DecentralisedRedirectService {
   /** environment variable name where the service map is configured */
   static readonly SERVICE_MAP_ENV_VAR_NAME = 'decentralisedServiceMap';
+
+  /** environment variable name where the case type map is configured */
+  static readonly CASE_TYPE_MAP_ENV_VAR_NAME = 'decentralisedCaseTypeConfig';
 
   private static readonly DECENTRALISED_EVENT_PREFIX = 'ext:';
   private static readonly USER_ID_REQUEST_PARAM_NAME = 'expected_sub';
@@ -49,6 +53,20 @@ export class DecentralisedRedirectService {
   public getUrl(serviceId: string, serviceUrl: string, userInfo: UserInfo): string {
     const absoluteUrl = this.getAbsoluteUrl(serviceId, serviceUrl);
     return absoluteUrl ? this.addUserInfo(absoluteUrl, userInfo).toString() : serviceUrl;
+  }
+
+  public redirectEvent(baseUrl: string, event: DecentralisedEvent): void {
+    const expectedSub = DecentralisedRedirectService.getExpectedSubFromUserDetails(
+      this.sessionStorageService.getItem('userDetails')
+    );
+    const absoluteUrl = event.getAbsoluteUrl(baseUrl, expectedSub);
+
+    this.window.location.assign(absoluteUrl);
+  }
+
+  public getBaseUrl(caseType: string): string | null {
+    const caseTypeMap = this.environmentService.get(DecentralisedRedirectService.CASE_TYPE_MAP_ENV_VAR_NAME);
+    return getWebUrlForCaseType(caseTypeMap, caseType);
   }
 
   buildDecentralisedEventUrl(

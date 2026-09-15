@@ -46,7 +46,7 @@ body .govuk-width-container {
   cursor: pointer;
 }
 
-@import 'govuk-frontend/dist/govuk/all';
+@import 'govuk-frontend/dist/govuk/index.import';
 @import '../../../style/hmcts-frontend';
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend

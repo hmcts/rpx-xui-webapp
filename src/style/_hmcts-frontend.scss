@@ -22,6 +22,13 @@ $hmcts-secondary-text-color: rgb(69, 74, 76);
 $hmcts-secondary-link-color: rgb(69, 74, 76);
 $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
+// govuk-frontend v6 removed these colour keywords from govuk-colour(); values
+// pinned here to the old v5 palette so this vendored CSS doesn't shift visually.
+$hmcts-govuk-light-grey: #f3f2f1;
+$hmcts-govuk-mid-grey: #b1b4b6;
+$hmcts-govuk-dark-grey: #505a5f;
+$hmcts-govuk-light-blue: #5694ca;
+
 // sass-mq compatibility shim: @hmcts/media-viewer uses `mq` but govuk-frontend v5 ships `govuk-media-query`
 @mixin mq($from: false, $until: false, $and: false) {
   @include govuk-media-query($from: $from, $until: $until, $and: $and) {
@@ -60,7 +67,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-filter-layout__filter {
-  box-shadow: inset 0 0 0 1px govuk-colour('light-grey');
+  box-shadow: inset 0 0 0 1px $hmcts-govuk-light-grey;
 
   @include govuk-media-query(desktop) {
     float: left;
@@ -106,8 +113,8 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
 // Secondary button
 .hmcts-button--secondary {
-  background-color: govuk-colour('light-grey');
-  box-shadow: 0 2px 0 rgba(govuk-colour('dark-grey'), 0.7);
+  background-color: $hmcts-govuk-light-grey;
+  box-shadow: 0 2px 0 rgba($hmcts-govuk-dark-grey, 0.7);
   color: govuk-colour('black');
 
   &:link,
@@ -120,7 +127,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
   &:hover,
   &:focus,
   &:link:focus {
-    background-color: rgba(govuk-colour('mid-grey'), 0.7);
+    background-color: rgba($hmcts-govuk-mid-grey, 0.7);
     color: $govuk-text-colour;
   }
 }
@@ -225,7 +232,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
 // Footer
 .hmcts-footer {
-  background-color: govuk-colour('light-grey');
+  background-color: $hmcts-govuk-light-grey;
   border-top: 1px solid $hmcts-border-color;
   padding-top: govuk-spacing(7);
   padding-bottom: govuk-spacing(7);
@@ -467,7 +474,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 // Filter
 .hmcts-filter {
   background-color: govuk-colour('white');
-  box-shadow: inset 0 0 0 1px govuk-colour('light-grey');
+  box-shadow: inset 0 0 0 1px $hmcts-govuk-light-grey;
 
   &:focus {
     @include govuk-focused-text;
@@ -475,7 +482,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-filter__header {
-  background-color: govuk-colour('light-grey');
+  background-color: $hmcts-govuk-light-grey;
   font-size: 0;
   padding: govuk-spacing(2) govuk-spacing(4);
   text-align: justify;
@@ -579,8 +586,8 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-filter__selected {
-  background-color: govuk-colour('light-grey');
-  box-shadow: inset 0 0 0 1px govuk-colour('light-grey');
+  background-color: $hmcts-govuk-light-grey;
+  box-shadow: inset 0 0 0 1px $hmcts-govuk-light-grey;
   padding: govuk-spacing(4);
 
   ul:last-of-type {
@@ -658,7 +665,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-filter__options {
-  box-shadow: inset 0 0 0 1px govuk-colour('light-grey');
+  box-shadow: inset 0 0 0 1px $hmcts-govuk-light-grey;
   margin-top: -1px;
   padding: govuk-spacing(4);
 
@@ -686,7 +693,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
     &:after {
       content: '';
-      background-color: govuk-colour('light-grey');
+      background-color: $hmcts-govuk-light-grey;
       height: 40px;
       position: absolute;
       right: 0;
@@ -859,7 +866,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
   }
 
   &:hover {
-    color: govuk-colour('light-blue');
+    color: $hmcts-govuk-light-blue;
   }
 
   &:focus {
@@ -954,8 +961,8 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
 .hmcts-identity-bar {
   @include govuk-clearfix;
-  background-color: govuk-colour('light-grey');
-  box-shadow: inset 0 -1px 0 0 govuk-colour('mid-grey');
+  background-color: $hmcts-govuk-light-grey;
+  box-shadow: inset 0 -1px 0 0 $hmcts-govuk-mid-grey;
   color: govuk-colour('black');
   padding-bottom: govuk-spacing(2) - 1px;
   padding-top: govuk-spacing(2);
@@ -1123,7 +1130,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-search--ondark .hmcts-search__hint {
-  color: govuk-colour('mid-grey');
+  color: $hmcts-govuk-mid-grey;
 }
 
 .hmcts-search--ondark .hmcts-search__input {

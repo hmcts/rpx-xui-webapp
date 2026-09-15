@@ -313,14 +313,15 @@ export class TaskListPage extends Base {
     timeoutMs = TASK_LIST_READY_TIMEOUT_MS
   ) {
     const sourceUrlPattern = this.taskListSourcePathPattern(path);
+    const navigationUrlPattern = new RegExp(`(?:${sourceUrlPattern.source})|(?:${urlPattern.source})`);
     let lastError: unknown;
 
     for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
       try {
-        await this.gotoTaskListPath(path, sourceUrlPattern, context, timeoutMs);
+        await this.gotoTaskListPath(path, navigationUrlPattern, context, timeoutMs);
         await this.waitForTaskListSpinnerToSettle(10_000);
-        await this.recoverBlankTaskListDocumentAfterNavigation(sourceUrlPattern, context, timeoutMs);
-        await this.page.waitForURL(urlPattern, { timeout: Math.min(10_000, timeoutMs) }).catch(() => undefined);
+        await this.recoverBlankTaskListDocumentAfterNavigation(navigationUrlPattern, context, timeoutMs);
+        await this.page.waitForURL(urlPattern, { timeout: Math.min(10_000, timeoutMs) });
         await terminalHeading.waitFor({ state: 'visible', timeout: Math.min(5_000, timeoutMs) });
         return;
       } catch (error) {

@@ -1307,7 +1307,7 @@ function defaultTestListRowsPerPage(html) {
     );
 }
 
-function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
+function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfettoAvailable = false) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
@@ -1332,6 +1332,14 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
+  if (perfettoAvailable && !root.querySelector('#odhin-perfetto-link')) {
+    root
+      .querySelector('body')
+      ?.insertAdjacentHTML(
+        'afterbegin',
+        '<p id="odhin-perfetto-link"><a href="../test-results/perfetto.json">Open Perfetto timeline</a></p>'
+      );
+  }
 
   return root.toString();
 }
@@ -1384,7 +1392,8 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries);
+    const perfettoAvailable = fs.existsSync(path.join(outputFolder, '..', 'test-results', 'perfetto.json'));
+    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoAvailable);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
 }

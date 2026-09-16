@@ -36,7 +36,7 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     private readonly sessionStorageService: SessionStorageService,
     private readonly titleService: Title,
     private readonly route: ActivatedRoute
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     window.addEventListener('message', this.messageListener);
@@ -56,7 +56,7 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
       }
       this.populateMedia(media);
     } else {
-      this.titleService.setTitle('View Document');
+      this.titleService.setTitle('View Document - Manage Case - HM Courts & Tribunals Service - GOV.UK');
     }
 
     this.initialiseFeatureFlags();
@@ -123,7 +123,7 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     this.caseId = media.case_id;
     this.caseJurisdiction = media.case_jurisdiction;
     this.mediaReady = true;
-    this.titleService.setTitle(this.mediaFilename + ' - View Document');
+    this.titleService.setTitle(`${this.mediaFilename} - View Document - Manage Case - HM Courts & Tribunals Service - GOV.UK`);
   }
 
   private initialiseFeatureFlags(): void {

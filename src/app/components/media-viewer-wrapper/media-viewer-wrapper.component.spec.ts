@@ -99,7 +99,7 @@ describe('MediaViewerWrapperComponent', () => {
       activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: null });
       fixture.detectChanges();
       component.ngOnInit();
-      expect(titleService.setTitle).toHaveBeenCalledWith('View Document');
+      expect(titleService.setTitle).toHaveBeenCalledWith('View Document - Manage Case - HM Courts & Tribunals Service - GOV.UK');
     });
   });
 

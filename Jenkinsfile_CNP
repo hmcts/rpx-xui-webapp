@@ -96,7 +96,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/playwright-api/test-results/perfetto*.json,functional-output/tests/playwright-integration/**/test-results/perfetto*.json,functional-output/tests/playwright-e2e/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg',
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/api_functional/test-results/perfetto*.json,functional-output/tests/playwright-integration/**/test-results/perfetto*.json,functional-output/tests/playwright-e2e/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg',
         excludes: 'functional-output/tests/**/test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
@@ -215,7 +215,7 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
             cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
         """
         steps.archiveArtifacts(allowEmptyArchive: false, artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}")
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-api/test-results/perfetto*.json,functional-output/tests/playwright-integration/**/test-results/perfetto*.json,functional-output/tests/playwright-e2e/**/test-results/perfetto*.json'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/test-results/perfetto*.json,functional-output/tests/playwright-integration/**/test-results/perfetto*.json,functional-output/tests/playwright-e2e/**/test-results/perfetto*.json'
         publishHTML([
           allowMissing         : false,
           alwaysLinkToLastBuild: true,
@@ -738,8 +738,8 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=6",
-                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-api/test-results',
-                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'
+                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/api_functional/test-results',
+                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/api_functional/odhin-report/playwright-junit.xml'
                             ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
@@ -758,7 +758,7 @@ withPipeline(type, product, component) {
                                 } finally {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'finish')
                                     ensureHtmlReportForPublishing(
-                                        'functional-output/tests/playwright-api/odhin-report',
+                                        'functional-output/tests/api_functional/odhin-report',
                                         'xui-playwright-api.html',
                                         'PREVIEW API Functional Test',
                                         apiOutcome
@@ -767,11 +767,11 @@ withPipeline(type, product, component) {
                                         allowMissing         : true,
                                         alwaysLinkToLastBuild: true,
                                         keepAll              : true,
-                                        reportDir            : 'functional-output/tests/playwright-api/odhin-report/',
+                                        reportDir            : 'functional-output/tests/api_functional/odhin-report/',
                                         reportFiles          : 'xui-playwright-api.html',
                                         reportName           : 'PREVIEW API Functional Test'
                                     ])
-                                    publishPlaywrightJUnit('functional-output/tests/playwright-api/odhin-report/playwright-junit.xml', apiOutcome)
+                                    publishPlaywrightJUnit('functional-output/tests/api_functional/odhin-report/playwright-junit.xml', apiOutcome)
                                 }
                             }
                         }
@@ -932,8 +932,8 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=6",
-                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-api/test-results',
-                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'
+                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/api_functional/test-results',
+                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/api_functional/odhin-report/playwright-junit.xml'
                             ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
@@ -952,7 +952,7 @@ withPipeline(type, product, component) {
                                 } finally {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'finish')
                                     ensureHtmlReportForPublishing(
-                                        'functional-output/tests/playwright-api/odhin-report',
+                                        'functional-output/tests/api_functional/odhin-report',
                                         'xui-playwright-api.html',
                                         'AAT API Functional Test',
                                         apiOutcome
@@ -961,11 +961,11 @@ withPipeline(type, product, component) {
                                         allowMissing         : true,
                                         alwaysLinkToLastBuild: true,
                                         keepAll              : true,
-                                        reportDir            : 'functional-output/tests/playwright-api/odhin-report/',
+                                        reportDir            : 'functional-output/tests/api_functional/odhin-report/',
                                         reportFiles          : 'xui-playwright-api.html',
                                         reportName           : 'AAT API Functional Test'
                                     ])
-                                    publishPlaywrightJUnit('functional-output/tests/playwright-api/odhin-report/playwright-junit.xml', apiOutcome)
+                                    publishPlaywrightJUnit('functional-output/tests/api_functional/odhin-report/playwright-junit.xml', apiOutcome)
                                 }
                             }
                         }

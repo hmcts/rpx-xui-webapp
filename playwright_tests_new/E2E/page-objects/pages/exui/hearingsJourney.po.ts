@@ -64,23 +64,22 @@ export class HearingsJourneyPage {
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
   readonly selectedVenueTags = this.page.getByRole('link', { name: /^Click to remove:/ });
 
-  /**
-   * The venue autocomplete renders into a CDK overlay outside the component's own markup, so it
-   * has to be reached through the overlay pane rather than the `.search-location` container.
-   *
-   * Matched on `role="listbox"` rather than a `mat-*` class: this app serves the legacy
-   * (non-MDC) Material autocomplete, so the panel is `.mat-autocomplete-panel`, not
-   * `.mat-mdc-autocomplete-panel`. The role is stable across both builds.
-   */
-  readonly venueAutocompletePanel = this.page.locator('.cdk-overlay-pane [role="listbox"]');
-  readonly venueOptions = this.venueAutocompletePanel.getByRole('option');
-
-  /** The placeholder option the component renders when a search comes back empty. */
-  readonly venueNoResultsOption = this.venueOptions.filter({ hasText: 'No results found' });
-
-  /** Real venue options matching the search term, excluding the "No results found" placeholder. */
-  venueOptionsMatching(searchTerm: string): Locator {
-    return this.venueOptions.filter({ hasText: searchTerm });
+  private async activeVenueOptions(): Promise<Locator> {
+    // Material exposes aria-controls (MDC) or aria-owns (legacy) for this input's panel.
+    const associatedInput = this.hearingVenue.and(this.page.locator('[aria-owns], [aria-controls]'));
+    let associationCount = 0;
+    try {
+      await associatedInput.waitFor({ state: 'attached', timeout: 1_000 });
+      associationCount = await associatedInput.count();
+    } catch {
+      // The input has no usable association.
+    }
+    if (associationCount === 0) {
+      throw new Error('Hearing venue input did not expose an associated autocomplete panel.');
+    }
+    const panelId = (await associatedInput.getAttribute('aria-controls')) || (await associatedInput.getAttribute('aria-owns'));
+    if (!panelId) throw new Error('Hearing venue input did not expose an associated autocomplete panel.');
+    return this.page.locator(`[role="listbox"][id=${JSON.stringify(panelId)}]`).getByRole('option');
   }
 
   // hearingConfirmationPAge
@@ -162,27 +161,40 @@ export class HearingsJourneyPage {
 
     const seededVenueCount = await this.selectedVenueTags.count();
 
+    await this.hearingVenue.scrollIntoViewIfNeeded();
     await this.hearingVenue.pressSequentially(venueSearchTerm);
 
-    // Every keystroke fires a fresh debounced l2okup that rebuilds the panel, so wait for an
+    // Every keystroke fires a fresh debounced lookup that rebuilds the panel, so wait for an
     // option that actually matches the search term rather than whatever the last in-flight
     // response happened to render.
-    const venueOption = this.venueOptionsMatching(venueSearchTerm).first();
+    const venueOptions = await this.activeVenueOptions();
+    const venueOption = venueOptions.filter({ hasText: venueSearchTerm }).first();
     try {
       await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
     } catch (error) {
-      if (await this.venueNoResultsOption.isVisible()) {
+      if (await venueOptions.filter({ hasText: 'No results found' }).isVisible()) {
         throw new Error(`Location search for "${venueSearchTerm}" returned "No results found".`);
       }
       throw error;
     }
 
-    await venueOption.click();
+    const expectedVenue = normaliseWhitespace(await venueOption.textContent());
+    const optionId = await venueOption.getAttribute('id');
+    if (!optionId) throw new Error('Hearing venue option did not expose its keyboard selection identity.');
+    // The component auto-activates its first result. Enter is a supported user interaction even
+    // when the associated CDK panel is outside the viewport; never select a different active result.
+    const activeOptionId = await this.hearingVenue.getAttribute('aria-activedescendant');
+    if (activeOptionId !== optionId) {
+      throw new Error(`aria-activedescendant mismatch: expected "${optionId}", but found "${activeOptionId ?? 'none'}".`);
+    }
+    await this.hearingVenue.press('Enter');
+    const selectedInputValue = normaliseWhitespace(await this.hearingVenue.inputValue());
+    if (selectedInputValue !== expectedVenue) {
+      throw new Error(`Expected hearing venue input to contain "${expectedVenue}", but found "${selectedInputValue}".`);
+    }
     await this.addLocationsButton.click();
 
-    // The autocomplete list is rebuilt every time the debounced search resolves, so the option
-    // text read before clicking can belong to a stale element. Take the name from the tag the
-    // page actually added instead, which is the value carried into the hearing request.
+    // Read back the tag actually added: this is the value carried into the hearing request.
     const addedVenueTag = this.selectedVenueTags.nth(seededVenueCount);
     await addedVenueTag.waitFor({ state: 'visible', timeout: 30_000 });
 
@@ -192,10 +204,9 @@ export class HearingsJourneyPage {
       throw new Error(`Venue selected for "${venueSearchTerm}" did not expose a location name.`);
     }
 
-    // Guards against a mis-targeted click silently adding a different court: the tag the page
-    // added must be the venue that was searched for.
-    if (!newSelectedVenue.includes(venueSearchTerm)) {
-      throw new Error(`Expected the added venue to match "${venueSearchTerm}", but the page added "${newSelectedVenue}".`);
+    // A different court with the same search prefix is not an acceptable selection.
+    if (newSelectedVenue !== expectedVenue) {
+      throw new Error(`Expected the added venue to be "${expectedVenue}", but the page added "${newSelectedVenue}".`);
     }
 
     return newSelectedVenue;

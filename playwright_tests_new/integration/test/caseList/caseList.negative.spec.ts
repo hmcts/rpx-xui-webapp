@@ -70,7 +70,7 @@ test.describe(
         await caseListPage.navigateTo();
       });
       await test.step('Verify user can see the WorkBasket Filter layout', async () => {
-        expect(caseListPage.filtersContainer).toBeVisible();
+        await expect(caseListPage.filtersContainer).toBeVisible();
       });
       await test.step('Verify user can see a list of cases in  expected layout given the mock response', async () => {
         expect(await caseListPage.caseListResultsAmount.textContent()).toBe(
@@ -106,7 +106,7 @@ test.describe(
         await caseListPage.navigateTo();
       });
       await test.step('Verify user can see the WorkBasket Filter layout', async () => {
-        expect(caseListPage.filtersContainer).toBeVisible();
+        await expect(caseListPage.filtersContainer).toBeVisible();
         await expect(caseListPage.jurisdictionSelect).toBeVisible();
         await expect(caseListPage.exuiHeader.header).toBeVisible();
         await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
@@ -126,7 +126,7 @@ test.describe(`Check behaviour of UI when a  Timeout issue occurs}`, { tag: ['@i
       await caseListPage.navigateTo();
     });
     await test.step('Verify user can see the WorkBasket Filter layout', async () => {
-      expect(caseListPage.filtersContainer).toBeVisible();
+      await expect(caseListPage.filtersContainer).toBeVisible();
       await expect(caseListPage.jurisdictionSelect).toBeVisible();
       await expect(caseListPage.exuiHeader.header).toBeVisible();
       await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();

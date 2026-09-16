@@ -88,7 +88,7 @@ export class ExuiHeaderComponent {
 
     const waitForState = (timeoutMs: number) =>
       this.page.waitForFunction(
-        ({ expectedAppHeaderLink, expectedLanguageCode, expectedSignOutLink, expectedToggleLabel }) => {
+        ({ expectedAppHeaderLink, expectedSignOutLink, expectedToggleLabel }) => {
           const appHeaderLink = document.querySelector('exui-header .hmcts-header a.hmcts-header__link');
           const languageToggle = document.querySelector('exui-header button.language');
           const signOutLink = document.querySelector('exui-header .hmcts-header .hmcts-header__navigation-link');

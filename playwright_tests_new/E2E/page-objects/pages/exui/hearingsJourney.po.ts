@@ -67,7 +67,13 @@ export class HearingsJourneyPage {
   private async activeVenueOptions(): Promise<Locator> {
     // Material exposes aria-controls (MDC) or aria-owns (legacy) for this input's panel.
     const associatedInput = this.hearingVenue.and(this.page.locator('[aria-owns], [aria-controls]'));
-    const associationCount = await associatedInput.count();
+    let associationCount = 0;
+    try {
+      await associatedInput.waitFor({ state: 'attached', timeout: 1_000 });
+      associationCount = await associatedInput.count();
+    } catch {
+      // The input has no usable association.
+    }
     if (associationCount === 0) {
       throw new Error('Hearing venue input did not expose an associated autocomplete panel.');
     }

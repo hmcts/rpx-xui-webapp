@@ -34,10 +34,18 @@ export function hearingVenueSelectionMarkup(
       document.body.appendChild(pane);
       ${options.missingAssociation ? '' : `input.setAttribute('${options.relation ?? 'aria-owns'}', 'owned-options');`}
       ${options.delayedResults ? "setTimeout(() => { pane.querySelector('button').textContent = 'Basingstoke County Court'; }, 100);" : ''}
-      pane.querySelector('button').addEventListener('click', () => {
+      const selectVenue = () => {
         selected = '${options.wrongSelection ? 'Different court' : 'Basingstoke County Court'}';
+        input.value = 'Basingstoke County Court';
         pane.remove();
-      });
+      };
+      const option = pane.querySelector('button');
+      option.id = 'owned-option';
+      input.setAttribute('aria-activedescendant', option.id);
+      option.addEventListener('click', selectVenue);
+      input.addEventListener('keydown', event => {
+        if (event.key === 'Enter') selectVenue();
+      }, { once: true });
     });
     document.querySelector('.search-location a').addEventListener('click', (event) => {
       event.preventDefault();

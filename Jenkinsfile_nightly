@@ -32,7 +32,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.5.1")
+@Library("Infrastructure@2.8.0")
 
 def type      = "nodejs"
 def product   = "xui"
@@ -57,7 +57,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg',
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/perfetto.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg',
         excludes: 'functional-output/tests/**/test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
@@ -534,6 +534,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline(type, product, component) {
+    enableBuildCache()
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_ENV = 'aat'
@@ -584,7 +585,7 @@ withNightlyPipeline(type, product, component) {
 
     afterAlways('fortify-scan') {
         recordPlaywrightLoadEvent('Fortify artifact archive', 'start')
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+        steps.archiveArtifacts allowEmptyArchive: false, artifacts: 'test/java/Fortify Scan/**/*'
         recordPlaywrightLoadEvent('Fortify artifact archive', 'finish')
     }
 

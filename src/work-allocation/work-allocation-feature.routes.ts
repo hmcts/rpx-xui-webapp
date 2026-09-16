@@ -50,7 +50,7 @@ export const ROUTES: Routes = [
             path: 'list',
             component: MyTasksComponent,
             data: {
-              title: 'HMCTS Manage cases | My work | My tasks',
+              title: 'My work - My tasks',
               subTitle: 'My tasks',
             },
           },
@@ -58,7 +58,7 @@ export const ROUTES: Routes = [
             path: 'available',
             component: AvailableTasksComponent,
             data: {
-              title: 'HMCTS Manage cases | My work | Available tasks',
+              title: 'My work - Available tasks',
               subTitle: 'Available tasks',
             },
           },
@@ -66,7 +66,7 @@ export const ROUTES: Routes = [
             path: 'my-cases',
             component: MyCasesComponent,
             data: {
-              title: 'HMCTS Manage cases | My work | My cases',
+              title: 'My work - My cases',
               subTitle: 'My cases',
             },
           },
@@ -75,7 +75,7 @@ export const ROUTES: Routes = [
             component: MyAccessComponent,
             canActivate: [WorkAllocationAccessGuard],
             data: {
-              title: 'HMCTS Manage cases | My work | My access',
+              title: 'My work - My access',
               subTitle: 'My access',
             },
           },
@@ -86,7 +86,7 @@ export const ROUTES: Routes = [
         component: AllWorkHomeComponent,
         canActivate: [HealthCheckGuard, TaskSupervisorGuard],
         data: {
-          title: 'HMCTS Manage cases | Task manager',
+          title: 'Task manager',
         },
         children: [
           {
@@ -97,7 +97,7 @@ export const ROUTES: Routes = [
             path: 'tasks',
             component: AllWorkTaskComponent,
             data: {
-              title: 'HMCTS Manage cases | All work | Tasks',
+              title: 'All work - Tasks',
               subTitle: 'Tasks',
             },
           },
@@ -105,7 +105,7 @@ export const ROUTES: Routes = [
             path: 'cases',
             component: AllWorkCaseComponent,
             data: {
-              title: 'HMCTS Manage cases | All work | Cases',
+              title: 'All work - Cases',
               subTitle: 'Cases',
             },
           },

@@ -42,7 +42,7 @@ describe('HearingActualRoleResolverService', () => {
       spyOn(service, 'getReferenceData$').and.callThrough();
       const route = new ActivatedRouteSnapshot();
       route.data = {
-        title: 'HMCTS Hearings | Request Hearing | Hearing Stage',
+        title: 'HMCTS Hearings - Request Hearing - Hearing Stage',
       };
       service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
         expect(service.getReferenceData$).toHaveBeenCalled();

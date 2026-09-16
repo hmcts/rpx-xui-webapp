@@ -85,7 +85,10 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
         try {
           await createCasePage.exuiHeader.switchLanguage('English');
           await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-          await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
+          await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION, {
+            expectedLocator: createCasePage.fileUploadInput,
+            retry: false,
+          });
           const welshTranslationResponse =
             scenario.language === 'Cymraeg'
               ? caseDetailsPage.page.waitForResponse(

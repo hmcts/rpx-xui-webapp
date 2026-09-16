@@ -643,7 +643,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.expect.timeout).toBe(60_000);
     expect(config.use.trace).toEqual({
       mode: 'retain-on-failure',
-      snapshots: true,
+      snapshots: { dom: true, aria: true, screen: true },
       screenshots: true,
       sources: true,
     });
@@ -848,13 +848,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
     expect(config.projects.find((project) => project.name === 'firefox')?.use?.trace).toEqual({
       mode: 'retain-on-failure',
-      snapshots: true,
+      snapshots: { dom: true, aria: true, screen: true },
       screenshots: true,
       sources: true,
     });
     expect(config.projects.find((project) => project.name === 'webkit')?.use?.trace).toEqual({
       mode: 'retain-on-failure',
-      snapshots: true,
+      snapshots: { dom: true, aria: true, screen: true },
       screenshots: true,
       sources: true,
     });

@@ -361,7 +361,6 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     await taskListPage.openFilterPanel();
 
-
     await taskListPage.expectSelectedFilterTagsVisible(['Taylor House', 'Birmingham Civil and Family Justice Centre']);
   });
 

@@ -644,6 +644,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.use.trace).toEqual({
       mode: 'retain-on-failure',
       snapshots: { dom: true, aria: true, screen: true },
+      screenshots: true,
+      sources: true,
     });
     expect(config.use.timezoneId).toBe('Europe/London');
     expect(config.projects.map((project) => project.name)).toEqual(['chromium']);
@@ -844,8 +846,18 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
     expect(config.projects.find((project) => project.name === 'firefox')?.use?.headless).toBe(false);
     expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
-    expect(config.projects.find((project) => project.name === 'firefox')?.use?.trace).toBe('retain-on-failure');
-    expect(config.projects.find((project) => project.name === 'webkit')?.use?.trace).toBe('retain-on-failure');
+    expect(config.projects.find((project) => project.name === 'firefox')?.use?.trace).toEqual({
+      mode: 'retain-on-failure',
+      snapshots: { dom: true, aria: true, screen: true },
+      screenshots: true,
+      sources: true,
+    });
+    expect(config.projects.find((project) => project.name === 'webkit')?.use?.trace).toEqual({
+      mode: 'retain-on-failure',
+      snapshots: { dom: true, aria: true, screen: true },
+      screenshots: true,
+      sources: true,
+    });
   });
 
   test('nightly config honours report folder and file overrides', async () => {

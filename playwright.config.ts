@@ -167,6 +167,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
+  if (env.PW_ENABLE_PERFETTO !== 'false') reporter.push(['perfetto', undefined]);
 
   return defineConfig({
     use: {
@@ -204,7 +205,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: 'retain-on-failure',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -222,7 +228,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: 'retain-on-failure',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -246,7 +257,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           headless: true,
           screenshot: 'off',
           video: 'off',
-          trace: 'off',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
         },
       },
     ],

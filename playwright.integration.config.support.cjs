@@ -239,7 +239,7 @@ const buildConfig = (env = process.env) => {
   }
 
   const trace = resolveFlag(env.PW_TRACE_RICH, true)
-    ? { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true }
+    ? { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
     : 'retain-on-failure';
 
   return defineConfig({

@@ -205,7 +205,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+          trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -223,7 +223,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+          trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -247,7 +247,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           headless: true,
           screenshot: 'off',
           video: 'off',
-          trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+          trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true },
         },
       },
     ],

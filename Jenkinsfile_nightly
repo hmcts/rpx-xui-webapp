@@ -633,7 +633,7 @@ withNightlyPipeline(type, product, component) {
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
                                 'FUNCTIONAL_TESTS_WORKERS=6',
-                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/api_functional/odhin-report/test-results',
+                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-api/test-results',
                                 'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
@@ -653,7 +653,7 @@ withNightlyPipeline(type, product, component) {
                         } finally {
                             recordPlaywrightLoadEvent('API', 'finish')
                             ensureHtmlReportForPublishing(
-                                'functional-output/tests/api_functional/odhin-report',
+                                'functional-output/tests/playwright-api/odhin-report',
                                 'xui-playwright-api.html',
                                 'Nightly API Functional Test',
                                 apiOutcome
@@ -662,11 +662,11 @@ withNightlyPipeline(type, product, component) {
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
                                 keepAll              : true,
-                                reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                reportDir            : 'functional-output/tests/playwright-api/odhin-report/',
                                 reportFiles          : 'xui-playwright-api.html',
                                 reportName           : 'Nightly API Functional Test'
                             ])
-                            publishPlaywrightJUnit('functional-output/tests/api_functional/odhin-report/playwright-junit.xml', apiOutcome)
+                            publishPlaywrightJUnit('functional-output/tests/playwright-api/odhin-report/playwright-junit.xml', apiOutcome)
                         }
                     }
                 },

@@ -1307,7 +1307,7 @@ function defaultTestListRowsPerPage(html) {
     );
 }
 
-function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfettoAvailable = false) {
+function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfettoFiles = []) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
@@ -1332,12 +1332,13 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfetto
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
-  if (perfettoAvailable && !root.querySelector('#odhin-perfetto-link')) {
+  if (perfettoFiles.length && !root.querySelector('#odhin-perfetto-link')) {
+    const links = perfettoFiles.map((fileName) => `<a href="../test-results/${fileName}">${fileName}</a>`).join(' · ');
     root
       .querySelector('body')
       ?.insertAdjacentHTML(
         'afterbegin',
-        '<p id="odhin-perfetto-link"><a href="../test-results/perfetto.json">Open Perfetto timeline</a></p>'
+        `<p id="odhin-perfetto-link">Perfetto timelines (test names and statuses are embedded): ${links}</p>`
       );
   }
 
@@ -1392,8 +1393,11 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const perfettoAvailable = fs.existsSync(path.join(outputFolder, '..', 'test-results', 'perfetto.json'));
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoAvailable);
+    const testResultsFolder = path.join(outputFolder, '..', 'test-results');
+    const perfettoFiles = fs.existsSync(testResultsFolder)
+      ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
+      : [];
+    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
 }

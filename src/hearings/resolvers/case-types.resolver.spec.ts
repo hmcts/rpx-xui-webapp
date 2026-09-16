@@ -41,7 +41,7 @@ describe('CaseTypesResolver', () => {
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Hearing requirements',
+      title: 'Request Hearing - Hearing requirements',
     };
     service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();

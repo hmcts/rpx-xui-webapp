@@ -24,9 +24,9 @@
 
     <div class="search-location">
       <div class="search-location__input">
-        <label class="govuk-body" for="location-primary"> Enter a location name </label>
+        <label class="govuk-body" [attr.for]="'location-' + (isPrimaryMode ? 'primary' : 'additional')"> Enter a location name </label>
         <input
-          id="location-primary"
+          [id]="'location-' + (isPrimaryMode ? 'primary' : 'additional')"
           class="govuk-input"
           [formControl]="searchTermFormControl"
           [matAutocomplete]="autoSearchLocation"

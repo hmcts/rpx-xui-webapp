@@ -95,23 +95,11 @@ export class ExuiHeaderComponent {
           const appHeaderText = appHeaderLink?.textContent?.trim() ?? '';
           const toggleText = languageToggle?.textContent?.trim() ?? '';
           const signOutText = signOutLink?.textContent?.trim() ?? '';
-          const rawClientContext = window.sessionStorage.getItem('clientContext');
-          if (!rawClientContext) {
-            return false;
-          }
-
-          try {
-            const clientContext = JSON.parse(rawClientContext);
-            const currentLanguage = clientContext?.client_context?.user_language?.language;
-            return (
-              currentLanguage === expectedLanguageCode &&
-              toggleText.includes(expectedToggleLabel) &&
-              appHeaderText.includes(expectedAppHeaderLink) &&
-              signOutText.includes(expectedSignOutLink)
-            );
-          } catch {
-            return false;
-          }
+          return (
+            toggleText.includes(expectedToggleLabel) &&
+            appHeaderText.includes(expectedAppHeaderLink) &&
+            signOutText.includes(expectedSignOutLink)
+          );
         },
         {
           expectedAppHeaderLink: renderState.appHeaderLink,

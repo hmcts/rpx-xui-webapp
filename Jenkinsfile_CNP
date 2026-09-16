@@ -607,6 +607,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withPipeline(type, product, component) {
 
+    enableBuildCache()
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_ENV = 'aat'

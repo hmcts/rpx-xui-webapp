@@ -30,14 +30,18 @@ export function hearingVenueSelectionMarkup(
       const pane = document.createElement('div');
       pane.id = 'owned-pane'; pane.className = 'cdk-overlay-pane';
       pane.style.top = input.getBoundingClientRect().bottom + 'px';
-      pane.innerHTML = '<div role="listbox" id="owned-options"><button role="option">${options.noResults || options.delayedResults ? 'No results found' : 'Basingstoke County Court'}</button></div>';
+      pane.innerHTML = '<div role="listbox" id="owned-options"><button id="owned-venue-option" role="option">${options.noResults || options.delayedResults ? 'No results found' : 'Basingstoke County Court'}</button></div>';
       document.body.appendChild(pane);
       ${options.missingAssociation ? '' : `input.setAttribute('${options.relation ?? 'aria-owns'}', 'owned-options');`}
+      ${options.missingAssociation ? '' : "input.setAttribute('aria-activedescendant', 'owned-venue-option');"}
       ${options.delayedResults ? "setTimeout(() => { pane.querySelector('button').textContent = 'Basingstoke County Court'; }, 100);" : ''}
-      pane.querySelector('button').addEventListener('click', () => {
+      const selectVenue = () => {
         selected = '${options.wrongSelection ? 'Different court' : 'Basingstoke County Court'}';
         pane.remove();
-      });
+        input.value = 'Basingstoke County Court';
+      };
+      pane.querySelector('button').addEventListener('click', selectVenue);
+      input.addEventListener('keydown', event => { if (event.key === 'Enter') selectVenue(); }, { once: true });
     });
     document.querySelector('.search-location a').addEventListener('click', (event) => {
       event.preventDefault();

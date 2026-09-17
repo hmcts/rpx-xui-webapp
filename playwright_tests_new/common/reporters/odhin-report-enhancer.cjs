@@ -1337,17 +1337,28 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfetto
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
-  if (perfettoFiles.length && !root.querySelector('#odhin-perfetto-link')) {
-    const links = perfettoFiles.map((fileName) => `<a href="../test-results/${fileName}">${fileName}</a>`).join(' · ');
-    root
-      .querySelector('body')
-      ?.insertAdjacentHTML(
-        'afterbegin',
-        `<p id="odhin-perfetto-link">Perfetto timelines (test names and statuses are embedded): ${links}</p>`
-      );
-  }
+  if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles);
 
   return root.toString();
+}
+
+function injectPerfettoTab(root, perfettoFiles) {
+  root.querySelector('#odhin-perfetto-link')?.remove();
+  if (root.querySelector('#TabPerfetto')) return;
+
+  const links = perfettoFiles
+    .map((fileName) => `<a href="../test-results/${fileName}">${fileName}</a>`)
+    .join(' · ');
+  root
+    .querySelector('.tab')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<button class="main-tablinks" onclick="openMainTab(event, 'TabPerfetto')">Perfetto Results</button>`
+    );
+  root.querySelector('body')?.insertAdjacentHTML(
+    'beforeend',
+    `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><p id="odhin-perfetto-link">${links}</p></div></div></div></div></div>`
+  );
 }
 
 function readAccessibilityEvidenceEntries(outputFolder) {

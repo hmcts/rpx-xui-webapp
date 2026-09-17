@@ -31,7 +31,7 @@
     "lint:api:fix": "node ./node_modules/eslint/bin/eslint.js --fix api",
     "lint:prettier": "node ./node_modules/prettier/bin/prettier.cjs -c .",
     "lint:prettier:fix": "node ./node_modules/prettier/bin/prettier.cjs -w .",
-    "lint:reporting:scripts": "node --check scripts/copy-odhin-report.js && node --check scripts/ensure-load-profile-report.js && node --check scripts/ensure-odhin-report.js && node --check scripts/playwright-load-event.js && node --check scripts/playwright-load-monitor.js && node --check scripts/run-playwright-accessibility.cjs && node --check scripts/run-playwright-a11y.cjs && node --check scripts/run-playwright-smoke.cjs && node --check scripts/run-playwright-wave-a11y.cjs && node --check scripts/verify-playwright-browsers.js",
+    "lint:reporting:scripts": "node --check scripts/ensure-load-profile-report.js && node --check scripts/ensure-odhin-report.js && node --check scripts/playwright-load-event.js && node --check scripts/playwright-load-monitor.js && node --check scripts/run-playwright-accessibility.cjs && node --check scripts/run-playwright-a11y.cjs && node --check scripts/run-playwright-smoke.cjs && node --check scripts/run-playwright-wave-a11y.cjs && node --check scripts/verify-playwright-browsers.js",
     "prepare": "husky install",
     "ng": "ng",
     "nuke": "rm -rf dist",

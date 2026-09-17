@@ -1307,7 +1307,13 @@ function defaultTestListRowsPerPage(html) {
     );
 }
 
-function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfettoFiles = []) {
+function enhanceDashboardHtml(
+  html,
+  featureStats,
+  evidenceEntries = [],
+  perfettoFiles = [],
+  perfettoHrefPrefix = '../test-results'
+) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
@@ -1339,17 +1345,17 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfetto
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
-  if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles);
+  if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
 
   return root.toString();
 }
 
-function injectPerfettoTab(root, perfettoFiles) {
+function injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix = '../test-results') {
   root.querySelector('#odhin-perfetto-link')?.remove();
   root.querySelector('#TabPerfetto')?.remove();
   root.querySelector('.main-tablinks[onclick*="TabPerfetto"]')?.remove();
 
-  const links = perfettoFiles.map((fileName) => `<a href="../test-results/${fileName}">${fileName}</a>`).join(' · ');
+  const links = perfettoFiles.map((fileName) => `<a href="${perfettoHrefPrefix}/${fileName}">${fileName}</a>`).join(' · ');
   root
     .querySelector('.tab')
     ?.insertAdjacentHTML(
@@ -1410,6 +1416,7 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
     testResultsFolder && fs.existsSync(testResultsFolder)
       ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
       : [];
+  const perfettoHrefPrefix = testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
   if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length && !perfettoFiles.length) {
     return;
   }
@@ -1419,7 +1426,7 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles);
+    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles, perfettoHrefPrefix);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
 

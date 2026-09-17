@@ -82,7 +82,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       enhancerModule.enhanceGeneratedReport(reportFolder, []);
       const html = fs.readFileSync(path.join(reportFolder, 'xui-playwright-integration.html'), 'utf8');
       expect(html).toContain('Perfetto Results');
-      expect(html).toContain('../test-results/perfetto.json');
+      expect(html).toContain('test-results/perfetto.json');
     } finally {
       fs.rmSync(root, { recursive: true, force: true });
     }

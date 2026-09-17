@@ -406,16 +406,28 @@ def runPlaywrightIntegrationProfileMatrix = {
         throw originalFailure
     } finally {
         try {
-            def profileArgs = runConfigs.collect { "'${it.label}'" }.join(' ')
-            sh "node scripts/write-integration-report-index.cjs '${reportRoot}' '${playwrightIntegrationReportFile}' ${profileArgs}"
-            publishHTML([
-                allowMissing         : false,
-                alwaysLinkToLastBuild: true,
-                keepAll              : true,
-                reportDir            : "${reportRoot}/",
-                reportFiles          : 'index.html',
-                reportName           : 'Playwright Integration Tests'
-            ])
+            def singleProfile = runConfigs.size() == 1 && fileExists("${runConfigs[0].reportDir}/${playwrightIntegrationReportFile}")
+            if (singleProfile) {
+                publishHTML([
+                    allowMissing         : false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : runConfigs[0].reportDir,
+                    reportFiles          : playwrightIntegrationReportFile,
+                    reportName           : 'Playwright Integration Tests'
+                ])
+            } else {
+                def profileArgs = runConfigs.collect { "'${it.label}'" }.join(' ')
+                sh "node scripts/write-integration-report-index.cjs '${reportRoot}' '${playwrightIntegrationReportFile}' ${profileArgs}"
+                publishHTML([
+                    allowMissing         : false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : "${reportRoot}/",
+                    reportFiles          : 'index.html',
+                    reportName           : 'Playwright Integration Tests'
+                ])
+            }
         } catch (Exception reportingFailure) {
             if (matrixFailure == null && reportingFailure instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                 throw reportingFailure

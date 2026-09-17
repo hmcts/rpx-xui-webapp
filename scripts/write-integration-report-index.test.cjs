@@ -34,7 +34,10 @@ test('both Jenkins matrices publish one guarded landing report and retain isolat
     const source = fs.readFileSync(path.join(__dirname, '..', filename), 'utf8');
     const start = source.indexOf('def runPlaywrightIntegrationProfileMatrix =');
     const matrix = source.slice(start, source.indexOf('\n}\n', start) + 2);
-    assert.equal((matrix.match(/publishHTML\(/g) ?? []).length, 1, filename);
+    assert.equal((matrix.match(/publishHTML\(/g) ?? []).length, 2, filename);
+    assert.match(matrix, /singleProfile = runConfigs\.size\(\) == 1/);
+    assert.match(matrix, /reportDir\s*:\s*runConfigs\[0\]\.reportDir/);
+    assert.match(matrix, /reportFiles\s*:\s*playwrightIntegrationReportFile/);
     assert.match(matrix, /reportDir\s*:\s*"\$\{reportRoot\}\//);
     assert.match(matrix, /reportFiles\s*:\s*'index\.html'/);
     assert.match(matrix, /PLAYWRIGHT_REPORT_FOLDER=\$\{runConfig\.reportDir\}/);
@@ -42,7 +45,7 @@ test('both Jenkins matrices publish one guarded landing report and retain isolat
     assert.match(matrix, /junit allowEmptyResults: false, testResults: junitFile/);
     assert.match(matrix, /dir\(runConfig\.reportDir\) \{ deleteDir\(\) \}/);
     assert.match(matrix, /catch \(Exception originalFailure\) \{\s*matrixFailure = originalFailure\s*throw originalFailure/);
-    assert.match(matrix, /finally \{\s*try \{\s*def profileArgs/);
+    assert.match(matrix, /finally \{\s*try \{\s*def singleProfile/);
     assert.match(matrix, /catch \(Exception reportingFailure\)/);
     assert.match(matrix, /matrixFailure == null && reportingFailure instanceof/);
     assert.match(matrix, /failures << message/);

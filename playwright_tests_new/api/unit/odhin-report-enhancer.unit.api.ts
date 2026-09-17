@@ -51,6 +51,7 @@ const enhancerTest = enhancerModule.__test__ as {
     targets: string[];
   }>;
   readAccessibilityEvidenceEntries: (outputFolder: string) => unknown[];
+  enhanceGeneratedReport: (outputFolder: string, featureStats: unknown) => void;
 };
 
 test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
@@ -65,6 +66,26 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         '/opt/jenkins/workspace/PR/playwright_tests_new/integration/test/hearings/hearingDetails.cr84.positive.spec.ts'
       )
     ).toBe('hearings');
+  });
+
+  test('finds Perfetto beside nested integration reports', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-nested-perfetto-'));
+    const reportFolder = path.join(root, 'odhin-report', 'preview-workers-7');
+    const resultsFolder = path.join(reportFolder, 'test-results');
+    fs.mkdirSync(resultsFolder, { recursive: true });
+    fs.writeFileSync(
+      path.join(reportFolder, 'xui-playwright-integration.html'),
+      '<html><body><button class="main-tablinks">Tests</button></body></html>'
+    );
+    fs.writeFileSync(path.join(resultsFolder, 'perfetto.json'), '{}');
+    try {
+      enhancerModule.enhanceGeneratedReport(reportFolder, []);
+      const html = fs.readFileSync(path.join(reportFolder, 'xui-playwright-integration.html'), 'utf8');
+      expect(html).toContain('Perfetto Results');
+      expect(html).toContain('../test-results/perfetto.json');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   });
 
   test('normalizes and sorts grouped feature stats', () => {

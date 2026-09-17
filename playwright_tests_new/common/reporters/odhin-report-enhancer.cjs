@@ -1403,10 +1403,13 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
 
   const normalizedStats = normalizeFeatureStats(featureStats);
   const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
-  const testResultsFolder = path.join(outputFolder, '..', 'test-results');
-  const perfettoFiles = fs.existsSync(testResultsFolder)
-    ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
-    : [];
+  const testResultsFolder = [path.join(outputFolder, 'test-results'), path.join(outputFolder, '..', 'test-results')].find(
+    (folder) => fs.existsSync(folder)
+  );
+  const perfettoFiles =
+    testResultsFolder && fs.existsSync(testResultsFolder)
+      ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
+      : [];
   if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length && !perfettoFiles.length) {
     return;
   }

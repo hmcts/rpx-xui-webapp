@@ -47,6 +47,9 @@ const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
   if (outputFolder.includes('playwright-integration')) {
     return 'xui-playwright-integration.html';
   }
+  if (outputFolder.includes('playwright-smoke')) {
+    return 'xui-playwright-smoke.html';
+  }
   return 'xui-playwright-e2e.html';
 };
 

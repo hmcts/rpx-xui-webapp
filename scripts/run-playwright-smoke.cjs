@@ -52,6 +52,7 @@ const buildSmokePlaywrightArgs = (env = process.env, extraArgs = process.argv.sl
 
 const buildSmokeEnvironment = (env = process.env) => ({
   ...env,
+  PLAYWRIGHT_REPORT_INDEX_FILENAME: env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-smoke.html',
   PLAYWRIGHT_REPORT_FOLDER:
     env.PLAYWRIGHT_SMOKE_REPORT_FOLDER ||
     (env.CI

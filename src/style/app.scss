@@ -1,5 +1,7 @@
+@forward 'govuk-frontend/dist/govuk';
+@use 'govuk-frontend/dist/govuk' as *;
+
 @import '_typography';
-@import 'govuk-frontend/dist/govuk/index.import';
 @import 'material-design-icons/iconfont/material-icons.css';
 
 $black: #323232;
@@ -7,7 +9,6 @@ $black: #323232;
 $path: '/assets/';
 
 $fa-font-path: '/node_modules/font-awesome/fonts';
-$govuk-template-image-path: '/assets';
 
 // Organise SASS (TODO / TS)
 @import './buttons';

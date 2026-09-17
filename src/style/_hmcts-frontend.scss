@@ -121,14 +121,14 @@ $hmcts-govuk-light-blue: #5694ca;
   &:visited,
   &:active,
   &:hover {
-    color: $govuk-text-colour;
+    color: govuk-functional-colour('text');
   }
 
   &:hover,
   &:focus,
   &:link:focus {
     background-color: rgba($hmcts-govuk-mid-grey, 0.7);
-    color: $govuk-text-colour;
+    color: govuk-functional-colour('text');
   }
 }
 

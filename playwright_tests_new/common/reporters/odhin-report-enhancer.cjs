@@ -1416,7 +1416,7 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
     testResultsFolder && fs.existsSync(testResultsFolder)
       ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
       : [];
-  const perfettoHrefPrefix = testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
+  const perfettoHrefPrefix = resolvePerfettoHrefPrefix(outputFolder, testResultsFolder);
   if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length && !perfettoFiles.length) {
     return;
   }
@@ -1429,21 +1429,15 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
     const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles, perfettoHrefPrefix);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
-
-  removeDuplicateTraceArchives(testResultsFolder);
 }
 
-function removeDuplicateTraceArchives(testResultsFolder) {
-  if (!fs.existsSync(testResultsFolder)) return;
-  const entries = fs.readdirSync(testResultsFolder, { withFileTypes: true });
-  entries.forEach((entry) => {
-    const filePath = path.join(testResultsFolder, entry.name);
-    if (entry.isDirectory()) {
-      removeDuplicateTraceArchives(filePath);
-    } else if (entry.isFile() && entry.name === 'trace.zip') {
-      fs.rmSync(filePath, { force: true });
-    }
-  });
+function resolvePerfettoHrefPrefix(outputFolder, testResultsFolder, env = process.env) {
+  const artifactBaseUrl = (env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL || env.BUILD_URL)?.trim().replace(/\/$/, '');
+  if (artifactBaseUrl && testResultsFolder) {
+    const relativeResultsPath = path.relative(process.cwd(), testResultsFolder).split(path.sep).join('/');
+    return `${artifactBaseUrl}/artifact/${relativeResultsPath}`;
+  }
+  return testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
 }
 
 module.exports = {
@@ -1465,6 +1459,7 @@ module.exports = {
     formatDuration,
     normalizeEvidenceEntries,
     readAccessibilityEvidenceEntries,
+    resolvePerfettoHrefPrefix,
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
     percentOf,

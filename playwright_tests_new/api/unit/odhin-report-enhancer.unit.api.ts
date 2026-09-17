@@ -52,6 +52,7 @@ const enhancerTest = enhancerModule.__test__ as {
   }>;
   readAccessibilityEvidenceEntries: (outputFolder: string) => unknown[];
   enhanceGeneratedReport: (outputFolder: string, featureStats: unknown) => void;
+  resolvePerfettoHrefPrefix: (outputFolder: string, testResultsFolder: string, env?: NodeJS.ProcessEnv) => string;
 };
 
 test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
@@ -86,6 +87,16 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     } finally {
       fs.rmSync(root, { recursive: true, force: true });
     }
+  });
+
+  test('links Perfetto to the Jenkins artifact when BUILD_URL is available', () => {
+    expect(
+      enhancerTest.resolvePerfettoHrefPrefix(
+        'functional-output/tests/playwright-e2e/odhin-report',
+        'functional-output/tests/playwright-e2e/test-results',
+        { BUILD_URL: 'https://build.hmcts.net/job/example/12/' }
+      )
+    ).toBe('https://build.hmcts.net/job/example/12/artifact/functional-output/tests/playwright-e2e/test-results');
   });
 
   test('normalizes and sorts grouped feature stats', () => {

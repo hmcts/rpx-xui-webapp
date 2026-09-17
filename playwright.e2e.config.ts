@@ -152,6 +152,9 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
     ],
   ];
+  if (env.CI && !isAccessibilityRun) {
+    reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
+  }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
     reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }
@@ -173,7 +176,9 @@ const buildConfig = (env: EnvMap = process.env) => {
     reporter,
     use: {
       baseURL: baseUrl,
-      trace: disableGenericFailureArtifacts ? 'off' : 'retain-on-failure',
+      trace: disableGenericFailureArtifacts
+        ? 'off'
+        : { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true },
       screenshot: disableGenericFailureArtifacts
         ? 'off'
         : {

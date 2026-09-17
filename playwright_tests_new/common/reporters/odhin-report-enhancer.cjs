@@ -1419,6 +1419,21 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
     const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
+
+  removeDuplicateTraceArchives(testResultsFolder);
+}
+
+function removeDuplicateTraceArchives(testResultsFolder) {
+  if (!fs.existsSync(testResultsFolder)) return;
+  const entries = fs.readdirSync(testResultsFolder, { withFileTypes: true });
+  entries.forEach((entry) => {
+    const filePath = path.join(testResultsFolder, entry.name);
+    if (entry.isDirectory()) {
+      removeDuplicateTraceArchives(filePath);
+    } else if (entry.isFile() && entry.name === 'trace.zip') {
+      fs.rmSync(filePath, { force: true });
+    }
+  });
 }
 
 module.exports = {

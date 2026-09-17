@@ -156,6 +156,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const reporter: [string, Record<string, unknown> | undefined][] = [
     [resolveDefaultReporter(env), undefined],
     ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs', undefined],
+    ...(env.PW_ENABLE_PERFETTO !== 'false'
+      ? [['perfetto', { outputFile: resolvePerfettoOutputFile(env) }] as [string, Record<string, unknown>]]
+      : []),
     [
       './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
       {
@@ -176,8 +179,6 @@ const buildConfig = (env: EnvMap = process.env) => {
     reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
-  if (env.PW_ENABLE_PERFETTO !== 'false') reporter.push(['perfetto', { outputFile: resolvePerfettoOutputFile(env) }]);
-
   return defineConfig({
     use: {
       baseURL: resolveBaseUrl(env),

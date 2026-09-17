@@ -1,5 +1,8 @@
 <div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': datetimeControl.errors && datetimeGroup.touched }">
-  <fieldset class="govuk-fieldset" [attr.aria-describedby]="datetimeControl.errors && datetimeGroup.touched ? id() + '-error' : null">
+  <fieldset
+    class="govuk-fieldset"
+    [attr.aria-describedby]="datetimeControl.errors && datetimeGroup.touched ? id() + '-error' : null"
+  >
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s govuk-!-font-weight-bold">
       <ng-container *ngIf="questionField.question_text">{{ questionField.question_text | rpxTranslate }}</ng-container>
     </legend>

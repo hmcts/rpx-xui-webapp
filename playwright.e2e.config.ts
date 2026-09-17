@@ -15,11 +15,17 @@ type EnvMap = NodeJS.ProcessEnv;
 const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
   env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
 
+const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
+  env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || 'xui-playwright-e2e.html';
 
-const resolvePerfettoOutputFile = (env: EnvMap = process.env) =>
-  env.PW_PERFETTO_OUTPUT?.trim() || `${env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results'}/perfetto.json`;
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
 
 const resolveOdhinTitle = (env: EnvMap = process.env): string => {
   const configured = env.PW_ODHIN_TITLE?.trim();

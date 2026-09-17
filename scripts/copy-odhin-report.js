@@ -9,6 +9,8 @@ const path = require('path');
 const source = path.resolve('functional-output', 'tests', 'playwright-api', 'odhin-report');
 const targetRoot = path.resolve('functional-output', 'tests', 'api_functional');
 const target = path.join(targetRoot, 'odhin-report');
+const sourcePerfetto = path.resolve('functional-output', 'tests', 'playwright-api', 'test-results', 'perfetto.json');
+const targetPerfetto = path.join(targetRoot, 'test-results', 'perfetto.json');
 const coverageRoot = path.resolve('reports', 'tests', 'coverage', 'api-playwright');
 const coverageLinkFlag = process.env.PW_ODHIN_LINK_COVERAGE === 'true';
 const LEGACY_ODHIN_REPORT_FILENAME = 'xui-playwright.html';
@@ -25,6 +27,10 @@ try {
   // Best-effort clean copy
   fs.rmSync(target, { recursive: true, force: true });
   fs.cpSync(source, target, { recursive: true, force: true });
+  if (fs.existsSync(sourcePerfetto)) {
+    fs.mkdirSync(path.dirname(targetPerfetto), { recursive: true });
+    fs.copyFileSync(sourcePerfetto, targetPerfetto);
+  }
   if (existingJunit) {
     fs.writeFileSync(path.join(target, 'playwright-junit.xml'), existingJunit);
   }

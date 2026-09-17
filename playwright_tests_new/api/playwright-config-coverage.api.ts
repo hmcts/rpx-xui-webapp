@@ -932,10 +932,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(containsEvidence(buildIntegrationConfig(env) as never)).toBe(true);
   });
 
-  test('all Playwright configs write Perfetto into the configured suite output directory', () => {
-    const outputDir = 'functional-output/tests/playwright-integration/test-results';
-    const expected = ['perfetto', { outputFile: `${outputDir}/perfetto.json` }];
-    const env = { CI: 'true', PLAYWRIGHT_OUTPUT_DIR: outputDir };
+  test('all Playwright configs write Perfetto into the configured Odhín suite directory', () => {
+    const reportFolder = 'functional-output/tests/playwright-integration/odhin-report';
+    const expected = ['perfetto', { outputFile: 'functional-output/tests/playwright-integration/test-results/perfetto.json' }];
+    const env = { CI: 'true', PLAYWRIGHT_REPORT_FOLDER: reportFolder };
     const containsPerfetto = (config: { reporter: Array<[string, unknown?]> }) =>
       config.reporter.some(([name, options]) => JSON.stringify([name, options]) === JSON.stringify(expected));
 

@@ -29,8 +29,11 @@ const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
-const resolvePerfettoOutputFile = (env: EnvMap = process.env) =>
-  env.PW_PERFETTO_OUTPUT?.trim() || `${env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results'}/perfetto.json`;
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
 
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
   const configured = env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim();

@@ -57,6 +57,8 @@ const buildSmokeEnvironment = (env = process.env) => ({
     (env.CI
       ? 'functional-output/tests/playwright-smoke/odhin-report'
       : env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-e2e/odhin-report'),
+  PLAYWRIGHT_OUTPUT_DIR:
+    env.PLAYWRIGHT_OUTPUT_DIR || (env.CI ? 'functional-output/tests/playwright-smoke/test-results' : 'test-results'),
 });
 
 const run = () => {

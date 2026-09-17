@@ -1312,7 +1312,12 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfetto
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
   const hasDashboardAccessibilityEvidence = htmlWithDefaultTestRows.includes('id="odhin-accessibility-evidence"');
-  if (!normalizedStats.length && !normalizedEvidenceEntries.length && !hasDashboardAccessibilityEvidence) {
+  if (
+    !normalizedStats.length &&
+    !normalizedEvidenceEntries.length &&
+    !hasDashboardAccessibilityEvidence &&
+    !perfettoFiles.length
+  ) {
     return htmlWithDefaultTestRows;
   }
 
@@ -1384,7 +1389,11 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
 
   const normalizedStats = normalizeFeatureStats(featureStats);
   const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
-  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length) {
+  const testResultsFolder = path.join(outputFolder, '..', 'test-results');
+  const perfettoFiles = fs.existsSync(testResultsFolder)
+    ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
+    : [];
+  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length && !perfettoFiles.length) {
     return;
   }
 
@@ -1393,10 +1402,6 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const testResultsFolder = path.join(outputFolder, '..', 'test-results');
-    const perfettoFiles = fs.existsSync(testResultsFolder)
-      ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
-      : [];
     const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });

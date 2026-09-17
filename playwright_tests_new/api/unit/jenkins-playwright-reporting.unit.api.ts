@@ -94,7 +94,7 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
     expect(source).toContain('PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}');
     expect(source).toContain(
-      "'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'"
+      "'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/api_functional/odhin-report/playwright-junit.xml'"
     );
     expect(source).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
     expect(source).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
@@ -105,7 +105,7 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(2);
     expect(nightlySource).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
     expect(nightlySource).toContain(
-      "'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'"
+      "'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/api_functional/odhin-report/playwright-junit.xml'"
     );
     expect(nightlySource).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
     expect(nightlySource).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");

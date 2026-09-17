@@ -20,9 +20,14 @@ try {
   }
 
   fs.mkdirSync(targetRoot, { recursive: true });
+  const targetJunit = path.join(target, 'playwright-junit.xml');
+  const existingJunit = fs.existsSync(targetJunit) ? fs.readFileSync(targetJunit) : undefined;
   // Best-effort clean copy
   fs.rmSync(target, { recursive: true, force: true });
   fs.cpSync(source, target, { recursive: true, force: true });
+  if (existingJunit) {
+    fs.writeFileSync(path.join(target, 'playwright-junit.xml'), existingJunit);
+  }
 
   normalizeApiOdhinFilename(source);
   normalizeApiOdhinFilename(target);

@@ -389,6 +389,11 @@ function injectNodeApiTab(reportFolder, endpoints, totalHits, logFiles) {
     try {
       let html = fs.readFileSync(fullPath, 'utf8');
       if (html.includes('id="TabNodeApi"')) {
+        html = html.replace(
+          /(<div id="TabNodeApi"[\s\S]*?<tbody>)[\s\S]*?(<\/tbody>)/m,
+          `$1${rows}$2`
+        );
+        fs.writeFileSync(fullPath, html, 'utf8');
         return;
       }
       const tabBlock = /(<div class="tab">[\s\S]*?)(<\/div>\s*<\/div>\s*<\/div>\s*<\/div>)/m;

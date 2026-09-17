@@ -1346,7 +1346,8 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfetto
 
 function injectPerfettoTab(root, perfettoFiles) {
   root.querySelector('#odhin-perfetto-link')?.remove();
-  if (root.querySelector('#TabPerfetto')) return;
+  root.querySelector('#TabPerfetto')?.remove();
+  root.querySelector('.main-tablinks[onclick*="TabPerfetto"]')?.remove();
 
   const links = perfettoFiles.map((fileName) => `<a href="../test-results/${fileName}">${fileName}</a>`).join(' · ');
   root

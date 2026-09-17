@@ -1323,6 +1323,8 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfetto
 
   const root = parse(htmlWithDefaultTestRows);
   injectEnhancerStyles(root);
+  root.querySelector('#TabNodeApi')?.remove();
+  root.querySelector('.main-tablinks[onclick*="TabNodeApi"]')?.remove();
   removeDashboardAccessibilityEvidence(root);
   removeAccessibilityTableEnhancements(root);
 

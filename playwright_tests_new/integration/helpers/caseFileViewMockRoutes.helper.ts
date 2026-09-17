@@ -77,7 +77,8 @@ export async function setupCaseFileViewDocumentBinaryMockRoutes(page: Page): Pro
     await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
   });
 
-  await page.route('**/documents/*/binary', async (route) => {
+  // Legacy binary requests carry case context as a query parameter for XUI's server-side access check.
+  await page.route('**/documents/*/binary*', async (route) => {
     await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
   });
 }

@@ -73,7 +73,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
         binaryRequests.push(route.request().url());
         await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
       });
-      await page.route('**/documents/*/binary', async (route) => {
+      await page.route('**/documents/*/binary*', async (route) => {
         binaryRequests.push(route.request().url());
         await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
       });
@@ -101,7 +101,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
       await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeV1);
       await expect
         .poll(() => binaryRequests.at(-1) || '')
-        .toContain(`/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1}/binary`);
+        .toContain(`/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1}/binary?caseId=${caseId}`);
       await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
     });
 

@@ -6,6 +6,7 @@ import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingValuesActions from '../../../hearings/store/actions/hearing-values.action';
 import { HttpError } from '../../../models/httpError.model';
+import { HearingValuesCaseContext } from '../../models/hearingValuesStateData';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
 
@@ -43,7 +44,7 @@ export class HearingValuesEffects {
     )
   );
 
-  public static handleError(error: HttpError, caseInfo: any): Observable<Action> {
+  public static handleError(error: HttpError, caseInfo: HearingValuesCaseContext): Observable<Action> {
     if (error && error.status) {
       return of(
         new fromAppStoreActions.Go({

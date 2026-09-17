@@ -12,8 +12,6 @@ import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   FEATURE_WORKALLOCATION_ENABLED,
-  SERVICES_CASE_CASEWORKER_REF_PATH,
-  SERVICES_CASE_JUDICIAL_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
@@ -21,6 +19,8 @@ import {
   SERVICES_EM_DOCASSEMBLY_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
+  SERVICES_PRD_CASEWORKER_REF_PATH,
+  SERVICES_PRD_JUDICIAL_API,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
@@ -91,9 +91,9 @@ describe('Health Check', (): void => {
     getConfigValueStub.withArgs(SERVICES_IDAM_API_URL).returns('http://idam-api');
     getConfigValueStub.withArgs(SERVICE_S2S_PATH).returns('http://s2s');
     getConfigValueStub.withArgs(SERVICES_WORK_ALLOCATION_TASK_API_PATH).returns('http://work-allocation-api');
-    getConfigValueStub.withArgs(SERVICES_CASE_CASEWORKER_REF_PATH).returns('http://caseworker-ref-api');
+    getConfigValueStub.withArgs(SERVICES_PRD_CASEWORKER_REF_PATH).returns('http://caseworker-ref-api');
     getConfigValueStub.withArgs(SERVICES_ROLE_ASSIGNMENT_API_PATH).returns('http://role-assignment-api');
-    getConfigValueStub.withArgs(SERVICES_CASE_JUDICIAL_REF_PATH).returns('http://judicial-ref-api');
+    getConfigValueStub.withArgs(SERVICES_PRD_JUDICIAL_API).returns('http://judicial-ref-api');
     getConfigValueStub.withArgs(SERVICES_TERMS_AND_CONDITIONS_URL).returns('http://terms-conditions');
 
     // Set up default feature flags
@@ -151,9 +151,9 @@ describe('Health Check', (): void => {
       const healthModule = require('./index');
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
-      expect(getConfigValueStub).to.have.been.calledWith(SERVICES_CASE_CASEWORKER_REF_PATH);
+      expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_CASEWORKER_REF_PATH);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-      expect(getConfigValueStub).to.have.been.calledWith(SERVICES_CASE_JUDICIAL_REF_PATH);
+      expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_JUDICIAL_API);
     });
   });
 

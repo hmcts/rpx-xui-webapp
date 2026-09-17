@@ -5,7 +5,7 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as crudService from '../common/crudService';
 import * as config from '../configuration';
-import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
+import { SERVICE_REF_DATA_MAPPING, SERVICES_PRD_CASEWORKER_REF_PATH } from '../configuration/references';
 import { StaffUser } from './models/staff-data-user.model';
 import { GroupOption, Service, StaffFilterOption } from './models/staff-filter-option.model';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
@@ -125,7 +125,7 @@ describe('RealStaffRefDataAPI', () => {
     sendPutStub = sandbox.stub(crudService, 'sendPut');
     getConfigValueStub = sandbox.stub(config, 'getConfigValue');
 
-    getConfigValueStub.withArgs(SERVICES_CASE_CASEWORKER_REF_PATH).returns(mockBaseUrl);
+    getConfigValueStub.withArgs(SERVICES_PRD_CASEWORKER_REF_PATH).returns(mockBaseUrl);
     getConfigValueStub.withArgs(SERVICE_REF_DATA_MAPPING).returns(mockServiceRefData);
 
     // Create instance after stubbing config

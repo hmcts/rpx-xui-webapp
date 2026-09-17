@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICE_REF_DATA_MAPPING, SERVICES_LOCATION_API_PATH } from '../configuration/references';
+import { SERVICE_REF_DATA_MAPPING, SERVICES_PRD_LOCATION_API } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -15,8 +15,8 @@ import { LocationModel } from './models/location.model';
 import { trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 
-// const url: string = getConfigValue(SERVICES_PRD_API_URL);
-const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
+// const locationUrl: string = getConfigValue(SERVICES_PRD_API_URL);
+const locationUrl: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 const logger: JUILogger = log4jui.getLogger('location work allocation');
 
 /**
@@ -43,7 +43,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   if (!isValidServiceId(serviceIds[0])) {
     serviceIds = getServiceIdsByService(serviceIds);
   }
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}&service_code=${serviceIds}`;
+  const markupPath: string = `${locationUrl}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}&service_code=${serviceIds}`;
   trackTrace(`POFCC-138 - Track trace - getLocations, markupPath used -->: ${markupPath}`, { functionCall: 'getLocations' });
   logger.info(`POFCC-138 - Logger - getLocations, markupPath used -->: ${markupPath}`);
   try {
@@ -126,7 +126,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
     let responseStatus;
     for (const location of locations) {
       const id = location.locationId;
-      const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
+      const basePath = locationUrl;
       const path: string = prepareGetSpecificLocationUrl(basePath, id);
       // no longer LocationResponse but CourtVenue
       const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);

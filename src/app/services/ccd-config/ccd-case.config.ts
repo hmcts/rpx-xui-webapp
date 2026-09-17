@@ -255,7 +255,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getLocationRefApiUrl(): string {
-    return this.config.location_ref_api_url;
+    return this.config.prd_location_ref_api_url;
   }
 
   public getCamRoleAssignmentsApiUrl(): string {

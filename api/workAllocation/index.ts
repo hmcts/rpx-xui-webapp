@@ -4,8 +4,8 @@ import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
-  SERVICES_CASE_CASEWORKER_REF_PATH,
-  SERVICES_CASE_JUDICIALWORKER_REF_PATH,
+  SERVICES_PRD_CASEWORKER_REF_PATH,
+  SERVICES_PRD_JUDICIALWORKER_REF_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
 } from '../configuration/references';
@@ -74,8 +74,8 @@ caseServiceMock.init();
 roleServiceMock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
-export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
-export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWORKER_REF_PATH);
+export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_PRD_CASEWORKER_REF_PATH);
+export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_PRD_JUDICIALWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
 

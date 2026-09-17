@@ -87,7 +87,7 @@ nodejs:
     SERVICES_PRD_LOCATION_API: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_PRD_JUDICIAL_API: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_PRD_COMMONDATA_API: http://rd-commondata-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    SERVICES_PRD_CASEWORKER_REF_PATH: http://rd-caseworker-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_PRD_CASEWORKER_REF_PATH: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_PRD_JUDICIALWORKER_REF_PATH: http://rd-judicial-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Em Anno
     SERVICES_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal

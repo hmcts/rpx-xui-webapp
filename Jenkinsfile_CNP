@@ -365,83 +365,107 @@ def integrationProfileRunConfig = { String spec, String testType ->
 
 def runPlaywrightIntegrationProfileMatrix = { String testType, String reportNamePrefix ->
     def failures = []
-    resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
-        def runConfig = integrationProfileRunConfig(spec, testType)
-        def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
-        def junitFile = "${runConfig.reportDir}/playwright-junit.xml"
-        def outcome = 'interrupted'
-        def runnerCompleted = false
-        sh "rm -f -- '${sessionConfigCompleteFile}'"
-        try {
-            withEnv([
-                "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
-                "PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results",
-                "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
-                "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
-                "TEST_TYPE=${testType}",
-                "ORG_USER_ASSIGNMENT_MODE=external",
-                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-                "PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE=${sessionConfigCompleteFile}",
-                "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
-                "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
-                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-            ]) {
-                yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
-            }
-            runnerCompleted = true
-            outcome = 'completed'
-            echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
-            assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
-            echo "[playwright-integration] Odhín report exists for ${runConfig.displayName}"
-        } catch (Exception e) {
-            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
-                throw e
-            }
-            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
-                throw e
-            }
-            outcome = runnerCompleted ? 'completed' : 'test-failure'
-            if (!fileExists(sessionConfigCompleteFile)) {
-                steps.sh "mkdir -p '${runConfig.reportDir}'"
-                writeFile(
-                    file: "${runConfig.reportDir}/runner-failure.txt",
-                    text: 'Integration session configuration did not complete before Playwright started. See the Jenkins console log for the configuration error.\n'
-                )
-                echo "[playwright-integration] Session configuration validation did not complete for ${runConfig.displayName}; aborting before another profile starts"
-                throw e
-            }
-            failures << "${runConfig.displayName}: ${e.getMessage()}"
-        } finally {
+    def matrixFailure = null
+    def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
+        integrationProfileRunConfig(spec, testType)
+    }
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    runConfigs.each { runConfig ->
+        dir(runConfig.reportDir) { deleteDir() }
+    }
+    try {
+        runConfigs.each { runConfig ->
+            def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
+            def junitFile = "${runConfig.reportDir}/playwright-junit.xml"
+            def outcome = 'interrupted'
+            def runnerCompleted = false
+            sh "rm -f -- '${sessionConfigCompleteFile}'"
             try {
-                echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
-                ensureHtmlReportForPublishing(
-                    runConfig.reportDir,
-                    playwrightIntegrationReportFile,
-                    "${reportNamePrefix} Playwright Integration Tests",
-                    outcome
-                )
-                publishHTML([
-                    allowMissing         : true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll              : true,
-                    reportDir            : "${runConfig.reportDir}/",
-                    reportFiles          : playwrightIntegrationReportFile,
-                    reportName           : "${reportNamePrefix} Playwright Integration Tests"
-                ])
-                junit allowEmptyResults: false, testResults: junitFile
-                echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
-            } catch (Exception publishException) {
-                if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
-                    throw publishException
+                withEnv([
+                    "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
+                    "PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results",
+                    "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
+                    "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
+                    "TEST_TYPE=${testType}",
+                    "ORG_USER_ASSIGNMENT_MODE=external",
+                    "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                    "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+                    "PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE=${sessionConfigCompleteFile}",
+                    "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
+                    "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                ]) {
+                    yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
                 }
-                if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
-                    throw publishException
+                runnerCompleted = true
+                outcome = 'completed'
+                echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
+                assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
+                echo "[playwright-integration] Odhín report exists for ${runConfig.displayName}"
+            } catch (Exception e) {
+                if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                    throw e
                 }
-                def publishFailure = "${runConfig.displayName} report publication: ${publishException.getMessage()}"
-                failures << publishFailure
-                echo "[playwright-integration] ${publishFailure}"
+                if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                    throw e
+                }
+                outcome = runnerCompleted ? 'completed' : 'test-failure'
+                if (!fileExists(sessionConfigCompleteFile)) {
+                    steps.sh "mkdir -p '${runConfig.reportDir}'"
+                    writeFile(
+                        file: "${runConfig.reportDir}/runner-failure.txt",
+                        text: 'Integration session configuration did not complete before Playwright started. See the Jenkins console log for the configuration error.\n'
+                    )
+                    echo "[playwright-integration] Session configuration validation did not complete for ${runConfig.displayName}; aborting before another profile starts"
+                    throw e
+                }
+                failures << "${runConfig.displayName}: ${e.getMessage()}"
+            } finally {
+                try {
+                    echo "[playwright-integration] Preparing Odhín HTML report for ${runConfig.displayName}"
+                    ensureHtmlReportForPublishing(
+                        runConfig.reportDir,
+                        playwrightIntegrationReportFile,
+                        "${reportNamePrefix} Playwright Integration Tests",
+                        outcome
+                    )
+                    junit allowEmptyResults: false, testResults: junitFile
+                    echo "[playwright-integration] Prepared Odhín HTML report for ${runConfig.displayName}"
+                } catch (Exception publishException) {
+                    if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                        throw publishException
+                    }
+                    if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                        throw publishException
+                    }
+                    def publishFailure = "${runConfig.displayName} report publication: ${publishException.getMessage()}"
+                    failures << publishFailure
+                    echo "[playwright-integration] ${publishFailure}"
+                }
             }
+        }
+    } catch (Exception originalFailure) {
+        matrixFailure = originalFailure
+        throw originalFailure
+    } finally {
+        try {
+            def profileArgs = runConfigs.collect { "'${it.label}'" }.join(' ')
+            sh "node scripts/write-integration-report-index.cjs '${reportRoot}' '${playwrightIntegrationReportFile}' ${profileArgs}"
+            publishHTML([
+                allowMissing         : false,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "${reportRoot}/",
+                reportFiles          : 'index.html',
+                reportName           : "${reportNamePrefix} Playwright Integration Tests"
+            ])
+        } catch (Exception reportingFailure) {
+            if (matrixFailure == null && reportingFailure instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                throw reportingFailure
+            }
+            def message = "Integration landing report publication: ${reportingFailure.getMessage()}"
+            failures << message
+            echo "[playwright-integration] ${message}"
         }
     }
     if (failures) {

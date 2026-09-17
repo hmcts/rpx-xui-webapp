@@ -5,6 +5,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { enhanceGeneratedReport } = require('../playwright_tests_new/common/reporters/odhin-report-enhancer.cjs');
 
 const source = path.resolve('functional-output', 'tests', 'playwright-api', 'odhin-report');
 const targetRoot = path.resolve('functional-output', 'tests', 'api_functional');
@@ -34,6 +35,10 @@ try {
   if (existingJunit) {
     fs.writeFileSync(path.join(target, 'playwright-junit.xml'), existingJunit);
   }
+
+  // Perfetto is written as the Playwright process exits; enhance after the copy
+  // so the report always links the completed suite timeline.
+  [source, target].forEach((folder) => enhanceGeneratedReport(folder, []));
 
   normalizeApiOdhinFilename(source);
   normalizeApiOdhinFilename(target);

@@ -190,6 +190,7 @@ const buildConfig = (env = process.env) => {
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
   reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
+  if (resolveFlag(env.PW_ENABLE_PERFETTO, true)) reporter.push(['perfetto', undefined]);
 
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';
@@ -230,9 +231,16 @@ const buildConfig = (env = process.env) => {
       },
     ]);
   }
+  if (env.CI) {
+    reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
+  }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
     reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }
+
+  const trace = resolveFlag(env.PW_TRACE_RICH, true)
+    ? { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
+    : 'retain-on-failure';
 
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
@@ -247,7 +255,7 @@ const buildConfig = (env = process.env) => {
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'retain-on-failure',
+      trace,
       screenshot: {
         mode: 'only-on-failure',
         fullPage: true,

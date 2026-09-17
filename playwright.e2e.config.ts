@@ -18,6 +18,9 @@ const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || 'xui-playwright-e2e.html';
 
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) =>
+  env.PW_PERFETTO_OUTPUT?.trim() || `${env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results'}/perfetto.json`;
+
 const resolveOdhinTitle = (env: EnvMap = process.env): string => {
   const configured = env.PW_ODHIN_TITLE?.trim();
   if (configured) {
@@ -157,6 +160,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
     reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
+  }
+  if (env.PW_ENABLE_PERFETTO !== 'false') {
+    reporter.push(['perfetto', { outputFile: resolvePerfettoOutputFile(env) }]);
   }
 
   return defineConfig({

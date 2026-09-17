@@ -932,6 +932,19 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(containsEvidence(buildIntegrationConfig(env) as never)).toBe(true);
   });
 
+  test('all Playwright configs write Perfetto into the configured suite output directory', () => {
+    const outputDir = 'functional-output/tests/playwright-integration/test-results';
+    const expected = ['perfetto', { outputFile: `${outputDir}/perfetto.json` }];
+    const env = { CI: 'true', PLAYWRIGHT_OUTPUT_DIR: outputDir };
+    const containsPerfetto = (config: { reporter: Array<[string, unknown?]> }) =>
+      config.reporter.some(([name, options]) => JSON.stringify([name, options]) === JSON.stringify(expected));
+
+    expect(containsPerfetto(buildConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildE2eConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildNightlyConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildIntegrationConfig(env) as never)).toBe(true);
+  });
+
   test('separates CI smoke evidence from E2E evidence', () => {
     expect(smokeRunner.buildSmokeEnvironment({ CI: 'true' }).PLAYWRIGHT_REPORT_FOLDER).toBe(
       'functional-output/tests/playwright-smoke/odhin-report'

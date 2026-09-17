@@ -22,6 +22,8 @@ const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
+const resolvePerfettoOutputFile = (env = process.env) =>
+  env.PW_PERFETTO_OUTPUT?.trim() || `${env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results'}/perfetto.json`;
 const INTEGRATION_TEST_TIMEOUT_MS = 180_000;
 const POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS = 30_000;
 const appVersion = (() => {
@@ -190,7 +192,9 @@ const buildConfig = (env = process.env) => {
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
   reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
-  if (resolveFlag(env.PW_ENABLE_PERFETTO, true)) reporter.push(['perfetto', undefined]);
+  if (resolveFlag(env.PW_ENABLE_PERFETTO, true)) {
+    reporter.push(['perfetto', { outputFile: resolvePerfettoOutputFile(env) }]);
+  }
 
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';

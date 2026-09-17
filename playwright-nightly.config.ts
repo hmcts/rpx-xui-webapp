@@ -23,6 +23,8 @@ const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBas
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) => env.PLAYWRIGHT_REPORT_FOLDER || defaultOdhinOutputFolder;
 const resolveOdhinIndexFilename = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || defaultOdhinIndexFilename;
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) =>
+  env.PW_PERFETTO_OUTPUT?.trim() || `${env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results'}/perfetto.json`;
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 const resolveEnvironmentFromUrl = (url: string): string => {
@@ -101,6 +103,9 @@ const buildConfig = (env: EnvMap = process.env) => {
     ]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
+  if (env.PW_ENABLE_PERFETTO !== 'false') {
+    reporter.push(['perfetto', { outputFile: resolvePerfettoOutputFile(env) }]);
+  }
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',

@@ -146,6 +146,17 @@ describe('SearchResultsComponent', () => {
     ],
   };
 
+  // The pagination links carry a routerLink, so RouterLink's own click listener runs alongside the
+  // component's handler and reads event.button - a null event would throw.
+  const leftClickEvent = {
+    button: 0,
+    ctrlKey: false,
+    shiftKey: false,
+    altKey: false,
+    metaKey: false,
+    preventDefault: () => {},
+  };
+
   beforeEach(waitForAsync(() => {
     searchService = createSpyObj<SearchService>('searchService', ['getResults', 'decrementStartRecord', 'incrementStartRecord']);
     searchService.getResults.and.returnValue(of(searchResultWithCaseList));
@@ -232,7 +243,7 @@ describe('SearchResultsComponent', () => {
     // Ensure that the start record is greater than 1 for the "Previous page" navigation to be displayed
     component.caseStartRecord = 3;
     fixture.detectChanges();
-    fixture.debugElement.query(By.css('a.govuk-pagination__link:first-of-type')).triggerEventHandler('click', null);
+    fixture.debugElement.query(By.css('a.govuk-pagination__link:first-of-type')).triggerEventHandler('click', leftClickEvent);
     expect(component.getPreviousResultsPage).toHaveBeenCalled();
     expect(searchService.decrementStartRecord).toHaveBeenCalled();
     expect(component.caseStartRecord).toEqual(1);
@@ -248,7 +259,7 @@ describe('SearchResultsComponent', () => {
     // Ensure that "more results to go" is true for the "Next page" navigation to be displayed
     component.moreResultsToGo = true;
     fixture.detectChanges();
-    fixture.debugElement.query(By.css('a.govuk-pagination__link:last-of-type')).triggerEventHandler('click', null);
+    fixture.debugElement.query(By.css('a.govuk-pagination__link:last-of-type')).triggerEventHandler('click', leftClickEvent);
     expect(component.getNextResultsPage).toHaveBeenCalled();
     expect(searchService.incrementStartRecord).toHaveBeenCalled();
     expect(component.caseStartRecord).toEqual(2);

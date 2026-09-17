@@ -18,7 +18,7 @@ import { CaseHomeComponent } from '..';
 import { reducers } from '../../../app/store';
 import { SessionStorageService } from '../../../app/services';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
-import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
+import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 import * as fromFeature from '../../store';
 
 describe('CaseHomeComponent', () => {

@@ -1,17 +1,16 @@
-// TODO - needs to be clarified wehre the css is coming form
+.button {
+  @extend .govuk-button;
+}
 
-/*
-Buttons
-*/
-
-$module: 'button';
-
-.#{$module} {
-  &-secondary {
-    @include button($grey-3);
-  }
-
-  &-tertiary {
-    @include button($grey-4);
+.button-secondary,
+.button-tertiary {
+  @extend .govuk-button;
+  @extend .govuk-button--secondary;
+  
+  &:link,
+  &:visited,
+  &:active,
+  &:hover {
+    color: govuk-colour('black');
   }
 }

@@ -326,10 +326,13 @@ def integrationProfileRunConfig = { String spec ->
 def runPlaywrightIntegrationProfileMatrix = {
     def failures = []
     def matrixFailure = null
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
     def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
         integrationProfileRunConfig(spec)
     }
-    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    if (runConfigs.size() == 1) {
+        runConfigs[0].reportDir = reportRoot
+    }
     def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
     dir(suiteResultsDir) { deleteDir() }
     runConfigs.each { runConfig ->
@@ -409,16 +412,27 @@ def runPlaywrightIntegrationProfileMatrix = {
         throw originalFailure
     } finally {
         try {
-            def profileArgs = runConfigs.collect { "'${it.label}'" }.join(' ')
-            sh "node scripts/write-integration-report-index.cjs '${reportRoot}' '${playwrightIntegrationReportFile}' ${profileArgs}"
-            publishHTML([
-                allowMissing         : false,
-                alwaysLinkToLastBuild: true,
-                keepAll              : true,
-                reportDir            : "${reportRoot}/",
-                reportFiles          : 'index.html',
-                reportName           : 'Playwright Integration Tests'
-            ])
+            if (runConfigs.size() == 1) {
+                publishHTML([
+                    allowMissing         : false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : reportRoot,
+                    reportFiles          : playwrightIntegrationReportFile,
+                    reportName           : 'Playwright Integration Tests'
+                ])
+            } else {
+                def profileArgs = runConfigs.collect { "'${it.label}'" }.join(' ')
+                sh "node scripts/write-integration-report-index.cjs '${reportRoot}' '${playwrightIntegrationReportFile}' ${profileArgs}"
+                publishHTML([
+                    allowMissing         : false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : "${reportRoot}/",
+                    reportFiles          : 'index.html',
+                    reportName           : 'Playwright Integration Tests'
+                ])
+            }
         } catch (Exception reportingFailure) {
             if (matrixFailure == null && reportingFailure instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                 throw reportingFailure

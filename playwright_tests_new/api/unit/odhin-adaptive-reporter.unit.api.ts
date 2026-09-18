@@ -43,7 +43,7 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     expect(html).toContain('href="../test-results/perfetto.json"');
   });
 
-  test('externalises attachments by default and preserves an explicit embedding override', () => {
+  test('always externalises attachments, including when embedding is requested', () => {
     const receivedOptions: Array<Record<string, unknown>> = [];
     const createInnerReporter = (options: Record<string, unknown>) => {
       receivedOptions.push(options);
@@ -54,7 +54,7 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     new OdhinAdaptiveReporter({ createInnerReporter, embedAttachments: true });
 
     expect(receivedOptions[0]?.embedAttachments).toBe(false);
-    expect(receivedOptions[1]?.embedAttachments).toBe(true);
+    expect(receivedOptions[1]?.embedAttachments).toBe(false);
   });
 
   test('adds an explicit source to session-capture setup failures before Odhín renders them', () => {

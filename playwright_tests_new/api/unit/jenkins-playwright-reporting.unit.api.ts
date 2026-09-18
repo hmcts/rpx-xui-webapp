@@ -95,8 +95,12 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source).toContain('PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}');
     expect(source).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
     expect(source).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
-    expect(source).toContain('test-results/**/*.png');
+    expect(source).toContain('test-results/perfetto*.json');
     expect(source).toContain('test-results/**/failure-data.json');
+    expect(source).not.toContain('test-results/**/trace.zip');
+    expect(source).not.toContain('test-results/**/*.png');
+    expect(source).not.toContain('test-results/**/*.jpg');
+    expect(source).not.toContain('test-results/**/*.jpeg');
     expect(source).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
     expect(source).toContain('def publishPlaywrightAccessibilityJUnit = {');
     expect(source).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');

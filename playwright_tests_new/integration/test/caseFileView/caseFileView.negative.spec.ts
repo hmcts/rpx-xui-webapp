@@ -43,7 +43,7 @@ test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integr
           body: JSON.stringify({ message: 'forced document binary failure' }),
         });
       });
-      await page.route('**/documents/*/binary', async (route) => {
+      await page.route('**/documents/*/binary*', async (route) => {
         failedBinaryRequest = true;
         await route.fulfill({
           status: 500,

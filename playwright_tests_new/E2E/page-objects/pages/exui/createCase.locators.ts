@@ -99,8 +99,8 @@ export function buildCreateCaseLocators(page: Page) {
 
     fileUploadComponent: primaryDocumentUploadComponent,
     fileUploadInput: page.locator('#DocumentUrl'),
-    fileUploadCancelButton: primaryDocumentUploadComponent.locator('button.button-secondary').first(),
-    fileUploadStatusLabel: page.locator('ccd-write-document-field .error-message'),
+    fileUploadCancelButton: primaryDocumentUploadComponent.locator('button.govuk-button--secondary').first(),
+    fileUploadStatusLabel: page.locator('ccd-write-document-field .govuk-error-message'),
     textField0Input: page.locator('#TextField0'),
     textField1Input: page.locator('#TextField1'),
     textField2Input: page.locator('#TextField2'),

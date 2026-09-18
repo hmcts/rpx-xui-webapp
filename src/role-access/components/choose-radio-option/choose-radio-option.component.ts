@@ -17,4 +17,5 @@ export class ChooseRadioOptionComponent {
   @Input() public description: string = null;
   @Input() public submitted: boolean = false;
   @Input() public errorText: string = 'Please select an option';
+  @Input() public showHeading: boolean = true;
 }

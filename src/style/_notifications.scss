@@ -4,8 +4,9 @@
   font-size: 24px;
   font-weight: bold;
   width: 100%;
-  color: $page-colour;
-  background: $turquoise;
+  color: govuk-colour('white');
+  // govuk-frontend v6 deprecated the 'turquoise' colour keyword (removal planned for v7); pinned to the old v5 hex
+  background: #28a197;
 }
 
 .small_notification {
@@ -14,8 +15,9 @@
   font-weight: bold;
   width: 60%;
   text-align: center;
-  color: $page-colour;
-  background: $turquoise;
+  color: govuk-colour('white');
+  // govuk-frontend v6 deprecated the 'turquoise' colour keyword (removal planned for v7); pinned to the old v5 hex
+  background: #28a197;
 }
 
 .alert-message-but {

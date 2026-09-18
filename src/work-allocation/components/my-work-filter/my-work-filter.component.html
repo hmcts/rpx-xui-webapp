@@ -5,10 +5,11 @@
     {{ toggleFilter ? 'Hide' : 'Show' }} work filter
   </button>
   <ng-container *ngIf="showFilteredText">
-    <span class="hmcts-badge hmcts-badge--black">Filtered view</span>
+    <span class="govuk-tag govuk-tag--grey">Filtered view</span>
     <span class="govuk-hint">All of your work may not be visible.</span>
   </ng-container>
 </div>
 <div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="toggleFilter">
+  <h2 class="govuk-visually-hidden">Work filter</h2>
   <xuilib-generic-filter [config]="fieldsConfig" [settings]="fieldsSettings"></xuilib-generic-filter>
 </div>

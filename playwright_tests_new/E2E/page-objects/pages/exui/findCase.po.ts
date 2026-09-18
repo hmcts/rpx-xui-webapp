@@ -17,10 +17,10 @@ export class FindCasePage extends Base {
   readonly ccdCaseReference = this.page
     .locator(String.raw`#dynamicFilters #\[CASE_REFERENCE\], input[id*="CASE_REFERENCE"]`)
     .first();
-  readonly pagination = this.page.locator('.ngx-pagination');
+  readonly pagination = this.page.locator('.govuk-pagination');
   readonly searchResultsContainer = this.page.locator('#search-result');
   readonly searchResultsSummary = this.page.locator('#search-result .pagination-top');
-  readonly searchResultsTable = this.page.locator('ccd-search-result#search-result');
+  readonly searchResultsTable = this.searchResultsContainer.locator('ccd-search-result');
   readonly searchResultsDataTable = this.searchResultsTable.locator('table').first();
   readonly firstRowOfSearchResultsTable = this.searchResultsTable.locator('.govuk-link').first();
   readonly workBasketFilterPanel = this.page.locator('ccd-search-filters-wrapper').first();

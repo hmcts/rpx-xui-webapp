@@ -370,6 +370,8 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
         integrationProfileRunConfig(spec, testType)
     }
     def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
+    dir(suiteResultsDir) { deleteDir() }
     runConfigs.each { runConfig ->
         dir(runConfig.reportDir) { deleteDir() }
     }
@@ -383,7 +385,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
             try {
                 withEnv([
                     "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
-                    "PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results",
+                    "PLAYWRIGHT_OUTPUT_DIR=${runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"}",
                     "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
                     "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
                     "TEST_TYPE=${testType}",

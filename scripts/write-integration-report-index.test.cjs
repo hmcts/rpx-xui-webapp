@@ -41,7 +41,11 @@ test('both Jenkins matrices publish one guarded landing report and retain isolat
     assert.match(matrix, /reportDir\s*:\s*"\$\{reportRoot\}\//);
     assert.match(matrix, /reportFiles\s*:\s*'index\.html'/);
     assert.match(matrix, /PLAYWRIGHT_REPORT_FOLDER=\$\{runConfig\.reportDir\}/);
-    assert.match(matrix, /PLAYWRIGHT_OUTPUT_DIR=\$\{runConfig\.reportDir\}\/test-results/);
+    assert.match(matrix, /suiteResultsDir = 'functional-output\/tests\/playwright-integration\/test-results'/);
+    assert.match(
+      matrix,
+      /PLAYWRIGHT_OUTPUT_DIR=\$\{runConfigs\.size\(\) == 1 \? suiteResultsDir : "\$\{runConfig\.reportDir\}\/test-results"\}/
+    );
     assert.match(matrix, /junit allowEmptyResults: false, testResults: junitFile/);
     assert.match(matrix, /dir\(runConfig\.reportDir\) \{ deleteDir\(\) \}/);
     assert.match(matrix, /catch \(Exception originalFailure\) \{\s*matrixFailure = originalFailure\s*throw originalFailure/);

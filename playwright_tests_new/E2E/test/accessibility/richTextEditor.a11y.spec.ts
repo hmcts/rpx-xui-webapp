@@ -104,7 +104,7 @@ test.describe('rich text editor accessibility interactions @accessibility @a11y 
     const undo = toolbar.getByRole('button', { name: 'Undo' });
     const redo = toolbar.getByRole('button', { name: 'Redo' });
     const bold = toolbar.getByRole('button', { name: 'Bold' });
-    
+
     await undo.focus();
     await expect(undo).toBeFocused();
     await page.keyboard.press('ArrowRight');

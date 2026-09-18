@@ -133,7 +133,7 @@ const solicitorUser = {
 };
 const globalSearchUser = {
   userId: 'a11y-global-search',
-  
+
   roles: ['caseworker', 'caseworker-publiclaw', 'caseworker-ia-caseofficer', 'hmcts-legal-operations'],
   roleCategory: 'LEGAL_OPERATIONS',
   roleAssignmentInfo: [

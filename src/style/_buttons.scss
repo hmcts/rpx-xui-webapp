@@ -2,12 +2,15 @@
   @extend .govuk-button;
 }
 
-.button-secondary {
-  @extend .govuk-button;
-  @extend .govuk-button--secondary;
-}
-
+.button-secondary,
 .button-tertiary {
   @extend .govuk-button;
   @extend .govuk-button--secondary;
+  
+  &:link,
+  &:visited,
+  &:active,
+  &:hover {
+    color: govuk-colour('black');
+  }
 }

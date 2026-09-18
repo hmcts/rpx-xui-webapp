@@ -101,11 +101,11 @@ export class TaskListPage extends Base {
   readonly cancelledTaskMessage = this.page.getByText("You've cancelled a task. It has been removed from the task list.");
   readonly taskNoLongerAvailableMessage = this.page.getByText('The task is no longer available.');
 
-  readonly paginationControls = this.page.locator('.ngx-pagination');
-  readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
-  readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');
-  readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous');
-  readonly paginationCurrentPage = this.paginationControls.locator('.current');
+  readonly paginationControls = this.page.locator('.govuk-pagination');
+  readonly paginationNextButton = this.paginationControls.locator('.govuk-pagination__next');
+  readonly paginationEllipsisButton = this.paginationControls.locator('.govuk-pagination__item--ellipsis');
+  readonly paginationPreviousButton = this.paginationControls.locator('.govuk-pagination__prev');
+  readonly paginationCurrentPage = this.paginationControls.locator('.govuk-pagination__item--current');
 
   readonly submitButton = this.page.locator('#submit-button');
   readonly continueButton = this.page.locator('.govuk-button').filter({ hasText: 'Continue' });

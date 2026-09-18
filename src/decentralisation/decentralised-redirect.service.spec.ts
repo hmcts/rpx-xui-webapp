@@ -1,19 +1,23 @@
 import { DecentralisedRedirectService } from './decentralised-redirect.service';
 import { SessionStorageService } from '../app/services';
 import { UserInfo } from '../app/models/user-details.model';
+import { DecentralisedEvent } from './decentralised-event';
+import { JudgeTypesAmendedConverter } from 'src/hearings/converters/judge-types.amended.converter';
 
 describe('DecentralisedRedirectService', () => {
   let decentralisedRedirectService: DecentralisedRedirectService;
 
   let environmentService: any;
-  let sessionStorageService: SessionStorageService;
+  let sessionStorageService: any;
   let window: Window;
   let userInfo: UserInfo;
 
   beforeEach(() => {
     environmentService = jasmine.createSpyObj('environmentService', ['get']);
     sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
-    window = {} as Window;
+    window = {
+      location: jasmine.createSpyObj('window.location', ['assign']),
+    } as Window;
 
     decentralisedRedirectService = new DecentralisedRedirectService(environmentService, sessionStorageService, window);
 
@@ -142,103 +146,68 @@ describe('DecentralisedRedirectService', () => {
     });
   });
 
-  describe(`decentralisedRedirectService.buildDecentralisedEventUrl`, () => {
-    it('should build an external URL for existing case events', () => {
-      const url = decentralisedRedirectService.buildDecentralisedEventUrl(
-        {
-          caseType: 'pcs',
-          caseId: '1234567890',
-          isCaseCreate: false,
-          eventId: 'ext:fooEvent',
-          queryParams: { tid: 'task-1', foo: 'bar' },
-        },
-        { PCS: { webUrl: 'https://pcs-frontend.service.gov.uk' } },
-        'user-123'
-      );
+  describe('isDecentralisedEvent', () => {
+    it('determines whether an event is decentralised', () => {
+      expect(decentralisedRedirectService.isDecentralisedEvent('')).toBeFalsy();
+      expect(decentralisedRedirectService.isDecentralisedEvent('A')).toBeFalsy();
+      expect(decentralisedRedirectService.isDecentralisedEvent('a')).toBeFalsy();
+      expect(decentralisedRedirectService.isDecentralisedEvent('xt:a')).toBeFalsy();
+      expect(decentralisedRedirectService.isDecentralisedEvent('aext:bext:')).toBeFalsy();
+      expect(decentralisedRedirectService.isDecentralisedEvent(null)).toBeFalsy();
+      expect(decentralisedRedirectService.isDecentralisedEvent()).toBeFalsy();
 
-      expect(url).toBe(
-        'https://pcs-frontend.service.gov.uk/cases/1234567890/event/ext%3AfooEvent?tid=task-1&foo=bar&expected_sub=user-123'
+      expect(decentralisedRedirectService.isDecentralisedEvent('ext:')).toBeTruthy();
+      expect(decentralisedRedirectService.isDecentralisedEvent('ext:a')).toBeTruthy();
+      expect(decentralisedRedirectService.isDecentralisedEvent('ext:aaaa:ext')).toBeTruthy();
+    });
+  });
+
+  describe('tryRedirectEvent', () => {
+    const event = DecentralisedEvent.forCase('E', 'PCS', 'C');
+
+    it('throws an error when no caseTypeMap is found for the case type', () => {
+      expect(() => decentralisedRedirectService.tryRedirectEvent(event)).toThrow(
+        new Error(`Event E is decentralised for case type PCS but the required parameters are not provided`)
       );
     });
 
-    it('should build an external URL for case-create events', () => {
-      const url = decentralisedRedirectService.buildDecentralisedEventUrl(
-        {
-          caseType: 'PCS',
-          jurisdiction: 'IA',
-          eventId: 'ext:createCase',
-          isCaseCreate: true,
-        },
-        { PCS: { webUrl: 'https://pcs-frontend.service.gov.uk' } },
-        'user-456'
-      );
+    it('throws an error when no baseUrl is found for the case type', () => {
+      const caseTypeMap = {
+        PT: { webUrl: 'https://pcs-frontend.service.gov.uk' },
+      };
 
-      expect(url).toBe('https://pcs-frontend.service.gov.uk/cases/case-create/IA/PCS/ext%3AcreateCase?expected_sub=user-456');
+      environmentService.get.and.returnValue(caseTypeMap);
+
+      expect(() => decentralisedRedirectService.tryRedirectEvent(event)).toThrow(
+        new Error(`Event E is decentralised for case type PCS but the required parameters are not provided`)
+      );
+      expect(environmentService.get).toHaveBeenCalledWith(DecentralisedRedirectService.CASE_TYPE_MAP_ENV_VAR_NAME);
     });
 
-    it('should return null when the event is not decentralised', () => {
-      const url = decentralisedRedirectService.buildDecentralisedEventUrl(
-        {
-          caseType: 'PCS',
-          caseId: '1234567890',
-          isCaseCreate: false,
-          eventId: 'standardEvent',
-        },
-        { PCS: { webUrl: 'https://pcs-frontend.service.gov.uk' } },
-        'user-123'
-      );
+    it('redirects the event when a baseUrl is found but no userID', () => {
+      const caseTypeMap = {
+        PCS: { webUrl: 'https://pcs-frontend.service.gov.uk' },
+      };
 
-      expect(url).toBeNull();
+      environmentService.get.and.returnValue(caseTypeMap);
+
+      expect(decentralisedRedirectService.tryRedirectEvent(event)).toBeTruthy();
+      expect(window.location.assign).toHaveBeenCalledWith('https://pcs-frontend.service.gov.uk/cases/C/event/E');
     });
 
-    it('should return null when case type is missing at runtime', () => {
-      const url = decentralisedRedirectService.buildDecentralisedEventUrl(
-        {
-          caseType: undefined,
-          caseId: '1234567890',
-          isCaseCreate: false,
-          eventId: 'ext:fooEvent',
-        } as any,
-        { PCS: { webUrl: 'https://pcs-frontend.service.gov.uk' } },
-        'user-123'
+    it('redirects the event when a baseUrl is found and a userID exists', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({ id: 'user-123', uid: 'user-uid' }));
+
+      const caseTypeMap = {
+        PCS: { webUrl: 'https://pcs-frontend.service.gov.uk' },
+      };
+
+      environmentService.get.and.returnValue(caseTypeMap);
+
+      expect(decentralisedRedirectService.tryRedirectEvent(event)).toBeTruthy();
+      expect(window.location.assign).toHaveBeenCalledWith(
+        'https://pcs-frontend.service.gov.uk/cases/C/event/E?expected_sub=user-123'
       );
-
-      expect(url).toBeNull();
-    });
-
-    it('should prefer the longest matching prefix for web URL resolution', () => {
-      const url = decentralisedRedirectService.buildDecentralisedEventUrl(
-        {
-          caseType: 'Prefix-Case',
-          caseId: '123',
-          isCaseCreate: false,
-          eventId: 'ext:fooEvent',
-        },
-        {
-          pre: { webUrl: 'https://one.test' },
-          prefix: { webUrl: 'https://two.test' },
-        },
-        'user-123'
-      );
-
-      expect(url).toBe('https://two.test/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
-    });
-
-    it('should resolve web URL from a template with %s placeholder', () => {
-      const url = decentralisedRedirectService.buildDecentralisedEventUrl(
-        {
-          caseType: 'PCS_PR_1234',
-          caseId: '123',
-          isCaseCreate: false,
-          eventId: 'ext:fooEvent',
-        },
-        {
-          PCS_PR_: { webUrl: 'https://pcs-xui-pr-%s.preview.platform' },
-        },
-        'user-123'
-      );
-
-      expect(url).toBe('https://pcs-xui-pr-1234.preview.platform/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
     });
   });
 

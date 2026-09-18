@@ -29,6 +29,12 @@ const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
+
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
   const configured = env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim();
   if (configured) {
@@ -40,6 +46,9 @@ const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
   }
   if (outputFolder.includes('playwright-integration')) {
     return 'xui-playwright-integration.html';
+  }
+  if (outputFolder.includes('playwright-smoke')) {
+    return 'xui-playwright-smoke.html';
   }
   return 'xui-playwright-e2e.html';
 };
@@ -147,6 +156,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const reporter: [string, Record<string, unknown> | undefined][] = [
     [resolveDefaultReporter(env), undefined],
     ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs', undefined],
+    ...(env.PW_ENABLE_PERFETTO !== 'false'
+      ? [['perfetto', { outputFile: resolvePerfettoOutputFile(env) }] as [string, Record<string, unknown>]]
+      : []),
     [
       './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
       {
@@ -167,8 +179,6 @@ const buildConfig = (env: EnvMap = process.env) => {
     reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
-  if (env.PW_ENABLE_PERFETTO !== 'false') reporter.push(['perfetto', undefined]);
-
   return defineConfig({
     use: {
       baseURL: resolveBaseUrl(env),
@@ -205,7 +215,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -223,7 +238,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -247,7 +267,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           headless: true,
           screenshot: 'off',
           video: 'off',
-          trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
         },
       },
     ],

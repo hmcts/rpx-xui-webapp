@@ -932,6 +932,29 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(containsEvidence(buildIntegrationConfig(env) as never)).toBe(true);
   });
 
+  test('all Playwright configs write Perfetto into the configured Odhín suite directory', () => {
+    const reportFolder = 'functional-output/tests/playwright-integration/odhin-report';
+    const expected = ['perfetto', { outputFile: 'functional-output/tests/playwright-integration/test-results/perfetto.json' }];
+    const env = { CI: 'true', PLAYWRIGHT_REPORT_FOLDER: reportFolder };
+    const containsPerfetto = (config: { reporter: Array<[string, unknown?]> }) =>
+      config.reporter.some(([name, options]) => JSON.stringify([name, options]) === JSON.stringify(expected));
+
+    expect(containsPerfetto(buildConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildE2eConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildNightlyConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildIntegrationConfig(env) as never)).toBe(true);
+  });
+
+  test('finalizes Perfetto before Odhín so the report can link the timeline', () => {
+    const env = { CI: 'true', PLAYWRIGHT_REPORT_FOLDER: 'functional-output/tests/playwright-integration/odhin-report' };
+    for (const config of [buildConfig(env), buildE2eConfig(env), buildNightlyConfig(env), buildIntegrationConfig(env)]) {
+      const perfettoIndex = config.reporter.findIndex(([name]) => name === 'perfetto');
+      const odhinIndex = config.reporter.findIndex(([name]) => name.includes('odhin-adaptive'));
+      expect(perfettoIndex).toBeGreaterThanOrEqual(0);
+      expect(odhinIndex).toBeGreaterThan(perfettoIndex);
+    }
+  });
+
   test('separates CI smoke evidence from E2E evidence', () => {
     expect(smokeRunner.buildSmokeEnvironment({ CI: 'true' }).PLAYWRIGHT_REPORT_FOLDER).toBe(
       'functional-output/tests/playwright-smoke/odhin-report'

@@ -72,7 +72,7 @@ describe('Person Service', () => {
     beforeEach(() => {
       // Mock all possible getConfigValue calls
       getConfigValueStub.callsFake((key) => {
-        if (key === 'services.case.judicialApi') {
+        if (key === 'services.prd.judicialApi') {
           return 'http://test-judicial-ref-url';
         }
         if (key.includes('SERVICE_REF_DATA_MAPPING')) {

@@ -1,6 +1,6 @@
 import { NextFunction } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_REF_API_URL, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
+import { SERVICE_REF_DATA_MAPPING, SERVICES_PRD_LOCATION_API } from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { Service } from '../staff-ref-data/models/staff-filter-option.model';
@@ -8,7 +8,7 @@ import { RefDataHMCTSService } from './models/ref-data-hmcts-service.model';
 import { LocationByServiceCodeResponse } from './models/ref-data-location-response.model';
 import { RefDataRegion } from './models/ref-data-region.model';
 
-const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
+const baseLocationRefUrl = getConfigValue(SERVICES_PRD_LOCATION_API);
 
 export async function getServices(req, res, next: NextFunction) {
   const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;

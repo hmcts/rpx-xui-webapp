@@ -4,14 +4,14 @@ import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_REF_API_URL } from '../configuration/references';
+import { SERVICES_PRD_LOCATION_API } from '../configuration/references';
 import { http } from '../lib/http';
 import { getLocations, getLocationsByServiceCode, getRegions } from './index';
 import { LocationByServiceCodeResponse } from './models/ref-data-location-response.model';
 import { RefDataLocation } from './models/ref-data-location.model';
 import { RefDataRegion } from './models/ref-data-region.model';
 
-const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
+const baseLocationRefUrl = getConfigValue(SERVICES_PRD_LOCATION_API);
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');

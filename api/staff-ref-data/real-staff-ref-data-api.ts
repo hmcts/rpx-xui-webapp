@@ -2,13 +2,13 @@ import { NextFunction, Response } from 'express';
 import * as querystring from 'querystring';
 import { sendGet, sendPost, sendPut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CASE_CASEWORKER_REF_PATH, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
+import { SERVICE_REF_DATA_MAPPING, SERVICES_PRD_CASEWORKER_REF_PATH } from '../configuration/references';
 import { StaffUser } from './models/staff-data-user.model';
 import { GroupOption, Service, StaffFilterOption } from './models/staff-filter-option.model';
 import { StaffRefDataAPI } from './models/staff-ref-data.model';
 
 export class RealStaffRefDataAPI implements StaffRefDataAPI {
-  public baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
+  public baseCaseWorkerRefUrl = getConfigValue(SERVICES_PRD_CASEWORKER_REF_PATH);
 
   async getFilteredUsers(req, res: Response, next: NextFunction) {
     const query = { ...req.query };

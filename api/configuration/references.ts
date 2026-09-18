@@ -34,11 +34,6 @@ export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleA
 export const SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH = 'services.role_assignment.roleMappingApi';
 export const SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH = 'services.lau.specificChallengedAccessApi';
 
-export const SERVICES_CASE_CASEWORKER_REF_PATH = 'services.case.caseworkerApi';
-export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialworkerApi';
-export const SERVICES_CASE_JUDICIAL_REF_PATH = 'services.case.judicialApi';
-export const SERVICES_LOCATION_API_PATH = 'services.location_api';
-
 export const SERVICES_JUDICIAL_BOOKING_API_PATH = 'services.judicialBookingApi';
 
 export const SERVICES_HEARINGS_COMPONENT_API = 'services.hearings.serviceApi';
@@ -70,14 +65,16 @@ export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
 export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices';
 
+// EXUI-4799 - Grouped all ref data endpoints
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 export const SERVICES_PRD_LOCATION_API = 'services.prd.locationApi';
 export const SERVICES_PRD_JUDICIAL_API = 'services.prd.judicialApi';
 export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
+export const SERVICES_PRD_CASEWORKER_REF_PATH = 'services.prd.caseworkerApi';
+export const SERVICES_PRD_JUDICIALWORKER_REF_PATH = 'services.prd.judicialworkerApi';
 
 export const SERVICES_REFUNDS_API_URL = 'services.refunds';
 export const SERVICES_NOTIFICATIONS_API_URL = 'services.notifications';
-export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 
 export const SERVICES_TRANSLATION_API_URL = 'services.translation';
 

@@ -220,8 +220,21 @@ export class CaseListPage extends Base {
     await this.goto();
   }
 
-  async getPaginationFinalItem(): Promise<string | undefined> {
-    const items = (await this.pagination.locator('li').allTextContents()).map((i) => i.trim());
+  async getPaginationFinalItem(): Promise<string | undefined> {    
+    const nextTitle = this.pagination.locator('.govuk-pagination__next .govuk-pagination__link-title');
+    if (await nextTitle.count()) {
+      const label = await nextTitle.first().evaluate((element) =>
+        Array.from(element.childNodes)
+          .filter((node) => node.nodeType === Node.TEXT_NODE)
+          .map((node) => node.textContent ?? '')
+          .join(' ')
+      );
+      return label.replace(/\s+/g, ' ').trim();
+    }
+
+    const items = (await this.pagination.locator('.govuk-pagination__item:not(.small-screen)').allTextContents()).map(
+      (i) => i.trim()
+    );
     return items.at(-1);
   }
 

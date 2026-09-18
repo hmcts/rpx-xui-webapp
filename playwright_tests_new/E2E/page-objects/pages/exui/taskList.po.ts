@@ -772,7 +772,9 @@ export class TaskListPage extends Base {
 
     const legacyPageControl = await this.findVisiblePaginationControl(
       this.paginationControls
-        .locator('li:not(.current):not(.ellipsis)')
+        .locator(
+          'li.govuk-pagination__item:not(.govuk-pagination__item--current):not(.govuk-pagination__item--ellipsis):not(.small-screen)'
+        )
         .filter({ hasText: new RegExp(String.raw`${pageText}\s*$`) })
         .locator('a, button, [tabindex="0"]')
     );

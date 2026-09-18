@@ -99,10 +99,10 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
     expect(source).toContain('test-results/perfetto*.json');
     expect(source).toContain('test-results/**/failure-data.json');
-    expect(source).not.toContain('test-results/**/trace.zip');
-    expect(source).not.toContain('test-results/**/*.png');
-    expect(source).not.toContain('test-results/**/*.jpg');
-    expect(source).not.toContain('test-results/**/*.jpeg');
+    expect(source).toContain('test-results/**/trace.zip');
+    expect(source).toContain('test-results/**/*.png');
+    expect(source).toContain('test-results/**/*.jpg');
+    expect(source).toContain('test-results/**/*.jpeg');
     expect(source).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
     expect(source).toContain('def publishPlaywrightAccessibilityJUnit = {');
     expect(source).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
@@ -116,6 +116,7 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(nightlySource).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
     expect(nightlySource).toContain('def publishPlaywrightAccessibilityJUnit = {');
     expect(nightlySource).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
+    expect(nightlySource).toContain('test-results/**/trace.zip');
     expect(nightlySource).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
     expect(nightlySource).toContain('skipMarkingBuildUnstable: true, testResults: playwrightAccessibilityJunitFile');
     expect(nightlySource.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(1);

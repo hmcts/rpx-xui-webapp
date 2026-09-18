@@ -1,0 +1,5 @@
+@use 'govuk-frontend/govuk/all' as *;
+
+// @hmcts/frontend has not yet migrated to the Sass module system, so it must
+// be evaluated in a scope where the GOV.UK mixins it consumes are available.
+@import '@hmcts/frontend/all';

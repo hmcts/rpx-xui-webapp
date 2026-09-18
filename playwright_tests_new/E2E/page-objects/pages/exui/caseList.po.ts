@@ -220,7 +220,7 @@ export class CaseListPage extends Base {
     await this.goto();
   }
 
-  async getPaginationFinalItem(): Promise<string | undefined> {    
+  async getPaginationFinalItem(): Promise<string | undefined> {
     const nextTitle = this.pagination.locator('.govuk-pagination__next .govuk-pagination__link-title');
     if (await nextTitle.count()) {
       const label = await nextTitle.first().evaluate((element) =>
@@ -232,8 +232,8 @@ export class CaseListPage extends Base {
       return label.replace(/\s+/g, ' ').trim();
     }
 
-    const items = (await this.pagination.locator('.govuk-pagination__item:not(.small-screen)').allTextContents()).map(
-      (i) => i.trim()
+    const items = (await this.pagination.locator('.govuk-pagination__item:not(.small-screen)').allTextContents()).map((i) =>
+      i.trim()
     );
     return items.at(-1);
   }

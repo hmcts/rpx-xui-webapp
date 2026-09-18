@@ -102,7 +102,9 @@ function resolveRetryDelayMs(attempt: number): number {
 }
 
 type TestingSupportErrorOutcome =
-  { kind: 'return'; user: ProfessionalUserInfo } | { kind: 'throw'; error: unknown } | { kind: 'retry'; waitMs: number };
+  | { kind: 'return'; user: ProfessionalUserInfo }
+  | { kind: 'throw'; error: unknown }
+  | { kind: 'retry'; waitMs: number };
 
 async function handleSidamFallbackCreate(
   args: CreateUserViaTestingSupportArgs,
@@ -213,7 +215,8 @@ export async function createUserViaTestingSupportFlow(
 }
 
 type Reconcile409SidamOutcome =
-  { action: 'return'; user: ProfessionalUserInfo } | { action: 'continue'; newIdentity: ProvisionedIdentity };
+  | { action: 'return'; user: ProfessionalUserInfo }
+  | { action: 'continue'; newIdentity: ProvisionedIdentity };
 
 async function reconcile409SidamFirst(
   args: CreateUserViaSidamFirstArgs,

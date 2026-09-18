@@ -32,4 +32,8 @@ export class CaseCreateFilterChanged implements Action {
   constructor(public payload: any) {}
 }
 export type CreateCasesAction =
-  ApplyChange | CreateCaseReset | CaseCreateFilterApply | CaseCreateFilterChanged | CreateCaseLoaded;
+  | ApplyChange
+  | CreateCaseReset
+  | CaseCreateFilterApply
+  | CaseCreateFilterChanged
+  | CreateCaseLoaded;

@@ -340,7 +340,8 @@ export async function setupQueryManagementMockRoutes(
 
     if (successfulSubmit) {
       const submittedQueryCollection = submittedEvent.data?.[QUERY_MANAGEMENT_CASE_QUERIES_FIELD_ID] as
-        QueryManagementCaseQueriesCollection | undefined;
+        | QueryManagementCaseQueriesCollection
+        | undefined;
       if (submittedQueryCollection) {
         queryCollection = submittedQueryCollection;
       }

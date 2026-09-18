@@ -45,7 +45,9 @@ export async function updateExistingUserFlow(
 }
 
 type SidamCreateOutcome =
-  { kind: 'success'; data: Record<string, unknown> } | { kind: 'fallback'; lastError: unknown } | { kind: 'skip' };
+  | { kind: 'success'; data: Record<string, unknown> }
+  | { kind: 'fallback'; lastError: unknown }
+  | { kind: 'skip' };
 
 async function tryCreateAuthenticated(
   execute: (includeAuth: boolean) => Promise<{ data: Record<string, unknown> }>,

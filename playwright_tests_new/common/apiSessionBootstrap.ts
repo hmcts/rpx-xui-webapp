@@ -8,7 +8,12 @@ const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
 const MAX_DISPOSE_TIMEOUT_MS = 1_000;
 
 export type ApiSessionBootstrapStage =
-  'configuration' | 'xui-auth-login' | 'idam-username' | 'idam-password' | 'xui-auth-status' | 'session-cookies';
+  | 'configuration'
+  | 'xui-auth-login'
+  | 'idam-username'
+  | 'idam-password'
+  | 'xui-auth-status'
+  | 'session-cookies';
 export type ApiSessionStorageState = Awaited<ReturnType<APIRequestContext['storageState']>>;
 export type ApiSessionBootstrapResult =
   | { status: 'authenticated'; storageState: ApiSessionStorageState }

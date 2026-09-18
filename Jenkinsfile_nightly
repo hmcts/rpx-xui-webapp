@@ -339,13 +339,14 @@ def runPlaywrightIntegrationProfileMatrix = {
         runConfigs.each { runConfig ->
             def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
             def junitFile = "${runConfig.reportDir}/playwright-junit.xml"
+            def outputDir = runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"
             def outcome = 'interrupted'
             def runnerCompleted = false
             sh "rm -f -- '${sessionConfigCompleteFile}'"
             try {
                 withEnv([
                   "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
-                  "PLAYWRIGHT_OUTPUT_DIR=${runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"}",
+                  "PLAYWRIGHT_OUTPUT_DIR=${outputDir}",
                   "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
                   "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile()}",
                   'ORG_USER_ASSIGNMENT_MODE=external',

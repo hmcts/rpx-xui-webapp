@@ -117,7 +117,11 @@
     "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
+<<<<<<< HEAD
     "@hmcts/ccd-case-ui-toolkit": "7.3.79-govuk-v6",
+=======
+    "@hmcts/ccd-case-ui-toolkit": "7.3.79-govuk5-v2",
+>>>>>>> gov-uk-styles-v5
     "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/media-viewer": "4.2.27",
     "@hmcts/nodejs-healthcheck": "1.8.5",

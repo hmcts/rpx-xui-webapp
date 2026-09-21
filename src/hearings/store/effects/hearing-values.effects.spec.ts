@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { firstValueFrom, of, take } from 'rxjs';
+import { firstValueFrom, of, Subject, take } from 'rxjs';
 import { Go } from '../../../app/store';
 import { initialState } from '../../hearing.test.data';
 import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
@@ -180,6 +180,31 @@ describe('Hearing Values Effects', () => {
 
       await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
       expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('OVERRIDE_JURIS', '9999000011112222');
+    });
+
+    it('should ignore a slow Hearing A response after navigating to Hearing B', () => {
+      const actionsSubject = new Subject<hearingValuesActions.LoadHearingValues>();
+      const hearingAResponse = new Subject<ServiceHearingValuesModel>();
+      const hearingBResponse = new Subject<ServiceHearingValuesModel>();
+      const hearingA = { caseId: 'CASE-A' } as ServiceHearingValuesModel;
+      const hearingB = { caseId: 'CASE-B' } as ServiceHearingValuesModel;
+      const emittedActions: hearingValuesActions.HearingValuesAction[] = [];
+
+      actions$ = actionsSubject;
+      hearingsServiceMock.loadHearingValues.and.returnValues(hearingAResponse, hearingBResponse);
+      const subscription = effects.loadHearingValue$.subscribe((action) => emittedActions.push(action));
+
+      actionsSubject.next(new hearingValuesActions.LoadHearingValues({ jurisdictionId: 'IA', caseReference: 'CASE-A' }));
+      actionsSubject.next(new hearingValuesActions.LoadHearingValues({ jurisdictionId: 'IA', caseReference: 'CASE-B' }));
+      hearingAResponse.next(hearingA);
+
+      expect(emittedActions).toEqual([]);
+
+      hearingBResponse.next(hearingB);
+
+      expect(emittedActions).toEqual([new hearingValuesActions.LoadHearingValuesSuccess(hearingB)]);
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', 'CASE-B');
+      subscription.unsubscribe();
     });
 
     it('should still load hearing values when payload has empty jurisdictionId/caseReference', async () => {

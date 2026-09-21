@@ -3,7 +3,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import * as fromHearingStore from '../../../hearings/store';
 import { HttpError } from '../../../models/httpError.model';
 import { HearingDayScheduleModel } from '../../models/hearingDaySchedule.model';
@@ -87,6 +87,30 @@ describe('Hearing List Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadHearingList$).toBeObservable(expected);
+    });
+
+    it('should ignore a slow Case A response after navigating to Case B', () => {
+      const actionsSubject = new Subject<hearingListActions.HearingListAction>();
+      const caseAResponse = new Subject<HearingListMainModel>();
+      const caseBResponse = new Subject<HearingListMainModel>();
+      const caseA = { caseRef: 'CASE-A', caseHearings: [] } as HearingListMainModel;
+      const caseB = { caseRef: 'CASE-B', caseHearings: [] } as HearingListMainModel;
+      const emittedActions: hearingListActions.HearingListAction[] = [];
+
+      actions$ = actionsSubject;
+      hearingsServiceMock.getAllHearings.and.returnValues(caseAResponse, caseBResponse);
+      const subscription = effects.loadHearingList$.subscribe((action) => emittedActions.push(action));
+
+      actionsSubject.next(new hearingListActions.LoadAllHearings('CASE-A'));
+      actionsSubject.next(new hearingListActions.LoadAllHearings('CASE-B'));
+      caseAResponse.next(caseA);
+
+      expect(emittedActions).toEqual([]);
+
+      caseBResponse.next(caseB);
+
+      expect(emittedActions).toEqual([new hearingListActions.LoadAllHearingsSuccess(caseB)]);
+      subscription.unsubscribe();
     });
   });
 

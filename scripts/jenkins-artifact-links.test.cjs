@@ -26,7 +26,7 @@ test('final suite HTML links exact Jenkins artifacts and coverage survives HTML 
     for (const suite of ['api', 'integration', 'e2e', 'smoke']) {
       const suiteDir = `functional-output/tests/playwright-${suite}`;
       const reportDir = `${suiteDir}/odhin-report${suite === 'integration' ? '/preview-workers-7' : ''}`;
-      const resultsDir = suite === 'integration' ? `${reportDir}/test-results` : `${suiteDir}/test-results`;
+      const resultsDir = `${suiteDir}/test-results`;
       fs.mkdirSync(reportDir, { recursive: true });
       fs.mkdirSync(resultsDir, { recursive: true });
       const reportFile = `${reportDir}/xui-playwright-${suite}.html`;
@@ -48,6 +48,7 @@ test('final suite HTML links exact Jenkins artifacts and coverage survives HTML 
       }
       if (suite === 'integration') {
         const landingRoot = `${suiteDir}/odhin-report`;
+        fs.mkdirSync(`${landingRoot}/preview-workers-7`, { recursive: true });
         writeIntegrationReportIndex(landingRoot, 'xui-playwright-integration.html', ['preview-workers-7']);
         const landing = parse(fs.readFileSync(`${landingRoot}/index.html`, 'utf8'));
         for (const link of landing.querySelectorAll('a')) {

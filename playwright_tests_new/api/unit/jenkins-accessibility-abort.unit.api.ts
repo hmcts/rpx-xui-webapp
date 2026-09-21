@@ -110,7 +110,8 @@ test.describe('Jenkins accessibility cancellation contract', { tag: '@svc-intern
       const source = fs.readFileSync(path.join(repositoryRoot, fileName), 'utf8');
 
       expect(source).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
-      expect(source).not.toContain('functional-output/tests/**/test-results/**/trace.zip');
+      expect(source).toContain('functional-output/tests/**/test-results/**/trace.zip');
+      expect(source).toContain('functional-output/tests/**/test-results/**/*.png');
     });
   }
 

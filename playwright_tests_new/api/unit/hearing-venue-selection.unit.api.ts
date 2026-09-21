@@ -5,8 +5,6 @@ import { hearingVenueSelectionMarkup } from '../../integration/mocks/hearing-ven
 
 test.describe('hearing venue autocomplete ownership', { tag: '@svc-internal' }, () => {
   test.use({ viewport: { width: 800, height: 480 }, actionTimeout: 1500 });
-  test.setTimeout(5000);
-
   test('selects the associated panel when an unrelated matching option is outside the viewport', async ({ page }) => {
     await page.setContent(hearingVenueSelectionMarkup({ stalePanel: true }));
     const stale = page.locator('#unrelated-options [role=option]');

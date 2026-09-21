@@ -4,7 +4,7 @@ import {
   ACCESS_REQUEST_CASE_ID,
   ACCESS_REQUEST_SERVICE_NAME,
   CHALLENGED_ACCESS_PATH,
-  applySessionCookies,
+  applySessionCookiesFromPool,
   expectChallengedAccessConditionalFields,
   getChallengedAccessReasonDetails,
   summaryRow,
@@ -14,7 +14,7 @@ import {
 const userIdentifier = 'STAFF_ADMIN';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  await applySessionCookiesFromPool(page, [userIdentifier]);
 });
 
 test.describe(`Challenged Access Request as ${userIdentifier}`, { tag: ['@integration', '@integration-access-requests'] }, () => {

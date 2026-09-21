@@ -1,10 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies, CHALLENGED_ACCESS_PATH, setupChallengedAccessMockRoutes } from '../../helpers';
+import { applySessionCookiesFromPool, CHALLENGED_ACCESS_PATH, setupChallengedAccessMockRoutes } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  await applySessionCookiesFromPool(page, [userIdentifier]);
 });
 
 test.describe(

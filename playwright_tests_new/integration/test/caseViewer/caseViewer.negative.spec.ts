@@ -8,7 +8,6 @@ test.describe('CCD case viewer empty and shuttered states', { tag: ['@integratio
     const historyTab = page.getByRole('tab', { name: 'Activity and history' });
     await historyTab.click();
     await expect(historyTab).toHaveAttribute('aria-selected', 'true');
-    // await expect(page.locator('mat-tab-body.mat-tab-body-active')).toHaveCount(1);
     await expect(page.locator('mat-tab-body.mat-mdc-tab-body-active')).toHaveCount(1);
     await expect(page.locator('ccd-event-log-table')).toHaveCount(0);
     await expect(page.getByRole('row', { name: /Create a case/ })).toHaveCount(0);

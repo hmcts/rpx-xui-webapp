@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
+import { Action } from '@ngrx/store';
 import { cold, hot } from 'jasmine-marbles';
 import { firstValueFrom, of, Subject, take } from 'rxjs';
 import { Go } from '../../../app/store';
@@ -188,7 +189,7 @@ describe('Hearing Values Effects', () => {
       const hearingBResponse = new Subject<ServiceHearingValuesModel>();
       const hearingA = { caseId: 'CASE-A' } as ServiceHearingValuesModel;
       const hearingB = { caseId: 'CASE-B' } as ServiceHearingValuesModel;
-      const emittedActions: hearingValuesActions.HearingValuesAction[] = [];
+      const emittedActions: Action[] = [];
 
       actions$ = actionsSubject;
       hearingsServiceMock.loadHearingValues.and.returnValues(hearingAResponse, hearingBResponse);

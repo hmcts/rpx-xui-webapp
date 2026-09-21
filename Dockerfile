@@ -13,6 +13,10 @@ ENV PUPPETEER_SKIP_DOWNLOAD=1 \
   NPM_CONFIG_UPDATE_NOTIFIER=false \
   SCARF_ANALYTICS=false
 
+# Pact is only required when publishing contracts. The production image build
+# does not run that script, so do not download its standalone binary here.
+ENV PACT_SKIP_BINARY_INSTALL=true
+
 USER root
 RUN corepack enable
 USER hmcts

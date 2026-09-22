@@ -870,10 +870,6 @@ export class TaskListPage extends Base {
     );
   }
 
-  async expectAccessTasksAndCasesTextVisible() {
-    await expect(this.page.getByText('Access tasks and cases.', { exact: true })).toBeVisible();
-  }
-
   async setSelectAllServicesFilter(checked: boolean) {
     await this.setFilterCheckbox(this.selectAllServicesFilter, checked, 'select all services');
   }

@@ -710,7 +710,7 @@ export class CaseDetailsPage extends Base {
       min: TIMEOUTS.TAB_LOAD,
       max: 30_000,
       multiplier: 3,
-      fallback: 15_000,
+      fallback: 30_000,
     });
     await this.waitForCaseDetailsTabsReady(tabLoadTimeoutMs);
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);

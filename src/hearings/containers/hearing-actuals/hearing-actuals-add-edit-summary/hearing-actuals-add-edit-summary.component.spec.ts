@@ -1,5 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
@@ -15,7 +16,7 @@ import {
   partySubChannelsRefData,
 } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { ACTION, HearingResult, PartyType } from '../../../models/hearings.enum';
+import { ACTION, HearingResult, HMCStatus, PartyType } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
@@ -145,8 +146,43 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     fixture.detectChanges();
   });
 
+  function setMatchingIndividualParties(): void {
+    component.individualParties = component.actualHearingDays[0].actualDayParties.map(
+      (party, index) =>
+        ({
+          partyID: party.actualPartyId,
+          partyType: PartyType.IND,
+          partyRole: party.partyRole,
+          partyName: `Party ${index}`,
+          individualDetails: {
+            title: '',
+            firstName: party.individualDetails?.firstName || '',
+            lastName: party.individualDetails?.lastName || '',
+            preferredHearingChannel: party.partyChannelSubType,
+          },
+        }) as PartyDetailsModel
+    );
+  }
+
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show confirm buttons by default', () => {
+    setMatchingIndividualParties();
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#hearing-timing-result-confirm-link'))).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('#hearing-parties-result-confirm-link'))).not.toBeNull();
+  });
+
+  it('should hide confirm buttons when redirected from completed or adjourned hearing details', () => {
+    component.isFinalisedEditMode = true;
+    setMatchingIndividualParties();
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('#hearing-timing-result-confirm-link'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('#hearing-parties-result-confirm-link'))).toBeNull();
   });
 
   it('should unsubscribe', () => {
@@ -178,6 +214,32 @@ describe('HearingActualsAddEditSummaryComponent', () => {
 
     component.onBack();
     expect(historyBackSpy).toHaveBeenCalled();
+  });
+
+  [
+    { status: HMCStatus.CANCELLED, route: 'hearing-cancelled-summary' },
+    { status: HMCStatus.COMPLETED, route: 'hearing-completed-summary' },
+    { status: HMCStatus.ADJOURNED, route: 'hearing-adjourned-summary' },
+  ].forEach(({ status, route }) => {
+    it(`should return to the ${status} summary from the finalised edit journey`, () => {
+      component.isFinalisedEditMode = true;
+      component.hearingActualsMainModel = { ...hearingActualsMainModel, hmcStatus: status };
+      component.hearingActualsCaseRef = '1111222233334444';
+      component.id = 'h100001';
+      const navigateSpy = spyOn(component.router, 'navigate');
+      const historyBackSpy = spyOn(component.location, 'back');
+
+      component.onBack();
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/', 'hearings', 'view', route, 'h100001'], {
+        state: {
+          caseRef: '1111222233334444',
+          returnToCaseHearings: true,
+          showEditButton: true,
+        },
+      });
+      expect(historyBackSpy).not.toHaveBeenCalled();
+    });
   });
 
   it('should return correct hearing type from the hearing types', () => {

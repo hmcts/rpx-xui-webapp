@@ -4,6 +4,8 @@ import { logger } from '../../../utils/logger.utils';
 
 export class ExuiHeaderComponent {
   private static readonly LANGUAGE_STATE_TIMEOUT_MS = 20_000;
+  private static readonly LANGUAGE_STATE_MAX_TIMEOUT_MS = 60_000;
+  private static readonly LANGUAGE_STATE_ACTIVITY_WINDOW_MS = 5_000;
   private static readonly LANGUAGE_RENDER_STATE = {
     en: {
       appHeaderLink: 'Manage Cases',
@@ -84,40 +86,97 @@ export class ExuiHeaderComponent {
     const target = this.resolveLanguageTarget(language);
     const renderState = this.getExpectedRenderState(target.code);
 
-    await this.page.waitForFunction(
-      ({ expectedAppHeaderLink, expectedLanguageCode, expectedSignOutLink, expectedToggleLabel }) => {
-        const appHeaderLink = document.querySelector('exui-header .hmcts-header a.hmcts-header__link');
-        const languageToggle = document.querySelector('exui-header button.language');
-        const signOutLink = document.querySelector('exui-header .hmcts-header .hmcts-header__navigation-link');
-        const appHeaderText = appHeaderLink?.textContent?.trim() ?? '';
-        const toggleText = languageToggle?.textContent?.trim() ?? '';
-        const signOutText = signOutLink?.textContent?.trim() ?? '';
-        const rawClientContext = window.sessionStorage.getItem('clientContext');
-        if (!rawClientContext) {
-          return false;
-        }
+    const waitForState = (timeoutMs: number) =>
+      this.page.waitForFunction(
+        ({ expectedAppHeaderLink, expectedLanguageCode, expectedSignOutLink, expectedToggleLabel }) => {
+          const appHeaderLink = document.querySelector('exui-header .hmcts-header a.hmcts-header__link');
+          const languageToggle = document.querySelector('exui-header button.language');
+          const signOutLink = document.querySelector('exui-header .hmcts-header .hmcts-header__navigation-link');
+          const appHeaderText = appHeaderLink?.textContent?.trim() ?? '';
+          const toggleText = languageToggle?.textContent?.trim() ?? '';
+          const signOutText = signOutLink?.textContent?.trim() ?? '';
+          const rawClientContext = window.sessionStorage.getItem('clientContext');
+          if (!rawClientContext) {
+            return false;
+          }
 
+          try {
+            const clientContext = JSON.parse(rawClientContext);
+            const currentLanguage = clientContext?.client_context?.user_language?.language;
+            return (
+              currentLanguage === expectedLanguageCode &&
+              toggleText.includes(expectedToggleLabel) &&
+              appHeaderText.includes(expectedAppHeaderLink) &&
+              signOutText.includes(expectedSignOutLink)
+            );
+          } catch {
+            return false;
+          }
+        },
+        {
+          expectedAppHeaderLink: renderState.appHeaderLink,
+          expectedLanguageCode: target.code,
+          expectedSignOutLink: renderState.signOutLink,
+          expectedToggleLabel: renderState.toggleLabel,
+        },
+        { timeout: timeoutMs }
+      );
+    const startedAt = Date.now();
+    const deadline = startedAt + ExuiHeaderComponent.LANGUAGE_STATE_MAX_TIMEOUT_MS;
+    let lastBackendActivityAt = startedAt;
+    let backendFailure = false;
+    const pendingTranslationRequests = new Set<unknown>();
+    const isLanguageBackendRequest = (url: string) =>
+      /\/api\/translation\//.test(url) || /\/aggregated\/caseworkers\/[^/]+\/jurisdictions(?:\?|$)/.test(url);
+    const onRequest = (request: { url(): string }) => {
+      if (isLanguageBackendRequest(request.url())) {
+        pendingTranslationRequests.add(request);
+        lastBackendActivityAt = Date.now();
+      }
+    };
+    const onResponse = (response: { url(): string; status(): number; request(): unknown }) => {
+      const url = response.url();
+      if (isLanguageBackendRequest(url)) {
+        pendingTranslationRequests.delete(response.request());
+        lastBackendActivityAt = Date.now();
+        backendFailure ||= response.status() >= 400;
+      }
+    };
+    const onRequestFailed = (request: { url(): string }) => {
+      if (isLanguageBackendRequest(request.url())) {
+        pendingTranslationRequests.delete(request);
+        backendFailure = true;
+      }
+    };
+
+    this.page.on('request', onRequest);
+    this.page.on('response', onResponse);
+    this.page.on('requestfailed', onRequestFailed);
+    try {
+      while (true) {
         try {
-          const clientContext = JSON.parse(rawClientContext);
-          const currentLanguage = clientContext?.client_context?.user_language?.language;
-          return (
-            currentLanguage === expectedLanguageCode &&
-            toggleText.includes(expectedToggleLabel) &&
-            appHeaderText.includes(expectedAppHeaderLink) &&
-            signOutText.includes(expectedSignOutLink)
-          );
-        } catch {
-          return false;
+          await waitForState(Math.min(ExuiHeaderComponent.LANGUAGE_STATE_TIMEOUT_MS, deadline - Date.now()));
+          return;
+        } catch (error) {
+          const remainingMs = deadline - Date.now();
+          const backendIsStillResponding =
+            pendingTranslationRequests.size > 0 ||
+            Date.now() - lastBackendActivityAt <= ExuiHeaderComponent.LANGUAGE_STATE_ACTIVITY_WINDOW_MS;
+          if (
+            backendFailure ||
+            remainingMs <= 0 ||
+            !backendIsStillResponding ||
+            !(error instanceof Error && error.name.includes('Timeout'))
+          ) {
+            throw error;
+          }
         }
-      },
-      {
-        expectedAppHeaderLink: renderState.appHeaderLink,
-        expectedLanguageCode: target.code,
-        expectedSignOutLink: renderState.signOutLink,
-        expectedToggleLabel: renderState.toggleLabel,
-      },
-      { timeout: ExuiHeaderComponent.LANGUAGE_STATE_TIMEOUT_MS }
-    );
+      }
+    } finally {
+      this.page.off('request', onRequest);
+      this.page.off('response', onResponse);
+      this.page.off('requestfailed', onRequestFailed);
+    }
   }
 
   public async selectHeaderMenuItem(menuItemText: string): Promise<void> {
@@ -141,12 +200,16 @@ export class ExuiHeaderComponent {
       return;
     }
 
-    await this.languageToggle.click();
-    await this.page.waitForLoadState('domcontentloaded');
-    if (waitForTranslatedContent) {
-      await this.waitForRenderedLanguageState(language);
-    } else {
-      await this.waitForLanguageContext(language);
+    const languageStatePromise = waitForTranslatedContent
+      ? this.waitForRenderedLanguageState(language)
+      : this.waitForLanguageContext(language);
+    try {
+      await this.languageToggle.click();
+      await this.page.waitForLoadState('domcontentloaded');
+      await languageStatePromise;
+    } catch (error) {
+      await languageStatePromise.catch(() => undefined);
+      throw error;
     }
   }
 }

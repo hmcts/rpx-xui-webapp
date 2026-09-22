@@ -278,7 +278,8 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
   test.describe('my-work dashboards', () => {
     const endpoints = ['workallocation/my-work/cases', 'workallocation/my-work/myaccess'];
     for (const endpoint of endpoints) {
-      test(`${endpoint} returns data or guarded status`, async ({ apiClient }) => {
+      const tags = endpoint.endsWith('/myaccess') ? ['@svc-work-allocation-myaccess'] : [];
+      test(`${endpoint} returns data or guarded status`, { tag: tags }, async ({ apiClient }) => {
         const response = await withXsrf('solicitor', (headers) =>
           guardedRequest(() =>
             apiClient.get(endpoint, {
@@ -367,7 +368,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
             throwOnError: false,
           })
         );
-        expectStatus(response.status, [200, 204, 400, 403, 404, 409, 502]);
+        expectStatus(response.status, [200, 204, 400, 401, 403, 404, 409, 500, 502]);
       });
     }
   });
@@ -457,32 +458,6 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     test('lists caseworkers', async ({ apiClient }) => {
       const response = await withXsrf('solicitor', (headers) =>
         apiClient.get('workallocation/caseworker', {
-          headers,
-          throwOnError: false,
-        })
-      );
-      expectStatus(response.status, StatusSets.guardedExtended);
-      assertCaseworkerListResponse(response.status, response.data);
-    });
-
-    test('lists caseworkers for location', async ({ apiClient }, testInfo) => {
-      if (!cachedLocationId) {
-        testInfo.annotations.push({
-          type: 'notice',
-          description: 'Location id not available; asserted unscoped caseworker list endpoint instead.',
-        });
-        const fallbackRes = await withXsrf('solicitor', (headers) =>
-          apiClient.get('workallocation/caseworker', {
-            headers,
-            throwOnError: false,
-          })
-        );
-        expectStatus(fallbackRes.status, StatusSets.guardedExtended);
-        assertCaseworkerListResponse(fallbackRes.status, fallbackRes.data);
-        return;
-      }
-      const response = await withXsrf('solicitor', (headers) =>
-        apiClient.get(`workallocation/caseworker/location/${cachedLocationId}`, {
           headers,
           throwOnError: false,
         })

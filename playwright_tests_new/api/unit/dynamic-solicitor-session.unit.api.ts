@@ -53,6 +53,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           email: 'test@example.com',
           cookies: [{ name: 'session' }] as never,
           storageFile: '/tmp/storage.json',
+          storageStateFingerprint: 'test-session-fingerprint',
         }),
         recaptureSession: async () => undefined,
         createApiContext: async () => {

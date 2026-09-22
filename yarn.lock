@@ -3427,13 +3427,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.1-tar-upscale":
-  version: 7.4.1-tar-upscale
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.1-tar-upscale"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.2":
+  version: 7.4.2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.2"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.37-tar-upscale"
+    "@hmcts/media-viewer": "npm:4.2.38"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
@@ -3469,12 +3469,12 @@ __metadata:
     prosemirror-history: 1.5.0
     prosemirror-model: 1.25.11
     prosemirror-schema-list: 1.5.1
-    rpx-xui-translation: 1.2.12
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/4b5cc0edd979aa97c75505d1ac5b655f2665916e0d0c9a3d253a01776b5d23ca4854840b2afd279c3f042408cb7eeabb675d40371d777d46e3b0c8f555ea7a26
+  checksum: 10/108838fcc80024676408671d62f6970b342d3d836d8b3a7767cfe944e055dac6905423e4bff4bce425160f9ff28ba5da11f7c40e9ce95411d7dc3eac7d562058
   languageName: node
   linkType: hard
 
@@ -3499,9 +3499,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.37-tar-upscale":
-  version: 4.2.37-tar-upscale
-  resolution: "@hmcts/media-viewer@npm:4.2.37-tar-upscale"
+"@hmcts/media-viewer@npm:4.2.38":
+  version: 4.2.38
+  resolution: "@hmcts/media-viewer@npm:4.2.38"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3522,9 +3522,9 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.12
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/bfd1ada900c3f705962554df45bc3eba4b46c2967f5bb177dbaed8817001704b571b6f0dbb7bbf266bb883b5d0bb4e3ee2d4678bc509efadbf45ba41f344bcb8
+  checksum: 10/57acd063c4d6be3d747cc0211e24936744e393b40ba4fe96a133f71505807a071a5c04b9f705a143178fee4d05e52f2a12ba536e96af2b1bfa91c8a0186661d8
   languageName: node
   linkType: hard
 
@@ -3592,9 +3592,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.17-tar-upscale":
-  version: 3.2.17-tar-upscale
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.17-tar-upscale"
+"@hmcts/rpx-xui-common-lib@npm:3.2.18":
+  version: 3.2.18
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.18"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
@@ -3615,16 +3615,16 @@ __metadata:
     "@ng-idle/keepalive": ^16.0.0
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.2.13-tar-upscale-2
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/7538f4fd5fc90d5f35476b60c733165abafaab90db55f5a88b974120e0a2286a03321bd972e06916f3b10f5de8534539585b7236a79fd56a655ed50c1f57425f
+  checksum: 10/14b686b829fe730bb853a4f527b7cd4e0f426e96c33882fb88ecfa0aed61aab17dc1fefd484aab0594d9b447e906b570bf57306051e228f2d947b6bd3b630f8d
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.29-tar-upscale":
-  version: 2.30.29-tar-upscale
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.29-tar-upscale"
+"@hmcts/rpx-xui-node-lib@npm:2.30.30":
+  version: 2.30.30
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.30"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.18.1"
@@ -3643,7 +3643,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/a87cf4f9bfc679377378f22768bb5109958601c30360726e9dbbe1610fc8e3c27a7720c5797059d1b0a4c22d5160d84a9af3dc17e47e70eb245a42d0ab797f16
+  checksum: 10/e984f248986d2e37a01fac753d0f792c8bc7131fb3edb073c0ba3e5acc971aef719ac586a943c049cbdb75f164309d035b918121109c8c99635aef57ee31b46f
   languageName: node
   linkType: hard
 
@@ -21327,15 +21327,15 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.1-tar-upscale"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.37-tar-upscale"
+    "@hmcts/media-viewer": "npm:4.2.38"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.17-tar-upscale"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.29-tar-upscale"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.18"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.30"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -21437,7 +21437,7 @@ __metadata:
     playwright-core: "npm:1.63.0"
     prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.13-tar-upscale-2"
+    rpx-xui-translation: "npm:1.2.14"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -21468,9 +21468,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.13-tar-upscale-2":
-  version: 1.2.13-tar-upscale-2
-  resolution: "rpx-xui-translation@npm:1.2.13-tar-upscale-2"
+"rpx-xui-translation@npm:1.2.14":
+  version: 1.2.14
+  resolution: "rpx-xui-translation@npm:1.2.14"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -21479,7 +21479,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/48c53d794de221544cfb935e67b5f5283e11eb65d222845119cf763fbb59b677bb914040c8e434ac926cfb535e2fe586e48f910ee6368c8693993d41250ebe00
+  checksum: 10/d8721c73290801831070039f803971d343150703dee898e3de52700ad1a3003538ba09f2f7cf58eb4bfad5749d07f9cfcd4e89bf03735d601c7d3e25e706499c
   languageName: node
   linkType: hard
 

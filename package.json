@@ -121,7 +121,7 @@
     "@hmcts/ccd-case-ui-toolkit": "7.4.1",
     "@hmcts/ccpay-web-component": "6.5.22",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.2.39-redact",
+    "@hmcts/media-viewer": "4.2.39-redact-1",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.4.1",
     "@hmcts/rpx-xui-common-lib": "3.2.17",

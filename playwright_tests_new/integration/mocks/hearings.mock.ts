@@ -383,6 +383,7 @@ export function buildLovRefDataMock(
   options?: {
     hearingTypes?: string[];
     caseTypeId?: string;
+    judgeTypes?: Array<Record<string, unknown>>;
   }
 ) {
   const scenarioHearingTypes = options?.hearingTypes ?? [LISTED_HEARING_SCENARIO.hearingType ?? 'ABA5-ABC'];
@@ -531,7 +532,14 @@ export function buildLovRefDataMock(
         child_nodes: [],
       },
     ],
-    JudgeType: [],
+    JudgeType: (options?.judgeTypes ?? []).map((judgeType, index) => ({
+      ...judgeType,
+      lov_order: index + 1,
+      category_key: 'JudgeType',
+      parent_category: null,
+      active_flag: true,
+      child_nodes: [],
+    })),
     PanelMemberType: [],
   };
 

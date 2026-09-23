@@ -14,6 +14,31 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
+    describe('Load action', () => {
+      it('should clear the existing hearing request before loading the new request', () => {
+        const currentState: HearingRequestStateData = {
+          ...fromHearingRequestReducer.initialHearingRequestState,
+          hearingRequestMainModel: {
+            ...fromHearingRequestReducer.initialHearingRequestState.hearingRequestMainModel,
+            caseDetails: {
+              ...fromHearingRequestReducer.initialHearingRequestState.hearingRequestMainModel.caseDetails,
+              hearingID: 'hearing-a',
+            },
+          },
+        };
+        const action = new fromHearingRequestActions.LoadHearingRequest({
+          hearingID: 'hearing-b',
+          targetURL: '',
+          caseRef: 'case-b',
+        });
+
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(currentState, action);
+
+        expect(hearingsState).toEqual(fromHearingRequestReducer.initialHearingRequestState);
+        expect(hearingsState.hearingRequestMainModel.caseDetails.hearingID).not.toBe('hearing-a');
+      });
+    });
+
     describe('Initialization action', () => {
       it('should initialize hearing request', () => {
         const initialHearingRequestState: HearingRequestStateData = {

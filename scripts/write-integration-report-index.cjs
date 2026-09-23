@@ -15,7 +15,9 @@ function writeIntegrationReportIndex(root, reportFile, profiles) {
   }
   const rows = profiles.map((profile) => {
     const report = path.join(root, profile, reportFile);
-    const results = path.join(root, profile, 'test-results');
+    const results = fs.existsSync(path.join(root, 'test-results'))
+      ? path.join(root, 'test-results')
+      : path.join(root, profile, 'test-results');
     const traces = fs.existsSync(results)
       ? fs
           .readdirSync(results)
@@ -25,7 +27,7 @@ function writeIntegrationReportIndex(root, reportFile, profiles) {
     const link = (file, label) => `<a href="${file.split('/').map(encodeURIComponent).join('/')}">${escape(label)}</a>`;
     const html = fs.existsSync(report) ? link(`${profile}/${reportFile}`, 'Open Odhín report') : 'Report unavailable';
     const perfetto = traces.length
-      ? traces.map((file) => link(`${profile}/test-results/${file}`, file)).join('<br>')
+      ? traces.map((file) => link(path.relative(root, path.join(results, file)), file)).join('<br>')
       : 'Perfetto unavailable';
     return `<tr><th scope="row">${escape(profile)}</th><td>${html}</td><td>${perfetto}</td></tr>`;
   });

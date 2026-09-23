@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -26,6 +26,7 @@ import moment from 'moment';
   standalone: false,
   selector: 'exui-hearing-requirements',
   templateUrl: './hearing-requirements.component.html',
+  styleUrls: ['./hearing-requirements.component.scss'],
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public readonly caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
@@ -37,8 +38,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public caseTypeRefData: LovRefDataModel[];
   public caseTypes: CaseCategoryDisplayModel[];
   public showReasonableAdjustmentFlagsWarningMessage: boolean;
-  public showMismatchErrorMessage: boolean;
-  public validationErrors: { id: string; message: string };
+  public showMismatchErrorMessage = false;
+  public showPageMismatchErrorMessage = false;
+
+  public validationErrors: { id: string; message: string[] };
 
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
@@ -60,6 +63,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   @HostListener('window:blur', ['$event'])
   public onBlur(): void {
     this.lostFocus = true;
+  }
+
+  // Sets popup reload as focus to the mismatch dialog link when it becomes available
+  @ViewChild('mismatchDialogLink')
+  public set mismatchDialogLink(link: ElementRef<HTMLAnchorElement> | undefined) {
+    if (link) {
+      setTimeout(() => link.nativeElement.focus());
+    }
   }
 
   constructor(
@@ -93,11 +104,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       this.caseTypeRefData,
       this.serviceHearingValuesModel.caseCategories
     );
-    if (
-      !HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel, this.caseReference)
-    ) {
+    const hearingRequestMismatchDetected = !HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel, this.caseReference);
+    this.hearingsService.hearingRequestContinueDisabled = hearingRequestMismatchDetected;
+    if (hearingRequestMismatchDetected) {
       this.showMismatchErrorMessage = true;
-      this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE };
+      this.showPageMismatchErrorMessage = true;
+      this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST };
     }
   }
 
@@ -234,7 +246,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.fragmentFocus();
   }
 
+  public closeMismatchErrorMessage(): void {
+    this.showMismatchErrorMessage = false;
+  }
+
   public ngOnDestroy() {
+    this.hearingsService.hearingRequestContinueDisabled = false;
     super.unsubscribe();
   }
 

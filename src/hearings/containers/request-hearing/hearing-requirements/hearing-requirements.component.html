@@ -11,8 +11,37 @@
       [warningMsg]="'Some of the information shown below may not be sent as part of your hearing request to the listing system. If you think this is an issue then please raise a ServiceNow ticket.'"
     >
     </exui-hearing-amend-warning-msg>
+    <div *ngIf="showMismatchErrorMessage" class="hearing-requirements-dialog-overlay">
+      <section
+        #mismatchDialog
+        class="hearing-requirements-dialog govuk-error-summary"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="hearing-requirements-dialog-title"
+        aria-describedby="hearing-requirements-dialog-description"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        tabindex="-1"
+        (keydown.escape)="closeMismatchErrorMessage()"
+      >
+        <h2 class="govuk-error-summary__title" id="hearing-requirements-dialog-title">
+          {{ 'There is a problem' | rpxTranslate }}
+        </h2>
+
+        <div class="govuk-error-summary__body">
+          <p id="hearing-requirements-dialog-description" class="govuk-body">
+            {{ validationErrors.message[0] | rpxTranslate }}
+            <a #mismatchDialogLink href="/">{{ validationErrors.message[1] | rpxTranslate }}</a>
+            {{ validationErrors.message[2] | rpxTranslate }}
+          </p>
+          <button type="button" class="govuk-button" (click)="closeMismatchErrorMessage()">
+            {{ 'Close' | rpxTranslate }}
+          </button>
+        </div>
+      </section>
+    </div>
     <div
-      *ngIf="showMismatchErrorMessage"
+      *ngIf="showPageMismatchErrorMessage"
       class="govuk-error-summary"
       aria-labelledby="error-summary-title"
       role="alert"
@@ -26,7 +55,8 @@
         <ul class="govuk-list govuk-error-summary__list">
           <li>
             <span id="error-answers-not-correct" class="govuk-error-message">
-              {{ validationErrors.message | rpxTranslate }} <a href="/">Reload the application</a>
+              {{ validationErrors.message[0] | rpxTranslate }} <a href="/">{{ validationErrors.message[1] | rpxTranslate }}</a>
+              {{ validationErrors.message[2] | rpxTranslate }}
             </span>
           </li>
         </ul>

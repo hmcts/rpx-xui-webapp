@@ -41,7 +41,11 @@ export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
   );
 }
 
-export function prepareElasticQuery(queryParams: { page? }, body: any, user: UserInfo): ElasticSearchQuery {
+export function prepareElasticQuery(
+  queryParams: { page?: any; [key: string]: any },
+  body: any,
+  user: UserInfo
+): ElasticSearchQuery {
   const metaCriteria: { [key: string]: string } = queryParams;
   let caseCriteria: object = {};
   const matchList: any[] = [];
@@ -52,6 +56,21 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
   const canPerformWildCardSearch: boolean = userCanPerformWildCardSearch(user);
   const caseType: string = metaCriteria.ctid;
   const fieldsToApplyWildCardSearchesTo = getConfigValue(WILDCARD_SEARCH_FIELDS) as { [key: string]: string[] };
+  const stateIds = getStateIds(metaCriteria.state);
+  delete metaCriteria.state;
+
+  if (stateIds.length === 1) {
+    matchList.push({
+      match: {
+        state: {
+          operator: 'and',
+          query: stateIds[0],
+        },
+      },
+    });
+  } else if (stateIds.length > 1) {
+    matchList.push({ terms: { 'state.keyword': stateIds } });
+  }
 
   Object.keys(metaCriteria).map((key: string): void => {
     if (key === 'ctid' || key === 'use_case' || key === 'view' || key === 'page') {
@@ -198,6 +217,14 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
     native_es_query: nativeEsQuery,
     supplementary_data: ['*'],
   };
+}
+
+function getStateIds(stateValue: string | string[]): string[] {
+  const values = Array.isArray(stateValue) ? stateValue : stateValue ? [stateValue] : [];
+  return values
+    .flatMap((state) => String(state).split(','))
+    .map((state) => state.trim())
+    .filter(Boolean);
 }
 
 function prepareSort(params) {

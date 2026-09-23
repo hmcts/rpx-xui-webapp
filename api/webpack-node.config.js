@@ -7,10 +7,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const { NODE_ENV = 'production' } = process.env;
 const isProduction = NODE_ENV === 'production';
 
-// Keep telemetry-sensitive runtime modules as real Node requires so
-// Application Insights/OpenTelemetry can patch them before the app starts.
-const runtimeExternals = new Set(['applicationinsights', 'express']);
-
 module.exports = {
   optimization: {
     minimize: isProduction,
@@ -39,18 +35,8 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
-    mainFields: ['main', 'module'],
   },
-  externals: [
-    ({ request }, callback) => {
-      if (runtimeExternals.has(request)) {
-        return callback(null, `commonjs ${request}`);
-      }
-
-      callback();
-    },
-    nodeExternals(),
-  ],
+  externals: [nodeExternals()],
   module: {
     rules: [
       {

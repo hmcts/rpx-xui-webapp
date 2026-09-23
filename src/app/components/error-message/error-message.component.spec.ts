@@ -51,4 +51,41 @@ describe('ErrorMessageComponent', () => {
     fixture.detectChanges();
     expect(fixture.debugElement.nativeElement.innerText).toBe(description);
   });
+
+  it('should link the error summary to the field id on the same page', () => {
+    wrapper.error = { title: 'There is a problem', description: 'Select an option', fieldId: 'APPROVE_REQUEST' };
+    fixture.detectChanges();
+    const link: HTMLAnchorElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list a');
+    expect(link.getAttribute('href')).toBe('#APPROVE_REQUEST');
+  });
+
+  it('should link multiple errors to their field ids', () => {
+    wrapper.error = { title: 'There is a problem', description: '', multiple: true, errors: [{ name: 'field-a', error: 'Error A' }] };
+    fixture.detectChanges();
+    const link: HTMLAnchorElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list a');
+    expect(link.getAttribute('href')).toBe('#field-a');
+  });
+
+  it('should focus the target field when the error summary link is clicked', () => {
+    const input = document.createElement('input');
+    input.id = 'APPROVE_REQUEST';
+    document.body.appendChild(input);
+    wrapper.error = { title: 'There is a problem', description: 'Select an option', fieldId: 'APPROVE_REQUEST' };
+    fixture.detectChanges();
+    const link: HTMLAnchorElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list a');
+    const event = new MouseEvent('click', { cancelable: true });
+    link.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(input);
+    input.remove();
+  });
+
+  it('should stay on the page when the target field does not exist', () => {
+    wrapper.error = { title: 'There is a problem', description: 'Select an option', fieldId: 'missing-field' };
+    fixture.detectChanges();
+    const link: HTMLAnchorElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list a');
+    const event = new MouseEvent('click', { cancelable: true });
+    link.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+  });
 });

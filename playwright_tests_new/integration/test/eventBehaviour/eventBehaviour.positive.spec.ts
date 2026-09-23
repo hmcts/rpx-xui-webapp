@@ -136,7 +136,7 @@ test.describe('Event behaviour integration', { tag: ['@integration', '@integrati
       }
     });
 
-    await page.getByRole('link', { name: 'Cancel', exact: true }).click();
+    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
 
     await expect(page).toHaveURL(
       new RegExp(

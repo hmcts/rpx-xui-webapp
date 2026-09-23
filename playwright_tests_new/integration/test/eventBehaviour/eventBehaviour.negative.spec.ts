@@ -95,7 +95,7 @@ test.describe('Event behaviour integration failures', { tag: ['@integration', '@
     await caseDetailsPage.continueCaseEvent();
     await validationResponse;
 
-    await expect(caseDetailsPage.generalProblemHeading).toBeVisible();
+    await expect(caseDetailsPage.eventCreationErrorHeading).toBeVisible();
     await expect(page.getByLabel('Outcome type')).toBeVisible();
     await expect(page.getByLabel('Decision reference')).toBeHidden();
     expect(submittedEvents).toHaveLength(0);

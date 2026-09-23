@@ -40,20 +40,8 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const userInfo = { ...rawUserInfo, token: `Bearer ${bearerToken}` };
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
     const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
-    /**
-     * Only emit user role telemetry when a valid user ID is available.
-     *
-     * Previously these traces were also emitted when userInfo.id was undefined,
-     * generating millions of low-value "User undefined..." entries in
-     * Application Insights and contributing to unnecessary telemetry costs.
-     *
-     * The traces are retained for valid users to preserve the existing
-     * diagnostic behaviour while preventing the known unnecessary telemetry.
-     */
-    if (userInfo.id) {
-      trackTrace(`User ${userInfo.id} roles: ${JSON.stringify(allRoles)}`, { functionCall: 'getUserDetails' });
-      trackTrace(`User ${userInfo.id} has ${userInfo?.roleCategories} roleCategories`, { functionCall: 'getUserDetails' });
-    }
+    trackTrace(`User ${userInfo?.id} roles: ${JSON.stringify(allRoles)}`, { functionCall: 'getUserDetails' });
+    trackTrace(`User ${userInfo?.id} has ${userInfo?.roleCategories} roleCategories`, { functionCall: 'getUserDetails' });
     userInfo.roles = allRoles;
     res.send({
       canShareCases,

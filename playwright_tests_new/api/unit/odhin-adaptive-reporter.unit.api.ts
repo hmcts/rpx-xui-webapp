@@ -7,6 +7,12 @@ const enhancerModule = require('../../common/reporters/odhin-report-enhancer.cjs
 
 const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: string) => { name: string; totalTests: number };
 const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
+const enhanceDashboardHtml = enhancerModule.enhanceDashboardHtml as (
+  html: string,
+  featureStats: unknown[],
+  evidenceEntries: unknown[],
+  perfettoFiles: string[]
+) => string;
 
 const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
   addFailureSource: (
@@ -31,7 +37,13 @@ const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
 };
 
 test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
-  test('externalises attachments by default and preserves an explicit embedding override', () => {
+  test('links external Perfetto files even when no dashboard extensions are present', () => {
+    const html = enhanceDashboardHtml('<html><body><main>Tests</main></body></html>', [], [], ['perfetto.json']);
+
+    expect(html).toContain('href="../test-results/perfetto.json"');
+  });
+
+  test('always externalises attachments, including when embedding is requested', () => {
     const receivedOptions: Array<Record<string, unknown>> = [];
     const createInnerReporter = (options: Record<string, unknown>) => {
       receivedOptions.push(options);
@@ -42,7 +54,7 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     new OdhinAdaptiveReporter({ createInnerReporter, embedAttachments: true });
 
     expect(receivedOptions[0]?.embedAttachments).toBe(false);
-    expect(receivedOptions[1]?.embedAttachments).toBe(true);
+    expect(receivedOptions[1]?.embedAttachments).toBe(false);
   });
 
   test('adds an explicit source to session-capture setup failures before Odhín renders them', () => {

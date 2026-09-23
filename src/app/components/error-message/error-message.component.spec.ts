@@ -60,7 +60,12 @@ describe('ErrorMessageComponent', () => {
   });
 
   it('should link multiple errors to their field ids', () => {
-    wrapper.error = { title: 'There is a problem', description: '', multiple: true, errors: [{ name: 'field-a', error: 'Error A' }] };
+    wrapper.error = {
+      title: 'There is a problem',
+      description: '',
+      multiple: true,
+      errors: [{ name: 'field-a', error: 'Error A' }],
+    };
     fixture.detectChanges();
     const link: HTMLAnchorElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary__list a');
     expect(link.getAttribute('href')).toBe('#field-a');

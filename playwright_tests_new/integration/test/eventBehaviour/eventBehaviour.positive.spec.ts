@@ -169,12 +169,22 @@ test.describe('Event behaviour integration', { tag: ['@integration', '@integrati
     const request = await submitRequest;
     const response = await submitResponse;
 
-    expect(request.postDataJSON()).toMatchObject({
+    expect(request.postDataJSON()).toEqual({
+      event: { id: EVENT_BEHAVIOUR_TRIGGER_ID, description: '', summary: '' },
       event_token: EVENT_BEHAVIOUR_EVENT_TOKEN,
-      data: { OutcomeType: 'approved', DecisionReference: 'EVT-123' },
+      ignore_warning: false,
+      data: {
+        OutcomeType: 'approved',
+        DecisionReference: 'EVT-123',
+        InternalNote: 'retained internal note',
+      },
     });
     expect(response.status()).toBe(201);
-    await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${EVENT_BEHAVIOUR_CASE_REFERENCE}(?:$|#)`));
+    await expect(page).toHaveURL(
+      new RegExp(
+        `/cases/case-details/${EVENT_BEHAVIOUR_JURISDICTION}/${EVENT_BEHAVIOUR_CASE_TYPE}/${EVENT_BEHAVIOUR_CASE_REFERENCE}(?:$|#)`
+      )
+    );
     await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
     await expect(caseDetailsPage.checkYourAnswersHeading).toBeHidden();
   });

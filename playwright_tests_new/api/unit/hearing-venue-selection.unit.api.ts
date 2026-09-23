@@ -54,6 +54,12 @@ test.describe('hearing venue autocomplete ownership', { tag: '@svc-internal' }, 
     expect(await new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel())).toBe('Basingstoke County Court');
   });
 
+  test('waits for a delayed autocomplete association', async ({ page }) => {
+    test.setTimeout(35_000);
+    await page.setContent(hearingVenueSelectionMarkup({ delayedAssociation: true }));
+    expect(await new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel())).toBe('Basingstoke County Court');
+  });
+
   test('still rejects an added tag that does not match the requested venue', async ({ page }) => {
     await page.setContent(hearingVenueSelectionMarkup({ wrongSelection: true }));
     await expect(new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel())).rejects.toThrow(

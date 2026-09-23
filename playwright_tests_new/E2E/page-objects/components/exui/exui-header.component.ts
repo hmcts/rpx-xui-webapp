@@ -190,7 +190,8 @@ export class ExuiHeaderComponent {
     const target = this.resolveLanguageTarget(language);
     await this.languageToggle.waitFor({ state: 'visible' });
     const toggleText = ((await this.languageToggle.textContent()) ?? '').trim();
-    if (!toggleText.includes(target.label)) {
+    const expectedToggleLabel = this.getExpectedRenderState(target.code).toggleLabel;
+    if (toggleText.includes(expectedToggleLabel)) {
       logger.debug(`Language is already set to ${target.label}`, { language: target.label });
       if (waitForTranslatedContent) {
         await this.waitForRenderedLanguageState(language);

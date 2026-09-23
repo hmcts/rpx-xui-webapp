@@ -79,6 +79,21 @@ test.describe(
             await expect(removeButton).toBeDisabled();
           }
         });
+
+        if (scenario.displayContextParameter === '#COLLECTION(allowInsert,allowDelete)') {
+          await test.step('Add and remove a collection row without disturbing the seeded row', async () => {
+            const removeButtons = createCasePage.additionalPeople.getByRole('button', { name: /Remove/ });
+            await expect(removeButtons).toHaveCount(1);
+
+            await createCasePage.addNewPersonButton.first().click();
+            await expect(removeButtons).toHaveCount(2);
+
+            await removeButtons.nth(1).click();
+            await page.getByRole('button', { name: 'Remove', exact: true }).last().click();
+            await expect(removeButtons).toHaveCount(1);
+            await expect(createCasePage.additionalPeople.getByLabel('First Name (Optional)', { exact: true })).toHaveValue('Ada');
+          });
+        }
       });
     }
   }

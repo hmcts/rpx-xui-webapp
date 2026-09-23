@@ -2,9 +2,12 @@ import { expect, test } from '../../../E2E/fixtures';
 import { openEventBehaviourJourney } from '../../helpers';
 import {
   EVENT_BEHAVIOUR_CASE_REFERENCE,
+  EVENT_BEHAVIOUR_CASE_TYPE,
+  EVENT_BEHAVIOUR_JURISDICTION,
   EVENT_BEHAVIOUR_EVENT_TOKEN,
   EVENT_BEHAVIOUR_TRIGGER_ID,
   EVENT_BEHAVIOUR_TRIGGER_NAME,
+  buildEventBehaviourTrigger,
 } from '../../mocks/eventBehaviour.mock';
 
 test.describe('Event behaviour integration', { tag: ['@integration', '@integration-event-behaviour'] }, () => {
@@ -84,7 +87,11 @@ test.describe('Event behaviour integration', { tag: ['@integration', '@integrati
       ])
     );
 
-    await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${EVENT_BEHAVIOUR_CASE_REFERENCE}(?:$|#)`));
+    await expect(page).toHaveURL(
+      new RegExp(
+        `/cases/case-details/${EVENT_BEHAVIOUR_JURISDICTION}/${EVENT_BEHAVIOUR_CASE_TYPE}/${EVENT_BEHAVIOUR_CASE_REFERENCE}(?:$|#)`
+      )
+    );
     await expect(page.getByText(/has been updated with event: Record outcome/)).toBeVisible();
     await caseDetailsPage.selectCaseDetailsTab('Activity and history');
     const eventRow = caseDetailsPage.historyTable.getByRole('row', { name: new RegExp(EVENT_BEHAVIOUR_TRIGGER_NAME) });
@@ -113,5 +120,62 @@ test.describe('Event behaviour integration', { tag: ['@integration', '@integrati
     await expect(page.getByLabel('Decision reference')).toBeVisible();
     await expect(page.getByLabel('Internal note')).toBeHidden();
     await expect(page.getByText('Use the format EVT-123')).toBeVisible();
+  });
+
+  test('cancels the event wizard without submitting an event', async ({ caseDetailsPage, page }) => {
+    await openEventBehaviourJourney(page, caseDetailsPage);
+    await caseDetailsPage.selectCaseAction(EVENT_BEHAVIOUR_TRIGGER_NAME, {
+      expectedLocator: page.getByLabel('Outcome type'),
+    });
+    await page.getByLabel('Outcome type').selectOption({ label: 'Approved' });
+
+    const submittedEvents: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes(`/data/cases/${EVENT_BEHAVIOUR_CASE_REFERENCE}/events`) && request.method() === 'POST') {
+        submittedEvents.push(request.url());
+      }
+    });
+
+    await page.getByRole('link', { name: 'Cancel', exact: true }).click();
+
+    await expect(page).toHaveURL(
+      new RegExp(
+        `/cases/case-details/${EVENT_BEHAVIOUR_JURISDICTION}/${EVENT_BEHAVIOUR_CASE_TYPE}/${EVENT_BEHAVIOUR_CASE_REFERENCE}(?:$|#)`
+      )
+    );
+    await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
+    expect(submittedEvents).toHaveLength(0);
+  });
+
+  test('submits directly when the event does not show a summary page', async ({ caseDetailsPage, page }) => {
+    await openEventBehaviourJourney(page, caseDetailsPage, {
+      trigger: buildEventBehaviourTrigger({ showSummary: false }),
+    });
+    await caseDetailsPage.selectCaseAction(EVENT_BEHAVIOUR_TRIGGER_NAME, {
+      expectedLocator: page.getByLabel('Outcome type'),
+    });
+    await page.getByLabel('Outcome type').selectOption({ label: 'Approved' });
+    await caseDetailsPage.continueCaseEvent();
+    await page.getByLabel('Decision reference').fill('EVT-123');
+
+    const submitRequest = page.waitForRequest(
+      (request) => request.url().includes(`/data/cases/${EVENT_BEHAVIOUR_CASE_REFERENCE}/events`) && request.method() === 'POST'
+    );
+    const submitResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(`/data/cases/${EVENT_BEHAVIOUR_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
+    );
+    await caseDetailsPage.submitCaseEvent();
+    const request = await submitRequest;
+    const response = await submitResponse;
+
+    expect(request.postDataJSON()).toMatchObject({
+      event_token: EVENT_BEHAVIOUR_EVENT_TOKEN,
+      data: { OutcomeType: 'approved', DecisionReference: 'EVT-123' },
+    });
+    expect(response.status()).toBe(201);
+    await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${EVENT_BEHAVIOUR_CASE_REFERENCE}(?:$|#)`));
+    await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
+    await expect(caseDetailsPage.checkYourAnswersHeading).toBeHidden();
   });
 });

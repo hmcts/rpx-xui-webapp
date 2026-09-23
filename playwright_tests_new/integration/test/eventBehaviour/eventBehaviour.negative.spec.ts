@@ -68,6 +68,39 @@ test.describe('Event behaviour integration failures', { tag: ['@integration', '@
     await expect(page.getByLabel('Decision reference')).toBeHidden();
   });
 
+  test('shows a server error for mid-event validation and does not submit the event', async ({ caseDetailsPage, page }) => {
+    await openEventBehaviourJourney(page, caseDetailsPage, {
+      midEventValidation: {
+        status: 500,
+        body: { message: 'Mid-event validation failed' },
+      },
+    });
+    await caseDetailsPage.selectCaseAction(EVENT_BEHAVIOUR_TRIGGER_NAME, {
+      expectedLocator: page.getByLabel('Outcome type'),
+    });
+
+    const submittedEvents: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes(`/data/cases/${EVENT_BEHAVIOUR_CASE_REFERENCE}/events`) && request.method() === 'POST') {
+        submittedEvents.push(request.url());
+      }
+    });
+
+    const validationResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(`/data/case-types/${EVENT_BEHAVIOUR_CASE_TYPE}/validate`) &&
+        response.request().method() === 'POST' &&
+        response.status() === 500
+    );
+    await caseDetailsPage.continueCaseEvent();
+    await validationResponse;
+
+    await expect(caseDetailsPage.generalProblemHeading).toBeVisible();
+    await expect(page.getByLabel('Outcome type')).toBeVisible();
+    await expect(page.getByLabel('Decision reference')).toBeHidden();
+    expect(submittedEvents).toHaveLength(0);
+  });
+
   for (const [status, message] of [
     [500, 'event-submit-failed'],
     [403, 'event-submit-forbidden'],

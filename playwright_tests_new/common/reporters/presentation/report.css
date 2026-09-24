@@ -58,7 +58,8 @@ body#body-content {
   min-height: 100%;
   background: var(--report-bg);
   color: var(--report-ink);
-  overflow-x: auto !important;
+  overflow-x: clip !important;
+  overflow-y: visible !important;
 }
 #body-content,
 #body-content * {
@@ -83,7 +84,9 @@ body#body-content {
   background: linear-gradient(115deg, #17223c, #292351 70%, #34336b);
   padding: 12px clamp(8px, 2vw, 32px) 0 !important;
   box-shadow: 0 4px 24px #16213a16;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
 }
 #body-content .report-title {
   font-size: clamp(19px, 2vw, 27px) !important;
@@ -846,4 +849,82 @@ body#body-content {
   background: var(--report-soft);
   color: var(--report-ink);
   font-weight: 700;
+}
+
+/* Keep attention on features and nonzero results without changing report data. */
+#body-content .report-panel:has(#odhin-feature-summary) {
+  order: -1;
+}
+#body-content .report-redundant-chart {
+  display: none !important;
+}
+#body-content .report-panel .table-borderless canvas {
+  max-width: 120px;
+  max-height: 120px;
+}
+#body-content #TabDashboard td.report-zero {
+  background: var(--report-surface) !important;
+  color: var(--report-muted) !important;
+  font-size: 0 !important;
+  box-shadow: none;
+}
+#body-content #TabDashboard td.report-zero * {
+  font-size: 0 !important;
+}
+#body-content #TabDashboard td.report-zero::after {
+  content: '—';
+  font-size: 16px;
+}
+#body-content .report-test-scroll {
+  max-height: 65vh;
+  overflow: auto;
+}
+#body-content #test-list-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--report-surface);
+}
+.test-detail-navigation {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+/* Use depth and a single accent to establish hierarchy without competing with results. */
+.report-metric {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 24px #15213d08;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+.report-metric:hover {
+  border-color: var(--report-accent);
+  box-shadow: 0 10px 28px #15213d14;
+}
+.report-metric.metric-0 {
+  background: radial-gradient(ellipse at top right, #a095ff66, transparent 65%), linear-gradient(125deg, #4131b6, #7160e5);
+  box-shadow: 0 8px 24px #5146d92b;
+}
+#body-content .report-panel:has(#odhin-feature-summary) > .odhin-thin-border {
+  border-top: 3px solid var(--report-accent);
+}
+#body-content .report-panel:has(#odhin-feature-summary) .info-box-header {
+  background: linear-gradient(100deg, color-mix(in srgb, var(--report-accent) 9%, var(--report-surface)), var(--report-surface));
+}
+#body-content .feature-toggle {
+  color: var(--report-ink);
+  font-weight: 700;
+}
+#body-content .feature-toggle:hover {
+  color: var(--report-accent);
+}
+#body-content .test-detail-navigation {
+  box-shadow: 0 4px 18px #15213d0c;
+}
+#body-content .tab button.active {
+  box-shadow: inset 0 3px 0 var(--report-accent);
 }

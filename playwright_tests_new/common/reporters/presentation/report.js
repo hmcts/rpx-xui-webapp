@@ -110,6 +110,9 @@
       0
     );
     const attention = count('failed') + count('timedOut') + count('interrupted') + count('flaky');
+    if (total > 0 && passed === total) {
+      summary.querySelector('#chart-status').closest('table').parentElement.classList.add('report-redundant-chart');
+    }
     const duration = cards[0]?.querySelector('tr:last-child td')?.textContent.trim() || '—';
     const metrics = document.createElement('section');
     metrics.className = 'report-metrics';
@@ -136,6 +139,15 @@
     });
     dashboard.before(metrics);
   }
+
+  // Decorate only dashboard status totals; keep native text for charts and filtering.
+  document
+    .querySelectorAll('#TabDashboard td[class*="result-status-"], #TabDashboard td[class*="chart-status-"]')
+    .forEach((cell) => {
+      if (!/^0(?:\s*\(0(?:\.0+)?%\)|(?:\.0+)?%)?$/.test(cell.textContent.trim())) return;
+      cell.classList.add('report-zero');
+      cell.setAttribute('aria-label', cell.textContent.trim());
+    });
 
   // Make native div-based controls operable with the keyboard without replacing their handlers.
   [
@@ -175,6 +187,9 @@ if (window.jQuery)
   $(document).ready(() => {
     if (!document.querySelector('#test-list-table')) return;
     const table = $('#test-list-table').DataTable();
+    $('#test-list-table').wrap(
+      '<div class="report-test-scroll" role="region" aria-label="Scrollable test results" tabindex="0"></div>'
+    );
     // The native initializer sets 100 rows; keep any explicit saved page length.
     const durationColumn = table
       .columns()
@@ -194,7 +209,7 @@ if (window.jQuery)
         navigation.setAttribute('aria-label', 'Test navigation');
         const back = document.createElement('button');
         back.type = 'button';
-        back.textContent = '← Back to tests';
+        back.textContent = '← Back to filtered results';
         back.dataset.bsDismiss = 'modal';
         const position = document.createElement('span');
         position.setAttribute('aria-live', 'polite');

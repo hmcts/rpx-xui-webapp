@@ -9,9 +9,23 @@ const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
-    // Odhín embeds attachments by default, which can exceed V8's string limit after retried browser failures.
-    // Keep the files beside the published report; callers can explicitly opt back into embedding for a small local run.
-    const reporterOptions = { embedAttachments: false, ...options };
+    // Keep traces and screenshots beside the published report; never serialize them into Odhín HTML.
+    const reporterOptions = {
+      ...options,
+      embedAttachments: false,
+      testListColumns: [
+        ...new Set([
+          ...String(options.testListColumns ?? '')
+            .toUpperCase()
+            .split(',')
+            .map((column) => column.trim())
+            .filter(Boolean),
+          'PROJECT',
+          'FILE',
+        ]),
+      ],
+    };
+    this.testMetadata = [];
     this.outputFolder = reporterOptions.outputFolder;
     const configuredLightweight = reporterOptions.lightweight;
     const envLightweight = process.env.PW_ODHIN_LIGHTWEIGHT;
@@ -114,6 +128,13 @@ class OdhinAdaptiveReporter {
       }
     }
 
+    this.testMetadata.push({
+      target: `#${test.id}-${result.retry}`,
+      feature: deriveFeatureName(test?.location?.file),
+      tags: test.tags ?? [],
+      durationMs: result.duration || 0,
+      retry: result.retry,
+    });
     this.recordStatus(result?.status);
     this.recordFeatureStat(test, result);
     this.enqueueInnerCallback('onTestEnd', () => this.inner.onTestEnd(test, nextResult), { test });
@@ -141,7 +162,7 @@ class OdhinAdaptiveReporter {
       }
     }
     try {
-      enhanceGeneratedReport(this.outputFolder, this.featureStats);
+      enhanceGeneratedReport(this.outputFolder, this.featureStats, this.testMetadata);
     } catch (error) {
       process.stderr.write(`[odhin-profile] report enhancement failed: ${formatErrorMessage(error)}\n`);
     }

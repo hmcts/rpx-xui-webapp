@@ -7,6 +7,12 @@ const enhancerModule = require('../../common/reporters/odhin-report-enhancer.cjs
 
 const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: string) => { name: string; totalTests: number };
 const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
+const enhanceDashboardHtml = enhancerModule.enhanceDashboardHtml as (
+  html: string,
+  featureStats: unknown[],
+  evidenceEntries: unknown[],
+  perfettoFiles: string[]
+) => string;
 
 const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
   addFailureSource: (
@@ -31,7 +37,44 @@ const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
 };
 
 test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
-  test('externalises attachments by default and preserves an explicit embedding override', () => {
+  test('links external Perfetto files even when no dashboard extensions are present', () => {
+    const html = enhanceDashboardHtml('<html><body><main>Tests</main></body></html>', [], [], ['perfetto.json']);
+
+    expect(html).toContain('href="../test-results/perfetto.json"');
+  });
+
+  test('preserves native optional columns for string and array configurations', () => {
+    for (const testListColumns of ['group,retry', ['GROUP', 'RETRY']]) {
+      let configured: string[] = [];
+      new OdhinAdaptiveReporter({
+        testListColumns,
+        createInnerReporter: (options: { testListColumns: string[] }) => {
+          configured = options.testListColumns;
+          return {};
+        },
+      });
+      expect(configured).toEqual(['GROUP', 'RETRY', 'PROJECT', 'FILE']);
+    }
+  });
+
+  test('keeps retry metadata keyed to the Odhín modal target without altering final feature totals', async () => {
+    const reporter = new OdhinAdaptiveReporter({ createInnerReporter: () => ({ onTestEnd() {} }), lightweight: true });
+    const testCase = {
+      id: 'project-scoped-id',
+      retries: 1,
+      tags: ['@integration'],
+      location: { file: '/tmp/playwright_tests_new/integration/test/hearings/details.spec.ts' },
+    };
+    await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 2000 });
+    await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 1000 });
+    expect(reporter.testMetadata).toEqual([
+      { target: '#project-scoped-id-0', feature: 'hearings', tags: ['@integration'], retry: 0, durationMs: 2000 },
+      { target: '#project-scoped-id-1', feature: 'hearings', tags: ['@integration'], retry: 1, durationMs: 1000 },
+    ]);
+    expect(reporter.featureStats.get('hearings')).toMatchObject({ totalTests: 1, flaky: 1, failed: 0 });
+  });
+
+  test('always externalises attachments, including when embedding is requested', () => {
     const receivedOptions: Array<Record<string, unknown>> = [];
     const createInnerReporter = (options: Record<string, unknown>) => {
       receivedOptions.push(options);
@@ -42,7 +85,7 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     new OdhinAdaptiveReporter({ createInnerReporter, embedAttachments: true });
 
     expect(receivedOptions[0]?.embedAttachments).toBe(false);
-    expect(receivedOptions[1]?.embedAttachments).toBe(true);
+    expect(receivedOptions[1]?.embedAttachments).toBe(false);
   });
 
   test('adds an explicit source to session-capture setup failures before Odhín renders them', () => {

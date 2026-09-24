@@ -500,7 +500,7 @@ export class CreateCasePage extends Base {
       waitForSpinnerToComplete: (spinnerContext, spinnerTimeoutMs) =>
         this.waitForSpinnerToComplete(spinnerContext, spinnerTimeoutMs),
       assertNoEventCreationError: (errorContext) => this.assertNoEventCreationError(errorContext),
-      checkForErrorMessage: () => this.checkForErrorMessage(),
+      checkForErrorMessage: (timeoutMs) => this.checkForErrorMessage(undefined, timeoutMs),
       getValidationErrorText: () => this.getValidationErrorText(),
       failFastOnCriticalWizardEndpointFailure: (failureContext, baselineIndex) =>
         this.failFastOnCriticalWizardEndpointFailure(failureContext, baselineIndex),
@@ -605,24 +605,41 @@ export class CreateCasePage extends Base {
     await this.ensureWizardAdvanced(context, initialUrl, options);
   }
 
-  async clickContinueMultipleTimes(count: number) {
+  async clickContinueMultipleTimes(count: number, finalStepLocator: Locator) {
     for (let i = 0; i < count; i++) {
+      const context = `after continue ${i + 1} of ${count}`;
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
       if (!visibleContinueButton) {
-        logger.info('Continue button not visible; stopping early', {
-          iteration: i + 1,
-          total: count,
-        });
-        break;
+        throw new Error(`Continue button not visible ${context}`);
       }
-      await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, {
-        continueButton: visibleContinueButton,
-      });
+      const initialPath = this.normalizePath(this.page.url());
+      const wizardPath = initialPath.slice(0, initialPath.lastIndexOf('/') + 1);
+      const apiCallsBaseline = this.getApiCalls().length;
+      try {
+        await this.clickContinueAndWait(context, { continueButton: visibleContinueButton });
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+        await this.page.waitForURL((url) => url.pathname.startsWith(wizardPath) && url.pathname !== initialPath, {
+          timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT,
+          waitUntil: 'commit',
+        });
+        if (i === count - 1) {
+          await finalStepLocator.waitFor({ state: 'attached', timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT });
+        } else {
+          await this.continueButton.filter({ visible: true }).first().waitFor({
+            state: 'visible',
+            timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT,
+          });
+        }
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+      } catch (error) {
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+        throw error;
+      }
       logger.info('Clicked continue button', { iteration: i + 1, total: count });
     }
   }
 
-  async checkForErrorMessage(message?: string, timeout = EXUI_TIMEOUTS.VALIDATION_ERROR_VISIBLE): Promise<boolean> {
+  async checkForErrorMessage(message?: string, timeout: number = EXUI_TIMEOUTS.VALIDATION_ERROR_VISIBLE): Promise<boolean> {
     const check = async (sel: Locator) => {
       try {
         await sel.waitFor({ state: 'visible', timeout });

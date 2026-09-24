@@ -3,10 +3,11 @@ import { HearingsJourneyPage } from '../../E2E/page-objects/pages/exui/hearingsJ
 import { createHearingJourneyModel } from '../../E2E/testData/hearings/hearingJourneyScenarios';
 import { hearingVenueSelectionMarkup } from '../../integration/mocks/hearing-venue-selection.mock';
 
+const MISSING_ASSOCIATION_TIMEOUT_MS = 2_000;
+const DELAYED_ASSOCIATION_TIMEOUT_MS = 5_000;
+
 test.describe('hearing venue autocomplete ownership', { tag: '@svc-internal' }, () => {
   test.use({ viewport: { width: 800, height: 480 }, actionTimeout: 1500 });
-  test.setTimeout(5000);
-
   test('selects the associated panel when an unrelated matching option is outside the viewport', async ({ page }) => {
     await page.setContent(hearingVenueSelectionMarkup({ stalePanel: true }));
     const stale = page.locator('#unrelated-options [role=option]');
@@ -24,9 +25,11 @@ test.describe('hearing venue autocomplete ownership', { tag: '@svc-internal' }, 
 
   test('fails closed when the input has no associated panel', async ({ page }) => {
     await page.setContent(hearingVenueSelectionMarkup({ missingAssociation: true }));
-    await expect(new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel())).rejects.toThrow(
-      'Hearing venue input did not expose an associated autocomplete panel.'
-    );
+    await expect(
+      new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel(), {
+        autocompleteTimeoutMs: MISSING_ASSOCIATION_TIMEOUT_MS,
+      })
+    ).rejects.toThrow('Hearing venue input did not expose an associated autocomplete panel.');
     await expect(page.getByRole('link', { name: /^Click to remove:/ })).toHaveCount(1);
   });
 
@@ -38,11 +41,12 @@ test.describe('hearing venue autocomplete ownership', { tag: '@svc-internal' }, 
   });
 
   test('reports associated no-results rather than clicking an unrelated matching option', async ({ page }) => {
-    test.setTimeout(35_000); // Preserve the helper's bounded 30-second wait for a matching search response.
     await page.setContent(hearingVenueSelectionMarkup({ noResults: true, stalePanel: true }));
-    await expect(new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel())).rejects.toThrow(
-      'Location search for "Basingstoke" returned "No results found".'
-    );
+    await expect(
+      new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel(), {
+        autocompleteTimeoutMs: MISSING_ASSOCIATION_TIMEOUT_MS,
+      })
+    ).rejects.toThrow('Location search for "Basingstoke" returned "No results found".');
     await expect(page.getByRole('link', { name: /^Click to remove:/ })).toHaveCount(1);
   });
 
@@ -54,6 +58,15 @@ test.describe('hearing venue autocomplete ownership', { tag: '@svc-internal' }, 
   test('waits through a previous empty response until the current venue result arrives', async ({ page }) => {
     await page.setContent(hearingVenueSelectionMarkup({ delayedResults: true }));
     expect(await new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel())).toBe('Basingstoke County Court');
+  });
+
+  test('waits for a delayed autocomplete association', async ({ page }) => {
+    await page.setContent(hearingVenueSelectionMarkup({ delayedAssociation: true }));
+    expect(
+      await new HearingsJourneyPage(page).setHearingVenue(createHearingJourneyModel(), {
+        autocompleteTimeoutMs: DELAYED_ASSOCIATION_TIMEOUT_MS,
+      })
+    ).toBe('Basingstoke County Court');
   });
 
   test('still rejects an added tag that does not match the requested venue', async ({ page }) => {

@@ -1,7 +1,8 @@
 .case-list-component {
   .search-block {
     clear: both;
-    overflow: hidden;
+    display: flow-root;
+    overflow: visible;
     .filter-block {
       float: left;
       width: 22%;

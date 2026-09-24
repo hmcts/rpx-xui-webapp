@@ -4,7 +4,7 @@
   --report-surface: #fff;
   --report-soft: #f7f9fc;
   --report-ink: #19243b;
-  --report-muted: #586780;
+  --report-muted: #47566e;
   --report-line: #e0e6f0;
   --report-accent: #5146d9;
   --odhin-border-radius: 12px;
@@ -35,7 +35,7 @@
   --report-surface: #182133;
   --report-soft: #1e2a40;
   --report-ink: #e5eaf5;
-  --report-muted: #a5b3cd;
+  --report-muted: #bdc9df;
   --report-line: #30405b;
   --report-accent: #b0a8ff;
   --odhin-passed-status-color: #7adbb1;
@@ -70,7 +70,8 @@ body#body-content {
     sans-serif;
 }
 #body-content {
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
   line-height: 1.5;
 }
 #body-content pre,
@@ -86,14 +87,14 @@ body#body-content {
 }
 #body-content .report-title {
   font-size: clamp(19px, 2vw, 27px) !important;
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: -0.6px;
 }
 .report-title::before {
   content: 'ODHÍN / AUTOMATION REPORT';
   display: block;
-  font-size: 10px;
-  letter-spacing: 2.2px;
+  font-size: 14px;
+  letter-spacing: 1.6px;
   color: #b9b6ef;
   margin-bottom: 8px;
 }
@@ -104,6 +105,7 @@ body#body-content {
   overflow-x: auto;
 }
 #body-content .tab button {
+  font-size: 16px;
   float: none;
   white-space: nowrap;
   padding: 12px 20px;
@@ -175,8 +177,8 @@ body#body-content {
   justify-content: space-between;
   gap: 12px;
   padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 650;
+  font-size: 18px;
+  font-weight: 700;
   border-bottom: 1px solid var(--report-line);
 }
 .panel-expand {
@@ -213,14 +215,14 @@ body#body-content {
 }
 #body-content .table > :not(caption) > * > * {
   padding: 10px 12px !important;
-  font-size: 13px !important;
+  font-size: 16px !important;
   vertical-align: middle;
   border-color: var(--report-line);
 }
 #body-content .table th {
-  color: var(--report-muted);
-  font-size: 11px !important;
-  font-weight: 650;
+  color: var(--report-ink);
+  font-size: 14px !important;
+  font-weight: 700;
   white-space: nowrap;
 }
 #body-content .table .fst-italic {
@@ -266,19 +268,19 @@ body#body-content {
   border-radius: 16px;
 }
 .report-metric span:first-child {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--report-muted);
 }
 .report-metric strong {
   font-size: clamp(27px, 3vw, 40px);
   line-height: 1.15;
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: -1.5px;
   overflow-wrap: anywhere;
 }
 .report-metric span:last-child {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--report-muted);
 }
 .report-metric.metric-0 {
@@ -400,7 +402,7 @@ body#body-content {
   flex-direction: column;
   gap: 7px;
   color: var(--report-muted);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 #body-content .report-filters select {
@@ -423,7 +425,7 @@ body#body-content {
   border: 1px solid #797499;
   border-radius: 8px;
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 14px;
 }
 #body-content .tab .report-density[aria-pressed='true'] {
   background: #ffffff20;
@@ -455,6 +457,7 @@ body#body-content {
     gap: 4px;
   }
   #body-content .tab button {
+    font-size: 16px;
     padding: 10px 12px;
   }
   #body-content .tab .report-density {
@@ -601,7 +604,7 @@ body#body-content {
   border: 1px solid #797499;
   border-radius: 8px;
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 14px;
 }
 @media (max-width: 650px) {
   #body-content .tab {
@@ -672,7 +675,7 @@ body#body-content {
 .test-detail-navigation span {
   flex: 1;
   text-align: center;
-  font-size: 13px;
+  font-size: 14px;
 }
 .test-detail-navigation button {
   border: 1px solid var(--report-line);
@@ -738,7 +741,7 @@ body#body-content {
 }
 .feature-tests li span {
   color: var(--report-muted);
-  font-size: 12px;
+  font-size: 14px;
   overflow-wrap: anywhere;
 }
 
@@ -818,4 +821,29 @@ body#body-content {
 }
 #body-content .report-panel:has(#chart-status) .odhin-table td {
   vertical-align: top;
+}
+
+/* Keep native report details and controls at the same readable text scale. */
+#body-content :is(input, select, textarea) {
+  font-size: 16px;
+  font-weight: 500;
+}
+#body-content
+  :is(
+    .small,
+    small,
+    .odhin-feature-overview-card-label,
+    .odhin-feature-overview-largest-title,
+    .odhin-feature-overview-largest-note
+  ) {
+  font-size: 14px;
+}
+#body-content :is(.test-detail-link, .perfetto-file a, .perfetto-open, .trace-open) {
+  font-weight: 600;
+}
+
+#body-content .odhin-a11y-issue-summary h2 {
+  background: var(--report-soft);
+  color: var(--report-ink);
+  font-weight: 700;
 }

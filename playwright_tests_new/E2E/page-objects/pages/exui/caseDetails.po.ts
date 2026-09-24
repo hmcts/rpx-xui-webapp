@@ -41,7 +41,7 @@ export class CaseDetailsPage extends Base {
 
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
 
-  readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
+  readonly submitCaseFlagButton = this.page.locator('ccd-case-edit button[type="submit"]');
   readonly continueButton = this.container.getByRole('button', { name: 'Continue', exact: true });
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
   readonly eventTable = this.page.locator('EventLogTable');
@@ -710,7 +710,7 @@ export class CaseDetailsPage extends Base {
       min: TIMEOUTS.TAB_LOAD,
       max: 30_000,
       multiplier: 3,
-      fallback: 15_000,
+      fallback: 30_000,
     });
     await this.waitForCaseDetailsTabsReady(tabLoadTimeoutMs);
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);

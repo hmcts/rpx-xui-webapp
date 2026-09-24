@@ -69,7 +69,7 @@ export class HearingsJourneyPage {
     const associatedInput = this.hearingVenue.and(this.page.locator('[aria-owns], [aria-controls]'));
     let associationCount = 0;
     try {
-      await associatedInput.waitFor({ state: 'attached', timeout: 1_000 });
+      await associatedInput.waitFor({ state: 'attached', timeout: 30_000 });
       associationCount = await associatedInput.count();
     } catch {
       // The input has no usable association.

@@ -1,4 +1,7 @@
-$govuk-global-styles: true;
+@use 'govuk-frontend/dist/govuk' as * with (
+  $govuk-global-styles: true
+);
+
 $hmcts-images-path: '/assets/images/';
 
 // Width of main container
@@ -39,6 +42,12 @@ body .govuk-width-container {
   float: right;
 }
 
+.govuk-notification-banner__header {
+  // govuk-frontend v6 defaults this to the brand (blue) colour; pinned to the
+  // same old v5 red used for .hmcts-banner--warning so this banner stays red
+  background-color: #d4351c;
+}
+
 .govuk-notification-banner__header .close {
   float: right;
   color: #fff;
@@ -46,7 +55,6 @@ body .govuk-width-container {
   cursor: pointer;
 }
 
-@import 'govuk-frontend/dist/govuk/all';
 @import '../../../style/hmcts-frontend';
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend

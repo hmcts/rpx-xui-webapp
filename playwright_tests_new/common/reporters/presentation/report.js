@@ -586,21 +586,36 @@ document.querySelectorAll('.perfetto-open').forEach((button) => {
     let interval;
     let timeout;
     try {
+      let cancellationError;
+      let perfettoReady = false;
       const ready = new Promise((resolve, reject) => {
+        const cancelOperation = (message) => {
+          cancellationError = new Error(message);
+          controller.abort();
+          reject(cancellationError);
+        };
         onMessage = (event) => {
-          if (event.origin === origin && event.source === popup && event.data === 'PONG') resolve();
+          if (event.origin === origin && event.source === popup && event.data === 'PONG') {
+            perfettoReady = true;
+            resolve();
+          }
         };
         window.addEventListener('message', onMessage);
         interval = setInterval(() => {
-          if (popup.closed) reject(new Error('Perfetto was closed.'));
+          if (popup.closed) cancelOperation('Perfetto was closed.');
           else popup.postMessage('PING', origin);
         }, 250);
-        timeout = setTimeout(() => reject(new Error('Perfetto did not respond.')), 30_000);
+        timeout = setTimeout(
+          () => cancelOperation(perfettoReady ? 'Trace download did not finish.' : 'Perfetto did not respond.'),
+          30_000
+        );
       });
       const [buffer] = await Promise.all([
         fetch(download.href, { signal: controller.signal }).then((response) => {
           if (!response.ok) throw new Error(`Trace download failed (${response.status}).`);
           return response.arrayBuffer();
+        }).catch((error) => {
+          throw cancellationError || error;
         }),
         ready,
       ]);

@@ -42,4 +42,5 @@ export * from './welshLanguageSession.helper';
 export * from './welshLanguageAssertions.helper';
 export * from './caseShareMockRoutes.helper';
 export * from './platformServicesMockRoutes.helper';
+export * from './restrictedCaseAccessContainer.helper';
 export * from './caseDetailsEventErrors.helper';

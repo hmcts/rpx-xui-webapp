@@ -1,0 +1,306 @@
+import { Locator, Page } from '@playwright/test';
+import { AdditionalFacility, HearingJourneyModel, HearingMethod, TypeOfJudges } from '../../../utils/hearing-model.ts';
+import { normaliseWhitespace } from '../../../utils/text.utils.ts';
+
+export class HearingsJourneyPage {
+  constructor(private readonly page: Page) {}
+
+  readonly container = this.page.locator('exui-case-hearings-ce');
+  readonly additionalSecurityYes = this.page.locator('#addition-security-confirmation #additionalSecurityYes');
+  readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
+  readonly facilitiesCheckbox = (facility: string) =>
+    this.page.locator(`#facilitiesList .govuk-checkboxes__input[value="${facility}"]`);
+
+  readonly locationAutocomplete = this.page.locator('.mat-autocomplete-trigger');
+
+  readonly hearingStageRadioButton = this.page.locator('#hearing-stage .govuk-radios__item');
+  readonly paperHearingYes = this.page.locator('#addition-security-confirmation  .govuk-radios__item #paperHearingYes');
+  readonly paperHearingNo = this.page.locator('#addition-security-confirmation  .govuk-radios__item #paperHearingNo');
+
+  // #methodsOfAttendance
+  readonly hearingInPerson = this.page.locator('#hearingLevelChannelList #INTER');
+  readonly hearingOnTelephone = this.page.locator('#hearingLevelChannelList #TEL');
+  readonly hearingViaVideo = this.page.locator('#hearingLevelChannelList #VID');
+
+  // How will each Participant attend the wedding?
+  readonly firstParty = this.page.locator('#partyChannel0');
+  readonly secondParty = this.page.locator('#partyChannel1');
+  readonly participantAttendanceSelects = this.page.locator('select[id^="partyChannel"]');
+
+  // How Many attending
+  // attendance-number
+  readonly numberAttendingHearing = this.page.locator('#attendance-number');
+  readonly hearingVenue = this.page.locator('#searchVenueLocation');
+
+  readonly hearingInWelshNo = this.page.locator('#welsh_hearing_no');
+  readonly hearingInWelshYes = this.page.locator('#welsh_hearing_yes');
+
+  readonly noSpecificJudgeRadio = this.page.locator('#noSpecificJudge');
+  readonly specificJudgeRadio = this.page.locator('#specificJudgeName');
+
+  readonly hearingPriority = this.page.locator('#hearingPriority');
+
+  readonly textField0FallbackInput = this.page.locator('input[id*="no"]').first();
+
+  readonly additionalInstructions = this.page.locator('#additionalInstructionsTextarea');
+
+  readonly selectAllJudgesThatApply = this.page.locator('.govuk-fieldset .govuk-fieldset__legend').nth(1);
+
+  // lengthOfHearing
+  readonly durationDays = this.page.locator('#durationdays');
+  readonly durationHours = this.page.locator('#durationhours');
+  readonly durationMinutes = this.page.locator('#durationmins');
+
+  readonly specificDateNo: Locator = this.page.locator('#noSpecificDate');
+  readonly specificDateYes: Locator = this.page.locator('#hearingSingleDate');
+  readonly specificDateRange: Locator = this.page.locator('#hearingDateRange');
+
+  readonly hearingLinkInformation = this.page.locator('.govuk-inset-text').first();
+  readonly submitRequestButton = this.page.getByRole('button', { name: 'Submit request' });
+
+  readonly hearingPriorityStandard: Locator = this.page.locator('#hearing-priority .govuk-radios #Standard');
+  readonly hearingPriorityUrgent: Locator = this.page.locator('#hearing-priority .govuk-radios #Urgent');
+
+  readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
+  readonly selectedVenueTags = this.page.getByRole('link', { name: /^Click to remove:/ });
+
+  private async activeVenueOptions(timeoutMs = 30_000): Promise<Locator> {
+    // Material exposes aria-controls (MDC) or aria-owns (legacy) for this input's panel.
+    const associatedInput = this.hearingVenue.and(this.page.locator('[aria-owns], [aria-controls]'));
+    let associationCount = 0;
+    try {
+      await associatedInput.waitFor({ state: 'attached', timeout: timeoutMs });
+      associationCount = await associatedInput.count();
+    } catch {
+      // The input has no usable association.
+    }
+    if (associationCount === 0) {
+      throw new Error('Hearing venue input did not expose an associated autocomplete panel.');
+    }
+    const panelId = (await associatedInput.getAttribute('aria-controls')) || (await associatedInput.getAttribute('aria-owns'));
+    if (!panelId) throw new Error('Hearing venue input did not expose an associated autocomplete panel.');
+    return this.page.locator(`[role="listbox"][id=${JSON.stringify(panelId)}]`).getByRole('option');
+  }
+
+  // hearingConfirmationPAge
+  readonly hearingPanel = this.page.locator('.govuk-panel.govuk-panel--confirmation');
+
+  // hearing hearingPanelTitle & hearingPanelBody
+  readonly hearingPanelTitle = this.hearingPanel.locator('.govuk-panel__title');
+  readonly hearingPanelBody = this.hearingPanel.locator('.govuk-panel__body');
+
+  async additionalSecurityAndFacilities(model: HearingJourneyModel): Promise<void> {
+    const value = model.get('hearingFacilities', 'additionalSecurity');
+
+    await (value === 'Yes' ? this.additionalSecurityYes : this.additionalSecurityNo).click();
+
+    const facilities: AdditionalFacility[] = model.get('hearingFacilities', 'additionalFacilities') ?? [];
+    if (facilities.length === 0) {
+      throw new Error('Expected at least one additional facility to select.');
+    }
+
+    for (const facility of facilities) {
+      await this.facilitiesCheckbox(facility).check();
+    }
+  }
+
+  async setHearingStage(model: HearingJourneyModel): Promise<void> {
+    const hearingStage = model.get('hearingStage', 'stage');
+    await this.hearingStageRadioButton.first().getByLabel(`${hearingStage}`).check();
+  }
+
+  async setParticipantAttendance(model: HearingJourneyModel): Promise<void> {
+    const paperHearingYesNo = model.get('hearingAttendance', 'paperHearing');
+    const hearingMethod = model.get('hearingAttendance', 'hearingMethod') ?? [];
+
+    await (paperHearingYesNo === 'Yes' ? this.paperHearingYes : this.paperHearingNo).click();
+
+    const hearingMethodAndLocatorMap: Record<HearingMethod, Locator> = {
+      'In Person': this.hearingInPerson,
+      Telephone: this.hearingOnTelephone,
+      Video: this.hearingViaVideo,
+    };
+
+    for (const method of hearingMethod ?? []) {
+      const locator = hearingMethodAndLocatorMap[method];
+      await locator.waitFor({ state: 'visible' });
+      await locator.check();
+    }
+
+    const howIsHearingAttended = model.get('hearingAttendance', 'attendHearingHow') as string[];
+    await this.participantAttendanceSelects.first().waitFor({ state: 'visible' });
+
+    const participantCount = await this.participantAttendanceSelects.count();
+    for (let index = 0; index < participantCount; index += 1) {
+      await this.participantAttendanceSelects.nth(index).selectOption(howIsHearingAttended[index] ?? 'Not in Attendance');
+    }
+
+    const noOfPeopleAttending = model.get('hearingAttendance', 'numberOfPeopleAttendingHearing') as string;
+    await this.numberAttendingHearing.fill(noOfPeopleAttending);
+  }
+
+  /**
+   * Waits for the venue page to finish seeding the locations already held on the case.
+   *
+   * The component loads them from an async `api/prd/location/getLocationById` lookup and
+   * assigns the response over its `selectedLocations` array. Adding a venue before that
+   * response lands means the assignment overwrites (and silently drops) the new selection,
+   * which is what makes the downstream check-your-answers venue assertions to be flaky.
+   */
+  async waitForSeededVenues(expectedSeededVenue: string, timeout = 30_000): Promise<void> {
+    await this.removeLocationLink(expectedSeededVenue).waitFor({ state: 'visible', timeout });
+  }
+
+  async setHearingVenue(model: HearingJourneyModel, options: { autocompleteTimeoutMs?: number } = {}): Promise<string> {
+    const hearingVenue = model.get('hearingVenue', 'name') as string[];
+    const venueSearchTerm = hearingVenue?.[0];
+
+    if (!venueSearchTerm) {
+      throw new Error(`Expected a hearing venue search term, got: ${JSON.stringify(hearingVenue)}`);
+    }
+
+    const seededVenueCount = await this.selectedVenueTags.count();
+
+    await this.hearingVenue.scrollIntoViewIfNeeded();
+    await this.hearingVenue.pressSequentially(venueSearchTerm);
+
+    // Every keystroke fires a fresh debounced lookup that rebuilds the panel, so wait for an
+    // option that actually matches the search term rather than whatever the last in-flight
+    // response happened to render.
+    const autocompleteTimeoutMs = options.autocompleteTimeoutMs ?? 30_000;
+    const venueOptions = await this.activeVenueOptions(autocompleteTimeoutMs);
+    const venueOption = venueOptions.filter({ hasText: venueSearchTerm }).first();
+    try {
+      await venueOption.waitFor({ state: 'visible', timeout: autocompleteTimeoutMs });
+    } catch (error) {
+      if (await venueOptions.filter({ hasText: 'No results found' }).isVisible()) {
+        throw new Error(`Location search for "${venueSearchTerm}" returned "No results found".`);
+      }
+      throw error;
+    }
+
+    const expectedVenue = normaliseWhitespace(await venueOption.textContent());
+    const optionId = await venueOption.getAttribute('id');
+    if (!optionId) throw new Error('Hearing venue option did not expose its keyboard selection identity.');
+    // The component auto-activates its first result. Enter is a supported user interaction even
+    // when the associated CDK panel is outside the viewport; never select a different active result.
+    const activeOptionId = await this.hearingVenue.getAttribute('aria-activedescendant');
+    if (activeOptionId !== optionId) {
+      throw new Error(`aria-activedescendant mismatch: expected "${optionId}", but found "${activeOptionId ?? 'none'}".`);
+    }
+    await this.hearingVenue.press('Enter');
+    const selectedInputValue = normaliseWhitespace(await this.hearingVenue.inputValue());
+    if (selectedInputValue !== expectedVenue) {
+      throw new Error(`Expected hearing venue input to contain "${expectedVenue}", but found "${selectedInputValue}".`);
+    }
+    await this.addLocationsButton.click();
+
+    // Read back the tag actually added: this is the value carried into the hearing request.
+    const addedVenueTag = this.selectedVenueTags.nth(seededVenueCount);
+    await addedVenueTag.waitFor({ state: 'visible', timeout: 30_000 });
+
+    const newSelectedVenue = await this.venueTagName(addedVenueTag);
+
+    if (!newSelectedVenue) {
+      throw new Error(`Venue selected for "${venueSearchTerm}" did not expose a location name.`);
+    }
+
+    // A different court with the same search prefix is not an acceptable selection.
+    if (newSelectedVenue !== expectedVenue) {
+      throw new Error(`Expected the added venue to be "${expectedVenue}", but the page added "${newSelectedVenue}".`);
+    }
+
+    return newSelectedVenue;
+  }
+
+  /** Reads the location name from a selected venue tag, dropping its visually hidden prefix. */
+  private async venueTagName(venueTag: Locator): Promise<string> {
+    const [tagText, hiddenPrefix] = await Promise.all([
+      venueTag.textContent(),
+      venueTag
+        .locator('.sr-only')
+        .textContent()
+        .catch(() => ''),
+    ]);
+
+    return normaliseWhitespace(tagText).replace(normaliseWhitespace(hiddenPrefix), '').trim();
+  }
+
+  async isWelshHearing(model: HearingJourneyModel): Promise<void> {
+    const welshHearing = model.get('hearingDetails', 'hearingInWelsh') as string;
+    await this.hearingInWelshYes.waitFor({ state: 'visible' });
+    await (welshHearing === 'Yes' ? this.hearingInWelshYes : this.hearingInWelshNo).click();
+  }
+
+  async setJudgeOptions(model: HearingJourneyModel): Promise<void> {
+    await this.noSpecificJudgeRadio.waitFor({ state: 'visible' });
+    await this.specificJudgeRadio.waitFor({ state: 'visible' });
+
+    await this.noSpecificJudgeRadio.click();
+
+    const judgeTypes = model.get('hearingDetails', 'judgeType') as TypeOfJudges[];
+    await this.selectJudgeTypes(judgeTypes);
+  }
+
+  async setHearingDurationAndPriority(model: HearingJourneyModel): Promise<void> {
+    const specificDate = model.get('hearingDetails', 'hearingSpecificDate') as string;
+    const hearingPriority = model.get('hearingDetails', 'hearingPriority') as string;
+
+    const days = model.get('hearingDuration', 'days') as number;
+    const hours = model.get('hearingDuration', 'hours') as number;
+    const minutes = model.get('hearingDuration', 'minutes') as number;
+
+    if (days != null) {
+      await this.durationDays.fill(days.toString());
+    }
+    if (hours != null) {
+      await this.durationHours.fill(hours.toString());
+    }
+    if (minutes != null) {
+      await this.durationMinutes.fill(minutes.toString());
+    }
+
+    await this.specificDateNo.waitFor({ state: 'visible' });
+    await this.specificDateYes.waitFor({ state: 'visible' });
+    await this.specificDateRange.waitFor({ state: 'visible' });
+
+    switch (specificDate) {
+      case 'No':
+        await this.specificDateNo.click();
+        break;
+      case 'Yes':
+        await this.specificDateYes.click();
+        break;
+      default:
+        await this.specificDateRange.click();
+        break;
+    }
+    await this.setHearingPriority(hearingPriority);
+  }
+
+  async selectJudgeTypes(judgeTypes: TypeOfJudges[]): Promise<void> {
+    const fieldset = this.page.locator('#judgeTypes .govuk-fieldset');
+    for (const judgeType of judgeTypes) {
+      await fieldset.getByLabel(judgeType).check();
+    }
+  }
+
+  async setHearingPriority(priority: string): Promise<void> {
+    const option = priority === 'Urgent' ? this.hearingPriorityUrgent : this.hearingPriorityStandard;
+    await option.check();
+  }
+
+  removeLocationLink(locationName: string): Locator {
+    return this.page.locator('.hmcts-filter-tags a.hmcts-filter__tag').filter({ hasText: locationName });
+  }
+
+  hearingsTabStatusLink(): Locator {
+    return this.page.getByRole('link', {
+      name: 'view the status of this hearing in the hearings tab',
+    });
+  }
+
+  async clickLinkToViewHearings(): Promise<void> {
+    await this.hearingsTabStatusLink().click();
+  }
+}

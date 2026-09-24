@@ -1334,17 +1334,30 @@ function defaultTestListRowsPerPage(html) {
     );
 }
 
-function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
+function enhanceDashboardHtml(
+  html,
+  featureStats,
+  evidenceEntries = [],
+  perfettoFiles = [],
+  perfettoHrefPrefix = '../test-results'
+) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
   const hasDashboardAccessibilityEvidence = htmlWithDefaultTestRows.includes('id="odhin-accessibility-evidence"');
-  if (!normalizedStats.length && !normalizedEvidenceEntries.length && !hasDashboardAccessibilityEvidence) {
+  if (
+    !normalizedStats.length &&
+    !normalizedEvidenceEntries.length &&
+    !hasDashboardAccessibilityEvidence &&
+    !perfettoFiles.length
+  ) {
     return htmlWithDefaultTestRows;
   }
 
   const root = parse(htmlWithDefaultTestRows);
   injectEnhancerStyles(root);
+  root.querySelector('#TabNodeApi')?.remove();
+  root.querySelector('.main-tablinks[onclick*="TabNodeApi"]')?.remove();
   removeDashboardAccessibilityEvidence(root);
   removeAccessibilityTableEnhancements(root);
 
@@ -1359,8 +1372,29 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
+  if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
 
   return root.toString();
+}
+
+function injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix = '../test-results') {
+  root.querySelector('#odhin-perfetto-link')?.remove();
+  root.querySelector('#TabPerfetto')?.remove();
+  root.querySelector('.main-tablinks[onclick*="TabPerfetto"]')?.remove();
+
+  const links = perfettoFiles.map((fileName) => `<a href="${perfettoHrefPrefix}/${fileName}">${fileName}</a>`).join(' · ');
+  root
+    .querySelector('.tab')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<button class="main-tablinks" onclick="openMainTab(event, 'TabPerfetto')">Perfetto Results</button>`
+    );
+  root
+    .querySelector('body')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><p id="odhin-perfetto-link">${links}</p></div></div></div></div></div>`
+    );
 }
 
 function readAccessibilityEvidenceEntries(outputFolder) {
@@ -1402,7 +1436,17 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
 
   const normalizedStats = normalizeFeatureStats(featureStats);
   const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
-  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length) {
+  const testResultsFolder = [
+    path.join(outputFolder, 'test-results'),
+    path.join(outputFolder, '..', 'test-results'),
+    path.join(outputFolder, '..', '..', 'test-results'),
+  ].find((folder) => fs.existsSync(folder));
+  const perfettoFiles =
+    testResultsFolder && fs.existsSync(testResultsFolder)
+      ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
+      : [];
+  const perfettoHrefPrefix = resolvePerfettoHrefPrefix(outputFolder, testResultsFolder);
+  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length && !perfettoFiles.length) {
     return;
   }
 
@@ -1411,9 +1455,18 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries);
+    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles, perfettoHrefPrefix);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
+}
+
+function resolvePerfettoHrefPrefix(outputFolder, testResultsFolder, env = process.env) {
+  const artifactBaseUrl = (env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL || env.BUILD_URL)?.trim().replace(/\/$/, '');
+  if (artifactBaseUrl && testResultsFolder) {
+    const relativeResultsPath = path.relative(process.cwd(), testResultsFolder).split(path.sep).join('/');
+    return `${artifactBaseUrl}/artifact/${relativeResultsPath}`;
+  }
+  return testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
 }
 
 module.exports = {
@@ -1435,6 +1488,7 @@ module.exports = {
     formatDuration,
     normalizeEvidenceEntries,
     readAccessibilityEvidenceEntries,
+    resolvePerfettoHrefPrefix,
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
     percentOf,

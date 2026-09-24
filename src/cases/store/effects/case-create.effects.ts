@@ -6,7 +6,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
-import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
+import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 @Injectable()
 export class CaseCreateEffects {

@@ -114,8 +114,52 @@
   outline: 3px solid var(--report-accent);
   outline-offset: 3px;
 }
-.a11y-evidence-card[hidden] {
+.a11y-workspace [hidden] {
   display: none;
+}
+.a11y-workspace details {
+  margin: 10px 0;
+  border: 1px solid var(--report-line);
+  border-radius: 8px;
+  background: var(--report-surface);
+  padding: 14px 18px;
+}
+.a11y-workspace summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.a11y-workspace summary::before {
+  content: '▸';
+  display: inline-block;
+  width: 1.2em;
+}
+.a11y-workspace details[open] > summary::before {
+  content: '▾';
+}
+.a11y-workspace summary {
+  list-style: none;
+}
+.a11y-workspace summary::-webkit-details-marker {
+  display: none;
+}
+.a11y-issue-group > summary > span {
+  display: inline-block;
+  margin-left: 18px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.a11y-group-body {
+  padding-top: 12px;
+}
+.a11y-workspace code {
+  color: var(--report-ink);
+  background: var(--report-soft);
+}
+@media (max-width: 600px) {
+  .a11y-issue-group > summary > span {
+    display: block;
+    margin: 6px 0 0 18px;
+  }
 }
 .a11y-card-heading {
   display: flex;

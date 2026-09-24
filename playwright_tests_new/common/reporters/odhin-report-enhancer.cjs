@@ -8,7 +8,9 @@ const { injectAccessibilityWorkspace } = require('./presentation/accessibility.c
 
 const evidenceLinkAttributes = ' target="_blank" rel="noopener noreferrer"';
 
-function deriveFeatureName(filePath) {
+function deriveFeatureName(filePath, annotations = []) {
+  const declared = uniqueValues(annotations.filter((item) => item.type === 'feature').map((item) => item.description?.trim()));
+  if (declared.length === 1) return declared[0];
   const normalized = String(filePath ?? '')
     .replace(/\\/g, '/')
     .trim();
@@ -28,7 +30,7 @@ function deriveFeatureName(filePath) {
   for (const pattern of rootedPatterns) {
     const match = normalized.match(pattern);
     if (match?.[1]) {
-      return match[1];
+      return match[1].toLowerCase() === 'accessibility' ? 'Unattributed accessibility' : match[1];
     }
   }
 
@@ -1124,7 +1126,10 @@ function injectAccessibilityIssueSummary(root, evidenceEntries) {
     return false;
   }
 
-  table.parentNode.insertAdjacentHTML('beforebegin', summaryHtml);
+  table.parentNode.insertAdjacentHTML(
+    'beforebegin',
+    `<details class="odhin-a11y-summary-disclosure"><summary>Accessibility issue groups</summary>${summaryHtml}</details>`
+  );
   return true;
 }
 
@@ -1200,7 +1205,9 @@ function injectAccessibilityIssueFilters(root, evidenceEntries) {
 
 function removeAccessibilityTableEnhancements(root) {
   root
-    .querySelectorAll('.odhin-a11y-issue-summary, .odhin-a11y-filter-bar, #odhin-a11y-filter-script')
+    .querySelectorAll(
+      '.odhin-a11y-summary-disclosure, .odhin-a11y-issue-summary, .odhin-a11y-filter-bar, #odhin-a11y-filter-script'
+    )
     .forEach((node) => node.remove());
   root
     .querySelectorAll('th.odhin-a11y-issues-header, td.odhin-a11y-table-issues, td.odhin-a11y-table-hint')

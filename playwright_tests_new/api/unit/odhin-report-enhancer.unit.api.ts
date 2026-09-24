@@ -19,7 +19,10 @@ const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: s
   interrupted: number;
   flaky: number;
 };
-const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
+const deriveFeatureName = enhancerModule.deriveFeatureName as (
+  filePath: string,
+  annotations?: Array<{ type: string; description?: string }>
+) => string;
 
 const enhancerTest = enhancerModule.__test__ as {
   enhanceDashboardHtml: (
@@ -120,6 +123,56 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         '/opt/jenkins/workspace/PR/playwright_tests_new/integration/test/hearings/hearingDetails.cr84.positive.spec.ts'
       )
     ).toBe('hearings');
+  });
+
+  test('uses declared product features without guessing accessibility titles or changing other suites', () => {
+    const file = '/tmp/playwright_tests_new/E2E/test/accessibility/webapp.a11y.spec.ts';
+    expect(deriveFeatureName(file, [{ type: 'feature', description: 'Case details' }])).toBe('Case details');
+    expect(deriveFeatureName(file, [{ type: 'page-state', description: 'Overview' }])).toBe('Unattributed accessibility');
+    expect(
+      deriveFeatureName(file, [
+        { type: 'feature', description: 'One' },
+        { type: 'feature', description: 'Two' },
+      ])
+    ).toBe('Unattributed accessibility');
+    expect(deriveFeatureName('/tmp/playwright_tests_new/integration/test/hearings/example.spec.ts')).toBe('hearings');
+  });
+
+  test('attributes skipped and timed-out accessibility executions without evidence and preserves retry totals', async () => {
+    const Reporter = require('../../common/reporters/odhin-adaptive.reporter.cjs');
+    const reporter = new Reporter({ createInnerReporter: () => ({ onTestEnd() {} }), lightweight: true });
+    const testCase = {
+      id: 'case-details',
+      retries: 1,
+      tags: ['@a11y'],
+      location: { file: '/tmp/playwright_tests_new/E2E/test/accessibility/webapp.a11y.spec.ts' },
+      annotations: [
+        { type: 'feature', description: 'Case details' },
+        { type: 'page-state', description: 'Overview' },
+      ],
+    };
+    await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 100 });
+    await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 200 });
+    await reporter.onTestEnd({ ...testCase, id: 'skipped' }, { status: 'skipped', retry: 0, duration: 0 });
+    await reporter.onTestEnd(
+      { ...testCase, id: 'timeout', retries: 0, annotations: [{ type: 'feature', description: 'Hearings' }] },
+      { status: 'timedOut', retry: 0, duration: 300 }
+    );
+    expect(reporter.featureStats.get('Case details')).toMatchObject({
+      totalTests: 2,
+      flaky: 1,
+      skipped: 1,
+      failed: 0,
+      durationMs: 200,
+    });
+    expect(reporter.featureStats.get('Hearings')).toMatchObject({ totalTests: 1, timedOut: 1, durationMs: 300 });
+    expect(reporter.testMetadata.map((item: { feature: string }) => item.feature)).toEqual([
+      'Case details',
+      'Case details',
+      'Case details',
+      'Hearings',
+    ]);
+    expect(enhancerTest.normalizeFeatureStats(reporter.featureStats).reduce((sum, stat) => sum + stat.totalTests, 0)).toBe(3);
   });
 
   for (const resultsLocation of ['test-results', '../test-results', '../../test-results']) {
@@ -543,6 +596,10 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('<th class="odhin-a11y-issues-header">Issue groups</th>');
     expect(nextHtml).toContain('<th class="odhin-a11y-issues-header">Fix hint</th>');
     expect(nextHtml).toContain('Issue Summary');
+    const disclosure = parse(nextHtml).querySelector('details.odhin-a11y-summary-disclosure');
+    expect(disclosure).not.toBeNull();
+    expect(disclosure.hasAttribute('open')).toBe(false);
+    expect(disclosure.querySelector('.odhin-a11y-issue-summary')).not.toBeNull();
     expect(nextHtml).toContain('<th>Fix scope</th>');
     expect(nextHtml).toContain('Likely page-specific fix');
     expect(nextHtml).toContain('Quick filters:');

@@ -95,7 +95,11 @@ const FAILED_REQUEST_STATUS_CODE_THRESHOLD = 400;
  * the SpanProcessor chain, and Azure Monitor's own metric-preaggregation
  * SpanProcessor is registered before any SpanProcessors this module adds.
  */
-export function markFailedServerSpanStatus(span: Span, _request: unknown, response: http.IncomingMessage | http.ServerResponse): void {
+export function markFailedServerSpanStatus(
+  span: Span,
+  _request: unknown,
+  response: http.IncomingMessage | http.ServerResponse
+): void {
   if (!(response instanceof http.ServerResponse)) {
     return;
   }

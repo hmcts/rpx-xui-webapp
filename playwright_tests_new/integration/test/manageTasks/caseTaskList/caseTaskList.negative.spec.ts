@@ -53,41 +53,42 @@ function caseTaskListNegativeTests() {
   });
 
   // EXUI-4276: the UI currently renders the malformed task instead of rejecting it safely.
-  test(`Sending an malformed API response for the task data should render the UI gracefully`, { tag: ['@blocked-exui-4276'] }, async ({
-    caseDetailsPage,
-    page,
-  }) => {
-    const malformedTaskData: unknown = [
-      {
-        id: 12345,
-        case_id: caseMockResponse.case_id,
-        task_title: null,
-        task_state: { value: 'assigned' },
-        type: ['followUpExtendedDirection'],
-        description: { markdown: 'This should be a plain string description' },
-        due_date: 'not-a-date',
-        dueDate: { value: 'tomorrow' },
-        assignee: { idamId: assigneeId },
-        actions: 'claim',
-      },
-    ];
+  test(
+    `Sending an malformed API response for the task data should render the UI gracefully`,
+    { tag: ['@blocked-exui-4276'] },
+    async ({ caseDetailsPage, page }) => {
+      const malformedTaskData: unknown = [
+        {
+          id: 12345,
+          case_id: caseMockResponse.case_id,
+          task_title: null,
+          task_state: { value: 'assigned' },
+          type: ['followUpExtendedDirection'],
+          description: { markdown: 'This should be a plain string description' },
+          due_date: 'not-a-date',
+          dueDate: { value: 'tomorrow' },
+          assignee: { idamId: assigneeId },
+          actions: 'claim',
+        },
+      ];
 
-    await test.step('Setup route mock for task details', async () => {
-      await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const body = JSON.stringify(malformedTaskData);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      await test.step('Setup route mock for task details', async () => {
+        await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
+          const body = JSON.stringify(malformedTaskData);
+          await route.fulfill({ status: 200, contentType: 'application/json', body });
+        });
       });
-    });
 
-    await test.step('Navigate to mocked case task list', async () => {
-      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
-    });
+      await test.step('Navigate to mocked case task list', async () => {
+        await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
+      });
 
-    await test.step('Verify malformed task data is handled gracefully', async () => {
-      await expect(caseDetailsPage.taskListContainer).toBeVisible();
-      expect(await caseDetailsPage.taskItem.count()).toBe(0);
-    });
-  });
+      await test.step('Verify malformed task data is handled gracefully', async () => {
+        await expect(caseDetailsPage.taskListContainer).toBeVisible();
+        expect(await caseDetailsPage.taskItem.count()).toBe(0);
+      });
+    }
+  );
 
   const errorCodes = [400];
   errorCodes.forEach((code) => {

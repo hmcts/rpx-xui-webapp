@@ -60,7 +60,6 @@ const enhancerTest = enhancerModule.__test__ as {
   }>;
   readAccessibilityEvidenceEntries: (outputFolder: string) => unknown[];
   enhanceGeneratedReport: (outputFolder: string, featureStats: unknown) => void;
-  resolvePerfettoHrefPrefix: (outputFolder: string, testResultsFolder: string, env?: NodeJS.ProcessEnv) => string;
 };
 
 test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
@@ -123,35 +122,51 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     ).toBe('hearings');
   });
 
-  test('finds Perfetto beside nested integration reports', () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-nested-perfetto-'));
-    const reportFolder = path.join(root, 'odhin-report', 'preview-workers-7');
-    const resultsFolder = path.join(reportFolder, 'test-results');
-    fs.mkdirSync(resultsFolder, { recursive: true });
-    fs.writeFileSync(
-      path.join(reportFolder, 'xui-playwright-integration.html'),
-      '<html><body><button class="main-tablinks">Tests</button></body></html>'
-    );
-    fs.writeFileSync(path.join(resultsFolder, 'perfetto.json'), '{}');
-    try {
-      enhancerModule.enhanceGeneratedReport(reportFolder, []);
-      const html = fs.readFileSync(path.join(reportFolder, 'xui-playwright-integration.html'), 'utf8');
-      expect(html).toContain('Perfetto Results');
-      expect(html).toContain('test-results/perfetto.json');
-    } finally {
-      fs.rmSync(root, { recursive: true, force: true });
-    }
-  });
-
-  test('links Perfetto to the Jenkins artifact when BUILD_URL is available', () => {
-    expect(
-      enhancerTest.resolvePerfettoHrefPrefix(
-        'functional-output/tests/playwright-e2e/odhin-report',
-        'functional-output/tests/playwright-e2e/test-results',
-        { BUILD_URL: 'https://build.hmcts.net/job/example/12/' }
-      )
-    ).toBe('https://build.hmcts.net/job/example/12/artifact/functional-output/tests/playwright-e2e/test-results');
-  });
+  for (const resultsLocation of ['test-results', '../test-results', '../../test-results']) {
+    test(`publishes same-origin Perfetto copies from ${resultsLocation} under Jenkins`, () => {
+      const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-perfetto-publication-'));
+      const reportFolder = path.join(temporaryRoot, 'odhin-report', 'preview-workers-7');
+      const resultsFolder = path.resolve(reportFolder, resultsLocation);
+      const reportFile = path.join(reportFolder, 'xui-playwright-integration.html');
+      const originalBuildUrl = process.env.BUILD_URL;
+      const originalArtifactUrl = process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+      const timelines = new Map([
+        ['perfetto.json', Buffer.from('{"traceEvents":[]}\n')],
+        ['perfetto-worker #1&2.json', Buffer.from('{"traceEvents":[{"name":"worker one"}]}\n')],
+      ]);
+      fs.mkdirSync(reportFolder, { recursive: true });
+      fs.mkdirSync(resultsFolder, { recursive: true });
+      fs.writeFileSync(reportFile, '<html><head></head><body><div class="tab"></div></body></html>');
+      timelines.forEach((bytes, name) => fs.writeFileSync(path.join(resultsFolder, name), bytes));
+      process.env.BUILD_URL = 'https://build.hmcts.net/job/example/12/';
+      process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL = 'https://build.hmcts.net/job/other/99/';
+      try {
+        enhancerModule.enhanceGeneratedReport(reportFolder, []);
+        enhancerModule.enhanceGeneratedReport(reportFolder, []);
+        const report = parse(fs.readFileSync(reportFile, 'utf8'));
+        const downloads = report.querySelectorAll('#TabPerfetto a[download]');
+        expect(report.querySelectorAll('#TabPerfetto')).toHaveLength(1);
+        expect(downloads).toHaveLength(timelines.size);
+        for (const link of downloads) {
+          const name = link.getAttribute('download');
+          expect(link.getAttribute('href')).toBe(`perfetto/${encodeURIComponent(name)}`);
+          const hostedUrl = new URL(
+            link.getAttribute('href'),
+            'https://static-build.hmcts.net/resource/report/xui-playwright-integration.html'
+          );
+          expect(hostedUrl.origin).toBe('https://static-build.hmcts.net');
+          expect(fs.readFileSync(path.join(reportFolder, 'perfetto', name))).toEqual(timelines.get(name));
+          expect(fs.readFileSync(path.join(resultsFolder, name))).toEqual(timelines.get(name));
+        }
+      } finally {
+        if (originalBuildUrl === undefined) delete process.env.BUILD_URL;
+        else process.env.BUILD_URL = originalBuildUrl;
+        if (originalArtifactUrl === undefined) delete process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+        else process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL = originalArtifactUrl;
+        fs.rmSync(temporaryRoot, { recursive: true, force: true });
+      }
+    });
+  }
 
   test('normalizes and sorts grouped feature stats', () => {
     const stats = enhancerTest.normalizeFeatureStats([

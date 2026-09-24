@@ -1213,6 +1213,6 @@ Feature Overview expands into compact test rows with status, duration and View s
 
 Webapp accessibility evidence, issue summaries, issue filters and fix hints remain available. API coverage and load-profile publication continue through the existing scripts.
 
-Perfetto Results offers **Download JSON** and **Open in Perfetto** for each retained timeline. The latter opens the hosted viewer and transfers the selected timeline after its supported handshake; allow the popup or use the download if it cannot open.
+Perfetto Results offers **Download JSON** and **Open in Perfetto** for each retained timeline. Timelines are copied unchanged into the report’s `perfetto/` folder and linked relatively, so Jenkins resource-domain reports can fetch them from the same origin; original test-result files remain available. The latter opens the hosted viewer and transfers the selected timeline after its supported handshake; allow the popup or use the download if it cannot open.
 
 Each retained test trace keeps **Download Trace** and adds **Open in Playwright Trace Viewer**. HTTP(S) reports pass the trace URL to the hosted viewer. If authentication or CORS prevents loading, download the ZIP and select it in the viewer. Reports opened from disk and embedded traces use the same download/select fallback. Lightweight reporting still omits successful-test traces according to its existing settings; viewer links do not generate missing artifacts.

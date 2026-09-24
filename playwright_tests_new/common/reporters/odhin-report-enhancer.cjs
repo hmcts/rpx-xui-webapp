@@ -1377,32 +1377,22 @@ function enhanceGeneratedReport(outputFolder, featureStats, testMetadata = []) {
     testResultsFolder && fs.existsSync(testResultsFolder)
       ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
       : [];
-  const perfettoHrefPrefix = resolvePerfettoHrefPrefix(outputFolder, testResultsFolder);
+  if (perfettoFiles.length) {
+    const publishedPerfettoFolder = path.join(outputFolder, 'perfetto');
+    fs.mkdirSync(publishedPerfettoFolder, { recursive: true });
+    perfettoFiles.forEach((fileName) => {
+      fs.copyFileSync(path.join(testResultsFolder, fileName), path.join(publishedPerfettoFolder, fileName));
+    });
+  }
 
   const reportFiles = fs.readdirSync(outputFolder).filter((fileName) => fileName.toLowerCase().endsWith('.html'));
 
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const nextHtml = enhanceDashboardHtml(
-      currentHtml,
-      normalizedStats,
-      evidenceEntries,
-      perfettoFiles,
-      perfettoHrefPrefix,
-      testMetadata
-    );
+    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles, 'perfetto', testMetadata);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
-}
-
-function resolvePerfettoHrefPrefix(outputFolder, testResultsFolder, env = process.env) {
-  const artifactBaseUrl = (env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL || env.BUILD_URL)?.trim().replace(/\/$/, '');
-  if (artifactBaseUrl && testResultsFolder) {
-    const relativeResultsPath = path.relative(process.cwd(), testResultsFolder).split(path.sep).join('/');
-    return `${artifactBaseUrl}/artifact/${relativeResultsPath}`;
-  }
-  return testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
 }
 
 module.exports = {
@@ -1424,7 +1414,6 @@ module.exports = {
     formatDuration,
     normalizeEvidenceEntries,
     readAccessibilityEvidenceEntries,
-    resolvePerfettoHrefPrefix,
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
     percentOf,

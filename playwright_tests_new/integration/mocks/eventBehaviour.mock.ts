@@ -75,7 +75,7 @@ const eventField = (options: EventFieldOptions) => ({
   complexACLs: [],
 });
 
-export function buildEventBehaviourTrigger() {
+export function buildEventBehaviourTrigger(options: { showSummary?: boolean } = {}) {
   return {
     id: EVENT_BEHAVIOUR_TRIGGER_ID,
     name: EVENT_BEHAVIOUR_TRIGGER_NAME,
@@ -146,7 +146,7 @@ export function buildEventBehaviourTrigger() {
         retries_timeout_mid_event: [],
       },
     ],
-    show_summary: true,
+    show_summary: options.showSummary ?? true,
     show_event_notes: false,
     end_button_label: 'Submit outcome',
     can_save_draft: null,

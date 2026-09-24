@@ -64,12 +64,12 @@ export class HearingsJourneyPage {
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
   readonly selectedVenueTags = this.page.getByRole('link', { name: /^Click to remove:/ });
 
-  private async activeVenueOptions(): Promise<Locator> {
+  private async activeVenueOptions(timeoutMs = 30_000): Promise<Locator> {
     // Material exposes aria-controls (MDC) or aria-owns (legacy) for this input's panel.
     const associatedInput = this.hearingVenue.and(this.page.locator('[aria-owns], [aria-controls]'));
     let associationCount = 0;
     try {
-      await associatedInput.waitFor({ state: 'attached', timeout: 1_000 });
+      await associatedInput.waitFor({ state: 'attached', timeout: timeoutMs });
       associationCount = await associatedInput.count();
     } catch {
       // The input has no usable association.
@@ -151,7 +151,7 @@ export class HearingsJourneyPage {
     await this.removeLocationLink(expectedSeededVenue).waitFor({ state: 'visible', timeout });
   }
 
-  async setHearingVenue(model: HearingJourneyModel): Promise<string> {
+  async setHearingVenue(model: HearingJourneyModel, options: { autocompleteTimeoutMs?: number } = {}): Promise<string> {
     const hearingVenue = model.get('hearingVenue', 'name') as string[];
     const venueSearchTerm = hearingVenue?.[0];
 
@@ -167,10 +167,11 @@ export class HearingsJourneyPage {
     // Every keystroke fires a fresh debounced lookup that rebuilds the panel, so wait for an
     // option that actually matches the search term rather than whatever the last in-flight
     // response happened to render.
-    const venueOptions = await this.activeVenueOptions();
+    const autocompleteTimeoutMs = options.autocompleteTimeoutMs ?? 30_000;
+    const venueOptions = await this.activeVenueOptions(autocompleteTimeoutMs);
     const venueOption = venueOptions.filter({ hasText: venueSearchTerm }).first();
     try {
-      await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
+      await venueOption.waitFor({ state: 'visible', timeout: autocompleteTimeoutMs });
     } catch (error) {
       if (await venueOptions.filter({ hasText: 'No results found' }).isVisible()) {
         throw new Error(`Location search for "${venueSearchTerm}" returned "No results found".`);

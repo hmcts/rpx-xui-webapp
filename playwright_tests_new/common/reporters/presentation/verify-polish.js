@@ -4,12 +4,14 @@ async (page) => {
   await page.locator('.report-metrics').waitFor();
   await page.locator('#loading').waitFor({ state: 'hidden' });
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.getByRole('button', { name: 'Reset layout', exact: true }).click();
   const zero = page.locator('#TabDashboard td.report-zero').first();
   if (!(await zero.count())) throw new Error('Zero totals were not muted');
   if ((await zero.evaluate((el) => getComputedStyle(el, '::after').content)) !== '"—"') throw new Error('Zero dash missing');
   if (!/^0/.test(await zero.textContent())) throw new Error('Native count was changed');
   const feature = page.locator('.report-panel:has(#odhin-feature-summary)');
-  if ((await feature.evaluate((el) => getComputedStyle(el).order)) !== '-1') throw new Error('Feature overview not prioritised');
+  if (!(await feature.evaluate((el) => el.parentElement.firstElementChild === el)))
+    throw new Error('Feature overview not prioritised');
   await page.evaluate(() => window.scrollTo(0, 600));
   await page.waitForFunction(() => Math.abs(document.querySelector('.sticky-top').getBoundingClientRect().top) <= 2);
   const tabs = await page.locator('#body-content > .sticky-top, #body-content .sticky-top').first().boundingBox();

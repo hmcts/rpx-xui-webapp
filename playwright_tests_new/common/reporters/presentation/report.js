@@ -18,6 +18,7 @@
   reset.className = 'report-reset';
   reset.textContent = 'Reset layout';
   reset.addEventListener('click', () => {
+    resetPanelOrder();
     dashboard.querySelectorAll('.report-panel').forEach((panel) => {
       panel.style.removeProperty('--panel-width');
       panel.style.removeProperty('--panel-height');
@@ -36,6 +37,7 @@
   const cards = [...dashboard.children];
   cards.forEach((column, index) => {
     column.classList.add('report-panel');
+    if (index >= 4) column.classList.add('report-panel-wide');
     column.dataset.panel = index;
     const header = column.querySelector('.info-box-header');
     if (!header) return;
@@ -99,6 +101,107 @@
       event.preventDefault();
     });
     column.querySelector('.odhin-thin-border').append(resize);
+  });
+
+  // Store only panel order; report data remains untouched.
+  const defaultOrder = cards.slice().sort((a, b) => Number(getComputedStyle(a).order) - Number(getComputedStyle(b).order));
+  const orderKey = `odhin-panel-order:${location.pathname}`;
+  const applyOrder = (panels) =>
+    panels.forEach((panel) => {
+      panel.style.order = '0';
+      dashboard.append(panel);
+    });
+  const saveOrder = () => {
+    try {
+      localStorage.setItem(orderKey, JSON.stringify([...dashboard.children].map((panel) => panel.dataset.panel)));
+    } catch {
+      /* Storage may be disabled in published reports. */
+    }
+  };
+  const resetPanelOrder = () => {
+    applyOrder(defaultOrder);
+    try {
+      localStorage.removeItem(orderKey);
+    } catch {
+      /* Layout still resets in memory. */
+    }
+  };
+  applyOrder(defaultOrder);
+  try {
+    const saved = JSON.parse(localStorage.getItem(orderKey));
+    if (
+      Array.isArray(saved) &&
+      saved.length === cards.length &&
+      new Set(saved).size === cards.length &&
+      saved.every((id) => cards.some((panel) => panel.dataset.panel === id))
+    ) {
+      applyOrder(saved.map((id) => cards.find((panel) => panel.dataset.panel === id)));
+    }
+  } catch {
+    /* Ignore unavailable or outdated saved layout. */
+  }
+  const announcement = document.createElement('span');
+  announcement.className = 'visually-hidden';
+  announcement.setAttribute('aria-live', 'polite');
+  dashboard.before(announcement);
+  cards.forEach((panel) => {
+    const header = panel.querySelector('.info-box-header');
+    const title = panel.querySelector('.panel-expand').dataset.title;
+    const move = document.createElement('button');
+    move.type = 'button';
+    move.className = 'panel-move';
+    move.textContent = '⠿';
+    move.setAttribute('aria-label', `Move ${title}`);
+    move.title = 'Drag to rearrange. Arrow keys move this panel earlier or later.';
+    header.insertBefore(move, header.querySelector('.panel-expand'));
+    const finish = () => {
+      saveOrder();
+      move.focus({ preventScroll: true });
+      announcement.textContent = `${title}: panel ${[...dashboard.children].indexOf(panel) + 1} of ${cards.length}`;
+    };
+    move.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'].includes(event.key)) return;
+      event.preventDefault();
+      const earlier = ['ArrowLeft', 'ArrowUp'].includes(event.key);
+      const neighbour = earlier ? panel.previousElementSibling : panel.nextElementSibling;
+      if (!neighbour) return;
+      dashboard.insertBefore(panel, earlier ? neighbour : neighbour.nextElementSibling);
+      finish();
+      move.scrollIntoView({ block: 'center' });
+    });
+    move.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      move.setPointerCapture(event.pointerId);
+      const startX = event.clientX,
+        startY = event.clientY;
+      let target, after;
+      const clean = () => {
+        panel.classList.remove('panel-dragging');
+        panel.style.removeProperty('transform');
+        target?.classList.remove('panel-drop-target');
+        move.onpointermove = move.onpointerup = move.onpointercancel = move.onlostpointercapture = null;
+      };
+      move.onpointermove = (pointer) => {
+        panel.classList.add('panel-dragging');
+        panel.style.transform = `translate(${pointer.clientX - startX}px, ${pointer.clientY - startY}px)`;
+        target?.classList.remove('panel-drop-target');
+        target = document.elementFromPoint(pointer.clientX, pointer.clientY)?.closest('.report-panel');
+        if (!target || target === panel || target.parentElement !== dashboard) {
+          target = null;
+          return;
+        }
+        const bounds = target.getBoundingClientRect();
+        after = pointer.clientY > bounds.y + bounds.height / 2;
+        target.classList.add('panel-drop-target');
+      };
+      move.onpointerup = () => {
+        if (target) dashboard.insertBefore(panel, after ? target.nextElementSibling : target);
+        clean();
+        finish();
+      };
+      move.onpointercancel = move.onlostpointercapture = clean;
+    });
   });
 
   const summary = document.querySelector('#chart-status')?.closest('.odhin-thin-border');
@@ -264,6 +367,13 @@ if (window.jQuery)
     const selects = [];
     table.columns().every(function (index) {
       const name = this.header().textContent.trim();
+      if (name === 'Project') {
+        this.header().classList.add('report-project-column');
+        this.footer()?.classList.add('report-project-column');
+        this.nodes()
+          .toArray()
+          .forEach((cell) => cell.classList.add('report-project-column'));
+      }
       if (!['Status', 'Project', 'File', 'Feature', 'Tags', 'Attempt'].includes(name)) return;
       const label = document.createElement('label');
       label.textContent = name === 'File' ? 'Test file' : name;
@@ -295,35 +405,6 @@ if (window.jQuery)
       label.append(select);
       filters.append(label);
     });
-    const durations = ['Min seconds', 'Max seconds'].map((name) => {
-      const label = document.createElement('label');
-      label.textContent = name;
-      const input = document.createElement('input');
-      input.type = 'number';
-      input.min = '0';
-      input.step = 'any';
-      input.placeholder = 'Any duration';
-      input.addEventListener('input', () => table.draw());
-      label.append(input);
-      filters.append(label);
-      return input;
-    });
-    $.fn.dataTable.ext.search.push((settings, data, index) => {
-      if (settings.nTable.id !== 'test-list-table') return true;
-      const row = table.row(index).node();
-      const duration = row.cells[durationColumn]?.textContent ?? '';
-      const seconds =
-        row.dataset.durationMs !== undefined
-          ? Number(row.dataset.durationMs) / 1000
-          : [...duration.matchAll(/(\d+(?:\.\d+)?)\s*(ms|h|m|s)\b/g)].reduce(
-              (total, match) => total + Number(match[1]) * { h: 3600, m: 60, s: 1, ms: 0.001 }[match[2]],
-              0
-            );
-      return (
-        (!durations[0].value || seconds >= Number(durations[0].value)) &&
-        (!durations[1].value || seconds <= Number(durations[1].value))
-      );
-    });
     const clear = document.createElement('button');
     clear.type = 'button';
     clear.textContent = 'Clear filters';
@@ -331,11 +412,16 @@ if (window.jQuery)
       selects.forEach((select) => {
         select.value = '';
       });
-      durations.forEach((input) => {
-        input.value = '';
-      });
+      filters.querySelector('input[type=search]').value = '';
       table.search('').columns().search('').draw();
     });
+    const search = document.querySelector('#test-list-table_filter label');
+    if (search) {
+      search.classList.add('report-search');
+      search.querySelector('input').setAttribute('aria-label', 'Search tests');
+      filters.append(search);
+      document.querySelector('#test-list-table_filter').remove();
+    }
     filters.append(clear);
     document.querySelector('#test-list-table_wrapper').prepend(filters);
     document.querySelector('#status-filter-row')?.remove();

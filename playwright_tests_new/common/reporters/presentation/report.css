@@ -162,7 +162,7 @@ body#body-content {
   min-width: 0;
   padding: 0;
 }
-#body-content .report-panel:nth-child(n + 5),
+#body-content .report-panel.report-panel-wide,
 #body-content .report-panel.panel-expanded {
   grid-column: 1 / -1;
 }
@@ -244,10 +244,10 @@ body#body-content {
 #body-content .testcase-run-info-table th {
   white-space: normal;
 }
-#body-content .report-panel:nth-child(n + 5) table {
+#body-content .report-panel.report-panel-wide table {
   min-width: 950px;
 }
-#body-content .report-panel:nth-child(n + 5) td:first-child {
+#body-content .report-panel.report-panel-wide td:first-child {
   text-align: left;
   min-width: 220px;
   overflow-wrap: anywhere;
@@ -400,7 +400,7 @@ body#body-content {
 }
 .report-filters label {
   display: flex;
-  flex: 1 1 160px;
+  flex: 1 1 140px;
   min-width: 0;
   flex-direction: column;
   gap: 7px;
@@ -555,11 +555,11 @@ body#body-content {
 #body-content .report-panel[data-panel='2'] {
   order: 3;
 }
-#body-content .report-panel:nth-child(n + 5) {
+#body-content .report-panel.report-panel-wide {
   order: 4;
 }
 #body-content .report-panel:has(#odhin-feature-summary),
-#body-content .report-panel:nth-child(n + 5) {
+#body-content .report-panel.report-panel-wide {
   flex-basis: var(--panel-width, 100%);
 }
 #body-content .report-panel.panel-sized {
@@ -927,4 +927,41 @@ body#body-content {
 }
 #body-content .tab button.active {
   box-shadow: inset 0 3px 0 var(--report-accent);
+}
+
+#body-content .report-project-column {
+  display: none;
+}
+.report-filters .report-search {
+  flex: 2 1 220px;
+}
+.report-filters .report-search input {
+  margin: 0;
+  width: 100%;
+}
+.panel-move {
+  margin-left: auto;
+  border: 1px solid var(--report-line);
+  border-radius: 7px;
+  background: var(--report-soft);
+  color: var(--report-muted);
+  width: 32px;
+  height: 32px;
+  font: inherit;
+  cursor: grab;
+  touch-action: none;
+  flex-shrink: 0;
+}
+.panel-move:active {
+  cursor: grabbing;
+}
+#body-content .panel-dragging {
+  position: relative;
+  z-index: 1030;
+  opacity: 0.8;
+  pointer-events: none;
+}
+#body-content .panel-drop-target > .odhin-thin-border {
+  outline: 3px dashed var(--report-accent);
+  outline-offset: -3px;
 }

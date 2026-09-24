@@ -9,9 +9,8 @@ const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
-    // Odhín embeds attachments by default, which can exceed V8's string limit after retried browser failures.
-    // Keep the files beside the published report; callers can explicitly opt back into embedding for a small local run.
-    const reporterOptions = { embedAttachments: false, ...options };
+    // Keep traces and screenshots beside the published report; never serialize them into Odhín HTML.
+    const reporterOptions = { ...options, embedAttachments: false };
     this.outputFolder = reporterOptions.outputFolder;
     const configuredLightweight = reporterOptions.lightweight;
     const envLightweight = process.env.PW_ODHIN_LIGHTWEIGHT;

@@ -57,8 +57,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/playwright-*/odhin-report/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg',
-        excludes: 'functional-output/tests/**/test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/playwright-*/odhin-report/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg'
     )
 }
 
@@ -326,10 +325,15 @@ def integrationProfileRunConfig = { String spec ->
 def runPlaywrightIntegrationProfileMatrix = {
     def failures = []
     def matrixFailure = null
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
     def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
         integrationProfileRunConfig(spec)
     }
-    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    if (runConfigs.size() == 1) {
+        runConfigs[0].reportDir = reportRoot
+    }
+    def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
+    dir(suiteResultsDir) { deleteDir() }
     runConfigs.each { runConfig ->
         dir(runConfig.reportDir) { deleteDir() }
     }
@@ -337,13 +341,14 @@ def runPlaywrightIntegrationProfileMatrix = {
         runConfigs.each { runConfig ->
             def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
             def junitFile = "${runConfig.reportDir}/playwright-junit.xml"
+            def outputDir = runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"
             def outcome = 'interrupted'
             def runnerCompleted = false
             sh "rm -f -- '${sessionConfigCompleteFile}'"
             try {
                 withEnv([
                   "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
-                  "PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results",
+                  "PLAYWRIGHT_OUTPUT_DIR=${outputDir}",
                   "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
                   "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile()}",
                   'ORG_USER_ASSIGNMENT_MODE=external',
@@ -406,13 +411,12 @@ def runPlaywrightIntegrationProfileMatrix = {
         throw originalFailure
     } finally {
         try {
-            def singleProfile = runConfigs.size() == 1 && fileExists("${runConfigs[0].reportDir}/${playwrightIntegrationReportFile}")
-            if (singleProfile) {
+            if (runConfigs.size() == 1) {
                 publishHTML([
                     allowMissing         : false,
                     alwaysLinkToLastBuild: true,
                     keepAll              : true,
-                    reportDir            : runConfigs[0].reportDir,
+                    reportDir            : reportRoot,
                     reportFiles          : playwrightIntegrationReportFile,
                     reportName           : 'Playwright Integration Tests'
                 ])

@@ -91,21 +91,32 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
   });
 
   test('keeps report diagnostics and JUnit output lane-local', () => {
-    expect(source).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
+    expect(source).toContain("suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'");
+    expect(source).toContain('outputDir = runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"');
+    expect(source).toContain('PLAYWRIGHT_OUTPUT_DIR=${outputDir}');
     expect(source).toContain('PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}');
     expect(source).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
     expect(source).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
-    expect(source).toContain('test-results/**/*.png');
+    expect(source).toContain('test-results/perfetto*.json');
     expect(source).toContain('test-results/**/failure-data.json');
+    expect(source).toContain('test-results/**/trace.zip');
+    expect(source).toContain('test-results/**/*.png');
+    expect(source).toContain('test-results/**/*.jpg');
+    expect(source).toContain('test-results/**/*.jpeg');
     expect(source).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
     expect(source).toContain('def publishPlaywrightAccessibilityJUnit = {');
     expect(source).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
     expect(source.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(2);
-    expect(nightlySource).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
+    expect(nightlySource).toContain("suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'");
+    expect(nightlySource).toContain(
+      'outputDir = runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"'
+    );
+    expect(nightlySource).toContain('PLAYWRIGHT_OUTPUT_DIR=${outputDir}');
     expect(nightlySource).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
     expect(nightlySource).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
     expect(nightlySource).toContain('def publishPlaywrightAccessibilityJUnit = {');
     expect(nightlySource).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
+    expect(nightlySource).toContain('test-results/**/trace.zip');
     expect(nightlySource).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
     expect(nightlySource).toContain('skipMarkingBuildUnstable: true, testResults: playwrightAccessibilityJunitFile');
     expect(nightlySource.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(1);

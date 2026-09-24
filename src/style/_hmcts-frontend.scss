@@ -2,4 +2,8 @@
 
 // @hmcts/frontend has not yet migrated to the Sass module system, so it must
 // be evaluated in a scope where the GOV.UK mixins it consumes are available.
+$hmcts-page-width: 1920px;
+$govuk-global-styles: true;
+$hmcts-images-path: '/assets/images/';
+
 @import '@hmcts/frontend/all';

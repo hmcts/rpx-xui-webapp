@@ -1,9 +1,6 @@
 $govuk-global-styles: true;
 $hmcts-images-path: '/assets/images/';
 
-// Width of main container
-$hmcts-page-width: 1920px;
-
 @use 'govuk-frontend/govuk/all' as govuk;
 @use 'src/style/hmcts-frontend' as frontend;
 

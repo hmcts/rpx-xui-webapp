@@ -1,4 +1,168 @@
 /* Self-contained Odhín 1.1.8 presentation pilot. No external fonts or assets. */
+.a11y-workspace {
+  max-width: 1500px;
+  margin: auto;
+  padding: clamp(16px, 3vw, 40px);
+  text-align: left;
+  color: var(--report-ink);
+  overflow-wrap: anywhere;
+}
+.a11y-workspace,
+.a11y-workspace * {
+  box-sizing: border-box;
+}
+.a11y-workspace section {
+  margin-top: 32px;
+  scroll-margin-top: 160px;
+}
+.a11y-intro {
+  border-left: 5px solid var(--report-accent);
+  padding: 8px 24px;
+}
+.a11y-eyebrow {
+  color: var(--report-accent);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  font-weight: 750;
+}
+.a11y-workspace h1 {
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 750;
+}
+.a11y-workspace h2 {
+  font-size: 23px;
+  font-weight: 700;
+}
+.a11y-workspace h3 {
+  font-size: 18px;
+  font-weight: 650;
+}
+.a11y-workspace a {
+  color: var(--report-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.a11y-workspace nav,
+.a11y-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+.a11y-metrics,
+.a11y-card-grid,
+.a11y-source-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.a11y-metrics > div,
+.a11y-evidence-card,
+.a11y-source-grid li,
+.a11y-manual-check {
+  background: var(--report-surface);
+  border: 1px solid var(--report-line);
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.a11y-metrics strong {
+  display: block;
+  font-size: 30px;
+  color: var(--report-accent);
+}
+.a11y-note {
+  padding: 16px 20px;
+  background: var(--report-soft);
+  border-left: 4px solid var(--report-accent);
+}
+.a11y-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: end;
+  margin: 18px 0;
+}
+.a11y-controls label {
+  display: grid;
+  gap: 6px;
+  flex: 1 1 220px;
+  min-width: 0;
+  font-weight: 600;
+}
+.a11y-workspace input,
+.a11y-workspace select,
+.a11y-workspace textarea,
+.a11y-workspace button {
+  min-width: 0;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--report-muted);
+  border-radius: 6px;
+  background: var(--report-surface);
+  color: var(--report-ink);
+  font: inherit;
+}
+.a11y-workspace input,
+.a11y-workspace select,
+.a11y-workspace textarea {
+  width: 100%;
+}
+.a11y-workspace button {
+  cursor: pointer;
+  font-weight: 650;
+}
+.a11y-workspace :focus-visible {
+  outline: 3px solid var(--report-accent);
+  outline-offset: 3px;
+}
+.a11y-evidence-card[hidden] {
+  display: none;
+}
+.a11y-card-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.a11y-status {
+  border: 1px solid var(--report-line);
+  background: var(--report-soft);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 13px;
+}
+.a11y-context {
+  font-size: 13px;
+  color: var(--report-muted);
+}
+.a11y-source-grid {
+  list-style: none;
+  padding: 0;
+}
+.a11y-source-grid span {
+  display: block;
+  color: var(--report-accent);
+  margin: 8px 0;
+}
+.a11y-table-scroll {
+  overflow-x: auto;
+}
+.a11y-workspace .odhin-a11y-issue-summary {
+  margin: 0;
+}
+.a11y-workspace .odhin-a11y-issue-summary > h2 {
+  display: none;
+}
+.a11y-manual-check {
+  margin: 10px 0;
+}
+.a11y-manual-check summary {
+  cursor: pointer;
+  font-weight: 700;
+}
 :root[data-applied-mode] {
   --report-bg: #f3f5fa;
   --report-surface: #fff;

@@ -412,7 +412,8 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).not.toContain('Accessibility Evidence');
     expect(nextHtml).not.toContain('odhin-accessibility-evidence');
     expect(nextHtml).not.toContain('odhin-a11y-evidence-grid');
-    expect(nextHtml).not.toContain('./accessibility-evidence/privacy-policy-highlighted-screenshot.png');
+    expect(parse(nextHtml).querySelector('#TabDashboard').innerHTML).not.toContain('./accessibility-evidence/');
+    expect(parse(nextHtml).querySelector('#TabAccessibility').innerHTML).toContain('privacy-policy-highlighted-screenshot.png');
   });
 
   test('removes previously injected accessibility evidence from the generated Odhín dashboard', () => {
@@ -537,7 +538,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('behavior:focus returns');
     expect(nextHtml).toContain('axe:engine-execution');
     expect(nextHtml).not.toContain('unexpected issue(s) across engines');
-    expect(nextHtml).toContain('2 Screen-reader issue(s):</strong> skip-link, main-landmark');
+    expect(nextHtml).toContain('2 Screen-reader heuristics issue(s):</strong> skip-link, main-landmark');
     expect(nextHtml).toContain('1 WAVE-like issue(s):</strong> link-name');
     expect(nextHtml).toContain('<th class="odhin-a11y-issues-header">Issue groups</th>');
     expect(nextHtml).toContain('<th class="odhin-a11y-issues-header">Fix hint</th>');
@@ -549,7 +550,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('data-a11y-issue-filter="main-landmark"');
     expect(nextHtml).toContain('table.column(issueColumnIndex).search(value).draw();');
     expect(nextHtml).toContain('<strong>WAVE-like:</strong> link-name (1)');
-    expect(nextHtml).toContain('<strong>Screen-reader:</strong> skip-link (1), main-landmark (1)');
+    expect(nextHtml).toContain('<strong>Screen-reader heuristics:</strong> skip-link (1), main-landmark (1)');
     expect(nextHtml).toContain('Also: main-landmark, link-name, focus returns, engine-execution.');
     expect(nextHtml).toContain('Developer hints');
     expect(nextHtml).toContain('Check the app shell skip link target exists on this route');
@@ -563,7 +564,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     );
     expect(nextHtml).toContain('Open screenshot');
     expect(nextHtml).toContain('Open screen-reader JSON');
-    expect(nextHtml).toContain('Open DOM and WAVE JSON');
+    expect(nextHtml).toContain('Open DOM and WAVE-like JSON');
     expect(nextHtml.indexOf('Accessibility findings for this test')).toBeLessThan(nextHtml.indexOf('run info'));
   });
 

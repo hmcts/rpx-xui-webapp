@@ -112,6 +112,19 @@ test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, 
       const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
       expect(manifest[0]).toMatchObject({ status: 'known-findings', violationCount: 2 });
       expect(manifest[0].summary).toContain('2 known issue(s), 0 unexpected issue(s)');
+      await attachAccessibilityPageSummaryEvidence(page, info, {
+        feature: 'header',
+        pageState: 'failed-focus',
+        strict: false,
+        url: page.url(),
+        outcomes: [{ engine: 'axe', status: 'passed', issueCount: 0, rules: [] }],
+        checks: [{ name: 'focus restoration', status: 'failed', message: 'Focus lost' }],
+      });
+      const updatedManifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
+      expect(updatedManifest.find((entry: { pageState: string }) => entry.pageState === 'failed-focus')).toMatchObject({
+        status: 'issues-found',
+        rules: ['behavior:focus restoration'],
+      });
     } finally {
       restoreEnv('PW_A11Y_EVIDENCE_DIR', previousDir);
       fs.rmSync(dir, { recursive: true, force: true });

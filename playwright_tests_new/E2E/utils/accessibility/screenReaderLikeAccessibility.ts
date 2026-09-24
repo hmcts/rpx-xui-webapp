@@ -500,7 +500,7 @@ export async function attachAccessibilityPageSummaryEvidence(
       context: summary.context,
       status: summary.outcomes.some((outcome) => outcome.status === 'error')
         ? 'error'
-        : unexpectedCount > 0
+        : unexpectedCount > 0 || failedChecks.length > 0
           ? 'issues-found'
           : knownCount > 0
             ? 'known-findings'

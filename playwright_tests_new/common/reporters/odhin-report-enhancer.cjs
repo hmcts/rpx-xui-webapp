@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('node-html-parser');
 const { applyPresentation } = require('./presentation/enhance.cjs');
+const { injectAccessibilityWorkspace } = require('./presentation/accessibility.cjs');
 
 const evidenceLinkAttributes = ' target="_blank" rel="noopener noreferrer"';
 
@@ -593,7 +594,7 @@ function engineLabel(engine) {
       summary: 'Page summary',
       axe: 'axe',
       'wave-like': 'WAVE-like',
-      'screen-reader': 'Screen-reader',
+      'screen-reader': 'Screen-reader heuristics',
       lighthouse: 'Lighthouse',
     }[engine] ?? engine
   );
@@ -604,7 +605,7 @@ function jsonLinkLabel(engine) {
     {
       summary: 'summary JSON',
       axe: 'DOM and axe JSON',
-      'wave-like': 'DOM and WAVE JSON',
+      'wave-like': 'DOM and WAVE-like JSON',
       'screen-reader': 'screen-reader JSON',
       lighthouse: 'Lighthouse JSON',
     }[engine] ?? 'evidence JSON'
@@ -1325,6 +1326,7 @@ function enhanceDashboardHtml(
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
+  injectAccessibilityWorkspace(root, normalizedEvidenceEntries, buildIssueSummaryBlock(normalizedEvidenceEntries));
   if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
 
   applyPresentation(root, testMetadata);

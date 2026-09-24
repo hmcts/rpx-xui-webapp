@@ -41,7 +41,7 @@ export class CaseDetailsPage extends Base {
 
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
 
-  readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
+  readonly submitCaseFlagButton = this.page.locator('ccd-case-edit button[type="submit"]');
   readonly continueButton = this.container.getByRole('button', { name: 'Continue', exact: true });
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
   readonly eventTable = this.page.locator('EventLogTable');

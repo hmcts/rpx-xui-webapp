@@ -3,7 +3,10 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-import { publishAccessibilityEvidence } from '../../E2E/utils/accessibility/accessibilityEvidencePublisher';
+import {
+  publishAccessibilityEvidence,
+  setAccessibilityEvidenceContext,
+} from '../../E2E/utils/accessibility/accessibilityEvidencePublisher';
 
 test.describe('accessibility evidence publisher', { tag: '@svc-internal' }, () => {
   const previousEvidenceDir = process.env.PW_A11Y_EVIDENCE_DIR;
@@ -14,6 +17,46 @@ test.describe('accessibility evidence publisher', { tag: '@svc-internal' }, () =
       return;
     }
     process.env.PW_A11Y_EVIDENCE_DIR = previousEvidenceDir;
+  });
+
+  test('preserves persona/language variants sharing a title and attachment prefix', async () => {
+    const evidenceDir = fs.mkdtempSync(path.join(os.tmpdir(), 'a11y-variants-'));
+    process.env.PW_A11Y_EVIDENCE_DIR = evidenceDir;
+    try {
+      for (const language of ['en', 'cy']) {
+        const info = fakeTestInfo('Shared state');
+        setAccessibilityEvidenceContext(info, {
+          scenarioId: 'header',
+          persona: 'staff',
+          language,
+          authentication: 'mocked',
+          dataMode: 'mocked',
+        });
+        await publishAccessibilityEvidence(info, {
+          attachmentPrefix: 'summary',
+          entry: {
+            engine: 'summary',
+            status: 'known-findings',
+            violationCount: 1,
+            rules: ['label'],
+            targets: [],
+          },
+          html: language,
+          json: { language },
+        });
+      }
+      const manifest = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'manifest.json'), 'utf8'));
+      expect(manifest).toHaveLength(2);
+      expect(new Set(manifest.map((entry: { htmlFileName: string }) => entry.htmlFileName)).size).toBe(2);
+      expect(manifest.map((entry: { context: { language: string } }) => entry.context.language).sort()).toEqual(['cy', 'en']);
+      const index = fs.readFileSync(path.join(evidenceDir, 'index.html'), 'utf8');
+      expect(index).toContain('language: cy');
+      expect(index).toContain('known-findings');
+      expect(manifest.every((entry: { screenshotFileName: string }) => entry.screenshotFileName === '')).toBe(true);
+      expect(index).not.toContain('>screenshot</a>');
+    } finally {
+      fs.rmSync(evidenceDir, { recursive: true, force: true });
+    }
   });
 
   test('writes files, manifest entry, and browseable index', async () => {

@@ -384,7 +384,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
           htmlFileName: 'privacy-policy-summary.html',
           jsonFileName: 'privacy-policy-summary.json',
           violationCount: 1,
-          rules: ['screen-reader:skip-link'],
+          rules: ['screen-reader:skip-link', 'behavior:focus returns', 'axe:engine-execution'],
+          status: 'error',
+          context: { scenarioId: 'privacy', language: 'cy', persona: '<staff>' },
           targets: [],
         },
         {
@@ -422,6 +424,10 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('id="odhin-a11y-modal-nav-script"');
     expect(nextHtml).toContain('data-odhin-a11y-back-title=');
     expect(nextHtml).toContain('Unique issue groups');
+    expect(nextHtml).toContain('language: cy');
+    expect(nextHtml).toContain('persona: &lt;staff&gt;');
+    expect(nextHtml).toContain('behavior:focus returns');
+    expect(nextHtml).toContain('axe:engine-execution');
     expect(nextHtml).not.toContain('unexpected issue(s) across engines');
     expect(nextHtml).toContain('2 Screen-reader issue(s):</strong> skip-link, main-landmark');
     expect(nextHtml).toContain('1 WAVE-like issue(s):</strong> link-name');
@@ -436,7 +442,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('table.column(issueColumnIndex).search(value).draw();');
     expect(nextHtml).toContain('<strong>WAVE-like:</strong> link-name (1)');
     expect(nextHtml).toContain('<strong>Screen-reader:</strong> skip-link (1), main-landmark (1)');
-    expect(nextHtml).toContain('Also: main-landmark, link-name.');
+    expect(nextHtml).toContain('Also: main-landmark, link-name, focus returns, engine-execution.');
     expect(nextHtml).toContain('Developer hints');
     expect(nextHtml).toContain('Check the app shell skip link target exists on this route');
     expect(nextHtml).toContain('Check the route template renders exactly one usable &lt;main&gt; or role=&quot;main&quot;');
@@ -468,6 +474,29 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(summaryHtml).toContain('custom-rule-1');
     expect(summaryHtml).toContain('custom-rule-13');
     expect(summaryHtml.match(/custom-rule-/g)).toHaveLength(13);
+  });
+
+  test('preserves and escapes scenario metadata and finding status in rendered evidence', () => {
+    const context = { scenarioId: 'header', persona: '<staff>', language: 'cy', authentication: 'mocked', dataMode: 'mocked' };
+    const entries = [
+      {
+        engine: 'summary',
+        testTitle: 'Welsh header',
+        htmlFileName: 'header.html',
+        violationCount: 1,
+        status: 'known-findings',
+        context,
+        rules: ['axe:label'],
+        targets: [],
+      },
+    ];
+    expect(enhancerTest.normalizeEvidenceEntries(entries)[0]).toMatchObject({ context });
+    const html = enhancerTest.buildAccessibilityEvidenceBlock(entries);
+    expect(html).toContain('persona: &lt;staff&gt;');
+    expect(html).toContain('language: cy');
+    expect(html).toContain('known-findings');
+    expect(html).toContain('1 reported issue(s)');
+    expect(html).not.toContain('unexpected issue(s)');
   });
 
   test('normalizes accessibility evidence entries and drops incomplete records', () => {

@@ -1,6 +1,12 @@
 import type { Page, TestInfo } from '@playwright/test';
-import { escapeHtml, publishAccessibilityEvidence, sanitiseFileName } from './accessibilityEvidencePublisher';
-import type { AccessibilityEngine } from './accessibilityAudit';
+import {
+  escapeHtml,
+  publishAccessibilityEvidence,
+  sanitiseFileName,
+  formatAccessibilityContext,
+  type AccessibilityContext,
+} from './accessibilityEvidencePublisher';
+import type { AccessibilityEngine, AccessibilityCheckOutcome } from './accessibilityAudit';
 
 export type ScreenReaderLikeViolation = {
   rule: string;
@@ -26,6 +32,7 @@ export type ScreenReaderLikeEvidence = {
 };
 
 type EvidenceMetadata = {
+  context?: AccessibilityContext;
   engine: AccessibilityEngine | 'summary';
   feature: string;
   pageState: string;
@@ -148,14 +155,27 @@ export async function collectScreenReaderLikeAccessibilityViolations(page: Page)
       add(violations, 'govuk-template-body', 'The page should use the GOV.UK template body class during the template migration.');
     }
 
+    const fragmentTarget = (link: Element): HTMLElement | null => {
+      try {
+        return document.getElementById(decodeURIComponent(link.getAttribute('href')?.slice(1) ?? ''));
+      } catch {
+        return null;
+      }
+    };
     const skipLink = Array.from(document.querySelectorAll('a[href^="#"]'))
       .filter(visible)
-      .find((link) => /skip to main content/i.test(text(link)));
+      .find(
+        (link) =>
+          accessibleName(link) &&
+          (link.classList.contains('govuk-skip-link') ||
+            /skip to main content/i.test(text(link)) ||
+            fragmentTarget(link)?.matches('main, [role="main"]'))
+      );
     if (!skipLink) {
       add(violations, 'skip-link', 'The page should expose a visible skip-to-main-content link.');
     } else {
       const targetId = skipLink.getAttribute('href')?.slice(1) ?? '';
-      if (!targetId || !document.getElementById(decodeURIComponent(targetId))) {
+      if (!targetId || !fragmentTarget(skipLink)) {
         add(violations, 'skip-link-target', `Skip link target "#${targetId}" should exist.`, skipLink);
       }
     }
@@ -424,16 +444,20 @@ export async function attachAccessibilityPageSummaryEvidence(
     strict: boolean;
     url: string;
     outcomes: EngineOutcomeSummary[];
+    context?: AccessibilityContext;
+    checks?: AccessibilityCheckOutcome[];
   }
 ): Promise<void> {
   if (!testInfo) {
     return;
   }
 
-  const snapshot = await collectScreenReaderLikePageSnapshot(page);
+  const snapshot = await collectOptionalPageSnapshot(page, summary);
+  const failedChecks = (summary.checks ?? []).filter((check) => check.status === 'failed');
+  const knownCount = summary.outcomes.reduce((count, outcome) => count + (outcome.knownIssueCount ?? 0), 0);
   const unexpectedCount = summary.outcomes.reduce(
     (count, outcome) => count + (outcome.unexpectedIssueCount ?? outcome.issueCount),
-    0
+    failedChecks.length
   );
   const screenshot =
     unexpectedCount > 0
@@ -446,7 +470,7 @@ export async function attachAccessibilityPageSummaryEvidence(
                 `${outcome.engine}: ${outcome.unexpectedIssueCount ?? outcome.issueCount} unexpected (${outcome.rules.join(', ')})`
             )
         )
-      : await page.screenshot({ fullPage: true });
+      : await captureOptionalScreenshot(page);
   const summaryEvidence = {
     ...summary,
     snapshot,
@@ -473,14 +497,24 @@ export async function attachAccessibilityPageSummaryEvidence(
       engine: 'summary',
       feature: summary.feature,
       pageState: summary.pageState,
-      status: unexpectedCount > 0 ? 'issues-found' : 'passed',
-      summary: `${summary.outcomes.length} engine(s), ${unexpectedCount} unexpected issue(s)`,
+      context: summary.context,
+      status: summary.outcomes.some((outcome) => outcome.status === 'error')
+        ? 'error'
+        : unexpectedCount > 0
+          ? 'issues-found'
+          : knownCount > 0
+            ? 'known-findings'
+            : 'passed',
+      summary: `${summary.outcomes.length} engine(s), ${knownCount} known issue(s), ${unexpectedCount} unexpected issue(s), ${(summary.checks ?? []).length} behavioral check(s)`,
     },
     html,
     json: summaryEvidence,
     screenshot,
-    violationCount: unexpectedCount,
-    rules: summary.outcomes.flatMap((outcome) => outcome.rules.map((rule) => `${outcome.engine}:${rule}`)),
+    violationCount: unexpectedCount + knownCount,
+    rules: [
+      ...summary.outcomes.flatMap((outcome) => outcome.rules.map((rule) => `${outcome.engine}:${rule}`)),
+      ...failedChecks.map((check) => `behavior:${check.name}`),
+    ],
     targets: [summary.url],
   });
 }
@@ -493,6 +527,7 @@ export async function attachAccessibilityReachabilityFailureEvidence(
     pageState: string;
     strict: boolean;
     error: unknown;
+    context?: AccessibilityContext;
   }
 ): Promise<void> {
   if (!testInfo) {
@@ -509,6 +544,7 @@ export async function attachAccessibilityReachabilityFailureEvidence(
     strict: context.strict,
     url,
     status: 'unreachable',
+    context: context.context,
     error: message,
   };
   const html = buildEvidenceShell({
@@ -548,7 +584,8 @@ export async function attachAccessibilityReachabilityFailureEvidence(
       engine: 'summary',
       feature: context.feature,
       pageState: context.pageState,
-      status: 'error',
+      status: 'blocked',
+      context: context.context,
       summary: `Page state was not reachable: ${message}`,
     },
     html,
@@ -614,7 +651,7 @@ async function captureOptionalScreenshot(page: Page, pageLevelFindings: string[]
       'base64'
     );
   } finally {
-    await cleanup?.();
+    await cleanup?.().catch(() => undefined);
   }
 }
 
@@ -652,6 +689,8 @@ function buildPageSummaryHtml(
     strict: boolean;
     url: string;
     outcomes: EngineOutcomeSummary[];
+    context?: AccessibilityContext;
+    checks?: AccessibilityCheckOutcome[];
     snapshot: ScreenReaderLikeSnapshot;
   },
   screenshot: Buffer
@@ -677,6 +716,10 @@ function buildPageSummaryHtml(
     screenshotDataUrl,
     body: `
       <section class="summary-card">
+        <p>${escapeHtml(formatAccessibilityContext(summary.context))}</p>
+        <p>Page summary snapshot captured after behavioral checks; engine evidence records the scanned state.</p>
+        <h2>Behavioral checks</h2>
+        <ul>${(summary.checks ?? []).map((check) => `<li>${escapeHtml(check.name)}: ${escapeHtml(check.status)} ${escapeHtml(check.message ?? '')}</li>`).join('') || '<li>No behavioral checks requested.</li>'}</ul>
         <h2>Engine summary</h2>
         <p><strong>URL:</strong> <code>${escapeHtml(summary.url)}</code></p>
         <p><strong>Strict mode:</strong> ${summary.strict ? 'on' : 'off'}</p>
@@ -918,6 +961,7 @@ async function writePublishedEvidence(
     attachmentPrefix: evidence.attachmentPrefix,
     entry: {
       engine: evidence.metadata.engine,
+      context: evidence.metadata.context,
       feature: evidence.metadata.feature,
       pageState: evidence.metadata.pageState,
       violationCount: evidence.violationCount,

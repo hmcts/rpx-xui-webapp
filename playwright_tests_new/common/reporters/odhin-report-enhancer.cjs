@@ -570,6 +570,15 @@ function normalizeEvidenceEntries(entries) {
     )
     .map((entry) => ({
       engine: typeof entry.engine === 'string' ? entry.engine : inferEvidenceEngine(entry),
+      ...(entry.context
+        ? {
+            context: Object.fromEntries(
+              ['scenarioId', 'persona', 'language', 'authentication', 'dataMode']
+                .filter((key) => typeof entry.context?.[key] === 'string')
+                .map((key) => [key, entry.context[key]])
+            ),
+          }
+        : {}),
       feature: typeof entry.feature === 'string' ? entry.feature : '',
       pageState: typeof entry.pageState === 'string' ? entry.pageState : '',
       testTitle: entry.testTitle,
@@ -641,7 +650,7 @@ function jsonLinkLabel(engine) {
 
 function issueLabel(engine, count) {
   if (engine === 'summary') {
-    return `${count} unexpected issue(s) across engines`;
+    return `${count} reported issue(s)`;
   }
   if (engine === 'lighthouse') {
     return count === 0 ? 'Accessibility threshold passed' : `${count} Lighthouse issue(s)`;
@@ -675,6 +684,12 @@ function buildAccessibilityEvidenceBlock(entries) {
           <div class="odhin-a11y-evidence-card-body">
             <span class="odhin-a11y-evidence-engine">${escapeHtml(engineLabel(entry.engine))}</span>
             <div class="odhin-a11y-evidence-title">${escapeHtml(entry.testTitle)}</div>
+            <p class="odhin-a11y-evidence-meta">Status: ${escapeHtml(entry.status || 'not recorded')}</p>
+            <p class="odhin-a11y-evidence-meta">${escapeHtml(
+              Object.entries(entry.context ?? {})
+                .map(([key, value]) => `${key}: ${value}`)
+                .join(' / ')
+            )}</p>
             <p class="odhin-a11y-evidence-meta">
               ${escapeHtml(issueLabel(entry.engine, entry.violationCount))}: ${escapeHtml(entry.rules.join(', ') || entry.summary || 'no rule recorded')}
             </p>
@@ -884,7 +899,13 @@ function buildTestEvidencePanel(entries, navigation = {}) {
         : '';
 
       return `
-        <p><strong>${escapeHtml(engineLabel(entry.engine))} evidence:</strong></p>
+        <p><strong>${escapeHtml(engineLabel(entry.engine))} evidence:</strong> ${escapeHtml(entry.status || 'not recorded')}</p>
+        <p>${escapeHtml(
+          Object.entries(entry.context ?? {})
+            .map(([key, value]) => `${key}: ${value}`)
+            .join(' / ')
+        )}</p>
+        <p>${escapeHtml(entry.summary)}</p>
         <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}"${evidenceLinkAttributes}>Open highlighted issue report</a>
         ${nativeReportLink}
         ${screenshotLink}
@@ -916,9 +937,15 @@ function buildTestEvidencePanel(entries, navigation = {}) {
 
 function issueEntriesOnly(entries) {
   const normalizedEntries = normalizeEvidenceEntries(entries);
-  return normalizedEntries.some((entry) => entry.engine !== 'summary')
-    ? normalizedEntries.filter((entry) => entry.engine !== 'summary')
-    : normalizedEntries;
+  if (!normalizedEntries.some((entry) => entry.engine !== 'summary')) return normalizedEntries;
+  return normalizedEntries.flatMap((entry) => {
+    if (entry.engine !== 'summary') return [entry];
+    // These failures have no engine detail entry; keep them alongside scanner findings.
+    const rules = entry.rules.filter(
+      (rule) => rule.startsWith('behavior:') || rule.endsWith(':engine-execution') || rule === 'page-state-reachability'
+    );
+    return rules.length ? [{ ...entry, rules, violationCount: rules.length }] : [];
+  });
 }
 
 function ruleCountsByEngine(entries) {

@@ -1,7 +1,10 @@
+import * as http from 'http';
+
 import * as applicationinsights from 'applicationinsights';
 import type * as express from 'express';
 
-import { SpanKind, TraceFlags } from '@opentelemetry/api';
+import { Span, SpanKind, SpanStatusCode, TraceFlags } from '@opentelemetry/api';
+import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
@@ -63,6 +66,43 @@ function getSpanRequestPath(span: ReadableSpan): string {
     attributes['http.route'];
 
   return typeof path === 'string' ? path : span.name;
+}
+
+/**
+ * Response status code, inclusive, from which an incoming HTTP request
+ * is considered failed for Application Insights "Failed requests"
+ * purposes, matching the classic Application Insights 2.x behaviour
+ * (success = statusCode < 400).
+ */
+const FAILED_REQUEST_STATUS_CODE_THRESHOLD = 400;
+
+/**
+ * Marks incoming (server) HTTP spans with an ERROR status for 4xx/5xx
+ * responses.
+ *
+ * The OpenTelemetry HTTP instrumentation only sets SERVER span status
+ * to ERROR for 5xx responses; 4xx is left UNSET because it is treated
+ * as a client-side outcome under OpenTelemetry semantic conventions.
+ *
+ * Azure Monitor's preaggregated "Failed requests" standard metric is
+ * derived from `span.status.code` at span-end time. Left as-is, 4xx
+ * responses are counted as successful in that metric even though the
+ * `requests` table (which reports the raw response code) shows them as
+ * failed, producing a chart/table mismatch.
+ *
+ * This must run via the HTTP instrumentation's applyCustomAttributesOnSpan
+ * hook rather than a SpanProcessor: it fires before span.end(), ahead of
+ * the SpanProcessor chain, and Azure Monitor's own metric-preaggregation
+ * SpanProcessor is registered before any SpanProcessors this module adds.
+ */
+export function markFailedServerSpanStatus(span: Span, _request: unknown, response: http.IncomingMessage | http.ServerResponse): void {
+  if (!(response instanceof http.ServerResponse)) {
+    return;
+  }
+
+  if (typeof response.statusCode === 'number' && response.statusCode >= FAILED_REQUEST_STATUS_CODE_THRESHOLD) {
+    span.setStatus({ code: SpanStatusCode.ERROR });
+  }
 }
 
 /**
@@ -138,6 +178,11 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
 
   appInsightsSetup.setAzureMonitorOptions({
     spanProcessors: [healthStaticFilteringProcessor],
+    instrumentationOptions: {
+      http: {
+        applyCustomAttributesOnSpan: markFailedServerSpanStatus,
+      } as HttpInstrumentationConfig,
+    },
   });
 
   appInsightsSetup

@@ -53,7 +53,7 @@ function caseTaskListNegativeTests() {
   });
 
   // EXUI-4276: the UI currently renders the malformed task instead of rejecting it safely.
-  test.skip(`Sending an malformed API response for the task data should render the UI gracefully`, async ({
+  test(`Sending an malformed API response for the task data should render the UI gracefully`, { tag: ['@blocked-exui-4276'] }, async ({
     caseDetailsPage,
     page,
   }) => {

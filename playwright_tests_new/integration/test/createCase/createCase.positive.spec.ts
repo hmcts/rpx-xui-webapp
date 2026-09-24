@@ -240,8 +240,8 @@ test.describe(
       });
     });
 
-    // EXUI-4317: the journey still stalls after changing gender and cannot reach check-your-answers reliably.
-    test.skip(`When you change the gender of Person 1, the previously filled 'maiden name' field is hidden, and not sent in the API request`, async ({
+    // EXUI-4317: changing gender hides Maiden Name, but the submitted Person1 payload still includes MaidenName.
+    test(`When you change the gender of Person 1, the previously filled 'maiden name' field is hidden, and not sent in the API request`, { tag: ['@blocked-exui-4317'] }, async ({
       createCasePage,
       caseDetailsPage,
       page,

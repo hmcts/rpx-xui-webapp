@@ -539,7 +539,7 @@ body#body-content {
   align-items: flex-start;
 }
 #body-content .report-panel {
-  flex: 1 1 var(--panel-width, 440px);
+  flex: 1 1 var(--panel-width, 560px);
   min-width: min(100%, 320px);
   max-width: 100%;
 }
@@ -810,4 +810,12 @@ body#body-content {
 .trace-help {
   margin: 12px;
   color: var(--report-muted);
+}
+
+/* Webapp includes retry execution detail in its global summary. Keep it readable and scrollable. */
+#body-content .report-panel:has(#chart-status) > .odhin-thin-border {
+  height: var(--panel-height, 480px);
+}
+#body-content .report-panel:has(#chart-status) .odhin-table td {
+  vertical-align: top;
 }

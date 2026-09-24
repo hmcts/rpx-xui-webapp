@@ -1,0 +1,5 @@
+@use 'govuk-frontend/govuk/all' as *;
+
+// @hmcts/media-viewer has not yet migrated to the Sass module system, so it
+// must be evaluated in a scope where the GOV.UK variables it consumes exist.
+@import '@hmcts/media-viewer/assets/all';

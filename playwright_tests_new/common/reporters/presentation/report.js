@@ -611,12 +611,14 @@ document.querySelectorAll('.perfetto-open').forEach((button) => {
         );
       });
       const [buffer] = await Promise.all([
-        fetch(download.href, { signal: controller.signal }).then((response) => {
-          if (!response.ok) throw new Error(`Trace download failed (${response.status}).`);
-          return response.arrayBuffer();
-        }).catch((error) => {
-          throw cancellationError || error;
-        }),
+        fetch(download.href, { signal: controller.signal })
+          .then((response) => {
+            if (!response.ok) throw new Error(`Trace download failed (${response.status}).`);
+            return response.arrayBuffer();
+          })
+          .catch((error) => {
+            throw cancellationError || error;
+          }),
         ready,
       ]);
       popup.postMessage({ perfetto: { buffer, title: download.download, fileName: download.download } }, origin);

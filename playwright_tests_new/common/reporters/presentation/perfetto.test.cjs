@@ -54,10 +54,7 @@ async function check(mode) {
     listener({ origin: 'https://ui.perfetto.dev', source: popup, data: 'PONG' });
   }
   if (mode === 'stalled-fetch') timeout();
-  await Promise.race([
-    pending,
-    new Promise((_, reject) => setImmediate(() => reject(new Error(`${mode} did not settle`)))),
-  ]);
+  await Promise.race([pending, new Promise((_, reject) => setImmediate(() => reject(new Error(`${mode} did not settle`))))]);
   if (mode === 'ok') {
     assert.equal(messages[0][0].perfetto.buffer, buffer);
     assert.equal(messages[0][1], 'https://ui.perfetto.dev');

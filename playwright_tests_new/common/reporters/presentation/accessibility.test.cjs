@@ -22,6 +22,7 @@ const { parse } = require('node-html-parser');
     feature: 'Report demonstration',
     violationCount: entry.rules.length,
     htmlFileName: `evidence-${index}.html`,
+    targets: index === 0 ? ['#query-details'] : [],
     context: { persona: 'solicitor', language: index === 2 ? 'cy' : 'en', dataMode: 'synthetic' },
   }));
   entries.forEach((entry) =>
@@ -40,6 +41,25 @@ const { parse } = require('node-html-parser');
   );
   assert(!parse(hostile).querySelector('#TabAccessibility img'));
   assert(!parse(hostile).querySelector('#TabAccessibility a[href*="secret"]'));
+  const spacing = parse(
+    enhanceDashboardHtml(
+      shell,
+      [],
+      [
+        {
+          ...entries[0],
+          engine: 'wave-like',
+          rules: ['text-spacing-clipping'],
+          targets: ['#case-summary'],
+          feature: 'query management',
+        },
+      ]
+    )
+  );
+  const guidance = spacing.querySelector('.a11y-fix-guidance').textContent;
+  assert.match(guidance, /overflow:hidden\/clip/);
+  assert.match(guidance, /query-management-container\.component\.html/);
+  assert.match(guidance, /#case-summary/);
   const report = path.join(output, 'accessibility-workspace.html');
   fs.writeFileSync(report, html);
   const browser = await chromium.launch();
@@ -60,47 +80,16 @@ const { parse } = require('node-html-parser');
     await page.getByLabel('Source', { exact: true }).selectOption('lighthouse');
     assert.match(await root.locator('.a11y-evidence-card:visible').innerText(), /not-recorded/);
     await page.getByRole('button', { name: 'Clear filters' }).click();
-    await root.getByRole('link', { name: 'Manual review', exact: true }).click();
-    assert.equal(await page.locator(':focus').textContent(), 'Manual review worksheet');
-    assert.equal(await page.locator('#a11y-manual-count').textContent(), '0 / 28');
-    await page.getByLabel('Reviewer', { exact: true }).fill('Synthetic reviewer');
-    await page.getByLabel('Review date', { exact: true }).fill('2026-09-24');
-    await page.getByLabel('Browser, OS, tools and versions').fill('Chromium / synthetic interaction proof');
-    await page.getByLabel('Outcome for Keyboard and focus').selectOption('failed');
-    await page.getByRole('button', { name: 'Record this review', exact: true }).click();
-    assert.match(await page.locator('#a11y-review-message').textContent(), /Add observations/);
-    await page.locator('[name="keyboard-notes"]').fill('Synthetic focus failure; evidence reference TEST-1.');
-    await page.getByRole('button', { name: 'Record this review', exact: true }).click();
-    assert.equal(await page.locator('#a11y-manual-count').textContent(), '1 / 28');
-    const download = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Export recorded reviews (JSON)', exact: true }).click();
-    const downloaded = await download;
-    const reviewPath = path.join(output, 'manual-review.json');
-    await downloaded.saveAs(reviewPath);
-    const data = JSON.parse(fs.readFileSync(reviewPath, 'utf8'));
-    assert.equal(data.reviews.length, 4);
-    assert.equal(data.reviews[0]['keyboard-status'], 'failed');
-    assert.equal(data.reviews[3]['keyboard-status'], 'not-run');
-    await page.reload();
-    await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
-    await page.locator('#a11y-workspace-tab').click();
-    await page.locator('#a11y-import').setInputFiles(reviewPath);
-    await page.waitForFunction(() => document.querySelector('#a11y-review-message').textContent.startsWith('Imported'));
-    assert.equal(await page.locator('#a11y-manual-count').textContent(), '1 / 28');
-    await page.locator('#a11y-import').setInputFiles({
-      name: 'wrong.json',
-      mimeType: 'application/json',
-      buffer: Buffer.from(JSON.stringify({ ...data, reportId: 'wrong-report' })),
-    });
-    await page.waitForFunction(() => document.querySelector('#a11y-review-message').textContent.startsWith('Import failed'));
-    assert.equal(await page.locator('#a11y-manual-count').textContent(), '1 / 28');
-    const malformed = JSON.parse(JSON.stringify(data));
-    malformed.reviews[0].date = '2026-02-30';
-    await page
-      .locator('#a11y-import')
-      .setInputFiles({ name: 'bad-date.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(malformed)) });
-    await page.waitForFunction(() => document.querySelector('#a11y-review-message').textContent.includes('reviewer, date'));
-    assert.equal(await page.locator('#a11y-manual-count').textContent(), '1 / 28');
+    assert.equal(await root.locator('form, input[type="file"], textarea').count(), 0);
+    assert.equal(await root.getByRole('button', { name: /review|export|import/i }).count(), 0);
+    await root.getByRole('link', { name: 'Recurring issues', exact: true }).click();
+    assert.equal(await page.locator(':focus').textContent(), 'Fix repeated barriers at their source');
+    const labelCard = root.locator('.a11y-evidence-card[data-source="axe"]');
+    assert.match(await labelCard.innerText(), /visible label/);
+    assert.match(await labelCard.innerText(), /#query-details/);
+    assert.match(await labelCard.innerText(), /Verify:/);
+    assert.equal(await root.locator('.a11y-evidence-card[data-status="passed"] .a11y-fix-guidance').count(), 0);
+    assert.match(await root.locator('.a11y-evidence-card[data-status="blocked"]').innerText(), /setup/);
     for (const mode of ['light', 'dark']) {
       await page.evaluate((value) => document.documentElement.setAttribute('data-applied-mode', value), mode);
       for (const width of [320, 1440]) {
@@ -128,7 +117,7 @@ const { parse } = require('node-html-parser');
       await page.screenshot({ path: path.join(output, `workspace-${mode}.png`) });
     }
     console.log(
-      'PASS: idempotence, empty run, escaping, safe links, filters, keyboard navigation, manual validation, export/import, pending checks, light/dark responsive layout.'
+      'PASS: idempotence, empty run, escaping, safe links, filters, keyboard navigation, actionable hints, DOM targets, no review recording, light/dark responsive layout.'
     );
     console.log(report);
   } finally {

@@ -1,4 +1,3 @@
-const { randomUUID } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const escape = (value) =>
@@ -10,45 +9,7 @@ const sources = {
   'screen-reader': ['Screen-reader heuristics', 'Local DOM checks; no NVDA, JAWS or VoiceOver session is executed.'],
   lighthouse: ['Lighthouse', 'Automated audit and configured threshold; not a conformance score.'],
 };
-const manualChecks = [
-  [
-    'keyboard',
-    'Keyboard and focus',
-    'Complete the journey with Tab, Shift+Tab, Enter, Space and Escape. Check visible focus, logical order, dialogs and focus restoration.',
-  ],
-  [
-    'assistive',
-    'Assistive technology',
-    'Record actual NVDA, JAWS or VoiceOver and browser versions. Check names, reading order, changing content and errors through the whole journey.',
-  ],
-  [
-    'reflow',
-    'Zoom and reflow',
-    'Check enlarged text, 200% zoom and a 320 CSS-pixel viewport. Record clipped content, lost controls and scrolling that prevents use.',
-  ],
-  [
-    'visual',
-    'Visual presentation',
-    'Inspect contrast states, focus indicators, forced colours, text spacing and information conveyed only by colour. Record the tool and measurements.',
-  ],
-  [
-    'content',
-    'Content and language',
-    'Review meaningful headings, link text, alternative text, English/Welsh language changes and understandable instructions.',
-  ],
-  [
-    'forms',
-    'Forms and recovery',
-    'Trigger validation, recover from errors and check timeout warnings. Confirm errors are understandable and users can continue without losing their work.',
-  ],
-  [
-    'media',
-    'Media and documents',
-    'Where present, review captions, transcripts, audio descriptions and document accessibility. Explain any not-applicable result.',
-  ],
-];
-
-function injectAccessibilityWorkspace(root, entries, issueSummary) {
+function injectAccessibilityWorkspace(root, entries, issueSummary, developerHints) {
   root.querySelectorAll('#TabAccessibility, #a11y-workspace-tab, #a11y-workspace-script').forEach((node) => node.remove());
   if (!entries.length) return;
   const scenarios = [
@@ -73,6 +34,15 @@ function injectAccessibilityWorkspace(root, entries, issueSummary) {
     )}</p>
     <p>${escape(entry.summary || `${entry.violationCount} reported findings`)}</p>
     <p>${entry.rules.map(escape).join(' · ') || 'No rule identifiers recorded'}</p>
+    ${
+      entry.rules.length || entry.violationCount > 0 || ['blocked', 'error', 'unreachable'].includes(entry.status)
+        ? `<div class="a11y-fix-guidance"><h4>Where to investigate and what to change</h4><ul>${developerHints([entry])
+            .map((hint) => `<li>${escape(hint)}</li>`)
+            .join(
+              ''
+            )}</ul><p><strong>Verify:</strong> reopen this exact page state with the same persona and language, rerun the named rule, and exercise the affected control with keyboard and assistive technology as applicable. Inspect the evidence to confirm the target; suggested locations are starting points, not source mappings.</p></div>`
+        : ''
+    }
     <div class="a11y-links">${safeLink(entry.htmlFileName, 'Read evidence')}${safeLink(entry.jsonFileName, 'JSON')}${safeLink(entry.screenshotFileName, 'Screenshot')}${safeLink(entry.reportFileName, 'Native report')}</div>
   </article>`
     )
@@ -94,25 +64,14 @@ function injectAccessibilityWorkspace(root, entries, issueSummary) {
   root.querySelector('body')?.insertAdjacentHTML(
     'beforeend',
     `<div id="TabAccessibility" class="main-tabcontent" style="display:none">
-    <main class="a11y-workspace" data-report-id="${randomUUID()}">
-      <header class="a11y-intro"><p class="a11y-eyebrow">ACCESSIBILITY · DEVELOPER WORKSPACE</p><h1>Build access into every journey</h1><p>Understand the evidence, remove barriers, and record the human checks automation cannot perform.</p>
-      <nav aria-label="Accessibility sections"><a href="#a11y-evidence">Evidence</a><a href="#a11y-patterns">Recurring issues</a><a href="#a11y-sources">Tools and coverage</a><a href="#a11y-manual">Manual review</a><a href="#a11y-next">Developer workflow</a></nav></header>
-      <div class="a11y-metrics"><div><strong>${scenarios.length}</strong>Recorded journey contexts</div><div><strong>${entries.length}</strong>Evidence records</div><div><strong>${blocked}</strong>Blocked / error records</div><div><strong id="a11y-manual-count">0 / ${scenarios.length * manualChecks.length}</strong>Manual checks recorded</div></div>
-      <p class="a11y-note">This is evidence from this run, not a WCAG conformance verdict or full route inventory. Multiple engines can report the same barrier; summaries repeat scanner findings. Missing evidence and unreviewed checks are not passes.</p>
+    <main class="a11y-workspace">
+      <header class="a11y-intro"><p class="a11y-eyebrow">ACCESSIBILITY · DEVELOPER WORKSPACE</p><h1>Build access into every journey</h1><p>Find the affected page and element, understand the likely fix, and verify the change.</p>
+      <nav aria-label="Accessibility sections"><a href="#a11y-evidence">Evidence</a><a href="#a11y-patterns">Recurring issues</a><a href="#a11y-sources">Tools and coverage</a><a href="#a11y-next">Developer workflow</a></nav></header>
+      <div class="a11y-metrics"><div><strong>${scenarios.length}</strong>Recorded journey contexts</div><div><strong>${entries.length}</strong>Evidence records</div><div><strong>${blocked}</strong>Blocked / error records</div></div>
+      <p class="a11y-note">This is evidence from this run, not a WCAG conformance verdict or full route inventory. Multiple engines can report the same barrier; summaries repeat scanner findings. Missing evidence is not a pass. Automated checks cannot establish full accessibility.</p>
       <section id="a11y-evidence"><h2>Explore the evidence</h2><div class="a11y-controls"><label>Search journeys, rules or personas<input id="a11y-search" type="search" placeholder="Try: heading, cy, solicitor"></label><label>Source<select aria-label="Source" id="a11y-source"><option value="">All sources</option>${options([...new Set(entries.map((e) => e.engine))].map((engine) => [engine, sources[engine]?.[0] ?? engine]))}</select></label><label>Outcome<select aria-label="Outcome" id="a11y-status"><option value="">All outcomes</option>${options([...new Set(entries.map((e) => e.status || 'not-recorded'))].map((status) => [status, status]))}</select></label><button type="button" id="a11y-clear">Clear filters</button></div><p id="a11y-results" role="status">${entries.length} evidence records shown</p><div class="a11y-card-grid">${cards}</div></section>
-      <section id="a11y-patterns"><h2>Fix repeated barriers at their source</h2><p>Review the affected states before choosing a shared-component fix. Counts represent test titles, not unique pages or confirmed defects.</p><div class="a11y-table-scroll">${issueSummary || '<p>No rule groups recorded. Check blocked states and manual coverage before drawing conclusions.</p>'}</div></section>
-      <section id="a11y-sources"><h2>Tools and coverage</h2><ul class="a11y-source-grid">${sourceRows}</ul><p>Manual results can record evidence from assistive technology, contrast tools, WAVE, Accessibility Insights or other evaluation methods. These tools are not automatically run by this worksheet.</p></section>
-      <section id="a11y-manual"><h2>Manual review worksheet</h2><p>Choose a journey context and record observations. This starter worksheet complements <a href="https://www.w3.org/WAI/test-evaluate/conformance/wcag-em/" target="_blank" rel="noopener noreferrer">WCAG-EM evaluation</a>; it is not a complete WCAG checklist. Keep case details and credentials out of notes.</p>
-      <p><strong>Session only:</strong> export before closing or reloading. Import restores a worksheet exported from this exact report and replaces the current worksheet.</p>
-      <div class="a11y-controls"><label>Journey context<select id="a11y-scenario">${options(
-        scenarios.map((key, index) => {
-          const [title, feature, state, context] = JSON.parse(key);
-          return [String(index), [title, feature, state, ...Object.values(context)].filter(Boolean).join(' · ')];
-        })
-      )}</select></label></div>
-      <form id="a11y-review-form"><div class="a11y-controls"><label>Reviewer<input name="reviewer" maxlength="120" required></label><label>Review date<input name="date" type="date" required></label><label>Browser, OS, tools and versions<input name="environment" maxlength="500" required></label></div>
-      ${manualChecks.map(([id, title, instruction]) => `<details class="a11y-manual-check" open><summary>${title}</summary><p>${instruction}</p><div class="a11y-controls"><label>Outcome for ${title}<select aria-label="Outcome for ${title}" name="${id}-status"><option value="not-run">Not run</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="blocked">Blocked</option><option value="not-applicable">Not applicable</option></select></label><label>Observations, steps and evidence reference<textarea name="${id}-notes" maxlength="4000" rows="2"></textarea></label></div></details>`).join('')}
-      <button type="submit">Record this review</button></form><div class="a11y-controls"><button type="button" id="a11y-export">Export recorded reviews (JSON)</button><label>Import recorded reviews<input id="a11y-import" type="file" accept="application/json,.json"></label></div><p id="a11y-review-message" role="status">No manual checks recorded.</p><p id="a11y-review-results"></p></section>
+      <section id="a11y-patterns"><h2>Fix repeated barriers at their source</h2><p>Review the affected states before choosing a shared-component fix. Counts represent test titles, not unique pages or confirmed defects.</p><div class="a11y-table-scroll">${issueSummary || '<p>No rule groups recorded. Check blocked states and scanner coverage before drawing conclusions.</p>'}</div></section>
+      <section id="a11y-sources"><h2>Tools and coverage</h2><ul class="a11y-source-grid">${sourceRows}</ul><p>Use the linked engine evidence for rule details, DOM snippets and available standards references. Heuristic checks do not execute assistive technology.</p></section>
       <section id="a11y-next"><h2>Build accessibility into the change</h2><ol><li>Choose representative roles, languages and journey states, including validation, dialogs and recovery.</li><li>Read the rule evidence and confirm the user impact. Fix shared components when multiple journeys expose the same cause.</li><li>Add a focused interaction regression test, rerun the scanners, and complete the relevant manual checks.</li><li>Attach evidence and remaining gaps to the pull request for human review.</li></ol><p><a href="https://www.w3.org/WAI/test-evaluate/" target="_blank" rel="noopener noreferrer">W3C evaluation guidance</a> · <a href="https://www.w3.org/WAI/WCAG22/quickref/" target="_blank" rel="noopener noreferrer">WCAG 2.2 reference</a></p></section>
     </main></div><script id="a11y-workspace-script">${fs.readFileSync(path.join(__dirname, 'accessibility.js'), 'utf8')}</script>`
   );

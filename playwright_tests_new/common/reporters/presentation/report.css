@@ -58,8 +58,7 @@
 }
 .a11y-metrics > div,
 .a11y-evidence-card,
-.a11y-source-grid li,
-.a11y-manual-check {
+.a11y-source-grid li {
   background: var(--report-surface);
   border: 1px solid var(--report-line);
   border-radius: 12px;
@@ -93,7 +92,6 @@
 }
 .a11y-workspace input,
 .a11y-workspace select,
-.a11y-workspace textarea,
 .a11y-workspace button {
   min-width: 0;
   max-width: 100%;
@@ -105,8 +103,7 @@
   font: inherit;
 }
 .a11y-workspace input,
-.a11y-workspace select,
-.a11y-workspace textarea {
+.a11y-workspace select {
   width: 100%;
 }
 .a11y-workspace button {
@@ -155,13 +152,6 @@
 }
 .a11y-workspace .odhin-a11y-issue-summary > h2 {
   display: none;
-}
-.a11y-manual-check {
-  margin: 10px 0;
-}
-.a11y-manual-check summary {
-  cursor: pointer;
-  font-weight: 700;
 }
 :root[data-applied-mode] {
   --report-bg: #f3f5fa;
@@ -1128,4 +1118,23 @@ body#body-content {
 #body-content .panel-drop-target > .odhin-thin-border {
   outline: 3px dashed var(--report-accent);
   outline-offset: -3px;
+}
+
+.a11y-fix-guidance {
+  border-top: 1px solid var(--report-line);
+  padding-top: 14px;
+  font-size: 14px;
+}
+.a11y-card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+}
+.a11y-fix-guidance h4 {
+  font-size: 16px;
+  font-weight: 700;
+}
+.a11y-fix-guidance ul {
+  padding-left: 20px;
+}
+.a11y-fix-guidance li {
+  margin-bottom: 10px;
 }

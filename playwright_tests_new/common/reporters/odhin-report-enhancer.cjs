@@ -715,6 +715,17 @@ function buildDeveloperHint(entries) {
   const targets = uniqueValues(entries.flatMap((entry) => entry.targets)).slice(0, 6);
   const hints = [];
 
+  if (entries.some((entry) => ['blocked', 'unreachable'].includes(entry.status)) || rules.includes('page-state-reachability')) {
+    return [
+      'Restore journey setup first: check the configured identity, route, test data and readiness failure in the evidence. No accessibility result is available for the intended page until it can be reached.',
+    ];
+  }
+  if (entries.some((entry) => entry.status === 'error') || rules.some((rule) => rule.endsWith(':engine-execution'))) {
+    hints.push(
+      'Resolve the scanner execution error in the attached evidence before treating its missing results as a product defect or a pass.'
+    );
+  }
+
   if (rules.some((rule) => rule.includes('skip-link'))) {
     hints.push('Check the app shell skip link target exists on this route and points at the visible main content.');
   }
@@ -732,6 +743,65 @@ function buildDeveloperHint(entries) {
   }
   if (rules.some((rule) => rule.includes('fieldset-legend'))) {
     hints.push('Check the fieldset has a visible legend that describes the grouped controls.');
+  }
+  const additionalAdvice = [
+    [
+      /heading-order/,
+      'Heading navigation: fix skipped levels in the owning template; use CSS for visual size instead of choosing a heading level for appearance. Recheck the heading outline in the rendered state.',
+    ],
+    [
+      /definition-list|dlitem|(^|:)dd($|:)/,
+      'Definition lists: inspect the affected dl and its dt/dd groups. Give each term its description, including conditional empty states, so assistive technology can expose the relationship.',
+    ],
+    [
+      /document-language|html-lang|valid-lang/,
+      'Language: inspect the rendered html lang and translated content together. Welsh page states need cy (or an appropriate cy subtag); set lang on passages in a different language. Recheck after switching languages.',
+    ],
+    [
+      /document-title|metadata|meta-description/,
+      'Page metadata: inspect the route title/metadata update and app-shell defaults for repeated wording. Describe this specific page state once; do not remove meaningful context just to make the title shorter.',
+    ],
+    [
+      /duplicate-id|aria-reference-target/,
+      'Relationships: search the reported id in the template and repeated components. Make ids unique and update label for, aria-labelledby, aria-describedby and fragment links together.',
+    ],
+    [
+      /color-contrast/,
+      'Contrast: inspect foreground/background tokens and the reported interaction state. Change the shared colour token where appropriate, then rerun contrast checks in light, dark, hover and focus states used by the component.',
+    ],
+    [
+      /image-alt/,
+      'Images: edit the image component or content source. Describe informative content; use empty alt only for decorative images. Verify the accessible name in the original evidence.',
+    ],
+    [
+      /table-headers/,
+      'Tables: inspect the data-table template. Associate cells with row/column headers using th and scope (or headers/id for complex tables), so values retain their meaning when read cell by cell.',
+    ],
+    [
+      /positive-tabindex|aria-hidden-focusable|behavior:.*focus|behavior:.*Tab|behavior:.*keyboard/,
+      'Keyboard: inspect the affected component focus handler and tabindex. Follow DOM order, keep hidden content out of the tab sequence, and restore focus after closing dialogs. Repeat the failing keyboard sequence from the test.',
+    ],
+    [
+      /error-describedby|govuk-error-message/,
+      'Validation: connect each invalid control to its visible error with aria-describedby and a unique error id. Repeat the invalid state to verify association, then correct the input and confirm obsolete error text and references clear.',
+    ],
+    [
+      /text-spacing-clipping/,
+      'Text spacing: inspect fixed heights, max-height and overflow:hidden/clip on the target and its containers. Allow text and controls to grow or wrap with user spacing overrides; rerun the spacing probe and inspect the expanded layout.',
+    ],
+  ];
+  for (const [pattern, advice] of additionalAdvice) {
+    if (rules.some((rule) => pattern.test(rule))) hints.push(advice);
+  }
+  if (entries.some((entry) => entry.feature === 'query management')) {
+    hints.push(
+      'Source starting point: src/cases/containers/query-management-container/query-management-container.component.html. Follow the rendered ccd-query-* component into the shared toolkit if it owns the target.'
+    );
+  }
+  if (entries.some((entry) => entry.feature === 'signed-in header')) {
+    hints.push(
+      'Source starting point: src/app/containers/app-header/app-header.component.html and src/app/components/hmcts-global-header/hmcts-global-header.component.html. Confirm the target belongs to the header before editing.'
+    );
   }
   if (targets.length) {
     hints.push(`Start near: ${targets.join(', ')}.`);
@@ -1326,7 +1396,12 @@ function enhanceDashboardHtml(
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
-  injectAccessibilityWorkspace(root, normalizedEvidenceEntries, buildIssueSummaryBlock(normalizedEvidenceEntries));
+  injectAccessibilityWorkspace(
+    root,
+    normalizedEvidenceEntries,
+    buildIssueSummaryBlock(normalizedEvidenceEntries),
+    buildDeveloperHint
+  );
   if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
 
   applyPresentation(root, testMetadata);

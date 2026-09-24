@@ -1,4 +1,5 @@
 import type { Page, TestInfo } from '@playwright/test';
+import { collectTextSpacingClipping } from './textSpacingAccessibility';
 import { escapeAttribute, escapeHtml, publishAccessibilityEvidence } from './accessibilityEvidencePublisher';
 
 export const WAVE_LIKE_A11Y_TAG = '@wave-a11y';
@@ -47,7 +48,7 @@ type WaveLikePageSnapshot = {
 };
 
 export async function collectWaveLikeAccessibilityViolations(page: Page): Promise<WaveLikeViolation[]> {
-  return page.evaluate<WaveLikeViolation[]>(() => {
+  const violations = await page.evaluate<WaveLikeViolation[]>(() => {
     const visible = (element: Element): element is HTMLElement => {
       if (!(element instanceof HTMLElement)) {
         return false;
@@ -260,6 +261,7 @@ export async function collectWaveLikeAccessibilityViolations(page: Page): Promis
 
     return violations;
   });
+  return [...violations, ...(await collectTextSpacingClipping(page))];
 }
 
 export async function attachWaveLikeAccessibilityEvidence(

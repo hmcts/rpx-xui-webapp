@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const enhancerModule = require('../../common/reporters/odhin-report-enhancer.cjs');
+const { parse } = require('node-html-parser');
 
 const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: string) => {
   name: string;
@@ -21,7 +22,14 @@ const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: s
 const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
 
 const enhancerTest = enhancerModule.__test__ as {
-  enhanceDashboardHtml: (html: string, featureStats: unknown, evidenceEntries?: unknown) => string;
+  enhanceDashboardHtml: (
+    html: string,
+    featureStats: unknown,
+    evidenceEntries?: unknown,
+    perfettoFiles?: string[],
+    perfettoHrefPrefix?: string,
+    testMetadata?: unknown[]
+  ) => string;
   formatDuration: (durationMs: number) => string;
   buildFeatureOverviewBlock: (featureStats: unknown) => string;
   buildAccessibilityEvidenceBlock: (entries: unknown) => string;
@@ -56,6 +64,52 @@ const enhancerTest = enhancerModule.__test__ as {
 };
 
 test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
+  test('matches metadata by retry target and preserves report panels when enhanced twice', () => {
+    const html = `<html><head><meta name="viewport" content="width=1200"></head><body>
+      <div class="tab"><button class="main-tablinks" onclick="openMainTab(event, 'TabCoverage')">Coverage</button></div>
+      <div id="TabCoverage"><a href="coverage/index.html">Open coverage report</a></div>
+      <div id="TabRunInfo">RPX XUI Webapp | aat | workers=4 | branch=feature/report</div>
+      <div id="TabLoadProfile"><a href="load-profile/load-profile.html">Load profile</a></div>
+      <table id="test-list-table"><thead><tr><th>Title</th><th>Status</th><th>Duration</th></tr></thead>
+      <tbody><tr data-bs-target="#test-1"><td>Shared title</td><td>passed</td><td>1s</td></tr>
+      <tr data-bs-target="#test-0"><td>Shared title</td><td>failed</td><td>2s</td></tr></tbody>
+      <tfoot><tr><th>Title</th><th>Status</th><th>Duration</th></tr></tfoot></table>
+      <div id="test-0"><a href="attachments/trace.zip">Trace</a></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0',
+        feature: '<img src=x onerror=alert(1)>',
+        tags: ['@a&b', '<script>bad()</script>'],
+        retry: 0,
+        durationMs: 2000,
+      },
+      { target: '#test-1', feature: 'hearings', tags: ['@integration'], retry: 1, durationMs: 1000 },
+    ];
+    const once = enhancerTest.enhanceDashboardHtml(html, [], [], ['perfetto.json'], '../test-results', metadata);
+    const twice = enhancerTest.enhanceDashboardHtml(once, [], [], ['perfetto.json'], '../test-results', metadata);
+    const root = parse(twice);
+    const rows = root.querySelectorAll('#test-list-table tbody tr');
+    expect(rows[0].querySelectorAll('[data-report-metadata]').map((cell: { text: string }) => cell.text)).toEqual([
+      'hearings',
+      '@integration',
+      '2',
+    ]);
+    expect(rows[1].getAttribute('data-duration-ms')).toBe('2000');
+    expect(rows[1].querySelector('img, script')).toBeNull();
+    expect(twice).toContain('&lt;script&gt;bad()&lt;/script&gt;');
+    expect(root.querySelectorAll('#webapp-report-theme')).toHaveLength(1);
+    expect(root.querySelectorAll('#webapp-report-ui')).toHaveLength(1);
+    expect(root.querySelectorAll('#test-list-table thead th')).toHaveLength(6);
+    expect(root.querySelectorAll('#test-list-table tfoot th')).toHaveLength(6);
+    expect(root.querySelectorAll('#TabPerfetto')).toHaveLength(1);
+    expect(root.querySelector('#TabPerfetto a').getAttribute('href')).toBe('../test-results/perfetto.json');
+    expect(root.querySelector('#TabCoverage a').getAttribute('href')).toBe('coverage/index.html');
+    expect(root.querySelector('#TabLoadProfile a').getAttribute('href')).toBe('load-profile/load-profile.html');
+    expect(root.querySelector('#test-0 a').getAttribute('href')).toBe('attachments/trace.zip');
+    expect(root.querySelector('#TabRunInfo').text).toContain('RPX XUI Webapp | aat | workers=4 | branch=feature/report');
+    expect(root.querySelector('meta[name="viewport"]').getAttribute('content')).toBe('width=device-width, initial-scale=1');
+  });
+
   test('derives feature names from Playwright file paths', () => {
     expect(
       deriveFeatureName(
@@ -187,7 +241,8 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('Passed');
     expect(nextHtml).toContain('Status by test file');
     expect(nextHtml).not.toContain('Status by feature');
-    expect(nextHtml).toContain('odhin-dashboard-stack');
+    expect(parse(nextHtml).querySelector('.odhin-dashboard-stack')).toBeNull();
+    expect(parse(nextHtml).querySelectorAll('#TabDashboard .row > div > .dashboard-block')).toHaveLength(5);
     expect(nextHtml.indexOf('Run info')).toBeLessThan(nextHtml.indexOf('Feature Overview'));
     expect(nextHtml.indexOf('Global Summary')).toBeLessThan(nextHtml.indexOf('Projects Summary'));
     expect(nextHtml).toContain("document.getElementById('chart-project').getContext('2d');");
@@ -392,6 +447,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
                 <td>1s</td>
               </tr>
             </tbody>
+            <tfoot><tr><th>Title</th><th>Status</th><th>Duration</th></tr></tfoot>
           </table>
           <div class="modal-content">
             <div class="modal-header result-header">
@@ -441,6 +497,11 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         },
       ]
     );
+
+    const table = parse(nextHtml).querySelector('#test-list-table');
+    expect(table.querySelectorAll('thead th')).toHaveLength(5);
+    expect(table.querySelectorAll('tfoot th')).toHaveLength(5);
+    expect(table.querySelectorAll('tbody tr')[0].querySelectorAll('td')).toHaveLength(5);
 
     expect(nextHtml).toContain(
       'data-a11y-test-evidence-link="privacy-policy-summary.html|privacy-policy-wave-like.html|privacy-policy-screen-reader.html"'

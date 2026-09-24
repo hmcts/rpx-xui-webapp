@@ -3427,13 +3427,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.1":
-  version: 7.4.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.2-exui-5220-rc1":
+  version: 7.4.2-exui-5220-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.2-exui-5220-rc1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.37"
+    "@hmcts/media-viewer": "npm:4.2.38"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
@@ -3469,12 +3469,12 @@ __metadata:
     prosemirror-history: 1.5.0
     prosemirror-model: 1.25.11
     prosemirror-schema-list: 1.5.1
-    rpx-xui-translation: 1.2.12
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/353a5ac851b6241ccbe680aece3ff3beac0a6af438ce5a1457ee14664e67f9316e2cb003aaf75eb877093b4e7584c09d3f45bf93663cdc27c78fef0516ad018e
+  checksum: 10/1026010b7802dd338d966ea87094ba507c7fb074418f9ab175d59325c099d8027cd8e2d95525251dc9191f4386fa3e58a3ae07dc90833be1f0792cf1ec62c5f1
   languageName: node
   linkType: hard
 
@@ -3528,9 +3528,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.37":
-  version: 4.2.37
-  resolution: "@hmcts/media-viewer@npm:4.2.37"
+"@hmcts/media-viewer@npm:4.2.38":
+  version: 4.2.38
+  resolution: "@hmcts/media-viewer@npm:4.2.38"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3551,9 +3551,9 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.12
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/a594353a2e2ff42f4f465a3dbd664adf043e384147e4b2482fc5e1024731a583590692685a2a612dc9a7151c726ec6bf9d8b63948b16e7f925d7de615d03eaf9
+  checksum: 10/57acd063c4d6be3d747cc0211e24936744e393b40ba4fe96a133f71505807a071a5c04b9f705a143178fee4d05e52f2a12ba536e96af2b1bfa91c8a0186661d8
   languageName: node
   linkType: hard
 
@@ -21389,7 +21389,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.2-exui-5220-rc1"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.27"

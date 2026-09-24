@@ -3499,35 +3499,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.27":
-  version: 4.2.27
-  resolution: "@hmcts/media-viewer@npm:4.2.27"
-  dependencies:
-    "@swimlane/ngx-datatable": "npm:^23.0.1"
-    moment-timezone: "npm:^0.6.2"
-    mutable-div: "npm:^2.0.0"
-    pdfjs-dist: "npm:^4.10.38"
-    socket.io-client: "npm:^4.8.0"
-    tslib: "npm:^2.3.0"
-    uuid: "npm:^11.0.3"
-  peerDependencies:
-    "@angular/animations": ^20.0.0
-    "@angular/cdk": ^17.3.8
-    "@angular/common": ^20.0.0
-    "@angular/core": ^20.0.0
-    "@angular/forms": ^20.0.0
-    "@angular/platform-browser": ^20.0.0
-    "@angular/router": ^20.0.0
-    "@ngrx/effects": ^20
-    "@ngrx/store": ^20
-    "@ngrx/store-devtools": ^20
-    ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.7
-    rxjs: ^7.8.2
-  checksum: 10/31ef99ab45c738237db6bfab48dae32f09d397d10de48b12bb3a521c0cad6bd0506255c064967be78191cb4d51b8e501fc2283e179a336faaad1eefacac57594
-  languageName: node
-  linkType: hard
-
 "@hmcts/media-viewer@npm:4.2.38":
   version: 4.2.38
   resolution: "@hmcts/media-viewer@npm:4.2.38"
@@ -3621,9 +3592,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.17":
-  version: 3.2.17
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.17"
+"@hmcts/rpx-xui-common-lib@npm:3.2.18":
+  version: 3.2.18
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.18"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     govuk-frontend: "npm:4.9.0"
@@ -3644,16 +3615,16 @@ __metadata:
     "@ng-idle/keepalive": ^16.0.0
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.2.12
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/fe00e865c7c073c397b914f02288590f059a81ccadc123585130734037c51b16176d0d1181f09017e2894d61b413de1aa2428538bab4e4d82849486ac752c32b
+  checksum: 10/14b686b829fe730bb853a4f527b7cd4e0f426e96c33882fb88ecfa0aed61aab17dc1fefd484aab0594d9b447e906b570bf57306051e228f2d947b6bd3b630f8d
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.29":
-  version: 2.30.29
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.29"
+"@hmcts/rpx-xui-node-lib@npm:2.30.30":
+  version: 2.30.30
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.30"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.18.1"
@@ -3672,7 +3643,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/69175823fbda86355ff937d118ca611b27ecca290307f93ece687b8a34e65e9f4b4dba34e106a70db129e3f95e7f9c2fd5f6cc0f62b22473cd89e7ba25d6b7ff
+  checksum: 10/e984f248986d2e37a01fac753d0f792c8bc7131fb3edb073c0ba3e5acc971aef719ac586a943c049cbdb75f164309d035b918121109c8c99635aef57ee31b46f
   languageName: node
   linkType: hard
 
@@ -11205,13 +11176,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chownr@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "chownr@npm:2.0.0"
-  checksum: 10/c57cf9dd0791e2f18a5ee9c1a299ae6e801ff58fee96dc8bfd0dcb4738a6ce58dd252a3605b1c93c6418fe4f9d5093b28ffbf4d66648cb2a9c67eaef9679be2f
-  languageName: node
-  linkType: hard
-
 "chownr@npm:^3.0.0":
   version: 3.0.0
   resolution: "chownr@npm:3.0.0"
@@ -14683,15 +14647,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-minipass@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "fs-minipass@npm:2.1.0"
-  dependencies:
-    minipass: "npm:^3.0.0"
-  checksum: 10/03191781e94bc9a54bd376d3146f90fe8e082627c502185dbf7b9b3032f66b0b142c1115f3b2cc5936575fc1b44845ce903dd4c21bec2a8d69f3bd56f9cee9ec
-  languageName: node
-  linkType: hard
-
 "fs-minipass@npm:^3.0.0":
   version: 3.0.3
   resolution: "fs-minipass@npm:3.0.3"
@@ -18150,27 +18105,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minipass@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "minipass@npm:5.0.0"
-  checksum: 10/61682162d29f45d3152b78b08bab7fb32ca10899bc5991ffe98afc18c9e9543bd1e3be94f8b8373ba6262497db63607079dc242ea62e43e7b2270837b7347c93
-  languageName: node
-  linkType: hard
-
 "minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0, minipass@npm:^7.0.2, minipass@npm:^7.0.3, minipass@npm:^7.0.4, minipass@npm:^7.1.2":
   version: 7.1.2
   resolution: "minipass@npm:7.1.2"
   checksum: 10/c25f0ee8196d8e6036661104bacd743785b2599a21de5c516b32b3fa2b83113ac89a2358465bc04956baab37ffb956ae43be679b2262bf7be15fce467ccd7950
-  languageName: node
-  linkType: hard
-
-"minizlib@npm:^2.1.1":
-  version: 2.1.2
-  resolution: "minizlib@npm:2.1.2"
-  dependencies:
-    minipass: "npm:^3.0.0"
-    yallist: "npm:^4.0.0"
-  checksum: 10/ae0f45436fb51344dcb87938446a32fbebb540d0e191d63b35e1c773d47512e17307bf54aa88326cc6d176594d00e4423563a091f7266c2f9a6872cdc1e234d1
   languageName: node
   linkType: hard
 
@@ -18190,7 +18128,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:1.0.4, mkdirp@npm:^1.0.3":
+"mkdirp@npm:1.0.4":
   version: 1.0.4
   resolution: "mkdirp@npm:1.0.4"
   bin:
@@ -21392,12 +21330,12 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.4.2-exui-5220-rc1"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.27"
+    "@hmcts/media-viewer": "npm:4.2.38"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.17"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.29"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.18"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.30"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -21499,7 +21437,7 @@ __metadata:
     playwright-core: "npm:1.63.0"
     prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.13"
+    rpx-xui-translation: "npm:1.2.14"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -21530,9 +21468,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.13":
-  version: 1.2.13
-  resolution: "rpx-xui-translation@npm:1.2.13"
+"rpx-xui-translation@npm:1.2.14":
+  version: 1.2.14
+  resolution: "rpx-xui-translation@npm:1.2.14"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -21541,7 +21479,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/c328888a31a91a6db3a2137d9c20a3385a101fac005ee0a23de1922c327aa255d05d32c8f5bcaff73eea7d6dc5d8f4bb3926a2101bd7a088cf0f3468372f426e
+  checksum: 10/d8721c73290801831070039f803971d343150703dee898e3de52700ad1a3003538ba09f2f7cf58eb4bfad5749d07f9cfcd4e89bf03735d601c7d3e25e706499c
   languageName: node
   linkType: hard
 
@@ -22857,30 +22795,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^6.1.13":
-  version: 6.2.1
-  resolution: "tar@npm:6.2.1"
-  dependencies:
-    chownr: "npm:^2.0.0"
-    fs-minipass: "npm:^2.0.0"
-    minipass: "npm:^5.0.0"
-    minizlib: "npm:^2.1.1"
-    mkdirp: "npm:^1.0.3"
-    yallist: "npm:^4.0.0"
-  checksum: 10/bfbfbb2861888077fc1130b84029cdc2721efb93d1d1fb80f22a7ac3a98ec6f8972f29e564103bbebf5e97be67ebc356d37fa48dbc4960600a1eb7230fbd1ea0
-  languageName: node
-  linkType: hard
-
-"tar@npm:^7.4.3, tar@npm:^7.5.4":
-  version: 7.5.7
-  resolution: "tar@npm:7.5.7"
+"tar@npm:^7.5.22":
+  version: 7.5.22
+  resolution: "tar@npm:7.5.22"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10/0d6938dd32fe5c0f17c8098d92bd9889ee0ed9d11f12381b8146b6e8c87bb5aa49feec7abc42463f0597503d8e89e4c4c0b42bff1a5a38444e918b4878b7fd21
+  checksum: 10/129606384b3c895f422aaca48bf316357be6dc7aa35c1066c3f06c28acfff0be5b356e1b0a0be7c53a7a8945534ac06cec6d8e296d170d8a09c8bff67b29300e
   languageName: node
   linkType: hard
 

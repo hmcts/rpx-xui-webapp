@@ -297,6 +297,25 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).not.toContain('id="chart-file"');
   });
 
+  test('treats flaky final passes as passed for feature pass-rate display', () => {
+    const manageTasks = createEmptyFeatureStat('manageTasks');
+    manageTasks.totalTests = 99;
+    manageTasks.passed = 96;
+    manageTasks.skipped = 3;
+
+    const caseDetails = createEmptyFeatureStat('caseDetails');
+    caseDetails.totalTests = 4;
+    caseDetails.passed = 3;
+    caseDetails.flaky = 1;
+
+    const html = enhancerTest.buildFeatureOverviewBlock([manageTasks, caseDetails]);
+    const root = parse(html);
+    const rows = root.querySelectorAll('tbody tr');
+    expect(rows[0].querySelector('.result-status-passed').text.trim()).toBe('96 (100.00%)');
+    expect(rows[1].querySelector('.result-status-passed').text.trim()).toBe('4 (100.00%)');
+    expect(rows[1].querySelector('.result-status-flaky').text.trim()).toBe('1 (25.00%)');
+  });
+
   test('feature overview block keeps feature distribution and outcome columns together', () => {
     const manageTasks = createEmptyFeatureStat('manageTasks');
     manageTasks.totalTests = 76;

@@ -105,7 +105,7 @@ nodejs:
     # Services Wa Workflow
     SERVICES_WA_WORKFLOW_API_URL: http://wa-workflow-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services ICP
-    SERVICES_ICP_API: http://em-icp-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_ICP_API: https://xui-icp.{{ .Values.global.environment }}.platform.hmcts.net
     # Services Idam
     SERVICES_IDAM_API_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_CLIENT_ID: xuiwebapp

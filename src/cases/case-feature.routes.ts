@@ -42,21 +42,21 @@ export const ROUTES: Routes = [
         path: 'case-share',
         component: CaseShareComponent,
         data: {
-          title: 'HMCTS Share Cases | Case Share',
+          title: 'HMCTS Share Cases - Case Share',
         },
       },
       {
         path: 'case-share-confirm',
         component: CaseShareConfirmComponent,
         data: {
-          title: 'HMCTS Share Cases | Case Share Confirm',
+          title: 'HMCTS Share Cases - Case Share Confirm',
         },
       },
       {
         path: 'case-share-complete',
         component: CaseShareCompleteComponent,
         data: {
-          title: 'HMCTS Share Cases | Case Share Complete',
+          title: 'HMCTS Share Cases - Case Share Complete',
         },
       },
       {

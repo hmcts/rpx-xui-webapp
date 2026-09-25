@@ -42,7 +42,7 @@ describe('PartyChannelsResolverService', () => {
       spyOn(service, 'getReferenceData$').and.callThrough();
       const route = new ActivatedRouteSnapshot();
       route.data = {
-        title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+        title: 'Request Hearing - Date Priority Hearing',
       };
       service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
         expect(service.getReferenceData$).toHaveBeenCalled();

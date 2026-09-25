@@ -761,7 +761,7 @@ describe('Case Flags Resolver', () => {
     spyOn(caseFlagsRefDataService, 'getCaseFlagsRefData').and.returnValue(of(CASE_FLAGS_REF_DATA));
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Hearing Requirement',
+      title: 'Request Hearing - Hearing Requirement',
     };
     resolver.resolve().subscribe((refData: CaseFlagReferenceModel[]) => {
       expect(refData).toEqual(CASE_FLAGS_REF_DATA.flags[0].FlagDetails);

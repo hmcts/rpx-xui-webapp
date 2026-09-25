@@ -27,6 +27,7 @@ export class HearingsService {
   public displayValidationError: boolean = false;
   public submitUpdatedRequestClicked: boolean = false;
   public hearingRequestForSubmitValid: boolean = false;
+  public hearingRequestContinueDisabled: boolean = false;
 
   constructor(private readonly http: HttpClient) {}
 

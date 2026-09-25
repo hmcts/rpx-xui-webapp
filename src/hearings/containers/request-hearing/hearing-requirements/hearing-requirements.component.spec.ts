@@ -2082,6 +2082,7 @@ describe('HearingRequirementsComponent', () => {
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
+    hearingsService.hearingRequestContinueDisabled = false;
     TestBed.configureTestingModule({
       declarations: [HearingRequirementsComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
@@ -3045,6 +3046,19 @@ describe('HearingRequirementsComponent', () => {
     component.serviceHearingValuesModel = serviceHearingValuesModel;
     component.ngOnInit();
     expect(component.showMismatchErrorMessage).toBeTruthy();
-    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE });
+    expect(hearingsService.hearingRequestContinueDisabled).toBeTruthy();
+    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST });
+  });
+
+  it('should clear continue disabled state when component is destroyed', () => {
+    hearingsService.hearingRequestContinueDisabled = true;
+    component.ngOnDestroy();
+    expect(hearingsService.hearingRequestContinueDisabled).toBeFalsy();
+  });
+
+  it('should close the mismatch error popup', () => {
+    component.showMismatchErrorMessage = true;
+    component.closeMismatchErrorMessage();
+    expect(component.showMismatchErrorMessage).toBeFalsy();
   });
 });

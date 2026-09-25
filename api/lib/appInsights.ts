@@ -1,13 +1,11 @@
 import * as applicationinsights from 'applicationinsights';
+import type { Contracts } from 'applicationinsights';
 import * as express from 'express';
 import { getConfigValue, showFeature } from '../configuration/';
 import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
-type TelemetryProcessor = Parameters<applicationinsights.TelemetryClient['addTelemetryProcessor']>[0];
-type TelemetryEnvelope = Parameters<TelemetryProcessor>[0];
-
-function fineGrainedSampling(envelope: TelemetryEnvelope): boolean {
-  if (['RequestData', 'RemoteDependencyData'].includes(envelope.data?.baseType)) {
-    const name = String(envelope.data?.baseData?.name || '').toLowerCase();
+function fineGrainedSampling(envelope: Contracts.EnvelopeTelemetry): boolean {
+  if (['RequestData', 'RemoteDependencyData'].includes(envelope.data.baseType)) {
+    const name = (envelope.data.baseData.name || '').toLowerCase();
 
     if (
       name.includes('/health') ||
@@ -30,15 +28,12 @@ function fineGrainedSampling(envelope: TelemetryEnvelope): boolean {
 }
 export let client: applicationinsights.TelemetryClient;
 
-const appInsightsConnectionString = getConfigValue<string>(APP_INSIGHTS_CONNECTION_STRING);
-const hasValidAppInsightsConnectionString = /(?:^|;)InstrumentationKey=[^;]+/i.test(appInsightsConnectionString || '');
-
-if (showFeature(FEATURE_APP_INSIGHTS_ENABLED) && hasValidAppInsightsConnectionString) {
+if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   applicationinsights
-    .setup(appInsightsConnectionString)
+    .setup(getConfigValue(APP_INSIGHTS_CONNECTION_STRING))
     .setAutoDependencyCorrelation(true)
     .setAutoCollectRequests(true)
-    .setAutoCollectPerformance(true, false)
+    .setAutoCollectPerformance(true)
     .setAutoCollectExceptions(true)
     .setAutoCollectDependencies(true)
     .setAutoCollectConsole(true, true)

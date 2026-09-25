@@ -64,6 +64,11 @@ export function hearingRequestReducer(
         ...initialHearingRequestState,
       };
     }
+    case fromActions.LOAD_HEARING_REQUEST: {
+      return {
+        ...initialHearingRequestState,
+      };
+    }
     case fromActions.INITIALIZE_HEARING_REQUEST: {
       const hearingRequestMainModel = action.payload;
       const updatedPartyDetails: PartyDetailsModel[] = [];

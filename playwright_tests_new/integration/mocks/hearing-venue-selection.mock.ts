@@ -9,6 +9,7 @@ export function hearingVenueSelectionMarkup(
     noResults?: boolean;
     unrelatedNoResults?: boolean;
     delayedResults?: boolean;
+    delayedAssociation?: boolean;
   } = {}
 ): string {
   return `<!doctype html><style>
@@ -32,7 +33,7 @@ export function hearingVenueSelectionMarkup(
       pane.style.top = input.getBoundingClientRect().bottom + 'px';
       pane.innerHTML = '<div role="listbox" id="owned-options"><button role="option">${options.noResults || options.delayedResults ? 'No results found' : 'Basingstoke County Court'}</button></div>';
       document.body.appendChild(pane);
-      ${options.missingAssociation ? '' : `input.setAttribute('${options.relation ?? 'aria-owns'}', 'owned-options');`}
+      ${options.missingAssociation ? '' : options.delayedAssociation ? `setTimeout(() => input.setAttribute('${options.relation ?? 'aria-owns'}', 'owned-options'), 1500);` : `input.setAttribute('${options.relation ?? 'aria-owns'}', 'owned-options');`}
       ${options.delayedResults ? "setTimeout(() => { pane.querySelector('button').textContent = 'Basingstoke County Court'; }, 100);" : ''}
       const selectVenue = () => {
         selected = '${options.wrongSelection ? 'Different court' : 'Basingstoke County Court'}';

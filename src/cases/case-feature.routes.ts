@@ -18,6 +18,7 @@ import { CaseViewerContainerComponent } from './containers/case-viewer-container
 import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { DecentralisedEventGuard } from '../decentralisation/decentralised-event.guard';
 
 export const ROUTES: Routes = [
   {
@@ -75,6 +76,8 @@ export const ROUTES: Routes = [
           },
           {
             path: ':jid/:ctid/:eid',
+            canActivate: [DecentralisedEventGuard],
+            canActivateChild: [DecentralisedEventGuard],
             component: CaseCreateSubmitComponent,
             resolve: {
               eventTrigger: CreateCaseEventTriggerResolver,
@@ -127,6 +130,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'case-details/:jurisdiction/:caseType/:cid',
+        canActivateChild: [DecentralisedEventGuard],
         component: CaseDetailsHomeComponent,
         resolve: { case: CaseResolver },
         runGuardsAndResolvers: 'always',

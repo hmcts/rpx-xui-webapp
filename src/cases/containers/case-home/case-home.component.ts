@@ -18,6 +18,7 @@ import { HeaderComponent } from '../../../app/components';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
 import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
+import { DecentralisedEvent } from '../../../decentralisation/decentralised-event';
 
 @Component({
   standalone: false,
@@ -60,19 +61,27 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const isRedirected =
+      if (
         navigation.action === NavigationOrigin.EVENT_TRIGGERED &&
-        this.decentralisedRedirectService.tryEventRedirect({
-          caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.snapshot.data?.case?.case_type?.id,
-          eventId: navigation.etid,
-          caseId: navigation.relativeTo.snapshot.params.cid,
-          queryParams: navigation.queryParams,
-          isCaseCreate: false,
-        });
+        this.decentralisedRedirectService.isDecentralisedEvent(navigation.etid)
+      ) {
+        const caseType =
+          navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.snapshot.data?.case?.case_type?.id;
 
-      if (!isRedirected) {
-        this.actionDispatcher(this.paramHandler(navigation));
+        if (caseType) {
+          this.decentralisedRedirectService.tryRedirectEvent(
+            DecentralisedEvent.forCase(
+              navigation.etid,
+              caseType,
+              navigation.relativeTo.snapshot.params.cid,
+              navigation.queryParams
+            )
+          );
+          return;
+        }
       }
+
+      this.actionDispatcher(this.paramHandler(navigation));
     }) as any;
 
     const libServices$ = combineLatest([this.ccdLibLoadingService.isLoading, this.commonLibLoadingService.isLoading]);

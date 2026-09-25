@@ -1,6 +1,6 @@
 import { RoleAccessHttpError, SpecificRole } from '../models';
 import { InfoMessageType } from '../models/enums/info-message-type';
-import { getRoles, getTitleText, handleError, REDIRECTS } from './role-access-utils';
+import { getRoles, getTitleText, handleError, REDIRECTS, setErrorTitle } from './role-access-utils';
 
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
@@ -74,5 +74,25 @@ describe('WorkAllocationUtils', () => {
     sessionStorageService.getItem.and.returnValue('{not-json}');
     const result = getRoles('service', sessionStorageService);
     expect(result).toEqual([]);
+  });
+
+  describe('setErrorTitle', () => {
+    let mockTitleService: any;
+
+    beforeEach(() => {
+      mockTitleService = jasmine.createSpyObj('Title', ['getTitle', 'setTitle']);
+    });
+
+    it('should prepend "Error: " when the title does not already start with "Error:"', () => {
+      mockTitleService.getTitle.and.returnValue('Some Page Title');
+      setErrorTitle(mockTitleService);
+      expect(mockTitleService.setTitle).toHaveBeenCalledWith('Error: Some Page Title');
+    });
+
+    it('should not modify the title when it already starts with "Error:"', () => {
+      mockTitleService.getTitle.and.returnValue('Error: Some Page Title');
+      setErrorTitle(mockTitleService);
+      expect(mockTitleService.setTitle).not.toHaveBeenCalled();
+    });
   });
 });

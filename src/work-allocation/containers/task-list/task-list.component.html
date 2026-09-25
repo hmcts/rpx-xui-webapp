@@ -40,7 +40,7 @@
       <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
         <button
           class="column-sort"
-          [style.display]="field.columnLabel && !field.disableSort ? 'block' : 'none'"
+          *ngIf="field.columnLabel && !field.disableSort"
           type="button"
           [id]="'sort_by_' + field.sortName"
           data-index="0"
@@ -48,7 +48,10 @@
         >
           {{ field.columnLabel }}
         </button>
-        <h1 class="column-label" *ngIf="field.disableSort">{{ field.columnLabel }}</h1>
+        <span class="column-label" *ngIf="field.disableSort">{{ field.columnLabel }}</span>
+        <span class="govuk-visually-hidden" *ngIf="!field.columnLabel && field.hiddenColumnLabel">{{
+          field.hiddenColumnLabel
+        }}</span>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
         <exui-task-field [task]="rowData" [config]="field"></exui-task-field>
@@ -67,7 +70,7 @@
       >
         <button
           class="column-sort"
-          [style.display]="field.columnLabel && !field.disableSort ? 'block' : 'none'"
+          *ngIf="field.columnLabel && !field.disableSort"
           type="button"
           [id]="'sort_by_' + field.sortName"
           data-index="0"
@@ -75,7 +78,10 @@
         >
           {{ field.columnLabel }}
         </button>
-        <h1 class="column-label" *ngIf="field.disableSort">{{ field.columnLabel }}</h1>
+        <span class="column-label" *ngIf="field.disableSort">{{ field.columnLabel }}</span>
+        <span class="govuk-visually-hidden" *ngIf="!field.columnLabel && field.hiddenColumnLabel">{{
+          field.hiddenColumnLabel
+        }}</span>
       </th>
       <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">
         <exui-task-field [task]="rowData" [config]="field"></exui-task-field>
@@ -85,7 +91,7 @@
 
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
-    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
+    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef><span class="govuk-visually-hidden">Manage</span></th>
     <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell">
       <div *ngIf="showManage[rowData.id]" class="xui-manage-container">
         <button

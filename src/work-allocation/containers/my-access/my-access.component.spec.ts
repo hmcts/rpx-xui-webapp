@@ -142,10 +142,10 @@ describe('MyAccessComponent', () => {
       if (fields[i].columnLabel) {
         expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
       } else {
-        expect(headerCells[i].textContent).toEqual('');
+        expect(headerCells[i].textContent.trim()).toEqual(fields[i].hiddenColumnLabel || '');
       }
     }
-    expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
+    expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('Manage');
   });
 
   it('should not show the footer when there are cases', () => {

@@ -67,7 +67,8 @@ test('preserves incomplete-only axe evidence without inventing violations', { ta
     expect(document.body.textContent).toContain('Needs investigation');
     expect(document.body.textContent).toContain('Background image requires review');
     expect(document.body.textContent).toContain('1.4.3');
-    expect(document.querySelector('a[href="../xui-playwright-a11y.html"]')).not.toBeNull();
+    const reportIndexFilename = process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-a11y.html';
+    expect(document.querySelector(`a[href="../${reportIndexFilename}"]`)).not.toBeNull();
     await attachAccessibilityPageSummaryEvidence(
       {
         ...page,

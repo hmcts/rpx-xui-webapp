@@ -30,7 +30,7 @@ test.describe('rich text editor accessibility interactions @accessibility @a11y 
       'Italic',
       'Underline',
       'Paragraph',
-      'Ordered List',
+      'Numbered List',
       'Bullet List',
       'Decrease Indent',
       'Increase Indent',
@@ -87,9 +87,9 @@ test.describe('rich text editor accessibility interactions @accessibility @a11y 
     const toolbar = page.getByRole('toolbar', { name: 'Outcome note formatting options' });
 
     await editor.focus();
-    await toolbar.getByRole('button', { name: 'Ordered List' }).click();
+    await toolbar.getByRole('button', { name: 'Numbered List' }).click();
     await editor.pressSequentially('Ordered item');
-    await expect(toolbar.getByRole('button', { name: 'Ordered List' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(toolbar.getByRole('button', { name: 'Numbered List' })).toHaveAttribute('aria-pressed', 'true');
     await expect(editor.locator('ol')).toContainText('Ordered item');
 
     await editor.press('Enter');
@@ -107,9 +107,9 @@ test.describe('rich text editor accessibility interactions @accessibility @a11y 
 
     await undo.focus();
     await expect(undo).toBeFocused();
-    await page.keyboard.press('Tab');
+    await page.keyboard.press('ArrowRight');
     await expect(redo).toBeFocused();
-    await page.keyboard.press('Tab');
+    await page.keyboard.press('ArrowRight');
     await expect(bold).toBeFocused();
   });
 });

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -15,7 +16,7 @@ import {
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
-import { getTitleText } from '../../../utils';
+import { getTitleText, setErrorTitle } from '../../../utils';
 
 @Component({
   standalone: false,
@@ -23,7 +24,7 @@ import { getTitleText } from '../../../utils';
   templateUrl: './choose-allocate-to.component.html',
 })
 export class ChooseAllocateToComponent implements OnInit {
-  public ERROR_MESSAGE = ERROR_MESSAGE;
+  public ERROR_MESSAGE = { ...ERROR_MESSAGE, fieldId: `${CHOOSE_ALLOCATE_TO}-error` };
   @Input() public navEvent: AllocateRoleNavigation;
 
   public title = RoleAllocationTitleText.NonExclusionAllocate;
@@ -40,7 +41,10 @@ export class ChooseAllocateToComponent implements OnInit {
   public typeOfRole: SpecificRole;
   public allocateTo: AllocateTo;
 
-  constructor(private readonly store: Store<fromFeature.State>) {}
+  constructor(
+    private readonly store: Store<fromFeature.State>,
+    private readonly titleService: Title
+  ) {}
 
   public ngOnInit(): void {
     this.allocateRoleStateDataSub = this.store
@@ -72,6 +76,7 @@ export class ChooseAllocateToComponent implements OnInit {
       this.radioOptionControl.setErrors({
         invalid: true,
       });
+      setErrorTitle(this.titleService);
       return;
     }
     this.dispatchEvent(navEvent);

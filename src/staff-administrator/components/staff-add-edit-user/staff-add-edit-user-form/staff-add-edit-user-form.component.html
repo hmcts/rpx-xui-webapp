@@ -21,7 +21,7 @@
       class="govuk-form-group govuk-form-group--limited-width"
       [class.govuk-form-group--error]="submitted && form.get('first_name')?.invalid"
     >
-      <h3 class="govuk-label">First name</h3>
+      <label class="govuk-label" for="first_name">First name</label>
       <p *ngIf="submitted && form.get('first_name')?.errors?.required" id="first_name-required-error" class="govuk-error-message">
         <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['first_name.required'] }}
       </p>
@@ -40,7 +40,7 @@
       class="govuk-form-group govuk-form-group--limited-width"
       [class.govuk-form-group--error]="submitted && form.get('last_name')?.invalid"
     >
-      <h3 class="govuk-label">Last name</h3>
+      <label class="govuk-label" for="last_name">Last name</label>
       <p *ngIf="submitted && form.get('last_name')?.errors?.required" id="last_name-required-error" class="govuk-error-message">
         <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['last_name.required'] }}
       </p>
@@ -59,7 +59,7 @@
       class="govuk-form-group govuk-form-group--limited-width"
       [class.govuk-form-group--error]="submitted && form.get('email_id')?.invalid"
     >
-      <h3 class="govuk-label">Email</h3>
+      <label class="govuk-label" for="email_id">Email</label>
       <ng-container *ngIf="!updateMode; else readOnlyEmail">
         <p *ngIf="submitted && form.get('email_id')?.errors?.required" id="email_id-required-error" class="govuk-error-message">
           <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.required'] }}
@@ -80,7 +80,7 @@
 
       <ng-template #readOnlyEmail>
         <div class="govuk-body">
-          <input type="text" class="govuk-input" [value]="form.get('email_id')?.value" disabled />
+          <input type="text" class="govuk-input" id="email_id" [value]="form.get('email_id')?.value" disabled />
         </div>
       </ng-template>
     </div>
@@ -97,6 +97,7 @@
         <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['region_id.required'] }}
       </p>
       <div class="govuk-body">
+        <label class="govuk-visually-hidden" for="region_id">Region</label>
         <select
           class="govuk-select"
           [class.govuk-select--error]="submitted && form.get('first_name')?.invalid"
@@ -207,6 +208,7 @@
         <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['user_type.required'] }}
       </p>
       <div class="govuk-body">
+        <label class="govuk-visually-hidden" for="user_type">User type</label>
         <select
           class="govuk-select"
           [class.govuk-select--error]="submitted && form.get('user_type')?.invalid"

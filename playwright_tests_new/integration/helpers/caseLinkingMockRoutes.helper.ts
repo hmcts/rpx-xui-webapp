@@ -172,7 +172,7 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
     await fulfillRoute(route, submitOverride, successfulSubmit ? currentCaseDetails : { message: 'case-link-submit-failed' });
   });
 
-  await page.route('**/api/user/details*', async (route) => {
+  await page.route('**/api/user/o/userinfo*', async (route) => {
     await fulfillRoute(route, undefined, userDetails);
   });
 

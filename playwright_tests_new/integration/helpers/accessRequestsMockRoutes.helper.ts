@@ -254,7 +254,7 @@ async function setupAccessRequestShellRoutes(page: Page, config: AccessRequestUs
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
   }, userDetails.userInfo);
 
-  await page.route('**/api/user/details*', async (route) => {
+  await page.route('**/api/user/o/userinfo*', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

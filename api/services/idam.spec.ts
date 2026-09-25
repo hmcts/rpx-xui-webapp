@@ -55,7 +55,7 @@ describe('cohQA', () => {
     it('If no cached session details should make a http.get call based on a given token', async () => {
       await idam.getDetails(url, 'token');
 
-      expect(spy).to.be.calledWith(`${url}/details`, { headers: { Authorization: 'Bearer token' } });
+      expect(spy).to.be.calledWith(`${url}/o/userinfo`, { headers: { Authorization: 'Bearer token' } });
     });
   });
 

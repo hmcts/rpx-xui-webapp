@@ -146,7 +146,7 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
   const jurisdictionName = String(caseDetails.case_type?.jurisdiction?.name ?? jurisdictionId);
   await setupCaseworkerJurisdictionsRoute(page, [jurisdictionId], [{ serviceId: jurisdictionId, serviceName: jurisdictionName }]);
 
-  await page.route('**/api/user/details*', async (route) => {
+  await page.route('**/api/user/o/userinfo*', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

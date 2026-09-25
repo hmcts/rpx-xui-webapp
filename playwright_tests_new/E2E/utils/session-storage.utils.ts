@@ -250,7 +250,7 @@ const isStorageStateAuthenticated = async (storagePath: string, baseUrl: string)
     ignoreHTTPSErrors: true,
   });
   try {
-    const response = await requestContext.get('/api/user/details', {
+    const response = await requestContext.get('/api/user/o/userinfo', {
       failOnStatusCode: false,
       timeout: resolveStorageValidationTimeoutMs(),
     });

@@ -83,7 +83,7 @@ function asFeatureVariations(variations: HearingsCaseVariation[]): Array<{ juris
 }
 
 function resolveStatusMapping(hmcStatus: string) {
-  return hearingStatusMappings.find((statusMapping) => statusMapping.hmcStatus === hmcStatus);
+  return hearingStatusMappings[hmcStatus];
 }
 
 function resolveDisplayStatus(scenario: HearingScenario): string {

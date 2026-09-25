@@ -1,6 +1,7 @@
 import type { Page, TestInfo } from '@playwright/test';
 import {
   escapeHtml,
+  escapeAttribute,
   publishAccessibilityEvidence,
   sanitiseFileName,
   formatAccessibilityContext,
@@ -664,7 +665,7 @@ function buildScreenReaderEvidenceHtml(evidence: ScreenReaderLikeEvidence, scree
           <h2>${index + 1}. ${escapeHtml(violation.rule)}</h2>
           <p><strong>${escapeHtml(violation.message)}</strong></p>
           <p><strong>Selector:</strong> <code>${escapeHtml(violation.selector ?? 'page')}</code></p>
-          <pre>${escapeHtml(violation.html ?? '')}</pre>
+          <details><summary>Inspect DOM snippet</summary><pre>${escapeHtml(violation.html ?? '')}</pre></details>
         </section>
       `
     )
@@ -738,14 +739,22 @@ function buildEvidenceShell(context: {
   body: string;
 }): string {
   return `
-    <html>
+    <!doctype html>
+    <html lang="en">
       <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>${escapeHtml(context.title)}</title>
         <style>
-          body { font-family: Arial, sans-serif; margin: 0; color: #0b0c0c; background: #f3f2f1; }
-          .layout { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; min-height: 100vh; }
+          * { box-sizing: border-box; }
+          body { font: 1rem/1.5 Arial, sans-serif; margin: 0; color: #0b0c0c; background: #f3f2f1; overflow-wrap: anywhere; }
+          a { color: #1d70b8; }
+          a:focus-visible, summary:focus-visible { outline: 3px solid #ffdd00; outline-offset: 2px; color: #0b0c0c; background: #ffdd00; }
+          .skip-link { position: absolute; left: -10000px; }
+          .skip-link:focus { left: 12px; top: 12px; z-index: 1; background: #ffdd00; padding: 12px; }
+          .layout { display: grid; grid-template-columns: minmax(260px, 320px) minmax(0, 1fr); min-height: 100vh; }
           .panel { background: #e6f0f7; border-right: 1px solid #b1b4b6; padding: 14px; position: sticky; top: 0; height: 100vh; overflow: auto; }
-          .panel h1 { font-size: 22px; margin: 0 0 12px; }
+          .panel h2 { font-size: 22px; margin: 0 0 12px; }
           .scorecard { background: #fff; border-left: 6px solid #1d70b8; padding: 12px; margin-bottom: 12px; }
           .score-grid, .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
           .score, .metric { background: #fff; border: 1px solid #b1b4b6; padding: 10px; }
@@ -754,7 +763,7 @@ function buildEvidenceShell(context: {
           .metric strong, .metric span, .metric small { display: block; }
           .token { display: inline-block; min-width: 46px; margin-right: 8px; background: #4c2c92; color: #fff; border-radius: 3px; text-align: center; font-weight: bold; }
           .marker { display: inline-block; min-width: 24px; margin-right: 8px; background: #1d70b8; color: #fff; border-radius: 3px; text-align: center; font-weight: bold; }
-          .content { background: #fff; padding: 24px; overflow: auto; }
+          .content { background: #fff; padding: 24px; min-width: 0; }
           .banner { color: #fff; padding: 16px; margin-bottom: 24px; }
           .issue-banner { background: #d4351c; }
           .pass-banner { background: #00703c; }
@@ -763,16 +772,23 @@ function buildEvidenceShell(context: {
           .visual img { display: block; max-width: 100%; height: auto; }
           .issue, .summary-card { border: 1px solid #b1b4b6; border-left: 8px solid #d4351c; padding: 16px; margin-bottom: 18px; background: #fff; }
           .issue.pass, .summary-card { border-left-color: #00703c; }
-          code, pre { background: #f3f2f1; padding: 4px; white-space: pre-wrap; }
+          code, pre { font-size: 0.9375rem; background: #f3f2f1; padding: 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+          .banner code { color: #0b0c0c; }
           li { margin-bottom: 8px; }
           details { background: #fff; border: 1px solid #b1b4b6; margin-bottom: 12px; padding: 8px; }
           summary { cursor: pointer; font-weight: bold; }
+          @media (max-width: 760px) {
+            .layout { grid-template-columns: minmax(0, 1fr); }
+            .panel { position: static; height: auto; border-right: 0; }
+            .content { padding: 16px; }
+          }
         </style>
       </head>
       <body>
+        <a class="skip-link" href="#evidence-content">Skip to evidence</a>
         <div class="layout">
           <aside class="panel">
-            <h1>${escapeHtml(context.title)}</h1>
+            <h2>Page structure</h2>
             <div class="scorecard">
               <p><strong>${escapeHtml(context.snapshot.title || 'Untitled page')}</strong></p>
               <div class="score-grid">
@@ -782,15 +798,15 @@ function buildEvidenceShell(context: {
                 <div class="score"><strong>${context.snapshot.axTree.length}</strong><br/>AX nodes</div>
               </div>
             </div>
-            <details open>
+            <details>
               <summary>Headings</summary>
               <ol>${context.snapshot.headings.map((heading) => `<li><span class="token">h${heading.level}</span>${escapeHtml(heading.text || '(empty)')}</li>`).join('') || '<li>No headings detected.</li>'}</ol>
             </details>
-            <details open>
+            <details>
               <summary>Landmarks</summary>
               <ol>${context.snapshot.landmarks.map((landmark) => `<li><span class="token">${escapeHtml(landmark.role)}</span>${escapeHtml(landmark.name || '(unlabelled)')} <code>${escapeHtml(landmark.selector)}</code></li>`).join('') || '<li>No landmarks detected.</li>'}</ol>
             </details>
-            <details open>
+            <details>
               <summary>Keyboard order</summary>
               <ol>${context.snapshot.keyboardOrder.map((item, index) => `<li><span class="marker">${index + 1}</span><strong>${escapeHtml(item.type)}</strong>: ${escapeHtml(item.name)} <code>${escapeHtml(item.selector)}</code></li>`).join('') || '<li>No focusable controls detected.</li>'}</ol>
             </details>
@@ -807,14 +823,17 @@ function buildEvidenceShell(context: {
               }</ol>
             </details>
           </aside>
-          <main class="content">
+          <main class="content" id="evidence-content" tabindex="-1">
+            <p><a href="../${escapeAttribute(process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-a11y.html')}">Back to Odhín report</a></p>
             <div class="${context.bannerClass}">
               <h1>${escapeHtml(context.title)}</h1>
               <p>${escapeHtml(context.summary)}</p>
             </div>
-            <section class="visual">
+            <p>Automated heuristics support investigation; they do not replace screen-reader testing or establish WCAG conformance.</p>
+            <details class="visual">
+              <summary>View page screenshot</summary>
               <img alt="Accessibility evidence screenshot" src="${context.screenshotDataUrl}" />
-            </section>
+            </details>
             ${context.body}
           </main>
         </div>

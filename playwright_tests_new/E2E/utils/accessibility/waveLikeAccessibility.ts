@@ -1,5 +1,6 @@
 import type { Page, TestInfo } from '@playwright/test';
 import { collectTextSpacingClipping } from './textSpacingAccessibility';
+import { guidanceForRule } from './waveLikeGuidance';
 import { escapeAttribute, escapeHtml, publishAccessibilityEvidence } from './accessibilityEvidencePublisher';
 
 export const WAVE_LIKE_A11Y_TAG = '@wave-a11y';
@@ -238,9 +239,7 @@ export async function collectWaveLikeAccessibilityViolations(page: Page): Promis
     Array.from(document.querySelectorAll('fieldset'))
       .filter(visible)
       .filter((fieldset) => !text(fieldset.querySelector('legend')))
-      .forEach((fieldset) =>
-        add(violations, 'fieldset-legend', 'Fieldsets should expose a visible legend for grouped controls.', fieldset)
-      );
+      .forEach((fieldset) => add(violations, 'fieldset-legend', 'Fieldset has no legend containing text.', fieldset));
 
     Array.from(document.querySelectorAll('table'))
       .filter(visible)
@@ -416,17 +415,9 @@ function buildIssueSummaryHtml(
   const screenshotDataUrl = `data:image/png;base64,${screenshot.toString('base64')}`;
   const odhinIndexFileName = process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-a11y.html';
   const odhinReportHref = `../${escapeAttribute(odhinIndexFileName)}`;
-  const ruleCounts = new Map<string, number>();
-  for (const violation of violations) {
-    ruleCounts.set(violation.rule, (ruleCounts.get(violation.rule) ?? 0) + 1);
-  }
-  const ruleRows = Array.from(ruleCounts.entries())
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(
-      ([rule, count]) => `
-        <li><span class="count">${count}</span>${escapeHtml(rule)}</li>
-      `
-    )
+  const rules = new Set(violations.map((violation) => violation.rule));
+  const ruleRows = violations
+    .map((violation, index) => `<li><a href="#issue-${index + 1}">${index + 1}. ${escapeHtml(violation.rule)}</a></li>`)
     .join('');
   const orderRows = pageSnapshot.order
     .map(
@@ -452,80 +443,86 @@ function buildIssueSummaryHtml(
   const cards = violations
     .map(
       (violation, index) => `
-        <section class="issue">
+        <section class="issue" id="issue-${index + 1}" tabindex="-1">
           <h2>${index + 1}. ${escapeHtml(violation.rule)}</h2>
           <p><strong>${escapeHtml(violation.message)}</strong></p>
           <p><strong>Selector:</strong> <code>${escapeHtml(violation.selector ?? 'page')}</code></p>
           ${buildDeveloperAdviceHtml(url, violation)}
-          <pre>${escapeHtml(violation.html ?? '')}</pre>
+          <details><summary>Captured DOM excerpt</summary><pre>${escapeHtml(violation.html ?? 'No element excerpt was captured for this page-level finding.')}</pre></details>
         </section>
       `
     )
     .join('');
 
   return `
-    <html>
+    <!doctype html><html lang="en">
       <head>
+        <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
         <title>WAVE-like Accessibility Issues</title>
         <style>
-          body { font-family: Arial, sans-serif; margin: 0; color: #0b0c0c; background: #f3f2f1; }
-          .layout { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; min-height: 100vh; }
+          * { box-sizing: border-box; }
+          body { font: 16px/1.5 Arial, sans-serif; margin: 0; color: #0b0c0c; background: #f3f2f1; overflow-wrap: anywhere; }
+          a { color: #1d70b8; text-underline-offset: .15em; }
+          .skip-link { position: absolute; left: 12px; top: -100px; padding: 12px; background: #ffdd00; color: #0b0c0c; z-index: 1; }
+          .skip-link:focus { top: 12px; }
+          a:focus-visible, summary:focus-visible, .issue:focus { outline: 3px solid #ffdd00; outline-offset: 3px; box-shadow: 0 0 0 6px #0b0c0c; }
+          .layout { display: grid; grid-template-columns: minmax(260px, 320px) minmax(0, 1fr); min-height: 100vh; }
           .panel { background: #d5dce0; border-right: 1px solid #b1b4b6; padding: 12px; position: sticky; top: 0; height: 100vh; overflow: auto; }
-          .panel h1 { font-size: 22px; margin: 0 0 12px; }
-          .toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 12px; }
-          .toolbar span { background: #fff; border-bottom: 3px solid #1d70b8; padding: 8px 4px; text-align: center; font-weight: bold; font-size: 12px; }
+          .panel h2 { font-size: 22px; margin: 0 0 12px; }
+          .toolbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; margin-bottom: 12px; }
+          .toolbar a { background: #fff; border-bottom: 3px solid #1d70b8; padding: 8px 4px; text-align: center; font-weight: bold; }
           .scorecard { background: #fff; border-radius: 4px; padding: 12px; margin-bottom: 12px; }
           .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
           .metric { border-left: 6px solid #f47738; padding-left: 8px; font-size: 14px; }
           .metric strong { display: block; font-size: 26px; }
-          .count { display: inline-block; min-width: 24px; margin-right: 8px; background: #1d70b8; color: #fff; border-radius: 3px; text-align: center; font-weight: bold; }
           .marker { display: inline-block; min-width: 24px; margin-right: 8px; background: #1d70b8; color: #fff; border-radius: 3px; text-align: center; font-weight: bold; }
           .structure-token { display: inline-block; min-width: 42px; margin-right: 8px; background: #4c2c92; color: #fff; border-radius: 3px; text-align: center; font-weight: bold; }
-          .content { background: #fff; padding: 24px; overflow: auto; }
-          .banner { background: #d4351c; color: #fff; padding: 16px; margin-bottom: 24px; }
+          .content { background: #fff; padding: 24px; min-width: 0; }
+          .banner { background: #0b0c0c; color: #fff; padding: 16px; margin-bottom: 24px; }
           .visual { border: 1px solid #b1b4b6; margin-bottom: 24px; background: #f3f2f1; }
           .visual img { display: block; max-width: 100%; height: auto; }
-          .issue { border: 4px solid #d4351c; padding: 16px; margin-bottom: 18px; background: #fff; }
+          .issue { border: 1px solid #b1b4b6; border-left: 6px solid #1d70b8; padding: 20px; margin-bottom: 24px; background: #fff; scroll-margin-top: 16px; }
           .issue h2 { margin-top: 0; }
           .report-nav { margin: 0 0 18px; }
           .report-nav a { color: #1d70b8; font-weight: bold; }
           .advice { background: #f3f2f1; border-left: 8px solid #1d70b8; padding: 12px 16px; margin: 12px 0; }
           .advice dt { font-weight: bold; margin-top: 8px; }
           .advice dd { margin-left: 0; }
-          code, pre { background: #f3f2f1; padding: 4px; white-space: pre-wrap; }
+          code, pre { font: .95em/1.5 monospace; background: #f3f2f1; padding: 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+          .location { display: grid; grid-template-columns: minmax(100px, 150px) minmax(0, 1fr); gap: 8px 16px; }
+          .location dt, .location dd { margin: 0; }
+          .advice p, .advice dl { max-width: 85ch; }
+          @media (max-width: 760px) { .layout { display: block; } .panel { position: static; height: auto; } .content { padding: 16px; } .location { display: block; } .location dd { margin-bottom: 12px; } .issue { padding: 12px; } }
           li { margin-bottom: 8px; }
           details { background: #fff; border: 1px solid #b1b4b6; margin-bottom: 12px; padding: 8px; }
           summary { cursor: pointer; font-weight: bold; }
         </style>
       </head>
       <body>
+        <a class="skip-link" href="#evidence-content">Skip to evidence</a>
         <div class="layout">
           <aside class="panel">
-            <h1>WAVE-like panel</h1>
-            <div class="toolbar">
-              <span>Details</span>
-              <span>Order</span>
-              <span>Structure</span>
-              <span>Contrast</span>
-            </div>
+            <h2>Evidence navigation</h2>
+            <nav class="toolbar" aria-label="Evidence sections"><a href="#issues">Findings</a><a href="#visual">Image</a><a href="#order">Order</a><a href="#structure">Structure</a></nav>
             <div class="scorecard">
               <p><strong>${escapeHtml(pageSnapshot.title || 'Untitled page')}</strong></p>
               <div class="metric-grid">
                 <div class="metric"><strong>${violations.length}</strong>Issues</div>
-                <div class="metric"><strong>${ruleCounts.size}</strong>Rules</div>
+                <div class="metric"><strong>${rules.size}</strong>Rules</div>
                 <div class="metric"><strong>${pageSnapshot.order.length}</strong>Order</div>
                 <div class="metric"><strong>${pageSnapshot.headings.length}</strong>Headings</div>
               </div>
             </div>
-            <details open>
-              <summary>Details</summary>
+            <details open id="issues">
+              <summary>Findings</summary>
               <ol>${ruleRows || '<li>No WAVE-like issues found.</li>'}</ol>
             </details>
-            <details open>
-              <summary>Order</summary>
+            <details id="order">
+              <summary>DOM order inventory</summary>
+              <p>Candidate controls in DOM order; this is not a verified keyboard Tab sequence.</p>
               <ol>${orderRows || '<li>No keyboard-order items detected.</li>'}</ol>
             </details>
-            <details open>
+            <details id="structure">
               <summary>Structure</summary>
               <ol>${structureRows || '<li>No headings or landmarks detected.</li>'}</ol>
             </details>
@@ -534,15 +531,15 @@ function buildIssueSummaryHtml(
               <p>Contrast signal is provided by axe and Lighthouse in the unified pack. This WAVE-like panel focuses on structure, order, names, labels, and target evidence.</p>
             </details>
           </aside>
-          <main class="content">
+          <main class="content" id="evidence-content" tabindex="-1">
             <div class="banner">
               <h1>WAVE-like accessibility evidence</h1>
-              <p>${violations.length} issue(s) on ${escapeHtml(url)}. Match marker numbers here to the highlighted page image.</p>
+              <p>${violations.length} automated finding(s). These checks include heuristics and conventions, not a WCAG conformance verdict. Match finding numbers to the highlighted page image.</p>
             </div>
             <p class="report-nav"><a href="${odhinReportHref}">Back to Odhín report</a></p>
-            <section class="visual">
+            <details class="visual" id="visual"><summary>Show highlighted page image</summary>
               <img alt="Highlighted page screenshot with WAVE-like issue markers" src="${screenshotDataUrl}" />
-            </section>
+            </details>
             ${cards}
             <p class="report-nav"><a href="${odhinReportHref}">Back to Odhín report</a></p>
           </main>
@@ -560,45 +557,47 @@ function withDeveloperAdvice(violations: WaveLikeViolation[]): WaveLikeViolation
 }
 
 function buildDeveloperAdviceHtml(url: string, violation: WaveLikeViolation): string {
+  const guidance = guidanceForRule(violation.rule);
   return `
     <div class="advice">
       <h3>Developer advice</h3>
+      <p><strong>${escapeHtml(guidance.classification)}</strong></p>
+      <h4>Where to look</h4>
+      ${buildWhereToLookHtml(url, violation)}
       <dl>
-        <dt>Where to look</dt>
-        <dd>${buildWhereToLookHtml(url, violation)}</dd>
-        <dt>What failed</dt>
-        <dd>${escapeHtml(violation.rule)}: ${escapeHtml(violation.message)}</dd>
+        <dt>Why this matters</dt>
+        <dd>${escapeHtml(guidance.impact)}</dd>
         <dt>What to fix</dt>
         <dd>${escapeHtml(violation.advice ?? adviceForRule(violation.rule))}</dd>
-        <dt>DOM hints</dt>
-        <dd>${buildFixPathHtml(violation)}</dd>
-        <dt>Evidence</dt>
-        <dd>Use this DOM snippet with the numbered highlighted screenshot marker for the same issue.</dd>
+        <dt>How to verify</dt>
+        <dd>${escapeHtml(guidance.verify)}</dd>
+        <dt>Guidance</dt><dd><a href="${guidance.url}">${escapeHtml(guidance.title)}</a></dd>
       </dl>
+      <details><summary>DOM hints and source investigation</summary><p>${buildFixPathHtml(violation)}</p>
+      <p>These are rendered DOM clues, not a verified source-file mapping. Match the selector and nearby text in the route component/template. The excerpt may be truncated.</p>
+      <pre>${escapeHtml(JSON.stringify(violation.codeLocation ?? {}, null, 2))}</pre></details>
     </div>
   `;
 }
 
 function buildWhereToLookHtml(url: string, violation: WaveLikeViolation): string {
   const hint = violation.codeLocation;
-  if (!hint) {
-    return `Route/page: <code>${escapeHtml(url)}</code>; page-level issue, inspect the document shell/template.`;
-  }
-
-  const parts = [
-    `route/page: ${url}`,
-    `tag: ${hint.tag}`,
-    hint.id ? `id: #${hint.id}` : '',
-    hint.classes ? `class: ${hint.classes}` : '',
-    hint.role ? `role: ${hint.role}` : '',
-    hint.testId ? `test id: ${hint.testId}` : '',
-    hint.angularAttrs ? `angular: ${hint.angularAttrs}` : '',
-    hint.nearestHeading ? `near: ${hint.nearestHeading}` : '',
-    hint.nearestLandmark ? `landmark: ${hint.nearestLandmark}` : '',
-    hint.accessibleName ? `name: ${hint.accessibleName}` : '',
-  ].filter(Boolean);
-
-  return `<code>${escapeHtml(parts.join(' | '))}</code>`;
+  const rows: Array<[string, string | undefined, boolean]> = [
+    ['Page', url, false],
+    ['Selector', violation.selector, true],
+    ['Element', hint?.tag, true],
+    ['Name hint', hint?.accessibleName, false],
+    ['Nearby heading', hint?.nearestHeading, false],
+    ['Landmark', hint?.nearestLandmark, false],
+  ];
+  return `<dl class="location">${rows
+    .filter(([, value]) => value)
+    .map(
+      ([label, value, code]) => `<dt>${label}</dt><dd>${code ? `<code>${escapeHtml(value!)}</code>` : escapeHtml(value!)}</dd>`
+    )
+    .join(
+      ''
+    )}</dl>${!hint ? '<p>No element context was captured. For a page-level finding, inspect the document shell/template.</p>' : ''}`;
 }
 
 function buildFixPathHtml(violation: WaveLikeViolation): string {
@@ -626,10 +625,12 @@ function adviceForRule(rule: string): string {
       'Make the id unique in the template, then update label for, aria-describedby, aria-labelledby, and error-summary links.',
     'error-summary-target':
       'Set each error-summary href to the invalid field id, ensure the field exists once, and move focus to the summary on submit.',
-    'fieldset-legend': 'Wrap related radios/checkboxes in a fieldset with a visible legend that describes the group question.',
+    'fieldset-legend':
+      'For related radios or checkboxes, add a non-empty legend describing the group question. Prefer a visible legend; a visually hidden legend can be valid when the visible context already supplies the question. Do not add a second fieldset around an existing group.',
     'h1-count':
-      'Keep one visible h1 for the page state; demote extra page-level headings or add the missing h1 in the main content.',
-    'heading-order': 'Do not skip heading levels. Change the heading level or add the missing section heading in the template.',
+      'Check all page headings, including shared banners. Follow the GOV.UK convention of one main page h1; choose other levels by section hierarchy, not visual size. Multiple h1 elements alone do not establish a WCAG failure.',
+    'heading-order':
+      'Check whether the heading hierarchy represents the content. Use nested levels for subsections; do not insert empty headings just to satisfy the check.',
     'image-alt': 'Add meaningful alt text for informative images; use alt="" or role="presentation" only for decorative images.',
     'main-landmark':
       'Render exactly one usable main element or role="main" in the app shell/page template; do not nest duplicate mains.',

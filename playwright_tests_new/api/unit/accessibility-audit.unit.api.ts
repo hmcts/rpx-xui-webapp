@@ -83,7 +83,13 @@ test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, 
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'a11y-known-'));
     const previousDir = process.env.PW_A11Y_EVIDENCE_DIR;
     process.env.PW_A11Y_EVIDENCE_DIR = dir;
-    const info = { title: 'known page', attach: async () => undefined } as unknown as TestInfo;
+    const attachments = new Map<string, string>();
+    const info = {
+      title: 'known page',
+      attach: async (name: string, attachment: { body: string | Buffer }) => {
+        attachments.set(name, String(attachment.body));
+      },
+    } as unknown as TestInfo;
     const page = {
       url: () => 'http://localhost/state',
       evaluate: async () => {
@@ -112,6 +118,15 @@ test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, 
       const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
       expect(manifest[0]).toMatchObject({ status: 'known-findings', violationCount: 2 });
       expect(manifest[0].summary).toContain('2 known issue(s), 0 unexpected issue(s)');
+      const summaryHtml = [...attachments.entries()].find(([name]) => name.endsWith('.html'))?.[1];
+      expect(summaryHtml).toBeTruthy();
+      const document = new JSDOM(summaryHtml).window.document;
+      expect(document.documentElement.lang).toBe('en');
+      expect(document.querySelector('meta[name="viewport"]')).not.toBeNull();
+      expect(document.querySelectorAll('h1')).toHaveLength(1);
+      expect(document.querySelector('main')?.id).toBe('evidence-content');
+      expect(document.querySelector('a[href="../xui-playwright-a11y.html"]')).not.toBeNull();
+      expect(document.querySelector('.panel details[open]')).toBeNull();
       await attachAccessibilityPageSummaryEvidence(page, info, {
         feature: 'header',
         pageState: 'failed-focus',

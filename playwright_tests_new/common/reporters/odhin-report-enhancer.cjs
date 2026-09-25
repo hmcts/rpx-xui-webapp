@@ -553,6 +553,8 @@ function normalizeEvidenceEntries(entries) {
       screenshotFileName: typeof entry.screenshotFileName === 'string' ? entry.screenshotFileName : '',
       reportFileName: typeof entry.reportFileName === 'string' ? entry.reportFileName : '',
       violationCount: Number(entry.violationCount),
+      ...(Number.isFinite(Number(entry.reviewCount)) ? { reviewCount: Math.max(0, Number(entry.reviewCount)) } : {}),
+      ...(Array.isArray(entry.reviewRules) ? { reviewRules: entry.reviewRules.map(String) } : {}),
       status: typeof entry.status === 'string' ? entry.status : '',
       summary: typeof entry.summary === 'string' ? entry.summary : '',
       rules: Array.isArray(entry.rules) ? entry.rules.map(String) : [],
@@ -717,6 +719,12 @@ function buildDeveloperHint(entries) {
   const targets = uniqueValues(entries.flatMap((entry) => entry.targets)).slice(0, 6);
   const hints = [];
 
+  if (entries.every((entry) => entry.status === 'needs-review')) {
+    return [
+      'The scanner could not decide this result. Open its check messages and affected element, reproduce the same page state, and use the linked rule guidance to verify it. Do not change code solely to clear an uncertain result.',
+    ];
+  }
+
   if (entries.some((entry) => ['blocked', 'unreachable'].includes(entry.status)) || rules.includes('page-state-reachability')) {
     return [
       'Restore journey setup first: check the configured identity, route, test data and readiness failure in the evidence. No accessibility result is available for the intended page until it can be reached.',
@@ -735,7 +743,9 @@ function buildDeveloperHint(entries) {
     hints.push('Check the route template renders exactly one usable <main> or role="main".');
   }
   if (rules.some((rule) => rule.includes('h1-count'))) {
-    hints.push('Check the page template has one visible h1 that matches the page state.');
+    hints.push(
+      'Follow the GOV.UK convention of one main page h1. Inspect shared banners and the content hierarchy; multiple h1 elements alone do not establish a WCAG failure.'
+    );
   }
   if (rules.some((rule) => rule.includes('label') || rule.includes('accessible-name') || rule.includes('link-name'))) {
     hints.push('Check the named form control or link has a visible label, aria-label, aria-labelledby, or useful link text.');
@@ -744,12 +754,14 @@ function buildDeveloperHint(entries) {
     hints.push('Check the validation template: title prefix, error summary links, and field-level error ids should line up.');
   }
   if (rules.some((rule) => rule.includes('fieldset-legend'))) {
-    hints.push('Check the fieldset has a visible legend that describes the grouped controls.');
+    hints.push(
+      'Give related controls a non-empty legend describing the group question. Prefer a visible legend; visually hidden text can be valid when visible context already supplies the question. Verify the computed group name and announcement; do not add a duplicate fieldset.'
+    );
   }
   const additionalAdvice = [
     [
       /heading-order/,
-      'Heading navigation: fix skipped levels in the owning template; use CSS for visual size instead of choosing a heading level for appearance. Recheck the heading outline in the rendered state.',
+      'Heading navigation: inspect whether section levels reflect the content hierarchy; a skipped level alone is not proof of a WCAG failure. Use CSS for visual size and recheck the rendered heading outline.',
     ],
     [
       /definition-list|dlitem|(^|:)dd($|:)/,

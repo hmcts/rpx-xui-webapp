@@ -45,6 +45,8 @@ type EngineOutcomeSummary = {
   engine: AccessibilityEngine;
   status: string;
   issueCount: number;
+  reviewCount?: number;
+  reviewRules?: string[];
   knownIssueCount?: number;
   unexpectedIssueCount?: number;
   rules: string[];
@@ -455,6 +457,8 @@ export async function attachAccessibilityPageSummaryEvidence(
 
   const snapshot = await collectOptionalPageSnapshot(page, summary);
   const failedChecks = (summary.checks ?? []).filter((check) => check.status === 'failed');
+  const reviewCount = summary.outcomes.reduce((count, outcome) => count + (outcome.reviewCount ?? 0), 0);
+  const reviewRules = summary.outcomes.flatMap((outcome) => outcome.reviewRules ?? []);
   const knownCount = summary.outcomes.reduce((count, outcome) => count + (outcome.knownIssueCount ?? 0), 0);
   const unexpectedCount = summary.outcomes.reduce(
     (count, outcome) => count + (outcome.unexpectedIssueCount ?? outcome.issueCount),
@@ -505,13 +509,17 @@ export async function attachAccessibilityPageSummaryEvidence(
           ? 'issues-found'
           : knownCount > 0
             ? 'known-findings'
-            : 'passed',
-      summary: `${summary.outcomes.length} engine(s), ${knownCount} known issue(s), ${unexpectedCount} unexpected issue(s), ${(summary.checks ?? []).length} behavioral check(s)`,
+            : reviewRules.length > 0
+              ? 'needs-review'
+              : 'passed',
+      summary: `${summary.outcomes.length} engine(s), ${knownCount} known issue(s), ${unexpectedCount} unexpected issue(s), ${reviewCount} node(s) needing investigation, ${(summary.checks ?? []).length} behavioral check(s)`,
     },
     html,
     json: summaryEvidence,
     screenshot,
     violationCount: unexpectedCount + knownCount,
+    reviewCount,
+    reviewRules,
     rules: [
       ...summary.outcomes.flatMap((outcome) => outcome.rules.map((rule) => `${outcome.engine}:${rule}`)),
       ...failedChecks.map((check) => `behavior:${check.name}`),
@@ -703,7 +711,7 @@ function buildPageSummaryHtml(
         <section class="metric ${outcome.status === 'passed' ? 'pass' : 'warn'}">
           <strong>${escapeHtml(outcome.engine)}</strong>
           <span>${escapeHtml(outcome.status)}</span>
-          <small>${outcome.issueCount} total, ${outcome.unexpectedIssueCount ?? outcome.issueCount} unexpected</small>
+          <small>${outcome.issueCount} total, ${outcome.unexpectedIssueCount ?? outcome.issueCount} unexpected; ${outcome.reviewCount ?? 0} node(s) needing investigation</small>
         </section>
       `
     )
@@ -972,6 +980,8 @@ async function writePublishedEvidence(
     json: unknown;
     screenshot: Buffer;
     violationCount: number;
+    reviewCount?: number;
+    reviewRules?: string[];
     rules: string[];
     targets: string[];
   }
@@ -984,6 +994,8 @@ async function writePublishedEvidence(
       feature: evidence.metadata.feature,
       pageState: evidence.metadata.pageState,
       violationCount: evidence.violationCount,
+      reviewCount: evidence.reviewCount,
+      reviewRules: evidence.reviewRules,
       status: evidence.metadata.status,
       summary: evidence.metadata.summary,
       rules: evidence.rules,

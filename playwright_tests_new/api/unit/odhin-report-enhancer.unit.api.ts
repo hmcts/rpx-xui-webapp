@@ -665,6 +665,39 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(html).not.toContain('unexpected issue(s)');
   });
 
+  test('retains investigation-only and mixed axe findings without counting them as violations', () => {
+    const base = {
+      engine: 'axe',
+      testTitle: 'Review page',
+      feature: 'Access',
+      pageState: 'Review',
+      htmlFileName: 'axe.html',
+      targets: [],
+      reviewCount: 2,
+      reviewRules: ['color-contrast'],
+    };
+    const shell = '<html><head></head><body><div class="tab"></div></body></html>';
+    for (const status of ['needs-review', 'issues-found', 'known-findings']) {
+      const entry = {
+        ...base,
+        status,
+        violationCount: status === 'needs-review' ? 0 : 1,
+        rules: status === 'needs-review' ? [] : ['label'],
+      };
+      expect(enhancerTest.normalizeEvidenceEntries([entry])[0]).toMatchObject({
+        reviewCount: 2,
+        reviewRules: ['color-contrast'],
+        violationCount: entry.violationCount,
+      });
+      const report = parse(enhancerTest.enhanceDashboardHtml(shell, [], [entry]));
+      expect(report.querySelectorAll('.a11y-issue-group[data-status="needs-review"]')).toHaveLength(1);
+      expect(report.querySelector('.a11y-issue-group[data-status="needs-review"]').textContent).toContain('color-contrast');
+      expect(report.querySelector('#a11y-all-records').textContent).toContain('2 node result(s) need investigation');
+      if (status !== 'needs-review')
+        expect(report.querySelectorAll(`.a11y-issue-group[data-status="${status}"]`)).toHaveLength(1);
+    }
+  });
+
   test('normalizes accessibility evidence entries and drops incomplete records', () => {
     const entries = enhancerTest.normalizeEvidenceEntries([
       {

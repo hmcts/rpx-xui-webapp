@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import { JSDOM } from 'jsdom';
 import os from 'os';
 import path from 'path';
+import { guidanceForRule } from '../../E2E/utils/accessibility/waveLikeGuidance';
 
 import {
   attachWaveLikeAccessibilityEvidence,
@@ -26,6 +27,13 @@ type DomGlobals = typeof globalThis & {
 };
 
 test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, () => {
+  test('maps guidance to relevant criteria without turning conventions into conformance failures', () => {
+    expect(guidanceForRule('document-language').criteria).toContain('3.1.1');
+    expect(guidanceForRule('text-spacing-clipping').criteria).toContain('1.4.12');
+    expect(guidanceForRule('duplicate-id').criteria).not.toContain('4.1.1');
+    expect(guidanceForRule('h1-count').criteria).toContain('not a standalone WCAG failure');
+    expect(guidanceForRule('unknown').criteria).toContain('No verified criterion mapping');
+  });
   test('uses the PR-actionable WAVE-like accessibility tag', () => {
     expect(WAVE_LIKE_A11Y_TAG).toBe('@wave-a11y');
   });

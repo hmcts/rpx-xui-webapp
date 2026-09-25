@@ -72,6 +72,9 @@ const { parse } = require('node-html-parser');
     'retain zero-count behavioral failures, suppress detailed summary duplicates and non-finding Lighthouse markers'
   );
   assert.equal(contracts.querySelectorAll('#a11y-all-records .a11y-evidence-card[data-status="unavailable"]').length, 2);
+  const mixed = { ...entries[0], reviewCount: 2, reviewRules: ['color-contrast'] };
+  const investigationReport = path.join(output, 'accessibility-investigation.html');
+  fs.writeFileSync(investigationReport, enhanceDashboardHtml(shell, [], [mixed]));
   const known = parse(enhanceDashboardHtml(shell, [], [{ ...entries[0], status: 'known-findings' }]));
   assert.equal(known.querySelectorAll('.a11y-issue-group[data-status="known-findings"]').length, 1);
   assert.equal(parse(enhanceDashboardHtml(html, [], entries)).querySelectorAll('#TabAccessibility').length, 1);
@@ -187,6 +190,19 @@ const { parse } = require('node-html-parser');
       assert.deepEqual(violations, [], `Report accessibility violations in ${mode} mode`);
       await page.screenshot({ path: path.join(output, `workspace-${mode}.png`) });
     }
+    await page.goto(pathToFileURL(investigationReport).href);
+    await page.locator('#a11y-workspace-tab').click();
+    await page.getByLabel('Outcome', { exact: true }).selectOption('needs-review');
+    assert.equal(await page.locator('.a11y-issue-group:visible').count(), 1);
+    assert.match(await page.locator('.a11y-issue-group:visible').innerText(), /color-contrast/);
+    await page.locator('#a11y-all-records > summary').click();
+    assert.equal(
+      await page.locator('#a11y-all-records .a11y-evidence-card:visible').count(),
+      1,
+      'mixed record remains discoverable for investigation'
+    );
+    await page.getByRole('button', { name: 'Clear filters' }).click();
+    assert.equal(await page.locator('.a11y-issue-group:visible').count(), 2, 'confirmed and uncertain rules stay separate');
     await page.goto(pathToFileURL(scaleReport).href);
     await page.locator('#a11y-workspace-tab').click();
     assert.equal(await page.locator('.a11y-issue-group:visible').count(), 26);

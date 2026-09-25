@@ -36,6 +36,8 @@ export type PublishedAccessibilityEvidenceEntry = {
   jsonFileName: string;
   screenshotFileName: string;
   violationCount: number;
+  reviewCount?: number;
+  reviewRules?: string[];
   status?: string;
   summary?: string;
   rules: string[];
@@ -192,6 +194,7 @@ async function writeEvidenceIndex(evidenceDir: string): Promise<void> {
           <p>${escapeHtml(entry.feature ?? 'accessibility')} / ${escapeHtml(entry.pageState ?? entry.engine)}</p>
           <p>${escapeHtml(formatAccessibilityContext(entry.context))}</p>
           <p>Status: ${escapeHtml(entry.status ?? 'not recorded')}</p>
+          <p>${entry.reviewCount ?? 0} node(s) needing investigation: ${escapeHtml((entry.reviewRules ?? []).join(', ') || 'none recorded')}</p>
           <p>${entry.violationCount} ${escapeHtml(entry.engine)} issue(s): ${escapeHtml(entry.rules.join(', '))}</p>
           ${entry.screenshotFileName ? `<a href="./${escapeAttribute(entry.screenshotFileName)}">screenshot</a> |` : ''}
           <a href="./${escapeAttribute(entry.jsonFileName)}">JSON evidence</a>

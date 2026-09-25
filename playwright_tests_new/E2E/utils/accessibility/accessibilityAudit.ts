@@ -1,4 +1,5 @@
 import { expect, type Page, type TestInfo } from '@playwright/test';
+import type { AxeResults } from 'axe-core';
 import { attachAccessibilityEvidence, runAxeAudit } from './axeEvidence';
 import {
   findUnexpectedAxeViolations,
@@ -39,8 +40,10 @@ export interface AccessibilityAuditOptions {
 
 type EngineOutcome = {
   engine: AccessibilityEngine;
-  status: 'passed' | 'known-findings' | 'issues-found' | 'error';
+  status: 'passed' | 'known-findings' | 'issues-found' | 'needs-review' | 'error';
   issueCount: number;
+  reviewCount?: number;
+  reviewRules?: string[];
   knownIssueCount?: number;
   unexpectedIssueCount?: number;
   message?: string;
@@ -182,13 +185,26 @@ async function runAxeEngine(page: Page, testInfo: TestInfo, options: Accessibili
     feature: options.feature,
     pageState: options.pageState,
   });
+  return summarizeAxeOutcome(results, options.axeKnownViolations ?? []);
+}
+
+export function summarizeAxeOutcome(results: AxeResults, knownViolations: KnownAxeViolation[] = []): EngineOutcome {
   const summary = summarizeAxeViolations(results.violations);
-  const unexpected = findUnexpectedAxeViolations(summary, options.axeKnownViolations ?? []);
+  const unexpected = findUnexpectedAxeViolations(summary, knownViolations);
   const knownIssueCount = countKnownAxeIssues(summary, unexpected);
 
   return {
     engine: 'axe',
-    status: unexpected.length > 0 ? 'issues-found' : knownIssueCount > 0 ? 'known-findings' : 'passed',
+    status:
+      unexpected.length > 0
+        ? 'issues-found'
+        : knownIssueCount > 0
+          ? 'known-findings'
+          : (results.incomplete ?? []).length > 0
+            ? 'needs-review'
+            : 'passed',
+    reviewCount: (results.incomplete ?? []).reduce((count, result) => count + result.nodes.length, 0),
+    reviewRules: (results.incomplete ?? []).map((result) => result.id),
     issueCount: summary.reduce((count, violation) => count + violation.nodeCount, 0),
     knownIssueCount,
     unexpectedIssueCount: unexpected.reduce((count, violation) => count + violation.nodeCount, 0),
@@ -242,8 +258,8 @@ async function runLighthouseEngine(runLighthouse: () => Promise<LighthouseAuditE
       status: 'passed',
       issueCount: 0,
       unexpectedIssueCount: 0,
-      message: evidence?.message,
-      evidenceFiles: evidence?.evidenceFiles,
+      message: evidence ? evidence.message : undefined,
+      evidenceFiles: evidence ? evidence.evidenceFiles : undefined,
       rules: ['accessibility-threshold'],
     };
   } catch (error) {
@@ -309,6 +325,7 @@ function buildSummaryHtml(summary: {
           <td>${escapeHtml(outcome.engine)}</td>
           <td>${escapeHtml(outcome.status)}</td>
           <td>${outcome.issueCount}</td>
+          <td>${outcome.reviewCount ?? 0}: ${escapeHtml((outcome.reviewRules ?? []).join(', '))}</td>
           <td>${outcome.knownIssueCount ?? 0}</td>
           <td>${outcome.unexpectedIssueCount ?? outcome.issueCount}</td>
           <td>${escapeHtml(outcome.rules.join(', ') || 'none')}</td>
@@ -350,6 +367,7 @@ function buildSummaryHtml(summary: {
               <th>Engine</th>
               <th>Status</th>
               <th>Total issues</th>
+              <th>Needs investigation (nodes)</th>
               <th>Known issues</th>
               <th>Unexpected issues</th>
               <th>Rules</th>

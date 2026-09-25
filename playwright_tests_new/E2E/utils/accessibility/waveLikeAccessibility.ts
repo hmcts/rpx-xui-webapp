@@ -572,6 +572,7 @@ function buildDeveloperAdviceHtml(url: string, violation: WaveLikeViolation): st
         <dt>How to verify</dt>
         <dd>${escapeHtml(guidance.verify)}</dd>
         <dt>Guidance</dt><dd><a href="${guidance.url}">${escapeHtml(guidance.title)}</a></dd>
+        <dt>Related WCAG criteria</dt><dd>${escapeHtml(guidance.criteria)} Criteria refer to WCAG 2.2; unless noted, they also existed in WCAG 2.0.</dd>
       </dl>
       <details><summary>DOM hints and source investigation</summary><p>${buildFixPathHtml(violation)}</p>
       <p>These are rendered DOM clues, not a verified source-file mapping. Match the selector and nearby text in the route component/template. The excerpt may be truncated.</p>

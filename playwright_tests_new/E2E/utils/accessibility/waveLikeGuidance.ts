@@ -4,6 +4,7 @@ export function guidanceForRule(rule: string): {
   verify: string;
   url: string;
   title: string;
+  criteria: string;
 } {
   const guidance: Record<string, [string, string, string]> = {
     'h1-count': [
@@ -89,5 +90,23 @@ export function guidanceForRule(rule: string): {
     'heading-order': ['https://www.w3.org/WAI/tutorials/page-structure/headings/', 'W3C WAI: page headings'],
   };
   const [url, title] = links[rule] ?? ['https://www.w3.org/WAI/tutorials/', 'W3C WAI: accessibility tutorials'];
-  return { classification, impact, verify, url, title };
+  const criteriaByRule: Record<string, string> = {
+    'h1-count': 'GOV.UK heading convention; not a standalone WCAG failure. Review 1.3.1 (A) and 2.4.6 (AA) in context.',
+    'heading-order': 'Related: 1.3.1 (A). A heading-level jump alone does not establish a failure.',
+    'fieldset-legend': 'Related: 1.3.1 (A) and 3.3.2 (A). Verify the group relationship and instructions.',
+    'accessible-name':
+      'Related: 4.1.2 (A); for visible labels also check 2.5.3 (A, added in WCAG 2.1). Verify the computed name.',
+    'duplicate-id':
+      'Inspect affected relationships against 1.3.1 (A) or 4.1.2 (A); duplicate IDs alone do not prove either failure.',
+    'error-summary-target': 'Related: 2.4.3 (A) and 3.3.1 (A). Confirm keyboard focus and identification of the error.',
+    'image-alt': 'Related: 1.1.1 (A). The required alternative depends on image purpose.',
+    'table-headers': 'Related: 1.3.1 (A). Verify data-cell header relationships.',
+    'document-title': 'Related: 2.4.2 (A). The title must describe the page topic or purpose.',
+    'document-language': 'Related: 3.1.1 (A); translated passages may also require 3.1.2 (AA).',
+    'main-landmark': 'Related: 2.4.1 (A). A main landmark is one technique for bypassing repeated content.',
+    'text-spacing-clipping': 'Related: 1.4.12 (AA, added in WCAG 2.1). Confirm actual loss of content or functionality.',
+  };
+  const criteria =
+    criteriaByRule[rule] ?? 'No verified criterion mapping; consult the linked guidance and inspect the condition.';
+  return { classification, impact, verify, url, title, criteria };
 }

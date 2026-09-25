@@ -11,10 +11,14 @@
       card.hidden =
         !card.textContent.toLowerCase().includes(query) ||
         (get('source').value && card.dataset.source !== get('source').value) ||
-        (get('status').value && card.dataset.status !== get('status').value);
+        (get('status').value &&
+          card.dataset.status !== get('status').value &&
+          !(get('status').value === 'needs-review' && card.dataset.needsReview === 'true'));
     }
     for (const group of groups) {
-      group.hidden = ![...group.querySelectorAll('.a11y-evidence-card')].some((card) => !card.hidden);
+      group.hidden =
+        (get('status').value && group.dataset.status !== get('status').value) ||
+        ![...group.querySelectorAll('.a11y-evidence-card')].some((card) => !card.hidden);
     }
     const records = [...get('all-records').querySelectorAll('.a11y-evidence-card')];
     const visibleGroups = groups.filter((group) => !group.hidden).length;

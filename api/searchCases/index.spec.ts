@@ -152,6 +152,78 @@ describe('Search Cases Elastic Search', () => {
       expect(searchCases.prepareElasticQuery(queryParams, body, userInfo)).to.deep.equal(expected);
     });
 
+    it('should map one state to the existing metadata match query', () => {
+      const userInfo: UserInfo = { forename: 'Thomas', roles: ['case'], surname: 'Jones' };
+
+      const result = searchCases.prepareElasticQuery({ state: 'CaseCreated', page: 1 }, {}, userInfo);
+
+      expect(result.native_es_query.query).to.deep.equal({
+        bool: {
+          must: [
+            {
+              match: {
+                state: {
+                  operator: 'and',
+                  query: 'CaseCreated',
+                },
+              },
+            },
+          ],
+        },
+      });
+    });
+
+    it('should map multiple states to an Elasticsearch terms query', () => {
+      const userInfo: UserInfo = { forename: 'Thomas', roles: ['case'], surname: 'Jones' };
+
+      const result = searchCases.prepareElasticQuery({ state: 'CaseCreated,Submitted', page: 1 }, {}, userInfo);
+
+      expect(result.native_es_query.query).to.deep.equal({
+        bool: {
+          must: [{ terms: { 'state.keyword': ['CaseCreated', 'Submitted'] } }],
+        },
+      });
+    });
+
+    it('should combine a state clause with metadata and case-field criteria', () => {
+      const userInfo: UserInfo = { forename: 'Thomas', roles: ['case'], surname: 'Jones' };
+
+      const result = searchCases.prepareElasticQuery(
+        { state: 'CaseCreated,Submitted', param: 'dummy', 'case.param2': 'dummy2', page: 1 },
+        {},
+        userInfo
+      );
+
+      expect(result.native_es_query.query).to.deep.equal({
+        bool: {
+          must: [
+            { terms: { 'state.keyword': ['CaseCreated', 'Submitted'] } },
+            { match: { param: { operator: 'and', query: 'dummy' } } },
+            { match: { 'data.param2': { operator: 'and', query: 'dummy2' } } },
+          ],
+        },
+      });
+    });
+
+    it('should omit an empty state clause while retaining other criteria', () => {
+      const userInfo: UserInfo = { forename: 'Thomas', roles: ['case'], surname: 'Jones' };
+
+      const result = searchCases.prepareElasticQuery(
+        { state: '', param: 'dummy', 'case.param2': 'dummy2', page: 1 },
+        {},
+        userInfo
+      );
+
+      expect(result.native_es_query.query).to.deep.equal({
+        bool: {
+          must: [
+            { match: { param: { operator: 'and', query: 'dummy' } } },
+            { match: { 'data.param2': { operator: 'and', query: 'dummy2' } } },
+          ],
+        },
+      });
+    });
+
     it('should perform a wildcard search on "generatedSurname" field ', async () => {
       const queryParams = {
         'case.generatedSurname': 'Beckham',

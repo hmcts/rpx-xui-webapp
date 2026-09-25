@@ -1,17 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>hmcts/.github:renovate-config",
-    "local>hmcts/.github//renovate/automerge-all"
-  ],
+  "extends": ["local>hmcts/.github:renovate-config", "local>hmcts/.github//renovate/automerge-all"],
   "automerge": true,
   "platformAutomerge": true,
   "prConcurrentLimit": 3,
   "prHourlyLimit": 1,
   "timezone": "Europe/London",
-  "schedule": [
-    "* 7-16 * * 1-5"
-  ],
+  "schedule": ["* 7-16 * * 1-5"],
   "updateNotScheduled": false,
   "packageRules": [
     {
@@ -28,9 +23,7 @@
     },
     {
       "description": "Disable major version updates",
-      "matchUpdateTypes": [
-        "major"
-      ],
+      "matchUpdateTypes": ["major"],
       "enabled": false
     }
   ]

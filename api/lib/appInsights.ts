@@ -9,12 +9,6 @@ import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base'
 
 import { getConfigValue, showFeature } from '../configuration/';
 import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
-type TelemetryProcessor = Parameters<applicationinsights.TelemetryClient['addTelemetryProcessor']>[0];
-type TelemetryEnvelope = Parameters<TelemetryProcessor>[0];
-
-function fineGrainedSampling(envelope: TelemetryEnvelope): boolean {
-  if (['RequestData', 'RemoteDependencyData'].includes(envelope.data?.baseType)) {
-    const name = String(envelope.data?.baseData?.name || '').toLowerCase();
 
 /**
  * High-volume, low-value incoming requests that should not be exported

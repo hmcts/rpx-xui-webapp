@@ -1,13 +1,14 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getLocationsRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const { Matchers } = require('@pact-foundation/pact');
+const { Matchers, MatchersV3 } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
+const { like } = MatchersV3;
 const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_location', port: 8000 });
 
 const searchTerm = 'cen';
@@ -73,6 +74,7 @@ describe('Locations ref data api, get matching location for search term', () => 
           query: {
             'search-string': searchTerm,
             'court-type-id': strCourtTypeIds,
+            service_code: like('AAA6,AAA7'),
           },
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
@@ -99,7 +101,7 @@ describe('Locations ref data api, get matching location for search term', () => 
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getLocationsRefDataAPIOverrides(mockServer.url);
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop: string) => {
           return configValues[prop];
         });
 

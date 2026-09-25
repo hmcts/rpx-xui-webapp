@@ -16,6 +16,8 @@ export class CaseListPage extends Base {
   readonly jurisdictionSelect = this.page.locator('#wb-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
   readonly stateSelect = this.page.locator('#wb-case-state');
+  readonly stateOptionsPanel = this.page.locator('#wb-case-state-options');
+  readonly stateCheckboxes = this.stateOptionsPanel.locator('input[type="checkbox"]');
   readonly textField0Input = this.page.locator('#TextField0');
   readonly textField0FallbackInput = this.page
     .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
@@ -51,7 +53,32 @@ export class CaseListPage extends Base {
   }
 
   public async searchByState(state: string): Promise<void> {
-    await this.selectDropdownOption(this.stateSelect, state);
+    await this.searchByStates(state === 'Any' ? [] : [state]);
+  }
+
+  public async searchByStates(states: string[]): Promise<void> {
+    await this.stateSelect.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    if ((await this.stateSelect.getAttribute('aria-expanded')) !== 'true') {
+      await this.stateSelect.click();
+    }
+    await this.stateOptionsPanel.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+
+    const selectedStates = new Set(states.filter((state) => state !== 'Any'));
+    const checkboxCount = await this.stateCheckboxes.count();
+    for (let index = 0; index < checkboxCount; index += 1) {
+      const checkbox = this.stateCheckboxes.nth(index);
+      const checkboxId = (await checkbox.getAttribute('id')) ?? '';
+      const stateId = checkboxId.replace('wb-case-state-', '');
+      const label = (await this.stateOptionsPanel.locator(`label[for="${checkboxId}"]`).textContent())?.trim() ?? '';
+      const shouldBeChecked = selectedStates.has(stateId) || selectedStates.has(label);
+      if ((await checkbox.isChecked()) !== shouldBeChecked) {
+        await checkbox.click();
+      }
+    }
+  }
+
+  public stateCheckbox(state: string): Locator {
+    return this.stateOptionsPanel.getByRole('checkbox', { name: state, exact: true });
   }
 
   public async searchByTextField0(textField0: string): Promise<boolean> {

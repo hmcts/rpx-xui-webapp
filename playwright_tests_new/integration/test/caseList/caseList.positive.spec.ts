@@ -17,11 +17,11 @@ import {
   buildCaseListMock,
   buildCaseListMockForDefaultState,
   buildCaseListMockForPage,
+  buildCaseListMockForStates,
   buildCaseListMockWithOptionalFieldsForPage,
   buildCaseListProbateFilterInputsMock,
   buildCaseListStateFilterInputsMock,
   buildCaseListTextFilterInputsMock,
-  CASE_LIST_STATE_FILTER_OPTIONS,
 } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
@@ -248,26 +248,35 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-  test(`User ${userIdentifier} can filter by multiple states and see the expected case list`, async ({
+  test(`User ${userIdentifier} can filter by one state, multiple states, and a dynamic filter`, async ({
     caseListPage,
     tableUtils,
     page,
   }) => {
     const jurisdictions = buildCaseListJurisdictionsMock();
     const workbasketInputs = buildCaseListStateFilterInputsMock();
-    const statesToVerify = ['Any', ...CASE_LIST_STATE_FILTER_OPTIONS];
-    const stateMocks = new Map(statesToVerify.map((state) => [state, buildCaseListMockForDefaultState(state)]));
+    const anyStateMock = buildCaseListMockForDefaultState('Any');
+    const singleStateMock = buildCaseListMockForStates(['CaseCreated']);
+    const multipleStateMock = buildCaseListMockForStates(['CaseCreated', 'Submitted']);
+    const intersectionMock = buildCaseListMockForStates(['CaseCreated'], 'intersection');
+    const stateMocks = new Map([
+      ['Any', anyStateMock],
+      ['CaseCreated', singleStateMock],
+      ['CaseCreated,Submitted', multipleStateMock],
+    ]);
 
     await clearPersistedCaseListState(page);
     await setupCaseListMocks(page, {
       searchResponseHandler: async (route) => {
         const requestUrl = new URL(route.request().url());
         const state = requestUrl.searchParams.get('state') ?? 'Any';
+        const textField0 = requestUrl.searchParams.get('case.TextField0');
+        const responseBody = textField0 ? intersectionMock : (stateMocks.get(state) ?? anyStateMock);
 
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(stateMocks.get(state) ?? stateMocks.get('Any')),
+          body: JSON.stringify(responseBody),
         });
       },
       jurisdictions,
@@ -279,37 +288,83 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     await caseListPage.searchByCaseType('XUI Case PoC');
     await expect(caseListPage.stateSelect).toBeVisible();
 
-    for (const state of statesToVerify) {
-      await test.step(`Apply the ${state} filter and verify the request and case list`, async () => {
-        await caseListPage.searchByState(state);
-        const stateSearchRequestPromise = waitForSearchCasesRequest(page, {
-          page: 1,
-          state: state === 'Any' ? undefined : state,
-          allowEmptyState: state === 'Any',
-        });
+    await test.step('apply one selected state and verify the request and case list', async () => {
+      await caseListPage.searchByStates(['CaseCreated']);
+      const stateSearchRequestPromise = waitForSearchCasesRequest(page, { page: 1, state: 'CaseCreated' });
+      await caseListPage.applyFilters();
+      const stateSearchRequest = await stateSearchRequestPromise;
 
-        await caseListPage.applyFilters();
-        const stateSearchRequest = await stateSearchRequestPromise;
-        const stateMock = stateMocks.get(state)!;
-        const expectedUniqueReference = stateMock.results[0].case_fields['[CASE_REFERENCE]'];
-
-        expectSearchCasesRequest(stateSearchRequest, {
-          ...defaultSearchCasesRequestParams,
-          page: '1',
-          state: state === 'Any' ? null : state,
-        });
-
-        await expectCaseListSummary(caseListPage, stateMock.total, 1);
-        await expectCaseListRows(caseListPage, tableUtils, stateMock);
-        await expectPaginationState(caseListPage, {
-          currentPage: 1,
-          previousVisible: false,
-          paginationVisible: true,
-          finalItem: 'Next',
-        });
-        await expect(caseListPage.caseResultsTable).toContainText(expectedUniqueReference);
+      expectSearchCasesRequest(stateSearchRequest, {
+        ...defaultSearchCasesRequestParams,
+        page: '1',
+        state: 'CaseCreated',
       });
-    }
+      await expectCaseListSummary(caseListPage, singleStateMock.total, 1);
+      await expectCaseListRows(caseListPage, tableUtils, singleStateMock);
+    });
+
+    await test.step('reopen the menu and verify the selected state is retained', async () => {
+      if ((await caseListPage.stateSelect.getAttribute('aria-expanded')) === 'true') {
+        await caseListPage.stateSelect.click();
+      }
+      await caseListPage.searchByStates(['CaseCreated']);
+      await expect(caseListPage.stateCheckbox('CaseCreated')).toBeChecked();
+    });
+
+    await test.step('apply two selected states and verify the request and case list', async () => {
+      const stateSearchRequestPromise = waitForSearchCasesRequest(page, { page: 1, state: 'CaseCreated,Submitted' });
+      await caseListPage.searchByStates(['CaseCreated', 'Submitted']);
+      await caseListPage.applyFilters();
+      const stateSearchRequest = await stateSearchRequestPromise;
+
+      expectSearchCasesRequest(stateSearchRequest, {
+        ...defaultSearchCasesRequestParams,
+        page: '1',
+        state: 'CaseCreated,Submitted',
+      });
+      await expectCaseListSummary(caseListPage, multipleStateMock.total, 1);
+      await expectCaseListRows(caseListPage, tableUtils, multipleStateMock);
+    });
+
+    await test.step('combine a selected state with a dynamic filter and verify the request and case list', async () => {
+      await caseListPage.searchByStates(['CaseCreated']);
+      expect(await caseListPage.searchByTextField0('intersection')).toBe(true);
+      const stateSearchRequestPromise = waitForSearchCasesRequest(page, { page: 1, state: 'CaseCreated' });
+      await caseListPage.applyFilters();
+      const stateSearchRequest = await stateSearchRequestPromise;
+
+      expectSearchCasesRequest(stateSearchRequest, {
+        ...defaultSearchCasesRequestParams,
+        page: '1',
+        state: 'CaseCreated',
+        caseFilters: { 'case.TextField0': 'intersection' },
+      });
+      await expectCaseListSummary(caseListPage, intersectionMock.total, 1);
+      await expectCaseListRows(caseListPage, tableUtils, intersectionMock);
+    });
+
+    await test.step('clear selected states and verify no state parameter is sent', async () => {
+      expect(await caseListPage.searchByTextField0('')).toBe(true);
+      await caseListPage.searchByStates([]);
+      const stateSearchRequestPromise = waitForSearchCasesRequest(page, { page: 1, allowEmptyState: true });
+      await caseListPage.applyFilters();
+      const stateSearchRequest = await stateSearchRequestPromise;
+
+      expectSearchCasesRequest(stateSearchRequest, {
+        ...defaultSearchCasesRequestParams,
+        page: '1',
+        state: null,
+      });
+      await expectCaseListSummary(caseListPage, anyStateMock.total, 1);
+      await expectCaseListRows(caseListPage, tableUtils, anyStateMock);
+    });
+
+    await expectPaginationState(caseListPage, {
+      currentPage: 1,
+      previousVisible: false,
+      paginationVisible: true,
+      finalItem: 'Next',
+    });
 
     await expect(caseListPage.unselectableCasesInfoMessage).toBeVisible();
     await expect(caseListPage.unselectableCasesInfoSummaryButton).toBeVisible();

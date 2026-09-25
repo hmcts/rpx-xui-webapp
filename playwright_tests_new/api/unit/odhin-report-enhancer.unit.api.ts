@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const enhancerModule = require('../../common/reporters/odhin-report-enhancer.cjs');
+const { parse } = require('node-html-parser');
 
 const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: string) => {
   name: string;
@@ -21,7 +22,14 @@ const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: s
 const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
 
 const enhancerTest = enhancerModule.__test__ as {
-  enhanceDashboardHtml: (html: string, featureStats: unknown, evidenceEntries?: unknown) => string;
+  enhanceDashboardHtml: (
+    html: string,
+    featureStats: unknown,
+    evidenceEntries?: unknown,
+    perfettoFiles?: string[],
+    perfettoHrefPrefix?: string,
+    testMetadata?: unknown[]
+  ) => string;
   formatDuration: (durationMs: number) => string;
   buildFeatureOverviewBlock: (featureStats: unknown) => string;
   buildAccessibilityEvidenceBlock: (entries: unknown) => string;
@@ -52,10 +60,55 @@ const enhancerTest = enhancerModule.__test__ as {
   }>;
   readAccessibilityEvidenceEntries: (outputFolder: string) => unknown[];
   enhanceGeneratedReport: (outputFolder: string, featureStats: unknown) => void;
-  resolvePerfettoHrefPrefix: (outputFolder: string, testResultsFolder: string, env?: NodeJS.ProcessEnv) => string;
 };
 
 test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
+  test('matches metadata by retry target and preserves report panels when enhanced twice', () => {
+    const html = `<html><head><meta name="viewport" content="width=1200"></head><body>
+      <div class="tab"><button class="main-tablinks" onclick="openMainTab(event, 'TabCoverage')">Coverage</button></div>
+      <div id="TabCoverage"><a href="coverage/index.html">Open coverage report</a></div>
+      <div id="TabRunInfo">RPX XUI Webapp | aat | workers=4 | branch=feature/report</div>
+      <div id="TabLoadProfile"><a href="load-profile/load-profile.html">Load profile</a></div>
+      <table id="test-list-table"><thead><tr><th>Title</th><th>Status</th><th>Duration</th></tr></thead>
+      <tbody><tr data-bs-target="#test-1"><td>Shared title</td><td>passed</td><td>1s</td></tr>
+      <tr data-bs-target="#test-0"><td>Shared title</td><td>failed</td><td>2s</td></tr></tbody>
+      <tfoot><tr><th>Title</th><th>Status</th><th>Duration</th></tr></tfoot></table>
+      <div id="test-0"><a href="attachments/trace.zip">Trace</a></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0',
+        feature: '<img src=x onerror=alert(1)>',
+        tags: ['@a&b', '<script>bad()</script>'],
+        retry: 0,
+        durationMs: 2000,
+      },
+      { target: '#test-1', feature: 'hearings', tags: ['@integration'], retry: 1, durationMs: 1000 },
+    ];
+    const once = enhancerTest.enhanceDashboardHtml(html, [], [], ['perfetto.json'], '../test-results', metadata);
+    const twice = enhancerTest.enhanceDashboardHtml(once, [], [], ['perfetto.json'], '../test-results', metadata);
+    const root = parse(twice);
+    const rows = root.querySelectorAll('#test-list-table tbody tr');
+    expect(rows[0].querySelectorAll('[data-report-metadata]').map((cell: { text: string }) => cell.text)).toEqual([
+      'hearings',
+      '@integration',
+      '2',
+    ]);
+    expect(rows[1].getAttribute('data-duration-ms')).toBe('2000');
+    expect(rows[1].querySelector('img, script')).toBeNull();
+    expect(twice).toContain('&lt;script&gt;bad()&lt;/script&gt;');
+    expect(root.querySelectorAll('#webapp-report-theme')).toHaveLength(1);
+    expect(root.querySelectorAll('#webapp-report-ui')).toHaveLength(1);
+    expect(root.querySelectorAll('#test-list-table thead th')).toHaveLength(6);
+    expect(root.querySelectorAll('#test-list-table tfoot th')).toHaveLength(6);
+    expect(root.querySelectorAll('#TabPerfetto')).toHaveLength(1);
+    expect(root.querySelector('#TabPerfetto a').getAttribute('href')).toBe('../test-results/perfetto.json');
+    expect(root.querySelector('#TabCoverage a').getAttribute('href')).toBe('coverage/index.html');
+    expect(root.querySelector('#TabLoadProfile a').getAttribute('href')).toBe('load-profile/load-profile.html');
+    expect(root.querySelector('#test-0 a').getAttribute('href')).toBe('attachments/trace.zip');
+    expect(root.querySelector('#TabRunInfo').text).toContain('RPX XUI Webapp | aat | workers=4 | branch=feature/report');
+    expect(root.querySelector('meta[name="viewport"]').getAttribute('content')).toBe('width=device-width, initial-scale=1');
+  });
+
   test('derives feature names from Playwright file paths', () => {
     expect(
       deriveFeatureName(
@@ -69,35 +122,51 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     ).toBe('hearings');
   });
 
-  test('finds Perfetto beside nested integration reports', () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-nested-perfetto-'));
-    const reportFolder = path.join(root, 'odhin-report', 'preview-workers-7');
-    const resultsFolder = path.join(reportFolder, 'test-results');
-    fs.mkdirSync(resultsFolder, { recursive: true });
-    fs.writeFileSync(
-      path.join(reportFolder, 'xui-playwright-integration.html'),
-      '<html><body><button class="main-tablinks">Tests</button></body></html>'
-    );
-    fs.writeFileSync(path.join(resultsFolder, 'perfetto.json'), '{}');
-    try {
-      enhancerModule.enhanceGeneratedReport(reportFolder, []);
-      const html = fs.readFileSync(path.join(reportFolder, 'xui-playwright-integration.html'), 'utf8');
-      expect(html).toContain('Perfetto Results');
-      expect(html).toContain('test-results/perfetto.json');
-    } finally {
-      fs.rmSync(root, { recursive: true, force: true });
-    }
-  });
-
-  test('links Perfetto to the Jenkins artifact when BUILD_URL is available', () => {
-    expect(
-      enhancerTest.resolvePerfettoHrefPrefix(
-        'functional-output/tests/playwright-e2e/odhin-report',
-        'functional-output/tests/playwright-e2e/test-results',
-        { BUILD_URL: 'https://build.hmcts.net/job/example/12/' }
-      )
-    ).toBe('https://build.hmcts.net/job/example/12/artifact/functional-output/tests/playwright-e2e/test-results');
-  });
+  for (const resultsLocation of ['test-results', '../test-results', '../../test-results']) {
+    test(`publishes same-origin Perfetto copies from ${resultsLocation} under Jenkins`, () => {
+      const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-perfetto-publication-'));
+      const reportFolder = path.join(temporaryRoot, 'odhin-report', 'preview-workers-7');
+      const resultsFolder = path.resolve(reportFolder, resultsLocation);
+      const reportFile = path.join(reportFolder, 'xui-playwright-integration.html');
+      const originalBuildUrl = process.env.BUILD_URL;
+      const originalArtifactUrl = process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+      const timelines = new Map([
+        ['perfetto.json', Buffer.from('{"traceEvents":[]}\n')],
+        ['perfetto-worker #1&2.json', Buffer.from('{"traceEvents":[{"name":"worker one"}]}\n')],
+      ]);
+      fs.mkdirSync(reportFolder, { recursive: true });
+      fs.mkdirSync(resultsFolder, { recursive: true });
+      fs.writeFileSync(reportFile, '<html><head></head><body><div class="tab"></div></body></html>');
+      timelines.forEach((bytes, name) => fs.writeFileSync(path.join(resultsFolder, name), bytes));
+      process.env.BUILD_URL = 'https://build.hmcts.net/job/example/12/';
+      process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL = 'https://build.hmcts.net/job/other/99/';
+      try {
+        enhancerModule.enhanceGeneratedReport(reportFolder, []);
+        enhancerModule.enhanceGeneratedReport(reportFolder, []);
+        const report = parse(fs.readFileSync(reportFile, 'utf8'));
+        const downloads = report.querySelectorAll('#TabPerfetto a[download]');
+        expect(report.querySelectorAll('#TabPerfetto')).toHaveLength(1);
+        expect(downloads).toHaveLength(timelines.size);
+        for (const link of downloads) {
+          const name = link.getAttribute('download');
+          expect(link.getAttribute('href')).toBe(`perfetto/${encodeURIComponent(name)}`);
+          const hostedUrl = new URL(
+            link.getAttribute('href'),
+            'https://static-build.hmcts.net/resource/report/xui-playwright-integration.html'
+          );
+          expect(hostedUrl.origin).toBe('https://static-build.hmcts.net');
+          expect(fs.readFileSync(path.join(reportFolder, 'perfetto', name))).toEqual(timelines.get(name));
+          expect(fs.readFileSync(path.join(resultsFolder, name))).toEqual(timelines.get(name));
+        }
+      } finally {
+        if (originalBuildUrl === undefined) delete process.env.BUILD_URL;
+        else process.env.BUILD_URL = originalBuildUrl;
+        if (originalArtifactUrl === undefined) delete process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+        else process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL = originalArtifactUrl;
+        fs.rmSync(temporaryRoot, { recursive: true, force: true });
+      }
+    });
+  }
 
   test('normalizes and sorts grouped feature stats', () => {
     const stats = enhancerTest.normalizeFeatureStats([
@@ -187,7 +256,8 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('Passed');
     expect(nextHtml).toContain('Status by test file');
     expect(nextHtml).not.toContain('Status by feature');
-    expect(nextHtml).toContain('odhin-dashboard-stack');
+    expect(parse(nextHtml).querySelector('.odhin-dashboard-stack')).toBeNull();
+    expect(parse(nextHtml).querySelectorAll('#TabDashboard .row > div > .dashboard-block')).toHaveLength(5);
     expect(nextHtml.indexOf('Run info')).toBeLessThan(nextHtml.indexOf('Feature Overview'));
     expect(nextHtml.indexOf('Global Summary')).toBeLessThan(nextHtml.indexOf('Projects Summary'));
     expect(nextHtml).toContain("document.getElementById('chart-project').getContext('2d');");
@@ -225,6 +295,25 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('Feature Overview');
     expect(nextHtml).toContain('odhin-feature-overview-layout-compact');
     expect(nextHtml).not.toContain('id="chart-file"');
+  });
+
+  test('treats flaky final passes as passed for feature pass-rate display', () => {
+    const manageTasks = createEmptyFeatureStat('manageTasks');
+    manageTasks.totalTests = 99;
+    manageTasks.passed = 96;
+    manageTasks.skipped = 3;
+
+    const caseDetails = createEmptyFeatureStat('caseDetails');
+    caseDetails.totalTests = 4;
+    caseDetails.passed = 3;
+    caseDetails.flaky = 1;
+
+    const html = enhancerTest.buildFeatureOverviewBlock([manageTasks, caseDetails]);
+    const root = parse(html);
+    const rows = root.querySelectorAll('tbody tr');
+    expect(rows[0].querySelector('.result-status-passed').text.trim()).toBe('96 (100.00%)');
+    expect(rows[1].querySelector('.result-status-passed').text.trim()).toBe('4 (100.00%)');
+    expect(rows[1].querySelector('.result-status-flaky').text.trim()).toBe('1 (25.00%)');
   });
 
   test('feature overview block keeps feature distribution and outcome columns together', () => {
@@ -392,6 +481,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
                 <td>1s</td>
               </tr>
             </tbody>
+            <tfoot><tr><th>Title</th><th>Status</th><th>Duration</th></tr></tfoot>
           </table>
           <div class="modal-content">
             <div class="modal-header result-header">
@@ -441,6 +531,11 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         },
       ]
     );
+
+    const table = parse(nextHtml).querySelector('#test-list-table');
+    expect(table.querySelectorAll('thead th')).toHaveLength(5);
+    expect(table.querySelectorAll('tfoot th')).toHaveLength(5);
+    expect(table.querySelectorAll('tbody tr')[0].querySelectorAll('td')).toHaveLength(5);
 
     expect(nextHtml).toContain(
       'data-a11y-test-evidence-link="privacy-policy-summary.html|privacy-policy-wave-like.html|privacy-policy-screen-reader.html"'

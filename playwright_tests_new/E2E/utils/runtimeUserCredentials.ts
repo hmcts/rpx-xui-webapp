@@ -13,7 +13,6 @@ type RuntimeUserCredentialEnvMapping = {
 export const RuntimeUserAlias = {
   DIVORCE_SOLICITOR: 'DIVORCE_SOLICITOR',
   SEARCH_EMPLOYMENT_CASE: 'SEARCH_EMPLOYMENT_CASE',
-  BEFTA_MASTER_CASE: 'BEFTA_MASTER_CASE',
 } as const;
 
 export type RuntimeUserAlias = (typeof RuntimeUserAlias)[keyof typeof RuntimeUserAlias];
@@ -40,10 +39,6 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   PROD_LIKE: {
     username: 'PROD_LIKE_USERNAME',
     password: 'PROD_LIKE_PASSWORD',
-  },
-  BEFTA_MASTER_CASE: {
-    username: 'BEFTA_MASTER_CASE_USERNAME',
-    password: 'BEFTA_MASTER_CASE_PASSWORD',
   },
   SEARCH_EMPLOYMENT_CASE: {
     username: 'SEARCH_EMPLOYMENT_CASE_USERNAME',

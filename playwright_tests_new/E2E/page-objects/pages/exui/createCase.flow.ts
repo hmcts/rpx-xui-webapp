@@ -207,7 +207,6 @@ export async function startCreateCaseFlow({
   caseType,
   eventType,
   maxAttempts,
-  loadTimeoutMs,
   createCaseButton,
   jurisdictionSelect,
   caseTypeSelect,
@@ -226,7 +225,6 @@ export async function startCreateCaseFlow({
   caseType: string;
   eventType?: string;
   maxAttempts: number;
-  loadTimeoutMs?: number;
   createCaseButton: Locator;
   jurisdictionSelect: Locator;
   caseTypeSelect: Locator;
@@ -235,12 +233,11 @@ export async function startCreateCaseFlow({
   somethingWentWrongHeading: Locator;
   getApiCalls: () => Array<{ method: string; status: number; url: string }>;
   waitForSelectReady: (selector: string, timeoutMs?: number) => Promise<void>;
-  selectOptionSmart: (selectLocator: Locator, option: string, timeoutMs?: number) => Promise<void>;
+  selectOptionSmart: (selectLocator: Locator, option: string) => Promise<void>;
   normalizeUnknownError: (error: unknown) => string;
   warn: (message: string, meta: Record<string, unknown>) => void;
   debug: (message: string, meta: Record<string, unknown>) => void;
 }): Promise<void> {
-  const createCaseLoadTimeoutMs = loadTimeoutMs ?? EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const apiCallsBaseline = getApiCalls().length;
     try {
@@ -255,40 +252,40 @@ export async function startCreateCaseFlow({
           await page.goto('/cases/case-filter');
         }
       }
-      await jurisdictionSelect.waitFor({ state: 'visible', timeout: createCaseLoadTimeoutMs });
-      await waitForSelectReady('#cc-jurisdiction', createCaseLoadTimeoutMs).catch((error) => {
+      await jurisdictionSelect.waitFor({ state: 'visible' });
+      await waitForSelectReady('#cc-jurisdiction', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
         const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
         if (bootstrapFailure) {
           throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading jurisdiction options)', bootstrapFailure));
         }
         throw error;
       });
-      await selectOptionSmart(jurisdictionSelect, jurisdiction, createCaseLoadTimeoutMs);
+      await selectOptionSmart(jurisdictionSelect, jurisdiction);
 
-      await caseTypeSelect.waitFor({ state: 'visible', timeout: createCaseLoadTimeoutMs });
-      await waitForSelectReady('#cc-case-type', createCaseLoadTimeoutMs).catch((error) => {
+      await caseTypeSelect.waitFor({ state: 'visible' });
+      await waitForSelectReady('#cc-case-type', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
         const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
         if (bootstrapFailure) {
           throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading case type options)', bootstrapFailure));
         }
         throw error;
       });
-      await selectOptionSmart(caseTypeSelect, caseType, createCaseLoadTimeoutMs);
+      await selectOptionSmart(caseTypeSelect, caseType);
 
       if (eventType) {
-        await eventTypeSelect.click({ timeout: createCaseLoadTimeoutMs });
-        await waitForSelectReady('#cc-event', createCaseLoadTimeoutMs).catch((error) => {
+        await eventTypeSelect.click();
+        await waitForSelectReady('#cc-event', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
           const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
           if (bootstrapFailure) {
             throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading event options)', bootstrapFailure));
           }
           throw error;
         });
-        await selectOptionSmart(eventTypeSelect, eventType, createCaseLoadTimeoutMs);
+        await selectOptionSmart(eventTypeSelect, eventType);
       }
 
       await startButton.click();
-      const navigationDeadline = Date.now() + createCaseLoadTimeoutMs;
+      const navigationDeadline = Date.now() + EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED;
       while (Date.now() < navigationDeadline) {
         if (!page.url().includes('/cases/case-filter')) {
           return;
@@ -300,7 +297,9 @@ export async function startCreateCaseFlow({
         await page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL);
       }
       if (page.url().includes('/cases/case-filter')) {
-        throw new Error(`Create case start navigation did not leave /cases/case-filter within ${createCaseLoadTimeoutMs}ms`);
+        throw new Error(
+          `Create case start navigation did not leave /cases/case-filter within ${EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED}ms`
+        );
       }
       return;
     } catch (error) {

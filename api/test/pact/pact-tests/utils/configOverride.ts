@@ -82,6 +82,13 @@ export function getNocAPIOverrides(nocAPiUrl) {
   };
 }
 
+export function getCaseAssignmentAPIOverrides(caseAssignmentApiUrl) {
+  return {
+    'services.ccd.caseAssignmentApi': caseAssignmentApiUrl,
+    ...defaultConfig,
+  };
+}
+
 export function getHearingsAPIOverrides(hearingsRefApiUrl: string) {
   return {
     'services.hearings.hmcApi': hearingsRefApiUrl,

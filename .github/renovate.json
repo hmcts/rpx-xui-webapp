@@ -1,4 +1,37 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>hmcts/.github:renovate-config", "local>hmcts/.github//renovate/automerge-minor"]
+  "extends": [
+    "local>hmcts/.github:renovate-config",
+    "local>hmcts/.github//renovate/automerge-all"
+  ],
+  "automerge": true,
+  "platformAutomerge": true,
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 1,
+  "timezone": "Europe/London",
+  "schedule": [
+    "* 7-16 * * 1-5"
+  ],
+  "updateNotScheduled": false,
+  "packageRules": [
+    {
+      "description": "Exclude pinned HMCTS and Angular dependencies from Renovate updates",
+      "matchPackageNames": [
+        "@hmcts/ccd-case-ui-toolkit",
+        "@hmcts/rpx-xui-common-lib",
+        "@hmcts/rpx-xui-node-lib",
+        "rpx-xui-translation",
+        "/^@angular\\//",
+        "/^@angular-devkit\\//"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable major version updates",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    }
+  ]
 }

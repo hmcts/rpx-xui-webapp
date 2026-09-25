@@ -180,12 +180,14 @@ export async function auditAccessibilityPage(page: Page, testInfo: TestInfo, opt
 
 async function runAxeEngine(page: Page, testInfo: TestInfo, options: AccessibilityAuditOptions): Promise<EngineOutcome> {
   const results = await runAxeAudit(page);
+  const outcome = summarizeAxeOutcome(results, options.axeKnownViolations ?? []);
   await attachAccessibilityEvidence(page, testInfo, results, `${evidencePrefix(options)}-axe`, {
     engine: 'axe',
     feature: options.feature,
     pageState: options.pageState,
+    status: outcome.status,
   });
-  return summarizeAxeOutcome(results, options.axeKnownViolations ?? []);
+  return outcome;
 }
 
 export function summarizeAxeOutcome(results: AxeResults, knownViolations: KnownAxeViolation[] = []): EngineOutcome {

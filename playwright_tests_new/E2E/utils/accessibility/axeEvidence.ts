@@ -21,6 +21,7 @@ interface PublishedEvidenceMetadata {
   engine: 'axe';
   feature: string;
   pageState: string;
+  status?: 'issues-found' | 'known-findings' | 'needs-review' | 'passed' | 'error';
 }
 
 const normaliseArray = <T>(value?: T | T[]): T[] => {
@@ -262,7 +263,7 @@ async function writePublishedEvidence(
     attachmentPrefix,
     entry: {
       engine: 'axe',
-      status: results.violations.length > 0 ? 'issues-found' : 'needs-review',
+      status: metadata?.status ?? (results.violations.length > 0 ? 'issues-found' : 'needs-review'),
       reviewCount: (results.incomplete ?? []).reduce((count, result) => count + result.nodes.length, 0),
       reviewRules: (results.incomplete ?? []).map((result) => result.id),
       feature: metadata?.feature,

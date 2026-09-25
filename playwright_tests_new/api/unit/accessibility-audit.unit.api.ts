@@ -125,7 +125,8 @@ test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, 
       expect(document.querySelector('meta[name="viewport"]')).not.toBeNull();
       expect(document.querySelectorAll('h1')).toHaveLength(1);
       expect(document.querySelector('main')?.id).toBe('evidence-content');
-      expect(document.querySelector('a[href="../xui-playwright-a11y.html"]')).not.toBeNull();
+      const reportIndexFilename = process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-a11y.html';
+      expect(document.querySelector(`a[href="../${reportIndexFilename}"]`)).not.toBeNull();
       expect(document.querySelector('.panel details[open]')).toBeNull();
       await attachAccessibilityPageSummaryEvidence(page, info, {
         feature: 'header',

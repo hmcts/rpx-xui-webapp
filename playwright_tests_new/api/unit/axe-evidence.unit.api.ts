@@ -120,3 +120,48 @@ test('keeps clean, incomplete, known and unexpected axe outcomes distinct', { ta
     expect(outcome.rules).toEqual(violations.map((item) => item.id));
   }
 });
+
+test('publishes resolved axe evidence statuses without changing diagnostic details', { tag: '@svc-internal' }, async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'axe-known-'));
+  const previous = process.env.PW_A11Y_EVIDENCE_DIR;
+  process.env.PW_A11Y_EVIDENCE_DIR = dir;
+  const attachments = new Map<string, string>();
+  const info = {
+    title: 'known findings',
+    attach: async (name: string, value: { body: string | Buffer }) => attachments.set(name, String(value.body)),
+  } as unknown as TestInfo;
+  const page = {
+    url: () => 'https://example.test/',
+    evaluate: async () => undefined,
+    screenshot: async () => Buffer.from('png'),
+  } as unknown as Page;
+  const violation = {
+    id: 'label',
+    help: 'Missing label',
+    description: 'The control has no label',
+    helpUrl: 'https://dequeuniversity.com/rules/axe/label',
+    tags: ['wcag2a'],
+    nodes: [{ target: ['#field'], html: '<input id="field">' }],
+  } as unknown as Result;
+  try {
+    for (const [prefix, status] of [
+      ['known', 'known-findings'],
+      ['unexpected', 'issues-found'],
+      ['incomplete', 'needs-review'],
+    ] as const) {
+      await attachAccessibilityEvidence(page, info, { url: page.url(), violations: [violation] } as AxeResults, prefix, {
+        engine: 'axe',
+        feature: prefix,
+        pageState: prefix,
+        status,
+      });
+      const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
+      expect(manifest.at(-1)).toMatchObject({ status, violationCount: 1, rules: ['label'] });
+      expect(attachments.get(`${prefix}.html`)).toContain('Automatically detected violation');
+    }
+  } finally {
+    if (previous === undefined) delete process.env.PW_A11Y_EVIDENCE_DIR;
+    else process.env.PW_A11Y_EVIDENCE_DIR = previous;
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

@@ -79,7 +79,7 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
     }
 
     await test.step('Search and open the Civil case by caseId', async () => {
-      await findCasePage.startFindCaseJourney(caseNumber, 'Civil', 'Civil');
+      await findCasePage.startFindCaseJourney(caseNumber, 'Civil', 'Civil', true);
       await findCasePage.displayCaseDetailsFor(caseNumber);
       await expect(page).toHaveURL(/\/cases\/case-details\//);
       await page.goto(`/cases/case-details/CIVIL/CIVIL/${caseNumber}#Summary`);

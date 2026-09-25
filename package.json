@@ -280,7 +280,7 @@
     "braces": "^3.0.3",
     "cookie": "^0.7.2",
     "dompurify": "^3.4.13",
-    "flat": "~5.0.1",
+    "flat": "~6.0.0",
     "form-data": "4.0.6",
     "jsdom": "^27.4.0",
     "jsonwebtoken@npm:^9.0.0": "npm:9.0.3",

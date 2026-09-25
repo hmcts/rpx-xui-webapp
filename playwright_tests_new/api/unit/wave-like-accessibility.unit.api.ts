@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import { JSDOM } from 'jsdom';
 import os from 'os';
 import path from 'path';
+import { guidanceForRule } from '../../E2E/utils/accessibility/waveLikeGuidance';
 
 import {
   attachWaveLikeAccessibilityEvidence,
@@ -26,6 +27,13 @@ type DomGlobals = typeof globalThis & {
 };
 
 test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, () => {
+  test('maps guidance to relevant criteria without turning conventions into conformance failures', () => {
+    expect(guidanceForRule('document-language').criteria).toContain('3.1.1');
+    expect(guidanceForRule('text-spacing-clipping').criteria).toContain('1.4.12');
+    expect(guidanceForRule('duplicate-id').criteria).not.toContain('4.1.1');
+    expect(guidanceForRule('h1-count').criteria).toContain('not a standalone WCAG failure');
+    expect(guidanceForRule('unknown').criteria).toContain('No verified criterion mapping');
+  });
   test('uses the PR-actionable WAVE-like accessibility tag', () => {
     expect(WAVE_LIKE_A11Y_TAG).toBe('@wave-a11y');
   });
@@ -87,6 +95,15 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
               nearestHeading: 'h1: Case details',
             },
           },
+          { rule: 'h1-count', message: 'Found 3 h1 elements.' },
+          { rule: 'fieldset-legend', message: 'Fieldset has no legend containing text.', selector: 'fieldset' },
+          {
+            rule: 'custom-rule',
+            message: '<script>alert(1)</script>',
+            advice: 'Keep this custom advice <safe>',
+            selector: `#${'long'.repeat(150)}`,
+            codeLocation: { tag: '<img src=x onerror=alert(1)>', accessibleName: '<script>bad()</script>' },
+          },
         ],
         'wave-accessibility-issues'
       );
@@ -105,11 +122,33 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
 
     const htmlAttachment = attachments.find((attachment) => attachment.name === 'wave-accessibility-issues.html');
     expect(htmlAttachment?.body?.toString()).toContain('Developer advice');
+    const report = new JSDOM(htmlAttachment?.body?.toString()).window.document;
+    expect(report.documentElement.lang).toBe('en');
+    expect(report.querySelectorAll('h1')).toHaveLength(1);
+    expect(report.querySelector('a[href="#issue-1"]')).not.toBeNull();
+    expect(report.querySelector('#issue-1')).not.toBeNull();
+    expect(report.querySelector('.location dt')?.textContent).toBe('Page');
+    expect(report.querySelector('.location')?.textContent).toContain('Case details');
+    expect(report.body.textContent).toContain('How to verify');
+    expect(report.querySelectorAll('script, [onerror]')).toHaveLength(0);
+    expect(report.querySelectorAll('.issue')).toHaveLength(4);
+    expect(report.querySelector('#issue-2')?.textContent).toContain(
+      'Multiple h1 elements alone do not establish a WCAG failure.'
+    );
+    expect(report.querySelector('#issue-2')?.textContent).toContain('No element context was captured');
+    expect(report.querySelector('#issue-3')?.textContent).toContain('a visually hidden legend can be valid');
+    expect(report.querySelector('#issue-4')?.textContent).toContain('Keep this custom advice <safe>');
+    expect(report.querySelector('#issue-4 .location')?.textContent).toContain('long'.repeat(150));
+    for (const link of report.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')) {
+      expect(report.getElementById(link.hash.slice(1))).not.toBeNull();
+    }
+    expect(report.querySelector('#order[open]')).toBeNull();
+    expect(report.querySelector('meta[name="viewport"]')).not.toBeNull();
     expect(htmlAttachment?.body?.toString()).toContain('<a href="../xui-playwright-a11y.html">Back to Odhín report</a>');
     expect(htmlAttachment?.body?.toString()).toContain('What to fix');
     expect(htmlAttachment?.body?.toString()).toContain('DOM hints');
     expect(htmlAttachment?.body?.toString()).toContain('search selector #continue');
-    expect(htmlAttachment?.body?.toString()).toContain('class: govuk-button');
+    expect(report.querySelector('pre')?.textContent).toContain('govuk-button');
     expect(htmlAttachment?.body?.toString()).toContain(
       'Fix the template first: add visible text, a govukLabel/label for the control, aria-label, or aria-labelledby.'
     );
@@ -128,6 +167,8 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
           <main class="govuk-main-wrapper">
             <h1>Case details</h1>
             <button id="continue" class="govuk-button" _ngcontent-c0></button>
+            <fieldset><legend class="govuk-visually-hidden">Choose a response</legend></fieldset>
+            <fieldset><legend> </legend></fieldset>
           </main>
         </body>
       </html>
@@ -149,7 +190,7 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
 
     const page = {
       evaluate: async <T>(callback: () => T) => {
-        globalScope.window = dom.window as Window & typeof globalThis;
+        globalScope.window = dom.window as unknown as Window & typeof globalThis;
         globalScope.document = dom.window.document;
         globalScope.Element = dom.window.Element;
         globalScope.HTMLElement = dom.window.HTMLElement;
@@ -160,7 +201,7 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
         globalScope.HTMLOutputElement = dom.window.HTMLOutputElement;
         globalScope.Node = dom.window.Node;
         globalScope.CSS = dom.window.CSS;
-        dom.window.HTMLElement.prototype.getClientRects = () => [{ width: 100, height: 20 }] as DOMRectList;
+        dom.window.HTMLElement.prototype.getClientRects = () => [{ width: 100, height: 20 }] as unknown as DOMRectList;
 
         try {
           return callback();
@@ -182,5 +223,12 @@ test.describe('WAVE-like accessibility tag contract', { tag: '@svc-internal' }, 
       nearestLandmark: 'main .govuk-main-wrapper',
     });
     expect(accessibleNameViolation?.codeLocation?.angularAttrs).toBe('_ngcontent-c0');
+    expect(violations.filter((violation) => violation.rule === 'fieldset-legend')).toEqual([
+      expect.objectContaining({
+        selector: 'fieldset',
+        message: 'Fieldset has no legend containing text.',
+        html: '<fieldset><legend> </legend></fieldset>',
+      }),
+    ]);
   });
 });

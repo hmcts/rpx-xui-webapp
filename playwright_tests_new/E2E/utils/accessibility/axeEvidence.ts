@@ -21,6 +21,7 @@ interface PublishedEvidenceMetadata {
   engine: 'axe';
   feature: string;
   pageState: string;
+  status?: 'issues-found' | 'known-findings' | 'needs-review' | 'passed' | 'error';
 }
 
 const normaliseArray = <T>(value?: T | T[]): T[] => {
@@ -70,8 +71,8 @@ export class AxeUtils {
 
     await testInfo.attach(reportName, {
       body: `
-        <html>
-          <head>
+        <!doctype html><html lang="en">
+          <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
             <title>Consolidated Accessibility Report</title>
             <style>
               body { font-family: Arial, sans-serif; margin: 24px; }
@@ -120,7 +121,7 @@ export async function attachAccessibilityEvidence(
   attachmentPrefix = 'accessibility-issues',
   metadata?: PublishedEvidenceMetadata
 ): Promise<void> {
-  if (!testInfo || results.violations.length === 0) {
+  if (!testInfo || (results.violations.length === 0 && (results.incomplete ?? []).length === 0)) {
     return;
   }
 
@@ -134,7 +135,7 @@ export async function attachAccessibilityEvidence(
     contentType: 'text/html',
   });
 
-  const cleanup = await markViolationsOnPage(page, results.violations);
+  const cleanup = await markViolationsOnPage(page, [...results.violations, ...(results.incomplete ?? [])]);
   let screenshot: Buffer;
   try {
     screenshot = await page.screenshot({ fullPage: true });
@@ -167,6 +168,8 @@ function toEvidenceSummary(results: AxeResults): unknown {
   return {
     url: results.url,
     violationCount: results.violations.length,
+    reviewCount: (results.incomplete ?? []).reduce((count, result) => count + result.nodes.length, 0),
+    incomplete: results.incomplete ?? [],
     violations: results.violations.map((violation) => ({
       id: violation.id,
       impact: violation.impact,
@@ -184,57 +187,69 @@ function toEvidenceSummary(results: AxeResults): unknown {
 }
 
 function buildIssueSummaryHtml(results: AxeResults): string {
-  const cards = results.violations
-    .map((violation, violationIndex) => {
-      const nodes = violation.nodes
+  const reportHref = `../${escapeAttribute(process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-a11y.html')}`;
+  const findings = [...results.violations, ...(results.incomplete ?? [])];
+  const cards = findings
+    .map((result, index) => {
+      const needsReview = index >= results.violations.length;
+      const criteria = result.tags
+        .filter((tag) => /^wcag[1-4][1-9]\d+$/.test(tag))
+        .map((tag) => {
+          const digits = tag.slice(4);
+          return `${digits[0]}.${digits[1]}.${digits.slice(2)}`;
+        });
+      const nodes = result.nodes
         .map(
           (node, nodeIndex) => `
-            <li>
-              <p><strong>Marker:</strong> ${violationIndex + 1}.${nodeIndex + 1}</p>
-              <p><strong>Selector:</strong> <code>${escapeHtml(node.target.join(', '))}</code></p>
-              <p><strong>Failure:</strong> ${escapeHtml(node.failureSummary ?? 'No failure summary provided')}</p>
-              <pre>${escapeHtml(node.html)}</pre>
-            </li>
-          `
+      <li>
+        <dl><dt>Screenshot marker</dt><dd>${index + 1}.${nodeIndex + 1}</dd>
+          <dt>Where to look</dt><dd><code>${escapeHtml(node.target.join(', '))}</code></dd>
+          <dt>${needsReview ? 'What needs checking' : 'What failed'}</dt><dd>${escapeHtml(node.failureSummary ?? 'See the check details below.')}</dd></dl>
+        <ul>${[...(node.any ?? []), ...(node.all ?? []), ...(node.none ?? [])].map((check) => `<li>${escapeHtml(check.message)}</li>`).join('')}</ul>
+        <details><summary>Rendered HTML excerpt</summary><pre>${escapeHtml(node.html)}</pre></details>
+      </li>`
         )
         .join('');
-
-      return `
-        <section class="issue">
-          <h2>${violationIndex + 1}. ${escapeHtml(violation.id)} <span>${escapeHtml(
-            violation.impact ?? 'unknown impact'
-          )}</span></h2>
-          <p><strong>${escapeHtml(violation.help)}</strong></p>
-          <p>${escapeHtml(violation.description)}</p>
-          <p><a href="${escapeAttribute(violation.helpUrl)}">${escapeHtml(violation.helpUrl)}</a></p>
-          <ol>${nodes}</ol>
-        </section>
-      `;
+      return `<section class="issue ${needsReview ? 'review' : ''}" id="issue-${index + 1}" tabindex="-1">
+      <h2>${index + 1}. ${escapeHtml(result.help)}</h2>
+      <p><strong>${needsReview ? 'Needs investigation — not a confirmed failure' : 'Automatically detected violation'}</strong> · ${escapeHtml(result.impact ?? 'impact not supplied')}</p>
+      <p>${escapeHtml(result.description)}</p>
+      <p><strong>Rule:</strong> ${escapeHtml(result.id)}. <strong>WCAG criterion number(s):</strong> ${escapeHtml(criteria.join(', ') || 'Not supplied by engine')}. <strong>Engine version/level tags:</strong> ${escapeHtml(
+        result.tags
+          .filter((tag) => /^wcag(?:2|21|22)a{1,3}$/.test(tag))
+          .map((tag) =>
+            tag.replace(
+              /^wcag(2|21|22)(a+)$/,
+              (_match, version: string, level: string) =>
+                `WCAG ${version === '2' ? '2.0' : version === '21' ? '2.1' : '2.2'} ${level.toUpperCase()}`
+            )
+          )
+          .join(', ') || 'Not supplied'
+      )}</p>
+      <p><strong>Potential solution:</strong> ${needsReview ? 'Determine whether the reported condition is a failure before changing the page. Use the check details and rule-specific examples.' : 'Use the failing check details and rule-specific examples to correct the affected markup, styles or interaction.'}
+        <a href="${escapeAttribute(result.helpUrl)}">${escapeHtml(result.id)}: explanation and remediation examples</a></p>
+      <p><strong>Verify:</strong> Recheck this element in the same page state, rerun the audit, and check the relevant keyboard or assistive-technology behaviour. An empty automated result does not establish full accessibility.</p>
+      <ol>${nodes}</ol>
+    </section>`;
     })
     .join('');
-
-  return `
-    <html>
-      <head>
-        <title>Accessibility Issues</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 24px; color: #0b0c0c; }
-          .banner { background: #d4351c; color: #fff; padding: 16px; margin-bottom: 24px; }
-          .issue { border: 4px solid #d4351c; padding: 16px; margin-bottom: 18px; }
-          .issue h2 { margin-top: 0; }
-          .issue h2 span { background: #ffdd00; color: #0b0c0c; font-size: 16px; padding: 4px 8px; }
-          code, pre { background: #f3f2f1; padding: 4px; white-space: pre-wrap; }
-        </style>
-      </head>
-      <body>
-        <div class="banner">
-          <h1>ACCESSIBILITY ISSUES FOUND</h1>
-          <p>${results.violations.length} axe rule violation(s). Match marker numbers here to the highlighted screenshot.</p>
-        </div>
-        ${cards}
-      </body>
-    </html>
-  `;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Axe accessibility evidence</title><style>
+      * { box-sizing: border-box; } body { font: 16px/1.5 Arial, sans-serif; margin: 0; color: #0b0c0c; overflow-wrap: anywhere; }
+      main { max-width: 76rem; margin: auto; padding: 1rem; } header { background: #0b0c0c; color: white; padding: 1rem; }
+      .issue { border: 2px solid #d4351c; padding: 1rem; margin: 1rem 0; } .review { border-color: #b58800; }
+      h2 { margin-top: 0; } dt { font-weight: bold; } dd { margin: 0 0 .6rem; }
+      code, pre { font-size: .95rem; background: #f3f2f1; white-space: pre-wrap; overflow-wrap: anywhere; }
+      pre { padding: .75rem; } a { color: #1d70b8; } :focus-visible { outline: 3px solid #ffdd00; box-shadow: 0 0 0 5px #0b0c0c; }
+      .skip-link { position: absolute; left: -10000px; } .skip-link:focus { position: static; }
+      summary { cursor: pointer; } li { margin-bottom: .75rem; }
+    </style></head><body><a class="skip-link" href="#evidence-content">Skip to evidence</a>
+    <header><h1>Axe accessibility evidence</h1><p>${results.violations.length} violated rule(s); ${(results.incomplete ?? []).length} rule(s) need investigation.</p></header>
+    <main id="evidence-content" tabindex="-1"><p><a href="${reportHref}">Back to Odhín report</a></p>
+      <p><strong>Page:</strong> ${escapeHtml(results.url)}</p><p>Automated checks cover part of WCAG 2.2 A/AA, including retained WCAG 2.0 and 2.1 criteria. This is not a conformance verdict. DOM targets are evidence clues, not verified source-file locations.</p>
+      <nav aria-label="Findings"><ul>${findings.map((result, index) => `<li><a href="#issue-${index + 1}">${index + 1}. ${escapeHtml(result.help)}</a></li>`).join('')}</ul></nav>
+      ${cards}<p><a href="${reportHref}">Back to Odhín report</a></p>
+    </main></body></html>`;
 }
 
 async function writePublishedEvidence(
@@ -248,11 +263,18 @@ async function writePublishedEvidence(
     attachmentPrefix,
     entry: {
       engine: 'axe',
+      status: metadata?.status ?? (results.violations.length > 0 ? 'issues-found' : 'needs-review'),
+      reviewCount: (results.incomplete ?? []).reduce((count, result) => count + result.nodes.length, 0),
+      reviewRules: (results.incomplete ?? []).map((result) => result.id),
       feature: metadata?.feature,
       pageState: metadata?.pageState,
       violationCount: results.violations.length,
       rules: results.violations.map((violation) => violation.id),
-      targets: results.violations.flatMap((violation) => violation.nodes.flatMap((node) => node.target)),
+      targets: [...results.violations, ...(results.incomplete ?? [])].flatMap((violation) =>
+        violation.nodes.flatMap((node) =>
+          node.target.map((target) => (typeof target === 'string' ? target : JSON.stringify(target)))
+        )
+      ),
     },
     html: buildIssueSummaryHtml(results),
     json: toEvidenceSummary(results),
@@ -265,7 +287,8 @@ async function markViolationsOnPage(page: Page, violations: Result[]): Promise<(
   const markers = violations.flatMap((violation, violationIndex) =>
     violation.nodes.flatMap((node, nodeIndex) =>
       node.target.map((target) => ({
-        target,
+        // Nested frame/shadow selectors remain unresolved instead of marking an unrelated top-level element.
+        target: typeof target === 'string' ? target : JSON.stringify(target),
         label: `${violationIndex + 1}.${nodeIndex + 1}`,
         rule: violation.id,
       }))

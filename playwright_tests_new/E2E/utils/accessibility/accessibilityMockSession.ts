@@ -18,6 +18,10 @@ export async function setupAccessibilityMockSession(page: Page, options: Accessi
   await setupXuiAppShellBaseRoutes(page, options);
 
   await page.route('**/auth/isAuthenticated*', async (route) => fulfillJson(route, true));
+  await page.route(/\/api\/configuration\?configurationKey=termsAndConditionsEnabled(?:&|$)/, async (route) =>
+    fulfillJson(route, false)
+  );
+  await page.route('**/api/monitoring-tools*', async (route) => fulfillJson(route, []));
   await page.route('**/api/healthCheck*', async (route) => fulfillJson(route, { healthState: true }));
   await page.route('**/api/organisation*', async (route) =>
     fulfillJson(route, {

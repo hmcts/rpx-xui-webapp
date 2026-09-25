@@ -1,9 +1,32 @@
 import type { TestInfo } from '@playwright/test';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { createHash } from 'node:crypto';
 import type { AccessibilityEngine } from './accessibilityAudit';
 
+export type AccessibilityContext = {
+  scenarioId?: string;
+  persona?: string;
+  language?: string;
+  authentication?: string;
+  dataMode?: string;
+};
+
+const contexts = new WeakMap<TestInfo, AccessibilityContext>();
+
+export function setAccessibilityEvidenceContext(testInfo: TestInfo, context?: AccessibilityContext): void {
+  if (context) contexts.set(testInfo, context);
+  else contexts.delete(testInfo);
+}
+
+export function formatAccessibilityContext(context?: AccessibilityContext): string {
+  return Object.entries(context ?? {})
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(' / ');
+}
+
 export type PublishedAccessibilityEvidenceEntry = {
+  context?: AccessibilityContext;
   engine: AccessibilityEngine | 'summary';
   feature?: string;
   pageState?: string;
@@ -13,6 +36,8 @@ export type PublishedAccessibilityEvidenceEntry = {
   jsonFileName: string;
   screenshotFileName: string;
   violationCount: number;
+  reviewCount?: number;
+  reviewRules?: string[];
   status?: string;
   summary?: string;
   rules: string[];
@@ -41,12 +66,16 @@ export async function publishAccessibilityEvidence(
   }
 ): Promise<PublishedAccessibilityEvidenceEntry> {
   const evidenceDir = getEvidenceDir();
-  const baseName = `${sanitiseFileName(testInfo.title)}-${evidence.attachmentPrefix}`;
+  const context = evidence.entry.context ?? contexts.get(testInfo);
+  const contextKey = context ? JSON.stringify(Object.entries(context).sort(([a], [b]) => a.localeCompare(b))) : '';
+  const variant = contextKey ? `-${createHash('sha256').update(contextKey).digest('hex').slice(0, 12)}` : '';
+  const baseName = `${sanitiseFileName(testInfo.title)}-${evidence.attachmentPrefix}${variant}`;
   const htmlFileName = `${baseName}.html`;
   const jsonFileName = `${baseName}.json`;
-  const screenshotFileName = `${baseName}${evidence.screenshotSuffix ?? '-screenshot.png'}`;
+  const screenshotFileName = evidence.screenshot ? `${baseName}${evidence.screenshotSuffix ?? '-screenshot.png'}` : '';
   const entry: PublishedAccessibilityEvidenceEntry = {
     ...evidence.entry,
+    ...(context ? { context } : {}),
     testTitle: testInfo.title,
     attachmentPrefix: evidence.attachmentPrefix,
     htmlFileName,
@@ -91,9 +120,7 @@ async function writeEvidenceEntry(
 async function writeEvidenceManifest(evidenceDir: string, entry: PublishedAccessibilityEvidenceEntry): Promise<void> {
   const manifestPath = path.join(evidenceDir, EVIDENCE_MANIFEST_FILE);
   const existingEntries = await readEvidenceManifest(evidenceDir);
-  const retainedEntries = existingEntries.filter(
-    (existingEntry) => existingEntry.testTitle !== entry.testTitle || existingEntry.attachmentPrefix !== entry.attachmentPrefix
-  );
+  const retainedEntries = existingEntries.filter((existingEntry) => evidenceEntryKey(existingEntry) !== evidenceEntryKey(entry));
 
   await fs.writeFile(manifestPath, JSON.stringify([...retainedEntries, entry], null, 2));
 }
@@ -136,7 +163,7 @@ async function readEvidenceManifest(evidenceDir: string): Promise<PublishedAcces
 }
 
 function evidenceEntryKey(entry: PublishedAccessibilityEvidenceEntry): string {
-  return `${entry.testTitle}\u0000${entry.attachmentPrefix}`;
+  return entry.htmlFileName;
 }
 
 function isPublishedEvidenceEntry(value: unknown): value is PublishedAccessibilityEvidenceEntry {
@@ -165,9 +192,11 @@ async function writeEvidenceIndex(evidenceDir: string): Promise<void> {
         <li>
           <a class="issue-link" href="./${escapeAttribute(entry.htmlFileName)}">${escapeHtml(entry.testTitle)}</a>
           <p>${escapeHtml(entry.feature ?? 'accessibility')} / ${escapeHtml(entry.pageState ?? entry.engine)}</p>
+          <p>${escapeHtml(formatAccessibilityContext(entry.context))}</p>
+          <p>Status: ${escapeHtml(entry.status ?? 'not recorded')}</p>
+          <p>${entry.reviewCount ?? 0} node(s) needing investigation: ${escapeHtml((entry.reviewRules ?? []).join(', ') || 'none recorded')}</p>
           <p>${entry.violationCount} ${escapeHtml(entry.engine)} issue(s): ${escapeHtml(entry.rules.join(', '))}</p>
-          <a href="./${escapeAttribute(entry.screenshotFileName)}">screenshot</a>
-          |
+          ${entry.screenshotFileName ? `<a href="./${escapeAttribute(entry.screenshotFileName)}">screenshot</a> |` : ''}
           <a href="./${escapeAttribute(entry.jsonFileName)}">JSON evidence</a>
           ${entry.reportFileName ? `| <a href="./${escapeAttribute(entry.reportFileName)}">native report</a>` : ''}
         </li>

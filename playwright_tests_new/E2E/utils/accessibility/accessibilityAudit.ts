@@ -1,4 +1,5 @@
 import { expect, type Page, type TestInfo } from '@playwright/test';
+import type { AxeResults } from 'axe-core';
 import { attachAccessibilityEvidence, runAxeAudit } from './axeEvidence';
 import {
   findUnexpectedAxeViolations,
@@ -7,7 +8,14 @@ import {
   type KnownAxeViolation,
 } from './axeKnownViolations';
 import type { LighthouseAuditEvidence } from './lighthouseEvidence';
-import { escapeAttribute, escapeHtml, sanitiseFileName } from './accessibilityEvidencePublisher';
+import {
+  escapeAttribute,
+  escapeHtml,
+  sanitiseFileName,
+  setAccessibilityEvidenceContext,
+  formatAccessibilityContext,
+  type AccessibilityContext,
+} from './accessibilityEvidencePublisher';
 import {
   attachAccessibilityPageSummaryEvidence,
   attachScreenReaderLikeAccessibilityEvidence,
@@ -17,7 +25,11 @@ import { attachWaveLikeAccessibilityEvidence, collectWaveLikeAccessibilityViolat
 
 export type AccessibilityEngine = 'axe' | 'wave-like' | 'screen-reader' | 'lighthouse';
 
+export type AccessibilityCheckOutcome = { name: string; status: 'passed' | 'failed'; message?: string };
+
 export interface AccessibilityAuditOptions {
+  context?: AccessibilityContext;
+  checks?: Array<{ name: string; run: () => Promise<void> }>;
   defaultEngines: AccessibilityEngine[];
   feature: string;
   pageState: string;
@@ -28,8 +40,10 @@ export interface AccessibilityAuditOptions {
 
 type EngineOutcome = {
   engine: AccessibilityEngine;
-  status: 'passed' | 'issues-found' | 'error';
+  status: 'passed' | 'known-findings' | 'issues-found' | 'needs-review' | 'error';
   issueCount: number;
+  reviewCount?: number;
+  reviewRules?: string[];
   knownIssueCount?: number;
   unexpectedIssueCount?: number;
   message?: string;
@@ -91,23 +105,42 @@ export function isAccessibilityStrictMode(): boolean {
 
 export async function auditAccessibilityPage(page: Page, testInfo: TestInfo, options: AccessibilityAuditOptions): Promise<void> {
   const engines = resolveAccessibilityEngines(options.defaultEngines);
+  if (engines.length === 0) testInfo.skip(true, 'No accessibility engines selected for this scenario.');
   const strict = options.strict ?? isAccessibilityStrictMode();
   const outcomes: EngineOutcome[] = [];
 
-  if (engines.includes('axe')) {
-    outcomes.push(await runAxeEngine(page, testInfo, options));
+  setAccessibilityEvidenceContext(testInfo, options.context);
+  const runners: Record<AccessibilityEngine, () => Promise<EngineOutcome>> = {
+    axe: () => runAxeEngine(page, testInfo, options),
+    'wave-like': () => runWaveLikeEngine(page, testInfo, options),
+    'screen-reader': () => runScreenReaderLikeEngine(page, testInfo, options),
+    lighthouse: () => {
+      if (!options.runLighthouse) throw new Error('Lighthouse was requested without an audit runner.');
+      return runLighthouseEngine(options.runLighthouse);
+    },
+  };
+  for (const engine of engines) {
+    try {
+      outcomes.push(await runners[engine]());
+    } catch (error) {
+      outcomes.push({
+        engine,
+        status: 'error',
+        issueCount: 1,
+        unexpectedIssueCount: 1,
+        message: error instanceof Error ? error.message : String(error),
+        rules: ['engine-execution'],
+      });
+    }
   }
-
-  if (engines.includes('wave-like')) {
-    outcomes.push(await runWaveLikeEngine(page, testInfo, options));
-  }
-
-  if (engines.includes('screen-reader')) {
-    outcomes.push(await runScreenReaderLikeEngine(page, testInfo, options));
-  }
-
-  if (engines.includes('lighthouse') && options.runLighthouse) {
-    outcomes.push(await runLighthouseEngine(options.runLighthouse));
+  const checks: AccessibilityCheckOutcome[] = [];
+  for (const check of options.checks ?? []) {
+    try {
+      await check.run();
+      checks.push({ name: check.name, status: 'passed' });
+    } catch (error) {
+      checks.push({ name: check.name, status: 'failed', message: error instanceof Error ? error.message : String(error) });
+    }
   }
 
   await attachAccessibilityAuditSummary(testInfo, {
@@ -116,6 +149,8 @@ export async function auditAccessibilityPage(page: Page, testInfo: TestInfo, opt
     strict,
     url: page.url(),
     outcomes,
+    context: options.context,
+    checks,
   });
   await attachAccessibilityPageSummaryEvidence(page, testInfo, {
     feature: options.feature,
@@ -123,13 +158,15 @@ export async function auditAccessibilityPage(page: Page, testInfo: TestInfo, opt
     strict,
     url: page.url(),
     outcomes,
+    context: options.context,
+    checks,
   });
 
   const unexpectedIssues = outcomes.filter(
     (outcome) => outcome.status !== 'passed' && (outcome.unexpectedIssueCount ?? outcome.issueCount) > 0
   );
   expect(
-    unexpectedIssues,
+    [...unexpectedIssues, ...checks.filter((check) => check.status === 'failed')],
     [
       `Accessibility issue(s) found for ${options.feature}: ${options.pageState}.`,
       strict
@@ -143,18 +180,33 @@ export async function auditAccessibilityPage(page: Page, testInfo: TestInfo, opt
 
 async function runAxeEngine(page: Page, testInfo: TestInfo, options: AccessibilityAuditOptions): Promise<EngineOutcome> {
   const results = await runAxeAudit(page);
+  const outcome = summarizeAxeOutcome(results, options.axeKnownViolations ?? []);
   await attachAccessibilityEvidence(page, testInfo, results, `${evidencePrefix(options)}-axe`, {
     engine: 'axe',
     feature: options.feature,
     pageState: options.pageState,
+    status: outcome.status,
   });
+  return outcome;
+}
+
+export function summarizeAxeOutcome(results: AxeResults, knownViolations: KnownAxeViolation[] = []): EngineOutcome {
   const summary = summarizeAxeViolations(results.violations);
-  const unexpected = findUnexpectedAxeViolations(summary, options.axeKnownViolations ?? []);
+  const unexpected = findUnexpectedAxeViolations(summary, knownViolations);
   const knownIssueCount = countKnownAxeIssues(summary, unexpected);
 
   return {
     engine: 'axe',
-    status: unexpected.length > 0 ? 'issues-found' : 'passed',
+    status:
+      unexpected.length > 0
+        ? 'issues-found'
+        : knownIssueCount > 0
+          ? 'known-findings'
+          : (results.incomplete ?? []).length > 0
+            ? 'needs-review'
+            : 'passed',
+    reviewCount: (results.incomplete ?? []).reduce((count, result) => count + result.nodes.length, 0),
+    reviewRules: (results.incomplete ?? []).map((result) => result.id),
     issueCount: summary.reduce((count, violation) => count + violation.nodeCount, 0),
     knownIssueCount,
     unexpectedIssueCount: unexpected.reduce((count, violation) => count + violation.nodeCount, 0),
@@ -208,8 +260,8 @@ async function runLighthouseEngine(runLighthouse: () => Promise<LighthouseAuditE
       status: 'passed',
       issueCount: 0,
       unexpectedIssueCount: 0,
-      message: evidence?.message,
-      evidenceFiles: evidence?.evidenceFiles,
+      message: evidence ? evidence.message : undefined,
+      evidenceFiles: evidence ? evidence.evidenceFiles : undefined,
       rules: ['accessibility-threshold'],
     };
   } catch (error) {
@@ -219,7 +271,7 @@ async function runLighthouseEngine(runLighthouse: () => Promise<LighthouseAuditE
       issueCount: 1,
       unexpectedIssueCount: 1,
       message: error instanceof Error ? error.message : String(error),
-      rules: ['accessibility-threshold'],
+      rules: ['engine-execution'],
     };
   }
 }
@@ -243,6 +295,8 @@ async function attachAccessibilityAuditSummary(
     strict: boolean;
     url: string;
     outcomes: EngineOutcome[];
+    context?: AccessibilityContext;
+    checks?: AccessibilityCheckOutcome[];
   }
 ): Promise<void> {
   await testInfo.attach('accessibility-audit-summary.json', {
@@ -262,6 +316,8 @@ function buildSummaryHtml(summary: {
   strict: boolean;
   url: string;
   outcomes: EngineOutcome[];
+  context?: AccessibilityContext;
+  checks?: AccessibilityCheckOutcome[];
 }): string {
   const rows = summary.outcomes
     .map((outcome) => {
@@ -271,6 +327,7 @@ function buildSummaryHtml(summary: {
           <td>${escapeHtml(outcome.engine)}</td>
           <td>${escapeHtml(outcome.status)}</td>
           <td>${outcome.issueCount}</td>
+          <td>${outcome.reviewCount ?? 0}: ${escapeHtml((outcome.reviewRules ?? []).join(', '))}</td>
           <td>${outcome.knownIssueCount ?? 0}</td>
           <td>${outcome.unexpectedIssueCount ?? outcome.issueCount}</td>
           <td>${escapeHtml(outcome.rules.join(', ') || 'none')}</td>
@@ -301,6 +358,9 @@ function buildSummaryHtml(summary: {
           <h1>Accessibility Audit Summary</h1>
           <p>${escapeHtml(summary.feature)} / ${escapeHtml(summary.pageState)}</p>
         </div>
+        <p>${escapeHtml(formatAccessibilityContext(summary.context))}</p>
+        <h2>Behavioral checks</h2>
+        <ul>${(summary.checks ?? []).map((check) => `<li>${escapeHtml(check.name)}: ${escapeHtml(check.status)} ${escapeHtml(check.message ?? '')}</li>`).join('') || '<li>No behavioral checks requested.</li>'}</ul>
         <p><strong>URL:</strong> <code>${escapeHtml(summary.url)}</code></p>
         <p><strong>Strict mode:</strong> ${summary.strict ? 'on' : 'off'}</p>
         <table>
@@ -309,6 +369,7 @@ function buildSummaryHtml(summary: {
               <th>Engine</th>
               <th>Status</th>
               <th>Total issues</th>
+              <th>Needs investigation (nodes)</th>
               <th>Known issues</th>
               <th>Unexpected issues</th>
               <th>Rules</th>

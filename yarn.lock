@@ -3565,9 +3565,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.79-govuk5-v5":
-  version: 7.3.79-govuk5-v5
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.79-govuk5-v5"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.79-govuk5-v6":
+  version: 7.3.79-govuk5-v6
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.79-govuk5-v6"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3580,22 +3580,22 @@ __metadata:
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
   peerDependencies:
+    "@angular-material-components/datetime-picker": 16.0.1
+    "@angular-material-components/moment-adapter": 16.0.1
     "@angular/animations": ^20.3.27
-    "@angular/cdk": 20.2.14
+    "@angular/cdk": 17.3.5
     "@angular/common": ^20.3.27
     "@angular/compiler": ^20.3.27
     "@angular/core": ^20.3.27
     "@angular/forms": ^20.3.27
     "@angular/localize": ^20.3.27
-    "@angular/material": 20.2.14
-    "@angular/material-moment-adapter": 20.2.14
+    "@angular/material": ^16.2.0
     "@angular/platform-browser": ^20.3.27
     "@angular/platform-browser-dynamic": ^20.3.27
     "@angular/router": ^20.3.27
     "@angular/upgrade": ^20.3.27
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
-    "@ngxmc/datetime-picker": 20.1.0
     class-transformer: ^0.5.1
     lodash: ^4.17.22
     moment: ^2.30.1
@@ -3613,7 +3613,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/ddb7677b950aaf93bd0d81198ccf04f4d397b62e72ff6f750a72029b95b478f87deeb3849f730d26f4ae265ec14eba9a54b9d3f41a7e9bf423f209eb386e0965
+  checksum: 10/bb85683a4a8a03d71cbf4d8299b2f066cd315172dce557ba4046d72d5184725a075df90573db5d7de393edca3e0c07effb90282ce04c05d6a81ddf189ce642ab
   languageName: node
   linkType: hard
 
@@ -22222,7 +22222,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.79-govuk5-v5"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.79-govuk5-v6"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/media-viewer": "npm:4.2.39"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

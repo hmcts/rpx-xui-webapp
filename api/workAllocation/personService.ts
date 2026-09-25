@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
-import { FEATURE_JRD_E_LINKS_V2_ENABLED, SERVICES_CASE_JUDICIAL_REF_PATH } from '../configuration/references';
+import { FEATURE_JRD_E_LINKS_V2_ENABLED, SERVICES_PRD_JUDICIAL_API } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -11,7 +11,7 @@ import { applySearchFilter } from './util';
 
 const HEADER_ACCEPT_V1 = 'application/json';
 const HEADER_ACCEPT_V2 = 'application/vnd.jrd.api+json;Version=2.0';
-const JUDICIAL_REF_URL = getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH);
+const JUDICIAL_REF_URL = getConfigValue(SERVICES_PRD_JUDICIAL_API);
 
 // judicial person search
 export async function postFindPersonSearch(req: EnhancedRequest, res: Response) {

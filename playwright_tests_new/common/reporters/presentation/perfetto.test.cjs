@@ -5,6 +5,7 @@ const source = fs.readFileSync(`${__dirname}/report.js`, 'utf8').split("// Perfe
 
 async function check(mode) {
   let click, listener;
+  let timeout;
   let removed = false;
   const messages = [];
   const popup = { closed: false, postMessage: (...args) => messages.push(args) };
@@ -31,26 +32,35 @@ async function check(mode) {
       },
     },
     AbortController,
-    fetch: async () => ({ ok: mode !== 'http-error', status: 403, arrayBuffer: async () => buffer }),
+    fetch: async (_, options) =>
+      mode === 'stalled-fetch'
+        ? new Promise((_, reject) => options.signal.addEventListener('abort', () => reject(new Error('AbortError'))))
+        : { ok: mode !== 'http-error', status: 403, arrayBuffer: async () => buffer },
     setInterval: () => 1,
     clearInterval() {},
-    setTimeout: () => 2,
+    setTimeout: (fn) => {
+      timeout = fn;
+      return 2;
+    },
     clearTimeout() {},
   };
   vm.runInNewContext("// Perfetto's documented" + source, context);
   const pending = click();
-  if (mode === 'ok') {
+  if (mode === 'ok' || mode === 'stalled-fetch') {
     listener({ origin: 'https://wrong.example', source: popup, data: 'PONG' });
     listener({ origin: 'https://ui.perfetto.dev', source: {}, data: 'PONG' });
     await new Promise((resolve) => setImmediate(resolve));
     assert.equal(messages.length, 0, 'Untrusted handshakes must not receive a trace');
     listener({ origin: 'https://ui.perfetto.dev', source: popup, data: 'PONG' });
   }
-  await pending;
+  if (mode === 'stalled-fetch') timeout();
+  await Promise.race([pending, new Promise((_, reject) => setImmediate(() => reject(new Error(`${mode} did not settle`))))]);
   if (mode === 'ok') {
     assert.equal(messages[0][0].perfetto.buffer, buffer);
     assert.equal(messages[0][1], 'https://ui.perfetto.dev');
     assert.match(status.textContent, /sent to Perfetto/);
+  } else if (mode === 'stalled-fetch') {
+    assert.match(status.textContent, /Trace download did not finish/);
   } else assert.match(status.textContent, /Download JSON/);
   if (mode !== 'blocked') {
     assert.equal(button.disabled, false);
@@ -58,7 +68,7 @@ async function check(mode) {
   }
 }
 (async () => {
-  for (const mode of ['blocked', 'http-error', 'ok']) await check(mode);
+  for (const mode of ['blocked', 'http-error', 'stalled-fetch', 'ok']) await check(mode);
   console.log('Perfetto handshake, origin/source checks, blocked popup and HTTP failure passed.');
 })().catch((error) => {
   console.error(error);

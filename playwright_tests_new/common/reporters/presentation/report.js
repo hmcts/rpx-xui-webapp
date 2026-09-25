@@ -204,16 +204,22 @@
     });
   });
 
+  const percentage = (value, total) => (total ? `${((value / total) * 100).toFixed(2).replace(/\.00$/, '')}%` : '—');
+  const countFrom = (cell) => Number(cell?.textContent.match(/\d+/)?.[0] || 0);
+  const statusValue = (container, status) => countFrom(container.querySelector(`.chart-status-${status}-info`));
   const summary = document.querySelector('#chart-status')?.closest('.odhin-thin-border');
   if (summary) {
-    const count = (status) => Number(summary.querySelector(`.chart-status-${status}-info`)?.textContent.trim() || 0);
-    const passed = count('passed');
+    const passed = statusValue(summary, 'passed');
+    const flaky = statusValue(summary, 'flaky');
+    const skipped = statusValue(summary, 'skipped');
     const total = ['passed', 'failed', 'timedOut', 'skipped', 'interrupted', 'flaky'].reduce(
-      (sum, status) => sum + count(status),
+      (sum, status) => sum + statusValue(summary, status),
       0
     );
-    const attention = count('failed') + count('timedOut') + count('interrupted') + count('flaky');
-    if (total > 0 && passed === total) {
+    const effectivePassed = passed + flaky;
+    const passDenominator = Math.max(0, total - skipped);
+    const attention = statusValue(summary, 'failed') + statusValue(summary, 'timedOut') + statusValue(summary, 'interrupted');
+    if (total > 0 && effectivePassed + skipped === total) {
       summary.querySelector('#chart-status').closest('table').parentElement.classList.add('report-redundant-chart');
     }
     const duration = cards[0]?.querySelector('tr:last-child td')?.textContent.trim() || '—';
@@ -224,10 +230,10 @@
       ['Tests in this run', String(total), 'Across all projects'],
       [
         'Pass rate',
-        total ? `${Math.round((passed / total) * 1000) / 10}%` : '—',
-        `${passed} passed · ${count('skipped')} skipped`,
+        percentage(effectivePassed, passDenominator),
+        `${effectivePassed} passed · ${skipped} skipped${flaky ? ` · ${flaky} flaky` : ''}`,
       ],
-      ['Needs attention', String(attention), 'Failed · timed out · interrupted · flaky'],
+      ['Needs attention', String(attention), 'Failed · timed out · interrupted'],
       ['Execution time', duration, 'Total elapsed time'],
     ].forEach(([label, value, detail], index) => {
       const metric = document.createElement('div');
@@ -240,8 +246,31 @@
       });
       metrics.append(metric);
     });
+    const finalPassedRow = [...summary.querySelectorAll('tr')].find(
+      (row) => row.querySelector('.chart-status-passed')?.textContent.trim() === 'Passed'
+    );
+    const passedCells = finalPassedRow?.querySelectorAll('.chart-status-passed-info');
+    if (passedCells?.length >= 2) {
+      passedCells[0].textContent = String(effectivePassed);
+      passedCells[1].textContent = percentage(effectivePassed, passDenominator);
+    }
     dashboard.before(metrics);
   }
+
+  [...dashboard.querySelectorAll('.odhin-thin-border')]
+    .filter((block) => block.querySelector('.info-box-header')?.textContent.includes('Status by project'))
+    .forEach((block) => {
+      [...block.querySelectorAll('tr')]
+        .filter((row) => row.querySelector('.result-status-passed'))
+        .forEach((row) => {
+          const total = countFrom(row.cells[1]);
+          const skipped = countFrom(row.querySelector('.result-status-skipped'));
+          const effectivePassed =
+            countFrom(row.querySelector('.result-status-passed')) + countFrom(row.querySelector('.result-status-flaky'));
+          row.querySelector('.result-status-passed').innerHTML =
+            `${effectivePassed} (<label class="fst-italic">${percentage(effectivePassed, Math.max(0, total - skipped))}</label>)`;
+        });
+    });
 
   // Decorate only dashboard status totals; keep native text for charts and filtering.
   document
@@ -586,22 +615,39 @@ document.querySelectorAll('.perfetto-open').forEach((button) => {
     let interval;
     let timeout;
     try {
+      let cancellationError;
+      let perfettoReady = false;
       const ready = new Promise((resolve, reject) => {
+        const cancelOperation = (message) => {
+          cancellationError = new Error(message);
+          controller.abort();
+          reject(cancellationError);
+        };
         onMessage = (event) => {
-          if (event.origin === origin && event.source === popup && event.data === 'PONG') resolve();
+          if (event.origin === origin && event.source === popup && event.data === 'PONG') {
+            perfettoReady = true;
+            resolve();
+          }
         };
         window.addEventListener('message', onMessage);
         interval = setInterval(() => {
-          if (popup.closed) reject(new Error('Perfetto was closed.'));
+          if (popup.closed) cancelOperation('Perfetto was closed.');
           else popup.postMessage('PING', origin);
         }, 250);
-        timeout = setTimeout(() => reject(new Error('Perfetto did not respond.')), 30_000);
+        timeout = setTimeout(
+          () => cancelOperation(perfettoReady ? 'Trace download did not finish.' : 'Perfetto did not respond.'),
+          30_000
+        );
       });
       const [buffer] = await Promise.all([
-        fetch(download.href, { signal: controller.signal }).then((response) => {
-          if (!response.ok) throw new Error(`Trace download failed (${response.status}).`);
-          return response.arrayBuffer();
-        }),
+        fetch(download.href, { signal: controller.signal })
+          .then((response) => {
+            if (!response.ok) throw new Error(`Trace download failed (${response.status}).`);
+            return response.arrayBuffer();
+          })
+          .catch((error) => {
+            throw cancellationError || error;
+          }),
         ready,
       ]);
       popup.postMessage({ perfetto: { buffer, title: download.download, fileName: download.download } }, origin);

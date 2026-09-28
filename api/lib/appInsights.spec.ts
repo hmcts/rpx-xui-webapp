@@ -24,7 +24,7 @@ describe('appInsights', () => {
       addRequestIdentity({ setAttribute } as any, request);
 
       expect(setAttribute).to.have.been.calledWith('enduser.pseudo.id', 'user-id@123');
-      expect(setAttribute).to.have.been.calledWith('ai.session.id', 'session-id|123|456');
+      expect(setAttribute).to.have.been.calledWith('session.id', 'session-id|123|456');
     });
 
     it('does not add identity attributes when the request has no AI cookies', () => {

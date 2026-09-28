@@ -137,7 +137,8 @@ function readCookie(cookieHeader: string | string[] | undefined, cookieName: str
 /**
  * Adds request-scoped user/session context to server spans. Azure Monitor
  * maps the enduser attributes to user_Id and user_AuthenticatedId. The
- * installed exporter currently retains ai.session.id as a custom dimension.
+ * installed exporter retains session.id as a custom dimension rather than
+ * mapping it to the native session_Id field.
  */
 export function addRequestIdentity(span: Span, request: unknown): void {
   if (!(request instanceof http.IncomingMessage)) {
@@ -153,7 +154,7 @@ export function addRequestIdentity(span: Span, request: unknown): void {
   }
 
   if (sessionId) {
-    span.setAttribute('ai.session.id', sessionId);
+    span.setAttribute('session.id', sessionId);
   }
 }
 

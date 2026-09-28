@@ -6,13 +6,46 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 
-import { markFailedServerSpanStatus } from './appInsights';
+import { addRequestIdentity, markFailedServerSpanStatus } from './appInsights';
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('appInsights', () => {
+  describe('addRequestIdentity', () => {
+    it('adds configured user and session cookie IDs to the request span', () => {
+      const setAttribute = sinon.stub();
+      const request = Object.create(http.IncomingMessage.prototype);
+      request.headers = {
+        cookie: '__userid__=user-id%40123; __sessionId__=session-id%7C123%7C456',
+      };
+
+      addRequestIdentity({ setAttribute } as any, request);
+
+      expect(setAttribute).to.have.been.calledWith('enduser.pseudo.id', 'user-id@123');
+      expect(setAttribute).to.have.been.calledWith('ai.session.id', 'session-id|123|456');
+    });
+
+    it('does not add identity attributes when the request has no AI cookies', () => {
+      const setAttribute = sinon.stub();
+      const request = Object.create(http.IncomingMessage.prototype);
+      request.headers = { cookie: '__userid__=user-id' };
+
+      addRequestIdentity({ setAttribute } as any, request);
+
+      expect(setAttribute).to.have.been.calledOnceWith('enduser.pseudo.id', 'user-id');
+    });
+
+    it('ignores non-HTTP request objects', () => {
+      const setAttribute = sinon.stub();
+
+      addRequestIdentity({ setAttribute } as any, {});
+
+      expect(setAttribute).not.to.have.been.called;
+    });
+  });
+
   describe('markFailedServerSpanStatus', () => {
     let setStatus: sinon.SinonStub;
     let span: any;

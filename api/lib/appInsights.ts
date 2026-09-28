@@ -8,7 +8,12 @@ import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-h
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
-import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
+import {
+  APP_INSIGHTS_CONNECTION_STRING,
+  COOKIES_SESSION_ID,
+  COOKIES_USER_ID,
+  FEATURE_APP_INSIGHTS_ENABLED,
+} from '../configuration/references';
 
 /**
  * High-volume, low-value incoming requests that should not be exported
@@ -109,6 +114,46 @@ export function markFailedServerSpanStatus(
   }
 }
 
+function readCookie(cookieHeader: string | string[] | undefined, cookieName: string): string | undefined {
+  const cookieHeaderValue = Array.isArray(cookieHeader) ? cookieHeader.join(';') : cookieHeader;
+  const cookie = cookieHeaderValue?.split(';').map((part) => part.trim()).find((part) => part.startsWith(`${cookieName}=`));
+
+  if (!cookie) {
+    return undefined;
+  }
+
+  const value = cookie.slice(cookieName.length + 1);
+
+  try {
+    return decodeURIComponent(value) || undefined;
+  } catch {
+    return value || undefined;
+  }
+}
+
+/**
+ * Adds request-scoped user/session context to server spans. Azure Monitor
+ * maps the enduser attributes to user_Id and user_AuthenticatedId. The
+ * installed exporter currently retains ai.session.id as a custom dimension.
+ */
+export function addRequestIdentity(span: Span, request: unknown): void {
+  if (!(request instanceof http.IncomingMessage)) {
+    return;
+  }
+
+  const cookieHeader = request.headers.cookie;
+  const userId = readCookie(cookieHeader, getConfigValue(COOKIES_USER_ID));
+  const sessionId = readCookie(cookieHeader, getConfigValue(COOKIES_SESSION_ID));
+
+  if (userId) {
+    span.setAttribute('enduser.pseudo.id', userId);
+  }
+
+  if (sessionId) {
+    span.setAttribute('ai.session.id', sessionId);
+  }
+}
+
 /**
  * Replaces the Application Insights 2.x fine-grained TelemetryProcessor
  * used for health/static request telemetry.
@@ -184,7 +229,10 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     spanProcessors: [healthStaticFilteringProcessor],
     instrumentationOptions: {
       http: {
-        applyCustomAttributesOnSpan: markFailedServerSpanStatus,
+        applyCustomAttributesOnSpan: (span, request, response) => {
+          markFailedServerSpanStatus(span, request, response);
+          addRequestIdentity(span, request);
+        },
       } as HttpInstrumentationConfig,
     },
   });

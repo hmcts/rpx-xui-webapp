@@ -24,3 +24,8 @@ $govuk-compatibility-govukfrontendtoolkit: true;
     @include govuk-focused-text;
   }
 }
+
+a {
+  @include govuk-link-common;
+  @include govuk-link-style-default;
+}

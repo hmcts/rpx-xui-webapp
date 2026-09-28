@@ -224,6 +224,23 @@ describe('Search Cases Elastic Search', () => {
       });
     });
 
+    it('should not mutate the supplied query parameters', () => {
+      const userInfo: UserInfo = { forename: 'Thomas', roles: ['case'], surname: 'Jones' };
+      const queryParams = {
+        'case.param2': 'dummy2',
+        ctid: 'PCS',
+        page: 1,
+        state: 'CaseCreated,Submitted',
+        use_case: 'WORKBASKET',
+        view: 'WORKBASKET',
+      };
+      const originalQueryParams = { ...queryParams };
+
+      searchCases.prepareElasticQuery(queryParams, {}, userInfo);
+
+      expect(queryParams).to.deep.equal(originalQueryParams);
+    });
+
     it('should perform a wildcard search on "generatedSurname" field ', async () => {
       const queryParams = {
         'case.generatedSurname': 'Beckham',

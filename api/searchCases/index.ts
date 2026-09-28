@@ -46,7 +46,7 @@ export function prepareElasticQuery(
   body: any,
   user: UserInfo
 ): ElasticSearchQuery {
-  const metaCriteria: { [key: string]: string } = queryParams;
+  const metaCriteria = { ...queryParams };
   let caseCriteria: object = {};
   const matchList: any[] = [];
   const size = body?.size || 10;

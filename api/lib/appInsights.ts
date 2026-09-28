@@ -116,7 +116,10 @@ export function markFailedServerSpanStatus(
 
 function readCookie(cookieHeader: string | string[] | undefined, cookieName: string): string | undefined {
   const cookieHeaderValue = Array.isArray(cookieHeader) ? cookieHeader.join(';') : cookieHeader;
-  const cookie = cookieHeaderValue?.split(';').map((part) => part.trim()).find((part) => part.startsWith(`${cookieName}=`));
+  const cookie = cookieHeaderValue
+    ?.split(';')
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${cookieName}=`));
 
   if (!cookie) {
     return undefined;

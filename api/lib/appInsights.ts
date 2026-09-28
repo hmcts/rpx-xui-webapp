@@ -276,15 +276,9 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
   if (span) {
     const cookieHeader = _req.headers.cookie;
 
-    const userId = readCookie(
-      cookieHeader,
-      getConfigValue(COOKIES_USER_ID)
-    );
+    const userId = readCookie(cookieHeader, getConfigValue(COOKIES_USER_ID));
 
-    const sessionId = readCookie(
-      cookieHeader,
-      getConfigValue(COOKIES_SESSION_ID)
-    );
+    const sessionId = readCookie(cookieHeader, getConfigValue(COOKIES_SESSION_ID));
 
     if (userId) {
       span.setAttribute('enduser.pseudo.id', userId);

@@ -146,7 +146,6 @@ export function hearingRequestReducer(
     default: {
       return {
         ...currentState,
-        lastError: null,
       };
     }
   }

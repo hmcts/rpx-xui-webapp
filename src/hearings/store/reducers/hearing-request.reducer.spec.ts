@@ -269,6 +269,25 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
+    describe('Unrelated actions', () => {
+      it('should preserve lastError for unrelated actions', () => {
+        const error = {
+          status: 500,
+          errors: null,
+          message: 'Internal server error',
+        };
+        const currentState: HearingRequestStateData = {
+          ...fromHearingRequestReducer.initialHearingRequestState,
+          lastError: error,
+        };
+        const action = new fromHearingRequestActions.NavigateBackHearingRequest();
+
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(currentState, action);
+
+        expect(hearingsState.lastError).toEqual(error);
+      });
+    });
+
     describe('Update hearing request failure', () => {
       it('should call error response action', () => {
         const initialHearingRequestState: HearingRequestStateData = {

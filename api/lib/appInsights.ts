@@ -3,7 +3,7 @@ import * as http from 'http';
 import * as applicationinsights from 'applicationinsights';
 import type * as express from 'express';
 
-import { Span, SpanKind, SpanStatusCode, TraceFlags } from '@opentelemetry/api';
+import { Span, SpanKind, SpanStatusCode, TraceFlags, trace } from '@opentelemetry/api';
 import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
@@ -135,30 +135,6 @@ function readCookie(cookieHeader: string | string[] | undefined, cookieName: str
 }
 
 /**
- * Adds request-scoped user/session context to server spans. Azure Monitor
- * maps the enduser attributes to user_Id and user_AuthenticatedId. The
- * installed exporter retains session.id as a custom dimension rather than
- * mapping it to the native session_Id field.
- */
-export function addRequestIdentity(span: Span, request: unknown): void {
-  if (!(request instanceof http.IncomingMessage)) {
-    return;
-  }
-
-  const cookieHeader = request.headers.cookie;
-  const userId = readCookie(cookieHeader, getConfigValue(COOKIES_USER_ID));
-  const sessionId = readCookie(cookieHeader, getConfigValue(COOKIES_SESSION_ID));
-
-  if (userId) {
-    span.setAttribute('enduser.pseudo.id', userId);
-  }
-
-  if (sessionId) {
-    span.setAttribute('session.id', sessionId);
-  }
-}
-
-/**
  * Replaces the Application Insights 2.x fine-grained TelemetryProcessor
  * used for health/static request telemetry.
  *
@@ -235,7 +211,6 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
       http: {
         applyCustomAttributesOnSpan: (span, request, response) => {
           markFailedServerSpanStatus(span, request, response);
-          addRequestIdentity(span, request);
         },
       } as HttpInstrumentationConfig,
     },
@@ -292,13 +267,33 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
  * Application Insights 3.x automatically instruments incoming HTTP
  * requests through OpenTelemetry.
  *
- * Manual request tracking is therefore removed to avoid duplicate
- * request telemetry.
- *
- * The middleware remains as a no-op so existing Express registration
- * does not need to change as part of this migration.
+ * Identity is added here because Express provides direct access to the
+ * incoming request cookies while the auto-instrumented server span is active.
  */
 export function appInsights(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
+  const span = trace.getActiveSpan();
+
+  if (span) {
+    const cookieHeader = _req.headers.cookie;
+
+    const userId = readCookie(
+      cookieHeader,
+      getConfigValue(COOKIES_USER_ID)
+    );
+
+    const sessionId = readCookie(
+      cookieHeader,
+      getConfigValue(COOKIES_SESSION_ID)
+    );
+
+    if (userId) {
+      span.setAttribute('enduser.pseudo.id', userId);
+    }
+
+    if (sessionId) {
+      span.setAttribute('session.id', sessionId);
+    }
+  }
   next();
 }
 

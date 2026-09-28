@@ -1,48 +1,89 @@
 import * as http from 'http';
 
-import { SpanStatusCode } from '@opentelemetry/api';
+import { SpanStatusCode, trace } from '@opentelemetry/api';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 
-import { addRequestIdentity, markFailedServerSpanStatus } from './appInsights';
+import { appInsights, markFailedServerSpanStatus } from './appInsights';
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('appInsights', () => {
-  describe('addRequestIdentity', () => {
-    it('adds configured user and session cookie IDs to the request span', () => {
-      const setAttribute = sinon.stub();
-      const request = Object.create(http.IncomingMessage.prototype);
-      request.headers = {
-        cookie: '__userid__=user-id%40123; __sessionId__=session-id%7C123%7C456',
+  describe('request identity', () => {
+    let getActiveSpanStub: sinon.SinonStub;
+    let setAttribute: sinon.SinonStub;
+    let next: sinon.SinonStub;
+
+    beforeEach(() => {
+      setAttribute = sinon.stub();
+      next = sinon.stub();
+
+      getActiveSpanStub = sinon.stub(trace, 'getActiveSpan').returns({
+        setAttribute,
+      } as any);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('adds configured user and session cookie IDs to the active request span', () => {
+      const request = {
+        headers: {
+          cookie: '__userid__=user-id%40123; __sessionId__=session-id%7C123%7C456',
+        },
       };
 
-      addRequestIdentity({ setAttribute } as any, request);
+      appInsights(request as any, {} as any, next);
 
       expect(setAttribute).to.have.been.calledWith('enduser.pseudo.id', 'user-id@123');
       expect(setAttribute).to.have.been.calledWith('session.id', 'session-id|123|456');
+      expect(next).to.have.been.calledOnce;
     });
 
-    it('does not add identity attributes when the request has no AI cookies', () => {
-      const setAttribute = sinon.stub();
-      const request = Object.create(http.IncomingMessage.prototype);
-      request.headers = { cookie: '__userid__=user-id' };
+    it('only adds the user identity when the request has no session cookie', () => {
+      const request = {
+        headers: {
+          cookie: '__userid__=user-id',
+        },
+      };
 
-      addRequestIdentity({ setAttribute } as any, request);
+      appInsights(request as any, {} as any, next);
 
       expect(setAttribute).to.have.been.calledOnceWith('enduser.pseudo.id', 'user-id');
+      expect(next).to.have.been.calledOnce;
     });
 
-    it('ignores non-HTTP request objects', () => {
-      const setAttribute = sinon.stub();
+    it('does not add identity attributes when the request has no identity cookies', () => {
+      const request = {
+        headers: {
+          cookie: 'some-other-cookie=value',
+        },
+      };
 
-      addRequestIdentity({ setAttribute } as any, {});
+      appInsights(request as any, {} as any, next);
 
       expect(setAttribute).not.to.have.been.called;
+      expect(next).to.have.been.calledOnce;
+    });
+
+    it('does not add identity attributes when there is no active span', () => {
+      getActiveSpanStub.returns(undefined);
+
+      const request = {
+        headers: {
+          cookie: '__userid__=user-id; __sessionId__=session-id',
+        },
+      };
+
+      appInsights(request as any, {} as any, next);
+
+      expect(setAttribute).not.to.have.been.called;
+      expect(next).to.have.been.calledOnce;
     });
   });
 

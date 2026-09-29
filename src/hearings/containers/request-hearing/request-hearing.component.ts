@@ -116,6 +116,7 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.hearingStateSub?.unsubscribe();
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequestToCompare());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());

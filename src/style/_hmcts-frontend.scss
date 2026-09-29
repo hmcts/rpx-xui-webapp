@@ -1285,6 +1285,12 @@ table:not(.govuk-table) tbody td a {
   float: left;
 }
 
+// Markdown (e.g. CCD Label fields, now rendered in a td rather than a th) must keep normal flow,
+// otherwise links in consecutive paragraphs float side by side.
+table:not(.govuk-table) tbody td .markdown a {
+  float: none;
+}
+
 table:not(.govuk-table) .numeric {
   text-align: right;
 }

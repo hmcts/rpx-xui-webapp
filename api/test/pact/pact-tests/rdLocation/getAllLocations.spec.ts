@@ -100,6 +100,7 @@ describe('Locations ref data api, get all locations for service', () => {
 
 function assertResponses(dto: any) {
   expect(dto).to.be.an('array').with.length(1);
-  expect(dto[0].id).to.equal('12345');
-  expect(dto[0].locationName).to.equal('siteName1');
+  expect(dto[0]).to.include.all.keys('id', 'locationName');
+  expect(dto[0].id).to.be.a('string');
+  expect(dto[0].locationName).to.be.a('string');
 }

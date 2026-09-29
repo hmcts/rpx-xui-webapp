@@ -20,7 +20,7 @@ import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { MetaReducer, Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { LoggerModule, NGXLogger, NgxLoggerLevel, NGXLoggerMapperService } from 'ngx-logger';
 import { RpxTranslationModule } from 'rpx-xui-translation';
@@ -50,6 +50,11 @@ import { effects } from './store/effects';
 import { CustomSerializer, reducers } from './store/reducers';
 import { InitialisationSyncService } from './services/ccd-config/initialisation-sync-service';
 
+export const STORE_RUNTIME_CHECKS = {
+  strictStateImmutability: true,
+  strictActionImmutability: true,
+};
+
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
 }
@@ -68,10 +73,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, {
-      runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true
-      }
+      runtimeChecks: STORE_RUNTIME_CHECKS,
     }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule.forRoot(),
@@ -133,4 +135,4 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     ),
   ],
 })
-export class AppModule { }
+export class AppModule {}

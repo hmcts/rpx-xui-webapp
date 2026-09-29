@@ -160,12 +160,20 @@ export async function collectScreenReaderLikeAccessibilityViolations(page: Page)
 
     const fragmentTarget = (link: Element): HTMLElement | null => {
       try {
-        return document.getElementById(decodeURIComponent(link.getAttribute('href')?.slice(1) ?? ''));
+        const href = link.getAttribute('href') ?? '';
+        const url = new URL(href, document.baseURI || document.location.href);
+        if (
+          url.origin !== document.location.origin ||
+          url.pathname !== document.location.pathname ||
+          url.search !== document.location.search
+        )
+          return null;
+        return document.getElementById(decodeURIComponent(url.hash.slice(1)));
       } catch {
         return null;
       }
     };
-    const skipLink = Array.from(document.querySelectorAll('a[href^="#"]'))
+    const skipLink = Array.from(document.querySelectorAll('a[href]'))
       .filter(visible)
       .find(
         (link) =>
@@ -255,11 +263,6 @@ export async function collectScreenReaderLikeAccessibilityViolations(page: Page)
             }
           });
       });
-
-    Array.from(document.querySelectorAll('[role="status"], [role="alert"], [aria-live]'))
-      .filter(visible)
-      .filter((region) => !text(region) && !accessibleName(region))
-      .forEach((region) => add(violations, 'live-region-empty', 'Live regions should expose useful announcement text.', region));
 
     Array.from(document.querySelectorAll('table'))
       .filter(visible)
@@ -687,7 +690,7 @@ function buildScreenReaderEvidenceHtml(evidence: ScreenReaderLikeEvidence, scree
     screenshotDataUrl,
     body:
       issueCards ||
-      '<section class="issue pass"><h2>No screen-reader-like issues found</h2><p>Keyboard order, naming, landmarks, template structure, and announcement contracts passed this heuristic lane.</p></section>',
+      '<section class="issue pass"><h2>No screen-reader-like issues found</h2><p>No issues were found by the static heuristics for naming, landmarks, template structure, or recorded announcement contracts. Potential focus targets are listed in DOM order; this lane does not observe keyboard traversal or spoken output.</p></section>',
   });
 }
 
@@ -802,7 +805,7 @@ function buildEvidenceShell(context: {
               <div class="score-grid">
                 <div class="score"><strong>${context.snapshot.headings.length}</strong><br/>Headings</div>
                 <div class="score"><strong>${context.snapshot.landmarks.length}</strong><br/>Landmarks</div>
-                <div class="score"><strong>${context.snapshot.keyboardOrder.length}</strong><br/>Focus items</div>
+                <div class="score"><strong>${context.snapshot.keyboardOrder.length}</strong><br/>Potential focus targets</div>
                 <div class="score"><strong>${context.snapshot.axTree.length}</strong><br/>AX nodes</div>
               </div>
             </div>
@@ -815,7 +818,7 @@ function buildEvidenceShell(context: {
               <ol>${context.snapshot.landmarks.map((landmark) => `<li><span class="token">${escapeHtml(landmark.role)}</span>${escapeHtml(landmark.name || '(unlabelled)')} <code>${escapeHtml(landmark.selector)}</code></li>`).join('') || '<li>No landmarks detected.</li>'}</ol>
             </details>
             <details>
-              <summary>Keyboard order</summary>
+              <summary>Potential focus targets in DOM order</summary>
               <ol>${context.snapshot.keyboardOrder.map((item, index) => `<li><span class="marker">${index + 1}</span><strong>${escapeHtml(item.type)}</strong>: ${escapeHtml(item.name)} <code>${escapeHtml(item.selector)}</code></li>`).join('') || '<li>No focusable controls detected.</li>'}</ol>
             </details>
             <details>

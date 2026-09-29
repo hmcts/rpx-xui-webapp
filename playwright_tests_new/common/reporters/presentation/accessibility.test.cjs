@@ -103,8 +103,47 @@ const { parse } = require('node-html-parser');
   );
   const guidance = spacing.querySelector('.a11y-fix-guidance').textContent;
   assert.match(guidance, /overflow:hidden\/clip/);
-  assert.match(guidance, /query-management-container\.component\.html/);
+  assert.match(spacing.querySelector('.a11y-occurrence-guidance').textContent, /query-management-container\.component\.html/);
   assert.match(spacing.querySelector('.a11y-evidence-card').textContent, /#case-summary/);
+
+  const correlated = parse(
+    enhanceDashboardHtml(
+      shell,
+      [],
+      [
+        {
+          ...entries[0],
+          rules: ['label'],
+          targets: ['#record-wide'],
+          findings: [{ rule: 'label', targets: ['#reason'], summary: 'Form control needs a label', anchor: 'issue-1' }],
+        },
+      ]
+    )
+  );
+  const correlatedCard = correlated.querySelector('.a11y-evidence-card');
+  assert.match(correlatedCard.textContent, /#reason/);
+  assert.doesNotMatch(correlatedCard.textContent, /#record-wide/);
+  assert.match(correlatedCard.querySelector('.a11y-links a').getAttribute('href'), /#issue-1$/);
+
+  const mixedOutcome = parse(
+    enhanceDashboardHtml(
+      shell,
+      [],
+      [
+        {
+          ...entries[0],
+          rules: ['color-contrast'],
+          targets: ['#failed', '#uncertain'],
+          reviewCount: 1,
+          reviewRules: ['color-contrast'],
+          findings: [{ rule: 'color-contrast', targets: ['#failed'], anchor: 'issue-1' }],
+        },
+      ]
+    )
+  );
+  assert.match(mixedOutcome.querySelector('.a11y-evidence-card').textContent, /#failed/);
+  assert.match(mixedOutcome.querySelector('.a11y-evidence-card').textContent, /#uncertain/);
+  assert.doesNotMatch(mixedOutcome.querySelector('.a11y-evidence-card .a11y-links a').getAttribute('href'), /#issue-1$/);
   const scaleEntries = Array.from({ length: 151 }, (_, index) => ({
     ...entries[0],
     testTitle: `Scale journey ${index}`,

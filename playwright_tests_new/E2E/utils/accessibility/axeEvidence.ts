@@ -270,6 +270,14 @@ async function writePublishedEvidence(
       pageState: metadata?.pageState,
       violationCount: results.violations.length,
       rules: results.violations.map((violation) => violation.id),
+      findings: results.violations.map((violation, index) => ({
+        rule: violation.id,
+        targets: violation.nodes.flatMap((node) =>
+          node.target.map((target) => (typeof target === 'string' ? target : JSON.stringify(target)))
+        ),
+        summary: violation.help,
+        anchor: `issue-${index + 1}`,
+      })),
       targets: [...results.violations, ...(results.incomplete ?? [])].flatMap((violation) =>
         violation.nodes.flatMap((node) =>
           node.target.map((target) => (typeof target === 'string' ? target : JSON.stringify(target)))

@@ -55,13 +55,18 @@ test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, 
         '<main><h1>Hafan</h1></main>',
         ['skip-link-target'],
       ],
+      [
+        '<a class="govuk-skip-link" href="http://localhost/#main">Neidio i’r prif gynnwys</a>',
+        '<main id="main"><h1>Hafan</h1></main>',
+        [],
+      ],
       ['<a href="#aside">Help</a>', '<main><h1>Hafan</h1></main><aside id="aside">Help</aside>', ['skip-link']],
       ['<a href="#%">Help</a><a href="#main">Neidio i’r prif gynnwys</a>', '<main id="main"><h1>Hafan</h1></main>', []],
       ['<a class="govuk-skip-link" href="#%">Neidio i’r prif gynnwys</a>', '<main><h1>Hafan</h1></main>', ['skip-link-target']],
     ] as const) {
       const dom = new JSDOM(
         `<html lang="cy"><head><title>Hafan</title></head><body class="govuk-template__body">${link}${target}</body></html>`,
-        { runScripts: 'outside-only' }
+        { runScripts: 'outside-only', url: 'http://localhost/' }
       );
       dom.window.HTMLElement.prototype.getClientRects = () => [{ width: 100, height: 20 }] as unknown as DOMRectList;
       const page = {
@@ -76,6 +81,42 @@ test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, 
       } finally {
         dom.window.close();
       }
+    }
+  });
+
+  test('does not report an idle empty live region as an accessibility defect', async () => {
+    const dom = new JSDOM(
+      '<html lang="en"><head><title>Page</title></head><body class="govuk-template__body"><a href="#main">Skip to main content</a><main id="main"><div role="status" aria-live="polite"></div></main></body></html>',
+      { runScripts: 'outside-only', url: 'http://localhost/' }
+    );
+    dom.window.HTMLElement.prototype.getClientRects = () => [{ width: 100, height: 20 }] as unknown as DOMRectList;
+    const page = {
+      url: () => 'http://localhost/',
+      evaluate: async (callback: () => unknown) => dom.window.eval(`(${callback.toString()})()`),
+    } as unknown as Page;
+    try {
+      const evidence = await collectScreenReaderLikeAccessibilityViolations(page);
+      expect(evidence.violations.some((item) => item.rule === 'live-region-empty')).toBe(false);
+    } finally {
+      dom.window.close();
+    }
+  });
+
+  test('does not treat a different query-string route as the current skip-link target', async () => {
+    const dom = new JSDOM(
+      '<html lang="en"><head><title>Page</title></head><body class="govuk-template__body"><a class="govuk-skip-link" href="http://localhost/page?other#main">Skip to main content</a><main id="main"><h1>Page</h1></main></body></html>',
+      { runScripts: 'outside-only', url: 'http://localhost/page?current' }
+    );
+    dom.window.HTMLElement.prototype.getClientRects = () => [{ width: 100, height: 20 }] as unknown as DOMRectList;
+    const page = {
+      url: () => 'http://localhost/page?current',
+      evaluate: async (callback: () => unknown) => dom.window.eval(`(${callback.toString()})()`),
+    } as unknown as Page;
+    try {
+      const evidence = await collectScreenReaderLikeAccessibilityViolations(page);
+      expect(evidence.violations.some((item) => item.rule === 'skip-link-target')).toBe(true);
+    } finally {
+      dom.window.close();
     }
   });
 

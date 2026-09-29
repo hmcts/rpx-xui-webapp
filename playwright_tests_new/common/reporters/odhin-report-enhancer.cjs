@@ -559,6 +559,18 @@ function normalizeEvidenceEntries(entries) {
       summary: typeof entry.summary === 'string' ? entry.summary : '',
       rules: Array.isArray(entry.rules) ? entry.rules.map(String) : [],
       targets: Array.isArray(entry.targets) ? entry.targets.map(String) : [],
+      ...(Array.isArray(entry.findings)
+        ? {
+            findings: entry.findings
+              .filter((finding) => finding && typeof finding.rule === 'string')
+              .map((finding) => ({
+                rule: finding.rule,
+                targets: Array.isArray(finding.targets) ? finding.targets.map(String) : [],
+                ...(typeof finding.summary === 'string' ? { summary: finding.summary } : {}),
+                ...(typeof finding.anchor === 'string' ? { anchor: finding.anchor } : {}),
+              })),
+          }
+        : {}),
     }))
     .sort(
       (left, right) =>
@@ -714,7 +726,8 @@ function uniqueValues(values) {
   return Array.from(new Set((Array.isArray(values) ? values : []).filter(Boolean).map(String)));
 }
 
-function buildDeveloperHint(entries) {
+function buildDeveloperHint(entries, options = {}) {
+  const includeSourceHints = options.includeSourceHints !== false;
   const rules = uniqueValues(entries.flatMap((entry) => entry.rules));
   const targets = uniqueValues(entries.flatMap((entry) => entry.targets)).slice(0, 6);
   const hints = [];
@@ -807,20 +820,23 @@ function buildDeveloperHint(entries) {
   for (const [pattern, advice] of additionalAdvice) {
     if (rules.some((rule) => pattern.test(rule))) hints.push(advice);
   }
-  if (entries.some((entry) => entry.feature === 'query management')) {
+  if (includeSourceHints && entries.some((entry) => entry.feature === 'query management')) {
     hints.push(
       'Source starting point: src/cases/containers/query-management-container/query-management-container.component.html. Follow the rendered ccd-query-* component into the shared toolkit if it owns the target.'
     );
   }
-  if (entries.some((entry) => entry.feature === 'signed-in header')) {
+  if (includeSourceHints && entries.some((entry) => entry.feature === 'signed-in header')) {
     hints.push(
       'Source starting point: src/app/containers/app-header/app-header.component.html and src/app/components/hmcts-global-header/hmcts-global-header.component.html. Confirm the target belongs to the header before editing.'
     );
   }
-  if (targets.length) {
+  if (includeSourceHints && targets.length) {
     hints.push(`Start near: ${targets.join(', ')}.`);
   }
 
+  if (options.sourceHintsOnly) {
+    return hints.filter((hint) => /^(Source starting point|Start near):/.test(hint));
+  }
   return hints.length ? hints : ['Open the highlighted issue report and start with the listed DOM target or page template.'];
 }
 

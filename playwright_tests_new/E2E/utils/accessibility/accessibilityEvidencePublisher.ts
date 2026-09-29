@@ -42,6 +42,7 @@ export type PublishedAccessibilityEvidenceEntry = {
   summary?: string;
   rules: string[];
   targets: string[];
+  findings?: Array<{ rule: string; targets: string[]; summary?: string; anchor?: string }>;
   summaryFileName?: string;
   reportFileName?: string;
   url?: string;

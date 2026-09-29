@@ -43,9 +43,17 @@ function injectAccessibilityWorkspace(root, entries, _issueSummary, developerHin
       ? `<a href="./accessibility-evidence/${encodeURIComponent(file)}" target="_blank" rel="noopener noreferrer">${escape(title)} ↗</a>`
       : '';
   const statusLabel = (entry) => outcomes[outcome(entry)] || outcome(entry);
-  const details = (
-    entry
-  ) => `<details class="a11y-evidence-card" data-source="${escape(entry.engine)}" data-status="${escape(outcome(entry))}" data-needs-review="${Boolean(entry.reviewRules?.length || entry.reviewCount > 0)}">
+  const details = (entry) => {
+    const finding =
+      entry.rules.length === 1 && !entry.reviewCount && !entry.reviewRules?.length
+        ? entry.findings?.find((item) => item.rule === entry.rules[0])
+        : undefined;
+    const targets = finding?.targets?.length ? finding.targets : entry.targets;
+    const evidenceLink = safeLink(entry.htmlFileName, 'Read evidence');
+    const linkedEvidence = finding?.anchor
+      ? evidenceLink.replace('" target=', `#${escape(finding.anchor)}" target=`)
+      : evidenceLink;
+    return `<details class="a11y-evidence-card" data-source="${escape(entry.engine)}" data-status="${escape(outcome(entry))}" data-needs-review="${Boolean(entry.reviewRules?.length || entry.reviewCount > 0)}">
     <summary><strong>${escape(entry.pageState || entry.testTitle)}</strong> <span class="a11y-status">${escape(statusLabel(entry))}</span></summary>
     <p>${escape(entry.testTitle)} · ${escape(entry.feature)}</p>
     <p class="a11y-context">${escape(
@@ -56,10 +64,18 @@ function injectAccessibilityWorkspace(root, entries, _issueSummary, developerHin
     <p>${escape(entry.summary || `${entry.violationCount} reported findings`)}</p>
     ${entry.reviewCount > 0 ? `<p><strong>${entry.reviewCount} node result(s) need investigation.</strong> These are not confirmed violations. Rules: ${(entry.reviewRules || []).map(escape).join(', ')}. Open the evidence for the scanner's uncertainty and verification steps.</p>` : ''}
     <p><strong>Source:</strong> ${escape(label(entry))} · ${entry.rules.map(escape).join(' · ') || 'No rule identifiers recorded'}</p>
-    ${entry.targets.length ? `<p><strong>DOM targets (for this evidence record):</strong></p><ul>${entry.targets.map((target) => `<li><code>${escape(target)}</code></li>`).join('')}</ul>` : ''}
-    <div class="a11y-links">${safeLink(entry.htmlFileName, 'Read evidence')}${safeLink(entry.screenshotFileName, 'Screenshot')}</div>
+    ${developerHints([{ ...entry, targets: finding?.targets ?? entry.targets }], { sourceHintsOnly: true })
+      .filter((hint) => /^(Source starting point|Start near):/.test(hint))
+      .map(
+        (hint) =>
+          `<p class="a11y-occurrence-guidance"><strong>Suggested starting point:</strong> ${escape(hint.replace(/^(Source starting point|Start near):\s*/, ''))}</p>`
+      )
+      .join('')}
+    ${targets.length ? `<p><strong>${finding ? 'DOM targets for this rule:' : 'DOM targets (for this evidence record):'}</strong></p><ul>${targets.map((target) => `<li><code>${escape(target)}</code></li>`).join('')}</ul>` : ''}
+    <div class="a11y-links">${linkedEvidence}${safeLink(entry.screenshotFileName, 'Screenshot')}</div>
     <details><summary>Technical evidence</summary><div class="a11y-links">${safeLink(entry.jsonFileName, 'JSON')}${safeLink(entry.reportFileName, 'Native report')}</div></details>
   </details>`;
+  };
   const groups = new Map();
   const groupedEntries = entries.flatMap((entry) => [
     ...(outcome(entry) === 'needs-review' ? [] : [entry]),
@@ -95,7 +111,10 @@ function injectAccessibilityWorkspace(root, entries, _issueSummary, developerHin
     .map((group) => {
       const count = new Set(group.entries.map(contextKey)).size;
       // Targets belong to the full record, not necessarily this individual rule.
-      const hints = developerHints(group.entries.map((entry) => ({ ...entry, rules: [group.rule], targets: [] })));
+      const hints = developerHints(
+        group.entries.map((entry) => ({ ...entry, rules: [group.rule], targets: [] })),
+        { includeSourceHints: false }
+      );
       return `<details class="a11y-issue-group" data-source="${escape(group.entries[0].engine)}" data-count="${count}" data-status="${escape(group.status)}">
       <summary><strong>${escape(group.rule)}</strong><span>${count} affected context${count === 1 ? '' : 's'}</span><span>${escape(label(group.entries[0]))}</span><span class="a11y-status">${escape(outcomes[group.status])}</span></summary>
       <div class="a11y-group-body"><div class="a11y-fix-guidance"><h3>What to investigate</h3><ul>${hints.map((hint) => `<li>${escape(hint)}</li>`).join('')}</ul></div>

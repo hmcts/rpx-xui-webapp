@@ -379,6 +379,13 @@ select::-ms-expand {
   width: auto;
 }
 
+// Case history sits in a zero-padding case-viewer cell inside a scrollable mat-tab body, so the
+// grid-row's -15px gutter would overflow and add a horizontal scrollbar. Clip the (empty) gutter.
+ccd-event-log {
+  display: block;
+  overflow: hidden;
+}
+
 .column-full {
   box-sizing: border-box;
   padding: 0 15px;

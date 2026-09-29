@@ -2,6 +2,7 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
+    OTEL_SERVICE_NAME: Web
     LOGGING: debug
     NODE_TLS_REJECT_UNAUTHORIZED: 1
     SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net

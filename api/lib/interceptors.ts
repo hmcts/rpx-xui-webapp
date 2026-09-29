@@ -28,6 +28,11 @@ interface TelemetryProperties {
   taskId?: string;
   callDateTime: string;
   host?: string;
+  'http.host'?: string;
+  'http.method'?: string;
+  'http.scheme'?: string;
+  'http.status_code'?: string;
+  'http.target'?: string;
   outboundId: string;
   service?: string;
 }
@@ -142,6 +147,23 @@ function extractRequestTarget(url?: string): { host?: string; service?: string }
   }
 }
 
+function extractTelemetryUrlAttributes(url?: string): { 'http.host'?: string; 'http.scheme'?: string; 'http.target'?: string } {
+  if (!url) {
+    return {};
+  }
+
+  try {
+    const parsedUrl = new URL(url, 'http://localhost');
+    return {
+      'http.host': parsedUrl.host || undefined,
+      'http.scheme': parsedUrl.protocol ? parsedUrl.protocol.replace(':', '') : undefined,
+      'http.target': `${parsedUrl.pathname}${parsedUrl.search}`,
+    };
+  } catch {
+    return {};
+  }
+}
+
 function extractFromBody(data: any): { caseId?: string; jurisdiction?: string; taskId?: string } {
   const parsedData = tryParseJson(data);
   if (!parsedData || typeof parsedData !== 'object') {
@@ -203,16 +225,29 @@ function buildLogPrefix(context: LogContext, extras: { durationMs?: number; even
   return `${parts.join(' ')} |`;
 }
 
-function buildTelemetryProperties(context: LogContext): TelemetryProperties {
+function buildTelemetryProperties(context: LogContext, resultCode?: string, url?: string): TelemetryProperties {
+  const telemetryUrlAttributes = extractTelemetryUrlAttributes(url);
+
   return {
     callDateTime: context.callDateTime,
     caseId: context.caseId,
     host: context.host,
+    'http.host': telemetryUrlAttributes['http.host'],
+    'http.method': context.method,
+    'http.scheme': telemetryUrlAttributes['http.scheme'],
+    'http.status_code': resultCode,
+    'http.target': telemetryUrlAttributes['http.target'],
     jurisdiction: context.jurisdiction,
     outboundId: context.outboundId,
     service: context.service,
     taskId: context.taskId,
   };
+}
+
+function toTelemetryResultCode(status?: number): string {
+  const logger = log4jui.getLogger('outgoing');
+  logger.info(`Converting status ${status} to telemetry result code. Type: ${typeof status}`);
+  return typeof status === 'number' ? String(status) : '0';
 }
 
 export function requestInterceptor(request) {
@@ -242,13 +277,13 @@ export function successInterceptor(response) {
   logger.info(
     `${buildLogPrefix(logContext, { durationMs: response.duration, event: 'response', status })} Success on ${response.config.method.toUpperCase()} to ${url}`
   );
+  const resultCode = toTelemetryResultCode(status);
   logger.trackRequest({
     duration: response.duration,
     name: `Service ${response.config.method.toUpperCase()} call`,
-    properties: buildTelemetryProperties(logContext),
-    resultCode: status,
+    properties: buildTelemetryProperties(logContext, resultCode, response.config.url),
+    resultCode,
     success: true,
-    url: response.config.url,
   });
   return response;
 }
@@ -278,13 +313,13 @@ export function errorInterceptor(error) {
     ${exceptionFormatter(data, exceptionOptions)}`);
   }
 
+  const resultCode = toTelemetryResultCode(status);
   logger.trackRequest({
     duration: error.duration,
     name: `Service ${error.config.method.toUpperCase()} call`,
-    properties: buildTelemetryProperties(logContext),
-    resultCode: status,
+    properties: buildTelemetryProperties(logContext, resultCode, error.config.url),
+    resultCode,
     success: false,
-    url: error.config.url,
   });
 
   return Promise.reject(error.response);

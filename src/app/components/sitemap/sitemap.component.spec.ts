@@ -68,10 +68,10 @@ describe('SitemapComponent', () => {
     { active: false, href: '/booking', roles: ['fee-paid-judge'], text: 'Work access' },
   ];
 
-  const createState = (details: UserDetails): fromRoot.State =>
+  const createState = (details: UserDetails, isTermsAndConditionsFeatureEnabled = false): fromRoot.State =>
     ({
       routerReducer: undefined,
-      appConfig: { userDetails: details },
+      appConfig: { userDetails: details, isTermsAndConditionsFeatureEnabled },
     }) as unknown as fromRoot.State;
 
   beforeEach(waitForAsync(() => {
@@ -102,9 +102,9 @@ describe('SitemapComponent', () => {
     fixture.detectChanges();
   });
 
-  function mockStoreState(details: UserDetails): void {
+  function mockStoreState(details: UserDetails, isTermsAndConditionsFeatureEnabled = false): void {
     storeMock.pipe.and.callFake((...operators: any[]) =>
-      operators.reduce((source, operator) => operator(source), of(createState(details)))
+      operators.reduce((source, operator) => operator(source), of(createState(details, isTermsAndConditionsFeatureEnabled)))
     );
   }
 
@@ -115,8 +115,8 @@ describe('SitemapComponent', () => {
     } as UserDetails;
   }
 
-  function renderSitemap(details: UserDetails): string[] {
-    mockStoreState(details);
+  function renderSitemap(details: UserDetails, isTermsAndConditionsFeatureEnabled = false): string[] {
+    mockStoreState(details, isTermsAndConditionsFeatureEnabled);
     fixture = TestBed.createComponent(SitemapComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -196,7 +196,7 @@ describe('SitemapComponent', () => {
       '/cases/case-search',
       '/search',
       '/accessibility',
-      '/terms-and-conditions',
+      '/legacy-terms-and-conditions',
       '/cookies',
       '/privacy-policy',
       '/get-help',
@@ -395,11 +395,25 @@ describe('SitemapComponent', () => {
       expect(destinations).toEqual([
         '/cases/case-filter',
         '/accessibility',
-        '/terms-and-conditions',
+        '/legacy-terms-and-conditions',
         '/cookies',
         '/privacy-policy',
         '/get-help',
       ]);
+    });
+
+    it('should use the feature-enabled Terms and conditions route', () => {
+      const destinations = renderSitemap(createUserDetails([]), true);
+
+      expect(destinations).toContain('/terms-and-conditions');
+      expect(destinations).not.toContain('/legacy-terms-and-conditions');
+    });
+
+    it('should use the legacy Terms and conditions route when the feature is disabled', () => {
+      const destinations = renderSitemap(createUserDetails([]), false);
+
+      expect(destinations).toContain('/legacy-terms-and-conditions');
+      expect(destinations).not.toContain('/terms-and-conditions');
     });
   });
 

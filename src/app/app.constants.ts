@@ -15,6 +15,9 @@ function featureToAttributeName(key: string): string {
   return key.split('-').join('_');
 }
 
+export const getTermsAndConditionsHref = (isEnabled: boolean): string =>
+  isEnabled ? '/terms-and-conditions' : '/legacy-terms-and-conditions';
+
 export const featureToAttributeMap = new Map<string, string>([
   [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],

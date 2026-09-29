@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { WAVerificationService } from '../../../work-allocation/services';
-import { AppConstants } from '../../app.constants';
+import { AppConstants, getTermsAndConditionsHref } from '../../app.constants';
 import { UserDetails, WAVerificationModel } from '../../models';
 import { NavigationItem } from '../../models/theming.model';
 import { HeaderConfigService } from '../../services/header-config/header-config.service';
@@ -58,6 +58,7 @@ const sitemapSections: SitemapSection[] = [
 })
 export class SitemapComponent implements OnInit {
   public sitemapSections$: Observable<SitemapSection[]>;
+  public termsAndConditionsHref$: Observable<string>;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -66,6 +67,11 @@ export class SitemapComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
+    this.termsAndConditionsHref$ = this.store.pipe(
+      select(fromRoot.getIsTermsAndConditionsFeatureEnabled),
+      map((isEnabled) => getTermsAndConditionsHref(isEnabled))
+    );
+
     this.sitemapSections$ = this.store.pipe(
       select(fromRoot.getUserDetails),
       filter((userDetails: UserDetails) => !!userDetails?.userInfo),

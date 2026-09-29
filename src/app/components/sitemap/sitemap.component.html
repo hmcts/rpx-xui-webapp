@@ -23,7 +23,7 @@
             <a class="govuk-link" routerLink="/accessibility">{{ 'Accessibility statement' | rpxTranslate }}</a>
           </li>
           <li>
-            <a class="govuk-link" routerLink="/terms-and-conditions">{{ 'Terms and conditions' | rpxTranslate }}</a>
+            <a class="govuk-link" [routerLink]="termsAndConditionsHref$ | async">{{ 'Terms and conditions' | rpxTranslate }}</a>
           </li>
           <li>
             <a class="govuk-link" routerLink="/cookies">{{ 'Cookies' | rpxTranslate }}</a>

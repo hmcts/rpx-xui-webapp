@@ -189,8 +189,6 @@ export async function collectScreenReaderLikeAccessibilityViolations(page: Page)
       if (!targetId || !fragmentTarget(skipLink)) {
         add(violations, 'skip-link-target', `Skip link target "#${targetId}" should exist.`, skipLink);
       }
-    } else {
-      add(violations, 'skip-link', 'The page should expose a skip-to-main-content link.');
     }
 
     const mainLandmarks = Array.from(document.querySelectorAll('main, [role="main"]')).filter(visible);

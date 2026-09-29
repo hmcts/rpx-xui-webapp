@@ -130,7 +130,7 @@ class OdhinAdaptiveReporter {
 
     this.testMetadata.push({
       target: `#${test.id}-${result.retry}`,
-      feature: deriveFeatureName(test?.location?.file),
+      feature: deriveFeatureName(test?.location?.file, test?.annotations),
       tags: test.tags ?? [],
       durationMs: result.duration || 0,
       retry: result.retry,
@@ -212,7 +212,7 @@ class OdhinAdaptiveReporter {
       return;
     }
 
-    const featureName = deriveFeatureName(test?.location?.file);
+    const featureName = deriveFeatureName(test?.location?.file, test?.annotations);
     const current = this.featureStats.get(featureName) ?? createEmptyFeatureStat(featureName);
     current.totalTests += 1;
     current.durationMs += Number(result?.duration ?? 0);

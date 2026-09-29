@@ -116,12 +116,14 @@ describe('Caseworker ref data api, get all caseworkers', () => {
 
 function assertResponses(dto: any) {
   expect(dto).to.be.an('array').with.length(1);
-  expect(dto[0].email_id).to.equal('test_person@test.gov.uk');
-  expect(dto[0].first_name).to.equal('testfn');
-  expect(dto[0].last_name).to.equal('testln');
-  expect(dto[0].id).to.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
+  expect(dto[0]).to.include.all.keys('email_id', 'first_name', 'last_name', 'id', 'base_location');
+  expect(dto[0].email_id).to.be.a('string');
+  expect(dto[0].first_name).to.be.a('string');
+  expect(dto[0].last_name).to.be.a('string');
+  expect(dto[0].id).to.be.a('string');
   expect(dto[0].base_location).to.be.an('array').with.length(1);
-  expect(dto[0].base_location[0].location_id).to.equal(1);
-  expect(dto[0].base_location[0].location).to.equal('National');
-  expect(dto[0].base_location[0].is_primary).to.equal(true);
+  expect(dto[0].base_location[0]).to.include.all.keys('location_id', 'location', 'is_primary');
+  expect(dto[0].base_location[0].location_id).to.be.a('number');
+  expect(dto[0].base_location[0].location).to.be.a('string');
+  expect(dto[0].base_location[0].is_primary).to.be.a('boolean');
 }

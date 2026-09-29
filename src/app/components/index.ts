@@ -17,6 +17,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { ApplicationRoutingComponent } from './routing/application-routing.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
 import { SessionErrorWrapperComponent } from './session-error-wrapper/session-error-wrapper.component';
+import { SitemapComponent } from './sitemap/sitemap.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
 
 export const components: any[] = [
@@ -40,6 +41,7 @@ export const components: any[] = [
   InfoMessageContainerComponent,
   InfoMessageComponent,
   ExpiredLoginLinkComponent,
+  SitemapComponent,
 ];
 
 export * from './hmcts-global-footer/hmcts-global-footer.component';
@@ -62,3 +64,4 @@ export * from './case-reference-search-box/case-reference-search-box.component';
 export * from '../containers/info-message-container/info-message-container.component';
 export * from './info-message/info-message.component';
 export * from './expired-login-link/expired-login-link.component';
+export * from './sitemap/sitemap.component';

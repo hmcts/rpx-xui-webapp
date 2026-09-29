@@ -1,0 +1,33 @@
+<exui-app-header></exui-app-header>
+
+<div class="govuk-width-container">
+  <main id="content" class="govuk-main-wrapper govuk-main-wrapper--l" role="main" tabindex="-1">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Site map</h1>
+
+        <ng-container *ngIf="sitemapSections$ | async as sections">
+          <ng-container *ngFor="let section of sections">
+            <h2 class="govuk-heading-l">{{ section.heading }}</h2>
+            <ul class="govuk-list">
+              <li *ngFor="let link of section.links">
+                <a class="govuk-link" [routerLink]="link.href">{{ link.text }}</a>
+              </li>
+            </ul>
+          </ng-container>
+        </ng-container>
+
+        <h2 class="govuk-heading-l">Help and information</h2>
+        <ul class="govuk-list">
+          <li><a class="govuk-link" routerLink="/accessibility">Accessibility statement</a></li>
+          <li><a class="govuk-link" routerLink="/terms-and-conditions">Terms and conditions</a></li>
+          <li><a class="govuk-link" routerLink="/cookies">Cookies</a></li>
+          <li><a class="govuk-link" routerLink="/privacy-policy">Privacy policy</a></li>
+          <li><a class="govuk-link" routerLink="/get-help">Get help</a></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</div>
+
+<exui-app-footer></exui-app-footer>

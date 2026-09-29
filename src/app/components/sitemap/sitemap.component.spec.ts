@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -9,6 +9,16 @@ import { HeaderConfigService } from '../../services/header-config/header-config.
 import { WAVerificationService } from '../../../work-allocation/services';
 import * as fromRoot from '../../store';
 import { SitemapComponent } from './sitemap.component';
+
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('SitemapComponent', () => {
   let component: SitemapComponent;
@@ -76,7 +86,7 @@ describe('SitemapComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [SitemapComponent],
+      declarations: [SitemapComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: Store, useValue: storeMock },
@@ -116,6 +126,57 @@ describe('SitemapComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should pass sitemap headings and link labels through the translation pipe', () => {
+    const translatePipeSpy = spyOn(RpxTranslateMockPipe.prototype, 'transform').and.callThrough();
+    mockStoreState(
+      createUserDetails(
+        [
+          'caseworker-civil',
+          'case-manager',
+          'task-supervisor',
+          'staff-admin',
+          'caseworker-divorce-solicitor',
+          'payments-refund',
+          'fee-paid-judge',
+        ],
+        [supportedCaseManagerAssignment]
+      )
+    );
+    const translatedFixture = TestBed.createComponent(SitemapComponent);
+    translatedFixture.detectChanges();
+
+    const translatedPhrases = translatePipeSpy.calls.allArgs().map(([phrase]) => phrase);
+
+    expect(translatedPhrases).toEqual(
+      jasmine.arrayContaining([
+        'Site map',
+        'Work allocation',
+        'My work',
+        'Available tasks',
+        'My cases',
+        'My access',
+        'All work',
+        'All work cases',
+        'Work access',
+        'Case management',
+        'Case list',
+        'Create case',
+        'Find case',
+        'Search cases',
+        'Notice of change',
+        'Refunds',
+        'Staff administration',
+        'Staff',
+        'Accessibility statement',
+        'Terms and conditions',
+        'Cookies',
+        'Privacy policy',
+        'Get help',
+        'Help and information',
+      ])
+    );
   });
 
   it('should show links available to the current user and unrestricted footer help pages', () => {

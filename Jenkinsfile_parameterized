@@ -80,7 +80,7 @@ def publishPlaywrightReport = { String reportDir, String reportFile, String repo
         reportFiles          : reportFile,
         reportName           : reportName
     ])
-    junit(allowEmptyResults: false, testResults: artifacts.replace('**', '**/*junit.xml'))
+    junit(allowEmptyResults: false, skipMarkingBuildUnstable: true, testResults: artifacts.replace('**', '**/*junit.xml'))
     archiveArtifacts allowEmptyArchive: true, artifacts: artifacts
 }
 

@@ -2464,6 +2464,7 @@ table.form-table td.form-cell .form-group {
 
 .govuk-tag {
   display: inline-block;
+  max-width: none;
   outline: 2px solid transparent;
   outline-offset: -2px;
   letter-spacing: 1px;

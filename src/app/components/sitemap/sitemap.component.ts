@@ -23,17 +23,6 @@ export interface SitemapSection {
 
 const sitemapSections: SitemapSection[] = [
   {
-    heading: 'Case management',
-    links: [
-      { text: 'Case list', href: '/cases', accessHref: '/cases' },
-      { text: 'Create case', href: '/cases/case-filter', accessHref: '/cases/case-filter' },
-      { text: 'Find case', href: '/cases/case-search', accessHref: '/cases/case-search' },
-      { text: 'Search cases', href: '/search', accessHref: '/search' },
-      { text: 'Notice of change', href: '/noc', accessHref: '/noc' },
-      { text: 'Refunds', href: '/refunds', accessHref: '/refunds' },
-    ],
-  },
-  {
     heading: 'Work allocation',
     links: [
       { text: 'My work', href: '/work/my-work/list', accessHref: '/work/my-work/list' },
@@ -43,6 +32,17 @@ const sitemapSections: SitemapSection[] = [
       { text: 'All work', href: '/work/all-work/tasks', accessHref: '/work/all-work/tasks' },
       { text: 'All work cases', href: '/work/all-work/cases', accessHref: '/work/all-work/tasks' },
       { text: 'Work access', href: '/booking', accessHref: '/booking' },
+    ],
+  },
+  {
+    heading: 'Case management',
+    links: [
+      { text: 'Case list', href: '/cases', accessHref: '/cases' },
+      { text: 'Create case', href: '/cases/case-filter', accessHref: '/cases/case-filter' },
+      { text: 'Find case', href: '/cases/case-search', accessHref: '/cases/case-search' },
+      { text: 'Search cases', href: '/search', accessHref: '/search' },
+      { text: 'Notice of change', href: '/noc', accessHref: '/noc' },
+      { text: 'Refunds', href: '/refunds', accessHref: '/refunds' },
     ],
   },
   {

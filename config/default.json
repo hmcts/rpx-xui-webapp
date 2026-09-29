@@ -9,6 +9,9 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
+  "appInsights": {
+    "samplingPercentage": 1
+  },
   "documentUploadThrottle": {
     "initialMs": 5000,
     "maxMs": 180000

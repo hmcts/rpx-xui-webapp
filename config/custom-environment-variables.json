@@ -9,6 +9,12 @@
   "logging": "LOGGING",
   "now": "NOW",
   "maxLogLine": "MAX_LOG_LINE",
+  "appInsights": {
+    "samplingPercentage": {
+      "__name": "APPINSIGHTS_SAMPLING_PERCENTAGE",
+      "__format": "json"
+    }
+  },
   "documentUploadThrottle": {
     "initialMs": {
       "__name": "DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS",

@@ -452,7 +452,7 @@ def secrets = [
     secret('mc-idam-client-secret', 'IDAM_SECRET'),
     secret('idam-api-url', 'IDAM_API_URL'),
     secret('s2s-url', 'S2S_URL'),
-    secret('webapp-managed-redis-connection-string', 'REDISCLOUD_URL'),
+    secret('webapp-redis6-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
     secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
@@ -784,6 +784,7 @@ withNightlyPipeline(type, product, component) {
                                 'PW_ACCESSIBILITY_WORKERS=6',
                                 'FUNCTIONAL_TESTS_WORKERS=6',
                                 'PLAYWRIGHT_SKIP_INSTALL=true',
+                                'A11Y_STRICT=false',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {

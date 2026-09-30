@@ -49,6 +49,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public submitted: boolean;
   public errors: any[] = [];
   private sub: Subscription;
+  private caseInfoSub: Subscription;
+  private caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
   private formSub: Subscription;
   public window: any = window;
   public showSpinner$: Observable<boolean>;
@@ -115,6 +117,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public ngOnInit(): void {
+    this.caseInfoSub = this.hearingStore.select(fromHearingStore.getHearingValuesCaseInfo).subscribe((caseInfo) => {
+      this.caseInfo = caseInfo;
+    });
     const partyChannels: LovRefDataModel[] = this.route.snapshot.data.partyChannels.filter(
       (channel: LovRefDataModel) => channel.key !== HearingChannelEnum.ONPPR
     );
@@ -302,6 +307,9 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     if (this.sub) {
       this.sub.unsubscribe();
     }
+    if (this.caseInfoSub) {
+      this.caseInfoSub.unsubscribe();
+    }
     if (this.formSub) {
       this.formSub.unsubscribe();
     }
@@ -342,6 +350,18 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public onBack(): void {
     this.location.back();
+  }
+
+  public onCancel(): void {
+    this.router.navigate([
+      '/',
+      'cases',
+      'case-details',
+      this.caseInfo?.jurisdictionId,
+      this.caseInfo?.caseType,
+      this.caseInfo?.caseReference || this.hearingActualsMainModel?.caseDetails?.caseRef,
+      'hearings',
+    ]);
   }
 
   private getAllRowErrors(controls: { [p: string]: AbstractControl }): { [p: string]: string } {

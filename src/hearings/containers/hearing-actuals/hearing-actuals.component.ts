@@ -54,7 +54,9 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
     return (
       this.router.url.includes('/hearing-actual-add-edit-summary') ||
       this.router.url.includes('/hearing-actual-edit-summary') ||
-      this.router.url.includes('/hearing-stage-result')
+      this.router.url.includes('/hearing-stage-result') ||
+      this.router.url.includes('/actuals-parties/') ||
+      this.router.url.includes('/hearing-timing/')
     );
   }
 

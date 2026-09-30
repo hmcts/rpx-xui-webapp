@@ -29,6 +29,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private hearingActuals: HearingActualsMainModel;
   private sub1$: Subscription;
   private sub2$: Subscription;
+  private caseInfoSub: Subscription;
+  private caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
   private id: string;
   private hearingDate: string;
   private readonly defaultHearingStartTimeValidators = [
@@ -115,6 +117,9 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
+    this.caseInfoSub = this.hearingStore.select(fromHearingStore.getHearingValuesCaseInfo).subscribe((caseInfo) => {
+      this.caseInfo = caseInfo;
+    });
     this.sub1$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
         filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
@@ -134,6 +139,9 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.sub1$.unsubscribe();
     this.sub2$.unsubscribe();
+    if (this.caseInfoSub) {
+      this.caseInfoSub.unsubscribe();
+    }
   }
 
   public onSubmit(value: any, valid: boolean): void {
@@ -207,6 +215,18 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   public onBack(): void {
     this.location.back();
+  }
+
+  public onCancel(): void {
+    this.router.navigate([
+      '/',
+      'cases',
+      'case-details',
+      this.caseInfo?.jurisdictionId,
+      this.caseInfo?.caseType,
+      this.caseInfo?.caseReference || this.hearingActuals?.caseDetails?.caseRef,
+      'hearings',
+    ]);
   }
 
   private getHearingTime(value: string, actualIndex: number): string {

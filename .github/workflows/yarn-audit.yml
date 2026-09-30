@@ -1,6 +1,9 @@
 name: Daily Yarn audit
 
 on:
+  push:
+    branches:
+      - suppression-action
   schedule:
     - cron: '0 7 * * 1-5'
       timezone: 'Europe/London'

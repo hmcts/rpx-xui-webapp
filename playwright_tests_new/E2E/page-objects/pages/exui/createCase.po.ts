@@ -488,7 +488,7 @@ export class CreateCasePage extends Base {
       waitForSpinnerToComplete: (spinnerContext, spinnerTimeoutMs) =>
         this.waitForSpinnerToComplete(spinnerContext, spinnerTimeoutMs),
       assertNoEventCreationError: (errorContext) => this.assertNoEventCreationError(errorContext),
-      checkForErrorMessage: () => this.checkForErrorMessage(),
+      checkForErrorMessage: (timeoutMs) => this.checkForErrorMessage(undefined, timeoutMs),
       getValidationErrorText: () => this.getValidationErrorText(),
       failFastOnCriticalWizardEndpointFailure: (failureContext, baselineIndex) =>
         this.failFastOnCriticalWizardEndpointFailure(failureContext, baselineIndex),
@@ -627,7 +627,7 @@ export class CreateCasePage extends Base {
     }
   }
 
-  async checkForErrorMessage(message?: string, timeout = EXUI_TIMEOUTS.VALIDATION_ERROR_VISIBLE): Promise<boolean> {
+  async checkForErrorMessage(message?: string, timeout: number = EXUI_TIMEOUTS.VALIDATION_ERROR_VISIBLE): Promise<boolean> {
     const check = async (sel: Locator) => {
       try {
         await sel.waitFor({ state: 'visible', timeout });

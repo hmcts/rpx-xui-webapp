@@ -117,7 +117,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    this.router.navigate([
+    void this.router.navigate([
       '/',
       'cases',
       'case-details',

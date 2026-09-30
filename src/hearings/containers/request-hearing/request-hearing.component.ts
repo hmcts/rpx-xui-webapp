@@ -41,7 +41,7 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public onCancel(): void {
-    this.router.navigate([
+    void this.router.navigate([
       '/',
       'cases',
       'case-details',

@@ -208,7 +208,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
     if (this.id) {
       this.ngZone.run(() => {
-        this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+        void this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
       });
     }
   }
@@ -218,7 +218,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    this.router.navigate([
+    void this.router.navigate([
       '/',
       'cases',
       'case-details',

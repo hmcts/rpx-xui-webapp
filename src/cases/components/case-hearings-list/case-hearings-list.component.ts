@@ -92,17 +92,17 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public addAndEdit(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary'], {
+    void this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary'], {
       state: { caseId: this.caseId },
     });
   }
 
   public cancelHearing(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
+    void this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
   }
 
   public linkHearing(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'link', this.caseId, hearingID]);
+    void this.router.navigate(['/', 'hearings', 'link', this.caseId, hearingID]);
   }
 
   public manageLinks(hearing: HearingListViewModel): void {
@@ -120,7 +120,7 @@ export class CaseHearingsListComponent implements OnInit {
         caseId: this.caseId,
       })
     );
-    this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
+    void this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
   }
 
   public viewAndEdit(hearingID: string): void {
@@ -199,7 +199,7 @@ export class CaseHearingsListComponent implements OnInit {
         );
         break;
       default:
-        this.router.navigate(['/', 'hearings', 'view']);
+        void this.router.navigate(['/', 'hearings', 'view']);
         break;
     }
   }

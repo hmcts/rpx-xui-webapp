@@ -54,7 +54,7 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
       this.location.back();
     } else {
       // Fallback when opened in a new tab/deep link (no useful history)
-      this.router.navigate([this.hearingActualAddEditUrl()]);
+      void this.router.navigate([this.hearingActualAddEditUrl()]);
     }
   }
 }

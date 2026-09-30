@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
+import type { APIRequestContext } from '@playwright/test';
 
 import { __test__ as resolverTest } from '../../E2E/utils/test-setup/hearingsCaseResolver';
-import { __test__ } from '../../E2E/utils/test-setup/prlHearingsCaseSetup';
+import { __test__, PrlHearingsCaseSetupConfig } from '../../E2E/utils/test-setup/prlHearingsCaseSetup';
 
 test.describe('PRL hearings case setup', () => {
   test('resolves required setup config with redirect fallback', () => {
@@ -152,6 +153,7 @@ test.describe('PRL hearings case setup', () => {
   test('uses the one PRL hearing-manager primary location from the signed-in user', () => {
     const resolvePrimaryLocation = resolverTest.resolveHearingManagerPrimaryLocation;
     const userDetails = {
+      userInfo: { roles: ['caseworker', 'caseworker-privatelaw-courtadmin'] },
       roleAssignmentInfo: [
         { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: ' 898213 ' },
         { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '898213' },
@@ -166,10 +168,13 @@ test.describe('PRL hearings case setup', () => {
   test('rejects missing or ambiguous PRL hearing-manager primary locations', () => {
     const resolvePrimaryLocation = resolverTest.resolveHearingManagerPrimaryLocation;
 
-    expect(() => resolvePrimaryLocation({ roleAssignmentInfo: [] }, 'PRIVATELAW')).toThrow(/exactly one.*found 0/i);
+    expect(() =>
+      resolvePrimaryLocation({ userInfo: { roles: ['caseworker-privatelaw-courtadmin'] }, roleAssignmentInfo: [] }, 'PRIVATELAW')
+    ).toThrow(/exactly one.*found 0/i);
     expect(() =>
       resolvePrimaryLocation(
         {
+          userInfo: { roles: ['caseworker-privatelaw-courtadmin'] },
           roleAssignmentInfo: [
             { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '898213' },
             { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '123456' },
@@ -180,11 +185,47 @@ test.describe('PRL hearings case setup', () => {
     ).toThrow(/exactly one.*found 2/i);
   });
 
-  test('requires an explicit seeded venue for a configured case reference', () => {
-    const resolveConfiguredVenue = resolverTest.resolveConfiguredCaseSeededVenue;
+  test('rejects a hearing manager location when the signed-in identity lacks the PRL court-admin role', () => {
+    const resolvePrimaryLocation = resolverTest.resolveHearingManagerPrimaryLocation;
 
-    expect(resolveConfiguredVenue(' East London Family Court ')).toBe('East London Family Court');
-    expect(() => resolveConfiguredVenue(undefined)).toThrow(/PRL_HEARINGS_COURT_LOCATION_LABEL/);
+    expect(() =>
+      resolvePrimaryLocation(
+        {
+          userInfo: { roles: ['caseworker', 'hearing-manager'] },
+          roleAssignmentInfo: [{ jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946' }],
+        },
+        'PRIVATELAW'
+      )
+    ).toThrow(/caseworker-privatelaw-courtadmin/i);
+    expect(() =>
+      resolvePrimaryLocation(
+        {
+          roleAssignmentInfo: [{ jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946' }],
+        },
+        'PRIVATELAW'
+      )
+    ).toThrow(/caseworker-privatelaw-courtadmin/i);
+  });
+
+  test('reads one refreshed user-details response before resolving the access profile', async () => {
+    const requestedUrls: string[] = [];
+    const page = {
+      request: {
+        get: async (url: string) => {
+          requestedUrls.push(url);
+          return {
+            status: () => 200,
+            json: async () => ({
+              userInfo: { roles: ['caseworker-privatelaw-courtadmin'] },
+              roleAssignmentInfo: [{ jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946' }],
+            }),
+          };
+        },
+      },
+    };
+
+    await expect(resolverTest.getHearingManagerPrimaryLocation(page as never, 'PRIVATELAW')).resolves.toBe('234946');
+    expect(requestedUrls).toEqual(['/api/user/details?refreshRoleAssignments=true']);
   });
 
   test('submits the exact canonical court option supplied by the CCD event token', () => {
@@ -239,6 +280,220 @@ test.describe('PRL hearings case setup', () => {
         '898213'
       )
     ).toThrow(/exactly one.*found 2/i);
+  });
+
+  test('preflights the signed-in hearing manager location against the authoritative C100 Work Allocation list', async () => {
+    let requestUrl = '';
+    let requestOptions: Record<string, unknown> | undefined;
+    const apiContext = {
+      post: async (url: string, options: Record<string, unknown>) => {
+        requestUrl = url;
+        requestOptions = options;
+        return {
+          ok: () => true,
+          status: () => 200,
+          json: async () => ({
+            data: {
+              courtList: {
+                list_items: [
+                  { code: '123456:other@justice.gov.uk', label: 'Other Family Court - 123456' },
+                  { code: '898213:eastlondonfamilypr@justice.gov.uk', label: 'East London Family Court - 898213' },
+                ],
+              },
+            },
+          }),
+        };
+      },
+    } as unknown as APIRequestContext;
+
+    const selected = await __test__.preflightWorkAllocationCourt(
+      apiContext,
+      { prlCosApiUrl: 'https://prl-cos-api.example.test/' } as Required<PrlHearingsCaseSetupConfig>,
+      'court-admin-token',
+      's2s-token',
+      '898213'
+    );
+
+    expect(requestUrl).toBe('https://prl-cos-api.example.test/transfer-court/about-to-start');
+    expect(requestOptions).toEqual({
+      headers: {
+        Authorization: 'Bearer court-admin-token',
+        ServiceAuthorization: 'Bearer s2s-token',
+        'Content-Type': 'application/json',
+      },
+      data: {
+        event_id: 'transferToAnotherCourt',
+        case_details: {
+          jurisdiction: 'PRIVATELAW',
+          case_type_id: 'PRLAPPS',
+          state: 'SUBMITTED_PAID',
+          data: {
+            caseTypeOfApplication: 'C100',
+            courtId: '898213',
+          },
+        },
+      },
+      failOnStatusCode: false,
+    });
+    expect(selected).toEqual({
+      code: '898213:eastlondonfamilypr@justice.gov.uk',
+      label: 'East London Family Court - 898213',
+    });
+  });
+
+  test('rejects unavailable, malformed, or ambiguous Work Allocation court options', async () => {
+    const selectWorkAllocationCourtLocation = __test__.selectWorkAllocationCourtLocation;
+
+    expect(() => selectWorkAllocationCourtLocation({}, '898213')).toThrow(/Work Allocation.*found 0/i);
+    expect(() =>
+      selectWorkAllocationCourtLocation(
+        {
+          data: {
+            courtList: {
+              list_items: [
+                { code: '8982130:not-the-same-court@justice.gov.uk', label: 'Prefix trap' },
+                { code: '898213:missing-label@justice.gov.uk', label: ' ' },
+              ],
+            },
+          },
+        },
+        '898213'
+      )
+    ).toThrow(/Work Allocation.*found 0/i);
+    expect(() =>
+      selectWorkAllocationCourtLocation(
+        {
+          data: {
+            courtList: {
+              list_items: [
+                { code: '898213:first@justice.gov.uk', label: 'First court' },
+                { code: '898213:second@justice.gov.uk', label: 'Second court' },
+              ],
+            },
+          },
+        },
+        '898213'
+      )
+    ).toThrow(/Work Allocation.*found 2/i);
+  });
+
+  test('reports a sanitized Work Allocation preflight HTTP failure', async () => {
+    const apiContext = {
+      post: async () => ({
+        ok: () => false,
+        status: () => 503,
+      }),
+    } as unknown as APIRequestContext;
+
+    await expect(
+      __test__.preflightWorkAllocationCourt(
+        apiContext,
+        { prlCosApiUrl: 'https://prl-cos-api.example.test' } as Required<PrlHearingsCaseSetupConfig>,
+        'court-admin-token',
+        's2s-token',
+        '898213'
+      )
+    ).rejects.toThrow(
+      'PRL hearings setup Work Allocation court preflight failed (HTTP 503). Check sanitized service logs for response details.'
+    );
+  });
+
+  test('completes Work Allocation preflight before acquiring citizen credentials or creating a case', async () => {
+    const calls: string[] = [];
+
+    const result = await __test__.prepareCitizenCaseAfterPreflight(
+      async () => {
+        calls.push('work-allocation-preflight');
+      },
+      async () => {
+        calls.push('citizen-token');
+        return 'citizen-token';
+      },
+      async (citizenToken) => {
+        calls.push(`citizen-create:${citizenToken}`);
+        return { id: '1111222233334444' };
+      }
+    );
+
+    expect(calls).toEqual(['work-allocation-preflight', 'citizen-token', 'citizen-create:citizen-token']);
+    expect(result).toEqual({
+      citizenToken: 'citizen-token',
+      createdCase: { id: '1111222233334444' },
+    });
+  });
+
+  test('stops before acquiring citizen credentials or creating a case when Work Allocation preflight fails', async () => {
+    const calls: string[] = [];
+
+    await expect(
+      __test__.prepareCitizenCaseAfterPreflight(
+        async () => {
+          calls.push('work-allocation-preflight');
+          throw new Error('location is not Work Allocation enabled');
+        },
+        async () => {
+          calls.push('citizen-token');
+          return 'citizen-token';
+        },
+        async () => {
+          calls.push('citizen-create');
+          return { id: '1111222233334444' };
+        }
+      )
+    ).rejects.toThrow('location is not Work Allocation enabled');
+    expect(calls).toEqual(['work-allocation-preflight']);
+  });
+
+  test('accepts only an issued Work Allocation case at the signed-in manager location', () => {
+    expect(() =>
+      __test__.validateIssuedCase(
+        {
+          state: 'CASE_ISSUED',
+          data: {
+            caseManagementLocation: { baseLocation: '898213' },
+          },
+        },
+        '898213'
+      )
+    ).not.toThrow();
+
+    expect(() =>
+      __test__.validateIssuedCase(
+        {
+          state: 'PROCEEDS_IN_HERITAGE_SYSTEM',
+          data: {
+            caseManagementLocation: { baseLocation: '898213' },
+            isNonWorkAllocationEnabledCourtSelected: 'Yes',
+          },
+        },
+        '898213'
+      )
+    ).toThrow(/expected state CASE_ISSUED.*PROCEEDS_IN_HERITAGE_SYSTEM/i);
+
+    expect(() =>
+      __test__.validateIssuedCase(
+        {
+          state: 'CASE_ISSUED',
+          data: {
+            caseManagementLocation: { baseLocation: '898213' },
+            isNonWorkAllocationEnabledCourtSelected: 'Yes',
+          },
+        },
+        '898213'
+      )
+    ).toThrow(/outside the Work Allocation path/i);
+
+    expect(() =>
+      __test__.validateIssuedCase(
+        {
+          state: 'CASE_ISSUED',
+          data: {
+            caseManagementLocation: { baseLocation: '123456' },
+          },
+        },
+        '898213'
+      )
+    ).toThrow(/expected case location 898213.*123456/i);
   });
 
   test('extracts supported CCD case-reference response shapes', () => {

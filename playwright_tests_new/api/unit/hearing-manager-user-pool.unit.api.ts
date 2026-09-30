@@ -28,11 +28,15 @@ const configuredEnv = {
 };
 
 test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, () => {
-  test('falls back to the legacy hearing manager users when no pooled users are configured', () => {
+  test('fails when no pooled hearing manager is configured instead of falling back to the base alias', () => {
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, {})).toEqual([]);
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_OFF_USER, {})).toEqual([]);
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, undefined, {})).toBe(HEARING_MANAGER_CR84_ON_USER);
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_OFF_USER, undefined, {})).toBe(HEARING_MANAGER_CR84_OFF_USER);
+    expect(() => resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, undefined, {})).toThrow(
+      /no configured hearing manager identity/i
+    );
+    expect(() => resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_OFF_USER, undefined, {})).toThrow(
+      /no configured hearing manager identity/i
+    );
   });
 
   test('returns only fully configured pooled users for the requested CR84 mode', () => {
@@ -112,7 +116,22 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     );
   });
 
-  test('returns fallback session candidates after the worker-selected CR84 user', () => {
+  test('rejects an explicitly selected pooled identity without configured credentials', () => {
+    expect(() => resolveHearingManagerUserIdentifier('HEARING_MANAGER_CR84_OFF-2', undefined, {})).toThrow(
+      /no configured hearing manager identity/i
+    );
+  });
+
+  test('keeps base aliases as shared session candidates when no pool is configured', () => {
+    expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_ON_USER, undefined, {})).toEqual([
+      HEARING_MANAGER_CR84_ON_USER,
+    ]);
+    expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, undefined, {})).toEqual([
+      HEARING_MANAGER_CR84_OFF_USER,
+    ]);
+  });
+
+  test('orders shared session candidates from the worker-selected CR84 identity', () => {
     expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 3 }, configuredEnv)).toEqual([
       'HEARING_MANAGER_CR84_OFF-4',
       'HEARING_MANAGER_CR84_OFF-1',

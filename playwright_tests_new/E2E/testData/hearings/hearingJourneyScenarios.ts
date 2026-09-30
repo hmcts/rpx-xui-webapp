@@ -14,10 +14,6 @@ export const prlHearingHappyPathScenario = {
   route: {
     jurisdictionId: 'PRIVATELAW',
     caseTypeId: 'PRLAPPS',
-    caseReference: process.env.PRL_HEARINGS_CASE_REFERENCE,
-    seededVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL,
-    caseReferencePattern: process.env.PRL_HEARINGS_CASE_REFERENCE_PATTERN ?? '*',
-    preferredStates: ['Judicial review', 'Prepare for hearing', 'Submitted', 'Case management'],
   },
   additionalInstructions: 'Additional instructions for E2E Playwright test',
   hearingFacilities: {
@@ -53,10 +49,6 @@ export const prlHearingHappyPathScenario = {
   route: {
     jurisdictionId: string;
     caseTypeId: string;
-    caseReference?: string;
-    seededVenue?: string;
-    caseReferencePattern: string;
-    preferredStates: string[];
   };
   additionalInstructions: string;
   hearingFacilities: {

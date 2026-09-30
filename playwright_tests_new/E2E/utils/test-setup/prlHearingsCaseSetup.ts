@@ -37,7 +37,6 @@ export type PrlCourtLocation = {
 
 export type PrlHearingsCaseSetupResult = {
   caseReference: string;
-  seededVenue: string;
 };
 
 type CaseCreateResponse = {
@@ -48,6 +47,7 @@ type CaseCreateResponse = {
 };
 
 type CcdCaseResponse = CaseCreateResponse & {
+  state?: string;
   data?: Record<string, unknown>;
   case_data?: Record<string, unknown>;
 };
@@ -63,10 +63,20 @@ type EventTokenResponse = {
   };
 };
 
+type WorkAllocationCourtResponse = {
+  data?: {
+    courtList?: {
+      list_items?: Array<Partial<PrlCourtLocation>>;
+    };
+  };
+};
+
 const CASE_REFERENCE_REGEX = /^\d{16}$/;
 const PRL_JURISDICTION = 'PRIVATELAW';
 const PRL_CASE_TYPE = 'PRLAPPS';
 const ISSUE_AND_SEND_TO_LOCAL_COURT_EVENT_ID = 'issueAndSendToLocalCourtCallback';
+const TRANSFER_TO_ANOTHER_COURT_EVENT_ID = 'transferToAnotherCourt';
+const CASE_ISSUED_STATE = 'CASE_ISSUED';
 const DEFAULT_SERVICE_MICROSERVICE = 'ccd_data';
 const REQUIRED_ENV_MESSAGE =
   'PRL hearings setup requires CCD_DATA_STORE_URL, PRL_COS_API_URL, IDAM_SECRET, ' +
@@ -161,19 +171,50 @@ function buildIssueAndSendToLocalCourtEventData(courtLocation: PrlCourtLocation)
   };
 }
 
-function selectCourtLocation(eventTokenResponse: EventTokenResponse, primaryLocation: string): PrlCourtLocation {
-  const matches = (eventTokenResponse.case_details?.case_data?.courtList?.list_items ?? []).filter(
+function selectCourtLocationFromList(
+  listItems: Array<Partial<PrlCourtLocation>> | undefined,
+  primaryLocation: string,
+  source: string
+): PrlCourtLocation {
+  const matches = (listItems ?? []).filter(
     (location): location is PrlCourtLocation =>
       location.code?.split(':', 1)[0]?.trim() === primaryLocation && Boolean(location.label?.trim())
   );
 
   if (matches.length !== 1) {
     throw new Error(
-      `PRL hearings setup expected exactly one CCD court option for hearing manager location ${primaryLocation}, found ${matches.length}.`
+      `PRL hearings setup expected exactly one ${source} for hearing manager location ${primaryLocation}, found ${matches.length}.`
     );
   }
 
   return matches[0];
+}
+
+function selectCourtLocation(eventTokenResponse: EventTokenResponse, primaryLocation: string): PrlCourtLocation {
+  return selectCourtLocationFromList(
+    eventTokenResponse.case_details?.case_data?.courtList?.list_items,
+    primaryLocation,
+    'CCD court option'
+  );
+}
+
+function selectWorkAllocationCourtLocation(response: WorkAllocationCourtResponse, primaryLocation: string): PrlCourtLocation {
+  return selectCourtLocationFromList(response.data?.courtList?.list_items, primaryLocation, 'PRL Work Allocation court option');
+}
+
+function buildWorkAllocationPreflightRequest(primaryLocation: string): Record<string, unknown> {
+  return {
+    event_id: TRANSFER_TO_ANOTHER_COURT_EVENT_ID,
+    case_details: {
+      jurisdiction: PRL_JURISDICTION,
+      case_type_id: PRL_CASE_TYPE,
+      state: 'SUBMITTED_PAID',
+      data: {
+        caseTypeOfApplication: 'C100',
+        courtId: primaryLocation,
+      },
+    },
+  };
 }
 
 function normalizeIdamApiUrl(url: string): string {
@@ -300,6 +341,43 @@ async function getServiceToken(
     throw new Error('PRL hearings setup S2S response did not include a token.');
   }
   return token;
+}
+
+async function preflightWorkAllocationCourt(
+  apiContext: APIRequestContext,
+  config: Required<PrlHearingsCaseSetupConfig>,
+  bearerToken: string,
+  serviceToken: string,
+  primaryLocation: string
+): Promise<PrlCourtLocation> {
+  const response = await apiContext.post(`${normalizeBaseUrl(config.prlCosApiUrl)}/transfer-court/about-to-start`, {
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+      ServiceAuthorization: `Bearer ${serviceToken}`,
+      'Content-Type': 'application/json',
+    },
+    data: buildWorkAllocationPreflightRequest(primaryLocation),
+    failOnStatusCode: false,
+  });
+
+  if (!response.ok()) {
+    throw formatHttpFailure('PRL hearings setup Work Allocation court preflight failed', response.status());
+  }
+
+  return selectWorkAllocationCourtLocation((await response.json()) as WorkAllocationCourtResponse, primaryLocation);
+}
+
+async function prepareCitizenCaseAfterPreflight(
+  preflight: () => Promise<unknown>,
+  getCitizenToken: () => Promise<string>,
+  createDraft: (citizenToken: string) => Promise<CcdCaseResponse>
+): Promise<{ citizenToken: string; createdCase: CcdCaseResponse }> {
+  await preflight();
+  const citizenToken = await getCitizenToken();
+  return {
+    citizenToken,
+    createdCase: await createDraft(citizenToken),
+  };
 }
 
 async function getEventToken(
@@ -474,6 +552,27 @@ async function getCaseInfo(
   return (await response.json()) as CcdCaseResponse;
 }
 
+function validateIssuedCase(caseInfo: CcdCaseResponse, primaryLocation: string): void {
+  if (caseInfo.state !== CASE_ISSUED_STATE) {
+    throw new Error(
+      `PRL hearings setup expected state ${CASE_ISSUED_STATE} after issuing the case, found ${caseInfo.state ?? 'missing'}.`
+    );
+  }
+
+  const caseData = caseInfo.data ?? caseInfo.case_data ?? {};
+  if (caseData.isNonWorkAllocationEnabledCourtSelected === 'Yes') {
+    throw new Error('PRL hearings setup issued the case outside the Work Allocation path.');
+  }
+
+  const caseManagementLocation = caseData.caseManagementLocation as { baseLocation?: unknown } | undefined;
+  const actualLocation = String(caseManagementLocation?.baseLocation ?? '').trim();
+  if (actualLocation !== primaryLocation) {
+    throw new Error(
+      `PRL hearings setup expected case location ${primaryLocation} after issuing the case, found ${actualLocation || 'missing'}.`
+    );
+  }
+}
+
 export async function createPrlHearingsCase(primaryLocation: string): Promise<PrlHearingsCaseSetupResult> {
   const resolved = resolvePrlHearingsCaseSetupConfig(process.env);
   const missing = validatePrlHearingsCaseSetupConfig(resolved);
@@ -484,18 +583,21 @@ export async function createPrlHearingsCase(primaryLocation: string): Promise<Pr
   const config = resolved as Required<PrlHearingsCaseSetupConfig>;
   const apiContext = await request.newContext();
   try {
-    const citizenToken = await getBearerToken({ username: config.citizenUsername, password: config.citizenPassword }, config);
-    const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
-    const createdCase = await createDraftCitizenCase(apiContext, config, citizenToken, serviceToken);
-    const caseReference = extractCaseReference(createdCase);
-    await submitCitizenCase(apiContext, config, citizenToken, serviceToken, createdCase);
-
     const courtAdminToken = await getBearerToken(
       { username: config.courtAdminUsername, password: config.courtAdminPassword },
       config
     );
+    const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
+    const { citizenToken, createdCase } = await prepareCitizenCaseAfterPreflight(
+      () => preflightWorkAllocationCourt(apiContext, config, courtAdminToken, serviceToken, primaryLocation),
+      () => getBearerToken({ username: config.citizenUsername, password: config.citizenPassword }, config),
+      (token) => createDraftCitizenCase(apiContext, config, token, serviceToken)
+    );
+    const caseReference = extractCaseReference(createdCase);
+    await submitCitizenCase(apiContext, config, citizenToken, serviceToken, createdCase);
+
     const courtAdminUserId = await getUserId(apiContext, config, courtAdminToken);
-    const courtLocation = await submitCcdEvent(
+    await submitCcdEvent(
       apiContext,
       config,
       courtAdminUserId,
@@ -505,8 +607,9 @@ export async function createPrlHearingsCase(primaryLocation: string): Promise<Pr
       ISSUE_AND_SEND_TO_LOCAL_COURT_EVENT_ID,
       primaryLocation
     );
-    await getCaseInfo(apiContext, config, courtAdminToken, serviceToken, caseReference);
-    return { caseReference, seededVenue: courtLocation.label };
+    const caseInfo = await getCaseInfo(apiContext, config, courtAdminToken, serviceToken, caseReference);
+    validateIssuedCase(caseInfo, primaryLocation);
+    return { caseReference };
   } finally {
     await apiContext.dispose();
   }
@@ -524,8 +627,13 @@ export const __test__ = {
   extractCaseReference,
   formatHttpFailure,
   buildIssueAndSendToLocalCourtEventData,
+  buildWorkAllocationPreflightRequest,
   isPrlHearingsCaseSetupEnabled,
+  preflightWorkAllocationCourt,
+  prepareCitizenCaseAfterPreflight,
   resolvePrlHearingsCaseSetupConfig,
   selectCourtLocation,
+  selectWorkAllocationCourtLocation,
+  validateIssuedCase,
   validatePrlHearingsCaseSetupConfig,
 };

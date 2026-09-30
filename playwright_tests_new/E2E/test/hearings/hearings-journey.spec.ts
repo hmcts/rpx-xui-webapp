@@ -36,11 +36,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
     let selectedHearingVenue = '';
 
     await test.step('Navigate to Hearings Page and click on the hearings tab', async () => {
-      const eligibleCase = await openEligibleHearingsCase(page, scenario.route);
-      if (!eligibleCase) {
-        throw new Error('The PRL hearing journey requires dynamic case setup to resolve its seeded hearing venue.');
-      }
-      seededHearingVenue = eligibleCase.seededVenue;
+      await openEligibleHearingsCase(page, scenario.route);
       await caseDetailsPage.selectCaseDetailsTab('Hearings');
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
     });
@@ -83,7 +79,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       // The venue already on the case is seeded by an async location lookup that overwrites the
       // selection list when it resolves, so wait for it before adding another venue.
-      await hearingsJourneyPage.waitForSeededVenues(seededHearingVenue);
+      seededHearingVenue = await hearingsJourneyPage.waitForSingleSeededVenue();
 
       selectedHearingVenue = await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
 
@@ -99,23 +95,19 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await continueHearingsFlow(page);
     });
 
+    await test.step('Complete Welsh Hearing Section', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-welsh$/);
+      await expect(page.getByRole('heading', { name: /Does this hearing need to be in Welsh?/i })).toBeVisible();
+      await hearingsJourneyPage.isWelshHearing(hearingJourneyModel);
+      await continueHearingsFlow(page);
+    });
+
     await test.step('Specific Judge Selection', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-judge$/);
       await expect(page.getByRole('heading', { name: /Do you want a specific judge?/i })).toBeVisible();
 
       await hearingsJourneyPage.setJudgeOptions(hearingJourneyModel);
       await expect(hearingsJourneyPage.selectAllJudgesThatApply).toHaveText('Select all judge types that apply');
-      await continueHearingsFlow(page);
-    });
-
-    await test.step('Complete Welsh Hearing Section when present', async () => {
-      if (!/\/hearings\/request\/hearing-welsh$/.test(page.url())) {
-        await expect(page).toHaveURL(/\/hearings\/request\/hearing-timing$/);
-        return;
-      }
-
-      await expect(page.getByRole('heading', { name: /Does this hearing need to be in Welsh?/i })).toBeVisible();
-      await hearingsJourneyPage.isWelshHearing(hearingJourneyModel);
       await continueHearingsFlow(page);
     });
 

@@ -29,11 +29,8 @@
         </h2>
 
         <div class="govuk-error-summary__body">
-          <p id="hearing-requirements-dialog-description" class="govuk-body">
-            {{ validationErrors.message[0] | rpxTranslate }}
-            <a #mismatchDialogLink href="/">{{ validationErrors.message[1] | rpxTranslate }}</a>
-            {{ validationErrors.message[2] | rpxTranslate }}
-          </p>
+          <!-- prettier-ignore -->
+          <p id="hearing-requirements-dialog-description" class="govuk-body">{{ validationErrors.message[0] | rpxTranslate }} <a #mismatchDialogLink href="/">{{ validationErrors.message[1] | rpxTranslate }}</a> {{ validationErrors.message[2] | rpxTranslate }}</p>
           <button type="button" class="govuk-button" (click)="closeMismatchErrorMessage()">
             {{ 'Close' | rpxTranslate }}
           </button>

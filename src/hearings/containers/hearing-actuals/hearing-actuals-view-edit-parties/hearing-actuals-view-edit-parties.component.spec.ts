@@ -3,7 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
@@ -226,6 +226,19 @@ describe('HearingActualsViewEditPartiesComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigate back to the case hearings page when cancelled', () => {
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    (component as any).caseInfo = {
+      jurisdictionId: 'IA',
+      caseType: 'Asylum',
+      caseReference: '1111222233334444',
+    };
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '1111222233334444', 'hearings']);
   });
 
   it('getRole should return the correct english role value', () => {

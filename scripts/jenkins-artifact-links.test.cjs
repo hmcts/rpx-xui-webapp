@@ -36,8 +36,8 @@ test('final suite HTML links exact Jenkins artifacts and coverage survives HTML 
       const html = parse(fs.readFileSync(reportFile, 'utf8'));
       assert(html.querySelector('.main-tablinks[onclick*="TabPerfetto"]'), suite);
       const href = html.querySelector('#TabPerfetto a').getAttribute('href');
-      assert.equal(href, `${build}artifact/${resultsDir}/perfetto.json`);
-      assert(fs.existsSync(new URL(href).pathname.split('/artifact/')[1]));
+      assert.equal(href, 'perfetto/perfetto.json');
+      assert.equal(fs.readFileSync(path.join(reportDir, href), 'utf8'), '{}');
       for (const pipeline of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
         const source = fs.readFileSync(path.join(__dirname, '..', pipeline), 'utf8');
         const globs = [...source.matchAll(/artifacts: '([^']*perfetto[^']*)'/g)].flatMap((m) => m[1].split(','));

@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -28,6 +28,8 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   public actualCancellationReasonCodes: LovRefDataModel[];
   public hearingActualsMainModel: HearingActualsMainModel;
   public sub: Subscription;
+  private caseInfoSub: Subscription;
+  private caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
   public submitted = false;
   public adjournHearingErrorMessage = '';
   public cancelHearingErrorMessage = '';
@@ -38,7 +40,8 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly location: Location,
     private readonly formBuilder: FormBuilder,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {
     this.route.params.subscribe((params) => {
       this.id = params.id;
@@ -62,6 +65,9 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.caseInfoSub = this.hearingStore.select(fromHearingStore.getHearingValuesCaseInfo).subscribe((caseInfo) => {
+      this.caseInfo = caseInfo;
+    });
     this.hearingStageResultForm = this.formBuilder.group({
       hearingStage: [''],
       hearingResult: ['', Validators.required],
@@ -109,6 +115,9 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+    if (this.caseInfoSub) {
+      this.caseInfoSub.unsubscribe();
+    }
   }
 
   public onSubmit(): void {
@@ -144,6 +153,18 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
 
   public onBack(): void {
     this.location.back();
+  }
+
+  public onCancel(): void {
+    void this.router.navigate([
+      '/',
+      'cases',
+      'case-details',
+      this.caseInfo?.jurisdictionId,
+      this.caseInfo?.caseType,
+      this.caseInfo?.caseReference || this.hearingActualsMainModel?.caseDetails?.caseRef,
+      'hearings',
+    ]);
   }
 
   private isFormValid(): boolean {

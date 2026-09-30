@@ -15,6 +15,7 @@ import * as hearingRequestActions from '../../store/actions/hearing-request.acti
 })
 export class HearingActualsComponent implements OnInit, OnDestroy {
   private sub: Subscription;
+  private caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
 
   public constructor(
     private readonly store: Store<fromHearingStore.State>,
@@ -26,10 +27,37 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
     this.sub = this.route.params
       .pipe(withLatestFrom(this.store.pipe(select(fromHearingStore.getHearingValuesCaseInfo))))
       .subscribe(([params, caseInfo]) => {
+        this.caseInfo = caseInfo;
         const caseRef = caseInfo?.caseReference;
         this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '', caseRef }));
         this.store.dispatch(new hearingActualsActions.GetHearingActuals({ id: params.id, caseRef }));
       });
+  }
+
+  public onCancel(): void {
+    void this.router.navigate([
+      '/',
+      'cases',
+      'case-details',
+      this.caseInfo?.jurisdictionId,
+      this.caseInfo?.caseType,
+      this.caseInfo?.caseReference,
+      'hearings',
+    ]);
+  }
+
+  public get isConfirmationPage(): boolean {
+    return this.router.url.endsWith('/hearing-actuals-confirmation');
+  }
+
+  public get isSummaryPage(): boolean {
+    return (
+      this.router.url.includes('/hearing-actual-add-edit-summary') ||
+      this.router.url.includes('/hearing-actual-edit-summary') ||
+      this.router.url.includes('/hearing-stage-result') ||
+      this.router.url.includes('/actuals-parties/') ||
+      this.router.url.includes('/hearing-timing/')
+    );
   }
 
   public ngOnDestroy(): void {

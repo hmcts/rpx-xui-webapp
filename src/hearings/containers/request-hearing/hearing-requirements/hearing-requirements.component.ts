@@ -104,11 +104,13 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       this.caseTypeRefData,
       this.serviceHearingValuesModel.caseCategories
     );
-    const hearingRequestMismatchDetected = !HearingsUtils.checkHearingConsistency(
+    // TODO: Edit line below once QA'd
+    const hearingRequestMismatchDetected = true; // temporarily set to true for testing
+    /* !HearingsUtils.checkHearingConsistency(
       this.hearingRequestMainModel,
       this.serviceHearingValuesModel,
       this.caseReference
-    );
+    ); */
     this.hearingsService.hearingRequestContinueDisabled = hearingRequestMismatchDetected;
     if (hearingRequestMismatchDetected) {
       this.showMismatchErrorMessage = true;

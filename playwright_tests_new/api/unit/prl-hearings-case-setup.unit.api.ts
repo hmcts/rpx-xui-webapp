@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
+import { __test__ as resolverTest } from '../../E2E/utils/test-setup/hearingsCaseResolver';
 import { __test__ } from '../../E2E/utils/test-setup/prlHearingsCaseSetup';
 
 test.describe('PRL hearings case setup', () => {
@@ -148,22 +149,96 @@ test.describe('PRL hearings case setup', () => {
     expect(error.message).not.toContain('Body');
   });
 
-  test('keeps the case management location aligned with the hearing court', () => {
-    const eventData = __test__.buildIssueAndSendToLocalCourtEventData({
-      courtLocationCode: '898213:',
-      courtLocationLabel: 'East London Family Court',
-    } as Parameters<typeof __test__.buildIssueAndSendToLocalCourtEventData>[0]);
+  test('uses the one PRL hearing-manager primary location from the signed-in user', () => {
+    const resolvePrimaryLocation = resolverTest.resolveHearingManagerPrimaryLocation;
+    const userDetails = {
+      roleAssignmentInfo: [
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: ' 898213 ' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '898213' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'case-allocator', primaryLocation: '654321' },
+        { jurisdiction: 'PUBLICLAW', roleName: 'hearing-manager', primaryLocation: '123456' },
+      ],
+    };
 
-    expect(eventData).toMatchObject({
-      data: {
-        caseManagementLocation: {
-          value: {
-            baseLocation: '898213',
-            baseLocationName: 'East London Family Court',
+    expect(resolvePrimaryLocation(userDetails, 'PRIVATELAW')).toBe('898213');
+  });
+
+  test('rejects missing or ambiguous PRL hearing-manager primary locations', () => {
+    const resolvePrimaryLocation = resolverTest.resolveHearingManagerPrimaryLocation;
+
+    expect(() => resolvePrimaryLocation({ roleAssignmentInfo: [] }, 'PRIVATELAW')).toThrow(/exactly one.*found 0/i);
+    expect(() =>
+      resolvePrimaryLocation(
+        {
+          roleAssignmentInfo: [
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '898213' },
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '123456' },
+          ],
+        },
+        'PRIVATELAW'
+      )
+    ).toThrow(/exactly one.*found 2/i);
+  });
+
+  test('requires an explicit seeded venue for a configured case reference', () => {
+    const resolveConfiguredVenue = resolverTest.resolveConfiguredCaseSeededVenue;
+
+    expect(resolveConfiguredVenue(' East London Family Court ')).toBe('East London Family Court');
+    expect(() => resolveConfiguredVenue(undefined)).toThrow(/PRL_HEARINGS_COURT_LOCATION_LABEL/);
+  });
+
+  test('submits the exact canonical court option supplied by the CCD event token', () => {
+    const selectCourtLocation = __test__.selectCourtLocation;
+    const courtLocation = selectCourtLocation(
+      {
+        case_details: {
+          case_data: {
+            courtList: {
+              list_items: [
+                { code: '898213:eastlondonfamilypr@justice.gov.uk', label: 'East London Family Court - 898213' },
+                { code: '123456:other@justice.gov.uk', label: 'Other Family Court - 123456' },
+              ],
+            },
           },
         },
       },
+      '898213'
+    );
+
+    expect(__test__.buildIssueAndSendToLocalCourtEventData(courtLocation)).toEqual({
+      data: {
+        courtList: {
+          value: {
+            code: '898213:eastlondonfamilypr@justice.gov.uk',
+            label: 'East London Family Court - 898213',
+          },
+          list_items: [
+            {
+              code: '898213:eastlondonfamilypr@justice.gov.uk',
+              label: 'East London Family Court - 898213',
+            },
+          ],
+        },
+      },
     });
+  });
+
+  test('rejects missing or ambiguous CCD court options', () => {
+    const selectCourtLocation = __test__.selectCourtLocation;
+    const response = (list_items: Array<{ code: string; label: string }>) => ({
+      case_details: { case_data: { courtList: { list_items } } },
+    });
+
+    expect(() => selectCourtLocation(response([]), '898213')).toThrow(/exactly one.*found 0/i);
+    expect(() =>
+      selectCourtLocation(
+        response([
+          { code: '898213:first@justice.gov.uk', label: 'First court' },
+          { code: '898213:second@justice.gov.uk', label: 'Second court' },
+        ]),
+        '898213'
+      )
+    ).toThrow(/exactly one.*found 2/i);
   });
 
   test('extracts supported CCD case-reference response shapes', () => {

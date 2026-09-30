@@ -8,6 +8,7 @@ type HearingCaseRoute = {
   jurisdictionId: string;
   caseTypeId: string;
   caseReference?: string;
+  seededVenue?: string;
   caseReferencePattern: string;
   preferredStates: string[];
 };
@@ -19,6 +20,14 @@ type GlobalSearchResult = {
 
 type GlobalSearchResponse = {
   results?: GlobalSearchResult[];
+};
+
+type UserDetailsResponse = {
+  roleAssignmentInfo?: Array<{
+    jurisdiction?: string;
+    roleName?: string;
+    primaryLocation?: string;
+  }>;
 };
 
 type CaseDetailsProbeStatus = 'usable' | 'challenged-access' | 'unusable';
@@ -38,6 +47,44 @@ function stateMatchesPreference(stateId: string | undefined, preferredStates: st
 
   const normalizedState = normalize(stateId);
   return preferredStates.some((preferredState) => normalizedState.includes(normalize(preferredState)));
+}
+
+function resolveHearingManagerPrimaryLocation(userDetails: UserDetailsResponse, jurisdictionId: string): string {
+  const locations = Array.from(
+    new Set(
+      (userDetails.roleAssignmentInfo ?? [])
+        .filter((assignment) => assignment.jurisdiction === jurisdictionId && assignment.roleName === 'hearing-manager')
+        .map((assignment) => assignment.primaryLocation?.trim())
+        .filter((location): location is string => Boolean(location))
+    )
+  );
+
+  if (locations.length !== 1) {
+    throw new Error(
+      `PRL hearings setup expected exactly one ${jurisdictionId} hearing-manager primary location, found ${locations.length}.`
+    );
+  }
+
+  return locations[0];
+}
+
+async function getHearingManagerPrimaryLocation(page: Page, jurisdictionId: string): Promise<string> {
+  const response = await page.request.get('/api/user/details', { failOnStatusCode: false });
+  if (response.status() !== 200) {
+    throw new Error(`PRL hearings setup could not read the signed-in user details (HTTP ${response.status()}).`);
+  }
+
+  return resolveHearingManagerPrimaryLocation((await response.json()) as UserDetailsResponse, jurisdictionId);
+}
+
+function resolveConfiguredCaseSeededVenue(seededVenue: string | undefined): string {
+  const resolvedVenue = seededVenue?.trim();
+  if (!resolvedVenue) {
+    throw new Error(
+      'PRL_HEARINGS_CASE_REFERENCE requires PRL_HEARINGS_COURT_LOCATION_LABEL so the seeded venue assertions remain deterministic.'
+    );
+  }
+  return resolvedVenue;
 }
 
 async function resolveCandidateCaseReferences(page: Page, route: HearingCaseRoute): Promise<string[]> {
@@ -119,10 +166,11 @@ async function openCaseDetailsProbe(page: Page, route: HearingCaseRoute, caseRef
 
 export async function openEligibleHearingsCase(page: Page, route: HearingCaseRoute) {
   if (route.caseReference) {
+    const seededVenue = resolveConfiguredCaseSeededVenue(route.seededVenue);
     await openCaseDetailsProbe(page, route, route.caseReference);
     const probeStatus = await getCaseDetailsProbeStatus(page);
     if (probeStatus === 'usable') {
-      return route.caseReference;
+      return { caseReference: route.caseReference, seededVenue };
     }
     const accessHint =
       probeStatus === 'challenged-access'
@@ -133,19 +181,20 @@ export async function openEligibleHearingsCase(page: Page, route: HearingCaseRou
     );
   }
 
-  const createdCaseReference = await createPrlHearingsCaseIfEnabled();
-  if (createdCaseReference) {
-    await openCaseDetailsProbe(page, route, createdCaseReference);
+  const primaryLocation = await getHearingManagerPrimaryLocation(page, route.jurisdictionId);
+  const createdCase = await createPrlHearingsCaseIfEnabled(primaryLocation);
+  if (createdCase) {
+    await openCaseDetailsProbe(page, route, createdCase.caseReference);
     const probeStatus = await getCaseDetailsProbeStatus(page);
     if (probeStatus === 'usable') {
-      return createdCaseReference;
+      return createdCase;
     }
     const accessHint =
       probeStatus === 'challenged-access'
         ? ' It opened the challenged-access screen, so check the created case court location against the hearing manager work area.'
         : '';
     throw new Error(
-      `PRL hearings setup created case ${createdCaseReference}, but it did not open a usable case-details tab list for ${route.jurisdictionId}/${route.caseTypeId}.${accessHint} The resolver validates access in the signed-in hearing manager session, so check the setup user's location and the hearing manager access model before falling back to shared cases.`
+      `PRL hearings setup created case ${createdCase.caseReference}, but it did not open a usable case-details tab list for ${route.jurisdictionId}/${route.caseTypeId}.${accessHint} The resolver validates access in the signed-in hearing manager session, so check the setup user's location and the hearing manager access model before falling back to shared cases.`
     );
   }
 
@@ -168,3 +217,8 @@ export async function openEligibleHearingsCase(page: Page, route: HearingCaseRou
   //   `Global search returned ${candidateCaseReferences.length} ${route.jurisdictionId}/${route.caseTypeId} candidate(s), but none opened a usable case-details tab list. ${challengedAccessCandidates} candidate(s) opened the challenged-access screen for this hearing manager. Set PRL_HEARINGS_CASE_REFERENCE to a known accessible PRL hearings case or enable PRL_HEARINGS_CASE_SETUP and prove the created case opens for this hearing manager.`
   // );
 }
+
+export const __test__ = {
+  resolveConfiguredCaseSeededVenue,
+  resolveHearingManagerPrimaryLocation,
+};

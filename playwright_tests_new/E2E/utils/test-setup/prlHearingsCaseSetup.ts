@@ -28,8 +28,16 @@ export type PrlHearingsCaseSetupConfig = {
   citizenPassword?: string;
   courtAdminUsername?: string;
   courtAdminPassword?: string;
-  courtLocationCode?: string;
-  courtLocationLabel?: string;
+};
+
+export type PrlCourtLocation = {
+  code: string;
+  label: string;
+};
+
+export type PrlHearingsCaseSetupResult = {
+  caseReference: string;
+  seededVenue: string;
 };
 
 type CaseCreateResponse = {
@@ -44,6 +52,17 @@ type CcdCaseResponse = CaseCreateResponse & {
   case_data?: Record<string, unknown>;
 };
 
+type EventTokenResponse = {
+  token?: string;
+  case_details?: {
+    case_data?: {
+      courtList?: {
+        list_items?: Array<Partial<PrlCourtLocation>>;
+      };
+    };
+  };
+};
+
 const CASE_REFERENCE_REGEX = /^\d{16}$/;
 const PRL_JURISDICTION = 'PRIVATELAW';
 const PRL_CASE_TYPE = 'PRLAPPS';
@@ -52,10 +71,6 @@ const DEFAULT_SERVICE_MICROSERVICE = 'ccd_data';
 const REQUIRED_ENV_MESSAGE =
   'PRL hearings setup requires CCD_DATA_STORE_URL, PRL_COS_API_URL, IDAM_SECRET, ' +
   'S2S_URL or PRL_HEARINGS_S2S_TOKEN, a redirect URI, citizen credentials, and court admin credentials.';
-const DEFAULT_HEARING_MANAGER_COURT_LOCATION = {
-  code: '898213:',
-  label: 'East London Family Court',
-};
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   return values.map((value) => value?.trim()).find((value): value is string => Boolean(value));
@@ -99,8 +114,6 @@ export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = proce
     citizenPassword: firstNonEmpty(env.CITIZEN_PASSWORD),
     courtAdminUsername: firstNonEmpty(env.COURT_ADMIN_STOKE_USERNAME, env.PRL_HEARINGS_SETUP_USERNAME),
     courtAdminPassword: firstNonEmpty(env.COURT_ADMIN_STOKE_PASSWORD, env.PRL_HEARINGS_SETUP_PASSWORD),
-    courtLocationCode: firstNonEmpty(env.PRL_HEARINGS_COURT_LOCATION_CODE, DEFAULT_HEARING_MANAGER_COURT_LOCATION.code),
-    courtLocationLabel: firstNonEmpty(env.PRL_HEARINGS_COURT_LOCATION_LABEL, DEFAULT_HEARING_MANAGER_COURT_LOCATION.label),
   };
 }
 
@@ -137,30 +150,30 @@ function normalizeBaseUrl(url: string): string {
   return url.replace(/\/+$/, '');
 }
 
-function normalizeCourtLocationCode(code: string): string {
-  return code.endsWith(':') ? code : `${code}:`;
-}
-
-function buildIssueAndSendToLocalCourtEventData(config: Required<PrlHearingsCaseSetupConfig>): Record<string, unknown> {
-  const courtLocation = {
-    code: normalizeCourtLocationCode(config.courtLocationCode),
-    label: config.courtLocationLabel,
-  };
-
+function buildIssueAndSendToLocalCourtEventData(courtLocation: PrlCourtLocation): Record<string, unknown> {
   return {
     data: {
       courtList: {
         value: courtLocation,
         list_items: [courtLocation],
       },
-      caseManagementLocation: {
-        value: {
-          baseLocation: courtLocation.code.replace(/:$/, ''),
-          baseLocationName: courtLocation.label,
-        },
-      },
     },
   };
+}
+
+function selectCourtLocation(eventTokenResponse: EventTokenResponse, primaryLocation: string): PrlCourtLocation {
+  const matches = (eventTokenResponse.case_details?.case_data?.courtList?.list_items ?? []).filter(
+    (location): location is PrlCourtLocation =>
+      location.code?.split(':', 1)[0]?.trim() === primaryLocation && Boolean(location.label?.trim())
+  );
+
+  if (matches.length !== 1) {
+    throw new Error(
+      `PRL hearings setup expected exactly one CCD court option for hearing manager location ${primaryLocation}, found ${matches.length}.`
+    );
+  }
+
+  return matches[0];
 }
 
 function normalizeIdamApiUrl(url: string): string {
@@ -296,8 +309,9 @@ async function getEventToken(
   bearerToken: string,
   serviceToken: string,
   eventId: string,
-  caseReference: string
-): Promise<string> {
+  caseReference: string,
+  primaryLocation: string
+): Promise<{ token: string; courtLocation: PrlCourtLocation }> {
   const tokenUrl =
     `${normalizeBaseUrl(config.ccdDataStoreUrl)}/caseworkers/${encodeURIComponent(userId)}` +
     `/jurisdictions/${PRL_JURISDICTION}/case-types/${PRL_CASE_TYPE}` +
@@ -325,11 +339,14 @@ async function getEventToken(
     throw new Error(`PRL hearings setup could not fetch CCD event token for ${eventId} (HTTP ${response.status()}).`);
   }
 
-  const body = (await response.json()) as { token?: string };
+  const body = (await response.json()) as EventTokenResponse;
   if (!body.token?.trim()) {
     throw new Error('PRL hearings setup event token response did not include a token.');
   }
-  return body.token;
+  return {
+    token: body.token,
+    courtLocation: selectCourtLocation(body, primaryLocation),
+  };
 }
 
 async function createDraftCitizenCase(
@@ -392,9 +409,18 @@ async function submitCcdEvent(
   serviceToken: string,
   caseReference: string,
   eventId: string,
-  eventData: Record<string, unknown>
-): Promise<void> {
-  const eventToken = await getEventToken(apiContext, config, userId, bearerToken, serviceToken, eventId, caseReference);
+  primaryLocation: string
+): Promise<PrlCourtLocation> {
+  const { token, courtLocation } = await getEventToken(
+    apiContext,
+    config,
+    userId,
+    bearerToken,
+    serviceToken,
+    eventId,
+    caseReference,
+    primaryLocation
+  );
   const response = await apiContext.post(
     `${normalizeBaseUrl(config.ccdDataStoreUrl)}/caseworkers/${encodeURIComponent(userId)}` +
       `/jurisdictions/${PRL_JURISDICTION}/case-types/${PRL_CASE_TYPE}/cases/${caseReference}/events`,
@@ -406,13 +432,13 @@ async function submitCcdEvent(
         'Content-Type': 'application/json; charset=UTF-8',
       },
       data: {
-        ...eventData,
+        ...buildIssueAndSendToLocalCourtEventData(courtLocation),
         event: {
           id: eventId,
           summary: '',
           description: '',
         },
-        event_token: eventToken,
+        event_token: token,
         ignore_warning: false,
       },
       failOnStatusCode: false,
@@ -422,6 +448,7 @@ async function submitCcdEvent(
   if (!response.ok()) {
     throw formatHttpFailure(`PRL hearings setup event ${eventId} failed`, response.status());
   }
+  return courtLocation;
 }
 
 async function getCaseInfo(
@@ -447,7 +474,7 @@ async function getCaseInfo(
   return (await response.json()) as CcdCaseResponse;
 }
 
-export async function createPrlHearingsCase(): Promise<string> {
+export async function createPrlHearingsCase(primaryLocation: string): Promise<PrlHearingsCaseSetupResult> {
   const resolved = resolvePrlHearingsCaseSetupConfig(process.env);
   const missing = validatePrlHearingsCaseSetupConfig(resolved);
   if (missing.length > 0) {
@@ -468,7 +495,7 @@ export async function createPrlHearingsCase(): Promise<string> {
       config
     );
     const courtAdminUserId = await getUserId(apiContext, config, courtAdminToken);
-    await submitCcdEvent(
+    const courtLocation = await submitCcdEvent(
       apiContext,
       config,
       courtAdminUserId,
@@ -476,21 +503,21 @@ export async function createPrlHearingsCase(): Promise<string> {
       serviceToken,
       caseReference,
       ISSUE_AND_SEND_TO_LOCAL_COURT_EVENT_ID,
-      buildIssueAndSendToLocalCourtEventData(config)
+      primaryLocation
     );
     await getCaseInfo(apiContext, config, courtAdminToken, serviceToken, caseReference);
-    return caseReference;
+    return { caseReference, seededVenue: courtLocation.label };
   } finally {
     await apiContext.dispose();
   }
 }
 
-export async function createPrlHearingsCaseIfEnabled(): Promise<string | undefined> {
+export async function createPrlHearingsCaseIfEnabled(primaryLocation: string): Promise<PrlHearingsCaseSetupResult | undefined> {
   if (!isPrlHearingsCaseSetupEnabled()) {
     return undefined;
   }
 
-  return createPrlHearingsCase();
+  return createPrlHearingsCase(primaryLocation);
 }
 
 export const __test__ = {
@@ -498,7 +525,7 @@ export const __test__ = {
   formatHttpFailure,
   buildIssueAndSendToLocalCourtEventData,
   isPrlHearingsCaseSetupEnabled,
-  normalizeCourtLocationCode,
   resolvePrlHearingsCaseSetupConfig,
+  selectCourtLocation,
   validatePrlHearingsCaseSetupConfig,
 };

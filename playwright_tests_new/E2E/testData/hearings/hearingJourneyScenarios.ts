@@ -15,6 +15,7 @@ export const prlHearingHappyPathScenario = {
     jurisdictionId: 'PRIVATELAW',
     caseTypeId: 'PRLAPPS',
     caseReference: process.env.PRL_HEARINGS_CASE_REFERENCE,
+    seededVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL,
     caseReferencePattern: process.env.PRL_HEARINGS_CASE_REFERENCE_PATTERN ?? '*',
     preferredStates: ['Judicial review', 'Prepare for hearing', 'Submitted', 'Case management'],
   },
@@ -34,9 +35,6 @@ export const prlHearingHappyPathScenario = {
   },
   hearingVenue: {
     searchTerm: 'Basingstoke',
-    // Court the case is issued to during setup, so it is already selected on the venue page.
-    // caseManagementVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL?.trim() || 'East London Family Court',
-    defaultHearingVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL?.trim() || 'East London Family Court',
   },
   hearingDetails: {
     hearingInWelsh: 'No',
@@ -56,6 +54,7 @@ export const prlHearingHappyPathScenario = {
     jurisdictionId: string;
     caseTypeId: string;
     caseReference?: string;
+    seededVenue?: string;
     caseReferencePattern: string;
     preferredStates: string[];
   };
@@ -75,8 +74,6 @@ export const prlHearingHappyPathScenario = {
   };
   hearingVenue: {
     searchTerm: string;
-    //caseManagementVenue: string;
-    defaultHearingVenue: string;
   };
   hearingDetails: {
     hearingInWelsh: YesNo;

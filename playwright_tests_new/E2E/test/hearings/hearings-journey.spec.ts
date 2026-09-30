@@ -32,10 +32,15 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
   }) => {
     const scenario = prlHearingHappyPathScenario;
     const hearingJourneyModel = createHearingJourneyModel();
+    let seededHearingVenue = '';
     let selectedHearingVenue = '';
 
     await test.step('Navigate to Hearings Page and click on the hearings tab', async () => {
-      await openEligibleHearingsCase(page, scenario.route);
+      const eligibleCase = await openEligibleHearingsCase(page, scenario.route);
+      if (!eligibleCase) {
+        throw new Error('The PRL hearing journey requires dynamic case setup to resolve its seeded hearing venue.');
+      }
+      seededHearingVenue = eligibleCase.seededVenue;
       await caseDetailsPage.selectCaseDetailsTab('Hearings');
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
     });
@@ -78,20 +83,18 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       // The venue already on the case is seeded by an async location lookup that overwrites the
       // selection list when it resolves, so wait for it before adding another venue.
-      await hearingsJourneyPage.waitForSeededVenues(scenario.hearingVenue.defaultHearingVenue);
+      await hearingsJourneyPage.waitForSeededVenues(seededHearingVenue);
 
       selectedHearingVenue = await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
 
       expect(selectedHearingVenue, `Venue added should match the "${scenario.hearingVenue.searchTerm}" search`).toContain(
         scenario.hearingVenue.searchTerm
       );
-      expect(selectedHearingVenue, 'Venue added should not be the venue already seeded on the case').not.toBe(
-        scenario.hearingVenue.defaultHearingVenue
-      );
+      expect(selectedHearingVenue, 'Venue added should not be the venue already seeded on the case').not.toBe(seededHearingVenue);
 
       // Both the seeded venue and the newly added one must survive, and nothing else may be added.
       await expect(hearingsJourneyPage.selectedVenueTags).toHaveCount(2);
-      await expect(hearingsJourneyPage.removeLocationLink(scenario.hearingVenue.defaultHearingVenue)).toBeVisible();
+      await expect(hearingsJourneyPage.removeLocationLink(seededHearingVenue)).toBeVisible();
       await expect(hearingsJourneyPage.removeLocationLink(selectedHearingVenue)).toBeVisible();
       await continueHearingsFlow(page);
     });
@@ -180,7 +183,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       // The venue names are resolved by an async location lookup after the summary renders, so the
       // list starts empty. Poll rather than take a single snapshot of the row.
-      const expectedVenues = [scenario.hearingVenue.defaultHearingVenue, selectedHearingVenue].sort();
+      const expectedVenues = [seededHearingVenue, selectedHearingVenue].sort();
       await expect
         .poll(async () => hearingsCYAPage.sortedRowListItems('Hearing Venue', 'What are the hearing venue details?'), {
           message: `Hearing venue summary should list exactly ${expectedVenues.join(' and ')}`,

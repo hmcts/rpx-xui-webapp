@@ -415,13 +415,13 @@ __metadata:
   linkType: hard
 
 "@angular/animations@npm:^20.3.31":
-  version: 20.3.31
-  resolution: "@angular/animations@npm:20.3.31"
+  version: 20.3.32
+  resolution: "@angular/animations@npm:20.3.32"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/core": 20.3.31
-  checksum: 10/4968bd3cfcde5aa63b67bb84beafc6dd0141a6dcc98c239cf8260c325631a149697bf58e5b48fbd96e71ce99488438a77e2592b65c4d24fda47885903431d1b1
+    "@angular/core": 20.3.32
+  checksum: 10/364e291f537153f295790198c09f5d547e9a96432af4ff2b893ef95c4edd623d6ea22ef26e4dc99d59f78f20e4204b4824c91f380718b5e35f2166afb550415b
   languageName: node
   linkType: hard
 
@@ -563,8 +563,8 @@ __metadata:
   linkType: hard
 
 "@angular/compiler-cli@npm:^20.3.31":
-  version: 20.3.31
-  resolution: "@angular/compiler-cli@npm:20.3.31"
+  version: 20.3.32
+  resolution: "@angular/compiler-cli@npm:20.3.32"
   dependencies:
     "@babel/core": "npm:7.29.7"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
@@ -575,7 +575,7 @@ __metadata:
     tslib: "npm:^2.3.0"
     yargs: "npm:^18.0.0"
   peerDependencies:
-    "@angular/compiler": 20.3.31
+    "@angular/compiler": 20.3.32
     typescript: ">=5.8 <6.0"
   peerDependenciesMeta:
     typescript:
@@ -583,16 +583,16 @@ __metadata:
   bin:
     ng-xi18n: bundles/src/bin/ng_xi18n.js
     ngc: bundles/src/bin/ngc.js
-  checksum: 10/31278d05bf2023c2af40dbe22bfbb00a4a120a7f9d1942dba633cdf3dedfa8de9bd83ec33701eb66bced5b7b07179a81ebdc6fd63d3594b7687062d7c0c1e4dd
+  checksum: 10/a6ed709c8fb5f77e4f9eb052e28353281e49ec4e524a1f5f224c6affc1bfebe90a200941cbc35f76b9f10fc0efb0f06861d34cc6162591231a71e1a25c45d015
   languageName: node
   linkType: hard
 
 "@angular/compiler@npm:^20.3.31":
-  version: 20.3.31
-  resolution: "@angular/compiler@npm:20.3.31"
+  version: 20.3.32
+  resolution: "@angular/compiler@npm:20.3.32"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/f49dfaf86f912b47ebcc22e26636f8ec37e7d5d4e4aae50c691222515a85ccdca93ca56ecb2fd5cef4c8ae3a9f94299b291e3d177d5c86a91b396e011f6562c0
+  checksum: 10/5a7e3f79d096aa1ba56e559feacc096bc13cce6fb3379d7d9d2fde298741156f0186919867e4520e0e9db4950abac255fa1089e34f034a3781762e098eee65e1
   languageName: node
   linkType: hard
 
@@ -615,14 +615,14 @@ __metadata:
   linkType: hard
 
 "@angular/elements@npm:^20.3.31":
-  version: 20.3.31
-  resolution: "@angular/elements@npm:20.3.31"
+  version: 20.3.32
+  resolution: "@angular/elements@npm:20.3.32"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/core": 20.3.31
+    "@angular/core": 20.3.32
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/e23ebcbb4134a31eaa759054d5bb387c11c91972fe1882427468776f055c7c831b0c9e0c32803dcd714fe1e31ef73a9020b008ca5d37a31d057a8c571d03d106
+  checksum: 10/bb79e56cc22b29f43809de52109a9750955afc988d61a61836421ae98c98b495051e9c5bfe55dc7c2a6d22dc7621b77cd746fbc6e917154c28cbd66e0adf7a7c
   languageName: node
   linkType: hard
 
@@ -705,16 +705,16 @@ __metadata:
   linkType: hard
 
 "@angular/platform-browser-dynamic@npm:^20.3.31":
-  version: 20.3.31
-  resolution: "@angular/platform-browser-dynamic@npm:20.3.31"
+  version: 20.3.32
+  resolution: "@angular/platform-browser-dynamic@npm:20.3.32"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": 20.3.31
-    "@angular/compiler": 20.3.31
-    "@angular/core": 20.3.31
-    "@angular/platform-browser": 20.3.31
-  checksum: 10/8c11d6ca1afc1fe5c7a5ce3e66e9404fb5135de93bafd2366502583a90a02610db4af98b2c44436cccf4591d9829a1d96242d70429721293cf4a39e2d65552f2
+    "@angular/common": 20.3.32
+    "@angular/compiler": 20.3.32
+    "@angular/core": 20.3.32
+    "@angular/platform-browser": 20.3.32
+  checksum: 10/31c4c6f9fa085cbbad85fae3e5d19c2ece8c87c4d5fef44683a58ab56a3b4cfebc0568698f52993bc6bd11b707a64c52fcccbacf2dc9a25d81d30a211eb6d614
   languageName: node
   linkType: hard
 
@@ -3394,9 +3394,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.4":
-  version: 7.4.4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.4"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.5-hmcts-label-fix":
+  version: 7.4.5-hmcts-label-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.5-hmcts-label-fix"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
@@ -3425,7 +3425,9 @@ __metadata:
     "@angular/upgrade": ^20.3.27
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
+    class-transformer: ^0.5.1
     govuk-elements-sass: ^3.1.2
+    lodash: ^4.17.22
     moment: ^2.30.1
     moment-timezone: ^0.5.31
     ngx-chips: ^3.0.0
@@ -3441,7 +3443,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/238efc9e4ab5811326a0b13e9d78a62478ac0320ddcda7903f83ea0c1c99ff11dd20b55894811b5909d3f4aff267eca36ff42f3bc02cd98c152bdc0e1e7ee105
+  checksum: 10/78242ac984719e2ac71a40297cb91b24ba52af13e5ea5abe7662a0c6481fc4a9874b270f5f5d9c696b6d57acafbce6db8a6c525865f0285687e833f3e9675ece
   languageName: node
   linkType: hard
 
@@ -16324,8 +16326,8 @@ __metadata:
   linkType: hard
 
 "joi@npm:^18.2.8":
-  version: 18.2.8
-  resolution: "joi@npm:18.2.8"
+  version: 18.2.9
+  resolution: "joi@npm:18.2.9"
   dependencies:
     "@hapi/address": "npm:^5.1.1"
     "@hapi/formula": "npm:^3.0.2"
@@ -16334,7 +16336,7 @@ __metadata:
     "@hapi/tlds": "npm:^1.1.1"
     "@hapi/topo": "npm:^6.0.2"
     "@standard-schema/spec": "npm:^1.1.0"
-  checksum: 10/430a89ff14936854c99461eba9d10e65f59f9372331d15065ffadf7832d3627e6bf5ea46b246deee320122d23f6ec6a983fa64dbb1f948242d943fe4a9f0bf25
+  checksum: 10/321836e1bded18c23f5bd10c85715cda778849cddf9285704c39b8df290ad50f9d977f4ebf522cc741feba31aa65fe760dc84e9f218decc777ed15412a33bf77
   languageName: node
   linkType: hard
 
@@ -21245,7 +21247,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.4"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.5-hmcts-label-fix"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.39"

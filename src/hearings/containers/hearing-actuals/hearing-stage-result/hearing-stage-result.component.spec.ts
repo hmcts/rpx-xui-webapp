@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
@@ -98,6 +99,15 @@ describe('HearingStageResultComponent', () => {
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should navigate back to the case hearings page when cancelled', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '1111222233334444', 'hearings']);
   });
 
   it('should return the correct hearing result based on the option selected', () => {

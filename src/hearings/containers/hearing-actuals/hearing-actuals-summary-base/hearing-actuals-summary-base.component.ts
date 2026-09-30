@@ -50,6 +50,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   public individualParties: PartyDetailsModel[];
   public showSpinner: boolean;
   public successBanner: boolean;
+  public caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -68,6 +69,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     this.id = this.route.snapshot.params.id;
     this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState);
     this.hearingState$.subscribe((state) => {
+      this.caseInfo = state.hearingValues.caseInfo;
       this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(
         HearingChannelEnum.ONPPR
       );
@@ -112,6 +114,18 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
 
   public onBack(): void {
     this.hearingsService.navigateAction(ACTION.BACK);
+  }
+
+  public onCancel(): void {
+    this.router.navigate([
+      '/',
+      'cases',
+      'case-details',
+      this.caseInfo?.jurisdictionId,
+      this.caseInfo?.caseType,
+      this.caseInfo?.caseReference || this.hearingActualsCaseRef,
+      'hearings',
+    ]);
   }
 
   public getHearingDateText(): string {

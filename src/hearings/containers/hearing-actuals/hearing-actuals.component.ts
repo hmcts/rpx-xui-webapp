@@ -50,6 +50,14 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
     return this.router.url.endsWith('/hearing-actuals-confirmation');
   }
 
+  public get isSummaryPage(): boolean {
+    return (
+      this.router.url.includes('/hearing-actual-add-edit-summary') ||
+      this.router.url.includes('/hearing-actual-edit-summary') ||
+      this.router.url.includes('/hearing-stage-result')
+    );
+  }
+
   public ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();

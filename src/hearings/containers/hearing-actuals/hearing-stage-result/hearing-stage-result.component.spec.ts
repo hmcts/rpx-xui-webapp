@@ -104,6 +104,11 @@ describe('HearingStageResultComponent', () => {
   it('should navigate back to the case hearings page when cancelled', () => {
     const router = TestBed.inject(Router);
     const navigateSpy = spyOn(router, 'navigate');
+    (component as any).caseInfo = {
+      jurisdictionId: 'IA',
+      caseType: 'Asylum',
+      caseReference: '1111222233334444',
+    };
 
     component.onCancel();
 

@@ -30,7 +30,7 @@ export class ViewHearingComponent {
         .pipe(take(1))
         .subscribe((caseInfo) => {
           if (caseInfo?.jurisdictionId && caseInfo?.caseType && caseInfo?.caseReference) {
-            this.router.navigate([
+            void this.router.navigate([
               '/',
               'cases',
               'case-details',

@@ -155,7 +155,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   public onBack(): void {
     const summaryRoute = this.getFinalisedHearingSummaryRoute();
     if (summaryRoute) {
-      this.router.navigate(['/', 'hearings', 'view', summaryRoute, this.id], {
+      void this.router.navigate(['/', 'hearings', 'view', summaryRoute, this.id], {
         state: {
           caseRef: this.hearingActualsCaseRef,
           returnToCaseHearings: true,

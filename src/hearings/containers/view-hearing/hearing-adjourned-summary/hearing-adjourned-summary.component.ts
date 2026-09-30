@@ -62,7 +62,7 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   }
 
   public onEdit(): void {
-    this.router.navigate(['/', 'hearings', 'actuals', this.hearingId, 'hearing-actual-add-edit-summary'], {
+    void this.router.navigate(['/', 'hearings', 'actuals', this.hearingId, 'hearing-actual-add-edit-summary'], {
       state: {
         caseId: this.caseRef || this.hearingActualsMainModel?.caseDetails?.caseRef,
         hideConfirmButtons: true,

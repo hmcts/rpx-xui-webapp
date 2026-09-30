@@ -11,6 +11,7 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 export class HmctsGlobalFooterComponent {
   @Input() public help: Helper;
   @Input() public navigation: Navigation;
+  @Input() public userEmail: string;
 
   public get currentLang() {
     return this.langService.language;

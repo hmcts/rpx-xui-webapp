@@ -15,9 +15,9 @@ type DateOption = 'noDate' | 'specificDate' | 'dateRange';
 
 export class HearingsUtils {
   public static readonly DISCREPANCY_MESSAGE_LIST = [
-    'The Party IDs and/or case information for this request appear mismatched. Please select ',
+    'Please select ',
     'Reload the application',
-    'to refresh the case data before continuing. The hearing request cannot continue until the mismatch has been resolved.',
+    'to refresh the case data before continuing. The hearing request cannot continue until refreshed.',
   ];
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
     return conditions && conditions.hasOwnProperty(propertyName) && conditions[propertyName] === propertyValue;

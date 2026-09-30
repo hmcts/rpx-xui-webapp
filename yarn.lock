@@ -3327,14 +3327,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.83-CME-1008-dart-sass":
-  version: 7.3.83-CME-1008-dart-sass
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.83-CME-1008-dart-sass"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.4-CME-1008-dart-sass-4":
+  version: 7.4.4-CME-1008-dart-sass-4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.4-CME-1008-dart-sass-4"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.27"
-    file-saver: "npm:^2.0.2"
+    "@hmcts/media-viewer": "npm:4.2.39"
+    file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
@@ -3359,18 +3359,25 @@ __metadata:
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
     "@ngxmc/datetime-picker": 20.1.0
+    class-transformer: ^0.5.1
     govuk-elements-sass: ^3.1.2
+    lodash: ^4.17.22
     moment: ^2.30.1
     moment-timezone: ^0.5.31
     ngx-chips: ^3.0.0
-    ngx-markdown: ^20
+    ngx-editor: 19.0.0-beta.1
+    ngx-markdown: ^20.1.0
     ngx-pagination: 6.0.3
-    rpx-xui-translation: 1.2.12
+    prosemirror-commands: 1.7.1
+    prosemirror-history: 1.5.0
+    prosemirror-model: 1.25.11
+    prosemirror-schema-list: 1.5.1
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/8458dac96f4c8446380d170853f985f2e9ceed884d396a801598efe367a5900a6dc21f814a228a647794f9e23753e655d7c8fb8654b5cd0f0002dfdb14b654d4
+  checksum: 10/f09b62e8af546190bd5ea40a57e11fe48315380b175b6f068b3cfe78b9fb34b17ebf56e5c17ffd6d53f3eb6f6cfd38ba24a64fdbb0add1855c86949820525c75
   languageName: node
   linkType: hard
 
@@ -3392,35 +3399,6 @@ __metadata:
   version: 0.0.50-alpha
   resolution: "@hmcts/frontend@npm:0.0.50-alpha"
   checksum: 10/a2c4a74f831c87d7a6510d17c64793117ce7fb577f19a74f62fb7a58694f87fbc0bc30b1448cfa7dfc32ecc872f6e58571df9f141090845895f1686b056647af
-  languageName: node
-  linkType: hard
-
-"@hmcts/media-viewer@npm:4.2.27":
-  version: 4.2.27
-  resolution: "@hmcts/media-viewer@npm:4.2.27"
-  dependencies:
-    "@swimlane/ngx-datatable": "npm:^23.0.1"
-    moment-timezone: "npm:^0.6.2"
-    mutable-div: "npm:^2.0.0"
-    pdfjs-dist: "npm:^4.10.38"
-    socket.io-client: "npm:^4.8.0"
-    tslib: "npm:^2.3.0"
-    uuid: "npm:^11.0.3"
-  peerDependencies:
-    "@angular/animations": ^20.0.0
-    "@angular/cdk": ^17.3.8
-    "@angular/common": ^20.0.0
-    "@angular/core": ^20.0.0
-    "@angular/forms": ^20.0.0
-    "@angular/platform-browser": ^20.0.0
-    "@angular/router": ^20.0.0
-    "@ngrx/effects": ^20
-    "@ngrx/store": ^20
-    "@ngrx/store-devtools": ^20
-    ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.7
-    rxjs: ^7.8.2
-  checksum: 10/31ef99ab45c738237db6bfab48dae32f09d397d10de48b12bb3a521c0cad6bd0506255c064967be78191cb4d51b8e501fc2283e179a336faaad1eefacac57594
   languageName: node
   linkType: hard
 
@@ -3450,6 +3428,35 @@ __metadata:
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
   checksum: 10/9012b83de83563c372ef9244bb6b2fe84de3b45d9d57b46df49c6814857c129d2ca91d86d6dedcbf244b6ba1122528733d59dfc42a0f9370bd976a7f632ce8c6
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.39-CME-776-dart-angular-20":
+  version: 4.2.39-CME-776-dart-angular-20
+  resolution: "@hmcts/media-viewer@npm:4.2.39-CME-776-dart-angular-20"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^23.0.1"
+    moment-timezone: "npm:^0.6.2"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.1.1"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.14
+    rxjs: ^7.8.2
+  checksum: 10/d4adc7fb801523abd7242edf9fb391c253536949459a2fdb279c8bf9921136339c65abca69ce4beb364a23f5d4e805463aa1432b242b03cb67dee572808f3cc8
   languageName: node
   linkType: hard
 
@@ -3517,12 +3524,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.16-CME-1008-dart-sass":
-  version: 3.2.16-CME-1008-dart-sass
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.16-CME-1008-dart-sass"
+"@hmcts/rpx-xui-common-lib@npm:3.2.20-CME-1008-dart-sass-2":
+  version: 3.2.20-CME-1008-dart-sass-2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.20-CME-1008-dart-sass-2"
   dependencies:
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    govuk-frontend: "npm:4.9.0"
+    govuk-frontend: "npm:^4.9.0"
     tslib: "npm:^2.0.0"
   peerDependencies:
     "@angular/animations": ^20.3.18
@@ -3540,10 +3547,10 @@ __metadata:
     "@ng-idle/keepalive": ^16.0.0
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.2.12
+    rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/8fb6baa117d452e9ed6026d1541f5d7c22471506c2e44fa38330c819f4446242e7ca77f80bd468147a8b5475714da268aa64343667aadcaa23b0e69eb953f8b3
+  checksum: 10/d81882f5bc167ca97b07a9386e628f3ba6dcb9a01a6c3bbe0de69c4823cbd5a3b6a45d384b11ce53ce704f8c6e2aba50b36b926d0776045791619c4ea43ab87c
   languageName: node
   linkType: hard
 
@@ -14153,13 +14160,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:4.9.0":
-  version: 4.9.0
-  resolution: "govuk-frontend@npm:4.9.0"
-  checksum: 10/03bae503b0c5aabcfb2724409f55f2221101a60f5334488319c9911408637efaa6737b733d4774436a520e9a79bf52bd9ae9a9e60f61a929c529b8125c0d5e29
-  languageName: node
-  linkType: hard
-
 "govuk-frontend@npm:^4.9.0":
   version: 4.10.1
   resolution: "govuk-frontend@npm:4.10.1"
@@ -20445,14 +20445,14 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.83-CME-1008-dart-sass"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.4-CME-1008-dart-sass-4"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.39"
+    "@hmcts/media-viewer": "npm:4.2.39-CME-776-dart-angular-20"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.16-CME-1008-dart-sass"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.20-CME-1008-dart-sass-2"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.31"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"

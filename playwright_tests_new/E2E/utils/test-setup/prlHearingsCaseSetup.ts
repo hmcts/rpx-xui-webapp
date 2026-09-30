@@ -153,6 +153,12 @@ function buildIssueAndSendToLocalCourtEventData(config: Required<PrlHearingsCase
         value: courtLocation,
         list_items: [courtLocation],
       },
+      caseManagementLocation: {
+        value: {
+          baseLocation: courtLocation.code.replace(/:$/, ''),
+          baseLocationName: courtLocation.label,
+        },
+      },
     },
   };
 }

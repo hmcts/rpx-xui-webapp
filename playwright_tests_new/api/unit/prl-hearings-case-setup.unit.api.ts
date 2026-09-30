@@ -148,6 +148,24 @@ test.describe('PRL hearings case setup', () => {
     expect(error.message).not.toContain('Body');
   });
 
+  test('keeps the case management location aligned with the hearing court', () => {
+    const eventData = __test__.buildIssueAndSendToLocalCourtEventData({
+      courtLocationCode: '898213:',
+      courtLocationLabel: 'East London Family Court',
+    } as Parameters<typeof __test__.buildIssueAndSendToLocalCourtEventData>[0]);
+
+    expect(eventData).toMatchObject({
+      data: {
+        caseManagementLocation: {
+          value: {
+            baseLocation: '898213',
+            baseLocationName: 'East London Family Court',
+          },
+        },
+      },
+    });
+  });
+
   test('extracts supported CCD case-reference response shapes', () => {
     expect(__test__.extractCaseReference({ id: 1234567812345678 })).toBe('1234567812345678');
     expect(__test__.extractCaseReference({ caseReference: '1111222233334444' })).toBe('1111222233334444');

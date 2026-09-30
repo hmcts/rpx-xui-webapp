@@ -1,0 +1,96 @@
+name: Daily Yarn audit
+
+on:
+  schedule:
+    - cron: '0 7 * * 1-5'
+      timezone: 'Europe/London'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: daily-yarn-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Check for new vulnerabilities
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Check for unsuppressed audit findings
+        id: audit
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          current_audit="${RUNNER_TEMP}/yarn-audit-current.jsonl"
+          current_normalized="${RUNNER_TEMP}/yarn-audit-current-normalized.jsonl"
+          known_normalized="${RUNNER_TEMP}/yarn-audit-known-normalized.jsonl"
+          new_findings="${RUNNER_TEMP}/yarn-audit-new-findings.jsonl"
+
+          set +e
+          yarn npm audit --recursive --environment production --json > "${current_audit}"
+          audit_status=$?
+          set -e
+
+          if [[ ! -s "${current_audit}" && "${audit_status}" -ne 0 ]]; then
+            echo "Yarn audit failed without returning an audit report." >&2
+            exit "${audit_status}"
+          fi
+
+          if [[ -s "${current_audit}" ]]; then
+            jq -e -s 'all(.[]; (.value | type == "string") and (.children.ID != null))' "${current_audit}" > /dev/null
+            jq -cS . "${current_audit}" | LC_ALL=C sort -u > "${current_normalized}"
+          else
+            : > "${current_normalized}"
+          fi
+
+          if [[ -s yarn-audit-known-issues ]]; then
+            jq -e -s 'all(.[]; (.value | type == "string") and (.children.ID != null))' yarn-audit-known-issues > /dev/null
+            jq -cS . yarn-audit-known-issues | LC_ALL=C sort -u > "${known_normalized}"
+          else
+            : > "${known_normalized}"
+          fi
+
+          comm -23 "${current_normalized}" "${known_normalized}" > "${new_findings}"
+          new_count=$(wc -l < "${new_findings}" | tr -d ' ')
+
+          echo "new-count=${new_count}" >> "${GITHUB_OUTPUT}"
+
+          if [[ "${new_count}" -gt 0 ]]; then
+            cp "${current_audit}" yarn-audit-known-issues
+            echo "changed=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+            echo "No new unsuppressed audit findings."
+          fi
+
+      - name: Create or update audit pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: yarn-audit-known-issues
+          branch: automation/yarn-audit-known-issues
+          delete-branch: true
+          commit-message: Update Yarn audit known issues
+          title: Update Yarn audit known issues
+          body: |
+            The daily Yarn audit found ${{ steps.audit.outputs.new-count }} finding(s) that are not present in `yarn-audit-known-issues`.
+
+            This PR updates the audit baseline to the current production dependency report. Review and remediate the findings where possible; merge only when the remaining findings are accepted for suppression.
+          labels: dependencies

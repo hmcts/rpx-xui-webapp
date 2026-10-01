@@ -1268,6 +1268,24 @@ td.govuk-table__cell {
 }
 
 // =============================================================================
+// Horizontal rule — compatibility shim
+// govuk-elements-sass gave every <hr> a flat 1px grey rule. CCD label fields often
+// contain only markdown `---` (e.g. et1JudgeReferralLine1), which otherwise falls
+// back to the browser's inset 3D rule and renders as a double line.
+// govuk-section-break is excluded: govuk-frontend styles it (incl. invisible variants).
+// =============================================================================
+
+hr:not(.govuk-section-break) {
+  display: block;
+  background: $govuk-border-colour;
+  border: 0;
+  height: 1px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+// =============================================================================
 // Plain table styles — compatibility shim
 // govuk-elements-sass applied global table styles to all plain <table> elements.
 // ccd-search-result renders a <table> with no govuk-table class and relies on these.
@@ -1291,6 +1309,19 @@ table:not(.govuk-table) td {
   text-align: left;
   border-bottom: 1px solid #bfc1c3;
   vertical-align: top;
+}
+
+// CCD collection table (ccd-read-complex-field-collection-table): summary row cells sit beside the
+// taller expand/collapse button, so keep them vertically centred as govuk-elements did.
+table.complex-panel-table tr.accordion-heading > td {
+  vertical-align: middle;
+}
+
+// CCD case tab (ccd-case-full-access-view): compound fields (e.g. collection tables) render in
+// tr.compound-field > td, which the toolkit sizes to width: 1%. Each row is wrapped in a <div>, so it
+// sits in its own shrink-to-fit anonymous table and collapses to its content. Let it fill the tab.
+.mat-mdc-tab-body tr.compound-field > td {
+  width: 100%;
 }
 
 table:not(.govuk-table) thead th {
@@ -1618,7 +1649,6 @@ textarea {
 
   button {
     margin: 1rem 0.25rem 0.25rem;
-    height: 2rem;
   }
 }
 
@@ -2591,6 +2621,11 @@ a:visited,
 
 .button-30 {
   height: 30px;
+  // govuk-frontend v5 .govuk-button is border-box with 6px/5px vertical padding sized for a
+  // ~38px button; squeezed to 30px the 19px line overflows and the label sits low. Trim the
+  // padding so border (2+2) + padding (4+3) + line-height (19) = 30px, keeping the label centred.
+  padding-top: 4px;
+  padding-bottom: 3px;
 }
 
 .markdown h1 {

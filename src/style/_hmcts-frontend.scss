@@ -4,11 +4,11 @@
 // these styles and is owned/maintained by this app, not synced from upstream.
 // Requires govuk-frontend mixins/functions to be imported before this file.
 //
-// Components with no references in this app, ccd-case-ui-toolkit, or
-// rpx-xui-common-lib have been removed (timeline, progress bar, add-another,
-// menu, scrollable pane, rich text editor, currency input). Before removing
-// anything else, confirm it is unused in both of those libraries too — not
-// just this repo — since they render markup that depends on these classes.
+// Components with no references in this app, ccd-case-ui-toolkit,
+// rpx-xui-common-lib, or ccpay-web-component have been removed (timeline,
+// progress bar, add-another, menu, scrollable pane, rich text editor). Before
+// removing anything else, confirm it is unused in all of those libraries too —
+// not just this repo — since they render markup that depends on these classes.
 // =============================================================================
 
 // Settings
@@ -462,6 +462,32 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
   @include govuk-media-query($from: tablet) {
     margin-bottom: 0;
   }
+}
+
+// Currency input
+// Used by @hmcts/ccpay-web-component (refund/remission amount fields) for the £ prefix box
+.hmcts-currency-input {
+  position: relative;
+}
+
+.hmcts-currency-input__symbol {
+  @include govuk-font($size: 19, $weight: bold);
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 8px 10px;
+  height: 40px;
+  box-sizing: border-box;
+  background-color: govuk-colour('light-grey');
+  border: 2px solid govuk-colour('black');
+}
+
+.hmcts-currency-input input {
+  padding-left: 40px;
+}
+
+.hmcts-currency-input__input--right-aligned {
+  text-align: right;
 }
 
 // Filter

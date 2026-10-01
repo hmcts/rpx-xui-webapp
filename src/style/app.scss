@@ -371,6 +371,13 @@ select::-ms-expand {
   margin-bottom: 30px;
 }
 
+// govuk-frontend v5 caps checkbox labels at calc(100% - 74px), sized for the 44px checkbox. Small checkboxes
+// only take 50px (34px input + 16px label padding), so in content-sized items (multi-column/flex layouts)
+// the label ends up 24px narrower than its text and the last word wraps.
+.govuk-checkboxes--small .govuk-checkboxes__label {
+  max-width: calc(100% - 50px);
+}
+
 // govuk-elements grid layout — replaces removed @import 'govuk-elements'
 // Required by ccd-case-ui-toolkit components (workbasket filters, search results)
 .grid-row {

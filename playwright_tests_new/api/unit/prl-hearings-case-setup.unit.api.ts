@@ -10,18 +10,18 @@ test.describe('PRL hearings case setup', () => {
       IDAM_TESTING_SUPPORT_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net',
       IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
       CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
+      TEST_URL: 'https://manage-case.aat.platform.hmcts.net',
       PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
       IDAM_CLIENT_ID: 'xuiwebapp',
       IDAM_SECRET: 'xui-webapp-secret',
       ORG_USER_ASSIGNMENT_REDIRECT_URI: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       S2S_URL: 'http://service-auth/testing-support/lease',
-      CITIZEN_USERNAME: 'citizen@example.test',
-      CITIZEN_PASSWORD: 'citizen-password',
       COURT_ADMIN_STOKE_USERNAME: 'court-admin@example.test',
       COURT_ADMIN_STOKE_PASSWORD: 'court-admin-password',
     });
 
     expect(config).toMatchObject({
+      manageCaseUrl: 'https://manage-case.aat.platform.hmcts.net',
       idamApiUrl: 'https://idam-testing-support-api.aat.platform.hmcts.net',
       idamWebUrl: 'https://idam-web-public.aat.platform.hmcts.net',
       idamTestingSupportUrl: 'https://idam-testing-support-api.aat.platform.hmcts.net',
@@ -31,7 +31,6 @@ test.describe('PRL hearings case setup', () => {
       redirectUri: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       serviceMicroservice: 'ccd_data',
       s2sUrl: 'http://service-auth/testing-support/lease',
-      citizenUsername: 'citizen@example.test',
       courtAdminUsername: 'court-admin@example.test',
     });
     expect(__test__.validatePrlHearingsCaseSetupConfig(config)).toEqual([]);
@@ -55,12 +54,11 @@ test.describe('PRL hearings case setup', () => {
       IDAM_TESTING_SUPPORT_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net',
       IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
       CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
+      TEST_URL: 'https://manage-case.aat.platform.hmcts.net',
       PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
       IDAM_SECRET: 'xui-webapp-secret',
       ORG_USER_ASSIGNMENT_REDIRECT_URI: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       PRL_HEARINGS_S2S_TOKEN: 'pre-issued-s2s-token',
-      CITIZEN_USERNAME: 'citizen@example.test',
-      CITIZEN_PASSWORD: 'citizen-password',
       COURT_ADMIN_STOKE_USERNAME: 'court-admin@example.test',
       COURT_ADMIN_STOKE_PASSWORD: 'court-admin-password',
     });
@@ -93,12 +91,11 @@ test.describe('PRL hearings case setup', () => {
       IDAM_TESTING_SUPPORT_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net',
       IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
       CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
+      TEST_URL: 'https://manage-case.aat.platform.hmcts.net',
       PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
       IDAM_SECRET: 'xui-webapp-secret',
       ORG_USER_ASSIGNMENT_REDIRECT_URI: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       S2S_URL: 'http://service-auth/testing-support/lease',
-      CITIZEN_USERNAME: 'citizen@example.test',
-      CITIZEN_PASSWORD: 'citizen-password',
       CASEWORKER_USERNAME: 'unused-caseworker@example.test',
       CASEWORKER_PASSWORD: 'unused-password',
       CCD_DATA_STORE_CLIENT_USERNAME: 'unused-ccd-caseworker@example.test',
@@ -113,19 +110,39 @@ test.describe('PRL hearings case setup', () => {
     expect(config.courtAdminPassword).toBe('court-admin-password');
   });
 
+  test('can validate setup config with selected hearing-manager credentials instead of fixed court-admin credentials', () => {
+    const baseConfig = __test__.resolvePrlHearingsCaseSetupConfig({
+      IDAM_TESTING_SUPPORT_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net',
+      IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
+      CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
+      TEST_URL: 'https://manage-case.aat.platform.hmcts.net',
+      PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
+      IDAM_SECRET: 'xui-webapp-secret',
+      ORG_USER_ASSIGNMENT_REDIRECT_URI: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
+      S2S_URL: 'http://service-auth/testing-support/lease',
+    });
+
+    expect(
+      __test__.validatePrlHearingsCaseSetupConfig({
+        ...baseConfig,
+        courtAdminUsername: 'selected-hearing-manager@example.test',
+        courtAdminPassword: 'selected-password',
+      })
+    ).toEqual([]);
+  });
+
   test('reports missing setup inputs before calling downstream services', () => {
     expect(__test__.validatePrlHearingsCaseSetupConfig({})).toEqual([
       'IDAM_API_URL, IDAM_TESTING_SUPPORT_URL, or IDAM_TESTING_SUPPORT_USERS_URL',
       'IDAM_WEB_URL',
       'IDAM_TESTING_SUPPORT_URL or IDAM_TESTING_SUPPORT_USERS_URL',
       'CCD_DATA_STORE_URL',
+      'TEST_URL or EXUI_BASE_URL',
       'PRL_COS_API_URL',
       'IDAM_SECRET',
       'MANAGE_CASE_REDIRECT_URI or ORG_USER_ASSIGNMENT_REDIRECT_URI',
       'S2S_URL or PRL_HEARINGS_S2S_TOKEN',
       'PRL_HEARINGS_SERVICE_MICROSERVICE',
-      'CITIZEN_USERNAME',
-      'CITIZEN_PASSWORD',
       'COURT_ADMIN_STOKE_USERNAME',
       'COURT_ADMIN_STOKE_PASSWORD',
     ]);
@@ -155,10 +172,13 @@ test.describe('PRL hearings case setup', () => {
     const userDetails = {
       userInfo: { roles: ['caseworker', 'caseworker-privatelaw-courtadmin'] },
       roleAssignmentInfo: [
-        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: ' 898213 ' },
-        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '898213' },
-        { jurisdiction: 'PRIVATELAW', roleName: 'case-allocator', primaryLocation: '654321' },
-        { jurisdiction: 'PUBLICLAW', roleName: 'hearing-manager', primaryLocation: '123456' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: ' 898213 ', substantive: 'N' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '898213', substantive: 'N' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'case-allocator', primaryLocation: '898213', substantive: 'N' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'task-supervisor', primaryLocation: '898213', substantive: 'N' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-team-leader', primaryLocation: '898213', substantive: 'Y' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '898213', substantive: 'Y' },
+        { jurisdiction: 'PUBLICLAW', roleName: 'hearing-manager', primaryLocation: '123456', substantive: 'Y' },
       ],
     };
 
@@ -176,13 +196,48 @@ test.describe('PRL hearings case setup', () => {
         {
           userInfo: { roles: ['caseworker-privatelaw-courtadmin'] },
           roleAssignmentInfo: [
-            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '898213' },
-            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '123456' },
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '898213', substantive: 'N' },
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '123456', substantive: 'N' },
           ],
         },
         'PRIVATELAW'
       )
     ).toThrow(/exactly one.*found 2/i);
+  });
+
+  test('rejects a hearing-manager location without matching substantive PRL access before creating a hearing case', () => {
+    const resolvePrimaryLocation = resolverTest.resolveHearingManagerPrimaryLocation;
+
+    expect(() =>
+      resolvePrimaryLocation(
+        {
+          userInfo: { roles: ['caseworker-privatelaw-courtadmin'] },
+          roleAssignmentInfo: [
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946', substantive: 'N' },
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '234946', substantive: 'N' },
+          ],
+        },
+        'PRIVATELAW'
+      )
+    ).toThrow(/substantive PRIVATELAW access location/i);
+  });
+
+  test('rejects split PRL access locations before creating a hearing case', () => {
+    const resolvePrimaryLocation = resolverTest.resolveHearingManagerPrimaryLocation;
+
+    expect(() =>
+      resolvePrimaryLocation(
+        {
+          userInfo: { roles: ['caseworker-privatelaw-courtadmin'] },
+          roleAssignmentInfo: [
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946', substantive: 'N' },
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '898213', substantive: 'Y' },
+            { jurisdiction: 'PRIVATELAW', roleName: 'case-allocator', primaryLocation: '898213', substantive: 'N' },
+          ],
+        },
+        'PRIVATELAW'
+      )
+    ).toThrow(/unambiguous substantive PRIVATELAW access location/i);
   });
 
   test('rejects a hearing manager location when the signed-in identity lacks the PRL court-admin role', () => {
@@ -192,7 +247,9 @@ test.describe('PRL hearings case setup', () => {
       resolvePrimaryLocation(
         {
           userInfo: { roles: ['caseworker', 'hearing-manager'] },
-          roleAssignmentInfo: [{ jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946' }],
+          roleAssignmentInfo: [
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946', substantive: 'N' },
+          ],
         },
         'PRIVATELAW'
       )
@@ -200,7 +257,9 @@ test.describe('PRL hearings case setup', () => {
     expect(() =>
       resolvePrimaryLocation(
         {
-          roleAssignmentInfo: [{ jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946' }],
+          roleAssignmentInfo: [
+            { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946', substantive: 'N' },
+          ],
         },
         'PRIVATELAW'
       )
@@ -217,7 +276,10 @@ test.describe('PRL hearings case setup', () => {
             status: () => 200,
             json: async () => ({
               userInfo: { roles: ['caseworker-privatelaw-courtadmin'] },
-              roleAssignmentInfo: [{ jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946' }],
+              roleAssignmentInfo: [
+                { jurisdiction: 'PRIVATELAW', roleName: 'hearing-manager', primaryLocation: '234946', substantive: 'N' },
+                { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '234946', substantive: 'Y' },
+              ],
             }),
           };
         },
@@ -228,58 +290,11 @@ test.describe('PRL hearings case setup', () => {
     expect(requestedUrls).toEqual(['/api/user/details?refreshRoleAssignments=true']);
   });
 
-  test('submits the exact canonical court option supplied by the CCD event token', () => {
-    const selectCourtLocation = __test__.selectCourtLocation;
-    const courtLocation = selectCourtLocation(
-      {
-        case_details: {
-          case_data: {
-            courtList: {
-              list_items: [
-                { code: '898213:eastlondonfamilypr@justice.gov.uk', label: 'East London Family Court - 898213' },
-                { code: '123456:other@justice.gov.uk', label: 'Other Family Court - 123456' },
-              ],
-            },
-          },
-        },
-      },
-      '898213'
-    );
-
-    expect(__test__.buildIssueAndSendToLocalCourtEventData(courtLocation)).toEqual({
-      data: {
-        courtList: {
-          value: {
-            code: '898213:eastlondonfamilypr@justice.gov.uk',
-            label: 'East London Family Court - 898213',
-          },
-          list_items: [
-            {
-              code: '898213:eastlondonfamilypr@justice.gov.uk',
-              label: 'East London Family Court - 898213',
-            },
-          ],
-        },
-      },
+  test('builds the minimal PRL testing-support admin create payload', () => {
+    expect(__test__.buildTestingSupportAdminCreateData()).toEqual({
+      caseTypeOfApplication: 'C100',
+      applicantCaseName: 'Doe V Richards',
     });
-  });
-
-  test('rejects missing or ambiguous CCD court options', () => {
-    const selectCourtLocation = __test__.selectCourtLocation;
-    const response = (list_items: Array<{ code: string; label: string }>) => ({
-      case_details: { case_data: { courtList: { list_items } } },
-    });
-
-    expect(() => selectCourtLocation(response([]), '898213')).toThrow(/exactly one.*found 0/i);
-    expect(() =>
-      selectCourtLocation(
-        response([
-          { code: '898213:first@justice.gov.uk', label: 'First court' },
-          { code: '898213:second@justice.gov.uk', label: 'Second court' },
-        ]),
-        '898213'
-      )
-    ).toThrow(/exactly one.*found 2/i);
   });
 
   test('preflights the signed-in hearing manager location against the authoritative C100 Work Allocation list', async () => {
@@ -398,57 +413,76 @@ test.describe('PRL hearings case setup', () => {
     );
   });
 
-  test('completes Work Allocation preflight before acquiring citizen credentials or creating a case', async () => {
-    const calls: string[] = [];
-
-    const result = await __test__.prepareCitizenCaseAfterPreflight(
-      async () => {
-        calls.push('work-allocation-preflight');
+  test('creates the PRL case through the CCD testing-support admin event', async () => {
+    const requests: Array<{ method: string; url: string; data?: unknown; headers?: unknown }> = [];
+    const apiContext = {
+      get: async (url: string, options?: { headers?: unknown }) => {
+        requests.push({ method: 'GET', url, headers: options?.headers });
+        return {
+          ok: () => true,
+          status: () => 200,
+          json: async () => ({ token: 'ccd-create-token' }),
+        };
       },
-      async () => {
-        calls.push('citizen-token');
-        return 'citizen-token';
+      post: async (url: string, options?: { data?: unknown; headers?: unknown }) => {
+        requests.push({ method: 'POST', url, data: options?.data, headers: options?.headers });
+        return {
+          ok: () => true,
+          status: () => 201,
+          json: async () => ({ id: '1111222233334444', state: 'JUDICIAL_REVIEW' }),
+        };
       },
-      async (citizenToken) => {
-        calls.push(`citizen-create:${citizenToken}`);
-        return { id: '1111222233334444' };
-      }
-    );
+    } as unknown as APIRequestContext;
 
-    expect(calls).toEqual(['work-allocation-preflight', 'citizen-token', 'citizen-create:citizen-token']);
-    expect(result).toEqual({
-      citizenToken: 'citizen-token',
-      createdCase: { id: '1111222233334444' },
+    await expect(
+      __test__.createTestingSupportAdminCase(
+        apiContext,
+        { ccdDataStoreUrl: 'https://ccd.example.test/' } as Required<PrlHearingsCaseSetupConfig>,
+        'court-admin-token',
+        's2s-token',
+        'user-123'
+      )
+    ).resolves.toEqual({ id: '1111222233334444', state: 'JUDICIAL_REVIEW' });
+
+    expect(requests[0]).toMatchObject({
+      method: 'GET',
+      url: 'https://ccd.example.test/caseworkers/user-123/jurisdictions/PRIVATELAW/case-types/PRLAPPS/event-triggers/testingSupportDummyAdminCreateNoc/token?ignore-warning=true',
+      headers: expect.objectContaining({
+        Authorization: 'Bearer court-admin-token',
+        ServiceAuthorization: 'Bearer s2s-token',
+        Accept: 'application/json',
+      }),
+    });
+    expect(requests[1]).toMatchObject({
+      method: 'POST',
+      url: 'https://ccd.example.test/caseworkers/user-123/jurisdictions/PRIVATELAW/case-types/PRLAPPS/cases?ignore-warning=true',
+      headers: expect.objectContaining({
+        Authorization: 'Bearer court-admin-token',
+        ServiceAuthorization: 'Bearer s2s-token',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }),
+    });
+    expect(requests[1].data).toEqual({
+      data: {
+        caseTypeOfApplication: 'C100',
+        applicantCaseName: 'Doe V Richards',
+      },
+      event: {
+        id: 'testingSupportDummyAdminCreateNoc',
+        summary: '',
+        description: '',
+      },
+      event_token: 'ccd-create-token',
+      ignore_warning: true,
     });
   });
 
-  test('stops before acquiring citizen credentials or creating a case when Work Allocation preflight fails', async () => {
-    const calls: string[] = [];
-
-    await expect(
-      __test__.prepareCitizenCaseAfterPreflight(
-        async () => {
-          calls.push('work-allocation-preflight');
-          throw new Error('location is not Work Allocation enabled');
-        },
-        async () => {
-          calls.push('citizen-token');
-          return 'citizen-token';
-        },
-        async () => {
-          calls.push('citizen-create');
-          return { id: '1111222233334444' };
-        }
-      )
-    ).rejects.toThrow('location is not Work Allocation enabled');
-    expect(calls).toEqual(['work-allocation-preflight']);
-  });
-
-  test('accepts only an issued Work Allocation case at the signed-in manager location', () => {
+  test('accepts only a created PRL Work Allocation case at the signed-in manager location', () => {
     expect(() =>
-      __test__.validateIssuedCase(
+      __test__.validateCreatedCase(
         {
-          state: 'CASE_ISSUED',
+          state: 'JUDICIAL_REVIEW',
           data: {
             caseManagementLocation: { baseLocation: '898213' },
           },
@@ -458,35 +492,21 @@ test.describe('PRL hearings case setup', () => {
     ).not.toThrow();
 
     expect(() =>
-      __test__.validateIssuedCase(
+      __test__.validateCreatedCase(
         {
-          state: 'PROCEEDS_IN_HERITAGE_SYSTEM',
+          state: 'SUBMITTED_PAID',
           data: {
             caseManagementLocation: { baseLocation: '898213' },
-            isNonWorkAllocationEnabledCourtSelected: 'Yes',
           },
         },
         '898213'
       )
-    ).toThrow(/expected state CASE_ISSUED.*PROCEEDS_IN_HERITAGE_SYSTEM/i);
+    ).toThrow(/expected state JUDICIAL_REVIEW.*SUBMITTED_PAID/i);
 
     expect(() =>
-      __test__.validateIssuedCase(
+      __test__.validateCreatedCase(
         {
-          state: 'CASE_ISSUED',
-          data: {
-            caseManagementLocation: { baseLocation: '898213' },
-            isNonWorkAllocationEnabledCourtSelected: 'Yes',
-          },
-        },
-        '898213'
-      )
-    ).toThrow(/outside the Work Allocation path/i);
-
-    expect(() =>
-      __test__.validateIssuedCase(
-        {
-          state: 'CASE_ISSUED',
+          state: 'JUDICIAL_REVIEW',
           data: {
             caseManagementLocation: { baseLocation: '123456' },
           },

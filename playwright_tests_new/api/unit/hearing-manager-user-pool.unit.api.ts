@@ -9,6 +9,10 @@ import {
 } from '../../integration/helpers/hearingManagerUserPool.helper.js';
 
 const configuredEnv = {
+  HEARING_MANAGER_CR84_OFF_USERNAME: 'hearing-off-base@example.test',
+  HEARING_MANAGER_CR84_OFF_PASSWORD: 'secret-base',
+  HEARING_MANAGER_CR84_ON_USERNAME: 'hearing-on-base@example.test',
+  HEARING_MANAGER_CR84_ON_PASSWORD: 'secret-base',
   HEARING_MANAGER_CR84_OFF_1_USERNAME: 'hearing-off-1@example.test',
   HEARING_MANAGER_CR84_OFF_1_PASSWORD: 'secret-1',
   HEARING_MANAGER_CR84_OFF_2_USERNAME: 'hearing-off-2@example.test',
@@ -60,8 +64,8 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
       HEARING_MANAGER_CR84_ON_2_PASSWORD: 'secret-2',
       HEARING_MANAGER_CR84_ON_4_USERNAME: 'hearing-on-4@example.test',
       HEARING_MANAGER_CR84_ON_4_PASSWORD: 'secret-4',
-      HEARING_MANAGER_CR84_ON_5_USERNAME: 'unsupported@example.test',
-      HEARING_MANAGER_CR84_ON_5_PASSWORD: 'secret-5',
+      HEARING_MANAGER_CR84_ON_9_USERNAME: 'unsupported@example.test',
+      HEARING_MANAGER_CR84_ON_9_PASSWORD: 'secret-9',
     };
 
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, env)).toEqual([
@@ -131,7 +135,7 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     ]);
   });
 
-  test('orders shared session candidates from the worker-selected CR84 identity', () => {
+  test('orders shared session candidates from the worker-selected CR84 identity without the legacy base alias', () => {
     expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 3 }, configuredEnv)).toEqual([
       'HEARING_MANAGER_CR84_OFF-4',
       'HEARING_MANAGER_CR84_OFF-1',

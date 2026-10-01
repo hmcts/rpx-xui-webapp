@@ -1,10 +1,9 @@
 import { expect, test } from '../../fixtures';
-import { ensureSession } from '../../../common/sessionCapture';
 import { AdditionalFacility, TypeOfJudges } from '../../utils/hearing-model';
-import { openHomeWithCapturedSession } from '../searchCase/searchCase.setup';
 import { continueHearingsFlow } from '../../../integration/helpers/hearingJourneySetup.helper.ts';
+import type { HearingManagerUserIdentifier } from '../../../integration/helpers/hearingManagerUserPool.helper';
 import { resolveHearingManagerUserIdentifier } from '../../../integration/helpers/hearingManagerUserPool.helper';
-import { openEligibleHearingsCase } from '../../utils/test-setup/hearingsCaseResolver';
+import { openEligibleHearingsCaseForUser } from '../../utils/test-setup/hearingsCaseResolver';
 import {
   createHearingJourneyModel,
   HEARING_REQUEST_EXPECTED_STATUS,
@@ -13,14 +12,12 @@ import {
 } from '../../testData/hearings/hearingJourneyScenarios';
 
 test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] }, () => {
-  const hearingsUserIdentifier = resolveHearingManagerUserIdentifier(HEARINGS_USER_IDENTIFIER);
+  let hearingManagerUserIdentifier: HearingManagerUserIdentifier;
 
-  test.beforeAll(async () => {
-    await ensureSession(hearingsUserIdentifier);
-  });
-
-  test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, hearingsUserIdentifier);
+  test.beforeEach(({}, testInfo) => {
+    hearingManagerUserIdentifier = resolveHearingManagerUserIdentifier(HEARINGS_USER_IDENTIFIER, {
+      parallelIndex: testInfo.parallelIndex,
+    });
   });
 
   test('Submit a new Hearing - Happy Path journey ', async ({
@@ -36,7 +33,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
     let selectedHearingVenue = '';
 
     await test.step('Navigate to Hearings Page and click on the hearings tab', async () => {
-      await openEligibleHearingsCase(page, scenario.route);
+      await openEligibleHearingsCaseForUser(page, scenario.route, hearingManagerUserIdentifier);
       await caseDetailsPage.selectCaseDetailsTab('Hearings');
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
     });

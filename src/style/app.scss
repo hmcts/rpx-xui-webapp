@@ -7,8 +7,6 @@ $govuk-frontend-toolkit-image-path: '/assets';
 $govuk-template-image-path: '/assets';
 
 $govuk-compatibility-govukelements: true;
-$govuk-compatibility-govuktemplate: true;
-$govuk-compatibility-govukfrontendtoolkit: true;
 
 @use '_typography' as *;
 @use 'govuk-frontend/govuk/all' as govuk;
@@ -472,7 +470,7 @@ button:focus {
   }
 }
 
-/** Error Summary 
+/** Error Summary
 * Make border color consistent with other error messages for HMCTS
 */
 .query-container .error-summary {

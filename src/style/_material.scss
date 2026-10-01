@@ -11,33 +11,6 @@ $outlineColor: #bfc1c3;
   margin-top: -1px;
 }
 
-.mat-mdc-tab {
-  min-width: 80px !important;
-  height: 42px !important;
-  margin: 0 4px 7px 4px;
-  border-top: 3px solid #fff;
-  background-color: govuk-colour.govuk-colour('light-grey');
-  color: govuk-colour.govuk-colour('black');
-  opacity: 1 !important;
-
-  &.cdk-focused {
-    border-top: 3px solid #ffdd00;
-    border-bottom: 4px solid #000;
-  }
-  &.mdc-tab--active {
-    height: 48px !important;
-    border-top: 1px solid $outlineColor;
-    border-bottom: 0;
-    border-left: 1px solid $outlineColor;
-    border-right: 1px solid $outlineColor;
-    background: #fff;
-    margin: 1px 4px 0 4px;
-    .mdc-tab__text-label {
-      opacity: 1;
-    }
-  }
-}
-
 .mat-mdc-tab-group .mdc-tab-indicator__content--underline,
 .mat-mdc-tab-nav-bar .mdc-tab-indicator__content--underline {
   height: 0 !important;
@@ -68,6 +41,8 @@ $outlineColor: #bfc1c3;
   flex-grow: 0 !important;
 }
 
+// src/style/_material.scss
+
 .mat-mdc-tab-group > .mat-mdc-tab-header .mat-mdc-tab {
   min-width: 80px !important;
   height: 42px !important;
@@ -76,6 +51,35 @@ $outlineColor: #bfc1c3;
   background-color: govuk-colour.govuk-colour('light-grey');
   color: govuk-colour.govuk-colour('black');
   opacity: 1 !important;
+
+  &.mdc-tab--active {
+    height: 48px !important;
+    margin: 1px 4px 0 4px;
+    border-top: 1px solid $outlineColor;
+    border-right: 1px solid $outlineColor;
+    border-left: 1px solid $outlineColor;
+    border-bottom: 0;
+    background-color: #fff;
+
+    .mdc-tab__ripple::before {
+      opacity: 0 !important;
+    }
+
+    .mat-ripple-element {
+      display: none;
+    }
+  }
+
+  &.cdk-focused {
+    border-top: 3px solid #ffdd00;
+    border-bottom: 4px solid #000;
+  }
+
+  // Must come after the normal active rule so focus wins.
+  &.mdc-tab--active.cdk-focused {
+    border-top: 3px solid #ffdd00;
+    border-bottom: 4px solid #000;
+  }
 }
 
 .mat-mdc-tab-group > .mat-mdc-tab-header .mat-mdc-tab.mdc-tab--active {
@@ -86,6 +90,12 @@ $outlineColor: #bfc1c3;
   border-left: 1px solid $outlineColor;
   border-bottom: 0;
   background-color: #fff;
+  .mdc-tab__ripple::before {
+    opacity: 0 !important;
+  }
+  .mat-ripple-element {
+    display: none;
+  }
 }
 
 .mat-mdc-tab .mdc-tab__text-label {

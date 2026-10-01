@@ -3395,6 +3395,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/ccpay-web-component@npm:6.5.27-cme-1118-v1":
+  version: 6.5.27-cme-1118-v1
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.27-cme-1118-v1"
+  dependencies:
+    exceljs: "npm:^4.4.0"
+    file-saver: "npm:^2.0.2"
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^20.3.1
+    "@angular/core": ~20.3.1
+  checksum: 10/111562f914e7ef1664a6909ea3d8d4bf2a73ec2d908a3f62ce9a0cb4f8b769dc9ceab8af3459f7c71f304e4ba09124ba9bdb87e51492c8aeb567e5dc6c8f6560
+  languageName: node
+  linkType: hard
+
 "@hmcts/frontend@npm:0.0.50-alpha":
   version: 0.0.50-alpha
   resolution: "@hmcts/frontend@npm:0.0.50-alpha"
@@ -20446,7 +20460,7 @@ __metadata:
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.4.4-CME-1008-dart-sass-4"
-    "@hmcts/ccpay-web-component": "npm:6.5.22"
+    "@hmcts/ccpay-web-component": "npm:6.5.27-cme-1118-v1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.39-CME-776-dart-angular-20"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

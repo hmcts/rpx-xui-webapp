@@ -17,7 +17,7 @@ type Jurisdiction = {
 };
 
 export async function assertJurisdictionsForUser(apiClient: PlaywrightApiClient, expectedNames: string[]): Promise<void> {
-  const user = await guardedRequest(() => apiClient.get('api/user/details', { timeoutMs: 20_000, throwOnError: false }));
+  const user = await guardedRequest(() => apiClient.get('api/user/o/userinfo', { timeoutMs: 20_000, throwOnError: false }));
   expectStatus(user.status, [200]);
   const uid = resolveUserId(user.data as { userInfo?: { uid?: string; id?: string } });
   expect(typeof uid).toBe('string');

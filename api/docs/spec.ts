@@ -75,7 +75,7 @@ const openApiSpec = {
         },
       },
     },
-    '/user/details': {
+    '/user/o/userinfo': {
       get: {
         summary: 'Current user details',
         description: 'Returns details and role assignments for the current authenticated user.',

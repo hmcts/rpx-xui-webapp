@@ -51,7 +51,7 @@ test.describe('Accessibility mocked session helper', { tag: '@svc-internal' }, (
     expect(fakePage.initScripts).toHaveLength(1);
     expect(fakePage.routes.map(({ pattern }) => pattern)).toEqual(
       expect.arrayContaining([
-        '**/api/user/details*',
+        '**/api/user/o/userinfo*',
         '**/assets/config/config.json*',
         /\/external\/config\/ui(?:\/|\?|$)/,
         '**/auth/isAuthenticated*',

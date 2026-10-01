@@ -53,7 +53,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     const waClient = await apiClientFor('waSolicitor');
 
     try {
-      const userRes = await waClient.get<UserDetailsResponse>('api/user/details', {
+      const userRes = await waClient.get<UserDetailsResponse>('api/user/o/userinfo', {
         throwOnError: false,
         timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
       });
@@ -61,7 +61,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
         userId = resolveUserId(userRes.data);
       }
     } catch (error) {
-      console.warn(`[WA_SETUP_DEGRADED] user/details failed: ${(error as Error).message}`);
+      console.warn(`[WA_SETUP_DEGRADED] user/o/userinfo failed: ${(error as Error).message}`);
     }
 
     try {
@@ -210,7 +210,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
           description: 'User id not available; asserted user details endpoint instead.',
         });
         const waClient = await apiClientFor('waSolicitor');
-        const userRes = await waClient.get('api/user/details', { throwOnError: false });
+        const userRes = await waClient.get('api/user/o/userinfo', { throwOnError: false });
         expectStatus(userRes.status, StatusSets.guardedBasic);
         return;
       }

@@ -289,7 +289,7 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       error,
       serverErrors: [],
       clientErrors: [],
-      slowCalls: [{ method: 'GET', url: 'https://example.test/api/user/details', duration: 6306 }],
+      slowCalls: [{ method: 'GET', url: 'https://example.test/api/user/o/userinfo', duration: 6306 }],
       failedRequests: [],
       networkTimeout: false,
       testStatus: 'failed',

@@ -142,7 +142,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
       expectStatus(listRes.status, [200, 204, 401, 403, 404, 500]);
 
       const profile = await guardedRequest(() =>
-        apiClient.get('api/user/details', {
+        apiClient.get('api/user/o/userinfo', {
           timeoutMs: 20_000,
           throwOnError: false,
         })

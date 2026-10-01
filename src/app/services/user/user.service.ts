@@ -15,7 +15,7 @@ export class UserService {
   ) {}
 
   public getUserDetails(refreshRoleAssignments: boolean = false): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`api/user/details?refreshRoleAssignments=${refreshRoleAssignments}`);
+    return this.http.get<UserDetails>(`api/user/o/userinfo?refreshRoleAssignments=${refreshRoleAssignments}`);
   }
 
   // TODO use the ccd-case-ui-toolkit version of this instead

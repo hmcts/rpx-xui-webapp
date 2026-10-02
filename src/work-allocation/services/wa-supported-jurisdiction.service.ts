@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable, of } from 'rxjs';
+import { asyncScheduler, Observable, scheduled } from 'rxjs';
 import { finalize, shareReplay, tap } from 'rxjs/operators';
 import { HMCTSServiceDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
@@ -27,7 +27,8 @@ export class WASupportedJurisdictionsService {
     if (cachedJurisdictions) {
       const jurisdictions = safeJsonParse<string[]>(cachedJurisdictions, null);
       if (Array.isArray(jurisdictions)) {
-        return of(jurisdictions);
+        // Preserve asynchronous HTTP delivery so case-viewer tabs can finish initializing.
+        return scheduled([jurisdictions], asyncScheduler);
       }
       this.sessionStorageService.removeItem(WASupportedJurisdictionsService.jurisdictionStorageKey);
     }

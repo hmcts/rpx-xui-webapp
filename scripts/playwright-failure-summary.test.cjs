@@ -250,3 +250,36 @@ test('API status-zero transport errors use the installed error field without lea
     assert.doesNotMatch(text, /SECRET|channel|private|IDAM/);
   }
 });
+
+test('exact CCD case creation producer identifies the operation without claiming a service outage', (t) => {
+  const root = workspace(t);
+  const message =
+    "Direct CCD case create failed with HTTP 504 for 'SECRET-scenario'. Route='POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false'. The gateway did not provide a usable CCD API response.";
+  const proxy = evidence({ apiErrors: [{ url: 'https://manage-case.aat.platform.hmcts.net/data/cases', status: 504 }] });
+  for (const prefix of ['', 'Error: ']) {
+    const file = report(root, 'report.json', [execution('unexpected', [result('failed', [proxy], prefix + message)])]);
+    const text = summarize([['E2E', file]], root);
+    assert.match(text, /CCD case creation reported HTTP 504; cause unconfirmed/);
+    assert.doesNotMatch(text, /SECRET|scenario|Route|gateway|outage/);
+    for (const label of ['API', 'Integration']) {
+      assert.doesNotMatch(summarize([[label, file]], root), /CCD case creation/);
+    }
+  }
+  for (const nearMatch of [
+    'Test title: ' + message,
+    'Some other error\n' + message,
+    message.replace('HTTP 504', 'HTTP 5040'),
+    message.replace('HTTP 504', 'HTTP 604'),
+    message.replace('case create', 'case validate'),
+    message.replace("for 'SECRET-scenario'. ", 'for arbitrary text '),
+  ]) {
+    const file = report(root, 'report.json', [execution('unexpected', [result('failed', [], nearMatch)])]);
+    assert.doesNotMatch(summarize([['E2E', file]], root), /CCD case creation/);
+  }
+  const stackOnly = result('failed', [], 'unrelated error');
+  stackOnly.errors[0].stack = message;
+  assert.doesNotMatch(
+    summarize([['E2E', report(root, 'stack.json', [execution('unexpected', [stackOnly])])]], root),
+    /CCD case creation/
+  );
+});

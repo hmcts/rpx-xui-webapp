@@ -52,6 +52,16 @@ function serviceName(url) {
 }
 
 function problem(result, label, root) {
+  const errors = result.errors || (result.error ? [result.error] : []);
+  if (label === 'E2E') {
+    // This producer describes a gateway operation, not a confirmed downstream outage.
+    for (const error of errors) {
+      const operation = /^(?:Error: )?Direct CCD case create failed with HTTP ([45]\d{2}) for '[^'\r\n]+'\. /.exec(
+        error.message || ''
+      );
+      if (operation) return `CCD case creation reported HTTP ${operation[1]}; cause unconfirmed`;
+    }
+  }
   const observations = new Set();
   for (const attachment of result.attachments || []) {
     if (!['failure-data.json', 'node-api-calls.json'].includes(attachment.name)) continue;
@@ -82,7 +92,6 @@ function problem(result, label, root) {
     return `${details} observed${observations.size > 3 ? ', further request errors' : ''}; cause unconfirmed${label !== 'E2E' ? ' (may include mocked responses)' : ''}`;
   }
   if (result.status === 'timedOut') return 'test timed out; cause unconfirmed';
-  const errors = result.errors || (result.error ? [result.error] : []);
   if (errors.some((error) => /expect\(|AssertionError|Expected:|Received:/.test(error.message || ''))) {
     return 'assertion failed; cause unconfirmed';
   }

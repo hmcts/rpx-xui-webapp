@@ -593,6 +593,7 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
+    env.PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS = 'IAC_CASEOFFICER_R2'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableFortifyScan('rpx-aat')

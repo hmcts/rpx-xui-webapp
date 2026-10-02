@@ -4,12 +4,11 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { HearingChannelEnum, HearingDateEnum } from '../models/hearings.enum';
+import { HearingChannelEnum, HearingDateEnum, PartyType } from '../models/hearings.enum';
 import { IndividualDetailsModel } from '../models/individualDetails.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
-import { PartyType } from 'api/hearings/models/hearings.enum';
 
 type DateOption = 'noDate' | 'specificDate' | 'dateRange';
 

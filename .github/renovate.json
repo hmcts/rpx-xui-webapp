@@ -10,12 +10,15 @@
   "updateNotScheduled": false,
   "packageRules": [
     {
-      "description": "Exclude pinned HMCTS and Angular dependencies from Renovate updates",
+      "description": "Exclude pinned HMCTS, Angular, and Application Insights dependencies from Renovate updates",
       "matchPackageNames": [
         "@hmcts/ccd-case-ui-toolkit",
+        "@hmcts/ccpay-web-component",
         "@hmcts/rpx-xui-common-lib",
         "@hmcts/rpx-xui-node-lib",
         "rpx-xui-translation",
+        "@microsoft/applicationinsights-web",
+        "applicationinsights",
         "/^@angular\\//",
         "/^@angular-devkit\\//"
       ],

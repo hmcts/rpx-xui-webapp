@@ -361,9 +361,7 @@ def integrationProfileRunConfig = { String spec, String testType ->
     ]
 }
 
-def runPlaywrightIntegrationProfileMatrix = { String testType, String reportNamePrefix ->
-    def failures = []
-    def matrixFailure = null
+def resolveIntegrationRunConfigs = { String testType ->
     def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
     def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
         integrationProfileRunConfig(spec, testType)
@@ -371,6 +369,14 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
     if (runConfigs.size() == 1) {
         runConfigs[0].reportDir = reportRoot
     }
+    return runConfigs
+}
+
+def runPlaywrightIntegrationProfileMatrix = { String testType, String reportNamePrefix ->
+    def failures = []
+    def matrixFailure = null
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    def runConfigs = resolveIntegrationRunConfigs(testType)
     def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
     dir(suiteResultsDir) { deleteDir() }
     runConfigs.each { runConfig ->
@@ -762,6 +768,14 @@ withPipeline(type, product, component) {
 
         stage('Preview Functional Tests (Parallel Report Gathering)') {
             def previewLoadProfileEvents = playwrightLoadProfileEventsFile('preview')
+            def failureSummary = load 'scripts/notify-playwright-failures.groovy'
+            def failureReports = params.RUN_PLAYWRIGHT_ACCESSIBILITY ? [] : [
+                [suite: 'API', path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json'],
+                [suite: 'E2E', path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json']
+            ] + resolveIntegrationRunConfigs('preview').collect { run ->
+                [suite: 'Integration', path: "${run.reportDir}/ci-evidence/playwright.json"]
+            }
+            def summaryReady = failureReports && failureSummary.prepare(failureReports)
             try {
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'start')
                 // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
@@ -934,6 +948,7 @@ withPipeline(type, product, component) {
 
                 parallel(previewFunctionalSuites)
             } finally {
+                failureSummary.publish(channel, 'PREVIEW', summaryReady ? failureReports : [])
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'finish')
                 archivePlaywrightDiagnostics()
                 publishCiLoadProfile('PREVIEW CI System Load')
@@ -956,6 +971,14 @@ withPipeline(type, product, component) {
 
         stage('AAT Functional Tests (Parallel Report Gathering)') {
             def aatLoadProfileEvents = playwrightLoadProfileEventsFile('aat')
+            def failureSummary = load 'scripts/notify-playwright-failures.groovy'
+            def failureReports = params.RUN_PLAYWRIGHT_ACCESSIBILITY ? [] : [
+                [suite: 'API', path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json'],
+                [suite: 'E2E', path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json']
+            ] + resolveIntegrationRunConfigs('aat').collect { run ->
+                [suite: 'Integration', path: "${run.reportDir}/ci-evidence/playwright.json"]
+            }
+            def summaryReady = failureReports && failureSummary.prepare(failureReports)
             try {
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'start')
                 // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
@@ -1128,6 +1151,7 @@ withPipeline(type, product, component) {
 
                 parallel(aatFunctionalSuites)
             } finally {
+                failureSummary.publish(channel, 'AAT', summaryReady ? failureReports : [])
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'finish')
                 archivePlaywrightDiagnostics()
                 publishCiLoadProfile('AAT CI System Load')

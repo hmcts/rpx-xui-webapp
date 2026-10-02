@@ -322,9 +322,7 @@ def integrationProfileRunConfig = { String spec ->
     ]
 }
 
-def runPlaywrightIntegrationProfileMatrix = {
-    def failures = []
-    def matrixFailure = null
+def resolveIntegrationRunConfigs = {
     def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
     def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
         integrationProfileRunConfig(spec)
@@ -332,6 +330,14 @@ def runPlaywrightIntegrationProfileMatrix = {
     if (runConfigs.size() == 1) {
         runConfigs[0].reportDir = reportRoot
     }
+    return runConfigs
+}
+
+def runPlaywrightIntegrationProfileMatrix = {
+    def failures = []
+    def matrixFailure = null
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    def runConfigs = resolveIntegrationRunConfigs()
     def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
     dir(suiteResultsDir) { deleteDir() }
     runConfigs.each { runConfig ->
@@ -658,6 +664,14 @@ withNightlyPipeline(type, product, component) {
         recordPlaywrightLoadEvent('Lint report publish', 'finish')
      }
     afterSuccess('fortify-scan') {
+      def failureSummary = load 'scripts/notify-playwright-failures.groovy'
+      def failureReports = [
+          [suite: 'API', path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json'],
+          [suite: 'E2E', path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json']
+      ] + resolveIntegrationRunConfigs().collect { run ->
+          [suite: 'Integration', path: "${run.reportDir}/ci-evidence/playwright.json"]
+      }
+      def summaryReady = failureSummary.prepare(failureReports)
       try {
       recordPlaywrightLoadEvent('Nightly functional tests', 'start')
         stage('Nightly Functional Tests (Parallel Report Gathering)') {
@@ -822,6 +836,7 @@ withNightlyPipeline(type, product, component) {
             )
         }
       } finally {
+        failureSummary.publish(channel, 'Nightly', summaryReady ? failureReports : [])
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
         archivePlaywrightDiagnostics()
       }

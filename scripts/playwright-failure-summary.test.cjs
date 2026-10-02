@@ -283,3 +283,31 @@ test('exact CCD case creation producer identifies the operation without claiming
     /CCD case creation/
   );
 });
+
+test('known environment-qualified public service hosts are attributed without matching unknown hosts', (t) => {
+  const root = workspace(t);
+  for (const [host, service] of [
+    ['idam-api.aat.platform.hmcts.net', 'IDAM'],
+    ['rd-professional-api.demo.platform.hmcts.net', 'PRD'],
+    ['ccd-data-store-api.aat.platform.hmcts.net', 'CCD'],
+    ['wa-task-management-api.perftest.platform.hmcts.net', 'Work Allocation'],
+  ]) {
+    const file = report(root, 'report.json', [
+      execution('unexpected', [result('failed', [evidence({ apiErrors: [{ url: `https://${host}/SECRET`, status: 503 }] })])]),
+    ]);
+    assert.ok(summarize([['E2E', file]], root).includes(`${service}: HTTP 503 observed`));
+  }
+  for (const host of [
+    'idam-api.aat.platform.hmcts.net.evil.test',
+    'idam-api.unknown.platform.hmcts.net',
+    'unknown-api.aat.platform.hmcts.net',
+    'idam-apiXaat.platform.hmcts.net',
+  ]) {
+    const file = report(root, 'report.json', [
+      execution('unexpected', [result('failed', [evidence({ apiErrors: [{ url: `https://${host}/SECRET`, status: 503 }] })])]),
+    ]);
+    const text = summarize([['E2E', file]], root);
+    assert.match(text, /HTTP 503 observed/);
+    assert.doesNotMatch(text, /IDAM|CCD|PRD|Work Allocation|SECRET/);
+  }
+});

@@ -41,6 +41,7 @@ function serviceName(url) {
     for (const [prefix, name] of Object.entries(SERVICES)) {
       if (
         host === `${prefix}.platform.hmcts.net` ||
+        new RegExp(`^${prefix}\\.(aat|demo|ithc|perftest|prod)\\.platform\\.hmcts\\.net$`).test(host) ||
         new RegExp(`^${prefix}-(aat|demo|ithc|perftest|prod)\\.service\\.core-compute-\\1\\.internal$`).test(host)
       )
         return name;

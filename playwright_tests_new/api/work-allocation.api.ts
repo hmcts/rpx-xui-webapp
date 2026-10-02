@@ -260,7 +260,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         apiClientFor,
       }) => {
         const waClient = await apiClientFor('caseOfficer_r2');
-        const actorId = await requireWorkAllocationUserId(waClient);
+        const actorId = action === 'assign' ? await requireWorkAllocationUserId(waClient) : undefined;
         const nonexistentTaskId = randomUUID();
         const before = await waClient.get(`workallocation/task/${nonexistentTaskId}`, { throwOnError: false });
         expectStatus(before.status, [404]);

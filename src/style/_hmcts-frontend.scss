@@ -483,11 +483,21 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-currency-input input {
+  display: block;
   padding-left: 40px;
 }
 
 .hmcts-currency-input__input--right-aligned {
   text-align: right;
+}
+
+.add-remission .govuk-radios__item {
+  display: inline-flex !important;
+  vertical-align: top;
+}
+
+.add-remission > p:last-child {
+  padding-bottom: govuk-spacing(6);
 }
 
 // Filter

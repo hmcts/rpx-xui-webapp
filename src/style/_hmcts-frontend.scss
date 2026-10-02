@@ -1357,6 +1357,19 @@ table:not(.govuk-table) tbody td a {
   float: left;
 }
 
+// CCD Label fields whose markdown is only `---` (e.g. et1JudgeReferralLine1): the table's row borders
+// already separate the fields, so collapse the row entirely. Otherwise cell padding + hr margins render
+// as an empty row, and a bare hr stacks on the previous row border as a heavier double line.
+table:not(.govuk-table) td:has(dl.case-field .markdown > hr:only-child) {
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+table:not(.govuk-table) td dl.case-field .markdown > hr:only-child {
+  display: none;
+}
+
 // Markdown (e.g. CCD Label fields, now rendered in a td rather than a th) must keep normal flow,
 // otherwise links in consecutive paragraphs float side by side.
 table:not(.govuk-table) tbody td .markdown a {

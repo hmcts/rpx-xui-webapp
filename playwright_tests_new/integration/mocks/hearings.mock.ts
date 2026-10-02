@@ -22,6 +22,7 @@ export const HEARINGS_LOCATION_NAME = 'Aberystwyth Justice Centre';
 export const HEARINGS_USER_ID = 'hearing-cr84-user';
 const HEARING_LINK_REASON_CODE = 'CLRC017';
 const HEARING_LINK_REASON_LABEL = 'Linked for a hearing';
+export const HEARINGS_WA_SUPPORTED_JURISDICTIONS = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC', 'PCS'];
 
 type UnknownRecord = Record<string, unknown>;
 

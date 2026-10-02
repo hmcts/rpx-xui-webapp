@@ -3,7 +3,7 @@ import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
-import { getLocationsRefDataAPIOverrides } from '../utils/configOverride';
+import { getPrdLocationsRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
@@ -65,7 +65,7 @@ describe('Locations ref data api, get all locations for service', () => {
 
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
-        const configValues = getLocationsRefDataAPIOverrides(mockServer.url);
+        const configValues = getPrdLocationsRefDataAPIOverrides(mockServer.url);
         sandbox.stub(config, 'get').callsFake((prop) => {
           return configValues[prop];
         });

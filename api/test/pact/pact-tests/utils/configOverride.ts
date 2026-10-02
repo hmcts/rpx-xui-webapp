@@ -34,14 +34,7 @@ export function getWorkAllocationAPIOverrides(waTaskAPiUrl) {
 
 export function getCaseworkerRefDataAPIOverrides(cwRefApiUrl) {
   return {
-    'services.case.caseworkerApi': cwRefApiUrl,
-    ...defaultConfig,
-  };
-}
-
-export function getLocationsRefDataAPIOverrides(locationRefApiUrl) {
-  return {
-    'services.location_api': locationRefApiUrl,
+    'services.prd.caseworkerApi': cwRefApiUrl,
     ...defaultConfig,
   };
 }

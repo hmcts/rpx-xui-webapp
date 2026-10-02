@@ -6,7 +6,7 @@ import { sendPost } from '../common/crudService';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_JRD_E_LINKS_V2_ENABLED,
-  SERVICES_CASE_JUDICIAL_REF_PATH,
+  SERVICES_PRD_JUDICIAL_API,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
 } from '../configuration/references';
 import { http } from '../lib/http';
@@ -22,7 +22,7 @@ import { release2ContentType } from './models/release2ContentType';
 const HEADER_ACCEPT_V1 = 'application/json';
 const HEADER_ACCEPT_V2 = 'application/vnd.jrd.api+json;Version=2.0';
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-const JUDICIAL_REF_URL = getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH);
+const JUDICIAL_REF_URL = getConfigValue(SERVICES_PRD_JUDICIAL_API);
 
 export async function findExclusionsForCaseId(req: EnhancedRequest, res: Response, next: NextFunction) {
   const requestPayload = getExclusionRequestPayload(req.body.caseId, req.body.jurisdiction, req.body.caseType);

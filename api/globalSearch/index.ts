@@ -1,11 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import {
-  GLOBAL_SEARCH_SERVICES,
-  SERVICES_CCD_DATA_STORE_API_PATH,
-  SERVICES_LOCATION_REF_API_URL,
-} from '../configuration/references';
+import { GLOBAL_SEARCH_SERVICES, SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_PRD_LOCATION_API } from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
@@ -18,7 +14,7 @@ import * as log4jui from '../lib/log4jui';
  * api/globalsearch/services
  */
 
-const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
+const baseLocationRefUrl = getConfigValue(SERVICES_PRD_LOCATION_API);
 const logger: JUILogger = log4jui.getLogger('global-search');
 
 export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {

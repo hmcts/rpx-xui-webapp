@@ -40,7 +40,7 @@ describe('WA Supported Jurisdictions', () => {
 
     config = require('../configuration');
     getConfigValueStub = sandbox.stub(config, 'getConfigValue');
-    getConfigValueStub.withArgs('services.locationref.api').returns('http://test-api');
+    getConfigValueStub.withArgs('services.prd.locationApi').returns('http://test-api');
     getConfigValueStub.withArgs('waSupportedJurisdictions').returns('IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC');
 
     // require the modules after stubbing

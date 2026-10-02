@@ -322,9 +322,7 @@ def integrationProfileRunConfig = { String spec ->
     ]
 }
 
-def runPlaywrightIntegrationProfileMatrix = {
-    def failures = []
-    def matrixFailure = null
+def resolveIntegrationRunConfigs = {
     def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
     def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
         integrationProfileRunConfig(spec)
@@ -332,6 +330,14 @@ def runPlaywrightIntegrationProfileMatrix = {
     if (runConfigs.size() == 1) {
         runConfigs[0].reportDir = reportRoot
     }
+    return runConfigs
+}
+
+def runPlaywrightIntegrationProfileMatrix = {
+    def failures = []
+    def matrixFailure = null
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    def runConfigs = resolveIntegrationRunConfigs()
     def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
     dir(suiteResultsDir) { deleteDir() }
     runConfigs.each { runConfig ->
@@ -479,6 +485,13 @@ def secrets = [
     secret('e2e-prl-solicitor-7-password', 'PRL_SOLICITOR7_PASSWORD'),
     secret('e2e-prl-solicitor-8-username', 'PRL_SOLICITOR8_USERNAME'),
     secret('e2e-prl-solicitor-8-password', 'PRL_SOLICITOR8_PASSWORD'),
+    secret('e2e-wa-task-admin-username', 'WA_TASK_ADMIN_USERNAME'),
+    secret('e2e-wa-task-admin-password', 'WA_TASK_ADMIN_PASSWORD'),
+    secret('ccd-datastore-url', 'CCD_DATA_STORE_URL'),
+    secret('prl-cos-aat-url', 'PRL_COS_API_URL'),
+    secret('s2s-token-url', 'PRL_HEARINGS_S2S_URL'),
+    secret('idam-web-url', 'IDAM_WEB_URL'),
+    secret('idam-testing-support-url', 'IDAM_TESTING_SUPPORT_URL'),
     secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
     secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
     secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
@@ -658,6 +671,14 @@ withNightlyPipeline(type, product, component) {
         recordPlaywrightLoadEvent('Lint report publish', 'finish')
      }
     afterSuccess('fortify-scan') {
+      def failureSummary = load 'scripts/notify-playwright-failures.groovy'
+      def failureReports = [
+          [suite: 'API', path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json'],
+          [suite: 'E2E', path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json']
+      ] + resolveIntegrationRunConfigs().collect { run ->
+          [suite: 'Integration', path: "${run.reportDir}/ci-evidence/playwright.json"]
+      }
+      def summaryReady = failureSummary.prepare(failureReports)
       try {
       recordPlaywrightLoadEvent('Nightly functional tests', 'start')
         stage('Nightly Functional Tests (Parallel Report Gathering)') {
@@ -822,6 +843,7 @@ withNightlyPipeline(type, product, component) {
             )
         }
       } finally {
+        failureSummary.publish(channel, 'Nightly', summaryReady ? failureReports : [])
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
         archivePlaywrightDiagnostics()
       }

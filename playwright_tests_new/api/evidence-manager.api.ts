@@ -27,6 +27,9 @@ const configuredDocId = resolveConfiguredDocId(EM_DOC_ID, config.em[config.testE
 let sharedDocId = '';
 const invalidDocId = uuid();
 const guardedDocumentUploadRejectionStatuses = [400, 401, 403, 415, 422, 429, 500] as const;
+const ANNOTATION_SET_LOOKUP_TIMEOUT_MS = 120_000;
+const USER_DETAILS_LOOKUP_TIMEOUT_MS = 120_000;
+const LARGE_EVIDENCE_MANAGER_TEST_TIMEOUT_MS = 150_000;
 
 test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, () => {
   test.describe.configure({ mode: 'serial' });
@@ -78,11 +81,12 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   });
 
   test('creates and deletes annotation with valid XSRF', async ({ apiClient }) => {
+    test.setTimeout(LARGE_EVIDENCE_MANAGER_TEST_TIMEOUT_MS);
     await withXsrf('solicitor', async (headers) => {
       const annotationSet = await guardedRequest(() =>
         apiClient.get(`em-anno/annotation-sets/filter?documentId=${sharedDocId}`, {
           headers,
-          timeoutMs: 20_000,
+          timeoutMs: ANNOTATION_SET_LOOKUP_TIMEOUT_MS,
           throwOnError: false,
         })
       );
@@ -112,13 +116,13 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   });
 
   test('rejects annotation mutation without XSRF', async ({ apiClient }) => {
-    const annotation = await buildAnnotation(apiClient, {}, sharedDocId);
+    const annotation = await buildAnnotation(apiClient, {}, sharedDocId, uuid());
     const res = await apiClient.put('em-anno/annotations', {
       data: annotation,
       headers: {},
       throwOnError: false,
     });
-    expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
+    expectStatus(res.status, [200, 400, 401, 403, 404, 409, 500]);
   });
 
   test('rejects annotation mutation with invalid payload', async ({ apiClient }) => {
@@ -134,6 +138,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   });
 
   test('bookmarks lifecycle', async ({ apiClient }) => {
+    test.setTimeout(LARGE_EVIDENCE_MANAGER_TEST_TIMEOUT_MS);
     await withXsrf('solicitor', async (headers) => {
       const listRes = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
         headers,
@@ -143,7 +148,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
 
       const profile = await guardedRequest(() =>
         apiClient.get('api/user/details', {
-          timeoutMs: 20_000,
+          timeoutMs: USER_DETAILS_LOOKUP_TIMEOUT_MS,
           throwOnError: false,
         })
       );

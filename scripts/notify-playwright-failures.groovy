@@ -1,3 +1,6 @@
+import uk.gov.hmcts.contino.ProjectBranch
+import uk.gov.hmcts.contino.slack.SlackChannelRetriever
+
 // Companion notification only: the shared library still owns the build notification.
 def reportArguments(List reports) {
     reports.collect { report ->
@@ -41,12 +44,20 @@ def publish(String channel, String phase, List reports) {
         if (!summary) {
             return
         }
+        // Follow notifyBuildFailure's routing: PR author DM, otherwise the team channel.
+        def recipient = channel
+        if (!new ProjectBranch(env.BRANCH_NAME).isMaster()) {
+            recipient = new SlackChannelRetriever(this).retrieve(channel, env.CHANGE_AUTHOR) ?: channel
+            if (recipient == '@iamabotuser') {
+                return
+            }
+        }
         def safePhase = phase in ['PREVIEW', 'AAT', 'Nightly'] ? phase : 'CI'
         def buildUrl = env.BUILD_URL ?: ''
         def reportLink = buildUrl ==~ /https:\/\/[A-Za-z0-9.\-]+(?::[0-9]+)?\/[A-Za-z0-9\/%._~\-]+/ ?
             "\n<${buildUrl}|Jenkins build and test reports>" : ''
         slackSend(
-            channel: channel,
+            channel: recipient,
             color: 'warning',
             failOnError: false,
             message: "*${safePhase} Playwright failure summary*\n${summary}${reportLink}"

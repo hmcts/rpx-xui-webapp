@@ -8,12 +8,35 @@ def aborted = loader.parseClass('''
 package hudson
 class AbortException extends Exception { AbortException(String message) { super(message) } }
 ''')
+loader.parseClass('''
+package uk.gov.hmcts.contino
+class ProjectBranch {
+    String branchName
+    ProjectBranch(String branchName) { this.branchName = branchName }
+    boolean isMaster() { branchName == 'master' }
+}
+''')
+loader.parseClass('''
+package uk.gov.hmcts.contino.slack
+class SlackChannelRetriever {
+    def steps
+    SlackChannelRetriever(steps) { this.steps = steps }
+    String retrieve(String channel, String author) { steps.resolveSlackRecipient(channel, author) }
+}
+''')
 def calls = []
 def shellResult = 'E2E: 2 failed\n- 2: CCD: HTTP 503 observed; cause unconfirmed\n'
 Exception shellError = null
 Exception slackError = null
+String mappedRecipient = '@test-author'
+Exception mappingError = null
 def binding = new Binding([
-    env: [BUILD_URL: 'https://build.hmcts.net/job/xui/42/'],
+    env: [BUILD_URL: 'https://build.hmcts.net/job/xui/42/', BRANCH_NAME: 'master'],
+    resolveSlackRecipient: { channel, author ->
+        calls << ['recipient', channel, author]
+        if (mappingError) { throw mappingError }
+        author ? mappedRecipient : channel
+    },
     sh: { args ->
         calls << ['sh', args]
         if (shellError) { throw shellError }
@@ -40,11 +63,47 @@ assert message.message.contains('PREVIEW Playwright failure summary')
 assert message.message.contains('E2E: 2 failed')
 assert message.message.contains('<https://build.hmcts.net/job/xui/42/|Jenkins build and test reports>')
 assert calls.findAll { it[0] == 'sh' }.last()[1].returnStdout
+assert !calls.any { it[0] == 'recipient' }
+
+binding.env.CHANGE_AUTHOR = 'test-github-author'
+calls.clear()
+notifier.publish('#xui-pipeline', 'Nightly', reports)
+assert calls.find { it[0] == 'slack' }[1].channel == '#xui-pipeline'
+assert !calls.any { it[0] == 'recipient' }
+
+// Match Infrastructure notifyBuildFailure: PR author DM, channel fallback, bot suppression.
+binding.env.BRANCH_NAME = 'PR-5491'
+binding.env.CHANGE_AUTHOR = 'test-github-author'
+calls.clear()
+notifier.publish('#xui-pipeline', 'PREVIEW', reports)
+assert calls.find { it[0] == 'recipient' } == ['recipient', '#xui-pipeline', 'test-github-author']
+assert calls.find { it[0] == 'slack' }[1].channel == '@test-author'
+mappedRecipient = null
+calls.clear()
+notifier.publish('#xui-pipeline', 'PREVIEW', reports)
+assert calls.find { it[0] == 'slack' }[1].channel == '#xui-pipeline'
+mappedRecipient = '@iamabotuser'
+calls.clear()
+notifier.publish('#xui-pipeline', 'PREVIEW', reports)
+assert !calls.any { it[0] == 'slack' }
+mappingError = new RuntimeException('sensitive mapping error')
+calls.clear()
+notifier.publish('#xui-pipeline', 'PREVIEW', reports)
+assert !calls.any { it[0] == 'slack' }
+assert !calls.toString().contains('sensitive mapping error')
+mappingError = null
+mappedRecipient = '@test-author'
+binding.env.BRANCH_NAME = 'nightly'
+binding.env.CHANGE_AUTHOR = null
+calls.clear()
+notifier.publish('#xui-pipeline', 'Nightly', reports)
+assert calls.find { it[0] == 'slack' }[1].channel == '#xui-pipeline'
 
 calls.clear()
 shellResult = ''
 notifier.publish('#xui-pipeline', 'AAT', reports)
 assert !calls.any { it[0] == 'slack' }
+assert !calls.any { it[0] == 'recipient' }
 calls.clear()
 notifier.publish('#xui-pipeline', 'AAT', [])
 assert calls.empty

@@ -1219,7 +1219,7 @@ Each retained test trace keeps **Download Trace** and adds **Open in Playwright 
 
 ### Slack failure summaries
 
-The CNP PREVIEW/AAT and nightly pipelines send one companion summary to the configured Slack channel after the API, E2E and integration suites finish. The shared Jenkins library still sends its normal build notification. Accessibility-only CNP runs do not send this companion summary.
+The CNP PREVIEW/AAT and nightly pipelines send one companion summary after the API, E2E and integration suites finish. It follows the shared Jenkins library's build-failure routing: PR authors receive a DM through the existing GitHub-to-Slack mapping; master, runs without an author and unmapped authors use the configured team channel. Bot-author notifications are skipped. The Jenkins Slack app must be a member of that team channel; Slack rejects channel delivery with `not_in_channel` otherwise. The shared library still sends its normal build notification. Accessibility-only CNP runs do not send this companion summary.
 
 The summary reads each run's existing `odhin-report/ci-evidence/playwright.json`. It groups final failures, separates retries and expected failures, and labels interrupted or unavailable results explicitly. Integration matrix profiles remain separate runs. Successful runs with only retry recoveries are quiet. Expected JSON files are cleared before the suites start so old results cannot be reused.
 

@@ -32,7 +32,8 @@ const USER_DETAILS_LOOKUP_TIMEOUT_MS = 120_000;
 const LARGE_EVIDENCE_MANAGER_TEST_TIMEOUT_MS = 150_000;
 
 test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, () => {
-  test.describe.configure({ mode: 'serial' });
+  // Keep document mutations sequential without skipping independent tests after a failure.
+  test.describe.configure({ mode: 'default' });
 
   test.beforeAll(async () => {
     sharedDocId = await resolveSharedDocId(configuredDocId, uploadSyntheticDoc);

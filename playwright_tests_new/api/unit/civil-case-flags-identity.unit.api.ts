@@ -2,7 +2,11 @@ import type { Browser } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import { configureCivilCaseFlagsRuntimeUsers } from '../../E2E/utils/test-setup/civil/civilCaseFlagsSetup';
-import { clearRuntimeUserCredentials } from '../../E2E/utils/runtimeUserCredentials';
+import {
+  clearRuntimeUserCredentials,
+  getRuntimeUserCredentials,
+  setRuntimeUserCredentials,
+} from '../../E2E/utils/runtimeUserCredentials';
 
 const keys = [
   'PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS',
@@ -16,13 +20,18 @@ const keys = [
   'IAC_CASEOFFICER_R1_PASSWORD',
   'IAC_CASEOFFICER_R2_USERNAME',
   'IAC_CASEOFFICER_R2_PASSWORD',
+  'PW_IAC_CASEOFFICER_R2_EMAIL',
+  'PW_IAC_CASEOFFICER_R2_PASSWORD',
 ] as const;
 
 test.describe('Civil case flags configured identity', { tag: '@svc-internal' }, () => {
   let original: Array<string | undefined>;
+  let originalAliasCredentials: ReturnType<typeof getRuntimeUserCredentials>;
   test.beforeEach(() => {
     original = keys.map((key) => process.env[key]);
     keys.forEach((key) => delete process.env[key]);
+    originalAliasCredentials = getRuntimeUserCredentials('IAC_CASEOFFICER_R2');
+    clearRuntimeUserCredentials('IAC_CASEOFFICER_R2');
   });
   test.afterEach(() => {
     keys.forEach((key, index) => {
@@ -30,6 +39,8 @@ test.describe('Civil case flags configured identity', { tag: '@svc-internal' }, 
       else process.env[key] = original[index];
     });
     clearRuntimeUserCredentials('CIVIL_COURT_STAFF');
+    clearRuntimeUserCredentials('IAC_CASEOFFICER_R2');
+    if (originalAliasCredentials) setRuntimeUserCredentials('IAC_CASEOFFICER_R2', originalAliasCredentials);
   });
 
   test('does not provision a substitute when configured credentials are missing', async () => {

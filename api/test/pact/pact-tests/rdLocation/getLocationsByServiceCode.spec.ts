@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
@@ -108,7 +108,7 @@ describe('Locations ref data api, get matching location for service code', () =>
           { service: 'IA', serviceCodes: ['BFA1'] },
           { service: 'CIVIL', serviceCodes: ['AAA6', 'AAA7'] },
         ];
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop: string) => {
           return configValues[prop];
         });
 

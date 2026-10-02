@@ -1321,16 +1321,21 @@ table:not(.govuk-table) td {
   vertical-align: top;
 }
 
-// CCD collection table (ccd-read-complex-field-collection-table): summary row cells sit beside the
-// taller expand/collapse button, so keep them vertically centred as govuk-elements did.
 table.complex-panel-table tr.accordion-heading > td {
   vertical-align: middle;
 }
 
-// CCD case tab (ccd-case-full-access-view): compound fields (e.g. collection tables) render in
-// tr.compound-field > td, which the toolkit sizes to width: 1%. Each row is wrapped in a <div>, so it
-// sits in its own shrink-to-fit anonymous table and collapses to its content. Let it fill the tab.
-.mat-mdc-tab-body tr.compound-field > td {
+.markdown table:not(.govuk-table) td {
+  vertical-align: middle;
+}
+
+// CCD case tab field values: centre against wrapped two-line labels, as before the v5 migration.
+table:not(.govuk-table) td[id^='case-viewer-field-read--'] {
+  vertical-align: middle;
+}
+
+mat-tab-body table > tbody > [ccdlabelsubstitutor]:not([hidden]) {
+  display: table;
   width: 100%;
 }
 

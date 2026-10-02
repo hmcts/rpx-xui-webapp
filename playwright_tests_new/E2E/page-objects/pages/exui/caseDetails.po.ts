@@ -93,6 +93,18 @@ export class CaseDetailsPage extends Base {
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
   readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
   readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
+  // FT_MasterCaseType (FT-All Field Data Types) renders its Details tab as table.NameTab.
+  readonly nameTabDataTable = this.page.locator('table.NameTab');
+  // "Rich Text Area" also prefixes "Rich Text Area with minimum length", so the plain row
+  // is matched with a negative lookahead to keep the two rows distinct.
+  readonly richTextAreaRow = this.nameTabDataTable
+    .locator('tr')
+    .filter({ hasText: /Rich Text Area(?! with minimum)/ })
+    .first();
+  readonly richTextAreaMinRow = this.nameTabDataTable
+    .locator('tr')
+    .filter({ hasText: 'Rich Text Area with minimum length' })
+    .first();
 
   // Task List tab
   readonly taskListContainer = this.page.locator('.active-tasks-container');

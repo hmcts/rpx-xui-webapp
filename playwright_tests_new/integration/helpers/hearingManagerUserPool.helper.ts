@@ -26,6 +26,11 @@ function hasSupportedRuntimeCredentials(userIdentifier: string, env: EnvMap): us
 }
 
 function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = process.env): number {
+  const forcedPoolIndex = Number(env.PW_HEARING_MANAGER_POOL_INDEX);
+  if (Number.isInteger(forcedPoolIndex) && forcedPoolIndex >= 0) {
+    return forcedPoolIndex;
+  }
+
   if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) >= 0) {
     return Number(source?.parallelIndex);
   }

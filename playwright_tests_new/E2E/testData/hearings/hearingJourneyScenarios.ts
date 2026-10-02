@@ -7,7 +7,7 @@ import {
   YesNo,
 } from '../../utils/hearing-model';
 
-export const HEARINGS_USER_IDENTIFIER = 'HEARING_MANAGER_CR84_ON';
+export const HEARINGS_USER_IDENTIFIER = process.env.PW_HEARINGS_USER_IDENTIFIER || 'HEARING_MANAGER_CR84_ON';
 export const HEARING_REQUEST_EXPECTED_STATUS = 'WAITING TO BE LISTED';
 
 export const prlHearingHappyPathScenario = {

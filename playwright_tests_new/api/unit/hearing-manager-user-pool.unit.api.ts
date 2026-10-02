@@ -101,7 +101,7 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     ).toBe('HEARING_MANAGER_CR84_OFF-4');
   });
 
-  test('honours an explicit zero parallel index over a configured environment index', () => {
+  test('honours an explicit zero parallel index over the Playwright environment index', () => {
     expect(
       resolveHearingManagerUserIdentifier(
         HEARING_MANAGER_CR84_ON_USER,
@@ -112,6 +112,19 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
         }
       )
     ).toBe('HEARING_MANAGER_CR84_ON-1');
+  });
+
+  test('allows a diagnostic pool-index override for one-worker AAT proof runs', () => {
+    expect(
+      resolveHearingManagerUserIdentifier(
+        HEARING_MANAGER_CR84_ON_USER,
+        { parallelIndex: 0 },
+        {
+          ...configuredEnv,
+          PW_HEARING_MANAGER_POOL_INDEX: '2',
+        }
+      )
+    ).toBe('HEARING_MANAGER_CR84_ON-3');
   });
 
   test('keeps an already pooled user identifier unchanged', () => {

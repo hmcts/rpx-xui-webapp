@@ -50,6 +50,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   public individualParties: PartyDetailsModel[];
   public showSpinner: boolean;
   public successBanner: boolean;
+  public isFinalisedEditMode = false;
 
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
@@ -79,6 +80,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     ]).pipe(map((errors) => errors.filter((item) => item).length));
 
     this.sub = this.hearingState$.pipe(filter((state) => !!state.hearingActuals.hearingActualsMainModel)).subscribe((state) => {
+      this.isFinalisedEditMode = !!state.hearingActuals.isFinalisedEditMode;
       this.hearingActualsCaseRef = state.hearingRequest.hearingRequestMainModel.caseDetails.caseRef;
       this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
       this.hearingOutcome =

@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
 import { Go } from '../../../app/store';
@@ -14,6 +15,7 @@ import { HearingActualsEffects } from './hearing-actuals.effects';
 describe('Hearing Actuals Effects', () => {
   let actions$;
   let effects: HearingActualsEffects;
+  let store: MockStore;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getHearingActuals',
     'updateHearingActuals',
@@ -36,9 +38,15 @@ describe('Hearing Actuals Effects', () => {
         },
         HearingActualsEffects,
         provideMockActions(() => actions$),
+        provideMockStore({ initialState: { hearings: { hearingActuals: { isFinalisedEditMode: false } } } }),
       ],
     });
     effects = TestBed.inject(HearingActualsEffects);
+    store = TestBed.inject(MockStore);
+    hearingsServiceMock.getHearingActuals.calls.reset();
+    hearingsServiceMock.updateHearingActuals.calls.reset();
+    hearingsServiceMock.submitHearingActuals.calls.reset();
+    routerMock.navigate.calls.reset();
   });
 
   describe('loadHearingActual$', () => {
@@ -65,6 +73,21 @@ describe('Hearing Actuals Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.updateHearingActuals$).toBeObservable(expected);
     });
+
+    it('should update only the store in the finalised hearing edit journey', () => {
+      store.setState({ hearings: { hearingActuals: { isFinalisedEditMode: true } } } as any);
+      const action = new hearingActualsActions.UpdateHearingActuals({
+        hearingId: '1111222233334444',
+        hearingActuals: hearingActualsMainModel.hearingActuals,
+        caseId: '5555666677778888',
+      });
+      const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel.hearingActuals);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+
+      expect(effects.updateHearingActuals$).toBeObservable(expected);
+      expect(hearingsServiceMock.updateHearingActuals).not.toHaveBeenCalled();
+    });
   });
 
   describe('updateHearingActualStage$', () => {
@@ -80,6 +103,21 @@ describe('Hearing Actuals Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.updateHearingActualsStage$).toBeObservable(expected);
     });
+
+    it('should update the stage only in the store in the finalised hearing edit journey', () => {
+      store.setState({ hearings: { hearingActuals: { isFinalisedEditMode: true } } } as any);
+      const action = new hearingActualsActions.UpdateHearingActualsStage({
+        hearingId: '1111222233334444',
+        hearingActuals: hearingActualsMainModel.hearingActuals,
+        caseId: '5555666677778888',
+      });
+      const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel.hearingActuals);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+
+      expect(effects.updateHearingActualsStage$).toBeObservable(expected);
+      expect(hearingsServiceMock.updateHearingActuals).not.toHaveBeenCalled();
+    });
   });
 
   describe('submitHearingActuals$', () => {
@@ -90,6 +128,51 @@ describe('Hearing Actuals Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.submitHearingActuals$).toBeObservable(expected);
+    });
+
+    it('should update the draft before submitting a finalised hearing edit', () => {
+      hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
+      hearingsServiceMock.submitHearingActuals.and.returnValue(of(200));
+      const action = new hearingActualsActions.SubmitHearingActuals({
+        id: '1111222233334444',
+        caseRef: '5555666677778888',
+        hearingActuals: hearingActualsMainModel.hearingActuals,
+      });
+      const completion = new hearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+
+      expect(effects.submitHearingActuals$).toBeObservable(expected);
+      expect(hearingsServiceMock.updateHearingActuals).toHaveBeenCalledWith(
+        '1111222233334444',
+        hearingActualsMainModel.hearingActuals,
+        '5555666677778888'
+      );
+      expect(hearingsServiceMock.submitHearingActuals).toHaveBeenCalledWith('1111222233334444', '5555666677778888');
+    });
+
+    it('should retain the user on check your answers when finalised hearing completion fails', () => {
+      const error: HttpError = {
+        status: 500,
+        statusText: 'Server Error',
+        message: 'Server Error',
+        errors: [],
+      };
+      hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
+      hearingsServiceMock.submitHearingActuals.and.returnValue(throwError(error));
+      const action = new hearingActualsActions.SubmitHearingActuals({
+        id: '1111222233334444',
+        caseRef: '5555666677778888',
+        hearingActuals: hearingActualsMainModel.hearingActuals,
+      });
+      const completion = new hearingActualsActions.SubmitHearingActualsFailure(error);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+
+      expect(effects.submitHearingActuals$).toBeObservable(expected);
+      expect(hearingsServiceMock.updateHearingActuals).toHaveBeenCalled();
+      expect(hearingsServiceMock.submitHearingActuals).toHaveBeenCalled();
+      expect(routerMock.navigate).not.toHaveBeenCalled();
     });
 
     it('should submit hearing actuals error', () => {

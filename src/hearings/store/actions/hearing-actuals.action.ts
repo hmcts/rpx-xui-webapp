@@ -3,6 +3,7 @@ import { HttpError } from '../../../models/httpError.model';
 import { ActualHearingDayModel, HearingActualsMainModel, HearingActualsModel } from '../../models/hearingActualsMainModel';
 
 export const RESET_HEARING_ACTUALS = '[HEARING ACTUALS] Reset Hearing Actuals';
+export const SET_HEARING_ACTUALS_EDIT_MODE = '[HEARING ACTUALS] Set Hearing Actuals Edit Mode';
 export const SAVE_HEARING_ACTUALS_PLANNED_DAYS = '[HEARING ACTUALS PLANNED] Save Hearing Actuals Planned Days';
 export const UPDATE_HEARING_ACTUALS = '[HEARING ACTUALS] Update Hearing Actuals';
 export const UPDATE_HEARING_ACTUALS_STAGE = '[HEARING ACTUALS] Update Hearing Actuals Stage';
@@ -16,6 +17,12 @@ export const RESET_HEARING_ACTUALS_LAST_ERROR = '[HEARING ACTUALS] Reset Hearing
 
 export class ResetHearingActuals implements Action {
   public readonly type = RESET_HEARING_ACTUALS;
+}
+
+export class SetHearingActualsEditMode implements Action {
+  public readonly type = SET_HEARING_ACTUALS_EDIT_MODE;
+
+  constructor(public isFinalisedEditMode: boolean) {}
 }
 
 export class SaveHearingActualsPlannedDays implements Action {
@@ -57,7 +64,7 @@ export class UpdateHearingActualsSuccess implements Action {
 export class SubmitHearingActuals implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS;
 
-  constructor(public payload: { id: string; caseRef: string }) {}
+  constructor(public payload: { id: string; caseRef: string; hearingActuals?: HearingActualsModel }) {}
 }
 
 export class SubmitHearingActualsSuccess implements Action {
@@ -78,6 +85,7 @@ export class ResetHearingActualsLastError implements Action {
 
 export type HearingActualsAction =
   | ResetHearingActuals
+  | SetHearingActualsEditMode
   | SaveHearingActualsPlannedDays
   | GetHearingActuals
   | GetHearingActualsSuccess

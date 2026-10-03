@@ -4,13 +4,13 @@ import * as fromCases from '../actions/case-list.action';
 export class CaselistStateFilter {
   public jurisdiction: Jurisdiction;
   public caseType: CaseType;
-  public caseState: CaseState;
+  public caseState: CaseState[];
   public metadataFields: any;
   public page: number;
   constructor() {
     this.jurisdiction = new Jurisdiction();
     this.caseType = new CaseType();
-    this.caseState = new CaseState();
+    this.caseState = [];
     this.metadataFields = {};
     this.page = 1;
   }
@@ -55,7 +55,11 @@ export function caselistReducer(state = initialCaselistState, action: fromCases.
           metadataFields: action.payload.selected.metadataFields,
           jurisdiction: action.payload.selected.jurisdiction,
           caseType: action.payload.selected.caseType,
-          caseState: action.payload.selected.caseState ? action.payload.selected.caseState : null,
+          caseState: Array.isArray(action.payload.selected.caseState)
+            ? action.payload.selected.caseState
+            : action.payload.selected.caseState
+              ? [action.payload.selected.caseState]
+              : [],
           page: action.payload.selected.page,
         },
         loading: true,

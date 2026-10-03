@@ -174,7 +174,7 @@ describe('CaseListComponent', () => {
     it('should be able to create an event.', async () => {
       const jurisdiction = { id: 'PROBATE' };
       const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
+      const caseState = [{ id: 'CaseCreated', name: 'Case created', description: '' }];
       const metadataFields = ['[CASE_REFERENCE]'];
       const formGroupValues = {};
       const page = 1;
@@ -280,7 +280,7 @@ describe('CaseListComponent', () => {
     beforeEach(async () => {
       const jurisdiction = { id: 'PROBATE' };
       const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
+      const caseState = [{ id: 'CaseCreated', name: 'Case created', description: '' }];
       const metadataFields = ['[CASE_REFERENCE]'];
       const formGroupValues = {};
       const page = 1;
@@ -354,7 +354,7 @@ describe('CaseListComponent', () => {
 
       expect(component.jurisdiction.id).toEqual('PROBATE');
       expect(component.caseType.id).toEqual('GrantOfRepresentation');
-      expect(component.caseState.id).toEqual('SolAppUpdated');
+      expect(component.caseState[0].id).toEqual('SolAppUpdated');
       expect(component.metadataFields[0]).toEqual('[CASE_REFERENCE]');
     });
   });

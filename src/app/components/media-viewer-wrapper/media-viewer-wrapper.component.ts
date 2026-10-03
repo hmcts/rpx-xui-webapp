@@ -71,9 +71,9 @@ export class MediaViewerWrapperComponent implements OnInit {
       this.caseId = media.case_id;
       this.caseJurisdiction = media.case_jurisdiction;
 
-      this.titleService.setTitle(this.mediaFilename + ' - View Document');
+      this.titleService.setTitle(`${this.mediaFilename} - View Document - Manage Case - HM Courts & Tribunals Service - GOV.UK`);
     } else {
-      this.titleService.setTitle('View Document');
+      this.titleService.setTitle('View Document - Manage Case - HM Courts & Tribunals Service - GOV.UK');
     }
 
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);

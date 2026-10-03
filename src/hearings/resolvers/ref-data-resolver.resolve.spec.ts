@@ -57,7 +57,7 @@ describe('Ref Data Resolver', () => {
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+      title: 'Request Hearing - Date Priority Hearing',
       category: HearingCategory.HearingPriority,
     };
     service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
@@ -75,7 +75,7 @@ describe('Ref Data Resolver', () => {
       spyOn(service, 'getReferenceData$').and.callThrough();
       const route = new ActivatedRouteSnapshot();
       route.data = {
-        title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+        title: 'Request Hearing - Date Priority Hearing',
         category: HearingCategory.PanelMemberType,
       };
       service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
@@ -91,7 +91,7 @@ describe('Ref Data Resolver', () => {
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+      title: 'Request Hearing - Date Priority Hearing',
       category: HearingCategory.HearingPriority,
     };
     service.resolve(route).subscribe(() => {

@@ -1,11 +1,15 @@
 // TODO - needs to be clarified wehre the css is coming form
+
+@use 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss' as colours;
+
+$notification-turquoise: #28a197;
 .notification {
   padding: 30px;
   font-size: 24px;
   font-weight: bold;
   width: 100%;
-  color: $page-colour;
-  background: $turquoise;
+  color: colours.$page-colour;
+  background: $notification-turquoise;
 }
 
 .small_notification {
@@ -14,8 +18,8 @@
   font-weight: bold;
   width: 60%;
   text-align: center;
-  color: $page-colour;
-  background: $turquoise;
+  color: colours.$page-colour;
+  background: $notification-turquoise;
 }
 
 .alert-message-but {

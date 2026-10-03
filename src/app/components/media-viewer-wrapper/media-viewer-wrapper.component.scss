@@ -1,6 +1,5 @@
-@import 'govuk-frontend/govuk/all';
-@import '@hmcts/frontend/all';
-@import '@hmcts/media-viewer/assets/all';
+@use 'src/style/hmcts-frontend' as frontend;
+@use 'src/style/media-viewer' as media-viewer;
 
 html {
   overflow: hidden;

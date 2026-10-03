@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
+import { HttpError } from '../../../models/httpError.model';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
@@ -41,8 +42,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingsActions: Actions[];
-  public hearingListLastErrorState$: Observable<fromHearingStore.State>;
-  public hearingValuesLastErrorState$: Observable<fromHearingStore.State>;
+  public hearingListLastErrorState$: Observable<HttpError>;
+  public hearingValuesLastErrorState$: Observable<HttpError>;
   public lastErrorSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public hasRequestAction: boolean = false;
@@ -129,7 +130,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         }
       });
     this.lastErrorSubscription = combineLatest([this.hearingListLastErrorState$, this.hearingValuesLastErrorState$]).subscribe({
-      next: ([hearingListlastError, hearingValuesLastError]: [fromHearingStore.State, fromHearingStore.State]) => {
+      next: ([hearingListlastError, hearingValuesLastError]: [HttpError, HttpError]) => {
         if (hearingListlastError || hearingValuesLastError) {
           this.serverError = {
             id: 'backendError',

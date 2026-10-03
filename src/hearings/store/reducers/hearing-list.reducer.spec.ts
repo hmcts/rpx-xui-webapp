@@ -52,6 +52,23 @@ describe('Hearing List Reducer', () => {
         const hearingsState = fromHearingListReducer.hearingListReducer(initialState, action);
         expect(hearingsState.hearingListMainModel).toEqual(HEARINGS_LIST);
       });
+
+      it('should replace Case A hearings with Case B hearings', () => {
+        const caseA = { caseRef: 'CASE-A', caseHearings: [] } as HearingListMainModel;
+        const caseB = { caseRef: 'CASE-B', caseHearings: [] } as HearingListMainModel;
+
+        const caseAState = fromHearingListReducer.hearingListReducer(
+          fromHearingListReducer.initialHearingListState,
+          new fromHearingListActions.LoadAllHearingsSuccess(caseA)
+        );
+        const caseBState = fromHearingListReducer.hearingListReducer(
+          caseAState,
+          new fromHearingListActions.LoadAllHearingsSuccess(caseB)
+        );
+
+        expect(caseBState.hearingListMainModel).toEqual(caseB);
+        expect(caseBState.hearingListMainModel).not.toEqual(caseA);
+      });
     });
   });
 });

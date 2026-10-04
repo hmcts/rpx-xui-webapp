@@ -3495,6 +3495,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/media-viewer@npm:4.2.39-ngrx-store-freeze-removal":
+  version: 4.2.39-ngrx-store-freeze-removal
+  resolution: "@hmcts/media-viewer@npm:4.2.39-ngrx-store-freeze-removal"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^23.0.1"
+    moment-timezone: "npm:^0.6.2"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.1.1"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.14
+    rxjs: ^7.8.2
+  checksum: 10/64405a122f070e9728bef11f3700f47155e1040a2c88ac8107b61fe9253763781fea41352f425fe1505db4c0322d45e0a08f53422d35dc63a2caab7916142cc3
+  languageName: node
+  linkType: hard
+
 "@hmcts/nodejs-healthcheck@npm:^1.8.6":
   version: 1.8.6
   resolution: "@hmcts/nodejs-healthcheck@npm:1.8.6"
@@ -12531,13 +12560,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-freeze-strict@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "deep-freeze-strict@npm:1.1.1"
-  checksum: 10/06e7a740391a09f97c2ff25c8b5fa2caccbab8de0b53db3d40f6aa49c0955366444304044cde3a9a5e7c95e973961ff9d8d05e225e208d69bbefacc38b41097d
-  languageName: node
-  linkType: hard
-
 "deep-is@npm:^0.1.3":
   version: 0.1.4
   resolution: "deep-is@npm:0.1.4"
@@ -18431,17 +18453,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngrx-store-freeze@npm:^0.2.4":
-  version: 0.2.4
-  resolution: "ngrx-store-freeze@npm:0.2.4"
-  dependencies:
-    deep-freeze-strict: "npm:^1.1.1"
-  peerDependencies:
-    "@ngrx/store": ">=4.0.0"
-  checksum: 10/55e211176c7c80a14523ad122cf006d5dedbf4b643a53fd60124eb73f86a018ade047fabcdc566eba7a13a14677b8442f56da6759e8563f7f5b8eaf36f169ddb
-  languageName: node
-  linkType: hard
-
 "ngx-chips@npm:3.0.0":
   version: 3.0.0
   resolution: "ngx-chips@npm:3.0.0"
@@ -21248,7 +21259,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.4.4"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.39"
+    "@hmcts/media-viewer": "npm:4.2.39-ngrx-store-freeze-removal"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
@@ -21339,7 +21350,6 @@ __metadata:
     mocha: "npm:^11.8.0"
     mochawesome: "npm:^7.0.0"
     moment-timezone: "npm:^0.6.2"
-    ngrx-store-freeze: "npm:^0.2.4"
     ngx-chips: "npm:3.0.0"
     ngx-editor: "npm:19.0.0-beta.1"
     ngx-logger: "npm:^5.0.12"

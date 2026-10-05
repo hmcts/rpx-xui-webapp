@@ -1,5 +1,23 @@
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@mixin _core-font-generator(
+  $font-size,
+  $font-size-640,
+  $font-size-print,
+  $line-height,
+  $line-height-640,
+  $tabular-numbers: false,
+  $font-weight: 400
+) {
+  font-family: 'nta', Arial, sans-serif;
+  font-weight: $font-weight;
+  text-transform: none;
+  font-size: $font-size-640;
+  line-height: $line-height-640;
+
+  @media (min-width: 641px) {
+    font-size: $font-size;
+    line-height: $line-height;
+  }
+}
 
 @mixin core-24pt($line-height: calc(30 / 24), $line-height-640: calc(24 / 20), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 24pt;

@@ -3,7 +3,11 @@ import { request } from '@playwright/test';
 import { ApiClient } from '@hmcts/playwright-common';
 import { ensureSessionCookies } from '../../common/sessionCapture';
 import { resolveRuntimeUserCredentialsForIdentifier } from '../../E2E/utils/runtimeUserCredentials';
-import { createPrlHearingsCase, resolvePrlHearingsCaseSetupConfig } from '../../E2E/utils/test-setup/prlHearingsCaseSetup';
+import {
+  createPrlHearingsCase,
+  findPrlWorkAllocationCourt,
+  resolvePrlHearingsCaseSetupConfig,
+} from '../../E2E/utils/test-setup/prlHearingsCaseSetup';
 import type { Task } from './types';
 
 const TASK_TYPE = 'newCaseTransferredToCourt';
@@ -127,12 +131,12 @@ type ActionUserDetails = {
   roleAssignmentInfo?: Array<{ jurisdiction?: string; roleName?: string; primaryLocation?: string; substantive?: string }>;
 };
 
-function requireCourtAdminCourt(userDetails: ActionUserDetails): string {
+function listActionCourts(userDetails: ActionUserDetails): string[] {
   if (!userDetails.userInfo?.roles?.includes('caseworker-privatelaw-courtadmin')) {
     throw new Error('WA fixture actor requires the PRL court-admin IDAM role.');
   }
   const assignments = userDetails.roleAssignmentInfo ?? [];
-  const courts = [
+  const hearingCourts = [
     ...new Set(
       assignments
         .filter(
@@ -142,12 +146,17 @@ function requireCourtAdminCourt(userDetails: ActionUserDetails): string {
         .filter((court): court is string => Boolean(court))
     ),
   ];
-  if (courts.length !== 1) throw new Error('WA fixture actor requires one unambiguous substantive PRL court-admin court.');
-  return courts[0];
+  return hearingCourts.filter((court) =>
+    assignments.some(
+      (role) => role.jurisdiction === 'PRIVATELAW' && role.roleName === 'task-supervisor' && role.primaryLocation === court
+    )
+  );
 }
 
 export function requireActionCourt(userDetails: ActionUserDetails): string {
-  const court = requireCourtAdminCourt(userDetails);
+  const courts = listActionCourts(userDetails);
+  if (courts.length !== 1) throw new Error('WA fixture actor requires one unambiguous substantive PRL court-admin court.');
+  const court = courts[0];
   const assignments = userDetails.roleAssignmentInfo ?? [];
   if (
     !assignments.some(
@@ -196,7 +205,12 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
     const userResponse = await context.get('/api/user/details?refreshRoleAssignments=true');
     if (userResponse.status() !== 200) throw new Error(`WA fixture actor lookup failed (HTTP ${userResponse.status()}).`);
     const userDetails = await userResponse.json();
-    const primaryLocation = requireActionCourt(userDetails);
+    const candidateCourts = listActionCourts(userDetails);
+    if (candidateCourts.length === 0) throw new Error('WA fixture actor has no substantive PRL court-admin court.');
+    const primaryLocation = await findPrlWorkAllocationCourt(candidateCourts, {
+      username: credentials.email,
+      password: credentials.password,
+    });
     const actorId = userDetails.userInfo?.id ?? userDetails.userInfo?.uid;
     if (typeof actorId !== 'string' || !actorId) throw new Error('WA fixture actor lookup returned no identity.');
     let assigneeId = actorId;

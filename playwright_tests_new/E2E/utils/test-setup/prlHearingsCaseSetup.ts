@@ -489,6 +489,42 @@ export async function createPrlHearingsCase(
   }
 }
 
+export async function findPrlWorkAllocationCourt(
+  primaryLocations: string[],
+  setupUserCredentials?: UserCredentials
+): Promise<string> {
+  const baseConfig = resolvePrlHearingsCaseSetupConfig(process.env);
+  const resolved = {
+    ...baseConfig,
+    courtAdminUsername: setupUserCredentials?.username ?? baseConfig.courtAdminUsername,
+    courtAdminPassword: setupUserCredentials?.password ?? baseConfig.courtAdminPassword,
+  };
+  const missing = validatePrlHearingsCaseSetupConfig(resolved);
+  if (missing.length > 0) throw new Error(`${REQUIRED_ENV_MESSAGE} Missing: ${missing.join(', ')}.`);
+  const config = resolved as Required<PrlHearingsCaseSetupConfig>;
+  const apiContext = await request.newContext();
+  try {
+    const bearerToken = await getBearerToken(
+      { username: config.courtAdminUsername, password: config.courtAdminPassword },
+      config
+    );
+    const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
+    for (const location of primaryLocations) {
+      try {
+        await preflightWorkAllocationCourt(apiContext, config, bearerToken, serviceToken, location);
+        return location;
+      } catch {
+        // Try the next role location; the caller receives one actionable error below.
+      }
+    }
+    throw new Error(
+      `PRL hearings setup found no seeded Work Allocation court for role locations: ${primaryLocations.join(', ')}.`
+    );
+  } finally {
+    await apiContext.dispose();
+  }
+}
+
 export async function createPrlHearingsCaseIfEnabled(
   primaryLocation: string,
   setupUserCredentials?: UserCredentials,

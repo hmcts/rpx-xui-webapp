@@ -137,6 +137,8 @@ fs.writeFileSync(outFile, updatedLines.join('\n'), 'utf-8');
 NODE
 
 for REQUIRED_KEY in \
+  WA_TASK_ADMIN_USERNAME \
+  WA_TASK_ADMIN_PASSWORD \
   WA_SOLICITOR_USERNAME \
   WA_SOLICITOR_PASSWORD \
   FPL_GLOBAL_SEARCH_USERNAME \

@@ -113,7 +113,6 @@ const buildConfig = (env: EnvMap = process.env) => {
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [
-      '**/test/smoke/smokeTest.spec.ts',
       ...localWorktreeTestIgnorePatterns,
       ...(env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true' ? [] : ['**/*.a11y.spec.ts']),
     ],

@@ -3,6 +3,7 @@ import {
   type HearingsCaseConfig,
   type HearingsCaseVariation,
   type HearingScenario,
+  HEARINGS_WA_SUPPORTED_JURISDICTIONS,
   buildCaseFlagsMock,
   buildHearingsAppConfigMock,
   buildCourtLocationMock,
@@ -198,7 +199,7 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify([]),
+      body: JSON.stringify(HEARINGS_WA_SUPPORTED_JURISDICTIONS),
     });
   });
 

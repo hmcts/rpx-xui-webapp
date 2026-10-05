@@ -20,6 +20,7 @@ export const HEARINGS_SERVICE_ID = 'ABA5';
 export const HEARINGS_LOCATION_ID = '827534';
 export const HEARINGS_LOCATION_NAME = 'Aberystwyth Justice Centre';
 export const HEARINGS_USER_ID = 'hearing-cr84-user';
+export const HEARINGS_WA_SUPPORTED_JURISDICTIONS = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC', 'PCS'];
 
 type UnknownRecord = Record<string, unknown>;
 

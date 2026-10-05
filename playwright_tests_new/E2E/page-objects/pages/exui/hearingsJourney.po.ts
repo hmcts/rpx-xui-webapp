@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { AdditionalFacility, HearingJourneyModel, HearingMethod, TypeOfJudges } from '../../../utils/hearing-model.ts';
 import { normaliseWhitespace } from '../../../utils/text.utils.ts';
 
@@ -147,8 +147,14 @@ export class HearingsJourneyPage {
    * response lands means the assignment overwrites (and silently drops) the new selection,
    * which is what makes the downstream check-your-answers venue assertions to be flaky.
    */
-  async waitForSeededVenues(expectedSeededVenue: string, timeout = 30_000): Promise<void> {
-    await this.removeLocationLink(expectedSeededVenue).waitFor({ state: 'visible', timeout });
+  async waitForSingleSeededVenue(timeout = 30_000): Promise<string> {
+    await expect(this.selectedVenueTags, 'The case should seed exactly one hearing venue').toHaveCount(1, { timeout });
+
+    const seededVenue = await this.venueTagName(this.selectedVenueTags.first());
+    if (!seededVenue) {
+      throw new Error('The seeded hearing venue tag did not expose a location name.');
+    }
+    return seededVenue;
   }
 
   async setHearingVenue(model: HearingJourneyModel, options: { autocompleteTimeoutMs?: number } = {}): Promise<string> {

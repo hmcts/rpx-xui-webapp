@@ -12,6 +12,7 @@ import {
   getAuthTokens,
   getOrRefreshCachedUsers,
   getOrRefreshCachedUsersWithRoles,
+  getUniqueUsersFromResponse,
   waitForCachedUsers,
 } from './caseWorkerUserDataCacheService';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
@@ -178,6 +179,38 @@ describe('Caseworker Cache Service', () => {
       sandbox.stub(http, 'get').resolves(res);
       const data = await fetchNewUserData();
       expect(data).to.deep.equal(mockMergedStaffUsers);
+    });
+  });
+
+  // EXUI-5291 - Ensure service names are capitalized when merging duplicate users
+  describe('getUniqueUsersFromResponse', () => {
+    it('should upper-case service names when merging duplicate users', () => {
+      const mockStaffDetails = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [],
+          },
+        },
+        {
+          ccd_service_name: 'Civil',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [],
+          },
+        },
+      ] as any[];
+
+      const [mergedUser] = getUniqueUsersFromResponse(mockStaffDetails);
+
+      expect(mergedUser.ccd_service_names).to.deep.equal(['IA', 'CIVIL']);
     });
   });
 

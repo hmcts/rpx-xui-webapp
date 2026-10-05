@@ -158,22 +158,6 @@ function listActionCourts(userDetails: ActionUserDetails): string[] {
   );
 }
 
-export function requireActionCourt(userDetails: ActionUserDetails): string {
-  const courts = listCourtAdminCourts(userDetails);
-  if (courts.length !== 1) throw new Error('WA fixture actor requires one unambiguous substantive PRL court-admin court.');
-  const court = courts[0];
-  const assignments = userDetails.roleAssignmentInfo ?? [];
-  if (
-    !assignments.some(
-      (role) =>
-        role.jurisdiction === 'PRIVATELAW' && role.roleName === 'task-supervisor' && role.primaryLocation?.trim() === court
-    )
-  ) {
-    throw new Error('WA fixture actor requires task-supervisor access at the same PRL court.');
-  }
-  return court;
-}
-
 export function listSharedActionCourts(operatorDetails: ActionUserDetails, assigneeDetails?: ActionUserDetails): string[] {
   const operatorCourts = listActionCourts(operatorDetails);
   if (!assigneeDetails) return operatorCourts;

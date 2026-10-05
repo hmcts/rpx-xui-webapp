@@ -541,8 +541,7 @@ export async function findPrlWorkAllocationCourt(
 
 export async function createPrlHearingsCaseIfEnabled(
   primaryLocation: string,
-  setupUserCredentials?: UserCredentials,
-  _page?: unknown
+  setupUserCredentials?: UserCredentials
 ): Promise<PrlHearingsCaseSetupResult | undefined> {
   if (!isPrlHearingsCaseSetupEnabled()) {
     return undefined;

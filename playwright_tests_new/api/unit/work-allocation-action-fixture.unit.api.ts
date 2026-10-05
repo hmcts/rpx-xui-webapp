@@ -4,7 +4,6 @@ import {
   provisionOwnedActionTask,
   requireAatUrl,
   requireExuiUrl,
-  requireActionCourt,
   requireAssignmentTarget,
   listSharedActionCourts,
   requireOwnedActionTask,
@@ -142,33 +141,6 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
       expect(() => requireExuiUrl(url)).toThrow('approved AAT');
   });
 
-  test('requires matching court-admin and supervisor access without rejecting derived supervisor roles', () => {
-    const roles = [
-      { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '234946', substantive: 'Y' },
-      { jurisdiction: 'PRIVATELAW', roleName: 'task-supervisor', primaryLocation: '234946', substantive: 'N' },
-    ];
-    const userInfo = { roles: ['caseworker-privatelaw-courtadmin'] };
-    expect(requireActionCourt({ userInfo, roleAssignmentInfo: roles })).toBe('234946');
-    expect(
-      requireActionCourt({
-        userInfo,
-        roleAssignmentInfo: [
-          { ...roles[0], primaryLocation: ' 234946 ' },
-          { ...roles[1], primaryLocation: ' 234946 ' },
-        ],
-      })
-    ).toBe('234946');
-    for (const roleAssignmentInfo of [
-      [],
-      roles.slice(0, 1),
-      [roles[0], { ...roles[1], primaryLocation: 'different' }],
-      [...roles, { ...roles[0], primaryLocation: 'different' }],
-      [{ ...roles[0], substantive: 'N' }, roles[1]],
-    ])
-      expect(() => requireActionCourt({ userInfo, roleAssignmentInfo })).toThrow();
-    expect(() => requireActionCourt({ userInfo: { roles: [] }, roleAssignmentInfo: roles })).toThrow();
-  });
-
   test('rejects wrong ownership, initial state and missing advertised permission', () => {
     expect(requireOwnedActionTask(ownedTask('owned'), caseReference, 'owned')).toBe('owned-task');
     for (const change of [
@@ -239,7 +211,8 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
         provisionOwnedActionTask({
           createCase: async () => ({ caseReference }),
           sendMessage: async (body) => {
-            taskName = (body as any).processVariables.name.value;
+            const message = body as { processVariables: Record<string, { value: string }> };
+            taskName = message.processVariables.name.value;
             return 204;
           },
           readTasks: async () => {

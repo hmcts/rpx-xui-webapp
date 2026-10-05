@@ -283,44 +283,6 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     }
   });
 
-  test.describe('owned task actions', { tag: '@wa-action' }, () => {
-    for (const action of ['claim', 'assign', 'unclaim', 'unassign', 'complete', 'cancel']) {
-      test(`${action} changes a newly provisioned task to its expected state`, async () => {
-        test.setTimeout(4 * 60_000);
-        const fixture = await createWorkAllocationActionFixture(action === 'unassign' ? 'HEARING_MANAGER_CR84_ON-1' : undefined);
-        const errors: unknown[] = [];
-        try {
-          const deps = {
-            apiClient: fixture.client,
-            expectedAssignee: fixture.actorId,
-            withXsrfFn: async (_role: string, fn: (headers: Record<string, string>) => Promise<void>) => fn(fixture.headers),
-          };
-          if (action === 'unassign') {
-            await runSeededAction('assign', () => fixture.taskId, { ...deps, expectedAssignee: fixture.assigneeId });
-          } else if (['unclaim', 'complete'].includes(action)) {
-            await runSeededAction('claim', () => fixture.taskId, deps);
-          }
-          await runSeededAction(action, () => fixture.taskId, deps);
-        } catch (error) {
-          errors.push(error);
-        }
-        try {
-          await fixture.cleanup();
-        } catch (cleanupError) {
-          errors.push(cleanupError);
-        } finally {
-          try {
-            await fixture.dispose();
-          } catch (disposeError) {
-            errors.push(disposeError);
-          }
-        }
-        if (errors.length > 1) throw new AggregateError(errors, 'WA action and owned fixture cleanup failed');
-        if (errors.length === 1) throw errors[0];
-      });
-    }
-  });
-
   test.describe('caseworkers & people', () => {
     test('lists caseworkers', async ({ apiClient }) => {
       const response = await withXsrf('solicitor', (headers) =>

@@ -390,6 +390,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     });
 
     expect(filters.excludedTags).toEqual(['@svc-work-allocation-myaccess']);
+    expect(filters.grepInvert?.test('@wa-action')).toBe(false);
     expect(filters.grepInvert?.test('@svc-work-allocation-myaccess')).toBe(true);
     expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
   });

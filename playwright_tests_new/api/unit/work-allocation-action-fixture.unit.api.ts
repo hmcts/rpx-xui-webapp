@@ -4,6 +4,7 @@ import {
   provisionOwnedActionTask,
   requireAatUrl,
   requireExuiUrl,
+  requireAuthenticatedUser,
   requireAssignmentTarget,
   listSharedActionCourts,
   requireOwnedActionTask,
@@ -20,7 +21,7 @@ function ownedTask(name: string): Task {
     type: 'newCaseTransferredToCourt',
     task_state: 'unassigned',
     assignee: null,
-    permissions: { values: ['read', 'own', 'claim', 'unclaim', 'assign', 'unassign', 'complete', 'cancel'] },
+    permissions: { values: ['Read', 'Own', 'Claim', 'Unclaim', 'CompleteOwn', 'UnclaimAssign', 'UnassignClaim'] },
   };
 }
 
@@ -82,9 +83,9 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
       }))
     ).rejects.toThrow('approved AAT');
   });
-  test('cleanup cancels only its verified owned task and proves the final state', async () => {
-    for (const initialState of ['unassigned', 'completed', 'cancelled', 'wrong-case']) {
-      let cancels = 0;
+  test('cleanup completes only its verified owned task and proves the final state', async () => {
+    for (const initialState of ['unassigned', 'assigned', 'completed', 'cancelled', 'wrong-case']) {
+      const posts: string[] = [];
       const client = {
         get: async () => ({
           status: 200,
@@ -92,19 +93,21 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
             task: {
               ...ownedTask('owned'),
               case_id: initialState === 'wrong-case' ? '9999999999999999' : caseReference,
-              task_state: cancels ? 'cancelled' : initialState,
+              task_state: posts.includes('complete') ? 'completed' : posts.includes('claim') ? 'assigned' : initialState,
             },
           },
         }),
-        post: async () => {
-          cancels++;
+        post: async (url: string) => {
+          posts.push(url.split('/').pop() ?? '');
           return { status: 204 };
         },
       };
       const cleanup = cleanupOwnedActionTask(client as never, { taskId: 'owned-task', caseReference });
       if (initialState === 'wrong-case') await expect(cleanup).rejects.toThrow('could not verify');
       else await cleanup;
-      expect(cancels).toBe(initialState === 'unassigned' ? 1 : 0);
+      expect(posts).toEqual(
+        initialState === 'unassigned' ? ['claim', 'complete'] : initialState === 'assigned' ? ['complete'] : []
+      );
     }
   });
   test('allows public HTTPS AAT and internal HTTP AAT service hosts only', () => {
@@ -139,6 +142,15 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
       'https://user:password@xui-webapp-pr-5491.preview.platform.hmcts.net',
     ])
       expect(() => requireExuiUrl(url)).toThrow('approved AAT');
+  });
+
+  test('fails closed when the authenticated session is for another user', () => {
+    expect(() => requireAuthenticatedUser({ userInfo: { email: 'wrong@example.test' } }, 'expected@example.test')).toThrow(
+      'expected expected@example.test'
+    );
+    expect(() =>
+      requireAuthenticatedUser({ userInfo: { email: 'EXPECTED@EXAMPLE.TEST' } }, 'expected@example.test')
+    ).not.toThrow();
   });
 
   test('rejects wrong ownership, initial state and missing advertised permission', () => {
@@ -182,6 +194,50 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
     });
     expect(result).toEqual({ caseReference, taskId: 'owned-task', idempotencyKey: key });
     expect(reads).toBe(2);
+  });
+
+  test('retries transient case provisioning before creating the owned task', async () => {
+    let creates = 0;
+    let waits = 0;
+    let taskName = '';
+    const result = await provisionOwnedActionTask({
+      createCase: async () => {
+        creates++;
+        if (creates < 9) throw new Error('PRL hearings setup testing-support admin case create failed (HTTP 504).');
+        return { caseReference };
+      },
+      sendMessage: async (body) => {
+        taskName = (body as any).processVariables.name.value;
+        return 204;
+      },
+      readTasks: async () => [ownedTask(taskName)],
+      wait: async () => {
+        waits++;
+      },
+      now: () => 0,
+    });
+    expect(result.taskId).toBe('owned-task');
+    expect(creates).toBe(9);
+    expect(waits).toBe(8);
+  });
+
+  test('does not retry non-transient case provisioning failures', async () => {
+    let creates = 0;
+    await expect(
+      provisionOwnedActionTask({
+        createCase: async () => {
+          creates++;
+          throw new Error('PRL hearings setup could not start the testing-support admin create event (HTTP 403).');
+        },
+        sendMessage: async () => {
+          throw new Error('Unexpected workflow call');
+        },
+        readTasks: async () => [],
+        wait: async () => {},
+        now: () => 0,
+      })
+    ).rejects.toThrow('HTTP 403');
+    expect(creates).toBe(1);
   });
 
   test('workflow errors fail without retrying or searching tasks', async () => {
@@ -240,6 +296,6 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
         },
         now: () => now,
       })
-    ).rejects.toThrow('within three minutes');
+    ).rejects.toThrow('within six minutes');
   });
 });

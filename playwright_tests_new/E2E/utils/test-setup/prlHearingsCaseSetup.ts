@@ -9,6 +9,7 @@ dotenv.config();
 type UserCredentials = {
   username: string;
   password: string;
+  bearerToken?: string;
 };
 
 export type PrlHearingsCaseSetupConfig = {
@@ -472,10 +473,9 @@ export async function createPrlHearingsCase(
   const config = resolved as Required<PrlHearingsCaseSetupConfig>;
   const apiContext = await request.newContext();
   try {
-    const courtAdminToken = await getBearerToken(
-      { username: config.courtAdminUsername, password: config.courtAdminPassword },
-      config
-    );
+    const courtAdminToken =
+      setupUserCredentials?.bearerToken ??
+      (await getBearerToken({ username: config.courtAdminUsername, password: config.courtAdminPassword }, config));
     const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
     await preflightWorkAllocationCourt(apiContext, config, courtAdminToken, serviceToken, primaryLocation);
     const userId = await getUserId(apiContext, config, courtAdminToken);
@@ -528,12 +528,11 @@ export async function findPrlWorkAllocationCourt(
   const config = resolved as Required<PrlHearingsCaseSetupConfig>;
   const apiContext = await request.newContext();
   try {
-    const bearerToken = await getBearerToken(
-      { username: config.courtAdminUsername, password: config.courtAdminPassword },
-      config
-    );
+    const bearerToken =
+      setupUserCredentials?.bearerToken ??
+      (await getBearerToken({ username: config.courtAdminUsername, password: config.courtAdminPassword }, config));
     const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
-    return findFirstPassingPrlWorkAllocationCourt(apiContext, config, bearerToken, serviceToken, primaryLocations);
+    return await findFirstPassingPrlWorkAllocationCourt(apiContext, config, bearerToken, serviceToken, primaryLocations);
   } finally {
     await apiContext.dispose();
   }

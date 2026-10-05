@@ -11,7 +11,10 @@ import {
 import type { Task } from './types';
 
 const TASK_TYPE = 'newCaseTransferredToCourt';
-const REQUIRED_PERMISSIONS = ['read', 'own', 'claim', 'unclaim', 'assign', 'unassign', 'complete', 'cancel'];
+const REQUIRED_ACTION_PERMISSIONS = ['read', 'own', 'claim', 'unclaim', 'completeown', 'unclaimassign', 'unassignclaim'];
+const CASE_PROVISION_RETRY_STATUSES = [500, 502, 504];
+const CASE_PROVISION_RETRIES = 8;
+const TASK_MONITOR_INITIATION_TIMEOUT_MS = 6 * 60_000;
 
 export function requireAatUrl(value: string | undefined, label: string): string {
   const url = new URL(value ?? '');
@@ -57,8 +60,10 @@ export function requireOwnedActionTask(task: Task, caseReference: string, taskNa
   if (task.task_state !== 'unassigned' || task.assignee) {
     throw new Error('WA fixture task must initially be unassigned.');
   }
-  const permissions = (task.permissions as { values?: string[] } | undefined)?.values;
-  if (!Array.isArray(permissions) || REQUIRED_PERMISSIONS.some((permission) => !permissions.includes(permission))) {
+  const permissions = (task.permissions as { values?: string[] } | undefined)?.values?.map((permission) =>
+    permission.toLowerCase()
+  );
+  if (!permissions || REQUIRED_ACTION_PERMISSIONS.some((permission) => !permissions.includes(permission))) {
     throw new Error('WA fixture actor lacks the required advertised action permissions.');
   }
   return task.id;
@@ -72,8 +77,27 @@ type ProvisionDependencies = {
   now: () => number;
 };
 
+function isTransientCaseProvisioningError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return CASE_PROVISION_RETRY_STATUSES.some((status) => message.includes(`HTTP ${status}`));
+}
+
+async function createCaseWithTransientRetry(deps: ProvisionDependencies): Promise<{ caseReference: string }> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= CASE_PROVISION_RETRIES; attempt++) {
+    try {
+      return await deps.createCase();
+    } catch (error) {
+      lastError = error;
+      if (!isTransientCaseProvisioningError(error) || attempt === CASE_PROVISION_RETRIES) throw error;
+      await deps.wait();
+    }
+  }
+  throw lastError;
+}
+
 export async function provisionOwnedActionTask(deps: ProvisionDependencies) {
-  const { caseReference } = await deps.createCase();
+  const { caseReference } = await createCaseWithTransientRetry(deps);
   if (!/^\d{16}$/.test(caseReference)) throw new Error('WA fixture creation returned an invalid case reference.');
   const idempotencyKey = randomUUID();
   const taskName = `EXUI WA action ${idempotencyKey}`;
@@ -95,7 +119,7 @@ export async function provisionOwnedActionTask(deps: ProvisionDependencies) {
     all: false,
   });
   if (status !== 204) throw new Error(`WA fixture workflow creation failed (HTTP ${status}).`);
-  const deadline = deps.now() + 3 * 60_000;
+  const deadline = deps.now() + TASK_MONITOR_INITIATION_TIMEOUT_MS;
   do {
     const tasks = await deps.readTasks(caseReference);
     const ownedTasks = tasks.filter((task) => task.name === taskName);
@@ -106,30 +130,49 @@ export async function provisionOwnedActionTask(deps: ProvisionDependencies) {
     }
     await deps.wait();
   } while (deps.now() < deadline);
-  throw new Error('WA fixture task-monitor initiation did not produce the owned task within three minutes.');
+  throw new Error('WA fixture task-monitor initiation did not produce the owned task within six minutes.');
 }
 
 export async function cleanupOwnedActionTask(
   client: Pick<ApiClient, 'get' | 'post'>,
   owned: { taskId: string; caseReference: string }
 ) {
-  const before = await client.get<{ task: Task }>(`workallocation/task/${owned.taskId}`, { throwOnError: false });
-  if (before.status !== 200 || before.data.task?.case_id !== owned.caseReference || before.data.task?.id !== owned.taskId) {
-    throw new Error('WA fixture cleanup could not verify its owned task.');
+  const readOwnedTask = async (): Promise<Task> => {
+    const response = await client.get<{ task: Task }>(`workallocation/task/${owned.taskId}`, { throwOnError: false });
+    const task = response.data.task;
+    if (response.status !== 200 || task?.case_id !== owned.caseReference || task?.id !== owned.taskId) {
+      throw new Error('WA fixture cleanup could not verify its owned task.');
+    }
+    return task;
+  };
+
+  let task = await readOwnedTask();
+  if (['completed', 'cancelled'].includes(String(task.task_state))) return;
+
+  if (task.task_state === 'unassigned') {
+    const claimed = await client.post(`workallocation/task/${owned.taskId}/claim`, { data: {}, throwOnError: false });
+    if (claimed.status !== 204) throw new Error(`WA fixture owned task cleanup claim failed (HTTP ${claimed.status}).`);
+    task = await readOwnedTask();
   }
-  if (['completed', 'cancelled'].includes(String(before.data.task.task_state))) return;
-  const cancelled = await client.post(`workallocation/task/${owned.taskId}/cancel`, { data: {}, throwOnError: false });
-  if (cancelled.status !== 204) throw new Error(`WA fixture owned task cleanup failed (HTTP ${cancelled.status}).`);
-  const after = await client.get<{ task: Task }>(`workallocation/task/${owned.taskId}`, { throwOnError: false });
-  if (after.status !== 200 || after.data.task?.task_state !== 'cancelled') {
-    throw new Error('WA fixture cleanup did not prove the owned task was cancelled.');
-  }
+
+  if (task.task_state !== 'assigned') throw new Error(`WA fixture cleanup cannot complete task in state ${task.task_state}.`);
+  const completed = await client.post(`workallocation/task/${owned.taskId}/complete`, { data: {}, throwOnError: false });
+  if (completed.status !== 204) throw new Error(`WA fixture owned task cleanup complete failed (HTTP ${completed.status}).`);
+  const after = await readOwnedTask();
+  if (after.task_state !== 'completed') throw new Error('WA fixture cleanup did not prove the owned task was completed.');
 }
 
 type ActionUserDetails = {
-  userInfo?: { id?: string; uid?: string; roles?: string[] };
+  userInfo?: { id?: string; uid?: string; email?: string; roles?: string[] };
   roleAssignmentInfo?: Array<{ jurisdiction?: string; roleName?: string; primaryLocation?: string; substantive?: string }>;
 };
+
+export function requireAuthenticatedUser(userDetails: ActionUserDetails, expectedEmail: string): void {
+  const actualEmail = userDetails.userInfo?.email?.trim().toLowerCase();
+  if (actualEmail && actualEmail !== expectedEmail.trim().toLowerCase()) {
+    throw new Error(`WA fixture authenticated as ${actualEmail}, expected ${expectedEmail}.`);
+  }
+}
 
 function listCourtAdminCourts(userDetails: ActionUserDetails): string[] {
   if (!userDetails.userInfo?.roles?.includes('caseworker-privatelaw-courtadmin')) {
@@ -149,13 +192,7 @@ function listCourtAdminCourts(userDetails: ActionUserDetails): string[] {
 }
 
 function listActionCourts(userDetails: ActionUserDetails): string[] {
-  const assignments = userDetails.roleAssignmentInfo ?? [];
-  return listCourtAdminCourts(userDetails).filter((court) =>
-    assignments.some(
-      (role) =>
-        role.jurisdiction === 'PRIVATELAW' && role.roleName === 'task-supervisor' && role.primaryLocation?.trim() === court
-    )
-  );
+  return listCourtAdminCourts(userDetails);
 }
 
 export function listSharedActionCourts(operatorDetails: ActionUserDetails, assigneeDetails?: ActionUserDetails): string[] {
@@ -202,6 +239,7 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
     const userResponse = await context.get('/api/user/details?refreshRoleAssignments=true');
     if (userResponse.status() !== 200) throw new Error(`WA fixture actor lookup failed (HTTP ${userResponse.status()}).`);
     const userDetails = await userResponse.json();
+    requireAuthenticatedUser(userDetails, credentials.email);
     const actorId = userDetails.userInfo?.id ?? userDetails.userInfo?.uid;
     if (typeof actorId !== 'string' || !actorId) throw new Error('WA fixture actor lookup returned no identity.');
     let assigneeDetails: ActionUserDetails | undefined;
@@ -227,6 +265,7 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
     const primaryLocation = await findPrlWorkAllocationCourt(candidateCourts, {
       username: credentials.email,
       password: credentials.password,
+      bearerToken,
     });
     if (assigneeDetails) assigneeId = requireAssignmentTarget(assigneeDetails, primaryLocation, actorId);
     const tokenResponse = await serviceContext.post(s2sUrl.toString(), { data: { microservice: 'xui_webapp' } });
@@ -234,7 +273,8 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
     const serviceToken = (await tokenResponse.text()).trim();
     if (!serviceToken) throw new Error('WA fixture S2S lookup returned no token.');
     const owned = await provisionOwnedActionTask({
-      createCase: () => createPrlHearingsCase(primaryLocation, { username: credentials.email, password: credentials.password }),
+      createCase: () =>
+        createPrlHearingsCase(primaryLocation, { username: credentials.email, password: credentials.password, bearerToken }),
       sendMessage: async (body) =>
         (
           await serviceContext.post(`${workflowUrl}/workflow/message`, {

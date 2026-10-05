@@ -131,12 +131,12 @@ type ActionUserDetails = {
   roleAssignmentInfo?: Array<{ jurisdiction?: string; roleName?: string; primaryLocation?: string; substantive?: string }>;
 };
 
-function listActionCourts(userDetails: ActionUserDetails): string[] {
+function listCourtAdminCourts(userDetails: ActionUserDetails): string[] {
   if (!userDetails.userInfo?.roles?.includes('caseworker-privatelaw-courtadmin')) {
     throw new Error('WA fixture actor requires the PRL court-admin IDAM role.');
   }
   const assignments = userDetails.roleAssignmentInfo ?? [];
-  const hearingCourts = [
+  return [
     ...new Set(
       assignments
         .filter(
@@ -146,7 +146,11 @@ function listActionCourts(userDetails: ActionUserDetails): string[] {
         .filter((court): court is string => Boolean(court))
     ),
   ];
-  return hearingCourts.filter((court) =>
+}
+
+function listActionCourts(userDetails: ActionUserDetails): string[] {
+  const assignments = userDetails.roleAssignmentInfo ?? [];
+  return listCourtAdminCourts(userDetails).filter((court) =>
     assignments.some(
       (role) => role.jurisdiction === 'PRIVATELAW' && role.roleName === 'task-supervisor' && role.primaryLocation === court
     )
@@ -154,7 +158,7 @@ function listActionCourts(userDetails: ActionUserDetails): string[] {
 }
 
 export function requireActionCourt(userDetails: ActionUserDetails): string {
-  const courts = listActionCourts(userDetails);
+  const courts = listCourtAdminCourts(userDetails);
   if (courts.length !== 1) throw new Error('WA fixture actor requires one unambiguous substantive PRL court-admin court.');
   const court = courts[0];
   const assignments = userDetails.roleAssignmentInfo ?? [];
@@ -169,7 +173,7 @@ export function requireActionCourt(userDetails: ActionUserDetails): string {
 }
 
 export function requireAssignmentTarget(userDetails: ActionUserDetails, court: string, operatorId: string): string {
-  if (requireCourtAdminCourt(userDetails) !== court)
+  if (!listCourtAdminCourts(userDetails).includes(court))
     throw new Error('WA assignment target must have access at the same PRL court.');
   const id = userDetails.userInfo?.id ?? userDetails.userInfo?.uid;
   if (!id?.trim() || id === operatorId) throw new Error('WA unassign requires a different, identified court-admin assignee.');

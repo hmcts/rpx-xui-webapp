@@ -30,6 +30,7 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
       userInfo: { uid: 'assignee', roles: ['caseworker-privatelaw-courtadmin'] },
       roleAssignmentInfo: [
         { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '234946', substantive: 'Y' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '234947', substantive: 'Y' },
       ],
     };
     expect(requireAssignmentTarget(details, '234946', 'operator')).toBe('assignee');

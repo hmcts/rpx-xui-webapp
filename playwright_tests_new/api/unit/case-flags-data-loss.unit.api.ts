@@ -128,6 +128,21 @@ test.describe('Civil case flag data-loss helpers', { tag: '@svc-internal' }, () 
     expect(resolveCivilClaimantPartyName(createCaseViewPayloadWithClaimantField())).toBe(EXPECTED_CLAIMANT_PARTY_NAME);
   });
 
+  test('claimant name resolution falls back to Civil party flag metadata', () => {
+    expect(
+      resolveCivilClaimantPartyName(
+        createCaseDetails({
+          applicant1: {
+            flags: {
+              partyName: EXPECTED_CLAIMANT_PARTY_NAME,
+              roleOnCase: 'Claimant 1',
+            },
+          },
+        })
+      )
+    ).toBe(EXPECTED_CLAIMANT_PARTY_NAME);
+  });
+
   test('data-loss report redacts case reference and describes raw attachment state', () => {
     const report = buildDataLossComparisonReport({
       baselineCaseDetails: createCaseDetails(),

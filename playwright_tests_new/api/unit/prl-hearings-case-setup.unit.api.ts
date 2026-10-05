@@ -413,6 +413,41 @@ test.describe('PRL hearings case setup', () => {
     );
   });
 
+  test('finds the first seeded Work Allocation court and preserves all preflight failures', async () => {
+    const apiContext = {} as APIRequestContext;
+    const config = { prlCosApiUrl: 'https://prl-cos-api.example.test/' } as Required<PrlHearingsCaseSetupConfig>;
+    const attempts: string[] = [];
+    const selected = await __test__.findFirstPassingPrlWorkAllocationCourt(
+      apiContext,
+      config,
+      'court-admin-token',
+      's2s-token',
+      ['111111', '222222'],
+      async (_apiContext, _config, _bearerToken, _serviceToken, location) => {
+        attempts.push(location);
+        if (location === '111111') throw new Error('court missing from PRL list');
+      }
+    );
+
+    expect(selected).toBe('222222');
+    expect(attempts).toEqual(['111111', '222222']);
+
+    await expect(
+      __test__.findFirstPassingPrlWorkAllocationCourt(
+        apiContext,
+        config,
+        'court-admin-token',
+        's2s-token',
+        ['111111', '222222'],
+        async (_apiContext, _config, _bearerToken, _serviceToken, location) => {
+          throw new Error(`preflight failed for ${location}`);
+        }
+      )
+    ).rejects.toThrow(
+      'PRL hearings setup found no seeded Work Allocation court for role locations: 111111, 222222. Preflight failures: 111111: preflight failed for 111111 | 222222: preflight failed for 222222.'
+    );
+  });
+
   test('creates the PRL case through the CCD testing-support admin event', async () => {
     const requests: Array<{ method: string; url: string; data?: unknown; headers?: unknown }> = [];
     const apiContext = {

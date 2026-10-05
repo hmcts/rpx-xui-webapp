@@ -6,6 +6,7 @@ import {
   requireExuiUrl,
   requireActionCourt,
   requireAssignmentTarget,
+  listSharedActionCourts,
   requireOwnedActionTask,
   resolveActionWorkflowUrl,
 } from '../utils/workAllocationActionFixture';
@@ -25,6 +26,28 @@ function ownedTask(name: string): Task {
 }
 
 test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
+  test('selects only courts shared by the operator and optional assignee', () => {
+    const operator = {
+      userInfo: { roles: ['caseworker-privatelaw-courtadmin'] },
+      roleAssignmentInfo: [
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '111111', substantive: 'Y' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'task-supervisor', primaryLocation: '111111', substantive: 'N' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '222222', substantive: 'Y' },
+        { jurisdiction: 'PRIVATELAW', roleName: 'task-supervisor', primaryLocation: ' 222222 ', substantive: 'N' },
+      ],
+    };
+    const assignee = {
+      userInfo: { uid: 'assignee', roles: ['caseworker-privatelaw-courtadmin'] },
+      roleAssignmentInfo: [
+        { jurisdiction: 'PRIVATELAW', roleName: 'hearing-centre-admin', primaryLocation: '222222', substantive: 'Y' },
+      ],
+    };
+
+    expect(listSharedActionCourts(operator)).toEqual(['111111', '222222']);
+    expect(listSharedActionCourts(operator, assignee)).toEqual(['222222']);
+    expect(listSharedActionCourts(operator, { ...assignee, roleAssignmentInfo: [] })).toEqual([]);
+  });
+
   test('assignment target is a different configured court admin at the same court', () => {
     const details = {
       userInfo: { uid: 'assignee', roles: ['caseworker-privatelaw-courtadmin'] },
@@ -126,6 +149,15 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
     ];
     const userInfo = { roles: ['caseworker-privatelaw-courtadmin'] };
     expect(requireActionCourt({ userInfo, roleAssignmentInfo: roles })).toBe('234946');
+    expect(
+      requireActionCourt({
+        userInfo,
+        roleAssignmentInfo: [
+          { ...roles[0], primaryLocation: ' 234946 ' },
+          { ...roles[1], primaryLocation: ' 234946 ' },
+        ],
+      })
+    ).toBe('234946');
     for (const roleAssignmentInfo of [
       [],
       roles.slice(0, 1),

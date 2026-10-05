@@ -489,6 +489,30 @@ export async function createPrlHearingsCase(
   }
 }
 
+async function findFirstPassingPrlWorkAllocationCourt(
+  apiContext: APIRequestContext,
+  config: Required<PrlHearingsCaseSetupConfig>,
+  bearerToken: string,
+  serviceToken: string,
+  primaryLocations: string[],
+  preflightCourt = preflightWorkAllocationCourt
+): Promise<string> {
+  const failures: string[] = [];
+  for (const location of primaryLocations) {
+    try {
+      await preflightCourt(apiContext, config, bearerToken, serviceToken, location);
+      return location;
+    } catch (error) {
+      failures.push(`${location}: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  throw new Error(
+    `PRL hearings setup found no seeded Work Allocation court for role locations: ${primaryLocations.join(
+      ', '
+    )}. Preflight failures: ${failures.join(' | ')}.`
+  );
+}
+
 export async function findPrlWorkAllocationCourt(
   primaryLocations: string[],
   setupUserCredentials?: UserCredentials
@@ -509,20 +533,7 @@ export async function findPrlWorkAllocationCourt(
       config
     );
     const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
-    const failures: string[] = [];
-    for (const location of primaryLocations) {
-      try {
-        await preflightWorkAllocationCourt(apiContext, config, bearerToken, serviceToken, location);
-        return location;
-      } catch (error) {
-        failures.push(`${location}: ${error instanceof Error ? error.message : String(error)}`);
-      }
-    }
-    throw new Error(
-      `PRL hearings setup found no seeded Work Allocation court for role locations: ${primaryLocations.join(
-        ', '
-      )}. Preflight failures: ${failures.join(' | ')}.`
-    );
+    return findFirstPassingPrlWorkAllocationCourt(apiContext, config, bearerToken, serviceToken, primaryLocations);
   } finally {
     await apiContext.dispose();
   }
@@ -547,6 +558,7 @@ export const __test__ = {
   buildWorkAllocationPreflightRequest,
   isPrlHearingsCaseSetupEnabled,
   preflightWorkAllocationCourt,
+  findFirstPassingPrlWorkAllocationCourt,
   createTestingSupportAdminCase,
   resolvePrlHearingsCaseSetupConfig,
   selectWorkAllocationCourtLocation,

@@ -152,7 +152,8 @@ function listActionCourts(userDetails: ActionUserDetails): string[] {
   const assignments = userDetails.roleAssignmentInfo ?? [];
   return listCourtAdminCourts(userDetails).filter((court) =>
     assignments.some(
-      (role) => role.jurisdiction === 'PRIVATELAW' && role.roleName === 'task-supervisor' && role.primaryLocation === court
+      (role) =>
+        role.jurisdiction === 'PRIVATELAW' && role.roleName === 'task-supervisor' && role.primaryLocation?.trim() === court
     )
   );
 }
@@ -164,12 +165,20 @@ export function requireActionCourt(userDetails: ActionUserDetails): string {
   const assignments = userDetails.roleAssignmentInfo ?? [];
   if (
     !assignments.some(
-      (role) => role.jurisdiction === 'PRIVATELAW' && role.roleName === 'task-supervisor' && role.primaryLocation === court
+      (role) =>
+        role.jurisdiction === 'PRIVATELAW' && role.roleName === 'task-supervisor' && role.primaryLocation?.trim() === court
     )
   ) {
     throw new Error('WA fixture actor requires task-supervisor access at the same PRL court.');
   }
   return court;
+}
+
+export function listSharedActionCourts(operatorDetails: ActionUserDetails, assigneeDetails?: ActionUserDetails): string[] {
+  const operatorCourts = listActionCourts(operatorDetails);
+  if (!assigneeDetails) return operatorCourts;
+  const assigneeCourts = new Set(listCourtAdminCourts(assigneeDetails));
+  return operatorCourts.filter((court) => assigneeCourts.has(court));
 }
 
 export function requireAssignmentTarget(userDetails: ActionUserDetails, court: string, operatorId: string): string {
@@ -209,14 +218,9 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
     const userResponse = await context.get('/api/user/details?refreshRoleAssignments=true');
     if (userResponse.status() !== 200) throw new Error(`WA fixture actor lookup failed (HTTP ${userResponse.status()}).`);
     const userDetails = await userResponse.json();
-    const candidateCourts = listActionCourts(userDetails);
-    if (candidateCourts.length === 0) throw new Error('WA fixture actor has no substantive PRL court-admin court.');
-    const primaryLocation = await findPrlWorkAllocationCourt(candidateCourts, {
-      username: credentials.email,
-      password: credentials.password,
-    });
     const actorId = userDetails.userInfo?.id ?? userDetails.userInfo?.uid;
     if (typeof actorId !== 'string' || !actorId) throw new Error('WA fixture actor lookup returned no identity.');
+    let assigneeDetails: ActionUserDetails | undefined;
     let assigneeId = actorId;
     if (assigneeUserIdentifier) {
       const assigneeSession = await ensureSessionCookies(assigneeUserIdentifier);
@@ -224,11 +228,23 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
       try {
         const response = await assigneeContext.get('/api/user/details?refreshRoleAssignments=true');
         if (response.status() !== 200) throw new Error(`WA assignment target lookup failed (HTTP ${response.status()}).`);
-        assigneeId = requireAssignmentTarget(await response.json(), primaryLocation, actorId);
+        assigneeDetails = await response.json();
       } finally {
         await assigneeContext.dispose();
       }
     }
+    const candidateCourts = listSharedActionCourts(userDetails, assigneeDetails);
+    if (candidateCourts.length === 0)
+      throw new Error(
+        assigneeDetails
+          ? 'WA fixture actor and assignment target have no shared substantive PRL court-admin court.'
+          : 'WA fixture actor has no substantive PRL court-admin court.'
+      );
+    const primaryLocation = await findPrlWorkAllocationCourt(candidateCourts, {
+      username: credentials.email,
+      password: credentials.password,
+    });
+    if (assigneeDetails) assigneeId = requireAssignmentTarget(assigneeDetails, primaryLocation, actorId);
     const tokenResponse = await serviceContext.post(s2sUrl.toString(), { data: { microservice: 'xui_webapp' } });
     if (tokenResponse.status() !== 200) throw new Error(`WA fixture S2S lookup failed (HTTP ${tokenResponse.status()}).`);
     const serviceToken = (await tokenResponse.text()).trim();

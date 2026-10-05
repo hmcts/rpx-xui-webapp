@@ -36,7 +36,10 @@ describe('ActualSummaryResponseResolver', () => {
     const service: ActualSummaryResponseResolver = TestBed.inject(ActualSummaryResponseResolver);
     const dispatchSpy = spyOn(store, 'dispatch');
     const route = { params: { id: 'h100001' } } as unknown as ActivatedRouteSnapshot;
-    store.overrideSelector(fromHearingStore.getHearingValuesCaseInfo, { caseReference: '1111222233334444' });
+    store.overrideSelector(fromHearingStore.getHearingValuesCaseInfo, {
+      jurisdictionId: 'IA',
+      caseReference: '1111222233334444',
+    });
     store.refreshState();
 
     await firstValueFrom(service.resolve(route));

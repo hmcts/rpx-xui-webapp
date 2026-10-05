@@ -26,6 +26,7 @@ import {
   HearingDateEnum,
   HearingScreensEnum,
   HearingTemplate,
+  HMCStatus,
   LaCaseStatus,
   Mode,
   PartyType,
@@ -110,8 +111,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       '$1-$2-$3-$4'
     );
     this.status =
-      hearingStatusMappings.find((mapping) => mapping.hmcStatus === this.hearingRequestMainModel.requestDetails?.status)
-        ?.exuiDisplayStatus || '';
+      hearingStatusMappings[this.hearingRequestMainModel.requestDetails?.status as HMCStatus]?.exuiDisplayStatus ?? '';
     this.requestSubmittedDate =
       moment(this.hearingRequestMainModel?.requestDetails?.timestamp)?.format(HearingDateEnum.DisplayMonth) || '';
     this.responseReceivedDate =

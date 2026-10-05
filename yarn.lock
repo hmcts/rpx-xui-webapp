@@ -3404,6 +3404,7 @@ __metadata:
   checksum: 10/ef959d3796638e11e5f7a9f2a64295ded7c638d6a21fa37bf1265b14c3a6636da593c9976138826c5b8972830a706d18a82b489e3d902e77026f7f0bec908704
   languageName: node
   linkType: hard
+
 "@hmcts/ccd-case-ui-toolkit@npm:7.4.5-exui-5202-rc-1":
   version: 7.4.5-exui-5202-rc-1
   resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.5-exui-5202-rc-1"
@@ -3452,7 +3453,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/40c5d0be647067ad9bfe572674d74afc986af4088a74b4f25220a2b9ba593bf5c69a1690b132fff2311b98217e62ba23802e7a3c2e666abf9df0a0d66ae70ec3
+  checksum: 10/3144070c366dbfa4f94cef1713d4746d36275de50623ce75c24f7cf25e7a1c7f674cbd55e0aaa1c8ea27c986fca60e018cea3d7ba6036dc8477bcf2dbfd7e84d
   languageName: node
   linkType: hard
 

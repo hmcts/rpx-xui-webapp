@@ -156,6 +156,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PUBLICLAW"
+    },
+    {
+      "caseTypes": [
+        "PCS"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
     ]
   }`;
@@ -241,6 +248,16 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"
+    },
+    {
+      "caseTypes": [
+        "GrantOfRepresentation",
+        "Caveat",
+        "StandingSearch",
+        "WillLodgement"
+      ],
+      "releaseVersion": "4",
+       "serviceName": "PROBATE"
     }
     ]
   }`;

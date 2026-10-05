@@ -16,8 +16,7 @@ type ProtectedCatch = {
 const protectedCatches: Record<string, ProtectedCatch[]> = {
   Jenkinsfile_CNP: [
     {
-      message: '[playwright-accessibility] Report publish failed;',
-      nonBlockingMarker: "currentBuild.result = 'UNSTABLE'",
+      message: '[playwright-accessibility] Report publish failed but is non-blocking:',
       variable: 'e',
     },
     {
@@ -26,8 +25,7 @@ const protectedCatches: Record<string, ProtectedCatch[]> = {
       variable: 'publishException',
     },
     {
-      message: '[parallel-report-gathering] Playwright Accessibility failed;',
-      nonBlockingMarker: "currentBuild.result = 'UNSTABLE'",
+      message: '[parallel-report-gathering] Playwright Accessibility failed but is non-blocking:',
       variable: 'e',
     },
     {
@@ -106,10 +104,12 @@ test.describe('Jenkins accessibility cancellation contract', { tag: '@svc-intern
       expect(source).toContain('kill -KILL "\\$monitorPid"');
     });
 
-    test(`${fileName} archives retained Playwright traces with failure diagnostics`, () => {
+    test(`${fileName} archives external Playwright evidence with failure diagnostics`, () => {
       const source = fs.readFileSync(path.join(repositoryRoot, fileName), 'utf8');
 
+      expect(source).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
       expect(source).toContain('functional-output/tests/**/test-results/**/trace.zip');
+      expect(source).toContain('functional-output/tests/**/test-results/**/*.png');
     });
   }
 
@@ -126,7 +126,7 @@ test.describe('Jenkins accessibility cancellation contract', { tag: '@svc-intern
             expectedCatch.nonBlockingMarker ?? expectedCatch.message,
             messagePosition
           );
-          expect(nonBlockingPosition, `${fileName} must retain the non-blocking side effect`).toBeGreaterThanOrEqual(0);
+          expect(nonBlockingPosition, `${fileName} must retain the non-blocking handling`).toBeGreaterThanOrEqual(0);
           const catchBlock = catchBlockBefore(source, nonBlockingPosition);
           expectCancellationGuard(catchBlock, expectedCatch.variable);
         }
@@ -145,28 +145,26 @@ test.describe('Jenkins accessibility cancellation contract', { tag: '@svc-intern
     });
   }
 
-  test('fails when an interruption rethrow is removed before an unstable transition', () => {
+  test('fails when an interruption rethrow is removed before non-blocking handling', () => {
     const source = fs.readFileSync(path.join(repositoryRoot, 'Jenkinsfile_CNP'), 'utf8');
-    const failureMessage = '[playwright-accessibility] Report publish failed;';
+    const failureMessage = '[playwright-accessibility] Report publish failed but is non-blocking:';
     const messagePosition = source.indexOf(failureMessage);
-    const unstablePosition = source.lastIndexOf("currentBuild.result = 'UNSTABLE'", messagePosition);
     const mutation = /if \(e instanceof org\.jenkinsci\.plugins\.workflow\.steps\.FlowInterruptedException\) \{\s*throw e\s*\}/;
-    const mutatedCatchBlock = catchBlockBefore(source, unstablePosition).replace(mutation, '');
+    const mutatedCatchBlock = catchBlockBefore(source, messagePosition).replace(mutation, '');
 
     expect(() => expectCancellationGuard(mutatedCatchBlock)).toThrow();
   });
 
-  test('fails when cancellation guards move after an unstable transition', () => {
+  test('fails when cancellation guards move after non-blocking handling', () => {
     const source = fs.readFileSync(path.join(repositoryRoot, 'Jenkinsfile_CNP'), 'utf8');
-    const failureMessage = '[playwright-accessibility] Report publish failed;';
+    const failureMessage = '[playwright-accessibility] Report publish failed but is non-blocking:';
     const messagePosition = source.indexOf(failureMessage);
-    const unstablePosition = source.lastIndexOf("currentBuild.result = 'UNSTABLE'", messagePosition);
-    const catchBlock = catchBlockBefore(source, unstablePosition);
+    const catchBlock = catchBlockBefore(source, messagePosition);
     const guards = catchBlock.slice(catchBlock.indexOf('if (e instanceof'));
-    const mutatedCatchBlock = `${catchBlock.slice(0, catchBlock.indexOf('if (e instanceof'))}currentBuild.result = 'UNSTABLE'\n${guards}`;
+    const mutatedCatchBlock = `${catchBlock.slice(0, catchBlock.indexOf('if (e instanceof'))}${failureMessage}\n${guards}`;
 
     expect(() =>
-      expectCancellationGuard(catchBlockBefore(mutatedCatchBlock, mutatedCatchBlock.indexOf("currentBuild.result = 'UNSTABLE'")))
+      expectCancellationGuard(catchBlockBefore(mutatedCatchBlock, mutatedCatchBlock.indexOf(failureMessage)))
     ).toThrow();
   });
 });

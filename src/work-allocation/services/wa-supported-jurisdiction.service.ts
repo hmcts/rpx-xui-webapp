@@ -10,7 +10,7 @@ import { SessionStorageService } from '../../app/services';
 export class WASupportedJurisdictionsService {
   public static readonly jurisdictionUrl: string = '/api/wa-supported-jurisdiction';
   public static readonly jurisdictionStorageKey: string = 'waSupportedJurisdictions_cache';
-  private supportedJurisdictionsRequest$: Observable<string[]>;
+  private supportedJurisdictionsRequest$: Observable<string[]> | null = null;
 
   public constructor(
     private readonly http: HttpClient,

@@ -509,16 +509,19 @@ export async function findPrlWorkAllocationCourt(
       config
     );
     const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
+    const failures: string[] = [];
     for (const location of primaryLocations) {
       try {
         await preflightWorkAllocationCourt(apiContext, config, bearerToken, serviceToken, location);
         return location;
-      } catch {
-        // Try the next role location; the caller receives one actionable error below.
+      } catch (error) {
+        failures.push(`${location}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
     throw new Error(
-      `PRL hearings setup found no seeded Work Allocation court for role locations: ${primaryLocations.join(', ')}.`
+      `PRL hearings setup found no seeded Work Allocation court for role locations: ${primaryLocations.join(
+        ', '
+      )}. Preflight failures: ${failures.join(' | ')}.`
     );
   } finally {
     await apiContext.dispose();

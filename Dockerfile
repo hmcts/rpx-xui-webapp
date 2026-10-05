@@ -23,7 +23,7 @@ COPY --chown=hmcts:hmcts .yarn/ ./.yarn/
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
 
 # Install dependencies once and expose the resolved Playwright version in build logs.
-RUN yarn install && yarn playwright --version
+RUN yarn install --inline-builds && yarn playwright --version
 
 FROM dependencies AS build
 WORKDIR /opt/app

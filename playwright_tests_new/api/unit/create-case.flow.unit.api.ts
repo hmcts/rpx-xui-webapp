@@ -6,6 +6,7 @@ import {
   startCreateCaseFlow,
 } from '../../E2E/page-objects/pages/exui/createCase.flow.js';
 import { buildTestAppUrl } from './testAppUrls.js';
+import { SUBMIT_ENDPOINT, submitFlowScenario } from './create-case-submit-support.js';
 
 function createLocator(overrides: Partial<Record<'isVisible' | 'isEnabled' | 'click' | 'waitFor', () => Promise<unknown>>> = {}) {
   return {
@@ -24,6 +25,130 @@ function createLocator(overrides: Partial<Record<'isVisible' | 'isEnabled' | 'cl
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
+  for (const errorAt of ['click', 'spinner', 'event-error', undefined] as const) {
+    test(`fresh submit HTTP failure takes precedence over ${errorAt ?? 'validation'} error`, async () => {
+      const scenario = submitFlowScenario({
+        submitCall: { method: 'POST', status: 502, url: SUBMIT_ENDPOINT },
+        errorAt,
+        error: new Error("Cannot read properties of null (reading 'indexOf')"),
+        validationText: "The event could not be created. Cannot read properties of null (reading 'indexOf')",
+      });
+      await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(
+        `Critical wizard endpoint failure after submit document upload submit: POST ${SUBMIT_ENDPOINT} returned HTTP 502`
+      );
+      expect(scenario.clicks()).toBe(1);
+    });
+  }
+
+  for (const [priorCount, burstCount] of [
+    [500, 0],
+    [499, 4],
+    [500, 500],
+  ]) {
+    test(`fresh submit failure survives FIFO history with ${priorCount} prior and ${burstCount} concurrent calls`, async () => {
+      const scenario = submitFlowScenario({
+        previousCalls: Array.from({ length: priorCount }, () => ({ method: 'POST', status: 502, url: SUBMIT_ENDPOINT })),
+        submitCalls: Array.from({ length: burstCount }, () => ({
+          method: 'GET',
+          status: 200,
+          url: buildTestAppUrl('/unrelated/resource'),
+        })),
+        submitCall: { method: 'POST', status: 502, url: SUBMIT_ENDPOINT },
+        validationText: 'Secondary validation error',
+      });
+      await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(`POST ${SUBMIT_ENDPOINT} returned HTTP 502`);
+      expect(scenario.clicks()).toBe(1);
+    });
+  }
+
+  test('stale and unrelated HTTP failures do not replace the original submit error', async () => {
+    const original = new Error('Original spinner failure');
+    const scenario = submitFlowScenario({
+      previousCalls: [{ method: 'POST', status: 502, url: SUBMIT_ENDPOINT }],
+      submitCall: { method: 'GET', status: 503, url: buildTestAppUrl('/unrelated/resource') },
+      errorAt: 'spinner',
+      error: original,
+    });
+    await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toBe(original);
+    expect(scenario.clicks()).toBe(1);
+  });
+
+  test('validation failures without fresh critical HTTP evidence remain failures', async () => {
+    const scenario = submitFlowScenario({ validationText: 'A required field is missing' });
+    await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(
+      'Validation error after submit document upload submit: A required field is missing'
+    );
+    expect(scenario.clicks()).toBe(1);
+  });
+
+  test('successful submit ignores an earlier failed request and submits once', async () => {
+    const scenario = submitFlowScenario({
+      previousCalls: [{ method: 'POST', status: 502, url: SUBMIT_ENDPOINT }],
+      submitCall: { method: 'POST', status: 201, url: SUBMIT_ENDPOINT },
+    });
+    await clickSubmitAndWaitFlow(scenario.options);
+    expect(scenario.clicks()).toBe(1);
+  });
+
+  test('waits for delayed usable summary despite an absent spinner and submits once', async () => {
+    const scenario = submitFlowScenario({ completion: { afterPolls: 2 } });
+    await clickSubmitAndWaitFlow(scenario.options);
+    expect(scenario.polls()).toBe(2);
+    expect(scenario.clicks()).toBe(1);
+  });
+
+  for (const [initialPath, path] of [
+    ['/cases/case-details/1234567890123456/trigger/updateCase', '/cases/case-details/DIVORCE/test/1234567890123456'],
+    ['/cases/case-details/DIVORCE/test/1234567890123456/trigger/updateCase', '/cases/case-details/1234567890123456'],
+  ]) {
+    test(`accepts the same case summary alias ${path}`, async () => {
+      const scenario = submitFlowScenario({ initialPath, completion: { path } });
+      scenario.options.timeoutMs = 50;
+      await clickSubmitAndWaitFlow(scenario.options);
+      expect(scenario.clicks()).toBe(1);
+    });
+  }
+
+  test('new case submission accepts its newly assigned summary route', async () => {
+    const scenario = submitFlowScenario({
+      initialPath: '/cases/create/DIVORCE/test/createCase',
+      completion: { afterPolls: 1, path: '/cases/case-details/DIVORCE/test/9999999999999999' },
+    });
+    await clickSubmitAndWaitFlow(scenario.options);
+    expect(scenario.polls()).toBe(1);
+  });
+
+  for (const completion of [
+    { afterPolls: 1, call: { method: 'POST', status: 502, url: SUBMIT_ENDPOINT } },
+    { afterPolls: 1, validationText: 'Delayed validation failure' },
+    { afterPolls: 1, closed: true },
+  ]) {
+    test(`rejects delayed submit failure ${JSON.stringify(completion)}`, async () => {
+      const scenario = submitFlowScenario({ completion });
+      await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(
+        completion.call ? /returned HTTP 502/ : completion.closed ? /Page closed/ : /Delayed validation failure/
+      );
+      expect(scenario.clicks()).toBe(1);
+    });
+  }
+
+  for (const completion of [
+    { path: '/cases/case-details/9999999999999999' },
+    { path: '/not-authorised' },
+    { path: '/cases/case-details/1234567890123456/trigger/other' },
+    { path: '/cases/case-details/1234567890123456/trigger/1234567890123456' },
+    { path: '/cases/case-details/DIVORCE/test/9999999999999999' },
+    { ready: false },
+    { stalled: true },
+  ]) {
+    test(`does not finish on unusable submit destination ${JSON.stringify(completion)}`, async () => {
+      const scenario = submitFlowScenario({ completion });
+      scenario.options.timeoutMs = 10;
+      await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(/Case details summary did not become usable/);
+      expect(scenario.clicks()).toBe(1);
+    });
+  }
+
   test('findCreateCaseBootstrapFailure returns the first recent bootstrap endpoint failure', () => {
     const failure = findCreateCaseBootstrapFailure(
       [

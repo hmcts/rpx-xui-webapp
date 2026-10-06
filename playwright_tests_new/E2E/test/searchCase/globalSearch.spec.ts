@@ -35,6 +35,7 @@ test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', 
     await test.step('Verify case details page navigation and elements', async () => {
       await globalSearchPage.viewCaseDetails(caseNumber);
       await expect(page).toHaveURL(/\/cases\/case-details\//);
+      await caseDetailsPage.selectCaseDetailsTab('Summary');
       const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
       expect.soft(caseNumberFromUrl).toContain(caseNumber);
       await expect.soft(caseDetailsPage.caseSummaryHeading).toHaveText('Case information');

@@ -18,7 +18,10 @@ test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', 
     const caseNumber = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
 
     await test.step('Initiate Global Search', async () => {
-      await globalSearchPage.performGlobalSearchWithCase(caseNumber, 'PUBLICLAW');
+      await globalSearchPage.searchLinkOnMenuBar.click();
+      await expect(page).toHaveURL(/\/search/);
+      await expect(globalSearchPage.pageHeading).toHaveText(/Search cases/);
+      await globalSearchPage.submitSearchWithCase(caseNumber, 'PUBLICLAW');
       const searchResultsTable = await tableUtils.parseDataTable(globalSearchPage.searchResultTable);
 
       expect(searchResultsTable.length).toBeGreaterThan(0);

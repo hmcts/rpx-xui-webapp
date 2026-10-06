@@ -705,7 +705,28 @@ export class CaseDetailsPage extends Base {
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
-    await tab.click();
+    // Material translates its tab strip; visible DOM tabs can still be clipped outside it.
+    const deadline = Date.now() + tabLoadTimeoutMs;
+    while (Date.now() < deadline) {
+      await tab.scrollIntoViewIfNeeded({ timeout: Math.max(1, deadline - Date.now()) });
+      const direction = await tab.evaluate((element) => {
+        const viewport = element.closest('mat-tab-header')?.querySelector('.mat-tab-label-container');
+        if (!viewport) return undefined;
+        const bounds = viewport.getBoundingClientRect();
+        const target = element.getBoundingClientRect();
+        // Match the click point clipped to the browser viewport, even for wide tabs.
+        const clickX = (Math.max(0, target.left) + Math.min(window.innerWidth, target.right)) / 2;
+        if (clickX < bounds.left) return 'before';
+        if (clickX > bounds.right) return 'after';
+        return undefined;
+      });
+      if (!direction) break;
+      // Material supplies no accessible name for these native pagination buttons.
+      await this.container.locator(`mat-tab-header button.mat-tab-header-pagination-${direction}`).click({
+        timeout: Math.max(1, deadline - Date.now()),
+      });
+    }
+    await tab.click({ timeout: Math.max(1, deadline - Date.now()) });
     await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {
       // Some tabs render without spinner; readiness is verified via tabpanel checks below.
     });

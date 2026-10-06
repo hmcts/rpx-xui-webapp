@@ -11,7 +11,7 @@ const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
 
 test.describe(
   'Verify creating and updating a case works as expected',
-  { tag: ['@e2e', '@e2e-update-case', '@e2e-reliability', '@nightly', '@e2e-pr-excluded'] },
+  { tag: ['@e2e', '@e2e-update-case', '@e2e-reliability', '@nightly'] },
   () => {
     test.describe.configure({ timeout: 240_000 });
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }) => {

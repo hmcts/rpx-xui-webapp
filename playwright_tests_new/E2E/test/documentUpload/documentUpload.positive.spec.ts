@@ -194,7 +194,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
 
 test.describe(
   'Document upload V1',
-  { tag: ['@e2e', '@e2e-document-upload', '@e2e-document-upload-v1', '@e2e-reliability', '@e2e-pr-excluded'] },
+  { tag: ['@e2e', '@e2e-document-upload', '@e2e-document-upload-v1', '@e2e-reliability'] },
   () => {
     test('Check the documentV1 upload works as expected', async ({
       page,

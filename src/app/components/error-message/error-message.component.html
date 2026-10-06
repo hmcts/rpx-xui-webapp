@@ -21,12 +21,8 @@
             <a
               tabindex="0"
               [attr.href]="error.fieldId ? '#' + error.fieldId : null"
-              (click)="focusField($event, error.fieldId)"
               >{{ error.description | rpxTranslate }}</a
             >
           </li>
-        </ng-template>
-      </ul>
-    </div>
   </div>
 </ng-container>

@@ -150,10 +150,10 @@ test.describe(
   }
 );
 
-// Skipped until EXUI-4272 is resolved and the error handling behaviour can be tested reliably
-test.describe.skip(
+// Blocked by EXUI-4272: the create-case bootstrap error UI is not implemented.
+test.describe(
   'Create case - bootstrap/load API error handling',
-  { tag: ['@integration', '@integration-create-case'] },
+  { tag: ['@integration', '@integration-create-case', '@blocked-exui-4272'] },
   () => {
     test.beforeEach(async ({ page }) => {
       await applySessionCookies(page, userIdentifier);

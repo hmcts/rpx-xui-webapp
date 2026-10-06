@@ -692,6 +692,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test('integration config applies only integration-scoped global exclusions', async () => {
     const filters = resolveIntegrationTagFilters({
       PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation,@e2e-search-case,@integration-manage-tasks',
+      INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
       CI: undefined,
     });
 

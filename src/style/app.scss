@@ -585,6 +585,11 @@ textarea.form-control {
 
 .button-30 {
   height: 30px;
+  // govuk-frontend v5 .govuk-button is border-box with 6px/5px vertical padding sized for a
+  // ~38px button; squeezed to 30px the 19px line overflows and the label sits low. Trim the
+  // padding so border (2+2) + padding (4+3) + line-height (19) = 30px, keeping the label centred.
+  padding-top: 4px;
+  padding-bottom: 3px;
 }
 
 .markdown {

@@ -1,7 +1,8 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
-import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
+import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
+import { translationCaseData } from '../../testData/updateCase/translationCase';
 
 type TranslationTestState = {
   nullTranslationResponses: number;
@@ -17,7 +18,7 @@ test.describe(
   () => {
     test.describe.configure({ timeout: 240_000 });
 
-    test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }) => {
+    test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
       const state: TranslationTestState = {
         nullTranslationResponses: 0,
         lastTranslationResponseStatus: 0,
@@ -29,10 +30,30 @@ test.describe(
         waitForSelector: 'exui-header',
         timeoutMs: 30_000,
       });
-      await createDivorceCase(createCasePage, 'DIVORCE', 'XUI Case PoC', 'Translation Test Case', {
-        maxAttempts: 1,
-        createCaseMaxAttempts: 2,
+      const setup = await setupCaseForJourney({
+        scenario: 'null-translation-case-details',
+        jurisdiction: 'DIVORCE',
+        caseType: 'xuiTestJurisdiction',
+        apiEventId: 'createCase',
+        apiPayload: { fieldValues: translationCaseData },
+        mode: 'api-required',
+        page,
+        createCasePage,
+        caseDetailsPage,
+        testInfo,
       });
+      const caseResponse = await page.request.get(`data/internal/cases/${setup.caseNumber}`, {
+        headers: {
+          experimental: 'true',
+          Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json;charset=UTF-8',
+        },
+      });
+      expect(caseResponse.status(), 'The selected solicitor must be able to read the seeded case').toBe(200);
+      const caseView = (await caseResponse.json()) as { tabs: Array<{ fields: Array<{ id: string; value: unknown }> }> };
+      expect(
+        Object.fromEntries(caseView.tabs.flatMap((tab) => tab.fields).map(({ id, value }) => [id, value])),
+        'The translation prerequisite must persist its seeded data'
+      ).toMatchObject(translationCaseData);
       await page.route('**api/translation/cy*', async (route) => {
         const response = await route.fetch();
         if (state.closed) {

@@ -135,7 +135,7 @@ async function openCaseDetailsProbe(page: Page, route: HearingCaseRoute, caseRef
 
 export async function openEligibleHearingsCase(page: Page, route: HearingCaseRoute, setupUserCredentials?: SetupUserCredentials) {
   const primaryLocation = await getHearingManagerPrimaryLocation(page, route.jurisdictionId);
-  const createdCase = await createPrlHearingsCaseIfEnabled(primaryLocation, setupUserCredentials, page);
+  const createdCase = await createPrlHearingsCaseIfEnabled(primaryLocation, setupUserCredentials);
   if (!createdCase) {
     throw new Error(
       'PRL hearings setup must be enabled so the journey can create a fresh case for the selected hearing manager.'

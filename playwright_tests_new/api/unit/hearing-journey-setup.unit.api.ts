@@ -70,7 +70,7 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
     ]);
   });
 
-  test('annotates the hearing identity selected after session fallback', async () => {
+  test('applies and annotates only the worker-selected hearing identity', async () => {
     const environment = {
       HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
       HEARING_MANAGER_CR84_ON_1_PASSWORD: 'not-a-real-password',
@@ -83,16 +83,16 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
     };
     const previousEnvironment = Object.fromEntries(Object.keys(environment).map((key) => [key, process.env[key]]));
     const testInfo = { annotations: [], parallelIndex: 0 };
-    const fallbackIdentity = 'HEARING_MANAGER_CR84_ON-2';
+    const selectedIdentity = 'HEARING_MANAGER_CR84_ON-1';
 
     try {
       Object.assign(process.env, environment);
       await applyHearingManagerSessionCookies({} as never, 'HEARING_MANAGER_CR84_ON', testInfo, async (_page, candidates) => {
-        expect(candidates).toEqual(['HEARING_MANAGER_CR84_ON-1', fallbackIdentity]);
-        return { userIdentifier: fallbackIdentity, session: {} as never };
+        expect(candidates).toEqual([selectedIdentity]);
+        return { userIdentifier: selectedIdentity, session: {} as never };
       });
 
-      expect(testInfo.annotations).toEqual([{ type: 'session-user', description: fallbackIdentity }]);
+      expect(testInfo.annotations).toEqual([{ type: 'session-user', description: selectedIdentity }]);
     } finally {
       for (const [key, value] of Object.entries(previousEnvironment)) {
         if (value === undefined) {

@@ -36,7 +36,9 @@ test('both Jenkins matrices publish one guarded landing report and retain isolat
     const matrix = source.slice(start, source.indexOf('\n}\n', start) + 2);
     assert.equal((matrix.match(/publishHTML\(/g) ?? []).length, 2, filename);
     assert.match(matrix, /if \(runConfigs\.size\(\) == 1\)/);
-    assert.match(matrix, /runConfigs\[0\]\.reportDir = reportRoot/);
+    const resolver = source.slice(source.indexOf('def resolveIntegrationRunConfigs ='), start);
+    assert.match(resolver, /runConfigs\[0\]\.reportDir = reportRoot/);
+    assert.match(matrix, /def runConfigs = resolveIntegrationRunConfigs\(/);
     assert.match(matrix, /reportDir\s*:\s*reportRoot/);
     assert.match(matrix, /reportFiles\s*:\s*'index\.html'/);
     assert.match(matrix, /reportDir\s*:\s*"\$\{reportRoot\}\//);

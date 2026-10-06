@@ -71,6 +71,8 @@ const TESTING_SUPPORT_ADMIN_CREATE_EVENT_ID = 'testingSupportDummyAdminCreateNoc
 const TRANSFER_TO_ANOTHER_COURT_EVENT_ID = 'transferToAnotherCourt';
 const JUDICIAL_REVIEW_STATE = 'JUDICIAL_REVIEW';
 const DEFAULT_SERVICE_MICROSERVICE = 'ccd_data';
+const S2S_TOKEN_RETRIES = 2;
+const S2S_TOKEN_RETRY_DELAY_MS = 1_000;
 const CCD_EVENT_HEADERS = {
   experimental: 'true',
   Accept: 'application/json',
@@ -82,6 +84,13 @@ const REQUIRED_ENV_MESSAGE =
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   return values.map((value) => value?.trim()).find((value): value is string => Boolean(value));
+}
+
+const wait = (delayMs: number) => new Promise((resolve) => setTimeout(resolve, delayMs));
+
+function isTransientS2sTokenError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /ENOTFOUND|EAI_AGAIN|ETIMEDOUT|ECONNRESET|socket hang up|timeout|timed out|HTTP (?:502|503|504)/i.test(message);
 }
 
 function resolveManageCaseRedirectUri(testUrl?: string): string | undefined {
@@ -310,22 +319,34 @@ async function getServiceToken(
     return configuredToken;
   }
 
-  const response = await apiContext.post(config.s2sUrl, {
-    data: {
-      microservice,
-    },
-    failOnStatusCode: false,
-  });
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= S2S_TOKEN_RETRIES; attempt++) {
+    try {
+      const response = await apiContext.post(config.s2sUrl, {
+        data: {
+          microservice,
+        },
+        failOnStatusCode: false,
+      });
 
-  if (!response.ok()) {
-    throw new Error(`PRL hearings setup could not fetch S2S token (HTTP ${response.status()}).`);
-  }
+      if (!response.ok()) {
+        throw new Error(`PRL hearings setup could not fetch S2S token (HTTP ${response.status()}).`);
+      }
 
-  const token = (await response.text()).trim();
-  if (!token) {
-    throw new Error('PRL hearings setup S2S response did not include a token.');
+      const token = (await response.text()).trim();
+      if (!token) {
+        throw new Error('PRL hearings setup S2S response did not include a token.');
+      }
+      return token;
+    } catch (error) {
+      lastError = error;
+      if (!isTransientS2sTokenError(error) || attempt === S2S_TOKEN_RETRIES) {
+        throw error;
+      }
+      await wait(S2S_TOKEN_RETRY_DELAY_MS);
+    }
   }
-  return token;
+  throw lastError;
 }
 
 async function preflightWorkAllocationCourt(
@@ -558,6 +579,8 @@ export const __test__ = {
   preflightWorkAllocationCourt,
   findFirstPassingPrlWorkAllocationCourt,
   createTestingSupportAdminCase,
+  getServiceToken,
+  isTransientS2sTokenError,
   resolvePrlHearingsCaseSetupConfig,
   selectWorkAllocationCourtLocation,
   validateCreatedCase,

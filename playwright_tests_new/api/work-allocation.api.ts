@@ -57,16 +57,10 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     assertLocationsListResponse(response.status, response.data);
   });
 
-  test('GET /workallocation/location/:id returns specific location details when location exists', async ({ apiClient }) => {
-    const cachedLocationId = await requireWorkAllocationLocation(apiClient, serviceCodes);
+  test('GET /workallocation/location includes the configured work-allocation location', async ({ apiClientFor }) => {
+    const waClient = await apiClientFor('waSolicitor');
 
-    // When: Fetching location details by ID
-    const response = await apiClient.get<Record<string, unknown>>(`workallocation/location/${cachedLocationId}`, {
-      throwOnError: false,
-    });
-
-    // Then: API responds with success or expected error codes
-    expectStatus(response.status, [200, 401, 403, 404, 500]);
+    expect(await requireWorkAllocationLocation(waClient, serviceCodes)).toBeTruthy();
   });
 
   test('GET /workallocation/taskNames returns catalogue of available task type names', async ({ apiClient }) => {

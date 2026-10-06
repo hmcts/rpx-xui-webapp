@@ -140,6 +140,7 @@
                           id="{{ case.caseRef }}{{ hearing.hearingID }}"
                           type="radio"
                           [value]="true"
+                          [attr.name]="'linked-case-' + i + '-hearing'"
                           [checked]="getHearingsFormValue(i, pos).controls[pos].get('isSelected').value"
                           (click)="updateLinkedCase(i, pos)"
                           [formControlName]="'isSelected'"

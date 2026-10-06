@@ -1,5 +1,5 @@
 {
-  "excludedTags": [],
+  "excludedTags": ["@blocked-exui-4272", "@blocked-exui-4276", "@blocked-exui-4317", "@blocked-exui-4318"],
   "availableTags": [
     "@integration",
     "@integration-access-requests",
@@ -23,6 +23,10 @@
     "@integration-restricted-case",
     "@integration-search-case",
     "@integration-share-case",
-    "@integration-welsh-language"
+    "@integration-welsh-language",
+    "@blocked-exui-4272",
+    "@blocked-exui-4276",
+    "@blocked-exui-4317",
+    "@blocked-exui-4318"
   ]
 }

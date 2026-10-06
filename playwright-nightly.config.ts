@@ -23,6 +23,11 @@ const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBas
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) => env.PLAYWRIGHT_REPORT_FOLDER || defaultOdhinOutputFolder;
 const resolveOdhinIndexFilename = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || defaultOdhinIndexFilename;
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 const resolveEnvironmentFromUrl = (url: string): string => {
@@ -78,6 +83,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   logResolvedTagFilters('Cross-browser E2E', e2eTagFilters, e2eEnv);
   const reporter: [string, Record<string, unknown> | undefined][] = [
     [env.CI ? 'dot' : 'list', undefined],
+    ...(env.PW_ENABLE_PERFETTO !== 'false'
+      ? [['perfetto', { outputFile: resolvePerfettoOutputFile(env) }] as [string, Record<string, unknown>]]
+      : []),
     [
       './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
       {
@@ -101,12 +109,10 @@ const buildConfig = (env: EnvMap = process.env) => {
     ]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
-
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [
-      '**/test/smoke/smokeTest.spec.ts',
       ...localWorktreeTestIgnorePatterns,
       ...(env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true' ? [] : ['**/*.a11y.spec.ts']),
     ],
@@ -141,7 +147,12 @@ const buildConfig = (env: EnvMap = process.env) => {
         use: {
           ...devices['Desktop Firefox'],
           headless: headlessMode,
-          trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -155,7 +166,12 @@ const buildConfig = (env: EnvMap = process.env) => {
         grepInvert: e2eTagFilters.grepInvert,
         use: {
           headless: headlessMode,
-          trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,

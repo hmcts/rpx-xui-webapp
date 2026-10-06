@@ -15,8 +15,17 @@ type EnvMap = NodeJS.ProcessEnv;
 const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
   env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
 
+const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
+  env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || 'xui-playwright-e2e.html';
+
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
 
 const resolveOdhinTitle = (env: EnvMap = process.env): string => {
   const configured = env.PW_ODHIN_TITLE?.trim();
@@ -136,6 +145,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const reporter: [string, Record<string, unknown> | undefined][] = [
     [resolveDefaultReporter(env), undefined],
     ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs', undefined],
+    ...(env.PW_ENABLE_PERFETTO !== 'false'
+      ? [['perfetto', { outputFile: resolvePerfettoOutputFile(env) }] as [string, Record<string, unknown>]]
+      : []),
     [
       './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
       {
@@ -158,7 +170,6 @@ const buildConfig = (env: EnvMap = process.env) => {
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
     reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }
-
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
@@ -178,7 +189,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       baseURL: baseUrl,
       trace: disableGenericFailureArtifacts
         ? 'off'
-        : { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true },
+        : { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true },
       screenshot: disableGenericFailureArtifacts
         ? 'off'
         : {

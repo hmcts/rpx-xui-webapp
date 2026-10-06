@@ -9,6 +9,7 @@ export function hearingVenueSelectionMarkup(
     noResults?: boolean;
     unrelatedNoResults?: boolean;
     delayedResults?: boolean;
+    delayedAssociation?: boolean;
   } = {}
 ): string {
   return `<!doctype html><style>
@@ -37,6 +38,7 @@ export function hearingVenueSelectionMarkup(
       ${options.delayedResults ? "setTimeout(() => { pane.querySelector('button').textContent = 'Basingstoke County Court'; }, 100);" : ''}
       const selectVenue = () => {
         selected = '${options.wrongSelection ? 'Different court' : 'Basingstoke County Court'}';
+        input.value = 'Basingstoke County Court';
         pane.remove();
         input.value = 'Basingstoke County Court';
       };

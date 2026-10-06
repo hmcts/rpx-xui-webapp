@@ -21,6 +21,7 @@ test.describe('axe known violation baseline', { tag: '@svc-internal' }, () => {
         id: 'label',
         description: 'Ensure every form element has a label',
         nodeCount: 2,
+        targets: ['#reason', '#other-reason'],
       },
     ]);
   });
@@ -75,5 +76,18 @@ test.describe('axe known violation baseline', { tag: '@svc-internal' }, () => {
         nodeCount: 1,
       },
     ]);
+  });
+
+  test('rejects a replacement node when a known finding declares its targets', () => {
+    const knownViolations: KnownAxeViolation[] = [
+      { id: 'label', description: 'Ensure every form element has a label', maxNodes: 1, targets: ['#reason'] },
+    ];
+
+    expect(
+      findUnexpectedAxeViolations(
+        [{ id: 'label', description: 'Ensure every form element has a label', nodeCount: 1, targets: ['#other'] }],
+        knownViolations
+      )
+    ).toEqual([{ id: 'label', description: 'Ensure every form element has a label', nodeCount: 1, targets: ['#other'] }]);
   });
 });

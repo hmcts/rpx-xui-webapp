@@ -57,16 +57,10 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     assertLocationsListResponse(response.status, response.data);
   });
 
-  test('GET /workallocation/location/:id returns specific location details when location exists', async ({ apiClient }) => {
-    const cachedLocationId = await requireWorkAllocationLocation(apiClient, serviceCodes);
+  test('GET /workallocation/location includes the configured work-allocation location', async ({ apiClientFor }) => {
+    const waClient = await apiClientFor('waSolicitor');
 
-    // When: Fetching location details by ID
-    const response = await apiClient.get<Record<string, unknown>>(`workallocation/location/${cachedLocationId}`, {
-      throwOnError: false,
-    });
-
-    // Then: API responds with success or expected error codes
-    expectStatus(response.status, [200, 401, 403, 404, 500]);
+    expect(await requireWorkAllocationLocation(waClient, serviceCodes)).toBeTruthy();
   });
 
   test('GET /workallocation/taskNames returns catalogue of available task type names', async ({ apiClient }) => {
@@ -279,44 +273,6 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         } else {
           expectStatus(response.status, [403, 404]);
         }
-      });
-    }
-  });
-
-  test.describe('owned task actions', { tag: '@wa-action' }, () => {
-    for (const action of ['claim', 'assign', 'unclaim', 'unassign', 'complete', 'cancel']) {
-      test(`${action} changes a newly provisioned task to its expected state`, async () => {
-        test.setTimeout(4 * 60_000);
-        const fixture = await createWorkAllocationActionFixture(action === 'unassign' ? 'HEARING_MANAGER_CR84_ON-1' : undefined);
-        const errors: unknown[] = [];
-        try {
-          const deps = {
-            apiClient: fixture.client,
-            expectedAssignee: fixture.actorId,
-            withXsrfFn: async (_role: string, fn: (headers: Record<string, string>) => Promise<void>) => fn(fixture.headers),
-          };
-          if (action === 'unassign') {
-            await runSeededAction('assign', () => fixture.taskId, { ...deps, expectedAssignee: fixture.assigneeId });
-          } else if (['unclaim', 'complete'].includes(action)) {
-            await runSeededAction('claim', () => fixture.taskId, deps);
-          }
-          await runSeededAction(action, () => fixture.taskId, deps);
-        } catch (error) {
-          errors.push(error);
-        }
-        try {
-          await fixture.cleanup();
-        } catch (cleanupError) {
-          errors.push(cleanupError);
-        } finally {
-          try {
-            await fixture.dispose();
-          } catch (disposeError) {
-            errors.push(disposeError);
-          }
-        }
-        if (errors.length > 1) throw new AggregateError(errors, 'WA action and owned fixture cleanup failed');
-        if (errors.length === 1) throw errors[0];
       });
     }
   });

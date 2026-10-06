@@ -8,6 +8,13 @@ const DELAYED_ASSOCIATION_TIMEOUT_MS = 5_000;
 
 test.describe('hearing venue autocomplete ownership', { tag: '@svc-internal' }, () => {
   test.use({ viewport: { width: 800, height: 480 }, actionTimeout: 1500 });
+
+  test('captures the single seeded venue exactly as rendered by the page', async ({ page }) => {
+    await page.setContent(hearingVenueSelectionMarkup());
+
+    await expect(new HearingsJourneyPage(page).waitForSingleSeededVenue()).resolves.toBe('Existing court');
+  });
+
   test('selects the associated panel when an unrelated matching option is outside the viewport', async ({ page }) => {
     await page.setContent(hearingVenueSelectionMarkup({ stalePanel: true }));
     const stale = page.locator('#unrelated-options [role=option]');

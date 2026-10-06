@@ -460,17 +460,20 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults exclude only nightly coverage', () => {
+  test('E2E tag defaults preserve PR exclusions independently of nightly coverage', () => {
     const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual(['@nightly']);
+    expect(filters.excludedTags).toEqual(['@e2e-pr-excluded']);
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
-    expect(filters.grepInvert?.test('@nightly')).toBe(true);
+    expect(filters.grepInvert?.test('@e2e-pr-excluded')).toBe(true);
+    expect(filters.grepInvert?.test('@nightly')).toBe(false);
     expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(false);
     expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(false);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([
+        '@e2e-pr-excluded',
+        '@nightly',
         '@e2e-case-file-view',
         '@e2e-case-flags',
         '@e2e-civil-data-loss',

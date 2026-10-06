@@ -3,7 +3,7 @@ import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-re
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 import { CCD_CASE_REFERENCE_LENGTH } from '../../page-objects/pages/exui/exui-timeouts';
 
-test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
+test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
   test.beforeEach(async ({ page, identityLease }) => {
     const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });
     await openHomeWithCapturedSession(page, lease.identity.userIdentifier);

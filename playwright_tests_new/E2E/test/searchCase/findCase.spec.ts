@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures';
 import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils';
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 
-test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
+test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search-case', '@nightly', '@e2e-pr-excluded'] }, () => {
   test.beforeEach(async ({ page, identityLease }) => {
     const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });
     await openHomeWithCapturedSession(page, lease.identity.userIdentifier);
@@ -57,16 +57,20 @@ test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search
   });
 });
 
-test.describe('Solicitor navigation to Find case (top-right)', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
-  test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, 'SOLICITOR');
-  });
-
-  test('Find case link appears on top-right and opens Find case page', async ({ findCasePage, page }) => {
-    await test.step('Open Find case from top-right link', async () => {
-      await findCasePage.openFromTopRight();
-      await expect(page).toHaveURL(/\/cases\/case-search/);
-      await expect(findCasePage.pageHeading).toHaveText('Search');
+test.describe(
+  'Solicitor navigation to Find case (top-right)',
+  { tag: ['@e2e', '@e2e-search-case', '@nightly', '@e2e-pr-excluded'] },
+  () => {
+    test.beforeEach(async ({ page }) => {
+      await openHomeWithCapturedSession(page, 'SOLICITOR');
     });
-  });
-});
+
+    test('Find case link appears on top-right and opens Find case page', async ({ findCasePage, page }) => {
+      await test.step('Open Find case from top-right link', async () => {
+        await findCasePage.openFromTopRight();
+        await expect(page).toHaveURL(/\/cases\/case-search/);
+        await expect(findCasePage.pageHeading).toHaveText('Search');
+      });
+    });
+  }
+);

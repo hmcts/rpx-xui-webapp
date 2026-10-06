@@ -1,5 +1,5 @@
 {
-  "excludedTags": ["@nightly"],
+  "excludedTags": ["@e2e-pr-excluded"],
   "availableTags": [
     "@a11y",
     "@accessibility",
@@ -7,6 +7,7 @@
     "@wave-a11y",
     "@e2e",
     "@nightly",
+    "@e2e-pr-excluded",
     "@validation",
     "@e2e-case-file-view",
     "@e2e-case-flags",

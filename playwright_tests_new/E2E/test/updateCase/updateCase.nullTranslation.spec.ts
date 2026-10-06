@@ -14,7 +14,7 @@ const translationTestStates = new WeakMap<Page, TranslationTestState>();
 
 test.describe(
   'Verify case events handle null/undefined translation labels correctly',
-  { tag: ['@e2e', '@e2e-translation'] },
+  { tag: ['@e2e', '@e2e-translation', '@nightly'] },
   () => {
     test.describe.configure({ timeout: 240_000 });
 

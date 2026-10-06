@@ -45,8 +45,8 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
   const metaCriteria: { [key: string]: string } = queryParams;
   let caseCriteria: object = {};
   const matchList: any[] = [];
-  const size = body.size || 10;
-  const sort = body.sort ? prepareSort(body.sort) : [];
+  const size = body?.size || 10;
+  const sort = body?.sort ? prepareSort(body.sort) : [];
   const page: number = (queryParams.page || 1) - 1;
   const from: number = page * size;
   const canPerformWildCardSearch: boolean = userCanPerformWildCardSearch(user);

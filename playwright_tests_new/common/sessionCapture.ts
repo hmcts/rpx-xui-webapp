@@ -363,11 +363,13 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
   }
 }
 
-export async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
+export async function acceptAccessCookiesIfPresent(page: Page): Promise<boolean> {
   const sessionCapturePage = new SessionCapturePage(page);
   if (await sessionCapturePage.acceptCookiesButton.isVisible().catch(() => false)) {
     await sessionCapturePage.acceptCookiesButton.click({ timeout: 2_000 }).catch(() => undefined);
+    return true;
   }
+  return false;
 }
 
 async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promise<boolean> {
@@ -928,7 +930,28 @@ export async function ensureAuthenticatedPage(
   const timeoutMs = options.timeoutMs ?? 60_000;
   let session = await ensureSessionCookies(userIdentifier);
   let identity = resolveLoadedIdentity(session);
-  await validateLoadedSessionForReuse(session, targetUrl);
+  const validation = await validateLoadedSessionForReuse(session, targetUrl);
+  if (validation === 'unauthenticated') {
+    logger.warn('Cached session was rejected before navigation; refreshing', {
+      userIdentifier: identity.userIdentifier,
+      sessionPath: session.storageFile,
+      operation: 'session-refresh',
+    });
+    await sessionCaptureWith([identity], {
+      force: true,
+      expectedStaleSession: session,
+    });
+    session = await ensureSessionCookiesForIdentity(identity);
+    identity = resolveLoadedIdentity(session);
+    const refreshedValidation = await validateLoadedSessionForReuse(session, targetUrl);
+    if (refreshedValidation === 'unauthenticated') {
+      throw new SessionCaptureError(
+        `Refreshed session was rejected by auth/isAuthenticated for ${identity.userIdentifier}`,
+        identity.userIdentifier,
+        { sessionPath: session.storageFile }
+      );
+    }
+  }
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
     markSetup('cookies-ready');

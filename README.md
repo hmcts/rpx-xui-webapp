@@ -15,7 +15,7 @@ yarn env:populate:demo
 
 This writes `.env` in the repo root using `.env.example` plus any Azure Key
 Vault secrets tagged with `e2e=<ENV_VAR_NAME>`. The generated `.env` is
-gitignored and must not be committed.
+gitignored and must not be committed
 
 Then follow:
 

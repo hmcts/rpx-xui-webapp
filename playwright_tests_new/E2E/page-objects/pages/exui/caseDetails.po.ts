@@ -653,19 +653,8 @@ export class CaseDetailsPage extends Base {
     if (await this.hasCallbackValidationErrorAlert()) {
       throw new Error('Callback data failed validation before selecting party flag target.');
     }
-    const exactLabel = this.page.getByLabel(`${target} (${target})`);
-    // Escape regex special characters to prevent unintended matches
-    const escapedTarget = target.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-    const fallbackLabel = this.page.getByLabel(new RegExp(escapedTarget, 'i'));
-    try {
-      await exactLabel.waitFor({ state: 'visible', timeout: 15000 });
-      await exactLabel.check();
-    } catch (error) {
-      // Exact label format not found, use case-insensitive fallback
-      this.logger.warn('Exact label not found, using regex fallback', { error });
-      await fallbackLabel.waitFor({ state: 'visible', timeout: 15000 });
-      await fallbackLabel.check();
-    }
+    const targetRadio = this.page.getByRole('radio', { name: `${target} (${target})`, exact: true });
+    await targetRadio.check();
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after selecting party flag target');
     await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });

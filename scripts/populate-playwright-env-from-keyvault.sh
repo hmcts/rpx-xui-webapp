@@ -64,11 +64,15 @@ populate_named_secret_if_empty() {
 # Jenkins maps these long-lived platform secrets by name rather than by their e2e tag.
 populate_named_secret_if_empty IDAM_API_URL idam-api-url
 populate_named_secret_if_empty TEST_PASSWORD test-password
+populate_named_secret_if_empty WA_TASK_ADMIN_USERNAME e2e-wa-task-admin-username
+populate_named_secret_if_empty WA_TASK_ADMIN_PASSWORD e2e-wa-task-admin-password
 
 for REQUIRED_KEY in \
   IDAM_API_URL \
   S2S_SECRET \
   TEST_PASSWORD \
+  WA_TASK_ADMIN_USERNAME \
+  WA_TASK_ADMIN_PASSWORD \
   WA_SOLICITOR_USERNAME \
   WA_SOLICITOR_PASSWORD \
   FPL_GLOBAL_SEARCH_USERNAME \

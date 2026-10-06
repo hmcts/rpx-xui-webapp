@@ -121,6 +121,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.hearingValuesSubscription = this.hearingStore
       .pipe(select(fromHearingStore.getHearingValuesModel))
       .subscribe((serviceHearingValuesModel) => {
+        // Dispose the previous ref-data request before starting one for new hearing values.
+        this.refDataSubscription?.unsubscribe();
         if (serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID) {
           this.refDataSubscription = this.lovRefDataService
             .getListOfValues(HearingCategory.HearingType, serviceHearingValuesModel.hmctsServiceID, false)

@@ -272,7 +272,7 @@ function findCivilClaimantPartyRecord(value: unknown, visited = new WeakSet<obje
     return fallbackMatch;
   }
 
-  return formatCivilPartyName(record) ? record : undefined;
+  return formatCivilIndividualName(record) ? record : undefined;
 }
 
 function findCivilClaimantPartyRecordInArray(value: unknown[], visited: WeakSet<object>): JsonRecord | undefined {
@@ -322,11 +322,31 @@ function isClaimant1PartyRecord(record: JsonRecord): boolean {
   return typeof roleOnCase === 'string' && /claimant\s*1/i.test(roleOnCase);
 }
 
-function formatCivilPartyName(record: JsonRecord): string | undefined {
-  const name = [record.individualTitle, record.individualFirstName, record.individualLastName]
+function formatCivilIndividualName(record: JsonRecord): string | undefined {
+  return [record.individualTitle, record.individualFirstName, record.individualLastName]
     .filter((part): part is string => typeof part === 'string' && part.trim().length > 0)
     .join(' ');
-  return name || undefined;
+}
+
+function formatCivilPartyName(record: JsonRecord): string | undefined {
+  const name = formatCivilIndividualName(record);
+  if (name) {
+    return name;
+  }
+
+  if (typeof record.partyName === 'string' && record.partyName.trim()) {
+    return record.partyName.trim();
+  }
+
+  const flags = record.flags;
+  if (flags && typeof flags === 'object' && !Array.isArray(flags)) {
+    const partyName = (flags as JsonRecord).partyName;
+    if (typeof partyName === 'string' && partyName.trim()) {
+      return partyName.trim();
+    }
+  }
+
+  return undefined;
 }
 
 function collectChangedPaths(before: unknown, after: unknown, path = '$', changes: string[] = []): string[] {

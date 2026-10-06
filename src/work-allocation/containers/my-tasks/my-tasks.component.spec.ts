@@ -179,11 +179,11 @@ describe('MyTasksComponent', () => {
           expect(headerCells[i].textContent).toContain(fields[i].columnLabel);
         }
       } else {
-        expect(headerCells[i].textContent).toEqual('  ');
+        expect(headerCells[i].textContent.trim()).toEqual(fields[i].hiddenColumnLabel || '');
       }
     }
-    // Make sure Manage + heading is blank.
-    expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
+    // Make sure Manage + heading contains the visually-hidden "Manage" label.
+    expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('Manage');
   });
 
   it('should not show the footer when there are tasks', fakeAsync(() => {

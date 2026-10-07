@@ -5,8 +5,6 @@ import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   FEATURE_WORKALLOCATION_ENABLED,
-  SERVICES_CASE_CASEWORKER_REF_PATH,
-  SERVICES_CASE_JUDICIAL_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
@@ -14,6 +12,8 @@ import {
   SERVICES_EM_DOCASSEMBLY_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
+  SERVICES_PRD_CASEWORKER_REF_PATH,
+  SERVICES_PRD_JUDICIAL_API,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
@@ -62,9 +62,9 @@ const config: HealthChecks = {
 
 if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
   config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH));
-  config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH));
+  config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_PRD_CASEWORKER_REF_PATH));
   config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH));
-  config.checks.judicialApi = checkServiceHealth(getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH));
+  config.checks.judicialApi = checkServiceHealth(getConfigValue(SERVICES_PRD_JUDICIAL_API));
 }
 
 export const addReformHealthCheck = (app) => {

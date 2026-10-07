@@ -84,7 +84,7 @@ describe('Access management api, get bookings', () => {
 
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getJudicialBookingAPIOverrides(mockServer.url);
-        configValues['services.location_api'] = 'http://localhost:8080';
+        configValues['services.prd.locationApi'] = 'http://localhost:8080';
 
         configValues.serviceRefDataMapping = [
           { service: 'IA', serviceCodes: ['BFA1'] },

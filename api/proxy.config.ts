@@ -11,13 +11,13 @@ import {
   SERVICES_EM_DOCASSEMBLY_API_URL,
   SERVICES_EM_HRS_API_PATH,
   SERVICES_ICP_API_URL,
-  SERVICES_LOCATION_REF_API_URL,
   SERVICES_MARKUP_API_URL,
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_COMMONDATA_API,
   SERVICES_REFUNDS_API_URL,
   SERVICES_NOTIFICATIONS_API_URL,
   SERVICES_TRANSLATION_API_URL,
+  SERVICES_PRD_LOCATION_API,
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
@@ -145,7 +145,7 @@ export const initProxy = (app: Express) => {
   applyProxy(app, {
     rewrite: false,
     source: '/refdata/location',
-    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
+    target: getConfigValue(SERVICES_PRD_LOCATION_API),
   });
 
   applyProxy(app, {

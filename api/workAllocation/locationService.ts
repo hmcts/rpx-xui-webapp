@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
+import { SERVICES_PRD_LOCATION_API } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -18,7 +18,7 @@ export async function commonGetFullLocation(req, allLocations: boolean) {
 
   const serviceCodeQueryString = req.query.serviceCodes as string;
   const services = serviceCodeQueryString.split(',');
-  const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
+  const basePath = getConfigValue(SERVICES_PRD_LOCATION_API);
   const serviceRefDataMapping = getServiceRefDataMappingList();
 
   serviceRefDataMapping.forEach((serviceRef) => {
@@ -46,7 +46,7 @@ export async function commonGetFullLocation(req, allLocations: boolean) {
 }
 
 export async function getFullLocationsForServices(req: EnhancedRequest) {
-  const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
+  const basePath = getConfigValue(SERVICES_PRD_LOCATION_API);
   const serviceRefDataMapping = getServiceRefDataMappingList();
   const services = req.body.bookableServices;
   let serviceCodes = [];
@@ -68,7 +68,7 @@ export async function getFullLocationsForServices(req: EnhancedRequest) {
 // Similar to above function but used to get only small portion of full data
 // Used to get region -> location information for location filter functionality
 export async function getRegionLocationsForServices(req: EnhancedRequest) {
-  const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
+  const basePath = getConfigValue(SERVICES_PRD_LOCATION_API);
   const serviceRefDataMapping = getServiceRefDataMappingList();
   const services = req.body.serviceIds;
   let serviceCodes = [];

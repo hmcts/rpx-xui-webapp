@@ -18,8 +18,6 @@ import {
   LOGGING,
   MAX_LOG_LINE,
   PROTOCOL,
-  SERVICES_CASE_CASEWORKER_REF_PATH,
-  SERVICES_CASE_JUDICIAL_REF_PATH,
   SERVICES_CCD_CASE_ASSIGNMENT_API_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
@@ -31,9 +29,9 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
   SERVICES_JUDICIAL_BOOKING_API_PATH,
-  SERVICES_LOCATION_REF_API_URL,
   SERVICES_PAYMENTS_URL,
   SERVICES_PRD_API_URL,
+  SERVICES_PRD_CASEWORKER_REF_PATH,
   SERVICES_PRD_COMMONDATA_API,
   SERVICES_PRD_JUDICIAL_API,
   SERVICES_PRD_LOCATION_API,
@@ -43,6 +41,7 @@ import {
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICE_S2S_PATH,
   SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH,
+  SERVICES_PRD_JUDICIALWORKER_REF_PATH,
 } from './references';
 
 /**
@@ -56,7 +55,7 @@ import {
  */
 export const applicationConfiguration = () => {
   return {
-    caseworkerRefPath: getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH),
+    caseworkerRefPath: getConfigValue(SERVICES_PRD_CASEWORKER_REF_PATH),
     clientId: getConfigValue(SERVICES_IDAM_CLIENT_ID),
     cookieSessionId: getConfigValue(COOKIES_SESSION_ID),
     cookieToken: getConfigValue(COOKIES_TOKEN),
@@ -88,16 +87,15 @@ export const applicationConfiguration = () => {
     servicesDocumentApiPath: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
     servicesDocumentApiV2Path: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
     servicesEmHrsApiPath: getConfigValue(SERVICES_EM_HRS_API_PATH),
-    servicesLocationRefApiPath: getConfigValue(SERVICES_LOCATION_REF_API_URL),
     servicesJudicialBookingApiPath: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
     servicesPrdApiPath: getConfigValue(SERVICES_PRD_API_URL),
     servicesPrdLocationApiPath: getConfigValue(SERVICES_PRD_LOCATION_API),
     servicesPrdJudicialApiPath: getConfigValue(SERVICES_PRD_JUDICIAL_API),
     servicesPrdCommondataApiPath: getConfigValue(SERVICES_PRD_COMMONDATA_API),
+    servicesPrdJudicialworkerApiPath: getConfigValue(SERVICES_PRD_JUDICIALWORKER_REF_PATH),
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
     servicesSpecificChallengedAccessPath: getConfigValue(SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH),
     workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH),
-    judicialApiPath: getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH),
   };
 };

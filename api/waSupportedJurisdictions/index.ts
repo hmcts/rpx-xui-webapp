@@ -1,6 +1,6 @@
 import { NextFunction, Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_REF_API_URL, WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
+import { SERVICES_PRD_LOCATION_API, WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
@@ -8,7 +8,7 @@ import { setHeaders } from '../lib/proxy';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 import { toTitleCase } from '../utils';
 
-const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
+const baseLocationRefUrl = getConfigValue(SERVICES_PRD_LOCATION_API);
 
 // Used for all work - could be used for all in future?
 export async function getDetailedWASupportedJurisdictions(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {

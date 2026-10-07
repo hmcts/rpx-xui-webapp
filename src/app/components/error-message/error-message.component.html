@@ -18,7 +18,9 @@
         </ng-container>
         <ng-template #one>
           <li>
-            <a tabindex="0" [attr.href]="error.fieldId ? '#' + error.fieldId : null">{{ error.description | rpxTranslate }}</a>
+            <a tabindex="0" [attr.href]="error.fieldId ? '#' + error.fieldId : null" (click)="focusField($event, error.fieldId)">{{
+              error.description | rpxTranslate
+            }}</a>
           </li>
         </ng-template>
       </ul>

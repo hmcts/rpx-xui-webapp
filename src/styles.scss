@@ -1,11 +1,23 @@
-@use 'govuk-frontend/govuk/all' as govuk with (
-  $govuk-compatibility-govukelements: true,
-  $govuk-compatibility-govuktemplate: true,
-  $govuk-compatibility-govukfrontendtoolkit: true
-);
+@import './style/app.scss';
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-@use './style/app' as *;
-@use '@angular/material/prebuilt-themes/indigo-pink.css';
+// govuk-frontend v4 compatibility: responsive font sizes for table components.
+// With $govuk-new-typography-scale: true (v5 modern scale), size-19 has no
+// tablet breakpoint (stays 19px everywhere), so these rules are absent.
+// Explicitly declaring them preserves the old responsive behaviour.
+@media (min-width: 40.0625em) {
+  .govuk-table {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
+
+  .govuk-table__caption {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
+}
 
 .govuk-js-link {
   @extend .govuk-link; // copies colour, underline, font
@@ -17,18 +29,13 @@
   cursor: pointer;
 
   // :link / :visited only match <a>, so repeat the colours
-  color: govuk.govuk-colour('blue');
+  color: govuk-colour('blue');
 
   &:hover {
-    color: govuk.govuk-colour('light-blue');
+    color: govuk-colour('dark-blue');
   }
 
   &:focus {
-    @include govuk.govuk-focused-text;
+    @include govuk-focused-text;
   }
-}
-
-a {
-  @include govuk.govuk-link-common;
-  @include govuk.govuk-link-style-default;
 }

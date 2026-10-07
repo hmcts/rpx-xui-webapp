@@ -275,16 +275,22 @@ export class CaseDetailsPage extends Base {
       });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')).filter(
-          (cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
+        // Only the row's own direct-child cells: querySelectorAll would also pull in
+        // header/data cells from any nested table rendered inside a value cell (e.g. a
+        // multi-select-list field's own accessible table), double-counting them as cells.
+        const cells = Array.from(row.children).filter(
+          (cell) =>
+            (cell.tagName === 'TH' || cell.tagName === 'TD') &&
+            !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
         );
         if (cells.length < 2) {
           continue;
         }
 
-        // Clone the key cell and strip nested tables so nested content is ignored
+        // Clone the key cell and strip nested table headers/captions so visually-hidden
+        // accessible text (e.g. "Value", "Multi selection table") isn't picked up as the label.
         const keyCellClone = cells[0].cloneNode(true) as Element;
-        keyCellClone.querySelectorAll('table').forEach((t) => t.remove());
+        keyCellClone.querySelectorAll('thead, th, caption').forEach((t) => t.remove());
         const rawKey = findFirstText(keyCellClone).replace(trailingSortIndicatorRegex, '').trim();
         if (!rawKey) {
           continue;
@@ -293,7 +299,9 @@ export class CaseDetailsPage extends Base {
           .slice(1)
           .map((c) => {
             const clone = c.cloneNode(true) as Element;
-            clone.querySelectorAll('table').forEach((t) => t.remove());
+            // Strip nested table headers/captions only, keeping the actual data cells (e.g. a
+            // multi-select-list field's selected values) so the real value survives.
+            clone.querySelectorAll('thead, th, caption').forEach((t) => t.remove());
             return findFirstText(clone).replace(trailingSortIndicatorRegex, '').trim();
           })
           .filter(Boolean);
@@ -645,19 +653,8 @@ export class CaseDetailsPage extends Base {
     if (await this.hasCallbackValidationErrorAlert()) {
       throw new Error('Callback data failed validation before selecting party flag target.');
     }
-    const exactLabel = this.page.getByLabel(`${target} (${target})`);
-    // Escape regex special characters to prevent unintended matches
-    const escapedTarget = target.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-    const fallbackLabel = this.page.getByLabel(new RegExp(escapedTarget, 'i'));
-    try {
-      await exactLabel.waitFor({ state: 'visible', timeout: 15000 });
-      await exactLabel.check();
-    } catch (error) {
-      // Exact label format not found, use case-insensitive fallback
-      this.logger.warn('Exact label not found, using regex fallback', { error });
-      await fallbackLabel.waitFor({ state: 'visible', timeout: 15000 });
-      await fallbackLabel.check();
-    }
+    const targetRadio = this.page.getByRole('radio', { name: `${target} (${target})`, exact: true });
+    await targetRadio.check();
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after selecting party flag target');
     await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });

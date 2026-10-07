@@ -26,22 +26,23 @@ test.describe('Work Allocation consuming scenario setup', { tag: '@svc-internal'
     }
   });
 
-  test('resolves a location only from a successful populated response', async () => {
+  test('resolves the configured stable location only when the locations list includes it', async () => {
     const paths: string[] = [];
     const client = {
       get: async (path: string) => {
         paths.push(path);
-        return { status: 200, data: [{ id: 'location-1' }] };
+        return { status: 200, data: [{ id: 'location-1' }, { id: '234946' }] };
       },
     };
-    expect(await requireWorkAllocationLocation(client, ['IA', 'CIVIL'])).toBe('location-1');
+    expect(await requireWorkAllocationLocation(client, ['IA', 'CIVIL'])).toBe('234946');
     expect(paths).toEqual(['workallocation/location?serviceCodes=IA%2CCIVIL']);
     for (const response of [
-      { status: 500, data: [{ id: 'location-1' }] },
+      { status: 500, data: [{ id: '234946' }] },
       { status: 200, data: [] },
+      { status: 200, data: [{ id: '231596' }] },
     ]) {
       await expect(requireWorkAllocationLocation({ get: async () => response }, ['IA'])).rejects.toThrow(
-        /requires a location id/
+        /requires location 234946/
       );
     }
   });

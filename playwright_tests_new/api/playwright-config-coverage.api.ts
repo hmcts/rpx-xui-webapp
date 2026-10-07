@@ -463,15 +463,14 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test('E2E tag defaults include all retained scenarios independently of nightly coverage', () => {
     const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual(['@e2e-civil-data-loss-blocked']);
-    expect(filters.grepInvert?.test('@e2e-civil-data-loss-blocked')).toBe(true);
+    expect(filters.excludedTags).toEqual([]);
+    expect(filters.grepInvert).toBeUndefined();
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([
         '@nightly',
         '@e2e-case-file-view',
         '@e2e-case-flags',
         '@e2e-civil-data-loss',
-        '@e2e-civil-data-loss-blocked',
         '@e2e-create-case',
         '@e2e-data-loss',
         '@e2e-document-upload',

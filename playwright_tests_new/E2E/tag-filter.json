@@ -1,5 +1,5 @@
 {
-  "excludedTags": ["@e2e-civil-data-loss-blocked"],
+  "excludedTags": [],
   "availableTags": [
     "@a11y",
     "@accessibility",
@@ -11,7 +11,6 @@
     "@e2e-case-file-view",
     "@e2e-case-flags",
     "@e2e-civil-data-loss",
-    "@e2e-civil-data-loss-blocked",
     "@e2e-create-case",
     "@e2e-data-loss",
     "@e2e-document-upload",

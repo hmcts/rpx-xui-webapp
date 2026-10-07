@@ -36,7 +36,7 @@
           </thead>
           <tbody class="govuk-table__body">
             <ng-container formArrayName="parties" *ngFor="let group of parties.controls; let i = index">
-              <tr class="error-row" *ngIf="submitted && rowHasErrors(i) && !group.hasError('duplicateEntries')">
+              <tr class="govuk-table__row" *ngIf="submitted && rowHasErrors(i) && !group.hasError('duplicateEntries')">
                 <td colspan="7">
                   <span class="govuk-error-message govuk-!-margin-top-2">
                     <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
@@ -45,7 +45,7 @@
                 </td>
               </tr>
 
-              <tr class="error-row" *ngIf="submitted && group.hasError('duplicateEntries')">
+              <tr class="govuk-table__row" *ngIf="submitted && group.hasError('duplicateEntries')">
                 <td colspan="7">
                   <span class="govuk-error-message govuk-!-margin-top-2">
                     <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>

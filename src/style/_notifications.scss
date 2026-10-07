@@ -5,7 +5,8 @@
   font-weight: bold;
   width: 100%;
   color: govuk-colour('white');
-  background: govuk-colour('turquoise');
+  // govuk-frontend v6 deprecated the 'turquoise' colour keyword (removal planned for v7); pinned to the old v5 hex
+  background: #28a197;
 }
 
 .small_notification {
@@ -15,7 +16,8 @@
   width: 60%;
   text-align: center;
   color: govuk-colour('white');
-  background: govuk-colour('turquoise');
+  // govuk-frontend v6 deprecated the 'turquoise' colour keyword (removal planned for v7); pinned to the old v5 hex
+  background: #28a197;
 }
 
 .alert-message-but {

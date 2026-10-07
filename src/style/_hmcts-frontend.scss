@@ -4,11 +4,11 @@
 // these styles and is owned/maintained by this app, not synced from upstream.
 // Requires govuk-frontend mixins/functions to be imported before this file.
 //
-// Components with no references in this app, ccd-case-ui-toolkit,
-// rpx-xui-common-lib, or ccpay-web-component have been removed (timeline,
-// progress bar, add-another, menu, scrollable pane, rich text editor). Before
-// removing anything else, confirm it is unused in all of those libraries too —
-// not just this repo — since they render markup that depends on these classes.
+// Components with no references in this app, ccd-case-ui-toolkit, or
+// rpx-xui-common-lib have been removed (timeline, progress bar, add-another,
+// menu, scrollable pane, rich text editor, currency input). Before removing
+// anything else, confirm it is unused in both of those libraries too — not
+// just this repo — since they render markup that depends on these classes.
 // =============================================================================
 
 // Settings
@@ -21,6 +21,13 @@ $hmcts-border-color: rgb(161, 172, 178);
 $hmcts-secondary-text-color: rgb(69, 74, 76);
 $hmcts-secondary-link-color: rgb(69, 74, 76);
 $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
+
+// govuk-frontend v6 removed these colour keywords from govuk-colour(); values
+// pinned here to the old v5 palette so this vendored CSS doesn't shift visually.
+$hmcts-govuk-light-grey: #f3f2f1;
+$hmcts-govuk-mid-grey: #b1b4b6;
+$hmcts-govuk-dark-grey: #505a5f;
+$hmcts-govuk-light-blue: #5694ca;
 
 // sass-mq compatibility shim: @hmcts/media-viewer uses `mq` but govuk-frontend v5 ships `govuk-media-query`
 @mixin mq($from: false, $until: false, $and: false) {
@@ -60,7 +67,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-filter-layout__filter {
-  box-shadow: inset 0 0 0 1px govuk-colour('light-grey');
+  box-shadow: inset 0 0 0 1px $hmcts-govuk-light-grey;
 
   @include govuk-media-query(desktop) {
     float: left;
@@ -106,22 +113,22 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
 // Secondary button
 .hmcts-button--secondary {
-  background-color: govuk-colour('light-grey');
-  box-shadow: 0 2px 0 rgba(govuk-colour('dark-grey'), 0.7);
+  background-color: $hmcts-govuk-light-grey;
+  box-shadow: 0 2px 0 rgba($hmcts-govuk-dark-grey, 0.7);
   color: govuk-colour('black');
 
   &:link,
   &:visited,
   &:active,
   &:hover {
-    color: $govuk-text-colour;
+    color: govuk-functional-colour('text');
   }
 
   &:hover,
   &:focus,
   &:link:focus {
-    background-color: rgba(govuk-colour('mid-grey'), 0.7);
-    color: $govuk-text-colour;
+    background-color: rgba($hmcts-govuk-mid-grey, 0.7);
+    color: govuk-functional-colour('text');
   }
 }
 
@@ -225,7 +232,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
 // Footer
 .hmcts-footer {
-  background-color: govuk-colour('light-grey');
+  background-color: $hmcts-govuk-light-grey;
   border-top: 1px solid $hmcts-border-color;
   padding-top: govuk-spacing(7);
   padding-bottom: govuk-spacing(7);
@@ -464,46 +471,10 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
   }
 }
 
-// Currency input
-// Used by @hmcts/ccpay-web-component (refund/remission amount fields) for the £ prefix box
-.hmcts-currency-input {
-  position: relative;
-}
-
-.hmcts-currency-input__symbol {
-  @include govuk-font($size: 19, $weight: bold);
-  position: absolute;
-  left: 0;
-  top: 0;
-  padding: 8px 10px;
-  height: 40px;
-  box-sizing: border-box;
-  background-color: govuk-colour('light-grey');
-  border: 2px solid govuk-colour('black');
-}
-
-.hmcts-currency-input input {
-  display: block;
-  padding-left: 40px;
-}
-
-.hmcts-currency-input__input--right-aligned {
-  text-align: right;
-}
-
-.add-remission .govuk-radios__item {
-  display: inline-flex !important;
-  vertical-align: top;
-}
-
-.add-remission > p:last-child {
-  padding-bottom: govuk-spacing(6);
-}
-
 // Filter
 .hmcts-filter {
   background-color: govuk-colour('white');
-  box-shadow: inset 0 0 0 1px govuk-colour('light-grey');
+  box-shadow: inset 0 0 0 1px $hmcts-govuk-light-grey;
 
   &:focus {
     @include govuk-focused-text;
@@ -511,7 +482,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-filter__header {
-  background-color: govuk-colour('light-grey');
+  background-color: $hmcts-govuk-light-grey;
   font-size: 0;
   padding: govuk-spacing(2) govuk-spacing(4);
   text-align: justify;
@@ -615,8 +586,8 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-filter__selected {
-  background-color: govuk-colour('light-grey');
-  box-shadow: inset 0 0 0 1px govuk-colour('light-grey');
+  background-color: $hmcts-govuk-light-grey;
+  box-shadow: inset 0 0 0 1px $hmcts-govuk-light-grey;
   padding: govuk-spacing(4);
 
   ul:last-of-type {
@@ -694,7 +665,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-filter__options {
-  box-shadow: inset 0 0 0 1px govuk-colour('light-grey');
+  box-shadow: inset 0 0 0 1px $hmcts-govuk-light-grey;
   margin-top: -1px;
   padding: govuk-spacing(4);
 
@@ -722,7 +693,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
     &:after {
       content: '';
-      background-color: govuk-colour('light-grey');
+      background-color: $hmcts-govuk-light-grey;
       height: 40px;
       position: absolute;
       right: 0;
@@ -895,33 +866,12 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
   }
 
   &:hover {
-    color: govuk-colour('light-blue');
+    color: $hmcts-govuk-light-blue;
   }
 
   &:focus {
     color: govuk-colour('black');
   }
-}
-
-// Badge
-.hmcts-badge {
-  @include govuk-font($size: 14);
-  border: 2px solid govuk-colour('blue');
-  color: govuk-colour('blue');
-  font-weight: bold;
-  padding: 0 govuk-spacing(1);
-  text-transform: uppercase;
-  vertical-align: middle;
-}
-
-.hmcts-badge--red {
-  border-color: govuk-colour('red');
-  color: govuk-colour('red');
-}
-
-.hmcts-badge--green {
-  border-color: govuk-colour('green');
-  color: govuk-colour('green');
 }
 
 // =============================================================================
@@ -1011,8 +961,8 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 
 .hmcts-identity-bar {
   @include govuk-clearfix;
-  background-color: govuk-colour('light-grey');
-  box-shadow: inset 0 -1px 0 0 govuk-colour('mid-grey');
+  background-color: $hmcts-govuk-light-grey;
+  box-shadow: inset 0 -1px 0 0 $hmcts-govuk-mid-grey;
   color: govuk-colour('black');
   padding-bottom: govuk-spacing(2) - 1px;
   padding-top: govuk-spacing(2);
@@ -1180,7 +1130,7 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 .hmcts-search--ondark .hmcts-search__hint {
-  color: govuk-colour('mid-grey');
+  color: $hmcts-govuk-mid-grey;
 }
 
 .hmcts-search--ondark .hmcts-search__input {
@@ -1278,24 +1228,6 @@ td.govuk-table__cell {
 }
 
 // =============================================================================
-// Horizontal rule — compatibility shim
-// govuk-elements-sass gave every <hr> a flat 1px grey rule. CCD label fields often
-// contain only markdown `---` (e.g. et1JudgeReferralLine1), which otherwise falls
-// back to the browser's inset 3D rule and renders as a double line.
-// govuk-section-break is excluded: govuk-frontend styles it (incl. invisible variants).
-// =============================================================================
-
-hr:not(.govuk-section-break) {
-  display: block;
-  background: $govuk-border-colour;
-  border: 0;
-  height: 1px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  padding: 0;
-}
-
-// =============================================================================
 // Plain table styles — compatibility shim
 // govuk-elements-sass applied global table styles to all plain <table> elements.
 // ccd-search-result renders a <table> with no govuk-table class and relies on these.
@@ -1321,24 +1253,6 @@ table:not(.govuk-table) td {
   vertical-align: top;
 }
 
-table.complex-panel-table tr.accordion-heading > td {
-  vertical-align: middle;
-}
-
-.markdown table:not(.govuk-table) td {
-  vertical-align: middle;
-}
-
-// CCD case tab field values: centre against wrapped two-line labels, as before the v5 migration.
-table:not(.govuk-table) td[id^='case-viewer-field-read--'] {
-  vertical-align: middle;
-}
-
-mat-tab-body table > tbody > [ccdlabelsubstitutor]:not([hidden]) {
-  display: table;
-  width: 100%;
-}
-
 table:not(.govuk-table) thead th {
   font-weight: 700;
 }
@@ -1355,25 +1269,6 @@ table:not(.govuk-table) td:last-child {
 
 table:not(.govuk-table) tbody td a {
   float: left;
-}
-
-// CCD Label fields whose markdown is only `---` (e.g. et1JudgeReferralLine1): the table's row borders
-// already separate the fields, so collapse the row entirely. Otherwise cell padding + hr margins render
-// as an empty row, and a bare hr stacks on the previous row border as a heavier double line.
-table:not(.govuk-table) td:has(dl.case-field .markdown > hr:only-child) {
-  padding-top: 0;
-  padding-bottom: 0;
-  border-bottom: 0;
-}
-
-table:not(.govuk-table) td dl.case-field .markdown > hr:only-child {
-  display: none;
-}
-
-// Markdown (e.g. CCD Label fields, now rendered in a td rather than a th) must keep normal flow,
-// otherwise links in consecutive paragraphs float side by side.
-table:not(.govuk-table) tbody td .markdown a {
-  float: none;
 }
 
 table:not(.govuk-table) .numeric {
@@ -1677,57 +1572,7 @@ textarea {
 
   button {
     margin: 1rem 0.25rem 0.25rem;
-  }
-}
-
-.form-label,
-.form-label-bold {
-  display: block;
-  color: #0b0c0c;
-  padding-bottom: 2px;
-}
-
-.form-label {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 400;
-  text-transform: none;
-  font-size: 16px;
-  line-height: 1.25;
-}
-
-@media (min-width: 641px) {
-  .form-label {
-    font-size: 19px;
-    line-height: 1.3157894737;
-  }
-}
-
-.form-label-bold {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 700;
-  text-transform: none;
-  font-size: 16px;
-  line-height: 1.25;
-}
-
-@media (min-width: 641px) {
-  .form-label-bold {
-    font-size: 19px;
-    line-height: 1.3157894737;
-  }
-}
-
-.form-block {
-  float: left;
-  clear: left;
-  margin-top: -5px;
-  margin-bottom: 5px;
-}
-
-@media (min-width: 641px) {
-  .form-block {
-    margin-top: 0;
-    margin-bottom: 10px;
+    height: 2rem;
   }
 }
 
@@ -1748,12 +1593,6 @@ textarea {
     font-size: 19px;
     line-height: 1.3157894737;
   }
-}
-
-.form-label .form-hint,
-.form-label-bold .form-hint {
-  margin-top: 0;
-  padding-bottom: 0;
 }
 
 .form-control {
@@ -2023,28 +1862,6 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
-.form-date .form-group {
-  float: left;
-  width: 50px;
-  margin-right: 20px;
-  margin-bottom: 0;
-  clear: none;
-  overflow: visible; // counteracts app.scss .form-group{overflow:hidden} which breaks float layout
-}
-
-.form-date .form-group label {
-  display: block;
-  padding-bottom: 2px;
-}
-
-.form-date .form-group input {
-  width: 100%;
-}
-
-.form-date .form-group-year {
-  width: 70px;
-}
-
 .form-group-error {
   margin-right: 15px;
   border-left: 4px solid #b10e1e;
@@ -2056,36 +1873,6 @@ input[type='number'] {
     border-left: 5px solid #b10e1e;
     padding-left: 15px;
   }
-}
-
-.form-control-error {
-  border: 4px solid #b10e1e;
-}
-
-.error-message {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 700;
-  text-transform: none;
-  font-size: 16px;
-  line-height: 1.25;
-  color: #b10e1e;
-  display: block;
-  clear: both;
-  margin: 0;
-  padding: 2px 0;
-}
-
-@media (min-width: 641px) {
-  .error-message {
-    font-size: 19px;
-    line-height: 1.3157894737;
-  }
-}
-
-.form-label .error-message,
-.form-label-bold .error-message {
-  padding-top: 4px;
-  padding-bottom: 0;
 }
 
 .error-summary {
@@ -2261,6 +2048,7 @@ fieldset::after,
 
 // =============================================================================
 // govuk-elements typography — compatibility shim
+// Required by @hmcts/ccpay-web-component, which still renders these classes.
 // =============================================================================
 
 .heading-xlarge {
@@ -2372,61 +2160,6 @@ fieldset::after,
   }
 }
 
-.body-text {
-  display: block;
-  margin-top: 0.3125em;
-  margin-bottom: 1.25em;
-
-  @media (min-width: 641px) {
-    margin-top: 0.2631578947em;
-    margin-bottom: 1.0526315789em;
-  }
-}
-
-.lede {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 400;
-  text-transform: none;
-  font-size: 18px;
-  line-height: 1.2;
-
-  @media (min-width: 641px) {
-    font-size: 24px;
-    line-height: 1.25;
-  }
-}
-
-// =============================================================================
-// govuk-elements accessibility — compatibility shim
-// =============================================================================
-
-.visually-hidden,
-.visuallyhidden {
-  position: absolute;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  width: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-}
-
-// Capital-H variant used by some legacy components
-.visuallyHidden {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 0;
-  margin: 0;
-  padding: 0;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  font-size: 0;
-}
-
 // =============================================================================
 // govuk-elements phase banner — compatibility shim
 // =============================================================================
@@ -2522,13 +2255,6 @@ table.form-table td.form-cell .form-group {
 // These mirror the final compiled state of the working demo build.
 // =============================================================================
 
-// Reduce form-label padding; govuk-elements base sets padding-bottom:2px
-.form-label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  padding-bottom: 0;
-}
-
 // Tighten hint margins in app context
 .form-hint {
   font-size: 16px;
@@ -2548,13 +2274,19 @@ table.form-table td.form-cell .form-group {
   width: 100%;
 }
 
+// govuk-select only sets max-width: 100% by default — pin ccd-dropdown
+// selects (ccd-case-ui-toolkit) to full width, matching workbasket-filters'
+// own scoped rule, applied globally so every consumer of .ccd-dropdown gets it
+.ccd-dropdown {
+  width: 100%;
+}
+
 // =============================================================================
 // govuk-tag — compatibility shim for older govuk-frontend versions
 // =============================================================================
 
 .govuk-tag {
   display: inline-block;
-  max-width: none;
   outline: 2px solid transparent;
   outline-offset: -2px;
   letter-spacing: 1px;
@@ -2601,12 +2333,6 @@ a:visited,
   margin-bottom: 15px;
 }
 
-.form-label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  padding-bottom: 0;
-}
-
 .form-hint {
   font-size: 16px;
   margin-top: 5px;
@@ -2624,20 +2350,11 @@ a:visited,
   width: 100%;
 }
 
-.dropdown-50 {
-  width: 50%;
-}
-
-.dropdown-100 {
-  width: 100%;
-}
-
 .width-50 {
   width: 50%;
 }
 
-.text-16,
-.error-message {
+.text-16 {
   font-size: 16px;
   font-family: nta, Arial, sans-serif;
   white-space: normal;
@@ -2649,49 +2366,11 @@ a:visited,
 
 .button-30 {
   height: 30px;
-  // govuk-frontend v5 .govuk-button is border-box with 6px/5px vertical padding sized for a
-  // ~38px button; squeezed to 30px the 19px line overflows and the label sits low. Trim the
-  // padding so border (2+2) + padding (4+3) + line-height (19) = 30px, keeping the label centred.
-  padding-top: 4px;
-  padding-bottom: 3px;
-}
-
-.markdown h1 {
-  font-size: 32px;
-}
-
-.markdown h2 {
-  font-size: 24px;
-}
-
-.markdown h3 {
-  font-size: 18px;
-}
-
-.markdown h4 {
-  font-size: 16px;
-}
-
-.markdown p {
-  font-size: 19px;
-  margin-bottom: 25px;
-  white-space: normal;
 }
 
 .markdown .qm-service-message strong {
   font-size: 19px;
   line-height: 25px;
-}
-
-.markdown ul {
-  font-size: 16px;
-  margin-bottom: 25px;
-  white-space: normal;
-}
-
-.markdown ul li {
-  margin-bottom: 5px;
-  list-style-type: disc;
 }
 
 tr.compound-field .markdown ul,
@@ -2705,19 +2384,6 @@ form.check-your-answers table td .markdown p {
   position: absolute;
   width: 50%;
   height: 41px;
-}
-
-.footer-menu {
-  float: left;
-  margin-bottom: 30px;
-  padding-right: 30px;
-  font-size: 16px;
-}
-
-.label-text {
-  font-size: 16px;
-  font-family: nta, Arial, sans-serif;
-  font-weight: 700;
 }
 
 .pagination-top {

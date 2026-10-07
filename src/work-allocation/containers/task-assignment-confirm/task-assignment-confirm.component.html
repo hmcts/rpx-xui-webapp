@@ -11,15 +11,15 @@
 
       <table class="govuk-table">
         <thead class="govuk-table__head">
-          <tr>
-            <th class="govuk-table__header">Case name</th>
-            <th class="govuk-table__header">Case category</th>
-            <th class="govuk-table__header">Location</th>
-            <th class="govuk-table__header">Task</th>
-            <th class="govuk-table__header">{{ getDueDateTitle() }}</th>
-            <th *ngIf="!isUserJudicial" class="govuk-table__header">Priority</th>
-            <th class="govuk-table__header">Person</th>
-            <th class="govuk-table__header"></th>
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Case name</th>
+            <th scope="col" class="govuk-table__header">Case category</th>
+            <th scope="col" class="govuk-table__header">Location</th>
+            <th scope="col" class="govuk-table__header">Task</th>
+            <th scope="col" class="govuk-table__header">{{ getDueDateTitle() }}</th>
+            <th *ngIf="!isUserJudicial" scope="col" class="govuk-table__header">Priority</th>
+            <th scope="col" class="govuk-table__header">Person</th>
+            <th scope="col" class="govuk-table__header"></th>
           </tr>
         </thead>
 

@@ -31,7 +31,7 @@ test.describe(
 
       await test.step('Verify the expected callback validation error is shown instead of the trim failure', async () => {
         const callbackValidationErrorSummary = page
-          .locator('.error-summary')
+          .locator('.govuk-error-summary')
           .filter({ hasText: /the callback data failed validation/i })
           .first();
 

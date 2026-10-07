@@ -9,6 +9,7 @@ dotenv.config();
 type UserCredentials = {
   username: string;
   password: string;
+  bearerToken?: string;
 };
 
 export type PrlHearingsCaseSetupConfig = {
@@ -70,6 +71,8 @@ const TESTING_SUPPORT_ADMIN_CREATE_EVENT_ID = 'testingSupportDummyAdminCreateNoc
 const TRANSFER_TO_ANOTHER_COURT_EVENT_ID = 'transferToAnotherCourt';
 const JUDICIAL_REVIEW_STATE = 'JUDICIAL_REVIEW';
 const DEFAULT_SERVICE_MICROSERVICE = 'ccd_data';
+const S2S_TOKEN_RETRIES = 2;
+const S2S_TOKEN_RETRY_DELAY_MS = 1_000;
 const CCD_EVENT_HEADERS = {
   experimental: 'true',
   Accept: 'application/json',
@@ -81,6 +84,13 @@ const REQUIRED_ENV_MESSAGE =
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   return values.map((value) => value?.trim()).find((value): value is string => Boolean(value));
+}
+
+const wait = (delayMs: number) => new Promise((resolve) => setTimeout(resolve, delayMs));
+
+function isTransientS2sTokenError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /ENOTFOUND|EAI_AGAIN|ETIMEDOUT|ECONNRESET|socket hang up|timeout|timed out|HTTP (?:502|503|504)/i.test(message);
 }
 
 function resolveManageCaseRedirectUri(testUrl?: string): string | undefined {
@@ -309,22 +319,34 @@ async function getServiceToken(
     return configuredToken;
   }
 
-  const response = await apiContext.post(config.s2sUrl, {
-    data: {
-      microservice,
-    },
-    failOnStatusCode: false,
-  });
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= S2S_TOKEN_RETRIES; attempt++) {
+    try {
+      const response = await apiContext.post(config.s2sUrl, {
+        data: {
+          microservice,
+        },
+        failOnStatusCode: false,
+      });
 
-  if (!response.ok()) {
-    throw new Error(`PRL hearings setup could not fetch S2S token (HTTP ${response.status()}).`);
-  }
+      if (!response.ok()) {
+        throw new Error(`PRL hearings setup could not fetch S2S token (HTTP ${response.status()}).`);
+      }
 
-  const token = (await response.text()).trim();
-  if (!token) {
-    throw new Error('PRL hearings setup S2S response did not include a token.');
+      const token = (await response.text()).trim();
+      if (!token) {
+        throw new Error('PRL hearings setup S2S response did not include a token.');
+      }
+      return token;
+    } catch (error) {
+      lastError = error;
+      if (!isTransientS2sTokenError(error) || attempt === S2S_TOKEN_RETRIES) {
+        throw error;
+      }
+      await wait(S2S_TOKEN_RETRY_DELAY_MS);
+    }
   }
-  return token;
+  throw lastError;
 }
 
 async function preflightWorkAllocationCourt(
@@ -472,10 +494,9 @@ export async function createPrlHearingsCase(
   const config = resolved as Required<PrlHearingsCaseSetupConfig>;
   const apiContext = await request.newContext();
   try {
-    const courtAdminToken = await getBearerToken(
-      { username: config.courtAdminUsername, password: config.courtAdminPassword },
-      config
-    );
+    const courtAdminToken =
+      setupUserCredentials?.bearerToken ??
+      (await getBearerToken({ username: config.courtAdminUsername, password: config.courtAdminPassword }, config));
     const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
     await preflightWorkAllocationCourt(apiContext, config, courtAdminToken, serviceToken, primaryLocation);
     const userId = await getUserId(apiContext, config, courtAdminToken);
@@ -489,10 +510,58 @@ export async function createPrlHearingsCase(
   }
 }
 
+async function findFirstPassingPrlWorkAllocationCourt(
+  apiContext: APIRequestContext,
+  config: Required<PrlHearingsCaseSetupConfig>,
+  bearerToken: string,
+  serviceToken: string,
+  primaryLocations: string[],
+  preflightCourt = preflightWorkAllocationCourt
+): Promise<string> {
+  const failures: string[] = [];
+  for (const location of primaryLocations) {
+    try {
+      await preflightCourt(apiContext, config, bearerToken, serviceToken, location);
+      return location;
+    } catch (error) {
+      failures.push(`${location}: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  throw new Error(
+    `PRL hearings setup found no seeded Work Allocation court for role locations: ${primaryLocations.join(
+      ', '
+    )}. Preflight failures: ${failures.join(' | ')}.`
+  );
+}
+
+export async function findPrlWorkAllocationCourt(
+  primaryLocations: string[],
+  setupUserCredentials?: UserCredentials
+): Promise<string> {
+  const baseConfig = resolvePrlHearingsCaseSetupConfig(process.env);
+  const resolved = {
+    ...baseConfig,
+    courtAdminUsername: setupUserCredentials?.username ?? baseConfig.courtAdminUsername,
+    courtAdminPassword: setupUserCredentials?.password ?? baseConfig.courtAdminPassword,
+  };
+  const missing = validatePrlHearingsCaseSetupConfig(resolved);
+  if (missing.length > 0) throw new Error(`${REQUIRED_ENV_MESSAGE} Missing: ${missing.join(', ')}.`);
+  const config = resolved as Required<PrlHearingsCaseSetupConfig>;
+  const apiContext = await request.newContext();
+  try {
+    const bearerToken =
+      setupUserCredentials?.bearerToken ??
+      (await getBearerToken({ username: config.courtAdminUsername, password: config.courtAdminPassword }, config));
+    const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
+    return await findFirstPassingPrlWorkAllocationCourt(apiContext, config, bearerToken, serviceToken, primaryLocations);
+  } finally {
+    await apiContext.dispose();
+  }
+}
+
 export async function createPrlHearingsCaseIfEnabled(
   primaryLocation: string,
-  setupUserCredentials?: UserCredentials,
-  _page?: unknown
+  setupUserCredentials?: UserCredentials
 ): Promise<PrlHearingsCaseSetupResult | undefined> {
   if (!isPrlHearingsCaseSetupEnabled()) {
     return undefined;
@@ -508,7 +577,10 @@ export const __test__ = {
   buildWorkAllocationPreflightRequest,
   isPrlHearingsCaseSetupEnabled,
   preflightWorkAllocationCourt,
+  findFirstPassingPrlWorkAllocationCourt,
   createTestingSupportAdminCase,
+  getServiceToken,
+  isTransientS2sTokenError,
   resolvePrlHearingsCaseSetupConfig,
   selectWorkAllocationCourtLocation,
   validateCreatedCase,

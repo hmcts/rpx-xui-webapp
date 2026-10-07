@@ -322,9 +322,7 @@ def integrationProfileRunConfig = { String spec ->
     ]
 }
 
-def runPlaywrightIntegrationProfileMatrix = {
-    def failures = []
-    def matrixFailure = null
+def resolveIntegrationRunConfigs = {
     def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
     def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
         integrationProfileRunConfig(spec)
@@ -332,6 +330,14 @@ def runPlaywrightIntegrationProfileMatrix = {
     if (runConfigs.size() == 1) {
         runConfigs[0].reportDir = reportRoot
     }
+    return runConfigs
+}
+
+def runPlaywrightIntegrationProfileMatrix = {
+    def failures = []
+    def matrixFailure = null
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    def runConfigs = resolveIntegrationRunConfigs()
     def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
     dir(suiteResultsDir) { deleteDir() }
     runConfigs.each { runConfig ->
@@ -479,6 +485,16 @@ def secrets = [
     secret('e2e-prl-solicitor-7-password', 'PRL_SOLICITOR7_PASSWORD'),
     secret('e2e-prl-solicitor-8-username', 'PRL_SOLICITOR8_USERNAME'),
     secret('e2e-prl-solicitor-8-password', 'PRL_SOLICITOR8_PASSWORD'),
+    secret('e2e-wa-task-admin-username', 'WA_TASK_ADMIN_USERNAME'),
+    secret('e2e-wa-task-admin-password', 'WA_TASK_ADMIN_PASSWORD'),
+    secret('court-admin-stoke-username', 'COURT_ADMIN_STOKE_USERNAME'),
+    secret('court-admin-stoke-password', 'COURT_ADMIN_STOKE_PASSWORD'),
+    secret('ccd-datastore-url', 'CCD_DATA_STORE_URL'),
+    secret('prl-cos-aat-url', 'PRL_COS_API_URL'),
+    secret('s2s-token-url', 'PRL_HEARINGS_S2S_URL'),
+    secret('prl-hearings-case-set-up', 'PRL_HEARINGS_CASE_SETUP'),
+    secret('idam-web-url', 'IDAM_WEB_URL'),
+    secret('idam-testing-support-url', 'IDAM_TESTING_SUPPORT_URL'),
     secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
     secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
     secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
@@ -580,6 +596,7 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
+    env.PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS = 'IAC_CASEOFFICER_R2'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableFortifyScan('rpx-aat')
@@ -658,6 +675,14 @@ withNightlyPipeline(type, product, component) {
         recordPlaywrightLoadEvent('Lint report publish', 'finish')
      }
     afterSuccess('fortify-scan') {
+      def failureSummary = load 'scripts/notify-playwright-failures.groovy'
+      def failureReports = [
+          [suite: 'API', path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json'],
+          [suite: 'E2E', path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json']
+      ] + resolveIntegrationRunConfigs().collect { run ->
+          [suite: 'Integration', path: "${run.reportDir}/ci-evidence/playwright.json"]
+      }
+      def summaryReady = failureSummary.prepare(failureReports)
       try {
       recordPlaywrightLoadEvent('Nightly functional tests', 'start')
         stage('Nightly Functional Tests (Parallel Report Gathering)') {
@@ -734,12 +759,12 @@ withNightlyPipeline(type, product, component) {
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
                                 'FUNCTIONAL_TESTS_WORKERS=7',
                                 'PW_E2E_CCD_SETUP_CONCURRENCY=1',
-                                'E2E_PW_INCLUDE_TAGS=@nightly',
+                                'E2E_PW_INCLUDE_TAGS=@e2e',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
+                                'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
                                 'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results',
-                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml',
-                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                             ]) {
                                 yarnBuilder.yarn('test:crossbrowser:raw')
                                 e2eOutcome = 'completed'
@@ -822,6 +847,7 @@ withNightlyPipeline(type, product, component) {
             )
         }
       } finally {
+        failureSummary.publish(channel, 'Nightly', summaryReady ? failureReports : [])
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
         archivePlaywrightDiagnostics()
       }

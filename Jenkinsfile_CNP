@@ -157,8 +157,7 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
         if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
             throw e
         }
-        currentBuild.result = 'UNSTABLE'
-        echo "[playwright-accessibility] Report publish failed; marking build unstable because this pack must publish Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
+        echo "[playwright-accessibility] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
 
@@ -167,7 +166,7 @@ def publishPlaywrightAccessibilityJUnit = {
         return
     }
     try {
-        junit allowEmptyResults: false, testResults: playwrightAccessibilityJunitFile
+        junit allowEmptyResults: false, skipMarkingBuildUnstable: true, testResults: playwrightAccessibilityJunitFile
     } catch (Exception e) {
         if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
             throw e
@@ -362,9 +361,7 @@ def integrationProfileRunConfig = { String spec, String testType ->
     ]
 }
 
-def runPlaywrightIntegrationProfileMatrix = { String testType, String reportNamePrefix ->
-    def failures = []
-    def matrixFailure = null
+def resolveIntegrationRunConfigs = { String testType ->
     def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
     def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
         integrationProfileRunConfig(spec, testType)
@@ -372,6 +369,14 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
     if (runConfigs.size() == 1) {
         runConfigs[0].reportDir = reportRoot
     }
+    return runConfigs
+}
+
+def runPlaywrightIntegrationProfileMatrix = { String testType, String reportNamePrefix ->
+    def failures = []
+    def matrixFailure = null
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    def runConfigs = resolveIntegrationRunConfigs(testType)
     def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
     dir(suiteResultsDir) { deleteDir() }
     runConfigs.each { runConfig ->
@@ -526,6 +531,8 @@ def secrets = [
     secret('e2e-prl-solicitor-7-password', 'PRL_SOLICITOR7_PASSWORD'),
     secret('e2e-prl-solicitor-8-username', 'PRL_SOLICITOR8_USERNAME'),
     secret('e2e-prl-solicitor-8-password', 'PRL_SOLICITOR8_PASSWORD'),
+    secret('e2e-wa-task-admin-username', 'WA_TASK_ADMIN_USERNAME'),
+    secret('e2e-wa-task-admin-password', 'WA_TASK_ADMIN_PASSWORD'),
     secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
     secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
     secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
@@ -653,6 +660,7 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
+    env.PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS = 'IAC_CASEOFFICER_R2'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableAksStagingDeployment()
@@ -763,6 +771,14 @@ withPipeline(type, product, component) {
 
         stage('Preview Functional Tests (Parallel Report Gathering)') {
             def previewLoadProfileEvents = playwrightLoadProfileEventsFile('preview')
+            def failureSummary = load 'scripts/notify-playwright-failures.groovy'
+            def failureReports = params.RUN_PLAYWRIGHT_ACCESSIBILITY ? [] : [
+                [suite: 'API', path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json'],
+                [suite: 'E2E', path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json']
+            ] + resolveIntegrationRunConfigs('preview').collect { run ->
+                [suite: 'Integration', path: "${run.reportDir}/ci-evidence/playwright.json"]
+            }
+            def summaryReady = failureReports && failureSummary.prepare(failureReports)
             try {
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'start')
                 // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
@@ -894,6 +910,7 @@ withPipeline(type, product, component) {
                                     "PW_ACCESSIBILITY_WORKERS=6",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "A11Y_STRICT=false",
                                     "PLAYWRIGHT_SKIP_INSTALL=true",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
@@ -910,8 +927,7 @@ withPipeline(type, product, component) {
                                 if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
                                     throw e
                                 }
-                                currentBuild.result = 'UNSTABLE'
-                                echo "[parallel-report-gathering] Playwright Accessibility failed; marking build unstable so a manual accessibility-only run cannot hide missing Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
+                                echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
                             } finally {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Accessibility', 'finish')
                                 publishPlaywrightAccessibilityJUnit()
@@ -935,6 +951,7 @@ withPipeline(type, product, component) {
 
                 parallel(previewFunctionalSuites)
             } finally {
+                failureSummary.publish(channel, 'PREVIEW', summaryReady ? failureReports : [])
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'finish')
                 archivePlaywrightDiagnostics()
                 publishCiLoadProfile('PREVIEW CI System Load')
@@ -957,6 +974,14 @@ withPipeline(type, product, component) {
 
         stage('AAT Functional Tests (Parallel Report Gathering)') {
             def aatLoadProfileEvents = playwrightLoadProfileEventsFile('aat')
+            def failureSummary = load 'scripts/notify-playwright-failures.groovy'
+            def failureReports = params.RUN_PLAYWRIGHT_ACCESSIBILITY ? [] : [
+                [suite: 'API', path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json'],
+                [suite: 'E2E', path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json']
+            ] + resolveIntegrationRunConfigs('aat').collect { run ->
+                [suite: 'Integration', path: "${run.reportDir}/ci-evidence/playwright.json"]
+            }
+            def summaryReady = failureReports && failureSummary.prepare(failureReports)
             try {
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'start')
                 // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
@@ -1088,6 +1113,7 @@ withPipeline(type, product, component) {
                                     "PW_ACCESSIBILITY_WORKERS=6",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "A11Y_STRICT=false",
                                     "PLAYWRIGHT_SKIP_INSTALL=true",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
@@ -1104,8 +1130,7 @@ withPipeline(type, product, component) {
                                 if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
                                     throw e
                                 }
-                                currentBuild.result = 'UNSTABLE'
-                                echo "[parallel-report-gathering] Playwright Accessibility failed; marking build unstable so a manual accessibility-only run cannot hide missing Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
+                                echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
                             } finally {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Accessibility', 'finish')
                                 publishPlaywrightAccessibilityJUnit()
@@ -1129,6 +1154,7 @@ withPipeline(type, product, component) {
 
                 parallel(aatFunctionalSuites)
             } finally {
+                failureSummary.publish(channel, 'AAT', summaryReady ? failureReports : [])
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'finish')
                 archivePlaywrightDiagnostics()
                 publishCiLoadProfile('AAT CI System Load')

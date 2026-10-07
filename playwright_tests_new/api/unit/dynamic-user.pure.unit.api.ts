@@ -452,10 +452,10 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     ).toThrow(/Unknown override field 'TextFieldd'/);
   });
 
-  test('uses configured CCD identifiers when aggregated jurisdictions remains unavailable', async () => {
+  test('fails closed when create-access jurisdictions remains unavailable', async () => {
     let attempts = 0;
     const request = {
-      scenario: 'configured identifier fallback',
+      scenario: 'create access unavailable',
       jurisdiction: 'DIVORCE',
       caseType: 'DIVORCE',
       page: {
@@ -476,7 +476,7 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
         userId: 'user-1',
         effectiveTimeoutMs: 100,
       })
-    ).resolves.toEqual({ jurisdictionId: 'DIVORCE', caseTypeId: 'DIVORCE' });
+    ).rejects.toThrow(/identity preflight.*unavailable/i);
     expect(attempts).toBe(3);
   });
 

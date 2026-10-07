@@ -1204,3 +1204,30 @@ export function isSessionFresh(
 - `api/utils/auth.ts` - API authentication helper
 - `api/data/testIds.ts` - Environment-driven test IDs
 - `api/utils/apiTestRuntimeConfig.ts` - Runtime user credential and environment configuration
+
+### Interactive Odhín reports
+
+API, integration and E2E reports retain their native run metadata, steps, external attachments and failure context, with a full-width responsive dashboard. Drag a panel’s resize handle (or use its arrow keys) to resize it; adjacent panels adapt. Expand and Reset layout controls are available, together with compact view and light/dark themes.
+
+Feature Overview expands into compact test rows with status, duration and View steps. Tests defaults to 100 rows, with search and combinable status, project, file, feature, tag, attempt and duration filters. Back to tests and previous/next navigation stay within the filtered, sorted results.
+
+Webapp accessibility evidence, issue summaries, issue filters and fix hints remain available. API coverage and load-profile publication continue through the existing scripts.
+
+Perfetto Results offers **Download JSON** and **Open in Perfetto** for each retained timeline. Timelines are copied unchanged into the report’s `perfetto/` folder and linked relatively, so Jenkins resource-domain reports can fetch them from the same origin; original test-result files remain available. The latter opens the hosted viewer and transfers the selected timeline after its supported handshake; allow the popup or use the download if it cannot open.
+
+Each retained test trace keeps **Download Trace** and adds **Open in Playwright Trace Viewer**. HTTP(S) reports pass the trace URL to the hosted viewer. If authentication or CORS prevents loading, download the ZIP and select it in the viewer. Reports opened from disk and embedded traces use the same download/select fallback. Lightweight reporting still omits successful-test traces according to its existing settings; viewer links do not generate missing artifacts.
+
+### Slack failure summaries
+
+The CNP PREVIEW/AAT and nightly pipelines send one companion summary after the API, E2E and integration suites finish. It follows the shared Jenkins library's build-failure routing: PR authors receive a DM through the existing GitHub-to-Slack mapping; master, runs without an author and unmapped authors use the configured team channel. Bot-author notifications are skipped. The Jenkins Slack app must be a member of that team channel; Slack rejects channel delivery with `not_in_channel` otherwise. The shared library still sends its normal build notification. Accessibility-only CNP runs do not send this companion summary.
+
+The summary reads each run's existing `odhin-report/ci-evidence/playwright.json`. It groups final failures, separates retries and expected failures, and labels interrupted or unavailable results explicitly. Integration matrix profiles remain separate runs. Successful runs with only retry recoveries are quiet. Expected JSON files are cleared before the suites start so old results cannot be reused.
+
+Only fixed diagnostic wording is sent: no test titles, raw errors, request URLs, bodies or credentials. Recognised direct E2E service hosts can be named when a failed-request attachment supplies evidence; proxy requests remain unattributed. API and integration request errors may be mocked and are labelled accordingly. An observed HTTP error or timeout is evidence, not a confirmed root cause. Unsupported or missing diagnostics retain a generic failure statement and the Jenkins report link.
+
+Summary generation or Slack delivery failure does not change the test outcome. Validate this reporting path locally without sending Slack messages:
+
+```bash
+node --test scripts/playwright-failure-summary.test.cjs scripts/write-integration-report-index.test.cjs
+groovy scripts/notify-playwright-failures.test.groovy
+```

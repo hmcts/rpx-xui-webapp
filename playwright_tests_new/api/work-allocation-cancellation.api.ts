@@ -103,7 +103,8 @@ function annotateTaskFallback(testInfo: TestInfo, runtime: WaRuntime): void {
 }
 
 test.describe('Work allocation cancellation API coverage', { tag: ['@svc-work-allocation'] }, () => {
-  test.describe.configure({ mode: 'serial' });
+  // Exercise each request contract even when another cancellation request fails.
+  test.describe.configure({ mode: 'default' });
 
   test('POST /workallocation/task/:id/cancel accepts the UI manual cancellation payload', async ({
     apiClientFor,

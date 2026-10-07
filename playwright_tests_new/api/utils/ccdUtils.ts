@@ -1,7 +1,7 @@
 import type { ApiClient as PlaywrightApiClient } from '@hmcts/playwright-common';
 import { expect } from '@playwright/test';
 
-import { expectStatus, guardedRequest } from './apiTestUtils';
+import { expectStatus, guardedRequest, withRetry } from './apiTestUtils';
 
 type JurisdictionResponse = {
   name?: string;
@@ -17,16 +17,23 @@ type Jurisdiction = {
 };
 
 export async function assertJurisdictionsForUser(apiClient: PlaywrightApiClient, expectedNames: string[]): Promise<void> {
-  const user = await guardedRequest(() => apiClient.get('api/user/o/userinfo', { timeoutMs: 20_000, throwOnError: false }));
+  const user = await withRetry(
+    () => guardedRequest(() => apiClient.get('api/user/o/userinfo', { timeoutMs: 20_000, throwOnError: false })),
+    { retries: 2, retryStatuses: [502, 504], baseDelayMs: 1_000 }
+  );
   expectStatus(user.status, [200]);
   const uid = resolveUserId(user.data as { userInfo?: { uid?: string; id?: string } });
   expect(typeof uid).toBe('string');
 
-  const response = await guardedRequest(() =>
-    apiClient.get(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
-      timeoutMs: 20_000,
-      throwOnError: false,
-    })
+  const response = await withRetry(
+    () =>
+      guardedRequest(() =>
+        apiClient.get(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
+          timeoutMs: 20_000,
+          throwOnError: false,
+        })
+      ),
+    { retries: 2, retryStatuses: [502, 504], baseDelayMs: 1_000 }
   );
   expectStatus(response.status, [200, 404]);
   expect(Array.isArray(response.data)).toBe(true);

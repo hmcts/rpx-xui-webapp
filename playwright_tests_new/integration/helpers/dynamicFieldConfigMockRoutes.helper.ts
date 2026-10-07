@@ -5,8 +5,10 @@ import { dynamicFieldConfigCaseData } from '../mocks/dynamicFieldConfig.mock';
 
 const CASE_TYPE = 'xuiTestJurisdiction';
 
-export async function openDynamicFieldConfigJourney(page: Page): Promise<void> {
-  await applySessionCookies(page, 'SOLICITOR');
+export async function openDynamicFieldConfigJourney(page: Page, options: { skipSessionCookies?: boolean } = {}): Promise<void> {
+  if (!options.skipSessionCookies) {
+    await applySessionCookies(page, 'SOLICITOR');
+  }
   const userDetails = buildHearingsUserDetailsMock(['caseworker-divorce', 'caseworker-divorce-solicitor']);
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));

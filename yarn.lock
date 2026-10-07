@@ -3575,9 +3575,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.24-4583":
-  version: 2.30.24-4583
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.24-4583"
+"@hmcts/rpx-xui-node-lib@npm:2.30.32":
+  version: 2.30.32
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.32"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.18.1"
@@ -3585,8 +3585,8 @@ __metadata:
     debug: "npm:^4.4.3"
     deepmerge: "npm:^4.3.1"
     express: "npm:^5.2.1"
-    express-session: "npm:^1.17.0"
-    joi: "npm:^18.1.2"
+    express-session: "npm:^1.19.0"
+    joi: "npm:^18.2.8"
     jwt-decode: "npm:^4.0.0"
     openid-client: "npm:^5.7.1"
     otplib: "npm:^13.4.0"
@@ -3596,7 +3596,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/ac7a0d846c8afefb37e7980eb92cf81cefabc7ffcb7e16f9a42fc0478f5688b8574fdcf2d5ae51c01a0a5664d4c86155e3861f3a8a14bb77d42fcb0c0ebfb4a2
+  checksum: 10/4aaf193ee29fa12242fb29e792654e99fb7432d5292753f37b19ab6725b1784132b6eeb9a396190b15d6e2c12e8aae7f67341981dd03a5446802e025ab845ec3
   languageName: node
   linkType: hard
 
@@ -13758,7 +13758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-session@npm:^1.17.0":
+"express-session@npm:^1.19.0":
   version: 1.19.0
   resolution: "express-session@npm:1.19.0"
   dependencies:
@@ -16048,7 +16048,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^18.0.1, joi@npm:^18.1.2":
+"joi@npm:^18.0.1":
   version: 18.2.1
   resolution: "joi@npm:18.2.1"
   dependencies:
@@ -16060,6 +16060,21 @@ __metadata:
     "@hapi/topo": "npm:^6.0.2"
     "@standard-schema/spec": "npm:^1.1.0"
   checksum: 10/1525745571b0b0c60fdb51a8cb6f2e5717241b04314872259f68e10ea729e456d2d4883812013fc03913b03eb2b6cbca9d40d144bbd29e7b02fb57797edb0357
+  languageName: node
+  linkType: hard
+
+"joi@npm:^18.2.8":
+  version: 18.2.9
+  resolution: "joi@npm:18.2.9"
+  dependencies:
+    "@hapi/address": "npm:^5.1.1"
+    "@hapi/formula": "npm:^3.0.2"
+    "@hapi/hoek": "npm:^11.0.7"
+    "@hapi/pinpoint": "npm:^2.0.1"
+    "@hapi/tlds": "npm:^1.1.1"
+    "@hapi/topo": "npm:^6.0.2"
+    "@standard-schema/spec": "npm:^1.1.0"
+  checksum: 10/321836e1bded18c23f5bd10c85715cda778849cddf9285704c39b8df290ad50f9d977f4ebf522cc741feba31aa65fe760dc84e9f218decc777ed15412a33bf77
   languageName: node
   linkType: hard
 
@@ -20829,7 +20844,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.16"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.24-4583"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.32"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

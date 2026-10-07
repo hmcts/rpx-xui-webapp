@@ -91,6 +91,14 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
        "serviceName": "PROBATE"
+    },
+    {
+      "caseTypes": [
+        "FinancialRemedyContested",
+        "FinancialRemedyMVP2"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "DIVORCE"
     }
   ]
   }`;
@@ -270,6 +278,14 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
        "serviceName": "PROBATE"
+    },
+    {
+      "caseTypes": [
+        "FinancialRemedyContested",
+        "FinancialRemedyMVP2"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "DIVORCE"
     }
     ]
   }`;

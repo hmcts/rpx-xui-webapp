@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
           id: 227101,
           locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
         },
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategories: ['LEGAL_OPERATIONS'],
         service: 'IA',
       },
     ]);
@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
+function caseTaskListNegativeTests() {
   test(`An empty task response shows an empty task list`, async ({ caseDetailsPage, page }) => {
     await test.step('Setup route mock for an empty task details', async () => {
       await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
@@ -52,42 +52,43 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
   });
 
-  // EXUI-4276 - is currently the reason this test is skipped. The test is still valid and should be re-enabled once the underlying issue is resolved.
-  test.skip(`Sending an malformed API response for the task data should render the UI gracefully`, async ({
-    caseDetailsPage,
-    page,
-  }) => {
-    const malformedTaskData: unknown = [
-      {
-        id: 12345,
-        case_id: caseMockResponse.case_id,
-        task_title: null,
-        task_state: { value: 'assigned' },
-        type: ['followUpExtendedDirection'],
-        description: { markdown: 'This should be a plain string description' },
-        due_date: 'not-a-date',
-        dueDate: { value: 'tomorrow' },
-        assignee: { idamId: assigneeId },
-        actions: 'claim',
-      },
-    ];
+  // EXUI-4276: the UI currently renders the malformed task instead of rejecting it safely.
+  test(
+    `Sending an malformed API response for the task data should render the UI gracefully`,
+    { tag: ['@blocked-exui-4276'] },
+    async ({ caseDetailsPage, page }) => {
+      const malformedTaskData: unknown = [
+        {
+          id: 12345,
+          case_id: caseMockResponse.case_id,
+          task_title: null,
+          task_state: { value: 'assigned' },
+          type: ['followUpExtendedDirection'],
+          description: { markdown: 'This should be a plain string description' },
+          due_date: 'not-a-date',
+          dueDate: { value: 'tomorrow' },
+          assignee: { idamId: assigneeId },
+          actions: 'claim',
+        },
+      ];
 
-    await test.step('Setup route mock for task details', async () => {
-      await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const body = JSON.stringify(malformedTaskData);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      await test.step('Setup route mock for task details', async () => {
+        await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
+          const body = JSON.stringify(malformedTaskData);
+          await route.fulfill({ status: 200, contentType: 'application/json', body });
+        });
       });
-    });
 
-    await test.step('Navigate to mocked case task list', async () => {
-      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
-    });
+      await test.step('Navigate to mocked case task list', async () => {
+        await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
+      });
 
-    await test.step('Verify malformed task data is handled gracefully', async () => {
-      await expect(caseDetailsPage.taskListContainer).toBeVisible();
-      expect(await caseDetailsPage.taskItem.count()).toBe(0);
-    });
-  });
+      await test.step('Verify malformed task data is handled gracefully', async () => {
+        await expect(caseDetailsPage.taskListContainer).toBeVisible();
+        expect(await caseDetailsPage.taskItem.count()).toBe(0);
+      });
+    }
+  );
 
   const errorCodes = [400];
   errorCodes.forEach((code) => {
@@ -108,4 +109,10 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       });
     });
   });
-});
+}
+
+test.describe(
+  `User ${userIdentifier} can see assigned tasks on a case`,
+  { tag: ['@integration', '@integration-manage-tasks'] },
+  caseTaskListNegativeTests
+);

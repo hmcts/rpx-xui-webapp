@@ -106,7 +106,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
       name: 'Employment Tribunals Offices and Venues - GOV.UK',
       contactLink: 'https://www.gov.uk/guidance/employment-tribunal-offices-and-venues',
     },
-    phone: 'England and Wales: 0300 123 1024, Scotland: 0300 790 6234',
+    phone: 'England and Wales: 0300 323 0196, Scotland: 0300 790 6234',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)',
   },
   {
@@ -195,7 +195,6 @@ const menuFlags = {
   MC_Work_Allocation: true,
   MC_Notice_of_Change: true,
   'feature-global-search': true,
-  'mc-work-allocation-active-feature': 'WorkAllocationRelease2',
   'feature-refunds': true,
 };
 

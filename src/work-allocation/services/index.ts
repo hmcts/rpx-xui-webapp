@@ -5,6 +5,7 @@ import { StaffSupportedJurisdictionsService } from './staff-supported-jurisdicti
 import { WASupportedJurisdictionsService } from './wa-supported-jurisdiction.service';
 import { WorkAllocationCaseService } from './work-allocation-case.service';
 import { WorkAllocationTaskService } from './work-allocation-task.service';
+import { WAVerificationService } from './wa-verification.service';
 
 export {
   CaseworkerDataService,
@@ -14,4 +15,5 @@ export {
   WASupportedJurisdictionsService,
   WorkAllocationCaseService,
   WorkAllocationTaskService,
+  WAVerificationService,
 };

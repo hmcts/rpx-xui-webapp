@@ -99,6 +99,9 @@ export interface GlobalSearchMockRoutesConfig {
   services: unknown;
   searchResultsHandler: (route: Route) => Promise<void>;
   caseDetailsHandler?: (route: Route) => Promise<void>;
+  waSupportedJurisdictions?: string[];
+  waSupportedRoleCategories?: string[];
+  waSupportedRoleTypes?: string[];
 }
 
 /**
@@ -108,6 +111,30 @@ export interface GlobalSearchMockRoutesConfig {
  * @param config - Configuration object with mock data and handlers
  */
 export async function setupGlobalSearchMockRoutes(page: Page, config: GlobalSearchMockRoutesConfig): Promise<void> {
+  await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(config.waSupportedJurisdictions ?? ['PUBLICLAW']),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleCategories*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(config.waSupportedRoleCategories ?? ['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL']),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleTypes*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(config.waSupportedRoleTypes ?? ['ORGANISATION']),
+    });
+  });
+
   // Mock jurisdictions endpoints
   await page.route('**/aggregated/caseworkers/**/jurisdictions*', async (route) => {
     await route.fulfill({

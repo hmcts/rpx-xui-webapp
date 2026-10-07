@@ -323,7 +323,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       getItem: jasmine.createSpy('getItem').and.returnValue(
         JSON.stringify({
           roles: [role],
-          roleCategory: role === AppTestConstants.IA_JUDGE_ROLE ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS,
+          roleCategories: role === AppTestConstants.IA_JUDGE_ROLE ? [RoleCategory.JUDICIAL] : [RoleCategory.LEGAL_OPERATIONS],
         })
       ),
     };

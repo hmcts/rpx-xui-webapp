@@ -24,13 +24,11 @@ import {
 } from './constants/actions';
 import { getCaseListPromises } from './index';
 import { Case, CaseList } from './interfaces/case';
-import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
   CachedCaseworker,
   CaseDataType,
   Caseworker,
-  CaseworkerApi,
   CaseworkersByService,
   Location,
   LocationApi,
@@ -78,37 +76,22 @@ export function prepareGetLocationsUrl(baseUrl: string, serviceCode: string = 'B
 
 // note: this function was created in order to get specific eppims id but spans services so not useful
 // however could still be used for another process
-export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string): string {
-  return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}`;
+export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string, serviceCode?: string): string {
+  const serviceCodeParam = serviceCode ? `&service_code=${serviceCode}` : '';
+  return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}${serviceCodeParam}`;
 }
 
-export function prepareGetUsersUrl(baseUrl: string, service: string, pageNumber: number = 0): string {
-  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
-  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}&page_number=${pageNumber}`;
+export function prepareGetUsersUrl(baseUrl: string, service: string): string {
+  const pageSize = Number.parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {
   return `${baseUrl}/am/role-assignments/query`;
 }
 
-export function prepareCaseWorkerSearchUrl(baseUrl: string) {
-  return `${baseUrl}/caseworker/search`;
-}
-
 export function prepareTaskSearchForCompletable(baseUrl: string) {
   return `${baseUrl}/task/search-for-completable`;
-}
-
-export function prepareCaseWorkerForLocation(baseUrl: string, locationId: string) {
-  return `${baseUrl}/caseworker/location/${locationId}`;
-}
-
-export function prepareCaseWorkerForService(baseUrl: string, serviceId: string) {
-  return `${baseUrl}/caseworker/service/${serviceId}`;
-}
-
-export function prepareCaseWorkerForLocationAndService(baseUrl: string, locationId: string, serviceId: string) {
-  return `${baseUrl}/caseworker/location/${locationId}/service/${serviceId}`;
 }
 
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
@@ -257,54 +240,20 @@ export function getSessionCaseworkerInfo(
   return [servicesNotInSession, caseworkersInSession];
 }
 
-export function getCaseworkerDataForServices(
-  caseWorkerData: CaseworkerApi[],
-  roleAssignmentByService: ServiceCaseworkerData
-): CaseworkersByService {
-  const roleAssignmentResponse = roleAssignmentByService.data.roleAssignmentResponse;
-  const caseworkersByCurrentService: CaseworkersByService = { service: roleAssignmentByService.jurisdiction, caseworkers: [] };
-  if (roleAssignmentResponse && roleAssignmentResponse.length > 0) {
-    const caseworkers = mapCaseworkerData(caseWorkerData, roleAssignmentResponse, roleAssignmentByService.jurisdiction);
-    caseworkersByCurrentService.caseworkers = caseworkers;
-  }
-  return caseworkersByCurrentService;
-}
-
-export function mapCaseworkerData(
-  caseWorkerData: CaseworkerApi[],
-  roleAssignments: RoleAssignment[],
-  jurisdiction?: string
-): Caseworker[] {
-  const caseworkers: Caseworker[] = [];
-  if (caseWorkerData) {
-    caseWorkerData.forEach((caseWorkerApi: CaseworkerApi) => {
-      const thisCaseWorker: Caseworker = {
-        email: caseWorkerApi.email_id,
-        firstName: caseWorkerApi.first_name,
-        idamId: caseWorkerApi.id,
-        lastName: caseWorkerApi.last_name,
-        location: mapCaseworkerLocation(caseWorkerApi.base_location),
-        roleCategory: getRoleCategory(roleAssignments, caseWorkerApi),
-        service: jurisdiction ? jurisdiction : null,
-      };
-      caseworkers.push(thisCaseWorker);
-    });
-  }
-  return caseworkers;
-}
-
 export function mapUsersToCachedCaseworkers(users: StaffUserDetails[], roleAssignments: RoleAssignment[]): CachedCaseworker[] {
   const caseworkers: CachedCaseworker[] = [];
   if (users) {
     users.forEach((staffUser: StaffUserDetails) => {
+      // normalise services to prevent errors
+      const services = staffUser.ccd_service_names || [];
       const thisCaseWorker: CachedCaseworker = {
         email: staffUser.staff_profile.email_id,
         firstName: staffUser.staff_profile.first_name,
         idamId: staffUser.staff_profile.id,
         lastName: staffUser.staff_profile.last_name,
         locations: mapCachedCaseworkerLocation(staffUser.staff_profile.base_location),
-        roleCategory: getUserRoleCategory(roleAssignments, staffUser.staff_profile, staffUser.ccd_service_names),
-        services: staffUser.ccd_service_names,
+        roleCategories: getUserRoleCategories(roleAssignments, staffUser.staff_profile, services),
+        services,
       };
       caseworkers.push(thisCaseWorker);
     });
@@ -312,21 +261,19 @@ export function mapUsersToCachedCaseworkers(users: StaffUserDetails[], roleAssig
   return caseworkers;
 }
 
-export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi: CaseworkerApi): string {
-  const roleAssignment = roleAssignments.find((roleAssign) => roleAssign.actorId === caseWorkerApi.id);
-  return roleAssignment ? roleAssignment.roleCategory : null;
-}
-
-export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
-  const roleAssignment = roleAssignments.find(
-    (roleAssign) =>
+export function getUserRoleCategories(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string[] {
+  const roleAssignmentsForUser = roleAssignments.filter((roleAssign): roleAssign is RoleAssignment & { roleCategory: string } => {
+    return Boolean(
       roleAssign.actorId === user.id &&
       roleAssign.roleCategory &&
       // added line below to stop irrelevant role setting role category
+      // EXUI-4758 - We could add 'irrelevant' roles back if we need them to set the full list of role categories
       // note - we know services are already capitalised
       (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction.toUpperCase()))
-  );
-  return roleAssignment ? roleAssignment.roleCategory : null;
+    );
+  });
+  // Use set to remove duplicates
+  return [...new Set(roleAssignmentsForUser.map((role) => role.roleCategory))];
 }
 
 export function mapCaseworkerLocation(baseLocation: LocationApi[]): Location {
@@ -1020,9 +967,6 @@ export function getAppropriateLocation(services: string[], locations: Location[]
 }
 
 export function searchAndReturnRefinedUsers(services: string[], term: string, users: CachedCaseworker[]): Caseworker[] {
-  if (!users) {
-    return [];
-  }
   if (services) {
     // filter out the caseworkers who are of the services required
     users = users.filter((user) => services.some((service) => user.services?.includes(service)));
@@ -1036,7 +980,7 @@ export function searchAndReturnRefinedUsers(services: string[], term: string, us
       idamId: cachedCaseworker.idamId,
       lastName: cachedCaseworker.lastName,
       location: getAppropriateLocation(services, cachedCaseworker.locations),
-      roleCategory: cachedCaseworker.roleCategory,
+      roleCategories: cachedCaseworker.roleCategories,
       service: getAppropriateService(services, cachedCaseworker.services),
     };
     filteredCaseworkers.push(thisCaseWorker);

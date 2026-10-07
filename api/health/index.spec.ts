@@ -223,9 +223,9 @@ describe('Health Check', (): void => {
       expect(xuiNodeOnStub).not.to.have.been.called;
     });
 
-    it('should handle Redis client ready event with connected client', () => {
+    it('should handle Redis client ready event with ready client', () => {
       showFeatureStub.withArgs(FEATURE_REDIS_ENABLED).returns(true);
-      const mockRedisClient = { connected: true };
+      const mockRedisClient = { isReady: true };
       let redisReadyCallback: (client: any) => void;
 
       xuiNodeOnStub.withArgs(SESSION.EVENT.REDIS_CLIENT_READY, sinon.match.func).callsFake((event, callback) => {
@@ -243,9 +243,9 @@ describe('Health Check', (): void => {
       expect(healthCheckRawStub).to.have.been.calledOnce;
     });
 
-    it('should handle Redis client ready event with disconnected client', () => {
+    it('should handle Redis client ready event with unavailable client', () => {
       showFeatureStub.withArgs(FEATURE_REDIS_ENABLED).returns(true);
-      const mockRedisClient = { connected: false };
+      const mockRedisClient = { isReady: false };
       let redisReadyCallback: (client: any) => void;
 
       xuiNodeOnStub.withArgs(SESSION.EVENT.REDIS_CLIENT_READY, sinon.match.func).callsFake((event, callback) => {
@@ -271,9 +271,9 @@ describe('Health Check', (): void => {
       expect(result).to.equal('down');
     });
 
-    it('should handle Redis client ready event and return up status for connected client', () => {
+    it('should handle Redis client ready event and return up status for ready client', () => {
       showFeatureStub.withArgs(FEATURE_REDIS_ENABLED).returns(true);
-      const mockRedisClient = { connected: true };
+      const mockRedisClient = { isReady: true };
       let redisReadyCallback: (client: any) => void;
 
       xuiNodeOnStub.withArgs(SESSION.EVENT.REDIS_CLIENT_READY, sinon.match.func).callsFake((event, callback) => {
@@ -344,7 +344,7 @@ describe('Health Check', (): void => {
   });
 
   describe('Redis health check function', () => {
-    it('should throw error when Redis client is null', () => {
+    it('should return down status when Redis client is null', () => {
       showFeatureStub.withArgs(FEATURE_REDIS_ENABLED).returns(true);
       let redisReadyCallback: (client: any) => void;
 
@@ -365,11 +365,13 @@ describe('Health Check', (): void => {
 
       redisReadyCallback(null);
 
-      // The actual implementation throws an error when trying to access .connected on null
-      expect(() => rawHealthCheckFunction()).to.throw();
+      const result = rawHealthCheckFunction();
+
+      expect(healthCheckDownStub).to.have.been.calledOnce;
+      expect(result).to.equal('down');
     });
 
-    it('should throw error when Redis client is undefined', () => {
+    it('should return down status when Redis client is undefined', () => {
       showFeatureStub.withArgs(FEATURE_REDIS_ENABLED).returns(true);
       let redisReadyCallback: (client: any) => void;
 
@@ -390,11 +392,13 @@ describe('Health Check', (): void => {
 
       redisReadyCallback(undefined);
 
-      // The actual implementation throws an error when trying to access .connected on undefined
-      expect(() => rawHealthCheckFunction()).to.throw();
+      const result = rawHealthCheckFunction();
+
+      expect(healthCheckDownStub).to.have.been.calledOnce;
+      expect(result).to.equal('down');
     });
 
-    it('should return down status when Redis client has no connected property', () => {
+    it('should return down status when Redis client has no isReady property', () => {
       showFeatureStub.withArgs(FEATURE_REDIS_ENABLED).returns(true);
       const mockRedisClient = {};
       let redisReadyCallback: (client: any) => void;

@@ -2,10 +2,10 @@ import { promises as fs } from 'node:fs';
 
 import { request } from '@playwright/test';
 
-import { config as testConfig } from '../common/apiTestConfig';
+import { config as testConfig } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState } from './utils/auth';
 import { test, expect, buildApiAttachment } from './fixtures';
-import { expectStatus, StatusSets } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, StatusSets } from './utils/apiTestUtils';
 import {
   applyExpiredCookies,
   assertSecurityHeaders,
@@ -56,10 +56,15 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
     expectStatus(response.status, [200, 302, 401, 403, 500, 502, 504]);
   });
 
-  test('returns enriched user details for solicitor session', async ({ apiClient }, testInfo) => {
-    const response = await apiClient.get<any>('api/user/details', { throwOnError: false });
+  test('returns enriched user details for dedicated work-allocation solicitor session', async ({ apiClientFor }, testInfo) => {
+    // Use the specifically provisioned, low-assignment Work Allocation solicitor.
+    // The contract remains full-body: a response header alone is not proof of a usable payload.
+    const apiClient = await apiClientFor('waSolicitor');
+    const response = await guardedRequest(() =>
+      apiClient.get<any>('api/user/details', { timeoutMs: 20_000, throwOnError: false })
+    );
 
-    expectStatus(response.status, StatusSets.guardedExtended);
+    expectStatus(response.status, [200]);
     if (!shouldProcessUserDetails(response.status)) {
       return;
     }

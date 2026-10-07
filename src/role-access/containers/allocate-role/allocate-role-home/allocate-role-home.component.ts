@@ -76,7 +76,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public caseId: string;
   public jurisdiction: string;
   public caseType: string;
-  public userRole: UserRole;
+  public userRoleNames: UserRole[] = [];
 
   public roleCategory: RoleCategory;
   public userIdToBeRemoved: string;
@@ -94,7 +94,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     private readonly router: Router
   ) {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
-      this.userRole = AppUtils.getUserRole(userDetails?.userInfo?.roles);
+      this.userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles);
     });
     if (this.route.snapshot.queryParams) {
       const { caseId } = this.route.snapshot.queryParams;
@@ -198,36 +198,28 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
           case AllocateRoleState.SEARCH_PERSON:
             switch (this.roleCategory) {
               case RoleCategory.JUDICIAL:
-                switch (this.userRole) {
-                  case UserRole.LegalOps:
-                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
-                    break;
-                  case UserRole.Judicial:
-                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
-                    break;
-                  default:
-                    throw new Error('Invalid user role');
+                if (this.hasUserRole(UserRole.Judicial)) {
+                  this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                } else if (this.hasUserRole(UserRole.LegalOps)) {
+                  this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+                } else {
+                  throw new Error('Invalid user role');
                 }
                 break;
               case RoleCategory.LEGAL_OPERATIONS:
-                switch (this.userRole) {
-                  case UserRole.LegalOps:
-                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
-                    break;
-                  case UserRole.Judicial:
-                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
-                    break;
-                  default:
-                    throw new Error('Invalid user role');
+                if (this.hasUserRole(UserRole.LegalOps)) {
+                  this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                } else if (this.hasUserRole(UserRole.Judicial)) {
+                  this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+                } else {
+                  throw new Error('Invalid user role');
                 }
                 break;
               case RoleCategory.CTSC:
-                switch (this.userRole) {
-                  case UserRole.CTSC:
-                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
-                    break;
-                  default:
-                    throw new Error('Invalid user role');
+                if (this.hasUserRole(UserRole.CTSC)) {
+                  this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                } else {
+                  throw new Error('Invalid user role');
                 }
                 break;
               case RoleCategory.ADMIN:
@@ -243,77 +235,67 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                 this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                 break;
               case Actions.Allocate:
-                switch (this.userRole) {
-                  case UserRole.Judicial:
-                    switch (this.roleCategory) {
-                      case RoleCategory.JUDICIAL:
-                        switch (this.allocateTo) {
-                          case AllocateTo.ALLOCATE_TO_ME:
-                            this.store.dispatch(
-                              new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
-                            );
-                            break;
-                          case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                            break;
-                          default:
-                            throw new Error('Invalid allocate to');
-                        }
-                        break;
-                      case RoleCategory.LEGAL_OPERATIONS:
-                      case RoleCategory.ADMIN:
-                        this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                        break;
-                      default:
-                        throw new Error('Invalid role category');
-                    }
-                    break;
-                  case UserRole.LegalOps:
-                    switch (this.roleCategory) {
-                      case RoleCategory.JUDICIAL:
-                      case RoleCategory.ADMIN:
-                        this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                        break;
-                      case RoleCategory.LEGAL_OPERATIONS:
-                        switch (this.allocateTo) {
-                          case AllocateTo.ALLOCATE_TO_ME:
-                            this.store.dispatch(
-                              new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
-                            );
-                            break;
-                          case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                            break;
-                          default:
-                            throw new Error('Invalid allocate to');
-                        }
-                        break;
-                      default:
-                        throw new Error('Invalid role category');
-                    }
-                    break;
-                  case UserRole.CTSC:
-                    switch (this.roleCategory) {
-                      case RoleCategory.CTSC:
-                        switch (this.allocateTo) {
-                          case AllocateTo.ALLOCATE_TO_ME:
-                            this.store.dispatch(
-                              new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
-                            );
-                            break;
-                          case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
-                            break;
-                          default:
-                            throw new Error('Invalid allocate to');
-                        }
-                        break;
-                      default:
-                        throw new Error('Invalid role category');
-                    }
-                    break;
-                  default:
-                    throw new Error('invalid user role');
+                if (this.hasUserRole(UserRole.Judicial)) {
+                  switch (this.roleCategory) {
+                    case RoleCategory.JUDICIAL:
+                      switch (this.allocateTo) {
+                        case AllocateTo.ALLOCATE_TO_ME:
+                          this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                          break;
+                        case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
+                          this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                          break;
+                        default:
+                          throw new Error('Invalid allocate to');
+                      }
+                      break;
+                    case RoleCategory.LEGAL_OPERATIONS:
+                    case RoleCategory.ADMIN:
+                      this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                      break;
+                    default:
+                      throw new Error('Invalid role category');
+                  }
+                } else if (this.hasUserRole(UserRole.LegalOps)) {
+                  switch (this.roleCategory) {
+                    case RoleCategory.JUDICIAL:
+                    case RoleCategory.ADMIN:
+                      this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                      break;
+                    case RoleCategory.LEGAL_OPERATIONS:
+                      switch (this.allocateTo) {
+                        case AllocateTo.ALLOCATE_TO_ME:
+                          this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                          break;
+                        case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
+                          this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                          break;
+                        default:
+                          throw new Error('Invalid allocate to');
+                      }
+                      break;
+                    default:
+                      throw new Error('Invalid role category');
+                  }
+                } else if (this.hasUserRole(UserRole.CTSC)) {
+                  switch (this.roleCategory) {
+                    case RoleCategory.CTSC:
+                      switch (this.allocateTo) {
+                        case AllocateTo.ALLOCATE_TO_ME:
+                          this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                          break;
+                        case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
+                          this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                          break;
+                        default:
+                          throw new Error('Invalid allocate to');
+                      }
+                      break;
+                    default:
+                      throw new Error('Invalid role category');
+                  }
+                } else {
+                  throw new Error('invalid user role');
                 }
                 break;
               default:
@@ -379,5 +361,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.allocateRoleStateDataSub.unsubscribe();
     }
     this.store.dispatch(new fromFeature.AllocateRoleReset());
+  }
+
+  private hasUserRole(userRole: UserRole): boolean {
+    return this.userRoleNames.includes(userRole);
   }
 }

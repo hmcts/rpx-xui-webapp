@@ -76,6 +76,14 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
+        "PCS",
+        "PCS-staging"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
+    },
+    {
+      "caseTypes": [
         "GrantOfRepresentation",
         "Caveat",
         "StandingSearch",
@@ -150,6 +158,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PUBLICLAW"
+    },
+    {
+      "caseTypes": [
+        "PCS"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     },
     {
       "caseTypes": [
@@ -238,6 +253,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "DIVORCE"
+    },
+    {
+      "caseTypes": [
+        "PCS"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     },
     {
       "caseTypes": [

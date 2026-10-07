@@ -13,6 +13,7 @@
     "@svc-ref-data",
     "@svc-role-assignment",
     "@svc-work-allocation",
+    "@svc-work-allocation-myaccess",
     "@svc-internal"
   ]
 }

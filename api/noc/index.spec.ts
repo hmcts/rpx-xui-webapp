@@ -4,6 +4,7 @@ import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { AxiosResponse } from 'axios';
+import * as configIndex from '../configuration';
 import * as noCService from './noCService';
 import * as errorCodeConverter from './errorCodeConverter';
 import { NoCQuestions } from './models/noCQuestions.interface';
@@ -93,6 +94,7 @@ describe('NoC API', (): void => {
         query: {
           caseId: '1234567890123456',
         },
+        session: {},
       });
     });
 
@@ -105,6 +107,7 @@ describe('NoC API', (): void => {
       expect(handleGetStub).to.have.been.calledOnce;
       expect(handleGetStub.firstCall.args[0]).to.include('/noc/noc-questions?case_id=1234567890123456');
       expect(handleGetStub.firstCall.args[1]).to.equal(req);
+      expect(req.session.nocCaseTypesByCaseId).to.deep.equal({ '1234567890123456': 'AAT' });
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockNoCQuestions);
       expect(next).to.not.have.been.called;
@@ -249,6 +252,7 @@ describe('NoC API', (): void => {
     beforeEach(() => {
       req = mockReq({
         body: mockValidationRequest,
+        session: {},
       });
     });
 
@@ -258,6 +262,7 @@ describe('NoC API', (): void => {
 
       await validateNoCQuestions(req, res, next);
 
+      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub).to.have.been.calledOnce;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/verify-noc-answers');
       expect(handlePostStub.firstCall.args[1]).to.equal(mockValidationRequest);
@@ -274,6 +279,7 @@ describe('NoC API', (): void => {
 
       await validateNoCQuestions(req, res, next);
 
+      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/verify-noc-answers');
       expect(handlePostStub.firstCall.args[1]).to.deep.equal({});
       expect(handlePostStub.firstCall.args[2]).to.equal(req);
@@ -286,9 +292,27 @@ describe('NoC API', (): void => {
 
       await validateNoCQuestions(req, res, next);
 
+      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/verify-noc-answers');
       expect(handlePostStub.firstCall.args[1]).to.equal(null);
       expect(handlePostStub.firstCall.args[2]).to.equal(req);
+    });
+
+    it('should validate NoC questions against a configured decentralised service', async () => {
+      const getConfigValueStub = sandbox.stub(configIndex, 'getConfigValue');
+      getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({
+        PCS: { nocBaseUrl: 'http://localhost:3206/' },
+      });
+      req.session.nocCaseTypesByCaseId = { '1234567890123456': 'PCS' };
+      const mockResponse = createMockResponse(200, mockValidationResponse);
+      handlePostStub.resolves(mockResponse);
+
+      await validateNoCQuestions(req, res, next);
+
+      expect(handleGetStub).not.to.have.been.called;
+      expect(handlePostStub.firstCall.args[0]).to.equal('http://localhost:3206/noc/verify-noc-answers');
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.send).to.have.been.calledWith(mockValidationResponse);
     });
 
     it('should handle validation failure response', async () => {
@@ -411,6 +435,7 @@ describe('NoC API', (): void => {
     beforeEach(() => {
       req = mockReq({
         body: mockSubmissionRequest,
+        session: {},
       });
     });
 
@@ -420,6 +445,7 @@ describe('NoC API', (): void => {
 
       await submitNoCEvents(req, res, next);
 
+      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub).to.have.been.calledOnce;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/noc-requests');
       expect(handlePostStub.firstCall.args[1]).to.equal(mockSubmissionRequest);
@@ -451,9 +477,27 @@ describe('NoC API', (): void => {
 
       await submitNoCEvents(req, res, next);
 
+      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/noc-requests');
       expect(handlePostStub.firstCall.args[1]).to.deep.equal({});
       expect(handlePostStub.firstCall.args[2]).to.equal(req);
+    });
+
+    it('should submit NoC events against a configured decentralised service', async () => {
+      const getConfigValueStub = sandbox.stub(configIndex, 'getConfigValue');
+      getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({
+        PCS: { nocBaseUrl: 'http://localhost:3206/' },
+      });
+      req.session.nocCaseTypesByCaseId = { '1234567890123456': 'PCS' };
+      const mockResponse = createMockResponse(201, mockSubmissionResponse, 'Created');
+      handlePostStub.resolves(mockResponse);
+
+      await submitNoCEvents(req, res, next);
+
+      expect(handleGetStub).not.to.have.been.called;
+      expect(handlePostStub.firstCall.args[0]).to.equal('http://localhost:3206/noc/noc-requests');
+      expect(res.status).to.have.been.calledWith(201);
+      expect(res.send).to.have.been.calledWith(mockSubmissionResponse);
     });
 
     it('should handle submission approval with different status', async () => {
@@ -656,6 +700,7 @@ describe('NoC API', (): void => {
       req = mockReq({
         query: { caseId: '1234567890123456' },
         body: { case_id: '1234567890123456' },
+        session: {},
       });
     });
 
@@ -692,7 +737,7 @@ describe('NoC API', (): void => {
 
       await getNoCQuestions(req, res, next);
 
-      expect(handleGetStub.firstCall.args[0]).to.include(`case_id=${caseIdWithQuery}`);
+      expect(handleGetStub.firstCall.args[0]).to.include('case_id=1234567890123456%26extra%3Dparam');
     });
 
     it('should handle error transformation returning null', async () => {

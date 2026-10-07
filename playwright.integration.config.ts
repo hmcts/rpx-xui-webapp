@@ -12,7 +12,17 @@ const {
 } = integrationConfigSupport as {
   buildConfig: (env: NodeJS.ProcessEnv) => {
     reporter: [string, Record<string, unknown> | undefined][];
-    projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
+    workers?: number;
+    testIgnore: string[];
+    projects: Array<{
+      name: string;
+      workers?: number;
+      testMatch?: string[];
+      testIgnore?: string[];
+      grep?: RegExp;
+      grepInvert?: RegExp;
+      use?: { channel?: string };
+    }>;
   };
   resolveOdhinConsoleCapture: (env: NodeJS.ProcessEnv) => { consoleLog: boolean; consoleError: boolean };
   resolveOdhinForceExitOnCompletion: (env: NodeJS.ProcessEnv) => boolean;
@@ -36,8 +46,8 @@ const resolveIntegrationTagFilters = (env: NodeJS.ProcessEnv = process.env) =>
   });
 
 const buildConfig = (env: NodeJS.ProcessEnv = process.env) => {
-  const config = buildSupportConfig(env);
   const integrationTagFilters = resolveIntegrationTagFilters(env);
+  const config = buildSupportConfig(env);
   logResolvedTagFilters('Integration', integrationTagFilters, env);
 
   for (const project of config.projects ?? []) {

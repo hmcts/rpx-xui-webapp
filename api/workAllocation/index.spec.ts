@@ -14,10 +14,6 @@ import {
   getTasksByCaseId,
   getTasksByCaseIdAndEventId,
   postTaskCompletionForAccess,
-  getAllCaseWorkersForLocation,
-  getCaseWorkersForService,
-  getCaseWorkersForLocationAndService,
-  searchCaseWorker,
   postTaskSearchForCompletable,
   getRolesCategory,
   showAllocateRoleLink,
@@ -63,7 +59,7 @@ describe('workAllocation', () => {
     idamId: 'user1',
     lastName: 'Alpha',
     location: undefined,
-    roleCategory: 'LEGAL_OPERATIONS',
+    roleCategories: ['LEGAL_OPERATIONS'],
     service: 'IA',
   };
 
@@ -123,7 +119,7 @@ describe('workAllocation', () => {
           firstName: 'User',
           lastName: 'One',
           email: 'one@one.com',
-          roleCategory: 'role1',
+          roleCategories: ['role1'],
           services: ['service1'],
           locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }],
         },
@@ -132,7 +128,7 @@ describe('workAllocation', () => {
           firstName: 'User',
           lastName: 'Two',
           email: 'two@two.com',
-          roleCategory: 'role1',
+          roleCategories: ['role1'],
           services: ['service1'],
           locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }],
         },
@@ -198,7 +194,7 @@ describe('workAllocation', () => {
         firstName: 'User',
         lastName: 'One',
         email: 'one@one.com',
-        roleCategory: 'role1',
+        roleCategories: ['role1'],
         services: ['service1'],
         locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }],
       },
@@ -207,7 +203,7 @@ describe('workAllocation', () => {
         firstName: 'User',
         lastName: 'Two',
         email: 'two@two.com',
-        roleCategory: 'role1',
+        roleCategories: ['role1'],
         services: ['service1'],
         locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }],
       },
@@ -661,142 +657,6 @@ describe('workAllocation', () => {
 
       expect(next).to.have.been.calledWith(error);
       expect(result).to.equal(error);
-    });
-  });
-
-  describe('getAllCaseWorkersForLocation', () => {
-    it('should get all case workers for a location', async () => {
-      const mockCaseWorkers = [
-        { id: 'worker1', firstName: 'John', lastName: 'Doe' },
-        { id: 'worker2', firstName: 'Jane', lastName: 'Smith' },
-      ];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocation').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { locationId: 'locase123' },
-      });
-      const response = mockRes();
-
-      await getAllCaseWorkersForLocation(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for location', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocation').rejects(error);
-
-      const req = mockReq({
-        params: { locationId: 'locase123' },
-      });
-      const response = mockRes();
-
-      await getAllCaseWorkersForLocation(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('getCaseWorkersForService', () => {
-    it('should get case workers for a service', async () => {
-      const mockCaseWorkers = [{ id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA' }];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForService').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForService(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for service', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForService').rejects(error);
-
-      const req = mockReq({
-        params: { serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForService(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('getCaseWorkersForLocationAndService', () => {
-    it('should get case workers for location and service', async () => {
-      const mockCaseWorkers = [{ id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA', location: 'locase123' }];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocationAndService').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { locationId: 'locase123', serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForLocationAndService(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for location and service', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocationAndService').rejects(error);
-
-      const req = mockReq({
-        params: { locationId: 'locase123', serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForLocationAndService(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('searchCaseWorker', () => {
-    it('should search for case workers', async () => {
-      const mockSearchResults = {
-        caseworkers: [{ id: 'worker1', firstName: 'John', lastName: 'Doe' }],
-      };
-      spy = sandbox.stub(caseWorkerServiceModule, 'handlePostSearch').resolves({ status: 200, data: mockSearchResults });
-
-      const req = mockReq({
-        body: {
-          searchTerm: 'John',
-          services: ['IA'],
-          userType: 'caseworker',
-        },
-      });
-      const response = mockRes();
-
-      await searchCaseWorker(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockSearchResults);
-    });
-
-    it('should handle errors when searching case workers', async () => {
-      const error = new Error('Search failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handlePostSearch').rejects(error);
-
-      const req = mockReq({
-        body: {
-          searchTerm: 'John',
-          services: ['IA'],
-        },
-      });
-      const response = mockRes();
-
-      await searchCaseWorker(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
     });
   });
 
@@ -1412,7 +1272,7 @@ describe('workAllocation', () => {
       // Force timestampExists true
       sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
 
-      const result = await setAssigneeNamesInTasks(tasks as any, ['user1', 'user2'], mockReq({}), next);
+      const result = await setAssigneeNamesInTasks(tasks as any, ['user1', 'user2']);
       expect(result[0].assigneeName).to.equal('Ann Alpha');
       expect(result[1].assigneeName).to.equal('Bob Beta');
     });
@@ -1422,7 +1282,7 @@ describe('workAllocation', () => {
       FullUserDetailCache.setUserDetails([]); // no cache
       sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
       sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').rejects(new Error('fail'));
-      const result = await setAssigneeNamesInTasks(tasks as any, ['uX'], mockReq({}), next);
+      const result = await setAssigneeNamesInTasks(tasks as any, ['uX']);
       expect(result[0].assigneeName).to.be.undefined;
     });
   });
@@ -1492,7 +1352,7 @@ describe('workAllocation', () => {
           firstName: 'Ann',
           lastName: 'Alpha',
           email: 'a@a.com',
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
           services: ['IA'],
           locations: [],
         } as any,
@@ -1521,7 +1381,7 @@ describe('workAllocation', () => {
           firstName: 'Ann',
           lastName: 'Alpha',
           email: 'a@a.com',
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
           services: ['IA'],
           locations: [],
         } as any,
@@ -1555,7 +1415,7 @@ describe('workAllocation', () => {
         firstName: 'Ann',
         lastName: 'Alpha',
         email: 'a@a.com',
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategories: ['LEGAL_OPERATIONS'],
         services: ['IA'],
         locations: [],
       } as any;
@@ -1572,6 +1432,20 @@ describe('workAllocation', () => {
       expect(response.send).to.have.been.calledWith(refinedCaseworker);
     });
 
+    it('returns null with 200 for silent not found', async () => {
+      FullUserDetailCache.setUserDetails([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
+
+      const req = mockReq({
+        body: { idamId: 'judicial-user', silentNotFound: true },
+        session: { passport: { user: { userinfo: { roles: ['caseworker-role'] } } } },
+      });
+      const response = mockRes();
+      await getUserByIdamId(req, response, next);
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith(null);
+    });
+
     it('refreshes cache and returns user when firstEntry', async () => {
       FullUserDetailCache.setUserDetails([]);
       sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
@@ -1584,7 +1458,7 @@ describe('workAllocation', () => {
           firstName: 'Ann',
           lastName: 'Alpha',
           email: 'a@a.com',
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
           services: ['IA'],
           locations: [],
         } as any,

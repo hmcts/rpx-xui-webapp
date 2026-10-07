@@ -193,5 +193,115 @@ test.describe(
       );
       await expect(page.getByRole('heading', { name: /you have successfully submitted the hearing details\./i })).toBeVisible();
     });
+
+    // EXUI-4655 - Back buttons previously causing infinite looping between pages
+    // Test added to confirm this is no longer happening
+    test('does not loop infinitely when using Back from hearing stage result and then actuals summary', async ({
+      page,
+      caseDetailsPage,
+      hearingsTabPage,
+    }) => {
+      await openHearingsTab(page, caseDetailsPage, {
+        userIdentifier: HEARING_MANAGER_CR84_OFF_USER,
+        routeConfig: {
+          userRoles: hearingManagerRoles,
+          hearings: [awaitingActualsScenario],
+        },
+      });
+      const caseHearingsUrl = page.url();
+
+      await hearingsTabPage.waitForReady(awaitingActualsScenario.hearingId, 'add-or-edit');
+      await hearingsTabPage.addOrEditButton(awaitingActualsScenario.hearingId).click();
+
+      const summaryUrl = new RegExp(`/hearings/actuals/${awaitingActualsScenario.hearingId}/hearing-actual-add-edit-summary$`);
+      const stageResultUrl = new RegExp(`/hearings/actuals/${awaitingActualsScenario.hearingId}/hearing-stage-result$`);
+
+      await expect(page).toHaveURL(summaryUrl);
+
+      await page.locator('#hearing-stage-result-update-link').click();
+      await expect(page).toHaveURL(stageResultUrl);
+
+      await page.getByRole('link', { name: /^back$/i }).click();
+      await expect(page).toHaveURL(summaryUrl);
+
+      await page.getByRole('link', { name: /^back$/i }).click();
+
+      await expect(page).toHaveURL(caseHearingsUrl);
+      await expect(page).not.toHaveURL(stageResultUrl);
+    });
+
+    // EXUI-4655 - Back buttons previously causing infinite looping between pages
+    // Test added to confirm this is no longer happening
+    test('does not loop infinitely when using Back from hearing timing and then actuals summary', async ({
+      page,
+      caseDetailsPage,
+      hearingsTabPage,
+    }) => {
+      await openHearingsTab(page, caseDetailsPage, {
+        userIdentifier: HEARING_MANAGER_CR84_OFF_USER,
+        routeConfig: {
+          userRoles: hearingManagerRoles,
+          hearings: [awaitingActualsScenario],
+        },
+      });
+      const caseHearingsUrl = page.url();
+
+      await hearingsTabPage.waitForReady(awaitingActualsScenario.hearingId, 'add-or-edit');
+      await hearingsTabPage.addOrEditButton(awaitingActualsScenario.hearingId).click();
+
+      const summaryUrl = new RegExp(`/hearings/actuals/${awaitingActualsScenario.hearingId}/hearing-actual-add-edit-summary$`);
+      const timingUrl = new RegExp(`/hearings/actuals/${awaitingActualsScenario.hearingId}/hearing-timing/[^/]+$`);
+
+      await expect(page).toHaveURL(summaryUrl);
+
+      await page.locator('#actual-hearing-dates summary').first().click();
+      await page.locator('a[href*="hearing-timing"]').first().click();
+      await expect(page).toHaveURL(timingUrl);
+
+      await page.getByRole('link', { name: /^back$/i }).click();
+      await expect(page).toHaveURL(summaryUrl);
+
+      await page.getByRole('link', { name: /^back$/i }).click();
+
+      await expect(page).toHaveURL(caseHearingsUrl);
+      await expect(page).not.toHaveURL(timingUrl);
+    });
+
+    // EXUI-4655 - Back buttons previously causing infinite looping between pages
+    // Test added to confirm this is no longer happening
+    test('does not loop infinitely when using Back from actuals parties and then actuals summary', async ({
+      page,
+      caseDetailsPage,
+      hearingsTabPage,
+    }) => {
+      await openHearingsTab(page, caseDetailsPage, {
+        userIdentifier: HEARING_MANAGER_CR84_OFF_USER,
+        routeConfig: {
+          userRoles: hearingManagerRoles,
+          hearings: [awaitingActualsScenario],
+        },
+      });
+      const caseHearingsUrl = page.url();
+
+      await hearingsTabPage.waitForReady(awaitingActualsScenario.hearingId, 'add-or-edit');
+      await hearingsTabPage.addOrEditButton(awaitingActualsScenario.hearingId).click();
+
+      const summaryUrl = new RegExp(`/hearings/actuals/${awaitingActualsScenario.hearingId}/hearing-actual-add-edit-summary$`);
+      const partiesUrl = new RegExp(`/hearings/actuals/${awaitingActualsScenario.hearingId}/actuals-parties/[^/]+$`);
+
+      await expect(page).toHaveURL(summaryUrl);
+
+      await page.locator('#actual-hearing-dates summary').first().click();
+      await page.locator('a[href*="actuals-parties"]').first().click();
+      await expect(page).toHaveURL(partiesUrl);
+
+      await page.getByRole('link', { name: /^back$/i }).click();
+      await expect(page).toHaveURL(summaryUrl);
+
+      await page.getByRole('link', { name: /^back$/i }).click();
+
+      await expect(page).toHaveURL(caseHearingsUrl);
+      await expect(page).not.toHaveURL(partiesUrl);
+    });
   }
 );

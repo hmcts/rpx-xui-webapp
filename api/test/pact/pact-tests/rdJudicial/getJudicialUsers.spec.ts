@@ -14,7 +14,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicialUsers', port: 8000 });
 
-const MockApp = require('../../../../../test_codecept/nodeMock/app');
+const MockApp = require('../../pact-mocks/app');
 
 const REQUEST_BODY = {
   sidam_ids: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],

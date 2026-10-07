@@ -356,17 +356,23 @@ export function createFakerIdentity(
   forename: string;
   surname: string;
 } {
-  const forename = faker.person.firstName();
-  const surname = faker.person.lastName();
   const timestamp = faker.date.recent().getTime().toString(36);
   const suffix = faker.string.alphanumeric(8).toLowerCase();
   const prefix = resolveEmailAccountPrefix(jurisdiction);
   const email = `${sanitiseIdentityToken(prefix, 'xui')}.${sanitiseIdentityToken(emailPrefix, 'user')}.${timestamp}.${suffix}@mailinator.com`;
   return {
     email,
-    forename,
-    surname,
+    forename: 'EXUI',
+    surname: `Auto ${toIdentityNamePart(emailPrefix)} ${faker.person.lastName()}`,
   };
+}
+
+function toIdentityNamePart(value: string): string {
+  const normalized = value
+    .replace(/[^a-zA-Z0-9]+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+  return normalized || 'User';
 }
 
 export function resolveEmailAccountPrefix(jurisdiction?: SolicitorJurisdiction): string {

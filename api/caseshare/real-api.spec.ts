@@ -5,6 +5,7 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as crudService from '../common/crudService';
 import * as configuration from '../configuration';
+import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 import { PRDRawUserModel } from './models/prd-raw-user.model';
 import { CCDRawUserModel } from './models/ccd-raw-user.model';
@@ -55,7 +56,6 @@ const convertUserToCCDFormat = (user: any): CCDRawUserModel => ({
 // Convert stub case data to CCD format
 const convertCaseToCCDFormat = (sharedCase: any): CCDRawCaseUserModel => ({
   case_id: sharedCase.caseId,
-  case_title: sharedCase.caseTitle,
   shared_with: sharedCase.sharedWith.map((user: any) => convertUserToCCDFormat(user)),
 });
 
@@ -68,6 +68,8 @@ describe('Case Share Real API', () => {
   let sendPostStub: sinon.SinonStub;
   let sendDeleteStub: sinon.SinonStub;
   let getConfigValueStub: sinon.SinonStub;
+  let trackTraceStub: sinon.SinonStub;
+  let mockLogger: { info: sinon.SinonStub };
   let getUsers: any;
   let getCases: any;
   let assignCases: any;
@@ -78,6 +80,13 @@ describe('Case Share Real API', () => {
     sandbox = sinon.createSandbox();
     getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
     getConfigValueStub.returns('http://default-api'); // Default return value
+
+    const appInsights = require('../lib/appInsights');
+    trackTraceStub = sandbox.stub(appInsights, 'trackTrace');
+    mockLogger = {
+      info: sandbox.stub(),
+    };
+    sandbox.stub(log4jui, 'getLogger').returns(mockLogger as any);
 
     const realApi = require('./real-api');
     getUsers = realApi.getUsers;
@@ -93,6 +102,8 @@ describe('Case Share Real API', () => {
   beforeEach(() => {
     next = sandbox.stub();
     res = mockRes();
+    trackTraceStub.resetHistory();
+    mockLogger.info.resetHistory();
 
     // Stub CRUD service methods
     handleGetStub = sandbox.stub(crudService, 'handleGet');
@@ -250,7 +261,6 @@ describe('Case Share Real API', () => {
       // Verify first case from stub data
       expect(sentCases[0]).to.deep.equal({
         caseId: '1573922332670942',
-        caseTitle: 'Paul Saddlebrook Vs Jennifer Saddlebrook',
         sharedWith: [
           {
             idamId: 'u111111',
@@ -270,7 +280,7 @@ describe('Case Share Real API', () => {
       });
 
       // Verify third case has users from different organisation
-      expect(sentCases[2].caseTitle).to.equal('Sam Green Vs Williams Lee');
+      expect(sentCases[2]).to.not.have.property('caseTitle');
       expect(sentCases[2].sharedWith).to.have.lengthOf(3);
       expect(sentCases[2].sharedWith[0].email).to.include('lambbrooks.com');
       expect(next).to.not.have.been.called;
@@ -295,7 +305,6 @@ describe('Case Share Real API', () => {
         case_assignments: [
           {
             case_id: 'case-123',
-            case_title: 'Test Case',
             shared_with: [],
           },
         ],
@@ -312,7 +321,6 @@ describe('Case Share Real API', () => {
       expect(res.send).to.have.been.calledWith([
         {
           caseId: 'case-123',
-          caseTitle: 'Test Case',
           sharedWith: [],
         },
       ]);
@@ -385,6 +393,51 @@ describe('Case Share Real API', () => {
       expect(response[0].sharedWith).to.have.lengthOf(2);
       expect(response[0].sharedWith.map((u: UserDetails) => u.idamId)).to.include.members(['u111111', 'u555555']);
       expect(response[0].pendingShares).to.be.empty;
+    });
+
+    it('should log assigned, removed, and selected case counts', async () => {
+      const joeElliott = testUsers.find((u) => u.idamId === 'u111111');
+      const anneDellar = testUsers.find((u) => u.idamId === 'u555555');
+      const jamesPriest = testSharedCases[1].sharedWith.find((u: any) => u.idamId === 'u333333');
+
+      req.body.sharedCases = [
+        {
+          caseId: testSharedCases[0].caseId,
+          caseTypeId: 'Asylum',
+          caseTitle: testSharedCases[0].caseTitle,
+          sharedWith: testSharedCases[0].sharedWith,
+          pendingShares: [joeElliott, anneDellar],
+        },
+        {
+          caseId: testSharedCases[1].caseId,
+          caseTypeId: 'Asylum',
+          caseTitle: testSharedCases[1].caseTitle,
+          sharedWith: testSharedCases[1].sharedWith,
+          pendingShares: [joeElliott, anneDellar],
+          pendingUnshares: [
+            {
+              ...jamesPriest,
+              caseRoles: ['[CLAIMANT]', '[SOLICITOR]'],
+            },
+          ],
+        },
+      ];
+
+      sendPostStub.resolves({ status: 201 });
+      sendDeleteStub.resolves({ status: 204 });
+
+      await assignCases(req, res);
+
+      expect(trackTraceStub).to.have.been.calledWith('CSA:: Case share assignments requested', {
+        assignedUsersCount: 2,
+        removedUsersCount: 1,
+        selectedCasesCount: 2,
+      });
+      expect(mockLogger.info).to.have.been.calledWith('CSA:: Case share assignments requested', {
+        assignedUsersCount: 2,
+        removedUsersCount: 1,
+        selectedCasesCount: 2,
+      });
     });
 
     it('should successfully unshare cases using stub data', async () => {

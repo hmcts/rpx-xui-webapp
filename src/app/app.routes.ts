@@ -5,6 +5,7 @@ import { BookingSystemErrorComponent } from '../booking/containers/utils/booking
 import { MyTasksComponent } from '../work-allocation/containers';
 import {
   AccessibilityComponent,
+  AccessDeniedComponent,
   ApplicationRoutingComponent,
   CookiePolicyComponent,
   GetHelpComponent,
@@ -146,6 +147,13 @@ export const ROUTES: Routes = [
     component: AccessibilityComponent,
     data: {
       title: 'Accessibility Statement',
+    },
+  },
+  {
+    path: 'access-denied',
+    component: AccessDeniedComponent,
+    data: {
+      title: 'Access Denied',
     },
   },
   {

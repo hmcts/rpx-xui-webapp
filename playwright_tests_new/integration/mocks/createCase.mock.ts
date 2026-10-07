@@ -190,6 +190,11 @@ export type CreateCaseAclCrudOverrides = {
 
 export type CreateCaseAclGroupInput = string[] | CreateCaseAclCrudOverrides[];
 
+type DivorcePocCaseDataOptions = {
+  peopleDisplayContextParameter?: string | null;
+  peopleValue?: unknown;
+};
+
 const CREATE_CASE_DEFAULT_CRUD: Omit<CreateCaseAcl, 'role'> = {
   create: true,
   read: true,
@@ -228,7 +233,12 @@ const CREATE_CASE_ACLS_WITH_READONLY_COURTADMIN = CREATE_CASE_SHARED_ACLS.map((a
   acl.role === 'caseworker-divorce-courtadmin' ? { ...acl, update: false, delete: false } : acl
 );
 
-export function divorcePocCaseData() {
+export function divorcePocCaseData(options: DivorcePocCaseDataOptions = {}) {
+  const peopleDisplayContextParameter =
+    'peopleDisplayContextParameter' in options
+      ? options.peopleDisplayContextParameter
+      : '#COLLECTION(allowDelete,allowInsert,allowUpdate)';
+
   return {
     id: 'createCase',
     name: 'Create a case',
@@ -422,7 +432,7 @@ export function divorcePocCaseData() {
         id: 'People',
         label: 'Group of People',
         hidden: null,
-        value: null,
+        value: options.peopleValue ?? null,
         metadata: false,
         hint_text: 'Hidden if "Hide all" is entered in Text Field 0; value will not be retained',
         field_type: buildCollectionFieldType({
@@ -434,7 +444,7 @@ export function divorcePocCaseData() {
         order: null,
         formatted_value: null,
         display_context: 'OPTIONAL',
-        display_context_parameter: '#COLLECTION(allowDelete,allowInsert,allowUpdate)',
+        display_context_parameter: peopleDisplayContextParameter,
         show_condition: 'TextField0!="Hide all 4"',
         show_summary_change_option: true,
         show_summary_content_option: null,

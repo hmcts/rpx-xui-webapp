@@ -10,7 +10,7 @@ import { Matchers, V3Interaction } from '@pact-foundation/pact';
 const { somethingLike } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
-const MockApp = require('../../../../../test_codecept/nodeMock/app');
+const MockApp = require('../../pact-mocks/app');
 
 describe('Caseworker ref data api, get all caseworkers for a specific service', () => {
   const baseLocations = [{ location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }];

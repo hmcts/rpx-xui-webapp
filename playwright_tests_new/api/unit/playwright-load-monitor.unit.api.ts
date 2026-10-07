@@ -41,6 +41,7 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
       label: string;
       eventsFile: string;
       stopFile: string;
+      stopFileMaxRuntimeMs: number;
     };
     commandArgs: string[];
   };
@@ -48,6 +49,12 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
     isCiLikeEnvironment: (env: Record<string, string | undefined>) => boolean;
     runMonitoredCommand: (commandArgs: string[], options: Record<string, unknown>) => Promise<number>;
     runUntilStopFile: (options: Record<string, unknown>) => Promise<number>;
+    writeProfileArtifacts: (
+      outputFolder: string,
+      summary: Summary,
+      samples: unknown[],
+      options?: { preserveExistingReport?: boolean }
+    ) => boolean;
   };
 };
 
@@ -153,6 +160,17 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(parsed.options.eventsFile).toBe('functional-output/stage-events.jsonl');
     expect(parsed.options.stopFile).toBe('functional-output/load-profile.stop');
     expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration']);
+  });
+
+  test('ignores the retired max-runtime environment override while retaining the CLI option', () => {
+    const args = ['--stop-file', 'functional-output/load-profile.stop'];
+    const baseline = loadMonitor.parseArgs(args);
+
+    withTemporaryEnv({ PW_LOAD_PROFILE_STOP_FILE_MAX_RUNTIME_MS: '1' }, () => {
+      expect(loadMonitor.parseArgs(args).options.stopFileMaxRuntimeMs).toBe(baseline.options.stopFileMaxRuntimeMs);
+    });
+
+    expect(loadMonitor.parseArgs([...args, '--stop-file-max-runtime-ms', '25']).options.stopFileMaxRuntimeMs).toBe(25);
   });
 
   test('treats Jenkins build metadata as CI for watchdog defaults', () => {
@@ -340,6 +358,195 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(fs.existsSync(path.join(outputFolder, 'load-profile.html'))).toBe(true);
   });
 
+  test('flushes a bounded monitor report when Jenkins cannot create its stop file', async () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-max-runtime-'));
+
+    try {
+      await expect(
+        loadMonitor.__test__.runUntilStopFile({
+          outputFolder,
+          reportFolder: outputFolder,
+          sampleIntervalMs: 5,
+          childIdleTimeoutMs: 0,
+          childCloseGraceMs: 0,
+          childTerminateGraceMs: 20,
+          label: 'bounded-jenkins-stage',
+          eventsFile: '',
+          stopFile: path.join(outputFolder, 'stop'),
+          stopFileMaxRuntimeMs: 25,
+        })
+      ).resolves.toBe(0);
+
+      const summary = JSON.parse(fs.readFileSync(path.join(outputFolder, 'summary.json'), 'utf8'));
+      expect(summary.stopReason).toBe('max-runtime');
+      expect(fs.readFileSync(path.join(outputFolder, 'load-profile.html'), 'utf8')).toContain('max-runtime');
+    } finally {
+      fs.rmSync(outputFolder, { recursive: true, force: true });
+    }
+  });
+
+  test('does not overwrite Jenkins fallback report when a late monitor flush completes', () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-preserve-fallback-'));
+    const reportPath = path.join(outputFolder, 'load-profile.html');
+    const fallbackReport = '<html><body>Jenkins fallback report</body></html>';
+    fs.writeFileSync(reportPath, fallbackReport, 'utf8');
+
+    const published = loadMonitor.__test__.writeProfileArtifacts(outputFolder, reportSummary(), [], {
+      preserveExistingReport: true,
+    });
+
+    expect(published).toBe(false);
+    expect(fs.readFileSync(reportPath, 'utf8')).toBe(fallbackReport);
+    fs.rmSync(outputFolder, { recursive: true, force: true });
+  });
+
+  test('replaces an earlier report for a normal completed command', () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-replace-report-'));
+    const reportPath = path.join(outputFolder, 'load-profile.html');
+
+    try {
+      fs.writeFileSync(reportPath, '<html><body>previous report</body></html>', 'utf8');
+      const published = loadMonitor.__test__.writeProfileArtifacts(outputFolder, reportSummary(), []);
+
+      expect(published).toBe(true);
+      expect(fs.readFileSync(reportPath, 'utf8')).toContain('<title>Playwright load profile</title>');
+    } finally {
+      fs.rmSync(outputFolder, { recursive: true, force: true });
+    }
+  });
+
+  test('flushes the real report after a stop file without relying on a visible monitor PID', async () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-process-'));
+    const stopFile = path.join(outputFolder, 'stop');
+    const monitor = childProcess.spawn(
+      process.execPath,
+      [
+        path.join(process.cwd(), 'scripts/playwright-load-monitor.js'),
+        '--output-folder',
+        outputFolder,
+        '--sample-interval-ms',
+        '20',
+        '--stop-file',
+        stopFile,
+      ],
+      { stdio: ['ignore', 'pipe', 'pipe'] }
+    );
+    let stdout = '';
+    monitor.stdout?.on('data', (chunk) => {
+      stdout += String(chunk);
+    });
+    const exit = new Promise<number | null>((resolve, reject) => {
+      monitor.once('error', reject);
+      monitor.once('exit', (code) => resolve(code));
+    });
+
+    try {
+      await expect.poll(() => stdout, { timeout: 5_000 }).toContain('[load-profile] monitoring until');
+      expect(monitor.exitCode).toBeNull();
+      expect(fs.existsSync(path.join(outputFolder, 'monitor.pid'))).toBe(false);
+
+      const ensure = childProcess.spawn(
+        process.execPath,
+        [
+          path.join(process.cwd(), 'scripts/ensure-load-profile-report.js'),
+          '--report-dir',
+          outputFolder,
+          '--report-file',
+          'load-profile.html',
+          '--report-name',
+          'Process lifecycle test',
+          '--wait-ms',
+          '5000',
+        ],
+        { stdio: 'ignore' }
+      );
+      const ensureExit = new Promise<number | null>((resolve, reject) => {
+        ensure.once('error', reject);
+        ensure.once('exit', (code) => resolve(code));
+      });
+      await new Promise<void>((resolve, reject) => {
+        ensure.once('spawn', resolve);
+        ensure.once('error', reject);
+      });
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      expect(ensure.exitCode).toBeNull();
+      expect(fs.existsSync(path.join(outputFolder, 'load-profile.html'))).toBe(false);
+
+      fs.writeFileSync(stopFile, 'stop\n');
+
+      await expect(Promise.all([exit, ensureExit])).resolves.toEqual([0, 0]);
+      expect(stdout).toContain('[load-profile] monitoring until');
+      expect(stdout).toContain('[load-profile] completed with exit code 0');
+      expect(fs.readFileSync(path.join(outputFolder, 'load-profile.html'), 'utf8')).toContain(
+        '<title>Playwright load profile</title>'
+      );
+    } finally {
+      if (monitor.exitCode === null && monitor.signalCode === null) {
+        monitor.kill('SIGKILL');
+      }
+      fs.rmSync(outputFolder, { recursive: true, force: true });
+    }
+  });
+
+  test('keeps overlapping monitor lifecycles isolated by output folder', async () => {
+    const rootFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-isolation-'));
+    const firstOutputFolder = path.join(rootFolder, 'ci-101');
+    const secondOutputFolder = path.join(rootFolder, 'ci-102');
+    const monitors = [firstOutputFolder, secondOutputFolder].map((outputFolder) => {
+      const stopFile = path.join(outputFolder, 'stop');
+      const monitor = childProcess.spawn(
+        process.execPath,
+        [
+          path.join(process.cwd(), 'scripts/playwright-load-monitor.js'),
+          '--output-folder',
+          outputFolder,
+          '--sample-interval-ms',
+          '20',
+          '--stop-file',
+          stopFile,
+        ],
+        { stdio: ['ignore', 'pipe', 'pipe'] }
+      );
+      let stdout = '';
+      monitor.stdout?.on('data', (chunk) => {
+        stdout += String(chunk);
+      });
+      const exit = new Promise<number | null>((resolve, reject) => {
+        monitor.once('error', reject);
+        monitor.once('exit', (code) => resolve(code));
+      });
+      return { outputFolder, stopFile, monitor, exit, getStdout: () => stdout };
+    });
+
+    try {
+      await expect
+        .poll(() => monitors.every((entry) => entry.getStdout().includes('[load-profile] monitoring until')), {
+          timeout: 5_000,
+        })
+        .toBe(true);
+
+      fs.mkdirSync(secondOutputFolder, { recursive: true });
+      fs.writeFileSync(monitors[1].stopFile, 'stop\n');
+      await expect(monitors[1].exit).resolves.toBe(0);
+      const secondReportPath = path.join(secondOutputFolder, 'load-profile.html');
+      const secondReport = fs.readFileSync(secondReportPath, 'utf8');
+
+      fs.mkdirSync(firstOutputFolder, { recursive: true });
+      fs.writeFileSync(monitors[0].stopFile, 'stop\n');
+      await expect(monitors[0].exit).resolves.toBe(0);
+
+      expect(fs.readFileSync(secondReportPath, 'utf8')).toBe(secondReport);
+      expect(fs.existsSync(path.join(firstOutputFolder, 'load-profile.html'))).toBe(true);
+    } finally {
+      for (const { monitor } of monitors) {
+        if (monitor.exitCode === null && monitor.signalCode === null) {
+          monitor.kill('SIGKILL');
+        }
+      }
+      fs.rmSync(rootFolder, { recursive: true, force: true });
+    }
+  });
+
   test('terminates a silent child command after the configured idle watchdog expires', async () => {
     const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-child-timeout-'));
     const child = new EventEmitter() as EventEmitter & {
@@ -499,6 +706,22 @@ function sample(overrides: Record<string, unknown>) {
     },
     ...overrides,
   };
+}
+
+function reportSummary(): Summary {
+  return loadMonitor.buildSummary(
+    {
+      command: ['jenkins-functional-stages'],
+      startEpochMs: Date.now() - 1_000,
+      sampleIntervalMs: 1_000,
+      effectiveCpuCount: 4,
+      totalMemoryBytes: 8 * 1024 ** 3,
+      workers: 'config-default',
+      shard: '',
+    },
+    [sample({})],
+    0
+  );
 }
 
 function withTemporaryEnv(overrides: Record<string, string | undefined>, callback: () => void) {

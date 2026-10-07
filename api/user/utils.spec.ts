@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants';
-import { getOrganisationRoles, getUserRoleCategory, isCurrentUserCaseAllocator, userDetailsValid } from './utils';
+import { getOrganisationRoles, getUserRoleCategories, isCurrentUserCaseAllocator, userDetailsValid } from './utils';
 
 describe('user.utils', () => {
   describe('isCurrentUserCaseAllocator without jurisdiction and location', () => {
@@ -153,7 +153,7 @@ describe('user.utils', () => {
         'hmcts-legal-operations',
         'task-supervisor',
       ];
-      expect(getUserRoleCategory(roles)).to.equal('admin');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['ADMIN', 'PROFESSIONAL']);
     });
   });
 
@@ -189,72 +189,72 @@ describe('user.utils', () => {
 
     it('should return citizen role category', () => {
       const roles = ['citizen'];
-      expect(getUserRoleCategory(roles)).to.equal('citizen');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['CITIZEN']);
     });
 
     it('should return judge role category for judge role', () => {
       const roles = ['judge'];
-      expect(getUserRoleCategory(roles)).to.equal('judicial');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['JUDICIAL']);
     });
 
     it('should return judge role category for judiciary role', () => {
       const roles = ['judiciary'];
-      expect(getUserRoleCategory(roles)).to.equal('judicial');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['JUDICIAL']);
     });
 
     it('should return admin role category', () => {
       const roles = ['admin'];
-      expect(getUserRoleCategory(roles)).to.equal('admin');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['ADMIN']);
     });
 
     it('should return ctsc role category', () => {
       const roles = ['ctsc'];
-      expect(getUserRoleCategory(roles)).to.equal('ctsc');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['CTSC']);
     });
 
     it('should return professional role for legal-operations', () => {
       const roles = ['legal-operations'];
-      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['PROFESSIONAL']);
     });
 
     it('should return professional role for task-supervisor', () => {
       const roles = ['task-supervisor'];
-      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['PROFESSIONAL']);
     });
 
     it('should return professional role for pui-case-manager', () => {
       const roles = ['pui-case-manager'];
-      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['PROFESSIONAL']);
     });
 
     it('should return professional role for pui-organisation-manager', () => {
       const roles = ['pui-organisation-manager'];
-      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['PROFESSIONAL']);
     });
 
     it('should return other_gov_department for SSCS DWP response writer', () => {
       const roles = ['caseworker-sscs-dwpresponsewriter'];
-      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['OTHER_GOV_DEPARTMENT']);
     });
 
     it('should return other_gov_department for SSCS HMRC response writer', () => {
       const roles = ['caseworker-sscs-hmrcresponsewriter'];
-      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['OTHER_GOV_DEPARTMENT']);
     });
 
     it('should return other_gov_department for SSCS IBCA response writer', () => {
       const roles = ['caseworker-sscs-ibcaresponsewriter'];
-      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['OTHER_GOV_DEPARTMENT']);
     });
 
     it('should return legal-operations as default', () => {
       const roles = ['unknown-role'];
-      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
+      expect(getUserRoleCategories(roles)).to.deep.equal(['LEGAL_OPERATIONS']);
     });
 
     it('should handle empty array and return default', () => {
-      const roles = [];
-      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
+      const roles: string[] = [];
+      expect(getUserRoleCategories(roles)).to.deep.equal(['LEGAL_OPERATIONS']);
     });
   });
 });

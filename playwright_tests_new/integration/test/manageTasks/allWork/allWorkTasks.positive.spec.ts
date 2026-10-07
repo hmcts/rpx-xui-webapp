@@ -1,36 +1,74 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import {
-  applySessionCookies,
-  getLegacyStaffAdminSessionIdentity,
-  setupManageTasksBaseRoutes,
-  taskListRoutePattern,
-} from '../../../helpers';
+import { applySessionCookies, setupManageTasksBaseRoutes, taskListRoutePattern } from '../../../helpers';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
+import {
+  allWorkTasksSupportedJurisdictionDetails,
+  allWorkTasksSupportedJurisdictions,
+  buildAllWorkTaskTableScenario,
+} from '../../../mocks/manageTasksAllWork.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
-const staffAdminSession = getLegacyStaffAdminSessionIdentity();
 const allWorkCasesRoutePattern = /\/workallocation\/all-work\/cases(?:\?.*)?$/;
-
-const supportedJurisdictions = ['IA', 'CIVIL'];
-const supportedJurisdictionDetails = [
-  { serviceId: 'IA', serviceName: 'Immigration and Asylum' },
-  { serviceId: 'CIVIL', serviceName: 'Civil' },
-];
 
 test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test.beforeEach(async ({ page }) => {
-    await applySessionCookies(page, staffAdminSession);
+    await applySessionCookies(page, userIdentifier);
   });
 
   test('User can view all-work task table, links, and pagination', async ({ taskListPage, page, tableUtils }) => {
-    const taskListMockResponse = buildTaskListMock(2000, '', myActionsList);
+    const {
+      caseMockResponse,
+      caseTasksResponse,
+      caseworkerLookupResponse,
+      firstTask,
+      secondPageFirstTask,
+      secondPageTaskListMockResponse,
+      taskListMockResponse,
+    } = buildAllWorkTaskTableScenario();
 
     await test.step('Setup route mocks for all-work tasks', async () => {
       await setupManageTasksBaseRoutes(page, {
-        taskListResponse: taskListMockResponse,
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        taskListHandler: async (route) => {
+          const requestBody = route.request().postDataJSON() as {
+            searchRequest?: {
+              pagination_parameters?: { page_number?: number };
+            };
+          };
+          const pageNumber = requestBody.searchRequest?.pagination_parameters?.page_number ?? 1;
+
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(pageNumber === 2 ? secondPageTaskListMockResponse : taskListMockResponse),
+          });
+        },
+        supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+        supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
+      });
+
+      await page.route(`**/data/internal/cases/${firstTask.case_id}*`, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(caseMockResponse),
+        });
+      });
+
+      await page.route(`**/workallocation/case/task/${firstTask.case_id}*`, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(caseTasksResponse),
+        });
+      });
+
+      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(caseworkerLookupResponse),
+        });
       });
     });
 
@@ -40,7 +78,7 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
-    await test.step('Verify expected all-work columns, data, and case link rendering', async () => {
+    await test.step('Verify expected all-work columns, data, and case/task link rendering', async () => {
       expect
         .soft(await taskListPage.getResultsText())
         .toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
@@ -55,16 +93,44 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       expect.soft(table[0]['Location']).toBe(taskListMockResponse.tasks[0].location_name);
       expect.soft(table[0]['Task']).toBe(taskListMockResponse.tasks[0].task_title);
 
-      const firstCase = taskListMockResponse.tasks[0];
-      const firstCaseLink = taskListPage.taskListTable.getByRole('link', { name: firstCase.case_name }).first();
+      const firstCaseLink = taskListPage.taskListTable.getByRole('link', { name: firstTask.case_name }).first();
       await expect(firstCaseLink).toBeVisible();
       await expect(firstCaseLink).toHaveAttribute(
         'href',
-        `/cases/case-details/${firstCase.jurisdiction}/${firstCase.case_type_id}/${firstCase.case_id}`
+        `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}`
+      );
+
+      const firstTaskLink = taskListPage.taskListTable.getByRole('link', { name: firstTask.task_title }).first();
+      await expect(firstTaskLink).toBeVisible();
+      await expect(firstTaskLink).toHaveAttribute(
+        'href',
+        new RegExp(
+          `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}(?:/tasks|#Tasks)$`
+        )
       );
     });
 
+    await test.step('Click the all-work Task link and land on the case details Tasks tab', async () => {
+      const caseTasksUrlPattern = new RegExp(
+        `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}(?:/tasks|#Tasks)(?:\\?.*)?$`
+      );
+      await taskListPage.taskListTable.getByRole('link', { name: firstTask.task_title }).first().click();
+
+      await expect(page).toHaveURL(caseTasksUrlPattern);
+      await taskListPage.recoverBlankDocumentAfterCurrentNavigation(
+        caseTasksUrlPattern,
+        'all-work task link case details navigation'
+      );
+
+      await expect(page).toHaveURL(caseTasksUrlPattern);
+      await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
+    });
+
     await test.step('Verify pagination controls are shown for multi-page all-work results', async () => {
+      await taskListPage.gotoAllWorkTasks();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+
       await expect(taskListPage.exuiBodyComponent.paginationNextButton).toBeVisible();
       await expect(taskListPage.exuiBodyComponent.paginationPreviousButton).not.toBeVisible();
 
@@ -74,6 +140,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       expect
         .soft(await taskListPage.getResultsText())
         .toContain(`Showing 26 to 50 of ${taskListMockResponse.total_records} results`);
+      await expect(taskListPage.taskListTable.getByRole('link', { name: secondPageFirstTask.case_name })).toBeVisible();
+      await expect(taskListPage.taskListTable.getByRole('link', { name: firstTask.case_name })).toHaveCount(0);
     });
   });
 
@@ -83,8 +151,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     await test.step('Setup route mocks for all-work tasks sorting', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse: taskListMockResponse,
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+        supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
       });
       await page.route(allWorkCasesRoutePattern, async (route) => {
         await route.fulfill({
@@ -153,8 +221,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     await test.step('Setup route mocks for all-work filters', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse: taskListMockResponse,
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+        supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
       });
     });
 
@@ -200,8 +268,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     await test.step('Setup route mocks for all-work manage action matrix', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse: taskListMockResponse,
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+        supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
       });
     });
 
@@ -263,8 +331,8 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
         await test.step('Setup route mocks for all-work role-based columns', async () => {
           await setupManageTasksBaseRoutes(page, {
             taskListResponse: taskListMockResponse,
-            supportedJurisdictions,
-            supportedJurisdictionDetails,
+            supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+            supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
             user: {
               roleCategory: scenario.roleCategory,
               roles: scenario.roles,

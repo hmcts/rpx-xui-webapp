@@ -9,7 +9,6 @@ import path from 'node:path';
 
 import { test, expect } from '@playwright/test';
 
-import { config } from '../common/apiTestConfig';
 import { __test__ as authTest } from './utils/auth';
 
 test.describe.configure({ mode: 'serial' });
@@ -18,6 +17,16 @@ const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
 const mockCredentials = { username: 'test-user', password: mockPassword };
 
 test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' }, () => {
+  test('keys API storage by normalized resolved identity without exposing the username', () => {
+    const first = authTest.getCacheKeyForIdentity('aat', 'solicitor', 'Solicitor.One@hmcts.net');
+    const sameIdentity = authTest.getCacheKeyForIdentity('aat', 'solicitor', ' solicitor.one@hmcts.net ');
+    const second = authTest.getCacheKeyForIdentity('aat', 'solicitor', 'solicitor.two@hmcts.net');
+
+    expect(first).toBe(sameIdentity);
+    expect(first).not.toBe(second);
+    expect(first).not.toContain('solicitor.one@hmcts.net');
+  });
+
   test('tryReadState returns parsed state or undefined for invalid content', async () => {
     const tmpDir = path.join(process.cwd(), 'test-results', 'tmp-auth-state');
     await fs.mkdir(tmpDir, { recursive: true });
@@ -67,7 +76,7 @@ test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' },
         createCalls += 1;
         return `state-${createCalls}`;
       },
-      tryReadState: async (path: string) => {
+      tryReadState: async () => {
         readCalls += 1;
         // First read: state missing, second read after create: return cookies
         if (readCalls >= 2) {
@@ -99,7 +108,7 @@ test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' },
 
   test('createStorageStateWith honors token bootstrap and falls back to form login', async () => {
     const storageRoot = path.join(process.cwd(), 'test-results', 'auth-storage');
-    const expectedStorageStateSuffix = `api-${config.testEnv}-solicitor.storage.json`;
+    const expectedStorageStateSuffix = `api-${authTest.getCacheKey('solicitor')}.storage.json`;
     let formCalls = 0;
     const onForm = async () => {
       formCalls += 1;

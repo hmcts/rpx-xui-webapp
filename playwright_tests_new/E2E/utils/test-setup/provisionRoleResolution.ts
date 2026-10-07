@@ -7,6 +7,7 @@ import {
 
 export type DynamicSolicitorAlias =
   | 'SOLICITOR'
+  | 'WA_DYNAMIC_SOLICITOR'
   | 'DIVORCE_SOLICITOR'
   | 'PROD_LIKE'
   | 'SEARCH_EMPLOYMENT_CASE'

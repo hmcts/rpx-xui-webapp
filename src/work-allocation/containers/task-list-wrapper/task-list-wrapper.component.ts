@@ -14,7 +14,7 @@ import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
-import { TaskListFilterComponent } from '../../components';
+import { MyWorkFilterComponent } from '../../components';
 import { ListConstants } from '../../components/constants';
 import { SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
@@ -28,7 +28,13 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService,
 } from '../../services';
-import { REDIRECTS, WILDCARD_SERVICE_DOWN, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
+import {
+  REDIRECTS,
+  WILDCARD_SERVICE_DOWN,
+  getCurrentUserRoleCategories,
+  handleFatalErrors,
+  handleTasksFatalErrors,
+} from '../../utils';
 
 @Component({
   standalone: false,
@@ -54,7 +60,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasksTotal: number;
   private currentUser: string;
   public routeEventsSubscription: Subscription;
-  public userRoleCategory: string;
+  public userRoleCategories: string[] = [];
   private initialFilterApplied = false;
   private goneBackCount = 0;
 
@@ -158,7 +164,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public ngOnInit(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
     this.waSupportedJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.userRoleCategory = this.getCurrentUserRoleCategory();
+    this.userRoleCategories = getCurrentUserRoleCategories(this.sessionStorageService);
     this.taskServiceConfig = this.getTaskServiceConfig();
     this.loadCaseWorkersAndLocations();
     this.setupTaskList();
@@ -172,7 +178,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public loadCaseWorkersAndLocations() {
     this.myWorkSubscription = this.filterService
-      .getStream(TaskListFilterComponent.FILTER_NAME)
+      .getStream(MyWorkFilterComponent.FILTER_NAME)
       .pipe(
         debounceTime(200),
         filter((f: FilterSetting) => f?.hasOwnProperty('fields'))
@@ -397,7 +403,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    return this.userRoleCategory?.toUpperCase() === RoleCategory.JUDICIAL;
+    return this.userRoleCategories.includes(RoleCategory.JUDICIAL);
   }
 
   // Do the actual load. This is separate as it's called from two methods.
@@ -480,15 +486,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     }
   }
 
-  public getCurrentUserRoleCategory(): string {
+  public getCurrentUserRoleCategories(): string[] {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (!userInfo) {
-        return;
+        return [];
       }
-      return userInfo.roleCategory;
+      return userInfo.roleCategories || [];
     }
+    return [];
   }
 
   private locationListsEqual(newLocations: string[]): boolean {

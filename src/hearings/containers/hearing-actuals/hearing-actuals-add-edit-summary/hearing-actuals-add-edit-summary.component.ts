@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -23,6 +24,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   constructor(
     public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,
+    public readonly location: Location,
     public readonly route: ActivatedRoute,
     public readonly router: Router,
     public readonly ccdDatePipe: DatePipe,
@@ -151,7 +153,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public onBack(): void {
-    window.history.back();
+    this.location.back();
   }
 
   public haveParticipantsBeenAdded(hearingDay: ActualHearingDayModel): boolean {

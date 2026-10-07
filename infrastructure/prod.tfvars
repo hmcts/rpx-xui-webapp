@@ -3,5 +3,20 @@ redis_sku_name = "Premium"
 redis_family   = "P"
 redis_capacity = "2"
 
+# Production peaks around 3 GB; B5 provides 6 GB before the service reserve.
+managed_redis_sku_name = "Balanced_B5"
+
+# Application Insights
+sampling_percentage = 100
+
 # Welsh Reporting
 welsh_reporting_enabled = true
+
+# ExUI Weekly Stats Reporting
+exui_weekly_stats_enabled = true
+
+# ExUI Throughput Stats Reporting
+exui_throughput_stats_enabled = true
+
+# ExUI PUI Activations Reporting
+exui_pui_activations_enabled = true

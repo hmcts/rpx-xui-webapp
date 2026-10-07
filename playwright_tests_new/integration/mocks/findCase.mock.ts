@@ -21,6 +21,26 @@ export function buildFindCaseJurisdictionsMock() {
     },
   ];
 }
+export function buildProbateFindCaseJurisdictionsMock() {
+  return [
+    {
+      id: 'PUBLICLAW',
+      name: FIND_CASE_JURISDICTION_LABEL,
+      caseTypes: [
+        {
+          id: 'PRLAPPS',
+          name: FIND_CASE_CASE_TYPE_LABEL,
+          states: [
+            {
+              id: 'CaseCreated',
+              name: 'Case created',
+            },
+          ],
+        },
+      ],
+    },
+  ];
+}
 
 export function buildFindCaseWorkBasketInputsMock() {
   const caseReferenceInput = {

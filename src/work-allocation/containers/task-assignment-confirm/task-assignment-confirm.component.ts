@@ -64,7 +64,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
       const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (userInfo) {
         // EXUI-2907 - Use roleCategory instead of roles
-        this.isUserJudicial = userInfo.roleCategory === RoleCategory.JUDICIAL;
+        this.isUserJudicial = !!userInfo.roleCategories?.includes(RoleCategory.JUDICIAL);
       }
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;

@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -56,6 +57,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
   public constructor(
     private readonly fb: FormBuilder,
+    private readonly location: Location,
     private readonly validators: ValidatorsUtils,
     private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly route: ActivatedRoute,
@@ -336,6 +338,10 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   public getRole(value: string): string {
     const hearingRole = this.hearingRoles.find((role) => role.key === value);
     return hearingRole ? hearingRole.value_en : value;
+  }
+
+  public onBack(): void {
+    this.location.back();
   }
 
   private getAllRowErrors(controls: { [p: string]: AbstractControl }): { [p: string]: string } {

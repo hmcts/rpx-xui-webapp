@@ -6,6 +6,8 @@ export type RuntimeUserCredentials = {
 type RuntimeUserCredentialEnvMapping = {
   username: string;
   password: string;
+  alternateUsernames?: string[];
+  alternatePasswords?: string[];
 };
 
 export const RuntimeUserAlias = {
@@ -23,8 +25,16 @@ export type PublishedRuntimeUserCredentialEnvState = RuntimeUserCredentialEnvMap
 const runtimeUserCredentials = new Map<string, RuntimeUserCredentials>();
 const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   SOLICITOR: {
-    username: 'SOLICITOR_USERNAME',
-    password: 'SOLICITOR_PASSWORD',
+    username: 'WA_SOLICITOR_USERNAME',
+    password: 'WA_SOLICITOR_PASSWORD',
+  },
+  WA_TASK_ADMIN: {
+    username: 'WA_TASK_ADMIN_USERNAME',
+    password: 'WA_TASK_ADMIN_PASSWORD',
+  },
+  WA_SOLICITOR: {
+    username: 'WA_SOLICITOR_USERNAME',
+    password: 'WA_SOLICITOR_PASSWORD',
   },
   DIVORCE_SOLICITOR: {
     username: 'DIVORCE_SOLICITOR_USERNAME',
@@ -70,9 +80,29 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'BOOKING_UI_FT_ON_4_USERNAME',
     password: 'BOOKING_UI_FT_ON_4_PASSWORD',
   },
+  'BOOKING_UI-FT-ON-5': {
+    username: 'BOOKING_UI_FT_ON_5_USERNAME',
+    password: 'BOOKING_UI_FT_ON_5_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-6': {
+    username: 'BOOKING_UI_FT_ON_6_USERNAME',
+    password: 'BOOKING_UI_FT_ON_6_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-7': {
+    username: 'BOOKING_UI_FT_ON_7_USERNAME',
+    password: 'BOOKING_UI_FT_ON_7_PASSWORD',
+  },
+  'BOOKING_UI-FT-ON-8': {
+    username: 'BOOKING_UI_FT_ON_8_USERNAME',
+    password: 'BOOKING_UI_FT_ON_8_PASSWORD',
+  },
   STAFF_ADMIN: {
     username: 'STAFF_ADMIN_USERNAME',
     password: 'STAFF_ADMIN_PASSWORD',
+  },
+  COURT_ADMIN: {
+    username: 'COURT_ADMIN_USERNAME',
+    password: 'COURT_ADMIN_PASSWORD',
   },
   'STAFF_ADMIN-1': {
     username: 'STAFF_ADMIN_1_USERNAME',
@@ -89,6 +119,22 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   'STAFF_ADMIN-4': {
     username: 'STAFF_ADMIN_4_USERNAME',
     password: 'STAFF_ADMIN_4_PASSWORD',
+  },
+  'STAFF_ADMIN-5': {
+    username: 'STAFF_ADMIN_5_USERNAME',
+    password: 'STAFF_ADMIN_5_PASSWORD',
+  },
+  'STAFF_ADMIN-6': {
+    username: 'STAFF_ADMIN_6_USERNAME',
+    password: 'STAFF_ADMIN_6_PASSWORD',
+  },
+  'STAFF_ADMIN-7': {
+    username: 'STAFF_ADMIN_7_USERNAME',
+    password: 'STAFF_ADMIN_7_PASSWORD',
+  },
+  'STAFF_ADMIN-8': {
+    username: 'STAFF_ADMIN_8_USERNAME',
+    password: 'STAFF_ADMIN_8_PASSWORD',
   },
   HEARING_MANAGER_CR84_OFF: {
     username: 'HEARING_MANAGER_CR84_OFF_USERNAME',
@@ -134,10 +180,6 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME',
     password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD',
   },
-  RESTRICTED_CASE_FILE_VIEW_OFF: {
-    username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME',
-    password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD',
-  },
   ORG_USER_ASSIGNMENT: {
     username: 'ORG_USER_ASSIGNMENT_USERNAME',
     password: 'ORG_USER_ASSIGNMENT_PASSWORD',
@@ -145,11 +187,107 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   IAC_JUDGE_WA_R1: {
     username: 'PW_IAC_JUDGE_WA_R1_EMAIL',
     password: 'PW_IAC_JUDGE_WA_R1_PASSWORD',
+    alternateUsernames: ['IAC_JUDGE_WA_R1_USERNAME'],
+    alternatePasswords: ['IAC_JUDGE_WA_R1_PASSWORD'],
+  },
+  IAC_CASEOFFICER_R1: {
+    username: 'PW_IAC_CASEOFFICER_R1_EMAIL',
+    password: 'PW_IAC_CASEOFFICER_R1_PASSWORD',
+    alternateUsernames: ['IAC_CASEOFFICER_R1_USERNAME'],
+    alternatePasswords: ['IAC_CASEOFFICER_R1_PASSWORD'],
   },
   IAC_CASEOFFICER_R2: {
     username: 'PW_IAC_CASEOFFICER_R2_EMAIL',
     password: 'PW_IAC_CASEOFFICER_R2_PASSWORD',
+    alternateUsernames: ['IAC_CASEOFFICER_R2_USERNAME'],
+    alternatePasswords: ['IAC_CASEOFFICER_R2_PASSWORD'],
   },
+  FPL_GLOBAL_SEARCH: {
+    username: 'FPL_GLOBAL_SEARCH_USERNAME',
+    password: 'FPL_GLOBAL_SEARCH_PASSWORD',
+  },
+  PROBATE_FIND_CASE: {
+    username: 'PROBATE_FIND_CASE_USERNAME',
+    password: 'PROBATE_FIND_CASE_PASSWORD',
+  },
+  PROBATE_CASEWORKER: {
+    username: 'PROBATE_CASEWORKER_USERNAME',
+    password: 'PROBATE_CASEWORKER_PASSWORD',
+  },
+  PROBATE_SOLICITOR: {
+    username: 'PROBATE_SOLICITOR_USERNAME',
+    password: 'PROBATE_SOLICITOR_PASSWORD',
+  },
+  NOC_SOLICITOR: {
+    username: 'NOC_SOLICITOR_USERNAME',
+    password: 'NOC_SOLICITOR_PASSWORD',
+  },
+  PRL_SOLICITOR: {
+    username: 'PRL_SOLICITOR_USERNAME',
+    password: 'PRL_SOLICITOR_PASSWORD',
+  },
+  PRL_SOLICITOR2: {
+    username: 'PRL_SOLICITOR2_USERNAME',
+    password: 'PRL_SOLICITOR2_PASSWORD',
+  },
+  PRL_SOLICITOR3: {
+    username: 'PRL_SOLICITOR3_USERNAME',
+    password: 'PRL_SOLICITOR3_PASSWORD',
+  },
+  PRL_SOLICITOR4: {
+    username: 'PRL_SOLICITOR4_USERNAME',
+    password: 'PRL_SOLICITOR4_PASSWORD',
+  },
+  PRL_SOLICITOR5: {
+    username: 'PRL_SOLICITOR5_USERNAME',
+    password: 'PRL_SOLICITOR5_PASSWORD',
+  },
+  PRL_SOLICITOR6: {
+    username: 'PRL_SOLICITOR6_USERNAME',
+    password: 'PRL_SOLICITOR6_PASSWORD',
+  },
+  PRL_SOLICITOR7: {
+    username: 'PRL_SOLICITOR7_USERNAME',
+    password: 'PRL_SOLICITOR7_PASSWORD',
+  },
+  PRL_SOLICITOR8: {
+    username: 'PRL_SOLICITOR8_USERNAME',
+    password: 'PRL_SOLICITOR8_PASSWORD',
+  },
+};
+
+const staffAdminPoolIdentifiers = [
+  'STAFF_ADMIN-1',
+  'STAFF_ADMIN-2',
+  'STAFF_ADMIN-3',
+  'STAFF_ADMIN-4',
+  'STAFF_ADMIN-5',
+  'STAFF_ADMIN-6',
+  'STAFF_ADMIN-7',
+  'STAFF_ADMIN-8',
+] as const;
+
+export function isStaffAdminPoolEnabled(env: Record<string, string | undefined> = process.env): boolean {
+  return env.STAFF_ADMIN_POOL_ENABLED?.trim().toLowerCase() !== 'false';
+}
+
+const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.ProcessEnv) => string[])> = {
+  STAFF_ADMIN: (env) => {
+    if (!isStaffAdminPoolEnabled(env)) {
+      return [];
+    }
+
+    const envIndex = Number(env.TEST_PARALLEL_INDEX ?? env.TEST_WORKER_INDEX);
+    const startIndex = Number.isInteger(envIndex) && envIndex >= 0 ? envIndex % staffAdminPoolIdentifiers.length : 0;
+    return staffAdminPoolIdentifiers.map(
+      (_, offset) => staffAdminPoolIdentifiers[(startIndex + offset) % staffAdminPoolIdentifiers.length]
+    );
+  },
+  FPL_GLOBAL_SEARCH: [],
+  USER_WITH_FLAGS: [],
+  IAC_JUDGE_WA_R1: [],
+  IAC_CASEOFFICER_R2: ['IAC_CASEOFFICER_R1'],
+  IAC_CASEOFFICER_R1: [],
 };
 
 function normalizeUserIdentifier(userIdentifier: string): string {
@@ -167,13 +305,71 @@ export function getRuntimeUserCredentials(userIdentifier: string): RuntimeUserCr
 export function resolveRuntimeUserCredentialsFromEnv(
   mapping: RuntimeUserCredentialEnvMapping
 ): RuntimeUserCredentials | undefined {
-  const email = process.env[mapping.username]?.trim();
-  const password = process.env[mapping.password];
+  const email = [mapping.username, ...(mapping.alternateUsernames ?? [])]
+    .map((key) => process.env[key]?.trim())
+    .find((value): value is string => Boolean(value));
+  const password = [mapping.password, ...(mapping.alternatePasswords ?? [])]
+    .map((key) => process.env[key])
+    .find((value): value is string => Boolean(value));
   if (!email || !password) {
     return undefined;
   }
 
   return { email, password };
+}
+
+function resolveRuntimeUserCredentialsForIdentifierInternal(
+  userIdentifier: string,
+  env: NodeJS.ProcessEnv,
+  visited: Set<string>
+): RuntimeUserCredentials | undefined {
+  const normalizedIdentifier = normalizeUserIdentifier(userIdentifier);
+  if (visited.has(normalizedIdentifier)) {
+    return undefined;
+  }
+  visited.add(normalizedIdentifier);
+
+  const runtimeCredentials = runtimeUserCredentials.get(normalizedIdentifier);
+  if (runtimeCredentials) {
+    return runtimeCredentials;
+  }
+
+  const mapping = dynamicUserEnvMap[normalizedIdentifier];
+  if (mapping) {
+    const email = [mapping.username, ...(mapping.alternateUsernames ?? [])]
+      .map((key) => env[key]?.trim())
+      .find((value): value is string => Boolean(value));
+    const password = [mapping.password, ...(mapping.alternatePasswords ?? [])]
+      .map((key) => env[key])
+      .find((value): value is string => Boolean(value));
+    if (email && password) {
+      return { email, password };
+    }
+  }
+
+  const fallbackEntry = runtimeUserIdentifierFallbacks[normalizedIdentifier];
+  let fallbackIdentifiers: string[] = [];
+  if (typeof fallbackEntry === 'function') {
+    fallbackIdentifiers = fallbackEntry(env);
+  } else if (Array.isArray(fallbackEntry)) {
+    fallbackIdentifiers = fallbackEntry;
+  }
+
+  for (const fallbackIdentifier of fallbackIdentifiers) {
+    const resolved = resolveRuntimeUserCredentialsForIdentifierInternal(fallbackIdentifier, env, visited);
+    if (resolved) {
+      return resolved;
+    }
+  }
+
+  return undefined;
+}
+
+export function resolveRuntimeUserCredentialsForIdentifier(
+  userIdentifier: string,
+  env: NodeJS.ProcessEnv = process.env
+): RuntimeUserCredentials | undefined {
+  return resolveRuntimeUserCredentialsForIdentifierInternal(userIdentifier, env, new Set<string>());
 }
 
 export function setRuntimeUserCredentials(userIdentifier: string, credentials: RuntimeUserCredentials): void {

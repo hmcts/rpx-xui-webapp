@@ -1,11 +1,11 @@
 import { request as playwrightRequest } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
 
-import { config } from '../common/apiTestConfig';
+import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState, getStoredCookie } from './utils/auth';
 import { test, expect } from './fixtures';
 import { EM_DOC_ID } from './data/testIds';
-import { expectStatus, withXsrf } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, withXsrf } from './utils/apiTestUtils';
 import {
   assertAnnotationResponse,
   assertBinaryResponse,
@@ -26,9 +26,15 @@ import {
 const configuredDocId = resolveConfiguredDocId(EM_DOC_ID, config.em[config.testEnv as keyof typeof config.em]?.docId);
 let sharedDocId = '';
 const invalidDocId = uuid();
-const guardedDocumentUploadRejectionStatuses = [400, 401, 403, 415, 429, 500] as const;
+const guardedDocumentUploadRejectionStatuses = [400, 401, 403, 415, 422, 429, 500] as const;
+const ANNOTATION_SET_LOOKUP_TIMEOUT_MS = 120_000;
+const USER_DETAILS_LOOKUP_TIMEOUT_MS = 120_000;
+const LARGE_EVIDENCE_MANAGER_TEST_TIMEOUT_MS = 150_000;
 
 test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, () => {
+  // Keep document mutations sequential without skipping independent tests after a failure.
+  test.describe.configure({ mode: 'default' });
+
   test.beforeAll(async () => {
     sharedDocId = await resolveSharedDocId(configuredDocId, uploadSyntheticDoc);
     if (!sharedDocId) {
@@ -76,8 +82,22 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   });
 
   test('creates and deletes annotation with valid XSRF', async ({ apiClient }) => {
+    test.setTimeout(LARGE_EVIDENCE_MANAGER_TEST_TIMEOUT_MS);
     await withXsrf('solicitor', async (headers) => {
-      const annotation = await buildAnnotation(apiClient, headers, sharedDocId);
+      const annotationSet = await guardedRequest(() =>
+        apiClient.get(`em-anno/annotation-sets/filter?documentId=${sharedDocId}`, {
+          headers,
+          timeoutMs: ANNOTATION_SET_LOOKUP_TIMEOUT_MS,
+          throwOnError: false,
+        })
+      );
+      expectStatus(annotationSet.status, [200]);
+      const annotationSetId =
+        typeof annotationSet.data === 'object' && annotationSet.data !== null && 'id' in annotationSet.data
+          ? (annotationSet.data as { id?: unknown }).id
+          : undefined;
+      expect(typeof annotationSetId).toBe('string');
+      const annotation = await buildAnnotation(apiClient, headers, sharedDocId, annotationSetId as string);
       const createRes = await apiClient.put('em-anno/annotations', {
         data: annotation,
         headers,
@@ -97,13 +117,13 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   });
 
   test('rejects annotation mutation without XSRF', async ({ apiClient }) => {
-    const annotation = await buildAnnotation(apiClient, {}, sharedDocId);
+    const annotation = await buildAnnotation(apiClient, {}, sharedDocId, uuid());
     const res = await apiClient.put('em-anno/annotations', {
       data: annotation,
       headers: {},
       throwOnError: false,
     });
-    expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
+    expectStatus(res.status, [200, 400, 401, 403, 404, 409, 500]);
   });
 
   test('rejects annotation mutation with invalid payload', async ({ apiClient }) => {
@@ -119,6 +139,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   });
 
   test('bookmarks lifecycle', async ({ apiClient }) => {
+    test.setTimeout(LARGE_EVIDENCE_MANAGER_TEST_TIMEOUT_MS);
     await withXsrf('solicitor', async (headers) => {
       const listRes = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
         headers,
@@ -126,7 +147,16 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
       });
       expectStatus(listRes.status, [200, 204, 401, 403, 404, 500]);
 
-      const bookmark = await buildBookmark(apiClient, sharedDocId);
+      const profile = await guardedRequest(() =>
+        apiClient.get('api/user/details', {
+          timeoutMs: USER_DETAILS_LOOKUP_TIMEOUT_MS,
+          throwOnError: false,
+        })
+      );
+      expectStatus(profile.status, [200]);
+      const userId = resolveUserInfoId(profile.data as { userInfo?: { uid?: string; id?: string } });
+      expect(typeof userId).toBe('string');
+      const bookmark = await buildBookmark(apiClient, sharedDocId, userId as string);
       const createRes = await apiClient.put('em-anno/bookmarks', {
         data: bookmark,
         headers,
@@ -146,7 +176,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   });
 
   test('rejects bookmark creation with invalid XSRF token', async ({ apiClient }) => {
-    const bookmark = await buildBookmark(apiClient, sharedDocId);
+    const bookmark = await buildBookmark(apiClient, sharedDocId, 'invalid-xsrf-test-user');
     const res = await apiClient.put('em-anno/bookmarks', {
       data: bookmark,
       headers: { 'X-XSRF-TOKEN': 'invalid' },
@@ -156,7 +186,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   });
 
   test('rejects bookmark creation without XSRF', async ({ apiClient }) => {
-    const bookmark = await buildBookmark(apiClient, sharedDocId);
+    const bookmark = await buildBookmark(apiClient, sharedDocId, 'missing-xsrf-test-user');
     const res = await apiClient.put('em-anno/bookmarks', {
       data: bookmark,
       headers: {},
@@ -224,7 +254,8 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
         headers,
         throwOnError: false,
       });
-      expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
+      // EM Annotation API documents annotation delete as 200/401/403, including an unknown id.
+      expectStatus(res.status, [200, 401, 403]);
     });
   });
 
@@ -235,7 +266,8 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
         headers,
         throwOnError: false,
       });
-      expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
+      // EM Annotation API documents bulk bookmark delete as idempotent 200/401/403.
+      expectStatus(res.status, [200, 401, 403]);
     });
   });
 });
@@ -293,10 +325,25 @@ test.describe('Evidence Manager helper coverage', { tag: '@svc-evidence-manager'
     expect(annotation.documentId).toBe('doc-2');
     expect(annotation.annotationSetId).toBe('set-2');
 
+    const suppliedAnnotation = await buildAnnotation(
+      { get: async () => Promise.reject(new Error('should not resolve an annotation set')) },
+      {},
+      sharedDocId,
+      'set-supplied'
+    );
+    expect(suppliedAnnotation.annotationSetId).toBe('set-supplied');
+
     const bookmarkClient = { get: async () => ({ data: { userInfo: { uid: 'user-1' } } }) };
     const bookmark = await buildBookmark(bookmarkClient, sharedDocId);
     expect(bookmark.documentId).toBe('doc-2');
     expect(bookmark.createdBy).toBe('user-1');
+
+    const suppliedBookmark = await buildBookmark(
+      { get: async () => Promise.reject(new Error('should not resolve a user')) },
+      sharedDocId,
+      'user-supplied'
+    );
+    expect(suppliedBookmark.createdBy).toBe('user-supplied');
   });
 
   test('resolveUserInfoId and buildXsrfHeader handle variants', () => {

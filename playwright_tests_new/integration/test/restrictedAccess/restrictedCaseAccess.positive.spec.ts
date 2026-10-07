@@ -52,7 +52,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(
-  `Restricted case access as ${TEST_USERS.FPL_GLOBAL_SEARCH} flows with prewarmed search session`,
+  `Restricted case access as ${TEST_USERS.FPL_GLOBAL_SEARCH} flows with lazy search session`,
   { tag: ['@integration', '@integration-restricted-case'] },
   () => {
     test('shows both legal-ops and judicial users and resolves judicial users from ref-data', async ({

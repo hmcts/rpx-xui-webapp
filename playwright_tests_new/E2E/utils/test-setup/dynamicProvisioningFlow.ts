@@ -5,18 +5,19 @@ export type DynamicProvisionAttempt = {
   attempt: number;
   durationMs: number;
   outcome: 'success' | 'failed';
+  retryable?: boolean;
   error?: string;
 };
 
 export class DynamicProvisioningError extends Error {
   readonly attempts: DynamicProvisionAttempt[];
-  readonly cause: unknown;
+  readonly diagnosticCause: string;
 
-  constructor(message: string, attempts: DynamicProvisionAttempt[], cause: unknown) {
+  constructor(message: string, attempts: DynamicProvisionAttempt[], diagnosticCause: string) {
     super(message);
     this.name = 'DynamicProvisioningError';
     this.attempts = [...attempts];
-    this.cause = cause;
+    this.diagnosticCause = diagnosticCause;
   }
 }
 
@@ -56,6 +57,39 @@ type ProvisionDynamicUserFlowDeps = {
   warn: (message: string, meta: Record<string, unknown>) => void;
   outputCreatedUserData: boolean;
 };
+
+const MAX_DIAGNOSTIC_ERROR_LENGTH = 240;
+
+function sanitizeProvisionErrorForDiagnostics(error: string): string {
+  const redacted = error
+    .replaceAll(/Bearer\s+[A-Za-z0-9._~+/-]+=*/gi, 'Bearer [redacted]')
+    .replaceAll(/([?&])(access_token|id_token|refresh_token|client_secret|password)=[^&\s]+/gi, (_match, prefix, key) => {
+      return `${prefix}${key}=[redacted]`;
+    })
+    .replaceAll(
+      /(["']?(?:access_token|id_token|refresh_token|client_secret|password)["']?\s*[:=]\s*)["']?[^"',&\s}]+["']?/gi,
+      (_match, prefix) => {
+        return `${prefix}[redacted]`;
+      }
+    )
+    .replaceAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[redacted-email]');
+
+  return redacted.length > MAX_DIAGNOSTIC_ERROR_LENGTH ? `${redacted.slice(0, MAX_DIAGNOSTIC_ERROR_LENGTH)}...` : redacted;
+}
+
+export function formatProvisionAttemptDiagnostics(attempts: readonly DynamicProvisionAttempt[]): string {
+  if (attempts.length === 0) {
+    return 'no provisioning attempts were recorded';
+  }
+
+  return attempts
+    .map((attempt) => {
+      const retryable = attempt.outcome === 'failed' ? `, retryable=${attempt.retryable === true ? 'yes' : 'no'}` : '';
+      const error = attempt.error ? `, error=${sanitizeProvisionErrorForDiagnostics(attempt.error)}` : '';
+      return `attempt ${attempt.attempt}: ${attempt.outcome} after ${attempt.durationMs}ms${retryable}${error}`;
+    })
+    .join('; ');
+}
 
 export async function provisionUserWithRetries(
   args: ProvisionDynamicUserFlowArgs,
@@ -99,12 +133,14 @@ export async function provisionUserWithRetries(
       return { user, attempts };
     } catch (error) {
       const errorMessage = deps.describeError(error);
+      const diagnosticErrorMessage = sanitizeProvisionErrorForDiagnostics(errorMessage);
       const retryable = deps.shouldRetry(error);
       attempts.push({
         attempt,
         durationMs: deps.now() - startedAt,
         outcome: 'failed',
-        error: errorMessage,
+        retryable,
+        error: diagnosticErrorMessage,
       });
       lastProvisionError = error;
       deps.warn('Dynamic solicitor provisioning attempt failed', {
@@ -113,7 +149,7 @@ export async function provisionUserWithRetries(
         maxAttempts: args.maxAttempts,
         retryable,
         retryDelayMs: args.retryDelayMs,
-        error: errorMessage,
+        error: diagnosticErrorMessage,
       });
       if (attempt === args.maxAttempts || !retryable) {
         break;
@@ -123,9 +159,11 @@ export async function provisionUserWithRetries(
   }
 
   const lastErrorMessage = deps.describeError(lastProvisionError);
+  const diagnosticLastErrorMessage = sanitizeProvisionErrorForDiagnostics(lastErrorMessage);
+  const attemptDiagnostics = formatProvisionAttemptDiagnostics(attempts);
   throw new DynamicProvisioningError(
-    `Dynamic user provisioning failed for alias '${args.alias}' after ${attempts.length} attempt(s). Last error: ${lastErrorMessage}`,
+    `Dynamic user provisioning failed for alias '${args.alias}' after ${attempts.length} attempt(s). Last error: ${diagnosticLastErrorMessage}. Attempt diagnostics: ${attemptDiagnostics}`,
     attempts,
-    lastProvisionError
+    diagnosticLastErrorMessage
   );
 }

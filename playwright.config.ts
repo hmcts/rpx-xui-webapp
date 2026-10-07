@@ -5,13 +5,16 @@ import { version as appVersion } from './package.json';
 import {
   logResolvedTagFilters,
   parseNonNegativeInt,
+  resolveLocalWorktreeTestIgnorePatterns,
   resolveApiProjectWorkerCount,
   resolveDefaultReporter,
   resolveTagFilters,
   resolveWorkerCount,
 } from './playwright-config-utils';
-
 type EnvMap = NodeJS.ProcessEnv;
+
+const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
+  env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
 
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultApiTagFilterConfigPath = 'playwright_tests_new/api/service-tag-filter.json';
@@ -26,6 +29,12 @@ const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
+
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
   const configured = env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim();
   if (configured) {
@@ -37,6 +46,9 @@ const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
   }
   if (outputFolder.includes('playwright-integration')) {
     return 'xui-playwright-integration.html';
+  }
+  if (outputFolder.includes('playwright-smoke')) {
+    return 'xui-playwright-smoke.html';
   }
   return 'xui-playwright-e2e.html';
 };
@@ -129,17 +141,44 @@ const resolveE2eTagFilters = (env: EnvMap = process.env) =>
   });
 
 const buildConfig = (env: EnvMap = process.env) => {
+  const e2eEnv = withPlaywrightTagsAlias(env);
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
+  const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
   const reportBranch = resolveBranchName(env);
   const apiTagFilters = resolveApiTagFilters(env);
-  const e2eTagFilters = resolveE2eTagFilters(env);
+  const e2eTagFilters = resolveE2eTagFilters(e2eEnv);
   logResolvedTagFilters('API', apiTagFilters, env);
-  logResolvedTagFilters('E2E smoke', e2eTagFilters, env);
+  logResolvedTagFilters('E2E smoke', e2eTagFilters, e2eEnv);
   const apiRetries = resolveApiRetries(env);
-
+  const reporter: [string, Record<string, unknown> | undefined][] = [
+    [resolveDefaultReporter(env), undefined],
+    ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs', undefined],
+    ...(env.PW_ENABLE_PERFETTO !== 'false'
+      ? [['perfetto', { outputFile: resolvePerfettoOutputFile(env) }] as [string, Record<string, unknown>]]
+      : []),
+    [
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
+      {
+        outputFolder: odhinOutputFolder,
+        indexFilename: resolveOdhinIndexFilename(env),
+        title: 'RPX XUI Playwright',
+        testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
+        project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+        release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+        startServer: false,
+        consoleLog: true,
+        consoleError: true,
+        testOutput: 'only-on-failure',
+      },
+    ],
+  ];
+  if (env.CI && env.PLAYWRIGHT_INCLUDE_A11Y !== 'true' && env.PLAYWRIGHT_INCLUDE_WAVE_A11Y !== 'true') {
+    reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
+  }
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   return defineConfig({
     use: {
       baseURL: resolveBaseUrl(env),
@@ -150,7 +189,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       'playwright_tests_new/E2E/**/*.spec.ts',
       'playwright_tests_new/integration/**/*.spec.ts',
     ],
-    testIgnore: [temporaryProbePattern],
+    testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     fullyParallel: true,
     forbidOnly: !!env.CI,
     retries: 2,
@@ -159,26 +198,9 @@ const buildConfig = (env: EnvMap = process.env) => {
       timeout: 60_000,
     },
     reportSlowTests: null,
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     workers: workerCount,
-    reporter: [
-      [resolveDefaultReporter(env)],
-      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
-      [
-        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
-        {
-          outputFolder: odhinOutputFolder,
-          indexFilename: resolveOdhinIndexFilename(env),
-          title: 'RPX XUI Playwright',
-          testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
-          project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
-          startServer: false,
-          consoleLog: true,
-          consoleError: true,
-          testOutput: 'only-on-failure',
-        },
-      ],
-    ],
+    reporter,
     projects: [
       {
         name: 'chromium',
@@ -186,13 +208,19 @@ const buildConfig = (env: EnvMap = process.env) => {
           'playwright_tests_new/api/**',
           'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts',
           temporaryProbePattern,
+          ...localWorktreeTestIgnorePatterns,
         ],
         use: {
           baseURL: resolveBaseUrl(env),
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: 'retain-on-failure',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -210,7 +238,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: 'retain-on-failure',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -234,7 +267,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           headless: true,
           screenshot: 'off',
           video: 'off',
-          trace: 'off',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
         },
       },
     ],

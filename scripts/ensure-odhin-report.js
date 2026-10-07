@@ -5,12 +5,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const DEFAULT_REPORT_FILE = 'xui-playwright-integration.html';
+const RUNNER_FAILURE_DIAGNOSTIC =
+  'Integration session configuration did not complete before Playwright started. See the Jenkins console log for the configuration error.';
 
 function parseArgs(argv) {
   const options = {
     reportDir: process.env.PLAYWRIGHT_REPORT_FOLDER || '',
     reportFile: process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || DEFAULT_REPORT_FILE,
     suiteName: process.env.PW_ODHIN_FALLBACK_SUITE_NAME || 'Playwright Integration Test',
+    outcome: process.env.PW_ODHIN_FALLBACK_OUTCOME || 'unknown',
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -24,6 +27,9 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg === '--suite-name' && next) {
       options.suiteName = next;
+      index += 1;
+    } else if (arg === '--outcome' && next) {
+      options.outcome = next;
       index += 1;
     }
   }
@@ -50,7 +56,7 @@ function buildFallbackReportHtml(options) {
   const generatedAt = new Date().toISOString();
   const reportDir = options.reportDir || '';
   const reportFiles = listFiles(reportDir);
-  const diagnostics = collectDiagnostics();
+  const diagnostics = collectDiagnostics(reportDir);
 
   return `<!doctype html>
 <html lang="en">
@@ -70,9 +76,9 @@ function buildFallbackReportHtml(options) {
     <h1>${escapeHtml(options.suiteName)}</h1>
     <div class="warning">
       <strong>Odhín HTML report was not generated before Jenkins publishing.</strong>
-      <p>The Playwright integration command failed or was interrupted before the Odhín reporter wrote
+      <p>${escapeHtml(fallbackExplanation(options, diagnostics))}
       <code>${escapeHtml(options.reportFile || DEFAULT_REPORT_FILE)}</code>. Jenkins generated this fallback so the build
-      always exposes a report artifact for failed integration runs.</p>
+      always exposes a report artifact for failed runs.</p>
     </div>
     <div class="meta">
       <p><strong>Generated:</strong> ${escapeHtml(generatedAt)}</p>
@@ -87,6 +93,17 @@ function buildFallbackReportHtml(options) {
 `;
 }
 
+function fallbackExplanation(options, diagnostics) {
+  if (diagnostics.some((diagnostic) => diagnostic.endsWith(`runner-failure.txt: ${RUNNER_FAILURE_DIAGNOSTIC}`))) {
+    return 'Integration session configuration did not complete before Playwright started.';
+  }
+  if (options.outcome === 'test-failure') return 'The Playwright command failed before the Odhín reporter wrote';
+  if (options.outcome === 'completed') return 'The Playwright command completed but the Odhín reporter did not write';
+  if (options.outcome === 'no-tests') return 'No Playwright tests were selected, so the Odhín reporter did not write';
+  if (options.outcome === 'interrupted') return 'The Playwright command was interrupted before the Odhín reporter wrote';
+  return 'The Odhín reporter did not write';
+}
+
 function listFiles(directory) {
   if (!directory || !fs.existsSync(directory)) {
     return [];
@@ -97,14 +114,16 @@ function listFiles(directory) {
     .sort();
 }
 
-function collectDiagnostics() {
-  const candidates = [
-    'functional-output/tests/playwright-diagnostics/failure-data',
-    'functional-output/tests/playwright-integration/load-profile',
-    'test-results',
-  ];
+function collectDiagnostics(reportDir) {
+  const candidates = [reportDir, path.join(reportDir, 'test-results')];
 
-  return candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => `${candidate}/${file}`));
+  return candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => formatDiagnostic(candidate, file)));
+}
+
+function formatDiagnostic(directory, file) {
+  const diagnosticPath = `${directory}/${file}`;
+  if (file !== 'runner-failure.txt') return diagnosticPath;
+  return `${diagnosticPath}: ${RUNNER_FAILURE_DIAGNOSTIC}`;
 }
 
 function listInterestingFiles(directory) {
@@ -122,7 +141,11 @@ function listInterestingFiles(directory) {
         }
         return;
       }
-      if (/(failure-data\.json|error-context\.md|trace\.zip|summary\.json|load-profile\.html)$/i.test(entry.name)) {
+      if (
+        /(failure-data\.json|error-context\.md|trace\.zip|summary\.json|load-profile\.html|runner-failure\.txt|[^/]+\.(png|jpe?g))$/i.test(
+          entry.name
+        )
+      ) {
         found.push(relativePath);
       }
     });
@@ -156,6 +179,7 @@ if (require.main === module) {
 
 module.exports = {
   buildFallbackReportHtml,
+  collectDiagnostics,
   ensureOdhinReport,
   parseArgs,
 };

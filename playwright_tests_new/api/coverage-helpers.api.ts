@@ -57,6 +57,18 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     expect(timeoutResult).toEqual({ data: undefined, status: 504 });
     expect(timeoutAnnotations).toBe(1);
 
+    const abortedResult = await guardedRequest(async () => {
+      throw new Error('Request failed: apiRequestContext.fetch: aborted');
+    });
+    expect(abortedResult).toEqual({ data: undefined, status: 504 });
+
+    const wrappedTransportResult = await guardedRequest(async () => {
+      throw new Error(
+        'POST https://xui.example/api/role-access/exclusions/confirm responded with 0 (transport: request failure)'
+      );
+    });
+    expect(wrappedTransportResult).toEqual({ data: undefined, status: 504 });
+
     await expect(
       guardedRequest(
         async () => {

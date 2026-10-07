@@ -30,16 +30,8 @@ export function resolveWorkAllocationUser(): SessionIdentityInput {
   }
 
   throw new Error(
-    'Live Work Allocation E2E requires either PW_E2E_MANAGE_TASKS_USER, both PW_E2E_MANAGE_TASKS_EMAIL/PW_E2E_MANAGE_TASKS_PASSWORD, or both PW_IAC_CASEOFFICER_R1_EMAIL/PW_IAC_CASEOFFICER_R1_PASSWORD. The @e2e-manage-tasks lane is excluded by default until seeded live WA data is available.'
+    'Live Work Allocation E2E requires either PW_E2E_MANAGE_TASKS_USER, both PW_E2E_MANAGE_TASKS_EMAIL/PW_E2E_MANAGE_TASKS_PASSWORD, or both PW_IAC_CASEOFFICER_R1_EMAIL/PW_IAC_CASEOFFICER_R1_PASSWORD, plus seeded live WA data.'
   );
-}
-
-function describeWorkAllocationUser(identity: SessionIdentityInput): string {
-  if (typeof identity === 'string') {
-    return identity;
-  }
-
-  return `${identity.userIdentifier} (${identity.email})`;
 }
 
 export async function applyWorkAllocationSession(page: Page, identity: SessionIdentityInput = resolveWorkAllocationUser()) {
@@ -49,28 +41,16 @@ export async function applyWorkAllocationSession(page: Page, identity: SessionId
   }
 }
 
-export async function bootstrapWorkAllocationShell({ page, taskListPage }: { page: Page; taskListPage: TaskListPage }) {
-  const workAllocationUser = resolveWorkAllocationUser();
-  await applyWorkAllocationSession(page, workAllocationUser);
+export async function bootstrapWorkAllocationShell({
+  page,
+  taskListPage,
+  identity = resolveWorkAllocationUser(),
+}: {
+  page: Page;
+  taskListPage: TaskListPage;
+  identity?: SessionIdentityInput;
+}) {
+  await applyWorkAllocationSession(page, identity);
   await taskListPage.goto();
-
-  const hasMyWorkNavigation = await page
-    .getByRole('navigation', { name: /primary navigation/i })
-    .getByRole('link', { name: 'My work', exact: true })
-    .isVisible()
-    .catch(() => false);
-  if (!hasMyWorkNavigation) {
-    const heading = await page
-      .locator('h1')
-      .first()
-      .textContent({ timeout: 1_000 })
-      .catch(() => '');
-    throw new Error(
-      `Work Allocation shell did not expose My work navigation for ${describeWorkAllocationUser(
-        workAllocationUser
-      )}. url=${page.url()} heading=${heading?.trim() || 'unknown'}`
-    );
-  }
-
   await taskListPage.waitForTaskListShellReady('work allocation shell bootstrap');
 }

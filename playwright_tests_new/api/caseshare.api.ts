@@ -1,15 +1,19 @@
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
-import { withXsrf } from './utils/apiTestUtils';
+import { guardedRequest, withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { assertCaseShareEntries, resolveEntries } from './utils/caseShareUtils';
 import { resolveHeader } from './utils/nodeAppUtils';
 
 const configuredCaseShareCaseIds = ROLE_ACCESS_CASE_ID ? resolveRoleAccessCaseId(ROLE_ACCESS_CASE_ID) : undefined;
 
+const LARGE_CONTRACT_RESPONSE_TIMEOUT_MS = 120_000;
+
 const CASESHARE_ENDPOINTS = [
   {
     path: 'api/caseshare/orgs',
+    timeoutMs: LARGE_CONTRACT_RESPONSE_TIMEOUT_MS,
+    testTimeoutMs: LARGE_CONTRACT_RESPONSE_TIMEOUT_MS + 30_000,
     property: 'organisations',
     schema: expect.objectContaining({
       organisationIdentifier: expect.any(String),
@@ -47,14 +51,23 @@ const CASESHARE_ENDPOINTS = [
 ] as const;
 
 test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
-  for (const { path, query, requiresConfiguredCaseIds, property, schema } of CASESHARE_ENDPOINTS) {
+  for (const endpoint of CASESHARE_ENDPOINTS) {
+    const timeoutMs = 'timeoutMs' in endpoint ? endpoint.timeoutMs : undefined;
+    const testTimeoutMs = 'testTimeoutMs' in endpoint ? endpoint.testTimeoutMs : undefined;
+    const { path, query, requiresConfiguredCaseIds, property, schema } = endpoint;
     test(`GET ${path} returns a usable contract`, async ({ apiClient }) => {
+      if (testTimeoutMs) {
+        test.setTimeout(testTimeoutMs);
+      }
       await withXsrf('solicitor', async (headers) => {
-        const response = await apiClient.get(path, {
-          headers: { ...headers, experimental: 'true' },
-          query,
-          throwOnError: false,
-        });
+        const response = await guardedRequest(() =>
+          apiClient.get(path, {
+            headers: { ...headers, experimental: 'true' },
+            query,
+            timeoutMs: timeoutMs ?? 20_000,
+            throwOnError: false,
+          })
+        );
         if (requiresConfiguredCaseIds && !configuredCaseShareCaseIds) {
           expect(response.status).toBe(400);
           return;

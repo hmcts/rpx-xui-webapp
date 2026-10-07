@@ -1,15 +1,11 @@
 import { test, expect } from '../../fixtures';
-import { ensureSession } from '../../../common/sessionCapture';
 import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils';
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 
 test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
-  test.beforeAll(async () => {
-    await ensureSession('FPL_GLOBAL_SEARCH');
-  });
-
-  test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
+  test.beforeEach(async ({ page, identityLease }) => {
+    const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });
+    await openHomeWithCapturedSession(page, lease.identity.userIdentifier);
   });
 
   test(
@@ -52,20 +48,16 @@ test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search
     }
   );
 
-  test('Find case is accessible from main menu navigation', async ({ findCasePage, page }) => {
-    await test.step('Open Find case from main navigation', async () => {
-      await findCasePage.openFromMainMenu();
-      await expect(page).toHaveURL(/\/cases\/case-search/);
-      await expect(findCasePage.pageHeading).toHaveText('Search');
+  test('Search is accessible from main menu navigation', async ({ globalSearchPage, page }) => {
+    await test.step('Open Search from main navigation', async () => {
+      await globalSearchPage.searchLinkOnMenuBar.click();
+      await expect(page).toHaveURL(/\/search/);
+      await expect(globalSearchPage.pageHeading).toHaveText(/Search cases/);
     });
   });
 });
 
 test.describe('Solicitor navigation to Find case (top-right)', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
-  test.beforeAll(async () => {
-    await ensureSession('SOLICITOR');
-  });
-
   test.beforeEach(async ({ page }) => {
     await openHomeWithCapturedSession(page, 'SOLICITOR');
   });

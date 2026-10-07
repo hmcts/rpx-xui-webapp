@@ -44,7 +44,7 @@ Use Playwright integration tests for local UI coverage with mocked backend route
 ### Prerequisites
 
 ```bash
-node -v   # requires >= 20.19.0
+node -v   # requires >= 24.18.0
 yarn install
 ```
 
@@ -126,13 +126,21 @@ Detailed suite documentation and architecture:
 
 - **E2E UI journeys (browser + backend):**
   - AAT: `yarn test:playwrightE2E`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:playwrightE2E`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:playwrightE2E`
   - Local app target: `TEST_URL=http://localhost:3000 yarn test:playwrightE2E`
 - **Integration tests (UI with mocked backend routes):**
   - AAT: `yarn test:playwright:integration`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:playwright:integration`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:playwright:integration`
   - Local app target with Playwright route mocks: `TEST_URL=http://localhost:3000 EXUI_BASE_URL=http://localhost:3000 PLAYWRIGHT_SKIP_INSTALL=true yarn test:playwright:integration`
 - **API functional tests (Playwright node-api project):**
   - `yarn test:api:pw`
+  - DEMO: `TEST_URL=https://manage-case.demo.platform.hmcts.net/ yarn test:api:pw`
+  - ITHC: `TEST_URL=https://manage-case.ithc.platform.hmcts.net/ yarn test:api:pw`
   - With coverage/report copy: `yarn test:api:pw:coverage`
+
+For AAT and DEMO, generate and source the local Playwright env first with `yarn env:populate:playwright:aat` or `yarn env:populate:playwright:demo`, then `set -a; source .env; set +a`. For ITHC, export the required credentials through an approved local secret mechanism and keep passwords out of command history.
 
 ### How tests operate
 
@@ -409,6 +417,9 @@ Key behaviour:
 - A flake summary is printed at the end of Playwright runs by `playwright_tests_new/common/reporters/flake-gate.reporter.cjs` (counts flaky, retry-pass and failed tests).
 - Flake gate is currently report-only in all environments; it does not fail the run.
 - `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
+
+Playwright 1.63 profiling can be enabled for a representative local run by adding `perfetto` to `PLAYWRIGHT_REPORTERS` (for example `PLAYWRIGHT_REPORTERS=list,odhin,perfetto`). The built-in reporter writes `test-results/perfetto.json` by default. Set `PW_TRACE_RICH=true` for retain-on-failure traces with DOM, ARIA and screen snapshots; measure artifact size before enabling it in CI.
+
 - Optional flake thresholds `PW_MAX_FLAKY_TESTS` (default `20`) and `PW_MAX_FLAKY_RATE` (default `0.2`, meaning 20%) are used for reporting output only.
 
 ### Playwright diagnostics artifacts in Jenkins

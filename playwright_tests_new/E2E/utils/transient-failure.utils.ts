@@ -20,6 +20,7 @@ const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /Submit button did not become available/i,
   /Submit button not visible/i,
   /Continue button not visible while retrying wizard advance/i,
+  /Create case select "#[^"]+" did not become ready within \d+ms/i,
   /Critical wizard endpoint failure/i,
   /Transient dependency instability after submit/i,
   /Test ended/i,
@@ -46,9 +47,12 @@ export function isDependencyEnvironmentFailure(error: unknown): boolean {
     /something went wrong page/i.test(message) ||
     /network timeout/i.test(message) ||
     /ECONNRESET|ENOTFOUND|ETIMEDOUT|getaddrinfo/i.test(message) ||
-    /Target page, context or browser has been closed/i.test(message) ||
     /setup exceeded \d+ms/i.test(message)
   );
+}
+
+export function isBrowserLifecycleFailure(error: unknown): boolean {
+  return FATAL_PAGE_CLOSED_PATTERNS.some((pattern) => pattern.test(asErrorMessage(error)));
 }
 
 export function isTransientWorkflowFailure(error: unknown): boolean {

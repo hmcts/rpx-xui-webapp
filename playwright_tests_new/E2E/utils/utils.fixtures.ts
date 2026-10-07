@@ -109,12 +109,18 @@ export const utilsFixtures = {
       // Using the cookies from global setup, inject to the new browser
       await context.addCookies(SessionUtils.getCookies(config.users.caseManager.sessionFile));
       // Provide the page to the test
-      await use(context.pages()[0]);
-      await context.close();
       try {
-        fs.rmSync(userDataDir, { recursive: true, force: true });
-      } catch {
-        // Best-effort cleanup; avoid test failure if temp removal fails.
+        await use(context.pages()[0]);
+      } finally {
+        try {
+          await context.close();
+        } finally {
+          try {
+            fs.rmSync(userDataDir, { recursive: true, force: true });
+          } catch {
+            // Best-effort cleanup; avoid test failure if temp removal fails.
+          }
+        }
       }
     } else {
       await use(page);

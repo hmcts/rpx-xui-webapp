@@ -32,7 +32,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.9")
+@Library("Infrastructure@2.8.0")
 
 def type      = "nodejs"
 def product   = "xui"
@@ -57,8 +57,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,test-results/**/trace.zip',
-        excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/playwright-*/odhin-report/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg'
     )
 }
 
@@ -66,12 +65,13 @@ def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
 def playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
 def playwrightAccessibilityReportFile = 'xui-playwright-accessibility.html'
+def playwrightAccessibilityJunitFile = 'functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
 }
 
-def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName, String outcome = 'unknown' ->
     def reportPath = "${reportDir}/${reportFile}"
     if (fileExists(reportPath)) {
         echo "[playwright-report] Reusing generated report at ${reportPath}"
@@ -83,13 +83,15 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
     withEnv([
         "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
         "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
-        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}"
+        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}",
+        "PW_ODHIN_ENSURE_OUTCOME=${outcome}"
     ]) {
         steps.sh '''
             node scripts/ensure-odhin-report.js \
               --report-dir "$PW_ODHIN_ENSURE_REPORT_DIR" \
               --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
-              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
+              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME" \
+              --outcome "$PW_ODHIN_ENSURE_OUTCOME"
         '''
     }
 }
@@ -120,6 +122,41 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
     }
 }
 
+def publishPlaywrightAccessibilityJUnit = {
+    if (!fileExists(playwrightAccessibilityJunitFile)) {
+        return
+    }
+    try {
+        junit allowEmptyResults: false, skipMarkingBuildUnstable: true, testResults: playwrightAccessibilityJunitFile
+    } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+            throw e
+        }
+        echo "[playwright-accessibility] JUnit publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+}
+
+def publishPlaywrightJUnit = { String junitFile, String outcome ->
+    if (!fileExists(junitFile)) {
+        if (outcome == 'completed') {
+            error "Playwright completed without producing JUnit results: ${junitFile}"
+        }
+        echo "[playwright-reporting] JUnit file absent after ${outcome}; preserving the runner result: ${junitFile}"
+        return
+    }
+    try {
+        junit allowEmptyResults: false, testResults: junitFile
+    } catch (Exception e) {
+        if (outcome == 'completed') {
+            throw e
+        }
+        echo "[playwright-reporting] JUnit publication failed after ${outcome}; preserving the runner result: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+}
+
 def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
     def safeReportName = reportName.replaceAll(/[^A-Za-z0-9._-]/, '-')
     def slimReportDir = "functional-output/tests/playwright-published-reports/load-profile/${safeReportName}"
@@ -137,6 +174,7 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
         cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
       """
       steps.archiveArtifacts(allowEmptyArchive: false, artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}")
+      archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
       publishHTML([
         allowMissing         : false,
         alwaysLinkToLastBuild: true,
@@ -284,67 +322,129 @@ def integrationProfileRunConfig = { String spec ->
     ]
 }
 
+def resolveIntegrationRunConfigs = {
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
+        integrationProfileRunConfig(spec)
+    }
+    if (runConfigs.size() == 1) {
+        runConfigs[0].reportDir = reportRoot
+    }
+    return runConfigs
+}
+
 def runPlaywrightIntegrationProfileMatrix = {
     def failures = []
-    resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
-        def runConfig = integrationProfileRunConfig(spec)
-        def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
-        sh "rm -f -- '${sessionConfigCompleteFile}'"
-        try {
-            withEnv([
-              "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
-              "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile()}",
-              'ORG_USER_ASSIGNMENT_MODE=external',
-              'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-              "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-              "PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE=${sessionConfigCompleteFile}",
-              "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-            ]) {
-              yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
-            }
-            echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
-            assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
-            echo "[playwright-integration] Odhín report exists for ${runConfig.displayName}"
-        } catch (Exception e) {
-            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
-                throw e
-            }
-            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
-                throw e
-            }
-            if (!fileExists(sessionConfigCompleteFile)) {
-                echo "[playwright-integration] Session configuration validation did not complete for ${runConfig.displayName}; aborting before another profile starts"
-                throw e
-            }
-            failures << "${runConfig.displayName}: ${e.getMessage()}"
-        } finally {
+    def matrixFailure = null
+    def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
+    def runConfigs = resolveIntegrationRunConfigs()
+    def suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'
+    dir(suiteResultsDir) { deleteDir() }
+    runConfigs.each { runConfig ->
+        dir(runConfig.reportDir) { deleteDir() }
+    }
+    try {
+        runConfigs.each { runConfig ->
+            def sessionConfigCompleteFile = "${runConfig.reportDir}/session-configuration.complete"
+            def junitFile = "${runConfig.reportDir}/playwright-junit.xml"
+            def outputDir = runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"
+            def outcome = 'interrupted'
+            def runnerCompleted = false
+            sh "rm -f -- '${sessionConfigCompleteFile}'"
             try {
-                echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
-                ensureHtmlReportForPublishing(
-                  runConfig.reportDir,
-                  playwrightIntegrationReportFile,
-                  "Playwright Integration Tests"
-                )
-                publishHTML([
-                  allowMissing         : true,
-                  alwaysLinkToLastBuild: true,
-                  keepAll              : true,
-                  reportDir            : "${runConfig.reportDir}/",
-                  reportFiles          : playwrightIntegrationReportFile,
-                  reportName           : "Playwright Integration Tests"
-                ])
-                echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
-            } catch (Exception publishException) {
-                if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
-                    throw publishException
+                withEnv([
+                  "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
+                  "PLAYWRIGHT_OUTPUT_DIR=${outputDir}",
+                  "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
+                  "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile()}",
+                  'ORG_USER_ASSIGNMENT_MODE=external',
+                  'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                  "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+                  "PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE=${sessionConfigCompleteFile}",
+                  "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                ]) {
+                  yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
                 }
-                if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
-                    throw publishException
+                runnerCompleted = true
+                outcome = 'completed'
+                echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
+                assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
+                echo "[playwright-integration] Odhín report exists for ${runConfig.displayName}"
+            } catch (Exception e) {
+                if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                    throw e
                 }
-                def publishFailure = "${runConfig.displayName} report publication: ${publishException.getMessage()}"
-                failures << publishFailure
-                echo "[playwright-integration] ${publishFailure}"
+                if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                    throw e
+                }
+                outcome = runnerCompleted ? 'completed' : 'test-failure'
+                if (!fileExists(sessionConfigCompleteFile)) {
+                    steps.sh "mkdir -p '${runConfig.reportDir}'"
+                    writeFile(
+                        file: "${runConfig.reportDir}/runner-failure.txt",
+                        text: 'Integration session configuration did not complete before Playwright started. See the Jenkins console log for the configuration error.\n'
+                    )
+                    echo "[playwright-integration] Session configuration validation did not complete for ${runConfig.displayName}; aborting before another profile starts"
+                    throw e
+                }
+                failures << "${runConfig.displayName}: ${e.getMessage()}"
+            } finally {
+                try {
+                    echo "[playwright-integration] Preparing Odhín HTML report for ${runConfig.displayName}"
+                    ensureHtmlReportForPublishing(
+                      runConfig.reportDir,
+                      playwrightIntegrationReportFile,
+                      "Playwright Integration Tests",
+                      outcome
+                    )
+                    junit allowEmptyResults: false, testResults: junitFile
+                    echo "[playwright-integration] Prepared Odhín HTML report for ${runConfig.displayName}"
+                } catch (Exception publishException) {
+                    if (publishException instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                        throw publishException
+                    }
+                    if (publishException instanceof hudson.AbortException && ((publishException.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                        throw publishException
+                    }
+                    def publishFailure = "${runConfig.displayName} report publication: ${publishException.getMessage()}"
+                    failures << publishFailure
+                    echo "[playwright-integration] ${publishFailure}"
+                }
             }
+        }
+    } catch (Exception originalFailure) {
+        matrixFailure = originalFailure
+        throw originalFailure
+    } finally {
+        try {
+            if (runConfigs.size() == 1) {
+                publishHTML([
+                    allowMissing         : false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : reportRoot,
+                    reportFiles          : playwrightIntegrationReportFile,
+                    reportName           : 'Playwright Integration Tests'
+                ])
+            } else {
+                def profileArgs = runConfigs.collect { "'${it.label}'" }.join(' ')
+                sh "node scripts/write-integration-report-index.cjs '${reportRoot}' '${playwrightIntegrationReportFile}' ${profileArgs}"
+                publishHTML([
+                    allowMissing         : false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : "${reportRoot}/",
+                    reportFiles          : 'index.html',
+                    reportName           : 'Playwright Integration Tests'
+                ])
+            }
+        } catch (Exception reportingFailure) {
+            if (matrixFailure == null && reportingFailure instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                throw reportingFailure
+            }
+            def message = "Integration landing report publication: ${reportingFailure.getMessage()}"
+            failures << message
+            echo "[playwright-integration] ${message}"
         }
     }
     if (failures) {
@@ -369,6 +469,32 @@ def secrets = [
     secret('mc-session-secret', 'SESSION_SECRET'),
     secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
     secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
+    secret('prl-solicitor-username', 'PRL_SOLICITOR_USERNAME'),
+    secret('prl-solicitor-password', 'PRL_SOLICITOR_PASSWORD'),
+    secret('e2e-prl-solicitor-4-username', 'PRL_SOLICITOR4_USERNAME'),
+    secret('e2e-prl-solicitor-4-password', 'PRL_SOLICITOR4_PASSWORD'),
+    secret('e2e-prl-solicitor-2-username', 'PRL_SOLICITOR2_USERNAME'),
+    secret('e2e-prl-solicitor-2-password', 'PRL_SOLICITOR2_PASSWORD'),
+    secret('e2e-prl-solicitor-3-username', 'PRL_SOLICITOR3_USERNAME'),
+    secret('e2e-prl-solicitor-3-password', 'PRL_SOLICITOR3_PASSWORD'),
+    secret('e2e-prl-solicitor-5-username', 'PRL_SOLICITOR5_USERNAME'),
+    secret('e2e-prl-solicitor-5-password', 'PRL_SOLICITOR5_PASSWORD'),
+    secret('e2e-prl-solicitor-6-username', 'PRL_SOLICITOR6_USERNAME'),
+    secret('e2e-prl-solicitor-6-password', 'PRL_SOLICITOR6_PASSWORD'),
+    secret('e2e-prl-solicitor-7-username', 'PRL_SOLICITOR7_USERNAME'),
+    secret('e2e-prl-solicitor-7-password', 'PRL_SOLICITOR7_PASSWORD'),
+    secret('e2e-prl-solicitor-8-username', 'PRL_SOLICITOR8_USERNAME'),
+    secret('e2e-prl-solicitor-8-password', 'PRL_SOLICITOR8_PASSWORD'),
+    secret('e2e-wa-task-admin-username', 'WA_TASK_ADMIN_USERNAME'),
+    secret('e2e-wa-task-admin-password', 'WA_TASK_ADMIN_PASSWORD'),
+    secret('court-admin-stoke-username', 'COURT_ADMIN_STOKE_USERNAME'),
+    secret('court-admin-stoke-password', 'COURT_ADMIN_STOKE_PASSWORD'),
+    secret('ccd-datastore-url', 'CCD_DATA_STORE_URL'),
+    secret('prl-cos-aat-url', 'PRL_COS_API_URL'),
+    secret('s2s-token-url', 'PRL_HEARINGS_S2S_URL'),
+    secret('prl-hearings-case-set-up', 'PRL_HEARINGS_CASE_SETUP'),
+    secret('idam-web-url', 'IDAM_WEB_URL'),
+    secret('idam-testing-support-url', 'IDAM_TESTING_SUPPORT_URL'),
     secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
     secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
     secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
@@ -381,6 +507,14 @@ def secrets = [
     secret('e2e-booking-ui-ft-on-3-password', 'BOOKING_UI_FT_ON_3_PASSWORD'),
     secret('e2e-booking-ui-ft-on-4-username', 'BOOKING_UI_FT_ON_4_USERNAME'),
     secret('e2e-booking-ui-ft-on-4-password', 'BOOKING_UI_FT_ON_4_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-5-username', 'BOOKING_UI_FT_ON_5_USERNAME'),
+    secret('e2e-booking-ui-ft-on-5-password', 'BOOKING_UI_FT_ON_5_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-6-username', 'BOOKING_UI_FT_ON_6_USERNAME'),
+    secret('e2e-booking-ui-ft-on-6-password', 'BOOKING_UI_FT_ON_6_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-7-username', 'BOOKING_UI_FT_ON_7_USERNAME'),
+    secret('e2e-booking-ui-ft-on-7-password', 'BOOKING_UI_FT_ON_7_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-8-username', 'BOOKING_UI_FT_ON_8_USERNAME'),
+    secret('e2e-booking-ui-ft-on-8-password', 'BOOKING_UI_FT_ON_8_PASSWORD'),
     secret('e2e-staff-admin-1-username', 'STAFF_ADMIN_1_USERNAME'),
     secret('e2e-staff-admin-1-password', 'STAFF_ADMIN_1_PASSWORD'),
     secret('e2e-staff-admin-2-username', 'STAFF_ADMIN_2_USERNAME'),
@@ -389,8 +523,18 @@ def secrets = [
     secret('e2e-staff-admin-3-password', 'STAFF_ADMIN_3_PASSWORD'),
     secret('e2e-staff-admin-4-username', 'STAFF_ADMIN_4_USERNAME'),
     secret('e2e-staff-admin-4-password', 'STAFF_ADMIN_4_PASSWORD'),
+    secret('e2e-staff-admin-5-username', 'STAFF_ADMIN_5_USERNAME'),
+    secret('e2e-staff-admin-5-password', 'STAFF_ADMIN_5_PASSWORD'),
+    secret('e2e-staff-admin-6-username', 'STAFF_ADMIN_6_USERNAME'),
+    secret('e2e-staff-admin-6-password', 'STAFF_ADMIN_6_PASSWORD'),
+    secret('e2e-staff-admin-7-username', 'STAFF_ADMIN_7_USERNAME'),
+    secret('e2e-staff-admin-7-password', 'STAFF_ADMIN_7_PASSWORD'),
+    secret('e2e-staff-admin-8-username', 'STAFF_ADMIN_8_USERNAME'),
+    secret('e2e-staff-admin-8-password', 'STAFF_ADMIN_8_PASSWORD'),
     secret('staff-admin-username', 'STAFF_ADMIN_USERNAME'),
     secret('staff-admin-password', 'STAFF_ADMIN_PASSWORD'),
+    secret('court-admin-username', 'COURT_ADMIN_USERNAME'),
+    secret('court-admin-password', 'COURT_ADMIN_PASSWORD'),
     secret('e2e-iac-caseofficer-r1-username', 'PW_IAC_CASEOFFICER_R1_EMAIL'),
     secret('e2e-iac-caseofficer-r1-password', 'PW_IAC_CASEOFFICER_R1_PASSWORD'),
     secret('e2e-iac-caseofficer-r2-username', 'PW_IAC_CASEOFFICER_R2_EMAIL'),
@@ -447,10 +591,12 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline(type, product, component) {
+    enableBuildCache()
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
+    env.PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS = 'IAC_CASEOFFICER_R2'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableFortifyScan('rpx-aat')
@@ -475,6 +621,7 @@ withNightlyPipeline(type, product, component) {
 	        stage('Playwright Install All Browsers') {
 	            try {
 	              recordPlaywrightLoadEvent('Playwright browser install', 'start')
+	              yarnBuilder.yarn('playwright --version')
 	              try {
 	                yarnBuilder.yarn('test:setup:playwright-install-all')
 	              } catch (Exception installWithDepsError) {
@@ -496,7 +643,7 @@ withNightlyPipeline(type, product, component) {
 
     afterAlways('fortify-scan') {
         recordPlaywrightLoadEvent('Fortify artifact archive', 'start')
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+        steps.archiveArtifacts allowEmptyArchive: false, artifacts: 'test/java/Fortify Scan/**/*'
         recordPlaywrightLoadEvent('Fortify artifact archive', 'finish')
     }
 
@@ -528,6 +675,14 @@ withNightlyPipeline(type, product, component) {
         recordPlaywrightLoadEvent('Lint report publish', 'finish')
      }
     afterSuccess('fortify-scan') {
+      def failureSummary = load 'scripts/notify-playwright-failures.groovy'
+      def failureReports = [
+          [suite: 'API', path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json'],
+          [suite: 'E2E', path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json']
+      ] + resolveIntegrationRunConfigs().collect { run ->
+          [suite: 'Integration', path: "${run.reportDir}/ci-evidence/playwright.json"]
+      }
+      def summaryReady = failureSummary.prepare(failureReports)
       try {
       recordPlaywrightLoadEvent('Nightly functional tests', 'start')
         stage('Nightly Functional Tests (Parallel Report Gathering)') {
@@ -536,29 +691,47 @@ withNightlyPipeline(type, product, component) {
                 failFast: false,
                 api: {
                     stage('API Tests') {
+                        def apiOutcome = 'interrupted'
                         try {
                             recordPlaywrightLoadEvent('API', 'start')
                             withEnv([
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
                                 'FUNCTIONAL_TESTS_WORKERS=6',
+                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-api/test-results',
+                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
                                 yarnBuilder.yarn('test:api:pw:coverage:raw')
+                                apiOutcome = 'completed'
                             }
                         } catch (Exception e) {
+                            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                throw e
+                            }
+                            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                throw e
+                            }
+                            apiOutcome = 'test-failure'
                             echo "[parallel-report-gathering] API Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
                             throw e
                         } finally {
                             recordPlaywrightLoadEvent('API', 'finish')
+                            ensureHtmlReportForPublishing(
+                                'functional-output/tests/playwright-api/odhin-report',
+                                'xui-playwright-api.html',
+                                'Nightly API Functional Test',
+                                apiOutcome
+                            )
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
                                 keepAll              : true,
-                                reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                reportDir            : 'functional-output/tests/playwright-api/odhin-report/',
                                 reportFiles          : 'xui-playwright-api.html',
                                 reportName           : 'Nightly API Functional Test'
                             ])
+                            publishPlaywrightJUnit('functional-output/tests/playwright-api/odhin-report/playwright-junit.xml', apiOutcome)
                         }
                     }
                 },
@@ -578,24 +751,42 @@ withNightlyPipeline(type, product, component) {
                 },
                 playwrightE2E: {
                     stage('Playwright E2E Cross Browser') {
+                        def e2eOutcome = 'interrupted'
                         try {
                             recordPlaywrightLoadEvent('E2E', 'start')
                             withEnv([
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                                'FUNCTIONAL_TESTS_WORKERS=6',
-                                'E2E_PW_INCLUDE_TAGS=@nightly',
+                                'FUNCTIONAL_TESTS_WORKERS=7',
+                                'PW_E2E_CCD_SETUP_CONCURRENCY=1',
+                                'E2E_PW_INCLUDE_TAGS=@e2e',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
+                                'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
-                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results',
+                                'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                             ]) {
                                 yarnBuilder.yarn('test:crossbrowser:raw')
+                                e2eOutcome = 'completed'
                             }
                         } catch (Exception e) {
+                            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                                throw e
+                            }
+                            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                                throw e
+                            }
+                            e2eOutcome = 'test-failure'
                             echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
                             throw e
                         } finally {
                             recordPlaywrightLoadEvent('E2E', 'finish')
+                            ensureHtmlReportForPublishing(
+                                'functional-output/tests/playwright-e2e/odhin-report',
+                                'xui-playwright-e2e.html',
+                                'Nightly Playwright E2E Cross Browser',
+                                e2eOutcome
+                            )
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -604,6 +795,7 @@ withNightlyPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright-e2e.html',
                                 reportName           : 'Nightly Playwright E2E Cross Browser'
                             ])
+                            publishPlaywrightJUnit('functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml', e2eOutcome)
                         }
                     }
                 },
@@ -617,6 +809,7 @@ withNightlyPipeline(type, product, component) {
                                 'PW_ACCESSIBILITY_WORKERS=6',
                                 'FUNCTIONAL_TESTS_WORKERS=6',
                                 'PLAYWRIGHT_SKIP_INSTALL=true',
+                                'A11Y_STRICT=false',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
@@ -636,6 +829,7 @@ withNightlyPipeline(type, product, component) {
                             echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
                         } finally {
                             recordPlaywrightLoadEvent('Accessibility', 'finish')
+                            publishPlaywrightAccessibilityJUnit()
                             try {
                                 publishPlaywrightAccessibilityReport('Nightly Playwright Accessibility Test Report')
                             } catch (Exception publishException) {
@@ -653,6 +847,7 @@ withNightlyPipeline(type, product, component) {
             )
         }
       } finally {
+        failureSummary.publish(channel, 'Nightly', summaryReady ? failureReports : [])
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
         archivePlaywrightDiagnostics()
       }

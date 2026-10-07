@@ -1,15 +1,14 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { filterEmptyRows } from '../../utils';
 import { caseBannerMatches } from '../../utils/banner.utils';
-import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
+import { isPageClosingError } from '../../utils/case-flags.utils';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
-import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { formatErrorMessage, isDependencyEnvironmentFailure } from '../../utils/transient-failure.utils';
 
 const PARTY_LEVEL_SUITE_TIMEOUT_MS = 300_000;
-const SESSION_BOOTSTRAP_TIMEOUT_MS = 300_000;
 
 test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: 180000 });
@@ -17,40 +16,23 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';
 
-  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
-    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
-    await ensureSession('SEARCH_EMPLOYMENT_CASE');
-  });
-
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     try {
-      await retryOnTransientFailure(
-        async () => {
-          await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-          const setup = await setupCaseForJourney({
-            scenario: 'case-flags-employment-case-level',
-            jurisdiction,
-            caseType,
-            apiEventId: 'initiateCase',
-            mode: 'api-required',
-            apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
-            page,
-            createCasePage,
-            caseDetailsPage,
-            testInfo,
-          });
-          caseNumber = setup.caseNumber;
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            if (page.isClosed()) {
-              return;
-            }
-            await page.goto('/').catch(() => undefined);
-          },
-        }
-      );
+      const lease = await identityLease.acquire({ pool: 'SEARCH_EMPLOYMENT_CASE' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
+      const setup = await setupCaseForJourney({
+        scenario: 'case-flags-employment-case-level',
+        jurisdiction,
+        caseType,
+        apiEventId: 'initiateCase',
+        mode: 'api-required',
+        apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+        page,
+        createCasePage,
+        caseDetailsPage,
+        testInfo,
+      });
+      caseNumber = setup.caseNumber;
     } catch (error) {
       if (isDependencyEnvironmentFailure(error)) {
         throw new Error(
@@ -61,7 +43,7 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
     }
   });
 
-  test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
+  test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage }) => {
     await test.step('Open case flags tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       await expect(caseDetailsPage.caseFlagsHeading).toBeVisible();
@@ -99,11 +81,10 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
     await test.step('Verify the case level flag is shown in the flags tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const expectedFlag = {
-        'Case flags': 'Welsh forms and communications',
-        Comments: 'Welsh',
-        'Creation date': await caseDetailsPage.todaysDateFormatted(),
-        'Last modified': '',
-        'Flag status': 'ACTIVE',
+        name: 'Welsh forms and communications',
+        comments: 'Welsh',
+        creationDate: (await caseDetailsPage.todaysDateFormatted()).replace('Sept', 'Sep'),
+        status: 'ACTIVE',
       };
       await expect
         .poll(
@@ -112,9 +93,16 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
               return false;
             }
             try {
-              const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
-              const visibleRows = filterEmptyRows(table);
-              return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
+              const table = caseDetailsPage.getTableByName('Case level flags');
+              const flagRow = table
+                .getByRole('row')
+                .filter({ hasText: expectedFlag.name })
+                .filter({ hasText: expectedFlag.comments });
+              if (!(await flagRow.isVisible())) {
+                return false;
+              }
+              const rowText = await flagRow.innerText();
+              return [expectedFlag.creationDate, expectedFlag.status].every((value) => rowText.includes(value));
             } catch (error) {
               if (isPageClosingError(error)) {
                 return false;
@@ -136,51 +124,34 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, ()
   const jurisdiction = 'DIVORCE';
   const caseType = 'xuiCaseFlagsV1';
 
-  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
-    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
-    await ensureSession('USER_WITH_FLAGS');
-  });
-
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     try {
-      await retryOnTransientFailure(
-        async () => {
-          await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
-          const setup = await setupCaseForJourney({
-            scenario: 'case-flags-divorce-party-level',
-            jurisdiction,
-            caseType,
-            apiEventId: 'createCase',
-            mode: 'api-required',
-            apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case-flags', {
-              overrides: {
-                LegalRepParty1Flags: {
-                  roleOnCase: testValue,
-                  partyName: testValue,
-                },
-                LegalRepParty2Flags: {
-                  roleOnCase: `${testValue}2`,
-                  partyName: `${testValue}2`,
-                },
-              },
-            }),
-            page,
-            createCasePage,
-            caseDetailsPage,
-            testInfo,
-          });
-          caseNumber = setup.caseNumber;
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            if (page.isClosed()) {
-              return;
-            }
-            await page.goto('/').catch(() => undefined);
+      const lease = await identityLease.acquire({ pool: 'USER_WITH_FLAGS' });
+      await applySessionCookies(page, lease.identity.userIdentifier);
+      const setup = await setupCaseForJourney({
+        scenario: 'case-flags-divorce-party-level',
+        jurisdiction,
+        caseType,
+        apiEventId: 'createCase',
+        mode: 'api-required',
+        apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case-flags', {
+          overrides: {
+            LegalRepParty1Flags: {
+              roleOnCase: testValue,
+              partyName: testValue,
+            },
+            LegalRepParty2Flags: {
+              roleOnCase: `${testValue}2`,
+              partyName: `${testValue}2`,
+            },
           },
-        }
-      );
+        }),
+        page,
+        createCasePage,
+        caseDetailsPage,
+        testInfo,
+      });
+      caseNumber = setup.caseNumber;
     } catch (error) {
       if (isDependencyEnvironmentFailure(error)) {
         throw new Error(
@@ -197,7 +168,7 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, ()
       const flagsTable = await caseDetailsPage.waitForTableByName(testValue);
       const table = await tableUtils.parseDataTable(flagsTable);
       const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      expect.soft(visibleRows.length).toBe(0);
     });
 
     await test.step('Create a new party level flag', async () => {
@@ -234,11 +205,10 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, ()
     await test.step('Verify the party level case flag is shown in the flags tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const expectedFlag = {
-        'Party level flags': 'I want to speak Welsh at a hearing',
-        Comments: `Welsh ${testValue}`,
-        'Creation date': await caseDetailsPage.todaysDateFormatted(),
-        'Last modified': '',
-        'Flag status': 'ACTIVE',
+        name: 'I want to speak Welsh at a hearing',
+        comments: `Welsh ${testValue}`,
+        creationDate: (await caseDetailsPage.todaysDateFormatted()).replace('Sept', 'Sep'),
+        status: 'ACTIVE',
       };
       await expect
         .poll(
@@ -257,9 +227,15 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, ()
                 timeoutMs: 15_000,
               });
               await partyFlagsTable.waitFor({ state: 'visible' });
-              const table = await tableUtils.parseDataTable(partyFlagsTable);
-              const visibleRows = filterEmptyRows(table);
-              return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
+              const flagRow = partyFlagsTable
+                .getByRole('row')
+                .filter({ hasText: expectedFlag.name })
+                .filter({ hasText: expectedFlag.comments });
+              if (!(await flagRow.isVisible())) {
+                return false;
+              }
+              const rowText = await flagRow.innerText();
+              return [expectedFlag.creationDate, expectedFlag.status].every((value) => rowText.includes(value));
             } catch (error) {
               if (isPageClosingError(error)) {
                 return false;

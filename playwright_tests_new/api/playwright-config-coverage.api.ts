@@ -390,6 +390,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     });
 
     expect(filters.excludedTags).toEqual(['@svc-work-allocation-myaccess']);
+    expect(filters.grepInvert?.test('@wa-action')).toBe(false);
     expect(filters.grepInvert?.test('@svc-work-allocation-myaccess')).toBe(true);
     expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
   });
@@ -887,6 +888,35 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.projects.find((project) => project.name === 'firefox')?.grepInvert?.test('@e2e-search-case')).toBe(true);
     expect(config.projects.find((project) => project.name === 'webkit')?.grepInvert?.test('@e2e-search-case')).toBe(true);
     expect(config.projects.find((project) => project.name === 'firefox')?.grepInvert?.test('@svc-work-allocation')).toBe(false);
+  });
+
+  test('nightly cross-browser config keeps Chromium-only live E2E journeys out of Firefox and WebKit by default', async () => {
+    const config = buildNightlyConfig({
+      CI: 'true',
+      TEST_URL: 'https://example.test',
+    });
+
+    for (const project of config.projects) {
+      expect(project.grepInvert?.test('@e2e-document-upload')).toBe(true);
+      expect(project.grepInvert?.test('@e2e-document-upload-v1')).toBe(true);
+      expect(project.grepInvert?.test('@e2e-civil-data-loss')).toBe(true);
+      expect(project.grepInvert?.test('@e2e-hearings') ?? false).toBe(false);
+    }
+  });
+
+  test('nightly cross-browser config allows explicit excluded-tag override to restore Chromium-only journeys', async () => {
+    const config = buildNightlyConfig({
+      CI: 'true',
+      E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
+      TEST_URL: 'https://example.test',
+    });
+
+    for (const project of config.projects) {
+      expect(project.grepInvert?.test('@e2e-document-upload') ?? false).toBe(false);
+      expect(project.grepInvert?.test('@e2e-document-upload-v1') ?? false).toBe(false);
+      expect(project.grepInvert?.test('@e2e-civil-data-loss') ?? false).toBe(false);
+      expect(project.grepInvert?.test('@e2e-hearings') ?? false).toBe(false);
+    }
   });
 
   test('integration config avoids forced Odhin timeout in CI', async () => {

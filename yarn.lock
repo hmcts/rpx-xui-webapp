@@ -3394,15 +3394,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.4-exui-4988":
-  version: 7.4.4-exui-4988
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.4-exui-4988"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.9":
+  version: 7.4.9
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.9"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.39"
+    "@hmcts/media-viewer": "npm:4.2.41"
     file-saver: "npm:^2.0.5"
-    govuk-frontend: "npm:^4.9.0"
+    govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
     tslib: "npm:^2.3.0"
@@ -3426,7 +3426,6 @@ __metadata:
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
     class-transformer: ^0.5.1
-    govuk-elements-sass: ^3.1.2
     lodash: ^4.17.22
     moment: ^2.30.1
     moment-timezone: ^0.5.31
@@ -3443,7 +3442,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/0f948ece4442abebd455ba2721fd4dd4f75ce2c9680f9a06438ad4dd453464e15b41d5c04372a9ff11c7fef14ca616d1461393e7a234ca31ff6d35d726b69337
+  checksum: 10/b4c9a311736b034acaba4d396b3f8a5c36dc5f5856b95d3cd2dc39087668f93ad837391dba8a1b28aaeb9eb92bbd71dfda4236c84bbc03d630c9756ad856fd0e
   languageName: node
   linkType: hard
 
@@ -3468,9 +3467,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.39":
-  version: 4.2.39
-  resolution: "@hmcts/media-viewer@npm:4.2.39"
+"@hmcts/media-viewer@npm:4.2.41":
+  version: 4.2.41
+  resolution: "@hmcts/media-viewer@npm:4.2.41"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3493,7 +3492,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/9012b83de83563c372ef9244bb6b2fe84de3b45d9d57b46df49c6814857c129d2ca91d86d6dedcbf244b6ba1122528733d59dfc42a0f9370bd976a7f632ce8c6
+  checksum: 10/25971c196b90f0a6792c017785924c9883df890379340df9624e40e72b2def1f5e3640b5d6b0f8313bc42a3df19fc6957968d0d0ffa76be548ea3875031b1f41
   languageName: node
   linkType: hard
 
@@ -14933,6 +14932,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"govuk-frontend@npm:5.13.0":
+  version: 5.13.0
+  resolution: "govuk-frontend@npm:5.13.0"
+  checksum: 10/6eca01260e4eb8740c805c58a7bac034041e0190226c7ef200e49a715f630f304a5816dfea3c0c6b0cfabe30995b05b024df2824546e8dd00066059c0f8d1bdb
+  languageName: node
+  linkType: hard
+
 "govuk-frontend@npm:^4.9.0":
   version: 4.10.1
   resolution: "govuk-frontend@npm:4.10.1"
@@ -21206,10 +21212,10 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.4-exui-4988"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.9"
     "@hmcts/ccpay-web-component": "npm:6.5.22"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.39"
+    "@hmcts/media-viewer": "npm:4.2.41"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"

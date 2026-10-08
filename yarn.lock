@@ -3416,13 +3416,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.6":
-  version: 7.4.6
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.6"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.8-5290-rc3":
+  version: 7.4.8-5290-rc3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.8-5290-rc3"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.39"
+    "@hmcts/ccpay-web-component": "npm:6.5.27"
+    "@hmcts/media-viewer": "npm:4.2.40"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
@@ -3464,21 +3464,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/0f12f87b14c53d3d46e3cb5aa37aff040b922c5c9109b662842dc06f2df812baed69ca115026ceeaae3472b04f2f604a2bfd60cf8d9df2d9ae144e3b5329f1d8
-  languageName: node
-  linkType: hard
-
-"@hmcts/ccpay-web-component@npm:6.5.22":
-  version: 6.5.22
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.22"
-  dependencies:
-    exceljs: "npm:^4.4.0"
-    file-saver: "npm:^2.0.2"
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^20.3.1
-    "@angular/core": ~20.3.1
-  checksum: 10/532536dcf2ac3bdfda4ca1e352bc9fe88e5c72b46aac9b37746f2926f86f9d553bba9454c2403fd0ba6edec6380ad614709fb91296d8eeeb1823d4ceef098d58
+  checksum: 10/aba414b73f59c82ee12ca166b1aaf6e04cfa287549b94af48f67c0cc271f987aabf730ecc022ee05bdb763864e87e048ef711aa9b2e9a0ee94492bd65d49ab82
   languageName: node
   linkType: hard
 
@@ -3522,6 +3508,35 @@ __metadata:
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
   checksum: 10/9012b83de83563c372ef9244bb6b2fe84de3b45d9d57b46df49c6814857c129d2ca91d86d6dedcbf244b6ba1122528733d59dfc42a0f9370bd976a7f632ce8c6
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.40":
+  version: 4.2.40
+  resolution: "@hmcts/media-viewer@npm:4.2.40"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^23.0.1"
+    moment-timezone: "npm:^0.6.2"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.1.1"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.14
+    rxjs: ^7.8.2
+  checksum: 10/22ae7f3c3b642b0f05a8af3c0ca0b98d256567fb72f8a859cea927d9cfe36baa3566f86fa6ab13ed798d4ccc1aacc695e91ac1bad5f2a88292e4dee08769c43e
   languageName: node
   linkType: hard
 
@@ -21041,7 +21056,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.6"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.8-5290-rc3"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.39"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

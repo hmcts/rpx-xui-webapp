@@ -22,6 +22,25 @@ export function extractCaseNumberFromUrl(url: string): string | null {
   }
 }
 
+export async function scrollTabIntoViewWithDetachedRetry(
+  tab: Pick<Locator, 'scrollIntoViewIfNeeded'>,
+  deadline: number,
+  now: () => number = Date.now
+): Promise<void> {
+  const scroll = () => tab.scrollIntoViewIfNeeded({ timeout: Math.max(1, deadline - now()) });
+  try {
+    await scroll();
+  } catch (error) {
+    if (
+      !(error instanceof Error) ||
+      !/^locator\.scrollIntoViewIfNeeded: Element is not attached to the DOM(?:\n|$)/.test(error.message)
+    ) {
+      throw error;
+    }
+    await scroll();
+  }
+}
+
 export interface CaseFlagItem {
   flagType: string;
   comments: string;
@@ -708,7 +727,7 @@ export class CaseDetailsPage extends Base {
     // Material translates its tab strip; visible DOM tabs can still be clipped outside it.
     const deadline = Date.now() + tabLoadTimeoutMs;
     while (Date.now() < deadline) {
-      await tab.scrollIntoViewIfNeeded({ timeout: Math.max(1, deadline - Date.now()) });
+      await scrollTabIntoViewWithDetachedRetry(tab, deadline);
       const direction = await tab.evaluate((element) => {
         const viewport = element.closest('mat-tab-header')?.querySelector('.mat-tab-label-container');
         if (!viewport) return undefined;

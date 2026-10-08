@@ -1,9 +1,54 @@
-import { expect, test } from '@playwright/test';
-import { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
+import { expect, Locator, test } from '@playwright/test';
+import { CaseDetailsPage, scrollTabIntoViewWithDetachedRetry } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { caseDetailsTabsMarkup } from '../../integration/mocks/case-details-tabs.mock';
 
 test.describe('case details tab pagination', { tag: '@svc-internal' }, () => {
   test.use({ actionTimeout: 1500 });
+
+  test('retries an exact detached-tab scroll with the remaining deadline', async () => {
+    const timeouts: number[] = [];
+    const times = [0, 40];
+    const tab: Pick<Locator, 'scrollIntoViewIfNeeded'> = {
+      async scrollIntoViewIfNeeded(options) {
+        timeouts.push(options?.timeout ?? 0);
+        if (timeouts.length === 1) {
+          throw new Error('locator.scrollIntoViewIfNeeded: Element is not attached to the DOM\nCall log');
+        }
+      },
+    };
+
+    await scrollTabIntoViewWithDetachedRetry(tab, 100, () => times.shift() ?? 40);
+
+    expect(timeouts).toEqual([100, 60]);
+  });
+
+  for (const scenario of [
+    {
+      name: 'propagates a second detached-tab scroll error after one retry',
+      firstError: new Error('locator.scrollIntoViewIfNeeded: Element is not attached to the DOM'),
+      expectedCalls: 2,
+    },
+    { name: 'propagates an unrelated scroll error without retrying', firstError: new Error('Timeout'), expectedCalls: 1 },
+  ]) {
+    test(scenario.name, async () => {
+      const secondError = new Error('second scroll failed');
+      let calls = 0;
+      const tab: Pick<Locator, 'scrollIntoViewIfNeeded'> = {
+        async scrollIntoViewIfNeeded() {
+          calls += 1;
+          if (calls === 1) {
+            throw scenario.firstError;
+          }
+          throw secondError;
+        },
+      };
+
+      await expect(scrollTabIntoViewWithDetachedRetry(tab, 100, () => 0)).rejects.toBe(
+        scenario.expectedCalls === 2 ? secondError : scenario.firstError
+      );
+      expect(calls).toBe(scenario.expectedCalls);
+    });
+  }
 
   for (const scenario of [
     { name: 'reveals a tab clipped before the visible strip', offset: 400, tab: 'Documents', pagination: true },

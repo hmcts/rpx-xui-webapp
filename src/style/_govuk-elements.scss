@@ -1,0 +1,5 @@
+$path: '/assets/';
+
+// govuk-elements is a legacy import-based package. Loading it in this wrapper
+// preserves its configuration scope while exposing its generated CSS as a Sass module.
+@import 'node_modules/govuk-elements-sass/public/sass/govuk-elements';

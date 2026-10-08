@@ -208,9 +208,9 @@ test.describe(
 
       await test.step('Check the case tab Data, matches previously entered data (EXUI-848/EXUI-811/EXUI-433)', async () => {
         await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:${jurisdiction}/${caseType}/)?1234123412341234(?:$|#)`));
-        await caseDetailsPage.divorceDataTable.waitFor({ state: 'visible', timeout: 30_000 });
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible', timeout: 30_000 });
 
-        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
+        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.caseViewerTable);
         const expectedCaseGender = caseData.gender === 'Not given' ? caseData.gender : caseData.gender.toLowerCase();
         expect(table).toMatchObject({
           'Select your gender': expectedCaseGender,

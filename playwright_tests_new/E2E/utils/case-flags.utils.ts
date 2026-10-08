@@ -281,14 +281,6 @@ function findCivilClaimantNameFromCaseView(value: unknown, visited = new WeakSet
   }
   visited.add(value);
 
-  if (Array.isArray(value)) {
-    for (const entry of value) {
-      const match = findCivilClaimantNameFromCaseView(entry, visited);
-      if (match) return match;
-    }
-    return undefined;
-  }
-
   const record = value as JsonRecord;
   if (record.id === 'caseNameHmctsInternal') {
     const formattedValue = record.formatted_value;

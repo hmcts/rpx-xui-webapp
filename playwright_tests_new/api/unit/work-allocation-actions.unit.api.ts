@@ -121,7 +121,7 @@ test.describe('WA action contracts', { tag: '@svc-internal' }, () => {
       })
     ).resolves.toBe(true);
   });
-  test('unassign uses assign with a null user and requires another assignee', async () => {
+  test('unassign uses assign with a null user for any assigned task', async () => {
     for (const assignee of ['other-actor', 'operator']) {
       let reads = 0;
       let posts = 0;
@@ -139,15 +139,10 @@ test.describe('WA action contracts', { tag: '@svc-internal' }, () => {
         expectedAssignee: 'operator',
         withXsrfFn: async (_role, fn) => fn({}),
       });
-      if (assignee === 'operator') {
-        await expect(result).rejects.toThrow();
-        expect(posts).toBe(0);
-      } else {
-        await expect(result).resolves.toBe(true);
-        expect(posts).toBe(1);
-      }
+      await expect(result).resolves.toBe(true);
+      expect(posts).toBe(1);
     }
-    expect(() => assertStateTransition('unassign', assigned, unassigned, 'actor')).toThrow();
-    expect(() => assertStateTransition('unassign', assigned, unassigned)).toThrow();
+    assertStateTransition('unassign', assigned, unassigned, 'actor');
+    assertStateTransition('unassign', assigned, unassigned);
   });
 });

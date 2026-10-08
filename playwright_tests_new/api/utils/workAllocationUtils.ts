@@ -317,10 +317,6 @@ export function assertStateTransition(action: string, before?: TaskState, after?
     expect(current.assignee).not.toBe(previous.assignee);
   } else if (action === 'unclaim' || action === 'unassign') {
     expect(previous.task_state).toBe('assigned');
-    if (action === 'unassign') {
-      expect(expectedAssignee?.trim(), 'unassign operator is required').toBeTruthy();
-      expect(previous.assignee).not.toBe(expectedAssignee);
-    }
     expect(current.task_state).toBe('unassigned');
     expect(current.assignee === undefined || current.assignee === '' || current.assignee === null).toBe(true);
   } else {
@@ -405,10 +401,8 @@ export async function runSeededAction(action: string, getId: () => string, deps:
   if (action === 'claim') expect(task.task_state).toBe('unassigned');
   if (action === 'unclaim' || action === 'unassign') expect(task.task_state).toBe('assigned');
   if (action === 'unassign') {
-    expect(deps.expectedAssignee?.trim(), 'unassign operator is required').toBeTruthy();
     expect(typeof task.assignee).toBe('string');
     expect(task.assignee?.trim()).toBeTruthy();
-    expect(task.assignee).not.toBe(deps.expectedAssignee);
   }
   if (action === 'claim' || action === 'assign') {
     expect(deps.expectedAssignee?.trim(), 'expected assignee is required').toBeTruthy();

@@ -458,7 +458,7 @@ def secrets = [
     secret('mc-idam-client-secret', 'IDAM_SECRET'),
     secret('idam-api-url', 'IDAM_API_URL'),
     secret('s2s-url', 'S2S_URL'),
-    secret('webapp-redis6-connection-string', 'REDISCLOUD_URL'),
+    secret('webapp-managed-redis-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
     secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
@@ -487,9 +487,12 @@ def secrets = [
     secret('e2e-prl-solicitor-8-password', 'PRL_SOLICITOR8_PASSWORD'),
     secret('e2e-wa-task-admin-username', 'WA_TASK_ADMIN_USERNAME'),
     secret('e2e-wa-task-admin-password', 'WA_TASK_ADMIN_PASSWORD'),
+    secret('court-admin-stoke-username', 'COURT_ADMIN_STOKE_USERNAME'),
+    secret('court-admin-stoke-password', 'COURT_ADMIN_STOKE_PASSWORD'),
     secret('ccd-datastore-url', 'CCD_DATA_STORE_URL'),
     secret('prl-cos-aat-url', 'PRL_COS_API_URL'),
     secret('s2s-token-url', 'PRL_HEARINGS_S2S_URL'),
+    secret('prl-hearings-case-set-up', 'PRL_HEARINGS_CASE_SETUP'),
     secret('idam-web-url', 'IDAM_WEB_URL'),
     secret('idam-testing-support-url', 'IDAM_TESTING_SUPPORT_URL'),
     secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
@@ -536,6 +539,8 @@ def secrets = [
     secret('e2e-iac-caseofficer-r1-password', 'PW_IAC_CASEOFFICER_R1_PASSWORD'),
     secret('e2e-iac-caseofficer-r2-username', 'PW_IAC_CASEOFFICER_R2_EMAIL'),
     secret('e2e-iac-caseofficer-r2-password', 'PW_IAC_CASEOFFICER_R2_PASSWORD'),
+    secret('e2e-civil-court-staff-username', 'CIVIL_COURT_STAFF_USERNAME'),
+    secret('e2e-civil-court-staff-password', 'CIVIL_COURT_STAFF_PASSWORD'),
     secret('e2e-iac-judge-wa-r1-username', 'PW_IAC_JUDGE_WA_R1_EMAIL'),
     secret('e2e-iac-judge-wa-r1-password', 'PW_IAC_JUDGE_WA_R1_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-username', 'HEARING_MANAGER_CR84_OFF_USERNAME'),
@@ -593,7 +598,7 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.TEST_ENV = 'aat'
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
-    env.PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS = 'IAC_CASEOFFICER_R2'
+    env.PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS = 'CIVIL_COURT_STAFF'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableFortifyScan('rpx-aat')
@@ -756,7 +761,7 @@ withNightlyPipeline(type, product, component) {
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
                                 'FUNCTIONAL_TESTS_WORKERS=7',
                                 'PW_E2E_CCD_SETUP_CONCURRENCY=1',
-                                'E2E_PW_INCLUDE_TAGS=@e2e',
+                                'E2E_PW_INCLUDE_TAGS=@nightly',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
                                 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',

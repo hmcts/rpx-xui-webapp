@@ -22,6 +22,25 @@ export function extractCaseNumberFromUrl(url: string): string | null {
   }
 }
 
+export async function scrollTabIntoViewWithDetachedRetry(
+  tab: Pick<Locator, 'scrollIntoViewIfNeeded'>,
+  deadline: number,
+  now: () => number = Date.now
+): Promise<void> {
+  const scroll = () => tab.scrollIntoViewIfNeeded({ timeout: Math.max(1, deadline - now()) });
+  try {
+    await scroll();
+  } catch (error) {
+    if (
+      !(error instanceof Error) ||
+      !/^locator\.scrollIntoViewIfNeeded: Element is not attached to the DOM(?:\n|$)/.test(error.message)
+    ) {
+      throw error;
+    }
+    await scroll();
+  }
+}
+
 export interface CaseFlagItem {
   flagType: string;
   comments: string;
@@ -653,19 +672,8 @@ export class CaseDetailsPage extends Base {
     if (await this.hasCallbackValidationErrorAlert()) {
       throw new Error('Callback data failed validation before selecting party flag target.');
     }
-    const exactLabel = this.page.getByLabel(`${target} (${target})`);
-    // Escape regex special characters to prevent unintended matches
-    const escapedTarget = target.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-    const fallbackLabel = this.page.getByLabel(new RegExp(escapedTarget, 'i'));
-    try {
-      await exactLabel.waitFor({ state: 'visible', timeout: 15000 });
-      await exactLabel.check();
-    } catch (error) {
-      // Exact label format not found, use case-insensitive fallback
-      this.logger.warn('Exact label not found, using regex fallback', { error });
-      await fallbackLabel.waitFor({ state: 'visible', timeout: 15000 });
-      await fallbackLabel.check();
-    }
+    const targetRadio = this.page.getByRole('radio', { name: `${target} (${target})`, exact: true });
+    await targetRadio.check();
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after selecting party flag target');
     await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
@@ -716,7 +724,28 @@ export class CaseDetailsPage extends Base {
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
-    await tab.click();
+    // Material translates its tab strip; visible DOM tabs can still be clipped outside it.
+    const deadline = Date.now() + tabLoadTimeoutMs;
+    while (Date.now() < deadline) {
+      await scrollTabIntoViewWithDetachedRetry(tab, deadline);
+      const direction = await tab.evaluate((element) => {
+        const viewport = element.closest('mat-tab-header')?.querySelector('.mat-tab-label-container');
+        if (!viewport) return undefined;
+        const bounds = viewport.getBoundingClientRect();
+        const target = element.getBoundingClientRect();
+        // Match the click point clipped to the browser viewport, even for wide tabs.
+        const clickX = (Math.max(0, target.left) + Math.min(window.innerWidth, target.right)) / 2;
+        if (clickX < bounds.left) return 'before';
+        if (clickX > bounds.right) return 'after';
+        return undefined;
+      });
+      if (!direction) break;
+      // Material supplies no accessible name for these native pagination buttons.
+      await this.container.locator(`mat-tab-header button.mat-tab-header-pagination-${direction}`).click({
+        timeout: Math.max(1, deadline - Date.now()),
+      });
+    }
+    await tab.click({ timeout: Math.max(1, deadline - Date.now()) });
     await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {
       // Some tabs render without spinner; readiness is verified via tabpanel checks below.
     });

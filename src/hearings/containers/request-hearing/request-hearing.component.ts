@@ -22,7 +22,7 @@ export class RequestHearingComponent implements OnDestroy {
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;
   public showMismatchErrorMessage: boolean;
-  public validationErrors: { id: string; message: string };
+  public validationErrors: { id: string; message: string[] };
 
   constructor(
     private readonly hearingStore: Store<fromHearingStore.State>,
@@ -61,7 +61,7 @@ export class RequestHearingComponent implements OnDestroy {
       mismatchLogMessages.forEach((message) => this.appConfig.logMessage(message));
       if (!HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
         this.showMismatchErrorMessage = true;
-        this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE };
+        this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST };
       } else {
         this.hearingsService.hearingRequestForSubmitValid = true;
         this.hearingsService.navigateAction(action);
@@ -74,6 +74,9 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public buttonDisabled(action: ACTION): boolean {
+    if (action === ACTION.CONTINUE) {
+      return this.hearingsService.hearingRequestContinueDisabled;
+    }
     if (action === ACTION.VIEW_EDIT_SUBMIT || action === ACTION.SUBMIT) {
       return this.hearingsService.hearingRequestForSubmitValid;
     }

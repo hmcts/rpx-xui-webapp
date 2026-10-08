@@ -1,10 +1,9 @@
 import { expect, test } from '../../fixtures';
-import { ensureSession } from '../../../common/sessionCapture';
 import { AdditionalFacility, TypeOfJudges } from '../../utils/hearing-model';
-import { openHomeWithCapturedSession } from '../searchCase/searchCase.setup';
 import { continueHearingsFlow } from '../../../integration/helpers/hearingJourneySetup.helper.ts';
+import type { HearingManagerUserIdentifier } from '../../../integration/helpers/hearingManagerUserPool.helper';
 import { resolveHearingManagerUserIdentifier } from '../../../integration/helpers/hearingManagerUserPool.helper';
-import { openEligibleHearingsCase } from '../../utils/test-setup/hearingsCaseResolver';
+import { openEligibleHearingsCaseForUser } from '../../utils/test-setup/hearingsCaseResolver';
 import {
   createHearingJourneyModel,
   HEARING_REQUEST_EXPECTED_STATUS,
@@ -13,14 +12,12 @@ import {
 } from '../../testData/hearings/hearingJourneyScenarios';
 
 test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] }, () => {
-  const hearingsUserIdentifier = resolveHearingManagerUserIdentifier(HEARINGS_USER_IDENTIFIER);
+  let hearingManagerUserIdentifier: HearingManagerUserIdentifier;
 
-  test.beforeAll(async () => {
-    await ensureSession(hearingsUserIdentifier);
-  });
-
-  test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, hearingsUserIdentifier);
+  test.beforeEach(({}, testInfo) => {
+    hearingManagerUserIdentifier = resolveHearingManagerUserIdentifier(HEARINGS_USER_IDENTIFIER, {
+      parallelIndex: testInfo.parallelIndex,
+    });
   });
 
   test('Submit a new Hearing - Happy Path journey ', async ({
@@ -32,10 +29,11 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
   }) => {
     const scenario = prlHearingHappyPathScenario;
     const hearingJourneyModel = createHearingJourneyModel();
+    let seededHearingVenue = '';
     let selectedHearingVenue = '';
 
     await test.step('Navigate to Hearings Page and click on the hearings tab', async () => {
-      await openEligibleHearingsCase(page, scenario.route);
+      await openEligibleHearingsCaseForUser(page, scenario.route, hearingManagerUserIdentifier);
       await caseDetailsPage.selectCaseDetailsTab('Hearings');
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
     });
@@ -78,21 +76,26 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       // The venue already on the case is seeded by an async location lookup that overwrites the
       // selection list when it resolves, so wait for it before adding another venue.
-      await hearingsJourneyPage.waitForSeededVenues(scenario.hearingVenue.defaultHearingVenue);
+      seededHearingVenue = await hearingsJourneyPage.waitForSingleSeededVenue();
 
       selectedHearingVenue = await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
 
       expect(selectedHearingVenue, `Venue added should match the "${scenario.hearingVenue.searchTerm}" search`).toContain(
         scenario.hearingVenue.searchTerm
       );
-      expect(selectedHearingVenue, 'Venue added should not be the venue already seeded on the case').not.toBe(
-        scenario.hearingVenue.defaultHearingVenue
-      );
+      expect(selectedHearingVenue, 'Venue added should not be the venue already seeded on the case').not.toBe(seededHearingVenue);
 
       // Both the seeded venue and the newly added one must survive, and nothing else may be added.
       await expect(hearingsJourneyPage.selectedVenueTags).toHaveCount(2);
-      await expect(hearingsJourneyPage.removeLocationLink(scenario.hearingVenue.defaultHearingVenue)).toBeVisible();
+      await expect(hearingsJourneyPage.removeLocationLink(seededHearingVenue)).toBeVisible();
       await expect(hearingsJourneyPage.removeLocationLink(selectedHearingVenue)).toBeVisible();
+      await continueHearingsFlow(page);
+    });
+
+    await test.step('Complete Welsh Hearing Section', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-welsh$/);
+      await expect(page.getByRole('heading', { name: /Does this hearing need to be in Welsh?/i })).toBeVisible();
+      await hearingsJourneyPage.isWelshHearing(hearingJourneyModel);
       await continueHearingsFlow(page);
     });
 
@@ -102,17 +105,6 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       await hearingsJourneyPage.setJudgeOptions(hearingJourneyModel);
       await expect(hearingsJourneyPage.selectAllJudgesThatApply).toHaveText('Select all judge types that apply');
-      await continueHearingsFlow(page);
-    });
-
-    await test.step('Complete Welsh Hearing Section when present', async () => {
-      if (!/\/hearings\/request\/hearing-welsh$/.test(page.url())) {
-        await expect(page).toHaveURL(/\/hearings\/request\/hearing-timing$/);
-        return;
-      }
-
-      await expect(page.getByRole('heading', { name: /Does this hearing need to be in Welsh?/i })).toBeVisible();
-      await hearingsJourneyPage.isWelshHearing(hearingJourneyModel);
       await continueHearingsFlow(page);
     });
 
@@ -180,7 +172,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       // The venue names are resolved by an async location lookup after the summary renders, so the
       // list starts empty. Poll rather than take a single snapshot of the row.
-      const expectedVenues = [scenario.hearingVenue.defaultHearingVenue, selectedHearingVenue].sort();
+      const expectedVenues = [seededHearingVenue, selectedHearingVenue].sort();
       await expect
         .poll(async () => hearingsCYAPage.sortedRowListItems('Hearing Venue', 'What are the hearing venue details?'), {
           message: `Hearing venue summary should list exactly ${expectedVenues.join(' and ')}`,

@@ -2,7 +2,6 @@ import { createLogger, IdamUtils } from '@hmcts/playwright-common';
 import { request } from '@playwright/test';
 import type { APIRequestContext } from '@playwright/test';
 import * as dotenv from 'dotenv';
-import prlC100DummyCaseData from '../../testData/hearings/prlC100DummyCaseData.json' with { type: 'json' };
 
 dotenv.config({ path: process.env.DOTENV_CONFIG_PATH ?? '.env' });
 dotenv.config();
@@ -10,6 +9,7 @@ dotenv.config();
 type UserCredentials = {
   username: string;
   password: string;
+  bearerToken?: string;
 };
 
 export type PrlHearingsCaseSetupConfig = {
@@ -17,6 +17,7 @@ export type PrlHearingsCaseSetupConfig = {
   idamWebUrl?: string;
   idamTestingSupportUrl?: string;
   ccdDataStoreUrl?: string;
+  manageCaseUrl?: string;
   prlCosApiUrl?: string;
   idamClientId?: string;
   idamSecret?: string;
@@ -24,12 +25,17 @@ export type PrlHearingsCaseSetupConfig = {
   s2sUrl?: string;
   s2sToken?: string;
   serviceMicroservice?: string;
-  citizenUsername?: string;
-  citizenPassword?: string;
   courtAdminUsername?: string;
   courtAdminPassword?: string;
-  courtLocationCode?: string;
-  courtLocationLabel?: string;
+};
+
+export type PrlCourtLocation = {
+  code: string;
+  label: string;
+};
+
+export type PrlHearingsCaseSetupResult = {
+  caseReference: string;
 };
 
 type CaseCreateResponse = {
@@ -40,25 +46,51 @@ type CaseCreateResponse = {
 };
 
 type CcdCaseResponse = CaseCreateResponse & {
+  state?: string;
   data?: Record<string, unknown>;
   case_data?: Record<string, unknown>;
+};
+
+type CreateEventTokenResponse = {
+  event_token?: string;
+  token?: string;
+};
+
+type WorkAllocationCourtResponse = {
+  data?: {
+    courtList?: {
+      list_items?: Array<Partial<PrlCourtLocation>>;
+    };
+  };
 };
 
 const CASE_REFERENCE_REGEX = /^\d{16}$/;
 const PRL_JURISDICTION = 'PRIVATELAW';
 const PRL_CASE_TYPE = 'PRLAPPS';
-const ISSUE_AND_SEND_TO_LOCAL_COURT_EVENT_ID = 'issueAndSendToLocalCourtCallback';
+const TESTING_SUPPORT_ADMIN_CREATE_EVENT_ID = 'testingSupportDummyAdminCreateNoc';
+const TRANSFER_TO_ANOTHER_COURT_EVENT_ID = 'transferToAnotherCourt';
+const JUDICIAL_REVIEW_STATE = 'JUDICIAL_REVIEW';
 const DEFAULT_SERVICE_MICROSERVICE = 'ccd_data';
-const REQUIRED_ENV_MESSAGE =
-  'PRL hearings setup requires CCD_DATA_STORE_URL, PRL_COS_API_URL, IDAM_SECRET, ' +
-  'S2S_URL or PRL_HEARINGS_S2S_TOKEN, a redirect URI, citizen credentials, and court admin credentials.';
-const DEFAULT_HEARING_MANAGER_COURT_LOCATION = {
-  code: '898213:',
-  label: 'East London Family Court',
+const S2S_TOKEN_RETRIES = 2;
+const S2S_TOKEN_RETRY_DELAY_MS = 1_000;
+const CCD_EVENT_HEADERS = {
+  experimental: 'true',
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
 };
+const REQUIRED_ENV_MESSAGE =
+  'PRL hearings setup requires CCD_DATA_STORE_URL, TEST_URL or EXUI_BASE_URL, PRL_COS_API_URL, IDAM_SECRET, ' +
+  'S2S_URL or PRL_HEARINGS_S2S_TOKEN, a redirect URI, and court admin credentials.';
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   return values.map((value) => value?.trim()).find((value): value is string => Boolean(value));
+}
+
+const wait = (delayMs: number) => new Promise((resolve) => setTimeout(resolve, delayMs));
+
+function isTransientS2sTokenError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /ENOTFOUND|EAI_AGAIN|ETIMEDOUT|ECONNRESET|socket hang up|timeout|timed out|HTTP (?:502|503|504)/i.test(message);
 }
 
 function resolveManageCaseRedirectUri(testUrl?: string): string | undefined {
@@ -84,6 +116,7 @@ export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = proce
     idamWebUrl: firstNonEmpty(env.IDAM_WEB_URL),
     idamTestingSupportUrl: firstNonEmpty(env.IDAM_TESTING_SUPPORT_URL, env.IDAM_TESTING_SUPPORT_USERS_URL),
     ccdDataStoreUrl: firstNonEmpty(env.CCD_DATA_STORE_URL),
+    manageCaseUrl: firstNonEmpty(env.TEST_URL, env.EXUI_BASE_URL),
     prlCosApiUrl: firstNonEmpty(env.PRL_COS_API_URL, env.PRL_HEARINGS_PRL_COS_API_URL, env.PRL_COS_API),
     idamClientId: firstNonEmpty(env.IDAM_CLIENT_ID, env.SERVICES_IDAM_CLIENT_ID, 'xuiwebapp'),
     idamSecret: firstNonEmpty(env.IDAM_SECRET),
@@ -95,12 +128,8 @@ export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = proce
     s2sUrl: firstNonEmpty(env.PRL_HEARINGS_S2S_URL, env.S2S_URL),
     s2sToken: firstNonEmpty(env.PRL_HEARINGS_S2S_TOKEN),
     serviceMicroservice: firstNonEmpty(env.PRL_HEARINGS_SERVICE_MICROSERVICE, DEFAULT_SERVICE_MICROSERVICE),
-    citizenUsername: firstNonEmpty(env.CITIZEN_USERNAME),
-    citizenPassword: firstNonEmpty(env.CITIZEN_PASSWORD),
     courtAdminUsername: firstNonEmpty(env.COURT_ADMIN_STOKE_USERNAME, env.PRL_HEARINGS_SETUP_USERNAME),
     courtAdminPassword: firstNonEmpty(env.COURT_ADMIN_STOKE_PASSWORD, env.PRL_HEARINGS_SETUP_PASSWORD),
-    courtLocationCode: firstNonEmpty(env.PRL_HEARINGS_COURT_LOCATION_CODE, DEFAULT_HEARING_MANAGER_COURT_LOCATION.code),
-    courtLocationLabel: firstNonEmpty(env.PRL_HEARINGS_COURT_LOCATION_LABEL, DEFAULT_HEARING_MANAGER_COURT_LOCATION.label),
   };
 }
 
@@ -112,13 +141,12 @@ export function validatePrlHearingsCaseSetupConfig(config: PrlHearingsCaseSetupC
   if (!config.idamWebUrl?.trim()) missing.push('IDAM_WEB_URL');
   if (!config.idamTestingSupportUrl?.trim()) missing.push('IDAM_TESTING_SUPPORT_URL or IDAM_TESTING_SUPPORT_USERS_URL');
   if (!config.ccdDataStoreUrl?.trim()) missing.push('CCD_DATA_STORE_URL');
+  if (!config.manageCaseUrl?.trim()) missing.push('TEST_URL or EXUI_BASE_URL');
   if (!config.prlCosApiUrl?.trim()) missing.push('PRL_COS_API_URL');
   if (!config.idamSecret?.trim()) missing.push('IDAM_SECRET');
   if (!config.redirectUri?.trim()) missing.push('MANAGE_CASE_REDIRECT_URI or ORG_USER_ASSIGNMENT_REDIRECT_URI');
   if (!config.s2sUrl?.trim() && !config.s2sToken?.trim()) missing.push('S2S_URL or PRL_HEARINGS_S2S_TOKEN');
   if (!config.serviceMicroservice?.trim()) missing.push('PRL_HEARINGS_SERVICE_MICROSERVICE');
-  if (!config.citizenUsername?.trim()) missing.push('CITIZEN_USERNAME');
-  if (!config.citizenPassword?.trim()) missing.push('CITIZEN_PASSWORD');
   if (!config.courtAdminUsername?.trim()) missing.push('COURT_ADMIN_STOKE_USERNAME');
   if (!config.courtAdminPassword?.trim()) missing.push('COURT_ADMIN_STOKE_PASSWORD');
   return missing;
@@ -137,21 +165,46 @@ function normalizeBaseUrl(url: string): string {
   return url.replace(/\/+$/, '');
 }
 
-function normalizeCourtLocationCode(code: string): string {
-  return code.endsWith(':') ? code : `${code}:`;
+function buildTestingSupportAdminCreateData(): Record<string, unknown> {
+  return {
+    caseTypeOfApplication: 'C100',
+    applicantCaseName: 'Doe V Richards',
+  };
 }
 
-function buildIssueAndSendToLocalCourtEventData(config: Required<PrlHearingsCaseSetupConfig>): Record<string, unknown> {
-  const courtLocation = {
-    code: normalizeCourtLocationCode(config.courtLocationCode),
-    label: config.courtLocationLabel,
-  };
+function selectCourtLocationFromList(
+  listItems: Array<Partial<PrlCourtLocation>> | undefined,
+  primaryLocation: string,
+  source: string
+): PrlCourtLocation {
+  const matches = (listItems ?? []).filter(
+    (location): location is PrlCourtLocation =>
+      location.code?.split(':', 1)[0]?.trim() === primaryLocation && Boolean(location.label?.trim())
+  );
 
+  if (matches.length !== 1) {
+    throw new Error(
+      `PRL hearings setup expected exactly one ${source} for hearing manager location ${primaryLocation}, found ${matches.length}.`
+    );
+  }
+
+  return matches[0];
+}
+
+function selectWorkAllocationCourtLocation(response: WorkAllocationCourtResponse, primaryLocation: string): PrlCourtLocation {
+  return selectCourtLocationFromList(response.data?.courtList?.list_items, primaryLocation, 'PRL Work Allocation court option');
+}
+
+function buildWorkAllocationPreflightRequest(primaryLocation: string): Record<string, unknown> {
   return {
-    data: {
-      courtList: {
-        value: courtLocation,
-        list_items: [courtLocation],
+    event_id: TRANSFER_TO_ANOTHER_COURT_EVENT_ID,
+    case_details: {
+      jurisdiction: PRL_JURISDICTION,
+      case_type_id: PRL_CASE_TYPE,
+      state: 'SUBMITTED_PAID',
+      data: {
+        caseTypeOfApplication: 'C100',
+        courtId: primaryLocation,
       },
     },
   };
@@ -239,6 +292,7 @@ async function getUserId(
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
     failOnStatusCode: false,
   });
@@ -265,157 +319,120 @@ async function getServiceToken(
     return configuredToken;
   }
 
-  const response = await apiContext.post(config.s2sUrl, {
-    data: {
-      microservice,
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= S2S_TOKEN_RETRIES; attempt++) {
+    try {
+      const response = await apiContext.post(config.s2sUrl, {
+        data: {
+          microservice,
+        },
+        failOnStatusCode: false,
+      });
+
+      if (!response.ok()) {
+        throw new Error(`PRL hearings setup could not fetch S2S token (HTTP ${response.status()}).`);
+      }
+
+      const token = (await response.text()).trim();
+      if (!token) {
+        throw new Error('PRL hearings setup S2S response did not include a token.');
+      }
+      return token;
+    } catch (error) {
+      lastError = error;
+      if (!isTransientS2sTokenError(error) || attempt === S2S_TOKEN_RETRIES) {
+        throw error;
+      }
+      await wait(S2S_TOKEN_RETRY_DELAY_MS);
+    }
+  }
+  throw lastError;
+}
+
+async function preflightWorkAllocationCourt(
+  apiContext: APIRequestContext,
+  config: Required<PrlHearingsCaseSetupConfig>,
+  bearerToken: string,
+  serviceToken: string,
+  primaryLocation: string
+): Promise<PrlCourtLocation> {
+  const response = await apiContext.post(`${normalizeBaseUrl(config.prlCosApiUrl)}/transfer-court/about-to-start`, {
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+      ServiceAuthorization: `Bearer ${serviceToken}`,
+      'Content-Type': 'application/json',
     },
+    data: buildWorkAllocationPreflightRequest(primaryLocation),
     failOnStatusCode: false,
   });
 
   if (!response.ok()) {
-    throw new Error(`PRL hearings setup could not fetch S2S token (HTTP ${response.status()}).`);
+    throw formatHttpFailure('PRL hearings setup Work Allocation court preflight failed', response.status());
   }
 
-  const token = (await response.text()).trim();
-  if (!token) {
-    throw new Error('PRL hearings setup S2S response did not include a token.');
-  }
-  return token;
+  return selectWorkAllocationCourtLocation((await response.json()) as WorkAllocationCourtResponse, primaryLocation);
 }
 
-async function getEventToken(
+async function createTestingSupportAdminCase(
   apiContext: APIRequestContext,
   config: Required<PrlHearingsCaseSetupConfig>,
-  userId: string,
   bearerToken: string,
   serviceToken: string,
-  eventId: string,
-  caseReference: string
-): Promise<string> {
-  const tokenUrl =
-    `${normalizeBaseUrl(config.ccdDataStoreUrl)}/caseworkers/${encodeURIComponent(userId)}` +
-    `/jurisdictions/${PRL_JURISDICTION}/case-types/${PRL_CASE_TYPE}` +
-    `/cases/${caseReference}/event-triggers/${eventId}/token`;
-  const requestOptions = {
-    headers: {
-      Authorization: `Bearer ${bearerToken}`,
-      ServiceAuthorization: `Bearer ${serviceToken}`,
-      Experimental: 'true',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    failOnStatusCode: false,
-  };
-
-  let response = await apiContext.get(tokenUrl, requestOptions);
-  if (response.status() === 415) {
-    response = await apiContext.post(tokenUrl, {
-      ...requestOptions,
-      data: {},
-    });
-  }
-
-  if (!response.ok()) {
-    throw new Error(`PRL hearings setup could not fetch CCD event token for ${eventId} (HTTP ${response.status()}).`);
-  }
-
-  const body = (await response.json()) as { token?: string };
-  if (!body.token?.trim()) {
-    throw new Error('PRL hearings setup event token response did not include a token.');
-  }
-  return body.token;
-}
-
-async function createDraftCitizenCase(
-  apiContext: APIRequestContext,
-  config: Required<PrlHearingsCaseSetupConfig>,
-  bearerToken: string,
-  serviceToken: string
+  userId: string
 ): Promise<CcdCaseResponse> {
-  const response = await apiContext.post(
-    `${normalizeBaseUrl(config.prlCosApiUrl)}/testing-support/create-dummy-citizen-case-with-body`,
+  const ccdBaseUrl = normalizeBaseUrl(config.ccdDataStoreUrl);
+  const eventTokenResponse = await apiContext.get(
+    `${ccdBaseUrl}/caseworkers/${encodeURIComponent(userId)}/jurisdictions/${PRL_JURISDICTION}/case-types/${PRL_CASE_TYPE}/event-triggers/${TESTING_SUPPORT_ADMIN_CREATE_EVENT_ID}/token?ignore-warning=true`,
     {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
         ServiceAuthorization: `Bearer ${serviceToken}`,
-        'Content-Type': 'application/json',
+        ...CCD_EVENT_HEADERS,
       },
-      data: prlC100DummyCaseData,
       failOnStatusCode: false,
     }
   );
 
-  if (!response.ok()) {
-    throw formatHttpFailure('PRL hearings setup citizen case create failed', response.status());
+  if (!eventTokenResponse.ok()) {
+    throw formatHttpFailure(
+      'PRL hearings setup could not start the testing-support admin create event',
+      eventTokenResponse.status()
+    );
   }
 
-  return (await response.json()) as CcdCaseResponse;
-}
+  const eventTokenBody = (await eventTokenResponse.json()) as CreateEventTokenResponse;
+  const eventToken = eventTokenBody.event_token?.trim() || eventTokenBody.token?.trim();
+  if (!eventToken) {
+    throw new Error('PRL hearings setup testing-support admin create event did not include a token.');
+  }
 
-async function submitCitizenCase(
-  apiContext: APIRequestContext,
-  config: Required<PrlHearingsCaseSetupConfig>,
-  bearerToken: string,
-  serviceToken: string,
-  createdCase: CcdCaseResponse
-): Promise<void> {
-  const caseReference = extractCaseReference(createdCase);
-  const response = await apiContext.post(
-    `${normalizeBaseUrl(config.prlCosApiUrl)}/citizen/${caseReference}/citizen-case-submit/submit-c100-application`,
+  const createResponse = await apiContext.post(
+    `${ccdBaseUrl}/caseworkers/${encodeURIComponent(userId)}/jurisdictions/${PRL_JURISDICTION}/case-types/${PRL_CASE_TYPE}/cases?ignore-warning=true`,
     {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
         ServiceAuthorization: `Bearer ${serviceToken}`,
-        'Content-Type': 'application/json',
-      },
-      data: createdCase,
-      failOnStatusCode: false,
-    }
-  );
-
-  if (!response.ok()) {
-    throw formatHttpFailure('PRL hearings setup citizen case submit failed', response.status());
-  }
-}
-
-async function submitCcdEvent(
-  apiContext: APIRequestContext,
-  config: Required<PrlHearingsCaseSetupConfig>,
-  userId: string,
-  bearerToken: string,
-  serviceToken: string,
-  caseReference: string,
-  eventId: string,
-  eventData: Record<string, unknown>
-): Promise<void> {
-  const eventToken = await getEventToken(apiContext, config, userId, bearerToken, serviceToken, eventId, caseReference);
-  const response = await apiContext.post(
-    `${normalizeBaseUrl(config.ccdDataStoreUrl)}/caseworkers/${encodeURIComponent(userId)}` +
-      `/jurisdictions/${PRL_JURISDICTION}/case-types/${PRL_CASE_TYPE}/cases/${caseReference}/events`,
-    {
-      headers: {
-        Authorization: `Bearer ${bearerToken}`,
-        ServiceAuthorization: `Bearer ${serviceToken}`,
-        Experimental: 'true',
-        'Content-Type': 'application/json; charset=UTF-8',
+        ...CCD_EVENT_HEADERS,
       },
       data: {
-        ...eventData,
+        data: buildTestingSupportAdminCreateData(),
         event: {
-          id: eventId,
+          id: TESTING_SUPPORT_ADMIN_CREATE_EVENT_ID,
           summary: '',
           description: '',
         },
         event_token: eventToken,
-        ignore_warning: false,
+        ignore_warning: true,
       },
       failOnStatusCode: false,
     }
   );
 
-  if (!response.ok()) {
-    throw formatHttpFailure(`PRL hearings setup event ${eventId} failed`, response.status());
+  if (!createResponse.ok()) {
+    throw formatHttpFailure('PRL hearings setup testing-support admin case create failed', createResponse.status());
   }
+
+  return (await createResponse.json()) as CcdCaseResponse;
 }
 
 async function getCaseInfo(
@@ -429,7 +446,7 @@ async function getCaseInfo(
     headers: {
       Authorization: `Bearer ${bearerToken}`,
       ServiceAuthorization: `Bearer ${serviceToken}`,
-      Experimental: 'true',
+      experimental: 'true',
     },
     failOnStatusCode: false,
   });
@@ -441,8 +458,34 @@ async function getCaseInfo(
   return (await response.json()) as CcdCaseResponse;
 }
 
-export async function createPrlHearingsCase(): Promise<string> {
-  const resolved = resolvePrlHearingsCaseSetupConfig(process.env);
+function validateCreatedCase(caseInfo: CcdCaseResponse, primaryLocation: string): void {
+  if (caseInfo.state !== JUDICIAL_REVIEW_STATE) {
+    throw new Error(
+      `PRL hearings setup expected state ${JUDICIAL_REVIEW_STATE} after creating the case, found ${caseInfo.state ?? 'missing'}.`
+    );
+  }
+
+  const caseData = caseInfo.data ?? caseInfo.case_data ?? {};
+
+  const caseManagementLocation = caseData.caseManagementLocation as { baseLocation?: unknown } | undefined;
+  const actualLocation = String(caseManagementLocation?.baseLocation ?? '').trim();
+  if (actualLocation !== primaryLocation) {
+    throw new Error(
+      `PRL hearings setup expected case location ${primaryLocation} after creating the case, found ${actualLocation || 'missing'}.`
+    );
+  }
+}
+
+export async function createPrlHearingsCase(
+  primaryLocation: string,
+  setupUserCredentials?: UserCredentials
+): Promise<PrlHearingsCaseSetupResult> {
+  const baseConfig = resolvePrlHearingsCaseSetupConfig(process.env);
+  const resolved = {
+    ...baseConfig,
+    courtAdminUsername: setupUserCredentials?.username ?? baseConfig.courtAdminUsername,
+    courtAdminPassword: setupUserCredentials?.password ?? baseConfig.courtAdminPassword,
+  };
   const missing = validatePrlHearingsCaseSetupConfig(resolved);
   if (missing.length > 0) {
     throw new Error(`${REQUIRED_ENV_MESSAGE} Missing: ${missing.join(', ')}.`);
@@ -451,48 +494,95 @@ export async function createPrlHearingsCase(): Promise<string> {
   const config = resolved as Required<PrlHearingsCaseSetupConfig>;
   const apiContext = await request.newContext();
   try {
-    const citizenToken = await getBearerToken({ username: config.citizenUsername, password: config.citizenPassword }, config);
+    const courtAdminToken =
+      setupUserCredentials?.bearerToken ??
+      (await getBearerToken({ username: config.courtAdminUsername, password: config.courtAdminPassword }, config));
     const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
-    const createdCase = await createDraftCitizenCase(apiContext, config, citizenToken, serviceToken);
+    await preflightWorkAllocationCourt(apiContext, config, courtAdminToken, serviceToken, primaryLocation);
+    const userId = await getUserId(apiContext, config, courtAdminToken);
+    const createdCase = await createTestingSupportAdminCase(apiContext, config, courtAdminToken, serviceToken, userId);
     const caseReference = extractCaseReference(createdCase);
-    await submitCitizenCase(apiContext, config, citizenToken, serviceToken, createdCase);
-
-    const courtAdminToken = await getBearerToken(
-      { username: config.courtAdminUsername, password: config.courtAdminPassword },
-      config
-    );
-    const courtAdminUserId = await getUserId(apiContext, config, courtAdminToken);
-    await submitCcdEvent(
-      apiContext,
-      config,
-      courtAdminUserId,
-      courtAdminToken,
-      serviceToken,
-      caseReference,
-      ISSUE_AND_SEND_TO_LOCAL_COURT_EVENT_ID,
-      buildIssueAndSendToLocalCourtEventData(config)
-    );
-    await getCaseInfo(apiContext, config, courtAdminToken, serviceToken, caseReference);
-    return caseReference;
+    const caseInfo = await getCaseInfo(apiContext, config, courtAdminToken, serviceToken, caseReference);
+    validateCreatedCase(caseInfo, primaryLocation);
+    return { caseReference };
   } finally {
     await apiContext.dispose();
   }
 }
 
-export async function createPrlHearingsCaseIfEnabled(): Promise<string | undefined> {
+async function findFirstPassingPrlWorkAllocationCourt(
+  apiContext: APIRequestContext,
+  config: Required<PrlHearingsCaseSetupConfig>,
+  bearerToken: string,
+  serviceToken: string,
+  primaryLocations: string[],
+  preflightCourt = preflightWorkAllocationCourt
+): Promise<string> {
+  const failures: string[] = [];
+  for (const location of primaryLocations) {
+    try {
+      await preflightCourt(apiContext, config, bearerToken, serviceToken, location);
+      return location;
+    } catch (error) {
+      failures.push(`${location}: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  throw new Error(
+    `PRL hearings setup found no seeded Work Allocation court for role locations: ${primaryLocations.join(
+      ', '
+    )}. Preflight failures: ${failures.join(' | ')}.`
+  );
+}
+
+export async function findPrlWorkAllocationCourt(
+  primaryLocations: string[],
+  setupUserCredentials?: UserCredentials
+): Promise<string> {
+  const baseConfig = resolvePrlHearingsCaseSetupConfig(process.env);
+  const resolved = {
+    ...baseConfig,
+    courtAdminUsername: setupUserCredentials?.username ?? baseConfig.courtAdminUsername,
+    courtAdminPassword: setupUserCredentials?.password ?? baseConfig.courtAdminPassword,
+  };
+  const missing = validatePrlHearingsCaseSetupConfig(resolved);
+  if (missing.length > 0) throw new Error(`${REQUIRED_ENV_MESSAGE} Missing: ${missing.join(', ')}.`);
+  const config = resolved as Required<PrlHearingsCaseSetupConfig>;
+  const apiContext = await request.newContext();
+  try {
+    const bearerToken =
+      setupUserCredentials?.bearerToken ??
+      (await getBearerToken({ username: config.courtAdminUsername, password: config.courtAdminPassword }, config));
+    const serviceToken = await getServiceToken(apiContext, config, config.serviceMicroservice);
+    return await findFirstPassingPrlWorkAllocationCourt(apiContext, config, bearerToken, serviceToken, primaryLocations);
+  } finally {
+    await apiContext.dispose();
+  }
+}
+
+export async function createPrlHearingsCaseIfEnabled(
+  primaryLocation: string,
+  setupUserCredentials?: UserCredentials
+): Promise<PrlHearingsCaseSetupResult | undefined> {
   if (!isPrlHearingsCaseSetupEnabled()) {
     return undefined;
   }
 
-  return createPrlHearingsCase();
+  return createPrlHearingsCase(primaryLocation, setupUserCredentials);
 }
 
 export const __test__ = {
   extractCaseReference,
   formatHttpFailure,
-  buildIssueAndSendToLocalCourtEventData,
+  buildTestingSupportAdminCreateData,
+  buildWorkAllocationPreflightRequest,
   isPrlHearingsCaseSetupEnabled,
-  normalizeCourtLocationCode,
+  preflightWorkAllocationCourt,
+  findFirstPassingPrlWorkAllocationCourt,
+  createTestingSupportAdminCase,
+  getServiceToken,
+  isTransientS2sTokenError,
   resolvePrlHearingsCaseSetupConfig,
+  selectWorkAllocationCourtLocation,
+  validateCreatedCase,
   validatePrlHearingsCaseSetupConfig,
 };

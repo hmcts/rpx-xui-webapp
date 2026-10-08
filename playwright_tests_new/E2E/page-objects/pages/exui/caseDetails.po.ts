@@ -49,7 +49,7 @@ export class CaseDetailsPage extends Base {
   readonly lastNameCell = this.page.locator('tr:has-text("Last Name") + td');
   readonly updateCase = this.page.getByText('Update case', { exact: true });
   readonly historyTable = this.page.locator('table.EventLogTable');
-  readonly historyDetailsTable = this.page.locator('table.EventLogDetails');
+  readonly historyDetailsList = this.page.locator('dl.EventLogDetails');
 
   // Case details - FindSearch FPL
   readonly caseDetailsTab1 = this.page.locator('div[role="tablist"]');
@@ -222,6 +222,28 @@ export class CaseDetailsPage extends Base {
     const fallbackTable = this.caseDocumentsTable.first();
     await fallbackTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
     return this.parseDataTable(fallbackTable);
+  }
+
+  /**
+   * Read a description list (dl) and return an object keyed by each dt's text, with the
+   * text of the dd that follows it as the value. The first occurrence of a key wins.
+   */
+  async dlToObjectInPage(list: Locator): Promise<Record<string, string>> {
+    await list.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+    return list.evaluate((dl) => {
+      const out: Record<string, string> = {};
+      for (const dt of Array.from(dl.querySelectorAll('dt'))) {
+        const key = (dt.textContent || '').replaceAll(/\s+/g, ' ').trim();
+        let dd = dt.nextElementSibling;
+        while (dd && dd.tagName !== 'DD') {
+          dd = dd.nextElementSibling;
+        }
+        if (key && !Object.prototype.hasOwnProperty.call(out, key)) {
+          out[key] = (dd?.textContent || '').replaceAll(/\s+/g, ' ').trim();
+        }
+      }
+      return out;
+    });
   }
 
   async trRowsToObjectInPage(selector: string | Locator): Promise<Record<string, string>> {

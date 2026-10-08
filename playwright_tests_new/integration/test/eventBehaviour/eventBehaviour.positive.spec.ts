@@ -97,7 +97,7 @@ test.describe('Event behaviour integration', { tag: ['@integration', '@integrati
     const eventRow = caseDetailsPage.historyTable.getByRole('row', { name: new RegExp(EVENT_BEHAVIOUR_TRIGGER_NAME) });
     await expect(eventRow).toBeVisible();
     await eventRow.click();
-    const eventDetails = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
+    const eventDetails = await caseDetailsPage.dlToObjectInPage(caseDetailsPage.historyDetailsList);
     expect(eventDetails).toMatchObject({
       'End state': 'Outcome recorded',
       Event: EVENT_BEHAVIOUR_TRIGGER_NAME,

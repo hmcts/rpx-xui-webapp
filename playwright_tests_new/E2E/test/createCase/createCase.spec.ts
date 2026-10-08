@@ -91,7 +91,7 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
         Summary: '-',
         Comment: '-',
       };
-      const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
+      const table = await caseDetailsPage.dlToObjectInPage(caseDetailsPage.historyDetailsList);
       expect.soft(table).toMatchObject(expectedDetails);
     });
   });

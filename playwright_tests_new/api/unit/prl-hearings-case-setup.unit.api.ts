@@ -77,6 +77,61 @@ test.describe('PRL hearings case setup', () => {
     expect(config.s2sUrl).toBe('http://service-auth/testing-support/lease');
   });
 
+  test('retries transient S2S token lookup failures before using the token', async () => {
+    let attempts = 0;
+    const context = {
+      post: async () => {
+        attempts++;
+        if (attempts < 3) {
+          throw new Error('getaddrinfo ENOTFOUND rpe-service-auth-provider-aat.service.core-compute-aat.internal');
+        }
+        return {
+          ok: () => true,
+          text: async () => 'service-token',
+        };
+      },
+    } as unknown as APIRequestContext;
+
+    await expect(
+      __test__.getServiceToken(
+        context,
+        {
+          s2sUrl: 'http://service-auth/testing-support/lease',
+          s2sToken: '',
+          serviceMicroservice: 'ccd_data',
+        } as Required<PrlHearingsCaseSetupConfig>,
+        'ccd_data'
+      )
+    ).resolves.toBe('service-token');
+    expect(attempts).toBe(3);
+  });
+
+  test('does not retry non-transient S2S token failures', async () => {
+    let attempts = 0;
+    const context = {
+      post: async () => {
+        attempts++;
+        return {
+          ok: () => false,
+          status: () => 403,
+        };
+      },
+    } as unknown as APIRequestContext;
+
+    await expect(
+      __test__.getServiceToken(
+        context,
+        {
+          s2sUrl: 'http://service-auth/testing-support/lease',
+          s2sToken: '',
+          serviceMicroservice: 'ccd_data',
+        } as Required<PrlHearingsCaseSetupConfig>,
+        'ccd_data'
+      )
+    ).rejects.toThrow('HTTP 403');
+    expect(attempts).toBe(1);
+  });
+
   test('accepts the Key Vault IDAM testing-support users URL alias', () => {
     const config = __test__.resolvePrlHearingsCaseSetupConfig({
       IDAM_TESTING_SUPPORT_USERS_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net/test/idam/users',
@@ -410,6 +465,41 @@ test.describe('PRL hearings case setup', () => {
       )
     ).rejects.toThrow(
       'PRL hearings setup Work Allocation court preflight failed (HTTP 503). Check sanitized service logs for response details.'
+    );
+  });
+
+  test('finds the first seeded Work Allocation court and preserves all preflight failures', async () => {
+    const apiContext = {} as APIRequestContext;
+    const config = { prlCosApiUrl: 'https://prl-cos-api.example.test/' } as Required<PrlHearingsCaseSetupConfig>;
+    const attempts: string[] = [];
+    const selected = await __test__.findFirstPassingPrlWorkAllocationCourt(
+      apiContext,
+      config,
+      'court-admin-token',
+      's2s-token',
+      ['111111', '222222'],
+      async (_apiContext, _config, _bearerToken, _serviceToken, location) => {
+        attempts.push(location);
+        if (location === '111111') throw new Error('court missing from PRL list');
+      }
+    );
+
+    expect(selected).toBe('222222');
+    expect(attempts).toEqual(['111111', '222222']);
+
+    await expect(
+      __test__.findFirstPassingPrlWorkAllocationCourt(
+        apiContext,
+        config,
+        'court-admin-token',
+        's2s-token',
+        ['111111', '222222'],
+        async (_apiContext, _config, _bearerToken, _serviceToken, location) => {
+          throw new Error(`preflight failed for ${location}`);
+        }
+      )
+    ).rejects.toThrow(
+      'PRL hearings setup found no seeded Work Allocation court for role locations: 111111, 222222. Preflight failures: 111111: preflight failed for 111111 | 222222: preflight failed for 222222.'
     );
   });
 

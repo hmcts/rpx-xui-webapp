@@ -33,10 +33,10 @@ export function resolveCivilClaimantPartyName(payload: CcdCaseDetails): string |
   const caseData = resolveCaseDataPayload(payload);
   const applicant = caseData.applicant1 ?? findCivilClaimantPartyRecord(payload);
   if (!applicant || typeof applicant !== 'object') {
-    return undefined;
+    return findCivilClaimantNameFromCaseView(payload);
   }
 
-  return formatCivilPartyName(applicant as JsonRecord);
+  return formatCivilPartyName(applicant as JsonRecord) ?? findCivilClaimantNameFromCaseView(payload);
 }
 
 export function rawCivilDataLossAttachmentsEnabled(): boolean {
@@ -273,6 +273,27 @@ function findCivilClaimantPartyRecord(value: unknown, visited = new WeakSet<obje
   }
 
   return formatCivilIndividualName(record) ? record : undefined;
+}
+
+function findCivilClaimantNameFromCaseView(value: unknown, visited = new WeakSet<object>()): string | undefined {
+  if (!isTraversableObject(value) || visited.has(value)) {
+    return undefined;
+  }
+  visited.add(value);
+
+  const record = value as JsonRecord;
+  if (record.id === 'caseNameHmctsInternal') {
+    const formattedValue = record.formatted_value;
+    if (typeof formattedValue === 'string') {
+      return formattedValue.split(/\s+v\s+/i, 2)[0]?.trim() || undefined;
+    }
+  }
+
+  for (const entry of Object.values(record)) {
+    const match = findCivilClaimantNameFromCaseView(entry, visited);
+    if (match) return match;
+  }
+  return undefined;
 }
 
 function findCivilClaimantPartyRecordInArray(value: unknown[], visited: WeakSet<object>): JsonRecord | undefined {

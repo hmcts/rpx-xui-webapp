@@ -1,8 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["local>hmcts/.github:renovate-config", "local>hmcts/.github//renovate/automerge-all"],
-  "automerge": true,
-  "platformAutomerge": true,
+  "automerge": false,
+  "platformAutomerge": false,
   "prConcurrentLimit": 3,
   "prHourlyLimit": 1,
   "timezone": "Europe/London",
@@ -13,9 +13,12 @@
       "description": "Exclude pinned HMCTS and Angular dependencies from Renovate updates",
       "matchPackageNames": [
         "@hmcts/ccd-case-ui-toolkit",
+        "@hmcts/ccpay-web-component",
         "@hmcts/rpx-xui-common-lib",
         "@hmcts/rpx-xui-node-lib",
         "rpx-xui-translation",
+        "@microsoft/applicationinsights-web",
+        "applicationinsights",
         "/^@angular\\//",
         "/^@angular-devkit\\//"
       ],

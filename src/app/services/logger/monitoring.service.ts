@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewPerformanceTelemetry } from '@microsoft/applicationinsights-web';
+import { defer, Observable, of } from 'rxjs';
+import { catchError, map, shareReplay, take } from 'rxjs/operators';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number);
@@ -48,8 +50,8 @@ export class MonitorConfig implements IConfig {
 @Injectable()
 export class MonitoringService implements IMonitoringService {
   public areCookiesEnabled: boolean = false;
-  @Optional() appInsights: ApplicationInsights;
-  @Optional() private config?: MonitorConfig;
+  public appInsights: ApplicationInsights;
+  private initialization$?: Observable<boolean>;
 
   constructor(private readonly http: HttpClient) {}
 
@@ -59,7 +61,7 @@ export class MonitoringService implements IMonitoringService {
       uri: url,
       properties,
       measurements,
-      duration: duration.toString(),
+      duration: duration?.toString(),
     };
     this.send(() => {
       this.appInsights.trackPageView(pageViewTelemetry);
@@ -87,29 +89,51 @@ export class MonitoringService implements IMonitoringService {
     this.areCookiesEnabled = true;
   }
 
-  private send(func: () => any): void {
-    if (this.config?.connectionString) {
-      func();
-    } else {
-      // will only get run once per login
-      this.http.get('/api/monitoring-tools').subscribe((monitor) => {
-        const connStr = monitor['connectionString'];
-        this.config = {
-          connectionString: connStr,
-        };
-        if (!this.areCookiesEnabled) {
-          this.config = {
-            ...this.config,
-            isCookieUseDisabled: true,
-            isStorageUseDisabled: true,
-            enableSessionStorageBuffer: true,
-          };
+  private send(func: () => void): void {
+    this.initialize().subscribe((initialized) => {
+      if (initialized) {
+        try {
+          func();
+        } catch {
+          // Telemetry failures must not interrupt the application or log sensitive error details.
         }
-        this.appInsights = new ApplicationInsights({ config: this.config });
-        // below is important step to utilise the app insights instance
-        this.appInsights.loadAppInsights();
-        func();
-      });
+      }
+    });
+  }
+
+  private initialize(): Observable<boolean> {
+    if (!this.initialization$) {
+      this.initialization$ = defer(() => this.http.get<{ connectionString?: string }>('/api/monitoring-tools')).pipe(
+        take(1),
+        map((monitor) => {
+          const connectionString = monitor?.connectionString;
+          if (typeof connectionString !== 'string' || !connectionString.trim()) {
+            return false;
+          }
+
+          const config: MonitorConfig = { connectionString };
+          if (!this.areCookiesEnabled) {
+            Object.assign(config, {
+              isCookieUseDisabled: true,
+              isStorageUseDisabled: true,
+              enableSessionStorageBuffer: true,
+            });
+          }
+
+          const appInsights = this.createAppInsights(config);
+          appInsights.loadAppInsights();
+          this.appInsights = appInsights;
+          return true;
+        }),
+        // Cache failure as well as success: later log calls must not repeatedly retry initialization.
+        catchError(() => of(false)),
+        shareReplay({ bufferSize: 1, refCount: false })
+      );
     }
+    return this.initialization$;
+  }
+
+  private createAppInsights(config: MonitorConfig): ApplicationInsights {
+    return new ApplicationInsights({ config });
   }
 }

@@ -3416,9 +3416,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.8-5290-rc3":
-  version: 7.4.8-5290-rc3
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.8-5290-rc3"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.9-fprel":
+  version: 7.4.9-fprel
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.9-fprel"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
@@ -3464,7 +3464,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/aba414b73f59c82ee12ca166b1aaf6e04cfa287549b94af48f67c0cc271f987aabf730ecc022ee05bdb763864e87e048ef711aa9b2e9a0ee94492bd65d49ab82
+  checksum: 10/9de03d98ccdabf6bf2339e5b9f0e2f9569be2b37263e5a29895debdf50171d123c0ee5aa69f5572943e84a77ad586ab61929bcda03ba88241da1f9bb8a66d7bd
   languageName: node
   linkType: hard
 
@@ -3479,35 +3479,6 @@ __metadata:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
   checksum: 10/892786160ccab3b4a1cb4db7485e4b9866e22743096d9342e107cab3437f9e4404aac6cf62afb99ee8df9ae85eee68404fc9845843963d58b8d550475d6e46f1
-  languageName: node
-  linkType: hard
-
-"@hmcts/media-viewer@npm:4.2.40":
-  version: 4.2.40
-  resolution: "@hmcts/media-viewer@npm:4.2.40"
-  dependencies:
-    "@swimlane/ngx-datatable": "npm:^23.0.1"
-    moment-timezone: "npm:^0.6.2"
-    mutable-div: "npm:^2.0.0"
-    pdfjs-dist: "npm:^4.10.38"
-    socket.io-client: "npm:^4.8.0"
-    tslib: "npm:^2.3.0"
-    uuid: "npm:^11.1.1"
-  peerDependencies:
-    "@angular/animations": ^20.0.0
-    "@angular/cdk": ^17.3.8
-    "@angular/common": ^20.0.0
-    "@angular/core": ^20.0.0
-    "@angular/forms": ^20.0.0
-    "@angular/platform-browser": ^20.0.0
-    "@angular/router": ^20.0.0
-    "@ngrx/effects": ^20
-    "@ngrx/store": ^20
-    "@ngrx/store-devtools": ^20
-    ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.14
-    rxjs: ^7.8.2
-  checksum: 10/22ae7f3c3b642b0f05a8af3c0ca0b98d256567fb72f8a859cea927d9cfe36baa3566f86fa6ab13ed798d4ccc1aacc695e91ac1bad5f2a88292e4dee08769c43e
   languageName: node
   linkType: hard
 
@@ -21056,7 +21027,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.8-5290-rc3"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.9-fprel"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.40"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

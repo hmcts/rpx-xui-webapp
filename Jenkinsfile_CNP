@@ -494,7 +494,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
     }
 }
 
-def branchesToSync = ['demo', 'perftest', 'ithc']
+def branchesToSync = ['perftest', 'ithc']
 
 def secrets = [
   'rpx-${env}': [

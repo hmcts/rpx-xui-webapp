@@ -152,6 +152,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'sitemap',
+    canActivate: [AuthGuard, SessionStorageGuard],
     component: SitemapComponent,
     data: {
       title: 'Site map',

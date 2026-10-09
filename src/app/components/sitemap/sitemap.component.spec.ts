@@ -163,6 +163,7 @@ describe('SitemapComponent', () => {
     expect(translatedPhrases).toEqual(
       jasmine.arrayContaining([
         'Site map',
+        'Use this page to find your way around',
         'My work',
         'My tasks',
         'Available tasks',
@@ -189,6 +190,16 @@ describe('SitemapComponent', () => {
         'Help and information',
       ])
     );
+  });
+
+  it('should use the logged-in user application title in the introduction', () => {
+    mockStoreState(createUserDetails(['judge']));
+    const titleFixture = TestBed.createComponent(SitemapComponent);
+    titleFixture.detectChanges();
+
+    const introduction = titleFixture.debugElement.query(By.css('main p.govuk-body')).nativeElement.textContent.trim();
+
+    expect(introduction).toBe('Use this page to find your way around Judicial Case Manager.');
   });
 
   it('should show links available to the current user and unrestricted footer help pages', () => {

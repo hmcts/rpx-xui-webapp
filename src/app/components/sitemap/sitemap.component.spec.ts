@@ -124,6 +124,17 @@ describe('SitemapComponent', () => {
     return fixture.debugElement.queryAll(By.css('main a')).map((link) => link.attributes.href);
   }
 
+  function renderSitemapHeadings(details: UserDetails): string[] {
+    mockStoreState(details);
+    fixture = TestBed.createComponent(SitemapComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    return fixture.debugElement
+      .queryAll(By.css('main h2'))
+      .map((heading) => heading.nativeElement.textContent.trim());
+  }
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -152,19 +163,20 @@ describe('SitemapComponent', () => {
     expect(translatedPhrases).toEqual(
       jasmine.arrayContaining([
         'Site map',
-        'Work allocation',
         'My work',
+        'My tasks',
         'Available tasks',
         'My cases',
         'My access',
         'All work',
-        'All work cases',
+        'Tasks',
+        'Cases',
         'Work access',
         'Case management',
         'Case list',
         'Create case',
         'Find case',
-        'Search cases',
+        'Search',
         'Notice of change',
         'Refunds',
         'Staff administration',
@@ -202,22 +214,38 @@ describe('SitemapComponent', () => {
       '/get-help',
     ]);
     expect(linkText).toEqual([
-      'My work',
+      'My tasks',
       'Available tasks',
       'My cases',
       'My access',
-      'All work',
-      'All work cases',
+      'Tasks',
+      'Cases',
       'Case list',
       'Create case',
       'Find case',
-      'Search cases',
+      'Search',
       'Accessibility statement',
       'Terms and conditions',
       'Cookies',
       'Privacy policy',
       'Get help',
     ]);
+  });
+
+  describe('work allocation section headings', () => {
+    it('should render My work only when its section has visible links', () => {
+      const headings = renderSitemapHeadings(createUserDetails(['case-manager'], [supportedCaseManagerAssignment]));
+
+      expect(headings).toContain('My work');
+      expect(headings).not.toContain('All work');
+    });
+
+    it('should render All work only when its section has visible links', () => {
+      const headings = renderSitemapHeadings(createUserDetails(['task-supervisor']));
+
+      expect(headings).toContain('All work');
+      expect(headings).not.toContain('My work');
+    });
   });
 
   describe('role-based visibility', () => {
@@ -240,7 +268,7 @@ describe('SitemapComponent', () => {
         expect(destinations).toContain('/cases/case-search');
       });
 
-      it('should show Search cases for a case-manager with a supported role assignment', () => {
+      it('should show Search for a case-manager with a supported role assignment', () => {
         const destinations = renderSitemap(createUserDetails(['case-manager'], [supportedCaseManagerAssignment]));
 
         expect(destinations).toContain('/search');
@@ -258,7 +286,7 @@ describe('SitemapComponent', () => {
         expect(destinations).toContain('/refunds');
       });
 
-      it('should show My work for a case-manager with a supported role assignment', () => {
+      it('should show My tasks for a case-manager with a supported role assignment', () => {
         const destinations = renderSitemap(createUserDetails(['case-manager'], [supportedCaseManagerAssignment]));
 
         expect(destinations).toContain('/work/my-work/list');
@@ -282,13 +310,13 @@ describe('SitemapComponent', () => {
         expect(destinations).toContain('/work/my-work/my-access');
       });
 
-      it('should show All work for a task-supervisor user', () => {
+      it('should show Tasks for a task-supervisor user', () => {
         const destinations = renderSitemap(createUserDetails(['task-supervisor']));
 
         expect(destinations).toContain('/work/all-work/tasks');
       });
 
-      it('should show All work cases for a task-supervisor user', () => {
+      it('should show Cases for a task-supervisor user', () => {
         const destinations = renderSitemap(createUserDetails(['task-supervisor']));
 
         expect(destinations).toContain('/work/all-work/cases');
@@ -320,7 +348,7 @@ describe('SitemapComponent', () => {
         expect(destinations).not.toContain('/cases/case-search');
       });
 
-      it('should hide Search cases when case-manager is absent', () => {
+      it('should hide Search when case-manager is absent', () => {
         const destinations = renderSitemap(createUserDetails(['unrelated-role']));
 
         expect(destinations).not.toContain('/search');
@@ -338,7 +366,7 @@ describe('SitemapComponent', () => {
         expect(destinations).not.toContain('/refunds');
       });
 
-      it('should hide My work when case-manager is absent', () => {
+      it('should hide My tasks when case-manager is absent', () => {
         const destinations = renderSitemap(createUserDetails(['unrelated-role']));
 
         expect(destinations).not.toContain('/work/my-work/list');
@@ -362,13 +390,13 @@ describe('SitemapComponent', () => {
         expect(destinations).not.toContain('/work/my-work/my-access');
       });
 
-      it('should hide All work when task-supervisor is absent', () => {
+      it('should hide Tasks when task-supervisor is absent', () => {
         const destinations = renderSitemap(createUserDetails(['unrelated-role']));
 
         expect(destinations).not.toContain('/work/all-work/tasks');
       });
 
-      it('should hide All work cases when task-supervisor is absent', () => {
+      it('should hide Cases when task-supervisor is absent', () => {
         const destinations = renderSitemap(createUserDetails(['unrelated-role']));
 
         expect(destinations).not.toContain('/work/all-work/cases');

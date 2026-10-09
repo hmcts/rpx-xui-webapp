@@ -34,6 +34,8 @@ nodejs:
     XUI_ENV: preview
     LOGGING: debug
     MAX_LOG_LINE: 80
+    # Override per environment to control SDK-side sampling (0-100).
+    APPINSIGHTS_SAMPLING_PERCENTAGE: 1
     PROTOCOL: https
     MICROSERVICE: xui_webapp
     ALLOW_CONFIG_MUTATIONS: 1

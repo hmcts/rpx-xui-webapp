@@ -9,7 +9,7 @@
 
         <ng-container *ngIf="sitemapSections$ | async as sections">
           <ng-container *ngFor="let section of sections">
-            <h2 class="govuk-heading-l">{{ section.heading | rpxTranslate }}</h2>
+            <h2 class="govuk-heading-m">{{ section.heading | rpxTranslate }}</h2>
             <ul class="govuk-list">
               <li *ngFor="let link of section.links">
                 <a class="govuk-link" [routerLink]="link.href">{{ link.text | rpxTranslate }}</a>
@@ -18,7 +18,7 @@
           </ng-container>
         </ng-container>
 
-        <h2 class="govuk-heading-l">{{ 'Help and information' | rpxTranslate }}</h2>
+        <h2 class="govuk-heading-m">{{ 'Help and information' | rpxTranslate }}</h2>
         <ul class="govuk-list">
           <li>
             <a class="govuk-link" routerLink="/accessibility">{{ 'Accessibility statement' | rpxTranslate }}</a>

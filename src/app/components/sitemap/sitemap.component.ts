@@ -5,12 +5,11 @@ import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { WAVerificationService } from '../../../work-allocation/services';
 import { AppConstants, getTermsAndConditionsHref } from '../../app.constants';
 import { UserDetails, WAVerificationModel } from '../../models';
-import { ApplicationTheme, NavigationItem } from '../../models/theming.model';
+import { NavigationItem } from '../../models/theming.model';
 import { HeaderConfigService } from '../../services/header-config/header-config.service';
 import * as fromRoot from '../../store';
 import { filterNavigationItemsByAccess } from '../../shared/utils/navigation-access.utils';
-import { environment } from '../../../environments/environment';
-import { getUserRolesExcludingSpecificAccessApprover } from '../../shared/utils/role.utils';
+import { getApplicationThemeForUserRoles } from '../../shared/utils/application-theme.utils';
 
 interface SitemapLink {
   text: string;
@@ -21,15 +20,6 @@ interface SitemapLink {
 export interface SitemapSection {
   heading: string;
   links: SitemapLink[];
-}
-
-function getApplicationTitleForUserRoles(userRoles: string[] = []): string {
-  const availableThemes = environment.themes;
-  const userRolesForTheme = getUserRolesExcludingSpecificAccessApprover(userRoles);
-  const themeRegex =
-    Object.keys(availableThemes).find((key) => userRolesForTheme.some((role) => new RegExp(key).test(role))) || '.+';
-
-  return (availableThemes[themeRegex] as ApplicationTheme).appTitle.name;
 }
 
 const sitemapSections: SitemapSection[] = [
@@ -96,7 +86,7 @@ export class SitemapComponent implements OnInit {
     );
 
     this.applicationTitle$ = userDetails$.pipe(
-      map((userDetails) => getApplicationTitleForUserRoles(userDetails.userInfo.roles ?? [])),
+      map((userDetails) => getApplicationThemeForUserRoles(userDetails.userInfo.roles ?? []).appTitle.name),
       startWith(AppConstants.DEFAULT_USER_THEME.appTitle.name)
     );
 

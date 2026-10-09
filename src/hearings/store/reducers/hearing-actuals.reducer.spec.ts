@@ -1,6 +1,7 @@
 import { HttpError } from '../../../models/httpError.model';
 import { hearingActualsMainModel } from '../../hearing.test.data';
 import { HearingActualsStateData } from '../../models/hearingActualsStateData.model';
+import { HMCStatus } from '../../models/hearings.enum';
 import * as fromHearingActualsActions from '../actions/hearing-actuals.action';
 import * as fromHearingActualsReducer from './hearing-actuals.reducer';
 
@@ -17,6 +18,28 @@ describe('Hearing Actuals Reducer', () => {
     });
 
     describe('get service hearing actuals success action', () => {
+      it('should clear current hearing actuals while loading new actuals', () => {
+        const action = new fromHearingActualsActions.GetHearingActuals({
+          id: '1111222233334444',
+          caseRef: '5555666677778888',
+        });
+        const hearingsState = fromHearingActualsReducer.hearingActualsReducer(
+          {
+            hearingActualsMainModel,
+            lastError: {
+              status: 500,
+              statusText: 'Server Error',
+              message: 'Server Error',
+              errors: [],
+            },
+          },
+          action
+        );
+
+        expect(hearingsState.hearingActualsMainModel).toEqual(null);
+        expect(hearingsState.lastError).toEqual(null);
+      });
+
       it('should set correct object', () => {
         const action = new fromHearingActualsActions.GetHearingActualsSuccess(hearingActualsMainModel);
         const hearingsState = fromHearingActualsReducer.hearingActualsReducer(
@@ -25,6 +48,44 @@ describe('Hearing Actuals Reducer', () => {
         );
         expect(hearingsState.hearingActualsMainModel).toEqual(hearingActualsMainModel);
       });
+
+      it('should retain finalised edit mode for cancelled, completed and adjourned hearings', () => {
+        [HMCStatus.CANCELLED, HMCStatus.COMPLETED, HMCStatus.ADJOURNED].forEach((hmcStatus) => {
+          const action = new fromHearingActualsActions.GetHearingActualsSuccess({
+            ...hearingActualsMainModel,
+            hmcStatus,
+          });
+          const hearingsState = fromHearingActualsReducer.hearingActualsReducer(
+            { ...fromHearingActualsReducer.initialHearingActualsState, isFinalisedEditMode: true },
+            action
+          );
+
+          expect(hearingsState.isFinalisedEditMode).withContext(hmcStatus).toBeTrue();
+        });
+      });
+
+      it('should disable finalised edit mode for an unsupported HMC status', () => {
+        const action = new fromHearingActualsActions.GetHearingActualsSuccess({
+          ...hearingActualsMainModel,
+          hmcStatus: HMCStatus.UPDATE_SUBMITTED,
+        });
+        const hearingsState = fromHearingActualsReducer.hearingActualsReducer(
+          { ...fromHearingActualsReducer.initialHearingActualsState, isFinalisedEditMode: true },
+          action
+        );
+
+        expect(hearingsState.isFinalisedEditMode).toBeFalse();
+      });
+    });
+
+    it('should set finalised edit mode', () => {
+      const action = new fromHearingActualsActions.SetHearingActualsEditMode(true);
+      const hearingsState = fromHearingActualsReducer.hearingActualsReducer(
+        fromHearingActualsReducer.initialHearingActualsState,
+        action
+      );
+
+      expect(hearingsState.isFinalisedEditMode).toBeTrue();
     });
 
     describe('save hearing actuals action', () => {
@@ -64,6 +125,24 @@ describe('Hearing Actuals Reducer', () => {
         expect(state.lastError).toEqual(null);
       });
 
+      it('should retain the draft while submitting a finalised hearing edit', () => {
+        const currentState: HearingActualsStateData = {
+          hearingActualsMainModel,
+          isFinalisedEditMode: true,
+          lastError: null,
+        };
+        const action = new fromHearingActualsActions.SubmitHearingActuals({
+          id: '1111222233334444',
+          caseRef: '5555666677778888',
+          hearingActuals: hearingActualsMainModel.hearingActuals,
+        });
+
+        const state = fromHearingActualsReducer.hearingActualsReducer(currentState, action);
+
+        expect(state.hearingActualsMainModel).toEqual(hearingActualsMainModel);
+        expect(state.isFinalisedEditMode).toBeTrue();
+      });
+
       it('should set the last error', () => {
         const { initialHearingActualsState } = fromHearingActualsReducer;
         const error: HttpError = {
@@ -74,6 +153,29 @@ describe('Hearing Actuals Reducer', () => {
         };
         const action = new fromHearingActualsActions.SubmitHearingActualsFailure(error);
         const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
+        expect(state.lastError).toEqual(error);
+      });
+
+      it('should retain the finalised hearing draft when submission fails', () => {
+        const error: HttpError = {
+          status: 500,
+          statusText: 'Server Error',
+          message: 'Server Error',
+          errors: [],
+        };
+        const currentState: HearingActualsStateData = {
+          hearingActualsMainModel,
+          isFinalisedEditMode: true,
+          lastError: null,
+        };
+
+        const state = fromHearingActualsReducer.hearingActualsReducer(
+          currentState,
+          new fromHearingActualsActions.SubmitHearingActualsFailure(error)
+        );
+
+        expect(state.hearingActualsMainModel).toEqual(hearingActualsMainModel);
+        expect(state.isFinalisedEditMode).toBeTrue();
         expect(state.lastError).toEqual(error);
       });
     });

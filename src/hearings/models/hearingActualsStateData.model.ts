@@ -3,5 +3,6 @@ import { HearingActualsMainModel } from './hearingActualsMainModel';
 
 export interface HearingActualsStateData {
   hearingActualsMainModel: HearingActualsMainModel;
+  isFinalisedEditMode?: boolean;
   lastError?: HttpError;
 }

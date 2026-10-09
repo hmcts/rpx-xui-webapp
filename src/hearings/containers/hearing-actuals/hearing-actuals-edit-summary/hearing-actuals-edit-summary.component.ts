@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
+import { HearingActualsModel } from '../../../models/hearingActualsMainModel';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-base/hearing-actuals-summary-base.component';
@@ -33,12 +34,19 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
 
   public onSubmitHearingDetails(): void {
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-    console.log(navState);
-    this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals({ id: this.id, caseRef: navState.caseId }));
+    const payload: { id: string; caseRef: string; hearingActuals?: HearingActualsModel } = {
+      id: this.id,
+      caseRef: navState?.caseId || this.hearingActualsCaseRef,
+    };
+    if (this.isFinalisedEditMode) {
+      payload.hearingActuals = this.hearingActualsMainModel.hearingActuals;
+    }
+    this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(payload));
   }
 
   // Note: Already onBack on extended component but does not work for this use case
   public onBackPage(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingActualsLastError());
     // Prefer an in-app back when we can
     const sameOriginReferrer = document.referrer && new URL(document.referrer).origin === location.origin;
 
@@ -46,7 +54,7 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
       this.location.back();
     } else {
       // Fallback when opened in a new tab/deep link (no useful history)
-      this.router.navigate([this.hearingActualAddEditUrl()]);
+      void this.router.navigate([this.hearingActualAddEditUrl()]);
     }
   }
 }

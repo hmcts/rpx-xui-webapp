@@ -118,7 +118,7 @@
     "@angular/ssr": "20.3.32",
     "@dr.pogodin/csurf": "^1.17.1",
     "@edium/fsm": "^3.0.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.4.9-fprel",
+    "@hmcts/ccd-case-ui-toolkit": "7.4.8-v1",
     "@hmcts/ccpay-web-component": "6.5.27",
     "@hmcts/media-viewer": "4.2.40",
     "@hmcts/nodejs-healthcheck": "^1.8.6",

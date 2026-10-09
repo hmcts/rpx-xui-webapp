@@ -3416,9 +3416,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.9-fprel":
-  version: 7.4.9-fprel
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.9-fprel"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.8-v1":
+  version: 7.4.8-v1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.8-v1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
@@ -3464,7 +3464,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/9de03d98ccdabf6bf2339e5b9f0e2f9569be2b37263e5a29895debdf50171d123c0ee5aa69f5572943e84a77ad586ab61929bcda03ba88241da1f9bb8a66d7bd
+  checksum: 10/376577e1cb9bc6cd01f72a3a29ae108787df8dc3b59379d576f83e708e1b01e7bd720e182a3b0c4bb2e77a00c7e9527f05dfe4e3a68a3b1256c8d7a79ce7b4df
   languageName: node
   linkType: hard
 
@@ -8487,11 +8487,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0":
-  version: 26.6.4
-  resolution: "@types/node@npm:26.6.4"
+  version: 24.9.1
+  resolution: "@types/node@npm:24.9.1"
   dependencies:
-    undici-types: "npm:~8.9.0"
-  checksum: 10/649173a03497020b8d3624a5149e0286bd175baf6d1df070c538637ccb256ce5554a76c5b63b454bda2cdb1821fa457e074477a75c3c78fc8f562d5c4a31cba8
+    undici-types: "npm:~7.16.0"
+  checksum: 10/eacbd06621616825042428dd6105d0c2f86d67b5f05f99db9fa89fe1cc173d5e65e604a9a61f1ce52ad915d09f2119e7468816ca1a22bb7a3cf5f3c131413c86
   languageName: node
   linkType: hard
 
@@ -8503,11 +8503,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^20.19.0":
-  version: 20.19.43
-  resolution: "@types/node@npm:20.19.43"
+  version: 20.19.23
+  resolution: "@types/node@npm:20.19.23"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/cb060ea17ef9f1fc9d47cfb00098175b25fc6f6bae3c08a89ec7ba1be3353445ccf8af62d88c591e6413c09713f7705a71684a27ef01d2bccac4be96b00cacac
+  checksum: 10/35ca928381fab74abe2938a5ef00e3e9721ed0475e370a2c5c49877ed88858690d8d5464b6cb6bbe717497482e9087d1f58b6140dbcdd2742750fbe39e271489
   languageName: node
   linkType: hard
 
@@ -21027,7 +21027,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.9-fprel"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.8-v1"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.40"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
@@ -23240,10 +23240,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~8.9.0":
-  version: 8.9.0
-  resolution: "undici-types@npm:8.9.0"
-  checksum: 10/8785591929de2b71d281c684e915c4a8c41becc225adbf42a3e89148f8b384724a21533494c30a1cbb85b4cbccd088d020788ff4f2d605013eb2863cd47a1639
+"undici-types@npm:~7.16.0":
+  version: 7.16.0
+  resolution: "undici-types@npm:7.16.0"
+  checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
   languageName: node
   linkType: hard
 

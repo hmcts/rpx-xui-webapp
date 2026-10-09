@@ -93,7 +93,7 @@ test.describe(
         expect.soft(dateMatches, 'Update case date should match today (ignore time)').toBe(true);
         expect.soft(updateAuthor, 'Update case author should be present').not.toBe('');
 
-        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
+        const table = await caseDetailsPage.dlToObjectInPage(caseDetailsPage.historyDetailsList);
         expect
           .soft(
             matchesToday(table.Date ?? '', expectedDate, numericFormat),

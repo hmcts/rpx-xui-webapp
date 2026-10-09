@@ -94,7 +94,7 @@ test.describe(
           Summary: '-',
           Comment: '-',
         };
-        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
+        const table = await caseDetailsPage.dlToObjectInPage(caseDetailsPage.historyDetailsList);
         expect.soft(table).toMatchObject(expectedDetails);
       });
     });

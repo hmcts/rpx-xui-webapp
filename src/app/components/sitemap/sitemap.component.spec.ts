@@ -130,9 +130,7 @@ describe('SitemapComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    return fixture.debugElement
-      .queryAll(By.css('main h2'))
-      .map((heading) => heading.nativeElement.textContent.trim());
+    return fixture.debugElement.queryAll(By.css('main h2')).map((heading) => heading.nativeElement.textContent.trim());
   }
 
   it('should create', () => {

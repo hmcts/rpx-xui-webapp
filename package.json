@@ -120,7 +120,7 @@
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccd-case-ui-toolkit": "7.4.8-5290-rc3",
     "@hmcts/ccpay-web-component": "6.5.27",
-    "@hmcts/media-viewer": "4.2.39",
+    "@hmcts/media-viewer": "4.2.40",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.4.1",
     "@hmcts/rpx-xui-common-lib": "3.2.21",

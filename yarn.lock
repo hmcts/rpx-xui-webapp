@@ -3482,9 +3482,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.39":
-  version: 4.2.39
-  resolution: "@hmcts/media-viewer@npm:4.2.39"
+"@hmcts/media-viewer@npm:4.2.40":
+  version: 4.2.40
+  resolution: "@hmcts/media-viewer@npm:4.2.40"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3507,7 +3507,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/9012b83de83563c372ef9244bb6b2fe84de3b45d9d57b46df49c6814857c129d2ca91d86d6dedcbf244b6ba1122528733d59dfc42a0f9370bd976a7f632ce8c6
+  checksum: 10/22ae7f3c3b642b0f05a8af3c0ca0b98d256567fb72f8a859cea927d9cfe36baa3566f86fa6ab13ed798d4ccc1aacc695e91ac1bad5f2a88292e4dee08769c43e
   languageName: node
   linkType: hard
 
@@ -21058,7 +21058,7 @@ __metadata:
     "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.4.8-5290-rc3"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
-    "@hmcts/media-viewer": "npm:4.2.39"
+    "@hmcts/media-viewer": "npm:4.2.40"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"

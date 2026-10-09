@@ -79,7 +79,7 @@ describe('Judicial ref data api, get all judge users', () => {
           { service: 'CIVIL', serviceCodes: ['AAA6', 'AAA7'] },
         ];
 
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
 

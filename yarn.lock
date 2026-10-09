@@ -3416,12 +3416,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.8":
-  version: 7.4.8
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.8"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.9-fprel":
+  version: 7.4.9-fprel
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.9-fprel"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.22"
+    "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.40"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:5.13.0"
@@ -3464,13 +3464,13 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/d355c545796ec4bec329bac2fb73f87f9fd78690d53d3e21eef4e21430d7a0fa9105ce02b7b949218d70b7d78a0dc75a9d650b174c735a68d983593fa915513c
+  checksum: 10/9de03d98ccdabf6bf2339e5b9f0e2f9569be2b37263e5a29895debdf50171d123c0ee5aa69f5572943e84a77ad586ab61929bcda03ba88241da1f9bb8a66d7bd
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.5.22":
-  version: 6.5.22
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.22"
+"@hmcts/ccpay-web-component@npm:6.5.27":
+  version: 6.5.27
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.27"
   dependencies:
     exceljs: "npm:^4.4.0"
     file-saver: "npm:^2.0.2"
@@ -3478,7 +3478,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
-  checksum: 10/532536dcf2ac3bdfda4ca1e352bc9fe88e5c72b46aac9b37746f2926f86f9d553bba9454c2403fd0ba6edec6380ad614709fb91296d8eeeb1823d4ceef098d58
+  checksum: 10/892786160ccab3b4a1cb4db7485e4b9866e22743096d9342e107cab3437f9e4404aac6cf62afb99ee8df9ae85eee68404fc9845843963d58b8d550475d6e46f1
   languageName: node
   linkType: hard
 
@@ -21027,8 +21027,8 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.8"
-    "@hmcts/ccpay-web-component": "npm:6.5.22"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.9-fprel"
+    "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.40"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"

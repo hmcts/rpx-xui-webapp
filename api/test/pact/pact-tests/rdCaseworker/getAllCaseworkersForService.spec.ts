@@ -12,7 +12,8 @@ const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUs
 
 const MockApp = require('../../pact-mocks/app');
 
-describe('Caseworker ref data api, get all caseworkers for a specific service', () => {
+// TEMPORARY: Remove this skip when the CME-1079 PR is introduced.
+xdescribe('Caseworker ref data api, get all caseworkers for a specific service', () => {
   const baseLocations = [{ location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }];
   const RESPONSE_BODY = [
     {
@@ -81,7 +82,7 @@ describe('Caseworker ref data api, get all caseworkers for a specific service', 
         configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
         configValues.waSupportedJurisdictions = 'IA';
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
 

@@ -67,7 +67,7 @@ describe('RD get case flag ref data', async () => {
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getRdCommonDataAPIOverrides(mockServer.url);
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
         const { getCaseFlagRefData } = requireReloaded('../../../../prd/caseFlag');

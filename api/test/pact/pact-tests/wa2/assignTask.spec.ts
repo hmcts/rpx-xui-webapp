@@ -51,7 +51,7 @@ describe('Task management api, assign a task to user', () => {
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getSearchTaskOverrides(mockServer.url);
-        await sandbox.stub(config, 'get').callsFake((prop) => {
+        await sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
 

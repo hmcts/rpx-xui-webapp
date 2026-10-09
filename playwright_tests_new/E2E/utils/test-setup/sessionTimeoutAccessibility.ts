@@ -5,7 +5,7 @@ import { setupAccessibilityMockSession } from '../accessibility/accessibilityMoc
 export async function setupSessionTimeoutAccessibility(page: Page): Promise<void> {
   await page.clock.install();
   await setupAccessibilityMockSession(page);
-  await page.route('**/api/user/details*', async (route) => {
+  await page.route('**/api/user/o/userinfo*', async (route) => {
     await route.fulfill({
       json: {
         ...buildXuiAppShellUserDetailsMock(),

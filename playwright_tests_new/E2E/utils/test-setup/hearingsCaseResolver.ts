@@ -86,7 +86,7 @@ function resolveHearingManagerPrimaryLocation(userDetails: UserDetailsResponse, 
 }
 
 async function getHearingManagerPrimaryLocation(page: Page, jurisdictionId: string): Promise<string> {
-  const response = await page.request.get('/api/user/details?refreshRoleAssignments=true', { failOnStatusCode: false });
+  const response = await page.request.get('/api/user/o/userinfo?refreshRoleAssignments=true', { failOnStatusCode: false });
   if (response.status() !== 200) {
     throw new Error(`PRL hearings setup could not read the signed-in user details (HTTP ${response.status()}).`);
   }

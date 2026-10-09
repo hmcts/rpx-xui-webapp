@@ -6,7 +6,7 @@ type SetupClient = {
 };
 
 export async function requireWorkAllocationUserId(client: SetupClient): Promise<string> {
-  const response = await client.get('api/user/details', { throwOnError: false, timeoutMs: 10_000 });
+  const response = await client.get('api/user/o/userinfo', { throwOnError: false, timeoutMs: 10_000 });
   const id = resolveUserId(response.data as UserDetailsResponse | undefined);
   if (response.status !== 200 || !id?.trim()) {
     throw new Error(`Work Allocation requires user details with a user id (HTTP ${response.status}).`);

@@ -285,7 +285,7 @@ Some EXUI top-navigation entries are now controlled by Access Management (AM) ro
 
 The Playwright dynamic-user flow does not create those AM assignments. It creates or updates the IDAM/SIDAM account, then assigns the user into a professional organisation through PRD/manage-org APIs. That is enough for solicitor-style journeys, but it does not write `/am/role-assignments`, so it cannot by itself make an EXUI staff or judicial user eligible for the new AM-backed menu entries.
 
-For integration tests, keep the AM role contract inside the mocked `/api/user/details` response. Use `playwright_tests_new/integration/helpers/amRoleAssignmentMock.helper.ts` when a route helper needs a staff or judicial AM menu role. The helper keeps the important parts together:
+For integration tests, keep the AM role contract inside the mocked `/api/user/o/userinfo` response. Use `playwright_tests_new/integration/helpers/amRoleAssignmentMock.helper.ts` when a route helper needs a staff or judicial AM menu role. The helper keeps the important parts together:
 
 ```ts
 {

@@ -11,7 +11,7 @@ test.describe('Work Allocation consuming scenario setup', { tag: '@svc-internal'
       },
     };
     expect(await requireWorkAllocationUserId(client)).toBe('selected-user');
-    expect(paths).toEqual(['api/user/details']);
+    expect(paths).toEqual(['api/user/o/userinfo']);
   });
 
   test('fails on unsuccessful or missing identity instead of passing a user-details fallback', async () => {

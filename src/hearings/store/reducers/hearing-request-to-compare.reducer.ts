@@ -11,6 +11,11 @@ export function hearingRequestToCompareReducer(
   action: fromHearingRequestCompareActions.HearingRequestToCompareAction
 ): HearingRequestStateData {
   switch (action.type) {
+    case fromHearingRequestCompareActions.RESET_HEARING_REQUEST_TO_COMPARE: {
+      return {
+        ...initialHearingRequestToCompareState,
+      };
+    }
     case fromHearingRequestCompareActions.INITIALIZE_HEARING_REQUEST_TO_COMPARE: {
       return {
         ...currentState,

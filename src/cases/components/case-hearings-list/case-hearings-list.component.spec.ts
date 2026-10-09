@@ -693,6 +693,14 @@ describe('CaseHearingsListComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should unsubscribe from feature changes when destroyed', () => {
+    const unsubscribeSpy = spyOn((component as any).hearingAmendmentsSubscription, 'unsubscribe').and.callThrough();
+
+    component.ngOnDestroy();
+
+    expect(unsubscribeSpy).toHaveBeenCalled();
+  });
+
   it('Should show only past and cancelling', () => {
     component.status = EXUISectionStatusEnum.UPCOMING;
     fixture.detectChanges();

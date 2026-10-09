@@ -212,6 +212,7 @@ describe('SitemapComponent', () => {
       '/cookies',
       '/privacy-policy',
       '/get-help',
+      '/sitemap',
     ]);
     expect(linkText).toEqual([
       'My tasks',
@@ -229,6 +230,7 @@ describe('SitemapComponent', () => {
       'Cookies',
       'Privacy policy',
       'Get help',
+      'Site map',
     ]);
   });
 
@@ -427,6 +429,7 @@ describe('SitemapComponent', () => {
         '/cookies',
         '/privacy-policy',
         '/get-help',
+        '/sitemap',
       ]);
     });
 

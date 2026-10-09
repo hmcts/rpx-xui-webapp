@@ -16,6 +16,7 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
   public hearingId: string;
   public caseName: string;
   public sub: Subscription;
+  public caseInfoSub: Subscription;
 
   constructor(
     private readonly hearingStore: Store<fromHearingStore.State>,
@@ -30,7 +31,7 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.hearingStore
+    this.caseInfoSub = this.hearingStore
       .select(fromHearingStore.caseInfoSelector)
       .pipe(
         tap((caseInfo) => {
@@ -58,6 +59,9 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingLinks());
     if (this.sub) {
       this.sub.unsubscribe();
+    }
+    if (this.caseInfoSub) {
+      this.caseInfoSub.unsubscribe();
     }
   }
 }

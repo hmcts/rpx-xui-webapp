@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
@@ -16,7 +16,7 @@ import * as fromHearingStore from '../../../hearings/store';
   templateUrl: './case-hearings-list.component.html',
   styleUrls: ['./case-hearings-list.component.scss'],
 })
-export class CaseHearingsListComponent implements OnInit {
+export class CaseHearingsListComponent implements OnInit, OnDestroy {
   @Input()
   public status: EXUISectionStatusEnum;
 
@@ -39,6 +39,7 @@ export class CaseHearingsListComponent implements OnInit {
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
   public isHearingAmendmentsEnabled = false;
+  private hearingAmendmentsSubscription: Subscription;
 
   constructor(
     private readonly hearingStore: Store<fromHearingStore.State>,
@@ -64,9 +65,13 @@ export class CaseHearingsListComponent implements OnInit {
     }
 
     const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
-    isHearingAmendmentsEnabled$.subscribe((enabled) => {
+    this.hearingAmendmentsSubscription = isHearingAmendmentsEnabled$.subscribe((enabled) => {
       this.isHearingAmendmentsEnabled = enabled;
     });
+  }
+
+  public ngOnDestroy(): void {
+    this.hearingAmendmentsSubscription?.unsubscribe();
   }
 
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {

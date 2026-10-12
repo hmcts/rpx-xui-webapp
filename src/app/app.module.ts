@@ -44,6 +44,7 @@ import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
 import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
+import { HearingsPageTrackingService, initializeHearingsPageTracking } from './services/logger/hearings-page-tracking.service';
 import { SharedModule } from './shared/shared.module';
 import { effects } from './store/effects';
 // ngrx modules - END
@@ -104,6 +105,12 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       multi: true,
     },
     MonitoringService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeHearingsPageTracking,
+      deps: [HearingsPageTrackingService],
+      multi: true,
+    },
     LoggerService,
     {
       provide: ErrorHandler,

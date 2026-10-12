@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewPerformanceTelemetry } from '@microsoft/applicationinsights-web';
+import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewTelemetry } from '@microsoft/applicationinsights-web';
 import { defer, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, take } from 'rxjs/operators';
 
@@ -56,12 +56,13 @@ export class MonitoringService implements IMonitoringService {
   constructor(private readonly http: HttpClient) {}
 
   public logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number) {
-    const pageViewTelemetry: IPageViewPerformanceTelemetry = {
+    const pageViewTelemetry: IPageViewTelemetry = {
       name,
       uri: url,
-      properties,
+      refUri: '',
+      properties: duration === undefined ? properties : { ...properties, duration },
       measurements,
-      duration: duration?.toString(),
+      startTime: duration === undefined ? undefined : new Date(Date.now() - duration),
     };
     this.send(() => {
       this.appInsights.trackPageView(pageViewTelemetry);
@@ -122,6 +123,22 @@ export class MonitoringService implements IMonitoringService {
 
           const appInsights = this.createAppInsights(config);
           appInsights.loadAppInsights();
+          appInsights.addTelemetryInitializer((item) => {
+            if (
+              (item.baseType === 'PageviewData' || item.baseType === 'PageviewPerformanceData') &&
+              item.baseData?.name?.startsWith('Hearings: ')
+            ) {
+              // The SDK can add an operation name from the real browser URL. Use the safe template instead.
+              if (item.ext?.trace) {
+                item.ext.trace.name = item.baseData.uri;
+              }
+              item.baseData.refUri = '';
+            } else if (item.baseType === 'EventData' && item.baseData?.name?.startsWith('Hearings.')) {
+              if (item.ext?.trace) {
+                item.ext.trace.name = item.baseData.properties?.page || 'Hearings';
+              }
+            }
+          });
           this.appInsights = appInsights;
           return true;
         }),

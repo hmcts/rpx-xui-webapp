@@ -15,6 +15,7 @@ describe('Monitoring service', () => {
     http.get.and.returnValue(of({ connectionString }));
     appInsights = jasmine.createSpyObj('ApplicationInsights', [
       'loadAppInsights',
+      'addTelemetryInitializer',
       'trackEvent',
       'trackPageView',
       'trackException',
@@ -51,9 +52,8 @@ describe('Monitoring service', () => {
       jasmine.objectContaining({
         name: 'Hearings',
         uri: '/hearings',
-        properties: undefined,
+        properties: { duration: 100 },
         measurements: undefined,
-        duration: '100',
       })
     );
     expect(appInsights.trackException).toHaveBeenCalledOnceWith({ exception });
@@ -75,9 +75,67 @@ describe('Monitoring service', () => {
         uri: undefined,
         properties: undefined,
         measurements: undefined,
-        duration: undefined,
       })
     );
+  });
+
+  it('should omit the browser referrer from page views', () => {
+    service.logPageView('Hearings: /hearings/cancel/:hearingId', '/hearings/cancel/:hearingId');
+    expect(appInsights.trackPageView).toHaveBeenCalledOnceWith(jasmine.objectContaining({ refUri: '' }));
+  });
+
+  ['PageviewData', 'PageviewPerformanceData'].forEach((baseType) => {
+    it(`should normalize SDK operation names and referrers for Hearings ${baseType}`, () => {
+      service.logPageView('Hearings: /hearings/cancel/:hearingId', '/hearings/cancel/:hearingId');
+      const initializer = appInsights.addTelemetryInitializer.calls.mostRecent().args[0];
+      const item = {
+        name: 'test',
+        baseType,
+        baseData: {
+          name: 'Hearings: /hearings/cancel/:hearingId',
+          uri: '/hearings/cancel/:hearingId',
+          refUri: '/case/private-case',
+        },
+        ext: { trace: { name: '/hearings/cancel/private-hearing' } },
+      };
+      initializer(item);
+      expect(item.ext.trace.name).toBe('/hearings/cancel/:hearingId');
+      expect(item.baseData.refUri).toBe('');
+      expect(JSON.stringify(item)).not.toContain('private-');
+    });
+  });
+
+  it('should not change unrelated telemetry operation names', () => {
+    service.logEvent('test');
+    const initializer = appInsights.addTelemetryInitializer.calls.mostRecent().args[0];
+    const item = { name: 'test', baseType: 'EventData', baseData: { name: 'test' }, ext: { trace: { name: '/work' } } };
+    initializer(item);
+    expect(item.ext.trace.name).toBe('/work');
+  });
+
+  it('should use only the normalized page as the operation name for Hearings journey timing events', () => {
+    service.logEvent('Hearings.JourneyDuration', { page: '/hearings/request/hearing-stage' }, { durationMs: 5000 });
+    const initializer = appInsights.addTelemetryInitializer.calls.mostRecent().args[0];
+    const item = {
+      name: 'test',
+      baseType: 'EventData',
+      baseData: { name: 'Hearings.JourneyDuration', properties: { page: '/hearings/request/hearing-stage' } },
+      ext: { trace: { name: '/cases/case-details/private-case/hearings' } },
+    };
+    initializer(item);
+    expect(item.ext.trace.name).toBe('/hearings/request/hearing-stage');
+    expect(JSON.stringify(item)).not.toContain('private-case');
+  });
+
+  it('should retain the measured page start time when SDK initialization is delayed', () => {
+    const response = new Subject<{ connectionString: string }>();
+    http.get.and.returnValue(response);
+    const clock = spyOn(Date, 'now').and.returnValue(10000);
+    service.logPageView('Hearings: /hearings/request', '/hearings/request', undefined, undefined, 5000);
+    clock.and.returnValue(20000);
+    response.next({ connectionString });
+    expect(appInsights.trackPageView.calls.first().args[0].startTime.getTime()).toBe(5000);
+    expect(appInsights.trackPageView.calls.first().args[0].properties.duration).toBe(5000);
   });
 
   it('should disable cookies and storage by default', () => {

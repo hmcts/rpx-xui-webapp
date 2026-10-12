@@ -482,10 +482,25 @@ For Playwright integration runs outside CI, periodic live progress logging is en
 
 You can override either variable explicitly in your local shell.
 
-## Running Consumer Driven Contract tests (pact)
+## Running Consumer Driven Contract tests (Pact) with a local Broker
 
-Run `yarn test-pact` to execute the Pact tests
-For publishing the pacts to broker execute `yarn publish-pact`
+Start the local Pact Broker from the Pact Broker Docker Compose directory:
+
+```bash
+docker compose up -d postgres pact-broker
+```
+
+From the consumer repository, run the full Pact suite and publish the generated contracts to the local Broker:
+
+```bash
+PACT_BROKER_URL=http://localhost:9292 yarn test:pact:run-and-publish
+```
+
+This script runs `yarn test-pact` followed by `yarn publish-pact`. To run them separately, use `PACT_BROKER_URL=http://localhost:9292 yarn test-pact` and then `PACT_BROKER_URL=http://localhost:9292 yarn publish-pact`.
+
+The publisher uses the full Git commit SHA as the consumer version and records the CI branch (`CHANGE_BRANCH` or `BRANCH_NAME`) or the current local Git branch as Pact branch metadata. Do not set a Pact tag for branch selection.
+
+When finished, stop the local Broker from its Docker Compose directory with `docker compose down`.
 
 ## Integration Documentation
 

@@ -3,7 +3,6 @@ import { execSync } from 'child_process';
 import * as path from 'path';
 import { getConfigValue } from '../../../configuration';
 import {
-  PACT_BRANCH_NAME,
   PACT_BROKER_PASSWORD,
   PACT_BROKER_URL,
   PACT_BROKER_USERNAME,
@@ -28,7 +27,14 @@ const isBrokerReachable = async (brokerUrl: string): Promise<boolean> => {
 
 const publish = async (): Promise<void> => {
   const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
-  const pactTag = getConfigValue(PACT_BRANCH_NAME) ? getConfigValue(PACT_BRANCH_NAME) : 'Dev';
+  const pactBranch =
+    process.env.CHANGE_BRANCH ||
+    process.env.BRANCH_NAME ||
+    execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+
+  if (!pactBranch || pactBranch.trim() === '' || pactBranch === 'HEAD') {
+    throw new Error('Could not determine the consumer Git branch for Pact publication.');
+  }
   const brokerReachable = await isBrokerReachable(pactBroker);
 
   if (!brokerReachable) {
@@ -36,22 +42,18 @@ const publish = async (): Promise<void> => {
   }
 
   const resolveConsumerVersion = (): string => {
-    try {
-      return execSync('git rev-parse --short=12 HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
-        .toString()
-        .trim();
-    } catch {
-      const envSha = process.env.GIT_COMMIT || process.env.CI_COMMIT_SHA || process.env.BUILD_VCS_NUMBER;
-      if (envSha && envSha.trim()) {
-        return envSha.trim().slice(0, 12);
-      }
-      return `local-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+    const gitSha = execSync('git rev-parse --verify HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    if (!/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/i.test(gitSha)) {
+      throw new Error(`Expected a full Git SHA for Pact consumer version, got: ${gitSha}`);
     }
+    return gitSha;
   };
 
   const configuredConsumerVersion = getConfigValue(PACT_CONSUMER_VERSION);
-  const consumerVersion =
-    configuredConsumerVersion && configuredConsumerVersion.trim() !== '' ? configuredConsumerVersion : resolveConsumerVersion();
+  const consumerVersion = resolveConsumerVersion();
+  if (configuredConsumerVersion && configuredConsumerVersion.trim() !== consumerVersion) {
+    throw new Error('PACT_CONSUMER_VERSION must match the full Git SHA of the checked-out commit.');
+  }
   const pactBrokerPassword = getConfigValue<string | null>(PACT_BROKER_PASSWORD);
   const pactBrokerUsername = getConfigValue<string | null>(PACT_BROKER_USERNAME);
 
@@ -60,7 +62,7 @@ const publish = async (): Promise<void> => {
     pactBroker,
     pactFilesOrDirs: [path.resolve(__dirname, '../pacts/')],
     publishVerificationResult: true,
-    tags: [pactTag],
+    branch: pactBranch,
     ...(pactBrokerPassword ? { pactBrokerPassword } : {}),
     ...(pactBrokerUsername ? { pactBrokerUsername } : {}),
   };
@@ -69,7 +71,7 @@ const publish = async (): Promise<void> => {
   console.log('');
   console.log(`Head over to ${pactBroker}`);
   console.log('to see your published contracts.');
-  console.log('Pact branchName is', pactTag);
+  console.log('Pact branch is', pactBranch);
 };
 
 describe('Pact publication', function () {

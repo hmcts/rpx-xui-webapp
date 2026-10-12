@@ -285,11 +285,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       (party) => party.partyType === PartyType.IND
     ).length;
     this.loggerService.warn('Hearing request party ID or case information mismatch popup displayed', {
-      caseId:
-        this.hearingRequestMainModel.caseDetails?.caseRef || this.serviceHearingValuesModel.caseId || this.caseReference,
+      caseId: this.hearingRequestMainModel.caseDetails?.caseRef || this.serviceHearingValuesModel.caseId || this.caseReference,
       hearingId:
-        this.hearingRequestMainModel.requestDetails?.hearingRequestID ||
-        this.hearingRequestMainModel.caseDetails?.hearingID,
+        this.hearingRequestMainModel.requestDetails?.hearingRequestID || this.hearingRequestMainModel.caseDetails?.hearingID,
       hearingRequestServiceCode: this.hearingRequestMainModel.caseDetails?.hmctsServiceCode,
       serviceHearingValuesServiceCode: this.serviceHearingValuesModel.hmctsServiceID,
       hearingRequestStatus: this.hearingRequestMainModel.requestDetails?.status,

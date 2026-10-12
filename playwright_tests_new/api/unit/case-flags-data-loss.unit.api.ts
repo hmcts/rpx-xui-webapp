@@ -128,6 +128,14 @@ test.describe('Civil case flag data-loss helpers', { tag: '@svc-internal' }, () 
     expect(resolveCivilClaimantPartyName(createCaseViewPayloadWithClaimantField())).toBe(EXPECTED_CLAIMANT_PARTY_NAME);
   });
 
+  test('claimant name resolution supports the Civil case-name field returned by UI case-view v2', () => {
+    expect(
+      resolveCivilClaimantPartyName({
+        tabs: [{ fields: [{ id: 'caseNameHmctsInternal', formatted_value: `${EXPECTED_CLAIMANT_PARTY_NAME} v Test Company` }] }],
+      })
+    ).toBe(EXPECTED_CLAIMANT_PARTY_NAME);
+  });
+
   test('claimant name resolution falls back to Civil party flag metadata', () => {
     expect(
       resolveCivilClaimantPartyName(

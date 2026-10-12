@@ -4,6 +4,7 @@ import { MonitoringService } from '../../app/services/logger/monitoring.service'
 export type HearingsJourneyType =
   'browse' | 'request' | 'amend' | 'view' | 'cancel' | 'link' | 'manage-links' | 'actuals' | 'error';
 export type HearingsTelemetryAction = 'continue' | 'back' | 'change' | 'submit' | 'cancel';
+export type HearingsValidationCategory = 'form' | 'case-context-mismatch';
 export type HearingsJourneyEndReason =
   'confirmation' | 'left-hearings' | 'context-changed' | 'returned-to-list' | 'pagehide' | 'destroyed';
 
@@ -155,6 +156,18 @@ export class HearingsTelemetryService {
     }
     this.journey = { ...this.journey, actionCount: this.journey.actionCount + 1 };
     this.monitoring.logEvent('Hearings.Action', { ...this.properties(), action }, { actionCount: this.journey.actionCount });
+  }
+
+  public recordValidationFailure(category: HearingsValidationCategory, errorCount = 1): void {
+    if (
+      !this.journey ||
+      !['form', 'case-context-mismatch'].includes(category) ||
+      !Number.isSafeInteger(errorCount) ||
+      errorCount < 1
+    ) {
+      return;
+    }
+    this.monitoring.logEvent('Hearings.ValidationFailed', { ...this.properties(), category }, { errorCount });
   }
 
   public endJourney(reason: HearingsJourneyEndReason, now = this.browser.performance.now(), endPage?: string): void {

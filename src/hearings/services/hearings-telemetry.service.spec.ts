@@ -1,4 +1,4 @@
-import { HearingsTelemetryAction, HearingsTelemetryService } from './hearings-telemetry.service';
+import { HearingsTelemetryAction, HearingsTelemetryService, HearingsValidationCategory } from './hearings-telemetry.service';
 import { MonitoringService } from '../../app/services/logger/monitoring.service';
 
 describe('Hearings telemetry service', () => {
@@ -123,6 +123,35 @@ describe('Hearings telemetry service', () => {
       expect(service.enterStep(step, {}, 0)).toBeNull();
     });
     expect(service.currentJourney).toBeNull();
+    expect(monitoring.logEvent).not.toHaveBeenCalled();
+  });
+
+  it('should record validation failures with only the current safe journey metadata and numeric count', () => {
+    const state = service.enterStep(
+      '/hearings/request/hearing-stage',
+      { caseId: 'private-case', hearingId: 'private-hearing' },
+      0
+    );
+    service.recordAction('continue');
+    service.recordValidationFailure('form', 2);
+    expect(monitoring.logEvent.calls.mostRecent().args).toEqual([
+      'Hearings.ValidationFailed',
+      { journeyId: state.journeyId, journeyType: 'request', step: state.currentStep, page: state.currentStep, category: 'form' },
+      { errorCount: 2 },
+    ]);
+    expect(service.currentJourney.actionCount).toBe(1);
+    expect(JSON.stringify(monitoring.logEvent.calls.allArgs())).not.toContain('private-');
+  });
+
+  it('should ignore invalid validation categories/counts and validation after journey end', () => {
+    service.enterStep('/hearings/request', {}, 0);
+    monitoring.logEvent.calls.reset();
+    service.recordValidationFailure('private-error-message' as HearingsValidationCategory, 1);
+    [0, -1, NaN, Infinity, 1.5].forEach((count) => service.recordValidationFailure('form', count));
+    expect(monitoring.logEvent).not.toHaveBeenCalled();
+    service.endJourney('left-hearings', 1000);
+    monitoring.logEvent.calls.reset();
+    service.recordValidationFailure('form');
     expect(monitoring.logEvent).not.toHaveBeenCalled();
   });
 });

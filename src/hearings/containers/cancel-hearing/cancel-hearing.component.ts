@@ -117,6 +117,7 @@ export class CancelHearingComponent implements OnInit {
   }
 
   public executeContinue(): void {
+    this.hearingsService.recordAction('submit');
     const cancellationErrorMessage = 'There was a system error and your request could not be processed. Please try again.';
     if (this.isFormValid()) {
       this.hearingsService.cancelHearingRequest(this.hearingId, this.caseId, this.getChosenReasons()).subscribe(
@@ -136,7 +137,13 @@ export class CancelHearingComponent implements OnInit {
       if (!this.validationErrors || (this.validationErrors && this.validationErrors.length === 0)) {
         this.cancelActioned = true;
       }
+    } else {
+      this.hearingsService.recordValidationFailure('form', this.validationErrors.length);
     }
+  }
+
+  public recordBack(): void {
+    this.hearingsService.recordAction('back');
   }
 
   public buttonDisabled(): boolean {

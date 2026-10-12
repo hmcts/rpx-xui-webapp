@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
 import { HearingListMainModel } from '../models/hearingListMain.model';
@@ -15,6 +15,7 @@ import {
 import { LovRefDataByServiceModel, LovRefDataModel } from '../models/lovRefData.model';
 import { ResponseDetailsModel } from '../models/requestDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import { HearingsTelemetryService, HearingsTelemetryAction, HearingsValidationCategory } from './hearings-telemetry.service';
 
 @Injectable()
 export class HearingsService {
@@ -29,10 +30,41 @@ export class HearingsService {
   public hearingRequestForSubmitValid: boolean = false;
   public hearingRequestContinueDisabled: boolean = false;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    @Optional() private readonly telemetry?: HearingsTelemetryService
+  ) {}
 
   public navigateAction(action: ACTION): void {
+    const actions = new Map<ACTION, HearingsTelemetryAction>([
+      [ACTION.BACK, 'back'],
+      [ACTION.CONTINUE, 'continue'],
+      [ACTION.SUBMIT, 'submit'],
+      [ACTION.CANCEL, 'cancel'],
+      [ACTION.VIEW_EDIT_REASON, 'submit'],
+      [ACTION.VIEW_EDIT_SUBMIT, 'submit'],
+    ]);
+    const telemetryAction = actions.get(action);
+    if (telemetryAction) {
+      this.recordAction(telemetryAction);
+    }
     this.actionSubject.next(action);
+  }
+
+  public recordAction(action: HearingsTelemetryAction): void {
+    try {
+      this.telemetry?.recordAction(action);
+    } catch {
+      // Telemetry must never prevent the original navigation, validation or API operation.
+    }
+  }
+
+  public recordValidationFailure(category: HearingsValidationCategory, errorCount = 1): void {
+    try {
+      this.telemetry?.recordValidationFailure(category, errorCount);
+    } catch {
+      // Do not log validation details or interfere with the user's journey.
+    }
   }
 
   public getAllHearings(caseId: string): Observable<HearingListMainModel> {

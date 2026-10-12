@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { HearingsService } from '../../../services/hearings.service';
 import { Subscription } from 'rxjs';
 import { HearingLinkedSelectionEnum, HearingSummaryEnum, Mode } from '../../../models/hearings.enum';
 import {
@@ -52,7 +53,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     private readonly validators: ValidatorsUtils,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    @Optional() private readonly hearingsService?: HearingsService
   ) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.mode = this.route.snapshot.data.mode;
@@ -213,6 +215,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit() {
+    this.hearingsService?.recordAction('continue');
     if (this.isManageLink) {
       if (this.isGetHearingsSelected()) {
         this.saveLinkedHearingInfo();
@@ -226,6 +229,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         this.saveLinkedHearingInfo();
       } else {
         this.linkedHearingSelectionError = this.linkedHearingEnum.ValidSelectionError;
+        this.hearingsService?.recordValidationFailure('form');
         this.errors.push({ id: 'linked-form', message: this.linkedHearingEnum.ValidSelectionError });
       }
     }
@@ -278,6 +282,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public onBack(): void {
+    this.hearingsService?.recordAction('back');
     if (this.isManageLink) {
       this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId]);
     } else {
@@ -286,6 +291,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
+    this.hearingsService?.recordAction('cancel');
     this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']);
   }
 

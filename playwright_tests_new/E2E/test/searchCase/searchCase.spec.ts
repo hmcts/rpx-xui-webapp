@@ -2,7 +2,7 @@ import { expect, test } from '../../fixtures';
 import { resolveCaseReferenceFromGlobalSearch, resolveNonExistentCaseReference } from '../../../E2E/utils/case-reference.utils';
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 
-test.describe('FPL global search user - 16-digit case search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
+test.describe('FPL global search user - 16-digit case search', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
   let availableCaseReference = '';
   test.beforeEach(async ({ page, identityLease }) => {
     const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });

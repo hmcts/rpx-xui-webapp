@@ -24,7 +24,7 @@ const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
 const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH);
 const MEDIA_VIEWER_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_MEDIA_VIEWER_TEST_TIMEOUT_MS ?? '', 10) || 300_000;
 
-test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
+test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer', '@nightly'] }, () => {
   test.describe.configure({ timeout: MEDIA_VIEWER_TEST_TIMEOUT_MS });
 
   test('Opens uploaded document in the Media Viewer end-to-end', async ({

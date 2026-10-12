@@ -4,6 +4,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AppConstants } from '../../app.constants';
+import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+import { EnvironmentService } from '../../shared/services/environment.service';
 import { FooterComponent } from './footer.component';
 import { NavigationItems } from './footer.model';
 
@@ -22,6 +24,7 @@ describe('FooterComponent', () => {
   let component: FooterComponent;
   let fixture: ComponentFixture<FooterComponent>;
   let mockStore: jasmine.SpyObj<Store<any>>;
+  let mockEnvironmentService: jasmine.SpyObj<EnvironmentService>;
 
   const mockNavigationData = {
     items: [
@@ -34,6 +37,8 @@ describe('FooterComponent', () => {
   beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('Store', ['pipe']);
     mockStore.pipe.and.returnValue(of(true));
+    mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['getDeploymentEnv']);
+    mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -43,6 +48,10 @@ describe('FooterComponent', () => {
         {
           provide: Store,
           useValue: mockStore,
+        },
+        {
+          provide: EnvironmentService,
+          useValue: mockEnvironmentService,
         },
       ],
     }).compileComponents();
@@ -70,6 +79,26 @@ describe('FooterComponent', () => {
   });
 
   describe('ngOnInit', () => {
+    it('should expose the logged in user email in lower environments', (done) => {
+      mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.AAT);
+      mockStore.pipe.and.returnValues(of('user@example.com'), of(true));
+
+      component.ngOnInit();
+
+      component.userEmail$.subscribe((email) => {
+        expect(email).toBe('user@example.com');
+        done();
+      });
+    });
+
+    it('should not expose the logged in user email in production', () => {
+      mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
+
+      component.ngOnInit();
+
+      expect(component.userEmail$).toBeUndefined();
+    });
+
     it('should update terms and conditions link when feature is enabled', () => {
       component.navigationData = mockNavigationData;
       mockStore.pipe.and.returnValue(of(true));

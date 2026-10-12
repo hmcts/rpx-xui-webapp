@@ -361,9 +361,8 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     await taskListPage.openFilterPanel();
 
-    await taskListPage.expectAccessTasksAndCasesTextVisible();
-
-    await taskListPage.expectSelectedFilterTagsVisible(['Taylor House', 'Birmingham Civil and Family Justice Centre']);
+    await expect(taskListPage.applyFilterButton).toBeEnabled();
+    await taskListPage.expectSelectedLocations(['Taylor House', 'Birmingham Civil and Family Justice Centre']);
   });
 
   for (const scenario of workFiltersLocationSearchScenarios) {

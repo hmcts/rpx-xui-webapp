@@ -1,7 +1,1 @@
-import { MemberType, RequirementType } from './hearings.enum';
-
-export interface PanelPreferenceModel {
-  memberID: string;
-  memberType?: MemberType;
-  requirementType: RequirementType;
-}
+export { PanelPreferenceModel } from './hearing-payload-support.model';

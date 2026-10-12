@@ -15,8 +15,8 @@ const REQUEST_BODY = {
   accessReason: 'Approve request',
   typeOfRole: { id: 'specific-access-granted', name: 'specific-access-granted' },
   period: {
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: new Date('2024-11-11T00:00:00.000Z'),
+    endDate: new Date('2024-11-11T00:00:00.000Z'),
   },
   actorId: '123',
   caseName: 'example name',

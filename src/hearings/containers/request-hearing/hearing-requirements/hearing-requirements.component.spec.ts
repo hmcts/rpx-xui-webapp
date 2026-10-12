@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
@@ -2079,7 +2079,7 @@ describe('HearingRequirementsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const locationsDataService = new LocationsDataService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
-  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error', 'warn']);
 
   beforeEach(() => {
     hearingsService.hearingRequestContinueDisabled = false;
@@ -3047,6 +3047,31 @@ describe('HearingRequirementsComponent', () => {
     component.ngOnInit();
     expect(component.showMismatchErrorMessage).toBeTruthy();
     expect(hearingsService.hearingRequestContinueDisabled).toBeTruthy();
+    loggerServiceMock.warn.calls.reset();
+    component.mismatchDialogLink = new ElementRef(jasmine.createSpyObj<HTMLAnchorElement>('mismatchDialogLink', ['focus']));
+    expect(loggerServiceMock.warn).toHaveBeenCalledWith(
+      'Hearing request party ID or case information mismatch popup displayed',
+      jasmine.objectContaining({
+        caseId:
+          component.hearingRequestMainModel.caseDetails.caseRef ||
+          component.serviceHearingValuesModel.caseId ||
+          component.caseReference,
+        hearingId:
+          component.hearingRequestMainModel.requestDetails?.hearingRequestID ||
+          component.hearingRequestMainModel.caseDetails?.hearingID,
+        hearingRequestServiceCode: component.hearingRequestMainModel.caseDetails.hmctsServiceCode,
+        serviceHearingValuesServiceCode: component.serviceHearingValuesModel.hmctsServiceID,
+        hearingRequestStatus: component.hearingRequestMainModel.requestDetails?.status,
+        hearingJourneyMode: component.hearingCondition.mode,
+        hmcIndividualPartyCount: 1,
+        shvIndividualPartyCount: 1,
+        partyIdMismatchDetected: true,
+        routeCaseReferenceMismatchDetected: false,
+        serviceCaseReferenceMismatchDetected: false,
+        serviceCodeMismatchDetected: false,
+        caseInformationMismatchDetected: false,
+      })
+    );
     expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST });
   });
 

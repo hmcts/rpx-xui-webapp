@@ -30,7 +30,9 @@ const publish = async (): Promise<void> => {
   const pactBranch =
     process.env.CHANGE_BRANCH ||
     process.env.BRANCH_NAME ||
-    execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString()
+      .trim();
 
   if (!pactBranch || pactBranch.trim() === '' || pactBranch === 'HEAD') {
     throw new Error('Could not determine the consumer Git branch for Pact publication.');
@@ -42,7 +44,9 @@ const publish = async (): Promise<void> => {
   }
 
   const resolveConsumerVersion = (): string => {
-    const gitSha = execSync('git rev-parse --verify HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    const gitSha = execSync('git rev-parse --verify HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString()
+      .trim();
     if (!/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/i.test(gitSha)) {
       throw new Error(`Expected a full Git SHA for Pact consumer version, got: ${gitSha}`);
     }

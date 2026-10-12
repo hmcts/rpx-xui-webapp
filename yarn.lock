@@ -3416,13 +3416,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.9-fprel":
-  version: 7.4.9-fprel
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.9-fprel"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.10":
+  version: 7.4.10
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.10"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
-    "@hmcts/media-viewer": "npm:4.2.40"
+    "@hmcts/media-viewer": "npm:4.2.41"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
@@ -3464,7 +3464,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/9de03d98ccdabf6bf2339e5b9f0e2f9569be2b37263e5a29895debdf50171d123c0ee5aa69f5572943e84a77ad586ab61929bcda03ba88241da1f9bb8a66d7bd
+  checksum: 10/d2650abf215f1ce2d7105ae7f3046c55c536e8437741ce4adddb32ec10b8ff4822f75d8ed0995501667848b07de53581edcb20c42828206c5bb4b39d211d0c23
   languageName: node
   linkType: hard
 
@@ -20986,7 +20986,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.9-fprel"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.10"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.41"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

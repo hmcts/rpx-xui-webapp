@@ -79,4 +79,15 @@ describe('HmctsGlobalFooterComponent', () => {
     component.toggleLanguage('en');
     expect(component.currentLang).toBe('en');
   });
+
+  it('should show the logged in user email when provided', () => {
+    component.userEmail = 'user@example.com';
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Logged in as: user@example.com');
+  });
+
+  it('should not show logged in user text when no email is provided', () => {
+    expect(fixture.nativeElement.textContent).not.toContain('Logged in as:');
+  });
 });

@@ -9,7 +9,7 @@
  * This file should be representative of the .json files in the root /config folder
  */
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret';
-export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string';
+export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-managed-redis-connection-string';
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc';
 export const APP_INSIGHTS_CONNECTION_STRING = 'secrets.rpx.appinsights-connection-string-mc';
 
@@ -150,6 +150,9 @@ export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds';
 export const CASE_SHARE_PERMISSIONS = 'pui-case-manager';
 
 export const SESSION_TIMEOUTS = 'sessionTimeouts';
+
+export const DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS = 'documentUploadThrottle.initialMs';
+export const DOCUMENT_UPLOAD_THROTTLE_MAX_MS = 'documentUploadThrottle.maxMs';
 
 // PACT
 export const PACT_BROKER_URL = 'pact.brokerUrl';

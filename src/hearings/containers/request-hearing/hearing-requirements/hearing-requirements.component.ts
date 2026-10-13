@@ -11,7 +11,7 @@ import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { HearingConditions, KEY_IS_INIT, KEY_MODE } from '../../../models/hearingConditions';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
-import { ACTION, CaseFlagType, Mode } from '../../../models/hearings.enum';
+import { ACTION, CaseFlagType, Mode, PartyType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';

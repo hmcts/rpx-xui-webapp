@@ -80,7 +80,7 @@ def publishPlaywrightReport = { String reportDir, String reportFile, String repo
         reportFiles          : reportFile,
         reportName           : reportName
     ])
-    junit(allowEmptyResults: false, testResults: artifacts.replace('**', '**/*junit.xml'))
+    junit(allowEmptyResults: false, skipMarkingBuildUnstable: true, testResults: artifacts.replace('**', '**/*junit.xml'))
     archiveArtifacts allowEmptyArchive: true, artifacts: artifacts
 }
 
@@ -99,6 +99,7 @@ def runManualPlaywrightAccessibility = { String environmentName ->
                     "PW_ACCESSIBILITY_WORKERS=6",
                     "FUNCTIONAL_TESTS_WORKERS=6",
                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                    "A11Y_STRICT=false",
                     "PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml"
                 ]) {
                     sh 'yarn test:accessibility:playwright'

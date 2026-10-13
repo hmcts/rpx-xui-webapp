@@ -3052,10 +3052,7 @@ describe('HearingRequirementsComponent', () => {
     expect(loggerServiceMock.warn).toHaveBeenCalledWith(
       'Hearing request party ID or case information mismatch popup displayed',
       jasmine.objectContaining({
-        caseId:
-          component.hearingRequestMainModel.caseDetails.caseRef ||
-          component.serviceHearingValuesModel.caseId ||
-          component.caseReference,
+        caseId: component.serviceHearingValuesModel.caseId,
         hearingId:
           component.hearingRequestMainModel.requestDetails?.hearingRequestID ||
           component.hearingRequestMainModel.caseDetails?.hearingID,
@@ -3066,8 +3063,8 @@ describe('HearingRequirementsComponent', () => {
         hmcIndividualPartyCount: 1,
         shvIndividualPartyCount: 1,
         partyIdMismatchDetected: true,
-        routeCaseReferenceMismatchDetected: false,
-        serviceCaseReferenceMismatchDetected: false,
+        routeCaseReferenceMismatchDetected: true,
+        serviceCaseReferenceMismatchDetected: true,
         serviceCodeMismatchDetected: false,
         caseInformationMismatchDetected: false,
       })

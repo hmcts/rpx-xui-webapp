@@ -28,7 +28,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "allowedCommonJsDependencies": ["hammerjs"],
             "stylePreprocessorOptions": {
-              "includePaths": [".", "node_modules"]
+              "includePaths": [".", "node_modules", "src/style/compat"]
             },
             "assets": [
               {
@@ -144,7 +144,7 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "stylePreprocessorOptions": {
-              "includePaths": ["node_modules"]
+              "includePaths": ["node_modules", "src/style/compat"]
             },
             "styles": ["src/styles.scss"],
             "include": ["src/**/*.spec.*"],

@@ -30,6 +30,30 @@ describe('Monitoring service', () => {
     expect(createAppInsights).not.toHaveBeenCalled();
   });
 
+  it('should capture native operation IDs without the SDK operation name or URL', () => {
+    service.logEvent('test');
+    Object.assign(appInsights, {
+      core: {
+        getTraceCtx: () => ({
+          getTraceId: () => 'a'.repeat(32),
+          getSpanId: () => 'b'.repeat(16),
+          getName: () => '/case/private-id',
+        }),
+      },
+    });
+    expect(service.captureOperationContext()).toEqual({ operationId: 'a'.repeat(32), operationParentId: 'b'.repeat(16) });
+  });
+
+  it('should pass the original exception and structured context to the SDK without rebuilding its stack', () => {
+    const exception = new TypeError('original');
+    const stack = exception.stack;
+    const properties = { telemetryArea: 'Hearings', operation: 'navigate', httpStatus: 500 };
+    service.logException(exception, properties);
+    expect(appInsights.trackException).toHaveBeenCalledOnceWith({ exception, properties });
+    expect(appInsights.trackException.calls.first().args[0].exception).toBe(exception);
+    expect(exception.stack).toBe(stack);
+  });
+
   it('should share one initialization across concurrent telemetry calls and reuse it afterwards', () => {
     const response = new Subject<{ connectionString: string }>();
     http.get.and.returnValue(response);

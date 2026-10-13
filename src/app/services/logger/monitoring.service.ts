@@ -3,11 +3,12 @@ import { Injectable } from '@angular/core';
 import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewTelemetry } from '@microsoft/applicationinsights-web';
 import { defer, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, take } from 'rxjs/operators';
+import { sanitizeHearingsException } from '../../../hearings/services/hearings-exception-telemetry';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number);
   logEvent(name: string, properties?: any, measurements?: any);
-  logException(exception: Error);
+  logException(exception: Error, properties?: Record<string, string | number>);
 }
 
 export class MonitorConfig implements IConfig {
@@ -80,14 +81,28 @@ export class MonitoringService implements IMonitoringService {
     });
   }
 
-  public logException(exception: Error) {
+  public logException(exception: Error, properties?: Record<string, string | number>) {
     this.send(() => {
-      this.appInsights.trackException({ exception });
+      this.appInsights.trackException(properties ? { exception, properties } : { exception });
     });
   }
 
   public enableCookies() {
     this.areCookiesEnabled = true;
+  }
+
+  public captureOperationContext(): Record<string, string> {
+    try {
+      const trace = this.appInsights?.core?.getTraceCtx();
+      const operationId = trace?.getTraceId();
+      const operationParentId = trace?.getSpanId();
+      return {
+        ...(operationId && /^[a-f\d]{32}$/i.test(operationId) ? { operationId } : {}),
+        ...(operationParentId && /^[a-f\d]{16}$/i.test(operationParentId) ? { operationParentId } : {}),
+      };
+    } catch {
+      return {};
+    }
   }
 
   private send(func: () => void): void {
@@ -124,6 +139,9 @@ export class MonitoringService implements IMonitoringService {
           const appInsights = this.createAppInsights(config);
           appInsights.loadAppInsights();
           appInsights.addTelemetryInitializer((item) => {
+            if (!sanitizeHearingsException(item)) {
+              return false;
+            }
             if (
               (item.baseType === 'PageviewData' || item.baseType === 'PageviewPerformanceData') &&
               item.baseData?.name?.startsWith('Hearings: ')

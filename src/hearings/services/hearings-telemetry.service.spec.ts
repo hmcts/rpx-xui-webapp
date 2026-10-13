@@ -1,12 +1,14 @@
 import { HearingsTelemetryAction, HearingsTelemetryService, HearingsValidationCategory } from './hearings-telemetry.service';
 import { MonitoringService } from '../../app/services/logger/monitoring.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('Hearings telemetry service', () => {
   let service: HearingsTelemetryService;
   let monitoring: jasmine.SpyObj<MonitoringService>;
 
   beforeEach(() => {
-    monitoring = jasmine.createSpyObj('MonitoringService', ['logEvent']);
+    monitoring = jasmine.createSpyObj('MonitoringService', ['logEvent', 'logException', 'captureOperationContext']);
+    monitoring.captureOperationContext.and.returnValue({});
     service = new HearingsTelemetryService(monitoring, window);
   });
 
@@ -153,5 +155,59 @@ describe('Hearings telemetry service', () => {
     monitoring.logEvent.calls.reset();
     service.recordValidationFailure('form');
     expect(monitoring.logEvent).not.toHaveBeenCalled();
+  });
+
+  it('should retain the original Error and stack and snapshot the initiating operation context', () => {
+    const first = service.enterStep('/hearings/cancel/:hearingId', { hearingId: 'private-a' }, 0);
+    const report = service.captureException('cancelHearingRequest');
+    const error = new TypeError('private-message');
+    const stack = error.stack;
+    service.enterStep('/hearings/cancel/:hearingId', { hearingId: 'private-b' }, 1000);
+    report(error);
+    expect(monitoring.logException.calls.first().args[0]).toBe(error);
+    expect(error.stack).toBe(stack);
+    expect(monitoring.logException.calls.first().args[1]).toEqual({
+      telemetryArea: 'Hearings',
+      operation: 'cancelHearingRequest',
+      journeyId: first.journeyId,
+      journeyType: 'cancel',
+      step: '/hearings/cancel/:hearingId',
+      page: '/hearings/cancel/:hearingId',
+    });
+  });
+
+  it('should preserve HTTP status without copying the downstream body, headers or URL', () => {
+    const error = new HttpErrorResponse({
+      status: 503,
+      url: '/api/hearings/private-id',
+      error: { privateName: 'private-person' },
+    });
+    service.captureException('loadHearingRequest')(error);
+    const [exception, properties] = monitoring.logException.calls.first().args;
+    expect(exception.name).toBe('HttpErrorResponse');
+    expect(exception.stack).toBeUndefined();
+    expect(properties.httpStatus).toBe(503);
+    expect(properties.operation).toBe('loadHearingRequest');
+    expect(exception['error']).toBeUndefined();
+    expect(exception['url']).toBeUndefined();
+    expect(error.error).toEqual({ privateName: 'private-person' });
+  });
+
+  it('should retain status zero for network errors and safely handle unknown failures', () => {
+    service.captureException('getAllHearings')(new HttpErrorResponse({ status: 0 }));
+    expect(monitoring.logException.calls.first().args[1].httpStatus).toBe(0);
+    expect(() => service.captureException('navigate')('private-server-response')).not.toThrow();
+    expect(monitoring.logException.calls.mostRecent().args[0].message).toBe('navigate failed');
+    expect(monitoring.logException.calls.mostRecent().args[0].stack).toBeUndefined();
+  });
+
+  it('should retain the native operation IDs captured before a slow failure', () => {
+    monitoring.captureOperationContext.and.returnValue({ operationId: 'a'.repeat(32), operationParentId: 'b'.repeat(16) });
+    const report = service.captureException('loadHearingRequest');
+    monitoring.captureOperationContext.and.returnValue({ operationId: 'c'.repeat(32), operationParentId: 'd'.repeat(16) });
+    report(new Error('original'));
+    expect(monitoring.logException.calls.first().args[1]).toEqual(
+      jasmine.objectContaining({ operationId: 'a'.repeat(32), operationParentId: 'b'.repeat(16) })
+    );
   });
 });

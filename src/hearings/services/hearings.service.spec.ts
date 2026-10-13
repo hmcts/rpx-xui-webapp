@@ -14,7 +14,8 @@ import { HearingsTelemetryService, HearingsTelemetryAction } from './hearings-te
 describe('HearingsService', () => {
   let telemetry: jasmine.SpyObj<HearingsTelemetryService>;
   beforeEach(() => {
-    telemetry = jasmine.createSpyObj('HearingsTelemetryService', ['recordAction', 'recordValidationFailure']);
+    telemetry = jasmine.createSpyObj('HearingsTelemetryService', ['recordAction', 'recordValidationFailure', 'captureException']);
+    telemetry.captureException.and.returnValue(() => {});
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
       providers: [
@@ -64,6 +65,37 @@ describe('HearingsService', () => {
   it('should forward validation categories and counts without any form values', () => {
     TestBed.inject(HearingsService).recordValidationFailure('case-context-mismatch');
     expect(telemetry.recordValidationFailure).toHaveBeenCalledOnceWith('case-context-mismatch', 1);
+  });
+
+  it('should observe API failures once and deliver the identical original error to subscribers', () => {
+    const service = TestBed.inject(HearingsService);
+    const report = jasmine.createSpy('report');
+    telemetry.captureException.and.returnValue(report);
+    const received = jasmine.createSpy('received');
+    service.loadHearingRequest('private-hearing', 'private-case').subscribe({ error: received });
+    const http = TestBed.inject(HttpTestingController);
+    http
+      .expectOne('api/hearings/getHearing?hearingId=private-hearing&caseRef=private-case')
+      .flush({ privateName: 'private-person' }, { status: 500, statusText: 'Server error' });
+    expect(telemetry.captureException).toHaveBeenCalledOnceWith('loadHearingRequest');
+    expect(report).toHaveBeenCalledTimes(1);
+    expect(received).toHaveBeenCalledTimes(1);
+    expect(received.calls.first().args[0]).toBe(report.calls.first().args[0]);
+    expect(received.calls.first().args[0].status).toBe(500);
+    http.verify();
+  });
+
+  it('should still deliver the original failure if exception telemetry throws', () => {
+    const service = TestBed.inject(HearingsService);
+    telemetry.captureException.and.returnValue(() => {
+      throw new Error('Telemetry failed');
+    });
+    const received = jasmine.createSpy('received');
+    service.getAllHearings('private-case').subscribe({ error: received });
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne('api/hearings/getHearings?caseId=private-case').flush({}, { status: 406, statusText: 'Not acceptable' });
+    expect(received.calls.first().args[0].status).toBe(406);
+    http.verify();
   });
 
   describe('getAllHearings', () => {

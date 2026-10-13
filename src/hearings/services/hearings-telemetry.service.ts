@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { MonitoringService } from '../../app/services/logger/monitoring.service';
+import { HEARINGS_OPERATIONS, HearingsOperation } from './hearings-exception-telemetry';
 
 export type HearingsJourneyType =
   'browse' | 'request' | 'amend' | 'view' | 'cancel' | 'link' | 'manage-links' | 'actuals' | 'error';
@@ -168,6 +169,41 @@ export class HearingsTelemetryService {
       return;
     }
     this.monitoring.logEvent('Hearings.ValidationFailed', { ...this.properties(), category }, { errorCount });
+  }
+
+  public captureException(operation: HearingsOperation): (error: unknown) => void {
+    if (!HEARINGS_OPERATIONS.includes(operation)) {
+      return () => {};
+    }
+    // Snapshot the initiating journey, not whichever case/page is active when a slow request fails.
+    const context = {
+      telemetryArea: 'Hearings',
+      operation,
+      ...this.monitoring.captureOperationContext?.(),
+      ...(this.journey ? this.properties() : { page: 'Hearings' }),
+    };
+    return (error: unknown) => {
+      try {
+        const detail =
+          error && typeof error === 'object'
+            ? (error as { name?: string; message?: string; stack?: string; status?: number })
+            : {};
+        const status =
+          Number.isInteger(detail.status) && detail.status >= 0 && detail.status <= 599 ? { httpStatus: detail.status } : {};
+        // HTTP errors are not native Errors. Project only diagnostic fields; exclude bodies, headers and URLs.
+        const exception: Error =
+          error instanceof Error
+            ? error
+            : {
+                name: typeof detail.name === 'string' ? detail.name : 'Error',
+                message: typeof detail.message === 'string' ? detail.message : `${operation} failed`,
+                stack: typeof detail.stack === 'string' ? detail.stack : undefined,
+              };
+        this.monitoring.logException(exception, { ...context, ...status });
+      } catch {
+        // Error reporting must never replace or swallow the original application failure.
+      }
+    };
   }
 
   public endJourney(reason: HearingsJourneyEndReason, now = this.browser.performance.now(), endPage?: string): void {

@@ -226,7 +226,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
           };
           this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
         })
-        .catch((err) => this.loggerService.error(err));
+        .catch(this.hearingsService.errorReporter('navigate'));
     }
   }
 

@@ -3416,9 +3416,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.10":
-  version: 7.4.10
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.10"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.11":
+  version: 7.4.11
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.11"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
@@ -3464,7 +3464,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/d2650abf215f1ce2d7105ae7f3046c55c536e8437741ce4adddb32ec10b8ff4822f75d8ed0995501667848b07de53581edcb20c42828206c5bb4b39d211d0c23
+  checksum: 10/6d74ec08368c4c4a5e1693217553e5823481a32277efcd91ac1d15822e5c311d52add7cbee6e6d2677b3b230a8040f3568dc6bebc336ef7ae6baea6c949d9599
   languageName: node
   linkType: hard
 
@@ -12754,14 +12754,14 @@ __metadata:
   linkType: hard
 
 "dompurify@npm:^3.4.13":
-  version: 3.4.13
-  resolution: "dompurify@npm:3.4.13"
+  version: 3.4.17
+  resolution: "dompurify@npm:3.4.17"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/0db0a309a868a38aca042f606b37446977c35ee4501850a8c1bf2781337d79871daf1f4344bbf5b545f2a8c62e4d4e192c8fd6f1ff49ecec7c865c55a0aefee3
+  checksum: 10/ae03c068bd351d1201a24a9667cb302c65939f45a0c357edec8b84133108e19ac74f355c2d8b0f30baadadd7f0be2db300d269aa80d3ee15872712ca9ff4e1a8
   languageName: node
   linkType: hard
 
@@ -20986,7 +20986,7 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.10"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.11"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.41"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

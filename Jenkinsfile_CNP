@@ -679,7 +679,7 @@ withPipeline(type, product, component) {
         stage('Playwright Install Chromium') {
             try {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
-                yarnBuilder.yarn('playwright --version')
+                yarnBuilder.yarn('test:setup:playwright-version')
                 yarnBuilder.yarn('test:setup:playwright-install-chromium')
                 yarnBuilder.yarn('test:setup:playwright-verify-chromium')
                 env.PLAYWRIGHT_SKIP_INSTALL = 'true'

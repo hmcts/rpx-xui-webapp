@@ -44,22 +44,7 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def archivePlaywrightDiagnostics = {
     steps.sh '''
-        set +e
-        out_dir="functional-output/tests/playwright-diagnostics/failure-data"
-        mkdir -p "${out_dir}"
-        if [ -d test-results ]; then
-          find test-results -type f | grep -E '/(failure-data.json|failure-context.json)$' | while read -r file; do
-            rel="${file#test-results/}"
-            safe_name=$(echo "${rel}" | tr '/ ' '__')
-            cp "${file}" "${out_dir}/${safe_name}"
-          done
-        fi
-        diagnostic_count=$(find test-results -type f 2>/dev/null | grep -E '/(failure-data.json|failure-context.json|trace.zip|[^/]+[.](png|jpg|jpeg))$' | wc -l | tr -d ' ')
-        if [ "${diagnostic_count:-0}" -gt 0 ]; then
-          echo "diagnostic_status=present" > "${out_dir}/diagnostic-manifest.txt"
-        else
-          echo "diagnostic_status=none-captured" > "${out_dir}/diagnostic-manifest.txt"
-        fi
+        node scripts/collect-playwright-diagnostics.cjs
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,

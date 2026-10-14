@@ -172,6 +172,25 @@ describe('Monitoring service', () => {
     });
   });
 
+  [0, 25, 100].forEach((samplingPercentage) => {
+    it(`should preserve environment-configured sampling of ${samplingPercentage} with shared initialization`, () => {
+      http.get.and.returnValue(of({ connectionString, samplingPercentage }));
+      service.logEvent('Hearings.Action');
+      service.logException(new Error('Test failure'));
+      expect(createAppInsights).toHaveBeenCalledOnceWith({
+        connectionString,
+        samplingPercentage,
+        isCookieUseDisabled: true,
+        isStorageUseDisabled: true,
+        enableSessionStorageBuffer: true,
+      });
+      expect(http.get).toHaveBeenCalledTimes(1);
+      expect(appInsights.loadAppInsights).toHaveBeenCalledTimes(1);
+      expect(appInsights.trackEvent).toHaveBeenCalledTimes(1);
+      expect(appInsights.trackException).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('should respect cookies enabled before initialization completes', () => {
     const response = new Subject<{ connectionString: string }>();
     http.get.and.returnValue(response);

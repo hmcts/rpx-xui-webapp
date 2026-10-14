@@ -119,7 +119,9 @@ export class MonitoringService implements IMonitoringService {
 
   private initialize(): Observable<boolean> {
     if (!this.initialization$) {
-      this.initialization$ = defer(() => this.http.get<{ connectionString?: string }>('/api/monitoring-tools')).pipe(
+      this.initialization$ = defer(() =>
+        this.http.get<{ connectionString?: string; samplingPercentage?: number }>('/api/monitoring-tools')
+      ).pipe(
         take(1),
         map((monitor) => {
           const connectionString = monitor?.connectionString;
@@ -128,6 +130,9 @@ export class MonitoringService implements IMonitoringService {
           }
 
           const config: MonitorConfig = { connectionString };
+          if (monitor.samplingPercentage !== undefined) {
+            config.samplingPercentage = monitor.samplingPercentage;
+          }
           if (!this.areCookiesEnabled) {
             Object.assign(config, {
               isCookieUseDisabled: true,

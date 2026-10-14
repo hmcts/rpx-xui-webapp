@@ -1080,6 +1080,12 @@ interface FailureDiagnosisContext {
   executionSignals: ExecutionSignals;
 }
 
+const failureDiagnosisStatuses = new Set<TestInfo['status']>(['failed', 'timedOut', 'interrupted']);
+
+function shouldAttachFailureDiagnosis(status: TestInfo['status']): boolean {
+  return failureDiagnosisStatuses.has(status);
+}
+
 /**
  * Attaches failure diagnosis annotations and artifacts to test info.
  * Follows HMCTS observability standards for instant root cause diagnosis.
@@ -1280,6 +1286,15 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   });
 }
 
+async function attachFailureDiagnosisIfNeeded(
+  testInfo: TestInfo,
+  buildContext: () => Omit<FailureDiagnosisContext, 'testInfo' | 'testStatus'>
+): Promise<void> {
+  if (shouldAttachFailureDiagnosis(testInfo.status)) {
+    await attachFailureDiagnosis({ testInfo, testStatus: testInfo.status, ...buildContext() });
+  }
+}
+
 // Gather all fixture types into a common type
 export type CustomFixtures = PageFixtures & UtilsFixtures;
 export interface TestFixtures extends CustomFixtures {
@@ -1432,11 +1447,9 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     }
 
     // On test failure, classify the root cause and attach diagnosis
-    if (testInfo.status === 'failed' || testInfo.status === 'timedOut') {
+    await attachFailureDiagnosisIfNeeded(testInfo, () => {
       const errorContext = collectErrorContext(testInfo);
-      await attachFailureDiagnosis({
-        testInfo,
-        testStatus: testInfo.status,
+      return {
         error: errorContext.diagnosticText,
         primaryError: errorContext.primaryMessage,
         actionableError: errorContext.actionableLine,
@@ -1453,8 +1466,8 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
           backendRequestsObserved,
           finalScreenshotError,
         },
-      });
-    }
+      };
+    });
 
     if (liveTimerEnabled) {
       const elapsedMs = Date.now() - testStartEpochMs;
@@ -1483,6 +1496,11 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
 export const expect = test.expect;
 
 export const __test__ = {
+  shouldAttachFailureDiagnosis: (status: TestInfo['status']) => shouldAttachFailureDiagnosis(status),
+  attachFailureDiagnosisIfNeeded: (
+    testInfo: TestInfo,
+    buildContext: () => Omit<FailureDiagnosisContext, 'testInfo' | 'testStatus'>
+  ) => attachFailureDiagnosisIfNeeded(testInfo, buildContext),
   classifyFailure: (context: ClassifyFailureContext) => classifyFailure(context),
   deriveFailureSource: (failureType: FailureType, error: string, topSuspect: string) =>
     deriveFailureSource(failureType, error, topSuspect),

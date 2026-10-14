@@ -116,9 +116,13 @@ function listFiles(directory) {
 }
 
 function collectDiagnostics(reportDir) {
-  const candidates = [reportDir, path.join(reportDir, 'test-results')];
+  const candidates = [reportDir, path.join(reportDir, 'test-results'), path.join(reportDir, '..', 'test-results')].filter(
+    (candidate, index, all) => all.indexOf(candidate) === index
+  );
 
-  return candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => formatDiagnostic(candidate, file)));
+  return Array.from(
+    new Set(candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => formatDiagnostic(candidate, file))))
+  );
 }
 
 function formatDiagnostic(directory, file) {

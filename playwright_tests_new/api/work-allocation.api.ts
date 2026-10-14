@@ -4,7 +4,7 @@ import type { TestInfo } from '@playwright/test';
 import { test, expect } from './fixtures';
 import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import type { UserDetailsResponse } from './utils/types';
-import { buildTaskSearchRequest } from './utils/work-allocation';
+import { buildCaseSearchRequest, buildTaskSearchRequest } from './utils/work-allocation';
 import { createWorkAllocationActionFixture } from './utils/workAllocationActionFixture';
 import { requireWorkAllocationLocation, requireWorkAllocationUserId } from './utils/workAllocationSetup';
 import {
@@ -199,10 +199,12 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     const endpoints = ['workallocation/my-work/cases', 'workallocation/my-work/myaccess'];
     for (const endpoint of endpoints) {
       const tags = endpoint.endsWith('/myaccess') ? ['@svc-work-allocation-myaccess'] : [];
+      const view = endpoint.endsWith('/myaccess') ? 'MyAccess' : 'MyCases';
       test(`${endpoint} returns data or guarded status`, { tag: tags }, async ({ apiClient }) => {
         const response = await withXsrf('solicitor', (headers) =>
           guardedRequest(() =>
-            apiClient.get(endpoint, {
+            apiClient.post(endpoint, {
+              data: buildCaseSearchRequest(view),
               headers,
               throwOnError: false,
               timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
@@ -214,12 +216,13 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
       });
     }
 
-    test('GET /workallocation/my-work/cases exposes case totals in response when data available', async ({ apiClient }) => {
+    test('POST /workallocation/my-work/cases exposes case totals in response when data available', async ({ apiClient }) => {
       // Given: A solicitor user authenticated with valid session
       // When: Requesting my-work cases dashboard
       // Then: Response includes totals field with case counts when cases exist
       const response = await withXsrf('solicitor', (headers) =>
-        apiClient.get('workallocation/my-work/cases', {
+        apiClient.post('workallocation/my-work/cases', {
+          data: buildCaseSearchRequest('MyCases'),
           headers,
           throwOnError: false,
         })

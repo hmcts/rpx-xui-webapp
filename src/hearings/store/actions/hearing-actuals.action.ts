@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { HttpError } from '../../../models/httpError.model';
 import { ActualHearingDayModel, HearingActualsMainModel, HearingActualsModel } from '../../models/hearingActualsMainModel';
+import { HMCStatus } from '../../models/hearings.enum';
 
 export const RESET_HEARING_ACTUALS = '[HEARING ACTUALS] Reset Hearing Actuals';
 export const SET_HEARING_ACTUALS_EDIT_MODE = '[HEARING ACTUALS] Set Hearing Actuals Edit Mode';
@@ -64,7 +65,7 @@ export class UpdateHearingActualsSuccess implements Action {
 export class SubmitHearingActuals implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS;
 
-  constructor(public payload: { id: string; caseRef: string; hearingActuals?: HearingActualsModel }) {}
+  constructor(public payload: { id: string; caseRef: string; hearingActuals?: HearingActualsModel; hearingStatus?: HMCStatus }) {}
 }
 
 export class SubmitHearingActualsSuccess implements Action {

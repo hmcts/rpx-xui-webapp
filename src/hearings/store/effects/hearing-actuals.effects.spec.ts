@@ -128,15 +128,16 @@ describe('Hearing Actuals Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.submitHearingActuals$).toBeObservable(expected);
+      expect(hearingsServiceMock.submitHearingActuals).toHaveBeenCalledWith('1111222233334444', '5555666677778888');
     });
 
-    it('should update the draft before submitting a finalised hearing edit', () => {
+    it('should update the draft without completing a finalised hearing edit', () => {
       hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
-      hearingsServiceMock.submitHearingActuals.and.returnValue(of(200));
       const action = new hearingActualsActions.SubmitHearingActuals({
         id: '1111222233334444',
         caseRef: '5555666677778888',
         hearingActuals: hearingActualsMainModel.hearingActuals,
+        hearingStatus: hearingActualsMainModel.hmcStatus,
       });
       const completion = new hearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
       actions$ = hot('-a', { a: action });
@@ -146,32 +147,38 @@ describe('Hearing Actuals Effects', () => {
       expect(hearingsServiceMock.updateHearingActuals).toHaveBeenCalledWith(
         '1111222233334444',
         hearingActualsMainModel.hearingActuals,
-        '5555666677778888'
+        '5555666677778888',
+        hearingActualsMainModel.hmcStatus
       );
-      expect(hearingsServiceMock.submitHearingActuals).toHaveBeenCalledWith('1111222233334444', '5555666677778888');
+      expect(hearingsServiceMock.submitHearingActuals).not.toHaveBeenCalled();
     });
 
-    it('should retain the user on check your answers when finalised hearing completion fails', () => {
+    it('should retain the user on check your answers when finalised hearing update fails', () => {
       const error: HttpError = {
         status: 500,
         statusText: 'Server Error',
         message: 'Server Error',
         errors: [],
       };
-      hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
-      hearingsServiceMock.submitHearingActuals.and.returnValue(throwError(error));
+      hearingsServiceMock.updateHearingActuals.and.returnValue(throwError(error));
       const action = new hearingActualsActions.SubmitHearingActuals({
         id: '1111222233334444',
         caseRef: '5555666677778888',
         hearingActuals: hearingActualsMainModel.hearingActuals,
+        hearingStatus: hearingActualsMainModel.hmcStatus,
       });
       const completion = new hearingActualsActions.SubmitHearingActualsFailure(error);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
 
       expect(effects.submitHearingActuals$).toBeObservable(expected);
-      expect(hearingsServiceMock.updateHearingActuals).toHaveBeenCalled();
-      expect(hearingsServiceMock.submitHearingActuals).toHaveBeenCalled();
+      expect(hearingsServiceMock.updateHearingActuals).toHaveBeenCalledWith(
+        '1111222233334444',
+        hearingActualsMainModel.hearingActuals,
+        '5555666677778888',
+        hearingActualsMainModel.hmcStatus
+      );
+      expect(hearingsServiceMock.submitHearingActuals).not.toHaveBeenCalled();
       expect(routerMock.navigate).not.toHaveBeenCalled();
     });
 

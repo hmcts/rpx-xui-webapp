@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { HearingActualsModel } from '../../../models/hearingActualsMainModel';
+import { HMCStatus } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-base/hearing-actuals-summary-base.component';
@@ -34,12 +35,13 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
 
   public onSubmitHearingDetails(): void {
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-    const payload: { id: string; caseRef: string; hearingActuals?: HearingActualsModel } = {
+    const payload: { id: string; caseRef: string; hearingActuals?: HearingActualsModel; hearingStatus?: HMCStatus } = {
       id: this.id,
       caseRef: navState?.caseId || this.hearingActualsCaseRef,
     };
     if (this.isFinalisedEditMode) {
       payload.hearingActuals = this.hearingActualsMainModel.hearingActuals;
+      payload.hearingStatus = this.hearingActualsMainModel.hmcStatus;
     }
     this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(payload));
   }

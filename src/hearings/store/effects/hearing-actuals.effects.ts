@@ -71,12 +71,14 @@ export class HearingActualsEffects {
     this.actions$.pipe(
       ofType(hearingActualsActions.SUBMIT_HEARING_ACTUALS),
       switchMap((action: hearingActualsActions.SubmitHearingActuals) => {
-        const submit$ = () => this.hearingsService.submitHearingActuals(action.payload.id, action.payload.caseRef);
-        const request$ = action.payload.hearingActuals
-          ? this.hearingsService
-              .updateHearingActuals(action.payload.id, action.payload.hearingActuals, action.payload.caseRef)
-              .pipe(switchMap(submit$))
-          : submit$();
+        const request$: Observable<unknown> = action.payload.hearingActuals
+          ? this.hearingsService.updateHearingActuals(
+              action.payload.id,
+              action.payload.hearingActuals,
+              action.payload.caseRef,
+              action.payload.hearingStatus
+            )
+          : this.hearingsService.submitHearingActuals(action.payload.id, action.payload.caseRef);
         return request$.pipe(
           map(() => new hearingActualsActions.SubmitHearingActualsSuccess(action.payload.id)),
           tap(() => this.router.navigate([`/hearings/actuals/${action.payload.id}/hearing-actuals-confirmation`])),

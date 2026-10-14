@@ -198,6 +198,7 @@ describe('HearingActualSummaryComponent', () => {
         id: component.id,
         caseRef: '1234',
         hearingActuals: hearingActualsMainModel.hearingActuals,
+        hearingStatus: hearingActualsMainModel.hmcStatus,
       })
     );
   });

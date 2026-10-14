@@ -1,5 +1,1 @@
-export interface OrganisationDetailsModel {
-  name?: string;
-  organisationType?: string;
-  cftOrganisationID?: string;
-}
+export { OrganisationDetailsModel } from './hearing-payload-support.model';

@@ -115,19 +115,19 @@ describe('WorkAllocationTaskService', () => {
     });
   });
 
-  it('getUsersAssignedTasks should return [] when userDetails missing', (done) => {
+  it('getUsersAssignedTasks should return null when userDetails missing', (done) => {
     service.getUsersAssignedTasks().subscribe((res) => {
-      expect(res).toEqual([]);
+      expect(res).toBeNull();
       expect(mockHttpService.post).not.toHaveBeenCalled();
       done();
     });
   });
 
-  it('getUsersAssignedTasks should return [] when userDetails is malformed', (done) => {
+  it('getUsersAssignedTasks should return null when userDetails is malformed', (done) => {
     sessionStorage.setItem('userDetails', '{not-json');
 
     service.getUsersAssignedTasks().subscribe((res) => {
-      expect(res).toEqual([]);
+      expect(res).toBeNull();
       expect(mockHttpService.post).not.toHaveBeenCalled();
       done();
     });

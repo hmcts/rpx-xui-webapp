@@ -1,52 +1,48 @@
 import { expect } from 'chai';
+import { getRedisClient, isRedisReady, RedisClient, setRedisClient } from './redisClient';
 
 describe('redisClient', () => {
-  function loadModule() {
-    delete require.cache[require.resolve('./redisClient')];
-    return require('./redisClient');
+  function createRedisClient(isReady: boolean): RedisClient {
+    return { isReady } as unknown as RedisClient;
   }
 
-  it('should return null when no redis client has been set', () => {
-    const redisClientModule = loadModule();
+  beforeEach(() => {
+    setRedisClient(null);
+  });
 
-    expect(redisClientModule.getRedisClient()).to.equal(null);
-    expect(redisClientModule.isRedisReady()).to.equal(false);
+  it('should return null when no redis client has been set', () => {
+    expect(getRedisClient()).to.equal(null);
+    expect(isRedisReady()).to.equal(false);
   });
 
   it('should store and return the redis client', () => {
-    const redisClientModule = loadModule();
-    const client = { connected: true };
+    const client = createRedisClient(true);
 
-    redisClientModule.setRedisClient(client);
+    setRedisClient(client);
 
-    expect(redisClientModule.getRedisClient()).to.equal(client);
+    expect(getRedisClient()).to.equal(client);
   });
 
   it('should return true when redis client is connected', () => {
-    const redisClientModule = loadModule();
+    setRedisClient(createRedisClient(true));
 
-    redisClientModule.setRedisClient({ connected: true });
-
-    expect(redisClientModule.isRedisReady()).to.equal(true);
+    expect(isRedisReady()).to.equal(true);
   });
 
   it('should return false when redis client is not connected', () => {
-    const redisClientModule = loadModule();
+    setRedisClient(createRedisClient(false));
 
-    redisClientModule.setRedisClient({ connected: false });
-
-    expect(redisClientModule.isRedisReady()).to.equal(false);
+    expect(isRedisReady()).to.equal(false);
   });
 
   it('should replace an existing redis client', () => {
-    const redisClientModule = loadModule();
-    const firstClient = { connected: true };
-    const secondClient = { connected: false };
+    const firstClient = createRedisClient(true);
+    const secondClient = createRedisClient(false);
 
-    redisClientModule.setRedisClient(firstClient);
-    redisClientModule.setRedisClient(secondClient);
+    setRedisClient(firstClient);
+    setRedisClient(secondClient);
 
-    expect(redisClientModule.getRedisClient()).to.equal(secondClient);
-    expect(redisClientModule.isRedisReady()).to.equal(false);
+    expect(getRedisClient()).to.equal(secondClient);
+    expect(isRedisReady()).to.equal(false);
   });
 });

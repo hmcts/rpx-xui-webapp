@@ -164,4 +164,19 @@ describe('CaseworkerDataService', () => {
       },
     });
   });
+  it('getUserByIdamId should make correct api call', () => {
+    service.getUserByIdamId('123456');
+    expect(mockHttpService.post).toHaveBeenCalledWith(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, {
+      idamId: '123456',
+      silentNotFound: false,
+    });
+  });
+
+  it('getUserByIdamId should support silent not found', () => {
+    service.getUserByIdamId('123456', true);
+    expect(mockHttpService.post).toHaveBeenCalledWith(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, {
+      idamId: '123456',
+      silentNotFound: true,
+    });
+  });
 });

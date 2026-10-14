@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -14,7 +14,6 @@ import { HearingRequestMainModel } from '../../../models/hearingRequestMain.mode
 import { ACTION, CaseFlagType, Mode } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
-import { PartyFlagsDisplayModel } from '../../../models/partyFlags.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
@@ -27,6 +26,7 @@ import moment from 'moment';
   standalone: false,
   selector: 'exui-hearing-requirements',
   templateUrl: './hearing-requirements.component.html',
+  styleUrls: ['./hearing-requirements.component.scss'],
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public readonly caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
@@ -38,8 +38,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public caseTypeRefData: LovRefDataModel[];
   public caseTypes: CaseCategoryDisplayModel[];
   public showReasonableAdjustmentFlagsWarningMessage: boolean;
-  public showMismatchErrorMessage: boolean;
-  public validationErrors: { id: string; message: string };
+  public showMismatchErrorMessage = false;
+  public showPageMismatchErrorMessage = false;
+
+  public validationErrors: { id: string; message: string[] };
 
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
@@ -61,6 +63,14 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   @HostListener('window:blur', ['$event'])
   public onBlur(): void {
     this.lostFocus = true;
+  }
+
+  // Sets popup reload as focus to the mismatch dialog link when it becomes available
+  @ViewChild('mismatchDialogLink')
+  public set mismatchDialogLink(link: ElementRef<HTMLAnchorElement> | undefined) {
+    if (link) {
+      setTimeout(() => link.nativeElement.focus());
+    }
   }
 
   constructor(
@@ -94,11 +104,16 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       this.caseTypeRefData,
       this.serviceHearingValuesModel.caseCategories
     );
-    if (
-      !HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel, this.caseReference)
-    ) {
+    const hearingRequestMismatchDetected = !HearingsUtils.checkHearingConsistency(
+      this.hearingRequestMainModel,
+      this.serviceHearingValuesModel,
+      this.caseReference
+    );
+    this.hearingsService.hearingRequestContinueDisabled = hearingRequestMismatchDetected;
+    if (hearingRequestMismatchDetected) {
       this.showMismatchErrorMessage = true;
-      this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE };
+      this.showPageMismatchErrorMessage = true;
+      this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST };
     }
   }
 
@@ -141,7 +156,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       caseDetails: {
         hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
-        caseRef: this.hearingListMainModel?.caseRef || null,
+        // case reference/ID must be set by shv in order to maintain correct case ID
+        caseRef: this.serviceHearingValuesModel.caseId,
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,
@@ -181,23 +197,16 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         individualDetails: partyDetail.individualDetails && {
           ...partyDetail.individualDetails,
           preferredHearingChannel: partyInHMC?.individualDetails?.preferredHearingChannel,
-          reasonableAdjustments: this.getAllPartyFlagsByPartyId(partyDetail.partyID).filter(
-            (flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID
-          ),
+          reasonableAdjustments:
+            partyDetail.individualDetails?.reasonableAdjustments?.filter(
+              (flagId) => flagId !== CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID
+            ) || [],
         },
         ...(organisationDetails && { organisationDetails }),
       };
       combinedPartyDetails.push(party);
     });
     return combinedPartyDetails;
-  }
-
-  public getAllPartyFlagsByPartyId(partyID: string): string[] {
-    const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce(
-      (previousValue, currentValue) => [...previousValue, ...currentValue.partyFlags],
-      []
-    );
-    return allRAFs.filter((flag) => flag.partyId === partyID).map((filterFlag) => filterFlag.flagId);
   }
 
   public initializeHearingCondition(): void {
@@ -241,7 +250,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.fragmentFocus();
   }
 
+  public closeMismatchErrorMessage(): void {
+    this.showMismatchErrorMessage = false;
+  }
+
   public ngOnDestroy() {
+    this.hearingsService.hearingRequestContinueDisabled = false;
     super.unsubscribe();
   }
 

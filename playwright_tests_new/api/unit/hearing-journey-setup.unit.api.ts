@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { buildLargeListedHearings, resolveHearingsCaseRoute } from '../../integration/helpers/hearingJourneySetup.helper.js';
+import {
+  applyHearingManagerSessionCookies,
+  buildLargeListedHearings,
+  resolveHearingsCaseRoute,
+} from '../../integration/helpers/hearingJourneySetup.helper.js';
 
 test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
   test('uses explicit route fields before routeConfig.caseConfig', () => {
@@ -64,5 +68,39 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
         hearingType: 'ABA5-LISTED-3',
       }),
     ]);
+  });
+
+  test('applies and annotates only the worker-selected hearing identity', async () => {
+    const environment = {
+      HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
+      HEARING_MANAGER_CR84_ON_1_PASSWORD: 'not-a-real-password',
+      HEARING_MANAGER_CR84_ON_2_USERNAME: 'hearing-on-2@example.test',
+      HEARING_MANAGER_CR84_ON_2_PASSWORD: 'not-a-real-password',
+      HEARING_MANAGER_CR84_ON_3_USERNAME: '',
+      HEARING_MANAGER_CR84_ON_3_PASSWORD: '',
+      HEARING_MANAGER_CR84_ON_4_USERNAME: '',
+      HEARING_MANAGER_CR84_ON_4_PASSWORD: '',
+    };
+    const previousEnvironment = Object.fromEntries(Object.keys(environment).map((key) => [key, process.env[key]]));
+    const testInfo = { annotations: [], parallelIndex: 0 };
+    const selectedIdentity = 'HEARING_MANAGER_CR84_ON-1';
+
+    try {
+      Object.assign(process.env, environment);
+      await applyHearingManagerSessionCookies({} as never, 'HEARING_MANAGER_CR84_ON', testInfo, async (_page, candidates) => {
+        expect(candidates).toEqual([selectedIdentity]);
+        return { userIdentifier: selectedIdentity, session: {} as never };
+      });
+
+      expect(testInfo.annotations).toEqual([{ type: 'session-user', description: selectedIdentity }]);
+    } finally {
+      for (const [key, value] of Object.entries(previousEnvironment)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+    }
   });
 });

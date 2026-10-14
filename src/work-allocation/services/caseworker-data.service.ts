@@ -99,4 +99,11 @@ export class CaseworkerDataService {
         )
       );
   }
+  public getUsersByIdamIds(idamIds: string[], services: string[]): Observable<Caseworker[]> {
+    return this.http.post<Caseworker[]>(`${CaseworkerDataService.caseWorkerUrl}/getUsersByIdamIds`, { idamIds, services });
+  }
+
+  public getUserByIdamId(idamId: string, silentNotFound = false): Observable<Caseworker> {
+    return this.http.post<Caseworker>(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, { idamId, silentNotFound });
+  }
 }

@@ -7,7 +7,16 @@ import {
   workFiltersSupportedJurisdictions,
   workFiltersUserId,
   workFiltersUserIdentifier,
+  warmWorkFiltersSession,
 } from './workFilters.setup';
+
+const WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 180_000;
+
+test.beforeAll(async ({}, testInfo) => {
+  testInfo.setTimeout(WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS);
+  await warmWorkFiltersSession();
+});
 
 test.beforeEach(async ({ page }) => {
   await setupWorkFiltersUser(page);

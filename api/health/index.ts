@@ -21,7 +21,7 @@ import {
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { JUILogger } from '../lib/models';
-import { setRedisClient } from '../redis/redisClient';
+import { isRedisReady, setRedisClient } from '../redis/redisClient';
 const logger: JUILogger = log4jui.getLogger('health');
 
 export const checkServiceHealth = (service) =>
@@ -85,7 +85,7 @@ export const addReformHealthCheck = (app) => {
         ...config.checks,
         ...{
           redis: HealthCheck.raw(() => {
-            return redisClient.connected ? HealthCheck.up() : HealthCheck.down();
+            return isRedisReady() ? HealthCheck.up() : HealthCheck.down();
           }),
         },
       };

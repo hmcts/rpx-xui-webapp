@@ -4,14 +4,15 @@ import { Base } from '../../base';
 const CASE_FILE_VIEW_FOLDER_TIMEOUT_MS = 10_000;
 const CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS = 200;
 const CASE_FILE_VIEW_DOCUMENT_TIMEOUT_MS = 15_000;
+const DIRECT_CHILD_FOLDER_NODE = ':scope > cdk-nested-tree-node.document-tree-container__folder';
+const DIRECT_CHILD_FOLDER_LABEL = ':scope > button .node__name--folder';
+const ROOT_DIRECT_CHILD_FOLDER_LABEL = `${DIRECT_CHILD_FOLDER_NODE} > button .node__name--folder`;
 
 export class CaseFileViewPage extends Base {
   readonly container = this.page.locator('#case-file-view');
   readonly treeContainer = this.container.locator('.document-tree-container').first();
   readonly treeRoot = this.treeContainer.locator('cdk-tree[role="tree"]').first();
-  readonly directChildFolderLabels = this.treeRoot.locator(
-    ':scope > cdk-nested-tree-node.document-tree-container__folder > button .node__name--folder:not(.document-tree-invisible)'
-  );
+  readonly directChildFolderLabels = this.treeRoot.locator(ROOT_DIRECT_CHILD_FOLDER_LABEL);
   readonly emptyStateMessage = this.treeContainer.getByText('No results found', { exact: true });
   readonly mediaViewerContainer = this.container.locator('.media-viewer-container');
   readonly mediaViewerToolbar = this.mediaViewerContainer.locator('#mvToolbarMain');
@@ -32,10 +33,10 @@ export class CaseFileViewPage extends Base {
   readonly documentHeader = this.container.locator('.document-folders-header .document-folders-header__title');
   readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort button').first();
   readonly sortMenu = this.page.locator('.cdk-overlay-pane').filter({ hasText: 'Sort documents by name' }).first();
-  readonly sortAscendingOption = this.sortMenu.getByText('A to Z ascending', { exact: true });
-  readonly sortDescendingOption = this.sortMenu.getByText('Z to A descending', { exact: true });
-  readonly sortRecentFirstOption = this.sortMenu.getByText('Recent first', { exact: true });
-  readonly sortOldestFirstOption = this.sortMenu.getByText('Oldest first', { exact: true });
+  readonly sortAscendingOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: /^A to Z ascending$/ });
+  readonly sortDescendingOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: /^Z to A descending$/ });
+  readonly sortRecentFirstOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: /^Recent first$/ });
+  readonly sortOldestFirstOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: /^Oldest first$/ });
 
   constructor(page: Page) {
     super(page);
@@ -57,7 +58,7 @@ export class CaseFileViewPage extends Base {
     for (const [index, segment] of segments.entries()) {
       folderNode = await this.findDirectChildFolderNode(currentScope, segment);
 
-      const folderButton = folderNode.locator(':scope > button.node[role="treeitem"]').first();
+      const folderButton = folderNode.locator(':scope > button.node').first();
       const isExpanded = await folderButton.getAttribute('aria-expanded');
 
       await folderButton.waitFor({ state: 'visible' });
@@ -202,8 +203,8 @@ export class CaseFileViewPage extends Base {
   }
 
   private async findDirectChildFolderNode(scope: Locator, folderName: string): Promise<Locator> {
-    const folderNodes = scope.locator(':scope > cdk-nested-tree-node.document-tree-container__folder');
-    const folderLabels = folderNodes.locator(':scope > button .node__name--folder:not(.document-tree-invisible)');
+    const folderNodes = scope.locator(DIRECT_CHILD_FOLDER_NODE);
+    const folderLabels = folderNodes.locator(DIRECT_CHILD_FOLDER_LABEL);
 
     const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
 
@@ -221,16 +222,14 @@ export class CaseFileViewPage extends Base {
 
     for (let i = 0; i < folderCount; i++) {
       const candidate = folderNodes.nth(i);
-      const label = candidate.locator(':scope > button .node__name--folder:not(.document-tree-invisible)').first();
+      const label = candidate.locator(DIRECT_CHILD_FOLDER_LABEL).first();
       const text = (await label.textContent())?.trim();
 
-      if (text) {
+      if (text && (await label.isVisible())) {
         visibleFolderNames.push(text);
-      }
-
-      if (text === folderName) {
-        await label.waitFor({ state: 'visible' });
-        return candidate;
+        if (text === folderName) {
+          return candidate;
+        }
       }
     }
 
@@ -311,9 +310,7 @@ export class CaseFileViewPage extends Base {
   }
 
   private async waitForTreeContentReady(): Promise<void> {
-    const folderLabels = this.treeRoot.locator(
-      ':scope > cdk-nested-tree-node.document-tree-container__folder > button .node__name--folder:not(.document-tree-invisible)'
-    );
+    const folderLabels = this.treeRoot.locator(ROOT_DIRECT_CHILD_FOLDER_LABEL);
     const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
 
     while (Date.now() < deadline) {

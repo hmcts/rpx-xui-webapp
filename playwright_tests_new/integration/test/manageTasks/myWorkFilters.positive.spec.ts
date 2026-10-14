@@ -1,11 +1,34 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies, myWorkSelectableLocations, setupMyWorkFilterRoutes } from '../../helpers';
+import { buildMyCasesMock } from '../../mocks/myCases.mock';
+
+type SearchParameter = {
+  key?: string;
+  values?: string[];
+};
+
+type SearchRequestPayload = {
+  searchRequest?: {
+    search_parameters?: SearchParameter[];
+  };
+};
+
+const getSearchParameterValues = (request: SearchRequestPayload, key: string): string[] =>
+  request.searchRequest?.search_parameters?.find((parameter) => parameter.key === key)?.values ?? [];
+
+const hasExactSearchParameterValues = (request: SearchRequestPayload, key: string, expectedValues: string[]): boolean => {
+  const actualValues = getSearchParameterValues(request, key);
+  return (
+    actualValues.length === expectedValues.length && expectedValues.every((expectedValue) => actualValues.includes(expectedValue))
+  );
+};
 
 const authenticatedUserIdentifier = 'STAFF_ADMIN';
 const myWorkFilterTabs = [
   {
     name: 'Available tasks',
     urlPattern: /\/work\/my-work\/available(?:\?.*)?$/,
+    view: 'AvailableTasks',
   },
   {
     name: 'My cases',
@@ -14,8 +37,9 @@ const myWorkFilterTabs = [
   {
     name: 'My tasks',
     urlPattern: /\/work\/my-work\/list(?:\?.*)?$/,
+    view: 'MyTasks',
   },
-];
+] as const;
 
 test.describe('My work filter parity', { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test.beforeEach(async ({ page }) => {
@@ -43,38 +67,44 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
     });
 
     await test.step('Open the My tasks view and verify the initial work filter state', async () => {
-      await taskListPage.goto();
-      await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+      await taskListPage.gotoAndWaitForTaskRow('opening My tasks filter parity');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Show work filter');
       await expect(taskListPage.filterPanel).toBeHidden();
 
       await taskListPage.openFilterPanel();
-      await expect(taskListPage.taskListFilterToggle).toHaveText('Hide work filter');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Hide work filter');
+      await taskListPage.expectWorkFilterControls();
       await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
       await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
       await expect(taskListPage.filterPanel.locator('#locations:visible').first()).toBeVisible();
 
       await taskListPage.applyCurrentFilters();
-      await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+      await expect(taskListPage.myWorkFilterToggle).toContainText('Show work filter');
       await expect(taskListPage.filterPanel).toBeHidden();
     });
 
     await test.step('Verify the same Services and Locations filter surface on Available tasks, My cases, and My tasks', async () => {
-      for (const { name: tabName, urlPattern } of myWorkFilterTabs) {
-        await Promise.all([
-          page.waitForURL(urlPattern, { timeout: 30_000 }),
-          taskListPage.taskTableTabs.filter({ hasText: tabName }).first().click(),
-        ]);
+      for (const { name: tabName, urlPattern, view } of myWorkFilterTabs) {
+        if (view) {
+          await taskListPage.clickTaskTabAndWaitForView(tabName, view, `${tabName} filter parity`);
+        } else {
+          await Promise.all([
+            page.waitForURL(urlPattern, { timeout: 30_000 }),
+            taskListPage.taskTableTabs.filter({ hasText: tabName }).first().click(),
+          ]);
+        }
         await taskListPage.waitForTaskListShellReady(`${tabName} filter parity`);
-        await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+        await expect(taskListPage.myWorkFilterToggle).toContainText('Show work filter');
 
         await taskListPage.openFilterPanel();
-        await expect(taskListPage.taskListFilterToggle).toHaveText('Hide work filter');
+        await expect(taskListPage.myWorkFilterToggle).toContainText('Hide work filter');
+        await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: tabName === 'My cases' ? 'ignore' : true });
         await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
         await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
         await expect(taskListPage.filterPanel.locator('#locations:visible').first()).toBeVisible();
 
         await taskListPage.applyCurrentFilters();
-        await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+        await expect(taskListPage.myWorkFilterToggle).toContainText('Show work filter');
         await expect(taskListPage.filterPanel).toBeHidden();
       }
     });
@@ -154,7 +184,7 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
       await expect(civilServiceFilter).not.toBeChecked();
 
       await taskListPage.applyCurrentFilters();
-      await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+      await expect(taskListPage.myWorkFilterToggle).toHaveText('Show work filter');
       await expect(taskListPage.filterPanel).toBeHidden();
 
       await taskListPage.openFilterPanel();
@@ -162,6 +192,97 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
       await expect(reopenedImmigrationServiceFilter).toBeChecked();
       const reopenedCivilServiceFilter = await taskListPage.waitForServiceFilterOptionVisible('Civil');
       await expect(reopenedCivilServiceFilter).not.toBeChecked();
+    });
+  });
+
+  test('filters the My cases screen using the task list work filter', async ({ taskListPage, page, tableUtils }) => {
+    const myCasesResponse = buildMyCasesMock();
+    const filteredMyCasesResponse = {
+      cases: [myCasesResponse.cases[0]],
+      total_records: 1,
+      unique_cases: 1,
+    };
+    const myCasesRequests: SearchRequestPayload[] = [];
+
+    await setupMyWorkFilterRoutes(page, {
+      myCasesRouteHandler: async (route) => {
+        const request = route.request().postDataJSON() as SearchRequestPayload;
+        myCasesRequests.push(request);
+        const hasIaServiceFilter = hasExactSearchParameterValues(request, 'services', ['IA']);
+        const hasIaLocationFilter = hasExactSearchParameterValues(request, 'locations', ['20001']);
+
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(hasIaServiceFilter && hasIaLocationFilter ? filteredMyCasesResponse : myCasesResponse),
+        });
+      },
+      roleAssignmentInfo: [
+        {
+          jurisdiction: 'IA',
+          substantive: 'Y',
+          roleType: 'ORGANISATION',
+          baseLocation: '20001',
+          isCaseAllocator: false,
+        },
+        {
+          jurisdiction: 'SSCS',
+          substantive: 'Y',
+          roleType: 'ORGANISATION',
+          baseLocation: '30001',
+          isCaseAllocator: false,
+        },
+      ],
+    });
+
+    await test.step('Open My cases and narrow the work filter to Immigration and Asylum', async () => {
+      await taskListPage.gotoMyCases();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.openFilterPanel();
+
+      const sscsServiceFilter = await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
+      await sscsServiceFilter.uncheck();
+      await expect(sscsServiceFilter).not.toBeChecked();
+
+      const sscsLocationTag = taskListPage.visibleSelectedLocationTags.filter({ hasText: 'SSCS Court Center 1' }).first();
+      if (await sscsLocationTag.isVisible().catch(() => false)) {
+        await sscsLocationTag.click();
+      }
+      await taskListPage.expectSelectedLocations(['IA Court Center 1']);
+      await taskListPage.applyCurrentFilters();
+      await expect(taskListPage.filterPanel).toBeHidden();
+    });
+
+    await test.step('Verify My cases reloads with the selected service and location filters', async () => {
+      await expect
+        .poll(
+          () =>
+            myCasesRequests.find(
+              (request) =>
+                hasExactSearchParameterValues(request, 'services', ['IA']) &&
+                hasExactSearchParameterValues(request, 'locations', ['20001'])
+            ) ?? null,
+          { message: 'filtered My cases request was sent' }
+        )
+        .not.toBeNull();
+
+      const filteredRequest = myCasesRequests.find(
+        (request) =>
+          hasExactSearchParameterValues(request, 'services', ['IA']) &&
+          hasExactSearchParameterValues(request, 'locations', ['20001'])
+      );
+      expect(filteredRequest?.searchRequest?.search_parameters).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ key: 'services', values: ['IA'] }),
+          expect.objectContaining({ key: 'locations', values: ['20001'] }),
+        ])
+      );
+
+      await expect(taskListPage.myCasesResultsAmount).toContainText('Showing 1 results');
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+      expect(table).toHaveLength(1);
+      expect(table[0]['Case name']).toBe(filteredMyCasesResponse.cases[0].case_name);
+      expect(table[0]['Service']).toBe(filteredMyCasesResponse.cases[0].expectedServiceLabel);
     });
   });
 

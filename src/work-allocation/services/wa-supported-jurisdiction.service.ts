@@ -6,7 +6,7 @@ import { HMCTSServiceDetails } from '../../app/models';
 import { LoggerService } from '../../app/services/logger/logger.service';
 import { logAndRethrow } from './work-allocation-error.utils';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class WASupportedJurisdictionsService {
   public static readonly jurisdictionUrl: string = '/api/wa-supported-jurisdiction';
   public constructor(

@@ -2,25 +2,19 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import { mockReq, mockRes } from 'sinon-express-mock';
+import { mockRes } from 'sinon-express-mock';
 import * as configuration from '../configuration';
 import { http } from '../lib/http';
 import * as caseWorkerService from './caseWorkerService';
 import {
-  createWADependencyUnavailableError,
   fetchNewUserData,
-  fetchRoleAssignments,
   fetchRoleAssignmentsForNewUsers,
-  fetchUserData,
   getAuthTokens,
   getOrRefreshCachedUsers,
   getOrRefreshCachedUsersWithRoles,
-  isWADependencyUnavailableError,
+  getUniqueUsersFromResponse,
   waitForCachedUsers,
 } from './caseWorkerUserDataCacheService';
-import * as caseWorkerUserDataCacheService from './caseWorkerUserDataCacheService';
-import { getUsersByServiceName } from './index';
-import { FullUserDetailCache } from './fullUserDetailCache';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
 import * as waRedisCache from './waRedisCache';
 
@@ -31,83 +25,48 @@ chai.use(sinonChai);
 describe('Caseworker Cache Service', () => {
   let sandbox: sinon.SinonSandbox;
 
+  const stubAuthConfig = () => {
+    const getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
+    getConfigValueStub.callsFake((key) => {
+      // values need to be structurally valid for the auth token requests to work
+      // none of these values are actually used in the tests, so they can be arbitrary
+      const values = {
+        microservice: 'xui_webapp',
+        'services.s2s': 'https://s2s.test.com',
+        'secrets.rpx.mc-s2s-client-secret': '  KAPWY3DPEHPK3PXP  ',
+        'services.idam.idamApiUrl': 'https://idam-api.test.com',
+        'services.idam.idamClientID': 'test-client-id',
+        'secrets.rpx.system-user-name': 'system-user',
+        'secrets.rpx.system-user-password': 'system-password',
+        'secrets.rpx.mc-idam-client-secret': 'test-idam-secret',
+        staffSupportedJurisdictions: 'IA,CIVIL,PRIVATELAW',
+      } as any;
+
+      return values[key];
+    });
+
+    return getConfigValueStub;
+  };
+
+  // Helper function to stub the auth token requests
+  const stubAuthTokenRequests = () => {
+    return sandbox.stub(http, 'post').callsFake((url: string) => {
+      if (url.includes('/lease')) {
+        return Promise.resolve({ data: 'service-token' });
+      }
+      if (url.includes('/o/token')) {
+        return Promise.resolve({ data: { access_token: 'access-token' } });
+      }
+      return Promise.reject(new Error(`Unexpected POST ${url}`));
+    });
+  };
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
   });
 
   afterEach(() => {
     sandbox.restore();
-  });
-
-  describe('fetchUserData dependency handling', () => {
-    const req = mockReq({
-      headers: {
-        accept: 'application/json',
-      },
-    });
-
-    it('wraps known downstream failures as dependency unavailable when no cache is available', async () => {
-      sandbox.stub(http, 'get').rejects({
-        isAxiosError: true,
-        response: {
-          status: 503,
-        },
-      });
-
-      try {
-        await fetchUserData(req as any);
-        expect.fail('expected dependency error');
-      } catch (error) {
-        expect(isWADependencyUnavailableError(error)).to.equal(true);
-        expect((error as any).diagnostics.upstream).to.equal('rd-caseworker-ref-api');
-      }
-    });
-
-    it('rethrows unexpected local failures instead of converting them to dependency unavailable', async () => {
-      const error = new Error('unexpected mapper failure');
-      sandbox.stub(http, 'get').rejects(error);
-
-      try {
-        await fetchUserData(req as any);
-        expect.fail('expected original error');
-      } catch (actualError) {
-        expect(actualError).to.equal(error);
-      }
-    });
-  });
-
-  describe('fetchRoleAssignments dependency handling', () => {
-    const req = mockReq({
-      headers: {
-        accept: 'application/json',
-      },
-    });
-
-    it('wraps known downstream failures as dependency unavailable when no cache is available', async () => {
-      sandbox.stub(http, 'post').rejects({
-        code: 'ECONNREFUSED',
-      });
-
-      try {
-        await fetchRoleAssignments([], req as any);
-        expect.fail('expected dependency error');
-      } catch (error) {
-        expect(isWADependencyUnavailableError(error)).to.equal(true);
-        expect((error as any).diagnostics.upstream).to.equal('am-role-assignment-service');
-      }
-    });
-
-    it('rethrows unexpected local failures instead of converting them to dependency unavailable', async () => {
-      const error = new Error('unexpected role mapping failure');
-      sandbox.stub(http, 'post').rejects(error);
-
-      try {
-        await fetchRoleAssignments([], req as any);
-        expect.fail('expected original error');
-      } catch (actualError) {
-        expect(actualError).to.equal(error);
-      }
-    });
   });
 
   describe('fetchNewUserData', () => {
@@ -215,9 +174,43 @@ describe('Caseworker Cache Service', () => {
         },
       ];
       const res = mockRes({ status: 200, data: mockStaffDetails });
+      stubAuthConfig();
+      stubAuthTokenRequests();
       sandbox.stub(http, 'get').resolves(res);
       const data = await fetchNewUserData();
       expect(data).to.deep.equal(mockMergedStaffUsers);
+    });
+  });
+
+  // EXUI-5291 - Ensure service names are capitalized when merging duplicate users
+  describe('getUniqueUsersFromResponse', () => {
+    it('should upper-case service names when merging duplicate users', () => {
+      const mockStaffDetails = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [],
+          },
+        },
+        {
+          ccd_service_name: 'Civil',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [],
+          },
+        },
+      ] as any[];
+
+      const [mergedUser] = getUniqueUsersFromResponse(mockStaffDetails);
+
+      expect(mergedUser.ccd_service_names).to.deep.equal(['IA', 'CIVIL']);
     });
   });
 
@@ -287,7 +280,7 @@ describe('Caseworker Cache Service', () => {
           idamId: '1',
           lastName: 'User',
           locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
-          roleCategory: 'ADMIN',
+          roleCategories: ['ADMIN'],
           services: ['IA', 'CIVIL'],
         },
         {
@@ -296,172 +289,29 @@ describe('Caseworker Cache Service', () => {
           idamId: '2',
           lastName: 'User',
           locations: [{ id: 'c', locationName: 'PL location', services: undefined }],
-          roleCategory: 'CTSC',
+          roleCategories: ['CTSC'],
           services: ['PRIVATELAW'],
         },
       ];
       const res = mockRes({ status: 200, data: { roleAssignmentResponse: mockRoleAssignments } });
-      sandbox.stub(http, 'post').resolves(res);
+      stubAuthConfig();
+      sandbox.stub(http, 'post').callsFake((url: string) => {
+        if (url.includes('/lease')) {
+          return Promise.resolve({ data: 'service-token' });
+        }
+        if (url.includes('/o/token')) {
+          return Promise.resolve({ data: { access_token: 'access-token' } });
+        }
+        return Promise.resolve(res);
+      });
       const data = await fetchRoleAssignmentsForNewUsers(mockMergedStaffUsers as StaffUserDetails[]);
       expect(data).to.deep.equal(finalCaseworkers);
     });
   });
 
-  describe('getUsersByServiceName dependency hardening', () => {
-    it('returns 200 with cached refined users when upstream fails', async () => {
-      const req = mockReq({
-        body: {
-          term: 'Alice',
-          services: ['IA'],
-        },
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: ['caseworker'],
-              },
-            },
-          },
-        },
-      });
-      const res = mockRes();
-      const next = sandbox.spy();
-      const cachedUsers = [
-        {
-          idamId: 'user-1',
-          firstName: 'Alice',
-          lastName: 'Example',
-          email: 'alice@example.com',
-          roleCategory: 'JUDICIAL',
-          services: ['IA'],
-          locations: [{ id: '1', locationName: 'Taylor House', services: ['IA'] }],
-        },
-        {
-          idamId: 'user-2',
-          firstName: 'Bob',
-          lastName: 'Example',
-          email: 'bob@example.com',
-          roleCategory: 'LEGAL_OPERATIONS',
-          services: ['CIVIL'],
-          locations: [{ id: '2', locationName: 'RCJ', services: ['CIVIL'] }],
-        },
-      ];
-
-      FullUserDetailCache.setUserDetails(cachedUsers as any);
-      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
-      sandbox
-        .stub(caseWorkerUserDataCacheService, 'fetchUserData')
-        .rejects(createWADependencyUnavailableError('rd-caseworker-ref-api'));
-
-      await getUsersByServiceName(req as any, res as any, next);
-
-      expect(res.status).to.have.been.calledWith(200);
-      expect(res.send).to.have.been.calledOnce;
-      expect(res.send.firstCall.args[0]).to.have.lengthOf(1);
-      expect(res.send.firstCall.args[0][0]).to.include({
-        idamId: 'user-1',
-        firstName: 'Alice',
-        lastName: 'Example',
-      });
-      expect(next).to.not.have.been.called;
-    });
-
-    it('returns 503 dependency diagnostics when upstream fails and no cache is available', async () => {
-      const req = mockReq({
-        body: {
-          term: '',
-          services: ['IA'],
-        },
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: ['caseworker'],
-              },
-            },
-          },
-        },
-      });
-      const res = mockRes();
-      const next = sandbox.spy();
-
-      FullUserDetailCache.setUserDetails([]);
-      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
-      sandbox
-        .stub(caseWorkerUserDataCacheService, 'fetchUserData')
-        .rejects(createWADependencyUnavailableError('rd-caseworker-ref-api'));
-
-      await getUsersByServiceName(req as any, res as any, next);
-
-      expect(res.status).to.have.been.calledWith(503);
-      expect(res.send).to.have.been.calledWith({
-        code: 'WA_DEPENDENCY_UNAVAILABLE',
-        message: 'Work Allocation dependency is temporarily unavailable',
-        upstream: 'rd-caseworker-ref-api',
-      });
-      expect(next).to.not.have.been.called;
-    });
-
-    it('passes non-dependency errors to next even when cache is available', async () => {
-      const req = mockReq({
-        body: {
-          term: 'Alice',
-          services: ['IA'],
-        },
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: ['caseworker'],
-              },
-            },
-          },
-        },
-      });
-      const res = mockRes();
-      const next = sandbox.spy();
-      const error = new Error('unexpected failure');
-      const cachedUsers = [
-        {
-          idamId: 'user-1',
-          firstName: 'Alice',
-          lastName: 'Example',
-          email: 'alice@example.com',
-          roleCategory: 'JUDICIAL',
-          services: ['IA'],
-          locations: [{ id: '1', locationName: 'Taylor House', services: ['IA'] }],
-        },
-      ];
-
-      FullUserDetailCache.setUserDetails(cachedUsers as any);
-      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
-      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').rejects(error);
-
-      await getUsersByServiceName(req as any, res as any, next);
-
-      expect(res.status).to.not.have.been.called;
-      expect(res.send).to.not.have.been.called;
-      expect(next).to.have.been.calledOnceWith(error);
-    });
-  });
-
   describe('getAuthTokens', () => {
     it('should generate an OTP from the trimmed v13 secret and fetch both auth tokens', async () => {
-      const getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
-      getConfigValueStub.callsFake((key) => {
-        const values = {
-          microservice: 'xui_webapp',
-          'services.s2s': 'https://s2s.test.com',
-          'secrets.rpx.mc-s2s-client-secret': '  JBSWY3DPEHPK3PXP  ',
-          'services.idam.idamApiUrl': 'https://idam-api.test.com',
-          'services.idam.idamClientID': 'test-client-id',
-          'secrets.rpx.system-user-name': 'system-user',
-          'secrets.rpx.system-user-password': 'system-password',
-          'secrets.rpx.mc-idam-client-secret': 'test-idam-secret',
-        };
-
-        return values[key];
-      });
+      stubAuthConfig();
 
       const postStub = sandbox.stub(http, 'post');
       postStub.onFirstCall().resolves({ data: 'service-token' });
@@ -540,6 +390,8 @@ describe('Caseworker Cache Service', () => {
       const setCachedUsersStub = sandbox.stub(waRedisCache, 'setCachedUsers').resolves();
       const releaseLockStub = sandbox.stub(waRedisCache, 'releaseLock').resolves();
 
+      stubAuthConfig();
+      stubAuthTokenRequests();
       sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
 
       const result = await getOrRefreshCachedUsers();
@@ -597,6 +449,8 @@ describe('Caseworker Cache Service', () => {
 
       sandbox.stub(waRedisCache, 'getCachedUsers').resolves(null);
       sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves({ status: 'unavailable' });
+      stubAuthConfig();
+      stubAuthTokenRequests();
       sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
 
       const result = await getOrRefreshCachedUsers();

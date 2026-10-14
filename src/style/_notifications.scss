@@ -4,8 +4,8 @@
   font-size: 24px;
   font-weight: bold;
   width: 100%;
-  color: $page-colour;
-  background: $turquoise;
+  color: govuk-colour('white');
+  background: govuk-colour('turquoise');
 }
 
 .small_notification {
@@ -14,8 +14,8 @@
   font-weight: bold;
   width: 60%;
   text-align: center;
-  color: $page-colour;
-  background: $turquoise;
+  color: govuk-colour('white');
+  background: govuk-colour('turquoise');
 }
 
 .alert-message-but {

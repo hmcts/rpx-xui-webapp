@@ -1,7 +1,6 @@
-import * as redis from 'redis';
 import { randomUUID } from 'crypto';
 
-import { getRedisClient } from '../redis/redisClient';
+import { getRedisClient, RedisClient } from '../redis/redisClient';
 import { CachedCaseworker } from './interfaces/common';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
 
@@ -9,7 +8,7 @@ const CACHE_TTL_SECONDS = 720;
 const LOCK_TTL_SECONDS = 90;
 
 const CACHED_USERS_KEY = 'wa:cachedUsers';
-const CACHED_USERS_WITH_ROLES_KEY = 'wa:cachedUsersWithRoles';
+const CACHED_USERS_WITH_ROLES_KEY = 'wa:cachedUsersWithFullRoles';
 const CACHED_USERS_LOCK_KEY = `${CACHED_USERS_KEY}:lock`;
 const CACHED_USERS_WITH_ROLES_LOCK_KEY = `${CACHED_USERS_WITH_ROLES_KEY}:lock`;
 
@@ -17,11 +16,11 @@ export type RedisLock = { status: 'acquired'; key: string; value: string } | { s
 
 export type AcquiredRedisLock = Extract<RedisLock, { status: 'acquired' }>;
 
-// get the redis client if it exists and is connected
-function getClientIfExists(): redis.RedisClient | null {
+// get the redis client if it exists and is ready
+function getClientIfExists(): RedisClient | null {
   const client = getRedisClient();
 
-  if (!client?.connected) {
+  if (!client?.isReady) {
     return null;
   }
 
@@ -35,18 +34,9 @@ async function getJson<T>(key: string): Promise<T | null> {
     return null;
   }
   // Note that there can be prefix attached to key but this will still work
-  const value = await new Promise<string | null>((resolve, reject) => {
-    client.get(key, (error, result) => {
-      if (error) {
-        reject(error);
-        return;
-      }
+  const value = await client.get(key);
 
-      resolve(result);
-    });
-  });
-
-  return value ? (JSON.parse(value) as T) : null;
+  return typeof value === 'string' ? (JSON.parse(value) as T) : null;
 }
 
 async function setJson<T>(key: string, value: T, ttlSeconds = CACHE_TTL_SECONDS): Promise<void> {
@@ -55,17 +45,12 @@ async function setJson<T>(key: string, value: T, ttlSeconds = CACHE_TTL_SECONDS)
     return;
   }
 
-  await new Promise<void>((resolve, reject) => {
-    // Note: Redis 'set' command with 'EX' option sets the expiry time in seconds
-    // Redis should automatically remove the key after the TTL expires
-    client.set(key, JSON.stringify(value), 'EX', ttlSeconds, (error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve();
-    });
+  // Redis 'EX' option sets the expiry time in seconds.
+  await client.set(key, JSON.stringify(value), {
+    expiration: {
+      type: 'EX',
+      value: ttlSeconds,
+    },
   });
 }
 
@@ -75,16 +60,7 @@ async function deleteKey(key: string): Promise<void> {
     return;
   }
 
-  await new Promise<void>((resolve, reject) => {
-    client.del(key, (error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve();
-    });
-  });
+  await client.del(key);
 }
 
 // acquire a lock for the given key, with a TTL to prevent deadlocks
@@ -96,16 +72,15 @@ async function acquireLock(key: string, ttlSeconds = LOCK_TTL_SECONDS): Promise<
 
   const value = randomUUID();
 
-  return new Promise<RedisLock>((resolve, reject) => {
-    client.set(key, value, 'EX', ttlSeconds, 'NX', (error, result) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve(result === 'OK' ? { status: 'acquired', key, value } : { status: 'held' });
-    });
+  const result = await client.set(key, value, {
+    expiration: {
+      type: 'EX',
+      value: ttlSeconds,
+    },
+    condition: 'NX',
   });
+
+  return result === 'OK' ? { status: 'acquired', key, value } : { status: 'held' };
 }
 
 // release the lock if it is still held
@@ -121,15 +96,9 @@ export async function releaseLock(lock: AcquiredRedisLock): Promise<void> {
     end
     return 0`;
 
-  await new Promise<void>((resolve, reject) => {
-    client.eval(releaseScript, 1, lock.key, lock.value, (error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve();
-    });
+  await client.eval(releaseScript, {
+    keys: [lock.key],
+    arguments: [lock.value],
   });
 }
 

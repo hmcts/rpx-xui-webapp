@@ -4,19 +4,20 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { HearingChannelEnum, HearingDateEnum } from '../models/hearings.enum';
+import { HearingChannelEnum, HearingDateEnum, PartyType } from '../models/hearings.enum';
 import { IndividualDetailsModel } from '../models/individualDetails.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
-import { PartyType } from 'api/hearings/models/hearings.enum';
 
 type DateOption = 'noDate' | 'specificDate' | 'dateRange';
 
 export class HearingsUtils {
-  public static readonly DISCREPANCY_MESSAGE =
-    'The Party IDs and/or case information for this request appear mismatched, please reload and start the request again.';
-
+  public static readonly DISCREPANCY_MESSAGE_LIST = [
+    'Please select ',
+    'Reload the application',
+    'to refresh the case data before continuing. The hearing request cannot continue until refreshed.',
+  ];
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
     return conditions && conditions.hasOwnProperty(propertyName) && conditions[propertyName] === propertyValue;
   }
@@ -323,9 +324,11 @@ export class HearingsUtils {
 
     const hrmCaseRef = hrmCaseDetails?.caseRef;
     const itemCaseRef = caseReference;
+    const shvCaseRef = shv?.caseId;
 
-    // Check against case reference if present
-    if (itemCaseRef && hrmCaseRef && itemCaseRef !== hrmCaseRef) {
+    // Check against case reference
+    // EXUI-4529 - shv is source of truth for case reference
+    if (hrmCaseRef && ((itemCaseRef && itemCaseRef !== hrmCaseRef) || (shvCaseRef && shvCaseRef !== hrmCaseRef))) {
       return false;
     }
 

@@ -12,6 +12,7 @@ const CASE_INFO_STORE_VALUE = {
 };
 
 const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
+  caseId: '1234567890',
   hmctsServiceID: 'BBA3',
   hearingChannels: [],
   hmctsInternalCaseName: 'Jane Smith vs DWP',

@@ -46,17 +46,16 @@ export class SearchCasePage extends Base {
       if (!errorMsg.includes('intercepts pointer events')) {
         throw error;
       }
-      await findButton.click({ force: true, timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
+      await this.waitForPostSearchSpinnerCycle();
+      await findButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
     }
     await this.waitForPostSearchSpinnerCycle();
     const immediateOutcomeReached = await this.waitForImmediateSearchOutcome(SearchCasePage.QUICK_SEARCH_OUTCOME_PROBE_MS);
-    if (!immediateOutcomeReached && (await this.shouldRetrySearchSubmit(caseId))) {
-      this.logger.warn('Header quick-search produced no immediate outcome; retrying once', {
+    if (!immediateOutcomeReached) {
+      this.logger.warn('Header quick-search produced no immediate outcome after submit', {
         caseId,
         currentUrl: this.page.url(),
       });
-      await this.caseIdTextBox.press('Enter');
-      await this.waitForPostSearchSpinnerCycle();
     }
   }
 
@@ -97,25 +96,6 @@ export class SearchCasePage extends Base {
       this.page.waitForURL((url) => url.toString() !== urlBeforeSubmit, { timeout: timeoutMs }).then(() => true),
       this.noResultsContainer.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
     ]).catch(() => false);
-  }
-
-  private async shouldRetrySearchSubmit(caseId: string): Promise<boolean> {
-    const currentUrl = this.page.url();
-    if (!/\/cases(?:[/?#]|$)/.test(currentUrl)) {
-      return false;
-    }
-
-    if (await this.noResultsContainer.isVisible().catch(() => false)) {
-      return false;
-    }
-
-    const inputVisible = await this.caseIdTextBox.isVisible().catch(() => false);
-    if (!inputVisible) {
-      return false;
-    }
-
-    const currentValue = await this.caseIdTextBox.inputValue().catch(() => '');
-    return currentValue === caseId;
   }
 
   constructor(page: Page) {

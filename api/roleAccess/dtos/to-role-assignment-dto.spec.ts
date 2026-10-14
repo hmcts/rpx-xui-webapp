@@ -275,7 +275,7 @@ describe('to-role-assignment-dto', () => {
     it('should create deny role assignment body for JUDICIAL category', () => {
       const currentUser: UserInfo = {
         id: 'reviewer123',
-        roleCategory: 'JUDICIAL',
+        roleCategories: ['JUDICIAL'],
         name: 'Judge Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
@@ -307,7 +307,7 @@ describe('to-role-assignment-dto', () => {
     it('should handle LEGAL_OPERATIONS category', () => {
       const currentUser: UserInfo = {
         uid: 'reviewer456',
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategories: ['LEGAL_OPERATIONS'],
         name: 'Legal Ops Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
@@ -338,7 +338,7 @@ describe('to-role-assignment-dto', () => {
     it('should handle ADMIN category', () => {
       const currentUser: UserInfo = {
         id: 'reviewer789',
-        roleCategory: 'ADMIN',
+        roleCategories: ['ADMIN'],
         name: 'Admin Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
@@ -366,7 +366,7 @@ describe('to-role-assignment-dto', () => {
     it('should handle CTSC category', () => {
       const currentUser: UserInfo = {
         id: 'reviewer012',
-        roleCategory: 'CTSC',
+        roleCategories: ['CTSC'],
         name: 'CTSC Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
@@ -394,7 +394,7 @@ describe('to-role-assignment-dto', () => {
     it('should handle unknown role category', () => {
       const currentUser: UserInfo = {
         id: 'reviewer345',
-        roleCategory: 'UNKNOWN',
+        roleCategories: ['UNKNOWN'],
         name: 'Unknown Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
@@ -422,7 +422,7 @@ describe('to-role-assignment-dto', () => {
     it('should include extra attributes when provided', () => {
       const currentUser: UserInfo = {
         id: 'reviewer678',
-        roleCategory: 'JUDICIAL',
+        roleCategories: ['JUDICIAL'],
         name: 'Judge Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
@@ -454,7 +454,7 @@ describe('to-role-assignment-dto', () => {
     it('should set correct note with timestamp', () => {
       const currentUser: UserInfo = {
         id: 'reviewer901',
-        roleCategory: 'JUDICIAL',
+        roleCategories: ['JUDICIAL'],
         name: 'Judge Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {

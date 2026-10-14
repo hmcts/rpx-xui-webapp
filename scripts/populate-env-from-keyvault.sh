@@ -136,7 +136,42 @@ const updatedLines = lines.map((line) => {
 fs.writeFileSync(outFile, updatedLines.join('\n'), 'utf-8');
 NODE
 
-for REQUIRED_KEY in WA_SOLICITOR_USERNAME WA_SOLICITOR_PASSWORD; do
+populate_named_secret_if_empty() {
+  local env_key="$1"
+  local secret_name="$2"
+  local secret_value
+
+  if grep -Eq "^${env_key}=.+" "${OUT_FILE}"; then
+    return
+  fi
+
+  secret_value="$(az keyvault secret show --vault-name "${VAULT}" --name "${secret_name}" --query value --output tsv 2>/dev/null || true)"
+  if [ -z "${secret_value}" ]; then
+    return
+  fi
+
+  ENV_FILE="${OUT_FILE}" ENV_KEY="${env_key}" ENV_VALUE="${secret_value}" node -e '
+    const fs = require("node:fs");
+    const file = process.env.ENV_FILE;
+    const key = process.env.ENV_KEY;
+    const value = process.env.ENV_VALUE;
+    const source = fs.readFileSync(file, "utf8");
+    fs.writeFileSync(file, source.replace(new RegExp(`^${key}=.*$`, "m"), `${key}=${value}`));
+  '
+  unset secret_value
+  echo "Setting ${env_key} from named Key Vault secret ${secret_name}"
+}
+
+populate_named_secret_if_empty WA_TASK_ADMIN_USERNAME e2e-wa-task-admin-username
+populate_named_secret_if_empty WA_TASK_ADMIN_PASSWORD e2e-wa-task-admin-password
+
+for REQUIRED_KEY in \
+  WA_TASK_ADMIN_USERNAME \
+  WA_TASK_ADMIN_PASSWORD \
+  WA_SOLICITOR_USERNAME \
+  WA_SOLICITOR_PASSWORD \
+  FPL_GLOBAL_SEARCH_USERNAME \
+  FPL_GLOBAL_SEARCH_PASSWORD; do
   if grep -q "^${REQUIRED_KEY}=" "${TEMPLATE_FILE}" && ! grep -Eq "^${REQUIRED_KEY}=.+" "${OUT_FILE}"; then
     echo "Warning: ${REQUIRED_KEY} was not populated from ${VAULT}; add a tagged Key Vault secret with e2e=${REQUIRED_KEY}."
   fi

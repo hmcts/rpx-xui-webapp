@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
 import type { SessionIdentityInput } from '../../common/sessionIdentity';
-import { applySessionCookies } from '../../common/sessionCapture';
+import { applySessionCookies, ensureSession } from '../../common/sessionCapture';
 import config from '../../E2E/utils/config.utils';
 
 type SolicitorCredentialMapping = {
@@ -150,20 +150,31 @@ export function resolveWelshLanguageSessionUsers(env: NodeJS.ProcessEnv = proces
 }
 
 export function resolveWelshLanguageSessionUser(
-  testInfo: Pick<TestInfo, 'workerIndex'>,
+  testInfo: Pick<TestInfo, 'parallelIndex'>,
   env: NodeJS.ProcessEnv = process.env
 ): SessionIdentityInput {
   const users = resolveWelshLanguageSessionUsers(env);
-  return users[testInfo.workerIndex % users.length];
+  return users[testInfo.parallelIndex % users.length];
+}
+
+export async function warmWelshLanguageSessions(env: NodeJS.ProcessEnv = process.env): Promise<void> {
+  await Promise.all(resolveWelshLanguageSessionUsers(env).map((userIdentifier) => ensureSession(userIdentifier)));
+}
+
+export async function warmWelshLanguageSessionForWorker(
+  testInfo: Pick<TestInfo, 'parallelIndex'>,
+  env: NodeJS.ProcessEnv = process.env
+): Promise<void> {
+  await ensureSession(resolveWelshLanguageSessionUser(testInfo, env));
 }
 
 export async function setupWelshLanguageSession(
   page: Page,
-  testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,
+  testInfo: Pick<TestInfo, 'parallelIndex' | 'annotations'>,
   env: NodeJS.ProcessEnv = process.env
 ): Promise<WelshLanguageSessionLease> {
   const users = resolveWelshLanguageSessionUsers(env);
-  const { release, userIdentifier } = await acquireWelshLanguageLeaseFromPool(users, testInfo.workerIndex % users.length);
+  const { release, userIdentifier } = await acquireWelshLanguageLeaseFromPool(users, testInfo.parallelIndex % users.length);
 
   try {
     await applySessionCookies(page, userIdentifier);

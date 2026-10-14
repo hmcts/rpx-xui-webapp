@@ -92,7 +92,7 @@ export class CaseViewerContainerComponent implements OnInit {
     });
     return (
       requiredFeature &&
-      !!AppUtils.getUserRole(userRoles) &&
+      !!(AppUtils.getUserRoleNames(userRoles)?.length > 0) &&
       !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles)
     );
   }

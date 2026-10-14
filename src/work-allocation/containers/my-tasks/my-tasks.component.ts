@@ -41,7 +41,8 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
         return;
       }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      const userRole: UserRole = userRoleNames[0] || undefined;
       const searchParameters: SearchTaskParameter[] = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] },
@@ -60,6 +61,7 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const searchTaskParameter: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [...this.getSortParameter()],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter(),
       };

@@ -14,27 +14,23 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { PUI_CASE_MANAGER } from '../user/utils';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
-import {
-  handleCaseWorkerForLocation,
-  handleCaseWorkerForLocationAndService,
-  handleCaseWorkerForService,
-  handlePostSearch,
-} from './caseWorkerService';
+import { handlePostSearch } from './caseWorkerService';
 import {
   fetchNewUserData,
   fetchRoleAssignments,
   fetchRoleAssignmentsForNewUsers,
   fetchUserData,
-  isWADependencyUnavailableError,
   timestampExists,
 } from './caseWorkerUserDataCacheService';
 import { ViewType } from './constants/actions';
 import { FullUserDetailCache } from './fullUserDetailCache';
-import { CaseList } from './interfaces/case';
+import { Case, CaseList } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseDataType } from './interfaces/common';
+import { Task } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
@@ -53,6 +49,8 @@ import {
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
+  getAssigneeIdsFromCases,
+  getAssigneeIdsFromTasks,
   getCaseIdListFromRoles,
   getMyAccessMappedCaseList,
   getRoleAssignmentsByQuery,
@@ -62,10 +60,6 @@ import {
   handlePost,
   mapCasesFromData,
   paginate,
-  prepareCaseWorkerForLocation,
-  prepareCaseWorkerForLocationAndService,
-  prepareCaseWorkerForService,
-  prepareCaseWorkerSearchUrl,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
@@ -74,7 +68,6 @@ import {
   searchAndReturnRefinedUsers,
   searchCasesById,
 } from './util';
-import { PUI_CASE_MANAGER } from '../user/utils';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -87,14 +80,18 @@ export const baseUrl: string = 'http://localhost:8080';
 
 const logger: JUILogger = log4jui.getLogger('workallocation');
 
+type RouteParam = string | string[];
+
+const getRouteParam = (param: RouteParam): string => (Array.isArray(param) ? param[0] : param);
+
 /**
  * getTask
  */
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   const traceProps = { functionCall: 'getTask' };
-  const taskId = req.params.taskId;
+  const taskId = req.params.taskId as string;
   try {
-    const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
+    const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, taskId);
     // Adding log in app insights for task completion journey
     trackTrace(`get task Id: ${taskId}`, { functionCall: 'getTask' });
     const jsonResponse = await handleTaskGet(getTaskPath, req);
@@ -156,7 +153,7 @@ export async function searchTypesOfWork(req: EnhancedRequest, res: Response, nex
  */
 export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const taskId = req.params.taskId;
+    const taskId = getRouteParam(req.params.taskId);
     const path = `${baseWorkAllocationTaskUrl}/task/${taskId}/roles`;
     const { status, data } = await handleTaskRolesGet(path, req);
     res.status(status);
@@ -198,8 +195,13 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
+      let tasksWithActions = assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser);
+      const assigneeIds = getAssigneeIdsFromTasks(tasksWithActions);
+      if (assigneeIds.length > 0) {
+        tasksWithActions = await setAssigneeNamesInTasks(tasksWithActions, assigneeIds);
+      }
       returnData = {
-        tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
+        tasks: tasksWithActions,
         total_records: data.total_records,
       };
     }
@@ -209,8 +211,38 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   }
 }
 
+// This will put assignee names in tasks based on cached user details
+// Note: Judges will not have their names populated until refresh within the Angular layer
+export async function setAssigneeNamesInTasks(tasks: Task[], assigneeIds: string[]): Promise<Task[]> {
+  let assigneeDetails = [];
+  if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+    assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+  } else {
+    try {
+      // EXUI-2645 - populate / refresh cache then retrieve only if there is no alternative
+      // if either call fails we revert back to proceeding without assignee names similar to previous Angular behaviours
+      const cachedUserData = await fetchUserData();
+      await fetchRoleAssignments(cachedUserData);
+      assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+    } catch (error) {
+      trackTrace(`Error fetching user data for assignees: ${error.toString()}, proceeding without assignee names`);
+      assigneeDetails = []; // proceed without assignee names
+    }
+  }
+  if (assigneeDetails.length > 0) {
+    const nameMap = new Map(assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`]));
+    tasks.forEach((taskWithAssignee) => {
+      const userId = taskWithAssignee.assignee;
+      if (userId && nameMap.has(userId)) {
+        taskWithAssignee.assigneeName = nameMap.get(userId);
+      }
+    });
+  }
+  return tasks;
+}
+
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
+  const caseId = getRouteParam(req.params.caseId);
   const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
   const searchRequest = {
     search_parameters: [
@@ -237,17 +269,17 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const actionedTasks = assignActionsToUpdatedTasks(data.tasks, ViewType.ACTIVE_TASKS, currentUserId);
-    return res.send(actionedTasks).status(status);
+    return res.status(status).send(actionedTasks);
   } catch (e) {
     next(e);
   }
 }
 
 export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
-  const eventId = req.params.eventId;
-  const caseType = req.params.caseType;
-  const jurisdiction = req.params.jurisdiction;
+  const caseId = getRouteParam(req.params.caseId);
+  const eventId = getRouteParam(req.params.eventId);
+  const caseType = getRouteParam(req.params.caseType);
+  const jurisdiction = getRouteParam(req.params.jurisdiction);
   const traceProps = { functionCall: 'getTasksByCaseIdAndEventId' };
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
@@ -272,6 +304,8 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
  */
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
   const traceProps = { functionCall: 'postTaskAction' };
+  const taskId = req.params.taskId as string;
+  const action = req.params.action as string;
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
     if (req.body.hasNoAssigneeOnComplete === true) {
@@ -296,20 +330,17 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     }
     if (actionByEvent === true) {
       mode = 'EXUI_CASE-EVENT_COMPLETION';
-      trackTrace(
-        `${req.params.action} on task Id: ${req.params.taskId} due to automated task completion by ${eventName} event`,
-        traceProps
-      );
+      trackTrace(`${action} on task Id: ${taskId} due to automated task completion by ${eventName} event`, traceProps);
     } else {
-      mode = req.params.action === 'cancel' ? 'EXUI_USER_CANCELLATION' : 'EXUI_USER_COMPLETION';
-      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);
+      mode = action === 'cancel' ? 'EXUI_USER_CANCELLATION' : 'EXUI_USER_COMPLETION';
+      trackTrace(`${action} on task Id: ${taskId} due to manual task action`, traceProps);
     }
-    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action, mode);
+    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, action, mode);
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
-    trackTrace(`Error calling ${req.params.action} on task Id: ${req.params.taskId} ${error.toString()}`, traceProps);
+    trackTrace(`Error calling ${action} on task Id: ${taskId} ${error.toString()}`, traceProps);
     // 5528 - removed error handling for 403 errors
     next(error);
   }
@@ -340,66 +371,6 @@ export async function postTaskCompletionForAccess(
     trackTrace(`Error calling complete on task Id: ${taskId} due to specific access processing`, traceProps);
     next(error);
     return error;
-  }
-}
-
-/**
- * Get CaseWorkers for Location
- */
-export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocation(baseCaseWorkerRefUrl, req.params.locationId);
-    const jsonResponse = await handleCaseWorkerForLocation(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Get CaseWorkers for Service
- */
-export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseCaseWorkerRefUrl, req.params.serviceId);
-    const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Get CaseWorkers for Location and Service
- */
-export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(
-      baseUrl,
-      req.params.locationId,
-      req.params.serviceId
-    );
-    const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Post to search for a Caseworker.
- */
-export async function searchCaseWorker(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
-    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
-    res.status(status);
-    res.send(data);
-  } catch (error) {
-    next(error);
   }
 }
 
@@ -440,8 +411,8 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response) {
 }
 
 export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const jurisdiction = req.params.jurisdiction;
-  const caseLocationId = req.params.caseLocationId;
+  const jurisdiction = req.params.jurisdiction as string;
+  const caseLocationId = req.params.caseLocationId as string;
   try {
     const result: boolean = checkIfCaseAllocator(jurisdiction, caseLocationId, req);
     return res.send(result).status(200);
@@ -590,12 +561,40 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.total_records = mappedCases.length;
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
-    result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    let casesWithActions = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    const assigneeIds = getAssigneeIdsFromCases(casesWithActions);
+    if (assigneeIds.length > 0) {
+      casesWithActions = await setAssigneeNamesInCases(casesWithActions, assigneeIds);
+    }
+    result.cases = casesWithActions;
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);
     next(error);
   }
+}
+
+// This will put assignee names in cases based on cached user details
+// Assignee name currently only matches one user but kept for future proofing
+// Note: Judges will not have their names populated until refresh within the Angular layer
+export async function setAssigneeNamesInCases(cases: Case[], assigneeIds: string[]): Promise<Case[]> {
+  let assigneeDetails = [];
+  if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+    assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+  }
+  // If cache does not exist, do not refresh it as the names for cases are no longer displayed anyway
+  if (assigneeDetails.length > 0) {
+    const nameMap = new Map(assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`]));
+    cases.forEach((caseWithAssignee) => {
+      const userId = caseWithAssignee.assignee;
+      if (userId && nameMap.has(userId)) {
+        caseWithAssignee.assigneeName = nameMap.get(userId);
+        // references to actor name in filters and components so added below
+        caseWithAssignee.actorName = nameMap.get(userId);
+      }
+    });
+  }
+  return cases;
 }
 
 export async function getTaskNames(req: EnhancedRequest, res: Response): Promise<Response> {
@@ -616,47 +615,146 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
       return;
     }
 
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
     const term = req.body.term;
     const services = req.body.services;
-    const currentUser: UserInfo = req.session.passport.user.userinfo;
-    if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
+    if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
       res.status(403).send('Forbidden');
       return;
     }
-    if (services.length === 0) {
+    if (services.length === 0 || services[0]?.length === 0) {
       // TODO(EXUI-2645): Remove this defensive branch once Angular always sends explicit service scoping.
-      res.status(200).send([]);
+      // Preserve the existing API contract: do not return users when no service is selected.
+      res.status(400).send('Bad Request');
       return;
     }
 
-    const fullUserDetailCache = FullUserDetailCache.getAllUserDetails() || [];
-    if (timestampExists() && fullUserDetailCache.length > 0) {
-      // If cache is warm, return immediately to avoid waiting on dependencies.
-      const refinedCachedUsers = searchAndReturnRefinedUsers(services, term, fullUserDetailCache);
-      res.status(200).send(refinedCachedUsers);
+    let cachedUsers = [];
+    let firstEntry = true;
+    if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+      // if already ran just use the cache to avoid loading issues
+      firstEntry = false;
+      cachedUsers = FullUserDetailCache.getAllUserDetails();
+
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+      res.status(200).send(cachedUsers);
+      refreshUserCache();
       return;
     }
-
-    const cachedUserData = await fetchUserData(req);
-    const cachedUsers = await fetchRoleAssignments(cachedUserData, req);
-    const refinedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-    res.status(200).send(refinedUsers);
+    // always update the cache after getting the cache if needed
+    const cachedUserData = await fetchUserData();
+    cachedUsers = await fetchRoleAssignments(cachedUserData);
+    if (firstEntry) {
+      // if not previously ran ensure the new values are given back to angular layer
+      // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+      res.status(200).send(cachedUsers);
+    }
   } catch (error) {
-    if (isWADependencyUnavailableError(error)) {
-      const term = req?.body?.term;
-      const services = Array.isArray(req?.body?.services) ? req.body.services : [];
-      const fullUserDetailCache = FullUserDetailCache.getAllUserDetails() || [];
-      if (fullUserDetailCache.length > 0) {
-        const refinedCachedUsers = searchAndReturnRefinedUsers(services, term, fullUserDetailCache);
-        res.status(200).send(refinedCachedUsers);
-        return;
-      }
-      res.status(503).send(error.diagnostics);
-      return;
-    }
     next(error);
   }
 }
+
+export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
+    const services = req.body.services;
+    const idamIds = req.body.idamIds;
+    let idamUsers = [];
+    let firstEntry = true;
+    if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
+      res.status(403).send('Forbidden');
+    } else {
+      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+        // if cache exists, use it
+        firstEntry = false;
+        idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
+        idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
+        res.status(200).send(idamUsers);
+        refreshUserCache();
+        return;
+      }
+      // always update the cache after getting the cache if needed
+      const cachedUserData = await fetchUserData();
+      await fetchRoleAssignments(cachedUserData);
+      if (firstEntry) {
+        // if not previously ran ensure the new values are given back to angular layer
+        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+        idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
+        idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
+        res.status(200).send(idamUsers);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+// return steps set completely within this to avoid undefined issues
+export async function getUserByIdamId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
+    const idamId = req.body.idamId;
+    const silentNotFound = req.body.silentNotFound;
+    let idamUser = null;
+    let firstEntry = true;
+    if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
+      res.status(403).send('Forbidden');
+      return;
+    } else {
+      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+        // if cache exists, use it
+        firstEntry = false;
+        idamUser = FullUserDetailCache.getUserByIdamId(idamId);
+        if (!idamUser) {
+          if (silentNotFound) {
+            res.status(200).send(null);
+            return;
+          }
+          res.status(404).send('User not found');
+          return;
+        } else {
+          // Below to get correct location and service details - not strictly necessary depending on usage
+          idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
+          void refreshUserCache();
+          res.status(200).send(idamUser);
+          return;
+        }
+      }
+      const cachedUserData = await fetchUserData();
+      await fetchRoleAssignments(cachedUserData);
+      if (firstEntry) {
+        // if not previously ran ensure the new values are given back to angular layer
+        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+        idamUser = FullUserDetailCache.getUserByIdamId(idamId);
+        if (!idamUser) {
+          if (silentNotFound) {
+            res.status(200).send(null);
+            return;
+          }
+          res.status(404).send('User not found');
+          return;
+        } else {
+          idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
+          res.status(200).send(idamUser);
+          return;
+        }
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Refreshing of cache set here to avoid conflicting error handling
+const refreshUserCache = async () => {
+  try {
+    const cachedUserData = await fetchUserData();
+    await fetchRoleAssignments(cachedUserData);
+  } catch (error) {
+    trackTrace(`Error refreshing user cache after getUserByIdamId response: ${error.toString()}`);
+  }
+};
 
 /**
  * getNewUsersByServiceName

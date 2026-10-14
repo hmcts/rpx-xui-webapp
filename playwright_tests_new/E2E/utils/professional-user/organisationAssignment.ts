@@ -43,6 +43,8 @@ export type AssignUserToOrganisationFlowArgs = {
     resendInvite?: boolean;
     requireServiceAuth?: boolean;
     assignmentBearerToken?: string;
+    expectedAssignmentPrincipalEmail?: string;
+    assignmentStorageState?: string;
     serviceToken?: string;
     rdProfessionalApiPath?: string;
   };
@@ -59,12 +61,15 @@ type OrganisationAssignmentFlowDeps = {
     roles: readonly string[];
     resendInvite: boolean;
     assignmentBearerToken?: string;
+    expectedAssignmentPrincipalEmail?: string;
+    assignmentStorageState?: string;
     serviceToken?: string;
   }) => Promise<OrganisationInviteResult>;
   isUserVisibleInOrganisationAssignment: (params: {
     organisationId: string;
     user: ProfessionalUserInfo;
     assignmentBearerToken?: string;
+    expectedAssignmentPrincipalEmail?: string;
     serviceToken?: string;
     rdProfessionalApiPath?: string;
     requireServiceAuth?: boolean;
@@ -107,15 +112,14 @@ const MAX_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 20;
 const MANAGE_ORG_ASSIGNMENT_PRINCIPAL_ROLES = new Set(SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE['manage-org']);
 
 type RdModeAttemptOutcome =
-  | { kind: 'success'; result: OrganisationAssignmentResult }
-  | { kind: 'retry' }
-  | { kind: 'break-mode'; lastError: unknown };
+  { kind: 'success'; result: OrganisationAssignmentResult } | { kind: 'retry' } | { kind: 'break-mode'; lastError: unknown };
 
 type ModeAttemptsLoopOutcome = { kind: 'success'; result: OrganisationAssignmentResult } | { kind: 'broken'; lastError: unknown };
 
 type ManageOrgPrimaryOutcome = {
   result: OrganisationAssignmentResult | null;
   suppressManageOrgFallback: boolean;
+  error?: unknown;
 };
 
 async function handleRetryExternalAssignment(
@@ -310,6 +314,8 @@ async function executeManageOrgFallback(
     roles: args.roles,
     resendInvite: args.options.resendInvite ?? false,
     assignmentBearerToken: args.options.assignmentBearerToken,
+    expectedAssignmentPrincipalEmail: args.options.expectedAssignmentPrincipalEmail,
+    assignmentStorageState: args.options.assignmentStorageState,
     serviceToken: args.options.serviceToken,
   });
   logger.warn(logMessage, {
@@ -341,6 +347,8 @@ async function tryManageOrgPrimary(
       roles: args.roles,
       resendInvite: args.options.resendInvite ?? false,
       assignmentBearerToken: args.options.assignmentBearerToken,
+      expectedAssignmentPrincipalEmail: args.options.expectedAssignmentPrincipalEmail,
+      assignmentStorageState: args.options.assignmentStorageState,
       serviceToken: args.options.serviceToken,
     });
     const requiresConflictVerification = manageOrgPrimary.status === 409;
@@ -350,6 +358,7 @@ async function tryManageOrgPrimary(
         organisationId: args.organisationId,
         user: args.options.user,
         assignmentBearerToken: args.options.assignmentBearerToken,
+        expectedAssignmentPrincipalEmail: args.options.expectedAssignmentPrincipalEmail,
         serviceToken: args.options.serviceToken,
         rdProfessionalApiPath: args.options.rdProfessionalApiPath,
         requireServiceAuth: args.options.requireServiceAuth,
@@ -391,6 +400,7 @@ async function tryManageOrgPrimary(
     return {
       result: null,
       suppressManageOrgFallback: shouldSuppressManageOrgFallbackAfterPrimaryFailure(error),
+      error,
     };
   }
 }
@@ -403,15 +413,27 @@ export async function assignUserToOrganisationFlow(
   let prereqs: AssignmentPrerequisites | undefined;
   let manageOrgPrimaryAttempted = false;
   let autoManageOrgFallbackSuppressed = false;
+  let lastManageOrgPrimaryError: unknown;
+  const hasExplicitAssignmentStorage = Boolean(args.options.assignmentStorageState);
+  const isSessionOnlyAssignment = hasExplicitAssignmentStorage && !args.options.assignmentBearerToken;
 
   const attemptManageOrgPrimary = async (): Promise<OrganisationAssignmentResult | null> => {
     manageOrgPrimaryAttempted = true;
     const primaryOutcome = await tryManageOrgPrimary(args, deps);
+    lastManageOrgPrimaryError = primaryOutcome.error;
     if (!primaryOutcome.result && args.requestedMode === 'auto' && primaryOutcome.suppressManageOrgFallback) {
       autoManageOrgFallbackSuppressed = true;
     }
     return primaryOutcome.result;
   };
+
+  if (hasExplicitAssignmentStorage) {
+    const primaryResult = await attemptManageOrgPrimary();
+    if (primaryResult) return primaryResult;
+    if (isSessionOnlyAssignment) {
+      throw toError(lastManageOrgPrimaryError, 'Manage-org session invite failed for dynamic organisation assignment.');
+    }
+  }
 
   if (shouldUseManageOrgInvitePrimary()) {
     const primaryResult = await attemptManageOrgPrimary();

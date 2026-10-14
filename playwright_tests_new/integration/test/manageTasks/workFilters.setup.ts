@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { applySessionCookies } from '../../helpers';
+import { ensureSession } from '../../../common/sessionCapture';
 import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import {
@@ -8,6 +9,7 @@ import {
   workFiltersSscsSearchLocation,
   workFiltersSscsSearchLocationSecondary,
 } from '../../mocks/workFiltersLocationSearch.mock';
+import { defaultStaffAMMenuRole, ensureSupportedAMRoleAssignment, uniqueRoles } from '../../helpers/amRoleAssignmentMock.helper';
 
 export const workFiltersUserIdentifier = 'STAFF_ADMIN';
 export const workFiltersUserId = 'staff-admin-integration-user';
@@ -45,11 +47,17 @@ export const workFiltersDefaultLocations = [
   },
 ];
 
+export async function warmWorkFiltersSession(): Promise<void> {
+  await ensureSession(workFiltersUserIdentifier);
+}
+
 export type WorkFilterRoleAssignment = {
   jurisdiction: string;
   substantive: string;
   roleType: string;
   baseLocation?: string;
+  roleCategory?: string;
+  roleName?: string;
 };
 
 type SetupWorkFiltersUserOptions = {
@@ -70,16 +78,20 @@ export async function setupWorkFiltersUser(page: Page, options: SetupWorkFilters
   const sessionUserId = extractUserIdFromCookies(session.cookies) ?? workFiltersUserId;
 
   const userDetails = buildHearingsUserDetailsMock(
-    options.roles ?? ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-civil']
+    options.roles ?? uniqueRoles(['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-civil', defaultStaffAMMenuRole])
   );
 
   userDetails.userInfo.id = sessionUserId;
   userDetails.userInfo.uid = sessionUserId;
   userDetails.userInfo.roleCategory = 'LEGAL_OPERATIONS';
-  userDetails.roleAssignmentInfo = options.roleAssignments ?? [
-    { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
-    { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
-  ];
+  userDetails.roleAssignmentInfo = ensureSupportedAMRoleAssignment(
+    options.roleAssignments ?? [
+      { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
+      { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
+    ],
+    defaultStaffAMMenuRole,
+    workFiltersSupportedJurisdictions
+  );
 
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));

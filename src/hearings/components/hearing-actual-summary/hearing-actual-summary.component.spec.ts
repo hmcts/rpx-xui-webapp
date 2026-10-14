@@ -489,6 +489,38 @@ describe('HearingActualSummaryComponent', () => {
     expect(component.actualMultiDaysHearingDates()).toEqual('12 Mar 2021 - 14 Mar 2021');
   });
 
+  it('should return multi day hearing days when a not required day has no start time', () => {
+    component.hearingActualsMainModel = {
+      ...hearingActualsMainModel,
+      hearingActuals: {
+        ...hearingActualsMainModel.hearingActuals,
+        actualHearingDays: [
+          {
+            ...hearingActualsMainModel.hearingActuals.actualHearingDays[0],
+            hearingDate: '2026-06-15',
+            hearingStartTime: '2026-06-15T09:00:00',
+            hearingEndTime: '2026-06-15T11:00:00',
+            notRequired: false,
+          },
+          {
+            ...hearingActualsMainModel.hearingActuals.actualHearingDays[1],
+            hearingDate: '2026-06-17',
+            hearingStartTime: null,
+            hearingEndTime: null,
+            pauseDateTimes: [],
+            actualDayParties: [],
+            notRequired: true,
+          },
+        ],
+      },
+    };
+
+    expect(component.actualMultiDaysHearingDates()).toEqual('15 Jun 2026 - 17 Jun 2026');
+    expect(component.actualHearingDayDate(component.hearingActualsMainModel.hearingActuals.actualHearingDays[1])).toEqual(
+      '2026-06-17'
+    );
+  });
+
   it('should set empty hearing type description', () => {
     fixture.detectChanges();
     expect(component.hearingTypeDescription).toEqual('');

@@ -28,6 +28,7 @@ describe('RequestHearingComponent', () => {
 
   beforeEach(() => {
     appConfig.logMessage.calls.reset();
+    hearingsService.hearingRequestContinueDisabled = false;
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [RequestHearingComponent, MockRpxTranslatePipe],
@@ -86,6 +87,12 @@ describe('RequestHearingComponent', () => {
     component.submitRequest(ACTION.VIEW_EDIT_SUBMIT);
     const buttonDisabled = component.buttonDisabled(ACTION.VIEW_EDIT_SUBMIT);
     expect(buttonDisabled).toEqual(false);
+  });
+
+  it('should check buttonDisabled returns true for continue when hearing request continue is disabled', () => {
+    hearingsService.hearingRequestContinueDisabled = true;
+    const buttonDisabled = component.buttonDisabled(ACTION.CONTINUE);
+    expect(buttonDisabled).toEqual(true);
   });
 
   it('should check buttonDisabled returns a true for a VIEW_EDIT_SUBMIT with successful validation', () => {
@@ -208,6 +215,7 @@ describe('RequestHearingComponent', () => {
       ],
     };
     const serviceHearingValuesModel: ServiceHearingValuesModel = {
+      caseId: '1234567890',
       hmctsServiceID: 'BBA3',
       hmctsInternalCaseName: 'Jane vs DWP',
       publicCaseName: 'Jane vs DWP',
@@ -390,7 +398,7 @@ describe('RequestHearingComponent', () => {
     component.submitRequest(ACTION.SUBMIT);
     expect(component.showMismatchErrorMessage).toBeTruthy();
     expect(appConfig.logMessage).not.toHaveBeenCalled();
-    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE });
+    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST });
   });
 
   it('should log public name when names are mismatched and still submit successfully', () => {
@@ -414,7 +422,7 @@ describe('RequestHearingComponent', () => {
     component.submitRequest(ACTION.SUBMIT);
 
     expect(appConfig.logMessage).toHaveBeenCalledWith(
-      'Hearing public name mismatch detected. HRM: Public Name SHV: Different Public Name for caseId: 1234123412341234 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED'
+      'Hearing public name mismatch detected. HRM: Public Name SHV: Different Public Name for caseId: 1234567890 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED'
     );
     expect(component.showMismatchErrorMessage).toBeFalsy();
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.SUBMIT);

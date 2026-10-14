@@ -1433,6 +1433,7 @@ export const caseFlagsRefData = [
 ];
 
 export const serviceHearingValuesModel: ServiceHearingValuesModel = {
+  caseId: '1234567890',
   hmctsServiceID: 'BBA3',
   hmctsInternalCaseName: 'Jane Smith vs DWP',
   publicCaseName: 'Jane Smith vs DWP',
@@ -2372,7 +2373,7 @@ export const initialState = {
         },
         caseDetails: {
           hmctsServiceCode: null,
-          caseRef: '1234123412341234',
+          caseRef: '1234567890',
           requestTimeStamp: null,
           hearingID: null,
           externalCaseReference: null,

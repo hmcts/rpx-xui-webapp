@@ -2,15 +2,10 @@ export const baseConfig = {
   '(judge)|(judiciary)|(panelmember)': [
     {
       active: true,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
       roles: [
+        'hmcts-judiciary',
         'caseworker-civil',
         'caseworker-ia-iacjudge',
         'caseworker-privatelaw',
@@ -22,13 +17,7 @@ export const baseConfig = {
     },
     {
       active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/all-work/tasks',
       roles: ['task-supervisor'],
       text: 'All work',
@@ -77,6 +66,7 @@ export const baseConfig = {
       flags: ['feature-global-search'],
       href: '/search',
       roles: [
+        'hmcts-judiciary',
         'caseworker-civil',
         'caseworker-ia-iacjudge',
         'caseworker-privatelaw',
@@ -132,6 +122,7 @@ export const baseConfig = {
         'caseworker-probate-solicitor',
         'caseworker-privatelaw-solicitor',
         'caseworker-employment-legalrep-solicitor',
+        'caseworker-pcs-solicitor',
       ],
       text: 'Notice of change',
     },
@@ -146,15 +137,12 @@ export const baseConfig = {
   '.+': [
     {
       active: true,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
       roles: [
+        'hmcts-admin',
+        'hmcts-ctsc',
+        'hmcts-legal-operations',
         'caseworker-civil',
         'caseworker-civil-staff',
         'caseworker-ia-caseofficer',
@@ -168,42 +156,10 @@ export const baseConfig = {
     },
     {
       active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease2',
-        },
-      ],
+      flags: ['MC_Work_Allocation'],
       href: '/work/all-work/tasks',
       roles: ['task-supervisor'],
       text: 'All work',
-    },
-    {
-      active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease1',
-        },
-      ],
-      href: '/tasks',
-      roles: ['caseworker-ia-caseofficer'],
-      text: 'Task list',
-    },
-    {
-      active: false,
-      flags: [
-        'MC_Work_Allocation',
-        {
-          flagName: 'mc-work-allocation-active-feature',
-          value: 'WorkAllocationRelease1',
-        },
-      ],
-      href: '/tasks/task-manager',
-      roles: ['caseworker-ia-caseofficer', 'task-supervisor'],
-      text: 'Task manager',
     },
     {
       active: false,
@@ -259,6 +215,9 @@ export const baseConfig = {
       flags: ['feature-global-search'],
       href: '/search',
       roles: [
+        'hmcts-admin',
+        'hmcts-ctsc',
+        'hmcts-legal-operations',
         'caseworker-civil',
         'caseworker-ia-caseofficer',
         'senior-tribunal-caseworker',
@@ -272,6 +231,7 @@ export const baseConfig = {
         'caseworker-sscs',
         'caseworker-employment',
         'caseworker-pcs',
+        'caseworker-probate',
       ],
       text: 'Search',
     },

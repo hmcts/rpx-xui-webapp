@@ -153,10 +153,11 @@ export class WorkAllocationTaskService {
     if (userInfoStr) {
       const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (!userInfo) {
-        return of([]);
+        return of(null);
       }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
+      const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
+      const userRole: UserRole = userRoleNames[0] || undefined;
       const searchParameters = [
         { key: 'user', operator: 'IN', values: [id] },
         { key: 'state', operator: 'IN', values: ['assigned'] },
@@ -164,6 +165,7 @@ export class WorkAllocationTaskService {
       const searchRequest: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [],
+        // Note: Is search_by being used? Looks like we could remove this
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
       };
       return this.http.post<{ tasks: Task[] }>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(
@@ -177,6 +179,6 @@ export class WorkAllocationTaskService {
         )
       );
     }
-    return of([]);
+    return of(null);
   }
 }

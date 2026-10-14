@@ -1,14 +1,21 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
-import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
 import { TermsAndConditionsComponent } from './terms-and-conditions.component';
+
+@Pipe({ name: 'rpxTranslate', standalone: false, pure: false })
+class MockRpxTranslatePipe implements PipeTransform {
+  transform(value: string): string {
+    return value;
+  }
+}
 
 const storeMock = {
   pipe: () => of(null),
@@ -47,7 +54,7 @@ describe('TermsAndConditionsComponent', () => {
     pipeSpy = spyOn(storeMock, 'pipe');
     dispatchSpy = spyOn(storeMock, 'dispatch');
     TestBed.configureTestingModule({
-      declarations: [TermsAndConditionsComponent, TestDummyHostComponent, RpxTranslatePipe],
+      declarations: [TermsAndConditionsComponent, TestDummyHostComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [RouterTestingModule],
       providers: [

@@ -14,10 +14,6 @@ import {
   getTasksByCaseId,
   getTasksByCaseIdAndEventId,
   postTaskCompletionForAccess,
-  getAllCaseWorkersForLocation,
-  getCaseWorkersForService,
-  getCaseWorkersForLocationAndService,
-  searchCaseWorker,
   postTaskSearchForCompletable,
   getRolesCategory,
   showAllocateRoleLink,
@@ -27,7 +23,10 @@ import {
   getCases,
   getTaskNames,
   getNewUsersByServiceName,
-  searchTypesOfWork,
+  setAssigneeNamesInTasks,
+  setAssigneeNamesInCases,
+  getUsersByIdamIds,
+  getUserByIdamId,
 } from '.';
 import { http } from '../lib/http';
 import { mockTasks } from './taskTestData.spec';
@@ -54,6 +53,15 @@ describe('workAllocation', () => {
   let res: any;
   let mockUserInfo: any;
   let mockRoleAssignments: any[];
+  const refinedCaseworker = {
+    email: 'a@a.com',
+    firstName: 'Ann',
+    idamId: 'user1',
+    lastName: 'Alpha',
+    location: undefined,
+    roleCategories: ['LEGAL_OPERATIONS'],
+    service: 'IA',
+  };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -111,7 +119,7 @@ describe('workAllocation', () => {
           firstName: 'User',
           lastName: 'One',
           email: 'one@one.com',
-          roleCategory: 'role1',
+          roleCategories: ['role1'],
           services: ['service1'],
           locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }],
         },
@@ -120,7 +128,7 @@ describe('workAllocation', () => {
           firstName: 'User',
           lastName: 'Two',
           email: 'two@two.com',
-          roleCategory: 'role1',
+          roleCategories: ['role1'],
           services: ['service1'],
           locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }],
         },
@@ -132,6 +140,32 @@ describe('workAllocation', () => {
       await getUsersByServiceName(req, res, next);
       expect(res.send).to.have.been.called;
       expect(res.status).to.have.been.calledWith(200);
+    });
+
+    it('should return 400 when services contains an empty list', async () => {
+      const req = mockReq({
+        body: {
+          term: null,
+          services: [],
+        },
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: ['role1'],
+              },
+            },
+          },
+        },
+      });
+
+      const response = mockRes();
+      const next = sandbox.spy();
+
+      await getUsersByServiceName(req, response, next);
+
+      expect(response.status).to.have.been.calledWith(400);
+      expect(response.send).to.have.been.calledWith('Bad Request');
     });
   });
 
@@ -160,7 +194,7 @@ describe('workAllocation', () => {
         firstName: 'User',
         lastName: 'One',
         email: 'one@one.com',
-        roleCategory: 'role1',
+        roleCategories: ['role1'],
         services: ['service1'],
         locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }],
       },
@@ -169,7 +203,7 @@ describe('workAllocation', () => {
         firstName: 'User',
         lastName: 'Two',
         email: 'two@two.com',
-        roleCategory: 'role1',
+        roleCategories: ['role1'],
         services: ['service1'],
         locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }],
       },
@@ -626,142 +660,6 @@ describe('workAllocation', () => {
     });
   });
 
-  describe('getAllCaseWorkersForLocation', () => {
-    it('should get all case workers for a location', async () => {
-      const mockCaseWorkers = [
-        { id: 'worker1', firstName: 'John', lastName: 'Doe' },
-        { id: 'worker2', firstName: 'Jane', lastName: 'Smith' },
-      ];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocation').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { locationId: 'loc123' },
-      });
-      const response = mockRes();
-
-      await getAllCaseWorkersForLocation(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for location', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocation').rejects(error);
-
-      const req = mockReq({
-        params: { locationId: 'loc123' },
-      });
-      const response = mockRes();
-
-      await getAllCaseWorkersForLocation(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('getCaseWorkersForService', () => {
-    it('should get case workers for a service', async () => {
-      const mockCaseWorkers = [{ id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA' }];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForService').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForService(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for service', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForService').rejects(error);
-
-      const req = mockReq({
-        params: { serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForService(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('getCaseWorkersForLocationAndService', () => {
-    it('should get case workers for location and service', async () => {
-      const mockCaseWorkers = [{ id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA', location: 'loc123' }];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocationAndService').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { locationId: 'loc123', serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForLocationAndService(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for location and service', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocationAndService').rejects(error);
-
-      const req = mockReq({
-        params: { locationId: 'loc123', serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForLocationAndService(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('searchCaseWorker', () => {
-    it('should search for case workers', async () => {
-      const mockSearchResults = {
-        caseworkers: [{ id: 'worker1', firstName: 'John', lastName: 'Doe' }],
-      };
-      spy = sandbox.stub(caseWorkerServiceModule, 'handlePostSearch').resolves({ status: 200, data: mockSearchResults });
-
-      const req = mockReq({
-        body: {
-          searchTerm: 'John',
-          services: ['IA'],
-          userType: 'caseworker',
-        },
-      });
-      const response = mockRes();
-
-      await searchCaseWorker(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockSearchResults);
-    });
-
-    it('should handle errors when searching case workers', async () => {
-      const error = new Error('Search failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handlePostSearch').rejects(error);
-
-      const req = mockReq({
-        body: {
-          searchTerm: 'John',
-          services: ['IA'],
-        },
-      });
-      const response = mockRes();
-
-      await searchCaseWorker(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
   describe('postTaskSearchForCompletable', () => {
     it('should search for completable tasks for supported jurisdiction', async () => {
       const mockTasks = [{ id: 'task1', completable: true }];
@@ -865,7 +763,7 @@ describe('workAllocation', () => {
       sandbox.stub(roleService, 'checkIfCaseAllocator').returns(true);
 
       const req = mockReq({
-        params: { jurisdiction: 'IA', caseLocationId: 'loc123' },
+        params: { jurisdiction: 'IA', caseLocationId: 'locase123' },
       });
       const response = mockRes();
 
@@ -880,7 +778,7 @@ describe('workAllocation', () => {
       sandbox.stub(roleService, 'checkIfCaseAllocator').returns(false);
 
       const req = mockReq({
-        params: { jurisdiction: 'IA', caseLocationId: 'loc123' },
+        params: { jurisdiction: 'IA', caseLocationId: 'locase123' },
       });
       const response = mockRes();
 
@@ -895,7 +793,7 @@ describe('workAllocation', () => {
       sandbox.stub(roleService, 'checkIfCaseAllocator').throws(error);
 
       const req = mockReq({
-        params: { jurisdiction: 'IA', caseLocationId: 'loc123' },
+        params: { jurisdiction: 'IA', caseLocationId: 'locase123' },
       });
       const response = mockRes();
 
@@ -1008,7 +906,7 @@ describe('workAllocation', () => {
           searchRequest: {
             search_parameters: [
               { key: 'services', values: ['IA'] },
-              { key: 'locations', values: ['loc123'] },
+              { key: 'locations', values: ['locase123'] },
             ],
           },
         },
@@ -1073,7 +971,7 @@ describe('workAllocation', () => {
         task_title: 'Test Task',
         created_date: '2029-01-01',
         due_date: '2029-01-31',
-        location: 'loc123',
+        location: 'locase123',
         jurisdiction: 'Family',
         region: 'North',
         case_type_id: 'FAM001',
@@ -1103,7 +1001,7 @@ describe('workAllocation', () => {
           case_role: 'judge',
           role_category: 'JUDICIAL',
           jurisdiction: 'Family',
-          location_id: 'loc123',
+          location_id: 'locase123',
           startDate: '2029-01-01',
           endDate: '2029-12-31',
           assignee: 'user123',
@@ -1113,7 +1011,7 @@ describe('workAllocation', () => {
       const req = mockReq({
         body: {
           searchRequest: {
-            search_parameters: [{ key: 'location_id', values: 'loc123' }],
+            search_parameters: [{ key: 'location_id', values: 'locase123' }],
             pagination_parameters: {
               page_number: 1,
               page_size: 10,
@@ -1224,7 +1122,7 @@ describe('workAllocation', () => {
         const mockTask = {
           task: {
             id: '123456',
-            due_date: '2029-12-01T10:00:00Z',
+            due_date: '2029-12-01test10:00:00Z',
             name: 'Test Task',
           },
         };
@@ -1240,7 +1138,7 @@ describe('workAllocation', () => {
         expect(response.send).to.have.been.calledWith(
           sinon.match({
             task: sinon.match({
-              dueDate: '2029-12-01T10:00:00Z',
+              dueDate: '2029-12-01test10:00:00Z',
             }),
           })
         );
@@ -1342,82 +1240,238 @@ describe('workAllocation', () => {
     });
   });
 
-  describe('searchTypesOfWork', () => {
-    const typesOfWork = [
-      { id: 'hearing_work', label: 'Hearing work' },
-      { id: 'upper_tribunal', label: 'Upper Tribunal' },
-      { id: 'routine_work', label: 'Routine work' },
-      { id: 'decision_making_work', label: 'Decision-making work' },
-      { id: 'applications', label: 'Applications' },
-    ];
-    const apiResponse = { work_types: typesOfWork };
-    const mapped = typesOfWork.map((workType) => ({ key: workType.id, label: workType.label }));
+  describe('setAssigneeNamesInTasks', () => {
+    it('populates assigneeName from cache', async () => {
+      const tasks = [
+        { id: 'test1', assignee: 'user1' },
+        { id: 'test2', assignee: 'user2' },
+      ] as any[];
 
-    it('should return all types when no searchTerm', async () => {
-      const httpRes = mockRes({ data: apiResponse });
-      sandbox.stub(http, 'get').resolves(httpRes);
+      const cached: CachedCaseworker[] = [
+        {
+          idamId: 'user1',
+          firstName: 'Ann',
+          lastName: 'Alpha',
+          email: 'a@a.com',
+          services: [],
+          locations: [],
+          roleCategory: 'LEGAL_OPERATIONS',
+        } as any,
+        {
+          idamId: 'user2',
+          firstName: 'Bob',
+          lastName: 'Beta',
+          email: 'b@b.com',
+          services: [],
+          locations: [],
+          roleCategory: 'LEGAL_OPERATIONS',
+        } as any,
+      ];
 
-      const req = mockReq({ body: { searchTerm: null } });
-      const response = mockRes();
+      FullUserDetailCache.setUserDetails(cached);
+      // Force timestampExists true
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
 
-      await searchTypesOfWork(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(sinon.match(mapped));
+      const result = await setAssigneeNamesInTasks(tasks as any, ['user1', 'user2']);
+      expect(result[0].assigneeName).to.equal('Ann Alpha');
+      expect(result[1].assigneeName).to.equal('Bob Beta');
     });
 
-    it('should filter by label case-insensitively', async () => {
-      const httpRes = mockRes({ data: apiResponse });
-      sandbox.stub(http, 'get').resolves(httpRes);
+    it('returns tasks unchanged when refresh throws', async () => {
+      const tasks = [{ id: 'test1', assignee: 'uX' }] as any[];
+      FullUserDetailCache.setUserDetails([]); // no cache
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').rejects(new Error('fail'));
+      const result = await setAssigneeNamesInTasks(tasks as any, ['uX']);
+      expect(result[0].assigneeName).to.be.undefined;
+    });
+  });
 
-      const req = mockReq({ body: { searchTerm: 'hearing' } });
-      const response = mockRes();
+  describe('setAssigneeNamesInCases', () => {
+    it('populates assigneeName and actorName from cache', async () => {
+      const cases = [
+        { id: 'case1', assignee: 'user1' },
+        { id: 'case2', assignee: 'user2' },
+      ] as any[];
 
-      await searchTypesOfWork(req, response, next);
+      const cached: CachedCaseworker[] = [
+        {
+          idamId: 'user1',
+          firstName: 'Ann',
+          lastName: 'Alpha',
+          email: 'a@a.com',
+          services: [],
+          locations: [],
+          roleCategory: 'LEGAL_OPERATIONS',
+        } as any,
+        {
+          idamId: 'user2',
+          firstName: 'Bob',
+          lastName: 'Beta',
+          email: 'b@b.com',
+          services: [],
+          locations: [],
+          roleCategory: 'LEGAL_OPERATIONS',
+        } as any,
+      ];
+      FullUserDetailCache.setUserDetails(cached);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
 
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith([{ key: 'hearing_work', label: 'Hearing work' }]);
+      const result = await setAssigneeNamesInCases(cases as any, ['user1', 'user2']);
+      expect(result[0].assigneeName).to.equal('Ann Alpha');
+      expect(result[0].actorName).to.equal('Ann Alpha');
+      expect(result[1].assigneeName).to.equal('Bob Beta');
+      expect(result[1].actorName).to.equal('Bob Beta');
     });
 
-    it('should filter by key (id) case-insensitively', async () => {
-      const httpRes = mockRes({ data: apiResponse });
-      sandbox.stub(http, 'get').resolves(httpRes);
+    it('does nothing when cache missing (timestamp false)', async () => {
+      FullUserDetailCache.setUserDetails([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      const result = await setAssigneeNamesInCases([{ id: 'case1', assignee: 'user1' }] as any, ['user1']);
+      expect(result[0].assigneeName).to.be.undefined;
+      expect(result[0].actorName).to.be.undefined;
+    });
+  });
 
-      const req = mockReq({ body: { searchTerm: 'ROUTINE_WORK' } });
+  describe('getUsersByIdamIds', () => {
+    it('returns 403 for PUI_CASE_MANAGER', async () => {
+      const req = mockReq({
+        body: { services: ['IA'], idamIds: ['user1'] },
+        session: { passport: { user: { userinfo: { roles: ['pui-case-manager'] } } } },
+      });
       const response = mockRes();
-
-      await searchTypesOfWork(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith([{ key: 'routine_work', label: 'Routine work' }]);
+      await getUsersByIdamIds(req, response, next);
+      expect(response.status).to.have.been.calledWith(403);
+      expect(response.send).to.have.been.calledWith('Forbidden');
     });
 
-    it('should return empty array when no matches', async () => {
-      const httpRes = mockRes({ data: apiResponse });
-      sandbox.stub(http, 'get').resolves(httpRes);
+    it('returns users from cache when timestamp exists', async () => {
+      const cached: CachedCaseworker[] = [
+        {
+          idamId: 'user1',
+          firstName: 'Ann',
+          lastName: 'Alpha',
+          email: 'a@a.com',
+          roleCategories: ['LEGAL_OPERATIONS'],
+          services: ['IA'],
+          locations: [],
+        } as any,
+      ];
+      FullUserDetailCache.setUserDetails(cached);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
 
-      const req = mockReq({ body: { searchTerm: 'nonexistent' } });
+      const req = mockReq({
+        body: { services: ['IA'], idamIds: ['user1'] },
+        session: { passport: { user: { userinfo: { roles: ['caseworker-role'] } } } },
+      });
       const response = mockRes();
-
-      await searchTypesOfWork(req, response, next);
-
+      await getUsersByIdamIds(req, response, next);
       expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith([]);
+      expect(response.send).to.have.been.calledWith(sinon.match.array.deepEquals([refinedCaseworker]));
     });
 
-    it('should handle an exception being thrown', async () => {
-      const httpRes = mockRes({ data: apiResponse });
-      sandbox.stub(http, 'get').resolves(httpRes);
-
-      const req = mockReq({ body: { searchTerm: 'anything' } });
+    it('refreshes cache and returns users when no cache', async () => {
+      FullUserDetailCache.setUserDetails([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      // Simulate refresh populates cache
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').resolves([{ id: 'dummy' } as any]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments').resolves([
+        {
+          idamId: 'user1',
+          firstName: 'Ann',
+          lastName: 'Alpha',
+          email: 'a@a.com',
+          roleCategories: ['LEGAL_OPERATIONS'],
+          services: ['IA'],
+          locations: [],
+        } as any,
+      ]);
+      const req = mockReq({
+        body: { services: ['IA'], idamIds: ['user1'] },
+        session: { passport: { user: { userinfo: { roles: ['caseworker-role'] } } } },
+      });
       const response = mockRes();
+      await getUsersByIdamIds(req, response, next);
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.called;
+    });
+  });
 
-      response.send.throws();
+  describe('getUserByIdamId', () => {
+    it('returns 403 for PUI_CASE_MANAGER', async () => {
+      const req = mockReq({
+        body: { idamId: 'user1' },
+        session: { passport: { user: { userinfo: { roles: ['pui-case-manager'] } } } },
+      });
+      const response = mockRes();
+      await getUserByIdamId(req, response, next);
+      expect(response.status).to.have.been.calledWith(403);
+      expect(response.send).to.have.been.calledWith('Forbidden');
+    });
 
-      await searchTypesOfWork(req, response, next);
+    it('returns user from cache when timestamp exists', async () => {
+      const cached: CachedCaseworker = {
+        idamId: 'user1',
+        firstName: 'Ann',
+        lastName: 'Alpha',
+        email: 'a@a.com',
+        roleCategories: ['LEGAL_OPERATIONS'],
+        services: ['IA'],
+        locations: [],
+      } as any;
+      FullUserDetailCache.setUserDetails([cached]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
 
-      // Consistent with similar tests in this file
-      expect(next).to.have.been.calledWith();
+      const req = mockReq({
+        body: { idamId: 'user1' },
+        session: { passport: { user: { userinfo: { roles: ['caseworker-role'] } } } },
+      });
+      const response = mockRes();
+      await getUserByIdamId(req, response, next);
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith(refinedCaseworker);
+    });
+
+    it('returns null with 200 for silent not found', async () => {
+      FullUserDetailCache.setUserDetails([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
+
+      const req = mockReq({
+        body: { idamId: 'judicial-user', silentNotFound: true },
+        session: { passport: { user: { userinfo: { roles: ['caseworker-role'] } } } },
+      });
+      const response = mockRes();
+      await getUserByIdamId(req, response, next);
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith(null);
+    });
+
+    it('refreshes cache and returns user when firstEntry', async () => {
+      FullUserDetailCache.setUserDetails([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').resolves([{ id: 'dummy' } as any]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments').resolves(); // cache populated elsewhere in app
+      // populate cache for assertion
+      FullUserDetailCache.setUserDetails([
+        {
+          idamId: 'user1',
+          firstName: 'Ann',
+          lastName: 'Alpha',
+          email: 'a@a.com',
+          roleCategories: ['LEGAL_OPERATIONS'],
+          services: ['IA'],
+          locations: [],
+        } as any,
+      ]);
+
+      const req = mockReq({
+        body: { idamId: 'user1' },
+        session: { passport: { user: { userinfo: { roles: ['caseworker-role'] } } } },
+      });
+      const response = mockRes();
+      await getUserByIdamId(req, response, next);
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith(sinon.match.has('idamId', 'user1'));
     });
   });
 });

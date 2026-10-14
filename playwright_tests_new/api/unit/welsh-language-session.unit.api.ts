@@ -33,7 +33,7 @@ test.describe('welsh language session helper', { tag: '@svc-internal' }, () => {
     ]);
   });
 
-  test('assigns workers across the configured solicitor pool', () => {
+  test('assigns stable parallel slots across the configured solicitor pool', () => {
     const env = {
       SOLICITOR_USERNAME: 'solicitor@example.test',
       SOLICITOR_PASSWORD: 'sol-password',
@@ -41,20 +41,42 @@ test.describe('welsh language session helper', { tag: '@svc-internal' }, () => {
       NOC_SOLICITOR_PASSWORD: 'noc-password',
     } as NodeJS.ProcessEnv;
 
-    expect(resolveWelshLanguageSessionUser({ workerIndex: 0 }, env)).toEqual({
+    expect(resolveWelshLanguageSessionUser({ parallelIndex: 0 }, env)).toEqual({
       userIdentifier: 'SOLICITOR',
       email: 'solicitor@example.test',
       password: 'sol-password',
     });
-    expect(resolveWelshLanguageSessionUser({ workerIndex: 1 }, env)).toEqual({
+    expect(resolveWelshLanguageSessionUser({ parallelIndex: 1 }, env)).toEqual({
       userIdentifier: 'NOC_SOLICITOR',
       email: 'noc@example.test',
       password: 'noc-password',
     });
-    expect(resolveWelshLanguageSessionUser({ workerIndex: 2 }, env)).toEqual({
+    expect(resolveWelshLanguageSessionUser({ parallelIndex: 2 }, env)).toEqual({
       userIdentifier: 'SOLICITOR',
       email: 'solicitor@example.test',
       password: 'sol-password',
+    });
+  });
+
+  test('keeps the selected Welsh identity when a worker restarts in the same parallel slot', () => {
+    const env = {
+      SOLICITOR_USERNAME: 'solicitor@example.test',
+      SOLICITOR_PASSWORD: 'sol-password',
+      NOC_SOLICITOR_USERNAME: 'noc@example.test',
+      NOC_SOLICITOR_PASSWORD: 'noc-password',
+    } as NodeJS.ProcessEnv;
+    const initialWorker = { workerIndex: 1, parallelIndex: 1 };
+    const restartedWorker = { workerIndex: 8, parallelIndex: 1 };
+
+    expect(resolveWelshLanguageSessionUser(initialWorker, env)).toEqual({
+      userIdentifier: 'NOC_SOLICITOR',
+      email: 'noc@example.test',
+      password: 'noc-password',
+    });
+    expect(resolveWelshLanguageSessionUser(restartedWorker, env)).toEqual({
+      userIdentifier: 'NOC_SOLICITOR',
+      email: 'noc@example.test',
+      password: 'noc-password',
     });
   });
 });

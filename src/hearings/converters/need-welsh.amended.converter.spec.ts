@@ -1,4 +1,5 @@
 import { cold } from 'jasmine-marbles';
+import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
@@ -12,9 +13,9 @@ describe('NeedWelshAmendedConverter', () => {
   });
 
   it('should transform need welsh flag based on selection', () => {
-    initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
-    initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
-    const STATE: State = initialState.hearings;
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
+    STATE.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
     const result$ = needWelshAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;
     const expected = cold('(b|)', { b: isAmended });

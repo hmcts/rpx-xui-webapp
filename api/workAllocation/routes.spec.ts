@@ -134,8 +134,8 @@ describe('workAllocation.routes', () => {
 
       await getUsersByServiceName(req as any, res as any, next as any);
 
-      expect(res.status).to.have.been.calledWith(200);
-      expect(res.send).to.have.been.calledWith([]);
+      expect(res.status).to.have.been.calledWith(400);
+      expect(res.send).to.have.been.calledWith('Bad Request');
       expect(next).not.to.have.been.called;
     });
   });

@@ -13,6 +13,13 @@ type TagFilterConfig = {
   availableServiceTags?: string[];
 };
 
+const toPosixPath = (value: string): string => value.replace(/\\/g, '/');
+
+export function resolveLocalWorktreeTestIgnorePatterns(rootDir: string = process.cwd()): string[] {
+  const normalizedRoot = toPosixPath(rootDir).replace(/\/$/, '');
+  return [`${normalizedRoot}/.worktrees/**`, `${normalizedRoot}/worktrees/**`];
+}
+
 export type ResolvedTagFilters = {
   includeTags: string[];
   excludedTags: string[];
@@ -79,14 +86,14 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
 
 /**
  * Resolves Playwright worker count from FUNCTIONAL_TESTS_WORKERS or runtime defaults.
- * Browser-heavy E2E runs default to 6 workers unless explicitly overridden.
+ * Browser-heavy E2E runs default to 7 workers unless explicitly overridden.
  */
 export function resolveWorkerCount(env: EnvMap = process.env): number {
   const configured = resolveConfiguredWorkerCount(env);
   if (configured !== undefined) {
     return configured;
   }
-  return 6;
+  return 7;
 }
 
 /**

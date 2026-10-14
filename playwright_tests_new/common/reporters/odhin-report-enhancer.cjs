@@ -732,23 +732,6 @@ function buildAccessibilityEvidenceBlock(entries) {
   `;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function injectAccessibilityEvidence(root, evidenceEntries) {
-  const evidenceHtml = buildAccessibilityEvidenceBlock(evidenceEntries);
-  if (!evidenceHtml || root.querySelector('#odhin-accessibility-evidence')) {
-    return false;
-  }
-
-  const dashboardRow =
-    root.querySelector('#TabDashboard .row') ?? root.querySelector('#TabDashboard') ?? root.querySelector('body');
-  if (!dashboardRow) {
-    return false;
-  }
-
-  dashboardRow.appendChild(parse(evidenceHtml));
-  return true;
-}
-
 function removeDashboardAccessibilityEvidence(root) {
   root.querySelectorAll('#odhin-accessibility-evidence').forEach((node) => node.remove());
 }

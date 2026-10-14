@@ -50,6 +50,41 @@ E2E/session helpers load the workspace `.env` through `E2E/utils/config.utils.ts
 
 ## Quick Command Reference (AAT, DEMO, ITHC and LOCAL)
 
+### Playwright upgrade and order-dependency checks
+
+The runner is pinned to Playwright **1.64.1**. Run `yarn test:setup:playwright-version`
+after an immutable install to check that `@playwright/test`, `playwright` and
+`playwright-core` match the manifest. Jenkins and the Docker dependency build use
+the same check; the application image does not install browser binaries.
+
+The opt-in support-suite stability command uses Playwright 1.64's seeded shuffle
+with retries disabled. It does not alter normal CI ordering or retry defaults:
+
+```bash
+# Generate a seed (printed by Playwright), then replay a reported seed.
+yarn test:playwright:stability
+yarn test:playwright:stability 271828182 --workers=4
+```
+
+This runs `api/unit` support tests, including browser-backed checks, not live AAT
+journeys. Install Chromium first and load the environment as described above:
+some support modules validate solicitor credentials at import time even when
+their tests stub transport. The command does not inject dummy credentials or
+bypass those checks. Reports default to
+`functional-output/tests/playwright-stability/` and are replaced on the next run.
+For retained comparisons, set unique `PLAYWRIGHT_OUTPUT_DIR`,
+`PLAYWRIGHT_REPORT_FOLDER` and `PLAYWRIGHT_JUNIT_OUTPUT` paths per run and retain
+the console log with its seed. A seed reproduces shuffled order, not OS scheduling.
+For an affected E2E/integration journey, pass `--shuffle <seed> --retries=0`
+through its existing runner instead of adding it to this support-suite command.
+
+Existing DOM/ARIA/screen traces and Perfetto timelines remain enabled; video
+remains off. Use `--add-reporter=html` to add native step subtitles/parameters and
+the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Only use
+non-sensitive step metadata; native reports and traces remain restricted artefacts.
+Named test locks coordinate one Playwright run, not independent Jenkins jobs:
+keep the existing physical-identity and session leases for cross-process isolation.
+
 By default, Playwright tests run against **AAT** from your local machine. Override `TEST_URL` to point the same suite at DEMO, ITHC, preview, or LOCAL.
 
 | Environment | `TEST_URL`                                     |

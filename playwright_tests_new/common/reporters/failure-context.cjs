@@ -12,10 +12,20 @@ const URL_KEY = /^(?:url|route|href|initiatedFrom|lastMainFrameUrl)$/i;
 const EMAIL_PATTERN = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi;
 const UUID_PATTERN = /\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b/gi;
 const CASE_REFERENCE_PATTERN = /\b(?:[A-Z]{1,8}\d{6,}|[A-Z]{1,8}[-/]\d{4,}(?:[-/]\d{2,})+)\b/g;
+const EMAIL_PATH_SEGMENT_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+const EMAIL_PATH_SEGMENT_FALLBACK_PATTERN = /^[^/]+(?:@|%40)[^/]+\.[^/]+$/i;
 const UUID_SEGMENT_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CASE_REFERENCE_SEGMENT_PATTERN = /^(?:[A-Z]{1,8}\d{6,}|[A-Z]{1,8}[-/]\d{4,}(?:[-/]\d{2,})+)$/i;
 const QUOTED_SECRET_PATTERN =
   /(["']?(?:authorization|cookie|set-cookie|x-api-key|token|password|secret|body|content|file)["']?\s*[:=]\s*["']?)((?:Bearer|Basic)\s+[^"'\s,;}]+|[^"'\s,;}]+)(["']?)/gi;
+
+function decodePathSegment(segment) {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+}
 
 function redactUrl(value) {
   const raw = String(value ?? '');
@@ -30,14 +40,16 @@ function redactUrl(value) {
     url.hash = '';
     url.pathname = url.pathname
       .split('/')
-      .map((segment) =>
-        /^\d{4,}$/.test(segment) ||
-        /^[a-f\d]{16,}$/i.test(segment) ||
-        UUID_SEGMENT_PATTERN.test(segment) ||
-        CASE_REFERENCE_SEGMENT_PATTERN.test(segment)
+      .map((segment) => {
+        const decodedSegment = decodePathSegment(segment);
+        if (EMAIL_PATH_SEGMENT_PATTERN.test(decodedSegment) || EMAIL_PATH_SEGMENT_FALLBACK_PATTERN.test(segment)) return ':email';
+        return /^\d{4,}$/.test(segment) ||
+          /^[a-f\d]{16,}$/i.test(segment) ||
+          UUID_SEGMENT_PATTERN.test(segment) ||
+          CASE_REFERENCE_SEGMENT_PATTERN.test(segment)
           ? ':id'
-          : segment
-      )
+          : segment;
+      })
       .join('/');
     return url.toString();
   } catch {
@@ -158,7 +170,7 @@ function buildFailureContext({
     status: redactText(status),
     retry: Number.isInteger(Number(retry)) ? Number(retry) : 0,
     project: redactText(project || 'unknown'),
-    worker: redactText(worker || 'unknown'),
+    worker: typeof worker === 'number' ? worker : redactText(worker ?? 'unknown'),
     build: {
       branch: redactText(branch),
       commit: redactText(commit),

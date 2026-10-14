@@ -614,7 +614,7 @@ withNightlyPipeline(type, product, component) {
 	        stage('Playwright Install All Browsers') {
 	            try {
 	              recordPlaywrightLoadEvent('Playwright browser install', 'start')
-	              yarnBuilder.yarn('playwright --version')
+	              yarnBuilder.yarn('test:setup:playwright-version')
 	              try {
 	                yarnBuilder.yarn('test:setup:playwright-install-all')
 	              } catch (Exception installWithDepsError) {

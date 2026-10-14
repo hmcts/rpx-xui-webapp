@@ -622,10 +622,9 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
       res.status(403).send('Forbidden');
       return;
     }
-    if (services.length === 0 || services[0]?.length === 0) {
+    if (services.length === 0) {
       // TODO(EXUI-2645): Remove this defensive branch once Angular always sends explicit service scoping.
-      // Preserve the existing API contract: do not return users when no service is selected.
-      res.status(400).send('Bad Request');
+      res.status(200).send([]);
       return;
     }
 

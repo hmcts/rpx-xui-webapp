@@ -142,7 +142,7 @@ describe('workAllocation', () => {
       expect(res.status).to.have.been.calledWith(200);
     });
 
-    it('should return 400 when services contains an empty list', async () => {
+    it('should return an empty result when services contains an empty list', async () => {
       const req = mockReq({
         body: {
           term: null,
@@ -164,8 +164,8 @@ describe('workAllocation', () => {
 
       await getUsersByServiceName(req, response, next);
 
-      expect(response.status).to.have.been.calledWith(400);
-      expect(response.send).to.have.been.calledWith('Bad Request');
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith([]);
     });
   });
 

@@ -17,6 +17,10 @@ export const HEARINGS_OPERATIONS = [
   'postLinkedHearingGroup',
   'putLinkedHearingGroup',
   'deleteLinkedHearingGroup',
+  'getListOfValues',
+  'getCaseFlagsRefData',
+  'getLocationById',
+  'searchJudicialUserByPersonalCodes',
   'navigate',
   'browser',
 ] as const;

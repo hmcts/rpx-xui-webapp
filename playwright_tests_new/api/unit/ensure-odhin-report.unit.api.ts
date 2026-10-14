@@ -69,6 +69,7 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
     fs.mkdirSync(reportDir, { recursive: true });
     fs.mkdirSync(staleIntegrationDir, { recursive: true });
     fs.writeFileSync(path.join(reportDir, 'failure-data.json'), '{}');
+    fs.writeFileSync(path.join(reportDir, 'failure-context.json'), '{}');
     fs.mkdirSync(path.join(reportDir, 'test-results', 'failure'), { recursive: true });
     fs.writeFileSync(path.join(reportDir, 'test-results', 'failure', 'test-failed-1.png'), 'screenshot');
     fs.writeFileSync(path.join(reportDir, 'test-results', 'failure', 'trace.zip'), 'trace');
@@ -79,6 +80,7 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
       process.chdir(root);
       const diagnostics = ensureReport.collectDiagnostics(reportDir);
       expect(diagnostics).toContain(`${reportDir}/failure-data.json`);
+      expect(diagnostics).toContain(`${reportDir}/failure-context.json`);
       expect(diagnostics).toContain(`${reportDir}/test-results/failure/test-failed-1.png`);
       expect(diagnostics).toContain(`${reportDir}/test-results/failure/trace.zip`);
       expect(diagnostics.join('\n')).not.toContain('playwright-integration/load-profile');

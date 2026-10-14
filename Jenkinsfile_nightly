@@ -48,13 +48,13 @@ def archivePlaywrightDiagnostics = {
         out_dir="functional-output/tests/playwright-diagnostics/failure-data"
         mkdir -p "${out_dir}"
         if [ -d test-results ]; then
-          find test-results -type f \( -name 'failure-data.json' -o -name 'failure-context.json' \) | while read -r file; do
+          find test-results -type f | grep -E '/(failure-data.json|failure-context.json)$' | while read -r file; do
             rel="${file#test-results/}"
             safe_name=$(echo "${rel}" | tr '/ ' '__')
             cp "${file}" "${out_dir}/${safe_name}"
           done
         fi
-        diagnostic_count=$(find test-results -type f \( -name 'failure-data.json' -o -name 'failure-context.json' -o -name 'trace.zip' -o -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) 2>/dev/null | wc -l | tr -d ' ')
+        diagnostic_count=$(find test-results -type f 2>/dev/null | grep -E '/(failure-data.json|failure-context.json|trace.zip|[^/]+\.(png|jpg|jpeg))$' | wc -l | tr -d ' ')
         if [ "${diagnostic_count:-0}" -gt 0 ]; then
           echo "diagnostic_status=present" > "${out_dir}/diagnostic-manifest.txt"
         else

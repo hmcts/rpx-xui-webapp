@@ -54,7 +54,7 @@ def archivePlaywrightDiagnostics = {
             cp "${file}" "${out_dir}/${safe_name}"
           done
         fi
-        diagnostic_count=$(find test-results -type f 2>/dev/null | grep -E '/(failure-data.json|failure-context.json|trace.zip|[^/]+\.(png|jpg|jpeg))$' | wc -l | tr -d ' ')
+        diagnostic_count=$(find test-results -type f 2>/dev/null | grep -E '/(failure-data.json|failure-context.json|trace.zip|[^/]+[.](png|jpg|jpeg))$' | wc -l | tr -d ' ')
         if [ "${diagnostic_count:-0}" -gt 0 ]; then
           echo "diagnostic_status=present" > "${out_dir}/diagnostic-manifest.txt"
         else

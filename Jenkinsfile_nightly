@@ -48,16 +48,22 @@ def archivePlaywrightDiagnostics = {
         out_dir="functional-output/tests/playwright-diagnostics/failure-data"
         mkdir -p "${out_dir}"
         if [ -d test-results ]; then
-          find test-results -type f -name 'failure-data.json' | while read -r file; do
+          find test-results -type f \( -name 'failure-data.json' -o -name 'failure-context.json' \) | while read -r file; do
             rel="${file#test-results/}"
             safe_name=$(echo "${rel}" | tr '/ ' '__')
             cp "${file}" "${out_dir}/${safe_name}"
           done
         fi
+        diagnostic_count=$(find test-results -type f \( -name 'failure-data.json' -o -name 'failure-context.json' -o -name 'trace.zip' -o -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) 2>/dev/null | wc -l | tr -d ' ')
+        if [ "${diagnostic_count:-0}" -gt 0 ]; then
+          echo "diagnostic_status=present" > "${out_dir}/diagnostic-manifest.txt"
+        else
+          echo "diagnostic_status=none-captured" > "${out_dir}/diagnostic-manifest.txt"
+        fi
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/playwright-*/odhin-report/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg'
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/playwright-*/odhin-report/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/failure-context.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg'
     )
 }
 

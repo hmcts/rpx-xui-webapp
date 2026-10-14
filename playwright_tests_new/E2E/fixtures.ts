@@ -1,6 +1,7 @@
 import { test as baseTest, type Request, type Response, type TestInfo } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
 import getPort from 'get-port';
+import { createRequire } from 'node:module';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
@@ -11,6 +12,14 @@ import {
   type IdentityLease,
 } from '../common/identityLease';
 import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
+
+const require = createRequire(import.meta.url);
+const { buildFailureContext, redactText, redactUrl, redactValue } = require('../common/reporters/failure-context.cjs') as {
+  buildFailureContext: (input: Record<string, unknown>) => Record<string, unknown>;
+  redactText: (value: unknown) => string;
+  redactUrl: (value: unknown) => string;
+  redactValue: (value: unknown) => unknown;
+};
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
 
@@ -65,6 +74,7 @@ interface ExecutionSignals {
   mainFrameNavigationCount: number;
   totalRequestsObserved: number;
   backendRequestsObserved: number;
+  finalScreenshotError?: string;
 }
 
 interface ErrorContext {
@@ -130,7 +140,7 @@ const TRUTHY_ENV_VALUES = new Set(['1', 'true', 'yes', 'on']);
  * @returns URL without query parameters
  */
 function sanitizeUrl(url: string): string {
-  return url.split('?')[0];
+  return redactUrl(url);
 }
 
 function stripAnsi(value: string): string {
@@ -1041,7 +1051,7 @@ function createRequestFailedHandler(failedRequests: FailedRequest[], maxTracked:
       failedRequests.push({
         url: sanitizeUrl(url),
         method: request.method(),
-        errorText: failure?.errorText ?? 'Unknown request failure',
+        errorText: redactText(failure?.errorText ?? 'Unknown request failure'),
         initiatedFrom,
         resourceType,
       });
@@ -1130,23 +1140,34 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   const executionSignalSummary = summarizeExecutionSignals(executionSignals);
   const failureSource = deriveFailureSource(failureType, error, topSuspect);
   const slowEndpointDetails = buildBoundedApiDetails(slowEndpointSummary, MAX_API_ERRORS_DETAILS_CHARS);
+  const safeFailureSource = redactText(failureSource);
+  const safePhaseMarker = redactText(phaseMarker);
+  const safeSetupMarker = redactText(setupMarker);
+  const safeBackendWait = redactText(backendWait);
+  const safeLikelyRootCause = redactText(likelyRootCause);
+  const safeFailureLocation = redactText(failureLocation);
+  const safeExecutionSignalSummary = redactText(executionSignalSummary);
+  const safeActionableError = redactText(actionableError);
+  const safeTopSuspect = redactText(topSuspect);
+  const safeSlowEndpointDetails = redactText(slowEndpointDetails);
+  const safeTimeoutSummary = redactText(timeoutSummary);
 
   const diagnosis = [
-    `Test failed: ${testInfo.title}`,
+    `Test failed: ${redactText(testInfo.title)}`,
     `Status: ${testStatus}`,
     `Failure type: ${failureType}`,
-    `Failure source: ${failureSource}`,
-    `Phase marker: ${phaseMarker}`,
-    `Setup marker: ${setupMarker}`,
-    `Backend wait: ${backendWait}`,
-    `Likely root cause: ${likelyRootCause}`,
-    `Failure location: ${failureLocation}`,
-    `Execution signals: ${executionSignalSummary}`,
-    actionableError ? `Actionable error: ${actionableError}` : '',
-    primaryError ? `Error: ${primaryError.substring(0, 300)}` : '',
+    `Failure source: ${safeFailureSource}`,
+    `Phase marker: ${safePhaseMarker}`,
+    `Setup marker: ${safeSetupMarker}`,
+    `Backend wait: ${safeBackendWait}`,
+    `Likely root cause: ${safeLikelyRootCause}`,
+    `Failure location: ${safeFailureLocation}`,
+    `Execution signals: ${safeExecutionSignalSummary}`,
+    safeActionableError ? `Actionable error: ${safeActionableError}` : '',
+    primaryError ? `Error: ${redactText(primaryError)}` : '',
     `API summary: total=${apiErrors.length + failedRequests.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, requestfailed=${failedRequests.length}, slow>${slowThreshold}ms=${slowCalls.length}`,
-    slowEndpointDetails ? `Slow endpoint summary: ${slowEndpointDetails}` : '',
-    timeoutSummary ? `Timeout suspects: ${timeoutSummary}` : '',
+    safeSlowEndpointDetails ? `Slow endpoint summary: ${safeSlowEndpointDetails}` : '',
+    safeTimeoutSummary ? `Timeout suspects: ${safeTimeoutSummary}` : '',
   ]
     .filter(Boolean)
     .join('\n');
@@ -1156,20 +1177,20 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   // Surface to Odhín report as annotations
   testInfo.annotations.push(
     { type: 'Failure type', description: failureType },
-    { type: 'Failure source', description: failureSource },
-    { type: 'Phase marker', description: phaseMarker },
-    { type: 'Setup marker', description: setupMarker },
-    { type: 'Backend wait', description: backendWait },
-    { type: 'Likely root cause', description: likelyRootCause },
-    { type: 'Failure location', description: failureLocation },
-    { type: 'Execution signals', description: executionSignalSummary },
-    { type: 'Top suspect', description: topSuspect }
+    { type: 'Failure source', description: safeFailureSource },
+    { type: 'Phase marker', description: safePhaseMarker },
+    { type: 'Setup marker', description: safeSetupMarker },
+    { type: 'Backend wait', description: safeBackendWait },
+    { type: 'Likely root cause', description: safeLikelyRootCause },
+    { type: 'Failure location', description: safeFailureLocation },
+    { type: 'Execution signals', description: safeExecutionSignalSummary },
+    { type: 'Top suspect', description: safeTopSuspect }
   );
   if (actionableError) {
-    testInfo.annotations.push({ type: 'Actionable error', description: actionableError });
+    testInfo.annotations.push({ type: 'Actionable error', description: safeActionableError });
   }
 
-  if (testInfo.error && !testInfo.error.message.startsWith('[Failure source:')) {
+  if (testInfo.error && !testInfo.error.message?.startsWith('[Failure source:')) {
     testInfo.error.message = `[Failure source: ${failureSource}]\n${testInfo.error.message}`;
   }
 
@@ -1217,21 +1238,41 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     body: JSON.stringify(
       {
         failureType,
-        phaseMarker,
-        setupMarker,
-        backendWait,
-        likelyRootCause,
-        failureLocation,
-        actionableError,
-        executionSignals,
-        topSuspect,
-        slowEndpointSummary,
-        apiErrors,
-        failedRequests,
-        slowCalls,
+        phaseMarker: safePhaseMarker,
+        setupMarker: safeSetupMarker,
+        backendWait: safeBackendWait,
+        likelyRootCause: safeLikelyRootCause,
+        failureLocation: safeFailureLocation,
+        actionableError: safeActionableError,
+        executionSignals: redactValue(executionSignals),
+        topSuspect: safeTopSuspect,
+        slowEndpointSummary: slowEndpointSummary.map(redactText),
+        apiErrors: redactValue(apiErrors),
+        failedRequests: redactValue(failedRequests),
+        slowCalls: redactValue(slowCalls),
         networkTimeout,
         timestamp: new Date().toISOString(),
       },
+      null,
+      2
+    ),
+    contentType: 'application/json',
+  });
+
+  await testInfo.attach('failure-context.json', {
+    body: JSON.stringify(
+      buildFailureContext({
+        testInfo,
+        status: testStatus,
+        retry: testInfo.retry,
+        project: testInfo.project.name,
+        worker: testInfo.workerIndex,
+        annotations: testInfo.annotations,
+        failureLocation,
+        actionableError,
+        executionSignals,
+        likelyRootCause,
+      }),
       null,
       2
     ),
@@ -1376,12 +1417,18 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
       }
     }
 
+    let finalScreenshotError = '';
     if (finalScreenshotEnabled && !page.isClosed() && testInfo.status !== 'skipped') {
-      const finalScreenshot = await page.screenshot({ fullPage: true });
-      await testInfo.attach('final-state.png', {
-        body: finalScreenshot,
-        contentType: 'image/png',
-      });
+      try {
+        const finalScreenshot = await page.screenshot({ fullPage: true });
+        await testInfo.attach('final-state.png', {
+          body: finalScreenshot,
+          contentType: 'image/png',
+        });
+      } catch (error) {
+        finalScreenshotError = redactText(error instanceof Error ? error.message : error);
+        logger.warn('Optional final screenshot capture failed', { error: finalScreenshotError });
+      }
     }
 
     // On test failure, classify the root cause and attach diagnosis
@@ -1404,6 +1451,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
           mainFrameNavigationCount,
           totalRequestsObserved,
           backendRequestsObserved,
+          finalScreenshotError,
         },
       });
     }

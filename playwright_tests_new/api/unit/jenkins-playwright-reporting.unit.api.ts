@@ -99,6 +99,9 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
     expect(source).toContain('test-results/perfetto*.json');
     expect(source).toContain('test-results/**/failure-data.json');
+    expect(source).toContain('test-results/**/failure-context.json');
+    expect(source).toContain('diagnostic-manifest.txt');
+    expect(source).toContain('diagnostic_status=none-captured');
     expect(source).toContain('test-results/**/trace.zip');
     expect(source).toContain('test-results/**/*.png');
     expect(source).toContain('test-results/**/*.jpg');
@@ -117,6 +120,9 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(nightlySource).toContain('def publishPlaywrightAccessibilityJUnit = {');
     expect(nightlySource).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
     expect(nightlySource).toContain('test-results/**/trace.zip');
+    expect(nightlySource).toContain('test-results/**/failure-context.json');
+    expect(nightlySource).toContain('diagnostic-manifest.txt');
+    expect(nightlySource).toContain('diagnostic_status=none-captured');
     expect(nightlySource).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
     expect(nightlySource).toContain('skipMarkingBuildUnstable: true, testResults: playwrightAccessibilityJunitFile');
     expect(nightlySource.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(1);

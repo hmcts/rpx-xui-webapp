@@ -221,11 +221,14 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
       // When: Requesting my-work cases dashboard
       // Then: Response includes totals field with case counts when cases exist
       const response = await withXsrf('solicitor', (headers) =>
-        apiClient.post('workallocation/my-work/cases', {
-          data: buildCaseSearchRequest('MyCases'),
-          headers,
-          throwOnError: false,
-        })
+        guardedRequest(() =>
+          apiClient.post('workallocation/my-work/cases', {
+            data: buildCaseSearchRequest('MyCases'),
+            headers,
+            throwOnError: false,
+            timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
+          })
+        )
       );
       expectStatus(response.status, StatusSets.guardedExtended);
       assertMyWorkTotalsResponse(response.status, response.data);

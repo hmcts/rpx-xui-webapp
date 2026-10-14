@@ -153,7 +153,7 @@ export class WorkAllocationTaskService {
     if (userInfoStr) {
       const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (!userInfo) {
-        return of(null);
+        return of([]);
       }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
@@ -179,6 +179,6 @@ export class WorkAllocationTaskService {
         )
       );
     }
-    return of(null);
+    return of([]);
   }
 }

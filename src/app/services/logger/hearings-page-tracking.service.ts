@@ -1,7 +1,14 @@
 import { Inject, Injectable, OnDestroy } from '@angular/core';
-import { ActivatedRouteSnapshot, NavigationEnd, PRIMARY_OUTLET, Router } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  PRIMARY_OUTLET,
+  Router,
+  RoutesRecognized,
+} from '@angular/router';
 import { fromEvent, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { MonitoringService } from './monitoring.service';
 import {
   HearingsJourneyContext,
@@ -42,8 +49,20 @@ export class HearingsPageTrackingService implements OnDestroy {
     }
     this.subscription = new Subscription();
     this.subscription.add(
-      this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-        this.trackPage();
+      this.router.events.subscribe((event) => {
+        if (event instanceof RoutesRecognized) {
+          const destination = this.hearingsPage(event.state.root);
+          try {
+            this.telemetry.prepareNavigation(destination?.path || null, destination?.context);
+          } catch {
+            this.telemetry.clearPendingNavigation();
+          }
+        } else if (event instanceof NavigationCancel || event instanceof NavigationError) {
+          this.telemetry.clearPendingNavigation();
+        } else if (event instanceof NavigationEnd) {
+          this.trackPage();
+          this.telemetry.clearPendingNavigation();
+        }
       })
     );
     this.subscription.add(fromEvent(this.browser, 'pagehide').subscribe(() => this.finish('pagehide')));
@@ -62,6 +81,7 @@ export class HearingsPageTrackingService implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscription?.unsubscribe();
+    this.telemetry.clearPendingNavigation();
     this.finish('destroyed');
   }
 
@@ -97,6 +117,7 @@ export class HearingsPageTrackingService implements OnDestroy {
     const path = this.page?.path;
     this.finishPage(now);
     this.telemetry.endJourney(reason, now, path);
+    this.telemetry.clearPendingNavigation();
   }
 
   private finishPage(now: number): void {

@@ -12,6 +12,62 @@ describe('Hearings telemetry service', () => {
     service = new HearingsTelemetryService(monitoring, window);
   });
 
+  it('prepares direct-entry resolver correlation without recording an unvisited page', () => {
+    service.prepareNavigation('/hearings/cancel/:hearingId', { hearingId: 'private-hearing' });
+    const requestId = service.requestJourneyId;
+    expect(requestId).toMatch(/^[a-f0-9]{32}$/);
+    expect(service.currentJourney).toBeNull();
+    expect(monitoring.logEvent).not.toHaveBeenCalled();
+    const entered = service.enterStep('/hearings/cancel/:hearingId', { hearingId: 'private-hearing' }, 10);
+    expect(entered.journeyId).toBe(requestId);
+    expect(service.requestJourneyId).toBe(requestId);
+    expect(monitoring.logEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('prepares a new case ID before navigation completes and keeps the old page until completion', () => {
+    const first = service.enterStep('/cases/case-details/:cid/hearings', { caseId: 'private-a' }, 0);
+    service.prepareNavigation('/cases/case-details/:cid/hearings', { caseId: 'private-b' });
+    const requestId = service.requestJourneyId;
+    expect(requestId).not.toBe(first.journeyId);
+    expect(service.currentJourney).toEqual(first);
+    const entered = service.enterStep('/cases/case-details/:cid/hearings', { caseId: 'private-b' }, 10);
+    expect(entered.journeyId).toBe(requestId);
+    expect(JSON.stringify(monitoring.logEvent.calls.allArgs())).not.toContain('private-');
+  });
+
+  it('restores the original journey on cancelled navigation but retains the attempted ID on slow failures', () => {
+    const first = service.enterStep('/hearings/cancel/:hearingId', { hearingId: 'private-a' }, 0);
+    service.prepareNavigation('/hearings/cancel/:hearingId', { hearingId: 'private-b' });
+    const requestId = service.requestJourneyId;
+    const report = service.captureException('loadHearingRequest');
+    service.clearPendingNavigation();
+    expect(service.requestJourneyId).toBe(first.journeyId);
+    expect(service.currentJourney).toEqual(first);
+    report(new Error('Original resolver error'));
+    expect(monitoring.logException.calls.first().args[1].journeyId).toBe(requestId);
+    expect(monitoring.logEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not carry the previous journey into requests while leaving Hearings', () => {
+    const first = service.enterStep('/hearings/request', {}, 0);
+    service.prepareNavigation(null);
+    expect(service.requestJourneyId).toBeNull();
+    service.clearPendingNavigation();
+    expect(service.requestJourneyId).toBe(first.journeyId);
+  });
+
+  it('retains the journey during ordinary step changes and prepares a new ID when returning to the case list', () => {
+    const first = service.enterStep('/hearings/request', {}, 0);
+    service.prepareNavigation('/hearings/request/hearing-stage');
+    expect(service.requestJourneyId).toBe(first.journeyId);
+    service.enterStep('/hearings/request/hearing-stage', {}, 10);
+    service.prepareNavigation('/cases/case-details/:cid/hearings', { caseId: 'private-case' });
+    const requestId = service.requestJourneyId;
+    expect(requestId).not.toBe(first.journeyId);
+    service.endJourney('returned-to-list', 20);
+    expect(service.enterStep('/cases/case-details/:cid/hearings', { caseId: 'private-case' }, 20).journeyId).toBe(requestId);
+  });
+
   [
     ['/cases/case-details/:cid/hearings', 'browse'],
     ['/hearings/request/hearing-requirements', 'request'],

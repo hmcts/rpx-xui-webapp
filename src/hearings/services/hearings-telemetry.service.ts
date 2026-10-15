@@ -88,6 +88,7 @@ const ACTIONS: readonly HearingsTelemetryAction[] = ['continue', 'back', 'change
 @Injectable({ providedIn: 'root' })
 export class HearingsTelemetryService {
   private journey?: ActiveJourney;
+  private pendingRequestContext?: { journeyId: string; journeyType: HearingsJourneyType; step: string; page: string } | null;
 
   constructor(
     private readonly monitoring: MonitoringService,
@@ -100,6 +101,39 @@ export class HearingsTelemetryService {
     }
     const { journeyType, journeyId, currentStep, actionCount } = this.journey;
     return { journeyType, journeyId, currentStep, actionCount };
+  }
+
+  public get requestJourneyId(): string | null {
+    return this.pendingRequestContext !== undefined
+      ? this.pendingRequestContext?.journeyId || null
+      : this.journey?.journeyId || null;
+  }
+
+  /** Prepare correlation before guards/resolvers run, without recording an unvisited page. */
+  public prepareNavigation(step: string | null, context: HearingsJourneyContext = {}): void {
+    const type = STEP_TYPES.get(step);
+    if (!type) {
+      this.pendingRequestContext = null;
+      return;
+    }
+    const startsNewJourney =
+      !this.journey ||
+      this.hasContextChanged(context) ||
+      (this.journey.currentStep.startsWith('/hearings/') && step.startsWith('/cases/'));
+    const journeyType =
+      this.journey && ((type === 'request' && this.journey.journeyType === 'amend') || type === 'error')
+        ? this.journey.journeyType
+        : type;
+    this.pendingRequestContext = {
+      journeyId: startsNewJourney ? this.newJourneyId() : this.journey.journeyId,
+      journeyType,
+      step,
+      page: step,
+    };
+  }
+
+  public clearPendingNavigation(): void {
+    this.pendingRequestContext = undefined;
   }
 
   public hasContextChanged(next: HearingsJourneyContext): boolean {
@@ -125,9 +159,7 @@ export class HearingsTelemetryService {
     }
     if (!this.journey) {
       this.journey = {
-        journeyId: Array.from(this.browser.crypto.getRandomValues(new Uint32Array(4)), (value) =>
-          value.toString(16).padStart(8, '0')
-        ).join(''),
+        journeyId: this.pendingRequestContext?.step === step ? this.pendingRequestContext.journeyId : this.newJourneyId(),
         journeyType: type,
         currentStep: step,
         actionCount: 0,
@@ -148,6 +180,7 @@ export class HearingsTelemetryService {
         pageCount: this.journey.pageCount + 1,
       };
     }
+    this.clearPendingNavigation();
     return this.currentJourney;
   }
 
@@ -180,7 +213,11 @@ export class HearingsTelemetryService {
       telemetryArea: 'Hearings',
       operation,
       ...this.monitoring.captureOperationContext?.(),
-      ...(this.journey ? this.properties() : { page: 'Hearings' }),
+      ...(this.pendingRequestContext !== undefined
+        ? this.pendingRequestContext || { page: 'Hearings' }
+        : this.journey
+          ? this.properties()
+          : { page: 'Hearings' }),
     };
     return (error: unknown) => {
       try {
@@ -232,5 +269,11 @@ export class HearingsTelemetryService {
       step: this.journey.currentStep,
       page: this.journey.currentStep,
     };
+  }
+
+  private newJourneyId(): string {
+    return Array.from(this.browser.crypto.getRandomValues(new Uint32Array(4)), (value) =>
+      value.toString(16).padStart(8, '0')
+    ).join('');
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideLocationMocks } from '@angular/common/testing';
 import { provideRouter, Router, Routes } from '@angular/router';
@@ -14,6 +14,7 @@ describe('Hearings page tracking', () => {
   let service: HearingsPageTrackingService;
   let monitoring: jasmine.SpyObj<MonitoringService>;
   let clock: jasmine.Spy;
+  let resolverJourneyId: string | null;
 
   const routes: Routes = [
     { path: 'work', component: TestPageComponent },
@@ -29,7 +30,16 @@ describe('Hearings page tracking', () => {
             { path: 'hearing-confirmation', component: TestPageComponent },
           ],
         },
-        { path: 'cancel/:hearingId', component: TestPageComponent },
+        {
+          path: 'cancel/:hearingId',
+          component: TestPageComponent,
+          resolve: {
+            correlation: () => {
+              resolverJourneyId = inject(HearingsTelemetryService).requestJourneyId;
+              return true;
+            },
+          },
+        },
         { path: 'link/:caseId/:hearingId/check-your-answers', component: TestPageComponent },
         { path: 'manage-links/:caseId/:hearingGroupRequestId/:hearingId', component: TestPageComponent },
         { path: 'actuals/:id/hearing-timing/:hearingDate', component: TestPageComponent },
@@ -70,6 +80,16 @@ describe('Hearings page tracking', () => {
   });
 
   afterEach(() => service.ngOnDestroy());
+
+  it('prepares the destination journey for resolvers on direct entry and hearing switches', async () => {
+    await router.navigateByUrl('/hearings/cancel/private-a');
+    const telemetry = TestBed.inject(HearingsTelemetryService);
+    const first = telemetry.currentJourney.journeyId;
+    expect(resolverJourneyId).toBe(first);
+    await router.navigateByUrl('/hearings/cancel/private-b');
+    expect(resolverJourneyId).not.toBe(first);
+    expect(resolverJourneyId).toBe(telemetry.currentJourney.journeyId);
+  });
 
   [
     ['/hearings/request', '/hearings/request'],

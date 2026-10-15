@@ -231,7 +231,6 @@ export const baseConfig = {
         'caseworker-sscs',
         'caseworker-employment',
         'caseworker-pcs',
-        'caseworker-probate',
       ],
       text: 'Search',
     },

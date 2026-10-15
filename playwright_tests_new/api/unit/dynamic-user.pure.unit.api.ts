@@ -425,7 +425,7 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(caseSetupTest.resolveUiFallbackFlag(undefined)).toBe(true);
     expect(caseSetupTest.resolveUiFallbackFlag(false)).toBe(false);
     expect(caseSetupTest.resolveCaseNumberFromCreateResponse({ case_reference: 1773065942199262 })).toBe('1773065942199262');
-    expect(caseSetupTest.isTransientApiRequestError(new Error('api/user/details failed: read ECONNRESET'))).toBe(true);
+    expect(caseSetupTest.isTransientApiRequestError(new Error('api/user/o/userinfo failed: read ECONNRESET'))).toBe(true);
     expect(caseSetupTest.isTransientApiRequestError(new Error('net::ERR_HTTP2_PROTOCOL_ERROR'))).toBe(true);
     expect(caseSetupTest.isTransientApiRequestError(new Error('SSL routines: decryption failed or bad record mac'))).toBe(true);
     expect(caseSetupTest.isTransientApiRequestError(new Error('Validation failed'))).toBe(false);
@@ -437,7 +437,7 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(
       isTransientWorkflowFailure(new Error('Create case select "#cc-jurisdiction" did not become ready within 30000ms'))
     ).toBe(true);
-    expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
+    expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/o/userinfo'))).toBe(true);
     expect(isTransientWorkflowFailure(new Error('Upload failed: server returned status 429 after 3 attempts'))).toBe(true);
     const browserClosed = new Error('Target page, context or browser has been closed');
     expect(isBrowserLifecycleFailure(browserClosed)).toBe(true);

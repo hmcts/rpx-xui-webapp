@@ -44,7 +44,7 @@ test.describe('dynamic field mock session selection', { tag: '@svc-internal' }, 
         'goto:/cases/case-create/DIVORCE/xuiTestJurisdiction/createCase/',
       ]);
       expect([...routes.keys()]).toEqual([
-        '**/api/user/details*',
+        '**/api/user/o/userinfo*',
         '**/data/internal/case-types/xuiTestJurisdiction/event-triggers/createCase*',
         '**/data/case-types/xuiTestJurisdiction/validate*',
       ]);

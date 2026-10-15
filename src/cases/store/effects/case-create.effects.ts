@@ -7,6 +7,7 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
 import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
+import { DecentralisedEvent } from '../../../decentralisation/decentralised-event';
 
 @Injectable()
 export class CaseCreateEffects {
@@ -22,14 +23,10 @@ export class CaseCreateEffects {
       ofType(fromActions.CREATE_CASE_FILTER_APPLY),
       map((action: fromActions.CaseCreateFilterApply) => action.payload),
       mergeMap((param) => {
-        if (
-          this.decentralisedRedirectService.tryEventRedirect({
-            caseType: param.caseTypeId,
-            jurisdiction: param.jurisdictionId,
-            eventId: param.eventId,
-            isCaseCreate: true,
-          })
-        ) {
+        if (this.decentralisedRedirectService.isDecentralisedEvent(param.eventId) && param.caseTypeId) {
+          this.decentralisedRedirectService.tryRedirectEvent(
+            DecentralisedEvent.forCreateCase(param.eventId, param.caseTypeId, param.jurisdictionId)
+          );
           return EMPTY;
         }
 

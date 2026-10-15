@@ -13,8 +13,6 @@ footer.govuk-footer {
 .govuk-footer__meta {
   max-width: 1860px;
   min-width: 960px;
-  padding-right: 15px;
-  padding-left: 15px;
 }
 
 body .govuk-width-container {
@@ -46,8 +44,8 @@ body .govuk-width-container {
   cursor: pointer;
 }
 
-@import 'govuk-frontend/govuk/all';
-@import 'node_modules/@hmcts/frontend/all';
+@import 'govuk-frontend/dist/govuk/all';
+@import '../../../style/hmcts-frontend';
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend
 // Find case button START

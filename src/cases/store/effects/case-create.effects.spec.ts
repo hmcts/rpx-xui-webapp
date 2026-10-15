@@ -12,7 +12,7 @@ import { CreateCaseGo, Go, NewCaseLoadedSuccessfully } from '../../../app/store/
 import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset } from '../actions/create-case.action';
 import { CaseCreateEffects } from './case-create.effects';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
+import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 describe('CaseCreate Effects', () => {
   let actions$;

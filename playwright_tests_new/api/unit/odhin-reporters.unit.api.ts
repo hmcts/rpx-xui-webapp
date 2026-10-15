@@ -11,6 +11,7 @@ let OdhinAdaptiveReporter: {
   new (options?: Record<string, unknown>): {
     onTestEnd: (test: unknown, result: unknown) => Promise<void>;
     onEnd: (result: unknown) => Promise<void>;
+    runtimeHookTimeoutMs: number;
     runtimeHookStats: { queued: number; completed: number; timedOut: number; failed: number };
   };
   __test__: {
@@ -351,6 +352,19 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
       failed: 0,
     });
     expect(stderrWrites.some((entry) => entry.includes('onTestEnd timed out'))).toBe(true);
+  });
+
+  test('adaptive reporter keeps a finite runtime hook timeout in CI by default', () => {
+    const originalCi = process.env.CI;
+    process.env.CI = 'true';
+
+    try {
+      const reporter = new OdhinAdaptiveReporter({ profile: false });
+      expect(reporter.runtimeHookTimeoutMs).toBe(15_000);
+    } finally {
+      if (originalCi === undefined) delete process.env.CI;
+      else process.env.CI = originalCi;
+    }
   });
 
   test('adaptive reporter can trim failed-test artifacts before handing results to Odhín', async () => {

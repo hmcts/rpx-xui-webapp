@@ -18,12 +18,23 @@ const poolEnvironment = {
   STAFF_ADMIN_3_PASSWORD: 'secret-3',
   STAFF_ADMIN_4_USERNAME: '',
   STAFF_ADMIN_4_PASSWORD: '',
+  STAFF_ADMIN_5_USERNAME: '',
+  STAFF_ADMIN_5_PASSWORD: '',
+  STAFF_ADMIN_6_USERNAME: '',
+  STAFF_ADMIN_6_PASSWORD: '',
+  STAFF_ADMIN_7_USERNAME: '',
+  STAFF_ADMIN_7_PASSWORD: '',
+  STAFF_ADMIN_8_USERNAME: '',
+  STAFF_ADMIN_8_PASSWORD: '',
 } as const;
 
 test.describe.configure({ mode: 'parallel' });
 
 for (const fallback of [false, true]) {
-  test(`legacy pooled session load preserves the ${fallback ? 'fallback' : 'primary'} selected by the active worker`, async ({}, testInfo) => {
+  test(`legacy pooled session load preserves the ${fallback ? 'fallback' : 'primary'} selected by the active worker`, async ({
+    request,
+  }, testInfo) => {
+    void request;
     const tempDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'session-legacy-pool-worker-unit-')));
     const previousCwd = process.cwd();
     const environmentKeys = [...Object.keys(poolEnvironment), 'TEST_PARALLEL_INDEX', 'TEST_WORKER_INDEX'];
@@ -79,7 +90,8 @@ for (const fallback of [false, true]) {
   });
 }
 
-test('legacy pooled session loading ignores unreadable and obsolete selection receipts', ({}, testInfo) => {
+test('legacy pooled session loading ignores unreadable and obsolete selection receipts', ({ request }, testInfo) => {
+  void request;
   const tempDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'session-legacy-pool-receipt-unit-')));
   const previousCwd = process.cwd();
   const environmentKeys = [...Object.keys(poolEnvironment), 'TEST_PARALLEL_INDEX', 'TEST_WORKER_INDEX'];

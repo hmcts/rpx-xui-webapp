@@ -8,6 +8,11 @@ const { readFileSync } = require('node:fs');
 const { cpus, totalmem } = require('node:os');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const {
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
+} = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
 const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
@@ -17,6 +22,12 @@ const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
+const resolveOdhinOutputFolder = (env = process.env) => env.PLAYWRIGHT_REPORT_FOLDER || defaultOdhinOutputFolder;
+const resolvePerfettoOutputFile = (env = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
 const INTEGRATION_TEST_TIMEOUT_MS = 180_000;
 const POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS = 30_000;
 const appVersion = (() => {
@@ -132,7 +143,7 @@ const resolveOdhinRuntimeHookTimeoutMs = (env = process.env) => {
       return parsed;
     }
   }
-  return env.CI ? 0 : 15000;
+  return 15000;
 };
 
 const resolveOdhinHardTimeoutMs = (env = process.env) => {
@@ -185,6 +196,9 @@ const buildConfig = (env = process.env) => {
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
   reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
+  if (resolveFlag(env.PW_ENABLE_PERFETTO, true)) {
+    reporter.push(['perfetto', { outputFile: resolvePerfettoOutputFile(env) }]);
+  }
 
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';
@@ -225,6 +239,16 @@ const buildConfig = (env = process.env) => {
       },
     ]);
   }
+  if (env.CI) {
+    reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
+  }
+  if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
+    reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
+  }
+
+  const trace = resolveFlag(env.PW_TRACE_RICH, true)
+    ? { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
+    : 'retain-on-failure';
 
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
@@ -233,12 +257,13 @@ const buildConfig = (env = process.env) => {
     retries: 2,
     timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },
+    outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
     workers: workerCount,
     reporter,
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'retain-on-failure',
+      trace,
       screenshot: {
         mode: 'only-on-failure',
         fullPage: true,
@@ -265,6 +290,8 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
+  resolveConfiguredSessionPoolCapacities,
+  resolveConfiguredPoolIdentities,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,

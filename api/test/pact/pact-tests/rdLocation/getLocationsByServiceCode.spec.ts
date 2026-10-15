@@ -108,7 +108,7 @@ describe('Locations ref data api, get matching location for service code', () =>
           { service: 'IA', serviceCodes: ['BFA1'] },
           { service: 'CIVIL', serviceCodes: ['AAA6', 'AAA7'] },
         ];
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
 

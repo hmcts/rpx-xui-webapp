@@ -13,6 +13,43 @@ const baseExecutionSignals = {
 };
 
 test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
+  test('attaches diagnosis for interrupted Playwright executions', () => {
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('interrupted')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('failed')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('timedOut')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('passed')).toBe(false);
+  });
+
+  test('attaches structured diagnostics when a run is interrupted', async () => {
+    const attachments: string[] = [];
+    const testInfo = {
+      annotations: [],
+      attach: async (name: string) => attachments.push(name),
+      error: { message: 'Browser closed before the assertion completed' },
+      file: 'playwright_tests_new/example.spec.ts',
+      project: { name: 'chromium' },
+      retry: 0,
+      status: 'interrupted',
+      title: 'interrupted diagnostic test',
+      workerIndex: 0,
+    } as unknown as Parameters<typeof diagnosticsTest.attachFailureDiagnosisIfNeeded>[0];
+
+    await diagnosticsTest.attachFailureDiagnosisIfNeeded(testInfo, () => ({
+      error: 'Browser closed before the assertion completed',
+      primaryError: 'Browser closed before the assertion completed',
+      actionableError: '',
+      setupMarker: 'none',
+      apiErrors: [],
+      failedRequests: [],
+      slowCalls: [],
+      networkTimeout: false,
+      slowThreshold: 1000,
+      executionSignals: baseExecutionSignals,
+    }));
+
+    expect(attachments).toEqual(['Failure diagnosis', 'failure-data.json', 'failure-context.json']);
+  });
+
   test('classifyFailure treats direct CCD event-token 502 failures as backend 5xx', () => {
     const failureType = diagnosticsTest.classifyFailure({
       error: "Error: Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",

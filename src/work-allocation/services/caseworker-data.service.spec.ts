@@ -164,6 +164,41 @@ describe('CaseworkerDataService', () => {
       },
     });
   });
+
+  it('getUsersByIdamIds should log and rethrow downstream failure', (done) => {
+    const downstreamError = { status: 503 };
+    mockHttpService.post.and.returnValue(throwError(() => downstreamError));
+
+    service.getUsersByIdamIds(['user1', 'user2'], ['IA', 'CIVIL']).subscribe({
+      next: () => done.fail('expected error'),
+      error: (error) => {
+        expect(error).toEqual(downstreamError);
+        expect(mockLoggerService.warn).toHaveBeenCalledWith(
+          'CaseworkerDataService.getUsersByIdamIds downstream failure; idamIdsCount=2; services=IA,CIVIL; endpoint=/workallocation/caseworker/getUsersByIdamIds; status=503',
+          downstreamError
+        );
+        done();
+      },
+    });
+  });
+
+  it('getUserByIdamId should log and rethrow downstream failure', (done) => {
+    const downstreamError = { status: 404 };
+    mockHttpService.post.and.returnValue(throwError(() => downstreamError));
+
+    service.getUserByIdamId('user1', true).subscribe({
+      next: () => done.fail('expected error'),
+      error: (error) => {
+        expect(error).toEqual(downstreamError);
+        expect(mockLoggerService.warn).toHaveBeenCalledWith(
+          'CaseworkerDataService.getUserByIdamId downstream failure; idamIdPresent=true; silentNotFound=true; endpoint=/workallocation/caseworker/getUserByIdamId; status=404',
+          downstreamError
+        );
+        done();
+      },
+    });
+  });
+
   it('getUserByIdamId should make correct api call', () => {
     service.getUserByIdamId('123456');
     expect(mockHttpService.post).toHaveBeenCalledWith(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, {

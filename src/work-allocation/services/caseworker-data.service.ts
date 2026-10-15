@@ -100,10 +100,30 @@ export class CaseworkerDataService {
       );
   }
   public getUsersByIdamIds(idamIds: string[], services: string[]): Observable<Caseworker[]> {
-    return this.http.post<Caseworker[]>(`${CaseworkerDataService.caseWorkerUrl}/getUsersByIdamIds`, { idamIds, services });
+    return this.http
+      .post<Caseworker[]>(`${CaseworkerDataService.caseWorkerUrl}/getUsersByIdamIds`, { idamIds, services })
+      .pipe(
+        catchError((error) =>
+          logAndRethrow(
+            this.logger,
+            `CaseworkerDataService.getUsersByIdamIds downstream failure; idamIdsCount=${idamIds.length}; services=${services.join(',')}; endpoint=${CaseworkerDataService.caseWorkerUrl}/getUsersByIdamIds`,
+            error
+          )
+        )
+      );
   }
 
   public getUserByIdamId(idamId: string, silentNotFound = false): Observable<Caseworker> {
-    return this.http.post<Caseworker>(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, { idamId, silentNotFound });
+    return this.http
+      .post<Caseworker>(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, { idamId, silentNotFound })
+      .pipe(
+        catchError((error) =>
+          logAndRethrow(
+            this.logger,
+            `CaseworkerDataService.getUserByIdamId downstream failure; idamIdPresent=${Boolean(idamId)}; silentNotFound=${silentNotFound}; endpoint=${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`,
+            error
+          )
+        )
+      );
   }
 }

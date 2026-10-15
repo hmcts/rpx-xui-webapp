@@ -81,6 +81,11 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
+    onRes: (response, _req, res) => {
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      return response;
+    },
     rewrite: true,
     rewriteUrl: (path: string) => '/addresses' + (path === '/' ? '' : path),
     source: '/api/addresses',

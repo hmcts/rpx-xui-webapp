@@ -13,7 +13,6 @@ import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model'
 type DateOption = 'noDate' | 'specificDate' | 'dateRange';
 
 export class HearingsUtils {
-
   // Code for hearing link reason
   public static readonly HEARING_LINK_REASON_CODE = 'CLRC017';
   public static readonly DISCREPANCY_MESSAGE_LIST = [

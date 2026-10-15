@@ -1,4 +1,5 @@
 import type { Page, Route } from '@playwright/test';
+import type { CaseFlagReferenceModel } from '../../../src/hearings/models/caseFlagReference.model';
 import {
   type HearingsCaseConfig,
   type HearingsCaseVariation,
@@ -55,6 +56,7 @@ export interface HearingsMockRoutesConfig {
   amendmentCaseVariations?: HearingsCaseVariation[];
   judgeTypes?: Array<Record<string, unknown>>;
   hearingsApiOverrides?: Partial<Record<HearingsEndpoint, HearingsApiOverride>>;
+  caseFlagsRefData?: CaseFlagReferenceModel[];
 }
 
 function requestPath(route: Route): string {
@@ -128,7 +130,15 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
   const linkedCasesWithHearings = buildLinkedCasesWithHearingsMock();
   const linkedHearingGroup = buildLinkedHearingGroupMock();
   const linkedHearingGroupResponse = buildLinkedHearingGroupResponseMock();
-  const caseFlags = buildCaseFlagsMock();
+  const caseFlags = config.caseFlagsRefData
+    ? {
+        flags: [
+          {
+            FlagDetails: config.caseFlagsRefData,
+          },
+        ],
+      }
+    : buildCaseFlagsMock();
   const courtLocation = buildCourtLocationMock(config.caseConfig);
   const hearingTypes = Array.from(
     new Set(
@@ -142,6 +152,14 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
   }, userDetails.userInfo);
+
+  await page.route('**/auth/isAuthenticated*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(true),
+    });
+  });
 
   const jurisdictionId = String(caseDetails.case_type?.jurisdiction?.id ?? 'IA');
   const jurisdictionName = String(caseDetails.case_type?.jurisdiction?.name ?? jurisdictionId);

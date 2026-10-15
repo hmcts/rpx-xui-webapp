@@ -34,7 +34,7 @@ export const initProxy = (app: Express) => {
   applyProxy(
     app,
     {
-      middlewares: [bodyParser.json()],
+      middlewares: [bodyParser.json(), documents.validateLegacyDocumentAccess],
       onReq: documents.handleRequest,
       onRes: documents.handleResponse,
       rewrite: false,

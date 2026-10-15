@@ -1,10 +1,12 @@
 /* global require, module */
 
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 const path = require('path');
 const { parse } = require('node-html-parser');
 const { applyPresentation } = require('./presentation/enhance.cjs');
 const { injectAccessibilityWorkspace } = require('./presentation/accessibility.cjs');
+const { redactText } = require('./failure-context.cjs');
 
 const evidenceLinkAttributes = ' target="_blank" rel="noopener noreferrer"';
 
@@ -129,6 +131,34 @@ function injectEnhancerStyles(root) {
   head.appendChild(
     parse(`
 <style id="odhin-enhancer-styles">
+  #odhin-failure-triage {
+    margin: 16px 0;
+  }
+
+  #odhin-failure-triage .odhin-failure-triage-note {
+    color: #505a5f;
+    margin: 0 0 12px;
+  }
+
+  #odhin-failure-triage table {
+    width: 100%;
+  }
+
+  #odhin-failure-triage td,
+  #odhin-failure-triage th {
+    vertical-align: top;
+    white-space: normal;
+  }
+
+  #odhin-failure-triage .odhin-failure-next-checks {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  #odhin-failure-triage .odhin-failure-observed {
+    font-weight: 700;
+  }
+
   .odhin-dashboard-stack {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
@@ -700,22 +730,6 @@ function buildAccessibilityEvidenceBlock(entries) {
       </div>
     </div>
   `;
-}
-
-function injectAccessibilityEvidence(root, evidenceEntries) {
-  const evidenceHtml = buildAccessibilityEvidenceBlock(evidenceEntries);
-  if (!evidenceHtml || root.querySelector('#odhin-accessibility-evidence')) {
-    return false;
-  }
-
-  const dashboardRow =
-    root.querySelector('#TabDashboard .row') ?? root.querySelector('#TabDashboard') ?? root.querySelector('body');
-  if (!dashboardRow) {
-    return false;
-  }
-
-  dashboardRow.appendChild(parse(evidenceHtml));
-  return true;
 }
 
 function removeDashboardAccessibilityEvidence(root) {
@@ -1383,6 +1397,85 @@ function stripLegacyFileChartArtifacts(root) {
   });
 }
 
+function normalizeFailureMetadata(testMetadata) {
+  const grouped = new Map();
+  (Array.isArray(testMetadata) ? testMetadata : []).forEach((entry) => {
+    if (!entry || typeof entry !== 'object') {
+      return;
+    }
+    const target = typeof entry.target === 'string' ? entry.target : '';
+    const identity = redactText(entry.testId || target.replace(/-\d+$/, '') || target || 'unknown');
+    const attempts = grouped.get(identity) ?? [];
+    attempts.push(entry);
+    grouped.set(identity, attempts);
+  });
+
+  return Array.from(grouped.values())
+    .flatMap((attempts) => {
+      const orderedAttempts = [...attempts].sort((left, right) => Number(left.retry ?? 0) - Number(right.retry ?? 0));
+      const finalAttempt = orderedAttempts.at(-1);
+      const finalStatus = finalAttempt?.status || finalAttempt?.failure?.status || 'failed';
+      if (!['failed', 'timedOut', 'interrupted'].includes(finalStatus)) {
+        return [];
+      }
+      return orderedAttempts.filter((entry) => entry?.failure && typeof entry.failure === 'object');
+    })
+    .map((entry) => {
+      const failure = entry.failure;
+      const nextChecks = Array.isArray(failure.nextChecks) ? failure.nextChecks.map(redactText).slice(0, 3) : [];
+      const target = typeof entry.target === 'string' && /^#[A-Za-z0-9_-]+$/.test(entry.target) ? entry.target : '';
+      return {
+        target,
+        title: redactText(failure.title || 'Unnamed test'),
+        file: redactText(failure.file || 'unknown file'),
+        line: Number.isInteger(failure.line) ? failure.line : null,
+        column: Number.isInteger(failure.column) ? failure.column : null,
+        project: redactText(failure.project || 'unknown'),
+        retry: Number.isInteger(Number(failure.retry)) ? Number(failure.retry) : 0,
+        status: redactText(failure.status || 'failed'),
+        classification: redactText(failure.classification || 'UNKNOWN'),
+        confidence: redactText(failure.confidence || 'observed'),
+        source: redactText(failure.source || 'unconfirmed'),
+        phase: redactText(failure.phase || ''),
+        actionableError: redactText(failure.actionableError || 'No actionable error captured'),
+        hypothesis: redactText(failure.hypothesis || 'No hypothesis recorded'),
+        nextChecks: nextChecks.length ? nextChecks : ['Open the trace and raw Playwright error before changing the test.'],
+      };
+    })
+    .sort((left, right) => left.file.localeCompare(right.file) || left.line - right.line || left.retry - right.retry);
+}
+
+function buildFailureTriageBlock(testMetadata = []) {
+  const failures = normalizeFailureMetadata(testMetadata);
+  if (!failures.length) {
+    return '';
+  }
+
+  const rows = failures
+    .map((failure) => {
+      const location = `${failure.file}${failure.line ? `:${failure.line}${failure.column ? `:${failure.column}` : ''}` : ''}`;
+      const detailLink = failure.target
+        ? `<a href="${escapeAttribute(failure.target)}" class="odhin-failure-detail-link">Open test details</a>`
+        : 'Test details unavailable';
+      const checks = failure.nextChecks.map((check) => `<li>${escapeHtml(check)}</li>`).join('');
+      const hypothesis = `<div><strong>Hypothesis (not confirmed):</strong> ${escapeHtml(failure.hypothesis)}</div>`;
+      return `<tr><td><span class="odhin-failure-observed">${escapeHtml(failure.classification)}</span><br><small>${escapeHtml(failure.confidence)} signal</small></td><td>${escapeHtml(failure.title)}<br><small>${escapeHtml(failure.status)} · retry ${failure.retry} · ${escapeHtml(failure.project)}</small></td><td>${escapeHtml(location)}<br><small>${escapeHtml(failure.phase || failure.source)}</small></td><td>${escapeHtml(failure.actionableError)}<br>${hypothesis}<br>${detailLink}</td><td><ul class="odhin-failure-next-checks">${checks}</ul></td></tr>`;
+    })
+    .join('');
+
+  return `<div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-failure-triage"><div class="info-box-header">Failed test triage</div><p class="odhin-failure-triage-note">Observed signals are evidence for investigation, not confirmed root causes. Retry attempts are shown separately; open test details for the raw error, trace and screenshots when published.</p><div class="odhin-table table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Observed signal</th><th>Test / attempt</th><th>Source</th><th>Actionable error</th><th>Next checks</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+function injectFailureTriage(root, testMetadata) {
+  const block = buildFailureTriageBlock(testMetadata);
+  if (!block) {
+    return;
+  }
+  root.querySelector('#odhin-failure-triage')?.remove();
+  const dashboard = root.querySelector('#TabDashboard > .container-fluid') ?? root.querySelector('#TabDashboard');
+  dashboard?.insertAdjacentHTML('afterbegin', block);
+}
+
 function defaultTestListRowsPerPage(html) {
   return String(html)
     .replace(
@@ -1437,6 +1530,7 @@ function enhanceDashboardHtml(
     buildIssueSummaryBlock(normalizedEvidenceEntries),
     buildDeveloperHint
   );
+  injectFailureTriage(root, testMetadata);
   if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
 
   applyPresentation(root, testMetadata);
@@ -1544,6 +1638,7 @@ module.exports = {
   percentOf,
   __test__: {
     buildFeatureOverviewBlock,
+    buildFailureTriageBlock,
     buildIssueSummaryBlock,
     buildAccessibilityEvidenceBlock,
     createEmptyFeatureStat,
@@ -1551,6 +1646,7 @@ module.exports = {
     deriveFeatureName,
     enhanceDashboardHtml,
     formatDuration,
+    normalizeFailureMetadata,
     normalizeEvidenceEntries,
     readAccessibilityEvidenceEntries,
     removeLegacyFileChartInitializer,

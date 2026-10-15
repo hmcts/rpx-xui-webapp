@@ -83,20 +83,11 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def archivePlaywrightDiagnostics = {
     steps.sh '''
-        set +e
-        out_dir="functional-output/tests/playwright-diagnostics/failure-data"
-        mkdir -p "${out_dir}"
-        if [ -d test-results ]; then
-          find test-results -type f -name 'failure-data.json' | while read -r file; do
-            rel="${file#test-results/}"
-            safe_name=$(echo "${rel}" | tr '/ ' '__')
-            cp "${file}" "${out_dir}/${safe_name}"
-          done
-        fi
+        node scripts/collect-playwright-diagnostics.cjs
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/playwright-*/odhin-report/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg'
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*,functional-output/tests/playwright-*/odhin-report/**/*,functional-output/tests/**/odhin-report/ci-evidence/playwright.json,functional-output/tests/**/test-results/perfetto*.json,functional-output/tests/**/test-results/**/failure-data.json,functional-output/tests/**/test-results/**/failure-context.json,functional-output/tests/**/test-results/**/trace.zip,functional-output/tests/**/test-results/**/*.png,functional-output/tests/**/test-results/**/*.jpg,functional-output/tests/**/test-results/**/*.jpeg'
     )
 }
 
@@ -669,9 +660,9 @@ withPipeline(type, product, component) {
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
 
-    // enablePactAs([
-    //    AppPipelineDsl.PactRoles.CONSUMER
-    // ])
+    enablePactAs([
+       AppPipelineDsl.PactRoles.CONSUMER
+    ])
 
     afterSuccess('checkout') {
         startCiLoadProfile()
@@ -688,7 +679,7 @@ withPipeline(type, product, component) {
         stage('Playwright Install Chromium') {
             try {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
-                yarnBuilder.yarn('playwright --version')
+                yarnBuilder.yarn('test:setup:playwright-version')
                 yarnBuilder.yarn('test:setup:playwright-install-chromium')
                 yarnBuilder.yarn('test:setup:playwright-verify-chromium')
                 env.PLAYWRIGHT_SKIP_INSTALL = 'true'

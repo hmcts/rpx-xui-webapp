@@ -35,6 +35,7 @@ const enhancerTest = enhancerModule.__test__ as {
   ) => string;
   formatDuration: (durationMs: number) => string;
   buildFeatureOverviewBlock: (featureStats: unknown) => string;
+  buildFailureTriageBlock: (testMetadata: unknown) => string;
   buildAccessibilityEvidenceBlock: (entries: unknown) => string;
   buildIssueSummaryBlock: (entries: unknown) => string;
   defaultTestListRowsPerPage: (html: string) => string;
@@ -123,6 +124,74 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         '/opt/jenkins/workspace/PR/playwright_tests_new/integration/test/hearings/hearingDetails.cr84.positive.spec.ts'
       )
     ).toBe('hearings');
+  });
+
+  test('adds a top-level failed-test triage block with escaped, retry-aware evidence links', () => {
+    const shell = `<html><head></head><body><div class="tab"></div><div id="TabDashboard"><div class="container-fluid"><div class="row"></div></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        failure: {
+          title: 'Upload case 1791906281904747',
+          file: 'playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts',
+          line: 240,
+          column: 9,
+          project: 'chromium',
+          retry: 0,
+          status: 'timedOut',
+          classification: 'GLOBAL_TIMEOUT_UI_STALL',
+          confidence: 'observed',
+          source: 'Test/application behaviour',
+          phase: 'ui-wait-pre-backend',
+          actionableError: 'locator.click timeout',
+          hypothesis: 'A loading overlay covered the control',
+          nextChecks: ['Open the trace at the failing action'],
+        },
+      },
+    ];
+    const report = parse(enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata));
+    const triage = report.querySelector('#odhin-failure-triage');
+
+    expect(triage).not.toBeNull();
+    expect(triage?.text).toContain('Failed test triage');
+    expect(triage?.text).toContain('GLOBAL_TIMEOUT_UI_STALL');
+    expect(triage?.text).toContain('Hypothesis (not confirmed)');
+    expect(triage?.querySelector('a')?.getAttribute('href')).toBe('#test-0-0');
+    expect(report.toString()).not.toContain('1791906281904747');
+  });
+
+  test('does not report a retry failure as unresolved when the final attempt passed', () => {
+    const shell = `<html><head></head><body><div id="TabDashboard"><div class="container-fluid"></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        testId: 'test-0',
+        retry: 0,
+        status: 'failed',
+        failure: { title: 'Flaky test', file: 'test.spec.ts', retry: 0, status: 'failed' },
+      },
+      { target: '#test-0-1', testId: 'test-0', retry: 1, status: 'passed' },
+    ];
+
+    const report = enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata);
+    expect(report).not.toContain('Failed test triage');
+  });
+
+  test('preserves failure triage when a later enhancer pass has no metadata', () => {
+    const shell = `<html><head></head><body><div id="TabDashboard"><div class="container-fluid"></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        testId: 'test-0',
+        retry: 0,
+        status: 'failed',
+        failure: { title: 'Failed test', file: 'test.spec.ts', retry: 0, status: 'failed' },
+      },
+    ];
+
+    const firstPass = enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata);
+    const secondPass = enhancerTest.enhanceDashboardHtml(firstPass, [], [], [], '../test-results');
+    expect((secondPass.match(/id="odhin-failure-triage"/g) ?? []).length).toBe(1);
   });
 
   test('uses declared product features without guessing accessibility titles or changing other suites', () => {

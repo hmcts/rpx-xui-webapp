@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
+import { NavigationStart, ResolveEnd, Router, RouterStateSnapshot, RoutesRecognized } from '@angular/router';
 import {
   CookieService,
   FeatureToggleService,
@@ -27,6 +27,8 @@ import { InitialisationSyncService } from '../../services/ccd-config/initialisat
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnInit, OnDestroy {
+  private static readonly PAGE_TITLE_SUFFIX = 'Manage Case - HM Courts & Tribunals Service - GOV.UK';
+
   public timeoutModalConfig = {
     countdown: '0 seconds',
     isVisible: false,
@@ -43,6 +45,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private timeoutNotificationServiceInitialised: boolean = false;
   private idleModalDisplayTimeInMilliseconds: number;
   private totalIdleTimeInMilliseconds: number;
+  private currentRouteTitle: string;
+  private selectedEventTitle: string;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -59,15 +63,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly initialisationSyncService: InitialisationSyncService
   ) {
     this.router.events.subscribe((data) => {
-      if (data instanceof RoutesRecognized) {
-        let child = data.state.root;
-        do {
-          child = child.firstChild;
-        } while (child.firstChild);
-        const d = child.data;
-        if (d.title) {
-          this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
-        }
+      if (data instanceof RoutesRecognized || data instanceof ResolveEnd) {
+        this.updateTitleFromRouterState(data.state);
       }
     });
 
@@ -107,6 +104,61 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (this.foregroundSessionSubscription) {
       this.foregroundSessionSubscription.unsubscribe();
+    }
+  }
+
+  @HostListener('document:submit', ['$event'])
+  public updateTitleForSubmittedCaseAction(event: Event): void {
+    const form = event.target as HTMLFormElement;
+    const isNextStepForm = form?.classList.contains('event-trigger');
+    const select = form?.querySelector<HTMLSelectElement>(isNextStepForm ? 'select#next-step' : 'select#cc-event');
+    if (!select) {
+      return;
+    }
+
+    const selectedAction = select?.options.item(select.selectedIndex)?.text?.trim();
+    if (select?.value && selectedAction) {
+      this.selectedEventTitle = selectedAction;
+      this.setPageTitle(`${selectedAction} - ${this.currentRouteTitle}`);
+    }
+  }
+
+  private updateTitleFromRouterState(state: RouterStateSnapshot): void {
+    let route = state.root;
+    let routeTitle: string;
+    let selectedTabTitle: string;
+    let resolvedCaseActionTitle: string;
+
+    while (route) {
+      routeTitle = route.data?.title || routeTitle;
+      selectedTabTitle = route.fragment || selectedTabTitle;
+      resolvedCaseActionTitle = route.data?.eventTrigger?.name || resolvedCaseActionTitle;
+      route = route.firstChild;
+    }
+
+    this.currentRouteTitle = routeTitle || this.currentRouteTitle;
+    const isCaseDetailsPage = state.url.includes('/cases/case-details/');
+    const isCaseActionPage = isCaseDetailsPage && state.url.includes('/trigger/');
+    const isCaseCreateEventPage = state.url.includes('/cases/case-create/');
+    const isEventPage = isCaseActionPage || isCaseCreateEventPage;
+    if (resolvedCaseActionTitle) {
+      this.selectedEventTitle = resolvedCaseActionTitle;
+    } else if (!isEventPage) {
+      this.selectedEventTitle = null;
+    }
+
+    let title = routeTitle;
+    if (isCaseDetailsPage && selectedTabTitle) {
+      title = `${selectedTabTitle} - ${routeTitle}`;
+    } else if (isEventPage && this.selectedEventTitle) {
+      title = `${this.selectedEventTitle} - ${routeTitle}`;
+    }
+    this.setPageTitle(title);
+  }
+
+  private setPageTitle(title: string): void {
+    if (title) {
+      this.titleService.setTitle(`${title} - ${AppComponent.PAGE_TITLE_SUFFIX}`);
     }
   }
 

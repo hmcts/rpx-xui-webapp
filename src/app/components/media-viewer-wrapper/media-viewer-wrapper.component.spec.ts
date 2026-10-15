@@ -120,7 +120,7 @@ describe('MediaViewerWrapperComponent', () => {
       windowService.getLocalStorage.and.returnValues(null);
       fixture.detectChanges();
       component.ngOnInit();
-      expect(titleService.setTitle).toHaveBeenCalledWith('View Document');
+      expect(titleService.setTitle).toHaveBeenCalledWith('View Document - Manage Case - HM Courts & Tribunals Service - GOV.UK');
     });
   });
 

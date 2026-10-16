@@ -17,6 +17,7 @@ export type SearchCasesRequestDetails = {
 };
 type ExpectedSearchCasesRequestDetails = Omit<SearchCasesRequestDetails, 'state' | 'caseFilters'> & {
   state?: string | null;
+  caseFilters?: Record<string, string>;
 };
 
 export const defaultSearchCasesRequestParams = {
@@ -150,10 +151,15 @@ export function expectSearchCasesRequest(request: SearchCasesRequestDetails, exp
 
   if (expected.state == null) {
     expect(request.state).toBeUndefined();
-    return;
+  } else {
+    expect(request.state).toBe(expected.state);
   }
 
-  expect(request.state).toBe(expected.state);
+  if (expected.caseFilters) {
+    for (const [key, value] of Object.entries(expected.caseFilters)) {
+      expect(request.caseFilters[key]).toBe(value);
+    }
+  }
 }
 
 export async function expectCaseListRows(

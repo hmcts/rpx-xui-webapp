@@ -158,6 +158,18 @@ export function buildCaseListMockForDefaultState(state: string) {
   return mock;
 }
 
+export function buildCaseListMockForStates(states: string[], textField0?: string) {
+  const mock = buildCaseListMock(Math.max(states.length * 2, 2));
+  mock.results.forEach((result, index) => {
+    result.case_fields['[STATE]'] = states[index % states.length];
+    if (textField0 !== undefined) {
+      result.case_fields.TextField0 = textField0;
+    }
+  });
+  mock.total = mock.results.length;
+  return mock;
+}
+
 function applyOptionalFieldOverrides<T extends { results: Array<{ case_fields: Record<string, string> }> }>(mock: T): T {
   if (mock.results[0]) {
     mock.results[0].case_fields.TextField0 = '';

@@ -15,8 +15,16 @@ export type SearchCasesRequestDetails = {
   state?: string;
   caseFilters: Record<string, string>;
 };
+/**
+ * What `waitForSearchCasesRequest` observes: the parsed parameters plus the raw request URL,
+ * for tests that assert on the query string itself (such as the comma separated `state` value).
+ */
+export type SearchCaseRequestWithUrl = SearchCasesRequestDetails & {
+  url: string;
+};
 type ExpectedSearchCasesRequestDetails = Omit<SearchCasesRequestDetails, 'state' | 'caseFilters'> & {
   state?: string | null;
+  caseFilters?: Record<string, string>;
 };
 
 export const defaultSearchCasesRequestParams = {
@@ -104,7 +112,7 @@ export async function waitForSearchCasesRequest(
     state?: string;
     allowEmptyState?: boolean;
   }
-): Promise<SearchCasesRequestDetails> {
+): Promise<SearchCaseRequestWithUrl> {
   const request = await page.waitForRequest((candidate) => {
     const requestUrl = new URL(candidate.url());
     if (requestUrl.pathname !== '/data/internal/searchCases' || requestUrl.searchParams.get('page') !== String(expected.page)) {
@@ -128,6 +136,7 @@ export async function waitForSearchCasesRequest(
 
   const requestUrl = new URL(request.url());
   return {
+    url: request.url(),
     ctid: requestUrl.searchParams.get('ctid') ?? '',
     useCase: requestUrl.searchParams.get('use_case') ?? '',
     view: requestUrl.searchParams.get('view') ?? '',
@@ -150,10 +159,15 @@ export function expectSearchCasesRequest(request: SearchCasesRequestDetails, exp
 
   if (expected.state == null) {
     expect(request.state).toBeUndefined();
-    return;
+  } else {
+    expect(request.state).toBe(expected.state);
   }
 
-  expect(request.state).toBe(expected.state);
+  if (expected.caseFilters) {
+    for (const [key, value] of Object.entries(expected.caseFilters)) {
+      expect(request.caseFilters[key]).toBe(value);
+    }
+  }
 }
 
 export async function expectCaseListRows(

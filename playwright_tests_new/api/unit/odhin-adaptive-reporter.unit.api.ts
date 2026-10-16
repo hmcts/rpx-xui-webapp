@@ -27,6 +27,7 @@ const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
   normalizeTestOutputMode: (raw: unknown) => true | false | 'only-on-failure';
   normalizeRuntimeHookTimeoutMs: (raw: unknown, fallbackMs: number) => number;
   withTimeout: <T>(promise: Promise<T>, timeoutMs: number) => Promise<T>;
+  buildFailureMetadata: (test: unknown, result: unknown) => Record<string, unknown> | null;
   trimResult: (
     result: Record<string, unknown>,
     options: { lightweight: boolean; testOutputMode: true | false | 'only-on-failure' }
@@ -67,10 +68,30 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     };
     await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 2000 });
     await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 1000 });
-    expect(reporter.testMetadata).toEqual([
-      { target: '#project-scoped-id-0', feature: 'hearings', tags: ['@integration'], retry: 0, durationMs: 2000 },
-      { target: '#project-scoped-id-1', feature: 'hearings', tags: ['@integration'], retry: 1, durationMs: 1000 },
-    ]);
+    expect(reporter.testMetadata).toHaveLength(2);
+    expect(reporter.testMetadata[0]).toMatchObject({
+      target: '#project-scoped-id-0',
+      testId: 'project-scoped-id',
+      feature: 'hearings',
+      tags: ['@integration'],
+      retry: 0,
+      durationMs: 2000,
+      status: 'failed',
+      failure: {
+        status: 'failed',
+        classification: 'UNKNOWN',
+        confidence: 'observed',
+      },
+    });
+    expect(reporter.testMetadata[1]).toEqual({
+      target: '#project-scoped-id-1',
+      testId: 'project-scoped-id',
+      feature: 'hearings',
+      tags: ['@integration'],
+      retry: 1,
+      durationMs: 1000,
+      status: 'passed',
+    });
     expect(reporter.featureStats.get('hearings')).toMatchObject({ totalTests: 1, flaky: 1, failed: 0 });
   });
 

@@ -3303,13 +3303,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.11-CME-1008-dart-sass-7":
-  version: 7.4.11-CME-1008-dart-sass-7
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.11-CME-1008-dart-sass-7"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.11-CME-1008-dart-sass-rc1":
+  version: 7.4.11-CME-1008-dart-sass-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.11-CME-1008-dart-sass-rc1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28-cme-1118-v1"
-    "@hmcts/media-viewer": "npm:4.2.42-CME-776-dart-angular-20"
+    "@hmcts/media-viewer": "npm:4.2.42-CME-776-dart-angular-20-rc1"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
@@ -3352,7 +3352,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/e9264a8156066a673a7914a5b6278d498322e07847b15932419b0443f6020145d14e7987f22f752da57b1ff918e20ebc75b8b21c59c3d142344fa34acecc139a
+  checksum: 10/cc524e1db3c409e8a1955fc5d7d08fc12ade097dff50fc969a440fca1321d259e7c9ceee312ea9b3ac8e6b689568a47ce064d42d0f618cc36caee3cf9b6e45e7
   languageName: node
   linkType: hard
 
@@ -3370,16 +3370,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/frontend@npm:0.0.50-alpha":
-  version: 0.0.50-alpha
-  resolution: "@hmcts/frontend@npm:0.0.50-alpha"
-  checksum: 10/a2c4a74f831c87d7a6510d17c64793117ce7fb577f19a74f62fb7a58694f87fbc0bc30b1448cfa7dfc32ecc872f6e58571df9f141090845895f1686b056647af
-  languageName: node
-  linkType: hard
-
-"@hmcts/media-viewer@npm:4.2.42-CME-776-dart-angular-20":
-  version: 4.2.42-CME-776-dart-angular-20
-  resolution: "@hmcts/media-viewer@npm:4.2.42-CME-776-dart-angular-20"
+"@hmcts/media-viewer@npm:4.2.42-CME-776-dart-angular-20-rc1":
+  version: 4.2.42-CME-776-dart-angular-20-rc1
+  resolution: "@hmcts/media-viewer@npm:4.2.42-CME-776-dart-angular-20-rc1"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3402,7 +3395,7 @@ __metadata:
     ngx-chips: 3.0.0
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
-  checksum: 10/56065083f695b520b7eb91bdf412fac2ae1a847c6336e925bebf1f1369a3f087f74d5799c29804c17a72933a9e5daf7c7eeb87e9a6e6269bae00cd73f1940e81
+  checksum: 10/24fe39c73b4d3b224b11f9569ec18e736a3f413fb64f3dacaa6fe0c0277907b12035886f6ca31bc6c4ffeb077a0bc549b20c90d10f269478610583c6031dda04
   languageName: node
   linkType: hard
 
@@ -3470,12 +3463,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.20-CME-1008-dart-sass-2":
-  version: 3.2.20-CME-1008-dart-sass-2
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.20-CME-1008-dart-sass-2"
+"@hmcts/rpx-xui-common-lib@npm:3.2.20-CME-1008-dart-sass-rc1":
+  version: 3.2.20-CME-1008-dart-sass-rc1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.20-CME-1008-dart-sass-rc1"
   dependencies:
-    "@hmcts/frontend": "npm:0.0.50-alpha"
-    govuk-frontend: "npm:^4.9.0"
+    govuk-frontend: "npm:5.13.0"
     tslib: "npm:^2.0.0"
   peerDependencies:
     "@angular/animations": ^20.3.18
@@ -3496,7 +3488,7 @@ __metadata:
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/d81882f5bc167ca97b07a9386e628f3ba6dcb9a01a6c3bbe0de69c4823cbd5a3b6a45d384b11ce53ce704f8c6e2aba50b36b926d0776045791619c4ea43ab87c
+  checksum: 10/777709cf99710c9be37b8694bf2c26abd911af03880bd4bc0e616ca78f68cbdc655d2faca3510f238bfee960a7c05f034db554400b1ffbb7adb124e254b16539
   languageName: node
   linkType: hard
 
@@ -13856,13 +13848,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^4.9.0":
-  version: 4.10.1
-  resolution: "govuk-frontend@npm:4.10.1"
-  checksum: 10/7fc16896b73134d227e3c8f6ed4017015293dd12e81262b6dea30b97156727523fb6c133f95f34461846a32cafe516cccf1d94100d936ae1c48a9059177e79cc
-  languageName: node
-  linkType: hard
-
 "graceful-fs@npm:4.1.15":
   version: 4.1.15
   resolution: "graceful-fs@npm:4.1.15"
@@ -20127,13 +20112,13 @@ __metadata:
     "@edium/fsm": "npm:^3.0.2"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.11-CME-1008-dart-sass-7"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.11-CME-1008-dart-sass-rc1"
     "@hmcts/ccpay-web-component": "npm:6.5.28-cme-1118-v1"
-    "@hmcts/media-viewer": "npm:4.2.42-CME-776-dart-angular-20"
+    "@hmcts/media-viewer": "npm:4.2.42-CME-776-dart-angular-20-rc1"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.20-CME-1008-dart-sass-2"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.20-CME-1008-dart-sass-rc1"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.33"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"

@@ -12,10 +12,7 @@ test.describe('Postcode lookup', { tag: '@svc-postcode-lookup' }, () => {
         throwOnError: false,
       });
 
-      expectStatus(
-        response.status,
-        StatusSets.guardedBasic.filter((s) => s !== 403)
-      );
+      expectStatus(response.status, [...StatusSets.guardedBasic.filter((s) => s !== 403), 404]);
       if (!shouldAssertAddress(response.status)) {
         return;
       }

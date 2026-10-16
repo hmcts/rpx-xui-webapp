@@ -36,6 +36,14 @@ import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
+  sendValidationError,
+  validateAllCasesBody,
+  validateGetUsersByServiceNameBody,
+  validateMyCasesBody,
+  validateSearchForCompletableBody,
+  validateSearchTaskBody,
+} from './validation';
+import {
   assignActionsToCases,
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
@@ -160,6 +168,11 @@ export async function getTaskRoles(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const validationFailure = validateSearchTaskBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
@@ -363,6 +376,11 @@ export async function postTaskCompletionForAccess(
 
 export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const validationFailure = validateSearchForCompletableBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
     const jurisdictions = getWASupportedJurisdictionsList();
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     const reqBody = {
@@ -436,6 +454,11 @@ export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
+    const validationFailure = validateMyCasesBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
@@ -493,6 +516,11 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 }
 
 export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const validationFailure = validateAllCasesBody(req.body);
+  if (validationFailure) {
+    return sendValidationError(res, validationFailure);
+  }
+
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
@@ -581,37 +609,45 @@ export async function getTaskNames(req: EnhancedRequest, res: Response): Promise
  */
 export async function getUsersByServiceName(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   try {
+    const validationFailure = validateGetUsersByServiceNameBody(req.body);
+    if (validationFailure) {
+      sendValidationError(res, validationFailure);
+      return;
+    }
+
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const term = req.body.term;
     const services = req.body.services;
-    let cachedUsers = [];
-    let firstEntry = true;
     if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
       res.status(403).send('Forbidden');
-    } else if (services?.length === 0 || services[0]?.length === 0) {
-      // if no services selected return empty array with error to avoid showing all users from all services
-      // note: should never happen as frontend should always send at least one service
-      res.status(400).send('Bad Request');
-    } else {
-      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
-        // if already ran just use the cache to avoid loading issues
-        firstEntry = false;
-        cachedUsers = FullUserDetailCache.getAllUserDetails();
+      return;
+    }
+    if (services.length === 0) {
+      // TODO(EXUI-2645): Remove this defensive branch once Angular always sends explicit service scoping.
+      res.status(200).send([]);
+      return;
+    }
 
-        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-        res.status(200).send(cachedUsers);
-        refreshUserCache();
-        return;
-      }
-      // always update the cache after getting the cache if needed
-      const cachedUserData = await fetchUserData();
-      cachedUsers = await fetchRoleAssignments(cachedUserData);
-      if (firstEntry) {
-        // if not previously ran ensure the new values are given back to angular layer
-        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
-        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-        res.status(200).send(cachedUsers);
-      }
+    let cachedUsers = [];
+    let firstEntry = true;
+    if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+      // if already ran just use the cache to avoid loading issues
+      firstEntry = false;
+      cachedUsers = FullUserDetailCache.getAllUserDetails();
+
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+      res.status(200).send(cachedUsers);
+      refreshUserCache();
+      return;
+    }
+    // always update the cache after getting the cache if needed
+    const cachedUserData = await fetchUserData();
+    cachedUsers = await fetchRoleAssignments(cachedUserData);
+    if (firstEntry) {
+      // if not previously ran ensure the new values are given back to angular layer
+      // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+      res.status(200).send(cachedUsers);
     }
   } catch (error) {
     next(error);

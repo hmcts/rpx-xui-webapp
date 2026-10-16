@@ -471,7 +471,6 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-
   test(`User ${userIdentifier} does not carry hidden dynamic filters across jurisdiction and case type changes`, async ({
     caseListPage,
     page,
@@ -529,13 +528,11 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     expect(Object.keys(probateSearchRequest.caseFilters)).not.toContain('case.TextField0');
   });
 
-  test(`User ${userIdentifier} sends the selected states as a comma separated state parameter`,
-    async ({
-      caseListPage,
-      tableUtils,
-      page,
+  test(`User ${userIdentifier} sends the selected states as a comma separated state parameter`, async ({
+    caseListPage,
+    tableUtils,
+    page,
   }) => {
-
     const jurisdictions = buildCaseListJurisdictionsMock();
     const workbasketInputs = buildCaseListStateFilterInputsMock();
     // Mirrors the reported URL shape: /data/internal/searchCases?ctid=...&state=a,b,c&page=1
@@ -594,6 +591,4 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     await expectCaseListSummary(caseListPage, selectedStatesMock.total, 1);
     await expectCaseListRows(caseListPage, tableUtils, selectedStatesMock);
   });
-
-
 });

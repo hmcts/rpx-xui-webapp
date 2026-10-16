@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
@@ -7,6 +7,7 @@ import { HearingConditions } from '../../models/hearingConditions';
 import { HearingSummaryEnum, HearingTemplate, Mode } from '../../models/hearings.enum';
 import { Section } from '../../models/section';
 import * as fromHearingStore from '../../store';
+import { HearingsService } from '../../services/hearings.service';
 
 @Component({
   standalone: false,
@@ -28,7 +29,8 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly router: Router,
     protected readonly route: ActivatedRoute,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    @Optional() private readonly hearingsService?: HearingsService
   ) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
@@ -75,6 +77,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   public changeAnswer(event: MouseEvent, id: string, changeLink: string): void {
+    this.hearingsService?.recordAction('change');
     event.preventDefault();
 
     const hearingCondition: HearingConditions = {

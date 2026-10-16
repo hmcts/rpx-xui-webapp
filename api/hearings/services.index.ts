@@ -2,8 +2,7 @@ import { NextFunction, Response } from 'express';
 import { sendGet, sendPost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
-import * as log4jui from '../lib/log4jui';
-import { EnhancedRequest, JUILogger } from '../lib/models';
+import { EnhancedRequest } from '../lib/models';
 import { DEFAULT_SCREEN_FLOW } from './data/defaultScreenFlow.data';
 import { hmcHearingsUrl } from './hmc.index';
 import { HearingListMainModel } from './models/hearingListMain.model';
@@ -11,9 +10,7 @@ import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { EXUIDisplayStatusEnum } from './models/hearings.enum';
 import { ServiceLinkedCasesModel } from './models/linkHearings.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
-import { trackTrace } from '../lib/appInsights';
-
-const logger: JUILogger = log4jui.getLogger('hearing-service-api');
+import { traceHearingsDiagnostic } from './hearings-telemetry';
 
 /**
  * loadServiceHearingValues - get details required to populate the hearing request/amend journey
@@ -38,7 +35,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
       res.status(status).send(dataByDefault);
     }
   } catch (error) {
-    trackTrace('Error calling serviceHearingValues', error);
+    traceHearingsDiagnostic('loadServiceHearingValues', 'failed', error);
     next(error);
   }
 }
@@ -94,7 +91,7 @@ export async function getHearings(caseId: string, req: EnhancedRequest) {
     );
     return data;
   } catch (error) {
-    logger.error(error.status, error.statusText, JSON.stringify(error.data));
+    traceHearingsDiagnostic('getHearings', 'failed', error);
     throw error;
   }
 }
@@ -108,7 +105,7 @@ export async function getHearings(caseId: string, req: EnhancedRequest) {
 export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Response, next: NextFunction) {
   const jurisdictionId = req.query.jurisdictionId;
   const reqBody = req.body;
-  console.log('is this being called perhaps?');
+  traceHearingsDiagnostic('loadLinkedCasesWithHearings', 'started');
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
@@ -168,7 +165,7 @@ export function getServicePath(jurisdictionId): string {
     const configPath = `services.hearings.${jurisdictionId.toLowerCase()}.serviceApi`;
     return getConfigValue(configPath);
   }
-  logger.error(`Hearings not configured for this jurisdiction: ${jurisdictionId}`);
+  traceHearingsDiagnostic('getServicePath', 'service-not-configured');
   return '';
 }
 

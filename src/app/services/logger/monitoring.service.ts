@@ -1,11 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Optional } from '@angular/core';
-import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewPerformanceTelemetry } from '@microsoft/applicationinsights-web';
+import { Injectable } from '@angular/core';
+import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewTelemetry } from '@microsoft/applicationinsights-web';
+import { defer, Observable, of } from 'rxjs';
+import { catchError, map, shareReplay, take } from 'rxjs/operators';
+import { sanitizeHearingsException } from '../../../hearings/services/hearings-exception-telemetry';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number);
   logEvent(name: string, properties?: any, measurements?: any);
-  logException(exception: Error);
+  logException(exception: Error, properties?: Record<string, string | number>);
 }
 
 export class MonitorConfig implements IConfig {
@@ -48,18 +51,19 @@ export class MonitorConfig implements IConfig {
 @Injectable()
 export class MonitoringService implements IMonitoringService {
   public areCookiesEnabled: boolean = false;
-  @Optional() appInsights: ApplicationInsights;
-  @Optional() private config?: MonitorConfig;
+  public appInsights: ApplicationInsights;
+  private initialization$?: Observable<boolean>;
 
   constructor(private readonly http: HttpClient) {}
 
   public logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number) {
-    const pageViewTelemetry: IPageViewPerformanceTelemetry = {
+    const pageViewTelemetry: IPageViewTelemetry = {
       name,
       uri: url,
-      properties,
+      refUri: '',
+      properties: duration === undefined ? properties : { ...properties, duration },
       measurements,
-      duration: duration.toString(),
+      startTime: duration === undefined ? undefined : new Date(Date.now() - duration),
     };
     this.send(() => {
       this.appInsights.trackPageView(pageViewTelemetry);
@@ -77,9 +81,9 @@ export class MonitoringService implements IMonitoringService {
     });
   }
 
-  public logException(exception: Error) {
+  public logException(exception: Error, properties?: Record<string, string | number>) {
     this.send(() => {
-      this.appInsights.trackException({ exception });
+      this.appInsights.trackException(properties ? { exception, properties } : { exception });
     });
   }
 
@@ -87,30 +91,89 @@ export class MonitoringService implements IMonitoringService {
     this.areCookiesEnabled = true;
   }
 
-  private send(func: () => any): void {
-    if (this.config?.connectionString) {
-      func();
-    } else {
-      // will only get run once per login
-      this.http.get('/api/monitoring-tools').subscribe((monitor) => {
-        const connStr = monitor['connectionString'];
-        this.config = {
-          connectionString: connStr,
-          samplingPercentage: monitor['samplingPercentage'],
-        };
-        if (!this.areCookiesEnabled) {
-          this.config = {
-            ...this.config,
-            isCookieUseDisabled: true,
-            isStorageUseDisabled: true,
-            enableSessionStorageBuffer: true,
-          };
-        }
-        this.appInsights = new ApplicationInsights({ config: this.config });
-        // below is important step to utilise the app insights instance
-        this.appInsights.loadAppInsights();
-        func();
-      });
+  public captureOperationContext(): Record<string, string> {
+    try {
+      const trace = this.appInsights?.core?.getTraceCtx();
+      const operationId = trace?.getTraceId();
+      const operationParentId = trace?.getSpanId();
+      return {
+        ...(operationId && /^[a-f\d]{32}$/i.test(operationId) ? { operationId } : {}),
+        ...(operationParentId && /^[a-f\d]{16}$/i.test(operationParentId) ? { operationParentId } : {}),
+      };
+    } catch {
+      return {};
     }
+  }
+
+  private send(func: () => void): void {
+    this.initialize().subscribe((initialized) => {
+      if (initialized) {
+        try {
+          func();
+        } catch {
+          // Telemetry failures must not interrupt the application or log sensitive error details.
+        }
+      }
+    });
+  }
+
+  private initialize(): Observable<boolean> {
+    if (!this.initialization$) {
+      this.initialization$ = defer(() =>
+        this.http.get<{ connectionString?: string; samplingPercentage?: number }>('/api/monitoring-tools')
+      ).pipe(
+        take(1),
+        map((monitor) => {
+          const connectionString = monitor?.connectionString;
+          if (typeof connectionString !== 'string' || !connectionString.trim()) {
+            return false;
+          }
+
+          const config: MonitorConfig = { connectionString };
+          if (monitor.samplingPercentage !== undefined) {
+            config.samplingPercentage = monitor.samplingPercentage;
+          }
+          if (!this.areCookiesEnabled) {
+            Object.assign(config, {
+              isCookieUseDisabled: true,
+              isStorageUseDisabled: true,
+              enableSessionStorageBuffer: true,
+            });
+          }
+
+          const appInsights = this.createAppInsights(config);
+          appInsights.loadAppInsights();
+          appInsights.addTelemetryInitializer((item) => {
+            if (!sanitizeHearingsException(item)) {
+              return false;
+            }
+            if (
+              (item.baseType === 'PageviewData' || item.baseType === 'PageviewPerformanceData') &&
+              item.baseData?.name?.startsWith('Hearings: ')
+            ) {
+              // The SDK can add an operation name from the real browser URL. Use the safe template instead.
+              if (item.ext?.trace) {
+                item.ext.trace.name = item.baseData.uri;
+              }
+              item.baseData.refUri = '';
+            } else if (item.baseType === 'EventData' && item.baseData?.name?.startsWith('Hearings.')) {
+              if (item.ext?.trace) {
+                item.ext.trace.name = item.baseData.properties?.page || 'Hearings';
+              }
+            }
+          });
+          this.appInsights = appInsights;
+          return true;
+        }),
+        // Cache failure as well as success: later log calls must not repeatedly retry initialization.
+        catchError(() => of(false)),
+        shareReplay({ bufferSize: 1, refCount: false })
+      );
+    }
+    return this.initialization$;
+  }
+
+  private createAppInsights(config: MonitorConfig): ApplicationInsights {
+    return new ApplicationInsights({ config });
   }
 }

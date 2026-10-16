@@ -1,8 +1,9 @@
 import { Location } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, Optional } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { HearingsService } from '../../../services/hearings.service';
 import moment from 'moment';
 import * as momentTimezone from 'moment-timezone';
 import { Subscription, combineLatest } from 'rxjs';
@@ -50,7 +51,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly ngZone: NgZone,
     private readonly validatorsUtils: ValidatorsUtils,
-    public ccdDatePipe: DatePipe
+    public ccdDatePipe: DatePipe,
+    @Optional() private readonly hearingsService?: HearingsService
   ) {}
 
   private getStartTime(hearingActuals: HearingActualsMainModel, plannedIndex: number, actualIndex: number | undefined): string {
@@ -137,10 +139,12 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(value: any, valid: boolean): void {
+    this.hearingsService?.recordAction('continue');
     this.submitted = true;
     this.errors = [];
     if (!valid) {
       this.setErrors(this.formGroup.errors);
+      this.hearingsService?.recordValidationFailure('form', Math.max(1, this.errors.length));
       return;
     }
     this.submitted = false;
@@ -206,6 +210,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   public onBack(): void {
+    this.hearingsService?.recordAction('back');
     this.location.back();
   }
 

@@ -149,13 +149,18 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
+    this.hearingsService.recordAction('continue');
     const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
       groupDetails: {
         groupLinkType: this.selectedOption,
       },
       hearingsInGroup: [],
     };
-    if (this.isFormValid()) {
+    const valid = this.isFormValid();
+    if (!valid) {
+      this.hearingsService.recordValidationFailure('form', this.validationErrors.length);
+    }
+    if (valid) {
       this.hearingOrder.value.forEach((formValue) => {
         const hearing = this.selectedLinkedCases.find((linked) => linked.caseRef === formValue.caseReference);
         const selectedHearing = hearing?.caseHearings?.find((selected) => selected.isSelected);
@@ -249,6 +254,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public onBack(): void {
+    this.hearingsService.recordAction('back');
     if (this.mode === Mode.MANAGE_HEARINGS) {
       this.router.navigate([
         '/',
@@ -265,6 +271,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
+    this.hearingsService.recordAction('cancel');
     this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']);
   }
 

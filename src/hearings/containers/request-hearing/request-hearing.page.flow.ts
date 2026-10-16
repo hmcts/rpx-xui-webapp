@@ -11,6 +11,7 @@ import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 
 export abstract class RequestHearingPageFlow {
+  private actionNavigated: boolean;
   public navigationSub: Subscription;
   public hearingStateSub: Subscription;
   public hearingListMainModel: HearingListMainModel;
@@ -27,7 +28,21 @@ export abstract class RequestHearingPageFlow {
     protected readonly featureToggleService: FeatureToggleService,
     protected readonly route?: ActivatedRoute
   ) {
-    this.navigationSub = this.hearingsService.navigateAction$.subscribe((action: ACTION) => this.executeAction(action));
+    this.navigationSub = this.hearingsService.navigateAction$.subscribe((action: ACTION) => {
+      this.actionNavigated = false;
+      this.executeAction(action);
+      if (
+        !this.actionNavigated &&
+        [ACTION.CONTINUE, ACTION.SUBMIT, ACTION.VIEW_EDIT_REASON, ACTION.VIEW_EDIT_SUBMIT].includes(action)
+      ) {
+        const page = this as RequestHearingPageFlow & { validationErrors?: unknown; errors?: unknown };
+        const errors = page.validationErrors ?? page.errors;
+        const count = Array.isArray(errors) ? errors.length : errors ? 1 : 0;
+        if (count) {
+          this.hearingsService.recordValidationFailure('form', count);
+        }
+      }
+    });
     this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe((hearingState) => {
       this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
       this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
@@ -50,6 +65,7 @@ export abstract class RequestHearingPageFlow {
   }
 
   public navigateAction(action: ACTION): void {
+    this.actionNavigated = true;
     switch (action) {
       case ACTION.BACK:
         this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest());
@@ -62,8 +78,11 @@ export abstract class RequestHearingPageFlow {
       case ACTION.SUBMIT:
         this.hearingStore.dispatch(new fromHearingStore.SubmitHearingRequest(this.hearingRequestMainModel));
         this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequestToCompare());
         this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
         this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingActuals());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingLinks());
         this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
         this.hearingsService.propertiesUpdatedOnPageVisit = null;
         break;
@@ -73,8 +92,11 @@ export abstract class RequestHearingPageFlow {
       case ACTION.VIEW_EDIT_SUBMIT:
         this.hearingStore.dispatch(new fromHearingStore.ViewEditSubmitHearingRequest(this.hearingRequestMainModel));
         this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequestToCompare());
         this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
         this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingActuals());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingLinks());
         this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
         this.hearingsService.propertiesUpdatedOnPageVisit = null;
         break;

@@ -70,7 +70,7 @@ export function buildCreateCaseLocators(page: Page) {
     complexType4FirstTickBox: page.locator('#ComplexType_4_selectedCategories-item_1'),
     complexType4SelectList: page.locator('#ComplexType_4_FixedListField'),
 
-    genderRadioButtons: page.locator('#Gender .multiple-choice'),
+    genderRadioButtons: page.locator('#Gender'),
     person1Title: page.locator('#Person1_Title'),
     person1TitleInput: page.locator('#Person1_Title'),
     person1FirstNameInput: page.locator('#Person1_FirstName'),
@@ -99,8 +99,8 @@ export function buildCreateCaseLocators(page: Page) {
 
     fileUploadComponent: primaryDocumentUploadComponent,
     fileUploadInput: page.locator('#DocumentUrl'),
-    fileUploadCancelButton: primaryDocumentUploadComponent.locator('button.button-secondary').first(),
-    fileUploadStatusLabel: page.locator('ccd-write-document-field .error-message'),
+    fileUploadCancelButton: primaryDocumentUploadComponent.locator('button.govuk-button--secondary').first(),
+    fileUploadStatusLabel: page.locator('ccd-write-document-field .govuk-error-message'),
     textField0Input: page.locator('#TextField0'),
     textField1Input: page.locator('#TextField1'),
     textField2Input: page.locator('#TextField2'),

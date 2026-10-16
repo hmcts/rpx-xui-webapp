@@ -16,8 +16,12 @@ test.describe(
       await createCasePage.continueButton.click();
 
       await expect(page.locator('#CaseReference')).toHaveValue('ABC');
+      // GOV.UK surfaces a field error twice: once as a summary link and once inline beside the field.
       await expect(
-        page.locator('.govuk-error-message, .validation-error').filter({ hasText: /Case reference is not valid/i })
+        page
+          .locator('.govuk-error-message, .validation-error')
+          .filter({ hasText: /Case reference is not valid/i })
+          .first()
       ).toBeVisible();
       await expect(page.getByRole('heading', { name: 'Check your answers' })).toBeHidden();
     });
@@ -31,8 +35,12 @@ test.describe(
       await page.locator('#CaseReference').fill('123');
       await createCasePage.continueButton.click();
 
+      // GOV.UK surfaces a field error twice: once as a summary link and once inline beside the field.
       await expect(
-        page.locator('.govuk-error-message, .validation-error').filter({ hasText: /reason for urgent handling/i })
+        page
+          .locator('.govuk-error-message, .validation-error')
+          .filter({ hasText: /reason for urgent handling/i })
+          .first()
       ).toBeVisible();
       await expect(page.getByLabel('Reason for urgent handling')).toBeVisible();
     });

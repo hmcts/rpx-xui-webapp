@@ -1,11 +1,17 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !phoneUkControl.valid }">
-  <label class="govuk-label" [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
-      questionField.question_text | rpxTranslate
-    }}</span>
-    <span class="error-message" *ngIf="phoneUkControl.errors && phoneUkControl.touched">{{
-      phoneUkControl.errors | nocError | rpxTranslate
-    }}</span>
+<div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': phoneUkControl.errors && phoneUkControl.touched }">
+  <label class="govuk-label govuk-!-font-weight-bold" [for]="id()">
+    <ng-container *ngIf="questionField.question_text">{{ questionField.question_text | rpxTranslate }}</ng-container>
   </label>
-  <input class="govuk-input govuk-input--width-10" [id]="id()" type="tel" [formControl]="phoneUkControl" />
+  <span class="govuk-error-message" *ngIf="phoneUkControl.errors && phoneUkControl.touched" [id]="id() + '-error'">
+    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+    {{ phoneUkControl.errors | nocError | rpxTranslate }}
+  </span>
+  <input
+    class="govuk-input govuk-input--width-10"
+    [class.govuk-input--error]="phoneUkControl.errors && phoneUkControl.touched"
+    [id]="id()"
+    type="tel"
+    [formControl]="phoneUkControl"
+    [attr.aria-describedby]="phoneUkControl.errors && phoneUkControl.touched ? id() + '-error' : null"
+  />
 </div>

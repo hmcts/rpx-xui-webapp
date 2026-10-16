@@ -118,7 +118,7 @@
     "@dr.pogodin/csurf": "^1.17.1",
     "@edium/fsm": "^3.0.2",
     "@hmcts/ccd-case-ui-toolkit": "7.4.5-govuk6",
-    "@hmcts/ccpay-web-component": "6.5.27",
+    "@hmcts/ccpay-web-component": "portal:../ccpay-web-component/dist/payment-lib",
     "@hmcts/media-viewer": "4.2.40",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.4.1",
@@ -268,6 +268,7 @@
     "crypto": false
   },
   "resolutions": {
+    "@hmcts/ccpay-web-component": "6.5.28-v1",
     "@opentelemetry/core": "^2.8.0",
     "@types/jsdom": "^27",
     "axios@npm:^0.24.0": "npm:1.18.1",

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { filter, map, take, tap } from 'rxjs/operators';
 import { UserDetails } from '../../app/models';
 import * as fromActions from '../../app/store';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 @Injectable()
 export class BookingGuard {
@@ -22,10 +23,10 @@ export class BookingGuard {
       // ignore falsy/partial emissions
       filter((u: any): u is UserDetails => !!u && !!u.userInfo),
       map((user) => {
-        const roleCategory = user.userInfo.roleCategory;
+        const roleCategories = user.userInfo.roleCategories;
         const roles = user.userInfo.roles ?? [];
 
-        const isJudicial = roleCategory === 'JUDICIAL' || roles.includes('caseworker-judge');
+        const isJudicial = roleCategories?.includes(RoleCategory.JUDICIAL) || roles.includes('caseworker-judge');
 
         const hasBookable = (user.roleAssignmentInfo ?? []).some((ra: any) => {
           const b = ra?.bookable;

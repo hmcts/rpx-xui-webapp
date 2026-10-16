@@ -2,13 +2,15 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { WASupportedJurisdictionsService } from '../../../../work-allocation/services';
+import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../../work-allocation/services';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessText } from '../../../models/enums';
 import { DecideSpecificAccessAndGo } from '../../../store';
@@ -37,6 +39,7 @@ describe('SpecificAccessReviewComponent', () => {
         provideMockStore(),
         FormBuilder,
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: Title, useValue: jasmine.createSpyObj('Title', { getTitle: 'Test Title', setTitle: undefined }) },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -81,8 +84,8 @@ describe('SpecificAccessReviewComponent', () => {
     it('should create component and show the "review access" info message banner', () => {
       const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
       expect(headingElement.textContent).toContain(SpecificAccessText.TITLE);
-      const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__legend--m');
-      expect(hintElement.textContent).toContain(SpecificAccessText.HINT);
+      const radioOptionEl = fixture.debugElement.query(By.css('exui-choose-radio-option'));
+      expect(radioOptionEl.properties['title']).toContain(SpecificAccessText.HINT);
     });
 
     it('should show validation error when any radio button selected and the form submitted', () => {
@@ -137,6 +140,50 @@ describe('SpecificAccessReviewComponent', () => {
       spyOn(component.specificAccessStateDataSub, 'unsubscribe').and.callThrough();
       component.ngOnDestroy();
       expect(component.specificAccessStateDataSub.unsubscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe('SpecificAccessReviewComponent requesterName population (non-judicial)', () => {
+    let fixture: ComponentFixture<SpecificAccessReviewComponent>;
+    let component: SpecificAccessReviewComponent;
+    let store: Store;
+    let caseworkerDataService: any;
+
+    beforeEach(() => {
+      store = TestBed.inject(Store);
+      caseworkerDataService = TestBed.inject(CaseworkerDataService) as jasmine.SpyObj<any>;
+
+      const nonJudicialState: SpecificAccessStateData = {
+        state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+        caseId: 'caseId',
+        caseName: 'Example case name',
+        taskId: 'taskId',
+        actorId: 'actor-nonjudicial',
+        jurisdiction: 'IA',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        requestedRole: 'specific-access-legal',
+        requestCreated: '01-01-2001',
+        accessReason: null,
+        period: { startDate: new Date('01-01-2001'), endDate: null },
+        person: null,
+        requestId: 'requestId',
+        specificAccessReason: null,
+      };
+
+      (store.pipe as jasmine.Spy).and.returnValue(of(nonJudicialState));
+
+      // Mock caseworker lookup
+      spyOn(caseworkerDataService, 'getUserByIdamId').and.returnValue(of({ firstName: 'Test', lastName: 'Beta' }));
+
+      fixture = TestBed.createComponent(SpecificAccessReviewComponent);
+      component = fixture.componentInstance;
+      component.formGroup = new FormGroup({});
+      fixture.detectChanges();
+    });
+
+    it('sets requesterName from caseworkerDataService for non-judicial roleCategory', () => {
+      expect(caseworkerDataService.getUserByIdamId).toHaveBeenCalledWith('actor-nonjudicial');
+      expect(component.requesterName).toBe('Test Beta');
     });
   });
 });

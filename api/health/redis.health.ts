@@ -10,18 +10,15 @@ export const redisHealth = async (): Promise<boolean> => {
   // Safely check if Redis client exists
   const redisClient = app?.locals?.redisClient;
 
-  return new Promise<boolean>((resolve) => {
-    try {
-      redisClient.ping((err, pong) => {
-        if (err || pong !== 'PONG') {
-          logger.error(err || 'redis server is not responsive');
-          return resolve(false);
-        }
-        return resolve(true);
-      });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      resolve(false);
+  try {
+    const pong = await redisClient.ping();
+    if (pong !== 'PONG') {
+      logger.error('redis server is not responsive');
+      return false;
     }
-  });
+    return true;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) {
+    return false;
+  }
 };

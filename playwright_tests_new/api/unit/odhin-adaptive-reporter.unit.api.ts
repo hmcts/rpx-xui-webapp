@@ -7,13 +7,27 @@ const enhancerModule = require('../../common/reporters/odhin-report-enhancer.cjs
 
 const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: string) => { name: string; totalTests: number };
 const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
+const enhanceDashboardHtml = enhancerModule.enhanceDashboardHtml as (
+  html: string,
+  featureStats: unknown[],
+  evidenceEntries: unknown[],
+  perfettoFiles: string[]
+) => string;
 
 const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
+  addFailureSource: (
+    test: { title: string },
+    result: { status: string; errors: Array<{ message: string; stack?: string }> }
+  ) => {
+    errors: Array<{ message: string; stack?: string }>;
+  };
+  deriveFailureSource: (errorMessage: string) => string | null;
   isFinalResult: (status: string, retry: number, retries: number) => boolean;
   normalizeFinalStatus: (status: string, retry: number) => string;
   normalizeTestOutputMode: (raw: unknown) => true | false | 'only-on-failure';
   normalizeRuntimeHookTimeoutMs: (raw: unknown, fallbackMs: number) => number;
   withTimeout: <T>(promise: Promise<T>, timeoutMs: number) => Promise<T>;
+  buildFailureMetadata: (test: unknown, result: unknown) => Record<string, unknown> | null;
   trimResult: (
     result: Record<string, unknown>,
     options: { lightweight: boolean; testOutputMode: true | false | 'only-on-failure' }
@@ -24,6 +38,125 @@ const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
 };
 
 test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
+  test('links external Perfetto files even when no dashboard extensions are present', () => {
+    const html = enhanceDashboardHtml('<html><body><main>Tests</main></body></html>', [], [], ['perfetto.json']);
+
+    expect(html).toContain('href="../test-results/perfetto.json"');
+  });
+
+  test('preserves native optional columns for string and array configurations', () => {
+    for (const testListColumns of ['group,retry', ['GROUP', 'RETRY']]) {
+      let configured: string[] = [];
+      new OdhinAdaptiveReporter({
+        testListColumns,
+        createInnerReporter: (options: { testListColumns: string[] }) => {
+          configured = options.testListColumns;
+          return {};
+        },
+      });
+      expect(configured).toEqual(['GROUP', 'RETRY', 'PROJECT', 'FILE']);
+    }
+  });
+
+  test('keeps retry metadata keyed to the Odhín modal target without altering final feature totals', async () => {
+    const reporter = new OdhinAdaptiveReporter({ createInnerReporter: () => ({ onTestEnd() {} }), lightweight: true });
+    const testCase = {
+      id: 'project-scoped-id',
+      retries: 1,
+      tags: ['@integration'],
+      location: { file: '/tmp/playwright_tests_new/integration/test/hearings/details.spec.ts' },
+    };
+    await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 2000 });
+    await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 1000 });
+    expect(reporter.testMetadata).toHaveLength(2);
+    expect(reporter.testMetadata[0]).toMatchObject({
+      target: '#project-scoped-id-0',
+      testId: 'project-scoped-id',
+      feature: 'hearings',
+      tags: ['@integration'],
+      retry: 0,
+      durationMs: 2000,
+      status: 'failed',
+      failure: {
+        status: 'failed',
+        classification: 'UNKNOWN',
+        confidence: 'observed',
+      },
+    });
+    expect(reporter.testMetadata[1]).toEqual({
+      target: '#project-scoped-id-1',
+      testId: 'project-scoped-id',
+      feature: 'hearings',
+      tags: ['@integration'],
+      retry: 1,
+      durationMs: 1000,
+      status: 'passed',
+    });
+    expect(reporter.featureStats.get('hearings')).toMatchObject({ totalTests: 1, flaky: 1, failed: 0 });
+  });
+
+  test('always externalises attachments, including when embedding is requested', () => {
+    const receivedOptions: Array<Record<string, unknown>> = [];
+    const createInnerReporter = (options: Record<string, unknown>) => {
+      receivedOptions.push(options);
+      return {};
+    };
+
+    new OdhinAdaptiveReporter({ createInnerReporter });
+    new OdhinAdaptiveReporter({ createInnerReporter, embedAttachments: true });
+
+    expect(receivedOptions[0]?.embedAttachments).toBe(false);
+    expect(receivedOptions[1]?.embedAttachments).toBe(false);
+  });
+
+  test('adds an explicit source to session-capture setup failures before Odhín renders them', () => {
+    const result = odhinAdaptiveTest.addFailureSource(
+      { title: 'searches a global case' },
+      {
+        status: 'failed',
+        errors: [
+          {
+            message: 'SessionCaptureError: IDAM login surface did not render within 20000ms',
+            stack: 'SessionCaptureError: IDAM login surface did not render within 20000ms\n    at test',
+          },
+        ],
+      }
+    );
+
+    expect(result.errors[0]).toMatchObject({
+      message: expect.stringContaining('[Failure source: XUI/IDAM authentication session capture]'),
+      stack: expect.stringContaining('[Failure source: XUI/IDAM authentication session capture]'),
+    });
+    expect(odhinAdaptiveTest.deriveFailureSource('Failed to fetch direct CCD event token (HTTP 504)')).toBe(
+      'CCD Data Store direct event-token route: GET /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/event-triggers/:eventId/token'
+    );
+    expect(odhinAdaptiveTest.deriveFailureSource('Direct CCD case create failed with HTTP 504')).toBe(
+      'CCD Data Store direct case-create route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false'
+    );
+  });
+
+  test('uses the test title to identify a generic external configuration failure', () => {
+    const result = odhinAdaptiveTest.addFailureSource(
+      { title: 'serves external configuration without authentication' },
+      {
+        status: 'failed',
+        errors: [
+          { message: 'ApiClientError: Request failed with status 503', stack: 'ApiClientError: Request failed with status 503' },
+        ],
+      }
+    );
+
+    expect(result.errors[0].stack).toContain('[Failure source: XUI external configuration route]');
+  });
+
+  test('identifies a session-reuse app-shell timeout as session capture infrastructure', () => {
+    expect(
+      odhinAdaptiveTest.deriveFailureSource(
+        'App shell not detected within 60000ms\n    at waitForAuthenticatedAppShell (sessionCapture.ts:1067:9)'
+      )
+    ).toBe('XUI/IDAM authentication session capture');
+  });
+
   test('normalizes test output mode inputs', () => {
     expect(odhinAdaptiveTest.normalizeTestOutputMode(undefined)).toBe('only-on-failure');
     expect(odhinAdaptiveTest.normalizeTestOutputMode('true')).toBe(true);
@@ -81,6 +214,23 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     });
 
     expect(nextResult).toEqual(originalResult);
+    expect(trimmedCounts).toEqual({ output: 0, heavyArtifacts: 0 });
+  });
+
+  test('keeps timed-out test artifacts when only-on-failure mode is used', () => {
+    const timedOutResult = {
+      status: 'timedOut',
+      stdout: [{ text: 'timeout out' }],
+      stderr: [{ text: 'timeout err' }],
+      steps: [{ title: 'timeout step' }],
+      attachments: [{ name: 'trace' }],
+    };
+    const { nextResult, trimmedCounts } = odhinAdaptiveTest.trimResult(timedOutResult, {
+      lightweight: true,
+      testOutputMode: 'only-on-failure',
+    });
+
+    expect(nextResult).toEqual(timedOutResult);
     expect(trimmedCounts).toEqual({ output: 0, heavyArtifacts: 0 });
   });
 

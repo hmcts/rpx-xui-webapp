@@ -36,7 +36,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 });
 
 test.describe(
-  'Global Search negative flows with prewarmed search session',
+  'Global Search negative flows with lazy search session',
   { tag: ['@integration', '@integration-search-case'] },
   () => {
     for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {

@@ -13,6 +13,43 @@ const baseExecutionSignals = {
 };
 
 test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
+  test('attaches diagnosis for interrupted Playwright executions', () => {
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('interrupted')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('failed')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('timedOut')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('passed')).toBe(false);
+  });
+
+  test('attaches structured diagnostics when a run is interrupted', async () => {
+    const attachments: string[] = [];
+    const testInfo = {
+      annotations: [],
+      attach: async (name: string) => attachments.push(name),
+      error: { message: 'Browser closed before the assertion completed' },
+      file: 'playwright_tests_new/example.spec.ts',
+      project: { name: 'chromium' },
+      retry: 0,
+      status: 'interrupted',
+      title: 'interrupted diagnostic test',
+      workerIndex: 0,
+    } as unknown as Parameters<typeof diagnosticsTest.attachFailureDiagnosisIfNeeded>[0];
+
+    await diagnosticsTest.attachFailureDiagnosisIfNeeded(testInfo, () => ({
+      error: 'Browser closed before the assertion completed',
+      primaryError: 'Browser closed before the assertion completed',
+      actionableError: '',
+      setupMarker: 'none',
+      apiErrors: [],
+      failedRequests: [],
+      slowCalls: [],
+      networkTimeout: false,
+      slowThreshold: 1000,
+      executionSignals: baseExecutionSignals,
+    }));
+
+    expect(attachments).toEqual(['Failure diagnosis', 'failure-data.json', 'failure-context.json']);
+  });
+
   test('classifyFailure treats direct CCD event-token 502 failures as backend 5xx', () => {
     const failureType = diagnosticsTest.classifyFailure({
       error: "Error: Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",
@@ -35,6 +72,78 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     expect(failureType).toBe('DOWNSTREAM_API_5XX');
   });
 
+  test('classifies a direct CCD case-create 504 with its owning route', () => {
+    const error =
+      "Error: Direct CCD case create failed with HTTP 504 for 'case-flags-employment-case-level'. Route='POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false'.";
+    const failureType = diagnosticsTest.classifyFailure({
+      error,
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+      failureLocation: '/tmp/caseSetup.ts:530',
+      actionableErrorLine: error,
+    });
+
+    expect(failureType).toBe('DOWNSTREAM_API_5XX');
+    expect(diagnosticsTest.deriveFailureSource(failureType, error, '')).toBe(
+      'CCD Data Store direct case-create route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false'
+    );
+  });
+
+  test('classifyFailure reports session-capture login-surface failures as authentication infrastructure', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'SessionCaptureError: IDAM login surface did not render within 20000ms for FPL_GLOBAL_SEARCH',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('AUTHENTICATION_SESSION_UNAVAILABLE');
+    expect(diagnosticsTest.deriveFailureSource(failureType, 'SessionCaptureError: IDAM login surface did not render', '')).toBe(
+      'XUI/IDAM authentication session capture'
+    );
+  });
+
+  test('classifies a reused-session app-shell timeout as authentication infrastructure', () => {
+    const error =
+      'App shell not detected within 60000ms (preferred=exui-header, url=https://manage-case.aat.platform.hmcts.net/)';
+    const failureType = diagnosticsTest.classifyFailure({
+      error,
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+      failureLocation: '/tmp/sessionCapture.ts:1067',
+      actionableErrorLine: error,
+    });
+
+    expect(failureType).toBe('AUTHENTICATION_SESSION_UNAVAILABLE');
+    expect(diagnosticsTest.deriveFailureSource(failureType, error, '')).toBe('XUI/IDAM authentication session capture');
+  });
+
+  test('derives the owning downstream route instead of reporting a generic backend failure', () => {
+    expect(
+      diagnosticsTest.deriveFailureSource(
+        'DOWNSTREAM_API_5XX',
+        'Request failed with status 504',
+        'GET https://manage-case.aat.platform.hmcts.net/aggregated/caseworkers/:uid/jurisdictions -> HTTP 504'
+      )
+    ).toBe(
+      'XUI aggregated caseworker route: https://manage-case.aat.platform.hmcts.net/aggregated/caseworkers/:uid/jurisdictions'
+    );
+  });
+
   test('deriveLikelyRootCause explains direct CCD event-token bootstrap failures', () => {
     const message = diagnosticsTest.deriveLikelyRootCause({
       failureType: 'DOWNSTREAM_API_5XX',
@@ -54,6 +163,23 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     });
 
     expect(message).toContain('Direct CCD event-token bootstrap failed');
+    expect(message).toContain('downstream 5xx response');
+  });
+
+  test('deriveLikelyRootCause names the direct CCD case-create stage', () => {
+    const message = diagnosticsTest.deriveLikelyRootCause({
+      failureType: 'DOWNSTREAM_API_5XX',
+      testStatus: 'failed',
+      error: 'Direct CCD case create failed with HTTP 504.',
+      timeoutSummary: '',
+      dominantSlowEndpoint: null,
+      topSuspect: 'No backend/API suspect identified',
+      executionSignals: baseExecutionSignals,
+      failureLocation: '/tmp/caseSetup.ts:530',
+      actionableErrorLine: 'Direct CCD case create failed with HTTP 504.',
+    });
+
+    expect(message).toContain('case-create submission');
     expect(message).toContain('downstream 5xx response');
   });
 
@@ -166,6 +292,47 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       networkTimeout: false,
       testStatus: 'failed',
       executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('UI_ELEMENT_MISSING');
+  });
+
+  test('classifyFailure reports identity queue exhaustion as scheduling rather than a UI failure', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error:
+        'IdentityLeaseTimeoutError: Identity scheduling timed out after 900000ms waiting for a compatible configured account.',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('IDENTITY_SCHEDULING_TIMEOUT');
+    expect(
+      diagnosticsTest.deriveFailureSource(
+        failureType,
+        'IdentityLeaseTimeoutError: Identity scheduling timed out',
+        'No backend/API suspect identified'
+      )
+    ).toBe('Test identity lease scheduler');
+  });
+
+  test('classifyFailure keeps a missing create-case submit action as UI readiness despite unrelated slow calls', () => {
+    const error = 'Error: Submit button did not become available creating divorce test case. visibleActionButtons=Test submit';
+    const failureType = diagnosticsTest.classifyFailure({
+      error,
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [{ method: 'GET', url: 'https://example.test/api/user/details', duration: 6306 }],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+      failureLocation: '/tmp/createCase.flow.ts:160',
+      actionableErrorLine: error,
     });
 
     expect(failureType).toBe('UI_ELEMENT_MISSING');

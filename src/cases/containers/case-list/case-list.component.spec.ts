@@ -40,7 +40,7 @@ describe('CaseListComponent', () => {
 
   const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
-  const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
+  const mockWindowService = jasmine.createSpyObj('WindowService', ['getSessionStorage', 'removeSessionStorage']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue', 'isEnabled']);
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
 
@@ -250,7 +250,7 @@ describe('CaseListComponent', () => {
       component.elasticSearchFlag = false;
     });
 
-    it('should call findCaseListPaginationMetadata() on page change with values from localStorage.', () => {
+    it('should call findCaseListPaginationMetadata() on page change with values from session storage.', () => {
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
 
       const event = {
@@ -259,9 +259,8 @@ describe('CaseListComponent', () => {
         },
       };
 
-      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
       component.savedQueryParams = { id: '' };
-      localStorageGetItemSpy.and.returnValue(
+      mockWindowService.getSessionStorage.and.returnValue(
         '{' + '"jurisdiction": "Probate", ' + '"case-type": "GrantOfRepresentation", ' + '"case-state": "BOReadyToIssue"' + '}'
       );
       component.elasticSearchFlag = false;
@@ -443,6 +442,51 @@ describe('CaseListComponent', () => {
   });
 
   describe('setCaseListFilterDefaults()', () => {
+    it('should return false when saved query params reference a case type outside the saved jurisdiction.', () => {
+      const jurisdictions = [
+        {
+          id: 'DIVORCE',
+          caseTypes: [{ id: 'DIVORCE_CASE_TYPE' }],
+        },
+      ] as any;
+
+      const isValid = component.areSavedQueryParamsValid(jurisdictions, {
+        jurisdiction: 'DIVORCE',
+        'case-type': 'PROBATE_CASE_TYPE',
+      });
+
+      expect(isValid).toEqual(false);
+    });
+
+    it('should clear saved query params and stored dynamic filters when saved defaults are invalid.', () => {
+      spyOn(component, 'getSavedQueryParams').and.returnValue({
+        jurisdiction: 'DIVORCE',
+        'case-type': 'PROBATE_CASE_TYPE',
+        'case-state': null,
+      });
+      mockWindowService.removeSessionStorage.calls.reset();
+
+      component.applyCaseListFilterDefaults([
+        {
+          id: 'DIVORCE',
+          name: 'Divorce',
+          description: '',
+          caseTypes: [
+            {
+              id: 'DIVORCE_CASE_TYPE',
+              events: null,
+              name: 'Divorce case type',
+              description: '',
+              states: [{ id: 'state', name: 'state', description: '' }],
+            },
+          ],
+        },
+      ]);
+
+      expect(mockWindowService.removeSessionStorage).toHaveBeenCalledWith('savedQueryParams');
+      expect(mockWindowService.removeSessionStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+    });
+
     it('should set the defaults.', async () => {
       component.jurisdictionsBehaviourSubject$.next([
         {
@@ -475,9 +519,8 @@ describe('CaseListComponent', () => {
       });
     });
 
-    it('should set the defaults from localStorage.', async () => {
-      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
-      localStorageGetItemSpy.and.returnValue(
+    it('should set the defaults from session storage.', async () => {
+      mockWindowService.getSessionStorage.and.returnValue(
         '{' + '"jurisdiction": "Probate", ' + '"case-type": "GrantOfRepresentation", ' + '"case-state": null' + '}'
       );
       component.jurisdictionsBehaviourSubject$.next([
@@ -511,13 +554,12 @@ describe('CaseListComponent', () => {
       });
     });
 
-    it('should set the defaults from localStorage, case state is null.', () => {
+    it('should set the defaults from session storage when case state is null.', () => {
       component.defaults = {};
 
       fixture.detectChanges();
 
-      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
-      localStorageGetItemSpy.and.returnValue(
+      mockWindowService.getSessionStorage.and.returnValue(
         '{' + '"jurisdiction": "Probate", ' + '"case-type": "GrantOfRepresentation", ' + '"case-state": "BOReadyToIssue"' + '}'
       );
       component.jurisdictionsBehaviourSubject$.next([
@@ -556,11 +598,11 @@ describe('CaseListComponent', () => {
 
     it('jurisdiction matches createEvent jurisdiction.', () => {
       const data = {
-        metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: { id: 'PUBLICLAW' },
-        caseStateGroupFromLS: { id: null },
-        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
-        formGroupFromLS: {
+        metadataFieldsGroupFromSessionStorage: undefined,
+        jurisdictionFromSessionStorage: { id: 'PUBLICLAW' },
+        caseStateGroupFromSessionStorage: { id: null },
+        caseTypeGroupFromSessionStorage: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromSessionStorage: {
           '[CASE_REFERENCE]': null,
           caseLocalAuthority: 'BNS',
           caseName: null,
@@ -570,24 +612,24 @@ describe('CaseListComponent', () => {
         },
       };
       const event = component.createEvent(
-        data.jurisdictionFromLS,
-        data.caseTypeGroupFromLS,
-        data.caseStateGroupFromLS,
-        data.metadataFieldsGroupFromLS,
-        data.formGroupFromLS,
+        data.jurisdictionFromSessionStorage,
+        data.caseTypeGroupFromSessionStorage,
+        data.caseStateGroupFromSessionStorage,
+        data.metadataFieldsGroupFromSessionStorage,
+        data.formGroupFromSessionStorage,
         1,
         undefined
       );
-      expect(event.selected.jurisdiction).toEqual(data.jurisdictionFromLS);
+      expect(event.selected.jurisdiction).toEqual(data.jurisdictionFromSessionStorage);
     });
 
     it('case type matches createEvent case type.', () => {
       const data = {
-        metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: { id: 'PUBLICLAW' },
-        caseStateGroupFromLS: { id: null },
-        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
-        formGroupFromLS: {
+        metadataFieldsGroupFromSessionStorage: undefined,
+        jurisdictionFromSessionStorage: { id: 'PUBLICLAW' },
+        caseStateGroupFromSessionStorage: { id: null },
+        caseTypeGroupFromSessionStorage: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromSessionStorage: {
           '[CASE_REFERENCE]': null,
           caseLocalAuthority: 'BNS',
           caseName: null,
@@ -597,24 +639,24 @@ describe('CaseListComponent', () => {
         },
       };
       const event = component.createEvent(
-        data.jurisdictionFromLS,
-        data.caseTypeGroupFromLS,
-        data.caseStateGroupFromLS,
-        data.metadataFieldsGroupFromLS,
-        data.formGroupFromLS,
+        data.jurisdictionFromSessionStorage,
+        data.caseTypeGroupFromSessionStorage,
+        data.caseStateGroupFromSessionStorage,
+        data.metadataFieldsGroupFromSessionStorage,
+        data.formGroupFromSessionStorage,
         1,
         undefined
       );
-      expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
+      expect(event.selected.caseType).toEqual(data.caseTypeGroupFromSessionStorage);
     });
 
     it('form group matches createEvent formgroup.', () => {
       const data = {
-        metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: { id: 'PUBLICLAW' },
-        caseStateGroupFromLS: { id: null },
-        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
-        formGroupFromLS: {
+        metadataFieldsGroupFromSessionStorage: undefined,
+        jurisdictionFromSessionStorage: { id: 'PUBLICLAW' },
+        caseStateGroupFromSessionStorage: { id: null },
+        caseTypeGroupFromSessionStorage: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromSessionStorage: {
           '[CASE_REFERENCE]': null,
           caseLocalAuthority: 'BNS',
           caseName: null,
@@ -624,15 +666,15 @@ describe('CaseListComponent', () => {
         },
       };
       const event = component.createEvent(
-        data.jurisdictionFromLS,
-        data.caseTypeGroupFromLS,
-        data.caseStateGroupFromLS,
-        data.metadataFieldsGroupFromLS,
-        data.formGroupFromLS,
+        data.jurisdictionFromSessionStorage,
+        data.caseTypeGroupFromSessionStorage,
+        data.caseStateGroupFromSessionStorage,
+        data.metadataFieldsGroupFromSessionStorage,
+        data.formGroupFromSessionStorage,
         1,
         undefined
       );
-      expect(event.selected.formGroup.value).toEqual(data.formGroupFromLS);
+      expect(event.selected.formGroup.value).toEqual(data.formGroupFromSessionStorage);
     });
   });
 

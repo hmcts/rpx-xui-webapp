@@ -21,7 +21,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   @Input() public jurisdictions: HMCTSServiceDetails[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
-    persistence: 'local',
+    persistence: 'session',
     enableDisabledButton: true,
     id: CaseManagerFilterComponent.FILTER_NAME,
     fields: [],
@@ -156,8 +156,9 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
-      const isLegalOpsOrJudicialRole = AppUtils.getUserRole(userDetails?.userInfo?.roles || []);
-      const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
+      const userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles || []);
+      // EXUI-4758 - Get first user role category, otherwise default to ALL
+      const roleType = AppUtils.convertDomainToLabel(userRoleNames[0] || PersonRole.ALL);
       this.filterConfig.cancelSetting.fields.push(
         {
           name: 'jurisdiction',

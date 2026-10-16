@@ -51,7 +51,6 @@ test.describe('Work Allocation shell unit tests', { tag: '@svc-internal' }, () =
         userIdentifier: 'PW_E2E_MANAGE_TASKS',
         email: 'wa-user@example.test',
         password: 'secret',
-        sessionKey: 'wa-user@example.test',
       });
     } finally {
       restoreWorkAllocationEnv(originalEnv);

@@ -35,7 +35,7 @@ function getUserDetails_oidc(): UserDetails {
       sub: 'juser8@mailinator.com',
       roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'],
       token: 'Bearer eyJ0eXAiOiJKV1Q',
-      roleCategory: 'LEGAL_OPS',
+      roleCategories: ['LEGAL_OPS'],
       email: '',
       identity: '',
       iss: '',
@@ -61,7 +61,7 @@ function getUserDetails_oauth(): UserDetails {
       active: true,
       roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'],
       token: 'Bearer eyJ0eXAiOiJKV1Q',
-      roleCategory: 'LEGAL_OPS',
+      roleCategories: ['LEGAL_OPS'],
     },
   };
 }

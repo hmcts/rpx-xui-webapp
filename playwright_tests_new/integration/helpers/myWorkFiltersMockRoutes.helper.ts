@@ -8,6 +8,7 @@ import {
   buildXuiAppShellEnvironmentConfigMock,
 } from './xuiAppShellMockRoutes.helper';
 import type { TaskListBootstrapRoleAssignment } from './taskListMockRoutes.helper';
+import { defaultStaffAMMenuRole, ensureSupportedAMRoleAssignment, uniqueRoles } from './amRoleAssignmentMock.helper';
 
 const myWorkUserId = 'wave2-my-work-user';
 const supportedJurisdictions = ['IA', 'SSCS', 'CIVIL'];
@@ -92,8 +93,12 @@ export async function setupMyWorkFilterRoutes(page: Page, options: MyWorkFilterR
     taskListResponse: buildTaskListMock(4, myWorkUserId, myActionsList),
     user: {
       replaceRoleAssignments: true,
-      roleAssignments: [...options.roleAssignmentInfo],
-      roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer'],
+      roleAssignments: ensureSupportedAMRoleAssignment(
+        options.roleAssignmentInfo,
+        defaultStaffAMMenuRole,
+        supportedJurisdictions
+      ),
+      roles: uniqueRoles(['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer', defaultStaffAMMenuRole]),
       userId: myWorkUserId,
     },
   });

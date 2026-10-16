@@ -12,6 +12,7 @@ import {
   getAuthTokens,
   getOrRefreshCachedUsers,
   getOrRefreshCachedUsersWithRoles,
+  getUniqueUsersFromResponse,
   waitForCachedUsers,
 } from './caseWorkerUserDataCacheService';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
@@ -23,6 +24,42 @@ chai.use(sinonChai);
 
 describe('Caseworker Cache Service', () => {
   let sandbox: sinon.SinonSandbox;
+
+  const stubAuthConfig = () => {
+    const getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
+    getConfigValueStub.callsFake((key) => {
+      // values need to be structurally valid for the auth token requests to work
+      // none of these values are actually used in the tests, so they can be arbitrary
+      const values = {
+        microservice: 'xui_webapp',
+        'services.s2s': 'https://s2s.test.com',
+        'secrets.rpx.mc-s2s-client-secret': '  KAPWY3DPEHPK3PXP  ',
+        'services.idam.idamApiUrl': 'https://idam-api.test.com',
+        'services.idam.idamClientID': 'test-client-id',
+        'secrets.rpx.system-user-name': 'system-user',
+        'secrets.rpx.system-user-password': 'system-password',
+        'secrets.rpx.mc-idam-client-secret': 'test-idam-secret',
+        staffSupportedJurisdictions: 'IA,CIVIL,PRIVATELAW',
+      } as any;
+
+      return values[key];
+    });
+
+    return getConfigValueStub;
+  };
+
+  // Helper function to stub the auth token requests
+  const stubAuthTokenRequests = () => {
+    return sandbox.stub(http, 'post').callsFake((url: string) => {
+      if (url.includes('/lease')) {
+        return Promise.resolve({ data: 'service-token' });
+      }
+      if (url.includes('/o/token')) {
+        return Promise.resolve({ data: { access_token: 'access-token' } });
+      }
+      return Promise.reject(new Error(`Unexpected POST ${url}`));
+    });
+  };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -137,9 +174,43 @@ describe('Caseworker Cache Service', () => {
         },
       ];
       const res = mockRes({ status: 200, data: mockStaffDetails });
+      stubAuthConfig();
+      stubAuthTokenRequests();
       sandbox.stub(http, 'get').resolves(res);
       const data = await fetchNewUserData();
       expect(data).to.deep.equal(mockMergedStaffUsers);
+    });
+  });
+
+  // EXUI-5291 - Ensure service names are capitalized when merging duplicate users
+  describe('getUniqueUsersFromResponse', () => {
+    it('should upper-case service names when merging duplicate users', () => {
+      const mockStaffDetails = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [],
+          },
+        },
+        {
+          ccd_service_name: 'Civil',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [],
+          },
+        },
+      ] as any[];
+
+      const [mergedUser] = getUniqueUsersFromResponse(mockStaffDetails);
+
+      expect(mergedUser.ccd_service_names).to.deep.equal(['IA', 'CIVIL']);
     });
   });
 
@@ -209,7 +280,7 @@ describe('Caseworker Cache Service', () => {
           idamId: '1',
           lastName: 'User',
           locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
-          roleCategory: 'ADMIN',
+          roleCategories: ['ADMIN'],
           services: ['IA', 'CIVIL'],
         },
         {
@@ -218,12 +289,21 @@ describe('Caseworker Cache Service', () => {
           idamId: '2',
           lastName: 'User',
           locations: [{ id: 'c', locationName: 'PL location', services: undefined }],
-          roleCategory: 'CTSC',
+          roleCategories: ['CTSC'],
           services: ['PRIVATELAW'],
         },
       ];
       const res = mockRes({ status: 200, data: { roleAssignmentResponse: mockRoleAssignments } });
-      sandbox.stub(http, 'post').resolves(res);
+      stubAuthConfig();
+      sandbox.stub(http, 'post').callsFake((url: string) => {
+        if (url.includes('/lease')) {
+          return Promise.resolve({ data: 'service-token' });
+        }
+        if (url.includes('/o/token')) {
+          return Promise.resolve({ data: { access_token: 'access-token' } });
+        }
+        return Promise.resolve(res);
+      });
       const data = await fetchRoleAssignmentsForNewUsers(mockMergedStaffUsers as StaffUserDetails[]);
       expect(data).to.deep.equal(finalCaseworkers);
     });
@@ -231,21 +311,7 @@ describe('Caseworker Cache Service', () => {
 
   describe('getAuthTokens', () => {
     it('should generate an OTP from the trimmed v13 secret and fetch both auth tokens', async () => {
-      const getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
-      getConfigValueStub.callsFake((key) => {
-        const values = {
-          microservice: 'xui_webapp',
-          'services.s2s': 'https://s2s.test.com',
-          'secrets.rpx.mc-s2s-client-secret': '  JBSWY3DPEHPK3PXP  ',
-          'services.idam.idamApiUrl': 'https://idam-api.test.com',
-          'services.idam.idamClientID': 'test-client-id',
-          'secrets.rpx.system-user-name': 'system-user',
-          'secrets.rpx.system-user-password': 'system-password',
-          'secrets.rpx.mc-idam-client-secret': 'test-idam-secret',
-        };
-
-        return values[key];
-      });
+      stubAuthConfig();
 
       const postStub = sandbox.stub(http, 'post');
       postStub.onFirstCall().resolves({ data: 'service-token' });
@@ -324,6 +390,8 @@ describe('Caseworker Cache Service', () => {
       const setCachedUsersStub = sandbox.stub(waRedisCache, 'setCachedUsers').resolves();
       const releaseLockStub = sandbox.stub(waRedisCache, 'releaseLock').resolves();
 
+      stubAuthConfig();
+      stubAuthTokenRequests();
       sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
 
       const result = await getOrRefreshCachedUsers();
@@ -381,6 +449,8 @@ describe('Caseworker Cache Service', () => {
 
       sandbox.stub(waRedisCache, 'getCachedUsers').resolves(null);
       sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves({ status: 'unavailable' });
+      stubAuthConfig();
+      stubAuthTokenRequests();
       sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
 
       const result = await getOrRefreshCachedUsers();

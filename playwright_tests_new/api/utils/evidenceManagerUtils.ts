@@ -111,11 +111,12 @@ export async function resolveAnnotationSetId(
 export async function buildAnnotation(
   apiClient: ApiClient,
   headers: Record<string, string>,
-  docId: string
+  docId: string,
+  annotationSetId?: string
 ): Promise<AnnotationPayload> {
   const annoId = uuid();
   const rectangleId = uuid();
-  const setId = await resolveAnnotationSetId(apiClient, headers, docId);
+  const setId = annotationSetId ?? (await resolveAnnotationSetId(apiClient, headers, docId));
 
   return {
     id: annoId,
@@ -137,8 +138,8 @@ export async function buildAnnotation(
   };
 }
 
-export async function buildBookmark(apiClient: ApiClient, docId: string): Promise<BookmarkPayload> {
-  const userId = await fetchUserId(apiClient);
+export async function buildBookmark(apiClient: ApiClient, docId: string, createdBy?: string): Promise<BookmarkPayload> {
+  const userId = createdBy ?? (await fetchUserId(apiClient));
   return {
     id: uuid(),
     name: `auto-${Date.now()}`,

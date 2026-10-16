@@ -11,10 +11,10 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(160, userId, myActionsList);
 });
 
-// EXUI-4318: case details opens, but the required task-details error message is not rendered.
-test.describe.skip(
+// Blocked by EXUI-4318: case details opens, but the task-details error message is not rendered.
+test.describe(
   `Task Go To negative scenarios as ${userIdentifier}`,
-  { tag: ['@integration', '@integration-manage-tasks'] },
+  { tag: ['@integration', '@integration-manage-tasks', '@blocked-exui-4318'] },
   () => {
     [500, 400].forEach((statusCode) => {
       test(`User still reaches case details when go endpoint returns ${statusCode}`, async ({ taskListPage, page }) => {

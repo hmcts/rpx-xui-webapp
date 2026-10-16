@@ -50,15 +50,26 @@ const buildSmokePlaywrightArgs = (env = process.env, extraArgs = process.argv.sl
   return args;
 };
 
-const buildSmokeEnvironment = (env = process.env) => ({ ...env });
+const buildSmokeEnvironment = (env = process.env) => ({
+  ...env,
+  PLAYWRIGHT_REPORT_INDEX_FILENAME: env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-smoke.html',
+  PLAYWRIGHT_REPORT_FOLDER:
+    env.PLAYWRIGHT_SMOKE_REPORT_FOLDER ||
+    (env.CI
+      ? 'functional-output/tests/playwright-smoke/odhin-report'
+      : env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-e2e/odhin-report'),
+  PLAYWRIGHT_OUTPUT_DIR:
+    env.PLAYWRIGHT_OUTPUT_DIR || (env.CI ? 'functional-output/tests/playwright-smoke/test-results' : 'test-results'),
+});
 
 const run = () => {
-  const reportDir = process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-e2e/odhin-report';
+  const smokeEnvironment = buildSmokeEnvironment();
+  const reportDir = smokeEnvironment.PLAYWRIGHT_REPORT_FOLDER;
   fs.rmSync(reportDir, { recursive: true, force: true });
   const playwrightCli = path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js');
   const result = spawnSync(process.execPath, [playwrightCli, ...buildSmokePlaywrightArgs()], {
     stdio: 'inherit',
-    env: buildSmokeEnvironment(),
+    env: smokeEnvironment,
   });
   if (result.error) {
     throw result.error;

@@ -199,7 +199,7 @@ describe('Hearings, get single hearing for given hearingId', () => {
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getHearingsAPIOverrides(mockServer.url);
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
 

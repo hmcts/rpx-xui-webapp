@@ -115,6 +115,12 @@ const ENV_KEYS = [
   'PW_IAC_CASEOFFICER_R1_PASSWORD',
   'PW_IAC_CASEOFFICER_R2_EMAIL',
   'PW_IAC_CASEOFFICER_R2_PASSWORD',
+  'IAC_JUDGE_WA_R1_USERNAME',
+  'IAC_JUDGE_WA_R1_PASSWORD',
+  'IAC_CASEOFFICER_R1_USERNAME',
+  'IAC_CASEOFFICER_R1_PASSWORD',
+  'IAC_CASEOFFICER_R2_USERNAME',
+  'IAC_CASEOFFICER_R2_PASSWORD',
   'SEARCH_EMPLOYMENT_CASE_USERNAME',
   'SEARCH_EMPLOYMENT_CASE_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
@@ -349,6 +355,23 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R1')).toBeUndefined();
 
+    process.env.IAC_CASEOFFICER_R1_USERNAME = 'legacy-iac-caseofficer-r1@example.test';
+    process.env.IAC_CASEOFFICER_R1_PASSWORD = 'legacy-iac-caseofficer-r1-secret';
+    process.env.IAC_CASEOFFICER_R2_USERNAME = 'legacy-iac-caseofficer-r2@example.test';
+    process.env.IAC_CASEOFFICER_R2_PASSWORD = 'legacy-iac-caseofficer-r2-secret';
+    process.env.IAC_JUDGE_WA_R1_USERNAME = 'legacy-iac-judge-r1@example.test';
+    process.env.IAC_JUDGE_WA_R1_PASSWORD = 'legacy-iac-judge-r1-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toEqual({
+      email: 'legacy-iac-judge-r1@example.test',
+      password: 'legacy-iac-judge-r1-secret',
+    });
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R2')).toEqual({
+      email: 'legacy-iac-caseofficer-r2@example.test',
+      password: 'legacy-iac-caseofficer-r2-secret',
+    });
+
+    delete process.env.IAC_JUDGE_WA_R1_USERNAME;
+    delete process.env.IAC_JUDGE_WA_R1_PASSWORD;
     process.env.PW_IAC_CASEOFFICER_R1_EMAIL = 'iac-caseofficer-r1@example.test';
     process.env.PW_IAC_CASEOFFICER_R1_PASSWORD = 'iac-caseofficer-r1-secret';
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();
@@ -362,6 +385,8 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     delete process.env.PW_IAC_CASEOFFICER_R2_EMAIL;
     delete process.env.PW_IAC_CASEOFFICER_R2_PASSWORD;
+    delete process.env.IAC_CASEOFFICER_R2_USERNAME;
+    delete process.env.IAC_CASEOFFICER_R2_PASSWORD;
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R2')).toEqual({
       email: 'iac-caseofficer-r1@example.test',
       password: 'iac-caseofficer-r1-secret',
@@ -427,10 +452,10 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     ).toThrow(/Unknown override field 'TextFieldd'/);
   });
 
-  test('uses configured CCD identifiers when aggregated jurisdictions remains unavailable', async () => {
+  test('fails closed when create-access jurisdictions remains unavailable', async () => {
     let attempts = 0;
     const request = {
-      scenario: 'configured identifier fallback',
+      scenario: 'create access unavailable',
       jurisdiction: 'DIVORCE',
       caseType: 'DIVORCE',
       page: {
@@ -451,7 +476,7 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
         userId: 'user-1',
         effectiveTimeoutMs: 100,
       })
-    ).resolves.toEqual({ jurisdictionId: 'DIVORCE', caseTypeId: 'DIVORCE' });
+    ).rejects.toThrow(/identity preflight.*unavailable/i);
     expect(attempts).toBe(3);
   });
 

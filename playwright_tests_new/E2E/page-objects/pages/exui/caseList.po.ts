@@ -16,6 +16,9 @@ export class CaseListPage extends Base {
   readonly jurisdictionSelect = this.page.locator('#wb-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
   readonly stateSelect = this.page.locator('#wb-case-state');
+  readonly stateSelectedLabel = this.stateSelect.locator('span');
+  readonly stateSelectAllButton = this.page.locator('#wb-case-state-select-all');
+  readonly stateUnselectAllButton = this.page.locator('#wb-case-state-unselect-all');
   readonly stateOptionsPanel = this.page.locator('#wb-case-state-options');
   readonly stateCheckboxes = this.stateOptionsPanel.locator('input[type="checkbox"]');
   readonly textField0Input = this.page.locator('#TextField0');
@@ -79,6 +82,45 @@ export class CaseListPage extends Base {
 
   public stateCheckbox(state: string): Locator {
     return this.stateOptionsPanel.getByRole('checkbox', { name: state, exact: true });
+  }
+
+  // The options panel is only rendered while it is open, so its visibility is the source of truth.
+  public async openWorkBasketStatePanel(): Promise<void> {
+    await this.stateSelect.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    if (!(await this.stateOptionsPanel.isVisible())) {
+      await this.stateSelect.click();
+    }
+    await this.stateOptionsPanel.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  }
+
+  // 'Select All' and 'Unselect All' sit outside the options panel, so they do not need it to be open.
+  public async selectAllCaseStates(): Promise<void> {
+    await this.stateSelectAllButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    await this.stateSelectAllButton.click();
+  }
+
+  public async unselectAllCaseStates(): Promise<void> {
+    await this.stateUnselectAllButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    await this.stateUnselectAllButton.click();
+  }
+
+  // Each option's state id is embedded in its checkbox id, e.g. 'wb-case-state-CaseCreated'.
+  private async readCaseStateOptions(): Promise<{ stateId: string; checked: boolean }[]> {
+    const checkboxes = await this.stateCheckboxes.all();
+
+    return Promise.all(
+      checkboxes.map(async (checkbox) => ({
+        stateId: ((await checkbox.getAttribute('id')) ?? '').replace('wb-case-state-', ''),
+        checked: await checkbox.isChecked(),
+      }))
+    );
+  }
+
+  public async getSelectedStateIds(): Promise<string[]> {
+    await this.openWorkBasketStatePanel();
+    const stateOptions = await this.readCaseStateOptions();
+
+    return stateOptions.filter((option) => option.checked).map((option) => option.stateId);
   }
 
   public async searchByTextField0(textField0: string): Promise<boolean> {

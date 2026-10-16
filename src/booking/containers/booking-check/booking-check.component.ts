@@ -81,7 +81,7 @@ export class BookingCheckComponent {
           }),
           tap(() => {
             this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
-            this.windowService.removeLocalStorage(MyWorkFilterComponent.FILTER_NAME);
+            this.windowService.removeSessionStorage(MyWorkFilterComponent.FILTER_NAME);
           }),
           switchMap(() =>
             this.router.navigate(['/work/my-work/list'], {

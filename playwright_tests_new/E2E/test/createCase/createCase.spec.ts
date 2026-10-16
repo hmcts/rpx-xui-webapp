@@ -63,7 +63,8 @@ test.describe(
       });
 
       await test.step('Check the case tab Data, matches previously entered data (EXUI-848/EXUI-811/EXUI-433)', async () => {
-        const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
+        const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.caseViewerTable);
         expect.soft(table1).toMatchObject({
           'Text Field 0': caseData.textField0,
           'Text Field 2': caseData.textField2,

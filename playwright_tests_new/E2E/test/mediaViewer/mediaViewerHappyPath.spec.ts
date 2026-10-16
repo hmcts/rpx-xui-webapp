@@ -24,7 +24,7 @@ const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
 const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH);
 const MEDIA_VIEWER_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_MEDIA_VIEWER_TEST_TIMEOUT_MS ?? '', 10) || 300_000;
 
-test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
+test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer', '@nightly'] }, () => {
   test.describe.configure({ timeout: MEDIA_VIEWER_TEST_TIMEOUT_MS });
 
   test('Opens uploaded document in the Media Viewer end-to-end', async ({
@@ -89,21 +89,23 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
       });
 
       await test.step('Validate the Media Viewer end-to-end happy path', async () => {
-        mediaPage = await backendMonitor.failFastOnCriticalBackendFailure(
+        const openedMediaPage = await backendMonitor.failFastOnCriticalBackendFailure(
           'open document',
           caseDetailsPage.openDocumentOneInMediaViewer()
         );
-        await mediaPage.waitForLoadState('domcontentloaded').catch(() => undefined);
+        mediaPage = openedMediaPage;
+        await openedMediaPage.waitForLoadState('domcontentloaded').catch(() => undefined);
 
-        await backendMonitor.waitForDocumentBinaryResponse(mediaPage);
-        await expect.poll(() => backendMonitor.lastDocumentBinaryUrl).toMatch(MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN);
-
-        const resolvedMediaViewerPage = new CaseFileViewPage(mediaPage);
-        await expect(mediaPage).toHaveURL(MEDIA_VIEWER_ROUTE_PATTERN);
-        await expect.poll(async () => mediaPage.title()).toContain(`${documentFileName} - View Document`);
-        await expect(resolvedMediaViewerPage.standaloneMediaViewerContainer).toBeVisible();
+        const resolvedMediaViewerPage = new CaseFileViewPage(openedMediaPage);
+        await expect(openedMediaPage).toHaveURL(MEDIA_VIEWER_ROUTE_PATTERN);
         await expect(resolvedMediaViewerPage.standaloneMediaViewerToolbar).toBeVisible();
         await expect(resolvedMediaViewerPage.standaloneMediaViewPanel).toBeVisible();
+
+        await backendMonitor.waitForDocumentBinaryResponse(openedMediaPage);
+        await expect.poll(() => backendMonitor.lastDocumentBinaryUrl).toMatch(MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN);
+
+        await expect.poll(async () => openedMediaPage.title()).toContain(`${documentFileName} - View Document`);
+        await expect(resolvedMediaViewerPage.standaloneMediaViewerContainer).toBeVisible();
       });
     } finally {
       page.context().off('response', backendMonitor.onResponse);

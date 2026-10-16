@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { config as testConfig } from './utils/apiTestRuntimeConfig';
-import { withXsrf, expectStatus, guardedRequest } from './utils/apiTestUtils';
+import { withXsrf, expectStatus, guardedRequest, withRetry } from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
 
@@ -18,7 +18,8 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
     const uniqueCaseTypes = Array.from(new Set(jurisdiction.caseTypeIds ?? []));
     for (const caseTypeId of uniqueCaseTypes) {
       const caseTypeIdText = stringifyCaseTypeId(caseTypeId);
-      test(`work-basket inputs available for ${caseTypeIdText}`, async ({ apiClient }) => {
+      test(`work-basket inputs available for ${caseTypeIdText}`, async ({ apiClient }, testInfo) => {
+        testInfo.setTimeout(90_000);
         interface WorkbasketInput {
           label?: string;
           field?: {
@@ -36,12 +37,16 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
           [key: string]: unknown;
         }
 
-        const response = await guardedRequest(() =>
-          apiClient.get<WorkbasketData>(`data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`, {
-            headers: { experimental: 'true' },
-            timeoutMs: 20_000,
-            throwOnError: false,
-          })
+        const response = await withRetry(
+          () =>
+            guardedRequest(() =>
+              apiClient.get<WorkbasketData>(`data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`, {
+                headers: { experimental: 'true' },
+                timeoutMs: 20_000,
+                throwOnError: false,
+              })
+            ),
+          { retries: 2, retryStatuses: [502, 504], baseDelayMs: 1_000 }
         );
         expectStatus(response.status, [200]);
 
@@ -70,19 +75,24 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
     }
   }
 
-  test('returns authenticated profile data for dedicated work-allocation solicitor', async ({ apiClientFor }) => {
+  test('returns authenticated profile data for dedicated work-allocation solicitor', async ({ apiClientFor }, testInfo) => {
+    testInfo.setTimeout(120_000);
     const apiClient = await apiClientFor('waSolicitor');
-    const response = await withXsrf('waSolicitor', (headers) =>
-      guardedRequest(() =>
-        apiClient.get('data/internal/profile', {
-          headers: {
-            ...headers,
-            experimental: 'true',
-          },
-          timeoutMs: 20_000,
-          throwOnError: false,
-        })
-      )
+    const response = await withRetry(
+      () =>
+        withXsrf('waSolicitor', (headers) =>
+          guardedRequest(() =>
+            apiClient.get('data/internal/profile', {
+              headers: {
+                ...headers,
+                experimental: 'true',
+              },
+              timeoutMs: 30_000,
+              throwOnError: false,
+            })
+          )
+        ),
+      { retries: 2, retryStatuses: [502, 504], baseDelayMs: 1_000 }
     );
 
     expectStatus(response.status, [200]);

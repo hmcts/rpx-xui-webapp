@@ -196,7 +196,7 @@ export const test = base.extend<ApiFixtures>({
 
       const networkTimeout =
         /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(errorMessage) ||
-        entries.some((entry) => /timeout|timed out|ETIMEDOUT/i.test(entry.errorMessage || entry.error || ''));
+        entries.some((entry) => /timeout|timed out|ETIMEDOUT/i.test(entry.error || ''));
 
       const failureType = classifyFailure(errorMessage, serverErrors, clientErrors, slowCalls, networkTimeout);
 

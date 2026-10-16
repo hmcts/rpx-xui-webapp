@@ -1,3 +1,5 @@
+import authInterceptor from './lib/middleware/auth';
+import { getOrgServices } from './ref-data/orgServices';
 import * as bodyParser from 'body-parser';
 import { Express } from 'express';
 import * as amendedJurisdictions from './amendedJurisdictions';
@@ -141,6 +143,8 @@ export const initProxy = (app: Express) => {
     source: '/api/notification',
     target: getConfigValue(SERVICES_NOTIFICATIONS_API_URL),
   });
+
+  app.get('/refdata/location/orgServices', authInterceptor, getOrgServices);
 
   applyProxy(app, {
     rewrite: false,

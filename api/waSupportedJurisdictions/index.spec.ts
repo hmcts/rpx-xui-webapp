@@ -6,6 +6,7 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as configuration from '../configuration';
 import { http } from '../lib/http';
+import * as log4jui from '../lib/log4jui';
 import { setHeaders } from '../lib/proxy';
 import { toTitleCase } from '../utils';
 import { getDetailedWASupportedJurisdictions } from './index';
@@ -20,7 +21,7 @@ describe('WA Supported Jurisdictions', () => {
   let httpGetStub: sinon.SinonStub;
   let setHeadersStub: sinon.SinonStub;
   let getConfigValueStub: sinon.SinonStub;
-  let consoleLogStub: sinon.SinonStub;
+  let errorLogStub: sinon.SinonStub;
   let waSupportedJurisdictions;
   let http;
   let proxy;
@@ -30,6 +31,7 @@ describe('WA Supported Jurisdictions', () => {
 
   beforeEach(() => {
     delete require.cache[require.resolve('./index')];
+    delete require.cache[require.resolve('../ref-data/orgServices')];
     delete require.cache[require.resolve('../lib/http')];
     delete require.cache[require.resolve('../lib/proxy')];
     delete require.cache[require.resolve('../configuration')];
@@ -47,6 +49,13 @@ describe('WA Supported Jurisdictions', () => {
     http = require('../lib/http');
     proxy = require('../lib/proxy');
     utils = require('../utils');
+    const logger = log4jui.getLogger('wa-supported-jurisdictions');
+    errorLogStub = sandbox.stub();
+    sandbox
+      .stub(log4jui, 'getLogger')
+      .callThrough()
+      .withArgs('wa-supported-jurisdictions')
+      .returns({ ...logger, error: errorLogStub });
     waSupportedJurisdictions = require('./index');
 
     toTitleCaseStub = sandbox.stub(utils, 'toTitleCase');
@@ -56,7 +65,6 @@ describe('WA Supported Jurisdictions', () => {
     next = sandbox.stub();
     httpGetStub = sandbox.stub(http.http, 'get');
     setHeadersStub = sandbox.stub(proxy, 'setHeaders');
-    consoleLogStub = sandbox.stub(console, 'log');
 
     res.send.returns(res);
     res.status.returns(res);
@@ -177,7 +185,7 @@ describe('WA Supported Jurisdictions', () => {
       const jurisdictionList = waSupportedJurisdictions.getWASupportedJurisdictionsList();
 
       expect(jurisdictionList).to.deep.equal(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC']);
-      expect(consoleLogStub).not.to.have.been.called;
+      expect(errorLogStub).not.to.have.been.called;
     });
 
     it('should handle errors and log them', () => {
@@ -187,7 +195,7 @@ describe('WA Supported Jurisdictions', () => {
       const result = waSupportedJurisdictions.getWASupportedJurisdictionsList();
 
       expect(result).to.be.undefined;
-      expect(consoleLogStub).to.have.been.calledWith(error);
+      expect(errorLogStub).to.have.been.calledWith(error);
     });
 
     it('should handle empty jurisdiction config', () => {

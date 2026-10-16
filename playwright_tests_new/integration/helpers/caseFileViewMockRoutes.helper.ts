@@ -13,6 +13,7 @@ export interface CaseFileViewMockRoutesConfig {
   categoriesStatus?: number;
   caseDetailsMock?: object;
   caseDetailsStatus?: number;
+  cdamExclusionList?: string;
 }
 
 export interface CaseFileViewUserDetailsConfig {
@@ -45,6 +46,23 @@ export async function setupCaseFileViewMockRoutes(
   const caseDetailsMock = config.caseDetailsMock ?? buildCaseFileViewCaseMock(caseId);
   const categoriesMock = config.categoriesMock ?? buildCaseFileViewCategoriesMock();
 
+  if (config.cdamExclusionList !== undefined) {
+    const cdamExclusionList = config.cdamExclusionList;
+    await page.route('**/assets/config/config.json*', async (route) => {
+      const response = await route.fetch();
+      const appConfig = await response.json();
+      appConfig.caseEditorConfig.documentSecureModeCaseTypeExclusions = cdamExclusionList;
+      appConfig.caseEditorConfig.mc_cdam_exclusion_list = cdamExclusionList;
+      await route.fulfill({ response, json: appConfig });
+    });
+    await page.route('**/*launchdarkly.com/sdk/eval**', async (route) => {
+      const response = await route.fetch();
+      const flags = await response.json();
+      flags['mc-cdam-exclusion-list'] = { value: cdamExclusionList, version: 1 };
+      await route.fulfill({ response, json: flags });
+    });
+  }
+
   await setupCaseworkerJurisdictionsRoute(page, ['PRIVATELAW'], [{ serviceId: 'PRIVATELAW', serviceName: 'Private Law' }]);
 
   await page.route(`**/data/internal/cases/${caseId}*`, async (route) => {
@@ -72,12 +90,14 @@ export async function setupCaseFileViewMockRoutes(
   });
 }
 
-export async function setupCaseFileViewDocumentBinaryMockRoutes(page: Page): Promise<void> {
+export async function setupCaseFileViewDocumentBinaryMockRoutes(page: Page, onRequest?: (url: string) => void): Promise<void> {
   await page.route('**/documentsv2/*/binary', async (route) => {
+    onRequest?.(route.request().url());
     await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
   });
 
   await page.route('**/documents/*/binary', async (route) => {
+    onRequest?.(route.request().url());
     await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
   });
 }

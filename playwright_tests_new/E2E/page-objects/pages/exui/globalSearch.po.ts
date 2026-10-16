@@ -27,6 +27,10 @@ export class GlobalSearchPage extends Base {
     await this.searchLinkOnMenuBar.click();
     await this.page.waitForURL(/\/search/, { timeout: EXUI_TIMEOUTS.GLOBAL_SEARCH_NAVIGATION });
     await this.searchForm.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.GLOBAL_SEARCH_NAVIGATION });
+    await this.submitSearchWithCase(caseId, caseType, applicantOrPartyName);
+  }
+
+  async submitSearchWithCase(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
     await this.caseIdTextBox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await this.caseIdTextBox.click();
     await this.caseIdTextBox.fill(caseId);
@@ -40,13 +44,25 @@ export class GlobalSearchPage extends Base {
   }
 
   async performGlobalSearchWithRetry(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
-    await this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName);
-    if (!(await this.errorPageHeading.isVisible().catch(() => false))) {
+    // This named helper is the one explicit transient-recovery contract; retain the first failure for diagnosis.
+    let firstFailure = '';
+    try {
+      await this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName);
       return;
+    } catch (error) {
+      firstFailure = error instanceof Error ? error.message : String(error);
+      if (!(await this.errorPageHeading.isVisible().catch(() => false))) {
+        throw error;
+      }
     }
-    await this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName);
-    if (await this.errorPageHeading.isVisible().catch(() => false)) {
-      throw new Error('Global search returned "Something went wrong" after retry.');
+
+    try {
+      await this.performGlobalSearchWithCase(caseId, caseType, applicantOrPartyName);
+    } catch (error) {
+      const secondFailure = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Global search failed after one bounded retry. First attempt: ${firstFailure}. Second attempt: ${secondFailure}`
+      );
     }
   }
 
@@ -88,7 +104,11 @@ export class GlobalSearchPage extends Base {
   }
 
   private async waitForSearchResults(caseId: string): Promise<void> {
-    if (await this.errorPageHeading.isVisible().catch(() => false)) return;
+    if (await this.errorPageHeading.isVisible().catch(() => false)) {
+      throw new Error(
+        `Global search returned "Something went wrong" before results were usable. Current URL: ${this.page.url()}`
+      );
+    }
 
     await this.searchResultsTable.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
     await this.searchResultRows.first().waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
@@ -110,7 +130,9 @@ export class GlobalSearchPage extends Base {
       await matchingCaseLink.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
     } catch {
       if (await this.errorPageHeading.isVisible().catch(() => false)) {
-        return;
+        throw new Error(
+          `Global search returned "Something went wrong" before case ${caseId} was usable. Current URL: ${this.page.url()}`
+        );
       }
       throw new Error(
         `Global search results did not contain case reference ${caseId} within ${EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN}ms`

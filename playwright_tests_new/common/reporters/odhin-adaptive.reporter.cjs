@@ -2,16 +2,34 @@
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { nextChecksFor, redactText, safeSourceFile } = require('./failure-context.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
+const failureStatuses = new Set(['failed', 'timedOut', 'interrupted']);
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
-    // Odhín embeds attachments by default, which can exceed V8's string limit after retried browser failures.
-    // Keep the files beside the published report; callers can explicitly opt back into embedding for a small local run.
-    const reporterOptions = { embedAttachments: false, ...options };
+    // Keep traces and screenshots beside the published report; never serialize them into Odhín HTML.
+    const reporterOptions = {
+      ...options,
+      embedAttachments: false,
+      testListColumns: [
+        ...new Set([
+          ...String(options.testListColumns ?? '')
+            .toUpperCase()
+            .split(',')
+            .map((column) => column.trim())
+            .filter(Boolean),
+          'PROJECT',
+          'FILE',
+        ]),
+      ],
+    };
+    this.testMetadata = [];
     this.outputFolder = reporterOptions.outputFolder;
     const configuredLightweight = reporterOptions.lightweight;
     const envLightweight = process.env.PW_ODHIN_LIGHTWEIGHT;
@@ -114,6 +132,17 @@ class OdhinAdaptiveReporter {
       }
     }
 
+    const failure = buildFailureMetadata(test, result);
+    this.testMetadata.push({
+      target: `#${test.id}-${result.retry}`,
+      testId: redactText(test.id),
+      feature: deriveFeatureName(test?.location?.file, test?.annotations),
+      tags: Array.isArray(test.tags) ? test.tags.map(redactText) : [],
+      durationMs: result.duration || 0,
+      retry: result.retry,
+      status: redactText(result?.status),
+      ...(failure ? { failure } : {}),
+    });
     this.recordStatus(result?.status);
     this.recordFeatureStat(test, result);
     this.enqueueInnerCallback('onTestEnd', () => this.inner.onTestEnd(test, nextResult), { test });
@@ -141,7 +170,7 @@ class OdhinAdaptiveReporter {
       }
     }
     try {
-      enhanceGeneratedReport(this.outputFolder, this.featureStats);
+      enhanceGeneratedReport(this.outputFolder, this.featureStats, this.testMetadata);
     } catch (error) {
       process.stderr.write(`[odhin-profile] report enhancement failed: ${formatErrorMessage(error)}\n`);
     }
@@ -191,7 +220,7 @@ class OdhinAdaptiveReporter {
       return;
     }
 
-    const featureName = deriveFeatureName(test?.location?.file);
+    const featureName = deriveFeatureName(test?.location?.file, test?.annotations);
     const current = this.featureStats.get(featureName) ?? createEmptyFeatureStat(featureName);
     current.totalTests += 1;
     current.durationMs += Number(result?.duration ?? 0);
@@ -248,6 +277,53 @@ class OdhinAdaptiveReporter {
   async flushInnerCallbacks() {
     await this.pendingInnerCallbacks;
   }
+}
+
+function buildFailureMetadata(test, result) {
+  if (!failureStatuses.has(result?.status)) {
+    return null;
+  }
+
+  const annotations = Array.isArray(test?.annotations) ? test.annotations : [];
+  const annotation = (type) => annotations.find((item) => item?.type === type)?.description ?? '';
+  const classification = annotation('Failure type') || 'UNKNOWN';
+  const location = test?.location ?? {};
+  const title = redactText(test?.title ?? 'Unnamed test');
+  const project = resolveProjectName(test);
+  const error = Array.isArray(result?.errors) ? result.errors[0] : result?.error;
+
+  return {
+    title,
+    file: safeSourceFile(location.file),
+    line: Number.isInteger(location.line) ? location.line : null,
+    column: Number.isInteger(location.column) ? location.column : null,
+    project: redactText(project),
+    retry: Number.isInteger(Number(result?.retry)) ? Number(result.retry) : 0,
+    status: redactText(result.status),
+    classification: redactText(classification),
+    confidence: 'observed',
+    source: redactText(annotation('Failure source')),
+    phase: redactText(annotation('Phase marker')),
+    actionableError: redactText(annotation('Actionable error') || error?.message || ''),
+    hypothesis: redactText(annotation('Likely root cause')),
+    nextChecks: nextChecksFor(classification),
+  };
+}
+
+function resolveProjectName(test) {
+  let suite = test?.parent;
+  let depth = 0;
+  while (suite && depth < 20) {
+    if (typeof suite.project === 'function') {
+      const project = suite.project();
+      if (project?.name) {
+        return project.name;
+      }
+    }
+    suite = suite.parent;
+    depth += 1;
+  }
+  return process.env.PW_PROJECT_NAME || 'unknown';
 }
 
 function addFailureSource(test, result) {
@@ -445,5 +521,6 @@ exportedReporter.__test__ = {
   normalizeBoolean,
   normalizeRuntimeHookTimeoutMs,
   withTimeout,
+  buildFailureMetadata,
 };
 module.exports = exportedReporter;

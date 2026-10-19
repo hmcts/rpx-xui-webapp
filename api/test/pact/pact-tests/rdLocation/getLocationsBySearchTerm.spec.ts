@@ -14,7 +14,8 @@ const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_location', port
 const searchTerm = 'cen';
 const strCourtTypeIds = '10';
 
-describe('Locations ref data api, get matching location for search term', () => {
+// TEMPORARY: Remove this skip when the CME-1079 PR is introduced.
+xdescribe('Locations ref data api, get matching location for search term', () => {
   const RESPONSE_BODY = [
     {
       court_venue_id: somethingLike('10576'),

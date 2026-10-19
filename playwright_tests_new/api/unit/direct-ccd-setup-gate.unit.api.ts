@@ -43,6 +43,14 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
     }
   });
 
+  test('rejects malformed seeded data rather than creating an empty substitute case', () => {
+    for (const payload of [{ TextField0: 'seeded' }, { fieldValues: null }, { fieldValues: [] }]) {
+      expect(() => caseSetupTest.resolveCaseSetupFieldValues(payload)).toThrow(/fieldValues object/);
+    }
+    const fields = { TextField0: 'seeded' };
+    expect(caseSetupTest.resolveCaseSetupFieldValues({ fieldValues: fields })).toBe(fields);
+  });
+
   test('retries the read-only aggregated jurisdiction lookup before case creation', async () => {
     let attempts = 0;
     let requestOptions: { headers?: Record<string, string> } | undefined;
@@ -73,7 +81,7 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
     });
   });
 
-  test('falls back to configured CCD identifiers after bounded read-only transport failures', async () => {
+  test('fails closed after bounded read-only transport failures', async () => {
     let attempts = 0;
     const request = {
       scenario: 'direct-ccd-read-fallback',
@@ -91,7 +99,7 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
 
     await expect(
       caseSetupTest.requestAggregatedJurisdictionsWithRetry(request, 'aggregated/caseworkers/user/jurisdictions', 1000)
-    ).resolves.toBeUndefined();
+    ).rejects.toThrow(/identity preflight.*unavailable/i);
     expect(attempts).toBe(3);
   });
 

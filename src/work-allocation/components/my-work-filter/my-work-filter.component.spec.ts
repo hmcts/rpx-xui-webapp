@@ -173,7 +173,7 @@ describe('MyWorkFilterComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.persistence = 'local';
+    component.persistence = 'session';
     mockFilterService.get.and.returnValue(null);
     mockFeatureToggleService.getValue.and.returnValue(of(servicesMap));
     mockSessionStorageService.getItem.and.returnValue(
@@ -194,8 +194,8 @@ describe('MyWorkFilterComponent', () => {
     expect(button.nativeElement.innerText).toContain('Show work filter');
   });
 
-  it('should set the persistence to be local storage if the  user is a judicial user', () => {
-    expect(component.fieldsConfig.persistence).toBe('local');
+  it('should set the persistence to session storage for a judicial user', () => {
+    expect(component.fieldsConfig.persistence).toBe('session');
   });
 
   it('should set booking locations', () => {

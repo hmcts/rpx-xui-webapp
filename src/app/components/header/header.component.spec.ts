@@ -59,7 +59,7 @@ describe('Header Component', () => {
     component = new HeaderComponent(mockStore, focusService);
   });
 
-  it('should render the skip to content link', () => {
+  it('should render the skip to content link for the current page', () => {
     const translatePipeSpy = spyOn(RpxTranslateMockPipe.prototype, 'transform').and.callThrough();
     fixture.componentInstance.currentUrl = 'http://localhost:8080/A/B#C';
     fixture.detectChanges();

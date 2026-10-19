@@ -15,6 +15,23 @@ function mediaViewerPage(): Page {
 }
 
 test.describe('Case details Media Viewer helper', { tag: '@svc-internal' }, () => {
+  test('does not reload a slow case-details page after its readiness timeout', async () => {
+    let reloads = 0;
+    const readinessError = new Error('case details remained unavailable');
+    const caseDetailsPage = Object.assign(Object.create(CaseDetailsPage.prototype), {
+      container: { waitFor: async () => Promise.reject(readinessError) },
+      page: {
+        url: () => 'https://xui.example/cases/case-details/DIVORCE/xuiTestCaseType/1234',
+        goto: async () => {
+          reloads += 1;
+        },
+      },
+    });
+
+    await expect(CaseDetailsPage.prototype.waitForCaseDetailsReady.call(caseDetailsPage)).rejects.toThrow(readinessError);
+    expect(reloads).toBe(0);
+  });
+
   test('returns same page when the document opens Media Viewer without a popup', async () => {
     const page = {
       waitForEvent: () => never<Page>(),
@@ -80,6 +97,7 @@ test.describe('Case details Media Viewer helper', { tag: '@svc-internal' }, () =
   });
 
   test('fails clearly when selecting the document does not open Media Viewer', async () => {
+    let clickAttempts = 0;
     const page = {
       waitForEvent: async () => {
         throw new Error('no popup');
@@ -94,9 +112,12 @@ test.describe('Case details Media Viewer helper', { tag: '@svc-internal' }, () =
     await expect(
       CaseDetailsPage.prototype.openDocumentOneInMediaViewer.call({
         getRecommendedTimeoutMs: () => 1,
-        openDocumentOne: async () => undefined,
+        openDocumentOne: async () => {
+          clickAttempts += 1;
+        },
         page,
       })
     ).rejects.toThrow(/Media Viewer did not open within 1ms after selecting Document 1 across 2 attempts/);
+    expect(clickAttempts).toBe(2);
   });
 });

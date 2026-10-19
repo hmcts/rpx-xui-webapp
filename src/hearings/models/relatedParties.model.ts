@@ -1,4 +1,1 @@
-export interface RelatedPartiesModel {
-  relatedPartyID: string;
-  relationshipType: string;
-}
+export { RelatedPartiesModel } from './hearing-payload-support.model';

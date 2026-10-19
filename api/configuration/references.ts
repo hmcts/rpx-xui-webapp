@@ -9,9 +9,10 @@
  * This file should be representative of the .json files in the root /config folder
  */
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret';
-export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string';
+export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-managed-redis-connection-string';
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc';
 export const APP_INSIGHTS_CONNECTION_STRING = 'secrets.rpx.appinsights-connection-string-mc';
+export const APP_INSIGHTS_SAMPLING_PERCENTAGE = 'appInsights.samplingPercentage';
 
 export const LAUNCH_DARKLY_CLIENT_ID = 'secrets.rpx.launch-darkly-client-id';
 
@@ -82,6 +83,7 @@ export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 export const SERVICES_TRANSLATION_API_URL = 'services.translation';
 
 export const PROTOCOL = 'protocol';
+export const DYNATRACE_CDN = 'dynatraceCdn';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';
 
@@ -107,6 +109,8 @@ export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles';
 
 export const DECENTRALISED_CASE_TYPE_CONFIG = 'decentralisedCaseTypeConfig';
 
+export const DECENTRALISED_SERVICE_MAP = 'decentralisedServiceMap';
+
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret';
 
 export const SYSTEM_USER_NAME = 'secrets.rpx.system-user-name';
@@ -129,6 +133,7 @@ export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 export const FEATURE_DOCS_ENABLED = 'docsEnabled';
 export const FEATURE_QUERY_IDAM_SERVICE_OVERRIDE = 'queryIdamServiceOverride';
+export const FEATURE_DYNATRACE_ENABLED = 'dynatraceEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 
@@ -147,9 +152,11 @@ export const CASE_SHARE_PERMISSIONS = 'pui-case-manager';
 
 export const SESSION_TIMEOUTS = 'sessionTimeouts';
 
+export const DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS = 'documentUploadThrottle.initialMs';
+export const DOCUMENT_UPLOAD_THROTTLE_MAX_MS = 'documentUploadThrottle.maxMs';
+
 // PACT
 export const PACT_BROKER_URL = 'pact.brokerUrl';
-export const PACT_BRANCH_NAME = 'pact.branchName';
 export const PACT_CONSUMER_VERSION = 'pact.consumerVersion';
 export const PACT_BROKER_USERNAME = 'pact.brokerUsername';
 export const PACT_BROKER_PASSWORD = 'pact.brokerPassword';

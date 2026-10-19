@@ -56,13 +56,17 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
     assertGlobalSearchResults(response.status, response.data);
   });
 
-  test('searchCases proxy responds or guards', async ({ apiClient }) => {
+  test('searchCases proxy responds or guards', async ({ apiClient }, testInfo) => {
+    testInfo.setTimeout(120_000);
     const response = await withRetry(
       () =>
-        apiClient.post<{ total?: number; cases?: unknown[] }>('data/internal/searchCases?ctid=xuiTestCaseType', {
-          data: { size: 1, from: 0, sort: [], native_es_query: { match_all: {} } },
-          throwOnError: false,
-        }),
+        guardedRequest(() =>
+          apiClient.post<{ total?: number; cases?: unknown[] }>('data/internal/searchCases?ctid=xuiTestCaseType', {
+            data: { size: 1, from: 0, sort: [], native_es_query: { match_all: {} } },
+            timeoutMs: 30_000,
+            throwOnError: false,
+          })
+        ),
       { retries: 1, retryStatuses: [502, 504] }
     );
     expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);

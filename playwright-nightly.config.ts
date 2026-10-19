@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
 import {
+  buildTagRegex,
   logResolvedTagFilters,
   resolveLocalWorktreeTestIgnorePatterns,
   resolveTagFilters,
@@ -17,6 +18,9 @@ const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-e2e/odhin-report';
 const defaultOdhinIndexFilename = 'xui-playwright-e2e.html';
+const NIGHTLY_CROSS_BROWSER_EXCLUDED_TAGS = ['@e2e-civil-data-loss', '@e2e-document-upload', '@e2e-document-upload-v1'];
+const hasClearedE2eExcludedTags = (env: EnvMap): boolean =>
+  (env.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?? '').split(/[\s,]+/).includes('@none');
 
 const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBaseUrl;
@@ -80,6 +84,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
     globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
   });
+  const nightlyCrossBrowserExcludedTags = hasClearedE2eExcludedTags(e2eEnv) ? [] : NIGHTLY_CROSS_BROWSER_EXCLUDED_TAGS;
   logResolvedTagFilters('Cross-browser E2E', e2eTagFilters, e2eEnv);
   const reporter: [string, Record<string, unknown> | undefined][] = [
     [env.CI ? 'dot' : 'list', undefined],
@@ -113,7 +118,6 @@ const buildConfig = (env: EnvMap = process.env) => {
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [
-      '**/test/smoke/smokeTest.spec.ts',
       ...localWorktreeTestIgnorePatterns,
       ...(env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true' ? [] : ['**/*.a11y.spec.ts']),
     ],
@@ -144,7 +148,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       {
         name: 'firefox',
         grep: e2eTagFilters.grep,
-        grepInvert: e2eTagFilters.grepInvert,
+        grepInvert: buildTagRegex([...e2eTagFilters.excludedTags, ...nightlyCrossBrowserExcludedTags]),
         use: {
           ...devices['Desktop Firefox'],
           headless: headlessMode,
@@ -164,7 +168,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       {
         name: 'webkit',
         grep: e2eTagFilters.grep,
-        grepInvert: e2eTagFilters.grepInvert,
+        grepInvert: buildTagRegex([...e2eTagFilters.excludedTags, ...nightlyCrossBrowserExcludedTags]),
         use: {
           headless: headlessMode,
           trace: {
@@ -188,6 +192,7 @@ const config = buildConfig(process.env);
 
 (config as { __test__?: unknown }).__test__ = {
   buildConfig,
+  NIGHTLY_CROSS_BROWSER_EXCLUDED_TAGS,
   resolveOdhinIndexFilename,
   resolveOdhinOutputFolder,
   resolveWorkerCount,

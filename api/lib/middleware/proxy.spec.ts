@@ -19,6 +19,7 @@ describe('Proxy Middleware', () => {
   let loggerStub: any;
   let onProxyError: any;
   let applyProxy: any;
+  let buildPathRewrite: any;
 
   before(() => {
     delete require.cache[require.resolve('./proxy')];
@@ -47,6 +48,7 @@ describe('Proxy Middleware', () => {
     const proxyModule = module.require('./proxy');
     onProxyError = proxyModule.onProxyError;
     applyProxy = proxyModule.applyProxy;
+    buildPathRewrite = proxyModule.buildPathRewrite;
   });
 
   afterEach(() => {
@@ -280,6 +282,18 @@ describe('Proxy Middleware', () => {
       applyProxy(mockApp, config, false);
 
       expect(mockApp.use).to.have.been.calledOnce;
+    });
+  });
+
+  describe('buildPathRewrite', () => {
+    it('should restore an exact Express mount path before proxying', () => {
+      const rewrite = buildPathRewrite({
+        rewrite: false,
+        source: '/web-pubsub/negotiate',
+        target: 'http://localhost:3460',
+      });
+
+      expect(rewrite('/', { baseUrl: '/web-pubsub/negotiate' })).to.equal('/web-pubsub/negotiate');
     });
   });
 });

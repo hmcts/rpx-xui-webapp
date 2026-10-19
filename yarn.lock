@@ -2941,7 +2941,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.39.5, @eslint/js@npm:^9.11.1, @eslint/js@npm:^9.39.2":
+"@eslint/js@npm:9.39.5, @eslint/js@npm:^9.11.1, @eslint/js@npm:^9.39.5":
   version: 9.39.5
   resolution: "@eslint/js@npm:9.39.5"
   checksum: 10/042d522f28da10ab205f368a94b620334418eb13a5226e50f7edd03dbe26809eb477d0b7a4dc3968b43a98f6ce594f6c03731214c3e0386fd5bcb74fdb9df64c
@@ -3348,9 +3348,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.21":
-  version: 3.2.21
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.21"
+"@hmcts/rpx-xui-common-lib@npm:3.2.22":
+  version: 3.2.22
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.22"
   dependencies:
     govuk-frontend: "npm:5.13.0"
     tslib: "npm:^2.0.0"
@@ -3373,7 +3373,7 @@ __metadata:
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/c590679b581077f9476a2565a64a5e395fea0c6835063f2d76d9c03baeb74ce089b4930fc5ae08b0d4b5e3983c436b888ad057b8ee4150fdac7a97f170b2ade0
+  checksum: 10/13b786a387c7d05247139b8818201a22201d8dc38f850d4ace29943a32f560209cd6fed0094e83b2f64f837f4fd7283d8abcf33967d6158697ae9eb9ab42686c
   languageName: node
   linkType: hard
 
@@ -6692,14 +6692,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.63.0":
-  version: 1.63.0
-  resolution: "@playwright/test@npm:1.63.0"
+"@playwright/test@npm:1.64.1":
+  version: 1.64.1
+  resolution: "@playwright/test@npm:1.64.1"
   dependencies:
-    playwright: "npm:1.63.0"
+    playwright: "npm:1.64.1"
   bin:
     playwright: cli.js
-  checksum: 10/b5e561b8f11488b8062b98c5cf975740f48ae7e9b455fb7152e0fb90d8e13f20c3c3ae6a15833655364246b99f5a46f6601daa5a9eef01de5004c8be7e2b3af3
+  checksum: 10/589855c5fbc9ebbfb072e77e4b24a646f302ca9823d56ac3ff08a8e4ecf7ee13a390fe19236f4f9737e9a736194324f244f90c409a10edeb480c5f99ce77d10e
   languageName: node
   linkType: hard
 
@@ -9502,19 +9502,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.18.1":
-  version: 1.18.1
-  resolution: "axios@npm:1.18.1"
-  dependencies:
-    follow-redirects: "npm:^1.16.0"
-    form-data: "npm:^4.0.5"
-    https-proxy-agent: "npm:^5.0.1"
-    proxy-from-env: "npm:^2.1.0"
-  checksum: 10/c4cdced3ee0a9bf7dcae189fbc74a124aa079d4f04dbd995e602d39c1419476e8d021f87ee39ac8d8398e5a55e6d0b986238b3645f0d9177ac80de87c2a73f18
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.12.1, axios@npm:^1.13.5, axios@npm:^1.19.0, axios@npm:^1.20.0, axios@npm:^1.8.4":
+"axios@npm:1.20.0, axios@npm:^1.12.1, axios@npm:^1.13.5, axios@npm:^1.19.0, axios@npm:^1.20.0, axios@npm:^1.8.4":
   version: 1.20.0
   resolution: "axios@npm:1.20.0"
   dependencies:
@@ -18577,12 +18565,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.63.0":
-  version: 1.63.0
-  resolution: "playwright-core@npm:1.63.0"
+"playwright-core@npm:1.64.1":
+  version: 1.64.1
+  resolution: "playwright-core@npm:1.64.1"
   bin:
     playwright-core: cli.js
-  checksum: 10/d0f7c70786f5e08aa7553a77ba28c07427086e323ae8c4126a647debd8181966dc11d6f8fe1462f2a776ad60c95451b08f01fbee17b11e69a5bd9a2070fe75a6
+  checksum: 10/4a173590bc784d8d5bfe2cace53ccc31316dac11475660b59cea24a2e833875d87183d41a957a20355301ac2b339a17940faaf0b42217156fa9c0c3cfdd4633c
   languageName: node
   linkType: hard
 
@@ -18602,14 +18590,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.63.0":
-  version: 1.63.0
-  resolution: "playwright@npm:1.63.0"
+"playwright@npm:1.64.1":
+  version: 1.64.1
+  resolution: "playwright@npm:1.64.1"
   dependencies:
-    playwright-core: "npm:1.63.0"
+    playwright-core: "npm:1.64.1"
   bin:
     playwright: cli.js
-  checksum: 10/ec87c22888148603a8955bc2a092f416455af931fe53925b9143ce333b83e42a6d8c159c00a4f2d232b27100cf3eadd93cec8a6e5c4e12c1c00663d2034dd515
+  checksum: 10/1096fa91e433f84c8677433a26052aa4f269bf0811aa793fe667d7053feb1c2852e9f10f9f0cced77fa2678f8580ed47192f29adbc9c027efa5ba87b38e23e50
   languageName: node
   linkType: hard
 
@@ -19921,7 +19909,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     "@edium/fsm": "npm:^3.0.2"
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
-    "@eslint/js": "npm:^9.39.2"
+    "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.4.11-cve-update"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
@@ -19929,7 +19917,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.21"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.22"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.33-cve-update"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
@@ -19940,7 +19928,7 @@ __metadata:
     "@ngrx/store-devtools": "npm:^20"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
-    "@playwright/test": "npm:1.63.0"
+    "@playwright/test": "npm:1.64.1"
     "@stryker-mutator/api": "npm:^8.0.0"
     "@stryker-mutator/core": "npm:^9.6.1"
     "@stryker-mutator/html-reporter": "npm:^3.1.0"
@@ -20024,11 +20012,11 @@ __metadata:
     odhin-reports-playwright: "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch"
     otplib: "npm:^13.4.0"
     pegjs: "npm:^0.10.0"
-    playwright: "npm:1.63.0"
-    playwright-core: "npm:1.63.0"
+    playwright: "npm:1.64.1"
+    playwright-core: "npm:1.64.1"
     prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.15"
+    rpx-xui-translation: "npm:1.2.16"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.2"
     sass: "npm:^1.97.3"
@@ -20059,9 +20047,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.15":
-  version: 1.2.15
-  resolution: "rpx-xui-translation@npm:1.2.15"
+"rpx-xui-translation@npm:1.2.16":
+  version: 1.2.16
+  resolution: "rpx-xui-translation@npm:1.2.16"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -20070,7 +20058,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/e8253f5e63aa79b26bc0d231da4dd03539b32b44369d4245bcfac20a89b681eae946328d1b3877c9e647850470ede0122bbd210ceaa4be871584223b4b29f381
+  checksum: 10/d2016adbeb278c92eb393463c78a67aac1b8ac198fe4f521933f2d7edaf4146ce0d1bec3e1a80529b0b93a08bfcc7c2ea9c51a429b62e58e0c76aec4c551112f
   languageName: node
   linkType: hard
 

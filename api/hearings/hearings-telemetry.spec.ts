@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { AxiosHeaders } from 'axios';
 import * as sinon from 'sinon';
 import type { Response } from 'express';
 import type { Contracts } from 'applicationinsights';
@@ -181,7 +182,9 @@ describe('Structured Hearings traces', () => {
 
       it(`preserves the downstream response and status for ${operation}`, async () => {
         const data = { caseHearings: [], privateResponse: 'private-response' };
-        sandbox.stub(crud, method).resolves({ status: 201, data });
+        sandbox
+          .stub(crud, method)
+          .resolves({ status: 201, data, statusText: 'Created', headers: {}, config: { headers: new AxiosHeaders() } });
         await hmc[operation](req, res, next);
         expect((res.status as sinon.SinonStub).calledOnceWithExactly(201)).to.equal(true);
         expect((res.send as sinon.SinonStub).calledOnceWithExactly(operation === 'submitHearingActuals' ? null : data)).to.equal(
@@ -217,7 +220,9 @@ describe('Structured Hearings traces', () => {
       config.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS']);
       config.withArgs('services.hearings.sscs.serviceApi').returns('http://service-api');
       req.query.jurisdictionId = 'SSCS';
-      const send = sandbox.stub(crud, 'sendPost').resolves({ status: 200, data: [] });
+      const send = sandbox
+        .stub(crud, 'sendPost')
+        .resolves({ status: 200, data: [], statusText: 'OK', headers: {}, config: { headers: new AxiosHeaders() } });
       await services.loadLinkedCasesWithHearings(req, res, next);
       expect(send.calledOnceWithExactly('http://service-api/serviceLinkedCases', req.body, req, next)).to.equal(true);
       expect((res.status as sinon.SinonStub).calledOnceWithExactly(200)).to.equal(true);

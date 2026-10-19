@@ -171,7 +171,7 @@ describe('Hearings shared server error telemetry', () => {
   it('keeps the final Hearings response status and body while replacing raw server error logs', () => {
     const log = sandbox.stub(log4js.getLogger('errorHandler'), 'error');
     const original = failure();
-    errorHandler(original, req, res, sandbox.stub());
+    errorHandler(original, req, res, () => {});
     expect(log.called).to.equal(false);
     expect((res.status as sinon.SinonStub).calledOnceWithExactly(503)).to.equal(true);
     expect((res.send as sinon.SinonStub).calledOnceWithExactly(original.data)).to.equal(true);
@@ -182,7 +182,7 @@ describe('Hearings shared server error telemetry', () => {
     sandbox.stub(log4js.getLogger('errorHandler'), 'error');
     trace.throws(new Error('SDK failure'));
     const original = failure();
-    errorHandler(original, req, res, sandbox.stub());
+    errorHandler(original, req, res, () => {});
     expect((res.send as sinon.SinonStub).calledOnceWithExactly(original.data)).to.equal(true);
   });
 

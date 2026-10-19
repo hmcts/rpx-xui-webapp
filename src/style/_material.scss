@@ -21,7 +21,8 @@ $outlineColor: #bfc1c3;
   height: 42px !important;
   margin: 0 4px 7px 4px;
   border-top: 3px solid #fff;
-  background-color: govuk-colour('light-grey');
+  // govuk-frontend v6 deprecated the 'light-grey' colour keyword (removal planned for v7); pinned to the old v5 hex
+  background-color: #f3f2f1;
   color: govuk-colour('black');
   opacity: 1 !important;
 

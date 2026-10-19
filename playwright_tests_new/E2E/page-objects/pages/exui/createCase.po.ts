@@ -874,7 +874,7 @@ export class CreateCasePage extends Base {
     const maxRetryDelayMs = 10_000;
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
       min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
-      max: 30_000,
+      max: 80_000,
       fallback: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       multiplier: 2,
     });

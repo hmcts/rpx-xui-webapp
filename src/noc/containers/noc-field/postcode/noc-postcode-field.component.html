@@ -1,12 +1,17 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !postcodeControl.valid }">
-  <label class="govuk-label" [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
-      questionField.question_text | rpxTranslate
-    }}</span>
-    <span class="error-message" *ngIf="postcodeControl.errors && postcodeControl.touched">{{
-      postcodeControl.errors | nocError | rpxTranslate
-    }}</span>
+<div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': postcodeControl.errors && postcodeControl.touched }">
+  <label class="govuk-label govuk-!-font-weight-bold" [for]="id()">
+    <ng-container *ngIf="questionField.question_text">{{ questionField.question_text | rpxTranslate }}</ng-container>
   </label>
-
-  <input class="govuk-input govuk-input--width-10" [id]="id()" type="text" [formControl]="postcodeControl" />
+  <span class="govuk-error-message" *ngIf="postcodeControl.errors && postcodeControl.touched" [id]="id() + '-error'">
+    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+    {{ postcodeControl.errors | nocError | rpxTranslate }}
+  </span>
+  <input
+    class="govuk-input govuk-input--width-10"
+    [class.govuk-input--error]="postcodeControl.errors && postcodeControl.touched"
+    [id]="id()"
+    type="text"
+    [formControl]="postcodeControl"
+    [attr.aria-describedby]="postcodeControl.errors && postcodeControl.touched ? id() + '-error' : null"
+  />
 </div>

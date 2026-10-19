@@ -32,7 +32,8 @@
   color: govuk-colour('blue');
 
   &:hover {
-    color: govuk-colour('dark-blue');
+    // govuk-frontend v6 removed the 'dark-blue' colour keyword; pinned to the old v5 hex so hover colour doesn't shift
+    color: #003078;
   }
 
   &:focus {

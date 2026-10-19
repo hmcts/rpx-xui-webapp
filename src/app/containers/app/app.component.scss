@@ -28,6 +28,12 @@ body .govuk-width-container {
   min-width: 900px;
 }
 
+// The main landmark is focused by the skip link for keyboard accessibility.
+// Do not display the browser's focus outline around the whole page container.
+#content:focus {
+  outline: none;
+}
+
 .govuk-phase-banner {
   max-width: 1920px;
   min-width: 900px;

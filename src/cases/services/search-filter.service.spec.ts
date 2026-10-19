@@ -133,6 +133,45 @@ describe('SearchFilterService', () => {
     );
   });
 
+  it('should preserve multiple case states for the case-list search', () => {
+    const filter = {
+      selected: {
+        jurisdiction: JURISDICTION,
+        caseType: CASE_TYPES[0],
+        caseState: [CASE_STATE, { id: 'Submitted' }],
+        formGroup: new FormGroup({ name: new FormControl('something') }),
+        page: 1,
+        view: 'WORKBASKET',
+      },
+    };
+
+    searchFilterService.search(filter, true);
+
+    expect(ccdSearchServiceMock.searchCases).toHaveBeenCalledWith(
+      CASE_TYPE.id,
+      { page: 1, state: `${CASE_STATE.id},Submitted` },
+      { name: 'something' },
+      'WORKBASKET',
+      undefined
+    );
+  });
+
+  it('should omit the state parameter when no case states are selected', () => {
+    const filter = {
+      selected: {
+        jurisdiction: JURISDICTION,
+        caseType: CASE_TYPES[0],
+        caseState: [],
+        page: 1,
+        view: 'WORKBASKET',
+      },
+    };
+
+    searchFilterService.search(filter, true);
+
+    expect(ccdSearchServiceMock.searchCases).toHaveBeenCalledWith(CASE_TYPE.id, { page: 1 }, {}, 'WORKBASKET', undefined);
+  });
+
   it('should make collection field values turn into multiple query parameters when calling searchCases', () => {
     const handoffReasons = new FormArray([
       new FormGroup({

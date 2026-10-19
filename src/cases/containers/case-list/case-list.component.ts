@@ -49,7 +49,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public jurisdiction$: Observable<Jurisdiction>;
   public caseType$: Observable<CaseType>;
-  public caseState$: Observable<CaseState>;
+  public caseState$: Observable<CaseState[]>;
   public resultView$: Observable<SearchResultView>;
   public paginationMetadata$: Observable<PaginationMetadata>;
   public metadataFields$: Observable<string[]>;
@@ -68,7 +68,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public jurisdiction: Jurisdiction;
   public caseType: CaseType;
-  public caseState: CaseState;
+  public caseState: CaseState[];
   public resultView: SearchResultView;
   public paginationMetadata: PaginationMetadata = new PaginationMetadata();
   public metadataFields: string[];
@@ -251,9 +251,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.caseType = {
       ...result[1],
     };
-    this.caseState = {
-      ...result[2],
-    };
+    this.caseState = this.toCaseStateArray(result[2]);
     this.metadataFields = {
       ...result[3],
     };
@@ -324,13 +322,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
         : null;
       jurisdictionFromSessionStorage = { id: this.selected.jurisdiction.id };
       caseTypeGroupFromSessionStorage = { id: this.selected.caseType.id };
-      caseStateGroupFromSessionStorage = { id: this.selected.caseState ? this.selected.caseState.id : null };
+      caseStateGroupFromSessionStorage = this.toCaseStateArray(this.selected.caseState);
     } else if (this.savedQueryParams) {
       this.savedQueryParams = safeJsonParse(this.windowService.getSessionStorage(SAVED_QUERY_PARAM_SES_STORAGE), null);
       formGroupFromSessionStorage = safeJsonParse(this.windowService.getSessionStorage(FORM_GROUP_VAL_SES_STORAGE), null);
       jurisdictionFromSessionStorage = { id: this.savedQueryParams.jurisdiction };
       caseTypeGroupFromSessionStorage = { id: this.savedQueryParams['case-type'] };
-      caseStateGroupFromSessionStorage = { id: this.savedQueryParams['case-state'] };
+      caseStateGroupFromSessionStorage = this.toCaseStateArray(this.savedQueryParams['case-state']);
     }
 
     const metadataFieldsGroupFromSessionStorage = ['[CASE_REFERENCE]', '[CREATED_DATE]'];
@@ -366,7 +364,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       selected: {
         jurisdiction,
         caseType,
-        caseState,
+        caseState: this.toCaseStateArray(caseState),
         metadataFields,
         formGroup: {
           value: formGroupValues ? formGroupValues : {},
@@ -377,6 +375,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
       sortParameters,
     };
   };
+
+  private toCaseStateArray(caseState: CaseState | CaseState[] | string): CaseState[] {
+    const states = Array.isArray(caseState) ? caseState : caseState ? [caseState] : [];
+    return states
+      .flatMap((state) => (typeof state === 'string' ? state.split(',').map((id) => ({ id })) : [state]))
+      .filter((state) => !!state && !!state.id) as CaseState[];
+  }
 
   /**
    * Display the name seen on the toggle button.

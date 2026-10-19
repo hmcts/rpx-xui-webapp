@@ -27,10 +27,11 @@ export class SearchFilterService {
     const filter = payload.selected;
     let searchParams = {};
     this.metadataFields = filter.metadataFields;
-    if (filter.caseState) {
+    const caseStateIds = this.getCaseStateIds(filter.caseState);
+    if (caseStateIds.length > 0) {
       searchParams = {
         ...searchParams,
-        state: filter.caseState.id,
+        state: caseStateIds.join(','),
       };
     }
     if (filter.page) {
@@ -48,6 +49,11 @@ export class SearchFilterService {
     const sortParameters = payload.sortParameters;
 
     return { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view, sortParameters };
+  }
+
+  private getCaseStateIds(caseState): string[] {
+    const states = Array.isArray(caseState) ? caseState : caseState ? [caseState] : [];
+    return states.map((state) => state.id).filter(Boolean);
   }
 
   private getCaseFilterFromFormGroup(formGroup?: FormGroup): { caseFilter; metadataFilter } {

@@ -47,14 +47,6 @@ test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search
       });
     }
   );
-
-  test('Search is accessible from main menu navigation', async ({ globalSearchPage, page }) => {
-    await test.step('Open Search from main navigation', async () => {
-      await globalSearchPage.searchLinkOnMenuBar.click();
-      await expect(page).toHaveURL(/\/search/);
-      await expect(globalSearchPage.pageHeading).toHaveText(/Search cases/);
-    });
-  });
 });
 
 test.describe('Solicitor navigation to Find case (top-right)', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {

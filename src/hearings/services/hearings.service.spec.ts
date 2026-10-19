@@ -195,8 +195,6 @@ describe('HearingsService', () => {
       [HttpTestingController, HearingsService],
       (httpMock: HttpTestingController, service: HearingsService) => {
         service.updateHearingRequest(payload).subscribe((response) => {
-          console.log('RESPONSE', JSON.stringify(response));
-          console.log('PAYLOAD', JSON.stringify(payload));
           expect(response).toBeNull();
         });
         httpMock

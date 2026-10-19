@@ -10,6 +10,23 @@ import {
 
 const journeys = new AsyncLocalStorage<string | undefined>();
 const requestJourneys = new WeakMap<IncomingMessage, string | undefined>();
+const hearingRequests = new AsyncLocalStorage<boolean>();
+const requestScopes = new WeakMap<IncomingMessage, boolean>();
+
+/** Identify the logging scope independently of an optional browser journey header. */
+export function isHearingsTelemetryRequest(request?: IncomingMessage): boolean {
+  try {
+    if (!request) {
+      return hearingRequests.getStore() === true;
+    }
+    return (
+      requestScopes.get(request) ??
+      (/^\/api\/hearings(?:\/|$)/.test((request.url || '').split('?')[0]) || !!requestJourneyId(request))
+    );
+  } catch {
+    return false;
+  }
+}
 
 function requestJourneyId(request: IncomingMessage): string | undefined {
   // Treat the header as untrusted metadata. Never retain URLs, bodies or other headers.
@@ -28,8 +45,10 @@ export const hearingsTelemetryCorrelation: RequestHandler = (request, _response,
   // Express can rewrite request.url inside mounted routers. Keep only the validated ID,
   // and let the weak reference expire naturally when the request is released.
   requestJourneys.set(request, journeyId);
+  const hearings = isHearingsTelemetryRequest(request);
+  requestScopes.set(request, hearings);
   // Each request has its own context, including those with no valid journey header.
-  journeys.run(journeyId, next);
+  hearingRequests.run(hearings, () => journeys.run(journeyId, next));
 };
 
 export function addHearingsJourneyToTelemetry(

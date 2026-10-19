@@ -16,6 +16,12 @@ const OPERATIONS = [
   'putLinkedHearingGroup',
   'deleteLinkedHearingGroup',
   'getServicePath',
+  'sendGet',
+  'sendPost',
+  'sendPut',
+  'sendDelete',
+  'outboundRequest',
+  'serverRequest',
 ] as const;
 export type HearingsTraceOperation = (typeof OPERATIONS)[number];
 
@@ -35,7 +41,9 @@ export function traceHearingsDiagnostic(
     if (!client || !OPERATIONS.includes(operation) || !Object.prototype.hasOwnProperty.call(DIAGNOSTICS, outcome)) {
       return;
     }
-    const status = error && typeof error === 'object' ? (error as { status?: unknown }).status : undefined;
+    const detail =
+      error && typeof error === 'object' ? (error as { status?: unknown; response?: { status?: unknown } }) : undefined;
+    const status = detail?.status ?? detail?.response?.status;
     const httpStatus =
       typeof status === 'number' && Number.isInteger(status) && status >= 0 && status <= 599 ? { httpStatus: status } : {};
     // The registered server telemetry processor adds the request-scoped anonymous journeyId.

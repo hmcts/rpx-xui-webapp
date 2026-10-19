@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import * as log4jui from './log4jui';
 import { propsExist } from './objectUtilities';
+import { isHearingsTelemetryRequest } from './hearings-telemetry-correlation';
+import { traceHearingsDiagnostic } from '../hearings/hearings-telemetry';
 
 const logger = log4jui.getLogger('errorHandler');
 
@@ -17,7 +19,9 @@ export default function errorHandler(err, req: Request, res: Response, next: Nex
     // remove any sensitive data
     delete err.request._header;
   }
-  if (err?.data) {
+  if (isHearingsTelemetryRequest(req)) {
+    traceHearingsDiagnostic('serverRequest', 'failed', err);
+  } else if (err?.data) {
     logger._logger.error(err.data);
   } else {
     if (err) {

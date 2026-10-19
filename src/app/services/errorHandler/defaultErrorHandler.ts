@@ -10,9 +10,9 @@ export class DefaultErrorHandler implements ErrorHandler {
   ) {}
 
   public handleError(error: Error) {
-    console.error('Handling error with DefaultErrorHandler.');
-    console.error(error);
-    if (this.hearingsTelemetry?.currentJourney) {
+    // Include resolver failures before NavigationEnd, when a journey is only prepared.
+    // Never print the original Hearings error: it can contain bodies, URLs or navigation state.
+    if (this.hearingsTelemetry?.currentJourney || this.hearingsTelemetry?.requestJourneyId) {
       try {
         this.hearingsTelemetry.captureException('browser')(error);
       } catch {
@@ -20,6 +20,8 @@ export class DefaultErrorHandler implements ErrorHandler {
       }
       return;
     }
+    console.error('Handling error with DefaultErrorHandler.');
+    console.error(error);
     this.loggerService.error(error);
   }
 }

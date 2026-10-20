@@ -211,7 +211,7 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
     const submissionCapture = await openCaseworkerRespondToQueryFromTasksTab(page, caseDetailsPage, queryManagementPage);
 
     await queryManagementPage.responseDetailInput.fill(QUERY_MANAGEMENT_RESPONSE_DETAIL);
-    await queryManagementPage.respondQueryForm.getByRole('checkbox', { name: 'I want to close this query' }).check();
+    await queryManagementPage.closeQueryCheckbox.check();
     await queryManagementPage.continueButton.click();
 
     await expect(queryManagementPage.reviewQueryDetailsHeading).toContainText('Review query response details');

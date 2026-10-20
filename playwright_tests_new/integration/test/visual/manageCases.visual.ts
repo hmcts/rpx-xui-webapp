@@ -4,6 +4,10 @@ import { openDynamicFieldConfigJourney } from '../../helpers/dynamicFieldConfigM
 import { setupVisualManageCasesRoutes } from '../../helpers/visualManageCasesRoutes.helper';
 import { buildVisualCaseListMock } from '../../mocks/visualManageCases.mock';
 
+test.beforeEach(() => {
+  test.skip(process.platform !== 'darwin', 'Visual baselines are macOS-only until an approved Linux baseline exists');
+});
+
 test('navigation and case list summary/table', async ({ page }) => {
   await setupVisualManageCasesRoutes(page, ['caseworker-cmc']);
   const mock = buildVisualCaseListMock();

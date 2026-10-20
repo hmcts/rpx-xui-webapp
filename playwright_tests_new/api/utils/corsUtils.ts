@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 
-import { StatusSets } from './apiTestUtils';
+export const corsAllowed = [200, 204, 400, 401, 403] as const;
+export const corsDisallowed = [200, 204, 400, 401, 403, 404] as const;
 
 export function assertCorsHeaders(
   expected: ReadonlyArray<number>,
@@ -8,13 +9,11 @@ export function assertCorsHeaders(
   headers: Record<string, string>,
   origin: string
 ): void {
-  if (expected === StatusSets.corsAllowed && status < 500) {
+  if (expected === corsAllowed && status >= 200 && status < 300) {
     const allowOrigin = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
-    if (allowOrigin) {
-      expect(allowOrigin).toBe(origin);
-    }
+    expect(allowOrigin).toBe(origin);
   }
-  if (expected === StatusSets.corsDisallowed && status < 500) {
+  if (expected === corsDisallowed && status < 500) {
     const allowed = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
     expect(allowed === origin).toBe(false);
   }

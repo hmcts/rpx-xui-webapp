@@ -98,18 +98,33 @@ test.describe(
       });
 
       let releaseCaseAResponse!: () => void;
+      let caseAResponseReleased = false;
       const caseAResponseGate = new Promise<void>((resolve) => {
-        releaseCaseAResponse = resolve;
+        releaseCaseAResponse = () => {
+          if (caseAResponseReleased) {
+            return;
+          }
+          caseAResponseReleased = true;
+          resolve();
+        };
+      });
+      let resolveCaseAResponseFulfilled!: () => void;
+      const caseAResponseFulfilled = new Promise<void>((resolve) => {
+        resolveCaseAResponseFulfilled = resolve;
       });
       await page.route('**/api/hearings/getHearings*', async (route) => {
         const requestedCaseReference = new URL(route.request().url()).searchParams.get('caseId');
         if (requestedCaseReference === HEARINGS_CASE_REFERENCE) {
           await caseAResponseGate;
-          await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify(buildHearingsListMock([LISTED_HEARING_SCENARIO])),
-          });
+          try {
+            await route.fulfill({
+              status: 200,
+              contentType: 'application/json',
+              body: JSON.stringify(buildHearingsListMock([LISTED_HEARING_SCENARIO])),
+            });
+          } finally {
+            resolveCaseAResponseFulfilled();
+          }
           return;
         }
         if (requestedCaseReference !== caseBReference) {
@@ -163,6 +178,7 @@ test.describe(
         await expect(hearingsTabPage.viewDetailsButton(caseBHearing.hearingId)).toBeVisible();
         // Release the stale A response only after B has rendered so this test proves cancellation ordering.
         releaseCaseAResponse();
+        await caseAResponseFulfilled;
       } finally {
         releaseCaseAResponse();
       }

@@ -15,7 +15,25 @@ export function assertCorsHeaders(
   }
   if (expected === corsDisallowed && status < 500) {
     const allowed = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
-    expect(allowed === origin).toBe(false);
+    expect([origin, '*']).not.toContain(allowed);
+  }
+}
+
+export function assertCorsPreflightHeaders(
+  expected: ReadonlyArray<number>,
+  status: number,
+  headers: Record<string, string>,
+  origin: string,
+  requestedMethod: string
+): void {
+  assertCorsHeaders(expected, status, headers, origin);
+  if (expected === corsAllowed && status >= 200 && status < 300) {
+    expect(headers['access-control-allow-credentials'] || headers['Access-Control-Allow-Credentials']).toBe('true');
+    expect(
+      (headers['access-control-allow-methods'] || headers['Access-Control-Allow-Methods'])
+        ?.split(',')
+        .map((method) => method.trim())
+    ).toContain(requestedMethod);
   }
 }
 

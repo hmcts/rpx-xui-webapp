@@ -2,7 +2,7 @@ import { test, expect, request } from '@playwright/test';
 
 import { config } from './utils/apiTestRuntimeConfig';
 import { expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
-import { assertCorsHeaders, shouldIgnoreCorsError } from './utils/corsUtils';
+import { assertCorsPreflightHeaders, shouldIgnoreCorsError } from './utils/corsUtils';
 
 const baseURL = config.baseUrl.replace(/\/+$/, '');
 const allowedOrigin = process.env.CORS_ALLOWED_ORIGINS?.split(',').find(Boolean) ?? '';
@@ -30,7 +30,7 @@ test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
         if (label === 'allowed') {
           expect(res.status, 'INCONCLUSIVE: allowed-origin preflight must succeed before CORS can pass').toBeLessThan(300);
         }
-        assertCorsHeaders(expected, res.status, res.headers, origin);
+        assertCorsPreflightHeaders(expected, res.status, res.headers, origin, 'GET');
       } catch (error) {
         if (shouldIgnoreCorsError(error)) {
           throw new Error('INCONCLUSIVE: CORS target is unreachable');
@@ -57,7 +57,7 @@ test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
         if (label === 'allowed') {
           expect(res.status, 'INCONCLUSIVE: allowed-origin preflight must succeed before CORS can pass').toBeLessThan(300);
         }
-        assertCorsHeaders(expected, res.status, res.headers, origin);
+        assertCorsPreflightHeaders(expected, res.status, res.headers, origin, 'GET');
       } catch (error) {
         if (shouldIgnoreCorsError(error)) {
           throw new Error('INCONCLUSIVE: CORS target is unreachable');

@@ -1,8 +1,11 @@
 import { expect, test } from '../../../E2E/fixtures';
 import {
   HEARING_MANAGER_CR84_ON_USER,
+  applyHearingManagerSessionCookies,
+  caseDetailsUrl,
+  gotoCaseDetailsWithRetry,
   hearingManagerRoles,
-  openHearingsTab,
+  setupHearingsMockRoutes,
   submitAdditionalInstructionsUpdate,
 } from '../../helpers';
 import {
@@ -31,30 +34,28 @@ test.describe(
   `Hearings cross-case stale state as ${HEARING_MANAGER_CR84_ON_USER}`,
   { tag: ['@integration', '@integration-hearings'] },
   () => {
-    test('keeps Case B identity and update payload when its list response is late after completed A (EXUI-5434)', async ({
+    test('keeps Case B identity and update payload when Case A responds after the switch (EXUI-5434)', async ({
       page,
       caseDetailsPage,
       hearingsTabPage,
       hearingViewEditSummaryPage,
       hearingViewSummaryPage,
     }) => {
-      await openHearingsTab(page, caseDetailsPage, {
-        userIdentifier: HEARING_MANAGER_CR84_ON_USER,
-        routeConfig: {
-          userRoles: hearingManagerRoles,
-          hearings: [LISTED_HEARING_SCENARIO],
-          hearingsApiOverrides: {
-            loadServiceHearingValues: {
-              body: {
-                ...buildServiceHearingValuesMock(),
-                caseId: HEARINGS_CASE_REFERENCE,
-                hmctsInternalCaseName: caseAInternalName,
-              },
+      await applyHearingManagerSessionCookies(page, HEARING_MANAGER_CR84_ON_USER);
+      await setupHearingsMockRoutes(page, {
+        userRoles: hearingManagerRoles,
+        hearings: [LISTED_HEARING_SCENARIO],
+        hearingsApiOverrides: {
+          loadServiceHearingValues: {
+            body: {
+              ...buildServiceHearingValuesMock(),
+              caseId: HEARINGS_CASE_REFERENCE,
+              hmctsInternalCaseName: caseAInternalName,
             },
           },
         },
       });
-      await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);
+      await gotoCaseDetailsWithRetry(page, caseDetailsUrl('CIVIL', 'CIVIL', HEARINGS_CASE_REFERENCE));
 
       const caseBReference = caseB.caseReference!;
       const caseBHearingRequest = buildHearingRequestMock(caseBHearing, caseB);
@@ -96,16 +97,25 @@ test.describe(
         });
       });
 
-      let releaseCaseBResponse!: () => void;
-      const caseBResponseGate = new Promise<void>((resolve) => {
-        releaseCaseBResponse = resolve;
+      let releaseCaseAResponse!: () => void;
+      const caseAResponseGate = new Promise<void>((resolve) => {
+        releaseCaseAResponse = resolve;
       });
       await page.route('**/api/hearings/getHearings*', async (route) => {
-        if (new URL(route.request().url()).searchParams.get('caseId') !== caseBReference) {
+        const requestedCaseReference = new URL(route.request().url()).searchParams.get('caseId');
+        if (requestedCaseReference === HEARINGS_CASE_REFERENCE) {
+          await caseAResponseGate;
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(buildHearingsListMock([LISTED_HEARING_SCENARIO])),
+          });
+          return;
+        }
+        if (requestedCaseReference !== caseBReference) {
           await route.fallback();
           return;
         }
-        await caseBResponseGate;
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -123,8 +133,18 @@ test.describe(
           request.url().includes('/api/hearings/getHearings') &&
           new URL(request.url()).searchParams.get('caseId') === caseBReference
       );
+      const caseAListRequest = page.waitForRequest(
+        (request) =>
+          request.url().includes('/api/hearings/getHearings') &&
+          new URL(request.url()).searchParams.get('caseId') === HEARINGS_CASE_REFERENCE
+      );
 
       try {
+        await page
+          .getByRole('tab', { name: /hearings/i })
+          .first()
+          .click();
+        await caseAListRequest;
         await page.locator('#exuiCaseReferenceSearch').fill(caseBReference);
         await page.locator('form:has(#exuiCaseReferenceSearch)').getByRole('button', { name: 'Find', exact: true }).click();
         await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:CIVIL/CIVIL/)?${caseBReference}(?:[?#]|$)`));
@@ -140,9 +160,11 @@ test.describe(
         await caseBListRequest;
         await expect(hearingsTabPage.container).toBeVisible();
         await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
-        await expect(hearingsTabPage.viewDetailsButton(caseBHearing.hearingId)).toBeHidden();
+        await expect(hearingsTabPage.viewDetailsButton(caseBHearing.hearingId)).toBeVisible();
+        // Release the stale A response only after B has rendered so this test proves cancellation ordering.
+        releaseCaseAResponse();
       } finally {
-        releaseCaseBResponse();
+        releaseCaseAResponse();
       }
 
       const valuesRequest = await caseBValuesRequest;

@@ -81,7 +81,7 @@ describe('Locations ref data api, get matching location by Id', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json',
+            'Content-Type': 'application/json',
           },
           body: RESPONSE_BODY,
         },

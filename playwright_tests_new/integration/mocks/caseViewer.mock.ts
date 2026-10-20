@@ -151,3 +151,15 @@ export function buildCaseViewerMock(variant: ViewerVariant = 'populated', roles?
   mock.events = canReadRestrictedData ? events : [];
   return mock;
 }
+
+export function buildTimezoneCaseViewerMock() {
+  const mock = buildCaseViewerMock();
+  const enteredDateTime = textField('enteredDateTime', 'Entered date and time', '2026-06-30T23:30:00');
+  enteredDateTime.field_type.id = 'DateTime';
+  enteredDateTime.field_type.type = 'DateTime';
+  (mock.tabs[0] as { fields: unknown[] }).fields.push(enteredDateTime);
+  const event = mock.events[0] as Record<string, unknown>;
+  event.created_date = '2026-06-30T23:30:00.000Z';
+  event.timestamp = '2026-06-30T23:30:00.000Z';
+  return mock;
+}

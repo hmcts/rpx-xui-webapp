@@ -1,5 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { openCaseViewer } from '../../helpers/caseViewerMockRoutes.helper';
+import { buildTimezoneCaseViewerMock } from '../../mocks/caseViewer.mock';
 
 test.describe('CCD case viewer regression coverage', { tag: ['@integration', '@integration-case-viewer'] }, () => {
   test('renders configured viewer tabs and case data', async ({ page, caseDetailsPage }) => {
@@ -28,6 +29,25 @@ test.describe('CCD case viewer regression coverage', { tag: ['@integration', '@i
     await openCaseViewer(page, caseDetailsPage);
 
     await expect(page.getByRole('link', { name: /print/i }).or(page.getByRole('button', { name: /print/i }))).toBeVisible();
+  });
+
+  test.describe('shared CCD viewer timestamp formatting', () => {
+    test.use({ locale: 'en-GB', timezoneId: 'Europe/London' });
+
+    test('shows generated event time locally without shifting an entered date and time', async ({ page, caseDetailsPage }) => {
+      await openCaseViewer(page, caseDetailsPage, 'populated', {
+        caseDetailsBody: buildTimezoneCaseViewerMock(),
+      });
+
+      await expect(
+        page.getByRole('tabpanel', { name: 'Case summary' }).getByRole('row', { name: /Entered date and time/ })
+      ).toContainText('30 Jun 2026, 11:30:00 PM');
+
+      await caseDetailsPage.selectCaseDetailsTab('Activity and history');
+      await expect(
+        page.getByRole('tabpanel', { name: 'Activity and history' }).getByRole('row', { name: /Create a case/ })
+      ).toContainText('1 Jul 2026, 12:30:00 AM');
+    });
   });
 });
 

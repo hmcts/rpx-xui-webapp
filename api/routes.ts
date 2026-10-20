@@ -3,7 +3,12 @@ import accessManagementRouter from './accessManagement/routes';
 import { router as caseShareRoutes } from './caseshare/routes';
 import { router as challengedAccessRouter } from './challengedAccess/routes';
 import { getConfigValue, showFeature } from './configuration';
-import { APP_INSIGHTS_CONNECTION_STRING, APP_INSIGHTS_KEY, FEATURE_DOCS_ENABLED } from './configuration/references';
+import {
+  APP_INSIGHTS_CONNECTION_STRING,
+  APP_INSIGHTS_KEY,
+  APP_INSIGHTS_SAMPLING_PERCENTAGE,
+  FEATURE_DOCS_ENABLED,
+} from './configuration/references';
 import docsRouter from './docs/routes';
 import { router as globalSearchRoutes } from './globalSearch/routes';
 import healthCheck from './healthCheck';
@@ -29,6 +34,7 @@ router.get('/monitoring-tools', (req, res) => {
   res.send({
     key: getConfigValue(APP_INSIGHTS_KEY),
     connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING),
+    samplingPercentage: getConfigValue<number>(APP_INSIGHTS_SAMPLING_PERCENTAGE),
   });
 });
 

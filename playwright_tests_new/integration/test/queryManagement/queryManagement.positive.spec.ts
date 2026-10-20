@@ -221,8 +221,14 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
       (response) =>
         response.url().includes(`/data/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
     );
+    const completeTaskResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(`/workallocation/task/${QUERY_MANAGEMENT_RESPOND_TASK_ID}/complete`) &&
+        response.request().method() === 'POST'
+    );
     await queryManagementPage.submitQuery();
     await submitResponse;
+    await completeTaskResponse;
 
     await expect(queryManagementPage.querySubmittedHeading).toContainText('Query response submitted');
     expect(submissionCapture.submittedEvents).toHaveLength(1);
@@ -242,6 +248,15 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
       messageType: QUERY_MANAGEMENT_RESPOND_MESSAGE_TYPE,
       isClosed: 'Yes',
     });
+    expect(submissionCapture.completedTasks).toEqual([
+      {
+        taskId: QUERY_MANAGEMENT_RESPOND_TASK_ID,
+        body: {
+          actionByEvent: true,
+          eventName: QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_NAME,
+        },
+      },
+    ]);
   });
 
   test('allows a solicitor to raise a follow-up query from query details', async ({

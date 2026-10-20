@@ -28,7 +28,8 @@ test.describe(
               'caseworker-ia',
               'caseworker-ia-caseofficer',
               'hmcts-legal-operations',
-              ...(judicialUser ? ['caseworker-ia-iacjudge', 'hmcts-judiciary'] : []),
+              'caseworker-ia-iacjudge',
+              'hmcts-judiciary',
             ],
             replaceRoleAssignments: true,
             roleAssignments: [
@@ -46,17 +47,13 @@ test.describe(
                 roleType: 'ORGANISATION',
                 substantive: 'Y',
               },
-              ...(judicialUser
-                ? [
-                    {
-                      jurisdiction: 'IA',
-                      roleCategory: 'JUDICIAL',
-                      roleName: 'hmcts-judiciary',
-                      roleType: 'ORGANISATION',
-                      substantive: 'Y',
-                    },
-                  ]
-                : []),
+              {
+                jurisdiction: 'IA',
+                roleCategory: 'JUDICIAL',
+                roleName: 'hmcts-judiciary',
+                roleType: 'ORGANISATION',
+                substantive: 'Y',
+              },
             ],
           },
         });

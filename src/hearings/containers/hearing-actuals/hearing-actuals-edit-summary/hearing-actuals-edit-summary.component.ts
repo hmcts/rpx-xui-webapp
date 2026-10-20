@@ -33,7 +33,6 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
 
   public onSubmitHearingDetails(): void {
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-    console.log(navState);
     this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals({ id: this.id, caseRef: navState.caseId }));
   }
 

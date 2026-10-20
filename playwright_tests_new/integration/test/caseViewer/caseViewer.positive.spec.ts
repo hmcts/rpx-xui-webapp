@@ -44,9 +44,9 @@ test.describe('CCD case viewer regression coverage', { tag: ['@integration', '@i
       ).toContainText('30 Jun 2026, 11:30:00 PM');
 
       await caseDetailsPage.selectCaseDetailsTab('Activity and history');
-      await expect(
-        page.getByRole('tabpanel', { name: 'Activity and history' }).getByRole('row', { name: /Create a case/ })
-      ).toContainText('1 Jul 2026, 12:30:00 AM');
+      await expect(caseDetailsPage.historyTable.getByRole('row', { name: /Create a case/ })).toContainText(
+        '1 Jul 2026, 12:30:00 AM'
+      );
     });
   });
 });

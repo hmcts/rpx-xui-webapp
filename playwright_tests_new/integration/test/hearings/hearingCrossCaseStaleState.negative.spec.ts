@@ -107,7 +107,7 @@ test.describe(
       });
 
       await gotoCaseDetailsWithRetry(page, caseDetailsUrl('CIVIL', 'CIVIL', caseBReference));
-      await expect(page).toHaveURL(new RegExp(`/cases/case-details/CIVIL/CIVIL/${caseBReference}(?:[/?#]|$)`));
+      await expect(page).toHaveURL(new RegExp(`/cases/case-details/CIVIL/CIVIL/${HEARINGS_CASE_REFERENCE}(?:[/?#]|$)`));
       await expect
         .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
         .toBe(HEARINGS_CASE_REFERENCE);

@@ -170,7 +170,9 @@ test.describe(
           .first()
           .click();
         await caseAListRequest;
-        await gotoCaseDetailsWithRetry(page, caseDetailsUrl('CIVIL', 'CIVIL', caseBReference));
+        await page.locator('#exuiCaseReferenceSearch').fill(caseBReference);
+        await page.locator('form:has(#exuiCaseReferenceSearch)').getByRole('button', { name: 'Find', exact: true }).click();
+        await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:CIVIL/CIVIL/)?${caseBReference}(?:[/?#]|$)`));
         await expect
           .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
           .toBe(caseBReference);

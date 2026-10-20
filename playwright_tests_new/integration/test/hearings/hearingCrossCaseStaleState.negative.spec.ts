@@ -10,6 +10,7 @@ import {
 } from '../../helpers';
 import {
   HEARINGS_LISTED_HEARING_ID,
+  HEARINGS_CASE_REFERENCE,
   LISTED_HEARING_SCENARIO,
   buildHearingsCaseDetailsMock,
   buildHearingsListMock,
@@ -71,7 +72,7 @@ test.describe(
       );
       await page.locator('#exuiCaseReferenceSearch').fill(caseBReference);
       await page.locator('form:has(#exuiCaseReferenceSearch)').getByRole('button', { name: 'Find', exact: true }).click();
-      await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:CIVIL/CIVIL/)?${caseBReference}(?:[?#]|$)`));
+      await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:CIVIL/CIVIL/)?${caseBReference}(?:[/?#]|$)`));
       await page
         .getByRole('tab', { name: /hearings/i })
         .first()
@@ -79,12 +80,16 @@ test.describe(
 
       expect((await failedCaseBValues).status()).toBe(500);
       await expect(hearingsTabPage.reloadButton).toBeVisible();
+      await expect(
+        page.getByText('There was a system error and your request could not be processed. Please try again.', { exact: true })
+      ).toBeVisible();
       await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
       await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0);
     });
 
     test('shows an error on direct entry when Case B route receives Case A details (EXUI-5434)', async ({
       page,
+      caseDetailsPage,
       hearingsTabPage,
     }) => {
       await applyHearingManagerSessionCookies(page, HEARING_MANAGER_CR84_ON_USER);
@@ -102,12 +107,19 @@ test.describe(
       });
 
       await gotoCaseDetailsWithRetry(page, caseDetailsUrl('CIVIL', 'CIVIL', caseBReference));
-      await expect(page).toHaveURL(new RegExp(`/cases/case-details/CIVIL/CIVIL/${caseBReference}(?:[?#]|$)`));
+      await expect(page).toHaveURL(new RegExp(`/cases/case-details/CIVIL/CIVIL/${caseBReference}(?:[/?#]|$)`));
+      await expect
+        .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
+        .toBe(HEARINGS_CASE_REFERENCE);
       await page
         .getByRole('tab', { name: /hearings/i })
         .first()
         .click();
 
+      await expect(page).toHaveURL(/#Hearings(?:$|[?])/i);
+      await expect(
+        page.getByText('There was a system error and your request could not be processed. Please try again.', { exact: true })
+      ).toBeVisible();
       await expect(hearingsTabPage.reloadButton).toBeVisible();
       await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
       await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0);

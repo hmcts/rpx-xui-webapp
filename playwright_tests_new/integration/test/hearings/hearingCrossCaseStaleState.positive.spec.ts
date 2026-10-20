@@ -109,8 +109,10 @@ test.describe(
         };
       });
       let resolveCaseAResponseFulfilled!: () => void;
-      const caseAResponseFulfilled = new Promise<void>((resolve) => {
+      let rejectCaseAResponseFulfilled!: (error: unknown) => void;
+      const caseAResponseFulfilled = new Promise<void>((resolve, reject) => {
         resolveCaseAResponseFulfilled = resolve;
+        rejectCaseAResponseFulfilled = reject;
       });
       await page.route('**/api/hearings/getHearings*', async (route) => {
         const requestedCaseReference = new URL(route.request().url()).searchParams.get('caseId');
@@ -122,8 +124,10 @@ test.describe(
               contentType: 'application/json',
               body: JSON.stringify(buildHearingsListMock([LISTED_HEARING_SCENARIO])),
             });
-          } finally {
             resolveCaseAResponseFulfilled();
+          } catch (error) {
+            rejectCaseAResponseFulfilled(error);
+            throw error;
           }
           return;
         }
@@ -153,6 +157,12 @@ test.describe(
           request.url().includes('/api/hearings/getHearings') &&
           new URL(request.url()).searchParams.get('caseId') === HEARINGS_CASE_REFERENCE
       );
+      const caseBListResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('/api/hearings/getHearings') &&
+          new URL(response.url()).searchParams.get('caseId') === caseBReference &&
+          response.status() === 200
+      );
 
       try {
         await page
@@ -160,27 +170,27 @@ test.describe(
           .first()
           .click();
         await caseAListRequest;
-        await page.locator('#exuiCaseReferenceSearch').fill(caseBReference);
-        await page.locator('form:has(#exuiCaseReferenceSearch)').getByRole('button', { name: 'Find', exact: true }).click();
-        await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:CIVIL/CIVIL/)?${caseBReference}(?:[?#]|$)`));
+        await gotoCaseDetailsWithRetry(page, caseDetailsUrl('CIVIL', 'CIVIL', caseBReference));
         await expect
           .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
           .toBe(caseBReference);
 
-        // The case-details helper waits for the load spinner, so click the tab directly while B's list is held.
         await page
           .getByRole('tab', { name: /hearings/i })
           .first()
           .click();
         await caseBListRequest;
+        await caseBListResponse;
         await expect(hearingsTabPage.container).toBeVisible();
         await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
         await expect(hearingsTabPage.viewDetailsButton(caseBHearing.hearingId)).toBeVisible();
+
         // Release the stale A response only after B has rendered so this test proves cancellation ordering.
         releaseCaseAResponse();
         await caseAResponseFulfilled;
       } finally {
         releaseCaseAResponse();
+        await caseAResponseFulfilled;
       }
 
       const valuesRequest = await caseBValuesRequest;

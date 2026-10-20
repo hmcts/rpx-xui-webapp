@@ -21,6 +21,7 @@ import {
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
 import { JUILogger } from './lib/models';
+import { appInsights } from './lib/appInsights';
 import * as tunnel from './lib/tunnel';
 import csrf from '@dr.pogodin/csurf';
 import openRoutes from './openRoutes';
@@ -69,6 +70,7 @@ function injectTemplateValues(html: string, nonce: string): string {
 
 export async function createApp() {
   const app = express();
+  app.use(appInsights);
 
   const logger: JUILogger = log4jui.getLogger('Application');
   if (showFeature(FEATURE_HELMET_ENABLED)) {

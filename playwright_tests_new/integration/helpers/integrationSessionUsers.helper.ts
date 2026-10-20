@@ -38,6 +38,8 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
     ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 0 }, env),
     ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 0 }, env),
   ],
+  // Authentication and user details are route-mocked by this suite.
+  '@integration-hearing-link': () => [],
   '@integration-manage-tasks': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
   // Authentication and user details are route-mocked by this suite.
   '@integration-platform-services': () => [],

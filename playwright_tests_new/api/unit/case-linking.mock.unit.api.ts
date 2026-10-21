@@ -9,7 +9,7 @@ import {
   CASE_LINKING_REASON_CODE,
   CASE_LINKING_RELATED_CASE_REFERENCE,
   CASE_LINKING_SECOND_RELATED_CASE_REFERENCE,
-  CASE_LINKING_SECONDARY_REASON_CODE,
+  CASE_LINKING_HEARING_REASON_CODE,
 } from '../../integration/mocks/caseLinking.mock.js';
 
 function metadataCaseReference(caseDetails: Record<string, unknown>): number | undefined {
@@ -141,7 +141,7 @@ test.describe('case linking mock builder', { tag: '@svc-internal' }, () => {
         },
         {
           linkedCaseReference: CASE_LINKING_SECOND_RELATED_CASE_REFERENCE,
-          reasonCode: CASE_LINKING_SECONDARY_REASON_CODE,
+          reasonCode: CASE_LINKING_HEARING_REASON_CODE,
         },
       ],
     });

@@ -21,9 +21,11 @@ WORKDIR /opt/app
 # Copy only dependency files for better layer caching
 COPY --chown=hmcts:hmcts .yarn/ ./.yarn/
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
+COPY --chown=hmcts:hmcts api/package.json ./api/package.json
 
-# Install dependencies once and expose the resolved Playwright version in build logs.
-RUN yarn install --inline-builds && yarn playwright --version
+# Fail early if the installed test runner drifts from the manifest.
+COPY --chown=hmcts:hmcts scripts/verify-playwright-version.cjs ./scripts/
+RUN yarn install --immutable --inline-builds && yarn test:setup:playwright-version
 
 FROM dependencies AS build
 WORKDIR /opt/app

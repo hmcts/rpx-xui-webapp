@@ -31,43 +31,55 @@ test.describe('webapp unified accessibility audit @accessibility @a11y @wave-a11
       continue;
     }
 
-    test(`${pageState.feature} - ${pageState.title}`, async ({
-      page,
-      taskListPage,
-      caseListPage,
-      accessRequestPage,
-      caseDetailsPage,
-      caseFileViewPage,
-      hearingsTabPage,
-      bookingUiPage,
-      globalSearchPage,
-      searchCasePage,
-    }, testInfo) => {
-      const accessibilityFixtures = {
-        page,
-        taskListPage,
-        caseListPage,
-        accessRequestPage,
-        caseDetailsPage,
-        caseFileViewPage,
-        hearingsTabPage,
-        bookingUiPage,
-        globalSearchPage,
-        searchCasePage,
-      } as AccessibilityFixtures;
+    test(
+      `${pageState.feature} - ${pageState.title}`,
+      {
+        annotation: [
+          { type: 'feature', description: pageState.feature },
+          { type: 'page-state', description: pageState.title },
+        ],
+      },
+      async (
+        {
+          page,
+          taskListPage,
+          caseListPage,
+          accessRequestPage,
+          caseDetailsPage,
+          caseFileViewPage,
+          hearingsTabPage,
+          bookingUiPage,
+          globalSearchPage,
+          searchCasePage,
+        },
+        testInfo
+      ) => {
+        const accessibilityFixtures = {
+          page,
+          taskListPage,
+          caseListPage,
+          accessRequestPage,
+          caseDetailsPage,
+          caseFileViewPage,
+          hearingsTabPage,
+          bookingUiPage,
+          globalSearchPage,
+          searchCasePage,
+        } as AccessibilityFixtures;
 
-      const pageStateReached = await setupPageStateOrReport(pageState, accessibilityFixtures, testInfo);
-      if (!pageStateReached) {
-        return;
+        const pageStateReached = await setupPageStateOrReport(pageState, accessibilityFixtures, testInfo);
+        if (!pageStateReached) {
+          return;
+        }
+
+        await auditAccessibilityPage(accessibilityFixtures.page, testInfo, {
+          defaultEngines: pageState.engines ?? defaultAccessibilityEngines,
+          feature: pageState.feature,
+          pageState: pageState.title,
+          axeKnownViolations: pageState.axeKnownViolations,
+        });
       }
-
-      await auditAccessibilityPage(accessibilityFixtures.page, testInfo, {
-        defaultEngines: pageState.engines ?? defaultAccessibilityEngines,
-        feature: pageState.feature,
-        pageState: pageState.title,
-        axeKnownViolations: pageState.axeKnownViolations,
-      });
-    });
+    );
   }
 });
 
@@ -78,41 +90,50 @@ test.describe('webapp scoped Lighthouse accessibility audit @accessibility @a11y
       continue;
     }
 
-    test(`${pageState.feature} - ${pageState.title}`, async ({ lighthousePort }, testInfo) => {
-      await withLighthousePage(lighthousePort, async (lighthousePage, lighthouseUtils) => {
-        const accessibilityFixtures = {
-          page: lighthousePage,
-        } as AccessibilityFixtures;
+    test(
+      `${pageState.feature} - ${pageState.title}`,
+      {
+        annotation: [
+          { type: 'feature', description: pageState.feature },
+          { type: 'page-state', description: pageState.title },
+        ],
+      },
+      async ({ lighthousePort }, testInfo) => {
+        await withLighthousePage(lighthousePort, async (lighthousePage, lighthouseUtils) => {
+          const accessibilityFixtures = {
+            page: lighthousePage,
+          } as AccessibilityFixtures;
 
-        const pageStateReached = await setupPageStateOrReport(pageState, accessibilityFixtures, testInfo);
-        if (!pageStateReached) {
-          return;
-        }
+          const pageStateReached = await setupPageStateOrReport(pageState, accessibilityFixtures, testInfo);
+          if (!pageStateReached) {
+            return;
+          }
 
-        const lighthouseScreenshot = await lighthousePage.screenshot({ fullPage: true });
-        await auditAccessibilityPage(lighthousePage, testInfo, {
-          defaultEngines: pageState.engines ?? defaultLighthouseEngines,
-          feature: pageState.feature,
-          pageState: pageState.title,
-          runLighthouse: () =>
-            runLighthouseAuditWithEvidence(
-              testInfo,
-              () =>
-                lighthouseUtils.audit({
-                  performance: 0,
-                  accessibility: 90,
-                  'best-practices': 0,
-                }),
-              {
-                feature: pageState.feature,
-                pageState: pageState.title,
-                url: lighthousePage.url(),
-              },
-              lighthouseScreenshot
-            ),
+          const lighthouseScreenshot = await lighthousePage.screenshot({ fullPage: true });
+          await auditAccessibilityPage(lighthousePage, testInfo, {
+            defaultEngines: pageState.engines ?? defaultLighthouseEngines,
+            feature: pageState.feature,
+            pageState: pageState.title,
+            runLighthouse: () =>
+              runLighthouseAuditWithEvidence(
+                testInfo,
+                () =>
+                  lighthouseUtils.audit({
+                    performance: 0,
+                    accessibility: 90,
+                    'best-practices': 0,
+                  }),
+                {
+                  feature: pageState.feature,
+                  pageState: pageState.title,
+                  url: lighthousePage.url(),
+                },
+                lighthouseScreenshot
+              ),
+          });
         });
-      });
-    });
+      }
+    );
   }
 });
 

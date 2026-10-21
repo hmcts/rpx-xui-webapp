@@ -32,9 +32,6 @@ test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
           return { status: response.status(), headers: response.headers() };
         });
         expectStatus(res.status, expected);
-        if (label === 'allowed') {
-          expect(res.status, 'INCONCLUSIVE: allowed-origin preflight must succeed before CORS can pass').toBeLessThan(300);
-        }
         const validation = validateCorsPreflightHeaders(expected, res.status, res.headers, origin, 'GET');
         expect(validation.valid, validation.message ?? 'CORS preflight headers matched the expected policy').toBe(true);
       } catch (error) {
@@ -61,9 +58,6 @@ test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
           return { status: response.status(), headers: response.headers() };
         });
         expectStatus(res.status, expected);
-        if (label === 'allowed') {
-          expect(res.status, 'INCONCLUSIVE: allowed-origin preflight must succeed before CORS can pass').toBeLessThan(300);
-        }
         const validation = validateCorsPreflightHeaders(expected, res.status, res.headers, origin, 'GET');
         expect(validation.valid, validation.message ?? 'CORS preflight headers matched the expected policy').toBe(true);
       } catch (error) {

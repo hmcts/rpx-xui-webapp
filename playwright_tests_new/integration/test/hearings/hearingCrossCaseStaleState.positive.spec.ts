@@ -217,7 +217,7 @@ test.describe(
 
       await hearingsTabPage.openViewDetails(caseBHearing.hearingId);
       await hearingViewSummaryPage.waitForReady();
-      await expect(hearingViewSummaryPage.container.locator('exui-hearing-case-name')).toHaveText(caseBInternalName);
+      await expect(hearingViewSummaryPage.summaryRow('Case internal name')).toContainText(caseBInternalName);
       const updateRequest = await submitAdditionalInstructionsUpdate(
         page,
         hearingViewSummaryPage,

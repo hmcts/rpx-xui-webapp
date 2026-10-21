@@ -136,10 +136,10 @@ describe('errorHandler', () => {
       });
       const { port } = server.address() as AddressInfo;
       const response = await new Promise<{ status: number; text: string }>((resolve, reject) => {
-        get(`http://127.0.0.1:${port}/workallocation/task`, incoming => {
+        get(`http://127.0.0.1:${port}/workallocation/task`, (incoming) => {
           let text = '';
           incoming.setEncoding('utf8');
-          incoming.on('data', chunk => {
+          incoming.on('data', (chunk) => {
             text += chunk;
           });
           incoming.on('error', reject);
@@ -153,7 +153,7 @@ describe('errorHandler', () => {
       expect(response.text).not.to.include('Express');
       expect(response.text).not.to.include('Java');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close(error => (error ? reject(error) : resolve())));
+      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
     }
   });
 

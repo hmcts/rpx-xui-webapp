@@ -32,7 +32,8 @@ describe('Hearings telemetry service', () => {
     expect(service.currentJourney).toEqual(first);
     const entered = service.enterStep('/cases/case-details/:cid/hearings', { caseId: 'private-b' }, 10);
     expect(entered.journeyId).toBe(requestId);
-    expect(JSON.stringify(monitoring.logEvent.calls.allArgs())).not.toContain('private-');
+    expect(monitoring.logEvent.calls.first().args[1].caseId).toBe('private-a');
+    expect(monitoring.logEvent.calls.mostRecent().args[1].caseId).toBe('private-b');
   });
 
   it('restores the original journey on cancelled navigation but retains the attempted ID on slow failures', () => {
@@ -129,7 +130,7 @@ describe('Hearings telemetry service', () => {
     expect(monitoring.logEvent.calls.allArgs().filter(([name]) => name === 'Hearings.Action').length).toBe(0);
   });
 
-  it('should reset the ID and action count on a case change without sending context', () => {
+  it('should reset the ID and action count on a case change and retain the correct case identifier', () => {
     const old = service.enterStep('/cases/case-details/:cid/hearings', { caseId: 'private-case-a' }, 0);
     service.recordAction('continue');
     service.enterStep('/cases/case-details/:cid/hearings', { caseId: 'private-case-b' }, 4000);
@@ -137,7 +138,8 @@ describe('Hearings telemetry service', () => {
     expect(service.currentJourney.actionCount).toBe(0);
     const duration = monitoring.logEvent.calls.allArgs().find(([name]) => name === 'Hearings.JourneyDuration');
     expect(duration[2]).toEqual({ durationMs: 4000, pageCount: 1, actionCount: 1 });
-    expect(JSON.stringify(monitoring.logEvent.calls.allArgs())).not.toContain('private-');
+    expect(duration[1].caseId).toBe('private-case-a');
+    expect(monitoring.logEvent.calls.mostRecent().args[1].caseId).toBe('private-case-b');
   });
 
   it('should reset the ID and action count on a hearing change', () => {
@@ -146,7 +148,8 @@ describe('Hearings telemetry service', () => {
     service.enterStep('/hearings/cancel/:hearingId', { hearingId: 'private-hearing-b' }, 2000);
     expect(service.currentJourney.journeyId).not.toBe(old.journeyId);
     expect(service.currentJourney.actionCount).toBe(0);
-    expect(JSON.stringify(monitoring.logEvent.calls.allArgs())).not.toContain('private-');
+    expect(monitoring.logEvent.calls.first().args[1].hearingId).toBe('private-hearing-a');
+    expect(monitoring.logEvent.calls.mostRecent().args[1].hearingId).toBe('private-hearing-b');
   });
 
   it('should clear state at journey end and ignore later actions and duplicate ends', () => {
@@ -194,11 +197,19 @@ describe('Hearings telemetry service', () => {
     service.recordValidationFailure('form', 2);
     expect(monitoring.logEvent.calls.mostRecent().args).toEqual([
       'Hearings.ValidationFailed',
-      { journeyId: state.journeyId, journeyType: 'request', step: state.currentStep, page: state.currentStep, category: 'form' },
+      {
+        journeyId: state.journeyId,
+        journeyType: 'request',
+        step: state.currentStep,
+        page: state.currentStep,
+        category: 'form',
+        caseId: 'private-case',
+        hearingId: 'private-hearing',
+      },
       { errorCount: 2 },
     ]);
     expect(service.currentJourney.actionCount).toBe(1);
-    expect(JSON.stringify(monitoring.logEvent.calls.allArgs())).not.toContain('private-');
+    expect(monitoring.logEvent.calls.mostRecent().args[1].caseId).toBe('private-case');
   });
 
   it('should ignore invalid validation categories/counts and validation after journey end', () => {
@@ -226,6 +237,7 @@ describe('Hearings telemetry service', () => {
       telemetryArea: 'Hearings',
       operation: 'cancelHearingRequest',
       journeyId: first.journeyId,
+      hearingId: 'private-a',
       journeyType: 'cancel',
       step: '/hearings/cancel/:hearingId',
       page: '/hearings/cancel/:hearingId',

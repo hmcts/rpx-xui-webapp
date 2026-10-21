@@ -5,6 +5,7 @@ import { provideRouter, Router, Routes } from '@angular/router';
 import { HearingsPageTrackingService, initializeHearingsPageTracking } from './hearings-page-tracking.service';
 import { MonitoringService } from './monitoring.service';
 import { HearingsTelemetryService } from '../../../hearings/services/hearings-telemetry.service';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
 @Component({ template: '' })
 class TestPageComponent {}
@@ -70,6 +71,7 @@ describe('Hearings page tracking', () => {
       providers: [
         provideRouter(routes),
         provideLocationMocks(),
+        provideMockStore({ initialState: {} }),
         { provide: MonitoringService, useValue: monitoring },
         { provide: Window, useValue: window },
       ],
@@ -80,6 +82,19 @@ describe('Hearings page tracking', () => {
   });
 
   afterEach(() => service.ngOnDestroy());
+
+  it('adds matched typed case context to page views without retaining the previous case jurisdiction', async () => {
+    const store = TestBed.inject(MockStore);
+    store.setState({ hearings: { hearingValues: { caseInfo: { caseReference: 'case-a', jurisdictionId: 'SSCS' } } } });
+    await router.navigateByUrl('/cases/case-details/case-a/hearings');
+    store.setState({ hearings: { hearingValues: { caseInfo: { caseReference: 'case-b', jurisdictionId: 'CIVIL' } } } });
+    await router.navigateByUrl('/cases/case-details/case-b/hearings');
+    await router.navigateByUrl('/work');
+    expect(monitoring.logPageView.calls.allArgs().map((args) => args[2])).toEqual([
+      { journeyId: jasmine.any(String), caseId: 'case-a', jurisdiction: 'SSCS' },
+      { journeyId: jasmine.any(String), caseId: 'case-b', jurisdiction: 'CIVIL' },
+    ]);
+  });
 
   it('prepares the destination journey for resolvers on direct entry and hearing switches', async () => {
     await router.navigateByUrl('/hearings/cancel/private-a');
@@ -115,11 +130,17 @@ describe('Hearings page tracking', () => {
       expect(monitoring.logPageView).toHaveBeenCalledOnceWith(
         `Hearings: ${normalizedPath}`,
         normalizedPath,
-        { journeyId: jasmine.any(String) },
+        {
+          journeyId: jasmine.any(String),
+          ...(url.includes('private-case') ? { caseId: 'private-case' } : {}),
+          ...(url.includes('private-hearing') ? { hearingId: 'private-hearing' } : {}),
+          ...(url.includes('private-jurisdiction') ? { jurisdiction: 'private-jurisdiction' } : {}),
+        },
         undefined,
         0
       );
-      expect(JSON.stringify(monitoring.logPageView.calls.allArgs())).not.toContain('private-');
+      expect(JSON.stringify(monitoring.logPageView.calls.allArgs())).not.toContain('private-name');
+      expect(JSON.stringify(monitoring.logPageView.calls.allArgs())).not.toContain('private-type');
       expect(JSON.stringify(monitoring.logPageView.calls.allArgs())).not.toContain('2026-10-09');
     });
   });
@@ -130,7 +151,7 @@ describe('Hearings page tracking', () => {
     expect(monitoring.logPageView).toHaveBeenCalledOnceWith(
       'Hearings: /hearings/cancel/:hearingId',
       '/hearings/cancel/:hearingId',
-      { journeyId: jasmine.any(String) },
+      { journeyId: jasmine.any(String), hearingId: 'private-hearing' },
       undefined,
       0
     );
@@ -142,8 +163,20 @@ describe('Hearings page tracking', () => {
     await router.navigateByUrl('/work');
     expect(monitoring.logPageView).toHaveBeenCalledTimes(2);
     expect(monitoring.logPageView.calls.allArgs()).toEqual([
-      ['Hearings: /hearings/cancel/:hearingId', '/hearings/cancel/:hearingId', { journeyId: jasmine.any(String) }, undefined, 0],
-      ['Hearings: /hearings/cancel/:hearingId', '/hearings/cancel/:hearingId', { journeyId: jasmine.any(String) }, undefined, 0],
+      [
+        'Hearings: /hearings/cancel/:hearingId',
+        '/hearings/cancel/:hearingId',
+        { journeyId: jasmine.any(String), hearingId: 'hearing-a' },
+        undefined,
+        0,
+      ],
+      [
+        'Hearings: /hearings/cancel/:hearingId',
+        '/hearings/cancel/:hearingId',
+        { journeyId: jasmine.any(String), hearingId: 'hearing-b' },
+        undefined,
+        0,
+      ],
     ]);
   });
 
@@ -237,7 +270,8 @@ describe('Hearings page tracking', () => {
     expect(durations[0][2].durationMs).toBe(4000);
     expect(durations[1][2].durationMs).toBe(3000);
     expect(durations[0][1].journeyId).not.toBe(durations[1][1].journeyId);
-    expect(JSON.stringify(monitoring.logEvent.calls.allArgs())).not.toContain('private-');
+    expect(durations[0][1].caseId).toBe('private-case-a');
+    expect(durations[1][1].caseId).toBe('private-case-b');
   });
 
   it('should split hearing journeys and preserve their individual durations', async () => {
@@ -250,7 +284,8 @@ describe('Hearings page tracking', () => {
     expect(durations[0][2].durationMs).toBe(3000);
     expect(durations[1][2].durationMs).toBe(5000);
     expect(durations[0][1].journeyId).not.toBe(durations[1][1].journeyId);
-    expect(JSON.stringify(monitoring.logEvent.calls.allArgs())).not.toContain('private-');
+    expect(durations[0][1].hearingId).toBe('private-hearing-a');
+    expect(durations[1][1].hearingId).toBe('private-hearing-b');
   });
 
   it('should finalize on pagehide only once and start fresh when restored from browser cache', async () => {

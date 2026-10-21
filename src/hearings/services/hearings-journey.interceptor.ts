@@ -4,6 +4,10 @@ import {
   HEARINGS_JOURNEY_HEADER,
   isHearingsJourneyId,
   isHearingsTelemetryPath,
+  HEARINGS_IDENTIFIER_HEADERS,
+  hearingTelemetryIdentifiers,
+  hearingsUrlIdentifiers,
+  mergeHearingsIdentifiers,
 } from '../../../common/hearings/telemetry-correlation';
 import { HearingsTelemetryService } from './hearings-telemetry.service';
 
@@ -13,9 +17,20 @@ export const hearingsJourneyInterceptor: HttpInterceptorFn = (request, next) => 
     const browser = inject(Window);
     const url = new URL(request.url, browser.location.origin);
     if (url.origin === browser.location.origin && isHearingsTelemetryPath(url.pathname)) {
-      const journeyId = inject(HearingsTelemetryService).requestJourneyId;
+      const telemetry = inject(HearingsTelemetryService);
+      const journeyId = telemetry.requestJourneyId;
       if (isHearingsJourneyId(journeyId)) {
-        correlatedRequest = request.clone({ setHeaders: { [HEARINGS_JOURNEY_HEADER]: journeyId } });
+        const headers = { [HEARINGS_JOURNEY_HEADER]: journeyId };
+        const identifiers = mergeHearingsIdentifiers(
+          hearingTelemetryIdentifiers(telemetry.requestIdentifiers),
+          hearingsUrlIdentifiers(url)
+        );
+        for (const key of ['caseId', 'hearingId', 'jurisdiction'] as const) {
+          if (identifiers[key]) {
+            headers[HEARINGS_IDENTIFIER_HEADERS[key]] = identifiers[key];
+          }
+        }
+        correlatedRequest = request.clone({ setHeaders: headers });
       }
     }
   } catch {

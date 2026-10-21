@@ -56,7 +56,10 @@ describe('Handled Hearings failures', () => {
     const [exception, properties] = monitoring.logException.calls.first().args;
     expect(properties).toEqual(jasmine.objectContaining({ telemetryArea: 'Hearings', operation, httpStatus: 503 }));
     expect(properties.step).toBe('/hearings/request/hearing-stage');
-    expect(JSON.stringify(properties)).not.toContain('private-');
+    const diagnostics = Object.fromEntries(
+      Object.entries(properties).filter(([key]) => !['caseId', 'hearingId', 'jurisdiction'].includes(key))
+    );
+    expect(JSON.stringify(diagnostics)).not.toContain('private-');
     expect(exception['error']).toBeUndefined();
     expect(exception['url']).toBeUndefined();
   }

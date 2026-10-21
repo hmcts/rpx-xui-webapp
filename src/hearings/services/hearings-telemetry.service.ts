@@ -1,4 +1,12 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
+import {
+  hearingTelemetryIdentifiers,
+  HearingsTelemetryIdentifiers,
+  mergeHearingsIdentifiers,
+} from '../../../common/hearings/telemetry-correlation';
+import { HearingValuesCaseContext } from '../models/hearingValuesStateData';
 import { MonitoringService } from '../../app/services/logger/monitoring.service';
 import { HEARINGS_OPERATIONS, HearingsOperation } from './hearings-exception-telemetry';
 
@@ -16,10 +24,18 @@ export interface HearingsJourneyState {
   readonly actionCount: number;
 }
 
-// Compared in memory only. Never spread this context into telemetry properties.
-export interface HearingsJourneyContext {
-  caseId?: string;
-  hearingId?: string;
+export type HearingsJourneyContext = HearingsTelemetryIdentifiers;
+
+export interface HearingsTelemetryStoreState {
+  hearings?: {
+    hearingValues?: { caseInfo?: HearingValuesCaseContext | null };
+    hearingRequest?: {
+      hearingRequestMainModel?: {
+        caseDetails?: { caseRef?: string; hearingID?: string };
+        requestDetails?: { hearingRequestID?: string };
+      };
+    };
+  };
 }
 
 interface ActiveJourney extends HearingsJourneyState {
@@ -88,11 +104,13 @@ const ACTIONS: readonly HearingsTelemetryAction[] = ['continue', 'back', 'change
 @Injectable({ providedIn: 'root' })
 export class HearingsTelemetryService {
   private journey?: ActiveJourney;
-  private pendingRequestContext?: { journeyId: string; journeyType: HearingsJourneyType; step: string; page: string } | null;
+  private pendingRequestContext?:
+    ({ journeyId: string; journeyType: HearingsJourneyType; step: string; page: string } & HearingsTelemetryIdentifiers) | null;
 
   constructor(
     private readonly monitoring: MonitoringService,
-    @Inject(Window) private readonly browser: Window
+    @Inject(Window) private readonly browser: Window,
+    @Optional() private readonly store?: Store<HearingsTelemetryStoreState>
   ) {}
 
   public get currentJourney(): HearingsJourneyState | null {
@@ -109,6 +127,25 @@ export class HearingsTelemetryService {
       : this.journey?.journeyId || null;
   }
 
+  public get requestIdentifiers(): HearingsTelemetryIdentifiers {
+    return this.pendingRequestContext !== undefined
+      ? this.pendingRequestContext
+        ? this.resolveIdentifiers(this.pendingRequestContext, this.pendingRequestContext.step)
+        : {}
+      : this.currentIdentifiers;
+  }
+
+  public get currentIdentifiers(): HearingsTelemetryIdentifiers {
+    if (!this.journey) {
+      return {};
+    }
+    const identifiers = this.resolveIdentifiers(this.journey.context, this.journey.currentStep);
+    // Retain identifiers learned during this page for its eventual duration event,
+    // even if the store starts loading another case before NavigationEnd.
+    this.journey.context = { ...identifiers };
+    return identifiers;
+  }
+
   /** Prepare correlation before guards/resolvers run, without recording an unvisited page. */
   public prepareNavigation(step: string | null, context: HearingsJourneyContext = {}): void {
     const type = STEP_TYPES.get(step);
@@ -116,6 +153,7 @@ export class HearingsTelemetryService {
       this.pendingRequestContext = null;
       return;
     }
+    context = this.resolveIdentifiers(context, step);
     const startsNewJourney =
       !this.journey ||
       this.hasContextChanged(context) ||
@@ -129,6 +167,7 @@ export class HearingsTelemetryService {
       journeyType,
       step,
       page: step,
+      ...context,
     };
   }
 
@@ -137,6 +176,7 @@ export class HearingsTelemetryService {
   }
 
   public hasContextChanged(next: HearingsJourneyContext): boolean {
+    next = this.resolveIdentifiers(next, this.pendingRequestContext?.step || this.journey?.currentStep);
     const previous = this.journey?.context;
     return !!(
       previous &&
@@ -154,6 +194,7 @@ export class HearingsTelemetryService {
     if (!type) {
       return null;
     }
+    context = this.resolveIdentifiers(context, step);
     if (this.hasContextChanged(context)) {
       this.endJourney('context-changed', now);
     }
@@ -204,21 +245,35 @@ export class HearingsTelemetryService {
     this.monitoring.logEvent('Hearings.ValidationFailed', { ...this.properties(), category }, { errorCount });
   }
 
-  public captureException(operation: HearingsOperation): (error: unknown) => void {
+  public captureException(
+    operation: HearingsOperation,
+    requestIdentifiers?: HearingsTelemetryIdentifiers
+  ): (error: unknown) => void {
     if (!HEARINGS_OPERATIONS.includes(operation)) {
       return () => {};
     }
     // Snapshot the initiating journey, not whichever case/page is active when a slow request fails.
-    const context = {
+    const context: Record<string, string> = {
       telemetryArea: 'Hearings',
       operation,
       ...this.monitoring.captureOperationContext?.(),
       ...(this.pendingRequestContext !== undefined
-        ? this.pendingRequestContext || { page: 'Hearings' }
+        ? this.pendingRequestContext
+          ? { ...this.pendingRequestContext, ...this.requestIdentifiers }
+          : { page: 'Hearings' }
         : this.journey
           ? this.properties()
           : { page: 'Hearings' }),
     };
+    const supplied = hearingTelemetryIdentifiers(requestIdentifiers);
+    const identifiers = mergeHearingsIdentifiers(
+      hearingTelemetryIdentifiers(context),
+      Object.keys(supplied).length ? this.resolveIdentifiers(supplied, context.step) : {}
+    );
+    for (const key of ['caseId', 'hearingId', 'jurisdiction']) {
+      delete context[key];
+    }
+    Object.assign(context, identifiers);
     return (error: unknown) => {
       try {
         const detail =
@@ -268,6 +323,7 @@ export class HearingsTelemetryService {
       journeyType: this.journey.journeyType,
       step: this.journey.currentStep,
       page: this.journey.currentStep,
+      ...this.currentIdentifiers,
     };
   }
 
@@ -275,5 +331,60 @@ export class HearingsTelemetryService {
     return Array.from(this.browser.crypto.getRandomValues(new Uint32Array(4)), (value) =>
       value.toString(16).padStart(8, '0')
     ).join('');
+  }
+
+  private resolveIdentifiers(context: HearingsJourneyContext, step?: string): HearingsTelemetryIdentifiers {
+    const route = hearingTelemetryIdentifiers(context);
+    let caseInfo: HearingValuesCaseContext | null | undefined;
+    let requestCaseId: string | undefined;
+    let requestHearingId: string | undefined;
+    try {
+      this.store
+        ?.select((state) => ({
+          caseInfo: state?.hearings?.hearingValues?.caseInfo,
+          requestCaseId: state?.hearings?.hearingRequest?.hearingRequestMainModel?.caseDetails?.caseRef,
+          requestHearingId:
+            state?.hearings?.hearingRequest?.hearingRequestMainModel?.requestDetails?.hearingRequestID ||
+            state?.hearings?.hearingRequest?.hearingRequestMainModel?.caseDetails?.hearingID,
+        }))
+        .pipe(take(1))
+        .subscribe({
+          next: (value) => {
+            caseInfo = value.caseInfo;
+            requestCaseId = value.requestCaseId;
+            requestHearingId = value.requestHearingId;
+          },
+          error: () => {},
+        });
+    } catch {
+      // Telemetry must not require the lazy Hearings feature or change application state.
+    }
+    const stored = hearingTelemetryIdentifiers({
+      caseId: caseInfo?.caseReference,
+      hearingId: caseInfo?.hearingId,
+      jurisdiction: caseInfo?.jurisdictionId,
+    });
+    const type = STEP_TYPES.get(step);
+    const existingHearing =
+      type && ((type !== 'request' && type !== 'browse') || (type === 'request' && this.journey?.journeyType === 'amend'));
+    if (!existingHearing && !route.hearingId) {
+      delete stored.hearingId;
+    }
+    if (
+      existingHearing &&
+      requestCaseId === (route.caseId || stored.caseId) &&
+      (!route.hearingId || route.hearingId === requestHearingId)
+    ) {
+      stored.hearingId = hearingTelemetryIdentifiers({ hearingId: requestHearingId }).hearingId || stored.hearingId;
+    }
+    if (
+      !stored.caseId ||
+      (route.caseId && route.caseId !== stored.caseId) ||
+      (route.hearingId && stored.hearingId && route.hearingId !== stored.hearingId) ||
+      (route.hearingId && !route.caseId && route.hearingId !== stored.hearingId)
+    ) {
+      return route;
+    }
+    return { ...stored, ...route };
   }
 }

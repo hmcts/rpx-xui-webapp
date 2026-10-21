@@ -18,6 +18,7 @@ import { ResponseDetailsModel } from '../models/requestDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import { HearingsTelemetryService, HearingsTelemetryAction, HearingsValidationCategory } from './hearings-telemetry.service';
 import { HearingsOperation } from './hearings-exception-telemetry';
+import { HearingsTelemetryIdentifiers } from '../../../common/hearings/telemetry-correlation';
 
 @Injectable()
 export class HearingsService {
@@ -70,12 +71,18 @@ export class HearingsService {
   }
 
   public getAllHearings(caseId: string): Observable<HearingListMainModel> {
-    return this.observeErrors('getAllHearings', this.http.get<HearingListMainModel>(`api/hearings/getHearings?caseId=${caseId}`));
+    return this.observeErrors(
+      'getAllHearings',
+      this.http.get<HearingListMainModel>(`api/hearings/getHearings?caseId=${caseId}`),
+      { caseId }
+    );
   }
 
-  public errorReporter(operation: HearingsOperation): (error: unknown) => void {
+  public errorReporter(operation: HearingsOperation, identifiers?: HearingsTelemetryIdentifiers): (error: unknown) => void {
     try {
-      const report = this.telemetry?.captureException(operation);
+      const report = identifiers
+        ? this.telemetry?.captureException(operation, identifiers)
+        : this.telemetry?.captureException(operation);
       return (error) => {
         try {
           report?.(error);
@@ -88,8 +95,12 @@ export class HearingsService {
     }
   }
 
-  private observeErrors<T>(operation: HearingsOperation, request: Observable<T>): Observable<T> {
-    return defer(() => request.pipe(tap({ error: this.errorReporter(operation) })));
+  private observeErrors<T>(
+    operation: HearingsOperation,
+    request: Observable<T>,
+    identifiers?: HearingsTelemetryIdentifiers
+  ): Observable<T> {
+    return defer(() => request.pipe(tap({ error: this.errorReporter(operation, identifiers) })));
   }
 
   public loadHearingValues(jurisdictionId: string, caseId: string): Observable<ServiceHearingValuesModel> {
@@ -97,7 +108,8 @@ export class HearingsService {
       'loadHearingValues',
       this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues?jurisdictionId=${jurisdictionId}`, {
         caseReference: caseId,
-      })
+      }),
+      { caseId, jurisdiction: jurisdictionId }
     );
   }
 
@@ -111,7 +123,8 @@ export class HearingsService {
       this.http.post<ServiceLinkedCasesModel[]>(`api/hearings/loadServiceLinkedCases?jurisdictionId=${jurisdictionId}`, {
         caseReference,
         hearingId, // could be null, empty string or missing
-      })
+      }),
+      { caseId: caseReference, hearingId, jurisdiction: jurisdictionId }
     );
   }
 
@@ -130,7 +143,8 @@ export class HearingsService {
           caseName,
           hearingId, // could be null, empty string or missing
         }
-      )
+      ),
+      { caseId: caseReference, hearingId, jurisdiction: jurisdictionId }
     );
   }
 
@@ -150,14 +164,16 @@ export class HearingsService {
       this.http.delete<ResponseDetailsModel>('api/hearings/cancelHearings', {
         params,
         body: { cancellationReasonCodes },
-      })
+      }),
+      { caseId, hearingId }
     );
   }
 
   public loadHearingRequest(hearingId: string, caseRef: string): Observable<HearingRequestMainModel> {
     return this.observeErrors(
       'loadHearingRequest',
-      this.http.get<HearingRequestMainModel>(`api/hearings/getHearing?hearingId=${hearingId}&caseRef=${caseRef}`)
+      this.http.get<HearingRequestMainModel>(`api/hearings/getHearing?hearingId=${hearingId}&caseRef=${caseRef}`),
+      { caseId: caseRef, hearingId }
     );
   }
 
@@ -167,7 +183,8 @@ export class HearingsService {
       this.http.post<ResponseDetailsModel>(
         'api/hearings/submitHearingRequest',
         this.prepareHearingRequestModel(hearingRequestMainModel)
-      )
+      ),
+      { caseId: hearingRequestMainModel.caseDetails?.caseRef }
     );
   }
 
@@ -181,14 +198,16 @@ export class HearingsService {
         'api/hearings/updateHearingRequest',
         this.prepareHearingRequestModel(hearingRequestMainModel),
         options
-      )
+      ),
+      { caseId: hearingRequestMainModel.caseDetails?.caseRef, hearingId: hearingRequestMainModel.requestDetails.hearingRequestID }
     );
   }
 
   public getHearingActuals(hearingId: string, caseRef: string): Observable<HearingActualsMainModel> {
     return this.observeErrors(
       'getHearingActuals',
-      this.http.get<HearingActualsMainModel>(`api/hearings/hearingActuals/${hearingId}?caseRef=${caseRef}`)
+      this.http.get<HearingActualsMainModel>(`api/hearings/hearingActuals/${hearingId}?caseRef=${caseRef}`),
+      { caseId: caseRef, hearingId }
     );
   }
 
@@ -202,14 +221,16 @@ export class HearingsService {
       this.http.put<HearingActualsMainModel>(
         `api/hearings/hearingActuals?hearingId=${hearingId}&caseId=${caseId}`,
         hearingActualsModel
-      )
+      ),
+      { caseId, hearingId }
     );
   }
 
   public submitHearingActuals(hearingId: string, caseRef: string): Observable<HttpResponse<number>> {
     return this.observeErrors(
       'submitHearingActuals',
-      this.http.post<HttpResponse<number>>(`api/hearings/hearingActualsCompletion/${hearingId}?caseRef=${caseRef}`, null)
+      this.http.post<HttpResponse<number>>(`api/hearings/hearingActualsCompletion/${hearingId}?caseRef=${caseRef}`, null),
+      { caseId: caseRef, hearingId }
     );
   }
 
@@ -218,7 +239,8 @@ export class HearingsService {
       'getLinkedHearingGroup',
       this.http.get<LinkedHearingGroupMainModel>(
         `api/hearings/getLinkedHearingGroup?groupId=${groupId}&hearingId=${hearingId}&caseId=${caseId}`
-      )
+      ),
+      { caseId, hearingId }
     );
   }
 
@@ -232,7 +254,8 @@ export class HearingsService {
       this.http.post<LinkedHearingGroupResponseModel>(
         `api/hearings/postLinkedHearingGroup?caseId=${caseId}&hearingId=${hearingId}`,
         linkedHearingGroupMainModel
-      )
+      ),
+      { caseId, hearingId }
     );
   }
 
@@ -247,7 +270,8 @@ export class HearingsService {
       this.http.put<LinkedHearingGroupResponseModel>(
         `api/hearings/putLinkedHearingGroup?groupId=${groupId}&caseId=${caseId}&hearingId=${hearingId}`,
         linkedHearingGroupMainModel
-      )
+      ),
+      { caseId, hearingId }
     );
   }
 
@@ -261,7 +285,8 @@ export class HearingsService {
     };
     return this.observeErrors(
       'deleteLinkedHearingGroup',
-      this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options)
+      this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options),
+      { caseId, hearingId }
     );
   }
 

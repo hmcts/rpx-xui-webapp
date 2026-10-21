@@ -10,6 +10,7 @@ import {
 } from '@angular/router';
 import { fromEvent, Subscription } from 'rxjs';
 import { MonitoringService } from './monitoring.service';
+import { HearingsTelemetryIdentifiers } from '../../../../common/hearings/telemetry-correlation';
 import {
   HearingsJourneyContext,
   HearingsJourneyEndReason,
@@ -25,6 +26,7 @@ interface HearingsPage {
 interface TimedPage extends HearingsPage {
   enteredAt: number;
   journeyId: string;
+  identifiers: HearingsTelemetryIdentifiers;
 }
 
 export function initializeHearingsPageTracking(service: HearingsPageTrackingService): () => void {
@@ -87,7 +89,7 @@ export class HearingsPageTrackingService implements OnDestroy {
 
   private trackPage(): void {
     const next = this.hearingsPage(this.router.routerState.snapshot.root);
-    if (next && this.page?.key === next.key) {
+    if (next && this.page?.key === next.key && !this.telemetry.hasContextChanged(next.context)) {
       return;
     }
     const now = this.browser.performance.now();
@@ -106,7 +108,7 @@ export class HearingsPageTrackingService implements OnDestroy {
     if (!journey) {
       return;
     }
-    this.page = { ...next, enteredAt: now, journeyId: journey.journeyId };
+    this.page = { ...next, enteredAt: now, journeyId: journey.journeyId, identifiers: this.telemetry.currentIdentifiers };
     if (this.isConfirmation(next.path)) {
       this.telemetry.endJourney('confirmation', now, next.path);
     }
@@ -127,7 +129,10 @@ export class HearingsPageTrackingService implements OnDestroy {
       this.monitoring.logPageView(
         `Hearings: ${page.path}`,
         page.path,
-        { journeyId: page.journeyId },
+        {
+          journeyId: page.journeyId,
+          ...(this.telemetry.currentJourney?.journeyId === page.journeyId ? this.telemetry.currentIdentifiers : page.identifiers),
+        },
         undefined,
         Math.max(0, now - page.enteredAt)
       );
@@ -146,7 +151,7 @@ export class HearingsPageTrackingService implements OnDestroy {
   private hearingsPage(root: ActivatedRouteSnapshot): HearingsPage | null {
     const segments: string[] = [];
     const actualSegments: string[] = [];
-    // Context is compared only in memory; it must never be attached to telemetry.
+    // Read only approved identifier fields; never include arbitrary route/navigation state.
     const context: HearingsJourneyContext = {};
     let route = root.children.find((child) => child.outlet === PRIMARY_OUTLET);
     while (route) {
@@ -164,6 +169,17 @@ export class HearingsPageTrackingService implements OnDestroy {
       }
       if (hearingId) {
         context.hearingId = hearingId;
+      }
+      if (route.params.jurisdiction || route.params.jurisdictionId) {
+        context.jurisdiction = route.params.jurisdiction || route.params.jurisdictionId;
+      }
+      const queryCaseId = route.queryParams.caseId || route.queryParams.caseRef || route.queryParams.caseReference;
+      if (!context.caseId && typeof queryCaseId === 'string') {
+        context.caseId = queryCaseId;
+      }
+      const jurisdiction = route.queryParams.jurisdictionId || route.queryParams.jurisdiction;
+      if (!context.jurisdiction && typeof jurisdiction === 'string') {
+        context.jurisdiction = jurisdiction;
       }
       route = route.children.find((child) => child.outlet === PRIMARY_OUTLET);
     }

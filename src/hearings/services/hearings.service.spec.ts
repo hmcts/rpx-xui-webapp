@@ -77,7 +77,10 @@ describe('HearingsService', () => {
     http
       .expectOne('api/hearings/getHearing?hearingId=private-hearing&caseRef=private-case')
       .flush({ privateName: 'private-person' }, { status: 500, statusText: 'Server error' });
-    expect(telemetry.captureException).toHaveBeenCalledOnceWith('loadHearingRequest');
+    expect(telemetry.captureException).toHaveBeenCalledOnceWith('loadHearingRequest', {
+      caseId: 'private-case',
+      hearingId: 'private-hearing',
+    });
     expect(report).toHaveBeenCalledTimes(1);
     expect(received).toHaveBeenCalledTimes(1);
     expect(received.calls.first().args[0]).toBe(report.calls.first().args[0]);

@@ -1,4 +1,5 @@
 import { ITelemetryItem } from '@microsoft/applicationinsights-web';
+import { hearingTelemetryIdentifiers } from '../../../common/hearings/telemetry-correlation';
 
 export const HEARINGS_OPERATIONS = [
   'getAllHearings',
@@ -33,7 +34,7 @@ export function sanitizeHearingsException(item: ITelemetryItem): boolean {
   }
   try {
     const properties = item.baseData.properties;
-    const safeProperties = {};
+    const safeProperties = { ...hearingTelemetryIdentifiers(properties) };
     for (const key of [
       'telemetryArea',
       'operation',

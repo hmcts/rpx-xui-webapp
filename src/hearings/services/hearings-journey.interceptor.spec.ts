@@ -1,14 +1,14 @@
 import { HttpClient, HttpHeaders, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { HEARINGS_JOURNEY_HEADER } from '../../../common/hearings/telemetry-correlation';
+import { HEARINGS_JOURNEY_HEADER, HEARINGS_IDENTIFIER_HEADERS } from '../../../common/hearings/telemetry-correlation';
 import { hearingsJourneyInterceptor } from './hearings-journey.interceptor';
 import { HearingsTelemetryService } from './hearings-telemetry.service';
 
 describe('Hearings journey interceptor', () => {
   const journeyA = 'a'.repeat(32);
   const journeyB = 'b'.repeat(32);
-  let currentJourney: { journeyId: string } | null;
+  let currentJourney: { journeyId: string; caseId?: string; hearingId?: string; jurisdiction?: string; caseName?: string } | null;
   let http: HttpClient;
   let requests: HttpTestingController;
   let readJourney: jasmine.Spy;
@@ -26,6 +26,9 @@ describe('Hearings journey interceptor', () => {
           useValue: {
             get requestJourneyId() {
               return readJourney()?.journeyId;
+            },
+            get requestIdentifiers() {
+              return currentJourney;
             },
           },
         },
@@ -51,9 +54,44 @@ describe('Hearings journey interceptor', () => {
       http.get(url).subscribe();
       const request = requests.expectOne(url);
       expect(request.request.headers.get(HEARINGS_JOURNEY_HEADER)).toBe(journeyA);
-      expect(request.request.headers.keys()).toEqual([HEARINGS_JOURNEY_HEADER]);
+      expect(request.request.headers.keys()).toEqual([
+        HEARINGS_JOURNEY_HEADER,
+        ...(url.includes('?caseId=') ? [HEARINGS_IDENTIFIER_HEADERS.caseId] : []),
+      ]);
       request.flush({});
     });
+  });
+
+  it('adds only approved context identifiers and does not forward them to external origins', () => {
+    currentJourney = {
+      journeyId: journeyA,
+      caseId: '1234567890123456',
+      hearingId: '20000001',
+      jurisdiction: 'SSCS',
+      caseName: 'private-name',
+    };
+    http.get('/api/hearings/getHearing').subscribe();
+    const first = requests.expectOne('/api/hearings/getHearing');
+    expect(first.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.caseId)).toBe('1234567890123456');
+    expect(first.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.hearingId)).toBe('20000001');
+    expect(first.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.jurisdiction)).toBe('SSCS');
+    expect(JSON.stringify(first.request.headers.keys())).not.toContain('caseName');
+    first.flush({});
+    http.get('https://external.example/api/hearings/getHearing').subscribe();
+    const external = requests.expectOne('https://external.example/api/hearings/getHearing');
+    expect(external.request.headers.keys()).toEqual([]);
+    external.flush({});
+  });
+
+  it('does not combine old journey identifiers with requests for another hearing or case', () => {
+    currentJourney = { journeyId: journeyA, caseId: 'case-a', hearingId: 'hearing-a', jurisdiction: 'SSCS' };
+    const url = '/api/hearings/getHearing?caseRef=case-b&hearingId=hearing-b';
+    http.get(url).subscribe();
+    const request = requests.expectOne(url);
+    expect(request.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.caseId)).toBe('case-b');
+    expect(request.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.hearingId)).toBe('hearing-b');
+    expect(request.request.headers.has(HEARINGS_IDENTIFIER_HEADERS.jurisdiction)).toBeFalse();
+    request.flush({});
   });
 
   [

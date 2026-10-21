@@ -12,6 +12,11 @@ describe('Hearings exception privacy filter', () => {
           operation: 'loadHearingRequest',
           page: '/hearings/request/hearing-stage',
           httpStatus: 406,
+          caseId: '1234567890123456',
+          hearingId: '20000001',
+          jurisdiction: 'SSCS',
+          caseName: 'private-name',
+          formValue: 'private-value',
           response: 'private-response',
         },
         exceptions: [
@@ -36,6 +41,15 @@ describe('Hearings exception privacy filter', () => {
     };
     sanitizeHearingsException(item);
     expect(item.baseData.properties.httpStatus).toBe(406);
+    expect(item.baseData.properties as Record<string, unknown>).toEqual({
+      telemetryArea: 'Hearings',
+      operation: 'loadHearingRequest',
+      page: '/hearings/request/hearing-stage',
+      httpStatus: 406,
+      caseId: '1234567890123456',
+      hearingId: '20000001',
+      jurisdiction: 'SSCS',
+    });
     expect(item.baseData.exceptions[0].parsedStack[0]).toEqual({
       level: 0,
       method: 'HearingComponent.submit',

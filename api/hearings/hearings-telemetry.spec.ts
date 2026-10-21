@@ -123,6 +123,7 @@ describe('Structured Hearings traces', () => {
       outcome: 'failed',
       httpStatus: 500,
       journeyId,
+      hearingId: 'private-hearing',
     });
   });
 

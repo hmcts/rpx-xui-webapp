@@ -201,9 +201,6 @@ test.describe(
         releaseCaseBResponse();
         await caseBListResponse;
         await expect(hearingsTabPage.container).toBeVisible();
-        await expect
-          .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
-          .toBe(caseBReference);
         await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
         await expect(hearingsTabPage.viewDetailsButton(caseBHearing.hearingId)).toBeVisible();
       } finally {

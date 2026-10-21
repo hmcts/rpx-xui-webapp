@@ -114,6 +114,17 @@ test.describe(
         resolveCaseAResponseFulfilled = resolve;
         rejectCaseAResponseFulfilled = reject;
       });
+      let releaseCaseBResponse!: () => void;
+      let caseBResponseReleased = false;
+      const caseBResponseGate = new Promise<void>((resolve) => {
+        releaseCaseBResponse = () => {
+          if (caseBResponseReleased) {
+            return;
+          }
+          caseBResponseReleased = true;
+          resolve();
+        };
+      });
       await page.route('**/api/hearings/getHearings*', async (route) => {
         const requestedCaseReference = new URL(route.request().url()).searchParams.get('caseId');
         if (requestedCaseReference === HEARINGS_CASE_REFERENCE) {
@@ -135,6 +146,7 @@ test.describe(
           await route.fallback();
           return;
         }
+        await caseBResponseGate;
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -142,27 +154,14 @@ test.describe(
         });
       });
 
-      const caseBValuesRequest = page.waitForRequest(
-        (request) =>
-          request.url().includes('/api/hearings/loadServiceHearingValues') &&
-          (request.postDataJSON() as { caseReference?: string })?.caseReference === caseBReference
-      );
-      const caseBListRequest = page.waitForRequest(
-        (request) =>
-          request.url().includes('/api/hearings/getHearings') &&
-          new URL(request.url()).searchParams.get('caseId') === caseBReference
-      );
       const caseAListRequest = page.waitForRequest(
         (request) =>
           request.url().includes('/api/hearings/getHearings') &&
           new URL(request.url()).searchParams.get('caseId') === HEARINGS_CASE_REFERENCE
       );
-      const caseBListResponse = page.waitForResponse(
-        (response) =>
-          response.url().includes('/api/hearings/getHearings') &&
-          new URL(response.url()).searchParams.get('caseId') === caseBReference &&
-          response.status() === 200
-      );
+      let caseBValuesRequest!: ReturnType<typeof page.waitForRequest>;
+      let caseBListRequest!: ReturnType<typeof page.waitForRequest>;
+      let caseBListResponse!: ReturnType<typeof page.waitForResponse>;
 
       try {
         await page
@@ -177,21 +176,42 @@ test.describe(
           .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
           .toBe(caseBReference);
 
+        caseBValuesRequest = page.waitForRequest(
+          (request) =>
+            request.url().includes('/api/hearings/loadServiceHearingValues') &&
+            (request.postDataJSON() as { caseReference?: string })?.caseReference === caseBReference
+        );
+        caseBListRequest = page.waitForRequest(
+          (request) =>
+            request.url().includes('/api/hearings/getHearings') &&
+            new URL(request.url()).searchParams.get('caseId') === caseBReference
+        );
+        caseBListResponse = page.waitForResponse(
+          (response) =>
+            response.url().includes('/api/hearings/getHearings') &&
+            new URL(response.url()).searchParams.get('caseId') === caseBReference &&
+            response.status() === 200
+        );
+
         await page
           .getByRole('tab', { name: /hearings/i })
           .first()
           .click();
         await caseBListRequest;
-        await caseBListResponse;
-        await expect(hearingsTabPage.container).toBeVisible();
-        await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
-        await expect(hearingsTabPage.viewDetailsButton(caseBHearing.hearingId)).toBeVisible();
-
-        // Release the stale A response only after B has rendered so this test proves cancellation ordering.
+        // Keep B's list request pending while the stale A response completes.
         releaseCaseAResponse();
         await caseAResponseFulfilled;
+        releaseCaseBResponse();
+        await caseBListResponse;
+        await expect(hearingsTabPage.container).toBeVisible();
+        await expect
+          .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
+          .toBe(caseBReference);
+        await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
+        await expect(hearingsTabPage.viewDetailsButton(caseBHearing.hearingId)).toBeVisible();
       } finally {
         releaseCaseAResponse();
+        releaseCaseBResponse();
         await caseAResponseFulfilled;
       }
 

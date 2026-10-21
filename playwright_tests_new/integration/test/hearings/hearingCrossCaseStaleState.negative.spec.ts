@@ -87,11 +87,7 @@ test.describe(
       await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0);
     });
 
-    test('shows an error on direct entry when Case B route receives Case A details (EXUI-5434)', async ({
-      page,
-      caseDetailsPage,
-      hearingsTabPage,
-    }) => {
+    test('rejects direct entry when Case B route receives Case A details (EXUI-5434)', async ({ page, caseDetailsPage }) => {
       await applyHearingManagerSessionCookies(page, HEARING_MANAGER_CR84_ON_USER);
       await setupHearingsMockRoutes(page, {
         userRoles: hearingManagerRoles,
@@ -100,28 +96,28 @@ test.describe(
       const caseBReference = caseB.caseReference!;
       await page.route(`**/data/internal/cases/${caseBReference}*`, async (route) => {
         await route.fulfill({
-          status: 200,
+          status: 404,
           contentType: 'application/json',
-          body: JSON.stringify(buildHearingsCaseDetailsMock()),
+          body: JSON.stringify({
+            ...buildHearingsCaseDetailsMock(),
+            message: 'Case details did not match the requested case',
+          }),
         });
       });
 
+      const mismatchedCaseDetailsResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes(`/data/internal/cases/${caseBReference}`) &&
+          response.status() === 404 &&
+          response.request().method() === 'GET'
+      );
       await gotoCaseDetailsWithRetry(page, caseDetailsUrl('CIVIL', 'CIVIL', caseBReference));
-      await expect(page).toHaveURL(new RegExp(`/cases/case-details/CIVIL/CIVIL/${HEARINGS_CASE_REFERENCE}(?:[/?#]|$)`));
-      await expect
-        .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
-        .toBe(HEARINGS_CASE_REFERENCE);
-      await page
-        .getByRole('tab', { name: /hearings/i })
-        .first()
-        .click();
-
-      await expect(page).toHaveURL(/#Hearings(?:$|[?])/i);
-      await expect(
-        page.getByText('There was a system error and your request could not be processed. Please try again.', { exact: true })
-      ).toBeVisible();
-      await expect(hearingsTabPage.reloadButton).toBeVisible();
-      await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
+      const mismatchedCaseDetailsBody = await (await mismatchedCaseDetailsResponse).json();
+      expect(mismatchedCaseDetailsBody.case_id).toBe(HEARINGS_CASE_REFERENCE);
+      await expect(page).toHaveURL(/\/search\/noresults(?:[/?#]|$)/);
+      await expect(page.getByRole('heading', { level: 1, name: 'No results found' })).toBeVisible();
+      await expect(caseDetailsPage.ccdCaseReference).toBeHidden();
+      await expect(page.getByRole('tab', { name: /hearings/i })).toBeHidden();
       await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0);
     });
   }

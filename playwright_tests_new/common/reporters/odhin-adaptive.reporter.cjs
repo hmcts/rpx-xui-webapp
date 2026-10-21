@@ -303,6 +303,7 @@ function buildFailureMetadata(test, result) {
     classification: redactText(classification),
     confidence: 'observed',
     source: redactText(annotation('Failure source')),
+    failureLocation: redactText(annotation('Failure location')),
     phase: redactText(annotation('Phase marker')),
     actionableError: redactText(annotation('Actionable error') || error?.message || ''),
     hypothesis: redactText(annotation('Likely root cause')),

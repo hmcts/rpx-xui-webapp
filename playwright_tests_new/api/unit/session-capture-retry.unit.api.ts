@@ -13,6 +13,7 @@ import type { SessionIdentity } from '../../common/sessionIdentity.js';
 import {
   SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
   isExplicitIdamLoginRejection,
+  isIdentityScopedLoginSurfaceTimeout,
   isTransientSessionCaptureError,
 } from '../../common/sessionCaptureRetry.js';
 
@@ -163,6 +164,15 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
   test('does not retry a typed locator timeout that can indicate a wrong or changed page', () => {
     const error = new Error('locator.waitFor: Timeout 10000ms exceeded');
     error.name = 'TimeoutError';
+    expect(isTransientSessionCaptureError(error)).toBe(false);
+  });
+
+  test('recognises a wrapped IDAM login-surface timeout as identity-scoped', () => {
+    const error = new Error(
+      'Login failed for STAFF_ADMIN-2 after 1 of 2 capture attempts: locator.waitFor: Timeout 10000ms exceeded. Call log: waiting for locator([data-testid="idam-username-input"])'
+    );
+
+    expect(isIdentityScopedLoginSurfaceTimeout(error)).toBe(true);
     expect(isTransientSessionCaptureError(error)).toBe(false);
   });
 
@@ -378,6 +388,16 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
   test('retries an enforced session capture budget timeout', () => {
     const error = new Error(`Session capture attempt timed out after ${sessionCaptureTest.sessionCaptureTargetBudgetMs}ms`);
     error.name = 'TimeoutError';
+    expect(isTransientSessionCaptureError(error)).toBe(true);
+  });
+
+  test('retries an unavailable IDAM login surface before credentials are submitted', () => {
+    const page = { url: () => 'https://manage-case.example.test/' } as unknown as Page;
+
+    const error = sessionCaptureTest.unavailableIdamLoginSurfaceError(page, 'FPL_GLOBAL_SEARCH');
+
+    expect(error.message).toContain('IDAM login surface did not render');
+    expect(error.context.failureKind).toBe(SERVICE_DOWN_SESSION_CAPTURE_FAILURE);
     expect(isTransientSessionCaptureError(error)).toBe(true);
   });
 

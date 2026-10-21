@@ -1,12 +1,18 @@
 /* global require, module */
 
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 const path = require('path');
 const { parse } = require('node-html-parser');
+const { applyPresentation } = require('./presentation/enhance.cjs');
+const { injectAccessibilityWorkspace } = require('./presentation/accessibility.cjs');
+const { redactText } = require('./failure-context.cjs');
 
 const evidenceLinkAttributes = ' target="_blank" rel="noopener noreferrer"';
 
-function deriveFeatureName(filePath) {
+function deriveFeatureName(filePath, annotations = []) {
+  const declared = uniqueValues(annotations.filter((item) => item.type === 'feature').map((item) => item.description?.trim()));
+  if (declared.length === 1) return declared[0];
   const normalized = String(filePath ?? '')
     .replace(/\\/g, '/')
     .trim();
@@ -26,7 +32,7 @@ function deriveFeatureName(filePath) {
   for (const pattern of rootedPatterns) {
     const match = normalized.match(pattern);
     if (match?.[1]) {
-      return match[1];
+      return match[1].toLowerCase() === 'accessibility' ? 'Unattributed accessibility' : match[1];
     }
   }
 
@@ -125,6 +131,34 @@ function injectEnhancerStyles(root) {
   head.appendChild(
     parse(`
 <style id="odhin-enhancer-styles">
+  #odhin-failure-triage {
+    margin: 16px 0;
+  }
+
+  #odhin-failure-triage .odhin-failure-triage-note {
+    color: #505a5f;
+    margin: 0 0 12px;
+  }
+
+  #odhin-failure-triage table {
+    width: 100%;
+  }
+
+  #odhin-failure-triage td,
+  #odhin-failure-triage th {
+    vertical-align: top;
+    white-space: normal;
+  }
+
+  #odhin-failure-triage .odhin-failure-next-checks {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  #odhin-failure-triage .odhin-failure-observed {
+    font-weight: 700;
+  }
+
   .odhin-dashboard-stack {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
@@ -431,44 +465,6 @@ function injectEnhancerStyles(root) {
   );
 }
 
-function dashboardBlockTitle(column) {
-  return column.querySelector('.info-box-header')?.text.trim() ?? '';
-}
-
-function rebalanceTopDashboardColumns(root) {
-  const columns = root.querySelectorAll('.col-12.col-xl-6');
-  const runInfoColumn = columns.find((column) => dashboardBlockTitle(column) === 'Run info');
-  const globalSummaryColumn = columns.find((column) => dashboardBlockTitle(column) === 'Global Summary');
-  const featureOverviewColumn = columns.find((column) => dashboardBlockTitle(column) === 'Feature Overview');
-  const projectsSummaryColumn = columns.find((column) => dashboardBlockTitle(column) === 'Projects Summary');
-
-  if (!runInfoColumn || !globalSummaryColumn || !featureOverviewColumn || !projectsSummaryColumn) {
-    return;
-  }
-
-  const parent = runInfoColumn.parentNode;
-  if (
-    !parent ||
-    parent !== globalSummaryColumn.parentNode ||
-    parent !== featureOverviewColumn.parentNode ||
-    parent !== projectsSummaryColumn.parentNode
-  ) {
-    return;
-  }
-
-  const leftStack = parse(
-    `<div class="col-12 col-xl-6 odhin-dashboard-stack">${runInfoColumn.innerHTML}${featureOverviewColumn.innerHTML}</div>`
-  );
-  const rightStack = parse(
-    `<div class="col-12 col-xl-6 odhin-dashboard-stack">${globalSummaryColumn.innerHTML}${projectsSummaryColumn.innerHTML}</div>`
-  );
-
-  runInfoColumn.replaceWith(leftStack);
-  globalSummaryColumn.replaceWith(rightStack);
-  featureOverviewColumn.remove();
-  projectsSummaryColumn.remove();
-}
-
 function buildFeatureOverviewBlock(featureStats) {
   const totalTests = featureStats.reduce((sum, feature) => sum + feature.totalTests, 0);
   const topFeature = featureStats[0];
@@ -570,6 +566,15 @@ function normalizeEvidenceEntries(entries) {
     )
     .map((entry) => ({
       engine: typeof entry.engine === 'string' ? entry.engine : inferEvidenceEngine(entry),
+      ...(entry.context
+        ? {
+            context: Object.fromEntries(
+              ['scenarioId', 'persona', 'language', 'authentication', 'dataMode']
+                .filter((key) => typeof entry.context?.[key] === 'string')
+                .map((key) => [key, entry.context[key]])
+            ),
+          }
+        : {}),
       feature: typeof entry.feature === 'string' ? entry.feature : '',
       pageState: typeof entry.pageState === 'string' ? entry.pageState : '',
       testTitle: entry.testTitle,
@@ -578,10 +583,24 @@ function normalizeEvidenceEntries(entries) {
       screenshotFileName: typeof entry.screenshotFileName === 'string' ? entry.screenshotFileName : '',
       reportFileName: typeof entry.reportFileName === 'string' ? entry.reportFileName : '',
       violationCount: Number(entry.violationCount),
+      ...(Number.isFinite(Number(entry.reviewCount)) ? { reviewCount: Math.max(0, Number(entry.reviewCount)) } : {}),
+      ...(Array.isArray(entry.reviewRules) ? { reviewRules: entry.reviewRules.map(String) } : {}),
       status: typeof entry.status === 'string' ? entry.status : '',
       summary: typeof entry.summary === 'string' ? entry.summary : '',
       rules: Array.isArray(entry.rules) ? entry.rules.map(String) : [],
       targets: Array.isArray(entry.targets) ? entry.targets.map(String) : [],
+      ...(Array.isArray(entry.findings)
+        ? {
+            findings: entry.findings
+              .filter((finding) => finding && typeof finding.rule === 'string')
+              .map((finding) => ({
+                rule: finding.rule,
+                targets: Array.isArray(finding.targets) ? finding.targets.map(String) : [],
+                ...(typeof finding.summary === 'string' ? { summary: finding.summary } : {}),
+                ...(typeof finding.anchor === 'string' ? { anchor: finding.anchor } : {}),
+              })),
+          }
+        : {}),
     }))
     .sort(
       (left, right) =>
@@ -621,7 +640,7 @@ function engineLabel(engine) {
       summary: 'Page summary',
       axe: 'axe',
       'wave-like': 'WAVE-like',
-      'screen-reader': 'Screen-reader',
+      'screen-reader': 'Screen-reader heuristics',
       lighthouse: 'Lighthouse',
     }[engine] ?? engine
   );
@@ -632,7 +651,7 @@ function jsonLinkLabel(engine) {
     {
       summary: 'summary JSON',
       axe: 'DOM and axe JSON',
-      'wave-like': 'DOM and WAVE JSON',
+      'wave-like': 'DOM and WAVE-like JSON',
       'screen-reader': 'screen-reader JSON',
       lighthouse: 'Lighthouse JSON',
     }[engine] ?? 'evidence JSON'
@@ -641,7 +660,7 @@ function jsonLinkLabel(engine) {
 
 function issueLabel(engine, count) {
   if (engine === 'summary') {
-    return `${count} unexpected issue(s) across engines`;
+    return `${count} reported issue(s)`;
   }
   if (engine === 'lighthouse') {
     return count === 0 ? 'Accessibility threshold passed' : `${count} Lighthouse issue(s)`;
@@ -675,6 +694,12 @@ function buildAccessibilityEvidenceBlock(entries) {
           <div class="odhin-a11y-evidence-card-body">
             <span class="odhin-a11y-evidence-engine">${escapeHtml(engineLabel(entry.engine))}</span>
             <div class="odhin-a11y-evidence-title">${escapeHtml(entry.testTitle)}</div>
+            <p class="odhin-a11y-evidence-meta">Status: ${escapeHtml(entry.status || 'not recorded')}</p>
+            <p class="odhin-a11y-evidence-meta">${escapeHtml(
+              Object.entries(entry.context ?? {})
+                .map(([key, value]) => `${key}: ${value}`)
+                .join(' / ')
+            )}</p>
             <p class="odhin-a11y-evidence-meta">
               ${escapeHtml(issueLabel(entry.engine, entry.violationCount))}: ${escapeHtml(entry.rules.join(', ') || entry.summary || 'no rule recorded')}
             </p>
@@ -707,22 +732,6 @@ function buildAccessibilityEvidenceBlock(entries) {
   `;
 }
 
-function injectAccessibilityEvidence(root, evidenceEntries) {
-  const evidenceHtml = buildAccessibilityEvidenceBlock(evidenceEntries);
-  if (!evidenceHtml || root.querySelector('#odhin-accessibility-evidence')) {
-    return false;
-  }
-
-  const dashboardRow =
-    root.querySelector('#TabDashboard .row') ?? root.querySelector('#TabDashboard') ?? root.querySelector('body');
-  if (!dashboardRow) {
-    return false;
-  }
-
-  dashboardRow.appendChild(parse(evidenceHtml));
-  return true;
-}
-
 function removeDashboardAccessibilityEvidence(root) {
   root.querySelectorAll('#odhin-accessibility-evidence').forEach((node) => node.remove());
 }
@@ -731,10 +740,28 @@ function uniqueValues(values) {
   return Array.from(new Set((Array.isArray(values) ? values : []).filter(Boolean).map(String)));
 }
 
-function buildDeveloperHint(entries) {
+function buildDeveloperHint(entries, options = {}) {
+  const includeSourceHints = options.includeSourceHints !== false;
   const rules = uniqueValues(entries.flatMap((entry) => entry.rules));
   const targets = uniqueValues(entries.flatMap((entry) => entry.targets)).slice(0, 6);
   const hints = [];
+
+  if (entries.every((entry) => entry.status === 'needs-review')) {
+    return [
+      'The scanner could not decide this result. Open its check messages and affected element, reproduce the same page state, and use the linked rule guidance to verify it. Do not change code solely to clear an uncertain result.',
+    ];
+  }
+
+  if (entries.some((entry) => ['blocked', 'unreachable'].includes(entry.status)) || rules.includes('page-state-reachability')) {
+    return [
+      'Restore journey setup first: check the configured identity, route, test data and readiness failure in the evidence. No accessibility result is available for the intended page until it can be reached.',
+    ];
+  }
+  if (entries.some((entry) => entry.status === 'error') || rules.some((rule) => rule.endsWith(':engine-execution'))) {
+    hints.push(
+      'Resolve the scanner execution error in the attached evidence before treating its missing results as a product defect or a pass.'
+    );
+  }
 
   if (rules.some((rule) => rule.includes('skip-link'))) {
     hints.push('Check the app shell skip link target exists on this route and points at the visible main content.');
@@ -743,7 +770,9 @@ function buildDeveloperHint(entries) {
     hints.push('Check the route template renders exactly one usable <main> or role="main".');
   }
   if (rules.some((rule) => rule.includes('h1-count'))) {
-    hints.push('Check the page template has one visible h1 that matches the page state.');
+    hints.push(
+      'Follow the GOV.UK convention of one main page h1. Inspect shared banners and the content hierarchy; multiple h1 elements alone do not establish a WCAG failure.'
+    );
   }
   if (rules.some((rule) => rule.includes('label') || rule.includes('accessible-name') || rule.includes('link-name'))) {
     hints.push('Check the named form control or link has a visible label, aria-label, aria-labelledby, or useful link text.');
@@ -752,12 +781,76 @@ function buildDeveloperHint(entries) {
     hints.push('Check the validation template: title prefix, error summary links, and field-level error ids should line up.');
   }
   if (rules.some((rule) => rule.includes('fieldset-legend'))) {
-    hints.push('Check the fieldset has a visible legend that describes the grouped controls.');
+    hints.push(
+      'Give related controls a non-empty legend describing the group question. Prefer a visible legend; visually hidden text can be valid when visible context already supplies the question. Verify the computed group name and announcement; do not add a duplicate fieldset.'
+    );
   }
-  if (targets.length) {
+  const additionalAdvice = [
+    [
+      /heading-order/,
+      'Heading navigation: inspect whether section levels reflect the content hierarchy; a skipped level alone is not proof of a WCAG failure. Use CSS for visual size and recheck the rendered heading outline.',
+    ],
+    [
+      /definition-list|dlitem|(^|:)dd($|:)/,
+      'Definition lists: inspect the affected dl and its dt/dd groups. Give each term its description, including conditional empty states, so assistive technology can expose the relationship.',
+    ],
+    [
+      /document-language|html-lang|valid-lang/,
+      'Language: inspect the rendered html lang and translated content together. Welsh page states need cy (or an appropriate cy subtag); set lang on passages in a different language. Recheck after switching languages.',
+    ],
+    [
+      /document-title|metadata|meta-description/,
+      'Page metadata: inspect the route title/metadata update and app-shell defaults for repeated wording. Describe this specific page state once; do not remove meaningful context just to make the title shorter.',
+    ],
+    [
+      /duplicate-id|aria-reference-target/,
+      'Relationships: search the reported id in the template and repeated components. Make ids unique and update label for, aria-labelledby, aria-describedby and fragment links together.',
+    ],
+    [
+      /color-contrast/,
+      'Contrast: inspect foreground/background tokens and the reported interaction state. Change the shared colour token where appropriate, then rerun contrast checks in light, dark, hover and focus states used by the component.',
+    ],
+    [
+      /image-alt/,
+      'Images: edit the image component or content source. Describe informative content; use empty alt only for decorative images. Verify the accessible name in the original evidence.',
+    ],
+    [
+      /table-headers/,
+      'Tables: inspect the data-table template. Associate cells with row/column headers using th and scope (or headers/id for complex tables), so values retain their meaning when read cell by cell.',
+    ],
+    [
+      /positive-tabindex|aria-hidden-focusable|behavior:.*focus|behavior:.*Tab|behavior:.*keyboard/,
+      'Keyboard: inspect the affected component focus handler and tabindex. Follow DOM order, keep hidden content out of the tab sequence, and restore focus after closing dialogs. Repeat the failing keyboard sequence from the test.',
+    ],
+    [
+      /error-describedby|govuk-error-message/,
+      'Validation: connect each invalid control to its visible error with aria-describedby and a unique error id. Repeat the invalid state to verify association, then correct the input and confirm obsolete error text and references clear.',
+    ],
+    [
+      /text-spacing-clipping/,
+      'Text spacing: inspect fixed heights, max-height and overflow:hidden/clip on the target and its containers. Allow text and controls to grow or wrap with user spacing overrides; rerun the spacing probe and inspect the expanded layout.',
+    ],
+  ];
+  for (const [pattern, advice] of additionalAdvice) {
+    if (rules.some((rule) => pattern.test(rule))) hints.push(advice);
+  }
+  if (includeSourceHints && entries.some((entry) => entry.feature === 'query management')) {
+    hints.push(
+      'Source starting point: src/cases/containers/query-management-container/query-management-container.component.html. Follow the rendered ccd-query-* component into the shared toolkit if it owns the target.'
+    );
+  }
+  if (includeSourceHints && entries.some((entry) => entry.feature === 'signed-in header')) {
+    hints.push(
+      'Source starting point: src/app/containers/app-header/app-header.component.html and src/app/components/hmcts-global-header/hmcts-global-header.component.html. Confirm the target belongs to the header before editing.'
+    );
+  }
+  if (includeSourceHints && targets.length) {
     hints.push(`Start near: ${targets.join(', ')}.`);
   }
 
+  if (options.sourceHintsOnly) {
+    return hints.filter((hint) => /^(Source starting point|Start near):/.test(hint));
+  }
   return hints.length ? hints : ['Open the highlighted issue report and start with the listed DOM target or page template.'];
 }
 
@@ -884,7 +977,13 @@ function buildTestEvidencePanel(entries, navigation = {}) {
         : '';
 
       return `
-        <p><strong>${escapeHtml(engineLabel(entry.engine))} evidence:</strong></p>
+        <p><strong>${escapeHtml(engineLabel(entry.engine))} evidence:</strong> ${escapeHtml(entry.status || 'not recorded')}</p>
+        <p>${escapeHtml(
+          Object.entries(entry.context ?? {})
+            .map(([key, value]) => `${key}: ${value}`)
+            .join(' / ')
+        )}</p>
+        <p>${escapeHtml(entry.summary)}</p>
         <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}"${evidenceLinkAttributes}>Open highlighted issue report</a>
         ${nativeReportLink}
         ${screenshotLink}
@@ -916,9 +1015,15 @@ function buildTestEvidencePanel(entries, navigation = {}) {
 
 function issueEntriesOnly(entries) {
   const normalizedEntries = normalizeEvidenceEntries(entries);
-  return normalizedEntries.some((entry) => entry.engine !== 'summary')
-    ? normalizedEntries.filter((entry) => entry.engine !== 'summary')
-    : normalizedEntries;
+  if (!normalizedEntries.some((entry) => entry.engine !== 'summary')) return normalizedEntries;
+  return normalizedEntries.flatMap((entry) => {
+    if (entry.engine !== 'summary') return [entry];
+    // These failures have no engine detail entry; keep them alongside scanner findings.
+    const rules = entry.rules.filter(
+      (rule) => rule.startsWith('behavior:') || rule.endsWith(':engine-execution') || rule === 'page-state-reachability'
+    );
+    return rules.length ? [{ ...entry, rules, violationCount: rules.length }] : [];
+  });
 }
 
 function ruleCountsByEngine(entries) {
@@ -1063,7 +1168,10 @@ function injectAccessibilityIssueSummary(root, evidenceEntries) {
     return false;
   }
 
-  table.parentNode.insertAdjacentHTML('beforebegin', summaryHtml);
+  table.parentNode.insertAdjacentHTML(
+    'beforebegin',
+    `<details class="odhin-a11y-summary-disclosure"><summary>Accessibility issue groups</summary>${summaryHtml}</details>`
+  );
   return true;
 }
 
@@ -1139,7 +1247,9 @@ function injectAccessibilityIssueFilters(root, evidenceEntries) {
 
 function removeAccessibilityTableEnhancements(root) {
   root
-    .querySelectorAll('.odhin-a11y-issue-summary, .odhin-a11y-filter-bar, #odhin-a11y-filter-script')
+    .querySelectorAll(
+      '.odhin-a11y-summary-disclosure, .odhin-a11y-issue-summary, .odhin-a11y-filter-bar, #odhin-a11y-filter-script'
+    )
     .forEach((node) => node.remove());
   root
     .querySelectorAll('th.odhin-a11y-issues-header, td.odhin-a11y-table-issues, td.odhin-a11y-table-hint')
@@ -1287,6 +1397,85 @@ function stripLegacyFileChartArtifacts(root) {
   });
 }
 
+function normalizeFailureMetadata(testMetadata) {
+  const grouped = new Map();
+  (Array.isArray(testMetadata) ? testMetadata : []).forEach((entry) => {
+    if (!entry || typeof entry !== 'object') {
+      return;
+    }
+    const target = typeof entry.target === 'string' ? entry.target : '';
+    const identity = redactText(entry.testId || target.replace(/-\d+$/, '') || target || 'unknown');
+    const attempts = grouped.get(identity) ?? [];
+    attempts.push(entry);
+    grouped.set(identity, attempts);
+  });
+
+  return Array.from(grouped.values())
+    .flatMap((attempts) => {
+      const orderedAttempts = [...attempts].sort((left, right) => Number(left.retry ?? 0) - Number(right.retry ?? 0));
+      const finalAttempt = orderedAttempts.at(-1);
+      const finalStatus = finalAttempt?.status || finalAttempt?.failure?.status || 'failed';
+      if (!['failed', 'timedOut', 'interrupted'].includes(finalStatus)) {
+        return [];
+      }
+      return orderedAttempts.filter((entry) => entry?.failure && typeof entry.failure === 'object');
+    })
+    .map((entry) => {
+      const failure = entry.failure;
+      const nextChecks = Array.isArray(failure.nextChecks) ? failure.nextChecks.map(redactText).slice(0, 3) : [];
+      const target = typeof entry.target === 'string' && /^#[A-Za-z0-9_-]+$/.test(entry.target) ? entry.target : '';
+      return {
+        target,
+        title: redactText(failure.title || 'Unnamed test'),
+        file: redactText(failure.file || 'unknown file'),
+        line: Number.isInteger(failure.line) ? failure.line : null,
+        column: Number.isInteger(failure.column) ? failure.column : null,
+        project: redactText(failure.project || 'unknown'),
+        retry: Number.isInteger(Number(failure.retry)) ? Number(failure.retry) : 0,
+        status: redactText(failure.status || 'failed'),
+        classification: redactText(failure.classification || 'UNKNOWN'),
+        confidence: redactText(failure.confidence || 'observed'),
+        source: redactText(failure.source || 'unconfirmed'),
+        phase: redactText(failure.phase || ''),
+        actionableError: redactText(failure.actionableError || 'No actionable error captured'),
+        hypothesis: redactText(failure.hypothesis || 'No hypothesis recorded'),
+        nextChecks: nextChecks.length ? nextChecks : ['Open the trace and raw Playwright error before changing the test.'],
+      };
+    })
+    .sort((left, right) => left.file.localeCompare(right.file) || left.line - right.line || left.retry - right.retry);
+}
+
+function buildFailureTriageBlock(testMetadata = []) {
+  const failures = normalizeFailureMetadata(testMetadata);
+  if (!failures.length) {
+    return '';
+  }
+
+  const rows = failures
+    .map((failure) => {
+      const location = `${failure.file}${failure.line ? `:${failure.line}${failure.column ? `:${failure.column}` : ''}` : ''}`;
+      const detailLink = failure.target
+        ? `<a href="${escapeAttribute(failure.target)}" class="odhin-failure-detail-link">Open test details</a>`
+        : 'Test details unavailable';
+      const checks = failure.nextChecks.map((check) => `<li>${escapeHtml(check)}</li>`).join('');
+      const hypothesis = `<div><strong>Hypothesis (not confirmed):</strong> ${escapeHtml(failure.hypothesis)}</div>`;
+      return `<tr><td><span class="odhin-failure-observed">${escapeHtml(failure.classification)}</span><br><small>${escapeHtml(failure.confidence)} signal</small></td><td>${escapeHtml(failure.title)}<br><small>${escapeHtml(failure.status)} · retry ${failure.retry} · ${escapeHtml(failure.project)}</small></td><td>${escapeHtml(location)}<br><small>${escapeHtml(failure.phase || failure.source)}</small></td><td>${escapeHtml(failure.actionableError)}<br>${hypothesis}<br>${detailLink}</td><td><ul class="odhin-failure-next-checks">${checks}</ul></td></tr>`;
+    })
+    .join('');
+
+  return `<div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-failure-triage"><div class="info-box-header">Failed test triage</div><p class="odhin-failure-triage-note">Observed signals are evidence for investigation, not confirmed root causes. Retry attempts are shown separately; open test details for the raw error, trace and screenshots when published.</p><div class="odhin-table table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Observed signal</th><th>Test / attempt</th><th>Source</th><th>Actionable error</th><th>Next checks</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+function injectFailureTriage(root, testMetadata) {
+  const block = buildFailureTriageBlock(testMetadata);
+  if (!block) {
+    return;
+  }
+  root.querySelector('#odhin-failure-triage')?.remove();
+  const dashboard = root.querySelector('#TabDashboard > .container-fluid') ?? root.querySelector('#TabDashboard');
+  dashboard?.insertAdjacentHTML('afterbegin', block);
+}
+
 function defaultTestListRowsPerPage(html) {
   return String(html)
     .replace(
@@ -1307,24 +1496,27 @@ function defaultTestListRowsPerPage(html) {
     );
 }
 
-function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
+function enhanceDashboardHtml(
+  html,
+  featureStats,
+  evidenceEntries = [],
+  perfettoFiles = [],
+  perfettoHrefPrefix = '../test-results',
+  testMetadata = []
+) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
-  const hasDashboardAccessibilityEvidence = htmlWithDefaultTestRows.includes('id="odhin-accessibility-evidence"');
-  if (!normalizedStats.length && !normalizedEvidenceEntries.length && !hasDashboardAccessibilityEvidence) {
-    return htmlWithDefaultTestRows;
-  }
-
   const root = parse(htmlWithDefaultTestRows);
   injectEnhancerStyles(root);
+  root.querySelector('#TabNodeApi')?.remove();
+  root.querySelector('.main-tablinks[onclick*="TabNodeApi"]')?.remove();
   removeDashboardAccessibilityEvidence(root);
   removeAccessibilityTableEnhancements(root);
 
   if (normalizedStats.length) {
     replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
     removeDuplicateFeatureStatusBlock(root);
-    rebalanceTopDashboardColumns(root);
     stripLegacyFileChartArtifacts(root);
   }
 
@@ -1332,8 +1524,42 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
+  injectAccessibilityWorkspace(
+    root,
+    normalizedEvidenceEntries,
+    buildIssueSummaryBlock(normalizedEvidenceEntries),
+    buildDeveloperHint
+  );
+  injectFailureTriage(root, testMetadata);
+  if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
 
+  applyPresentation(root, testMetadata);
   return root.toString();
+}
+
+function injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix = '../test-results') {
+  root.querySelector('#odhin-perfetto-link')?.remove();
+  root.querySelector('#TabPerfetto')?.remove();
+  root.querySelector('.main-tablinks[onclick*="TabPerfetto"]')?.remove();
+
+  const links = perfettoFiles
+    .map(
+      (fileName) =>
+        `<div class="perfetto-file"><strong>${escapeHtml(fileName)}</strong><a href="${escapeAttribute(perfettoHrefPrefix)}/${encodeURIComponent(fileName)}" download="${escapeAttribute(fileName)}">Download JSON</a><button type="button" class="perfetto-open">Open in Perfetto ↗</button><span class="perfetto-status" role="status"></span></div>`
+    )
+    .join('');
+  root
+    .querySelector('.tab')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<button class="main-tablinks" onclick="openMainTab(event, 'TabPerfetto')">Perfetto Results</button>`
+    );
+  root
+    .querySelector('body')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><div id="odhin-perfetto-link">${links}</div></div></div></div></div></div>`
+    );
 }
 
 function readAccessibilityEvidenceEntries(outputFolder) {
@@ -1368,15 +1594,28 @@ function readAccessibilityEvidenceEntries(outputFolder) {
   return Array.from(entriesByKey.values());
 }
 
-function enhanceGeneratedReport(outputFolder, featureStats) {
+function enhanceGeneratedReport(outputFolder, featureStats, testMetadata = []) {
   if (!outputFolder || !fs.existsSync(outputFolder)) {
     return;
   }
 
   const normalizedStats = normalizeFeatureStats(featureStats);
   const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
-  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length) {
-    return;
+  const testResultsFolder = [
+    path.join(outputFolder, 'test-results'),
+    path.join(outputFolder, '..', 'test-results'),
+    path.join(outputFolder, '..', '..', 'test-results'),
+  ].find((folder) => fs.existsSync(folder));
+  const perfettoFiles =
+    testResultsFolder && fs.existsSync(testResultsFolder)
+      ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
+      : [];
+  if (perfettoFiles.length) {
+    const publishedPerfettoFolder = path.join(outputFolder, 'perfetto');
+    fs.mkdirSync(publishedPerfettoFolder, { recursive: true });
+    perfettoFiles.forEach((fileName) => {
+      fs.copyFileSync(path.join(testResultsFolder, fileName), path.join(publishedPerfettoFolder, fileName));
+    });
   }
 
   const reportFiles = fs.readdirSync(outputFolder).filter((fileName) => fileName.toLowerCase().endsWith('.html'));
@@ -1384,7 +1623,7 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries);
+    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles, 'perfetto', testMetadata);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
 }
@@ -1399,6 +1638,7 @@ module.exports = {
   percentOf,
   __test__: {
     buildFeatureOverviewBlock,
+    buildFailureTriageBlock,
     buildIssueSummaryBlock,
     buildAccessibilityEvidenceBlock,
     createEmptyFeatureStat,
@@ -1406,6 +1646,7 @@ module.exports = {
     deriveFeatureName,
     enhanceDashboardHtml,
     formatDuration,
+    normalizeFailureMetadata,
     normalizeEvidenceEntries,
     readAccessibilityEvidenceEntries,
     removeLegacyFileChartInitializer,

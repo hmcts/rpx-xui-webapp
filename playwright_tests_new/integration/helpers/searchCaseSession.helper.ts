@@ -7,20 +7,20 @@ const probateFindCaseSessionUsers = ['PROBATE_CASEWORKER'] as const;
 export { resolveIntegrationSessionUsers, resolveSearchCaseSessionUsers } from './integrationSessionUsers.helper';
 
 export function resolveSearchCaseUserIdentifier(
-  testInfo: Pick<TestInfo, 'workerIndex'>,
+  testInfo: Pick<TestInfo, 'parallelIndex'>,
   env: NodeJS.ProcessEnv = process.env
 ): string {
   const users = resolveSearchCaseSessionUsers(env);
-  return users[testInfo.workerIndex % users.length];
+  return users[testInfo.parallelIndex % users.length];
 }
 
-export function resolveProbateSearchCaseUserIdentifier(testInfo: Pick<TestInfo, 'workerIndex'>): string {
-  return probateFindCaseSessionUsers[testInfo.workerIndex % probateFindCaseSessionUsers.length];
+export function resolveProbateSearchCaseUserIdentifier(testInfo: Pick<TestInfo, 'parallelIndex'>): string {
+  return probateFindCaseSessionUsers[testInfo.parallelIndex % probateFindCaseSessionUsers.length];
 }
 
 export async function applySearchCaseSessionCookies(
   page: Page,
-  testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,
+  testInfo: Pick<TestInfo, 'parallelIndex' | 'annotations'>,
   env: NodeJS.ProcessEnv = process.env,
   applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
 ): Promise<string> {
@@ -35,7 +35,7 @@ export async function applySearchCaseSessionCookies(
 
 export async function applyProbateSearchCaseSessionCookies(
   page: Page,
-  testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,
+  testInfo: Pick<TestInfo, 'parallelIndex' | 'annotations'>,
   applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
 ): Promise<string> {
   const userIdentifier = resolveProbateSearchCaseUserIdentifier(testInfo);

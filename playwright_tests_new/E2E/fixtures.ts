@@ -1,17 +1,35 @@
 import { test as baseTest, type Request, type Response, type TestInfo } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
 import getPort from 'get-port';
+import { createRequire } from 'node:module';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
+import {
+  acquireIdentityLease,
+  resolveIdentityLeaseTestTimeouts,
+  resolveIdentityLeaseTiming,
+  type IdentityLease,
+} from '../common/identityLease';
+import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
+
+const require = createRequire(import.meta.url);
+const { buildFailureContext, redactText, redactUrl, redactValue } = require('../common/reporters/failure-context.cjs') as {
+  buildFailureContext: (input: Record<string, unknown>) => Record<string, unknown>;
+  redactText: (value: unknown) => string;
+  redactUrl: (value: unknown) => string;
+  redactValue: (value: unknown) => unknown;
+};
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
 
 type FailureType =
+  | 'AUTHENTICATION_SESSION_UNAVAILABLE'
   | 'DOWNSTREAM_API_5XX'
   | 'DOWNSTREAM_API_4XX'
   | 'SLOW_API_RESPONSE'
   | 'NETWORK_TIMEOUT'
+  | 'IDENTITY_SCHEDULING_TIMEOUT'
   | 'TIMEOUT_NO_API_ACTIVITY'
   | 'GLOBAL_TIMEOUT_UI_STALL'
   | 'UI_ELEMENT_MISSING'
@@ -56,6 +74,7 @@ interface ExecutionSignals {
   mainFrameNavigationCount: number;
   totalRequestsObserved: number;
   backendRequestsObserved: number;
+  finalScreenshotError?: string;
 }
 
 interface ErrorContext {
@@ -114,7 +133,6 @@ const STRONG_SLOW_CALL_COUNT = 2;
 const ANSI_ESCAPE = String.fromCodePoint(27);
 const ANSI_ESCAPE_PATTERN = new RegExp(String.raw`${ANSI_ESCAPE}\[[0-?]*[ -/]*[@-~]`, 'g');
 const TRUTHY_ENV_VALUES = new Set(['1', 'true', 'yes', 'on']);
-
 /**
  * Sanitize URL by removing query parameters to prevent logging sensitive data.
  * Query params may contain tokens, session IDs, or PII.
@@ -122,7 +140,7 @@ const TRUTHY_ENV_VALUES = new Set(['1', 'true', 'yes', 'on']);
  * @returns URL without query parameters
  */
 function sanitizeUrl(url: string): string {
-  return url.split('?')[0];
+  return redactUrl(url);
 }
 
 function stripAnsi(value: string): string {
@@ -282,6 +300,52 @@ function buildTopSuspect(
   return 'No backend/API suspect identified';
 }
 
+function describeApiFailureSource(candidate: string): string | null {
+  const normalized = candidate.toLowerCase();
+  const route = candidate.match(/(?:GET|POST|PUT|PATCH|DELETE)\s+(https?:\/\/[^\s]+)/i)?.[1];
+  const sanitizedRoute = route ? sanitizeUrl(route) : '';
+
+  if (/\/aggregated\/caseworkers\//i.test(normalized)) {
+    return `XUI aggregated caseworker route${sanitizedRoute ? `: ${sanitizedRoute}` : ''}`;
+  }
+  if (/\/workallocation\//i.test(normalized)) {
+    return `Work Allocation API${sanitizedRoute ? `: ${sanitizedRoute}` : ''}`;
+  }
+  if (/\/external\/(?:config\/ui|configuration-ui)/i.test(normalized)) {
+    return `XUI external configuration route${sanitizedRoute ? `: ${sanitizedRoute}` : ''}`;
+  }
+  if (/\/data\/(?:cases|caseworkers)|\/caseworkers\//i.test(normalized)) {
+    return `CCD Data Store route${sanitizedRoute ? `: ${sanitizedRoute}` : ''}`;
+  }
+  return sanitizedRoute ? `XUI downstream API route: ${sanitizedRoute}` : null;
+}
+
+function deriveFailureSource(failureType: FailureType, error: string, topSuspect: string): string {
+  const signal = `${error}\n${topSuspect}`;
+  if (failureType === 'IDENTITY_SCHEDULING_TIMEOUT') {
+    return 'Test identity lease scheduler';
+  }
+  if (/Direct CCD case create failed/i.test(signal)) {
+    return 'CCD Data Store direct case-create route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false';
+  }
+  if (/Direct CCD case validate failed/i.test(signal)) {
+    return 'CCD Data Store direct case-validation route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/validate';
+  }
+  if (/Failed to fetch direct CCD event token/i.test(signal)) {
+    return 'CCD Data Store direct event-token route: GET /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/event-triggers/:eventId/token';
+  }
+  if (/SessionCaptureError|session capture|IDAM login|auth\/login|login surface|App shell not detected within/i.test(signal)) {
+    return 'XUI/IDAM authentication session capture';
+  }
+  if (failureType === 'DOWNSTREAM_API_5XX' || failureType === 'DOWNSTREAM_API_4XX') {
+    return describeApiFailureSource(topSuspect) ?? 'XUI downstream API';
+  }
+  if (failureType === 'NETWORK_TIMEOUT' || failureType === 'SLOW_API_RESPONSE') {
+    return describeApiFailureSource(topSuspect) ?? 'Backend/network dependency';
+  }
+  return 'Test/application behaviour';
+}
+
 function aggregateSlowCalls(slowCalls: Array<{ url: string; duration: number; method: string }>): SlowCallAggregate[] {
   const aggregates = new Map<string, SlowCallAggregate>();
   for (const call of slowCalls) {
@@ -349,8 +413,11 @@ function summarizeExecutionSignals(signals: ExecutionSignals): string {
   return `lastUrl=${signals.lastMainFrameUrl}, navigations=${signals.mainFrameNavigationCount}, requests=${signals.totalRequestsObserved}, backendRequests=${signals.backendRequestsObserved}`;
 }
 
-function extractDirectCcdTokenFailureStatus(signal: string): number | null {
-  const match = /Failed to fetch direct CCD event token \(HTTP (\d{3})\)/i.exec(signal);
+function extractDirectCcdSetupFailureStatus(signal: string): number | null {
+  const match =
+    /(?:Failed to fetch direct CCD event token \(HTTP|Direct CCD case (?:create|validate) failed with HTTP) (\d{3})/i.exec(
+      signal
+    );
   if (!match?.[1]) {
     return null;
   }
@@ -472,6 +539,12 @@ function derivePhaseMarker(
   }
   if (failureType === 'DOWNSTREAM_API_4XX') {
     return 'backend-4xx';
+  }
+  if (failureType === 'AUTHENTICATION_SESSION_UNAVAILABLE') {
+    return 'session-capture-authentication';
+  }
+  if (failureType === 'IDENTITY_SCHEDULING_TIMEOUT') {
+    return 'identity-lease-scheduling';
   }
   if (failureType === 'UI_ELEMENT_MISSING') {
     return backendWait === 'yes' ? 'ui-wait-post-backend' : 'ui-wait-pre-backend';
@@ -653,7 +726,19 @@ function deriveLikelyRootCause({
 }: RootCauseContext): string {
   const isPageClosed = /Target page, context or browser has been closed/i.test(error);
   const readinessSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
-  const directCcdTokenFailureStatus = extractDirectCcdTokenFailureStatus(readinessSignal);
+  const directCcdSetupFailureStatus = extractDirectCcdSetupFailureStatus(readinessSignal);
+
+  if (failureType === 'AUTHENTICATION_SESSION_UNAVAILABLE') {
+    return `The XUI/IDAM login surface did not become available while capturing a session (${summarizeExecutionSignals(
+      executionSignals
+    )}). No credentials were submitted; this is an authentication/session-capture infrastructure failure, not a journey assertion.`;
+  }
+
+  if (failureType === 'IDENTITY_SCHEDULING_TIMEOUT') {
+    return `No compatible configured identity became free within the bounded scheduling window (${summarizeExecutionSignals(
+      executionSignals
+    )}). This is identity-pool contention or a leaked lease, not a missing credential or UI failure.`;
+  }
 
   if (/dynamicProvisioningFlow\.ts|Dynamic user provisioning (failed|timed out)/i.test(readinessSignal)) {
     return `Dynamic user provisioning exhausted its retry budget before the browser journey started (${summarizeExecutionSignals(
@@ -661,14 +746,19 @@ function deriveLikelyRootCause({
     )}). This is a setup/provisioning timeout, not a document-upload UI failure.`;
   }
 
-  if (directCcdTokenFailureStatus !== null) {
+  if (directCcdSetupFailureStatus !== null) {
     const severityHint =
-      directCcdTokenFailureStatus >= 500
+      directCcdSetupFailureStatus >= 500
         ? 'downstream 5xx response'
-        : directCcdTokenFailureStatus >= 400
+        : directCcdSetupFailureStatus >= 400
           ? 'downstream 4xx response'
-          : `HTTP ${directCcdTokenFailureStatus} response`;
-    return `Direct CCD event-token bootstrap failed with ${severityHint} before the case journey could start (${summarizeExecutionSignals(
+          : `HTTP ${directCcdSetupFailureStatus} response`;
+    const stage = /Direct CCD case create failed/i.test(readinessSignal)
+      ? 'case-create submission'
+      : /Direct CCD case validate failed/i.test(readinessSignal)
+        ? 'case-validation submission'
+        : 'event-token bootstrap';
+    return `Direct CCD ${stage} failed with ${severityHint} before the case journey could start (${summarizeExecutionSignals(
       executionSignals
     )}).`;
   }
@@ -677,6 +767,11 @@ function deriveLikelyRootCause({
     return `The /cases shell did not become interactive before the search journey started (${summarizeExecutionSignals(
       executionSignals
     )}). This points to case-list bootstrap readiness rather than the mocked backend response path.`;
+  }
+  if (/Submit button did not become available/i.test(readinessSignal)) {
+    return `The create-case review page rendered without a submit action matching the supported accessible labels (${summarizeExecutionSignals(
+      executionSignals
+    )}). Inspect the visible action labels and locator contract; unrelated slow calls are supporting telemetry, not the diagnosed cause.`;
   }
   if (
     /Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
@@ -793,19 +888,31 @@ function classifyFailure({
   const hasStrongSlowSignal = hasStrongSlowBackendSignal(slowCalls);
   const hasLocatorSignal = error.includes('locator') || error.includes('element') || error.includes('waiting for');
   const readinessSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
-  const directCcdTokenFailureStatus = extractDirectCcdTokenFailureStatus(readinessSignal);
+  const directCcdSetupFailureStatus = extractDirectCcdSetupFailureStatus(readinessSignal);
   const hasUiReadinessSignal =
-    /Cases page shell did not become ready|Task list shell did not become ready|Task list filter panel did not become ready|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+    /Submit button did not become available|Cases page shell did not become ready|Task list shell did not become ready|Task list filter panel did not become ready|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
       readinessSignal
     );
   const hasNetworkTimeoutFailure =
     networkTimeout || failedRequests.some((request) => /timeout|timed out|ETIMEDOUT/i.test(request.errorText));
+  const hasSessionCaptureFailure =
+    /SessionCaptureError|session capture|IDAM login|auth\/login|login surface|App shell not detected within/i.test(
+      `${error} ${actionableErrorLine}`
+    );
 
-  if (directCcdTokenFailureStatus !== null) {
-    if (directCcdTokenFailureStatus >= 500) {
+  if (/IdentityLeaseTimeoutError|Identity scheduling timed out/i.test(error)) {
+    return 'IDENTITY_SCHEDULING_TIMEOUT';
+  }
+
+  if (hasSessionCaptureFailure) {
+    return 'AUTHENTICATION_SESSION_UNAVAILABLE';
+  }
+
+  if (directCcdSetupFailureStatus !== null) {
+    if (directCcdSetupFailureStatus >= 500) {
       return 'DOWNSTREAM_API_5XX';
     }
-    if (directCcdTokenFailureStatus >= 400) {
+    if (directCcdSetupFailureStatus >= 400) {
       return 'DOWNSTREAM_API_4XX';
     }
   }
@@ -817,6 +924,9 @@ function classifyFailure({
   }
   if (hasNetworkTimeoutFailure) {
     return slowCalls.length > 0 ? 'SLOW_API_RESPONSE' : 'NETWORK_TIMEOUT';
+  }
+  if (/Submit button did not become available/i.test(readinessSignal)) {
+    return 'UI_ELEMENT_MISSING';
   }
   if (testStatus !== 'timedOut' && (hasLocatorSignal || hasUiReadinessSignal) && !hasBackendFailureSignals) {
     return 'UI_ELEMENT_MISSING';
@@ -941,7 +1051,7 @@ function createRequestFailedHandler(failedRequests: FailedRequest[], maxTracked:
       failedRequests.push({
         url: sanitizeUrl(url),
         method: request.method(),
-        errorText: failure?.errorText ?? 'Unknown request failure',
+        errorText: redactText(failure?.errorText ?? 'Unknown request failure'),
         initiatedFrom,
         resourceType,
       });
@@ -968,6 +1078,12 @@ interface FailureDiagnosisContext {
   networkTimeout: boolean;
   slowThreshold: number;
   executionSignals: ExecutionSignals;
+}
+
+const failureDiagnosisStatuses = new Set<TestInfo['status']>(['failed', 'timedOut', 'interrupted']);
+
+function shouldAttachFailureDiagnosis(status: TestInfo['status']): boolean {
+  return failureDiagnosisStatuses.has(status);
 }
 
 /**
@@ -1028,23 +1144,36 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     actionableErrorLine: actionableError,
   });
   const executionSignalSummary = summarizeExecutionSignals(executionSignals);
+  const failureSource = deriveFailureSource(failureType, error, topSuspect);
   const slowEndpointDetails = buildBoundedApiDetails(slowEndpointSummary, MAX_API_ERRORS_DETAILS_CHARS);
+  const safeFailureSource = redactText(failureSource);
+  const safePhaseMarker = redactText(phaseMarker);
+  const safeSetupMarker = redactText(setupMarker);
+  const safeBackendWait = redactText(backendWait);
+  const safeLikelyRootCause = redactText(likelyRootCause);
+  const safeFailureLocation = redactText(failureLocation);
+  const safeExecutionSignalSummary = redactText(executionSignalSummary);
+  const safeActionableError = redactText(actionableError);
+  const safeTopSuspect = redactText(topSuspect);
+  const safeSlowEndpointDetails = redactText(slowEndpointDetails);
+  const safeTimeoutSummary = redactText(timeoutSummary);
 
   const diagnosis = [
-    `Test failed: ${testInfo.title}`,
+    `Test failed: ${redactText(testInfo.title)}`,
     `Status: ${testStatus}`,
     `Failure type: ${failureType}`,
-    `Phase marker: ${phaseMarker}`,
-    `Setup marker: ${setupMarker}`,
-    `Backend wait: ${backendWait}`,
-    `Likely root cause: ${likelyRootCause}`,
-    `Failure location: ${failureLocation}`,
-    `Execution signals: ${executionSignalSummary}`,
-    actionableError ? `Actionable error: ${actionableError}` : '',
-    primaryError ? `Error: ${primaryError.substring(0, 300)}` : '',
+    `Failure source: ${safeFailureSource}`,
+    `Phase marker: ${safePhaseMarker}`,
+    `Setup marker: ${safeSetupMarker}`,
+    `Backend wait: ${safeBackendWait}`,
+    `Likely root cause: ${safeLikelyRootCause}`,
+    `Failure location: ${safeFailureLocation}`,
+    `Execution signals: ${safeExecutionSignalSummary}`,
+    safeActionableError ? `Actionable error: ${safeActionableError}` : '',
+    primaryError ? `Error: ${redactText(primaryError)}` : '',
     `API summary: total=${apiErrors.length + failedRequests.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, requestfailed=${failedRequests.length}, slow>${slowThreshold}ms=${slowCalls.length}`,
-    slowEndpointDetails ? `Slow endpoint summary: ${slowEndpointDetails}` : '',
-    timeoutSummary ? `Timeout suspects: ${timeoutSummary}` : '',
+    safeSlowEndpointDetails ? `Slow endpoint summary: ${safeSlowEndpointDetails}` : '',
+    safeTimeoutSummary ? `Timeout suspects: ${safeTimeoutSummary}` : '',
   ]
     .filter(Boolean)
     .join('\n');
@@ -1054,16 +1183,21 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   // Surface to Odhín report as annotations
   testInfo.annotations.push(
     { type: 'Failure type', description: failureType },
-    { type: 'Phase marker', description: phaseMarker },
-    { type: 'Setup marker', description: setupMarker },
-    { type: 'Backend wait', description: backendWait },
-    { type: 'Likely root cause', description: likelyRootCause },
-    { type: 'Failure location', description: failureLocation },
-    { type: 'Execution signals', description: executionSignalSummary },
-    { type: 'Top suspect', description: topSuspect }
+    { type: 'Failure source', description: safeFailureSource },
+    { type: 'Phase marker', description: safePhaseMarker },
+    { type: 'Setup marker', description: safeSetupMarker },
+    { type: 'Backend wait', description: safeBackendWait },
+    { type: 'Likely root cause', description: safeLikelyRootCause },
+    { type: 'Failure location', description: safeFailureLocation },
+    { type: 'Execution signals', description: safeExecutionSignalSummary },
+    { type: 'Top suspect', description: safeTopSuspect }
   );
   if (actionableError) {
-    testInfo.annotations.push({ type: 'Actionable error', description: actionableError });
+    testInfo.annotations.push({ type: 'Actionable error', description: safeActionableError });
+  }
+
+  if (testInfo.error && !testInfo.error.message?.startsWith('[Failure source:')) {
+    testInfo.error.message = `[Failure source: ${failureSource}]\n${testInfo.error.message}`;
   }
 
   if (failureType === 'DOWNSTREAM_API_5XX' || failureType === 'DOWNSTREAM_API_4XX' || failedRequests.length > 0) {
@@ -1110,18 +1244,18 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     body: JSON.stringify(
       {
         failureType,
-        phaseMarker,
-        setupMarker,
-        backendWait,
-        likelyRootCause,
-        failureLocation,
-        actionableError,
-        executionSignals,
-        topSuspect,
-        slowEndpointSummary,
-        apiErrors,
-        failedRequests,
-        slowCalls,
+        phaseMarker: safePhaseMarker,
+        setupMarker: safeSetupMarker,
+        backendWait: safeBackendWait,
+        likelyRootCause: safeLikelyRootCause,
+        failureLocation: safeFailureLocation,
+        actionableError: safeActionableError,
+        executionSignals: redactValue(executionSignals),
+        topSuspect: safeTopSuspect,
+        slowEndpointSummary: slowEndpointSummary.map(redactText),
+        apiErrors: redactValue(apiErrors),
+        failedRequests: redactValue(failedRequests),
+        slowCalls: redactValue(slowCalls),
         networkTimeout,
         timestamp: new Date().toISOString(),
       },
@@ -1130,6 +1264,35 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     ),
     contentType: 'application/json',
   });
+
+  await testInfo.attach('failure-context.json', {
+    body: JSON.stringify(
+      buildFailureContext({
+        testInfo,
+        status: testStatus,
+        retry: testInfo.retry,
+        project: testInfo.project.name,
+        worker: testInfo.workerIndex,
+        annotations: testInfo.annotations,
+        failureLocation,
+        actionableError,
+        executionSignals,
+        likelyRootCause,
+      }),
+      null,
+      2
+    ),
+    contentType: 'application/json',
+  });
+}
+
+async function attachFailureDiagnosisIfNeeded(
+  testInfo: TestInfo,
+  buildContext: () => Omit<FailureDiagnosisContext, 'testInfo' | 'testStatus'>
+): Promise<void> {
+  if (shouldAttachFailureDiagnosis(testInfo.status)) {
+    await attachFailureDiagnosis({ testInfo, testStatus: testInfo.status, ...buildContext() });
+  }
 }
 
 // Gather all fixture types into a common type
@@ -1137,10 +1300,17 @@ export type CustomFixtures = PageFixtures & UtilsFixtures;
 export interface TestFixtures extends CustomFixtures {
   benignApiErrorRuleRegistry: BenignApiErrorRuleRegistry;
   registerBenignApiErrorRule: BenignApiErrorRuleRegistry['registerBenignApiErrorRule'];
+  identityLease: {
+    acquire: (requirements: IdentityCompatibilityRequirements) => Promise<IdentityLease>;
+  };
+}
+
+interface WorkerFixtures {
+  lighthousePort: number;
 }
 
 // Extend 'test' object using custom fixtures with enhanced failure diagnosis
-export const test = baseTest.extend<TestFixtures, { lighthousePort: number }>({
+export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
   ...pageFixtures,
   ...utilsFixtures,
 
@@ -1152,6 +1322,49 @@ export const test = baseTest.extend<TestFixtures, { lighthousePort: number }>({
 
   registerBenignApiErrorRule: async ({ benignApiErrorRuleRegistry }, use) => {
     await use(benignApiErrorRuleRegistry.registerBenignApiErrorRule);
+  },
+
+  // eslint-disable-next-line no-empty-pattern
+  identityLease: async ({}, use, testInfo) => {
+    const releases: Array<() => Promise<void>> = [];
+    let testFailed = false;
+    let teardownFailure: Error | undefined;
+    const timing = resolveIdentityLeaseTiming();
+    const originalTimeoutMs = testInfo.timeout;
+    const fixtureStartedAt = Date.now();
+    const acquire = async <T extends IdentityLease>(leaseFactory: () => Promise<T>): Promise<T> => {
+      const elapsedBeforeAcquireMs = Date.now() - fixtureStartedAt;
+      const timeouts = resolveIdentityLeaseTestTimeouts(originalTimeoutMs, elapsedBeforeAcquireMs, timing);
+      testInfo.setTimeout(timeouts.duringAcquireMs);
+      const lease = await leaseFactory();
+      releases.push(lease.release);
+      testInfo.setTimeout(
+        resolveIdentityLeaseTestTimeouts(originalTimeoutMs, Date.now() - fixtureStartedAt, timing).afterAcquireMs
+      );
+      return lease;
+    };
+    try {
+      await use({
+        acquire: (requirements) => acquire(() => acquireIdentityLease(requirements, process.env, fetch, originalTimeoutMs)),
+      });
+    } catch (error) {
+      testFailed = true;
+      throw error;
+    } finally {
+      const releaseResults = await Promise.allSettled(releases.reverse().map((release) => release()));
+      const releaseFailures = releaseResults.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+      if (releaseFailures.length > 0) {
+        releaseFailures.forEach(({ reason }) => {
+          console.warn('[identity-lease] lease release failed during test teardown', reason);
+        });
+        if (!testFailed) {
+          teardownFailure = new Error(`Failed to release ${releaseFailures.length} identity lease(s) during test teardown`);
+        }
+      }
+    }
+    if (teardownFailure) {
+      throw teardownFailure;
+    }
   },
 
   page: async ({ page, benignApiErrorRuleRegistry }, use, testInfo) => {
@@ -1219,20 +1432,24 @@ export const test = baseTest.extend<TestFixtures, { lighthousePort: number }>({
       }
     }
 
+    let finalScreenshotError = '';
     if (finalScreenshotEnabled && !page.isClosed() && testInfo.status !== 'skipped') {
-      const finalScreenshot = await page.screenshot({ fullPage: true });
-      await testInfo.attach('final-state.png', {
-        body: finalScreenshot,
-        contentType: 'image/png',
-      });
+      try {
+        const finalScreenshot = await page.screenshot({ fullPage: true });
+        await testInfo.attach('final-state.png', {
+          body: finalScreenshot,
+          contentType: 'image/png',
+        });
+      } catch (error) {
+        finalScreenshotError = redactText(error instanceof Error ? error.message : error);
+        logger.warn('Optional final screenshot capture failed', { error: finalScreenshotError });
+      }
     }
 
     // On test failure, classify the root cause and attach diagnosis
-    if (testInfo.status === 'failed' || testInfo.status === 'timedOut') {
+    await attachFailureDiagnosisIfNeeded(testInfo, () => {
       const errorContext = collectErrorContext(testInfo);
-      await attachFailureDiagnosis({
-        testInfo,
-        testStatus: testInfo.status,
+      return {
         error: errorContext.diagnosticText,
         primaryError: errorContext.primaryMessage,
         actionableError: errorContext.actionableLine,
@@ -1247,9 +1464,10 @@ export const test = baseTest.extend<TestFixtures, { lighthousePort: number }>({
           mainFrameNavigationCount,
           totalRequestsObserved,
           backendRequestsObserved,
+          finalScreenshotError,
         },
-      });
-    }
+      };
+    });
 
     if (liveTimerEnabled) {
       const elapsedMs = Date.now() - testStartEpochMs;
@@ -1278,7 +1496,14 @@ export const test = baseTest.extend<TestFixtures, { lighthousePort: number }>({
 export const expect = test.expect;
 
 export const __test__ = {
+  shouldAttachFailureDiagnosis: (status: TestInfo['status']) => shouldAttachFailureDiagnosis(status),
+  attachFailureDiagnosisIfNeeded: (
+    testInfo: TestInfo,
+    buildContext: () => Omit<FailureDiagnosisContext, 'testInfo' | 'testStatus'>
+  ) => attachFailureDiagnosisIfNeeded(testInfo, buildContext),
   classifyFailure: (context: ClassifyFailureContext) => classifyFailure(context),
+  deriveFailureSource: (failureType: FailureType, error: string, topSuspect: string) =>
+    deriveFailureSource(failureType, error, topSuspect),
   derivePhaseMarker: (
     failureType: FailureType,
     error: string,

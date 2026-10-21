@@ -111,29 +111,18 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     });
 
     await test.step('Click the all-work Task link and land on the case details Tasks tab', async () => {
-      const caseDetailsResponsePromise = page.waitForResponse(
-        (response) =>
-          response.request().method() === 'GET' &&
-          response.url().includes(`/data/internal/cases/${firstTask.case_id}`) &&
-          response.status() === 200
+      const caseTasksUrlPattern = new RegExp(
+        `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}(?:/tasks|#Tasks)(?:\\?.*)?$`
       );
-      const caseTasksResponsePromise = page.waitForResponse(
-        (response) =>
-          response.request().method() === 'POST' &&
-          response.url().includes(`/workallocation/case/task/${firstTask.case_id}`) &&
-          response.status() === 200
-      );
-
       await taskListPage.taskListTable.getByRole('link', { name: firstTask.task_title }).first().click();
 
-      await caseDetailsResponsePromise;
-      await caseTasksResponsePromise;
-
-      await expect(page).toHaveURL(
-        new RegExp(
-          `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}(?:/tasks|#Tasks)(?:\\?.*)?$`
-        )
+      await expect(page).toHaveURL(caseTasksUrlPattern);
+      await taskListPage.recoverBlankDocumentAfterCurrentNavigation(
+        caseTasksUrlPattern,
+        'all-work task link case details navigation'
       );
+
+      await expect(page).toHaveURL(caseTasksUrlPattern);
       await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
     });
 
@@ -256,6 +245,56 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await expect(taskListPage.allWorkTasksByRoleTypeFilter).toBeVisible();
       await expect(taskListPage.allWorkPersonSearchInput).toBeVisible();
     });
+  });
+
+  test('All-work type search starts at three characters and defaults to all types', async ({ taskListPage, page }) => {
+    const taskListMockResponse = buildTaskListMock(10, '', myActionsList);
+    const taskSearchRequests: Array<{ searchRequest?: { search_parameters?: Array<{ key?: string }> }; view?: string }> = [];
+    const workTypeSearchTerms: string[] = [];
+
+    await setupManageTasksBaseRoutes(page, {
+      taskListHandler: async (route) => {
+        taskSearchRequests.push(route.request().postDataJSON());
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(taskListMockResponse) });
+      },
+      supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+      supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
+    });
+    await page.route('**/workallocation/task/search-types-of-work', async (route) => {
+      const { searchTerm } = route.request().postDataJSON() as { searchTerm: string };
+      workTypeSearchTerms.push(searchTerm);
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([{ key: 'hearing_work', label: 'Hearing work' }]),
+      });
+    });
+
+    await taskListPage.gotoAllWorkTasks();
+    await expect(taskListPage.taskListTable).toBeVisible();
+    await taskListPage.exuiSpinnerComponent.wait();
+    await expect.poll(() => taskSearchRequests.filter((request) => request.view === 'AllWork').length).toBeGreaterThan(0);
+    expect(taskSearchRequests.find((request) => request.view === 'AllWork')?.searchRequest?.search_parameters).toEqual(
+      expect.any(Array)
+    );
+    expect(
+      taskSearchRequests
+        .find((request) => request.view === 'AllWork')
+        ?.searchRequest?.search_parameters?.some((parameter) => parameter.key === 'work_type')
+    ).not.toBe(true);
+
+    await taskListPage.waitForAllWorkFilterControlsReady();
+    const workTypeSearch = page.locator('#inputWorkTypeSearch');
+    await expect(workTypeSearch).toBeVisible();
+    await page.clock.install();
+    await workTypeSearch.fill('He');
+    await page.clock.runFor(1_000);
+    expect(workTypeSearchTerms).toEqual([]);
+
+    await workTypeSearch.fill('Hea');
+    await page.clock.runFor(1_000);
+    await expect.poll(() => workTypeSearchTerms).toEqual(['Hea']);
+    await expect(page.getByRole('option', { name: 'Hearing work' })).toBeVisible();
   });
 
   test('All-work manage action matrix is rendered for each expected row', async ({ taskListPage, page }) => {

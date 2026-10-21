@@ -1,15 +1,28 @@
 #!/usr/bin/env node
+/* global module, process, require */
+/* eslint-disable @typescript-eslint/no-require-imports */
 
-process.env.A11Y_ENGINES = process.env.A11Y_ENGINES || 'wave-like';
-process.env.PLAYWRIGHT_A11Y_ENGINES = process.env.PLAYWRIGHT_A11Y_ENGINES || process.env.A11Y_ENGINES;
-process.env.PLAYWRIGHT_INCLUDE_WAVE_A11Y = 'true';
-process.env.PLAYWRIGHT_JUNIT_OUTPUT =
-  process.env.PLAYWRIGHT_JUNIT_OUTPUT || 'functional-output/tests/playwright-wave-a11y/playwright-wave-a11y-junit.xml';
-process.env.PLAYWRIGHT_REPORT_FOLDER =
-  process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-wave-a11y/odhin-report';
-process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME = process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-wave-a11y.html';
-process.env.PLAYWRIGHT_REPORT_PROJECT = process.env.PLAYWRIGHT_REPORT_PROJECT || 'RPX XUI Webapp - WAVE-like Accessibility';
-process.env.PW_ODHIN_TITLE = process.env.PW_ODHIN_TITLE || 'RPX-XUI-WEBAPP WAVE-like Accessibility';
-process.env.FUNCTIONAL_TESTS_WORKERS = process.env.PW_WAVE_A11Y_WORKERS || process.env.FUNCTIONAL_TESTS_WORKERS || '6';
+const WAVE_A11Y_OUTPUT_DIR = 'functional-output/tests/playwright-wave-a11y/test-results';
 
-require('./run-playwright-accessibility.cjs');
+function configureWaveA11yEnvironment(sourceEnv = process.env) {
+  sourceEnv.A11Y_ENGINES = sourceEnv.A11Y_ENGINES || 'wave-like';
+  sourceEnv.PLAYWRIGHT_A11Y_ENGINES = sourceEnv.PLAYWRIGHT_A11Y_ENGINES || sourceEnv.A11Y_ENGINES;
+  sourceEnv.PLAYWRIGHT_INCLUDE_WAVE_A11Y = 'true';
+  sourceEnv.PLAYWRIGHT_OUTPUT_DIR = sourceEnv.PLAYWRIGHT_OUTPUT_DIR || WAVE_A11Y_OUTPUT_DIR;
+  sourceEnv.PLAYWRIGHT_JUNIT_OUTPUT =
+    sourceEnv.PLAYWRIGHT_JUNIT_OUTPUT || 'functional-output/tests/playwright-wave-a11y/playwright-wave-a11y-junit.xml';
+  sourceEnv.PLAYWRIGHT_REPORT_FOLDER =
+    sourceEnv.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-wave-a11y/odhin-report';
+  sourceEnv.PLAYWRIGHT_REPORT_INDEX_FILENAME = sourceEnv.PLAYWRIGHT_REPORT_INDEX_FILENAME || 'xui-playwright-wave-a11y.html';
+  sourceEnv.PLAYWRIGHT_REPORT_PROJECT = sourceEnv.PLAYWRIGHT_REPORT_PROJECT || 'RPX XUI Webapp - WAVE-like Accessibility';
+  sourceEnv.PW_ODHIN_TITLE = sourceEnv.PW_ODHIN_TITLE || 'RPX-XUI-WEBAPP WAVE-like Accessibility';
+  sourceEnv.FUNCTIONAL_TESTS_WORKERS = sourceEnv.PW_WAVE_A11Y_WORKERS || sourceEnv.FUNCTIONAL_TESTS_WORKERS || '6';
+  return sourceEnv;
+}
+
+if (require.main === module) {
+  configureWaveA11yEnvironment();
+  require('./run-playwright-accessibility.cjs').runAccessibility();
+}
+
+module.exports = { configureWaveA11yEnvironment };

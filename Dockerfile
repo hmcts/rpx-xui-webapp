@@ -1,4 +1,4 @@
-FROM hmctsprod.azurecr.io/base/node:20-alpine AS dependencies
+FROM hmctsprod.azurecr.io/base/node:24-alpine AS dependencies
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
 ENV PUPPETEER_SKIP_DOWNLOAD=1 \
@@ -21,9 +21,11 @@ WORKDIR /opt/app
 # Copy only dependency files for better layer caching
 COPY --chown=hmcts:hmcts .yarn/ ./.yarn/
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
+COPY --chown=hmcts:hmcts api/package.json ./api/package.json
 
-# Install dependencies once
-RUN yarn install
+# Fail early if the installed test runner drifts from the manifest.
+COPY --chown=hmcts:hmcts scripts/verify-playwright-version.cjs ./scripts/
+RUN yarn install --immutable --inline-builds && yarn test:setup:playwright-version
 
 FROM dependencies AS build
 WORKDIR /opt/app
@@ -34,7 +36,7 @@ COPY --chown=hmcts:hmcts . .
 # Build the application (dependencies already installed)
 RUN yarn build
 
-FROM hmctsprod.azurecr.io/base/node:20-alpine AS runtime
+FROM hmctsprod.azurecr.io/base/node:24-alpine AS runtime
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
 USER root

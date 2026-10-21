@@ -75,7 +75,7 @@ const eventField = (options: EventFieldOptions) => ({
   complexACLs: [],
 });
 
-export function buildEventBehaviourTrigger() {
+export function buildEventBehaviourTrigger(options: { showSummary?: boolean } = {}) {
   return {
     id: EVENT_BEHAVIOUR_TRIGGER_ID,
     name: EVENT_BEHAVIOUR_TRIGGER_NAME,
@@ -146,7 +146,7 @@ export function buildEventBehaviourTrigger() {
         retries_timeout_mid_event: [],
       },
     ],
-    show_summary: true,
+    show_summary: options.showSummary ?? true,
     show_event_notes: false,
     end_button_label: 'Submit outcome',
     can_save_draft: null,
@@ -162,7 +162,9 @@ export function buildEventBehaviourTrigger() {
   };
 }
 
-export function buildEventBehaviourCaseDetails(options: { eventRecorded?: boolean; eventReturnedByCaseView?: boolean } = {}) {
+export function buildEventBehaviourCaseDetails(
+  options: { eventRecorded?: boolean; eventReturnedByCaseView?: boolean; richTextReadValue?: string } = {}
+) {
   const caseDetails = JSON.parse(JSON.stringify(caseDetailsTemplate)) as Record<string, unknown>;
   caseDetails.case_id = EVENT_BEHAVIOUR_CASE_REFERENCE;
   caseDetails.case_type = {
@@ -236,6 +238,39 @@ export function buildEventBehaviourCaseDetails(options: { eventRecorded?: boolea
       show_condition: null,
     },
   ];
+
+  if (options.richTextReadValue !== undefined) {
+    (caseDetails.tabs as Array<Record<string, unknown>>).unshift({
+      id: 'rich-text-data',
+      label: 'Case data',
+      order: 1,
+      fields: [
+        {
+          id: 'RichTextValue',
+          label: 'Rich text value',
+          value: options.richTextReadValue,
+          field_type: textFieldType({ id: 'RichTextArea', type: 'RichTextArea' }),
+          acls: [],
+          complexACLs: [],
+          display_context: 'OPTIONAL',
+          display_context_parameter: null,
+          show_condition: null,
+        },
+        {
+          id: 'LegacyTextAreaValue',
+          label: 'Legacy text area value',
+          value: options.richTextReadValue,
+          field_type: textFieldType({ id: 'TextArea', type: 'TextArea' }),
+          acls: [],
+          complexACLs: [],
+          display_context: 'OPTIONAL',
+          display_context_parameter: null,
+          show_condition: null,
+        },
+      ],
+      show_condition: null,
+    });
+  }
 
   return caseDetails;
 }

@@ -7,7 +7,6 @@ import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
-import { AuthenticationError } from './utils/errors';
 import { seedRoleAccessCaseId } from './utils/role-access';
 import { RoleAssignmentContainer } from './utils/types';
 import {
@@ -57,13 +56,17 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
     assertGlobalSearchResults(response.status, response.data);
   });
 
-  test('searchCases proxy responds or guards', async ({ apiClient }) => {
+  test('searchCases proxy responds or guards', async ({ apiClient }, testInfo) => {
+    testInfo.setTimeout(120_000);
     const response = await withRetry(
       () =>
-        apiClient.post<{ total?: number; cases?: unknown[] }>('data/internal/searchCases?ctid=xuiTestCaseType', {
-          data: { size: 1, from: 0, sort: [], native_es_query: { match_all: {} } },
-          throwOnError: false,
-        }),
+        guardedRequest(() =>
+          apiClient.post<{ total?: number; cases?: unknown[] }>('data/internal/searchCases?ctid=xuiTestCaseType', {
+            data: { size: 1, from: 0, sort: [], native_es_query: { match_all: {} } },
+            timeoutMs: 30_000,
+            throwOnError: false,
+          })
+        ),
       { retries: 1, retryStatuses: [502, 504] }
     );
     expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
@@ -231,11 +234,13 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
 
   test('exclusions/confirm responds with XSRF header', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.post<RoleAssignmentContainer>('api/role-access/exclusions/confirm', {
-        data: {},
-        headers,
-        throwOnError: false,
-      });
+      const res = await guardedRequest(() =>
+        apiClient.post<RoleAssignmentContainer>('api/role-access/exclusions/confirm', {
+          data: {},
+          headers,
+          throwOnError: false,
+        })
+      );
       expectStatus(res.status, StatusSets.allocateRole);
       assertRoleAssignmentsIfPresent(res.status, res.data);
     });
@@ -269,24 +274,12 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
       expect(hasCaseOfficer).toBe(false);
       return;
     }
-    try {
-      const client = await apiClientFor('caseOfficer_r1');
-      const res = await client.post('api/role-access/allocate-role/confirm', {
-        data: buildRoleAllocationRequest(resolveRoleAccessCaseId(roleAccessCaseId)),
-        throwOnError: false,
-      });
-      expectStatus(res.status, [401, 403, 500]);
-    } catch (error) {
-      if (error instanceof AuthenticationError) {
-        testInfo.annotations.push({
-          type: 'notice',
-          description: `Skipping case-officer role check in ${config.testEnv}: ${error.message}`,
-        });
-        test.skip(true, `caseOfficer_r1 cannot authenticate in ${config.testEnv}`);
-        return;
-      }
-      throw error;
-    }
+    const client = await apiClientFor('caseOfficer_r1');
+    const res = await client.post('api/role-access/allocate-role/confirm', {
+      data: buildRoleAllocationRequest(resolveRoleAccessCaseId(roleAccessCaseId)),
+      throwOnError: false,
+    });
+    expectStatus(res.status, [401, 403, 500]);
   });
 
   test('role access confirm returns guarded status for stale session', async () => {

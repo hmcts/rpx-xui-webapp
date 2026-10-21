@@ -33,6 +33,17 @@ resource "azurerm_key_vault_secret" "redis6_connection_string" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
+  name         = "${var.component}-managed-redis-connection-string"
+  value        = "rediss://:${urlencode(module.managed_redis.primary_access_key)}@${module.managed_redis.hostname}:${module.managed_redis.port}"
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+moved {
+  from = azurerm_key_vault_secret.managed_redis_connection_string["demo"]
+  to   = azurerm_key_vault_secret.managed_redis_connection_string
+}
+
 module "redis6-cache" {
   source                        = "git@github.com:hmcts/cnp-module-redis?ref=4.x"
   product                       = "${var.shared_product_name}-mc-redis6"
@@ -50,6 +61,37 @@ module "redis6-cache" {
   sku_name                      = var.redis_sku_name
 }
 
+# Deploy Azure Managed Redis alongside the legacy cache until the application
+# cutover has completed.
+module "managed_redis" {
+  source = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
+
+  product     = var.product
+  component   = var.component
+  env         = var.env
+  location    = var.location
+  common_tags = var.common_tags
+
+  sku_name = var.managed_redis_sku_name
+
+  public_network_access   = "Disabled"
+  create_private_endpoint = true
+  subnet_id               = data.azurerm_subnet.core_infra_redis_subnet.id
+  private_dns_zone_ids = [
+    "/subscriptions/${var.private_dns_subscription_id}/resourceGroups/core-infra-intsvc-rg/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.net"
+  ]
+
+  access_keys_authentication_enabled = true
+  persistence_rdb_backup_frequency   = "6h"
+
+  clustering_policy = "EnterpriseCluster"
+}
+
+moved {
+  from = module.managed_redis["demo"]
+  to   = module.managed_redis
+}
+
 module "application_insights" {
   source = "git@github.com:hmcts/terraform-module-application-insights?ref=4.x"
 
@@ -59,7 +101,9 @@ module "application_insights" {
   location            = var.location
   application_type    = var.application_type
   resource_group_name = azurerm_resource_group.rg.name
-  sampling_percentage = var.sampling_percentage
+  # Keep ingestion sampling disabled. Sampling is performed by the application
+  # SDK and configured per deployment with APPINSIGHTS_SAMPLING_PERCENTAGE.
+  sampling_percentage = 100
 
   common_tags = var.common_tags
 }

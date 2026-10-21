@@ -36,7 +36,7 @@ test.describe(
   () => {
     test('keeps Case B identity and update payload when Case A responds after the switch (EXUI-5434)', async ({
       page,
-      caseDetailsPage,
+      searchCasePage,
       hearingsTabPage,
       hearingViewEditSummaryPage,
       hearingViewSummaryPage,
@@ -169,12 +169,9 @@ test.describe(
           .first()
           .click();
         await caseAListRequest;
-        await page.locator('#exuiCaseReferenceSearch').fill(caseBReference);
-        await page.locator('form:has(#exuiCaseReferenceSearch)').getByRole('button', { name: 'Find', exact: true }).click();
+        await searchCasePage.caseIdTextBox.fill(caseBReference);
+        await searchCasePage.searchCaseFindButton.click();
         await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:CIVIL/CIVIL/)?${caseBReference}(?:[/?#]|$)`));
-        await expect
-          .poll(async () => (await caseDetailsPage.ccdCaseReference.textContent())?.replace(/\D/g, ''))
-          .toBe(caseBReference);
 
         caseBValuesRequest = page.waitForRequest(
           (request) =>

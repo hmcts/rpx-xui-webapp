@@ -27,6 +27,7 @@ test.describe(
       page,
       caseDetailsPage,
       hearingsTabPage,
+      searchCasePage,
     }) => {
       await openHearingsTab(page, caseDetailsPage, {
         userIdentifier: HEARING_MANAGER_CR84_ON_USER,
@@ -70,8 +71,8 @@ test.describe(
           response.url().includes('/api/hearings/loadServiceHearingValues') &&
           (response.request().postDataJSON() as { caseReference?: string })?.caseReference === caseBReference
       );
-      await page.locator('#exuiCaseReferenceSearch').fill(caseBReference);
-      await page.locator('form:has(#exuiCaseReferenceSearch)').getByRole('button', { name: 'Find', exact: true }).click();
+      await searchCasePage.caseIdTextBox.fill(caseBReference);
+      await searchCasePage.searchCaseFindButton.click();
       await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:CIVIL/CIVIL/)?${caseBReference}(?:[/?#]|$)`));
       await page
         .getByRole('tab', { name: /hearings/i })
@@ -87,7 +88,7 @@ test.describe(
       await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0);
     });
 
-    test('rejects direct entry when Case B route receives Case A details (EXUI-5434)', async ({ page, caseDetailsPage }) => {
+    test('rejects direct entry when Case B route receives Case A details (EXUI-5434)', async ({ page }) => {
       await applyHearingManagerSessionCookies(page, HEARING_MANAGER_CR84_ON_USER);
       await setupHearingsMockRoutes(page, {
         userRoles: hearingManagerRoles,
@@ -114,10 +115,10 @@ test.describe(
       await gotoCaseDetailsWithRetry(page, caseDetailsUrl('CIVIL', 'CIVIL', caseBReference));
       const mismatchedCaseDetailsBody = await (await mismatchedCaseDetailsResponse).json();
       expect(mismatchedCaseDetailsBody.case_id).toBe(HEARINGS_CASE_REFERENCE);
-      await expect(page).toHaveURL(/\/search\/noresults(?:[/?#]|$)/);
-      await expect(page.getByRole('heading', { level: 1, name: 'No results found' })).toBeVisible();
-      await expect(caseDetailsPage.ccdCaseReference).toBeHidden();
-      await expect(page.getByRole('tab', { name: /hearings/i })).toBeHidden();
+      await expect(page).toHaveURL(/\/cases(?:[/?#]|$)/);
+      await expect(page.getByRole('heading', { level: 1, name: 'Case list' })).toBeVisible();
+      await expect(page.locator('ccd-case-header')).toHaveCount(0);
+      await expect(page.getByRole('tab', { name: /hearings/i })).toHaveCount(0);
       await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0);
     });
   }

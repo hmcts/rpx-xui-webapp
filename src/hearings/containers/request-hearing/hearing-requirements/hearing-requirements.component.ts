@@ -41,6 +41,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public showMismatchErrorMessage = false;
   public showPageMismatchErrorMessage = false;
   private mismatchPopupLogged = false;
+  private mismatchPopupTriggeredForTelemetryTest = false;
 
   public validationErrors: { id: string; message: string[] };
 
@@ -116,9 +117,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     );
     this.hearingsService.hearingRequestContinueDisabled = hearingRequestMismatchDetected;
     if (hearingRequestMismatchDetected) {
-      this.showMismatchErrorMessage = true;
-      this.showPageMismatchErrorMessage = true;
-      this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST };
+      this.showMismatchError();
     }
   }
 
@@ -259,6 +258,13 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     this.showMismatchErrorMessage = false;
   }
 
+  public triggerMismatchPopupForTelemetryTest(): void {
+    this.mismatchPopupTriggeredForTelemetryTest = true;
+    this.mismatchPopupLogged = false;
+    this.hearingsService.hearingRequestContinueDisabled = true;
+    this.showMismatchError();
+  }
+
   public ngOnDestroy() {
     this.hearingsService.hearingRequestContinueDisabled = false;
     super.unsubscribe();
@@ -275,6 +281,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     if (this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
     }
+  }
+
+  private showMismatchError(): void {
+    this.showMismatchErrorMessage = true;
+    this.showPageMismatchErrorMessage = true;
+    this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST };
   }
 
   private logMismatchPopupDisplayed(): void {
@@ -312,6 +324,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         this.serviceHearingValuesModel,
         this.caseReference
       ),
+      telemetryTestTrigger: this.mismatchPopupTriggeredForTelemetryTest,
     });
   }
 

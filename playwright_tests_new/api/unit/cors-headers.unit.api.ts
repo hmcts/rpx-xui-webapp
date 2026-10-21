@@ -3,12 +3,19 @@ import { expect, test } from '@playwright/test';
 import {
   corsAllowed,
   corsDisallowed,
+  resolveAllowedOrigin,
   shouldIgnoreCorsError,
   validateCorsHeaders,
   validateCorsPreflightHeaders,
 } from '../utils/corsUtils';
 
 test.describe('CORS helper coverage', { tag: '@svc-internal' }, () => {
+  test('uses the configured origin and falls back when the test runner has no CORS env', () => {
+    expect(resolveAllowedOrigin(' https://custom.test,https://other.test')).toBe('https://custom.test');
+    expect(resolveAllowedOrigin('')).toBe('https://manage-case.platform.hmcts.net');
+    expect(resolveAllowedOrigin(undefined)).toBe('https://manage-case.platform.hmcts.net');
+  });
+
   test('requires exact allow-origin on successful allowed preflights, including 204', () => {
     for (const status of [200, 204]) {
       const headers = {

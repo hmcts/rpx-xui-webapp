@@ -1,5 +1,15 @@
 export const corsAllowed = [200, 204, 400, 401, 403] as const;
 export const corsDisallowed = [200, 204, 400, 401, 403, 404] as const;
+const defaultAllowedOrigin = 'https://manage-case.platform.hmcts.net';
+
+export function resolveAllowedOrigin(configuredOrigins?: string): string {
+  return (
+    configuredOrigins
+      ?.split(',')
+      .map((origin) => origin.trim())
+      .find(Boolean) ?? defaultAllowedOrigin
+  );
+}
 
 export type CorsValidationResult = {
   valid: boolean;

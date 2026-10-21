@@ -2,10 +2,16 @@ import { test, expect, request } from '@playwright/test';
 
 import { config } from './utils/apiTestRuntimeConfig';
 import { expectStatus, withRetry } from './utils/apiTestUtils';
-import { corsAllowed, corsDisallowed, shouldIgnoreCorsError, validateCorsPreflightHeaders } from './utils/corsUtils';
+import {
+  corsAllowed,
+  corsDisallowed,
+  resolveAllowedOrigin,
+  shouldIgnoreCorsError,
+  validateCorsPreflightHeaders,
+} from './utils/corsUtils';
 
 const baseURL = config.baseUrl.replace(/\/+$/, '');
-const allowedOrigin = process.env.CORS_ALLOWED_ORIGINS?.split(',').find(Boolean) ?? '';
+const allowedOrigin = resolveAllowedOrigin(process.env.CORS_ALLOWED_ORIGINS);
 
 const origins = [
   { label: 'allowed', origin: allowedOrigin, expected: corsAllowed },
@@ -15,9 +21,6 @@ const origins = [
 test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
   origins.forEach(({ label, origin, expected }) => {
     test(`OPTIONS /api/user/details (${label} origin)`, async () => {
-      if (label === 'allowed') {
-        expect(allowedOrigin, 'CORS_ALLOWED_ORIGINS must be configured for the allowed-origin live path').not.toBe('');
-      }
       const ctx = await request.newContext({ baseURL, ignoreHTTPSErrors: true });
       try {
         const res = await withRetry(async () => {
@@ -47,9 +50,6 @@ test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
     });
 
     test(`OPTIONS /api/configuration (${label} origin)`, async () => {
-      if (label === 'allowed') {
-        expect(allowedOrigin, 'CORS_ALLOWED_ORIGINS must be configured for the allowed-origin live path').not.toBe('');
-      }
       const ctx = await request.newContext({ baseURL, ignoreHTTPSErrors: true });
       try {
         const res = await withRetry(async () => {

@@ -2446,13 +2446,13 @@ __metadata:
   linkType: hard
 
 "@dr.pogodin/csurf@npm:^1.17.1":
-  version: 1.18.1
-  resolution: "@dr.pogodin/csurf@npm:1.18.1"
+  version: 1.18.2
+  resolution: "@dr.pogodin/csurf@npm:1.18.2"
   dependencies:
     cookie: "npm:^2.0.1"
     cookie-signature: "npm:^1.2.2"
     http-errors: "npm:^2.0.1"
-  checksum: 10/9ed5c447d72a45fc33844732106ced3c361a85ba2234a549bb24015a3edcb292f0666d333897d60fa7fda98fcb5586a63696a7f604004f37dc263fceebd2ed02
+  checksum: 10/ee098f3118c0050d48afb93971eb72c9a3b46e26f764941aae34461b2225a3fb9298243ba7e22e8cc78dcc75bc86fedb7cc44735643c82c8a2d78a43aac932f7
   languageName: node
   linkType: hard
 

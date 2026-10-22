@@ -3046,7 +3046,6 @@ describe('HearingRequirementsComponent', () => {
     component.serviceHearingValuesModel = serviceHearingValuesModel;
     component.ngOnInit();
     expect(component.showMismatchErrorMessage).toBeTruthy();
-    expect(component.showPageMismatchErrorMessage).toBeTruthy();
     expect(hearingsService.hearingRequestContinueDisabled).toBeTruthy();
     loggerServiceMock.warn.calls.reset();
     component.mismatchDialogLink = new ElementRef(jasmine.createSpyObj<HTMLAnchorElement>('mismatchDialogLink', ['focus']));
@@ -3068,41 +3067,9 @@ describe('HearingRequirementsComponent', () => {
         serviceCaseReferenceMismatchDetected: true,
         serviceCodeMismatchDetected: false,
         caseInformationMismatchDetected: false,
-        telemetryTestTrigger: false,
       })
     );
     expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST });
-  });
-
-  it('should trigger the full mismatch state and log a test event when the test button is clicked', () => {
-    loggerServiceMock.warn.calls.reset();
-    const testButton = fixture.nativeElement.querySelector('button.govuk-button--secondary') as HTMLButtonElement;
-
-    testButton.click();
-    fixture.detectChanges();
-
-    expect(component.showMismatchErrorMessage).toBeTruthy();
-    expect(component.showPageMismatchErrorMessage).toBeTruthy();
-    expect(hearingsService.hearingRequestContinueDisabled).toBeTruthy();
-    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST });
-    expect(fixture.nativeElement.querySelector('.hearing-requirements-dialog')).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('.govuk-error-summary[role="alert"]')).toBeTruthy();
-    expect(loggerServiceMock.warn).toHaveBeenCalledOnceWith(
-      'Hearing request party ID or case information mismatch popup displayed',
-      jasmine.objectContaining({ telemetryTestTrigger: true })
-    );
-
-    const closeButton = fixture.nativeElement.querySelector('.hearing-requirements-dialog button') as HTMLButtonElement;
-    closeButton.click();
-    fixture.detectChanges();
-
-    expect(component.showMismatchErrorMessage).toBeFalsy();
-    expect(component.showPageMismatchErrorMessage).toBeTruthy();
-    expect(hearingsService.hearingRequestContinueDisabled).toBeTruthy();
-
-    testButton.click();
-    fixture.detectChanges();
-    expect(loggerServiceMock.warn).toHaveBeenCalledTimes(2);
   });
 
   it('should clear continue disabled state when component is destroyed', () => {

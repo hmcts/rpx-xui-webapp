@@ -235,6 +235,7 @@ const openApiSpec = {
         properties: {
           key: { type: 'string', nullable: true },
           connectionString: { type: 'string', nullable: true },
+          samplingPercentage: { type: 'number', minimum: 0, maximum: 100 },
         },
       },
       ConfigurationValue: {

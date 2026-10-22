@@ -1,10 +1,12 @@
 /* global require, module */
 
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 const path = require('path');
 const { parse } = require('node-html-parser');
 const { applyPresentation } = require('./presentation/enhance.cjs');
 const { injectAccessibilityWorkspace } = require('./presentation/accessibility.cjs');
+const { redactText } = require('./failure-context.cjs');
 
 const evidenceLinkAttributes = ' target="_blank" rel="noopener noreferrer"';
 
@@ -97,6 +99,14 @@ function percentOf(total, value) {
   return ((value / total) * 100).toFixed(2);
 }
 
+function effectivePassTotal(feature) {
+  return Number(feature?.passed ?? 0) + Number(feature?.flaky ?? 0);
+}
+
+function passRateDenominator(feature) {
+  return Math.max(0, Number(feature?.totalTests ?? 0) - Number(feature?.skipped ?? 0));
+}
+
 function formatDuration(durationMs) {
   const safeDuration = Math.max(0, Math.round(Number(durationMs) || 0));
   const hours = Math.floor(safeDuration / 3600000);
@@ -129,6 +139,34 @@ function injectEnhancerStyles(root) {
   head.appendChild(
     parse(`
 <style id="odhin-enhancer-styles">
+  .odhin-failure-triage {
+    margin: 16px 0;
+  }
+
+  .odhin-failure-triage .odhin-failure-triage-note {
+    color: #505a5f;
+    margin: 0 0 12px;
+  }
+
+  .odhin-failure-triage table {
+    width: 100%;
+  }
+
+  .odhin-failure-triage td,
+  .odhin-failure-triage th {
+    vertical-align: top;
+    white-space: normal;
+  }
+
+  .odhin-failure-triage .odhin-failure-next-checks {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .odhin-failure-triage .odhin-failure-observed {
+    font-weight: 700;
+  }
+
   .odhin-dashboard-stack {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
@@ -449,6 +487,9 @@ function buildFeatureOverviewBlock(featureStats) {
   const rows = featureStats
     .map((feature) => {
       const color = colorForFeature(feature.name);
+      const effectivePassed = effectivePassTotal(feature);
+      const passDenominator = passRateDenominator(feature);
+      const passPercentage = passDenominator ? `${percentOf(passDenominator, effectivePassed)}%` : '—';
       return `
                 <tr>
                   <td class="text-start fs-6 text-secondary-emphasis summary-row-left-column" style="border-left: 8px solid ${color};">
@@ -456,7 +497,7 @@ function buildFeatureOverviewBlock(featureStats) {
                   </td>
                   <td class="text-secondary-emphasis">${feature.totalTests}</td>
                   <td class="text-secondary-emphasis">${formatDuration(feature.durationMs)}</td>
-                  <td class="result-status-passed">${feature.passed} (<label class="fst-italic">${percentOf(feature.totalTests, feature.passed)}%</label>)</td>
+                  <td class="result-status-passed">${effectivePassed} (<label class="fst-italic">${passPercentage}</label>)</td>
                   <td class="result-status-failed">${feature.failed} (<label class="fst-italic">${percentOf(feature.totalTests, feature.failed)}%</label>)</td>
                   <td class="result-status-timedOut">${feature.timedOut} (<label class="fst-italic">${percentOf(feature.totalTests, feature.timedOut)}%</label>)</td>
                   <td class="result-status-skipped">${feature.skipped} (<label class="fst-italic">${percentOf(feature.totalTests, feature.skipped)}%</label>)</td>
@@ -700,22 +741,6 @@ function buildAccessibilityEvidenceBlock(entries) {
       </div>
     </div>
   `;
-}
-
-function injectAccessibilityEvidence(root, evidenceEntries) {
-  const evidenceHtml = buildAccessibilityEvidenceBlock(evidenceEntries);
-  if (!evidenceHtml || root.querySelector('#odhin-accessibility-evidence')) {
-    return false;
-  }
-
-  const dashboardRow =
-    root.querySelector('#TabDashboard .row') ?? root.querySelector('#TabDashboard') ?? root.querySelector('body');
-  if (!dashboardRow) {
-    return false;
-  }
-
-  dashboardRow.appendChild(parse(evidenceHtml));
-  return true;
 }
 
 function removeDashboardAccessibilityEvidence(root) {
@@ -1383,6 +1408,110 @@ function stripLegacyFileChartArtifacts(root) {
   });
 }
 
+function normalizeFailureMetadata(testMetadata) {
+  const grouped = new Map();
+  (Array.isArray(testMetadata) ? testMetadata : []).forEach((entry) => {
+    if (!entry || typeof entry !== 'object') {
+      return;
+    }
+    const target = typeof entry.target === 'string' ? entry.target : '';
+    const identity = redactText(entry.testId || target.replace(/-\d+$/, '') || target || 'unknown');
+    const attempts = grouped.get(identity) ?? [];
+    attempts.push(entry);
+    grouped.set(identity, attempts);
+  });
+
+  return Array.from(grouped.values())
+    .flatMap((attempts) => {
+      const orderedAttempts = [...attempts].sort((left, right) => Number(left.retry ?? 0) - Number(right.retry ?? 0));
+      const finalAttempt = orderedAttempts.at(-1);
+      const finalStatus = finalAttempt?.status || finalAttempt?.failure?.status || 'failed';
+      if (!['failed', 'timedOut', 'interrupted'].includes(finalStatus)) {
+        return [];
+      }
+      return orderedAttempts.filter((entry) => entry?.failure && typeof entry.failure === 'object');
+    })
+    .map((entry) => {
+      const failure = entry.failure;
+      const nextChecks = Array.isArray(failure.nextChecks) ? failure.nextChecks.map(redactText).slice(0, 3) : [];
+      const target = typeof entry.target === 'string' && /^#[A-Za-z0-9_-]+$/.test(entry.target) ? entry.target : '';
+      return {
+        target,
+        title: redactText(failure.title || 'Unnamed test'),
+        file: redactText(failure.file || 'unknown file'),
+        line: Number.isInteger(failure.line) ? failure.line : null,
+        column: Number.isInteger(failure.column) ? failure.column : null,
+        project: redactText(failure.project || 'unknown'),
+        retry: Number.isInteger(Number(failure.retry)) ? Number(failure.retry) : 0,
+        status: redactText(failure.status || 'failed'),
+        classification: redactText(failure.classification || 'UNKNOWN'),
+        confidence: redactText(failure.confidence || 'observed'),
+        source: redactText(failure.source || 'unconfirmed'),
+        failureLocation: redactText(failure.failureLocation || ''),
+        phase: redactText(failure.phase || ''),
+        actionableError: redactText(failure.actionableError || 'No actionable error captured'),
+        hypothesis: redactText(failure.hypothesis || 'No hypothesis recorded'),
+        nextChecks: nextChecks.length ? nextChecks : ['Open the trace and raw Playwright error before changing the test.'],
+      };
+    })
+    .sort((left, right) => left.file.localeCompare(right.file) || left.line - right.line || left.retry - right.retry);
+}
+
+function renderFailureTriageBlock(failures, target = '') {
+  if (!failures.length) {
+    return '';
+  }
+
+  const rows = failures
+    .map((failure) => {
+      const location = `${failure.file}${failure.line ? `:${failure.line}${failure.column ? `:${failure.column}` : ''}` : ''}`;
+      const checks = failure.nextChecks.map((check) => `<li>${escapeHtml(check)}</li>`).join('');
+      const hypothesis = `<div><strong>Hypothesis (not confirmed):</strong> ${escapeHtml(failure.hypothesis)}</div>`;
+      const failureLocation = failure.failureLocation
+        ? `<br><small>Failure action: ${escapeHtml(failure.failureLocation)}</small>`
+        : '';
+      return `<tr><td><span class="odhin-failure-observed">${escapeHtml(failure.classification)}</span><br><small>${escapeHtml(failure.confidence)} signal</small></td><td>${escapeHtml(failure.title)}<br><small>${escapeHtml(failure.status)} · retry ${failure.retry} · ${escapeHtml(failure.project)}</small></td><td>${escapeHtml(location)}<br><small>${escapeHtml(failure.phase || failure.source)}</small>${failureLocation}</td><td>${escapeHtml(failure.actionableError)}<br>${hypothesis}</td><td><ul class="odhin-failure-next-checks">${checks}</ul></td></tr>`;
+    })
+    .join('');
+
+  const suffix = target ? target.slice(1) : 'report';
+  const blockId = `odhin-failure-triage-${suffix}`;
+  return `<details class="mt-3 mb-3 odhin-thin-border odhin-failure-triage" id="${escapeAttribute(blockId)}" open><summary class="info-box-header">Failed test triage</summary><p class="odhin-failure-triage-note">Observed signals are evidence for investigation, not confirmed root causes. Retry attempts are shown separately inside the failed test attempt.</p><div class="odhin-table table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Observed signal</th><th>Test / attempt</th><th>Source</th><th>Actionable error</th><th>Next checks</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
+}
+
+function buildFailureTriageBlock(testMetadata = [], target = '') {
+  return renderFailureTriageBlock(
+    normalizeFailureMetadata(testMetadata).filter((failure) => !target || failure.target === target),
+    target
+  );
+}
+
+function injectFailureTriage(root, testMetadata) {
+  const failuresByTarget = new Map();
+  normalizeFailureMetadata(testMetadata).forEach((failure) => {
+    if (!failure.target) {
+      return;
+    }
+    const failures = failuresByTarget.get(failure.target) ?? [];
+    failures.push(failure);
+    failuresByTarget.set(failure.target, failures);
+  });
+
+  if (!failuresByTarget.size) {
+    return;
+  }
+
+  root.querySelectorAll('.odhin-failure-triage').forEach((node) => node.remove());
+  failuresByTarget.forEach((failures, target) => {
+    const modal = root.querySelector(target);
+    const host = modal?.querySelector('.modal-content') ?? modal;
+    const block = renderFailureTriageBlock(failures, target);
+    if (host && block) {
+      host.insertAdjacentHTML('afterbegin', block);
+    }
+  });
+}
+
 function defaultTestListRowsPerPage(html) {
   return String(html)
     .replace(
@@ -1437,6 +1566,7 @@ function enhanceDashboardHtml(
     buildIssueSummaryBlock(normalizedEvidenceEntries),
     buildDeveloperHint
   );
+  injectFailureTriage(root, testMetadata);
   if (perfettoFiles.length) injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
 
   applyPresentation(root, testMetadata);
@@ -1544,6 +1674,7 @@ module.exports = {
   percentOf,
   __test__: {
     buildFeatureOverviewBlock,
+    buildFailureTriageBlock,
     buildIssueSummaryBlock,
     buildAccessibilityEvidenceBlock,
     createEmptyFeatureStat,
@@ -1551,6 +1682,7 @@ module.exports = {
     deriveFeatureName,
     enhanceDashboardHtml,
     formatDuration,
+    normalizeFailureMetadata,
     normalizeEvidenceEntries,
     readAccessibilityEvidenceEntries,
     removeLegacyFileChartInitializer,

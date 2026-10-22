@@ -13,6 +13,43 @@ const baseExecutionSignals = {
 };
 
 test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
+  test('attaches diagnosis for interrupted Playwright executions', () => {
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('interrupted')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('failed')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('timedOut')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('passed')).toBe(false);
+  });
+
+  test('attaches structured diagnostics when a run is interrupted', async () => {
+    const attachments: string[] = [];
+    const testInfo = {
+      annotations: [],
+      attach: async (name: string) => attachments.push(name),
+      error: { message: 'Browser closed before the assertion completed' },
+      file: 'playwright_tests_new/example.spec.ts',
+      project: { name: 'chromium' },
+      retry: 0,
+      status: 'interrupted',
+      title: 'interrupted diagnostic test',
+      workerIndex: 0,
+    } as unknown as Parameters<typeof diagnosticsTest.attachFailureDiagnosisIfNeeded>[0];
+
+    await diagnosticsTest.attachFailureDiagnosisIfNeeded(testInfo, () => ({
+      error: 'Browser closed before the assertion completed',
+      primaryError: 'Browser closed before the assertion completed',
+      actionableError: '',
+      setupMarker: 'none',
+      apiErrors: [],
+      failedRequests: [],
+      slowCalls: [],
+      networkTimeout: false,
+      slowThreshold: 1000,
+      executionSignals: baseExecutionSignals,
+    }));
+
+    expect(attachments).toEqual(['Failure diagnosis', 'failure-data.json', 'failure-context.json']);
+  });
+
   test('classifyFailure treats direct CCD event-token 502 failures as backend 5xx', () => {
     const failureType = diagnosticsTest.classifyFailure({
       error: "Error: Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",
@@ -33,6 +70,60 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     });
 
     expect(failureType).toBe('DOWNSTREAM_API_5XX');
+  });
+
+  test('classifies browser DNS and connection failures before a companion API 504', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Error: expect(received).toBe(expected) Expected: 200 Received: 504',
+      serverErrors: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          status: 504,
+          method: 'GET',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          method: 'GET',
+          errorText: 'net::ERR_NAME_NOT_RESOLVED',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('NETWORK_ERROR');
+  });
+
+  test('classifies Chromium connection refusal as a network error', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Error: expect(received).toBe(expected) Expected: 200 Received: 504',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          method: 'GET',
+          errorText: 'net::ERR_CONNECTION_REFUSED',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('NETWORK_ERROR');
   });
 
   test('classifies a direct CCD case-create 504 with its owning route', () => {

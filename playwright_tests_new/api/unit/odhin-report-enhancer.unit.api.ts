@@ -35,6 +35,7 @@ const enhancerTest = enhancerModule.__test__ as {
   ) => string;
   formatDuration: (durationMs: number) => string;
   buildFeatureOverviewBlock: (featureStats: unknown) => string;
+  buildFailureTriageBlock: (testMetadata: unknown, target?: string) => string;
   buildAccessibilityEvidenceBlock: (entries: unknown) => string;
   buildIssueSummaryBlock: (entries: unknown) => string;
   defaultTestListRowsPerPage: (html: string) => string;
@@ -112,6 +113,20 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(root.querySelector('meta[name="viewport"]').getAttribute('content')).toBe('width=device-width, initial-scale=1');
   });
 
+  test('adds the fluid presentation to report HTML without a body and remains idempotent', () => {
+    const html = '<html><head><title>API report</title></head><main id="report-content">Report content</main></html>';
+    const once = enhancerTest.enhanceDashboardHtml(html, [], []);
+    const twice = enhancerTest.enhanceDashboardHtml(once, [], []);
+    const root = parse(twice);
+    const body = root.querySelector('body');
+
+    expect(body).not.toBeNull();
+    expect(body.getAttribute('id')).toBe('body-content');
+    expect(body.querySelector('#report-content').text).toBe('Report content');
+    expect(body.querySelectorAll('#webapp-report-ui')).toHaveLength(1);
+    expect(root.querySelectorAll('#webapp-report-theme')).toHaveLength(1);
+  });
+
   test('derives feature names from Playwright file paths', () => {
     expect(
       deriveFeatureName(
@@ -123,6 +138,93 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         '/opt/jenkins/workspace/PR/playwright_tests_new/integration/test/hearings/hearingDetails.cr84.positive.spec.ts'
       )
     ).toBe('hearings');
+  });
+
+  test('adds failed-test triage inside the matching test details with escaped, retry-aware evidence', () => {
+    const shell = `<html><head></head><body><div class="tab"></div><div id="TabDashboard"><div class="container-fluid"><div class="row"></div></div></div><table id="test-list-table"><tbody><tr data-bs-target="#test-0-0"><td>failed test</td></tr></tbody></table><div id="test-0-0" class="modal"><div class="modal-content"><div class="modal-body">raw test details</div></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        failure: {
+          title: 'Upload case 1791906281904747',
+          file: 'playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts',
+          line: 240,
+          column: 9,
+          project: 'chromium',
+          retry: 0,
+          status: 'timedOut',
+          classification: 'GLOBAL_TIMEOUT_UI_STALL',
+          confidence: 'observed',
+          source: 'Test/application behaviour',
+          phase: 'ui-wait-pre-backend',
+          actionableError: 'locator.click timeout',
+          hypothesis: 'A loading overlay covered the control',
+          nextChecks: ['Open the trace at the failing action'],
+        },
+      },
+    ];
+    const report = parse(enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata));
+    const triage = report.querySelector('#test-0-0 .odhin-failure-triage');
+
+    expect(triage).not.toBeNull();
+    expect(report.querySelector('#TabDashboard .odhin-failure-triage')).toBeNull();
+    expect(report.querySelector('#test-list-table tr')?.getAttribute('data-bs-target')).toBe('#test-0-0');
+    expect(triage?.text).toContain('Failed test triage');
+    expect(triage?.text).toContain('GLOBAL_TIMEOUT_UI_STALL');
+    expect(triage?.text).toContain('Hypothesis (not confirmed)');
+    expect(triage?.querySelector('a')).toBeNull();
+    expect(report.toString()).not.toContain('1791906281904747');
+  });
+
+  test('does not report a retry failure as unresolved when the final attempt passed', () => {
+    const shell = `<html><head></head><body><div id="TabDashboard"><div class="container-fluid"></div></div><div id="test-0-0" class="modal"><div class="modal-content"></div></div><div id="test-0-1" class="modal"><div class="modal-content"></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        testId: 'test-0',
+        retry: 0,
+        status: 'failed',
+        failure: { title: 'Flaky test', file: 'test.spec.ts', retry: 0, status: 'failed' },
+      },
+      { target: '#test-0-1', testId: 'test-0', retry: 1, status: 'passed' },
+    ];
+
+    const report = enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata);
+    expect(report).not.toContain('Failed test triage');
+  });
+
+  test('preserves failure triage when a later enhancer pass has no metadata', () => {
+    const shell = `<html><head></head><body><div id="TabDashboard"><div class="container-fluid"></div></div><div id="test-0-0" class="modal"><div class="modal-content"></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        testId: 'test-0',
+        retry: 0,
+        status: 'failed',
+        failure: { title: 'Failed test', file: 'test.spec.ts', retry: 0, status: 'failed' },
+      },
+    ];
+
+    const firstPass = enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata);
+    const secondPass = enhancerTest.enhanceDashboardHtml(firstPass, [], [], [], '../test-results');
+    expect(parse(secondPass).querySelectorAll('.odhin-failure-triage')).toHaveLength(1);
+    expect(parse(secondPass).querySelector('#TabDashboard .odhin-failure-triage')).toBeNull();
+  });
+
+  test('does not fall back to a dashboard triage block when the failed test detail is unavailable', () => {
+    const shell = `<html><head></head><body><div id="TabDashboard"><div class="container-fluid"></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#missing-test-0',
+        testId: 'missing-test',
+        retry: 0,
+        status: 'failed',
+        failure: { title: 'Failed test', file: 'test.spec.ts', retry: 0, status: 'failed' },
+      },
+    ];
+
+    const report = enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata);
+    expect(report).not.toContain('Failed test triage');
   });
 
   test('uses declared product features without guessing accessibility titles or changing other suites', () => {
@@ -348,6 +450,38 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('Feature Overview');
     expect(nextHtml).toContain('odhin-feature-overview-layout-compact');
     expect(nextHtml).not.toContain('id="chart-file"');
+  });
+
+  test('counts flaky final passes, excludes skipped tests, and keeps failures out of the pass rate', () => {
+    const feature = createEmptyFeatureStat('caseDetails');
+    feature.totalTests = 8;
+    feature.passed = 2;
+    feature.flaky = 1;
+    feature.failed = 1;
+    feature.timedOut = 1;
+    feature.skipped = 2;
+    feature.interrupted = 1;
+
+    const html = enhancerTest.buildFeatureOverviewBlock([feature]);
+    const row = parse(html).querySelector('tbody tr');
+
+    expect(row?.querySelector('.result-status-passed')?.text.trim()).toBe('3 (50.00%)');
+    expect(row?.querySelector('.result-status-failed')?.text.trim()).toBe('1 (12.50%)');
+    expect(row?.querySelector('.result-status-timedOut')?.text.trim()).toBe('1 (12.50%)');
+    expect(row?.querySelector('.result-status-skipped')?.text.trim()).toBe('2 (25.00%)');
+    expect(row?.querySelector('.result-status-interrupted')?.text.trim()).toBe('1 (12.50%)');
+  });
+
+  test('renders the fluid dashboard no-data marker when no non-skipped tests are in the denominator', () => {
+    const noTests = createEmptyFeatureStat('noTests');
+    const allSkipped = createEmptyFeatureStat('allSkipped');
+    allSkipped.totalTests = 3;
+    allSkipped.skipped = 3;
+
+    const rows = parse(enhancerTest.buildFeatureOverviewBlock([noTests, allSkipped])).querySelectorAll('tbody tr');
+
+    expect(rows[0].querySelector('.result-status-passed')?.text.trim()).toBe('0 (—)');
+    expect(rows[1].querySelector('.result-status-passed')?.text.trim()).toBe('0 (—)');
   });
 
   test('feature overview block keeps feature distribution and outcome columns together', () => {

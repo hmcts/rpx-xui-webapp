@@ -2,10 +2,14 @@
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { nextChecksFor, redactText, safeSourceFile } = require('./failure-context.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
+const failureStatuses = new Set(['failed', 'timedOut', 'interrupted']);
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
@@ -128,12 +132,16 @@ class OdhinAdaptiveReporter {
       }
     }
 
+    const failure = buildFailureMetadata(test, result);
     this.testMetadata.push({
       target: `#${test.id}-${result.retry}`,
+      testId: redactText(test.id),
       feature: deriveFeatureName(test?.location?.file, test?.annotations),
-      tags: test.tags ?? [],
+      tags: Array.isArray(test.tags) ? test.tags.map(redactText) : [],
       durationMs: result.duration || 0,
       retry: result.retry,
+      status: redactText(result?.status),
+      ...(failure ? { failure } : {}),
     });
     this.recordStatus(result?.status);
     this.recordFeatureStat(test, result);
@@ -269,6 +277,54 @@ class OdhinAdaptiveReporter {
   async flushInnerCallbacks() {
     await this.pendingInnerCallbacks;
   }
+}
+
+function buildFailureMetadata(test, result) {
+  if (!failureStatuses.has(result?.status)) {
+    return null;
+  }
+
+  const annotations = Array.isArray(test?.annotations) ? test.annotations : [];
+  const annotation = (type) => annotations.find((item) => item?.type === type)?.description ?? '';
+  const classification = annotation('Failure type') || 'UNKNOWN';
+  const location = test?.location ?? {};
+  const title = redactText(test?.title ?? 'Unnamed test');
+  const project = resolveProjectName(test);
+  const error = Array.isArray(result?.errors) ? result.errors[0] : result?.error;
+
+  return {
+    title,
+    file: safeSourceFile(location.file),
+    line: Number.isInteger(location.line) ? location.line : null,
+    column: Number.isInteger(location.column) ? location.column : null,
+    project: redactText(project),
+    retry: Number.isInteger(Number(result?.retry)) ? Number(result.retry) : 0,
+    status: redactText(result.status),
+    classification: redactText(classification),
+    confidence: 'observed',
+    source: redactText(annotation('Failure source')),
+    failureLocation: redactText(annotation('Failure location')),
+    phase: redactText(annotation('Phase marker')),
+    actionableError: redactText(annotation('Actionable error') || error?.message || ''),
+    hypothesis: redactText(annotation('Likely root cause')),
+    nextChecks: nextChecksFor(classification),
+  };
+}
+
+function resolveProjectName(test) {
+  let suite = test?.parent;
+  let depth = 0;
+  while (suite && depth < 20) {
+    if (typeof suite.project === 'function') {
+      const project = suite.project();
+      if (project?.name) {
+        return project.name;
+      }
+    }
+    suite = suite.parent;
+    depth += 1;
+  }
+  return process.env.PW_PROJECT_NAME || 'unknown';
 }
 
 function addFailureSource(test, result) {
@@ -466,5 +522,6 @@ exportedReporter.__test__ = {
   normalizeBoolean,
   normalizeRuntimeHookTimeoutMs,
   withTimeout,
+  buildFailureMetadata,
 };
 module.exports = exportedReporter;

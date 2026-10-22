@@ -6160,14 +6160,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/core@npm:^2.8.0":
-  version: 2.12.0
-  resolution: "@opentelemetry/core@npm:2.12.0"
+"@opentelemetry/core@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@opentelemetry/core@npm:3.0.0"
   dependencies:
     "@opentelemetry/semantic-conventions": "npm:^1.29.0"
   peerDependencies:
-    "@opentelemetry/api": ">=1.0.0 <1.10.0"
-  checksum: 10/2bbc02ad2e131d23061d24826fdd061b5f5527c16f482d05906dfa345373165c2ad6f90089593f30abfd3029d7488b618f029c831155225151b74dec71bf1746
+    "@opentelemetry/api": ">=1.10.0 <1.11.0"
+  checksum: 10/bcde51834b4904ad764c9ceac992461ebd9888cb51a4f13722fd45943bc3342769df0394a3c3c61611eb5252b1b32e632b5703e1f0e44cf539690b1f211a684e
   languageName: node
   linkType: hard
 
@@ -9933,7 +9933,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"applicationinsights@npm:^3.16.0":
+"applicationinsights@npm:^3.17.0":
   version: 3.17.0
   resolution: "applicationinsights@npm:3.17.0"
   dependencies:
@@ -16162,7 +16162,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jui@workspace:api"
   dependencies:
-    applicationinsights: "npm:^3.16.0"
+    applicationinsights: "npm:^3.17.0"
     express: "npm:^5.2.1"
   languageName: unknown
   linkType: soft
@@ -20732,7 +20732,7 @@ __metadata:
     "@typescript-eslint/utils": "npm:^8.53.1"
     accessibility-checker: "npm:^4.0.0"
     allure-js-commons: "npm:^3.0.0"
-    applicationinsights: "npm:^3.16.0"
+    applicationinsights: "npm:^3.17.0"
     axe-core: "npm:^4.9.1"
     axe-html-reporter: "npm:^2.2.3"
     axios: "npm:^1.20.0"

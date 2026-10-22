@@ -1,4 +1,4 @@
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Inject, Injectable, Injector, Optional } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 import {
@@ -110,7 +110,7 @@ export class HearingsTelemetryService {
   constructor(
     private readonly monitoring: MonitoringService,
     @Inject(Window) private readonly browser: Window,
-    @Optional() private readonly store?: Store<HearingsTelemetryStoreState>
+    @Optional() private readonly injector?: Injector
   ) {}
 
   public get currentJourney(): HearingsJourneyState | null {
@@ -339,7 +339,10 @@ export class HearingsTelemetryService {
     let requestCaseId: string | undefined;
     let requestHearingId: string | undefined;
     try {
-      this.store
+      // ErrorHandler depends on this service, while StoreDevtools depends on ErrorHandler.
+      // Resolve the store only when reading identifiers, never during service construction.
+      this.injector
+        ?.get<Store<HearingsTelemetryStoreState>>(Store, null)
         ?.select((state) => ({
           caseInfo: state?.hearings?.hearingValues?.caseInfo,
           requestCaseId: state?.hearings?.hearingRequest?.hearingRequestMainModel?.caseDetails?.caseRef,

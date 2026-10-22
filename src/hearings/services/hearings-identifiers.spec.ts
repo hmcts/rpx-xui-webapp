@@ -1,3 +1,4 @@
+import { Injector } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,7 +27,11 @@ describe('Hearings permitted telemetry identifiers', () => {
     store = { select: (selector) => state.pipe(map(selector)) } as unknown as Store<HearingsTelemetryStoreState>;
     monitoring = jasmine.createSpyObj('MonitoringService', ['logEvent', 'logException', 'captureOperationContext']);
     monitoring.captureOperationContext.and.returnValue({});
-    telemetry = new HearingsTelemetryService(monitoring, window, store);
+    telemetry = new HearingsTelemetryService(
+      monitoring,
+      window,
+      Injector.create({ providers: [{ provide: Store, useValue: store }] })
+    );
   });
 
   it('records case and jurisdiction on starts, actions, validation and journey-duration events', () => {
@@ -164,7 +169,43 @@ describe('Hearings permitted telemetry identifiers', () => {
     const unavailable = {
       select: () => throwError(() => new Error('Store unavailable')),
     } as unknown as Store<HearingsTelemetryStoreState>;
-    const plain = new HearingsTelemetryService(monitoring, window, unavailable);
+    const plain = new HearingsTelemetryService(
+      monitoring,
+      window,
+      Injector.create({ providers: [{ provide: Store, useValue: unavailable }] })
+    );
+    expect(() => plain.enterStep('/hearings/cancel/:hearingId', { caseId: 'case-a', hearingId: 'hearing-a' }, 0)).not.toThrow();
+    expect(plain.currentIdentifiers).toEqual({ caseId: 'case-a', hearingId: 'hearing-a' });
+  });
+
+  it('does not construct the store while constructing telemetry', () => {
+    const createStore = jasmine.createSpy('createStore').and.returnValue(store);
+    const injector = Injector.create({ providers: [{ provide: Store, useFactory: createStore }] });
+    const plain = new HearingsTelemetryService(monitoring, window, injector);
+    expect(createStore).not.toHaveBeenCalled();
+    plain.enterStep('/hearings/request/hearing-stage', {}, 0);
+    expect(createStore).toHaveBeenCalledTimes(1);
+    expect(plain.currentIdentifiers).toEqual({ caseId: '1234567890123456', jurisdiction: 'SSCS' });
+  });
+
+  it('preserves route identifiers when the injector has no store provider', () => {
+    const plain = new HearingsTelemetryService(monitoring, window, Injector.create({ providers: [] }));
+    expect(() => plain.enterStep('/hearings/cancel/:hearingId', { caseId: 'case-a', hearingId: 'hearing-a' }, 0)).not.toThrow();
+    expect(plain.currentIdentifiers).toEqual({ caseId: 'case-a', hearingId: 'hearing-a' });
+  });
+
+  it('keeps telemetry non-blocking if store construction fails', () => {
+    const injector = Injector.create({
+      providers: [
+        {
+          provide: Store,
+          useFactory: () => {
+            throw new Error('Store unavailable');
+          },
+        },
+      ],
+    });
+    const plain = new HearingsTelemetryService(monitoring, window, injector);
     expect(() => plain.enterStep('/hearings/cancel/:hearingId', { caseId: 'case-a', hearingId: 'hearing-a' }, 0)).not.toThrow();
     expect(plain.currentIdentifiers).toEqual({ caseId: 'case-a', hearingId: 'hearing-a' });
   });

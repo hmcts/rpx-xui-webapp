@@ -438,6 +438,38 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).not.toContain('id="chart-file"');
   });
 
+  test('counts flaky final passes, excludes skipped tests, and keeps failures out of the pass rate', () => {
+    const feature = createEmptyFeatureStat('caseDetails');
+    feature.totalTests = 8;
+    feature.passed = 2;
+    feature.flaky = 1;
+    feature.failed = 1;
+    feature.timedOut = 1;
+    feature.skipped = 2;
+    feature.interrupted = 1;
+
+    const html = enhancerTest.buildFeatureOverviewBlock([feature]);
+    const row = parse(html).querySelector('tbody tr');
+
+    expect(row?.querySelector('.result-status-passed')?.text.trim()).toBe('3 (50.00%)');
+    expect(row?.querySelector('.result-status-failed')?.text.trim()).toBe('1 (12.50%)');
+    expect(row?.querySelector('.result-status-timedOut')?.text.trim()).toBe('1 (12.50%)');
+    expect(row?.querySelector('.result-status-skipped')?.text.trim()).toBe('2 (25.00%)');
+    expect(row?.querySelector('.result-status-interrupted')?.text.trim()).toBe('1 (12.50%)');
+  });
+
+  test('renders the fluid dashboard no-data marker when no non-skipped tests are in the denominator', () => {
+    const noTests = createEmptyFeatureStat('noTests');
+    const allSkipped = createEmptyFeatureStat('allSkipped');
+    allSkipped.totalTests = 3;
+    allSkipped.skipped = 3;
+
+    const rows = parse(enhancerTest.buildFeatureOverviewBlock([noTests, allSkipped])).querySelectorAll('tbody tr');
+
+    expect(rows[0].querySelector('.result-status-passed')?.text.trim()).toBe('0 (—)');
+    expect(rows[1].querySelector('.result-status-passed')?.text.trim()).toBe('0 (—)');
+  });
+
   test('feature overview block keeps feature distribution and outcome columns together', () => {
     const manageTasks = createEmptyFeatureStat('manageTasks');
     manageTasks.totalTests = 76;

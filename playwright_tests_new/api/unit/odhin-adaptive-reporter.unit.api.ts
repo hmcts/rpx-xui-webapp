@@ -65,6 +65,7 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
       retries: 1,
       tags: ['@integration'],
       location: { file: '/tmp/playwright_tests_new/integration/test/hearings/details.spec.ts' },
+      annotations: [{ type: 'Failure location', description: 'hearingDetails.spec.ts:42:7' }],
     };
     await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 2000 });
     await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 1000 });
@@ -81,6 +82,7 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
         status: 'failed',
         classification: 'UNKNOWN',
         confidence: 'observed',
+        failureLocation: 'hearingDetails.spec.ts:42:7',
       },
     });
     expect(reporter.testMetadata[1]).toEqual({

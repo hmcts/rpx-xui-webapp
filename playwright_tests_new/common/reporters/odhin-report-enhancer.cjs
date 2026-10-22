@@ -131,31 +131,31 @@ function injectEnhancerStyles(root) {
   head.appendChild(
     parse(`
 <style id="odhin-enhancer-styles">
-  #odhin-failure-triage {
+  .odhin-failure-triage {
     margin: 16px 0;
   }
 
-  #odhin-failure-triage .odhin-failure-triage-note {
+  .odhin-failure-triage .odhin-failure-triage-note {
     color: #505a5f;
     margin: 0 0 12px;
   }
 
-  #odhin-failure-triage table {
+  .odhin-failure-triage table {
     width: 100%;
   }
 
-  #odhin-failure-triage td,
-  #odhin-failure-triage th {
+  .odhin-failure-triage td,
+  .odhin-failure-triage th {
     vertical-align: top;
     white-space: normal;
   }
 
-  #odhin-failure-triage .odhin-failure-next-checks {
+  .odhin-failure-triage .odhin-failure-next-checks {
     margin: 0;
     padding-left: 18px;
   }
 
-  #odhin-failure-triage .odhin-failure-observed {
+  .odhin-failure-triage .odhin-failure-observed {
     font-weight: 700;
   }
 
@@ -1436,6 +1436,7 @@ function normalizeFailureMetadata(testMetadata) {
         classification: redactText(failure.classification || 'UNKNOWN'),
         confidence: redactText(failure.confidence || 'observed'),
         source: redactText(failure.source || 'unconfirmed'),
+        failureLocation: redactText(failure.failureLocation || ''),
         phase: redactText(failure.phase || ''),
         actionableError: redactText(failure.actionableError || 'No actionable error captured'),
         hypothesis: redactText(failure.hypothesis || 'No hypothesis recorded'),
@@ -1445,8 +1446,7 @@ function normalizeFailureMetadata(testMetadata) {
     .sort((left, right) => left.file.localeCompare(right.file) || left.line - right.line || left.retry - right.retry);
 }
 
-function buildFailureTriageBlock(testMetadata = []) {
-  const failures = normalizeFailureMetadata(testMetadata);
+function renderFailureTriageBlock(failures, target = '') {
   if (!failures.length) {
     return '';
   }
@@ -1454,26 +1454,51 @@ function buildFailureTriageBlock(testMetadata = []) {
   const rows = failures
     .map((failure) => {
       const location = `${failure.file}${failure.line ? `:${failure.line}${failure.column ? `:${failure.column}` : ''}` : ''}`;
-      const detailLink = failure.target
-        ? `<a href="${escapeAttribute(failure.target)}" class="odhin-failure-detail-link">Open test details</a>`
-        : 'Test details unavailable';
       const checks = failure.nextChecks.map((check) => `<li>${escapeHtml(check)}</li>`).join('');
       const hypothesis = `<div><strong>Hypothesis (not confirmed):</strong> ${escapeHtml(failure.hypothesis)}</div>`;
-      return `<tr><td><span class="odhin-failure-observed">${escapeHtml(failure.classification)}</span><br><small>${escapeHtml(failure.confidence)} signal</small></td><td>${escapeHtml(failure.title)}<br><small>${escapeHtml(failure.status)} · retry ${failure.retry} · ${escapeHtml(failure.project)}</small></td><td>${escapeHtml(location)}<br><small>${escapeHtml(failure.phase || failure.source)}</small></td><td>${escapeHtml(failure.actionableError)}<br>${hypothesis}<br>${detailLink}</td><td><ul class="odhin-failure-next-checks">${checks}</ul></td></tr>`;
+      const failureLocation = failure.failureLocation
+        ? `<br><small>Failure action: ${escapeHtml(failure.failureLocation)}</small>`
+        : '';
+      return `<tr><td><span class="odhin-failure-observed">${escapeHtml(failure.classification)}</span><br><small>${escapeHtml(failure.confidence)} signal</small></td><td>${escapeHtml(failure.title)}<br><small>${escapeHtml(failure.status)} · retry ${failure.retry} · ${escapeHtml(failure.project)}</small></td><td>${escapeHtml(location)}<br><small>${escapeHtml(failure.phase || failure.source)}</small>${failureLocation}</td><td>${escapeHtml(failure.actionableError)}<br>${hypothesis}</td><td><ul class="odhin-failure-next-checks">${checks}</ul></td></tr>`;
     })
     .join('');
 
-  return `<div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-failure-triage"><div class="info-box-header">Failed test triage</div><p class="odhin-failure-triage-note">Observed signals are evidence for investigation, not confirmed root causes. Retry attempts are shown separately; open test details for the raw error, trace and screenshots when published.</p><div class="odhin-table table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Observed signal</th><th>Test / attempt</th><th>Source</th><th>Actionable error</th><th>Next checks</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  const suffix = target ? target.slice(1) : 'report';
+  const blockId = `odhin-failure-triage-${suffix}`;
+  return `<details class="mt-3 mb-3 odhin-thin-border odhin-failure-triage" id="${escapeAttribute(blockId)}" open><summary class="info-box-header">Failed test triage</summary><p class="odhin-failure-triage-note">Observed signals are evidence for investigation, not confirmed root causes. Retry attempts are shown separately inside the failed test attempt.</p><div class="odhin-table table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Observed signal</th><th>Test / attempt</th><th>Source</th><th>Actionable error</th><th>Next checks</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
+}
+
+function buildFailureTriageBlock(testMetadata = [], target = '') {
+  return renderFailureTriageBlock(
+    normalizeFailureMetadata(testMetadata).filter((failure) => !target || failure.target === target),
+    target
+  );
 }
 
 function injectFailureTriage(root, testMetadata) {
-  const block = buildFailureTriageBlock(testMetadata);
-  if (!block) {
+  const failuresByTarget = new Map();
+  normalizeFailureMetadata(testMetadata).forEach((failure) => {
+    if (!failure.target) {
+      return;
+    }
+    const failures = failuresByTarget.get(failure.target) ?? [];
+    failures.push(failure);
+    failuresByTarget.set(failure.target, failures);
+  });
+
+  if (!failuresByTarget.size) {
     return;
   }
-  root.querySelector('#odhin-failure-triage')?.remove();
-  const dashboard = root.querySelector('#TabDashboard > .container-fluid') ?? root.querySelector('#TabDashboard');
-  dashboard?.insertAdjacentHTML('afterbegin', block);
+
+  root.querySelectorAll('.odhin-failure-triage').forEach((node) => node.remove());
+  failuresByTarget.forEach((failures, target) => {
+    const modal = root.querySelector(target);
+    const host = modal?.querySelector('.modal-content') ?? modal;
+    const block = renderFailureTriageBlock(failures, target);
+    if (host && block) {
+      host.insertAdjacentHTML('afterbegin', block);
+    }
+  });
 }
 
 function defaultTestListRowsPerPage(html) {

@@ -72,6 +72,60 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     expect(failureType).toBe('DOWNSTREAM_API_5XX');
   });
 
+  test('classifies browser DNS and connection failures before a companion API 504', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Error: expect(received).toBe(expected) Expected: 200 Received: 504',
+      serverErrors: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          status: 504,
+          method: 'GET',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          method: 'GET',
+          errorText: 'net::ERR_NAME_NOT_RESOLVED',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('NETWORK_ERROR');
+  });
+
+  test('classifies Chromium connection refusal as a network error', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Error: expect(received).toBe(expected) Expected: 200 Received: 504',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          method: 'GET',
+          errorText: 'net::ERR_CONNECTION_REFUSED',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('NETWORK_ERROR');
+  });
+
   test('classifies a direct CCD case-create 504 with its owning route', () => {
     const error =
       "Error: Direct CCD case create failed with HTTP 504 for 'case-flags-employment-case-level'. Route='POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false'.";

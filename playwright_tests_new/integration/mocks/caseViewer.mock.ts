@@ -19,6 +19,12 @@ const CASE_VIEWER_RESTRICTED_ACL = [
   },
 ];
 
+type CaseViewerTab = {
+  acls?: typeof CASE_VIEWER_RESTRICTED_ACL;
+  fields: unknown[];
+  [key: string]: unknown;
+};
+
 type CaseViewerMock = {
   case_id: string;
   case_type: {
@@ -28,7 +34,7 @@ type CaseViewerMock = {
   };
   state: unknown;
   metadataFields: Array<Record<string, unknown>>;
-  tabs: unknown[];
+  tabs: CaseViewerTab[];
   triggers: unknown[];
   events: unknown[];
 };
@@ -149,5 +155,17 @@ export function buildCaseViewerMock(variant: ViewerVariant = 'populated', roles?
 
   mock.triggers = [];
   mock.events = canReadRestrictedData ? events : [];
+  return mock;
+}
+
+export function buildTimezoneCaseViewerMock() {
+  const mock = buildCaseViewerMock();
+  const enteredDateTime = textField('enteredDateTime', 'Entered date and time', '2026-06-30T23:30:00');
+  enteredDateTime.field_type.id = 'DateTime';
+  enteredDateTime.field_type.type = 'DateTime';
+  mock.tabs[0].fields.push(enteredDateTime);
+  const event = mock.events[0] as Record<string, unknown>;
+  event.created_date = '2026-06-30T23:30:00.000Z';
+  event.timestamp = '2026-06-30T23:30:00.000Z';
   return mock;
 }

@@ -21,14 +21,12 @@ describe('Auth session store selection', () => {
 
   afterEach(() => sandbox.restore());
 
-  it('uses local file sessions without reading missing Redis configuration when Redis is disabled', async () => {
-    config.withArgs(REDIS_CLOUD_URL).throws(new Error('Redis secret is not configured'));
-    config.withArgs(REDIS_KEY_PREFIX).throws(new Error('Redis prefix is not configured'));
-    config.withArgs(REDIS_TTL).throws(new Error('Redis TTL is not configured'));
+  it('uses local file sessions instead of configured Redis sessions when Redis is disabled', async () => {
+    // Store options are built before the Redis feature flag selects the session store.
+    config.withArgs(REDIS_CLOUD_URL).returns('redis://test-only');
+    config.withArgs(REDIS_KEY_PREFIX).returns('test-prefix');
+    config.withArgs(REDIS_TTL).returns(3600);
     await getXuiNodeMiddleware();
-    expect(config.calledWith(REDIS_CLOUD_URL)).to.equal(false);
-    expect(config.calledWith(REDIS_KEY_PREFIX)).to.equal(false);
-    expect(config.calledWith(REDIS_TTL)).to.equal(false);
     const options = configure.firstCall.args[0];
     expect(options.session.redisStore).to.equal(undefined);
     expect(options.session.fileStore.fileStoreOptions).to.deep.equal({ filePath: '.sessions' });

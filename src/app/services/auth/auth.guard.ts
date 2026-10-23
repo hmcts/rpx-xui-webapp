@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '..';
 import { WindowLocationService } from '../window-location/window-location.service';
 import { AuthService } from './auth.service';
@@ -37,18 +36,12 @@ export class AuthGuard {
     this.sessionStorage.setItem('redirectUrl', this.windowLocationService.getPathName());
   }
 
-  public getJSONObject(value: string): UserInfo {
-    return safeJsonParse<UserInfo>(value, null);
-  }
-
   private redirectToStoredUrl(): void {
     const currentLocationPathName = this.windowLocationService.getPathName();
     const currentPathIsNotEmpty = /^\/([a-z]+)/g;
     const currentPathIsRoot = !currentLocationPathName.match(currentPathIsNotEmpty);
 
-    const userInfoStr = this.sessionStorage.getItem('userDetails');
-
-    if (currentPathIsRoot && userInfoStr && this.getJSONObject(userInfoStr)) {
+    if (currentPathIsRoot && CurrentUserService.readUserInfo(this.sessionStorage)) {
       const redirectUrl = this.sessionStorage.getItem('redirectUrl', true);
       if (!redirectUrl) {
         return;

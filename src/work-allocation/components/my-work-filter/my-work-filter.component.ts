@@ -1,7 +1,7 @@
+import { CurrentUserService, SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import {
   BookingCheckType,
   FeatureToggleService,
@@ -12,7 +12,7 @@ import {
   FilterService,
   FilterSetting,
 } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
@@ -249,7 +249,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
       const location: Location = history.state.location;
       this.defaultLocations = [location.id];
     }
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe((userDetails) => {
       const isFeePaidJudgeWithNoBooking: boolean =
         this.bookingLocations.length === 0 &&
         !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
@@ -374,7 +374,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
 
   private setUpServicesFilter(services: any[], serviceNamesMap: { [key: string]: string }): void {
     // Available services need to be added to work-allocation-utils.ts -> servicesMap
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe((userDetails) => {
       if (!services.length) {
         return;
       }

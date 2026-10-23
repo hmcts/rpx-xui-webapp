@@ -1,8 +1,9 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BookingCheckType, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { BookingNavigationEvent, BookingProcess } from '../../models';
 
@@ -71,7 +72,7 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   // get a comma separated list of unique jurisdictions from the user role assignment info
   private getJurisdictions(): void {
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
+    CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails).subscribe((user) => {
       this.jurisdictions = Array.from(
         new Set(user.roleAssignmentInfo.filter((role) => role.bookable).map((a) => a.jurisdiction))
       ).toString();

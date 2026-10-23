@@ -1,6 +1,5 @@
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { Action } from '@ngrx/store';
-import { UserDetails } from '../../../app/models';
 
 export const APP_LOAD_CONFIG = '[App] Load Config';
 export const APP_LOAD_CONFIG_SUCCESS = '[App] Load Config Success';
@@ -133,7 +132,6 @@ export class LoadUserDetails implements Action {
 
 export class LoadUserDetailsSuccess implements Action {
   public readonly type = LOAD_USER_DETAILS_SUCCESS;
-  constructor(public payload: UserDetails) {}
 }
 
 export class LoadUserDetailsFail implements Action {

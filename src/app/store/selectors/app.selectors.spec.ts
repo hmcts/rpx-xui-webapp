@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromActions from '../actions';
@@ -16,14 +17,7 @@ describe('App Selectors', () => {
     termsAndConditions: null,
     isTermsAndConditionsFeatureEnabled: false,
     useIdleSessionTimeout: false,
-    userDetails: {
-      sessionTimeout: {
-        idleModalDisplayTime: 0,
-        totalIdleTime: 0,
-      },
-      canShareCases: false,
-      userInfo: null,
-    },
+    userDetailsVersion: 0,
     decorate16digitCaseReferenceSearchBoxInHeader: false,
   };
 
@@ -64,18 +58,13 @@ describe('App Selectors', () => {
     termsAndConditions: null,
     isTermsAndConditionsFeatureEnabled: false,
     useIdleSessionTimeout: false,
-    userDetails: {
-      sessionTimeout: {
-        idleModalDisplayTime: 0,
-        totalIdleTime: 0,
-      },
-      canShareCases: false,
-      userInfo: null,
-    },
+    userDetailsVersion: 0,
     decorate16digitCaseReferenceSearchBoxInHeader: false,
   };
 
   beforeEach(() => {
+    sessionStorage.removeItem('userDetails');
+    CurrentUserService.resetUserDetails();
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({
@@ -88,6 +77,39 @@ describe('App Selectors', () => {
     store = TestBed.inject(Store);
 
     spyOn(store, 'dispatch').and.callThrough();
+  });
+
+  afterEach(() => {
+    sessionStorage.removeItem('userDetails');
+    CurrentUserService.resetUserDetails();
+  });
+
+  it('selects user details from session storage after the version action', () => {
+    const details = {
+      userInfo: { id: 'user-1', email: 'user@example.com', roles: [], token: 'Bearer secret' },
+      canShareCases: true,
+      sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 30 },
+      roleAssignmentInfo: [{ jurisdiction: 'IA', isCaseAllocator: true }]
+    } as any;
+    let selectedDetails;
+    store.select(fromSelectors.getUserDetails).subscribe((value) => (selectedDetails = value));
+
+    CurrentUserService.setUserDetails(sessionStorage, details);
+    store.dispatch(new fromActions.LoadUserDetailsSuccess());
+
+    expect(selectedDetails.userInfo).toEqual({ id: 'user-1', email: 'user@example.com', roles: [] });
+    expect(selectedDetails.canShareCases).toBeTrue();
+    expect(selectedDetails.roleAssignmentInfo).toEqual(details.roleAssignmentInfo);
+    expect(sessionStorage.getItem('userDetails')).not.toContain('Bearer secret');
+  });
+
+  it('does not emit user details again for unrelated app state changes', () => {
+    let emissions = 0;
+    store.select(fromSelectors.getUserDetails).subscribe(() => emissions++);
+
+    store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
+
+    expect(emissions).toBe(1);
   });
 
   describe('Configuration State', () => {

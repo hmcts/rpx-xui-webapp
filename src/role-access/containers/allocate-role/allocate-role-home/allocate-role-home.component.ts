@@ -1,3 +1,4 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -93,7 +94,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe((userDetails) => {
       this.userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles);
     });
     if (this.route.snapshot.queryParams) {

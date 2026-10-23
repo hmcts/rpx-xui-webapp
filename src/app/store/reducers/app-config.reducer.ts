@@ -1,5 +1,5 @@
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
-import { ConfigurationModel, TermsAndCondition, UserDetails } from '../../models';
+import { ConfigurationModel, TermsAndCondition } from '../../models';
 import * as fromActions from '../actions/';
 
 export interface AppConfigState {
@@ -10,7 +10,7 @@ export interface AppConfigState {
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
   useIdleSessionTimeout: boolean;
-  userDetails: UserDetails;
+  userDetailsVersion: number;
   decorate16digitCaseReferenceSearchBoxInHeader: boolean;
 }
 
@@ -22,14 +22,7 @@ export const initialState: AppConfigState = {
   termsAndConditions: null,
   isTermsAndConditionsFeatureEnabled: false,
   useIdleSessionTimeout: false,
-  userDetails: {
-    sessionTimeout: {
-      idleModalDisplayTime: 0,
-      totalIdleTime: 0,
-    },
-    canShareCases: false,
-    userInfo: null,
-  },
+  userDetailsVersion: 0,
   decorate16digitCaseReferenceSearchBoxInHeader: false,
 };
 
@@ -91,7 +84,7 @@ export function reducer(state = initialState, action: fromActions.AppActions): A
     case fromActions.LOAD_USER_DETAILS_SUCCESS:
       return {
         ...state,
-        userDetails: action.payload,
+        userDetailsVersion: state.userDetailsVersion + 1,
       };
     case fromActions.START_IDLE_SESSION_TIMEOUT:
       return {
@@ -119,6 +112,6 @@ export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
-export const getUserDetails = (state: AppConfigState) => state.userDetails;
+export const getUserDetailsVersion = (state: AppConfigState) => state.userDetailsVersion;
 export const getDecorate16digitCaseReferenceSearchBoxInHeader = (state: AppConfigState) =>
   state.decorate16digitCaseReferenceSearchBoxInHeader;

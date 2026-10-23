@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule, combineReducers } from '@ngrx/store';
 import { BehaviorSubject, of } from 'rxjs';
 import { skip, switchMap, take } from 'rxjs/operators';
-import { UserService } from '../../../app/services/user/user.service';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
 import { WAVerificationService } from '../../../work-allocation/services';
@@ -99,7 +99,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
           useValue: storeMock,
         },
         {
-          provide: UserService,
+          provide: CurrentUserService,
           useValue: {
             getUserDetails: () =>
               of({
@@ -687,7 +687,7 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
           useValue: storeMock,
         },
         {
-          provide: UserService,
+          provide: CurrentUserService,
           useValue: {
             getUserDetails: () => of({}),
           },

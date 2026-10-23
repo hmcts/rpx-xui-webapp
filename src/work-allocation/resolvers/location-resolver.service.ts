@@ -1,8 +1,9 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocationModel } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import moment from 'moment';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs';
@@ -59,12 +60,12 @@ export class LocationResolver {
 
   private userDetails(): Observable<UserDetails> {
     const newBookingCreated = this.router.getCurrentNavigation()?.extras?.state?.newBooking === true;
-    return newBookingCreated ? this.updateAndGetUserDetails() : this.store.pipe(select(fromRoot.getUserDetails));
+    return newBookingCreated ? this.updateAndGetUserDetails() : CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails);
   }
 
   private updateAndGetUserDetails(): Observable<UserDetails> {
     this.store.dispatch(new fromRoot.LoadUserDetails(true));
-    return this.store.pipe(select(fromRoot.getUserDetails));
+    return CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails);
   }
 
   // Will call location service API with list of derived possible services to get locations by region

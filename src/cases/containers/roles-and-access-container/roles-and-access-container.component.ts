@@ -1,6 +1,6 @@
+import { CurrentUserService, CaseField, CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CaseField, CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { first, map, mergeMap, tap } from 'rxjs/operators';
@@ -104,7 +104,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
     /* istanbul ignore else*/
     if (jurisdictionField) {
       this.caseJurisdiction = jurisdictionField.value;
-      this.store.select(fromRoot.getUserDetails).subscribe((user) => this.setDisplayAllocateLink(user, this.caseJurisdiction));
+      CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails).subscribe((user) => this.setDisplayAllocateLink(user, this.caseJurisdiction));
     }
   }
 

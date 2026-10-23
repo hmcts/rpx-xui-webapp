@@ -1,3 +1,4 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
@@ -122,7 +123,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public loadAndListenForUserDetails() {
     this.store.dispatch(new fromRoot.LoadUserDetails(true));
-    const userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
+    const userDetails$ = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails);
     const envConfigAndUserDetails$ = combineLatest([this.environmentService.config$, userDetails$]);
     envConfigAndUserDetails$.subscribe((envConfigAndUserDetails) => {
       this.userDetailsHandler(envConfigAndUserDetails[0].launchDarklyClientId, envConfigAndUserDetails[1]);

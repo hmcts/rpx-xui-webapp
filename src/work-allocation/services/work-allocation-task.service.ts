@@ -1,11 +1,11 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
-import { UserInfo, UserRole } from '../../app/models';
+import { UserRole } from '../../app/models';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
@@ -90,12 +90,8 @@ export class WorkAllocationTaskService {
   }
 
   public getUsersAssignedTasks(): Observable<Task[]> {
-    const userInfoStr = sessionStorage.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return of(null);
-      }
+    const userInfo = CurrentUserService.readUserInfo(sessionStorage);
+    if (userInfo) {
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
       const userRole: UserRole = userRoleNames[0] || undefined;

@@ -218,6 +218,24 @@ describe('CaseViewerContainerComponent', () => {
   let debug: DebugElement;
   let store: MockStore;
 
+  const initialUserDetails = {
+    sessionTimeout: {
+      idleModalDisplayTime: 0,
+      totalIdleTime: 0,
+    },
+    canShareCases: true,
+    userInfo: {
+      id: '',
+      active: true,
+      email: 'juser4@mailinator.com',
+      forename: 'XUI test',
+      roles: roles,
+      uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+      surname: 'judge',
+    },
+    roleAssignmentInfo: [],
+  };
+
   const initialState: State = {
     routerReducer: null,
     appConfig: {
@@ -228,23 +246,7 @@ describe('CaseViewerContainerComponent', () => {
       termsAndConditions: null,
       isTermsAndConditionsFeatureEnabled: null,
       useIdleSessionTimeout: null,
-      userDetails: {
-        sessionTimeout: {
-          idleModalDisplayTime: 0,
-          totalIdleTime: 0,
-        },
-        canShareCases: true,
-        userInfo: {
-          id: '',
-          active: true,
-          email: 'juser4@mailinator.com',
-          forename: 'XUI test',
-          roles: roles,
-          uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge',
-        },
-        roleAssignmentInfo: [],
-      },
+      userDetailsVersion: 0,
       decorate16digitCaseReferenceSearchBoxInHeader: false,
     },
   };
@@ -282,7 +284,7 @@ describe('CaseViewerContainerComponent', () => {
     component = fixture.componentInstance;
     debug = fixture.debugElement;
     store = TestBed.inject(MockStore);
-    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
+    store.overrideSelector(fromRoot.getUserDetails, initialUserDetails);
     fixture.detectChanges();
   });
 
@@ -310,6 +312,24 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
   let store: MockStore;
 
+  const initialUserDetails = {
+    sessionTimeout: {
+      idleModalDisplayTime: 0,
+      totalIdleTime: 0,
+    },
+    canShareCases: true,
+    userInfo: {
+      id: '',
+      active: true,
+      email: 'juser4@mailinator.com',
+      forename: 'XUI test',
+      roles: rolesWithHearingRoles,
+      uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+      surname: 'judge',
+    },
+    roleAssignmentInfo: [],
+  };
+
   const initialState: State = {
     routerReducer: null,
     appConfig: {
@@ -320,23 +340,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
       termsAndConditions: null,
       isTermsAndConditionsFeatureEnabled: null,
       useIdleSessionTimeout: null,
-      userDetails: {
-        sessionTimeout: {
-          idleModalDisplayTime: 0,
-          totalIdleTime: 0,
-        },
-        canShareCases: true,
-        userInfo: {
-          id: '',
-          active: true,
-          email: 'juser4@mailinator.com',
-          forename: 'XUI test',
-          roles: rolesWithHearingRoles,
-          uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge',
-        },
-        roleAssignmentInfo: [],
-      },
+      userDetailsVersion: 0,
       decorate16digitCaseReferenceSearchBoxInHeader: false,
     },
   };
@@ -373,7 +377,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
     mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
+    store.overrideSelector(fromRoot.getUserDetails, initialUserDetails);
     component.appendedTabs$ = of([{ id: 'hearings', label: 'Hearings', fields: [], show_condition: null }]);
     fixture.detectChanges();
   });
@@ -388,6 +392,24 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
   let store = jasmine.createSpyObj('store', ['dispatch']);
 
+  const initialUserDetails = {
+    sessionTimeout: {
+      idleModalDisplayTime: 0,
+      totalIdleTime: 0,
+    },
+    canShareCases: true,
+    userInfo: {
+      id: '',
+      active: true,
+      email: 'juser4@mailinator.com',
+      forename: 'XUI test',
+      roles: [],
+      uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+      surname: 'judge',
+    },
+    roleAssignmentInfo: [],
+  };
+
   const initialState: State = {
     routerReducer: null,
     appConfig: {
@@ -398,23 +420,7 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
       termsAndConditions: null,
       isTermsAndConditionsFeatureEnabled: null,
       useIdleSessionTimeout: null,
-      userDetails: {
-        sessionTimeout: {
-          idleModalDisplayTime: 0,
-          totalIdleTime: 0,
-        },
-        canShareCases: true,
-        userInfo: {
-          id: '',
-          active: true,
-          email: 'juser4@mailinator.com',
-          forename: 'XUI test',
-          roles: [],
-          uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge',
-        },
-        roleAssignmentInfo: [],
-      },
+      userDetailsVersion: 0,
       decorate16digitCaseReferenceSearchBoxInHeader: false,
     },
   };
@@ -451,7 +457,7 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
     mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    const blanckUserDetails = { ...initialState.appConfig.userDetails, roles: [] };
+    const blanckUserDetails = { ...initialUserDetails, roles: [] };
     store.overrideSelector(fromRoot.getUserDetails, blanckUserDetails);
     fixture.detectChanges();
   });
@@ -468,6 +474,24 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
   let store: MockStore;
 
+  const initialUserDetails = {
+    sessionTimeout: {
+      idleModalDisplayTime: 0,
+      totalIdleTime: 0,
+    },
+    canShareCases: true,
+    userInfo: {
+      id: '',
+      active: true,
+      email: 'juser4@mailinator.com',
+      forename: 'XUI test',
+      roles: roles,
+      uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+      surname: 'judge',
+    },
+    roleAssignmentInfo: [],
+  };
+
   const initialState: State = {
     routerReducer: null,
     appConfig: {
@@ -478,23 +502,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
       termsAndConditions: null,
       isTermsAndConditionsFeatureEnabled: null,
       useIdleSessionTimeout: null,
-      userDetails: {
-        sessionTimeout: {
-          idleModalDisplayTime: 0,
-          totalIdleTime: 0,
-        },
-        canShareCases: true,
-        userInfo: {
-          id: '',
-          active: true,
-          email: 'juser4@mailinator.com',
-          forename: 'XUI test',
-          roles: roles,
-          uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge',
-        },
-        roleAssignmentInfo: [],
-      },
+      userDetailsVersion: 0,
       decorate16digitCaseReferenceSearchBoxInHeader: false,
     },
   };
@@ -531,7 +539,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
     mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
+    store.overrideSelector(fromRoot.getUserDetails, initialUserDetails);
     component.appendedTabs$ = of([]);
     fixture.detectChanges();
   });

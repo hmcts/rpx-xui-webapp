@@ -1,7 +1,7 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
-import { UserInfo, UserRole } from '../../../app/models';
+import { UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Location } from '../../interfaces/common';
@@ -65,13 +65,8 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   }
 
   public getSearchCaseRequestPagination(): SearchCaseRequest {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return;
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
       // Default to LegalOps if no role is found as search_by seems not to be used anyway
       const userRole: UserRole = userRoleNames[0] || UserRole.LegalOps;

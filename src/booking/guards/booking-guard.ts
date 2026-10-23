@@ -1,6 +1,7 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, map, take, tap } from 'rxjs/operators';
 import { UserDetails } from '../../app/models';
@@ -17,7 +18,7 @@ export class BookingGuard {
   ) {}
 
   public canActivate(): Observable<boolean> {
-    const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
+    const userDetails$ = CurrentUserService.selectUserDetails(this.store, fromActions.getUserDetails);
 
     return userDetails$.pipe(
       // ignore falsy/partial emissions

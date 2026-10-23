@@ -1,23 +1,12 @@
+import { CurrentUserService, CaseState, CaseType, DefinitionsService, Jurisdiction, PaginationMetadata, SearchResultComponent, SearchResultView, SearchResultViewItem, WindowService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {
-  CaseState,
-  CaseType,
-  DefinitionsService,
-  Jurisdiction,
-  PaginationMetadata,
-  SearchResultComponent,
-  SearchResultView,
-  SearchResultViewItem,
-  WindowService,
-} from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
 import { filter, mergeMap, take, takeUntil } from 'rxjs/operators';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../../organisation/models';
 import * as fromStore from '../../../organisation/store';
@@ -158,7 +147,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.triggerQuery();
 
-    this.userDetails = this.store.pipe(select(fromRoot.getUserDetails)) as unknown as Observable<any>;
+    this.userDetails = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails) as unknown as Observable<any>;
     this.pIsCaseShareVisible$ = combineLatest([this.userDetails, this.shareableJurisdictions$, this.jurisdiction$]).pipe(
       mergeMap((project) => {
         this.cd.detectChanges();

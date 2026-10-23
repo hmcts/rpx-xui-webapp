@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { WAVerificationService } from '../../../work-allocation/services';
@@ -29,8 +30,7 @@ export class NavigationAccessGuard {
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const { accessDeniedRedirectUrl, requiredNavigationHref } = route.data as NavigationAccessGuardData;
 
-    return this.store.pipe(
-      select(fromAppStore.getUserDetails),
+    return CurrentUserService.selectUserDetails(this.store, fromAppStore.getUserDetails).pipe(
       filter((userDetails: UserDetails) => !!userDetails?.userInfo),
       switchMap((userDetails) => {
         const userRoles = userDetails.userInfo.roles ?? [];

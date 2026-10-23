@@ -1,7 +1,7 @@
+import { CurrentUserService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { NavigationExtras } from '@angular/router';
 import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { HMCTSServiceDetails, UserInfo } from '../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { HMCTSServiceDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
@@ -272,12 +272,8 @@ export function getDestinationUrl(url: string): string {
 }
 
 export function getCurrentUserRoleCategories(sessionStorageService: SessionStorageService): RoleCategory[] {
-  const userInfoStr = sessionStorageService.getItem('userDetails');
-  if (userInfoStr) {
-    const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-    if (!userInfo) {
-      return [];
-    }
+  const userInfo = CurrentUserService.readUserInfo(sessionStorageService);
+  if (userInfo) {
     return (userInfo.roleCategories as RoleCategory[]) || [];
   }
   return [];

@@ -43,19 +43,16 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
       const userRole: UserRole = userRoleNames[0] || undefined;
 
-      // get 'locations' key from the current browser session
-      const locationsFromSessionStorage = safeJsonParse<any>(
-        this.sessionStorageService.getItem(MyWorkFilterComponent.FILTER_NAME),
-        null
-      );
+      // Read saved selections through the filter ownership check.
+      const locationsFromLS = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
 
-      // set service and location filters using data from session storage
+      // set service and location filters using data from local storage
       let serviceFilters = [];
       let locationFilters = [];
       /* istanbul ignore else */
-      if (locationsFromSessionStorage?.fields) {
-        const services = locationsFromSessionStorage.fields.find((field) => field.name === 'services');
-        const locations = locationsFromSessionStorage.fields.find((field) => field.name === 'locations');
+      if (locationsFromLS?.fields) {
+        const services = locationsFromLS.fields.find((field) => field.name === 'services');
+        const locations = locationsFromLS.fields.find((field) => field.name === 'locations');
         if (services?.hasOwnProperty('value')) {
           serviceFilters = services.value;
         }

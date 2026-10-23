@@ -30,7 +30,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public userRoleNames: UserRole[] = [];
 
   public fieldsConfig: FilterConfig = {
-    persistence: 'session',
+    persistence: 'local',
     enableDisabledButton: true,
     id: TaskManagerFilterComponent.FILTER_NAME,
     fields: [],

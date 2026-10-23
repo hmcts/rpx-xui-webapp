@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { expect, test } from '../../../E2E/fixtures';
 import { myCasesRoutePattern, setupManageTasksBaseRoutes } from '../../helpers';
 import {
@@ -156,6 +157,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     const expectedUserId = await setupWorkFiltersUser(page);
 
     await setupManageTasksBaseRoutes(page, {
+      user: { userId: expectedUserId },
       supportedJurisdictions: workFiltersSupportedJurisdictions,
       supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
       taskListHandler: async (route) => {
@@ -201,6 +203,9 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     const initialRequestCount = taskRequests.length;
     await taskListPage.applyCurrentFilters();
     await expect.poll(() => taskRequests.length).toBe(initialRequestCount + 1);
+    const savedFilter = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? 'null'), MY_WORK_FILTER_STORAGE_KEY);
+    expect(savedFilter.ownerHash).toBe(createHash('sha256').update(`exui-filter-owner:${expectedUserId}`).digest('hex'));
+    expect(savedFilter).not.toHaveProperty('idamId');
 
     const latestRequest = taskRequests.at(-1);
     expect(latestRequest?.searchRequest?.search_parameters).toEqual(
@@ -221,7 +226,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     expect(table[0]['Task']).toBe(filteredTask.task_title);
   });
 
-  test('My cases request honours persisted service and location filters from session storage', async ({
+  test('My cases restores owned service and location filters from local storage after reload', async ({
     taskListPage,
     page,
     tableUtils,
@@ -239,11 +244,16 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     const expectedUserId = await setupWorkFiltersUser(page);
 
     await page.addInitScript(
-      ({ myWorkFilterStorageKey }) => {
-        window.sessionStorage.setItem(
+      ({ myWorkFilterStorageKey, ownerHash }) => {
+        if (window.sessionStorage.getItem('work-filter-seeded')) {
+          return;
+        }
+        window.sessionStorage.setItem('work-filter-seeded', 'true');
+        window.localStorage.setItem(
           myWorkFilterStorageKey,
           JSON.stringify({
             id: myWorkFilterStorageKey,
+            ownerHash,
             fields: [
               { name: 'services', value: ['IA'] },
               { name: 'locations', value: [{ epimms_id: '765324' }] },
@@ -251,7 +261,10 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
           })
         );
       },
-      { myWorkFilterStorageKey: MY_WORK_FILTER_STORAGE_KEY }
+      {
+        myWorkFilterStorageKey: MY_WORK_FILTER_STORAGE_KEY,
+        ownerHash: createHash('sha256').update(`exui-filter-owner:${expectedUserId}`).digest('hex'),
+      }
     );
 
     await setupManageTasksBaseRoutes(page, {
@@ -299,6 +312,16 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       ])
     );
 
+    myCasesRequests.length = 0;
+    await page.reload();
+    await expect.poll(() => myCasesRequests.some((request) =>
+      hasExactSearchParameterValues(request, 'services', ['IA']) &&
+      hasExactSearchParameterValues(request, 'locations', ['765324'])
+    )).toBe(true);
+    const savedFilter = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? 'null'), MY_WORK_FILTER_STORAGE_KEY);
+    expect(savedFilter.ownerHash).toBe(createHash('sha256').update(`exui-filter-owner:${expectedUserId}`).digest('hex'));
+    expect(savedFilter).not.toHaveProperty('idamId');
+
     const persistedServiceFilter = await taskListPage.waitForServiceFilterOptionVisible(expectedIaServiceLabel);
     await expect(persistedServiceFilter).toBeChecked();
     await expect(await taskListPage.waitForServiceFilterOptionVisible('Civil')).not.toBeChecked();
@@ -323,6 +346,52 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         summary: 'Showing 1 results',
       });
   });
+
+  for (const previousOwner of ['another-user', 'missing-owner']) {
+    test(`My cases rejects a local filter from ${previousOwner}`, async ({ taskListPage, page }) => {
+      const currentUserId = await setupWorkFiltersUser(page);
+      await setupManageTasksBaseRoutes(page, {
+        user: { userId: currentUserId },
+        taskListResponse: buildTaskListMock(6, workFiltersUserId, myActionsList),
+        supportedJurisdictions: workFiltersSupportedJurisdictions,
+        supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
+      });
+      const requests: SearchRequestPayload[] = [];
+      await page.route(myCasesRoutePattern, async (route) => {
+        requests.push(route.request().postDataJSON() as SearchRequestPayload);
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(buildMyCasesMock()) });
+      });
+      await page.addInitScript(({ key, ownerHash }) => {
+        localStorage.setItem(key, JSON.stringify({
+          id: key,
+          ownerHash,
+          fields: [
+            { name: 'services', value: ['IA'] },
+            { name: 'locations', value: [{ epimms_id: '231596' }] },
+          ],
+        }));
+      }, {
+        key: MY_WORK_FILTER_STORAGE_KEY,
+        ownerHash: previousOwner === 'missing-owner'
+          ? undefined
+          : createHash('sha256').update('exui-filter-owner:another-user').digest('hex'),
+      });
+
+      await taskListPage.gotoMyCases();
+      await expect.poll(() => requests.length).toBeGreaterThan(0);
+      await expect(await taskListPage.waitForServiceFilterOptionVisible('Civil')).toBeChecked();
+      expect(requests.some((request) =>
+        hasExactSearchParameterValues(request, 'services', ['IA']) &&
+        hasExactSearchParameterValues(request, 'locations', ['231596'])
+      )).toBe(false);
+      await expect.poll(() => page.evaluate((key) => {
+        const setting = JSON.parse(localStorage.getItem(key) ?? 'null');
+        return setting?.ownerHash;
+      }, MY_WORK_FILTER_STORAGE_KEY)).toBe(
+        createHash('sha256').update(`exui-filter-owner:${currentUserId}`).digest('hex')
+      );
+    });
+  }
 
   test('My tasks restores default base locations using organisation service codes', async ({ taskListPage, page }) => {
     const taskListResponse = buildTaskListMock(6, workFiltersUserId, myActionsList);

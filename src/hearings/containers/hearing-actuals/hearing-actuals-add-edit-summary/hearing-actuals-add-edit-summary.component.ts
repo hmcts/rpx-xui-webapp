@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { HearingActualAddEditSummaryEnum, HearingResult } from '../../../models/hearings.enum';
+import { HearingActualAddEditSummaryEnum, HearingResult, HMCStatus } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
@@ -37,7 +37,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   public onSubmitHearingDetails(): void {
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
       const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-      this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary'], {
+      void this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary'], {
         state: { caseId: navState?.caseId },
       });
     }
@@ -153,7 +153,34 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public onBack(): void {
+    const summaryRoute = this.getFinalisedHearingSummaryRoute();
+    if (summaryRoute) {
+      void this.router.navigate(['/', 'hearings', 'view', summaryRoute, this.id], {
+        state: {
+          caseRef: this.hearingActualsCaseRef,
+          returnToCaseHearings: true,
+          showEditButton: true,
+        },
+      });
+      return;
+    }
     this.location.back();
+  }
+
+  private getFinalisedHearingSummaryRoute(): string | null {
+    if (!this.isFinalisedEditMode) {
+      return null;
+    }
+    switch (this.hearingActualsMainModel?.hmcStatus) {
+      case HMCStatus.CANCELLED:
+        return 'hearing-cancelled-summary';
+      case HMCStatus.COMPLETED:
+        return 'hearing-completed-summary';
+      case HMCStatus.ADJOURNED:
+        return 'hearing-adjourned-summary';
+      default:
+        return null;
+    }
   }
 
   public haveParticipantsBeenAdded(hearingDay: ActualHearingDayModel): boolean {

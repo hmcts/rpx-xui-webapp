@@ -113,6 +113,20 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(root.querySelector('meta[name="viewport"]').getAttribute('content')).toBe('width=device-width, initial-scale=1');
   });
 
+  test('adds the fluid presentation to report HTML without a body and remains idempotent', () => {
+    const html = '<html><head><title>API report</title></head><main id="report-content">Report content</main></html>';
+    const once = enhancerTest.enhanceDashboardHtml(html, [], []);
+    const twice = enhancerTest.enhanceDashboardHtml(once, [], []);
+    const root = parse(twice);
+    const body = root.querySelector('body');
+
+    expect(body).not.toBeNull();
+    expect(body.getAttribute('id')).toBe('body-content');
+    expect(body.querySelector('#report-content').text).toBe('Report content');
+    expect(body.querySelectorAll('#webapp-report-ui')).toHaveLength(1);
+    expect(root.querySelectorAll('#webapp-report-theme')).toHaveLength(1);
+  });
+
   test('derives feature names from Playwright file paths', () => {
     expect(
       deriveFeatureName(

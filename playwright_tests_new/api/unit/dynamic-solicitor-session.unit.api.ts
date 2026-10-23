@@ -1,8 +1,13 @@
 import { expect, test } from '@playwright/test';
+import path from 'node:path';
 
 import { __test__ as dynamicSessionTest } from '../../E2E/utils/test-setup/dynamicSolicitorSession.js';
 import { DynamicProvisioningError } from '../../E2E/utils/test-setup/dynamicProvisioningFlow.js';
 import { TEST_APP_BASE_URL } from './testAppUrls.js';
+import { __test__ as sessionCaptureTest, loadSessionCookies, type LoadedSession } from '../../common/sessionCapture.js';
+import { resolveSessionStorageKey } from '../../common/sessionIdentity.js';
+import { storageStateFingerprint } from '../../common/sessionStorageState.js';
+import { createSessionCacheHarness, syntheticSessionIdentity, syntheticSessionState } from './session-cache.mock.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -20,15 +25,6 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           forename: 'Dynamic',
           surname: 'User',
           roleNames: ['caseworker'],
-          organisationAssignment: {
-            status: 201,
-            organisationId: 'test-org',
-            userIdentifier: 'user-123',
-            roles: ['caseworker'],
-            mode: 'external',
-            requestedMode: 'auto',
-            attemptedModes: ['external'],
-          },
         },
         sessionIdentity: {
           userIdentifier: 'SOLICITOR',
@@ -88,117 +84,141 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
     expect(attachedBodies[attachedBodies.length - 1]).toContain('"ready":true');
   });
 
-  test('waitForExuiUserPropagation forces one session recapture after unauthorized user details and then succeeds', async () => {
-    const attachedBodies: string[] = [];
-    const seenSessionCookieValues: string[] = [];
-    let attempt = 0;
-    let recaptureCount = 0;
-    const staleSession = {
-      email: 'test@example.com',
-      cookies: [{ name: 'session', value: 'stale' }] as never,
-      storageFile: '/tmp/stale-storage.json',
-      storageStateFingerprint: 'stale-session-fingerprint',
-    };
-    let rejectedSessionSeen: typeof staleSession | undefined;
+  for (const newerReplacement of [false, true]) {
+    test(`waitForExuiUserPropagation ${newerReplacement ? 'preserves a newer replacement' : 'recaptures the rejected state'} after unauthorized user details`, async () => {
+      const attachedBodies: string[] = [];
+      const seenSessionCookieValues: string[] = [];
+      let attempt = 0;
+      let recaptureCount = 0;
+      let loginCount = 0;
+      const loadedSessions: LoadedSession[] = [];
+      const harness = createSessionCacheHarness();
+      const sessionIdentity = syntheticSessionIdentity('dynamic@example.test', 'shared-session', 'EMPLOYMENT_DYNAMIC_SOLICITOR');
+      const otherIdentity = syntheticSessionIdentity('other@example.test', 'shared-session', 'OTHER_ACCOUNT');
+      const storageFile = path.join(process.cwd(), '.sessions', `${resolveSessionStorageKey(sessionIdentity)}.storage.json`);
+      const otherFile = path.join(process.cwd(), '.sessions', `${resolveSessionStorageKey(otherIdentity)}.storage.json`);
+      const lockFile = path.join(process.cwd(), '.sessions', `${resolveSessionStorageKey(sessionIdentity)}.lock`);
+      const otherState = syntheticSessionState('b-v1');
+      harness.files.set(storageFile, syntheticSessionState('a-v1'));
+      harness.files.set(otherFile, otherState);
 
-    await dynamicSessionTest.waitForExuiUserPropagation(
-      {
-        alias: 'EMPLOYMENT_DYNAMIC_SOLICITOR',
-        user: {
-          email: 'dynamic@example.test',
-          password: 'secret',
-          forename: 'Dynamic',
-          surname: 'User',
-          roleNames: ['caseworker', 'caseworker-employment', 'caseworker-employment-legalrep-solicitor', 'pui-case-manager'],
-          organisationAssignment: {
-            status: 201,
-            organisationId: 'test-org',
-            userIdentifier: 'user-123',
-            roles: ['caseworker', 'caseworker-employment', 'caseworker-employment-legalrep-solicitor', 'pui-case-manager'],
-            mode: 'external',
-            requestedMode: 'auto',
-            attemptedModes: ['external'],
-          },
-        },
-        sessionIdentity: {
-          userIdentifier: 'EMPLOYMENT_DYNAMIC_SOLICITOR',
-          email: 'dynamic@example.test',
-          password: 'secret',
-          sessionKey: 'dynamic-employment_dynamic_solicitor-user-123',
-        },
-        roleContext: {
-          jurisdiction: 'employment',
-          testType: 'case-create',
-        },
-        testInfo: {
-          attach: async (_name: string, payload: { body: string | Buffer }) => {
-            attachedBodies.push(String(payload.body));
-          },
-        } as never,
-      },
-      {
-        resolveTimeoutMs: () => 5_000,
-        resolvePollIntervalMs: () => 1,
-        resolveBaseUrl: () => TEST_APP_BASE_URL,
-        ensureSessionCookies: async () =>
-          recaptureCount === 0
-            ? staleSession
-            : {
-                email: 'test@example.com',
-                cookies: [{ name: 'session', value: 'fresh' }] as never,
-                storageFile: '/tmp/fresh-storage.json',
-                storageStateFingerprint: 'fresh-session-fingerprint',
+      try {
+        await dynamicSessionTest.waitForExuiUserPropagation(
+          {
+            alias: 'EMPLOYMENT_DYNAMIC_SOLICITOR',
+            user: {
+              email: 'dynamic@example.test',
+              password: 'secret',
+              forename: 'Dynamic',
+              surname: 'User',
+              roleNames: ['caseworker', 'caseworker-employment', 'caseworker-employment-legalrep-solicitor', 'pui-case-manager'],
+            },
+            sessionIdentity,
+            roleContext: {
+              jurisdiction: 'employment',
+              testType: 'case-create',
+            },
+            testInfo: {
+              attach: async (_name: string, payload: { body: string | Buffer }) => {
+                attachedBodies.push(String(payload.body));
               },
-        recaptureSession: async (_sessionIdentity, rejectedSession) => {
-          rejectedSessionSeen = rejectedSession as typeof staleSession;
-          recaptureCount += 1;
-        },
-        createApiContext: async ({ storageState }) => {
-          attempt += 1;
-          const sessionCookieValue = storageState.cookies.find((cookie) => cookie.name === 'session')?.value;
-          if (!sessionCookieValue) {
-            throw new Error('expected loaded session cookie snapshot');
-          }
-          seenSessionCookieValues.push(sessionCookieValue);
-          return {
-            get: async (url: string) => {
-              if (url === '/api/user/details') {
-                if (sessionCookieValue === 'stale') {
+            } as never,
+          },
+          {
+            resolveTimeoutMs: () => 5_000,
+            resolvePollIntervalMs: () => 1,
+            resolveBaseUrl: () => TEST_APP_BASE_URL,
+            ensureSessionCookies: async (identity) => {
+              expect(identity).toBe(sessionIdentity);
+              const loaded = loadSessionCookies(identity);
+              loadedSessions.push(loaded);
+              return loaded;
+            },
+            recaptureSession: async (identity, rejectedSession) => {
+              expect(identity).toBe(sessionIdentity);
+              expect(rejectedSession).toBe(loadedSessions[0]);
+              expect(rejectedSession.storageFile).toBe(storageFile);
+              recaptureCount += 1;
+              if (newerReplacement) harness.files.set(storageFile, syntheticSessionState('a-v2'));
+              await sessionCaptureTest.sessionCaptureWith([identity], {
+                ...harness.captureDeps,
+                force: true,
+                expectedStaleSession: rejectedSession,
+                loginAndPersistSession: async ({ sessionPath }) => {
+                  expect(harness.files.has(sessionPath)).toBe(false);
+                  loginCount += 1;
+                  harness.captureDeps.fs!.writeFileSync(sessionPath, syntheticSessionState('a-v2'));
+                },
+              });
+            },
+            createApiContext: async ({ storageState }) => {
+              attempt += 1;
+              const sessionCookieValue = storageState.cookies.find((cookie) => cookie.name === '__auth__')?.value;
+              if (!sessionCookieValue) {
+                throw new Error('expected loaded session cookie snapshot');
+              }
+              seenSessionCookieValues.push(sessionCookieValue);
+              return {
+                get: async (url: string) => {
+                  if (url === '/api/user/details') {
+                    if (sessionCookieValue === 'a-v1') {
+                      return {
+                        status: () => 401,
+                        json: async () => ({}),
+                        text: async () => '',
+                      };
+                    }
+                    return {
+                      status: () => 200,
+                      json: async () => ({ userInfo: { uid: 'user-123' } }),
+                      text: async () => '',
+                    };
+                  }
                   return {
-                    status: () => 401,
-                    json: async () => ({}),
+                    status: () => 200,
+                    json: async () => [{ id: 'employment' }],
                     text: async () => '',
                   };
-                }
-                return {
-                  status: () => 200,
-                  json: async () => ({ userInfo: { uid: 'user-123' } }),
-                  text: async () => '',
-                };
-              }
-              return {
-                status: () => 200,
-                json: async () => [{ id: 'employment' }],
-                text: async () => '',
-              };
+                },
+                dispose: async () => undefined,
+              } as never;
             },
-            dispose: async () => undefined,
-          } as never;
-        },
-        attachAttempts: async (_info, _alias, attempts) => {
-          attachedBodies.push(JSON.stringify(attempts));
-        },
-        sleep: async () => undefined,
-        info: () => undefined,
-      }
-    );
+            attachAttempts: async (_info, _alias, attempts) => {
+              attachedBodies.push(JSON.stringify(attempts));
+            },
+            sleep: async () => undefined,
+            info: () => undefined,
+          }
+        );
 
-    expect(recaptureCount).toBe(1);
-    expect(rejectedSessionSeen).toBe(staleSession);
-    expect(attempt).toBe(2);
-    expect(seenSessionCookieValues).toEqual(['stale', 'fresh']);
-    expect(attachedBodies[attachedBodies.length - 1]).toContain('"userDetailsStatus":200');
-  });
+        expect(recaptureCount).toBe(1);
+        expect(attempt).toBe(2);
+        expect(seenSessionCookieValues).toEqual(['a-v1', 'a-v2']);
+        expect(loadedSessions.map((session) => session.storageFile)).toEqual([storageFile, storageFile]);
+        expect(loadedSessions.map((session) => session.storageStateFingerprint)).toEqual([
+          storageStateFingerprint(syntheticSessionState('a-v1')),
+          storageStateFingerprint(syntheticSessionState('a-v2')),
+        ]);
+        expect(harness.files.get(otherFile)).toBe(otherState);
+        expect(loadSessionCookies(otherIdentity).cookies.map((cookie) => cookie.value)).toEqual(['b-v1', 'b-v1']);
+        expect(loginCount).toBe(newerReplacement ? 0 : 1);
+        expect(harness.events).toEqual([
+          { operation: 'write', path: lockFile },
+          { operation: 'lock', path: lockFile },
+          ...(newerReplacement
+            ? []
+            : [
+                { operation: 'delete', path: storageFile },
+                { operation: 'write', path: storageFile },
+              ]),
+          { operation: 'release', path: lockFile },
+        ]);
+        expect(attachedBodies[attachedBodies.length - 1]).toContain('"userDetailsStatus":200');
+      } finally {
+        harness.dispose();
+      }
+    });
+  }
 
   test('provisionDynamicSolicitorForAliasFlow returns explicit session identity and runs readiness checks without global runtime mutation', async () => {
     const attachmentNames: string[] = [];

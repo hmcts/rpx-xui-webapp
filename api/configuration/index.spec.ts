@@ -33,7 +33,7 @@ describe('configuration', () => {
 
   it('should read the system user password directly from the environment when set', () => {
     process.env.SYSTEM_USER_PASSWORD = 'system-user-password-from-env';
-    const configGetStub = sandbox.stub(Object.getPrototypeOf(config), 'get').returns('system-user-password-from-config');
+    const configGetStub = sandbox.stub(config, 'get').returns('system-user-password-from-config');
 
     const value = getConfigValue('secrets.rpx.system-user-password');
 
@@ -43,7 +43,7 @@ describe('configuration', () => {
 
   it('should read the Pact broker password directly from the environment when set', () => {
     process.env.PACT_BROKER_PASSWORD = 'pact-broker-password-from-env';
-    const configGetStub = sandbox.stub(Object.getPrototypeOf(config), 'get').returns('pact-broker-password-from-config');
+    const configGetStub = sandbox.stub(config, 'get').returns('pact-broker-password-from-config');
 
     const value = getConfigValue('pact.brokerPassword');
 
@@ -53,7 +53,7 @@ describe('configuration', () => {
 
   it('should fall back to config for env-only password references when the environment is not set', () => {
     delete process.env.SYSTEM_USER_PASSWORD;
-    const configGetStub = sandbox.stub(Object.getPrototypeOf(config), 'get').returns('system-user-password-from-config');
+    const configGetStub = sandbox.stub(config, 'get').returns('system-user-password-from-config');
 
     const value = getConfigValue('secrets.rpx.system-user-password');
 
@@ -63,7 +63,7 @@ describe('configuration', () => {
 
   it('should continue to read normal references from config', () => {
     process.env.SYSTEM_USER_PASSWORD = 'system-user-password-from-env';
-    const configGetStub = sandbox.stub(Object.getPrototypeOf(config), 'get').returns('https://idam.example.test');
+    const configGetStub = sandbox.stub(config, 'get').returns('https://idam.example.test');
 
     const value = getConfigValue('services.idam.idamApiUrl');
 

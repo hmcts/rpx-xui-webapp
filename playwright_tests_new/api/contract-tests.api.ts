@@ -7,6 +7,7 @@ import { test, expect } from './fixtures';
 import { expectStatus, guardedRequest, StatusSets } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
+import { buildTaskSearchRequest } from './utils/work-allocation';
 import { z } from 'zod';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
@@ -47,10 +48,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
   }) => {
     const apiClient = await apiClientFor('waSolicitor');
     // Given: A task search request for MyTasks view
-    const searchRequest = {
-      view: 'MyTasks',
-      searchRequest: [],
-    };
+    const searchRequest = buildTaskSearchRequest('MyTasks', { states: ['assigned'] });
 
     // When: Searching for tasks
     const response = await apiClient.post('workallocation/task', {

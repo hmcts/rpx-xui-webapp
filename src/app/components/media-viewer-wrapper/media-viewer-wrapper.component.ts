@@ -36,7 +36,7 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     private readonly sessionStorageService: SessionStorageService,
     private readonly titleService: Title,
     private readonly route: ActivatedRoute
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     window.addEventListener('message', this.messageListener);

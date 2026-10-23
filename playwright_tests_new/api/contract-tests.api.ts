@@ -56,28 +56,24 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
       throwOnError: false,
     });
 
-    // Then: Response status is within expected range
-    expectStatus(response.status, [200, 401, 403, 500, 502]);
+    // Then: The contract endpoint succeeds and returns a valid TaskList
+    expectStatus(response.status, [200]);
+    expectContract(response.data, WorkAllocationSchemas.TaskList, {
+      context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
+    });
 
-    // And: Response structure matches TaskList contract when successful
-    if (response.status === 200) {
-      expectContract(response.data, WorkAllocationSchemas.TaskList, {
-        context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
-      });
+    // And: tasks array is present
+    const taskListData = response.data as { tasks: unknown[] };
+    expect(taskListData).toHaveProperty('tasks');
+    expect(Array.isArray(taskListData.tasks)).toBe(true);
 
-      // And: tasks array is present
-      const taskListData = response.data as { tasks: unknown[] };
-      expect(taskListData).toHaveProperty('tasks');
-      expect(Array.isArray(taskListData.tasks)).toBe(true);
-
-      // And: Each task has required fields
-      if (taskListData.tasks.length > 0) {
-        const firstTask = taskListData.tasks[0] as { id: unknown; task_state: unknown };
-        expect(firstTask).toHaveProperty('id');
-        expect(firstTask).toHaveProperty('task_state');
-        expect(typeof firstTask.id).toBe('string');
-        expect(typeof firstTask.task_state).toBe('string');
-      }
+    // And: Each task has required fields
+    if (taskListData.tasks.length > 0) {
+      const firstTask = taskListData.tasks[0] as { id: unknown; task_state: unknown };
+      expect(firstTask).toHaveProperty('id');
+      expect(firstTask).toHaveProperty('task_state');
+      expect(typeof firstTask.id).toBe('string');
+      expect(typeof firstTask.task_state).toBe('string');
     }
   });
 

@@ -12,7 +12,7 @@ import { HEARINGS_OPERATIONS, HearingsOperation } from './hearings-exception-tel
 
 export type HearingsJourneyType =
   'browse' | 'request' | 'amend' | 'view' | 'cancel' | 'link' | 'manage-links' | 'actuals' | 'error';
-export type HearingsTelemetryAction = 'continue' | 'back' | 'change' | 'submit' | 'cancel';
+export type HearingsTelemetryAction = 'continue' | 'back' | 'change' | 'submit' | 'cancel' | 'retry';
 export type HearingsValidationCategory = 'form' | 'case-context-mismatch';
 export type HearingsJourneyEndReason =
   'confirmation' | 'left-hearings' | 'context-changed' | 'returned-to-list' | 'pagehide' | 'destroyed';
@@ -99,7 +99,7 @@ const STEP_TYPES = new Map<string, HearingsJourneyType>([
   ['/cases/case-details/:jurisdiction/:caseType/:cid/hearings', 'browse'],
 ]);
 
-const ACTIONS: readonly HearingsTelemetryAction[] = ['continue', 'back', 'change', 'submit', 'cancel'];
+const ACTIONS: readonly HearingsTelemetryAction[] = ['continue', 'back', 'change', 'submit', 'cancel', 'retry'];
 
 @Injectable({ providedIn: 'root' })
 export class HearingsTelemetryService {
@@ -233,6 +233,16 @@ export class HearingsTelemetryService {
     this.monitoring.logEvent('Hearings.Action', { ...this.properties(), action }, { actionCount: this.journey.actionCount });
   }
 
+  /** Ignore a late success if the user has already left or switched journeys. */
+  public captureCompletion(): () => void {
+    const journeyId = this.journey?.journeyId;
+    return () => {
+      if (journeyId && this.journey?.journeyId === journeyId) {
+        this.endJourney('confirmation');
+      }
+    };
+  }
+
   public recordValidationFailure(category: HearingsValidationCategory, errorCount = 1): void {
     if (
       !this.journey ||
@@ -242,7 +252,9 @@ export class HearingsTelemetryService {
     ) {
       return;
     }
-    this.monitoring.logEvent('Hearings.ValidationFailed', { ...this.properties(), category }, { errorCount });
+    // Closed identifiers, never a control value, validation message or dynamic field ID.
+    const validationId = category === 'form' ? 'form-invalid' : 'case-context-mismatch';
+    this.monitoring.logEvent('Hearings.ValidationFailed', { ...this.properties(), category, validationId }, { errorCount });
   }
 
   public captureException(
@@ -305,16 +317,23 @@ export class HearingsTelemetryService {
     const journey = this.journey;
     const properties = this.properties();
     this.journey = undefined;
+    const endProperties = {
+      ...properties,
+      page: endPage && STEP_TYPES.has(endPage) ? endPage : journey.currentStep,
+      startPage: journey.startPage,
+      endReason: reason,
+    };
+    const measurements = {
+      durationMs: Math.max(0, now - journey.enteredAt),
+      pageCount: journey.pageCount,
+      actionCount: journey.actionCount,
+    };
     this.monitoring.logEvent(
-      'Hearings.JourneyDuration',
-      {
-        ...properties,
-        page: endPage && STEP_TYPES.has(endPage) ? endPage : journey.currentStep,
-        startPage: journey.startPage,
-        endReason: reason,
-      },
-      { durationMs: Math.max(0, now - journey.enteredAt), pageCount: journey.pageCount, actionCount: journey.actionCount }
+      reason === 'confirmation' ? 'Hearings.JourneyCompleted' : 'Hearings.JourneyAbandoned',
+      endProperties,
+      measurements
     );
+    this.monitoring.logEvent('Hearings.JourneyDuration', endProperties, measurements);
   }
 
   private properties(): Record<string, string> {

@@ -43,6 +43,7 @@ describe('Hearings permitted telemetry identifiers', () => {
       'Hearings.JourneyStarted',
       'Hearings.Action',
       'Hearings.ValidationFailed',
+      'Hearings.JourneyAbandoned',
       'Hearings.JourneyDuration',
     ]);
     monitoring.logEvent.calls.allArgs().forEach(([, properties]) => {

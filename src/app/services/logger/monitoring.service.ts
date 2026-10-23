@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewTelemetry } from '@microsoft/applicationinsights-web';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import type { IConfig, IEventTelemetry, IPageViewTelemetry } from '@microsoft/applicationinsights-web';
 import { defer, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, take } from 'rxjs/operators';
 import { sanitizeHearingsException } from '../../../hearings/services/hearings-exception-telemetry';
@@ -8,6 +9,7 @@ import { sanitizeHearingsException } from '../../../hearings/services/hearings-e
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number);
   logEvent(name: string, properties?: any, measurements?: any);
+  logMetric(name: string, value: number, properties: Record<string, string>): void;
   logException(exception: Error, properties?: Record<string, string | number>);
 }
 
@@ -79,6 +81,10 @@ export class MonitoringService implements IMonitoringService {
     this.send(() => {
       this.appInsights.trackEvent(eventTelemetry);
     });
+  }
+
+  public logMetric(name: string, value: number, properties: Record<string, string>): void {
+    this.send(() => this.appInsights.trackMetric({ name, average: value, sampleCount: 1 }, properties));
   }
 
   public logException(exception: Error, properties?: Record<string, string | number>) {
@@ -156,7 +162,10 @@ export class MonitoringService implements IMonitoringService {
                 item.ext.trace.name = item.baseData.uri;
               }
               item.baseData.refUri = '';
-            } else if (item.baseType === 'EventData' && item.baseData?.name?.startsWith('Hearings.')) {
+            } else if (
+              (item.baseType === 'EventData' || item.baseType === 'MetricData') &&
+              (item.baseData?.name?.startsWith('Hearings.') || item.baseData?.metrics?.[0]?.name?.startsWith('Hearings.'))
+            ) {
               if (item.ext?.trace) {
                 item.ext.trace.name = item.baseData.properties?.page || 'Hearings';
               }

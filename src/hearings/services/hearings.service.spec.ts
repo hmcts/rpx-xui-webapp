@@ -14,7 +14,12 @@ import { HearingsTelemetryService, HearingsTelemetryAction } from './hearings-te
 describe('HearingsService', () => {
   let telemetry: jasmine.SpyObj<HearingsTelemetryService>;
   beforeEach(() => {
-    telemetry = jasmine.createSpyObj('HearingsTelemetryService', ['recordAction', 'recordValidationFailure', 'captureException']);
+    telemetry = jasmine.createSpyObj('HearingsTelemetryService', [
+      'recordAction',
+      'recordValidationFailure',
+      'captureException',
+      'captureCompletion',
+    ]);
     telemetry.captureException.and.returnValue(() => {});
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
@@ -30,6 +35,42 @@ describe('HearingsService', () => {
   it('should be created', inject([HearingsService], (service: HearingsService) => {
     expect(service).toBeTruthy();
   }));
+
+  it('records cancellation completion on success without changing the API response', () => {
+    const complete = jasmine.createSpy('complete');
+    telemetry.captureCompletion.and.returnValue(complete);
+    const received = jasmine.createSpy('received');
+    TestBed.inject(HearingsService).cancelHearingRequest('hearing-a', 'case-a', []).subscribe(received);
+    expect(complete).not.toHaveBeenCalled();
+    const controller = TestBed.inject(HttpTestingController);
+    const request = controller.expectOne((req) => req.url === 'api/hearings/cancelHearings');
+    expect(request.request.method).toBe('DELETE');
+    expect(request.request.body).toEqual({ cancellationReasonCodes: [] });
+    const response = { response: 'unchanged' };
+    request.flush(response);
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect(received).toHaveBeenCalledOnceWith(response);
+    controller.verify();
+  });
+
+  it('does not complete a failed cancellation, and reporting failure never replaces success', () => {
+    const complete = jasmine.createSpy('complete').and.throwError('Telemetry unavailable');
+    telemetry.captureCompletion.and.returnValue(complete);
+    const service = TestBed.inject(HearingsService);
+    const controller = TestBed.inject(HttpTestingController);
+    const error = jasmine.createSpy('error');
+    service.cancelHearingRequest('hearing-a', 'case-a', []).subscribe({ error });
+    controller
+      .expectOne((req) => req.url === 'api/hearings/cancelHearings')
+      .flush({}, { status: 503, statusText: 'Unavailable' });
+    expect(complete).not.toHaveBeenCalled();
+    expect(error).toHaveBeenCalled();
+    const next = jasmine.createSpy('next');
+    service.cancelHearingRequest('hearing-a', 'case-a', []).subscribe(next);
+    controller.expectOne((req) => req.url === 'api/hearings/cancelHearings').flush({});
+    expect(next).toHaveBeenCalledOnceWith({});
+    controller.verify();
+  });
 
   [
     [ACTION.BACK, 'back'],

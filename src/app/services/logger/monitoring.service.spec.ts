@@ -19,6 +19,7 @@ describe('Monitoring service', () => {
       'trackEvent',
       'trackPageView',
       'trackException',
+      'trackMetric',
     ]);
     service = new MonitoringService(http);
     createAppInsights = spyOn<any>(service, 'createAppInsights').and.returnValue(appInsights);
@@ -28,6 +29,15 @@ describe('Monitoring service', () => {
     expect(service).toBeTruthy();
     expect(http.get).not.toHaveBeenCalled();
     expect(createAppInsights).not.toHaveBeenCalled();
+  });
+
+  it('records page duration as a native metric without emitting another page view', () => {
+    service.logMetric('Hearings.PageDuration', 2500, { page: '/hearings/request', pageVisitId: 'anonymous-1' });
+    expect(appInsights.trackMetric).toHaveBeenCalledOnceWith(
+      { name: 'Hearings.PageDuration', average: 2500, sampleCount: 1 },
+      { page: '/hearings/request', pageVisitId: 'anonymous-1' }
+    );
+    expect(appInsights.trackPageView).not.toHaveBeenCalled();
   });
 
   it('should capture native operation IDs without the SDK operation name or URL', () => {

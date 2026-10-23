@@ -12,6 +12,41 @@ describe('Hearings telemetry service', () => {
     service = new HearingsTelemetryService(monitoring, window);
   });
 
+  it('records an explicit retry with the same journey and increments its action count', () => {
+    const journey = service.enterStep('/cases/case-details/:cid/hearings', { caseId: 'case-a' }, 0);
+    service.recordAction('retry');
+    expect(monitoring.logEvent.calls.mostRecent().args).toEqual([
+      'Hearings.Action',
+      jasmine.objectContaining({ action: 'retry', journeyId: journey.journeyId }),
+      { actionCount: 1 },
+    ]);
+  });
+
+  it('emits one completion or abandonment event alongside the backward-compatible duration event', () => {
+    service.enterStep('/hearings/request', {}, 0);
+    service.endJourney('confirmation', 100);
+    service.endJourney('destroyed', 200);
+    expect(monitoring.logEvent.calls.allArgs().map(([name]) => name)).toEqual([
+      'Hearings.JourneyStarted',
+      'Hearings.JourneyCompleted',
+      'Hearings.JourneyDuration',
+    ]);
+    service.enterStep('/hearings/request', {}, 300);
+    service.endJourney('left-hearings', 500);
+    expect(monitoring.logEvent.calls.allArgs().filter(([name]) => name === 'Hearings.JourneyAbandoned').length).toBe(1);
+  });
+
+  it('ignores a cancellation success that arrives after switching to another journey', () => {
+    service.enterStep('/hearings/cancel/:hearingId', { hearingId: 'hearing-a' }, 0);
+    const complete = service.captureCompletion();
+    service.enterStep('/hearings/cancel/:hearingId', { hearingId: 'hearing-b' }, 10);
+    complete();
+    expect(service.currentJourney).not.toBeNull();
+    expect(monitoring.logEvent.calls.allArgs().filter(([name]) => name === 'Hearings.JourneyCompleted').length).toBe(0);
+    service.captureCompletion()();
+    expect(service.currentJourney).toBeNull();
+  });
+
   it('prepares direct-entry resolver correlation without recording an unvisited page', () => {
     service.prepareNavigation('/hearings/cancel/:hearingId', { hearingId: 'private-hearing' });
     const requestId = service.requestJourneyId;
@@ -159,7 +194,7 @@ describe('Hearings telemetry service', () => {
     expect(service.currentJourney).toBeNull();
     service.recordAction('continue');
     service.endJourney('destroyed', 7000);
-    expect(monitoring.logEvent).toHaveBeenCalledTimes(3);
+    expect(monitoring.logEvent).toHaveBeenCalledTimes(4);
     expect(monitoring.logEvent.calls.mostRecent().args[2]).toEqual({ durationMs: 6000, pageCount: 1, actionCount: 1 });
   });
 
@@ -203,6 +238,7 @@ describe('Hearings telemetry service', () => {
         step: state.currentStep,
         page: state.currentStep,
         category: 'form',
+        validationId: 'form-invalid',
         caseId: 'private-case',
         hearingId: 'private-hearing',
       },

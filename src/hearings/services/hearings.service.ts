@@ -98,9 +98,29 @@ export class HearingsService {
   private observeErrors<T>(
     operation: HearingsOperation,
     request: Observable<T>,
-    identifiers?: HearingsTelemetryIdentifiers
+    identifiers?: HearingsTelemetryIdentifiers,
+    completeJourney = false
   ): Observable<T> {
-    return defer(() => request.pipe(tap({ error: this.errorReporter(operation, identifiers) })));
+    return defer(() => {
+      let complete: (() => void) | undefined;
+      try {
+        complete = completeJourney ? this.telemetry?.captureCompletion() : undefined;
+      } catch {
+        // Completion telemetry is optional and must never affect the request.
+      }
+      return request.pipe(
+        tap({
+          error: this.errorReporter(operation, identifiers),
+          next: () => {
+            try {
+              complete?.();
+            } catch {
+              /* Preserve the successful API response. */
+            }
+          },
+        })
+      );
+    });
   }
 
   public loadHearingValues(jurisdictionId: string, caseId: string): Observable<ServiceHearingValuesModel> {
@@ -165,7 +185,8 @@ export class HearingsService {
         params,
         body: { cancellationReasonCodes },
       }),
-      { caseId, hearingId }
+      { caseId, hearingId },
+      true
     );
   }
 

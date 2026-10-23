@@ -27,6 +27,8 @@ interface TimedPage extends HearingsPage {
   enteredAt: number;
   journeyId: string;
   identifiers: HearingsTelemetryIdentifiers;
+  journeyType: string;
+  pageVisitId: string;
 }
 
 export function initializeHearingsPageTracking(service: HearingsPageTrackingService): () => void {
@@ -37,6 +39,7 @@ export function initializeHearingsPageTracking(service: HearingsPageTrackingServ
 export class HearingsPageTrackingService implements OnDestroy {
   private subscription?: Subscription;
   private page?: TimedPage;
+  private visitCount = 0;
 
   constructor(
     private readonly router: Router,
@@ -60,6 +63,13 @@ export class HearingsPageTrackingService implements OnDestroy {
             this.telemetry.clearPendingNavigation();
           }
         } else if (event instanceof NavigationCancel || event instanceof NavigationError) {
+          if (event instanceof NavigationError && event.target && this.hearingsPage(event.target.root)) {
+            try {
+              this.telemetry.captureException('navigate')(event.error);
+            } catch {
+              // Reporting must not alter Angular's existing navigation error handling.
+            }
+          }
           this.telemetry.clearPendingNavigation();
         } else if (event instanceof NavigationEnd) {
           this.trackPage();
@@ -89,9 +99,6 @@ export class HearingsPageTrackingService implements OnDestroy {
 
   private trackPage(): void {
     const next = this.hearingsPage(this.router.routerState.snapshot.root);
-    if (next && this.page?.key === next.key && !this.telemetry.hasContextChanged(next.context)) {
-      return;
-    }
     const now = this.browser.performance.now();
     const previousPath = this.page?.path;
     this.finishPage(now);
@@ -108,7 +115,15 @@ export class HearingsPageTrackingService implements OnDestroy {
     if (!journey) {
       return;
     }
-    this.page = { ...next, enteredAt: now, journeyId: journey.journeyId, identifiers: this.telemetry.currentIdentifiers };
+    this.page = {
+      ...next,
+      enteredAt: now,
+      journeyId: journey.journeyId,
+      journeyType: journey.journeyType,
+      identifiers: this.telemetry.currentIdentifiers,
+      pageVisitId: `${journey.journeyId}-${++this.visitCount}`,
+    };
+    this.monitoring.logPageView(`Hearings: ${next.path}`, next.path, this.pageProperties(this.page));
     if (this.isConfirmation(next.path)) {
       this.telemetry.endJourney('confirmation', now, next.path);
     }
@@ -126,17 +141,19 @@ export class HearingsPageTrackingService implements OnDestroy {
     if (this.page) {
       const page = this.page;
       this.page = undefined;
-      this.monitoring.logPageView(
-        `Hearings: ${page.path}`,
-        page.path,
-        {
-          journeyId: page.journeyId,
-          ...(this.telemetry.currentJourney?.journeyId === page.journeyId ? this.telemetry.currentIdentifiers : page.identifiers),
-        },
-        undefined,
-        Math.max(0, now - page.enteredAt)
-      );
+      this.monitoring.logMetric('Hearings.PageDuration', Math.max(0, now - page.enteredAt), this.pageProperties(page));
     }
+  }
+
+  private pageProperties(page: TimedPage): Record<string, string> {
+    return {
+      journeyId: page.journeyId,
+      journeyType: page.journeyType,
+      pageVisitId: page.pageVisitId,
+      page: page.path,
+      step: page.path,
+      ...(this.telemetry.currentJourney?.journeyId === page.journeyId ? this.telemetry.currentIdentifiers : page.identifiers),
+    };
   }
 
   private isConfirmation(path: string): boolean {

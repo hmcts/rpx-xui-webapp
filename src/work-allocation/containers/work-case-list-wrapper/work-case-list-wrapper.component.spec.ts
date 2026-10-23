@@ -6,12 +6,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
+import { HMCTSServiceDetails } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models/case-role-details.interface';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
 import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -76,7 +78,7 @@ describe('WorkCaseListWrapperComponent', () => {
     'getMyCases',
     'getMyAccess',
   ]);
-  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['addMessageOnce']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
@@ -88,8 +90,11 @@ describe('WorkCaseListWrapperComponent', () => {
   let store: Store<fromActions.State>;
 
   beforeEach(() => {
+    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+    mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(of([]));
     storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     storeMock.pipe.and.returnValue(of(USER_DETAILS));
+    mockInfoMessageCommService.addMessageOnce.calls.reset();
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
@@ -139,6 +144,69 @@ describe('WorkCaseListWrapperComponent', () => {
 
   it('should create', () => {
     expect(component).toBeDefined();
+  });
+
+  describe('loadSupportedJurisdictions()', () => {
+    const supervisorDetails = {
+      ...USER_DETAILS,
+      roleAssignmentInfo: [{ roleName: 'task-supervisor', jurisdiction: null, roleType: 'type' }],
+    };
+
+    beforeEach(() => {
+      storeMock.pipe.and.returnValue(of(supervisorDetails));
+    });
+
+    it('uses no jurisdictions and warns when the supported-jurisdictions request fails', () => {
+      mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(
+        throwError(() => new Error('service unavailable'))
+      );
+      mockWASupportedJurisdictionService.getWASupportedJurisdictions.calls.reset();
+      component.loadSupportedJurisdictions();
+      const values: string[][] = [];
+      const valuesForSecondSubscriber: string[][] = [];
+      let receivedError: unknown;
+
+      component.waSupportedJurisdictions$.subscribe({
+        next: (jurisdictions) => values.push(jurisdictions),
+        error: (error) => (receivedError = error),
+      });
+      component.waSupportedJurisdictions$.subscribe((jurisdictions) => valuesForSecondSubscriber.push(jurisdictions));
+
+      expect(receivedError).toBeUndefined();
+      expect(values).toEqual([[]]);
+      expect(valuesForSecondSubscriber).toEqual([[]]);
+      expect(mockWASupportedJurisdictionService.getWASupportedJurisdictions).toHaveBeenCalledTimes(1);
+      expect(mockInfoMessageCommService.addMessageOnce).toHaveBeenCalledOnceWith(
+        jasmine.objectContaining({ type: InfoMessageType.WARNING, message: jasmine.stringMatching(/Work Allocation/i) })
+      );
+    });
+
+    it('uses no detailed services and warns when the service-details request fails', () => {
+      mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(
+        throwError(() => new Error('service unavailable'))
+      );
+      mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(
+        throwError(() => new Error('service unavailable'))
+      );
+      component.loadSupportedJurisdictions();
+      const jurisdictionValues: string[][] = [];
+      const values: HMCTSServiceDetails[][] = [];
+      let receivedError: unknown;
+
+      component.waSupportedJurisdictions$.subscribe((jurisdictions) => jurisdictionValues.push(jurisdictions));
+      component.waSupportedDetailedServices$.subscribe({
+        next: (services) => values.push(services),
+        error: (error) => (receivedError = error),
+      });
+
+      expect(receivedError).toBeUndefined();
+      expect(jurisdictionValues).toEqual([[]]);
+      expect(values).toEqual([[]]);
+      expect(component.supportedJurisdictions).toEqual([]);
+      expect(mockInfoMessageCommService.addMessageOnce).toHaveBeenCalledOnceWith(
+        jasmine.objectContaining({ type: InfoMessageType.WARNING, message: jasmine.stringMatching(/Work Allocation/i) })
+      );
+    });
   });
 
   describe('onActionHandler()', () => {

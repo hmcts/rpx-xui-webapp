@@ -57,7 +57,7 @@ export async function handleCaseWorkerDetails(path: string, req: EnhancedRequest
 }
 
 export async function handlePostSearch(path: string, payload: string | any, req: EnhancedRequest): Promise<any> {
-  logger.info('post search', payload);
+  logger.info('post search');
   const headers = setHeaders(req);
   return await http.post(path, payload, { headers });
 }

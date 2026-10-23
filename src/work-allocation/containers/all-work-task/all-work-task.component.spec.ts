@@ -1,6 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -12,6 +13,8 @@ import { TaskListComponent } from '..';
 import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { HMCTSServiceDetails, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models';
@@ -68,6 +71,7 @@ describe('AllWorkTaskComponent', () => {
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', [
     'addInfoMessage',
+    'addMessageOnce',
     'getInfoMessage$',
     'removeAllMessages',
   ]);
@@ -280,6 +284,67 @@ describe('AllWorkTaskComponent', () => {
         page_number: 1,
         page_size: 25,
       });
+    });
+  });
+
+  it('keeps initial All Work bootstrap role-scoped when detailed jurisdiction lookup fails', () => {
+    fixture.destroy();
+    const roleScopedUserDetails = {
+      ...USER_DETAILS,
+      roleAssignmentInfo: [{ roleName: 'task-supervisor', jurisdiction: 'IA', roleType: 'type' }],
+    };
+    storeMock.pipe.and.returnValue(of(roleScopedUserDetails));
+    mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(
+      throwError(() => new Error('detailed jurisdiction lookup unavailable'))
+    );
+    mockInfoMessageCommService.addMessageOnce.calls.reset();
+    mockTaskService.searchTask.calls.reset();
+    mockTaskService.searchTask.and.returnValue(of({ tasks: [], total_records: 0 }));
+    mockSessionStorageService.getItem.and.callFake((key: string) =>
+      key === 'userDetails'
+        ? JSON.stringify({
+            id: 'someId',
+            forename: 'fore',
+            surname: 'surName',
+            email: 'email',
+            active: true,
+            roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+            uid: '1233434',
+          })
+        : null
+    );
+
+    fixture = TestBed.createComponent(AllWorkTaskComponent);
+    component = fixture.componentInstance;
+    component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.tasks-container')).not.toBeNull();
+    const taskManagerFilter = fixture.debugElement.query(By.css('exui-task-manager-filter'));
+    expect(taskManagerFilter?.properties['jurisdictions']).toEqual([{ serviceId: 'IA', serviceName: 'IA' }]);
+    expect(component.supportedJurisdictions).toEqual([]);
+    expect(mockTaskService.searchTask).not.toHaveBeenCalled();
+    expect(mockInfoMessageCommService.addMessageOnce).toHaveBeenCalledOnceWith({
+      type: InfoMessageType.WARNING,
+      message: InfoMessage.WA_JURISDICTIONS_UNAVAILABLE,
+    });
+
+    component.onSelectionChanged({
+      findTaskNameControl: null,
+      location: '**ALL LOCATIONS**',
+      service: 'IA',
+      selectPerson: 'All',
+      person: null,
+      taskType: 'All',
+      taskName: null,
+      workTypes: [],
+    });
+
+    expect(mockTaskService.searchTask).toHaveBeenCalledTimes(1);
+    expect(mockTaskService.searchTask.calls.mostRecent().args[0].searchRequest.search_parameters).toContain({
+      key: 'jurisdiction',
+      operator: 'IN',
+      values: ['IA'],
     });
   });
 

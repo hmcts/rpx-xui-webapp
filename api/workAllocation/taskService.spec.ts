@@ -5,6 +5,7 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { HttpMock } from '../common/httpMock';
 import { http } from '../lib/http';
+import * as log4jui from '../lib/log4jui';
 import * as proxy from '../lib/proxy';
 import { handleTaskGet, handleTaskPost, handleTaskSearch, handleTaskRolesGet, handleGetTasksByCaseId } from './taskService';
 import * as util from './util';
@@ -49,11 +50,13 @@ describe('workAllocation.taskService', () => {
     it('should make a get request', async () => {
       spy = sandbox.stub(http, 'get').resolves(res);
       const path = '/task/123456';
+      const stdoutWrite = sandbox.spy(process.stdout, 'write');
       const req = mockReq();
       const response = await handleTaskGet(path, req);
       expect(response).to.equal('ok'); // Returns just the data.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(path); // Correct url.
+      expect(JSON.stringify(stdoutWrite.args)).not.to.contain('123456');
     });
 
     it('should set headers correctly with Content-Type and remove Accept header', async () => {
@@ -424,6 +427,52 @@ describe('workAllocation.taskService', () => {
       } catch (err) {
         expect(err).to.equal(error);
       }
+    });
+
+    it('redacts task identifiers from configured HTTP logs and telemetry without changing the request URL', async () => {
+      const taskId = 'PRIVATE_TASK_ID';
+      const info = sandbox.stub();
+      const errorLog = sandbox.stub();
+      const trackRequest = sandbox.stub();
+      sandbox.stub(log4jui, 'getLogger').returns({ info, error: errorLog, trackRequest } as any);
+      handlePostStub.restore();
+      setHeadersStub.returns({ Authorization: 'Bearer token' });
+      const sentRequests: Array<{ body: string; url: string }> = [];
+      const originalAdapter = http.defaults.adapter;
+      http.defaults.adapter = async (config) => {
+        sentRequests.push({ body: config.data as string, url: config.url });
+        if (config.url.endsWith('/complete')) {
+          throw {
+            config,
+            response: { status: 500, data: { details: `upstream failed for ${taskId}` } },
+            status: 500,
+            toString: () => 'upstream failed',
+          };
+        }
+        return { config, data: {}, headers: {}, status: 200, statusText: 'OK' };
+      };
+
+      try {
+        await handleTaskPost(`/workallocation/task/${taskId}/assign`, {}, mockReq());
+        let failure;
+        try {
+          await handleTaskPost(`/workallocation/task/${taskId}/complete`, {}, mockReq());
+        } catch (error) {
+          // The failure path is included to verify error logging and telemetry.
+          failure = error;
+        }
+        expect(failure).to.exist;
+      } finally {
+        http.defaults.adapter = originalAdapter;
+      }
+
+      const emitted = JSON.stringify({ logs: [...info.args, ...errorLog.args], telemetry: trackRequest.args });
+      expect(emitted).not.to.contain(taskId);
+      expect(sentRequests).to.deep.equal([
+        { body: '{}', url: `/workallocation/task/${taskId}/assign` },
+        { body: '{}', url: `/workallocation/task/${taskId}/complete` },
+      ]);
+      expect(trackRequest).to.have.been.calledTwice;
     });
 
     it('should handle conflict errors for task assignment', async () => {

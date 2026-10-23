@@ -223,6 +223,19 @@ export class AppUtils {
     );
   }
 
+  public static getOrganisationJurisdictions(roleAssignmentInfo: RoleAssignmentInfo[] = []): string[] {
+    return Array.from(
+      new Set(
+        roleAssignmentInfo
+          .filter(
+            (role): role is RoleAssignmentInfo & { jurisdiction: string } =>
+              role.roleType === 'ORGANISATION' && typeof role.jurisdiction === 'string' && role.jurisdiction.length > 0
+          )
+          .map((role) => role.jurisdiction)
+      )
+    );
+  }
+
   // EXUI-4758 - We know user can have multiple role categories and we should return all of them
   // Howwever, we shouldn't refer to them as role categories in code as they specify a different enum
   public static getUserRoleNames(userRoles: string[]): UserRole[] {

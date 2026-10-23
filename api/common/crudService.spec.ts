@@ -75,6 +75,32 @@ describe('crudService', () => {
       expect(mockLogger.info).to.have.been.calledWith('handle get:', crudPath);
     });
 
+    it('redacts hearing IDs from shared CRUD logs without changing request URLs', async () => {
+      const hearingId = 'PRIVATE_HEARING_ID';
+      const crudPath = `https://hmc.example/hearingActualsCompletion/${hearingId}`;
+      const getStub = sandbox.stub(http, 'get').resolves(res);
+
+      await crudService.handleGet(crudPath, req);
+
+      const emittedLogs = JSON.stringify(mockLogger.info.args);
+      expect(emittedLogs).not.to.contain(hearingId);
+      expect(emittedLogs).to.contain('https://hmc.example/hearingActualsCompletion/[REDACTED]');
+      expect(getStub.firstCall.args[0]).to.equal(crudPath);
+    });
+
+    it('redacts linked hearing group IDs from shared CRUD logs without changing request URLs', async () => {
+      const groupId = 'PRIVATE_HEARING_GROUP_ID';
+      const crudPath = `https://hmc.example/linkedHearingGroup/${groupId}`;
+      const getStub = sandbox.stub(http, 'get').resolves(res);
+
+      await crudService.handleGet(crudPath, req);
+
+      const emittedLogs = JSON.stringify(mockLogger.info.args);
+      expect(emittedLogs).not.to.contain(groupId);
+      expect(emittedLogs).to.contain('https://hmc.example/linkedHearingGroup/[REDACTED]');
+      expect(getStub.firstCall.args[0]).to.equal(crudPath);
+    });
+
     it('should propagate errors to caller (no internal handling)', async () => {
       const error = {
         status: 404,
@@ -221,7 +247,7 @@ describe('crudService', () => {
       expect(mockLogger.info).to.have.been.calledWith('sendGet to:', crudPath);
     });
 
-    it('should handle error and log error message', async () => {
+    it('should propagate an error without logging its upstream response', async () => {
       const error = {
         status: 500,
         statusText: 'Internal Server Error',
@@ -235,12 +261,7 @@ describe('crudService', () => {
         expect.fail('Should have thrown error');
       } catch (e) {
         expect(e).to.equal(error);
-        expect(mockLogger.error).to.have.been.calledOnce;
-        expect(mockLogger.error).to.have.been.calledWith(
-          'sendGet: 500 /crud/12345',
-          'Internal Server Error',
-          JSON.stringify({ error: 'Server error' })
-        );
+        expect(mockLogger.error).not.to.have.been.called;
       }
     });
   });
@@ -277,12 +298,7 @@ describe('crudService', () => {
 
       await crudService.sendPost(crudPath, dummyData, req, next);
 
-      expect(mockLogger.error).to.have.been.calledOnce;
-      expect(mockLogger.error).to.have.been.calledWith(
-        'sendPost: 400 /crud/12345',
-        'Bad Request',
-        JSON.stringify({ validation: 'failed' })
-      );
+      expect(mockLogger.error).not.to.have.been.called;
       expect(next).to.have.been.calledWith(error);
     });
 
@@ -300,7 +316,7 @@ describe('crudService', () => {
         expect.fail('Should have thrown error');
       } catch (e) {
         expect(e).to.equal(error);
-        expect(mockLogger.error).to.have.been.calledOnce;
+        expect(mockLogger.error).not.to.have.been.called;
       }
     });
   });
@@ -366,7 +382,7 @@ describe('crudService', () => {
       expect(mockLogger.info).to.have.been.calledWith('send put request to:', crudPath);
     });
 
-    it('should handle error and log error message', async () => {
+    it('should propagate an error without logging its upstream response', async () => {
       const error = {
         status: 409,
         statusText: 'Conflict',
@@ -380,8 +396,7 @@ describe('crudService', () => {
         expect.fail('Should have thrown error');
       } catch (e) {
         expect(e).to.equal(error);
-        expect(mockLogger.error).to.have.been.calledOnce;
-        expect(mockLogger.error).to.have.been.calledWith(409, 'Conflict', JSON.stringify({ conflict: 'Version mismatch' }));
+        expect(mockLogger.error).not.to.have.been.called;
       }
     });
 
@@ -399,12 +414,7 @@ describe('crudService', () => {
         expect.fail('Should have thrown error');
       } catch (e) {
         expect(e).to.equal(error);
-        expect(mockLogger.error).to.have.been.calledOnce;
-        expect(mockLogger.error).to.have.been.calledWith(
-          422,
-          'Unprocessable Entity',
-          undefined // JSON.stringify(undefined) returns undefined (not a string)
-        );
+        expect(mockLogger.error).not.to.have.been.called;
       }
     });
   });
@@ -444,7 +454,7 @@ describe('crudService', () => {
       expect(mockLogger.info).to.have.been.calledWith('send delete request to:', crudPath);
     });
 
-    it('should handle error and log error message', async () => {
+    it('should propagate an error without logging its upstream response', async () => {
       const error = {
         status: 401,
         statusText: 'Unauthorized',
@@ -458,8 +468,7 @@ describe('crudService', () => {
         expect.fail('Should have thrown error');
       } catch (e) {
         expect(e).to.equal(error);
-        expect(mockLogger.error).to.have.been.calledOnce;
-        expect(mockLogger.error).to.have.been.calledWith(401, 'Unauthorized', JSON.stringify({ message: 'Invalid token' }));
+        expect(mockLogger.error).not.to.have.been.called;
       }
     });
 
@@ -477,8 +486,44 @@ describe('crudService', () => {
         expect.fail('Should have thrown error');
       } catch (e) {
         expect(e).to.equal(error);
-        expect(mockLogger.error).to.have.been.calledWith(500, 'Server Error', 'null');
+        expect(mockLogger.error).not.to.have.been.called;
       }
     });
+  });
+
+  it('does not log upstream status text or response bodies from send helpers', async () => {
+    const privateName = 'PRIVATE-PARTY-NAME-CANARY';
+    const privateDetail = 'PRIVATE-UPSTREAM-DETAIL-CANARY';
+    const error = {
+      status: 502,
+      statusText: `Upstream response contained ${privateName}`,
+      data: { firstName: privateName, details: privateDetail },
+    };
+    const next = sinon.stub();
+    sandbox.stub(http, 'get').rejects(error);
+    sandbox.stub(http, 'post').rejects(error);
+    sandbox.stub(http, 'put').rejects(error);
+    sandbox.stub(http, 'delete').rejects(error);
+    const thrownErrors: unknown[] = [];
+
+    for (const request of [
+      () => crudService.sendGet('/crud/get', req),
+      () => crudService.sendPut('/crud/put', dummyData, req),
+      () => crudService.sendDelete('/crud/delete', dummyData, req),
+    ]) {
+      try {
+        await request();
+      } catch (caught) {
+        thrownErrors.push(caught);
+      }
+    }
+    await crudService.sendPost('/crud/post', dummyData, req, next);
+
+    expect(thrownErrors).to.deep.equal([error, error, error]);
+    expect(next).to.have.been.calledOnceWithExactly(error);
+    const emittedLogs = JSON.stringify(mockLogger.error.args);
+    expect(emittedLogs).not.to.contain(privateName);
+    expect(emittedLogs).not.to.contain(privateDetail);
+    expect(mockLogger.error).not.to.have.been.called;
   });
 });

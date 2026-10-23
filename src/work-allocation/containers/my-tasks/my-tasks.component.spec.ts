@@ -7,7 +7,7 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
@@ -71,7 +71,15 @@ describe('MyTasksComponent', () => {
   let store: Store<fromActions.State>;
 
   beforeEach(waitForAsync(() => {
-    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
+    storeMock = jasmine.createSpyObj('Store', ['dispatch', 'pipe']);
+    storeMock.pipe.and.returnValue(
+      of({
+        roleAssignmentInfo: [
+          { jurisdiction: 'IA', roleType: 'ORGANISATION' },
+          { jurisdiction: 'CIVIL', roleType: 'ORGANISATION' },
+        ],
+      })
+    );
     TestBed.configureTestingModule({
       imports: [CdkTableModule, ExuiCommonLibModule, RouterTestingModule, WorkAllocationComponentsModule, PaginationModule],
       declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
@@ -125,10 +133,9 @@ describe('MyTasksComponent', () => {
   }));
 
   it('should make a call to load tasks using the default search request', waitForAsync(() => {
-    component.ngOnInit();
-    // tick(500);
-    fixture.detectChanges();
-    component.getSearchTaskRequestPagination();
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    component.selectedServices = ['IA', 'CIVIL'];
+    component.loadTasks();
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   }));
@@ -165,6 +172,93 @@ describe('MyTasksComponent', () => {
       expect(search_parameter.key).not.toBe('work_type');
     }
   });
+
+  it('does not request My Work tasks when no jurisdiction is selected', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    component.selectedServices = [];
+    mockTaskService.searchTask.calls.reset();
+
+    component.loadTasks();
+
+    expect(mockTaskService.searchTask).not.toHaveBeenCalled();
+  });
+
+  it('does not load stale services before a safe role scope is available', fakeAsync(() => {
+    fixture.destroy();
+    const roleDetails = new Subject<{ roleAssignmentInfo: Array<{ roleType: string; jurisdiction?: string }> }>();
+    const filters = new Subject<FilterSetting>();
+    storeMock.pipe.and.returnValue(roleDetails.asObservable());
+    mockFilterService.getStream.and.returnValue(filters);
+
+    fixture = TestBed.createComponent(WrapperComponent);
+    wrapper = fixture.componentInstance;
+    component = wrapper.appComponentRef;
+    fixture.detectChanges();
+    mockTaskService.searchTask.calls.reset();
+
+    filters.next({
+      id: 'locations',
+      fields: [
+        { name: 'locations', value: [{ epimms_id: '231596' }] },
+        { name: 'types-of-work', value: ['hearing_work'] },
+        { name: 'services', value: ['IA'] },
+      ],
+    });
+    tick(201);
+    expect(mockTaskService.searchTask).not.toHaveBeenCalled();
+
+    roleDetails.next({ roleAssignmentInfo: [] });
+    tick();
+    expect(mockTaskService.searchTask).not.toHaveBeenCalled();
+  }));
+
+  it('loads My Tasks for a judicial user within their assigned service', fakeAsync(() => {
+    fixture.destroy();
+    storeMock.pipe.and.returnValue(
+      of({
+        roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'CASE', roleCategory: 'JUDICIAL' }],
+      })
+    );
+    mockSessionStorageService.getItem.and.callFake((key: string) =>
+      key === 'userDetails'
+        ? JSON.stringify({
+            id: 'judicial-user',
+            roles: ['caseworker-ia-iacjudge'],
+            roleCategories: ['JUDICIAL'],
+          })
+        : null
+    );
+    mockFilterService.getStream.and.returnValue(
+      of({
+        id: 'my-work-filter',
+        fields: [
+          { name: 'locations', value: [{ epimms_id: '231596' }] },
+          { name: 'types-of-work', value: ['hearing_work'] },
+          { name: 'services', value: ['IA'] },
+        ],
+      })
+    );
+    mockTaskService.searchTask.calls.reset();
+
+    fixture = TestBed.createComponent(WrapperComponent);
+    wrapper = fixture.componentInstance;
+    component = wrapper.appComponentRef;
+    fixture.detectChanges();
+    tick(201);
+
+    expect(mockTaskService.searchTask).toHaveBeenCalledTimes(1);
+    if (!mockTaskService.searchTask.calls.count()) {
+      return;
+    }
+    const searchRequest = mockTaskService.searchTask.calls.mostRecent().args[0].searchRequest;
+    expect(searchRequest.search_by).toBe('judge');
+    expect(searchRequest.search_parameters).toContain({ key: 'jurisdiction', operator: 'IN', values: ['IA'] });
+
+    component.selectedServices = ['SSCS'];
+    mockTaskService.searchTask.calls.reset();
+    component.loadTasks();
+    expect(mockTaskService.searchTask).not.toHaveBeenCalled();
+  }));
 
   it('should have all column headers, including "Manage +"', () => {
     const element = fixture.debugElement.nativeElement;

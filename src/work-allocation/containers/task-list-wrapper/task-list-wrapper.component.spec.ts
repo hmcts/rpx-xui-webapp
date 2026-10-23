@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { ChangeDetectorRef, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
@@ -18,6 +18,8 @@ import { TaskActionIds } from '../../enums';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
+import { AllocateRoleService } from '../../../role-access/services';
+import { MyTasksComponent } from '../my-tasks/my-tasks.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
 @Pipe({
@@ -50,6 +52,7 @@ describe('TaskListWrapperComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
+  const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', [
     'getWASupportedJurisdictions',
   ]);
@@ -71,10 +74,10 @@ describe('TaskListWrapperComponent', () => {
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
   beforeEach(() => {
-    storeMock = jasmine.createSpyObj('Store', ['dispatch']);
+    storeMock = jasmine.createSpyObj('Store', ['dispatch', 'pipe']);
     TestBed.configureTestingModule({
       imports: [WorkAllocationComponentsModule, ExuiCommonLibModule, RouterTestingModule, CdkTableModule],
-      declarations: [TaskListComponent, TaskListWrapperComponent, RpxTranslationMockPipe],
+      declarations: [TaskListComponent, TaskListWrapperComponent, MyTasksComponent, RpxTranslationMockPipe],
       providers: [
         { provide: ChangeDetectorRef, useValue: mockRef },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
@@ -87,6 +90,7 @@ describe('TaskListWrapperComponent', () => {
         { provide: FilterService, useValue: mockFilterService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: Store, useValue: storeMock },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
       ],
@@ -223,4 +227,23 @@ describe('TaskListWrapperComponent', () => {
       expect(mockSessionStorageService.getItem).toHaveBeenCalledWith('pageSessionKey');
     });
   });
+
+  it('keeps My Tasks unsearched when the filter has no services field', fakeAsync(() => {
+    storeMock.pipe.and.returnValue(of({ roleAssignmentInfo: [] }));
+    mockSessionStorageService.getItem.and.returnValue(null);
+    spyOn(mockFilterService, 'getStream').and.returnValue(of({ id: 'locations', fields: [{ name: 'locations', value: [] }] }));
+    mockWorkAllocationService.searchTask.calls.reset();
+
+    const myTasksFixture = TestBed.createComponent(MyTasksComponent);
+    try {
+      const myTasks = myTasksFixture.componentInstance;
+      myTasksFixture.detectChanges();
+      tick(201);
+
+      expect(myTasks.selectedServices).toEqual([]);
+      expect(mockWorkAllocationService.searchTask).not.toHaveBeenCalled();
+    } finally {
+      myTasksFixture.destroy();
+    }
+  }));
 });

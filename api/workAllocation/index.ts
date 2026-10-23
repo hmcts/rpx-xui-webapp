@@ -46,6 +46,7 @@ import {
   getCaseIdListFromRoles,
   getMyAccessMappedCaseList,
   getRoleAssignmentsByQuery,
+  getSafeFailureStatus,
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
   getUniqueCasesCount,
@@ -85,7 +86,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, taskId);
     // Adding log in app insights for task completion journey
-    trackTrace(`get task Id: ${taskId}`, { functionCall: 'getTask' });
+    trackTrace('Getting Work Allocation task', { functionCall: 'getTask' });
     const jsonResponse = await handleTaskGet(getTaskPath, req);
     if (jsonResponse?.task?.due_date) {
       jsonResponse.task.dueDate = jsonResponse.task.due_date;
@@ -93,7 +94,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {
-    trackTrace(`Error calling get task Id: ${taskId} ${error.toString()}`, traceProps);
+    trackTrace('Error calling Work Allocation task service', traceProps);
     next(error);
   }
 }
@@ -160,16 +161,71 @@ export async function getTaskRoles(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const requestBody = req.body;
+    const searchRequest = requestBody?.searchRequest;
+    const searchParameters = searchRequest?.search_parameters;
+    const sortingParameters = searchRequest?.sorting_parameters;
+    const paginationParameters = searchRequest?.pagination_parameters;
+    const validSearchParameters =
+      Array.isArray(searchParameters) &&
+      searchParameters.every((parameter) => {
+        const validValue = (value: unknown) =>
+          typeof value === 'string' || (Array.isArray(value) && value.every((entry) => typeof entry === 'string'));
+        return (
+          parameter &&
+          typeof parameter === 'object' &&
+          !Array.isArray(parameter) &&
+          typeof parameter.key === 'string' &&
+          parameter.key.trim().length > 0 &&
+          typeof parameter.operator === 'string' &&
+          parameter.operator.trim().length > 0 &&
+          parameter.values !== undefined &&
+          validValue(parameter.values)
+        );
+      });
+    const validSortingParameters =
+      Array.isArray(sortingParameters) &&
+      sortingParameters.every(
+        (sort) =>
+          sort &&
+          typeof sort === 'object' &&
+          !Array.isArray(sort) &&
+          typeof sort.sort_by === 'string' &&
+          sort.sort_by.trim().length > 0 &&
+          typeof sort.sort_order === 'string' &&
+          sort.sort_order.trim().length > 0
+      );
+    const validPagination =
+      paginationParameters == null ||
+      (typeof paginationParameters === 'object' &&
+        !Array.isArray(paginationParameters) &&
+        Number.isInteger(paginationParameters.page_number) &&
+        paginationParameters.page_number > 0 &&
+        Number.isInteger(paginationParameters.page_size) &&
+        paginationParameters.page_size > 0);
+
+    if (
+      !requestBody ||
+      typeof requestBody !== 'object' ||
+      Array.isArray(requestBody) ||
+      !searchRequest ||
+      typeof searchRequest !== 'object' ||
+      Array.isArray(searchRequest) ||
+      !validSearchParameters ||
+      !validSortingParameters ||
+      !validPagination
+    ) {
+      return res.status(400).send({ error: 'Bad Request', message: 'Invalid task search request' });
+    }
+
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
-    const searchRequest = req.body.searchRequest;
     // determines whether should use release 3 or release 4 permission logic
-    searchRequest.sorting_parameters.find((sort, index) => {
-      if (sort.sort_by === 'priority') {
-        searchRequest.sorting_parameters.splice(index, 1);
-      }
-    });
-    const sortParam = searchRequest.sorting_parameters.find((sort) => sort.sort_by === 'created_date');
+    const priorityIndex = sortingParameters.findIndex((sort) => sort.sort_by === 'priority');
+    if (priorityIndex !== -1) {
+      sortingParameters.splice(priorityIndex, 1);
+    }
+    const sortParam = sortingParameters.find((sort) => sort.sort_by === 'created_date');
     if (sortParam) {
       sortParam.sort_by = 'dueDate';
     }
@@ -212,7 +268,9 @@ export async function setAssigneeNamesInTasks(tasks: Task[], assigneeIds: string
       await fetchRoleAssignments(cachedUserData);
       assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
     } catch (error) {
-      trackTrace(`Error fetching user data for assignees: ${error.toString()}, proceeding without assignee names`);
+      trackTrace('Error fetching user data for assignees; proceeding without assignee names', {
+        status: getSafeFailureStatus(error),
+      });
       assigneeDetails = []; // proceed without assignee names
     }
   }
@@ -271,17 +329,13 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
     const jurisdictions = getWASupportedJurisdictionsList();
-    // Adding log in app insights for task completion journey
-    trackTrace(`Search for completable task of eventId and caseId: ${eventId} ${caseId}`, traceProps);
+    trackTrace('Searching for completable task', traceProps);
     const { status, data } = jurisdictions.includes(jurisdiction)
       ? await handlePost(`${baseWorkAllocationTaskUrl}/task/search-for-completable`, payload, req)
       : { status: 200, data: [] };
     return res.status(status).send(data);
   } catch (e) {
-    trackTrace(
-      `Error calling search for completable task of eventId and caseId: ${eventId} ${caseId} ${e.toString()}`,
-      traceProps
-    );
+    trackTrace('Error calling search for completable task', traceProps);
     next(e);
   }
 }
@@ -310,24 +364,21 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       actionByEvent = req.body.actionByEvent;
       delete req.body.actionByEvent;
     }
-    let eventName;
     if (req.body.eventName) {
-      eventName = req.body.eventName;
       delete req.body.eventName;
     }
     if (actionByEvent === true) {
       mode = 'EXUI_CASE-EVENT_COMPLETION';
-      trackTrace(`${action} on task Id: ${taskId} due to automated task completion by ${eventName} event`, traceProps);
     } else {
       mode = action === 'cancel' ? 'EXUI_USER_CANCELLATION' : 'EXUI_USER_COMPLETION';
-      trackTrace(`${action} on task Id: ${taskId} due to manual task action`, traceProps);
     }
+    trackTrace('Work Allocation task action requested', traceProps);
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, action, mode);
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
-    trackTrace(`Error calling ${action} on task Id: ${taskId} ${error.toString()}`, traceProps);
+    trackTrace('Work Allocation task action failed', traceProps);
     // 5528 - removed error handling for 403 errors
     next(error);
   }
@@ -352,10 +403,10 @@ export async function postTaskCompletionForAccess(
     };
     // line added as requests are different for approval/rejection
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete', 'EXUI_USER_COMPLETION');
-    trackTrace(`complete on task Id: ${taskId} due to specific access processing`, traceProps);
+    trackTrace('Completing Work Allocation task for specific access processing', traceProps);
     return await handleTaskPost(getTaskPath, newRequest, req);
   } catch (error) {
-    trackTrace(`Error calling complete on task Id: ${taskId} due to specific access processing`, traceProps);
+    trackTrace('Error completing Work Allocation task for specific access processing', traceProps);
     next(error);
     return error;
   }
@@ -377,7 +428,6 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
     res.status(status);
     res.send(data);
   } catch (error) {
-    console.error(error);
     next(error);
   }
 }
@@ -476,7 +526,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 
     // filter cases by locationIds
     const caseData = filterByLocationId(result.cases, locationIds);
-    logger.info('results filtered by location id', caseData.length, locationIds);
+    logger.info('results filtered by location id', caseData.length);
 
     if (caseData) {
       const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles) : [];
@@ -487,7 +537,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     }
     return res.send(result).status(200);
   } catch (e) {
-    console.log(e);
+    console.log(`getMyCases request failed status=${getSafeFailureStatus(e)}`);
     return res.send(null).status(500);
   }
 }
@@ -496,7 +546,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
-  logger.info('getting all work cases', searchParameters);
+  logger.info('getting all work cases');
 
   try {
     // get case allocator locations
@@ -511,7 +561,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
 
     // get all role assignments
     const query = constructRoleAssignmentQuery(searchParameters);
-    logger.info('cases query', JSON.stringify(query, null, 2));
+    logger.info('cases query prepared');
     const roleAssignmentResult = await getRoleAssignmentsByQuery(query, req);
 
     const cases = await getCaseIdListFromRoles(roleAssignmentResult.roleAssignmentResponse, req);
@@ -541,7 +591,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.cases = casesWithActions;
     return res.send(result).status(200);
   } catch (error) {
-    console.error(error);
+    console.error(`getCases request failed status=${getSafeFailureStatus(error)}`);
     next(error);
   }
 }
@@ -580,39 +630,57 @@ export async function getTaskNames(req: EnhancedRequest, res: Response): Promise
  * getUsersByServiceName
  */
 export async function getUsersByServiceName(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  const services = req.body?.services;
+  const term = req.body?.term;
   try {
     const currentUser: UserInfo = req.session.passport.user.userinfo;
-    const term = req.body.term;
-    const services = req.body.services;
     let cachedUsers = [];
-    let firstEntry = true;
     if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
       res.status(403).send('Forbidden');
-    } else if (services?.length === 0 || services[0]?.length === 0) {
+      return;
+    }
+    if (
+      !Array.isArray(services) ||
+      services.length === 0 ||
+      services.some((service) => typeof service !== 'string' || service.trim().length === 0)
+    ) {
       // if no services selected return empty array with error to avoid showing all users from all services
       // note: should never happen as frontend should always send at least one service
       res.status(400).send('Bad Request');
-    } else {
-      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
-        // if already ran just use the cache to avoid loading issues
-        firstEntry = false;
-        cachedUsers = FullUserDetailCache.getAllUserDetails();
+      return;
+    }
+    if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+      // if already ran just use the cache to avoid loading issues
+      cachedUsers = FullUserDetailCache.getAllUserDetails();
 
-        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-        res.status(200).send(cachedUsers);
-        refreshUserCache();
-        return;
-      }
-      // always update the cache after getting the cache if needed
+      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+      res.status(200).send(cachedUsers);
+      refreshUserCache();
+      return;
+    }
+    try {
+      // Refreshing user details and role assignments are the only dependency failures
+      // that may use the bounded cache fallback below.
       const cachedUserData = await fetchUserData();
       cachedUsers = await fetchRoleAssignments(cachedUserData);
-      if (firstEntry) {
-        // if not previously ran ensure the new values are given back to angular layer
-        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
-        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-        res.status(200).send(cachedUsers);
+    } catch {
+      const cachedCaseworkers = FullUserDetailCache.getAllUserDetails();
+      if (cachedCaseworkers?.length) {
+        res.status(200).send(searchAndReturnRefinedUsers(services, term, cachedCaseworkers));
+        return;
       }
+      next({
+        status: 503,
+        data: {
+          code: 'CASEWORKER_DATA_UNAVAILABLE',
+          message: 'Caseworker data is temporarily unavailable',
+        },
+      });
+      return;
     }
+    // This response filtering is local work; its errors must reach the normal handler.
+    cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+    res.status(200).send(cachedUsers);
   } catch (error) {
     next(error);
   }
@@ -715,7 +783,9 @@ const refreshUserCache = async () => {
     const cachedUserData = await fetchUserData();
     await fetchRoleAssignments(cachedUserData);
   } catch (error) {
-    trackTrace(`Error refreshing user cache after getUserByIdamId response: ${error.toString()}`);
+    trackTrace('Error refreshing user cache after getUserByIdamId response', {
+      status: getSafeFailureStatus(error),
+    });
   }
 };
 
@@ -727,7 +797,7 @@ export const getNewUsersByServiceName = async (resolve, reject) => {
     const cachedUserData = await fetchNewUserData();
     await fetchRoleAssignmentsForNewUsers(cachedUserData);
   } catch (error) {
-    console.log('Error getting caseworkers', error);
+    console.log(`getNewUsersByServiceName request failed status=${getSafeFailureStatus(error)}`);
     reject(error);
   }
   resolve();

@@ -142,30 +142,135 @@ describe('workAllocation', () => {
       expect(res.status).to.have.been.calledWith(200);
     });
 
-    it('should return 400 when services contains an empty list', async () => {
-      const req = mockReq({
-        body: {
-          term: null,
-          services: [],
-        },
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: ['role1'],
-              },
-            },
-          },
-        },
-      });
+    for (const services of [undefined, 'service1', [''], ['   '], [null], []]) {
+      it(`should reject invalid service scope ${JSON.stringify(services)}`, async () => {
+        const req = mockReq({
+          body: { term: null, services },
+          session: { passport: { user: { userinfo: { roles: ['role1'] } } } },
+        });
+        const response = mockRes();
+        const fetchUsers = sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData');
+        const fetchRoles = sandbox.stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments').resolves([]);
 
+        await getUsersByServiceName(req, response, next);
+
+        expect(response.status).to.have.been.calledWith(400);
+        expect(response.send).to.have.been.calledWith('Bad Request');
+        expect(fetchUsers).not.to.have.been.called;
+        expect(fetchRoles).not.to.have.been.called;
+        expect(next).not.to.have.been.called;
+      });
+    }
+
+    it('returns cached users filtered to the requested service when refresh fails', async () => {
+      const cachedUsers: CachedCaseworker[] = [
+        { ...refinedCaseworker, services: ['service1'], locations: [] },
+        { ...refinedCaseworker, idamId: 'user2', services: ['service2'], locations: [] },
+      ];
+      FullUserDetailCache.setUserDetails(cachedUsers);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      sandbox
+        .stub(caseWorkerUserDataCacheService, 'fetchUserData')
+        .rejects({ response: { status: 503, data: 'private upstream body' } });
+      const req = mockReq({
+        body: { term: null, services: ['service1'] },
+        session: { passport: { user: { userinfo: { roles: ['role1'] } } } },
+      });
       const response = mockRes();
-      const next = sandbox.spy();
 
       await getUsersByServiceName(req, response, next);
 
-      expect(response.status).to.have.been.calledWith(400);
-      expect(response.send).to.have.been.calledWith('Bad Request');
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith([sinon.match({ idamId: 'user1', service: 'service1' })]);
+      expect(next).not.to.have.been.called;
+    });
+
+    it('returns service-filtered cached users when role-assignment refresh fails', async () => {
+      const cachedUsers: CachedCaseworker[] = [
+        { ...refinedCaseworker, services: ['service1'], locations: [] },
+        { ...refinedCaseworker, idamId: 'user2', services: ['service2'], locations: [] },
+      ];
+      const fetchedUserData = [{ id: 'fetched-user' } as any];
+      FullUserDetailCache.setUserDetails(cachedUsers);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      const fetchUsers = sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').resolves(fetchedUserData);
+      const fetchRoles = sandbox
+        .stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments')
+        .rejects(new Error('role refresh failed'));
+      const req = mockReq({
+        body: { term: null, services: ['service1'] },
+        session: { passport: { user: { userinfo: { roles: ['role1'] } } } },
+      });
+      const response = mockRes();
+
+      await getUsersByServiceName(req, response, next);
+
+      expect(fetchUsers).to.have.been.calledOnce;
+      expect(fetchRoles).to.have.been.calledOnceWithExactly(fetchedUserData);
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith([sinon.match({ idamId: 'user1', service: 'service1' })]);
+      expect(next).not.to.have.been.called;
+    });
+
+    it('passes a structured 503 when role-assignment refresh fails without cached users', async () => {
+      FullUserDetailCache.setUserDetails([]);
+      const fetchedUserData = [{ id: 'fetched-user' } as any];
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      const fetchUsers = sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').resolves(fetchedUserData);
+      const fetchRoles = sandbox
+        .stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments')
+        .rejects(new Error('role refresh failed'));
+      const req = mockReq({
+        body: { term: null, services: ['service1'] },
+        session: { passport: { user: { userinfo: { roles: ['role1'] } } } },
+      });
+
+      await getUsersByServiceName(req, mockRes(), next);
+
+      expect(fetchUsers).to.have.been.calledOnce;
+      expect(fetchRoles).to.have.been.calledOnceWithExactly(fetchedUserData);
+      expect(next).to.have.been.calledOnceWithExactly({
+        status: 503,
+        data: {
+          code: 'CASEWORKER_DATA_UNAVAILABLE',
+          message: 'Caseworker data is temporarily unavailable',
+        },
+      });
+    });
+
+    it('passes a structured 503 to the error handler when refresh fails without cached users', async () => {
+      FullUserDetailCache.setUserDetails([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      sandbox
+        .stub(caseWorkerUserDataCacheService, 'fetchUserData')
+        .rejects({ response: { status: 503, data: 'private upstream body' } });
+      const req = mockReq({
+        body: { term: null, services: ['service1'] },
+        session: { passport: { user: { userinfo: { roles: ['role1'] } } } },
+      });
+
+      await getUsersByServiceName(req, mockRes(), next);
+
+      expect(next).to.have.been.calledOnce;
+      expect(next.firstCall.args[0]).to.deep.equal({
+        status: 503,
+        data: {
+          code: 'CASEWORKER_DATA_UNAVAILABLE',
+          message: 'Caseworker data is temporarily unavailable',
+        },
+      });
+    });
+
+    it('passes pre-fetch session errors to the error handler instead of serving cached data', async () => {
+      FullUserDetailCache.setUserDetails([{ ...refinedCaseworker, services: ['service1'], locations: [] }]);
+      const req = mockReq({ body: { term: null, services: ['service1'] } });
+      const response = mockRes();
+
+      await getUsersByServiceName(req, response, next);
+
+      expect(response.send).not.to.have.been.called;
+      expect(next).to.have.been.calledOnce;
+      expect(next.firstCall.args[0]).to.be.instanceOf(Error);
     });
   });
 
@@ -324,12 +429,55 @@ describe('workAllocation', () => {
   });
 
   describe('searchTask', () => {
+    const malformedBodies = [
+      undefined,
+      null,
+      {},
+      { searchRequest: null },
+      { searchRequest: [] },
+      { searchRequest: { sorting_parameters: [] } },
+      { searchRequest: { search_parameters: null, sorting_parameters: [] } },
+      { searchRequest: { search_parameters: {}, sorting_parameters: [] } },
+      { searchRequest: { search_parameters: [null], sorting_parameters: [] } },
+      { searchRequest: { search_parameters: [{}], sorting_parameters: [] } },
+      { searchRequest: { search_parameters: [{ key: 'state', operator: 'IN' }], sorting_parameters: [] } },
+      { searchRequest: { search_parameters: [{ key: 'state', operator: 'IN', value: 'assigned' }], sorting_parameters: [] } },
+      {
+        searchRequest: {
+          search_parameters: [{ key: 'state', operator: 'IN', values: ['assigned', null] }],
+          sorting_parameters: [],
+        },
+      },
+      { searchRequest: { search_parameters: [], sorting_parameters: [{}] } },
+      { searchRequest: { sorting_parameters: null } },
+      { searchRequest: { sorting_parameters: [null] } },
+      { searchRequest: { sorting_parameters: [], pagination_parameters: [] } },
+      { searchRequest: { sorting_parameters: [], pagination_parameters: { page_number: 0, page_size: 10 } } },
+      { searchRequest: { sorting_parameters: [], pagination_parameters: { page_number: 1, page_size: 0 } } },
+    ];
+
+    for (const body of malformedBodies) {
+      it(`should return 400 without calling Work Allocation for malformed body ${JSON.stringify(body)}`, async () => {
+        spy = sandbox.stub(http, 'post').resolves(res);
+        const response = mockRes();
+
+        await searchTask(mockReq({ body }), response, next);
+
+        expect(response.status).to.have.been.calledWith(400);
+        expect(response.send).to.have.been.calledWith(
+          sinon.match({ error: 'Bad Request', message: 'Invalid task search request' })
+        );
+        expect(spy).not.to.have.been.called;
+        expect(next).not.to.have.been.called;
+      });
+    }
+
     it('should make a post request and respond appropriately', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
           searchRequest: {
-            search_parameters: [],
+            search_parameters: [{ key: 'user', operator: 'IN', values: ['user-123'] }],
             sorting_parameters: [],
           },
           view: 'MyTasks',
@@ -345,7 +493,10 @@ describe('workAllocation', () => {
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task`);
-      expect(args[1]).to.deep.equal({ search_parameters: [], sorting_parameters: [] });
+      expect(args[1]).to.deep.equal({
+        search_parameters: [{ key: 'user', operator: 'IN', values: ['user-123'] }],
+        sorting_parameters: [],
+      });
 
       // Should have received the HTTP response. The search simply returns the data.
       expect(response.data.length).to.equal(3);
@@ -387,11 +538,39 @@ describe('workAllocation', () => {
       expect(response.data[0].jurisdiction).to.equal('IA');
     });
 
+    it('preserves valid search parameter and sorting transformations', async () => {
+      spy = sandbox.stub(http, 'post').resolves(mockRes({ data: mockTasks }));
+      const req = mockReq({
+        body: {
+          searchRequest: {
+            search_parameters: [{ key: 'state', operator: 'IN', values: ['assigned'] }],
+            sorting_parameters: [
+              { sort_by: 'priority', sort_order: 'ASC' },
+              { sort_by: 'created_date', sort_order: 'DESC' },
+            ],
+            search_by: 'caseworker',
+            pagination_parameters: { page_number: 2, page_size: 10 },
+          },
+          view: 'MyTasks',
+        },
+      });
+
+      await searchTask(req, mockRes(), next);
+
+      expect(spy).to.have.been.calledOnce;
+      expect(spy.firstCall.args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task?first_result=10&max_results=10`);
+      expect(spy.firstCall.args[1]).to.deep.equal({
+        search_parameters: [{ key: 'state', operator: 'IN', values: ['assigned'] }],
+        sorting_parameters: [{ sort_by: 'dueDate', sort_order: 'DESC' }],
+      });
+    });
+
     it('should handle an exception being thrown', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          search: 'criteria',
+          searchRequest: { search_parameters: [], sorting_parameters: [] },
+          view: 'MyTasks',
         },
       });
       const response = mockRes();
@@ -446,6 +625,28 @@ describe('workAllocation', () => {
       await postTaskAction(req, response, next);
 
       expect(next).to.have.been.calledWith();
+    });
+
+    it('does not trace task IDs, event names, or dependency errors when a task action fails', async () => {
+      const appInsights = require('../lib/appInsights');
+      const trace = sandbox.stub(appInsights, 'trackTrace');
+      const taskId = 'PRIVATE_TASK_ID';
+      const eventName = 'PRIVATE_EVENT_NAME';
+      const error = new Error('PRIVATE_UPSTREAM_ERROR');
+      sandbox.stub(taskServiceModule, 'handleTaskPost').rejects(error);
+      const req = mockReq({
+        params: { taskId, action: 'assign' },
+        body: { actionByEvent: true, eventName },
+      });
+
+      await postTaskAction(req, mockRes(), next);
+
+      expect(next).to.have.been.calledWith(error);
+      expect(trace).to.have.been.called;
+      const allTraceArguments = JSON.stringify(trace.args);
+      expect(allTraceArguments).not.to.contain(taskId);
+      expect(allTraceArguments).not.to.contain(eventName);
+      expect(allTraceArguments).not.to.contain(error.message);
     });
   });
 
@@ -537,6 +738,29 @@ describe('workAllocation', () => {
   });
 
   describe('getTasksByCaseIdAndEventId', () => {
+    it('does not send case or event identifiers to Application Insights', async () => {
+      const appInsights = require('../lib/appInsights');
+      const trace = sandbox.stub(appInsights, 'trackTrace');
+      const caseId = 'PRIVATE_CASE_ID';
+      const eventId = 'PRIVATE_EVENT_ID';
+      const dependencyError = new Error('PRIVATE_UPSTREAM_ERROR');
+      sandbox
+        .stub(utilModule, 'handlePost')
+        .onFirstCall()
+        .resolves({ status: 200, data: [] })
+        .onSecondCall()
+        .rejects(dependencyError);
+      sandbox.stub(waSupportedJurisdictionsModule, 'getWASupportedJurisdictionsList').returns(['IA']);
+      const req = mockReq({ params: { caseId, eventId, caseType: 'Case', jurisdiction: 'IA' } });
+
+      await getTasksByCaseIdAndEventId(req, mockRes(), next);
+      await getTasksByCaseIdAndEventId(req, mockRes(), next);
+
+      expect(JSON.stringify(trace.args)).not.to.contain(caseId);
+      expect(JSON.stringify(trace.args)).not.to.contain(eventId);
+      expect(JSON.stringify(trace.args)).not.to.contain(dependencyError.message);
+    });
+
     it('should successfully get tasks by case ID and event ID for supported jurisdiction', async () => {
       const mockTasks = [{ id: 'task1', case_id: '1234567890123456', event_id: 'submit' }];
       spy = sandbox.stub(utilModule, 'handlePost').resolves({ status: 200, data: mockTasks });
@@ -607,6 +831,22 @@ describe('workAllocation', () => {
   });
 
   describe('postTaskCompletionForAccess', () => {
+    it('does not expose task IDs in access-completion traces on success or failure', async () => {
+      const appInsights = require('../lib/appInsights');
+      const trace = sandbox.stub(appInsights, 'trackTrace');
+      const taskId = 'PRIVATE_TASK_ID';
+      const error = new Error('completion failed');
+      const handleTaskPostStub = sandbox.stub(taskServiceModule, 'handleTaskPost');
+      handleTaskPostStub.onFirstCall().resolves({ status: 204, data: {} });
+      handleTaskPostStub.onSecondCall().rejects(error);
+
+      await postTaskCompletionForAccess(mockReq({ body: { taskId } }), mockRes(), next);
+      await postTaskCompletionForAccess(mockReq({ body: { taskId } }), mockRes(), next);
+
+      expect(trace).to.have.been.called;
+      expect(JSON.stringify(trace.args)).not.to.contain(taskId);
+    });
+
     it('should complete task for access with taskId in body', async () => {
       const mockResponse = { task_completed: true };
       spy = sandbox.stub(taskServiceModule, 'handleTaskPost').resolves({ status: 200, data: mockResponse });
@@ -703,7 +943,10 @@ describe('workAllocation', () => {
     });
 
     it('should handle errors when searching for completable tasks', async () => {
-      const error = new Error('Search failed');
+      const error = Object.assign(new Error('Search failed'), {
+        config: { headers: { Authorization: 'Bearer PRIVATE_TOKEN' }, data: 'PRIVATE_CASE_ID' },
+      });
+      const logError = sandbox.stub(console, 'error');
       spy = sandbox.stub(caseWorkerServiceModule, 'handlePostSearch').rejects(error);
 
       const req = mockReq({
@@ -720,7 +963,8 @@ describe('workAllocation', () => {
 
       await postTaskSearchForCompletable(req, response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next).to.have.been.calledOnceWithExactly(error);
+      expect(logError).not.to.have.been.called;
     });
   });
 
@@ -804,7 +1048,8 @@ describe('workAllocation', () => {
   });
 
   describe('getCaseListPromises', () => {
-    it('should return array of promises for case data', () => {
+    it('should return array of promises for case data', async () => {
+      const postStub = sandbox.stub(http, 'post').resolves({ data: { cases: [] } } as any);
       const mockCaseData = {
         IA: {
           Asylum: new Set(['1234567890123456', '1234567890123457']),
@@ -818,6 +1063,8 @@ describe('workAllocation', () => {
       expect(result).to.be.an('array');
       expect(result.length).to.be.greaterThan(0);
       expect(result[0]).to.be.a('promise');
+      await Promise.all(result);
+      expect(postStub.callCount).to.equal(result.length);
     });
 
     it('should handle empty case data', () => {
@@ -830,7 +1077,8 @@ describe('workAllocation', () => {
       expect(result.length).to.equal(0);
     });
 
-    it('should handle multiple jurisdictions and case types', () => {
+    it('should handle multiple jurisdictions and case types', async () => {
+      const postStub = sandbox.stub(http, 'post').resolves({ data: { cases: [] } } as any);
       const mockCaseData = {
         IA: {
           Asylum: new Set(['1234567890123456']),
@@ -847,6 +1095,8 @@ describe('workAllocation', () => {
 
       expect(result).to.be.an('array');
       expect(result.length).to.be.greaterThan(2);
+      await Promise.all(result);
+      expect(postStub.callCount).to.equal(result.length);
     });
   });
 
@@ -900,13 +1150,16 @@ describe('workAllocation', () => {
     it('should return user cases', async () => {
       // Mock refreshRoleAssignmentForUser
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
+      const privateLocation = 'PRIVATE_MY_CASE_LOCATION_CANARY';
+      const stdoutWrite = sandbox.spy(process.stdout, 'write');
+      const stderrWrite = sandbox.spy(process.stderr, 'write');
 
       const req = mockReq({
         body: {
           searchRequest: {
             search_parameters: [
               { key: 'services', values: ['IA'] },
-              { key: 'locations', values: ['locase123'] },
+              { key: 'locations', values: [privateLocation] },
             ],
           },
         },
@@ -925,10 +1178,16 @@ describe('workAllocation', () => {
 
       expect(response.send).to.have.been.called;
       expect(response.status).to.have.been.calledWith(200);
+      const emittedLogs = JSON.stringify([...stdoutWrite.args, ...stderrWrite.args]);
+      expect(emittedLogs).not.to.contain(privateLocation);
     });
 
     it('should handle errors when getting my cases', async () => {
-      const error = new Error('Get cases failed');
+      const error = Object.assign(new Error('PRIVATE_MY_CASES_ERROR_CANARY'), {
+        config: { headers: { Authorization: 'Bearer PRIVATE_MY_CASES_TOKEN_CANARY' }, data: 'PRIVATE_MY_CASES_BODY_CANARY' },
+        response: { status: 503, data: { partyName: 'PRIVATE_MY_CASES_NAME_CANARY' } },
+      });
+      const errorLog = sandbox.stub(console, 'log');
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').rejects(error);
 
       const req = mockReq({
@@ -951,6 +1210,16 @@ describe('workAllocation', () => {
 
       expect(response.send).to.have.been.calledWith(null);
       expect(response.status).to.have.been.calledWith(500);
+      const emittedLogs = JSON.stringify(errorLog.args);
+      for (const canary of [
+        'PRIVATE_MY_CASES_ERROR_CANARY',
+        'PRIVATE_MY_CASES_TOKEN_CANARY',
+        'PRIVATE_MY_CASES_BODY_CANARY',
+        'PRIVATE_MY_CASES_NAME_CANARY',
+      ]) {
+        expect(emittedLogs).not.to.contain(canary);
+      }
+      expect(emittedLogs).to.contain('getMyCases request failed status=503');
     });
   });
 
@@ -1028,7 +1297,11 @@ describe('workAllocation', () => {
     });
 
     it('should handle errors when getting cases', async () => {
-      const error = new Error('Get cases failed');
+      const error = Object.assign(new Error('PRIVATE_CASES_ERROR_CANARY'), {
+        config: { headers: { Authorization: 'Bearer PRIVATE_CASES_TOKEN_CANARY' }, data: 'PRIVATE_CASES_BODY_CANARY' },
+        response: { status: 503, data: { caseName: 'PRIVATE_CASES_NAME_CANARY' } },
+      });
+      const errorLog = sandbox.stub(console, 'error');
       // Mock getRoleAssignmentsByQuery to throw error
       sandbox.stub(utilModule, 'getRoleAssignmentsByQuery').rejects(error);
 
@@ -1043,7 +1316,41 @@ describe('workAllocation', () => {
 
       await getCases(req, response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next).to.have.been.calledOnceWithExactly(error);
+      const emittedLogs = JSON.stringify(errorLog.args);
+      for (const canary of [
+        'PRIVATE_CASES_ERROR_CANARY',
+        'PRIVATE_CASES_TOKEN_CANARY',
+        'PRIVATE_CASES_BODY_CANARY',
+        'PRIVATE_CASES_NAME_CANARY',
+      ]) {
+        expect(emittedLogs).not.to.contain(canary);
+      }
+      expect(emittedLogs).to.contain('getCases request failed status=503');
+    });
+
+    it('does not log request-derived search parameters or role-assignment queries', async () => {
+      const privateLocation = 'PRIVATE_LOCATION_FILTER_CANARY';
+      const stdoutWrite = sandbox.spy(process.stdout, 'write');
+      const stderrWrite = sandbox.spy(process.stderr, 'write');
+      sandbox.stub(utilModule, 'getRoleAssignmentsByQuery').resolves({ roleAssignmentResponse: [] });
+      sandbox.stub(utilModule, 'getCaseIdListFromRoles').resolves([]);
+      sandbox.stub(utilModule, 'filterByLocationId').returns([]);
+
+      const req = mockReq({
+        body: {
+          searchRequest: {
+            search_parameters: [{ key: 'location_id', values: privateLocation }],
+          },
+        },
+      });
+      const response = mockRes();
+
+      await getCases(req, response, next);
+
+      expect(response.send).to.have.been.called;
+      const emittedLogs = JSON.stringify([...stdoutWrite.args, ...stderrWrite.args]);
+      expect(emittedLogs).not.to.contain(privateLocation);
     });
   });
 
@@ -1104,7 +1411,14 @@ describe('workAllocation', () => {
     it('should handle errors when fetching new users', async () => {
       const resolve = sandbox.spy();
       const reject = sandbox.spy();
-      const error = new Error('Fetch users failed');
+      const error = Object.assign(new Error('PRIVATE_NEW_CASEWORKER_ERROR_CANARY'), {
+        config: {
+          headers: { Authorization: 'Bearer PRIVATE_NEW_CASEWORKER_TOKEN_CANARY' },
+          data: 'PRIVATE_NEW_CASEWORKER_BODY_CANARY',
+        },
+        response: { status: 503 },
+      });
+      const errorLog = sandbox.stub(console, 'log');
 
       // Mock fetchNewUserData to throw error
       sandbox.stub(caseWorkerUserDataCacheService, 'fetchNewUserData').rejects(error);
@@ -1113,6 +1427,11 @@ describe('workAllocation', () => {
 
       expect(reject).to.have.been.calledWith(error);
       expect(resolve).to.have.been.called; // Note: This function incorrectly calls resolve() even after error
+      const emittedLogs = JSON.stringify(errorLog.args);
+      expect(emittedLogs).not.to.contain('PRIVATE_NEW_CASEWORKER_ERROR_CANARY');
+      expect(emittedLogs).not.to.contain('PRIVATE_NEW_CASEWORKER_TOKEN_CANARY');
+      expect(emittedLogs).not.to.contain('PRIVATE_NEW_CASEWORKER_BODY_CANARY');
+      expect(emittedLogs).to.contain('getNewUsersByServiceName request failed status=503');
     });
   });
 
@@ -1279,11 +1598,26 @@ describe('workAllocation', () => {
 
     it('returns tasks unchanged when refresh throws', async () => {
       const tasks = [{ id: 'test1', assignee: 'uX' }] as any[];
+      const error = Object.assign(new Error('PRIVATE_ASSIGNEE_REFRESH_ERROR_CANARY'), {
+        config: {
+          headers: { Authorization: 'Bearer PRIVATE_ASSIGNEE_REFRESH_TOKEN_CANARY' },
+          data: 'PRIVATE_ASSIGNEE_REFRESH_BODY_CANARY',
+        },
+        response: { status: 503 },
+      });
+      const appInsights = require('../lib/appInsights');
+      const trace = sandbox.stub(appInsights, 'trackTrace');
       FullUserDetailCache.setUserDetails([]); // no cache
       sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
-      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').rejects(new Error('fail'));
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').rejects(error);
       const result = await setAssigneeNamesInTasks(tasks as any, ['uX']);
       expect(result[0].assigneeName).to.be.undefined;
+      const emittedTraces = JSON.stringify(trace.args);
+      expect(emittedTraces).not.to.contain('PRIVATE_ASSIGNEE_REFRESH_ERROR_CANARY');
+      expect(emittedTraces).not.to.contain('PRIVATE_ASSIGNEE_REFRESH_TOKEN_CANARY');
+      expect(emittedTraces).not.to.contain('PRIVATE_ASSIGNEE_REFRESH_BODY_CANARY');
+      expect(emittedTraces).to.contain('proceeding without assignee names');
+      expect(emittedTraces).to.contain('503');
     });
   });
 
@@ -1432,9 +1766,53 @@ describe('workAllocation', () => {
       expect(response.send).to.have.been.calledWith(refinedCaseworker);
     });
 
+    it('does not include raw refresh failures in caseworker cache diagnostics', async () => {
+      const cached: CachedCaseworker = {
+        idamId: 'user1',
+        firstName: 'Ann',
+        lastName: 'Alpha',
+        email: 'a@a.com',
+        roleCategories: ['LEGAL_OPERATIONS'],
+        services: ['IA'],
+        locations: [],
+      } as any;
+      const error = Object.assign(new Error('PRIVATE_CACHE_REFRESH_ERROR_CANARY'), {
+        config: {
+          headers: { Authorization: 'Bearer PRIVATE_CACHE_REFRESH_TOKEN_CANARY' },
+          data: 'PRIVATE_CACHE_REFRESH_BODY_CANARY',
+        },
+        response: { status: 503 },
+      });
+      const appInsights = require('../lib/appInsights');
+      const trace = sandbox.stub(appInsights, 'trackTrace');
+      FullUserDetailCache.setUserDetails([cached]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').rejects(error);
+
+      const req = mockReq({
+        body: { idamId: 'user1' },
+        session: { passport: { user: { userinfo: { roles: ['caseworker-role'] } } } },
+      });
+      const response = mockRes();
+
+      await getUserByIdamId(req, response, next);
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith(sinon.match.has('idamId', 'user1'));
+      const emittedTraces = JSON.stringify(trace.args);
+      expect(emittedTraces).not.to.contain('PRIVATE_CACHE_REFRESH_ERROR_CANARY');
+      expect(emittedTraces).not.to.contain('PRIVATE_CACHE_REFRESH_TOKEN_CANARY');
+      expect(emittedTraces).not.to.contain('PRIVATE_CACHE_REFRESH_BODY_CANARY');
+      expect(emittedTraces).to.contain('refreshing user cache');
+      expect(emittedTraces).to.contain('503');
+    });
+
     it('returns null with 200 for silent not found', async () => {
       FullUserDetailCache.setUserDetails([]);
       sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').resolves([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments').resolves([]);
 
       const req = mockReq({
         body: { idamId: 'judicial-user', silentNotFound: true },

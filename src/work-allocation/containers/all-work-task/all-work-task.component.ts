@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
-import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo, UserRole } from '../../../app/models';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder, TaskContext } from '../../enums';
@@ -83,7 +85,15 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     );
 
     // get detailed services for the all work services list
-    const waJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions();
+    const waJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions().pipe(
+      catchError(() => {
+        this.infoMessageCommService.addMessageOnce({
+          type: InfoMessageType.WARNING,
+          message: InfoMessage.WA_JURISDICTIONS_UNAVAILABLE,
+        });
+        return of([]);
+      })
+    );
     this.waSupportedDetailedServices$ = combineLatest([userRoles$, waJurisdictions$]).pipe(
       map((jurisdictions) => {
         const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);

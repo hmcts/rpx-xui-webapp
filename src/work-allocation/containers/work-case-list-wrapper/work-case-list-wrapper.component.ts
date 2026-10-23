@@ -6,7 +6,7 @@ import { AlertService, Jurisdiction, LoadingService, safeJsonParse } from '@hmct
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
-import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators';
 import { HMCTSServiceDetails } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -58,6 +58,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   private pCasesTotal: number;
   private pUniqueCases: number;
+  private hasShownJurisdictionWarning = false;
   public routeEventsSubscription: Subscription;
 
   // subscriptions
@@ -171,7 +172,10 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       );
 
     // for all case lists other than all work
-    const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
+    const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions().pipe(
+      catchError(() => this.handleJurisdictionLoadError<string>()),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
     this.waSupportedJurisdictions$ = combineLatest([userRoles$, waJurisdictions$]).pipe(
       map((jurisdictions) => {
         const areasOfJurisdiction = jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
@@ -181,7 +185,10 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     );
 
     // for all work cases (need detailed service information)
-    const waDetailedJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions();
+    const waDetailedJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions().pipe(
+      catchError(() => this.handleJurisdictionLoadError<HMCTSServiceDetails>()),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
     this.waSupportedDetailedServices$ = combineLatest([userRoles$, waDetailedJurisdictions$]).pipe(
       map((jurisdictions) => {
         const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);
@@ -195,6 +202,17 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     if (this.selectedLocationsSubscription) {
       this.selectedLocationsSubscription.unsubscribe();
     }
+  }
+
+  private handleJurisdictionLoadError<T>(): Observable<T[]> {
+    if (!this.hasShownJurisdictionWarning) {
+      this.infoMessageCommService.addMessageOnce({
+        type: InfoMessageType.WARNING,
+        message: InfoMessage.WA_JURISDICTIONS_UNAVAILABLE,
+      });
+      this.hasShownJurisdictionWarning = true;
+    }
+    return of([]);
   }
 
   // only present for my work cases

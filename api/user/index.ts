@@ -40,8 +40,6 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const userInfo = { ...rawUserInfo, token: `Bearer ${bearerToken}` };
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
     const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
-    trackTrace(`User ${userInfo?.id} roles: ${JSON.stringify(allRoles)}`, { functionCall: 'getUserDetails' });
-    trackTrace(`User ${userInfo?.id} has ${userInfo?.roleCategories} roleCategories`, { functionCall: 'getUserDetails' });
     userInfo.roles = allRoles;
     res.send({
       canShareCases,
@@ -96,23 +94,22 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
 
       if (response.status === 304) {
         // as user role assignments are not returned use session to send expected results
-        trackTrace(`user ${id} details from session:- ${JSON.stringify(req?.session?.userRoleAssignments)}`, {
+        trackTrace('Role assignment service returned 304; using session assignments', {
           functionCall: 'refreshRoleAssignmentForUser',
         });
-        userRoleAssignments = setUserRoles(userInfo, req, id);
+        userRoleAssignments = setUserRoles(userInfo, req);
         return userRoleAssignments;
       }
 
       const activeRoleAssignments = getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date());
       req.session.roleAssignmentResponse = activeRoleAssignments;
-      userRoleAssignments = setUserRoles(userInfo, req, id);
+      userRoleAssignments = setUserRoles(userInfo, req);
       req.session.roleRequestEtag = response?.headers?.etag;
     } catch (error) {
-      let err = error;
-      if (typeof error === 'object' && error !== null) {
-        err = JSON.stringify(error);
-      }
-      trackTrace(`error while retrieving user ${id} details:- ${err}`, { functionCall: 'refreshRoleAssignmentForUser' });
+      const status = error?.status ?? error?.response?.status;
+      trackTrace(`Role assignment refresh failed (HTTP ${status ?? 'unavailable'})`, {
+        functionCall: 'refreshRoleAssignmentForUser',
+      });
     }
   } else {
     trackTrace('userInfo is null', { functionCall: 'refreshRoleAssignmentForUser' });
@@ -120,15 +117,15 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   return userRoleAssignments;
 }
 
-export function setUserRoles(userInfo: UserInfo, req: any, userId: string): any[] {
+export function setUserRoles(userInfo: UserInfo, req: any): any[] {
   userInfo.roles = userInfo.roles ? userInfo.roles : [];
-  trackTrace(`user ${userId} prior roles ${JSON.stringify(userInfo.roles.slice(0, 50))} before addition`);
+  trackTrace('Preparing role assignments', { functionCall: 'setUserRoles' });
   const activeRoleAssignments = req.session.roleAssignmentResponse;
   const userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
   const amRoles = getOrganisationRoles(activeRoleAssignments);
-  trackTrace(`user ${userId} roles: ${JSON.stringify(amRoles.slice(0, 50))}`, { functionCall: 'refreshRoleAssignmentForUser' });
+  trackTrace('Organisation roles resolved', { functionCall: 'setUserRoles' });
   addUserRolesIfUnique(userInfo, amRoles);
-  trackTrace(`user ${userId} roles ${JSON.stringify(userInfo.roles.slice(0, 50))} added to userInfo`);
+  trackTrace('Role assignments applied to user info', { functionCall: 'setUserRoles' });
   if (!userInfo.roleCategories || userInfo.roleCategories.length === 0) {
     // only set the role category if not already set
     // this means user will not have to log out and log in to be assigned it properly

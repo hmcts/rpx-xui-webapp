@@ -11,7 +11,7 @@ const httpMock: AxiosInstance = HttpMock.getInstance();
 const logger: JUILogger = log4jui.getLogger('task-service');
 
 export async function handleTaskGet(path: string, req: EnhancedRequest): Promise<any> {
-  logger.info('getting tasks for', path);
+  logger.info('getting task');
   const headers = setHeaders(req);
   const accept = 'Accept';
   const contentType = 'Content-Type';
@@ -22,7 +22,7 @@ export async function handleTaskGet(path: string, req: EnhancedRequest): Promise
 }
 
 export async function handleTaskRolesGet(path: string, req: EnhancedRequest): Promise<any> {
-  logger.info('getting task Roles for', path);
+  logger.info('getting task roles');
   const headers = setHeaders(req);
   const accept = 'Accept';
   const contentType = 'Content-Type';
@@ -33,13 +33,12 @@ export async function handleTaskRolesGet(path: string, req: EnhancedRequest): Pr
 }
 
 export async function handleTaskSearch(path: string, payload: any, req: EnhancedRequest): Promise<any> {
-  logger.info('search task for', JSON.stringify(payload));
   const headers = setHeaders(req);
   return await http.post(path, payload, { headers });
 }
 
 export async function handleTaskPost(path: string, payload: any, req: EnhancedRequest): Promise<any> {
-  logger.info('posting tasks for', path);
+  logger.info('posting Work Allocation task action');
   // Return the whole response, not just the data, so we can
   // see what the status of the response is.
   return await handlePost(path, payload, req);

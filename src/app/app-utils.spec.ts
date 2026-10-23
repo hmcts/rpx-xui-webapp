@@ -253,6 +253,24 @@ describe('getDistinctJurisdictionsForRoleAssignment', () => {
   });
 });
 
+describe('getOrganisationJurisdictions', () => {
+  it('returns unique non-empty jurisdictions from organisation roles in source order', () => {
+    expect(
+      AppUtils.getOrganisationJurisdictions([
+        { jurisdiction: 'IA', roleType: 'ORGANISATION' } as any,
+        { jurisdiction: 'CIVIL', roleType: 'ORGANISATION' } as any,
+        { jurisdiction: 'IA', roleType: 'ORGANISATION' } as any,
+        { jurisdiction: '', roleType: 'ORGANISATION' } as any,
+        { jurisdiction: 'SSCS', roleType: 'CASE' } as any,
+      ])
+    ).toEqual(['IA', 'CIVIL']);
+  });
+
+  it('returns an empty list when no organisation jurisdictions are available', () => {
+    expect(AppUtils.getOrganisationJurisdictions()).toEqual([]);
+  });
+});
+
 describe('checkRoleIsSupported', () => {
   const waVerification = {
     waSupportedCategories: [],

@@ -39,6 +39,11 @@ import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
 import { Task } from './interfaces/task';
 
+export function getSafeFailureStatus(error: any): number | 'unavailable' {
+  const status = error?.status ?? error?.response?.status;
+  return Number.isInteger(status) && status >= 100 && status <= 599 ? status : 'unavailable';
+}
+
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
 }
@@ -605,7 +610,7 @@ export async function getRoleAssignmentsByQuery(query: any, req: express.Request
     const result = await http.post(path, query, { headers });
     return result.data;
   } catch (e) {
-    console.error(e);
+    console.error(`getRoleAssignmentsByQuery request failed status=${getSafeFailureStatus(e)}`);
   }
   return null;
 }
@@ -618,7 +623,7 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
     const result = await http.post(path, query, { headers, params: { ctid: queryParams } });
     return result.data;
   } catch (e) {
-    console.error(e);
+    console.error(`searchCasesById request failed status=${getSafeFailureStatus(e)}`);
   }
   return null;
 }
@@ -938,7 +943,7 @@ export async function getTypesOfWorkByUserId(path, req: express.Request): Promis
     const result = await http.get(path, { headers });
     return result.data;
   } catch (e) {
-    console.error(e);
+    console.error(`getTypesOfWorkByUserId request failed status=${getSafeFailureStatus(e)}`);
   }
   return null;
 }

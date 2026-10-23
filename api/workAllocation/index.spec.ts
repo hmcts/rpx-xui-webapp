@@ -39,6 +39,7 @@ import * as taskServiceModule from './taskService';
 import * as caseWorkerServiceModule from './caseWorkerService';
 import * as caseWorkerUserDataCacheService from './caseWorkerUserDataCacheService';
 import * as utilModule from './util';
+import * as taskHearingDateService from './taskHearingDateService';
 import * as waSupportedJurisdictionsModule from '../waSupportedJurisdictions';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -324,6 +325,33 @@ describe('workAllocation', () => {
   });
 
   describe('searchTask', () => {
+    for (const view of ['MyTasks', 'AvailableTasks', 'AllWork', 'ActiveTasks']) {
+      it(`should ${view === 'ActiveTasks' ? 'preserve' : 'replace'} hearing dates for ${view}`, async () => {
+        const tasks = [{ ...mockTasks[0], permissions: [], assignee: null, next_hearing_date: '2020-01-01' }];
+        sandbox.stub(taskServiceModule, 'handleTaskSearch').resolves({ status: 200, data: { tasks, total_records: 17 } });
+        const enrich = sandbox
+          .stub(taskHearingDateService, 'setTaskHearingDatesFromCases')
+          .callsFake(async (items) => items.map((item) => ({ ...item, next_hearing_date: '2026-11-01' })));
+        const req = mockReq({
+          body: {
+            searchRequest: { search_parameters: [], sorting_parameters: [] },
+            view,
+          },
+        });
+        const response = mockRes();
+
+        await searchTask(req, response, next);
+
+        expect(next.called).to.equal(false);
+        const result = response.send.firstCall.args[0];
+        expect(result.total_records).to.equal(17);
+        expect(result.tasks[0].next_hearing_date).to.equal(view === 'ActiveTasks' ? '2020-01-01' : '2026-11-01');
+        expect(enrich.calledOnce).to.equal(view !== 'ActiveTasks');
+        expect(result.tasks[0].case_name).to.equal(tasks[0].case_name);
+        expect(result.tasks[0].due_date).to.equal(tasks[0].due_date);
+      });
+    }
+
     it('should make a post request and respond appropriately', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({

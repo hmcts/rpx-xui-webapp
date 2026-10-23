@@ -611,6 +611,7 @@ export async function getRoleAssignmentsByQuery(query: any, req: express.Request
 }
 
 export async function searchCasesById(queryParams: string, query: any, req: express.Request): Promise<CaseList> {
+  console.log('Searching cases by ID with queryParams:', JSON.stringify(queryParams, null, 2), 'and query:', JSON.stringify(query, null, 2));
   const url = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
   const path = `${url}/searchCases`;
   const headers = setHeaders(req);

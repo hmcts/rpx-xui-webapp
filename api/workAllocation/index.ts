@@ -35,6 +35,7 @@ import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
+import { setTaskHearingDatesFromCases } from './taskHearingDateService';
 import {
   assignActionsToCases,
   assignActionsToUpdatedTasks,
@@ -186,6 +187,9 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       const assigneeIds = getAssigneeIdsFromTasks(tasksWithActions);
       if (assigneeIds.length > 0) {
         tasksWithActions = await setAssigneeNamesInTasks(tasksWithActions, assigneeIds);
+      }
+      if ([ViewType.MY_TASKS, ViewType.AVAILABLE_TASKS, ViewType.ALL_WORK].includes(req.body.view)) {
+        tasksWithActions = await setTaskHearingDatesFromCases(tasksWithActions, req);
       }
       returnData = {
         tasks: tasksWithActions,

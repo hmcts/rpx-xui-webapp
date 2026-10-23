@@ -314,10 +314,15 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     myCasesRequests.length = 0;
     await page.reload();
-    await expect.poll(() => myCasesRequests.some((request) =>
-      hasExactSearchParameterValues(request, 'services', ['IA']) &&
-      hasExactSearchParameterValues(request, 'locations', ['765324'])
-    )).toBe(true);
+    await expect
+      .poll(() =>
+        myCasesRequests.some(
+          (request) =>
+            hasExactSearchParameterValues(request, 'services', ['IA']) &&
+            hasExactSearchParameterValues(request, 'locations', ['765324'])
+        )
+      )
+      .toBe(true);
     const savedFilter = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? 'null'), MY_WORK_FILTER_STORAGE_KEY);
     expect(savedFilter.ownerHash).toBe(createHash('sha256').update(`exui-filter-owner:${expectedUserId}`).digest('hex'));
     expect(savedFilter).not.toHaveProperty('idamId');
@@ -361,35 +366,47 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         requests.push(route.request().postDataJSON() as SearchRequestPayload);
         await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(buildMyCasesMock()) });
       });
-      await page.addInitScript(({ key, ownerHash }) => {
-        localStorage.setItem(key, JSON.stringify({
-          id: key,
-          ownerHash,
-          fields: [
-            { name: 'services', value: ['IA'] },
-            { name: 'locations', value: [{ epimms_id: '231596' }] },
-          ],
-        }));
-      }, {
-        key: MY_WORK_FILTER_STORAGE_KEY,
-        ownerHash: previousOwner === 'missing-owner'
-          ? undefined
-          : createHash('sha256').update('exui-filter-owner:another-user').digest('hex'),
-      });
+      await page.addInitScript(
+        ({ key, ownerHash }) => {
+          localStorage.setItem(
+            key,
+            JSON.stringify({
+              id: key,
+              ownerHash,
+              fields: [
+                { name: 'services', value: ['IA'] },
+                { name: 'locations', value: [{ epimms_id: '231596' }] },
+              ],
+            })
+          );
+        },
+        {
+          key: MY_WORK_FILTER_STORAGE_KEY,
+          ownerHash:
+            previousOwner === 'missing-owner'
+              ? undefined
+              : createHash('sha256').update('exui-filter-owner:another-user').digest('hex'),
+        }
+      );
 
       await taskListPage.gotoMyCases();
       await expect.poll(() => requests.length).toBeGreaterThan(0);
       await expect(await taskListPage.waitForServiceFilterOptionVisible('Civil')).toBeChecked();
-      expect(requests.some((request) =>
-        hasExactSearchParameterValues(request, 'services', ['IA']) &&
-        hasExactSearchParameterValues(request, 'locations', ['231596'])
-      )).toBe(false);
-      await expect.poll(() => page.evaluate((key) => {
-        const setting = JSON.parse(localStorage.getItem(key) ?? 'null');
-        return setting?.ownerHash;
-      }, MY_WORK_FILTER_STORAGE_KEY)).toBe(
-        createHash('sha256').update(`exui-filter-owner:${currentUserId}`).digest('hex')
-      );
+      expect(
+        requests.some(
+          (request) =>
+            hasExactSearchParameterValues(request, 'services', ['IA']) &&
+            hasExactSearchParameterValues(request, 'locations', ['231596'])
+        )
+      ).toBe(false);
+      await expect
+        .poll(() =>
+          page.evaluate((key) => {
+            const setting = JSON.parse(localStorage.getItem(key) ?? 'null');
+            return setting?.ownerHash;
+          }, MY_WORK_FILTER_STORAGE_KEY)
+        )
+        .toBe(createHash('sha256').update(`exui-filter-owner:${currentUserId}`).digest('hex'));
     });
   }
 

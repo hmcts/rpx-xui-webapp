@@ -368,7 +368,9 @@ describe('Index', () => {
 
       await getUserDetails(req, res, next);
 
-      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal('f5f1b0776101acadd9d3171e4343b5de5ebfb15187d1ec2ddf8ec1acf3aa1ea6');
+      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal(
+        'f5f1b0776101acadd9d3171e4343b5de5ebfb15187d1ec2ddf8ec1acf3aa1ea6'
+      );
       expect(req.session.passport.user.userinfo).not.to.have.property('filterOwnerHash');
     });
 
@@ -393,7 +395,9 @@ describe('Index', () => {
 
       await getUserDetails(req, res, next);
 
-      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal('7abb8f7e388ed61a565b3ae0f6e770f6f46c868fe8ed450566b59baa762250a2');
+      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal(
+        '7abb8f7e388ed61a565b3ae0f6e770f6f46c868fe8ed450566b59baa762250a2'
+      );
       expect(req.session.passport.user.userinfo).not.to.have.property('filterOwnerHash');
     });
 
@@ -418,7 +422,9 @@ describe('Index', () => {
 
       await getUserDetails(req, res, next);
 
-      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal('f5f1b0776101acadd9d3171e4343b5de5ebfb15187d1ec2ddf8ec1acf3aa1ea6');
+      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal(
+        'f5f1b0776101acadd9d3171e4343b5de5ebfb15187d1ec2ddf8ec1acf3aa1ea6'
+      );
       expect(req.session.passport.user.userinfo).not.to.have.property('filterOwnerHash');
     });
 

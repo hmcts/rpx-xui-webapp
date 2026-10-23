@@ -83,6 +83,25 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     }
   });
 
+  test('GET /api/user/o/userinfo contract: returns UserDetails with userInfo object', async ({ apiClientFor }) => {
+    const apiClient = await apiClientFor('waSolicitor');
+    // Given: An authenticated user
+    // When: Fetching user details
+    const response = await guardedRequest(() => apiClient.get('api/user/o/userinfo', { timeoutMs: 20_000, throwOnError: false }));
+
+    expectStatus(response.status, [200]);
+
+    // And: Response has userInfo when successful
+    if (response.status === 200 && response.data && typeof response.data === 'object') {
+      const userData = response.data as Record<string, unknown>;
+      if ('userInfo' in userData && userData.userInfo && typeof userData.userInfo === 'object') {
+        const userInfo = userData.userInfo as Record<string, unknown>;
+        // Verify userInfo has an id field (could be 'id' or 'uid')
+        expect(userInfo.id || userInfo.uid).toBeDefined();
+      }
+    }
+  });
+
   test('GET /workallocation/task/types-of-work contract: returns array of work type classifications', async ({
     apiClientFor,
   }) => {

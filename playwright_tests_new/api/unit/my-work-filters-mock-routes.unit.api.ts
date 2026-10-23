@@ -69,7 +69,7 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
     expect(fakePage.initScripts).toHaveLength(2);
     expect(fakePage.routes.map(({ pattern }) => pattern)).toEqual(
       expect.arrayContaining([
-        '**/api/user/details*',
+        '**/api/user/o/userinfo*',
         myCasesRoutePattern,
         '**/aggregated/caseworkers/**/jurisdictions*',
         '**/workallocation/region-location*',
@@ -78,7 +78,7 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
       ])
     );
 
-    const userDetailsRoute = getLastRegisteredRoute(fakePage.routes, '**/api/user/details*');
+    const userDetailsRoute = getLastRegisteredRoute(fakePage.routes, '**/api/user/o/userinfo*');
     const myCasesRoute = getLastRegisteredRoute(fakePage.routes, myCasesRoutePattern);
     const aggregatedJurisdictionsRoute = getLastRegisteredRoute(fakePage.routes, '**/aggregated/caseworkers/**/jurisdictions*');
     const fullLocationRoute = getLastRegisteredRoute(fakePage.routes, '**/workallocation/full-location*');

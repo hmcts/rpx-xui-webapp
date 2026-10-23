@@ -342,7 +342,7 @@ test.describe('PRL hearings case setup', () => {
     };
 
     await expect(resolverTest.getHearingManagerPrimaryLocation(page as never, 'PRIVATELAW')).resolves.toBe('234946');
-    expect(requestedUrls).toEqual(['/api/user/details?refreshRoleAssignments=true']);
+    expect(requestedUrls).toEqual(['/api/user/o/userinfo?refreshRoleAssignments=true']);
   });
 
   test('builds the minimal PRL testing-support admin create payload', () => {

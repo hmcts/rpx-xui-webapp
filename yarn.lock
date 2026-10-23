@@ -3348,9 +3348,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.33":
-  version: 2.30.33
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.33"
+"@hmcts/rpx-xui-node-lib@npm:2.30.34-joi-update":
+  version: 2.30.34-joi-update
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.34-joi-update"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.20.0"
@@ -3359,7 +3359,7 @@ __metadata:
     deepmerge: "npm:^4.3.1"
     express: "npm:^5.2.1"
     express-session: "npm:^1.19.0"
-    joi: "npm:^18.2.8"
+    joi: "npm:^18.3.0"
     jwt-decode: "npm:^4.0.0"
     openid-client: "npm:^5.7.1"
     otplib: "npm:^13.4.0"
@@ -3369,7 +3369,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/032be4a5a506cdb3d8b17d9053683ef388befe67cd9a8457d83007bc5e6d94a6443aa69a75d70a8278a83de7eb21dc0fdd42dd033b1419d78611bacc1274c471
+  checksum: 10/c661ef6cf74187e1a523ccea1f1da920363a8e50ed0dfa3f62b4f018a75c12b72010b56bcf37a289f2d638488446a42a6240f56f505d1f96e731647008e0dccb
   languageName: node
   linkType: hard
 
@@ -15128,7 +15128,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^18.0.1, joi@npm:^18.0.2, joi@npm:^18.2.8":
+"joi@npm:^18.0.1, joi@npm:^18.0.2":
   version: 18.2.9
   resolution: "joi@npm:18.2.9"
   dependencies:
@@ -15140,6 +15140,21 @@ __metadata:
     "@hapi/topo": "npm:^6.0.2"
     "@standard-schema/spec": "npm:^1.1.0"
   checksum: 10/321836e1bded18c23f5bd10c85715cda778849cddf9285704c39b8df290ad50f9d977f4ebf522cc741feba31aa65fe760dc84e9f218decc777ed15412a33bf77
+  languageName: node
+  linkType: hard
+
+"joi@npm:^18.3.0":
+  version: 18.3.0
+  resolution: "joi@npm:18.3.0"
+  dependencies:
+    "@hapi/address": "npm:^5.1.1"
+    "@hapi/formula": "npm:^3.0.2"
+    "@hapi/hoek": "npm:^11.0.7"
+    "@hapi/pinpoint": "npm:^2.0.1"
+    "@hapi/tlds": "npm:^1.1.1"
+    "@hapi/topo": "npm:^6.0.2"
+    "@standard-schema/spec": "npm:^1.1.0"
+  checksum: 10/b6cb61b45513415131ffa9617405713d54cc50392f2c3872c9841c6509b575bbb53145edd1fd7464075aa1f8a3eb0092171f36eb65dbb9aff06afaebc88ea46b
   languageName: node
   linkType: hard
 
@@ -19889,7 +19904,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.22"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.33"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.34-joi-update"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

@@ -6,7 +6,7 @@
     "api"
   ],
   "engines": {
-    "node": ">=24.18.0"
+    "node": ">=24.22.1"
   },
   "scripts": {
     "build": "yarn build:prod && yarn build:node",

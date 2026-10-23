@@ -52,8 +52,9 @@ describe('Logger service', () => {
       mockedSessionStorageService,
       mockEnvironmentService
     );
-    service.warn('message');
-    expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
+    const properties = { reason: 'test warning' };
+    service.warn('message', properties);
+    expect(mockedMonitoringService.logEvent).toHaveBeenCalledWith('message', properties);
     expect(mockedNgxLogger.warn).toHaveBeenCalled();
   });
 

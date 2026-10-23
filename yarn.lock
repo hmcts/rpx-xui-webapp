@@ -3093,9 +3093,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.11-CME-1008-dart-sass-rc2":
-  version: 7.4.11-CME-1008-dart-sass-rc2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.11-CME-1008-dart-sass-rc2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.14-CME-1008-dart-sass-rc3":
+  version: 7.4.14-CME-1008-dart-sass-rc3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.14-CME-1008-dart-sass-rc3"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28-cme-1118-v1"
@@ -3142,7 +3142,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/f91d4240ea1bc780f24cb7436fd50ae00a585c9ae091e231556a9440576c1d26c392ad45d4c1974991ee2508ddc9ab33e6deb51e30acc9db9482e1c21782706f
+  checksum: 10/2bc8f08b14620d4eb636ae2efe9ad0b75a7c1287f2448a26445bfb42239c7e0cd35aa76ac9b44aed170ebcfa83749a6bc237668a837bb82cf5d7bc40ffe5175b
   languageName: node
   linkType: hard
 
@@ -19051,7 +19051,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.11-CME-1008-dart-sass-rc2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.14-CME-1008-dart-sass-rc3"
     "@hmcts/ccpay-web-component": "npm:6.5.28-cme-1118-v1"
     "@hmcts/media-viewer": "npm:4.2.42-CME-776-dart-angular-20-rc2"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

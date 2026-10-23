@@ -12,6 +12,12 @@ export async function setupCaseFileViewMockSession(page: Page, caseId: string, b
       email: 'wave2.playwright@justice.gov.uk',
     },
   });
+  await page.route(/\/api\/configuration\?configurationKey=termsAndConditionsEnabled(?:&|$)/, (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(false) })
+  );
+  await page.route('**/api/monitoring-tools*', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) })
+  );
   await page.route('**/auth/isAuthenticated*', async (route) => {
     await route.fulfill({
       status: 200,

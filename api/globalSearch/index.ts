@@ -1,16 +1,11 @@
+import { fetchOrgServices } from '../ref-data/orgServices';
 import { NextFunction, Response } from 'express';
 import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import {
-  GLOBAL_SEARCH_SERVICES,
-  SERVICES_CCD_DATA_STORE_API_PATH,
-  SERVICES_LOCATION_REF_API_URL,
-} from '../configuration/references';
+import { GLOBAL_SEARCH_SERVICES, SERVICES_CCD_DATA_STORE_API_PATH } from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
-import { http } from '../lib/http';
-import { setHeaders } from '../lib/proxy';
 import { toTitleCase } from '../utils';
 import * as log4jui from '../lib/log4jui';
 /**
@@ -18,19 +13,16 @@ import * as log4jui from '../lib/log4jui';
  * api/globalsearch/services
  */
 
-const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
 const logger: JUILogger = log4jui.getLogger('global-search');
 
 export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;
   try {
     // Return global search services from session if available
     if (req.session.globalSearchServices && req.session.globalSearchServices.length !== 0) {
       return res.json(req.session.globalSearchServices);
     }
 
-    const response = await http.get(`${apiPath}`, { headers: setHeaders(req) });
-
+    const response = await fetchOrgServices(req);
     const services: any = generateServices(response.data);
 
     // Store generated global search services to session

@@ -1,21 +1,19 @@
+import { fetchOrgServices } from '../ref-data/orgServices';
 import { NextFunction, Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_REF_API_URL, WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
+import { WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
-import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
-import { setHeaders } from '../lib/proxy';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 import { toTitleCase } from '../utils';
+import * as log4jui from '../lib/log4jui';
 
-const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
+const logger = log4jui.getLogger('wa-supported-jurisdictions');
 
 // Used for all work - could be used for all in future?
 export async function getDetailedWASupportedJurisdictions(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
-  const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;
   try {
-    const response = await http.get(`${apiPath}`, { headers: setHeaders(req) });
-
+    const response = await fetchOrgServices(req);
     const services: any = generateServices(response.data);
     res.send(services).status(200);
   } catch (error) {
@@ -41,7 +39,7 @@ export function getWASupportedJurisdictionsList(): any {
     const jurisdictionsArray = jurisdictions.split(',');
     return jurisdictionsArray;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
   }
 }
 

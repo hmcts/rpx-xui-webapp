@@ -90,4 +90,14 @@ describe('HmctsGlobalFooterComponent', () => {
   it('should not show logged in user text when no email is provided', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Logged in as:');
   });
+
+  it('should pass the site map link label through the translation pipe', () => {
+    const translatePipeSpy = spyOn(RpxTranslateMockPipe.prototype, 'transform').and.callThrough();
+    fixture = TestBed.createComponent(HmctsGlobalFooterComponent);
+    component = fixture.componentInstance;
+    component.navigation = navigationData;
+    fixture.detectChanges();
+
+    expect(translatePipeSpy).toHaveBeenCalledWith('Site map');
+  });
 });

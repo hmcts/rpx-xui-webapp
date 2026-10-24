@@ -1,4 +1,5 @@
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HearingsTelemetryService } from './hearings-telemetry.service';
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { CaseFlagsRefDataService } from './case-flags-ref-data.service';
@@ -8,7 +9,12 @@ describe('CaseFlagsRefDataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
-      providers: [CaseFlagsRefDataService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        { provide: HearingsTelemetryService, useValue: null },
+        CaseFlagsRefDataService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
   });
 

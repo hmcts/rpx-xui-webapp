@@ -1,4 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { inject, TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -743,6 +744,7 @@ describe('Case Flags Resolver', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([])],
       providers: [
+        { provide: HearingsTelemetryService, useValue: null },
         provideMockStore({ initialState }),
         CaseFlagsRefDataService,
         provideHttpClient(withInterceptorsFromDi()),

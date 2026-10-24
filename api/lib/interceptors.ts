@@ -6,6 +6,8 @@ import { MAX_LOG_LINE } from '../configuration/references';
 
 import { shorten, valueOrNull } from '../lib/util';
 import * as log4jui from './log4jui';
+import { isHearingsTelemetryRequest } from './hearings-telemetry-correlation';
+import { traceHearingsDiagnostic } from '../hearings/hearings-telemetry';
 
 const exceptionOptions = {
   maxLines: 1,
@@ -258,6 +260,13 @@ export function errorInterceptor(error) {
   error.config.metadata.startTime = error.config.metadata.startTime || new Date();
   error.config.metadata.endTime = new Date();
   error.duration = error.config.metadata.endTime - error.config.metadata.startTime;
+
+  if (isHearingsTelemetryRequest()) {
+    // Native SDK dependency telemetry already records the outbound request and timing.
+    // Do not duplicate it with a custom request containing raw URLs or extracted case IDs.
+    traceHearingsDiagnostic('outboundRequest', 'failed', error);
+    return Promise.reject(error.response);
+  }
 
   const logger = log4jui.getLogger('return');
 

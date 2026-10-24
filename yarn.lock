@@ -3160,9 +3160,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.14":
-  version: 7.4.14
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.14"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.14-exui-5389-rc2":
+  version: 7.4.14-exui-5389-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.14-exui-5389-rc2"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
@@ -3208,7 +3208,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/bb46ae9697e0fcdb0e34f17cdac762962ff10a28acb2e2041830f5d6197e2f8a159a9ae00615ced217ea08816bbb7239d4036d47ead07c1658b57476399b5fa1
+  checksum: 10/a1012daf7662921912749c7fc22cc07f76fb561494921bf6256814d0d3686c9b53dc3012883bd47d0b9e987733ad11e7ea04bc0920043423f715682c9c5ff7e7
   languageName: node
   linkType: hard
 
@@ -3319,9 +3319,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.22":
-  version: 3.2.22
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.22"
+"@hmcts/rpx-xui-common-lib@npm:3.2.22-exui-5389-rc2":
+  version: 3.2.22-exui-5389-rc2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.22-exui-5389-rc2"
   dependencies:
     govuk-frontend: "npm:5.13.0"
     tslib: "npm:^2.0.0"
@@ -3344,7 +3344,7 @@ __metadata:
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/13b786a387c7d05247139b8818201a22201d8dc38f850d4ace29943a32f560209cd6fed0094e83b2f64f837f4fd7283d8abcf33967d6158697ae9eb9ab42686c
+  checksum: 10/d63dbd84be40e5c08f59d5eea911a48676cd523d5bd5e8983e4d79d73505edce15bdc5365729a6ddb15932fee0a77f9864c08da48138abb1c327d7a75b93615c
   languageName: node
   linkType: hard
 
@@ -19882,13 +19882,13 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.14"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.14-exui-5389-rc2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.43"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.22"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.22-exui-5389-rc2"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.33"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"

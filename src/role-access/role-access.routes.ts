@@ -23,7 +23,7 @@ export const ROUTES: Routes = [
             component: null,
             // canActivate: [HealthCheckGuard],
             data: {
-              title: 'HMCTS Manage cases | Role and access | Specific access',
+              title: 'Role and access - Specific access',
             },
           },
         ],
@@ -38,7 +38,7 @@ export const ROUTES: Routes = [
         path: '',
         component: null,
         data: {
-          title: 'HMCTS Manage cases | Role and access | Add Exclusion',
+          title: 'Role and access - Add Exclusion',
         },
       },
     ],
@@ -48,14 +48,14 @@ export const ROUTES: Routes = [
     component: DeleteExclusionComponent,
     canActivate: [CaseAllocatorGuard],
     data: {
-      title: 'HMCTS Manage cases | Role and access | Delete exclusion',
+      title: 'Role and access - Delete exclusion',
     },
   },
   {
     path: 'rejected-request',
     component: RejectedRequestViewComponent,
     data: {
-      title: 'HMCTS Manage cases | Role and access | Rejected request',
+      title: 'Role and access - Rejected request',
     },
   },
   {
@@ -67,7 +67,7 @@ export const ROUTES: Routes = [
         component: AllocateRoleHomeComponent,
         canActivate: [CaseAllocatorGuard],
         data: {
-          title: 'HMCTS Manage cases | Role and access | Allocate a role',
+          title: 'Role and access - Allocate a role',
         },
       },
       {
@@ -75,7 +75,7 @@ export const ROUTES: Routes = [
         component: AllocateRoleHomeComponent,
         canActivate: [CaseAllocatorGuard],
         data: {
-          title: 'HMCTS Manage cases | Role and access | Reallocate a role',
+          title: 'Role and access - Reallocate a role',
         },
       },
       {
@@ -83,7 +83,7 @@ export const ROUTES: Routes = [
         component: RemoveRoleComponent,
         canActivate: [CaseAllocatorGuard],
         data: {
-          title: 'HMCTS Manage cases | Role and access | Remove a role',
+          title: 'Role and access - Remove a role',
         },
       },
     ],

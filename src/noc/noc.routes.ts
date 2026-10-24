@@ -11,7 +11,7 @@ export const ROUTES: Routes = [
         path: '',
         component: null,
         data: {
-          title: 'HMCTS Manage cases | Notice of Change',
+          title: 'Notice of Change',
           featureDisabledRedirect: '/',
         },
       },

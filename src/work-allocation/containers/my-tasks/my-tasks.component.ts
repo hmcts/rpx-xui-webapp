@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
@@ -7,20 +6,13 @@ import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '..
 import { FieldConfig } from '../../models/common';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
-import { select } from '@ngrx/store';
-import { filter, take } from 'rxjs/operators';
-import * as fromActions from '../../../app/store';
-import { Subscription } from 'rxjs';
 
 @Component({
   standalone: false,
   selector: 'exui-my-tasks',
   templateUrl: 'my-tasks.component.html',
 })
-export class MyTasksComponent extends TaskListWrapperComponent implements OnDestroy, OnInit {
-  private allowedServices: string[];
-  private roleAssignmentSubscription: Subscription;
-
+export class MyTasksComponent extends TaskListWrapperComponent implements OnInit {
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyTasks;
   }
@@ -39,42 +31,6 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnDest
 
   public get fields(): FieldConfig[] {
     return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;
-  }
-
-  public ngOnInit(): void {
-    super.ngOnInit();
-    this.roleAssignmentSubscription = this.store
-      .pipe(
-        select(fromActions.getUserDetails),
-        filter((userDetails) => Array.isArray(userDetails?.roleAssignmentInfo)),
-        take(1)
-      )
-      .subscribe((userDetails) => {
-        const roleAssignmentInfo = userDetails.roleAssignmentInfo;
-        const judicialCaseRole = roleAssignmentInfo.find(
-          (role) => role.roleCategory === RoleCategory.JUDICIAL && role.roleType === 'CASE'
-        );
-        this.allowedServices = [
-          ...AppUtils.getOrganisationJurisdictions(roleAssignmentInfo),
-          ...(this.isCurrentUserJudicial() && judicialCaseRole
-            ? AppUtils.getDistinctJurisdictionsForRoleAssignment(roleAssignmentInfo, judicialCaseRole)
-            : []),
-        ];
-        this.loadTasks();
-      });
-  }
-
-  public ngOnDestroy(): void {
-    this.roleAssignmentSubscription?.unsubscribe();
-    super.ngOnDestroy();
-  }
-
-  protected canLoadTasks(): boolean {
-    return (
-      this.allowedServices !== undefined &&
-      this.selectedServices.length > 0 &&
-      this.selectedServices.every((service) => this.allowedServices.includes(service))
-    );
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {

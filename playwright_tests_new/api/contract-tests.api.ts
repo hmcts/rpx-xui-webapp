@@ -61,20 +61,6 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     expectContract(response.data, WorkAllocationSchemas.TaskList, {
       context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
     });
-
-    // And: tasks array is present
-    const taskListData = response.data as { tasks: unknown[] };
-    expect(taskListData).toHaveProperty('tasks');
-    expect(Array.isArray(taskListData.tasks)).toBe(true);
-
-    // And: Each task has required fields
-    if (taskListData.tasks.length > 0) {
-      const firstTask = taskListData.tasks[0] as { id: unknown; task_state: unknown };
-      expect(firstTask).toHaveProperty('id');
-      expect(firstTask).toHaveProperty('task_state');
-      expect(typeof firstTask.id).toBe('string');
-      expect(typeof firstTask.task_state).toBe('string');
-    }
   });
 
   test('GET /workallocation/task/types-of-work contract: returns array of work type classifications', async ({

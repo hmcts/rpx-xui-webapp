@@ -1,6 +1,5 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
 import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
@@ -27,7 +26,6 @@ import {
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
-chai.use(chaiAsPromised);
 
 describe('CaseWorker Service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -199,39 +197,6 @@ describe('CaseWorker Service', () => {
   });
 
   describe('handlePostSearch', () => {
-    it('does not log the completable-task search payload', async () => {
-      const caseId = 'CASE-SEARCH-CANARY';
-      const caseType = 'CASE-TYPE-SEARCH-CANARY';
-      const eventId = 'EVENT-SEARCH-CANARY';
-      const payload = {
-        case_id: caseId,
-        case_jurisdiction: 'IA',
-        case_type: caseType,
-        event_id: eventId,
-      };
-      const mockResponse = { status: 200, data: [] };
-      const path = '/task/search-for-completable';
-      const req = mockReq();
-      const post = sandbox.stub(http, 'post').resolves(mockResponse);
-      const emittedLogs: string[] = [];
-      sandbox.stub(process.stdout, 'write').callsFake((chunk: string | Uint8Array) => {
-        emittedLogs.push(chunk.toString());
-        return true;
-      });
-
-      const response = await handlePostSearch(path, payload, req);
-
-      expect(response).to.deep.equal(mockResponse);
-      expect(post).to.have.been.calledOnce;
-      expect(post.firstCall.args[0]).to.equal(path);
-      expect(post.firstCall.args[1]).to.deep.equal(payload);
-      const logOutput = emittedLogs.join('');
-      expect(logOutput).to.contain('post search');
-      for (const canary of [caseId, caseType, eventId]) {
-        expect(logOutput).not.to.contain(canary);
-      }
-    });
-
     it('should make a post request with payload', async () => {
       const mockResponse = { status: 200, data: { results: [] } };
       sandbox.stub(http, 'post').resolves(mockResponse);

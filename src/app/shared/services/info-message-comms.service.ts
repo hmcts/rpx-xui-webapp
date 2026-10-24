@@ -43,15 +43,6 @@ export class InfoMessageCommService {
     this.emitMessages(this.infoMessages);
   }
 
-  public addMessageOnce(message: InformationMessage): void {
-    const alreadyQueued = this.infoMessages.some(
-      (queuedMessage) => queuedMessage.type === message.type && queuedMessage.message === message.message
-    );
-    if (!alreadyQueued) {
-      this.addMessage(message);
-    }
-  }
-
   public emitMessages(messages: InformationMessage[]): void {
     this.infoMessageSource.next(messages);
   }

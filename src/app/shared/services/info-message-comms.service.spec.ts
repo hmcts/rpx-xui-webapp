@@ -92,21 +92,6 @@ describe('WorkAllocation: InfoMessageCommService', () => {
     });
   });
 
-  describe('addMessageOnce()', () => {
-    it('does not queue an identical message more than once', () => {
-      const service = new InfoMessageCommService();
-      const warning: InformationMessage = {
-        type: InfoMessageType.WARNING,
-        message: InfoMessage.WA_JURISDICTIONS_UNAVAILABLE,
-      };
-
-      service.addMessageOnce(warning);
-      service.addMessageOnce(warning);
-
-      expect(service.getMessages()).toEqual([warning]);
-    });
-  });
-
   describe('emitMessages()', () => {
     it(
       'should pass messages to the Subjects next() function, so that any subscribers' +

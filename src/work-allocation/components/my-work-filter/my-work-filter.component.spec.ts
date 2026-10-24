@@ -7,13 +7,10 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService, FilterService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
-import { of, OperatorFunction, Subject, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import * as fromAppStore from '../../../app/store';
-import { InfoMessage } from '../../../app/shared/enums/info-message';
-import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
-import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
 import { MyWorkFilterComponent } from './my-work-filter.component';
@@ -83,17 +80,17 @@ describe('MyWorkFilterComponent', () => {
     postcode: 'AB11 6LT',
   };
   const mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks']);
-  mockTaskService.currentTasks$ = of([null]);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks', 'currentTasks$']);
   const locationService = jasmine.createSpyObj('locationService', ['path', 'getSpecificLocations']);
   const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', [
     'getWASupportedJurisdictions',
   ]);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem', 'removeItem']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
   locationService.getSpecificLocations.and.returnValue(of([]));
+  mockTaskService.currentTasks$.and.returnValue(of([null]));
   mockStore.pipe.and.returnValue(of({ roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION' }] }));
   const roleAssignmentInfo = [
     {
@@ -226,218 +223,6 @@ describe('MyWorkFilterComponent', () => {
 
   it('should set allowTypesOfWorkFilter to true by default', () => {
     expect(component.allowTypesOfWorkFilter).toBe(true);
-  });
-
-  it('continues initial filter bootstrap with only role-assigned services when jurisdiction lookup fails', () => {
-    fixture.destroy();
-    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(
-      throwError(() => new Error('jurisdiction lookup unavailable'))
-    );
-    mockFilterService.persist.calls.reset();
-
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    component.persistence = 'session';
-    fixture.detectChanges();
-
-    const services = component.fieldsSettings.fields.find((field) => field.name === 'services');
-    expect(services?.value).toEqual(['services_all', 'IA']);
-    expect(component.fieldsConfig.fields.map((field) => field.name)).toContain('services');
-    expect(mockFilterService.persist).toHaveBeenCalled();
-    expect(TestBed.inject(InfoMessageCommService).getMessages()).toContain({
-      type: InfoMessageType.WARNING,
-      message: InfoMessage.WA_JURISDICTIONS_UNAVAILABLE,
-    });
-  });
-
-  it('preserves a narrower saved service selection within the user role scope when jurisdiction lookup fails', () => {
-    fixture.destroy();
-    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(
-      throwError(() => new Error('jurisdiction lookup unavailable'))
-    );
-    mockStore.pipe.and.returnValue(
-      of({
-        roleAssignmentInfo: [
-          { jurisdiction: 'IA', roleType: 'ORGANISATION' },
-          { jurisdiction: 'SSCS', roleType: 'ORGANISATION' },
-        ],
-      })
-    );
-    mockFilterService.get.and.returnValue({
-      id: MyWorkFilterComponent.FILTER_NAME,
-      fields: [
-        { name: 'services', value: ['IA', 'CIVIL'] },
-        { name: 'locations', value: [LOCATION] },
-      ],
-    });
-    mockFilterService.persist.calls.reset();
-
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    component.persistence = 'session';
-    fixture.detectChanges();
-
-    expect(mockFilterService.persist).toHaveBeenCalledOnceWith(
-      jasmine.objectContaining({
-        fields: jasmine.arrayContaining([
-          jasmine.objectContaining({ name: 'services', value: ['IA'] }),
-          jasmine.objectContaining({ name: 'locations', value: [LOCATION] }),
-        ]),
-      }),
-      'session'
-    );
-  });
-
-  it('clears a saved select-all service filter when lookup fails and the user has no organisation jurisdiction', () => {
-    fixture.destroy();
-    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(
-      throwError(() => new Error('jurisdiction lookup unavailable'))
-    );
-    mockStore.pipe.and.returnValue(of({ roleAssignmentInfo: [] }));
-    const savedSetting = {
-      id: MyWorkFilterComponent.FILTER_NAME,
-      fields: [
-        { name: 'services', value: ['services_all'] },
-        { name: 'locations', value: [LOCATION] },
-      ],
-    };
-    mockFilterService.get.and.returnValue(savedSetting);
-    mockFilterService.persist.calls.reset();
-
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    component.persistence = 'session';
-    fixture.detectChanges();
-
-    expect(mockFilterService.persist).toHaveBeenCalledOnceWith(
-      jasmine.objectContaining({
-        id: MyWorkFilterComponent.FILTER_NAME,
-        fields: jasmine.arrayContaining([
-          jasmine.objectContaining({ name: 'services', value: [] }),
-          jasmine.objectContaining({ name: 'locations', value: [LOCATION] }),
-        ]),
-      }),
-      'session'
-    );
-  });
-
-  it('clears a saved service selection when supported jurisdictions resolve empty', () => {
-    fixture.destroy();
-    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of([]));
-    mockStore.pipe.and.returnValue(
-      of({
-        roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION' }],
-      })
-    );
-    mockFilterService.get.and.returnValue({
-      id: MyWorkFilterComponent.FILTER_NAME,
-      fields: [
-        { name: 'services', value: ['services_all', 'IA'] },
-        { name: 'locations', value: [LOCATION] },
-      ],
-    });
-    mockFilterService.persist.calls.reset();
-
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    component.persistence = 'session';
-    const subscribeToFilters = spyOn(component as any, 'subscribeToFilters').and.callThrough();
-    fixture.detectChanges();
-
-    expect(mockFilterService.persist).toHaveBeenCalledOnceWith(
-      jasmine.objectContaining({
-        id: MyWorkFilterComponent.FILTER_NAME,
-        fields: jasmine.arrayContaining([
-          jasmine.objectContaining({ name: 'services', value: [] }),
-          jasmine.objectContaining({ name: 'locations', value: [LOCATION] }),
-        ]),
-      }),
-      'session'
-    );
-    expect(subscribeToFilters).not.toHaveBeenCalled();
-  });
-
-  it('initializes filter fields and subscriptions once after role assignment info is loaded', () => {
-    fixture.destroy();
-    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
-    locationService.path.and.returnValue('/work/my-work/list');
-    const userDetails$ = new Subject<any>();
-    mockStore.pipe.and.callFake((...operators: OperatorFunction<any, any>[]) =>
-      operators.reduce((stream, operator) => operator(stream), userDetails$.asObservable())
-    );
-    mockFilterService.get.and.returnValue({
-      id: MyWorkFilterComponent.FILTER_NAME,
-      fields: [{ name: 'locations', value: [LOCATION] }],
-    });
-    mockFilterService.persist.calls.reset();
-
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    component.persistence = 'session';
-    const persistFirstSetting = spyOn(component as any, 'persistFirstSetting').and.callThrough();
-    const subscribeToFilters = spyOn(component as any, 'subscribeToFilters').and.callThrough();
-    fixture.detectChanges();
-
-    userDetails$.next({ appConfig: { userDetails: { userInfo: null } } });
-    userDetails$.next({
-      appConfig: {
-        userDetails: {
-          userInfo: { id: 'user-id' },
-          roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION', bookable: true }],
-        },
-      },
-    });
-    userDetails$.next({
-      appConfig: {
-        userDetails: {
-          userInfo: { id: 'user-id' },
-          roleAssignmentInfo: [
-            { jurisdiction: 'IA', roleType: 'ORGANISATION', bookable: true },
-            { jurisdiction: 'SSCS', roleType: 'ORGANISATION', bookable: true },
-          ],
-        },
-      },
-    });
-
-    expect(component.fieldsSettings.fields.filter((field) => field.name === 'locations').length).toBe(1);
-    expect(component.fieldsSettings.fields.filter((field) => field.name === 'types-of-work').length).toBe(1);
-    expect(persistFirstSetting).toHaveBeenCalledTimes(1);
-    expect(subscribeToFilters).toHaveBeenCalledTimes(1);
-  });
-
-  it('offers and persists only supported services assigned to a judicial CASE role', () => {
-    fixture.destroy();
-    mockStore.pipe.and.returnValue(
-      of({
-        roleAssignmentInfo: [{ jurisdiction: 'IA', roleCategory: RoleCategory.JUDICIAL, roleType: 'CASE' }],
-      })
-    );
-    mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
-    mockFilterService.get.and.returnValue(null);
-    mockFilterService.persist.calls.reset();
-
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    component.persistence = 'session';
-    fixture.detectChanges();
-
-    const servicesField = component.fieldsConfig.fields.find((field) => field.name === 'services');
-    const selectedServices = component.fieldsSettings.fields.find((field) => field.name === 'services')?.value;
-
-    expect(servicesField?.options.map((option) => option.key)).toEqual(['services_all', 'IA']);
-    expect(selectedServices).toEqual(['services_all', 'IA']);
-    expect(mockFilterService.persist).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        fields: jasmine.arrayContaining([jasmine.objectContaining({ name: 'services', value: ['services_all', 'IA'] })]),
-      }),
-      'session'
-    );
   });
 
   xit('should not get the base location as default location if not within region', () => {

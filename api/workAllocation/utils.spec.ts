@@ -32,7 +32,6 @@ import {
   getCaseName,
   getEndDate,
   getRoleAssignmentsByQuery,
-  searchCasesById,
   getRoleIdsFromRoles,
   getSessionCaseworkerInfo,
   getSubstantiveRoles,
@@ -1440,58 +1439,6 @@ describe('workAllocation.utils', () => {
       const data = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
       expect(data).to.deep.equal(mockRoleAssignments);
     });
-
-    it('returns null without logging raw role-assignment errors', async () => {
-      const error = Object.assign(new Error('PRIVATE_ROLE_ASSIGNMENT_ERROR_CANARY'), {
-        config: {
-          headers: { Authorization: 'Bearer PRIVATE_ROLE_ASSIGNMENT_TOKEN_CANARY' },
-          data: 'PRIVATE_ROLE_ASSIGNMENT_BODY_CANARY',
-        },
-        response: { status: 503, data: { partyName: 'PRIVATE_ROLE_ASSIGNMENT_NAME_CANARY' } },
-      });
-      const errorLog = sandbox.stub(console, 'error');
-      sandbox.stub(http, 'post').rejects(error);
-
-      const result = await getRoleAssignmentsByQuery({ queryRequests: [] }, mockReq());
-
-      expect(result).to.equal(null);
-      const emittedLogs = JSON.stringify(errorLog.args);
-      for (const canary of [
-        'PRIVATE_ROLE_ASSIGNMENT_ERROR_CANARY',
-        'PRIVATE_ROLE_ASSIGNMENT_TOKEN_CANARY',
-        'PRIVATE_ROLE_ASSIGNMENT_BODY_CANARY',
-        'PRIVATE_ROLE_ASSIGNMENT_NAME_CANARY',
-      ]) {
-        expect(emittedLogs).not.to.contain(canary);
-      }
-      expect(emittedLogs).to.contain('getRoleAssignmentsByQuery request failed status=503');
-    });
-
-    it('returns null without logging raw case-search errors', async () => {
-      const error = Object.assign(new Error('PRIVATE_CASE_SEARCH_ERROR_CANARY'), {
-        config: {
-          headers: { Authorization: 'Bearer PRIVATE_CASE_SEARCH_TOKEN_CANARY' },
-          data: 'PRIVATE_CASE_SEARCH_BODY_CANARY',
-        },
-        response: { status: 503, data: { caseName: 'PRIVATE_CASE_SEARCH_NAME_CANARY' } },
-      });
-      const errorLog = sandbox.stub(console, 'error');
-      sandbox.stub(http, 'post').rejects(error);
-
-      const result = await searchCasesById('private-query-canary', { query: {} }, mockReq());
-
-      expect(result).to.equal(null);
-      const emittedLogs = JSON.stringify(errorLog.args);
-      for (const canary of [
-        'PRIVATE_CASE_SEARCH_ERROR_CANARY',
-        'PRIVATE_CASE_SEARCH_TOKEN_CANARY',
-        'PRIVATE_CASE_SEARCH_BODY_CANARY',
-        'PRIVATE_CASE_SEARCH_NAME_CANARY',
-      ]) {
-        expect(emittedLogs).not.to.contain(canary);
-      }
-      expect(emittedLogs).to.contain('searchCasesById request failed status=503');
-    });
   });
 
   describe('constructRoleAssignmentQuery', () => {
@@ -1919,32 +1866,6 @@ describe('workAllocation.utils', () => {
 
       const data = await getTypesOfWorkByUserId(req, req);
       expect(data).to.deep.equal(typesOfWork);
-    });
-
-    it('returns null without logging raw type-of-work errors', async () => {
-      const error = Object.assign(new Error('PRIVATE_TYPES_OF_WORK_ERROR_CANARY'), {
-        config: {
-          headers: { Authorization: 'Bearer PRIVATE_TYPES_OF_WORK_TOKEN_CANARY' },
-          data: 'PRIVATE_TYPES_OF_WORK_BODY_CANARY',
-        },
-        response: { status: 503, data: { caseName: 'PRIVATE_TYPES_OF_WORK_NAME_CANARY' } },
-      });
-      const errorLog = sandbox.stub(console, 'error');
-      sandbox.stub(http, 'get').rejects(error);
-
-      const result = await getTypesOfWorkByUserId('https://workallocation.example/types', mockReq());
-
-      expect(result).to.equal(null);
-      const emittedLogs = JSON.stringify(errorLog.args);
-      for (const canary of [
-        'PRIVATE_TYPES_OF_WORK_ERROR_CANARY',
-        'PRIVATE_TYPES_OF_WORK_TOKEN_CANARY',
-        'PRIVATE_TYPES_OF_WORK_BODY_CANARY',
-        'PRIVATE_TYPES_OF_WORK_NAME_CANARY',
-      ]) {
-        expect(emittedLogs).not.to.contain(canary);
-      }
-      expect(emittedLogs).to.contain('getTypesOfWorkByUserId request failed status=503');
     });
   });
 

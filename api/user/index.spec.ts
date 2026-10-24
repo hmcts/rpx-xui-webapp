@@ -35,6 +35,7 @@ describe('Index', () => {
   let mockUserInfo: any;
   let mockRoleAssignments: RoleAssignment[];
   let mockReqData: any;
+  let mockUserId: string;
 
   beforeEach(() => {
     roleAssignments = [
@@ -86,6 +87,7 @@ describe('Index', () => {
       },
     ];
     mockReqData = { session: { roleAssignmentResponse: mockRoleAssignments } };
+    mockUserId = '123';
   });
 
   describe('getActiveRoleAssignments', () => {
@@ -179,7 +181,7 @@ describe('Index', () => {
           endTime: undefined,
         },
       ];
-      expect(setUserRoles(mockUserInfo, mockReqData)).to.deep.equal(mockUserRoles);
+      expect(setUserRoles(mockUserInfo, mockReqData, mockUserId)).to.deep.equal(mockUserRoles);
       expect(mockUserInfo.roleCategories).to.deep.equal(['ADMIN']);
       expect(mockUserInfo.roles).to.deep.equal(['caseworker-test', 'caseworker-test2', 'test role', 'test role 2']);
     });
@@ -291,8 +293,8 @@ describe('Index', () => {
         passport: {
           user: {
             userinfo: {
-              id: 'USER-ID-CANARY',
-              roles: ['IDAM-ROLE-CANARY', 'pui-case-manager'],
+              id: 'test-user',
+              roles: ['caseworker', 'pui-case-manager'],
               roleCategory: null,
             },
             tokenset: { accessToken: 'valid-token' },
@@ -335,16 +337,13 @@ describe('Index', () => {
       expect(callArgs).to.have.property('roleAssignmentInfo');
       expect(callArgs).to.have.property('userInfo');
       expect(callArgs.userInfo).to.include({
-        id: 'USER-ID-CANARY',
+        id: 'test-user',
         token: 'Bearer valid-token',
       });
 
       // Verify that original roles are present
-      expect(callArgs.userInfo.roles).to.include('IDAM-ROLE-CANARY');
+      expect(callArgs.userInfo.roles).to.include('caseworker');
       expect(callArgs.userInfo.roles).to.include('pui-case-manager');
-      const diagnostics = JSON.stringify((appInsights.trackTrace as sinon.SinonStub).args);
-      expect(diagnostics).not.to.contain('USER-ID-CANARY');
-      expect(diagnostics).not.to.contain('IDAM-ROLE-CANARY');
       // Note: synthetic roles would be added if roleAssignmentResponse had appropriate data
     });
 
@@ -588,15 +587,13 @@ describe('Index', () => {
     });
 
     it('should handle 304 Not Modified response', async () => {
-      const mockUserInfo = { id: 'USER-ID-CANARY', roles: ['IDAM-ROLE-CANARY'] };
-      req.session.userRoleAssignments = [{ roleName: 'SESSION-ROLE-CANARY' }];
+      const mockUserInfo = { id: 'user123', roles: ['caseworker'] };
 
       // Set up cached role assignments in session
       req.session.roleAssignmentResponse = [
         {
-          id: 'ROLE-ASSIGNMENT-ID-CANARY',
-          roleName: 'ASSIGNMENT-ROLE-CANARY',
-          roleCategory: 'ASSIGNMENT-CATEGORY-CANARY',
+          id: '1',
+          roleName: 'cached-role',
           roleType: 'ORGANISATION',
           attributes: {},
         },
@@ -615,91 +612,7 @@ describe('Index', () => {
 
       // Should return the transformed cached data
       expect(result).to.be.an('array');
-      expect(result[0]).to.include({ roleName: 'ASSIGNMENT-ROLE-CANARY' });
-      expect(mockUserInfo.roles).to.include('IDAM-ROLE-CANARY');
-
-      const diagnostics = JSON.stringify((appInsights.trackTrace as sinon.SinonStub).args);
-      for (const canary of [
-        'USER-ID-CANARY',
-        'ROLE-ASSIGNMENT-ID-CANARY',
-        'SESSION-ROLE-CANARY',
-        'ASSIGNMENT-CATEGORY-CANARY',
-        'ASSIGNMENT-ROLE-CANARY',
-        'IDAM-ROLE-CANARY',
-      ]) {
-        expect(diagnostics).not.to.include(canary);
-      }
-      expect(diagnostics).to.include('304');
-      expect(diagnostics).to.include('refreshRoleAssignmentForUser');
-      expect(diagnostics).to.include('setUserRoles');
-    });
-
-    it('should log the refresh status without Axios request or response data', async () => {
-      const mockUserInfo = { id: 'USER-ID-CANARY', roles: ['IDAM-ROLE-CANARY'] };
-      const axiosError = {
-        isAxiosError: true,
-        message: 'UPSTREAM-BODY-CANARY',
-        config: {
-          url: '/am/role-assignments/actors/CONFIG-CANARY',
-          headers: { Authorization: 'Bearer AUTH-CANARY' },
-          data: 'REQUEST-BODY-CANARY',
-        },
-        request: { headers: { Authorization: 'Bearer REQUEST-AUTH-CANARY' } },
-        response: { status: 503, data: { message: 'UPSTREAM-BODY-CANARY' } },
-      };
-
-      sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
-      sandbox.stub(proxy, 'setHeaders').returns({});
-      sandbox.stub(http, 'get').rejects(axiosError);
-
-      const result = await refreshRoleAssignmentForUser(mockUserInfo, req);
-
-      expect(result).to.deep.equal([]);
-      const diagnostics = JSON.stringify((appInsights.trackTrace as sinon.SinonStub).args);
-      for (const canary of [
-        'USER-ID-CANARY',
-        'IDAM-ROLE-CANARY',
-        'CONFIG-CANARY',
-        'AUTH-CANARY',
-        'REQUEST-AUTH-CANARY',
-        'REQUEST-BODY-CANARY',
-        'UPSTREAM-BODY-CANARY',
-      ]) {
-        expect(diagnostics).not.to.include(canary);
-      }
-      expect(diagnostics).to.include('503');
-      expect(diagnostics).to.include('refreshRoleAssignmentForUser');
-    });
-
-    it('logs the HTTP status from the response object rejected by the HTTP interceptor', async () => {
-      const mockUserInfo = { id: 'user123', roles: ['caseworker'] };
-      const originalAdapter = http.defaults.adapter;
-
-      sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
-      sandbox.stub(proxy, 'setHeaders').returns({});
-      http.defaults.adapter = async (request) => {
-        throw Object.assign(new Error('Request failed with status code 503'), {
-          config: request,
-          response: {
-            config: request,
-            data: { message: 'UPSTREAM-BODY-CANARY' },
-            headers: {},
-            status: 503,
-            statusText: 'Service Unavailable',
-          },
-        });
-      };
-
-      try {
-        const result = await refreshRoleAssignmentForUser(mockUserInfo, req);
-
-        expect(result).to.deep.equal([]);
-        const diagnostics = JSON.stringify((appInsights.trackTrace as sinon.SinonStub).args);
-        expect(diagnostics).to.include('503');
-        expect(diagnostics).not.to.include('UPSTREAM-BODY-CANARY');
-      } finally {
-        http.defaults.adapter = originalAdapter;
-      }
+      expect(result[0]).to.include({ roleName: 'cached-role' });
     });
 
     it('should handle other errors and return empty array', async () => {

@@ -1,17 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { select } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
-import * as fromActions from '../../../app/store';
 import { MyWorkFilterComponent } from '../../components';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
-import { getCurrentUserRoleCategories } from '../../utils/work-allocation-utils';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 
 @Component({
@@ -19,47 +13,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   selector: 'exui-my-cases',
   templateUrl: 'my-cases.component.html',
 })
-export class MyCasesComponent extends WorkCaseListWrapperComponent implements OnInit, OnDestroy {
-  private allowedServices: string[];
-  private roleAssignmentSubscription: Subscription;
-
-  public ngOnInit(): void {
-    this.roleAssignmentSubscription = this.store
-      .pipe(
-        select(fromActions.getUserDetails),
-        filter((userDetails) => Array.isArray(userDetails?.roleAssignmentInfo)),
-        take(1)
-      )
-      .subscribe((userDetails) => {
-        const roleAssignmentInfo = userDetails.roleAssignmentInfo;
-        const judicialCaseRole = roleAssignmentInfo.find(
-          (role) => role.roleCategory === RoleCategory.JUDICIAL && role.roleType === 'CASE'
-        );
-        this.allowedServices = [
-          ...AppUtils.getOrganisationJurisdictions(roleAssignmentInfo),
-          ...(getCurrentUserRoleCategories(this.sessionStorageService).includes(RoleCategory.JUDICIAL) && judicialCaseRole
-            ? AppUtils.getDistinctJurisdictionsForRoleAssignment(roleAssignmentInfo, judicialCaseRole)
-            : []),
-        ];
-        super.ngOnInit();
-      });
-  }
-
-  public ngOnDestroy(): void {
-    this.roleAssignmentSubscription?.unsubscribe();
-    super.ngOnDestroy();
-  }
-
-  protected doLoad(): void {
-    const services = this.getSearchCaseRequestPagination()?.search_parameters.find(
-      (parameter) => parameter.key === 'services'
-    )?.values;
-    if (!Array.isArray(services) || !services.length) {
-      return;
-    }
-    super.doLoad();
-  }
-
+export class MyCasesComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyCases;
   }
@@ -79,10 +33,6 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent implements On
   public backUrl: string = 'work/my-work/my-cases';
 
   public getSearchCaseRequestPagination(): SearchCaseRequest {
-    if (this.allowedServices === undefined) {
-      return;
-    }
-
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
@@ -106,18 +56,12 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent implements On
       if (locationsFromSessionStorage?.fields) {
         const services = locationsFromSessionStorage.fields.find((field) => field.name === 'services');
         const locations = locationsFromSessionStorage.fields.find((field) => field.name === 'locations');
-        if (Array.isArray(services?.value)) {
-          serviceFilters = services.value.filter(
-            (service) => service !== 'services_all' && this.allowedServices.includes(service)
-          );
+        if (services?.hasOwnProperty('value')) {
+          serviceFilters = services.value;
         }
         if (locations?.hasOwnProperty('value')) {
           locationFilters = locations.value.map((l) => l.epimms_id);
         }
-      }
-
-      if (!serviceFilters.length) {
-        return;
       }
 
       return {

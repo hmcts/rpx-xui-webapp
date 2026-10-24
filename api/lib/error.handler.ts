@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as log4jui from './log4jui';
 import { propsExist } from './objectUtilities';
-import { isWorkAllocationTaskSearchRequest } from './interceptors';
 
 const logger = log4jui.getLogger('errorHandler');
 
@@ -18,15 +17,11 @@ export default function errorHandler(err, req: Request, res: Response, next: Nex
     // remove any sensitive data
     delete err.request._header;
   }
-  const errorUrl = err?.config?.url;
-  const isTaskSearchRequest = isWorkAllocationTaskSearchRequest(err?.config);
-  const isTaskRequest = /\/task\/[^/?#]+/i.test(errorUrl ?? '') || isTaskSearchRequest;
-  const hasInterceptorDiagnostic = Boolean(err?.config?.metadata?.logContext?.outboundId);
-  if (!hasInterceptorDiagnostic) {
-    if (isTaskRequest) {
-      logger._logger.error(`Work Allocation task request failed status=${err.status ?? err.response?.status ?? 'unavailable'}`);
-    } else if (err) {
-      logger._logger.error(`Request failed status=${err.status ?? err.response?.status ?? 'unavailable'}`);
+  if (err?.data) {
+    logger._logger.error(err.data);
+  } else {
+    if (err) {
+      logger._logger.error(err.toString());
     } else {
       logger._logger.error('errorHanndler called with no error');
     }

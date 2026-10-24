@@ -195,7 +195,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         this.initialFilterApplied = true;
         this.selectedLocations = newLocations.map((l) => l.epimms_id);
         this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
-        this.selectedServices = services?.filter((service) => service !== 'services_all') ?? [];
+        this.selectedServices = services?.filter((service) => service !== 'services_all');
         this.doLoad();
       });
   }
@@ -269,10 +269,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       sorting_parameters: this.getSortParameter(),
       pagination_parameters: this.getPaginationParameter(),
     };
-  }
-
-  protected canLoadTasks(): boolean {
-    return true;
   }
 
   public getSortParameter(): SortParameter[] {
@@ -419,9 +415,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         return;
       }
       this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
-    }
-    if (!this.canLoadTasks()) {
-      return;
     }
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();

@@ -11,17 +11,12 @@ import {
   FilterPersistence,
   FilterService,
   FilterSetting,
-  RoleCategory,
 } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { Subscription, combineLatest, of } from 'rxjs';
-import { catchError, filter, map, take } from 'rxjs/operators';
+import { Subscription, combineLatest } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
-import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
-import { InfoMessage } from '../../../app/shared/enums/info-message';
-import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
-import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromAppStore from '../../../app/store';
 import { Location, LocationByEpimmsModel } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
@@ -94,8 +89,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     private readonly taskTypesService: TaskTypesService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly appStore: Store<fromAppStore.State>,
-    private readonly featureToggleService: FeatureToggleService,
-    private readonly infoMessageCommService: InfoMessageCommService
+    private readonly featureToggleService: FeatureToggleService
   ) {
     if (this.router.getCurrentNavigation()?.extras?.state?.location) {
       this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
@@ -158,38 +152,21 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     // EXUI-3967 - ticket needs to be made to combine subscriptions if possible
     this.subscription = combineLatest([
       this.taskTypesService.getTypesOfWork(),
-      this.service.getWASupportedJurisdictions().pipe(
-        catchError(() => {
-          this.infoMessageCommService.addMessageOnce({
-            type: InfoMessageType.WARNING,
-            message: InfoMessage.WA_JURISDICTIONS_UNAVAILABLE,
-          });
-          return of(null);
-        })
-      ),
+      this.service.getWASupportedJurisdictions(),
       this.taskService.getUsersAssignedTasks(),
       this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices),
       this.featureToggleService.getValue('ServiceNames', servicesMap),
-      this.appStore.pipe(
-        select(fromAppStore.getUserDetails),
-        filter((userDetails) => Array.isArray(userDetails?.roleAssignmentInfo)),
-        take(1)
-      ),
     ]).subscribe(
-      ([typesOfWork, services, assignedTasks, locations, serviceNamesMap, userDetails]: [
+      ([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [
         any[],
-        string[] | null,
+        string[],
         Task[],
         LocationByEpimmsModel[],
         any,
-        any,
       ]) => {
-        const hasSafeServiceScope = this.setUpServicesFilter(services, serviceNamesMap, userDetails);
+        this.setUpServicesFilter(services, serviceNamesMap);
         this.setUpLocationFilter(locations);
         this.setUpTypesOfWorkFilter(typesOfWork);
-        if (!hasSafeServiceScope) {
-          return;
-        }
         this.persistFirstSetting();
         this.subscribeToFilters(assignedTasks);
       }
@@ -272,46 +249,38 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
       const location: Location = history.state.location;
       this.defaultLocations = [location.id];
     }
-    this.appStoreSub = this.appStore
-      .pipe(
-        select(fromAppStore.getUserDetails),
-        filter((userDetails) => Array.isArray(userDetails?.roleAssignmentInfo)),
-        take(1)
-      )
-      .subscribe((userDetails) => {
-        const isFeePaidJudgeWithNoBooking: boolean =
-          this.bookingLocations.length === 0 &&
-          !userDetails.roleAssignmentInfo.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
-        if (isFeePaidJudgeWithNoBooking) {
-          this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
-        } else if (!isLocationsAvailable) {
-          const baseLocations: string[] = [];
-          userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
-            const roleJurisdiction = roleAssignment.jurisdiction;
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+      const isFeePaidJudgeWithNoBooking: boolean =
+        this.bookingLocations.length === 0 &&
+        !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
+      if (isFeePaidJudgeWithNoBooking) {
+        this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
+      } else if (!isLocationsAvailable) {
+        const baseLocations: string[] = [];
+        userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
+          const roleJurisdiction = roleAssignment.jurisdiction;
+          if (
+            roleJurisdiction &&
+            roleAssignment.roleType === 'ORGANISATION' &&
+            !bookableServices.includes(roleAssignment.jurisdiction) &&
+            roleAssignment.baseLocation &&
+            roleAssignment.substantive.toLocaleLowerCase() === 'y'
+          ) {
+            // EUI-7339 - Added to ensure default locations are actually selectable
             if (
-              roleJurisdiction &&
-              roleAssignment.roleType === 'ORGANISATION' &&
-              !bookableServices.includes(roleAssignment.jurisdiction) &&
-              roleAssignment.baseLocation &&
-              roleAssignment.substantive.toLocaleLowerCase() === 'y'
+              !roleAssignment.region ||
+              locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)
             ) {
-              // EUI-7339 - Added to ensure default locations are actually selectable
-              if (
-                !roleAssignment.region ||
-                locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)
-              ) {
-                baseLocations.push(roleAssignment.baseLocation);
-                this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
-              }
+              baseLocations.push(roleAssignment.baseLocation);
+              this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
             }
-          });
-          this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
-          this.defaultLocations =
-            this.defaultLocations && this.defaultLocations.length > 0
-              ? this.defaultLocations
-              : Array.from(new Set(baseLocations));
-        }
-      });
+          }
+        });
+        this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
+        this.defaultLocations =
+          this.defaultLocations && this.defaultLocations.length > 0 ? this.defaultLocations : Array.from(new Set(baseLocations));
+      }
+    });
   }
 
   private persistFirstSetting(): void {
@@ -403,99 +372,65 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     this.fieldsConfig.fields.push(field);
   }
 
-  private setUpServicesFilter(services: string[] | null, serviceNamesMap: { [key: string]: string }, userDetails: any): boolean {
+  private setUpServicesFilter(services: any[], serviceNamesMap: { [key: string]: string }): void {
     // Available services need to be added to work-allocation-utils.ts -> servicesMap
-    const roleAssignmentInfo = userDetails.roleAssignmentInfo || [];
-    const organisationServices = AppUtils.getOrganisationJurisdictions(roleAssignmentInfo);
-    const judicialCaseRole = roleAssignmentInfo.find(
-      (role) => role.roleCategory === RoleCategory.JUDICIAL && role.roleType === 'CASE'
-    );
-    const judicialCaseServices = judicialCaseRole
-      ? AppUtils.getDistinctJurisdictionsForRoleAssignment(roleAssignmentInfo, judicialCaseRole)
-      : [];
-    const roleServices = Array.from(new Set([...organisationServices, ...judicialCaseServices]));
-    if ((services !== null && !services.length) || (services === null && !roleServices.length)) {
-      const savedSetting = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
-      if (savedSetting) {
-        const fields = savedSetting.fields.some((field) => field.name === 'services')
-          ? savedSetting.fields.map((field) => (field.name === 'services' ? { ...field, value: [] } : field))
-          : [...savedSetting.fields, { name: 'services', value: [] }];
-        this.filterService.persist({ ...savedSetting, fields }, this.fieldsConfig.persistence);
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+      if (!services.length) {
+        return;
       }
-      return false;
-    }
-    if (services === null) {
-      const savedSetting = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
-      const savedServiceSetting = savedSetting?.fields.find((field) => field.name === 'services');
-      if (savedSetting && savedServiceSetting) {
-        const savedServices = Array.isArray(savedServiceSetting.value) ? savedServiceSetting.value : [];
-        const savedRoleServices = savedServices.filter((service) => roleServices.includes(service));
-        const selectedServices = savedRoleServices.length ? savedRoleServices : roleServices;
-        const preserveSelectAll = savedServices.includes('services_all') && savedRoleServices.length === roleServices.length;
-        const safeServiceValue = [
-          ...(preserveSelectAll || !savedRoleServices.length ? ['services_all'] : []),
-          ...selectedServices,
+      if (!userDetails.roleAssignmentInfo?.some((p) => p.jurisdiction !== undefined)) {
+        return;
+      }
+      const filteredServices = _.intersection.apply(_, [
+        userDetails.roleAssignmentInfo
+          .filter((p) => p.roleType && p.roleType === 'ORGANISATION')
+          .map((item) => item.jurisdiction)
+          .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
+        services,
+      ]);
+      const field: FilterFieldConfig = {
+        name: 'services',
+        options: [
+          {
+            key: 'services_all',
+            label: 'Select all',
+            selectAll: true,
+          },
+          ...filteredServices.sort().map((service) => {
+            return {
+              key: service,
+              label: serviceNamesMap[service] || service,
+            };
+          }),
+        ],
+        minSelected: 1,
+        maxSelected: null,
+        lineBreakBefore: false,
+        displayMinSelectedError: true,
+        minSelectedError: 'Select a service',
+        title: 'Services',
+        type: 'checkbox-large',
+      };
+
+      const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
+      if (fieldSetting) {
+        fieldSetting.value = ['services_all', ...filteredServices];
+      } else {
+        this.fieldsSettings.fields = [
+          ...this.fieldsSettings.fields,
+          {
+            name: 'services',
+            value: ['services_all', ...filteredServices],
+          },
         ];
-        if (!_.isEqual(savedServices, safeServiceValue)) {
-          this.filterService.persist(
-            {
-              ...savedSetting,
-              fields: savedSetting.fields.map((field) =>
-                field.name === 'services' ? { ...field, value: safeServiceValue } : field
-              ),
-            },
-            this.fieldsConfig.persistence
-          );
-        }
       }
-    }
-    if (services !== null && !userDetails.roleAssignmentInfo?.some((role) => role.jurisdiction !== undefined)) {
-      return true;
-    }
-    const filteredServices = services === null ? roleServices : _.intersection(roleServices, services);
-    const field: FilterFieldConfig = {
-      name: 'services',
-      options: [
-        {
-          key: 'services_all',
-          label: 'Select all',
-          selectAll: true,
-        },
-        ...filteredServices.sort().map((service) => {
-          return {
-            key: service,
-            label: serviceNamesMap[service] || service,
-          };
-        }),
-      ],
-      minSelected: 1,
-      maxSelected: null,
-      lineBreakBefore: false,
-      displayMinSelectedError: true,
-      minSelectedError: 'Select a service',
-      title: 'Services',
-      type: 'checkbox-large',
-    };
 
-    const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
-    if (fieldSetting) {
-      fieldSetting.value = ['services_all', ...filteredServices];
-    } else {
-      this.fieldsSettings.fields = [
-        ...this.fieldsSettings.fields,
-        {
-          name: 'services',
-          value: ['services_all', ...filteredServices],
-        },
-      ];
-    }
-
-    this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-    const fieldConfig = this.fieldsConfig.fields.find((f) => f.name === 'services');
-    if (!fieldConfig) {
-      this.fieldsConfig.fields.push(field);
-    }
-    return true;
+      this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+      const fieldConfig = this.fieldsConfig.fields.find((f) => f.name === 'services');
+      if (!fieldConfig) {
+        this.fieldsConfig.fields.push(field);
+      }
+    });
   }
 
   /**

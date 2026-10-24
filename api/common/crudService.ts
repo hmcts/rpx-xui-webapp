@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction } from 'express';
 import { http } from '../lib/http';
-import { redactTelemetryIdentifiers } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -16,7 +15,7 @@ export const logger: JUILogger = log4jui.getLogger('crud-service');
  * @returns {Promise<AxiosResponse>}
  */
 export async function handleGet(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
-  logger.info('handle get:', redactTelemetryIdentifiers(path));
+  logger.info('handle get:', path);
   const headers = setHeaders(req);
   return await http.get(path, { headers });
 }
@@ -26,12 +25,17 @@ export async function sendGet(
   req: EnhancedRequest,
   customHeaders: { [x: string]: string } = {}
 ): Promise<AxiosResponse> {
-  logger.info('sendGet to:', redactTelemetryIdentifiers(path));
-  const headers = {
-    ...setHeaders(req),
-    ...customHeaders,
-  };
-  return await http.get(path, { headers });
+  try {
+    logger.info('sendGet to:', path);
+    const headers = {
+      ...setHeaders(req),
+      ...customHeaders,
+    };
+    return await http.get(path, { headers });
+  } catch (e) {
+    logger.error('sendGet: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
+    throw e;
+  }
 }
 /**
  * Generic handlePost call Rest API with POST method
@@ -42,17 +46,18 @@ export async function sendGet(
  * @returns {Promise<AxiosResponse>}
  */
 export async function handlePost<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
-  logger.info('handlePost:', redactTelemetryIdentifiers(path));
+  logger.info('handlePost:', path);
   const headers = setHeaders(req);
   return await http.post(path, body, { headers });
 }
 
 export async function sendPost<T>(path: string, body: T, req: EnhancedRequest, next?: NextFunction): Promise<AxiosResponse> {
   try {
-    logger.info('sendPost to:', redactTelemetryIdentifiers(path));
+    logger.info('sendPost to:', path);
     const headers = setHeaders(req);
     return await http.post(path, body, { headers });
   } catch (e) {
+    logger.error('sendPost: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
     if (next) {
       next(e);
     } else {
@@ -71,7 +76,7 @@ export async function sendPost<T>(path: string, body: T, req: EnhancedRequest, n
  */
 export async function handlePostBlob<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
   try {
-    logger.info('handle post blob:', redactTelemetryIdentifiers(path));
+    logger.info('handle post blob:', path);
     const headers = setHeaders(req);
     return await http.post(path, body, {
       headers,
@@ -91,15 +96,20 @@ export async function handlePostBlob<T>(path: string, body: T, req: EnhancedRequ
  * @returns {Promise<AxiosResponse>}
  */
 export async function handlePut<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
-  logger.info('handle put:', redactTelemetryIdentifiers(path));
+  logger.info('handle put:', path);
   const headers = setHeaders(req);
   return await http.put(path, body, { headers });
 }
 
 export async function sendPut<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
-  logger.info('send put request to:', redactTelemetryIdentifiers(path));
-  const headers = setHeaders(req);
-  return await http.put(path, body, { headers });
+  try {
+    logger.info('send put request to:', path);
+    const headers = setHeaders(req);
+    return await http.put(path, body, { headers });
+  } catch (e) {
+    logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    throw e;
+  }
 }
 
 /**
@@ -111,7 +121,7 @@ export async function sendPut<T>(path: string, body: T, req: EnhancedRequest): P
  * @returns {Promise<AxiosResponse>}
  */
 export async function handleDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
-  logger.info('handle delete:', redactTelemetryIdentifiers(path));
+  logger.info('handle delete:', path);
   const headers = setHeaders(req);
   return await http.delete(path, {
     data: body,
@@ -120,12 +130,17 @@ export async function handleDelete<T>(path: string, body: T, req: EnhancedReques
 }
 
 export async function sendDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
-  logger.info('send delete request to:', redactTelemetryIdentifiers(path));
-  const headers = setHeaders(req);
-  // AM service reject header with 406 error if accept is sent
-  delete headers.accept;
-  return await http.delete(path, {
-    data: body,
-    headers,
-  });
+  try {
+    logger.info('send delete request to:', path);
+    const headers = setHeaders(req);
+    // AM service reject header with 406 error if accept is sent
+    delete headers.accept;
+    return await http.delete(path, {
+      data: body,
+      headers,
+    });
+  } catch (e) {
+    logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    throw e;
+  }
 }

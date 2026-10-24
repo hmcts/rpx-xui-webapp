@@ -1,5 +1,5 @@
 export const SERVICES_COURT_TYPE_MAPPINGS = {
-  PROBATE: ['18'], // 18: Probate
+  PROBATE: ['27'], // 18: Probate
   EMPLOYMENT: ['17'], // 17: Employment Tribunal
   IA: ['4', '23'], // 4: Asylum Support Appeals 23: Immigration and Asylum Tribunal
   CIVIL: ['10'],
@@ -17,7 +17,7 @@ export const SERVICES_COURT_TYPE_MAPPINGS = {
   ABA3: ['18'], // Public Law,
   ABA4: ['18'], // Adoption
   ABA5: ['18'], // Private Law
-  ABA6: ['18'], // Probate
+  ABA6: ['27'], // Probate
   AAA1: ['10'], // Civil
   AAA2: ['10'], // Civil
   AAA3: ['10'], // Civil

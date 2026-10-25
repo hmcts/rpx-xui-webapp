@@ -37,7 +37,7 @@ import {
   getSubstantiveRoles,
   getTypesOfWorkByUserId,
   getUniqueCasesCount,
-  mapCasesFromData,
+  mapGSCasesFromData,
   mapCaseworkerLocation,
   mapRoleType,
   mapUsersToCachedCaseworkers,
@@ -956,32 +956,26 @@ describe('workAllocation.utils', () => {
     });
   });
 
-  describe('mapCasesFromData', () => {
-    // note not making it a case as would have to fill in multiple unnecessary properties
+  describe('mapGSCasesFromData', () => {
+    // note not making it a GlobalCase as would have to fill in multiple unnecessary properties
     const mockCaseData: any[] = [
       {
-        id: '123',
-        type: 'example',
-        case_type_id: 'Asylum',
-        case_data: {
-          hmctsCaseCategory: 'Asylum',
-          caseManagementLocation: {
-            baseLocation: '001',
-          },
-        },
-        jurisdiction: 'IA',
+        CCDCaseTypeName: 'Asylum',
+        CCDJurisdictionId: 'IA',
+        CCDJurisdictionName: 'Immigration and Asylum',
+        baseLocationId: '001',
+        caseManagementCategoryName: ' Asylum ',
+        caseNameHmctsInternal: 'First test case',
+        caseReference: '123',
       },
       {
-        id: '456',
-        type: 'example2',
-        case_type_id: 'Test',
-        jurisdiction: 'IA',
-        case_data: {
-          hmctsCaseCategory: 'Test',
-          caseManagementLocation: {
-            baseLocation: '001',
-          },
-        },
+        CCDCaseTypeName: 'Test',
+        CCDJurisdictionId: 'IA',
+        CCDJurisdictionName: 'Immigration and Asylum',
+        baseLocationId: '001',
+        caseManagementCategoryName: 'Test',
+        caseNameHmctsInternal: 'Second test case',
+        caseReference: '456',
       },
     ];
     const mockRoleAssignment: RoleAssignment[] = [
@@ -1029,13 +1023,13 @@ describe('workAllocation.utils', () => {
         access: undefined,
         id: '1',
         case_id: '123',
-        case_name: '123',
+        case_name: 'First test case',
         case_category: 'Asylum',
         case_type: 'Asylum',
         case_role: 'example-role',
         isNew: false,
         jurisdiction: 'IA',
-        jurisdictionId: 'IA',
+        jurisdictionId: 'Immigration and Asylum',
         location_id: '001',
         role: 'example-role',
         startDate: new Date('01-01-2021'),
@@ -1050,18 +1044,19 @@ describe('workAllocation.utils', () => {
         specificAccessReason: undefined,
         reviewerRoleCategory: undefined,
         infoRequiredComment: undefined,
+        next_hearing_date: undefined,
       },
       {
         access: undefined,
         id: '3',
         case_id: '456',
-        case_name: '456',
+        case_name: 'Second test case',
         case_category: 'Test',
         case_type: 'Test',
         case_role: 'example-role-2',
         isNew: false,
         jurisdiction: 'IA',
-        jurisdictionId: 'IA',
+        jurisdictionId: 'Immigration and Asylum',
         location_id: '001',
         role: 'example-role-2',
         startDate: new Date('01-01-2021'),
@@ -1076,22 +1071,20 @@ describe('workAllocation.utils', () => {
         specificAccessReason: undefined,
         reviewerRoleCategory: undefined,
         infoRequiredComment: undefined,
+        next_hearing_date: undefined,
       },
     ];
 
     it('should return empty list if there is nothing given', () => {
-      expect(mapCasesFromData([], [])).to.deep.equal([]);
-      expect(mapCasesFromData([], firstRoleAssignment)).to.deep.equal([]);
-      expect(mapCasesFromData([], firstRoleAssignment)).to.deep.equal([]);
-      expect(mapCasesFromData([], [])).to.deep.equal([]);
+      expect(mapGSCasesFromData([], [])).to.deep.equal([]);
+      expect(mapGSCasesFromData([], firstRoleAssignment)).to.deep.equal([]);
+      expect(mapGSCasesFromData([], firstRoleAssignment)).to.deep.equal([]);
+      expect(mapGSCasesFromData([], [])).to.deep.equal([]);
     });
 
     it('should return correct case data if role assignment data returned', () => {
-      const mappedCaseData = mapCasesFromData(mockCaseData, mockRoleAssignment);
-      expect(mappedCaseData[0].isNew).to.equal(expectedRoleCaseData[0].isNew);
-      expect(mappedCaseData[0].jurisdiction).to.equal(expectedRoleCaseData[0].jurisdiction);
-      expect(mappedCaseData[0].jurisdictionId).to.equal(expectedRoleCaseData[0].jurisdictionId);
-      expect(mappedCaseData[0].location_id).to.equal(expectedRoleCaseData[0].location_id);
+      const mappedCaseData = mapGSCasesFromData(mockCaseData, mockRoleAssignment);
+      expect(mappedCaseData).to.deep.equal(expectedRoleCaseData);
     });
   });
 

@@ -391,7 +391,7 @@ describe('RolesContainerComponent', () => {
     );
     spyOn(component, 'setDisplayAllocateLink');
 
-    store.select.and.returnValue(of({}));
+    store.pipe.and.returnValue(of({}));
     component.applyJurisdiction(CASE_VIEW);
 
     expect(component.setDisplayAllocateLink).toHaveBeenCalled();

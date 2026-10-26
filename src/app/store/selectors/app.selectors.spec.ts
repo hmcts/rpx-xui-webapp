@@ -65,6 +65,8 @@ describe('App Selectors', () => {
   beforeEach(() => {
     sessionStorage.removeItem('userDetails');
     CurrentUserService.resetUserDetails();
+    fromSelectors.getUserDetails.clearResult();
+    fromSelectors.getUserDetails.release();
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({
@@ -82,6 +84,8 @@ describe('App Selectors', () => {
   afterEach(() => {
     sessionStorage.removeItem('userDetails');
     CurrentUserService.resetUserDetails();
+    fromSelectors.getUserDetails.clearResult();
+    fromSelectors.getUserDetails.release();
   });
 
   it('selects user details from session storage after the version action', () => {

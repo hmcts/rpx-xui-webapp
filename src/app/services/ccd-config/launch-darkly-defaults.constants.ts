@@ -81,6 +81,24 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"
+    },
+    {
+      "caseTypes": [
+        "FinancialRemedyContested",
+        "FinancialRemedyMVP2"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "DIVORCE"
+    },
+    {
+      "caseTypes": [
+        "GrantOfRepresentation",
+        "Caveat",
+        "StandingSearch",
+        "WillLodgement"
+      ],
+      "releaseVersion": "4",
+       "serviceName": "PROBATE"
     }
   ]
   }`;
@@ -148,6 +166,13 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PUBLICLAW"
+    },
+    {
+      "caseTypes": [
+        "PCS"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PCS"
     }
     ]
   }`;
@@ -233,6 +258,24 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "PCS"
+    },
+    {
+      "caseTypes": [
+        "GrantOfRepresentation",
+        "Caveat",
+        "StandingSearch",
+        "WillLodgement"
+      ],
+      "releaseVersion": "4",
+       "serviceName": "PROBATE"
+    },
+    {
+      "caseTypes": [
+        "FinancialRemedyContested",
+        "FinancialRemedyMVP2"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "DIVORCE"
     }
     ]
   }`;

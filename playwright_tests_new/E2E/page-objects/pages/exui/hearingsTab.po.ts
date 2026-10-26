@@ -1,11 +1,12 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { HearingJourneyModel } from '../../../utils/hearing-model.ts';
 
-type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit';
+type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit' | 'link';
 
 export class HearingsTabPage {
   constructor(private readonly page: Page) {}
 
-  readonly container = this.page.locator('exui-case-hearings-ce');
+  readonly container = this.page.locator('exui-case-hearings, exui-case-hearings-ce');
   readonly emptyState = this.page.getByText('No current and upcoming hearings found', { exact: false });
   readonly reloadButton = this.page.locator('#reload-hearing-tab');
   readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });
@@ -15,9 +16,11 @@ export class HearingsTabPage {
   readonly particularOrderRadio = this.page.locator('#particularOrder');
   readonly hearingOrderSelects = this.page.locator('select[id^="hearingsOrder"]');
   readonly viewDetailsButtons = this.page.locator('[id^="link-view-details-"]');
+  readonly additionalSecurityYes = this.page.locator('#addition-security-confirmation #additionalSecurityYes');
+  readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
 
   sectionHeading(name: string): Locator {
-    return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
+    return this.page.getByText(name, { exact: true }).first();
   }
 
   currentAndUpcomingHeading(name: string): Locator {
@@ -56,6 +59,8 @@ export class HearingsTabPage {
         return this.cancelButton(hearingId);
       case 'add-or-edit':
         return this.addOrEditButton(hearingId);
+      case 'link':
+        return this.linkHearingButton(hearingId);
       case 'view-details':
       default:
         return this.viewDetailsButton(hearingId);
@@ -70,8 +75,8 @@ export class HearingsTabPage {
   }
 
   async waitForReady(hearingId?: string, action: HearingAction = 'view-details'): Promise<void> {
-    await expect(this.container).toBeVisible();
-    await expect(this.currentAndUpcomingHeading('Current and upcoming')).toBeVisible();
+    await expect(this.container).toBeVisible({ timeout: 30_000 });
+    await expect(this.currentAndUpcomingHeading('Current and upcoming')).toBeVisible({ timeout: 30_000 });
 
     if (!hearingId) {
       return;
@@ -102,6 +107,7 @@ export class HearingsTabPage {
   }
 
   async openRequestHearing(): Promise<void> {
+    await expect(this.requestHearingButton).toBeVisible({ timeout: 30_000 });
     await this.requestHearingButton.click();
   }
 
@@ -129,6 +135,22 @@ export class HearingsTabPage {
     const orderCount = await this.hearingOrderSelects.count();
     for (let index = 0; index < orderCount; index += 1) {
       await this.hearingOrderSelects.nth(index).selectOption(String(index + 1));
+    }
+  }
+
+  async additionalSecurity(model: HearingJourneyModel): Promise<void> {
+    const value = model.get('hearingFacilities', 'additionalSecurity');
+
+    if (value === 'Yes') {
+      await this.additionalSecurityYes.click();
+    } else {
+      await this.additionalSecurityNo.click();
+    }
+  }
+
+  async setHearingPositions(positions: string[]): Promise<void> {
+    for (const [index, position] of positions.entries()) {
+      await this.hearingOrderSelects.nth(index).selectOption(position);
     }
   }
 }

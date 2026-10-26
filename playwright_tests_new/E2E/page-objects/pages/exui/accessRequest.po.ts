@@ -4,6 +4,7 @@ import { Base } from '../../base';
 export class AccessRequestPage extends Base {
   private static readonly NAVIGATION_ATTEMPTS = 3;
   private static readonly NAVIGATION_TIMEOUT_MS = 30_000;
+  private static readonly NAVIGATION_ATTEMPT_TIMEOUT_MS = 15_000;
 
   readonly requestAccessButton = this.page.getByRole('button', { name: 'Request access' });
   readonly continueButton = this.page.getByRole('button', { name: 'Continue', exact: true });

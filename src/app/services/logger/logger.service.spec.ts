@@ -104,56 +104,67 @@ describe('Logger service', () => {
     expect(mockedNgxLogger.trace).toHaveBeenCalled();
   });
 
-  it('should be able to get a message', () => {
-    const service = new LoggerService(
-      mockedMonitoringService,
-      mockedNgxLogger,
-      mockedSessionStorageService,
-      mockEnvironmentService
-    );
-    // slice off the last two characters of string to ensure no accidental discrepancies
-    const expectedMessage = `Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
-    const returnedMessage = service.getMessage('message');
-    expect(returnedMessage).not.toBeNull();
-    expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
-  });
+  describe('getMessage() timestamps', () => {
+    const fixedNow = 1700000000000;
 
-  it('should be able to get a message with the user id', () => {
-    const userInfo = {
-      id: '1',
-      forename: 'Test',
-      surname: 'User',
-      email: 'testemail',
-      active: true,
-      roles: ['pui-case-manager'],
-      uid: '123',
-    };
-    mockedSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
-    const service = new LoggerService(
-      mockedMonitoringService,
-      mockedNgxLogger,
-      mockedSessionStorageService,
-      mockEnvironmentService
-    );
-    // slice off the last two characters of string to ensure no accidental discrepancies
-    const expectedMessage = `User - 1, Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
-    const returnedMessage = service.getMessage('message');
-    expect(returnedMessage).not.toBeNull();
-    expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
-  });
+    beforeEach(() => {
+      jasmine.clock().install();
+      jasmine.clock().mockDate(new Date(fixedNow));
+    });
 
-  it('should be able to get a message when userDetails is invalid JSON', () => {
-    mockedSessionStorageService.getItem.and.returnValue('{not-json}');
-    const service = new LoggerService(
-      mockedMonitoringService,
-      mockedNgxLogger,
-      mockedSessionStorageService,
-      mockEnvironmentService
-    );
-    const expectedMessage = `Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
-    const returnedMessage = service.getMessage('message');
-    expect(returnedMessage).not.toBeNull();
-    expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('should be able to get a message', () => {
+      const service = new LoggerService(
+        mockedMonitoringService,
+        mockedNgxLogger,
+        mockedSessionStorageService,
+        mockEnvironmentService
+      );
+      const expectedMessage = `Message - message, Timestamp - ${fixedNow}`;
+      const returnedMessage = service.getMessage('message');
+      expect(returnedMessage).not.toBeNull();
+      expect(returnedMessage).toBe(expectedMessage);
+    });
+
+    it('should be able to get a message with the user id', () => {
+      const userInfo = {
+        id: '1',
+        forename: 'Test',
+        surname: 'User',
+        email: 'testemail',
+        active: true,
+        roles: ['pui-case-manager'],
+        uid: '123',
+      };
+      mockedSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+      const service = new LoggerService(
+        mockedMonitoringService,
+        mockedNgxLogger,
+        mockedSessionStorageService,
+        mockEnvironmentService
+      );
+      const expectedMessage = `User - 1, Message - message, Timestamp - ${fixedNow}`;
+      const returnedMessage = service.getMessage('message');
+      expect(returnedMessage).not.toBeNull();
+      expect(returnedMessage).toBe(expectedMessage);
+    });
+
+    it('should be able to get a message when userDetails is invalid JSON', () => {
+      mockedSessionStorageService.getItem.and.returnValue('{not-json}');
+      const service = new LoggerService(
+        mockedMonitoringService,
+        mockedNgxLogger,
+        mockedSessionStorageService,
+        mockEnvironmentService
+      );
+      const expectedMessage = `Message - message, Timestamp - ${fixedNow}`;
+      const returnedMessage = service.getMessage('message');
+      expect(returnedMessage).not.toBeNull();
+      expect(returnedMessage).toBe(expectedMessage);
+    });
   });
 
   it('should log the correct environment type to the console', () => {

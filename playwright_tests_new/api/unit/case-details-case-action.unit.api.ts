@@ -81,4 +81,118 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
     expect(spinnerTimeouts).toEqual([50, 50, 50, 50]);
     expect(expectedWaits).toBe(2);
   });
+
+  test('reports redacted Update Case readiness diagnostics without replaying the action', async () => {
+    let goClicks = 0;
+    let optionSelections = 0;
+    const caseDetailsPage = Object.assign(Object.create(CaseDetailsPage.prototype), {
+      caseActionGoButton: {
+        waitFor: async () => undefined,
+        click: async () => {
+          goClicks += 1;
+        },
+      },
+      caseActionsDropdown: {
+        waitFor: async () => undefined,
+        locator: () => ({ evaluateAll: async () => [{ label: 'Update case', value: 'updateCase' }] }),
+        selectOption: async () => {
+          optionSelections += 1;
+        },
+      },
+      eventCreationErrorHeading: { isVisible: async () => false },
+      logger: { warn: () => undefined },
+      page: {
+        locator: () => ({ first: () => ({ isVisible: async () => false, waitFor: async () => undefined }) }),
+        url: () => 'https://xui.example/cases/case-details/1234567890123456?token=secret-value',
+        waitForLoadState: async () => undefined,
+      },
+    });
+    const expectedLocator = {
+      waitFor: async () => {
+        throw new Error('field missing for case ABC1234567 token=secret-value');
+      },
+    } as unknown as Locator;
+
+    let diagnostic = '';
+    try {
+      await CaseDetailsPage.prototype.selectCaseAction.call(caseDetailsPage, 'Update case', {
+        expectedLocator,
+        expectedTarget: 'Update Case person 2 first-name input',
+        retry: false,
+      });
+    } catch (error) {
+      diagnostic = error instanceof Error ? error.message : String(error);
+    }
+
+    expect(goClicks).toBe(1);
+    expect(optionSelections).toBe(1);
+    expect(diagnostic).toContain('expected target "Update Case person 2 first-name input"');
+    expect(diagnostic).toContain('url=https://xui.example/cases/case-details/:id');
+    expect(diagnostic).toContain('spinnerVisible=false');
+    expect(diagnostic).toContain('eventErrorVisible=false');
+    expect(diagnostic).not.toContain('1234567890123456');
+    expect(diagnostic).not.toContain('ABC1234567');
+    expect(diagnostic).not.toContain('secret-value');
+  });
 });
+
+// Exercise the real helper: the upload journey must not switch language until
+// its own form is visible, and must never start a second case event on failure.
+for (const state of ['missing', 'wrong form', 'delayed upload form'] as const) {
+  test(`upload readiness blocks ${state} until the expected form is visible`, { tag: '@svc-internal' }, async () => {
+    let goClicks = 0;
+    let languageSwitches = 0;
+    let waitedForUpload = false;
+    let releaseUpload: () => void = () => undefined;
+    const uploadVisible = new Promise<void>((resolve) => {
+      releaseUpload = resolve;
+    });
+    const expectedLocator = {
+      waitFor: async (options: { state: string }) => {
+        expect(options.state).toBe('visible');
+        waitedForUpload = true;
+        if (state !== 'delayed upload form') throw new Error(`Upload form unavailable: ${state}`);
+        await uploadVisible;
+      },
+    } as unknown as Locator;
+    const details = Object.assign(Object.create(CaseDetailsPage.prototype), {
+      caseActionGoButton: {
+        waitFor: async () => undefined,
+        click: async () => {
+          goClicks++;
+        },
+      },
+      caseActionsDropdown: {
+        waitFor: async () => undefined,
+        locator: () => ({ evaluateAll: async () => [{ label: 'Upload Document', value: 'uploadDocument' }] }),
+        selectOption: async () => undefined,
+      },
+      eventCreationErrorHeading: { isVisible: async () => false },
+      logger: { warn: () => undefined },
+      page: {
+        locator: () => ({ first: () => ({ isVisible: async () => false, waitFor: async () => undefined }) }),
+        url: () => 'https://xui.example/cases/case-details/1234567890123456',
+        waitForLoadState: async () => undefined,
+      },
+    });
+    const journey = CaseDetailsPage.prototype.selectCaseAction
+      .call(details, 'Upload Document', {
+        expectedLocator,
+        retry: false,
+      })
+      .then(() => {
+        languageSwitches++;
+      });
+    if (state === 'delayed upload form') {
+      await expect.poll(() => waitedForUpload).toBe(true);
+      expect(languageSwitches).toBe(0);
+      releaseUpload();
+      await journey;
+      expect(languageSwitches).toBe(1);
+    } else {
+      await expect(journey).rejects.toThrow(`Upload form unavailable: ${state}`);
+      expect(languageSwitches).toBe(0);
+    }
+    expect(goClicks).toBe(1);
+  });
+}

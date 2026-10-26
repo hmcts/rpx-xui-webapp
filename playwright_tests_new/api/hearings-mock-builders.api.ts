@@ -20,7 +20,7 @@ import {
 
 const require = createRequire(import.meta.url);
 const { hearingStatusMappings } = require('../../src/hearings/models/hearingStatusMappings') as {
-  hearingStatusMappings: Array<{ hmcStatus: string }>;
+  hearingStatusMappings: Record<string, { hmcStatus: string }>;
 };
 
 test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
@@ -99,7 +99,9 @@ test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
     expect(payload.caseRef).toBe(HEARINGS_CASE_REFERENCE);
     expect(payload.caseHearings).toHaveLength(statusExpectations.length);
     expect(statusExpectations.map((statusExpectation) => statusExpectation.hmcStatus).sort()).toEqual(
-      hearingStatusMappings.map((statusMapping) => statusMapping.hmcStatus).sort()
+      Object.values(hearingStatusMappings)
+        .map((statusMapping) => statusMapping.hmcStatus)
+        .sort()
     );
     statusExpectations.forEach((statusExpectation, index) => {
       expect(payload.caseHearings[index]).toMatchObject({
@@ -350,9 +352,9 @@ test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
       '8254902572336147',
     ]);
     expect(linkedCases.map((linkedCase) => linkedCase.reasonsForLink)).toEqual([
-      ['Linked for a hearing'],
-      ['Linked for a hearing', 'Progressed as part of lead case'],
-      ['Familial', 'Guardian', 'Linked for a hearing'],
+      ['CLRC017'],
+      ['CLRC017', 'Progressed as part of lead case'],
+      ['Familial', 'Guardian', 'CLRC017'],
     ]);
 
     const casesWithHearings = linkedCases.filter((linkedCase) => linkedCase.caseHearings.length > 0);

@@ -28,6 +28,7 @@ describe('RequestHearingComponent', () => {
 
   beforeEach(() => {
     appConfig.logMessage.calls.reset();
+    hearingsService.hearingRequestContinueDisabled = false;
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [RequestHearingComponent, MockRpxTranslatePipe],
@@ -93,6 +94,12 @@ describe('RequestHearingComponent', () => {
     (component as any).submitRequestFailed = true;
 
     expect(component.buttonDisabled(ACTION.SUBMIT)).toBeFalse();
+  });
+
+  it('should check buttonDisabled returns true for continue when hearing request continue is disabled', () => {
+    hearingsService.hearingRequestContinueDisabled = true;
+    const buttonDisabled = component.buttonDisabled(ACTION.CONTINUE);
+    expect(buttonDisabled).toEqual(true);
   });
 
   it('should check buttonDisabled returns a true for a VIEW_EDIT_SUBMIT with successful validation', () => {
@@ -398,7 +405,7 @@ describe('RequestHearingComponent', () => {
     component.submitRequest(ACTION.SUBMIT);
     expect(component.showMismatchErrorMessage).toBeTruthy();
     expect(appConfig.logMessage).not.toHaveBeenCalled();
-    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE });
+    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST });
   });
 
   it('should log public name when names are mismatched and still submit successfully', () => {

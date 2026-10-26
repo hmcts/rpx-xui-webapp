@@ -44,7 +44,7 @@ Use Playwright integration tests for local UI coverage with mocked backend route
 ### Prerequisites
 
 ```bash
-node -v   # requires >= 20.19.0
+node -v   # requires >= 24.22.1
 yarn install
 ```
 
@@ -417,6 +417,9 @@ Key behaviour:
 - A flake summary is printed at the end of Playwright runs by `playwright_tests_new/common/reporters/flake-gate.reporter.cjs` (counts flaky, retry-pass and failed tests).
 - Flake gate is currently report-only in all environments; it does not fail the run.
 - `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
+
+Playwright profiling can be enabled for a representative local run by adding `perfetto` to `PLAYWRIGHT_REPORTERS` (for example `PLAYWRIGHT_REPORTERS=list,odhin,perfetto`). The built-in reporter writes `test-results/perfetto.json` by default. Set `PW_TRACE_RICH=true` for retain-on-failure traces with DOM, ARIA and screen snapshots; measure artifact size before enabling it in CI.
+
 - Optional flake thresholds `PW_MAX_FLAKY_TESTS` (default `20`) and `PW_MAX_FLAKY_RATE` (default `0.2`, meaning 20%) are used for reporting output only.
 
 ### Playwright diagnostics artifacts in Jenkins
@@ -479,10 +482,25 @@ For Playwright integration runs outside CI, periodic live progress logging is en
 
 You can override either variable explicitly in your local shell.
 
-## Running Consumer Driven Contract tests (pact)
+## Running Consumer Driven Contract tests (Pact) with a local Broker
 
-Run `yarn test-pact` to execute the Pact tests
-For publishing the pacts to broker execute `yarn publish-pact`
+Start the local Pact Broker from the Pact Broker Docker Compose directory:
+
+```bash
+docker compose up -d postgres pact-broker
+```
+
+From the consumer repository, run the full Pact suite and publish the generated contracts to the local Broker:
+
+```bash
+PACT_BROKER_URL=http://localhost:9292 yarn test:pact:run-and-publish
+```
+
+This script runs `yarn test-pact` followed by `yarn publish-pact`. To run them separately, use `PACT_BROKER_URL=http://localhost:9292 yarn test-pact` and then `PACT_BROKER_URL=http://localhost:9292 yarn publish-pact`.
+
+The publisher uses the full Git commit SHA as the consumer version and records the CI branch (`CHANGE_BRANCH` or `BRANCH_NAME`) or the current local Git branch as Pact branch metadata. Do not set a Pact tag for branch selection.
+
+When finished, stop the local Broker from its Docker Compose directory with `docker compose down`.
 
 ## Integration Documentation
 

@@ -1,11 +1,12 @@
 {
-  "excludedTags": [],
+  "excludedTags": ["@blocked-exui-4272", "@blocked-exui-4276", "@blocked-exui-4317", "@blocked-exui-4318"],
   "availableTags": [
     "@integration",
     "@integration-access-requests",
     "@integration-booking-ui",
     "@integration-case-details",
     "@integration-case-file-view",
+    "@integration-case-file-view-mock-session",
     "@integration-case-linking",
     "@integration-event-behaviour",
     "@integration-case-viewer",
@@ -15,6 +16,7 @@
     "@integration-create-case",
     "@integration-data-loss",
     "@integration-hearings",
+    "@integration-hearing-link",
     "@integration-manage-tasks",
     "@integration-platform-services",
     "@integration-probate-find-case",
@@ -22,6 +24,10 @@
     "@integration-restricted-case",
     "@integration-search-case",
     "@integration-share-case",
-    "@integration-welsh-language"
+    "@integration-welsh-language",
+    "@blocked-exui-4272",
+    "@blocked-exui-4276",
+    "@blocked-exui-4317",
+    "@blocked-exui-4318"
   ]
 }

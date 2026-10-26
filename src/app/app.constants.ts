@@ -15,6 +15,9 @@ function featureToAttributeName(key: string): string {
   return key.split('-').join('_');
 }
 
+export const getTermsAndConditionsHref = (isEnabled: boolean): string =>
+  isEnabled ? '/terms-and-conditions' : '/legacy-terms-and-conditions';
+
 export const featureToAttributeMap = new Map<string, string>([
   [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
@@ -31,6 +34,7 @@ const footerDataNavigation = {
     { text: 'Cookies', href: '/cookies', target: '_blank' },
     { text: 'Privacy policy', href: '/privacy-policy', target: '_blank' },
     { text: 'Get help', href: '/get-help', target: '_blank' },
+    { text: 'Site map', href: '/sitemap', target: '_blank' },
   ],
 };
 

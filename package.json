@@ -6,7 +6,7 @@
     "api"
   ],
   "engines": {
-    "node": ">=24.18.0"
+    "node": ">=24.22.1"
   },
   "scripts": {
     "build": "yarn build:prod && yarn build:node",
@@ -120,13 +120,13 @@
     "@angular/ssr": "20.3.32",
     "@dr.pogodin/csurf": "^1.17.1",
     "@edium/fsm": "^3.0.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.4.14",
+    "@hmcts/ccd-case-ui-toolkit": "7.4.15",
     "@hmcts/ccpay-web-component": "6.5.27",
-    "@hmcts/media-viewer": "4.2.43",
+    "@hmcts/media-viewer": "4.2.44",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.4.1",
-    "@hmcts/rpx-xui-common-lib": "3.2.22",
-    "@hmcts/rpx-xui-node-lib": "2.30.33",
+    "@hmcts/rpx-xui-common-lib": "3.2.24",
+    "@hmcts/rpx-xui-node-lib": "2.30.34",
     "@microsoft/applicationinsights-web": "^3.4.3",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
@@ -167,7 +167,7 @@
     "otplib": "^13.4.0",
     "pegjs": "^0.10.0",
     "prettier": "^3.9.5",
-    "rpx-xui-translation": "1.2.16",
+    "rpx-xui-translation": "1.2.17",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.2",
     "stream": "^0.0.3",

@@ -253,12 +253,12 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         { type: 'page-state', description: 'Overview' },
       ],
     };
-    await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 100 });
+    await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 100, stdout: [], stderr: [] });
     await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 200 });
     await reporter.onTestEnd({ ...testCase, id: 'skipped' }, { status: 'skipped', retry: 0, duration: 0 });
     await reporter.onTestEnd(
       { ...testCase, id: 'timeout', retries: 0, annotations: [{ type: 'feature', description: 'Hearings' }] },
-      { status: 'timedOut', retry: 0, duration: 300 }
+      { status: 'timedOut', retry: 0, duration: 300, stdout: [], stderr: [] }
     );
     expect(reporter.featureStats.get('Case details')).toMatchObject({
       totalTests: 2,

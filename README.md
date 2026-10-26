@@ -44,7 +44,7 @@ Use Playwright integration tests for local UI coverage with mocked backend route
 ### Prerequisites
 
 ```bash
-node -v   # requires >= 24.18.0
+node -v   # requires >= 24.22.1
 yarn install
 ```
 

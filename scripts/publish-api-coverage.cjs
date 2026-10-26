@@ -18,12 +18,10 @@ function publishApiCoverage(reportFolder, coverageRoot) {
       'beforeend',
       '<button class="main-tablinks" onclick="openMainTab(event, \'TabCoverage\')">Coverage</button>'
     );
-  root
-    .querySelector('body')
-    .insertAdjacentHTML(
-      'beforeend',
-      '<div id="TabCoverage" style="display: none" class="main-tabcontent"><h2>API test coverage</h2><p><a href="coverage/index.html">Open coverage report</a></p></div>'
-    );
+  (root.querySelector('body') ?? root).insertAdjacentHTML(
+    'beforeend',
+    '<div id="TabCoverage" style="display: none" class="main-tabcontent"><h2>API test coverage</h2><p><a href="coverage/index.html">Open coverage report</a></p></div>'
+  );
   fs.writeFileSync(reportFile, root.toString());
 }
 

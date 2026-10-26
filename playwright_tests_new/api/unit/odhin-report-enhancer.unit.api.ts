@@ -113,6 +113,20 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(root.querySelector('meta[name="viewport"]').getAttribute('content')).toBe('width=device-width, initial-scale=1');
   });
 
+  test('adds the fluid presentation to report HTML without a body and remains idempotent', () => {
+    const html = '<html><head><title>API report</title></head><main id="report-content">Report content</main></html>';
+    const once = enhancerTest.enhanceDashboardHtml(html, [], []);
+    const twice = enhancerTest.enhanceDashboardHtml(once, [], []);
+    const root = parse(twice);
+    const body = root.querySelector('body');
+
+    expect(body).not.toBeNull();
+    expect(body.getAttribute('id')).toBe('body-content');
+    expect(body.querySelector('#report-content').text).toBe('Report content');
+    expect(body.querySelectorAll('#webapp-report-ui')).toHaveLength(1);
+    expect(root.querySelectorAll('#webapp-report-theme')).toHaveLength(1);
+  });
+
   test('derives feature names from Playwright file paths', () => {
     expect(
       deriveFeatureName(
@@ -239,12 +253,12 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         { type: 'page-state', description: 'Overview' },
       ],
     };
-    await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 100 });
+    await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 100, stdout: [], stderr: [] });
     await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 200 });
     await reporter.onTestEnd({ ...testCase, id: 'skipped' }, { status: 'skipped', retry: 0, duration: 0 });
     await reporter.onTestEnd(
       { ...testCase, id: 'timeout', retries: 0, annotations: [{ type: 'feature', description: 'Hearings' }] },
-      { status: 'timedOut', retry: 0, duration: 300 }
+      { status: 'timedOut', retry: 0, duration: 300, stdout: [], stderr: [] }
     );
     expect(reporter.featureStats.get('Case details')).toMatchObject({
       totalTests: 2,
@@ -436,6 +450,38 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('Feature Overview');
     expect(nextHtml).toContain('odhin-feature-overview-layout-compact');
     expect(nextHtml).not.toContain('id="chart-file"');
+  });
+
+  test('counts flaky final passes, excludes skipped tests, and keeps failures out of the pass rate', () => {
+    const feature = createEmptyFeatureStat('caseDetails');
+    feature.totalTests = 8;
+    feature.passed = 2;
+    feature.flaky = 1;
+    feature.failed = 1;
+    feature.timedOut = 1;
+    feature.skipped = 2;
+    feature.interrupted = 1;
+
+    const html = enhancerTest.buildFeatureOverviewBlock([feature]);
+    const row = parse(html).querySelector('tbody tr');
+
+    expect(row?.querySelector('.result-status-passed')?.text.trim()).toBe('3 (50.00%)');
+    expect(row?.querySelector('.result-status-failed')?.text.trim()).toBe('1 (12.50%)');
+    expect(row?.querySelector('.result-status-timedOut')?.text.trim()).toBe('1 (12.50%)');
+    expect(row?.querySelector('.result-status-skipped')?.text.trim()).toBe('2 (25.00%)');
+    expect(row?.querySelector('.result-status-interrupted')?.text.trim()).toBe('1 (12.50%)');
+  });
+
+  test('renders the fluid dashboard no-data marker when no non-skipped tests are in the denominator', () => {
+    const noTests = createEmptyFeatureStat('noTests');
+    const allSkipped = createEmptyFeatureStat('allSkipped');
+    allSkipped.totalTests = 3;
+    allSkipped.skipped = 3;
+
+    const rows = parse(enhancerTest.buildFeatureOverviewBlock([noTests, allSkipped])).querySelectorAll('tbody tr');
+
+    expect(rows[0].querySelector('.result-status-passed')?.text.trim()).toBe('0 (—)');
+    expect(rows[1].querySelector('.result-status-passed')?.text.trim()).toBe('0 (—)');
   });
 
   test('feature overview block keeps feature distribution and outcome columns together', () => {

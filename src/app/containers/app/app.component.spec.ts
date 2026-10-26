@@ -103,7 +103,100 @@ describe('AppComponent', () => {
   });
 
   it('Calls title service', () => {
-    expect(title.setTitle).toHaveBeenCalled();
+    expect(title.setTitle).toHaveBeenCalledWith('Test - Manage Case - HM Courts & Tribunals Service - GOV.UK');
+  });
+
+  it('updates the page title to the selected case tab', () => {
+    const state = testRoute.state;
+    state.url = '/cases/case-details/1234567890123456#Hearings';
+    state.root.firstChild.fragment = 'Hearings';
+
+    appComponent['updateTitleFromRouterState'](state);
+
+    expect(title.setTitle).toHaveBeenCalledWith('Hearings - Test - Manage Case - HM Courts & Tribunals Service - GOV.UK');
+  });
+
+  it('updates the page title when the selected Next step action is submitted', () => {
+    const form = document.createElement('form');
+    form.classList.add('event-trigger');
+    const select = document.createElement('select');
+    select.id = 'next-step';
+    select.add(new Option('Select action', ''));
+    select.add(new Option('Upload additional applications', 'uploadAdditionalApplications'));
+    select.selectedIndex = 1;
+    form.appendChild(select);
+
+    appComponent.updateTitleForSubmittedCaseAction({ target: form } as unknown as Event);
+
+    expect(title.setTitle).toHaveBeenCalledWith(
+      'Upload additional applications - Test - Manage Case - HM Courts & Tribunals Service - GOV.UK'
+    );
+  });
+
+  it('does not update the page title when no Next step action is selected', () => {
+    title.setTitle.calls.reset();
+    const form = document.createElement('form');
+    form.classList.add('event-trigger');
+    const select = document.createElement('select');
+    select.id = 'next-step';
+    select.add(new Option('Select action', ''));
+    form.appendChild(select);
+
+    appComponent.updateTitleForSubmittedCaseAction({ target: form } as unknown as Event);
+
+    expect(title.setTitle).not.toHaveBeenCalled();
+  });
+
+  it('preserves the selected action title during Go navigation', () => {
+    const form = document.createElement('form');
+    form.classList.add('event-trigger');
+    const select = document.createElement('select');
+    select.id = 'next-step';
+    select.add(new Option('Upload additional applications', 'uploadAdditionalApplications'));
+    form.appendChild(select);
+    appComponent.updateTitleForSubmittedCaseAction({ target: form } as unknown as Event);
+
+    const state = testRoute.state;
+    state.url = '/cases/case-details/1234567890123456/trigger/uploadAdditionalApplications';
+    state.root.firstChild.fragment = null;
+    appComponent['updateTitleFromRouterState'](state);
+
+    expect(title.setTitle.calls.mostRecent().args[0]).toBe(
+      'Upload additional applications - Test - Manage Case - HM Courts & Tribunals Service - GOV.UK'
+    );
+  });
+
+  it('updates the page title when the selected Create Case event is submitted', () => {
+    const form = document.createElement('form');
+    const select = document.createElement('select');
+    select.id = 'cc-event';
+    select.add(new Option('--Select a value--', ''));
+    select.add(new Option('Start application', 'startApplication'));
+    select.selectedIndex = 1;
+    form.appendChild(select);
+
+    appComponent.updateTitleForSubmittedCaseAction({ target: form } as unknown as Event);
+
+    expect(title.setTitle).toHaveBeenCalledWith(
+      'Start application - Test - Manage Case - HM Courts & Tribunals Service - GOV.UK'
+    );
+  });
+
+  it('preserves the selected Create Case event title during Start navigation', () => {
+    const form = document.createElement('form');
+    const select = document.createElement('select');
+    select.id = 'cc-event';
+    select.add(new Option('Start application', 'startApplication'));
+    form.appendChild(select);
+    appComponent.updateTitleForSubmittedCaseAction({ target: form } as unknown as Event);
+
+    const state = testRoute.state;
+    state.url = '/cases/case-create/PUBLICLAW/CARE_SUPERVISION_EPO/startApplication';
+    appComponent['updateTitleFromRouterState'](state);
+
+    expect(title.setTitle.calls.mostRecent().args[0]).toBe(
+      'Start application - Test - Manage Case - HM Courts & Tribunals Service - GOV.UK'
+    );
   });
 
   it('signOutHandler', () => {

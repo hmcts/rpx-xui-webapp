@@ -123,7 +123,7 @@ test.describe(
 
         await expect(page).toHaveURL(MY_WORK_LIST_URL_REGEX);
         await expect(taskListPage.taskListTable).toBeVisible();
-        await expect(taskListPage.exuiBodyComponent.message).toContainText(TASK_UNAVAILABLE_WARNING);
+        await expect(taskListPage.exuiBodyComponent.warningMessage).toContainText(TASK_UNAVAILABLE_WARNING);
       });
     });
   }

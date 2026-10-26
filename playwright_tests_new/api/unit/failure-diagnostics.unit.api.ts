@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 
 import { __test__ as diagnosticsTest } from '../../E2E/fixtures.js';
 import { TEST_AVAILABLE_TASKS_URL, TEST_SERVICE_DOWN_URL } from './testAppUrls.js';
@@ -20,18 +21,21 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     expect(diagnosticsTest.shouldAttachFailureDiagnosis('passed')).toBe(false);
   });
 
-  test('attaches structured diagnostics when a run is interrupted', async () => {
-    const attachments: string[] = [];
+  test('persists redacted structured diagnostics in the test output directory and attaches the file', async ({
+    browserName,
+  }, playwrightTestInfo) => {
+    const attachments: Array<{ name: string; path?: string }> = [];
     const testInfo = {
       annotations: [],
-      attach: async (name: string) => attachments.push(name),
+      attach: async (name: string, options?: { path?: string }) => attachments.push({ name, path: options?.path }),
       error: { message: 'Browser closed before the assertion completed' },
       file: 'playwright_tests_new/example.spec.ts',
-      project: { name: 'chromium' },
+      project: { name: browserName },
       retry: 0,
       status: 'interrupted',
       title: 'interrupted diagnostic test',
       workerIndex: 0,
+      outputPath: (...segments: string[]) => playwrightTestInfo.outputPath('failure-data-fixture', ...segments),
     } as unknown as Parameters<typeof diagnosticsTest.attachFailureDiagnosisIfNeeded>[0];
 
     await diagnosticsTest.attachFailureDiagnosisIfNeeded(testInfo, () => ({
@@ -44,10 +48,19 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       slowCalls: [],
       networkTimeout: false,
       slowThreshold: 1000,
-      executionSignals: baseExecutionSignals,
+      executionSignals: {
+        ...baseExecutionSignals,
+        lastMainFrameUrl: 'https://xui.example/cases/1234567890123456?token=secret',
+      },
     }));
 
-    expect(attachments).toEqual(['Failure diagnosis', 'failure-data.json', 'failure-context.json']);
+    expect(attachments.map(({ name }) => name)).toEqual(['Failure diagnosis', 'failure-data.json', 'failure-context.json']);
+    const failureDataPath = attachments.find(({ name }) => name === 'failure-data.json')?.path;
+    expect(failureDataPath).toBe(playwrightTestInfo.outputPath('failure-data-fixture', 'failure-data.json'));
+    const savedFailureData = await readFile(failureDataPath!, 'utf8');
+    expect(JSON.parse(savedFailureData)).toMatchObject({ failureType: 'UNKNOWN' });
+    expect(savedFailureData).not.toContain('secret');
+    expect(savedFailureData).not.toContain('1234567890123456');
   });
 
   test('classifyFailure treats direct CCD event-token 502 failures as backend 5xx', () => {

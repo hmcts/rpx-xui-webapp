@@ -48,9 +48,9 @@ export function resolveSessionIdentity(input: SessionIdentityInput, deps: Sessio
 export function resolveSessionStorageKey(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): string {
   const identity = resolveSessionIdentity(input, deps);
   const explicitSessionKey = identity.sessionKey?.trim();
-  if (explicitSessionKey) {
-    return collisionSafeSessionStorageKey(explicitSessionKey, `explicit\0${explicitSessionKey}`);
-  }
   const canonicalEmail = identity.email.trim().toLowerCase();
+  if (explicitSessionKey) {
+    return collisionSafeSessionStorageKey(explicitSessionKey, `explicit\0${canonicalEmail}\0${explicitSessionKey}`);
+  }
   return collisionSafeSessionStorageKey(canonicalEmail, canonicalEmail);
 }

@@ -249,38 +249,42 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
       const location: Location = history.state.location;
       this.defaultLocations = [location.id];
     }
-    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe((userDetails) => {
-      const isFeePaidJudgeWithNoBooking: boolean =
-        this.bookingLocations.length === 0 &&
-        !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
-      if (isFeePaidJudgeWithNoBooking) {
-        this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
-      } else if (!isLocationsAvailable) {
-        const baseLocations: string[] = [];
-        userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
-          const roleJurisdiction = roleAssignment.jurisdiction;
-          if (
-            roleJurisdiction &&
-            roleAssignment.roleType === 'ORGANISATION' &&
-            !bookableServices.includes(roleAssignment.jurisdiction) &&
-            roleAssignment.baseLocation &&
-            roleAssignment.substantive.toLocaleLowerCase() === 'y'
-          ) {
-            // EUI-7339 - Added to ensure default locations are actually selectable
+    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe(
+      (userDetails) => {
+        const isFeePaidJudgeWithNoBooking: boolean =
+          this.bookingLocations.length === 0 &&
+          !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
+        if (isFeePaidJudgeWithNoBooking) {
+          this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
+        } else if (!isLocationsAvailable) {
+          const baseLocations: string[] = [];
+          userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
+            const roleJurisdiction = roleAssignment.jurisdiction;
             if (
-              !roleAssignment.region ||
-              locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)
+              roleJurisdiction &&
+              roleAssignment.roleType === 'ORGANISATION' &&
+              !bookableServices.includes(roleAssignment.jurisdiction) &&
+              roleAssignment.baseLocation &&
+              roleAssignment.substantive.toLocaleLowerCase() === 'y'
             ) {
-              baseLocations.push(roleAssignment.baseLocation);
-              this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
+              // EUI-7339 - Added to ensure default locations are actually selectable
+              if (
+                !roleAssignment.region ||
+                locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)
+              ) {
+                baseLocations.push(roleAssignment.baseLocation);
+                this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
+              }
             }
-          }
-        });
-        this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
-        this.defaultLocations =
-          this.defaultLocations && this.defaultLocations.length > 0 ? this.defaultLocations : Array.from(new Set(baseLocations));
+          });
+          this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
+          this.defaultLocations =
+            this.defaultLocations && this.defaultLocations.length > 0
+              ? this.defaultLocations
+              : Array.from(new Set(baseLocations));
+        }
       }
-    });
+    );
   }
 
   private persistFirstSetting(): void {
@@ -374,63 +378,65 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
 
   private setUpServicesFilter(services: any[], serviceNamesMap: { [key: string]: string }): void {
     // Available services need to be added to work-allocation-utils.ts -> servicesMap
-    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe((userDetails) => {
-      if (!services.length) {
-        return;
-      }
-      if (!userDetails.roleAssignmentInfo?.some((p) => p.jurisdiction !== undefined)) {
-        return;
-      }
-      const filteredServices = _.intersection.apply(_, [
-        userDetails.roleAssignmentInfo
-          .filter((p) => p.roleType && p.roleType === 'ORGANISATION')
-          .map((item) => item.jurisdiction)
-          .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
-        services,
-      ]);
-      const field: FilterFieldConfig = {
-        name: 'services',
-        options: [
-          {
-            key: 'services_all',
-            label: 'Select all',
-            selectAll: true,
-          },
-          ...filteredServices.sort().map((service) => {
-            return {
-              key: service,
-              label: serviceNamesMap[service] || service,
-            };
-          }),
-        ],
-        minSelected: 1,
-        maxSelected: null,
-        lineBreakBefore: false,
-        displayMinSelectedError: true,
-        minSelectedError: 'Select a service',
-        title: 'Services',
-        type: 'checkbox-large',
-      };
+    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe(
+      (userDetails) => {
+        if (!services.length) {
+          return;
+        }
+        if (!userDetails.roleAssignmentInfo?.some((p) => p.jurisdiction !== undefined)) {
+          return;
+        }
+        const filteredServices = _.intersection.apply(_, [
+          userDetails.roleAssignmentInfo
+            .filter((p) => p.roleType && p.roleType === 'ORGANISATION')
+            .map((item) => item.jurisdiction)
+            .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
+          services,
+        ]);
+        const field: FilterFieldConfig = {
+          name: 'services',
+          options: [
+            {
+              key: 'services_all',
+              label: 'Select all',
+              selectAll: true,
+            },
+            ...filteredServices.sort().map((service) => {
+              return {
+                key: service,
+                label: serviceNamesMap[service] || service,
+              };
+            }),
+          ],
+          minSelected: 1,
+          maxSelected: null,
+          lineBreakBefore: false,
+          displayMinSelectedError: true,
+          minSelectedError: 'Select a service',
+          title: 'Services',
+          type: 'checkbox-large',
+        };
 
-      const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
-      if (fieldSetting) {
-        fieldSetting.value = ['services_all', ...filteredServices];
-      } else {
-        this.fieldsSettings.fields = [
-          ...this.fieldsSettings.fields,
-          {
-            name: 'services',
-            value: ['services_all', ...filteredServices],
-          },
-        ];
-      }
+        const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
+        if (fieldSetting) {
+          fieldSetting.value = ['services_all', ...filteredServices];
+        } else {
+          this.fieldsSettings.fields = [
+            ...this.fieldsSettings.fields,
+            {
+              name: 'services',
+              value: ['services_all', ...filteredServices],
+            },
+          ];
+        }
 
-      this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-      const fieldConfig = this.fieldsConfig.fields.find((f) => f.name === 'services');
-      if (!fieldConfig) {
-        this.fieldsConfig.fields.push(field);
+        this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+        const fieldConfig = this.fieldsConfig.fields.find((f) => f.name === 'services');
+        if (!fieldConfig) {
+          this.fieldsConfig.fields.push(field);
+        }
       }
-    });
+    );
   }
 
   /**

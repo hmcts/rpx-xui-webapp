@@ -70,7 +70,9 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly environmentService: EnvironmentService,
     private readonly router: Router
   ) {
-    this.userRoles$ = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails).pipe(map((userDetails) => userDetails?.userInfo?.roles));
+    this.userRoles$ = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails).pipe(
+      map((userDetails) => userDetails?.userInfo?.roles)
+    );
 
     this.deploymentEnv = this.environmentService.getDeploymentEnv();
 

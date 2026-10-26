@@ -241,5 +241,4 @@ describe('DecentralisedRedirectService', () => {
       expect(url).toBe('https://pcs-xui-pr-1234.preview.platform/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
     });
   });
-
 });

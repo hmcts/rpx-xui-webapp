@@ -272,27 +272,29 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe((userDetails) => {
-      // get jurisdiction key from detailed service list
-      const jurisdiction = this.jurisdictions?.length > 0 ? this.jurisdictions[0].serviceId : '';
-      this.userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles || []);
-      // EXUI-4758 - Get first user role category, otherwise default to ALL
-      this.roleType = AppUtils.convertDomainToLabel(this.userRoleNames[0] || PersonRole.ALL);
-      this.fieldsConfig.cancelSetting.fields.push(
-        {
-          name: 'taskType',
-          value: [getRoleCategory(this.roleType)],
-        },
-        {
-          name: 'role',
-          value: [this.roleType],
-        },
-        {
-          name: 'service',
-          value: [jurisdiction],
-        }
-      );
-    });
+    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe(
+      (userDetails) => {
+        // get jurisdiction key from detailed service list
+        const jurisdiction = this.jurisdictions?.length > 0 ? this.jurisdictions[0].serviceId : '';
+        this.userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles || []);
+        // EXUI-4758 - Get first user role category, otherwise default to ALL
+        this.roleType = AppUtils.convertDomainToLabel(this.userRoleNames[0] || PersonRole.ALL);
+        this.fieldsConfig.cancelSetting.fields.push(
+          {
+            name: 'taskType',
+            value: [getRoleCategory(this.roleType)],
+          },
+          {
+            name: 'role',
+            value: [this.roleType],
+          },
+          {
+            name: 'service',
+            value: [jurisdiction],
+          }
+        );
+      }
+    );
     this.fieldsConfig.fields = [
       TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
       TaskManagerFilterComponent.initSelectLocationFilter(),

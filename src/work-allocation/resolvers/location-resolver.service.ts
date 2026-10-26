@@ -60,7 +60,9 @@ export class LocationResolver {
 
   private userDetails(): Observable<UserDetails> {
     const newBookingCreated = this.router.getCurrentNavigation()?.extras?.state?.newBooking === true;
-    return newBookingCreated ? this.updateAndGetUserDetails() : CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails);
+    return newBookingCreated
+      ? this.updateAndGetUserDetails()
+      : CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails);
   }
 
   private updateAndGetUserDetails(): Observable<UserDetails> {

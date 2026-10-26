@@ -89,7 +89,7 @@ describe('App Selectors', () => {
       userInfo: { id: 'user-1', email: 'user@example.com', roles: [], token: 'Bearer secret' },
       canShareCases: true,
       sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 30 },
-      roleAssignmentInfo: [{ jurisdiction: 'IA', isCaseAllocator: true }]
+      roleAssignmentInfo: [{ jurisdiction: 'IA', isCaseAllocator: true }],
     } as any;
     let selectedDetails;
     store.select(fromSelectors.getUserDetails).subscribe((value) => (selectedDetails = value));

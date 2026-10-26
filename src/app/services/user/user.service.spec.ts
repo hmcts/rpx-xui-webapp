@@ -8,5 +8,4 @@ describe('User service', () => {
     service.getUserDetails();
     expect(mockedHttpClient.get).toHaveBeenCalled();
   });
-
 });

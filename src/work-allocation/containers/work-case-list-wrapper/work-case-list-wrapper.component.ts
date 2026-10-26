@@ -160,14 +160,13 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public loadSupportedJurisdictions(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
-    const userRoles$ = CurrentUserService.selectUserDetails(this.store, fromActions.getUserDetails)
-      .pipe(
-        map((userDetails) =>
-          userDetails.roleAssignmentInfo
-            .filter((role) => role.roleName && role.roleName === 'task-supervisor')
-            .map((role) => role.jurisdiction || null)
-        )
-      );
+    const userRoles$ = CurrentUserService.selectUserDetails(this.store, fromActions.getUserDetails).pipe(
+      map((userDetails) =>
+        userDetails.roleAssignmentInfo
+          .filter((role) => role.roleName && role.roleName === 'task-supervisor')
+          .map((role) => role.jurisdiction || null)
+      )
+    );
 
     // for all case lists other than all work
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();

@@ -156,21 +156,23 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe((userDetails) => {
-      const userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles || []);
-      // EXUI-4758 - Get first user role category, otherwise default to ALL
-      const roleType = AppUtils.convertDomainToLabel(userRoleNames[0] || PersonRole.ALL);
-      this.filterConfig.cancelSetting.fields.push(
-        {
-          name: 'jurisdiction',
-          value: this.jurisdictions?.length > 0 ? [this.jurisdictions[0].serviceId] : [],
-        },
-        {
-          name: 'role',
-          value: [roleType],
-        }
-      );
-    });
+    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe(
+      (userDetails) => {
+        const userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles || []);
+        // EXUI-4758 - Get first user role category, otherwise default to ALL
+        const roleType = AppUtils.convertDomainToLabel(userRoleNames[0] || PersonRole.ALL);
+        this.filterConfig.cancelSetting.fields.push(
+          {
+            name: 'jurisdiction',
+            value: this.jurisdictions?.length > 0 ? [this.jurisdictions[0].serviceId] : [],
+          },
+          {
+            name: 'role',
+            value: [roleType],
+          }
+        );
+      }
+    );
     this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
       CaseManagerFilterComponent.initRoleTypeFilter(),

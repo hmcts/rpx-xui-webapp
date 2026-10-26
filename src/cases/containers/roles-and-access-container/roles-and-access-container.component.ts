@@ -104,7 +104,9 @@ export class RolesAndAccessContainerComponent implements OnInit {
     /* istanbul ignore else*/
     if (jurisdictionField) {
       this.caseJurisdiction = jurisdictionField.value;
-      CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails).subscribe((user) => this.setDisplayAllocateLink(user, this.caseJurisdiction));
+      CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails).subscribe((user) =>
+        this.setDisplayAllocateLink(user, this.caseJurisdiction)
+      );
     }
   }
 

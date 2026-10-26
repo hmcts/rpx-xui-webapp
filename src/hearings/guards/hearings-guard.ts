@@ -20,8 +20,9 @@ export class HearingsGuard {
     protected readonly hearingStore: Store<fromAppStore.State>,
     protected readonly router: Router
   ) {
-    this.userRoles$ = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails)
-      .pipe(map((userDetails) => userDetails.userInfo.roles));
+    this.userRoles$ = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).pipe(
+      map((userDetails) => userDetails.userInfo.roles)
+    );
   }
 
   public hasMatchedPermissions(): Observable<boolean> {

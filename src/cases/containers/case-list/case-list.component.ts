@@ -1,4 +1,16 @@
-import { CurrentUserService, CaseState, CaseType, DefinitionsService, Jurisdiction, PaginationMetadata, SearchResultComponent, SearchResultView, SearchResultViewItem, WindowService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  CurrentUserService,
+  CaseState,
+  CaseType,
+  DefinitionsService,
+  Jurisdiction,
+  PaginationMetadata,
+  SearchResultComponent,
+  SearchResultView,
+  SearchResultViewItem,
+  WindowService,
+  safeJsonParse,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';

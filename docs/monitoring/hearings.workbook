@@ -1,0 +1,171 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "name": "overview",
+      "content": {
+        "json": "# Hearings journeys\nObserved telemetry only: sampling, blocked telemetry and browser termination can leave gaps. Abandonment means an observed ending without confirmation, not proof of user failure. Page entry is in pageViews; measured elapsed page time is in customMetrics, joined by pageVisitId. No raw messages, payloads or form values are displayed."
+      }
+    },
+    {
+      "type": 9,
+      "name": "time-range",
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "time-range",
+            "name": "TimeRange",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 86400000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 604800000
+                }
+              ]
+            }
+          }
+        ],
+        "style": "pills"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-1",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Journey starts and outcomes",
+        "query": "customEvents\n| where name in ('Hearings.JourneyStarted', 'Hearings.JourneyCompleted', 'Hearings.JourneyAbandoned')\n| summarize ObservedJourneys=dcount(tostring(customDimensions.journeyId)) by Event=name, JourneyType=tostring(customDimensions.journeyType)\n| order by JourneyType asc, Event asc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-2",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Drop-off by last step (observed endings)",
+        "query": "customEvents\n| where name == 'Hearings.JourneyAbandoned'\n| extend JourneyType=tostring(customDimensions.journeyType)\n| where JourneyType !in ('browse', 'view', 'error')\n| summarize ObservedJourneys=dcount(tostring(customDimensions.journeyId)) by JourneyType, Step=tostring(customDimensions.step), Reason=tostring(customDimensions.endReason)\n| order by ObservedJourneys desc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-3",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Page entries",
+        "query": "pageViews\n| where name startswith 'Hearings: '\n| summarize ObservedVisits=count() by Page=url\n| order by ObservedVisits desc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-4",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Page duration (milliseconds)",
+        "query": "customMetrics\n| where name == 'Hearings.PageDuration'\n| summarize ObservedSamples=count(), AverageMs=avg(value), P95Ms=percentile(value, 95) by Page=tostring(customDimensions.page)\n| order by AverageMs desc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-5",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Journey duration (milliseconds)",
+        "query": "customEvents\n| where name == 'Hearings.JourneyDuration'\n| summarize ObservedJourneys=count(), AverageMs=avg(todouble(customMeasurements.durationMs)), P95Ms=percentile(todouble(customMeasurements.durationMs), 95) by JourneyType=tostring(customDimensions.journeyType), Reason=tostring(customDimensions.endReason)",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-6",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Actions and retries",
+        "query": "customEvents\n| where name == 'Hearings.Action'\n| summarize ObservedActions=count() by Step=tostring(customDimensions.step), Action=tostring(customDimensions.action)\n| order by ObservedActions desc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-7",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Validation failures",
+        "query": "customEvents\n| where name == 'Hearings.ValidationFailed'\n| summarize ObservedFailures=count(), ErrorCount=sum(todouble(customMeasurements.errorCount)) by Step=tostring(customDimensions.step), ValidationId=tostring(customDimensions.validationId)\n| order by ObservedFailures desc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-8",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Errors (safe metadata only)",
+        "query": "exceptions\n| where tostring(customDimensions.telemetryArea) == 'Hearings'\n| summarize ObservedErrors=count() by Operation=tostring(customDimensions.operation), Status=tostring(customDimensions.httpStatus), Step=tostring(customDimensions.step)\n| order by ObservedErrors desc",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "panel-9",
+      "content": {
+        "version": "KqlItem/1.0",
+        "title": "Correlated server requests and dependencies",
+        "query": "union (requests | project timestamp, Kind='request', operation_Id, success, resultCode, customDimensions), (dependencies | project timestamp, Kind='dependency', operation_Id, success, resultCode, customDimensions)\n| extend JourneyId=tostring(customDimensions.journeyId)\n| where isnotempty(JourneyId)\n| project timestamp, Kind, JourneyId, operation_Id, success, resultCode\n| order by timestamp desc\n| take 100",
+        "size": 0,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "timeContextFromParameter": "TimeRange",
+        "visualization": "table"
+      }
+    }
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

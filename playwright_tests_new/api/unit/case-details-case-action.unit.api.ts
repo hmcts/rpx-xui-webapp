@@ -81,6 +81,59 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
     expect(spinnerTimeouts).toEqual([50, 50, 50, 50]);
     expect(expectedWaits).toBe(2);
   });
+
+  test('reports redacted Update Case readiness diagnostics without replaying the action', async () => {
+    let goClicks = 0;
+    let optionSelections = 0;
+    const caseDetailsPage = Object.assign(Object.create(CaseDetailsPage.prototype), {
+      caseActionGoButton: {
+        waitFor: async () => undefined,
+        click: async () => {
+          goClicks += 1;
+        },
+      },
+      caseActionsDropdown: {
+        waitFor: async () => undefined,
+        locator: () => ({ evaluateAll: async () => [{ label: 'Update case', value: 'updateCase' }] }),
+        selectOption: async () => {
+          optionSelections += 1;
+        },
+      },
+      eventCreationErrorHeading: { isVisible: async () => false },
+      logger: { warn: () => undefined },
+      page: {
+        locator: () => ({ first: () => ({ isVisible: async () => false, waitFor: async () => undefined }) }),
+        url: () => 'https://xui.example/cases/case-details/1234567890123456?token=secret-value',
+        waitForLoadState: async () => undefined,
+      },
+    });
+    const expectedLocator = {
+      waitFor: async () => {
+        throw new Error('field missing for case ABC1234567 token=secret-value');
+      },
+    } as unknown as Locator;
+
+    let diagnostic = '';
+    try {
+      await CaseDetailsPage.prototype.selectCaseAction.call(caseDetailsPage, 'Update case', {
+        expectedLocator,
+        expectedTarget: 'Update Case person 2 first-name input',
+        retry: false,
+      });
+    } catch (error) {
+      diagnostic = error instanceof Error ? error.message : String(error);
+    }
+
+    expect(goClicks).toBe(1);
+    expect(optionSelections).toBe(1);
+    expect(diagnostic).toContain('expected target "Update Case person 2 first-name input"');
+    expect(diagnostic).toContain('url=https://xui.example/cases/case-details/:id');
+    expect(diagnostic).toContain('spinnerVisible=false');
+    expect(diagnostic).toContain('eventErrorVisible=false');
+    expect(diagnostic).not.toContain('1234567890123456');
+    expect(diagnostic).not.toContain('ABC1234567');
+    expect(diagnostic).not.toContain('secret-value');
+  });
 });
 
 // Exercise the real helper: the upload journey must not switch language until
@@ -117,7 +170,8 @@ for (const state of ['missing', 'wrong form', 'delayed upload form'] as const) {
       eventCreationErrorHeading: { isVisible: async () => false },
       logger: { warn: () => undefined },
       page: {
-        locator: () => ({ first: () => ({ waitFor: async () => undefined }) }),
+        locator: () => ({ first: () => ({ isVisible: async () => false, waitFor: async () => undefined }) }),
+        url: () => 'https://xui.example/cases/case-details/1234567890123456',
         waitForLoadState: async () => undefined,
       },
     });

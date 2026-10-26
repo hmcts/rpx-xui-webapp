@@ -3,6 +3,13 @@ import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
 import { TIMEOUTS } from '../../../test/documentUpload/constants';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { redactText, redactUrl } = require('../../../../common/reporters/failure-context.cjs') as {
+  redactText: (value: unknown) => string;
+  redactUrl: (value: unknown) => string;
+};
 
 const validatorUtils = new ValidatorUtils();
 const tableUtils = new TableUtils();
@@ -511,6 +518,7 @@ export class CaseDetailsPage extends Base {
     options: {
       expectedLocator?: Locator;
       expectedPath?: string | RegExp;
+      expectedTarget?: string;
       timeoutMs?: number;
       retry?: boolean;
     } = {}
@@ -563,11 +571,22 @@ export class CaseDetailsPage extends Base {
       await waitForExpected();
     } catch (error) {
       const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+      if (options.retry === false) {
+        const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+        const spinnerVisible = await spinner.isVisible().catch(() => false);
+        const expectedTarget =
+          options.expectedTarget ??
+          (typeof options.expectedPath === 'string' ? options.expectedPath : options.expectedPath?.toString()) ??
+          options.expectedLocator?.toString() ??
+          'unspecified';
+        throw new Error(
+          `Case action "${redactText(action)}" did not reach expected target "${redactText(expectedTarget)}" ` +
+            `(url=${redactUrl(this.page.url())}; selectedOption=${redactText(`${matchingOption.label} (${matchingOption.value})`)}; ` +
+            `spinnerVisible=${spinnerVisible}; eventErrorVisible=${eventErrorVisible}; cause=${redactText(error)})`
+        );
+      }
       if (eventErrorVisible) {
         throw new Error(`Case event failed after selecting "${action}": The event could not be created.`);
-      }
-      if (options.retry === false) {
-        throw error;
       }
       const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
       const spinnerWasVisible = await spinner.isVisible().catch(() => false);

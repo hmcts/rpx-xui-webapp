@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs';
 
 import { ApiClient as PlaywrightApiClient, type ApiClientError, type ApiLogEntry, createLogger } from '@hmcts/playwright-common';
 import { test as base, request, type TestInfo } from '@playwright/test';
+import { isNetworkTransportError as hasNetworkTransportError } from '../common/failureClassification.js';
 
 export { expect } from '@playwright/test';
 export { buildApiAttachment } from '@hmcts/playwright-common';
@@ -27,6 +28,7 @@ type FailureType =
   | 'DOWNSTREAM_API_4XX'
   | 'SLOW_API_RESPONSE'
   | 'NETWORK_TIMEOUT'
+  | 'NETWORK_ERROR'
   | 'ASSERTION_FAILURE'
   | 'UNKNOWN';
 
@@ -103,6 +105,10 @@ function formatApiClientFailure(error: ApiClientError): string {
   return `${entry.method} ${sanitizeUrl(entry.url)} responded with ${error.status} (${details.join('; ')})`;
 }
 
+function isNetworkTransportError(entry: Pick<ApiLogEntry, 'status' | 'error'>): boolean {
+  return entry.status === 0 && hasNetworkTransportError(entry.error || '');
+}
+
 function recordApiClientFailure(entries: ApiLogEntry[], error: ApiClientError): void {
   entries.push(error.logEntry);
   error.message = formatApiClientFailure(error);
@@ -113,10 +119,14 @@ function classifyFailure(
   serverErrors: ApiError[],
   clientErrors: ApiError[],
   slowCalls: Array<{ url: string; duration: number; method: string }>,
-  networkTimeout: boolean
+  networkTimeout: boolean,
+  networkError = false
 ): FailureType {
   if (/auth\/login responded with (?:502|503|504)/i.test(error)) {
     return 'AUTHENTICATION_ROUTE_UNAVAILABLE';
+  }
+  if (networkError) {
+    return 'NETWORK_ERROR';
   }
   if (serverErrors.length > 0) {
     return 'DOWNSTREAM_API_5XX';
@@ -196,9 +206,10 @@ export const test = base.extend<ApiFixtures>({
 
       const networkTimeout =
         /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(errorMessage) ||
-        entries.some((entry) => /timeout|timed out|ETIMEDOUT/i.test(entry.errorMessage || entry.error || ''));
+        entries.some((entry) => /timeout|timed out|ETIMEDOUT/i.test(entry.error || ''));
+      const networkError = entries.some(isNetworkTransportError);
 
-      const failureType = classifyFailure(errorMessage, serverErrors, clientErrors, slowCalls, networkTimeout);
+      const failureType = classifyFailure(errorMessage, serverErrors, clientErrors, slowCalls, networkTimeout, networkError);
 
       const diagnosis = [
         `Test ${testInfo.status}: ${testInfo.title}`,
@@ -426,6 +437,7 @@ export const __test__ = {
   classifyFailure,
   describeApiTarget,
   formatApiClientFailure,
+  isNetworkTransportError,
   recordApiClientFailure,
   redactRequestContextDetails,
   shouldAutoInjectXsrf,

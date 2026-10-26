@@ -16,6 +16,11 @@ export class CaseListPage extends Base {
   readonly jurisdictionSelect = this.page.locator('#wb-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
   readonly stateSelect = this.page.locator('#wb-case-state');
+  readonly stateSelectedLabel = this.stateSelect.locator('span');
+  readonly stateSelectAllButton = this.page.locator('#wb-case-state-select-all');
+  readonly stateUnselectAllButton = this.page.locator('#wb-case-state-unselect-all');
+  readonly stateOptionsPanel = this.page.locator('#wb-case-state-options');
+  readonly stateCheckboxes = this.stateOptionsPanel.locator('input[type="checkbox"]');
   readonly textField0Input = this.page.locator('#TextField0');
   readonly textField0FallbackInput = this.page
     .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
@@ -51,7 +56,71 @@ export class CaseListPage extends Base {
   }
 
   public async searchByState(state: string): Promise<void> {
-    await this.selectDropdownOption(this.stateSelect, state);
+    await this.searchByStates(state === 'Any' ? [] : [state]);
+  }
+
+  public async searchByStates(states: string[]): Promise<void> {
+    await this.stateSelect.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    if ((await this.stateSelect.getAttribute('aria-expanded')) !== 'true') {
+      await this.stateSelect.click();
+    }
+    await this.stateOptionsPanel.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+
+    const selectedStates = new Set(states.filter((state) => state !== 'Any'));
+    const checkboxCount = await this.stateCheckboxes.count();
+    for (let index = 0; index < checkboxCount; index += 1) {
+      const checkbox = this.stateCheckboxes.nth(index);
+      const checkboxId = (await checkbox.getAttribute('id')) ?? '';
+      const stateId = checkboxId.replace('wb-case-state-', '');
+      const label = (await this.stateOptionsPanel.locator(`label[for="${checkboxId}"]`).textContent())?.trim() ?? '';
+      const shouldBeChecked = selectedStates.has(stateId) || selectedStates.has(label);
+      if ((await checkbox.isChecked()) !== shouldBeChecked) {
+        await checkbox.click();
+      }
+    }
+  }
+
+  public stateCheckbox(state: string): Locator {
+    return this.stateOptionsPanel.getByRole('checkbox', { name: state, exact: true });
+  }
+
+  // The options panel is only rendered while it is open, so its visibility is the source of truth.
+  public async openWorkBasketStatePanel(): Promise<void> {
+    await this.stateSelect.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    if (!(await this.stateOptionsPanel.isVisible())) {
+      await this.stateSelect.click();
+    }
+    await this.stateOptionsPanel.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  }
+
+  // 'Select All' and 'Unselect All' sit outside the options panel, so they do not need it to be open.
+  public async selectAllCaseStates(): Promise<void> {
+    await this.stateSelectAllButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    await this.stateSelectAllButton.click();
+  }
+
+  public async unselectAllCaseStates(): Promise<void> {
+    await this.stateUnselectAllButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    await this.stateUnselectAllButton.click();
+  }
+
+  // Each option's state id is embedded in its checkbox id, e.g. 'wb-case-state-CaseCreated'.
+  private async readCaseStateOptions(): Promise<{ stateId: string; checked: boolean }[]> {
+    const checkboxes = await this.stateCheckboxes.all();
+
+    return Promise.all(
+      checkboxes.map(async (checkbox) => ({
+        stateId: ((await checkbox.getAttribute('id')) ?? '').replace('wb-case-state-', ''),
+        checked: await checkbox.isChecked(),
+      }))
+    );
+  }
+
+  public async getSelectedStateIds(): Promise<string[]> {
+    await this.openWorkBasketStatePanel();
+    const stateOptions = await this.readCaseStateOptions();
+
+    return stateOptions.filter((option) => option.checked).map((option) => option.stateId);
   }
 
   public async searchByTextField0(textField0: string): Promise<boolean> {

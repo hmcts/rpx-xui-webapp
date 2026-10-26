@@ -1,0 +1,125 @@
+import { expect, test } from '../../../E2E/fixtures';
+import {
+  applyHearingManagerSessionCookies,
+  caseDetailsUrl,
+  gotoCaseDetailsWithRetry,
+  HEARING_MANAGER_CR84_ON_USER,
+  hearingManagerRoles,
+  openHearingsTab,
+  setupHearingsMockRoutes,
+} from '../../helpers';
+import {
+  HEARINGS_LISTED_HEARING_ID,
+  HEARINGS_CASE_REFERENCE,
+  LISTED_HEARING_SCENARIO,
+  buildHearingsCaseDetailsMock,
+  buildHearingsListMock,
+  type HearingsCaseConfig,
+} from '../../mocks/hearings.mock';
+
+const caseB: HearingsCaseConfig = { caseReference: '9988776655443322' };
+
+test.describe(
+  `Hearings cross-case failure state as ${HEARING_MANAGER_CR84_ON_USER}`,
+  { tag: ['@integration', '@integration-hearings'] },
+  () => {
+    test('shows the Case B values-load error without displaying Case A hearing rows (EXUI-5434)', async ({
+      page,
+      caseDetailsPage,
+      hearingsTabPage,
+      searchCasePage,
+    }) => {
+      await openHearingsTab(page, caseDetailsPage, {
+        userIdentifier: HEARING_MANAGER_CR84_ON_USER,
+        routeConfig: { userRoles: hearingManagerRoles, hearings: [LISTED_HEARING_SCENARIO] },
+      });
+      await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);
+
+      const caseBReference = caseB.caseReference!;
+      await page.route(`**/data/internal/cases/${caseBReference}*`, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(buildHearingsCaseDetailsMock(caseB)),
+        });
+      });
+      await page.route('**/api/hearings/getHearings*', async (route) => {
+        if (new URL(route.request().url()).searchParams.get('caseId') !== caseBReference) {
+          await route.fallback();
+          return;
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(buildHearingsListMock([], caseB)),
+        });
+      });
+      await page.route('**/api/hearings/loadServiceHearingValues*', async (route) => {
+        if ((route.request().postDataJSON() as { caseReference?: string })?.caseReference !== caseBReference) {
+          await route.fallback();
+          return;
+        }
+        await route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({ message: 'Case B unavailable' }),
+        });
+      });
+
+      const failedCaseBValues = page.waitForResponse(
+        (response) =>
+          response.url().includes('/api/hearings/loadServiceHearingValues') &&
+          (response.request().postDataJSON() as { caseReference?: string })?.caseReference === caseBReference
+      );
+      await searchCasePage.caseIdTextBox.fill(caseBReference);
+      await searchCasePage.searchCaseFindButton.click();
+      await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:CIVIL/CIVIL/)?${caseBReference}(?:[/?#]|$)`));
+      await page
+        .getByRole('tab', { name: /hearings/i })
+        .first()
+        .click();
+
+      expect((await failedCaseBValues).status()).toBe(500);
+      await expect(hearingsTabPage.reloadButton).toBeVisible();
+      await expect(
+        page.getByText('There was a system error and your request could not be processed. Please try again.', { exact: true })
+      ).toBeVisible();
+      await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeHidden();
+      await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0);
+    });
+
+    test('rejects direct entry when Case B route receives Case A details (EXUI-5434)', async ({ page }) => {
+      await applyHearingManagerSessionCookies(page, HEARING_MANAGER_CR84_ON_USER);
+      await setupHearingsMockRoutes(page, {
+        userRoles: hearingManagerRoles,
+        hearings: [LISTED_HEARING_SCENARIO],
+      });
+      const caseBReference = caseB.caseReference!;
+      await page.route(`**/data/internal/cases/${caseBReference}*`, async (route) => {
+        await route.fulfill({
+          status: 404,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            ...buildHearingsCaseDetailsMock(),
+            message: 'Case details did not match the requested case',
+          }),
+        });
+      });
+
+      const mismatchedCaseDetailsResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes(`/data/internal/cases/${caseBReference}`) &&
+          response.status() === 404 &&
+          response.request().method() === 'GET'
+      );
+      await gotoCaseDetailsWithRetry(page, caseDetailsUrl('CIVIL', 'CIVIL', caseBReference));
+      const mismatchedCaseDetailsBody = await (await mismatchedCaseDetailsResponse).json();
+      expect(mismatchedCaseDetailsBody.case_id).toBe(HEARINGS_CASE_REFERENCE);
+      await expect(page).toHaveURL(/\/cases(?:[/?#]|$)/);
+      await expect(page.getByRole('heading', { level: 1, name: 'Case list' })).toBeVisible();
+      await expect(page.locator('ccd-case-header')).toHaveCount(0);
+      await expect(page.getByRole('tab', { name: /hearings/i })).toHaveCount(0);
+      await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0);
+    });
+  }
+);

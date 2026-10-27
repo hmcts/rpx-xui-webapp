@@ -3,6 +3,13 @@ import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
 import { TIMEOUTS } from '../../../test/documentUpload/constants';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { redactText, redactUrl } = require('../../../../common/reporters/failure-context.cjs') as {
+  redactText: (value: unknown) => string;
+  redactUrl: (value: unknown) => string;
+};
 
 const validatorUtils = new ValidatorUtils();
 const tableUtils = new TableUtils();
@@ -111,7 +118,7 @@ export class CaseDetailsPage extends Base {
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
   readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
-  readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
+  readonly divorceDataSubTable = this.caseViewerTable.locator('table.complex-panel-table table').first();
 
   // Task List tab
   readonly taskListContainer = this.page.locator('.active-tasks-container');
@@ -511,6 +518,7 @@ export class CaseDetailsPage extends Base {
     options: {
       expectedLocator?: Locator;
       expectedPath?: string | RegExp;
+      expectedTarget?: string;
       timeoutMs?: number;
       retry?: boolean;
     } = {}
@@ -563,11 +571,22 @@ export class CaseDetailsPage extends Base {
       await waitForExpected();
     } catch (error) {
       const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+      if (options.retry === false) {
+        const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+        const spinnerVisible = await spinner.isVisible().catch(() => false);
+        const expectedTarget =
+          options.expectedTarget ??
+          (typeof options.expectedPath === 'string' ? options.expectedPath : options.expectedPath?.toString()) ??
+          options.expectedLocator?.toString() ??
+          'unspecified';
+        throw new Error(
+          `Case action "${redactText(action)}" did not reach expected target "${redactText(expectedTarget)}" ` +
+            `(url=${redactUrl(this.page.url())}; selectedOption=${redactText(`${matchingOption.label} (${matchingOption.value})`)}; ` +
+            `spinnerVisible=${spinnerVisible}; eventErrorVisible=${eventErrorVisible}; cause=${redactText(error)})`
+        );
+      }
       if (eventErrorVisible) {
         throw new Error(`Case event failed after selecting "${action}": The event could not be created.`);
-      }
-      if (options.retry === false) {
-        throw error;
       }
       const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
       const spinnerWasVisible = await spinner.isVisible().catch(() => false);
@@ -729,7 +748,9 @@ export class CaseDetailsPage extends Base {
     while (Date.now() < deadline) {
       await scrollTabIntoViewWithDetachedRetry(tab, deadline);
       const direction = await tab.evaluate((element) => {
-        const viewport = element.closest('mat-tab-header')?.querySelector('.mat-tab-label-container');
+        const viewport = element
+          .closest('mat-tab-header, .mat-mdc-tab-header')
+          ?.querySelector('.mat-mdc-tab-label-container, .mat-tab-label-container');
         if (!viewport) return undefined;
         const bounds = viewport.getBoundingClientRect();
         const target = element.getBoundingClientRect();
@@ -740,10 +761,11 @@ export class CaseDetailsPage extends Base {
         return undefined;
       });
       if (!direction) break;
-      // Material supplies no accessible name for these native pagination buttons.
-      await this.container.locator(`mat-tab-header button.mat-tab-header-pagination-${direction}`).click({
-        timeout: Math.max(1, deadline - Date.now()),
-      });
+      // Material supplies no accessible name for these pagination controls.
+      await this.container
+        .locator(`.mat-mdc-tab-header-pagination-${direction}, .mat-tab-header-pagination-${direction}`)
+        .first()
+        .click({ timeout: Math.max(1, deadline - Date.now()) });
     }
     await tab.click({ timeout: Math.max(1, deadline - Date.now()) });
     await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {

@@ -118,7 +118,7 @@ export class CaseDetailsPage extends Base {
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
   readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
-  readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
+  readonly divorceDataSubTable = this.caseViewerTable.locator('table.complex-panel-table table').first();
 
   // Task List tab
   readonly taskListContainer = this.page.locator('.active-tasks-container');
@@ -748,7 +748,9 @@ export class CaseDetailsPage extends Base {
     while (Date.now() < deadline) {
       await scrollTabIntoViewWithDetachedRetry(tab, deadline);
       const direction = await tab.evaluate((element) => {
-        const viewport = element.closest('mat-tab-header')?.querySelector('.mat-tab-label-container');
+        const viewport = element
+          .closest('mat-tab-header, .mat-mdc-tab-header')
+          ?.querySelector('.mat-mdc-tab-label-container, .mat-tab-label-container');
         if (!viewport) return undefined;
         const bounds = viewport.getBoundingClientRect();
         const target = element.getBoundingClientRect();
@@ -759,10 +761,11 @@ export class CaseDetailsPage extends Base {
         return undefined;
       });
       if (!direction) break;
-      // Material supplies no accessible name for these native pagination buttons.
-      await this.container.locator(`mat-tab-header button.mat-tab-header-pagination-${direction}`).click({
-        timeout: Math.max(1, deadline - Date.now()),
-      });
+      // Material supplies no accessible name for these pagination controls.
+      await this.container
+        .locator(`.mat-mdc-tab-header-pagination-${direction}, .mat-tab-header-pagination-${direction}`)
+        .first()
+        .click({ timeout: Math.max(1, deadline - Date.now()) });
     }
     await tab.click({ timeout: Math.max(1, deadline - Date.now()) });
     await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {

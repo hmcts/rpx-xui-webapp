@@ -3,15 +3,18 @@ import {
   setupCaseFileViewDocumentBinaryMockRoutes,
   setupCaseFileViewMockRoutes,
   setupCaseFileViewUserDetailsRoute,
+  setupCaseFileViewMockSession,
 } from '../../helpers';
-import { CASE_FILE_VIEW_DOC_IDS, CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF } from '../../mocks/caseFileView.mock';
-import { acceptAccessCookiesIfPresent, applySessionCookies } from '../../../common/sessionCapture';
+import { CASE_FILE_VIEW_DOC_IDS, CASE_FILE_VIEW_DOCUMENT_GATEWAYS } from '../../mocks/caseFileView.mock';
+import { applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
 const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
 const sortedDocumentOrderTimeoutMs = 15_000;
 const evidenceDocumentsAscending = ['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf'];
 const evidenceDocumentsDescending = ['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf'];
+const evidenceDocumentsRecentFirst = ['Middle evidence.pdf', 'Zeta evidence.pdf', 'Alpha evidence.pdf'];
+const evidenceDocumentsOldestFirst = ['Alpha evidence.pdf', 'Zeta evidence.pdf', 'Middle evidence.pdf'];
 const orderDocumentsOldestFirst = ['Approved order.pdf', 'Root order.pdf'];
 const fileViewV1ModeUser = {
   idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
@@ -58,74 +61,79 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
       const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
 
       await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('21 Oct 2023');
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('22 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('22 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('21 Oct 2023');
     });
   });
 
-  test('Case view can show V2 and V1 documents', async ({ caseDetailsPage, caseFileViewPage, page }) => {
-    const binaryRequests: string[] = [];
-    await test.step('Set up case file and binary document mocks', async () => {
-      await applySessionCookies(page, fileViewOnUser);
-      await setupCaseFileViewMockRoutes(page, caseId);
+  for (const gateway of CASE_FILE_VIEW_DOCUMENT_GATEWAYS) {
+    test(`Case view delivers documents through ${gateway.label}`, async ({ caseDetailsPage, caseFileViewPage, page }) => {
+      const binaryRequests: string[] = [];
+      await test.step('Set up case file and binary document mocks', async () => {
+        await applySessionCookies(page, fileViewOnUser);
+        await setupCaseFileViewMockRoutes(page, caseId, { cdamExclusionList: gateway.cdamExclusionList });
 
-      await page.route('**/documentsv2/*/binary', async (route) => {
-        binaryRequests.push(route.request().url());
-        await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
+        await setupCaseFileViewDocumentBinaryMockRoutes(page, (url) => binaryRequests.push(new URL(url).pathname));
       });
-      await page.route('**/documents/*/binary', async (route) => {
-        binaryRequests.push(route.request().url());
-        await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
+
+      await test.step('Open the Case File View tab', async () => {
+        await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
+        await caseDetailsPage.selectCaseDetailsTab('Case File View');
+        await caseFileViewPage.waitForReady();
+        await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
       });
+
+      await test.step('Select Zeta evidence and verify its binary request', async () => {
+        const requestCountBeforeZeta = binaryRequests.length;
+        await caseFileViewPage.clickFile('Evidence', 'Zeta evidence.pdf');
+        await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeZeta);
+        await expect
+          .poll(() => binaryRequests.at(-1) || '')
+          .toBe(`${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceZeta}/binary`);
+      });
+
+      await test.step('Select Alpha evidence and update the binary request target', async () => {
+        const requestCountBeforeAlpha = binaryRequests.length;
+        await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
+        await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeAlpha);
+        await expect
+          .poll(() => binaryRequests.at(-1) || '')
+          .toBe(`${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`);
+        await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
+      });
+
+      await test.step('Verify media viewer content and toolbar', async () => {
+        await caseFileViewPage.mediaViewPanel.waitFor();
+        expect(await caseFileViewPage.mediaViewerToolbar.isVisible()).toBe(true);
+        expect(await caseFileViewPage.mediaViewPanel.textContent()).toContain('Case File View - Document Delivery Fixture');
+      });
+    });
+  }
+});
+
+test.describe('Case File View mock session', { tag: ['@integration', '@integration-case-file-view-mock-session'] }, () => {
+  test('sort options reorder documents exactly with an isolated mock session', async ({
+    caseDetailsPage,
+    caseFileViewPage,
+    page,
+    baseURL,
+  }) => {
+    if (!baseURL) {
+      throw new Error('Case file view mock session requires a configured baseURL');
+    }
+    let routeClosure: Awaited<ReturnType<typeof setupCaseFileViewMockSession>>;
+
+    await test.step('Set up case file and binary document mocks', async () => {
+      routeClosure = await setupCaseFileViewMockSession(page, caseId, baseURL);
     });
 
     await test.step('Open the Case File View tab', async () => {
       await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
-      await caseDetailsPage.selectCaseDetailsTab('Case File View');
-      await caseFileViewPage.waitForReady();
-      await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
-    });
-
-    await test.step('Select a V2 document and update the media viewer request target', async () => {
-      const requestCountBeforeV2 = binaryRequests.length;
-      await caseFileViewPage.clickFile('Evidence', 'Zeta evidence.pdf');
-      await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeV2);
-      await expect
-        .poll(() => binaryRequests.at(-1) || '')
-        .toContain(`/documentsv2/${CASE_FILE_VIEW_DOC_IDS.evidenceZetaV2}/binary`);
-    });
-
-    await test.step('Select a V1 document and update the media viewer request target', async () => {
-      const requestCountBeforeV1 = binaryRequests.length;
-      await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
-      await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeV1);
-      await expect
-        .poll(() => binaryRequests.at(-1) || '')
-        .toContain(`/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1}/binary`);
-      await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
-    });
-
-    await test.step('Verify media viewer content and toolbar', async () => {
-      await caseFileViewPage.mediaViewPanel.waitFor();
-      expect(await caseFileViewPage.mediaViewerToolbar.isVisible()).toBe(true);
-      expect(await caseFileViewPage.mediaViewPanel.textContent()).toContain('Case File View - Document Delivery Fixture');
-    });
-  });
-
-  test('sort options reorder documents as expected', async ({ caseDetailsPage, caseFileViewPage, page }) => {
-    await test.step('Set up case file and binary document mocks', async () => {
-      await applySessionCookies(page, fileViewOnUser);
-      await setupCaseFileViewMockRoutes(page, caseId);
-      await setupCaseFileViewDocumentBinaryMockRoutes(page);
-    });
-
-    await test.step('Open the Case File View tab', async () => {
-      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
-      await acceptAccessCookiesIfPresent(page);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
       await expect(caseFileViewPage.sortButton).toBeVisible();
+      expect(routeClosure.getUnexpectedRequests()).toEqual([]);
     });
 
     await test.step('Show all sort options', async () => {
@@ -138,7 +146,6 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents A to Z', async () => {
       await caseFileViewPage.sortByAscending();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(evidenceDocumentsAscending);
@@ -146,7 +153,6 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents Z to A', async () => {
       await caseFileViewPage.sortByDescending();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(evidenceDocumentsDescending);
@@ -154,24 +160,22 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents by most recent first', async () => {
       await caseFileViewPage.sortByRecentFirst();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
-        .toEqual(evidenceDocumentsDescending);
+        .toEqual(evidenceDocumentsRecentFirst);
     });
 
     await test.step('Sort evidence documents by oldest first', async () => {
       await caseFileViewPage.getFolderNode('Orders.Approved orders');
       await caseFileViewPage.sortByOldestFirst();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
-        .toEqual(evidenceDocumentsAscending);
+        .toEqual(evidenceDocumentsOldestFirst);
 
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Orders', orderDocumentsOldestFirst.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(orderDocumentsOldestFirst);
+      expect(routeClosure.getUnexpectedRequests()).toEqual([]);
     });
   });
 });

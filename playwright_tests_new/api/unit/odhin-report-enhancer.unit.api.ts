@@ -19,7 +19,10 @@ const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: s
   interrupted: number;
   flaky: number;
 };
-const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
+const deriveFeatureName = enhancerModule.deriveFeatureName as (
+  filePath: string,
+  annotations?: Array<{ type: string; description?: string }>
+) => string;
 
 const enhancerTest = enhancerModule.__test__ as {
   enhanceDashboardHtml: (
@@ -32,6 +35,7 @@ const enhancerTest = enhancerModule.__test__ as {
   ) => string;
   formatDuration: (durationMs: number) => string;
   buildFeatureOverviewBlock: (featureStats: unknown) => string;
+  buildFailureTriageBlock: (testMetadata: unknown, target?: string) => string;
   buildAccessibilityEvidenceBlock: (entries: unknown) => string;
   buildIssueSummaryBlock: (entries: unknown) => string;
   defaultTestListRowsPerPage: (html: string) => string;
@@ -109,6 +113,20 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(root.querySelector('meta[name="viewport"]').getAttribute('content')).toBe('width=device-width, initial-scale=1');
   });
 
+  test('adds the fluid presentation to report HTML without a body and remains idempotent', () => {
+    const html = '<html><head><title>API report</title></head><main id="report-content">Report content</main></html>';
+    const once = enhancerTest.enhanceDashboardHtml(html, [], []);
+    const twice = enhancerTest.enhanceDashboardHtml(once, [], []);
+    const root = parse(twice);
+    const body = root.querySelector('body');
+
+    expect(body).not.toBeNull();
+    expect(body.getAttribute('id')).toBe('body-content');
+    expect(body.querySelector('#report-content').text).toBe('Report content');
+    expect(body.querySelectorAll('#webapp-report-ui')).toHaveLength(1);
+    expect(root.querySelectorAll('#webapp-report-theme')).toHaveLength(1);
+  });
+
   test('derives feature names from Playwright file paths', () => {
     expect(
       deriveFeatureName(
@@ -120,6 +138,143 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
         '/opt/jenkins/workspace/PR/playwright_tests_new/integration/test/hearings/hearingDetails.cr84.positive.spec.ts'
       )
     ).toBe('hearings');
+  });
+
+  test('adds failed-test triage inside the matching test details with escaped, retry-aware evidence', () => {
+    const shell = `<html><head></head><body><div class="tab"></div><div id="TabDashboard"><div class="container-fluid"><div class="row"></div></div></div><table id="test-list-table"><tbody><tr data-bs-target="#test-0-0"><td>failed test</td></tr></tbody></table><div id="test-0-0" class="modal"><div class="modal-content"><div class="modal-body">raw test details</div></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        failure: {
+          title: 'Upload case 1791906281904747',
+          file: 'playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts',
+          line: 240,
+          column: 9,
+          project: 'chromium',
+          retry: 0,
+          status: 'timedOut',
+          classification: 'GLOBAL_TIMEOUT_UI_STALL',
+          confidence: 'observed',
+          source: 'Test/application behaviour',
+          phase: 'ui-wait-pre-backend',
+          actionableError: 'locator.click timeout',
+          hypothesis: 'A loading overlay covered the control',
+          nextChecks: ['Open the trace at the failing action'],
+        },
+      },
+    ];
+    const report = parse(enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata));
+    const triage = report.querySelector('#test-0-0 .odhin-failure-triage');
+
+    expect(triage).not.toBeNull();
+    expect(report.querySelector('#TabDashboard .odhin-failure-triage')).toBeNull();
+    expect(report.querySelector('#test-list-table tr')?.getAttribute('data-bs-target')).toBe('#test-0-0');
+    expect(triage?.text).toContain('Failed test triage');
+    expect(triage?.text).toContain('GLOBAL_TIMEOUT_UI_STALL');
+    expect(triage?.text).toContain('Hypothesis (not confirmed)');
+    expect(triage?.querySelector('a')).toBeNull();
+    expect(report.toString()).not.toContain('1791906281904747');
+  });
+
+  test('does not report a retry failure as unresolved when the final attempt passed', () => {
+    const shell = `<html><head></head><body><div id="TabDashboard"><div class="container-fluid"></div></div><div id="test-0-0" class="modal"><div class="modal-content"></div></div><div id="test-0-1" class="modal"><div class="modal-content"></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        testId: 'test-0',
+        retry: 0,
+        status: 'failed',
+        failure: { title: 'Flaky test', file: 'test.spec.ts', retry: 0, status: 'failed' },
+      },
+      { target: '#test-0-1', testId: 'test-0', retry: 1, status: 'passed' },
+    ];
+
+    const report = enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata);
+    expect(report).not.toContain('Failed test triage');
+  });
+
+  test('preserves failure triage when a later enhancer pass has no metadata', () => {
+    const shell = `<html><head></head><body><div id="TabDashboard"><div class="container-fluid"></div></div><div id="test-0-0" class="modal"><div class="modal-content"></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#test-0-0',
+        testId: 'test-0',
+        retry: 0,
+        status: 'failed',
+        failure: { title: 'Failed test', file: 'test.spec.ts', retry: 0, status: 'failed' },
+      },
+    ];
+
+    const firstPass = enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata);
+    const secondPass = enhancerTest.enhanceDashboardHtml(firstPass, [], [], [], '../test-results');
+    expect(parse(secondPass).querySelectorAll('.odhin-failure-triage')).toHaveLength(1);
+    expect(parse(secondPass).querySelector('#TabDashboard .odhin-failure-triage')).toBeNull();
+  });
+
+  test('does not fall back to a dashboard triage block when the failed test detail is unavailable', () => {
+    const shell = `<html><head></head><body><div id="TabDashboard"><div class="container-fluid"></div></div></body></html>`;
+    const metadata = [
+      {
+        target: '#missing-test-0',
+        testId: 'missing-test',
+        retry: 0,
+        status: 'failed',
+        failure: { title: 'Failed test', file: 'test.spec.ts', retry: 0, status: 'failed' },
+      },
+    ];
+
+    const report = enhancerTest.enhanceDashboardHtml(shell, [], [], [], '../test-results', metadata);
+    expect(report).not.toContain('Failed test triage');
+  });
+
+  test('uses declared product features without guessing accessibility titles or changing other suites', () => {
+    const file = '/tmp/playwright_tests_new/E2E/test/accessibility/webapp.a11y.spec.ts';
+    expect(deriveFeatureName(file, [{ type: 'feature', description: 'Case details' }])).toBe('Case details');
+    expect(deriveFeatureName(file, [{ type: 'page-state', description: 'Overview' }])).toBe('Unattributed accessibility');
+    expect(
+      deriveFeatureName(file, [
+        { type: 'feature', description: 'One' },
+        { type: 'feature', description: 'Two' },
+      ])
+    ).toBe('Unattributed accessibility');
+    expect(deriveFeatureName('/tmp/playwright_tests_new/integration/test/hearings/example.spec.ts')).toBe('hearings');
+  });
+
+  test('attributes skipped and timed-out accessibility executions without evidence and preserves retry totals', async () => {
+    const Reporter = require('../../common/reporters/odhin-adaptive.reporter.cjs');
+    const reporter = new Reporter({ createInnerReporter: () => ({ onTestEnd() {} }), lightweight: true });
+    const testCase = {
+      id: 'case-details',
+      retries: 1,
+      tags: ['@a11y'],
+      location: { file: '/tmp/playwright_tests_new/E2E/test/accessibility/webapp.a11y.spec.ts' },
+      annotations: [
+        { type: 'feature', description: 'Case details' },
+        { type: 'page-state', description: 'Overview' },
+      ],
+    };
+    await reporter.onTestEnd(testCase, { status: 'failed', retry: 0, duration: 100, stdout: [], stderr: [] });
+    await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 200 });
+    await reporter.onTestEnd({ ...testCase, id: 'skipped' }, { status: 'skipped', retry: 0, duration: 0 });
+    await reporter.onTestEnd(
+      { ...testCase, id: 'timeout', retries: 0, annotations: [{ type: 'feature', description: 'Hearings' }] },
+      { status: 'timedOut', retry: 0, duration: 300, stdout: [], stderr: [] }
+    );
+    expect(reporter.featureStats.get('Case details')).toMatchObject({
+      totalTests: 2,
+      flaky: 1,
+      skipped: 1,
+      failed: 0,
+      durationMs: 200,
+    });
+    expect(reporter.featureStats.get('Hearings')).toMatchObject({ totalTests: 1, timedOut: 1, durationMs: 300 });
+    expect(reporter.testMetadata.map((item: { feature: string }) => item.feature)).toEqual([
+      'Case details',
+      'Case details',
+      'Case details',
+      'Hearings',
+    ]);
+    expect(enhancerTest.normalizeFeatureStats(reporter.featureStats).reduce((sum, stat) => sum + stat.totalTests, 0)).toBe(3);
   });
 
   for (const resultsLocation of ['test-results', '../test-results', '../../test-results']) {
@@ -297,23 +452,36 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).not.toContain('id="chart-file"');
   });
 
-  test('treats flaky final passes as passed for feature pass-rate display', () => {
-    const manageTasks = createEmptyFeatureStat('manageTasks');
-    manageTasks.totalTests = 99;
-    manageTasks.passed = 96;
-    manageTasks.skipped = 3;
+  test('counts flaky final passes, excludes skipped tests, and keeps failures out of the pass rate', () => {
+    const feature = createEmptyFeatureStat('caseDetails');
+    feature.totalTests = 8;
+    feature.passed = 2;
+    feature.flaky = 1;
+    feature.failed = 1;
+    feature.timedOut = 1;
+    feature.skipped = 2;
+    feature.interrupted = 1;
 
-    const caseDetails = createEmptyFeatureStat('caseDetails');
-    caseDetails.totalTests = 4;
-    caseDetails.passed = 3;
-    caseDetails.flaky = 1;
+    const html = enhancerTest.buildFeatureOverviewBlock([feature]);
+    const row = parse(html).querySelector('tbody tr');
 
-    const html = enhancerTest.buildFeatureOverviewBlock([manageTasks, caseDetails]);
-    const root = parse(html);
-    const rows = root.querySelectorAll('tbody tr');
-    expect(rows[0].querySelector('.result-status-passed').text.trim()).toBe('96 (100.00%)');
-    expect(rows[1].querySelector('.result-status-passed').text.trim()).toBe('4 (100.00%)');
-    expect(rows[1].querySelector('.result-status-flaky').text.trim()).toBe('1 (25.00%)');
+    expect(row?.querySelector('.result-status-passed')?.text.trim()).toBe('3 (50.00%)');
+    expect(row?.querySelector('.result-status-failed')?.text.trim()).toBe('1 (12.50%)');
+    expect(row?.querySelector('.result-status-timedOut')?.text.trim()).toBe('1 (12.50%)');
+    expect(row?.querySelector('.result-status-skipped')?.text.trim()).toBe('2 (25.00%)');
+    expect(row?.querySelector('.result-status-interrupted')?.text.trim()).toBe('1 (12.50%)');
+  });
+
+  test('renders the fluid dashboard no-data marker when no non-skipped tests are in the denominator', () => {
+    const noTests = createEmptyFeatureStat('noTests');
+    const allSkipped = createEmptyFeatureStat('allSkipped');
+    allSkipped.totalTests = 3;
+    allSkipped.skipped = 3;
+
+    const rows = parse(enhancerTest.buildFeatureOverviewBlock([noTests, allSkipped])).querySelectorAll('tbody tr');
+
+    expect(rows[0].querySelector('.result-status-passed')?.text.trim()).toBe('0 (—)');
+    expect(rows[1].querySelector('.result-status-passed')?.text.trim()).toBe('0 (—)');
   });
 
   test('feature overview block keeps feature distribution and outcome columns together', () => {
@@ -431,7 +599,8 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).not.toContain('Accessibility Evidence');
     expect(nextHtml).not.toContain('odhin-accessibility-evidence');
     expect(nextHtml).not.toContain('odhin-a11y-evidence-grid');
-    expect(nextHtml).not.toContain('./accessibility-evidence/privacy-policy-highlighted-screenshot.png');
+    expect(parse(nextHtml).querySelector('#TabDashboard').innerHTML).not.toContain('./accessibility-evidence/');
+    expect(parse(nextHtml).querySelector('#TabAccessibility').innerHTML).toContain('privacy-policy-highlighted-screenshot.png');
   });
 
   test('removes previously injected accessibility evidence from the generated Odhín dashboard', () => {
@@ -506,7 +675,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
           htmlFileName: 'privacy-policy-summary.html',
           jsonFileName: 'privacy-policy-summary.json',
           violationCount: 1,
-          rules: ['screen-reader:skip-link'],
+          rules: ['screen-reader:skip-link', 'behavior:focus returns', 'axe:engine-execution'],
+          status: 'error',
+          context: { scenarioId: 'privacy', language: 'cy', persona: '<staff>' },
           targets: [],
         },
         {
@@ -549,12 +720,20 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('id="odhin-a11y-modal-nav-script"');
     expect(nextHtml).toContain('data-odhin-a11y-back-title=');
     expect(nextHtml).toContain('Unique issue groups');
+    expect(nextHtml).toContain('language: cy');
+    expect(nextHtml).toContain('persona: &lt;staff&gt;');
+    expect(nextHtml).toContain('behavior:focus returns');
+    expect(nextHtml).toContain('axe:engine-execution');
     expect(nextHtml).not.toContain('unexpected issue(s) across engines');
-    expect(nextHtml).toContain('2 Screen-reader issue(s):</strong> skip-link, main-landmark');
+    expect(nextHtml).toContain('2 Screen-reader heuristics issue(s):</strong> skip-link, main-landmark');
     expect(nextHtml).toContain('1 WAVE-like issue(s):</strong> link-name');
     expect(nextHtml).toContain('<th class="odhin-a11y-issues-header">Issue groups</th>');
     expect(nextHtml).toContain('<th class="odhin-a11y-issues-header">Fix hint</th>');
     expect(nextHtml).toContain('Issue Summary');
+    const disclosure = parse(nextHtml).querySelector('details.odhin-a11y-summary-disclosure');
+    expect(disclosure).not.toBeNull();
+    expect(disclosure.hasAttribute('open')).toBe(false);
+    expect(disclosure.querySelector('.odhin-a11y-issue-summary')).not.toBeNull();
     expect(nextHtml).toContain('<th>Fix scope</th>');
     expect(nextHtml).toContain('Likely page-specific fix');
     expect(nextHtml).toContain('Quick filters:');
@@ -562,8 +741,8 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).toContain('data-a11y-issue-filter="main-landmark"');
     expect(nextHtml).toContain('table.column(issueColumnIndex).search(value).draw();');
     expect(nextHtml).toContain('<strong>WAVE-like:</strong> link-name (1)');
-    expect(nextHtml).toContain('<strong>Screen-reader:</strong> skip-link (1), main-landmark (1)');
-    expect(nextHtml).toContain('Also: main-landmark, link-name.');
+    expect(nextHtml).toContain('<strong>Screen-reader heuristics:</strong> skip-link (1), main-landmark (1)');
+    expect(nextHtml).toContain('Also: main-landmark, link-name, focus returns, engine-execution.');
     expect(nextHtml).toContain('Developer hints');
     expect(nextHtml).toContain('Check the app shell skip link target exists on this route');
     expect(nextHtml).toContain('Check the route template renders exactly one usable &lt;main&gt; or role=&quot;main&quot;');
@@ -576,7 +755,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     );
     expect(nextHtml).toContain('Open screenshot');
     expect(nextHtml).toContain('Open screen-reader JSON');
-    expect(nextHtml).toContain('Open DOM and WAVE JSON');
+    expect(nextHtml).toContain('Open DOM and WAVE-like JSON');
     expect(nextHtml.indexOf('Accessibility findings for this test')).toBeLessThan(nextHtml.indexOf('run info'));
   });
 
@@ -595,6 +774,62 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(summaryHtml).toContain('custom-rule-1');
     expect(summaryHtml).toContain('custom-rule-13');
     expect(summaryHtml.match(/custom-rule-/g)).toHaveLength(13);
+  });
+
+  test('preserves and escapes scenario metadata and finding status in rendered evidence', () => {
+    const context = { scenarioId: 'header', persona: '<staff>', language: 'cy', authentication: 'mocked', dataMode: 'mocked' };
+    const entries = [
+      {
+        engine: 'summary',
+        testTitle: 'Welsh header',
+        htmlFileName: 'header.html',
+        violationCount: 1,
+        status: 'known-findings',
+        context,
+        rules: ['axe:label'],
+        targets: [],
+      },
+    ];
+    expect(enhancerTest.normalizeEvidenceEntries(entries)[0]).toMatchObject({ context });
+    const html = enhancerTest.buildAccessibilityEvidenceBlock(entries);
+    expect(html).toContain('persona: &lt;staff&gt;');
+    expect(html).toContain('language: cy');
+    expect(html).toContain('known-findings');
+    expect(html).toContain('1 reported issue(s)');
+    expect(html).not.toContain('unexpected issue(s)');
+  });
+
+  test('retains investigation-only and mixed axe findings without counting them as violations', () => {
+    const base = {
+      engine: 'axe',
+      testTitle: 'Review page',
+      feature: 'Access',
+      pageState: 'Review',
+      htmlFileName: 'axe.html',
+      targets: [],
+      reviewCount: 2,
+      reviewRules: ['color-contrast'],
+    };
+    const shell = '<html><head></head><body><div class="tab"></div></body></html>';
+    for (const status of ['needs-review', 'issues-found', 'known-findings']) {
+      const entry = {
+        ...base,
+        status,
+        violationCount: status === 'needs-review' ? 0 : 1,
+        rules: status === 'needs-review' ? [] : ['label'],
+      };
+      expect(enhancerTest.normalizeEvidenceEntries([entry])[0]).toMatchObject({
+        reviewCount: 2,
+        reviewRules: ['color-contrast'],
+        violationCount: entry.violationCount,
+      });
+      const report = parse(enhancerTest.enhanceDashboardHtml(shell, [], [entry]));
+      expect(report.querySelectorAll('.a11y-issue-group[data-status="needs-review"]')).toHaveLength(1);
+      expect(report.querySelector('.a11y-issue-group[data-status="needs-review"]').textContent).toContain('color-contrast');
+      expect(report.querySelector('#a11y-all-records').textContent).toContain('2 node result(s) need investigation');
+      if (status !== 'needs-review')
+        expect(report.querySelectorAll(`.a11y-issue-group[data-status="${status}"]`)).toHaveLength(1);
+    }
   });
 
   test('normalizes accessibility evidence entries and drops incomplete records', () => {

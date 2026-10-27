@@ -7,8 +7,7 @@ export class SearchCasePage extends Base {
 
   // Locators
   readonly pageHeading = this.page.locator('main h1');
-  // CSS class from HMCTS Design System - stable by design
-  readonly quickSearchContainer = this.page.locator('.hmcts-primary-navigation__global-search');
+  readonly quickSearchContainer = this.page.locator('form:has(#exuiCaseReferenceSearch)');
   readonly quickSearchContainerFallback = this.page.locator('li:has(#exuiCaseReferenceSearch)').first();
   readonly caseIdTextBox = this.page.locator('#exuiCaseReferenceSearch');
   readonly searchCaseFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });

@@ -2,8 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
-import { Store } from '@ngrx/store';
-import { provideMockStore } from '@ngrx/store/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../hearing.test.data';
@@ -19,7 +18,7 @@ import { RequestHearingComponent } from './request-hearing.component';
 describe('RequestHearingComponent', () => {
   let component: RequestHearingComponent;
   let fixture: ComponentFixture<RequestHearingComponent>;
-  let mockStore: any;
+  let mockStore: MockStore;
   const mockPageFlow = jasmine.createSpyObj('PageFlow', ['getCurrentPage']);
   const appConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -40,10 +39,14 @@ describe('RequestHearingComponent', () => {
         { provide: HearingsService, useValue: hearingsService },
       ],
     }).compileComponents();
-    mockStore = TestBed.inject(Store);
+    mockStore = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(RequestHearingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    mockStore.resetSelectors();
   });
 
   it('should create', () => {
@@ -89,11 +92,25 @@ describe('RequestHearingComponent', () => {
     expect(buttonDisabled).toEqual(false);
   });
 
-  it('should enable the submit button after a request failure', () => {
-    hearingsService.hearingRequestForSubmitValid = true;
-    (component as any).submitRequestFailed = true;
+  [400, 500].forEach((status) => {
+    it(`should enable the submit button after a ${status} response`, () => {
+      spyOn(hearingsService, 'navigateAction');
+      component.submitRequest(ACTION.SUBMIT);
 
-    expect(component.buttonDisabled(ACTION.SUBMIT)).toBeFalse();
+      mockStore.overrideSelector(fromHearingStore.getHearingsFeatureState, {
+        ...initialState.hearings,
+        hearingRequest: {
+          ...initialState.hearings.hearingRequest,
+          lastError: {
+            status,
+            message: `Http failure response: ${status}`,
+          },
+        },
+      });
+      mockStore.refreshState();
+
+      expect(component.buttonDisabled(ACTION.SUBMIT)).toBeFalse();
+    });
   });
 
   it('should check buttonDisabled returns true for continue when hearing request continue is disabled', () => {

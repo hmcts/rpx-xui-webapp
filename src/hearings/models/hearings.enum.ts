@@ -227,6 +227,7 @@ export const HearingDatePriorityConstEnum = {
 export enum HearingSummaryEnum {
   BackendError = 'There was a system error and your request could not be processed. Please try again.',
   RequestFailedError = 'Something went wrong and your request could not be processed. A support ticket has been automatically raised. For updates on issue resolution, contact your service desk quoting all the error details on this screen.',
+  RequestServiceError = 'Your hearing request could not be submitted due to a temporary system issue. Please try again. If the problem persists, contact your support team.'
 }
 
 export enum ACTION {

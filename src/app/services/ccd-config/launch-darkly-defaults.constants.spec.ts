@@ -11,4 +11,13 @@ describe('LaunchDarklyDefaultsConstants', () => {
     const def = LaunchDarklyDefaultsConstants.getWaServiceConfig(DeploymentEnvironmentEnum.AAT);
     expect(def).toBe(LaunchDarklyDefaultsConstants.waServiceConfigTest);
   });
+
+  it('should enable WA only for Financial Remedy Consented in non-prod configs', () => {
+    const divorceCaseTypes = (config: { configurations: Array<{ serviceName: string; caseTypes: string[] }> }) =>
+      config.configurations.find((entry) => entry.serviceName === 'DIVORCE' && entry.caseTypes.includes('FinancialRemedyMVP2'))
+        ?.caseTypes;
+
+    expect(divorceCaseTypes(LaunchDarklyDefaultsConstants.waServiceConfigTest)).toEqual(['FinancialRemedyMVP2']);
+    expect(divorceCaseTypes(LaunchDarklyDefaultsConstants.waServiceConfigTestQm)).toEqual(['FinancialRemedyMVP2']);
+  });
 });

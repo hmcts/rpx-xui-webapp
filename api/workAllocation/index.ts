@@ -377,7 +377,6 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
     res.status(status);
     res.send(data);
   } catch (error) {
-    console.error(error);
     next(error);
   }
 }
@@ -486,8 +485,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
     }
     return res.send(result).status(200);
-  } catch (e) {
-    console.log(e);
+  } catch {
     return res.send(null).status(500);
   }
 }
@@ -541,7 +539,6 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.cases = casesWithActions;
     return res.send(result).status(200);
   } catch (error) {
-    console.error(error);
     next(error);
   }
 }
@@ -727,7 +724,7 @@ export const getNewUsersByServiceName = async (resolve, reject) => {
     const cachedUserData = await fetchNewUserData();
     await fetchRoleAssignmentsForNewUsers(cachedUserData);
   } catch (error) {
-    console.log('Error getting caseworkers', error);
+    console.log('Error getting caseworkers');
     reject(error);
   }
   resolve();

@@ -21,9 +21,6 @@ createApp().then((app: express.Application) => {
   app.set('view engine', 'html');
   app.set('views', __dirname);
 
-  app.set('view engine', 'html');
-  app.set('views', __dirname);
-
   app.use(corsMw);
 
   app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
@@ -43,10 +40,12 @@ createApp().then((app: express.Application) => {
 
   app.use(appInsights);
   app.use(errorHandler);
-  app.listen(process.env.PORT || 3000, (error) => {
+
+  const port = process.env.PORT || 3000;
+  app.listen(port, (error) => {
     if (error) {
       throw error;
     }
-    console.log('Server listening on port 3000!');
+    console.log(`Server listening on port ${port}!`);
   });
 });

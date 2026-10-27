@@ -3160,9 +3160,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.15":
-  version: 7.4.15
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.15"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.16-moment-update":
+  version: 7.4.16-moment-update
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.16-moment-update"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
@@ -3193,7 +3193,7 @@ __metadata:
     "@ngrx/store": ^20.1.0
     class-transformer: ^0.5.1
     lodash: ^4.17.22
-    moment: ^2.30.1
+    moment: ^2.31.0
     moment-timezone: ^0.5.31
     ngx-chips: ^3.0.0
     ngx-editor: 19.0.0-beta.1
@@ -3208,7 +3208,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/ee3487b518289174bbadb26302440187aa4a7bb0cd8362b5bc5c746e262304bc77421a7bff895fea67e50d3f3c080c0662c323849ce12f130a042e950d5f4ab9
+  checksum: 10/e67361b2cdf48355dd900aae75294f258e2f5d1483b3d5ed7050c7c3bae67f82b73596263fada6763dd12510c4d7b46fbf16746231785b6060b2c5ab373ace78
   languageName: node
   linkType: hard
 
@@ -19882,7 +19882,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.15"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.16-moment-update"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
     "@hmcts/media-viewer": "npm:4.2.44"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

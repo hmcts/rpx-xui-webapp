@@ -6,7 +6,7 @@
     "api"
   ],
   "engines": {
-    "node": ">=24.18.0"
+    "node": ">=24.22.1"
   },
   "scripts": {
     "build": "yarn build:prod && yarn build:node",
@@ -125,7 +125,7 @@
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.4.1",
     "@hmcts/rpx-xui-common-lib": "3.2.20-CME-1008-dart-sass-rc2",
-    "@hmcts/rpx-xui-node-lib": "2.30.33",
+    "@hmcts/rpx-xui-node-lib": "2.30.34",
     "@microsoft/applicationinsights-web": "^3.4.3",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
@@ -167,7 +167,7 @@
     "otplib": "^13.4.0",
     "pegjs": "^0.10.0",
     "prettier": "^3.9.5",
-    "rpx-xui-translation": "1.2.16",
+    "rpx-xui-translation": "1.2.17",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.2",
     "stream": "^0.0.3",
@@ -235,7 +235,7 @@
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "^2.0.0",
     "karma-sonarqube-unit-reporter": "^0.0.23",
-    "karma-spec-reporter": "0.0.36",
+    "karma-spec-reporter": "0.0.37",
     "minimatch": "8.0.7",
     "mocha": "^11.8.0",
     "mochawesome": "^7.0.0",

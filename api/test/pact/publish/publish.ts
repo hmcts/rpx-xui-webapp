@@ -26,7 +26,7 @@ const isBrokerReachable = async (brokerUrl: string): Promise<boolean> => {
 };
 
 const publish = async (): Promise<void> => {
-  const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
+  const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:9292';
   const pactBranch =
     process.env.CHANGE_BRANCH ||
     process.env.BRANCH_NAME ||

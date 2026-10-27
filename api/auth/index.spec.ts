@@ -250,7 +250,7 @@
 //       getConfigValueStub.withArgs('secrets.rpx.system-user-name').returns(mockConfig.userName);
 //       getConfigValueStub.withArgs('secrets.rpx.system-user-password').returns(mockConfig.password);
 //       getConfigValueStub.withArgs('sessionSecret').returns(mockConfig.sessionSecret);
-//       getConfigValueStub.withArgs('secrets.rpx.webapp-redis-connection-string').returns(mockConfig.redisCloudUrl);
+//       getConfigValueStub.withArgs('secrets.rpx.webapp-managed-redis-connection-string').returns(mockConfig.redisCloudUrl);
 //       getConfigValueStub.withArgs('redis.prefix').returns(mockConfig.redisKeyPrefix);
 //       getConfigValueStub.withArgs('redis.ttl').returns(mockConfig.redisTtl);
 //       getConfigValueStub.withArgs('microservice').returns(mockConfig.microservice);

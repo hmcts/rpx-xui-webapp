@@ -27,11 +27,6 @@ variable "application_type" {
   description = "Type of Application Insights (Web/Other)"
 }
 
-variable "sampling_percentage" {
-  default     = 1
-  description = "Specifies the sampling percentage for Application Insights"
-}
-
 variable "managed_redis_sku_name" {
   default     = "Balanced_B0"
   description = "The SKU to use for Azure Managed Redis."

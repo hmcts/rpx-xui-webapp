@@ -30,6 +30,10 @@ export function describeUnexpectedSameOriginApiRequest(
     if (!webProtocols.has(request.protocol) || !webProtocols.has(initiator.protocol) || request.origin !== initiator.origin) {
       return undefined;
     }
+    // Dynatrace RUM uses same-origin /rb_... POSTs; allow its beacons through to the monitoring endpoint.
+    if (method.toUpperCase() === 'POST' && /^\/rb_[^/]+$/.test(request.pathname)) {
+      return undefined;
+    }
   } catch {
     return undefined;
   }

@@ -39,6 +39,12 @@ test.describe('same-origin mock-session route closure', { tag: '@svc-internal' }
         'GET'
       )
     ).toBeUndefined();
+    expect(
+      describeUnexpectedSameOriginApiRequest('https://xui.example/rb_bf24054dsx', 'https://xui.example/cases', 'xhr', 'POST')
+    ).toBeUndefined();
+    expect(
+      describeUnexpectedSameOriginApiRequest('https://xui.example/rb_bf24054dsx', 'https://xui.example/cases', 'xhr', 'GET')
+    ).toEqual({ method: 'GET', route: 'https://xui.example/rb_bf24054dsx' });
   });
 
   test('does not classify requests with opaque origins as same-origin', () => {
@@ -113,5 +119,27 @@ test.describe('same-origin mock-session route closure', { tag: '@svc-internal' }
 
     expect(aborted).toBe(false);
     expect(fellBack).toBe(true);
+
+    aborted = false;
+    fellBack = false;
+    await routeHandler?.({
+      request: () =>
+        ({
+          url: () => 'https://xui.example/rb_bf24054dsx',
+          frame: () => ({ url: () => 'https://xui.example/cases' }),
+          resourceType: () => 'xhr',
+          method: () => 'POST',
+        }) as never,
+      abort: async () => {
+        aborted = true;
+      },
+      fallback: async () => {
+        fellBack = true;
+      },
+    } as unknown as Route);
+
+    expect(aborted).toBe(false);
+    expect(fellBack).toBe(true);
+    expect(closure.getUnexpectedRequests()).toHaveLength(2);
   });
 });

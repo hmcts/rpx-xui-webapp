@@ -99,7 +99,6 @@ export class HearingLinksEffects {
         ofType(hearingLinksActions.MANAGE_LINKED_HEARING_GROUP),
         map((action: hearingLinksActions.ManageLinkedHearingGroup) => action.payload),
         switchMap((payload) => {
-          console.log(payload);
           let apiCall: any;
           if (
             payload.linkedHearingGroup &&

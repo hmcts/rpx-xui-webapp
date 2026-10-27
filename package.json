@@ -255,6 +255,7 @@
     "start-server-and-test": "^2.0.13",
     "terser-webpack-plugin": "^5.3.3",
     "ts-loader": "^9.4.4",
+    "ts-node": "^10.9.2",
     "typescript": "~5.9.0",
     "typescript-eslint": "^8.66.0",
     "underscore": "^1.13.6",

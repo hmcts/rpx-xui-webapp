@@ -3160,9 +3160,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.15":
-  version: 7.4.15
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.15"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.16-exceljs-update":
+  version: 7.4.16-exceljs-update
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.16-exceljs-update"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
@@ -3208,7 +3208,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/ee3487b518289174bbadb26302440187aa4a7bb0cd8362b5bc5c746e262304bc77421a7bff895fea67e50d3f3c080c0662c323849ce12f130a042e950d5f4ab9
+  checksum: 10/b22646088f30735388a39cb558ac2a42db3ff147e2cdb6cd400ec4198cff95e177da1bf304032c1c5fb994dffdc08bf0a5115d405273344f41e06607f8343165
   languageName: node
   linkType: hard
 
@@ -3252,6 +3252,35 @@ __metadata:
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
   checksum: 10/44ea63b73df41c6658bb77d9056ec24699e1617d6419bb9f54e0633a0b504bebde2d98483d06b3721ad93bc622efa84eb665dc1c6fe2c3cf8673abc8f21944e9
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.46-exceljs-update":
+  version: 4.2.46-exceljs-update
+  resolution: "@hmcts/media-viewer@npm:4.2.46-exceljs-update"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^23.0.1"
+    moment-timezone: "npm:^0.6.2"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.1.1"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.14
+    rxjs: ^7.8.2
+  checksum: 10/4c54e47d822b99229acb9a7ea0e99fe2674034ad9c869cd7ff22c86ca2cc98c628f49552b8f9822d567a70ee5f2655544818cea85ba5557e3f09e9be22179857
   languageName: node
   linkType: hard
 
@@ -19882,9 +19911,9 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.15"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.16-exceljs-update"
     "@hmcts/ccpay-web-component": "npm:6.5.27"
-    "@hmcts/media-viewer": "npm:4.2.44"
+    "@hmcts/media-viewer": "npm:4.2.46-exceljs-update"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
@@ -20007,7 +20036,7 @@ __metadata:
     typescript: "npm:~5.9.0"
     typescript-eslint: "npm:^8.66.0"
     underscore: "npm:^1.13.6"
-    uuid: "npm:^11.1.1"
+    uuid: "npm:^14.0.3"
     wait-on: "npm:^8"
     web-animations-js: "npm:^2.3.2"
     webpack: "npm:^5.94.0"
@@ -22152,12 +22181,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^11.1.1":
+"uuid@npm:11.1.1, uuid@npm:^11.1.1":
   version: 11.1.1
   resolution: "uuid@npm:11.1.1"
   bin:
     uuid: dist/esm/bin/uuid
   checksum: 10/16411d3dc12a08d6691616c09a75e66a7f900ba1beef6628a76fe0602f82fae2ee537b564d0b7bc95c24f58d059ca9b58c75a1e806118efb50e17822ff00ddd2
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^11.1.0 || ^12 || ^13 || ^14.0.0, uuid@npm:^14.0.3":
+  version: 14.0.3
+  resolution: "uuid@npm:14.0.3"
+  bin:
+    uuid: dist-node/bin/uuid
+  checksum: 10/a6ab4e6ef84ff77b574846215c425c915de035395710e09f083f3bc1d4744df63db78598da0d04619a0a60a15a9cce2bc7c1ef10bf302349e761838816d798a7
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^8.3.2":
+  version: 8.3.2
+  resolution: "uuid@npm:8.3.2"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 10/9a5f7aa1d6f56dd1e8d5f2478f855f25c645e64e26e347a98e98d95781d5ed20062d6cca2eecb58ba7c84bc3910be95c0451ef4161906abaab44f9cb68ffbdd1
   languageName: node
   linkType: hard
 

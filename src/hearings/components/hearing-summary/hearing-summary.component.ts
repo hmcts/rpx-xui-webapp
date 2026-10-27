@@ -41,7 +41,8 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
         if (state.hearingRequest.lastError) {
           const { status } = state.hearingRequest.lastError;
           this.validationErrors = [];
-          const errorMessage = 400 <= status && status <= 600 ? HearingSummaryEnum.RequestServiceError : HearingSummaryEnum.BackendError;
+          const errorMessage =
+            400 <= status && status <= 600 ? HearingSummaryEnum.RequestServiceError : HearingSummaryEnum.BackendError;
           this.validationErrors.push({
             id: 'submit-hearing-error',
             message: errorMessage,

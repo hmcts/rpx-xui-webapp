@@ -15,7 +15,6 @@ import { TaskPermission, TaskRole } from '../../models/tasks';
   styleUrls: ['./task-assignment-choose-role.component.scss'],
 })
 export class TaskAssignmentChooseRoleComponent implements OnInit {
-  private static readonly userDetails: string = 'userDetails';
   public title: string = 'Choose a role type';
   public verb: string = '';
   public caption: string = 'Reassign task';

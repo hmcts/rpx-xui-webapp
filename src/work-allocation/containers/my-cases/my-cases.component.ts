@@ -1,7 +1,7 @@
+import { CurrentUserService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Component } from '@angular/core';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { AppUtils } from '../../../app/app-utils';
-import { UserInfo, UserRole } from '../../../app/models/user-details.model';
+import { UserRole } from '../../../app/models/user-details.model';
 import { MyWorkFilterComponent } from '../../components';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
@@ -33,12 +33,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
   public backUrl: string = 'work/my-work/my-cases';
 
   public getSearchCaseRequestPagination(): SearchCaseRequest {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return;
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
       const userRole: UserRole = userRoleNames[0] || undefined;

@@ -1,10 +1,10 @@
+import { CurrentUserService, AlertService, Jurisdiction, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Location as StateLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, Jurisdiction, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { HMCTSServiceDetails } from '../../../app/models';
@@ -160,15 +160,13 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public loadSupportedJurisdictions(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
-    const userRoles$ = this.store
-      .pipe(select(fromActions.getUserDetails))
-      .pipe(
-        map((userDetails) =>
-          userDetails.roleAssignmentInfo
-            .filter((role) => role.roleName && role.roleName === 'task-supervisor')
-            .map((role) => role.jurisdiction || null)
-        )
-      );
+    const userRoles$ = CurrentUserService.selectUserDetails(this.store, fromActions.getUserDetails).pipe(
+      map((userDetails) =>
+        userDetails.roleAssignmentInfo
+          .filter((role) => role.roleName && role.roleName === 'task-supervisor')
+          .map((role) => role.jurisdiction || null)
+      )
+    );
 
     // for all case lists other than all work
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();

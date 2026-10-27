@@ -1,3 +1,4 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -44,9 +45,9 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   public ngOnInit(): void {
     this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
 
-    this.isHearingManager$ = this.appStore
-      .pipe(select(fromAppStore.getUserDetails))
-      .pipe(map((userDetails) => userDetails?.userInfo?.roles.includes(UserRole.HearingManager)));
+    this.isHearingManager$ = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).pipe(
+      map((userDetails) => userDetails?.userInfo?.roles.includes(UserRole.HearingManager))
+    );
 
     this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).subscribe((hearingValues) => {
       if (hearingValues) {

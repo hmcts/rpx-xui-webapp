@@ -1,3 +1,4 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
@@ -54,7 +55,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     const roleAccessState$ = this.store.pipe(select(fromFeature.getRoleAccessState));
-    this.userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
+    this.userDetails$ = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails);
     combineLatest([roleAccessState$, this.userDetails$]).subscribe(([exclusionStateData, userDetails]: any) => {
       this.exclusionOption = exclusionStateData.exclusionOption;
       this.setOptionsList(userDetails, exclusionStateData.jurisdiction);

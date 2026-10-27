@@ -1,6 +1,7 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnInit } from '@angular/core';
 import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppConstants } from '../../../app/app.constants';
 import { UserDetails } from '../../../app/models/user-details.model';
@@ -19,7 +20,7 @@ export class GetHelpComponent implements OnInit {
   constructor(private readonly store: Store<fromRoot.State>) {}
 
   public ngOnInit() {
-    this.userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
+    this.userDetails$ = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails);
     this.userDetails$.subscribe((userDetail: UserDetails) => {
       if (userDetail && userDetail.userInfo) {
         this.caseManager = userDetail?.userInfo?.roles.includes('pui-case-manager');

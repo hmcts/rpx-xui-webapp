@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { CaseNotifier, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, CurrentUserService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
@@ -157,9 +157,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       map((hearingListStateData) => hearingListStateData?.hearingListMainModel?.caseRef === this.caseId)
     );
     this.userRoles = [];
-    const detailsStr = this.sessionSvc.getItem('userDetails');
-    if (detailsStr) {
-      const details = safeJsonParse<any>(detailsStr, null);
+    const details = CurrentUserService.readUserInfo(this.sessionSvc);
+    if (details) {
       if (details && details.hasOwnProperty('roles')) {
         this.userRoles = details['roles'] as string[];
       }

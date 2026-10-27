@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
@@ -99,9 +100,9 @@ export class AppEffects {
       ofType(fromActions.LOAD_USER_DETAILS),
       switchMap((action?: { payload: boolean; type: string }) => {
         return this.userService.getUserDetails(action.payload).pipe(
-          tap((userDetails) => this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails.userInfo))),
+          tap((userDetails) => CurrentUserService.setUserDetails(this.sessionStorageService, userDetails)),
           tap((userDetails) => (this.roleService.roles = userDetails?.userInfo?.roles)),
-          map((userDetails) => new fromActions.LoadUserDetailsSuccess(userDetails)),
+          map(() => new fromActions.LoadUserDetailsSuccess()),
           catchError((err) => of(new fromActions.LoadUserDetailsFail(err)))
         );
       })

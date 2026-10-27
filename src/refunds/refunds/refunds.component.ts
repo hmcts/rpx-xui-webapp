@@ -1,5 +1,6 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import * as fromRoot from '../../app/store';
 
 @Component({
@@ -22,7 +23,7 @@ export class RefundsComponent implements OnInit {
   public ngOnInit() {
     // Update the store with the user details
     this.store.dispatch(new fromRoot.LoadUserDetails(true));
-    const userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
+    const userDetails$ = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails);
     userDetails$.subscribe((details) => {
       this.userEmail = details.userInfo.email;
       this.userRoles = details?.userInfo?.roles;

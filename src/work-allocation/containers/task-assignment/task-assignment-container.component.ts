@@ -1,12 +1,12 @@
+import { CurrentUserService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { Location as StateLocation } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 
-import { ErrorMessage, UserInfo } from '../../../app/models';
+import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -43,7 +43,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     fields: this.fields,
   };
 
-  protected userDetailsKey: string = 'userDetails';
   private readonly assignTask: Subscription;
 
   constructor(
@@ -99,12 +98,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public isCurrentUserJudicial(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return false;
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       return !!userInfo.roleCategories?.includes(RoleCategory.JUDICIAL);
     }
     return false;

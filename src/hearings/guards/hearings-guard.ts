@@ -1,5 +1,6 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Injectable } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as fromAppStore from '../../app/store';
@@ -19,9 +20,9 @@ export class HearingsGuard {
     protected readonly hearingStore: Store<fromAppStore.State>,
     protected readonly router: Router
   ) {
-    this.userRoles$ = this.appStore
-      .pipe(select(fromAppStore.getUserDetails))
-      .pipe(map((userDetails) => userDetails.userInfo.roles));
+    this.userRoles$ = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).pipe(
+      map((userDetails) => userDetails.userInfo.roles)
+    );
   }
 
   public hasMatchedPermissions(): Observable<boolean> {

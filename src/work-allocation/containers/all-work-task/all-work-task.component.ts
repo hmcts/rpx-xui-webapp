@@ -1,11 +1,11 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
-import { select } from '@ngrx/store';
+
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
-import { UserInfo, UserRole } from '../../../app/models';
+import { UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder, TaskContext } from '../../enums';
@@ -70,7 +70,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public loadCaseWorkersAndLocations(): void {
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(
+    const userRoles$ = CurrentUserService.selectUserDetails(this.store, fromActions.getUserDetails).pipe(
       map((userDetails) => {
         if (!userDetails.roleAssignmentInfo) {
           // if no role assignment info, do not allow page to disappear
@@ -94,12 +94,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return;
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
       // EXUI-4758 - Set to first user role category, otherwise default to LegalOps
       const userRole: UserRole = userRoleNames[0] || UserRole.LegalOps;

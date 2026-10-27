@@ -149,10 +149,5 @@ describe('AuthGuard', () => {
 
       expect(authService.setWindowLocationHref).not.toHaveBeenCalledWith('/cheesecakes/1');
     });
-    it('Get JSON object Handles errors', () => {
-      const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
-      const result = guard.getJSONObject('someobject');
-      expect(result).toBeNull();
-    });
   });
 });

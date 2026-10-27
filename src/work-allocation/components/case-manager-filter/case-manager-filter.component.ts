@@ -1,8 +1,9 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
@@ -155,21 +156,23 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
-      const userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles || []);
-      // EXUI-4758 - Get first user role category, otherwise default to ALL
-      const roleType = AppUtils.convertDomainToLabel(userRoleNames[0] || PersonRole.ALL);
-      this.filterConfig.cancelSetting.fields.push(
-        {
-          name: 'jurisdiction',
-          value: this.jurisdictions?.length > 0 ? [this.jurisdictions[0].serviceId] : [],
-        },
-        {
-          name: 'role',
-          value: [roleType],
-        }
-      );
-    });
+    this.appStoreSub = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails).subscribe(
+      (userDetails) => {
+        const userRoleNames = AppUtils.getUserRoleNames(userDetails?.userInfo?.roles || []);
+        // EXUI-4758 - Get first user role category, otherwise default to ALL
+        const roleType = AppUtils.convertDomainToLabel(userRoleNames[0] || PersonRole.ALL);
+        this.filterConfig.cancelSetting.fields.push(
+          {
+            name: 'jurisdiction',
+            value: this.jurisdictions?.length > 0 ? [this.jurisdictions[0].serviceId] : [],
+          },
+          {
+            name: 'role',
+            value: [roleType],
+          }
+        );
+      }
+    );
     this.filterConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(this.jurisdictions),
       CaseManagerFilterComponent.initRoleTypeFilter(),

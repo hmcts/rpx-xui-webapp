@@ -1,8 +1,8 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component } from '@angular/core';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { AppUtils } from '../../../app/app-utils';
-import { UserInfo, UserRole } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -39,12 +39,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return;
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
       // EXUI-4758 - Get first user role category, otherwise default to LegalOps
       const userRole: UserRole = userRoleNames[0] || UserRole.LegalOps;

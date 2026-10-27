@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { CURRENT_USER_DETAILS } from '@hmcts/ccd-case-ui-toolkit';
 import {
   CookieService,
   ExuiCommonLibModule,
@@ -46,6 +47,7 @@ import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { SharedModule } from './shared/shared.module';
 import { effects } from './store/effects';
+import { getUserDetails } from './store/selectors/app.selectors';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
@@ -91,6 +93,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     }),
   ],
   providers: [
+    { provide: CURRENT_USER_DETAILS, useFactory: (store: Store) => store.select(getUserDetails), deps: [Store] },
     NGXLogger,
     NGXLoggerMapperService,
     {

@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "paths": {
+      "@hmcts/ccd-case-ui-toolkit": ["../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit"]
+    }
+  }
+}

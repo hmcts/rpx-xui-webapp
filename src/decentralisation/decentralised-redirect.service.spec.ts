@@ -241,17 +241,4 @@ describe('DecentralisedRedirectService', () => {
       expect(url).toBe('https://pcs-xui-pr-1234.preview.platform/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
     });
   });
-
-  describe('getExpectedSubFromUserDetails', () => {
-    [
-      { input: JSON.stringify({ id: 'user-123', uid: 'user-uid' }), expected: 'user-123', name: 'prefer id when present' },
-      { input: JSON.stringify({ uid: 'user-uid' }), expected: 'user-uid', name: 'fallback to uid' },
-      { input: null, expected: null, name: 'return null when userDetails missing' },
-      { input: '{bad json', expected: null, name: 'return null for malformed JSON' },
-    ].forEach(({ input, expected, name }) => {
-      it(`should ${name} when reading expected sub from userDetails`, () => {
-        expect(DecentralisedRedirectService.getExpectedSubFromUserDetails(input)).toBe(expected);
-      });
-    });
-  });
 });

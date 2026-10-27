@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { MemoizedSelector, Store } from '@ngrx/store';
-import { BehaviorSubject, Observable, lastValueFrom, of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { BehaviorSubject, Observable, lastValueFrom, map, of } from 'rxjs';
 import { HeaderConfigService } from '../../services/header-config/header-config.service';
 import * as fromAppStore from '../../store';
 import { WAVerificationService } from '../../../work-allocation/services';
@@ -12,7 +12,6 @@ describe('NavigationAccessGuard', () => {
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
   let headerConfigServiceMock: jasmine.SpyObj<HeaderConfigService>;
   let waVerificationServiceMock: jasmine.SpyObj<WAVerificationService>;
-  let userDetailsSelector: MemoizedSelector<fromAppStore.State, any>;
 
   const createState = (userDetails: any) =>
     ({
@@ -29,7 +28,7 @@ describe('NavigationAccessGuard', () => {
     }) as unknown as ActivatedRouteSnapshot;
 
   const mockStoreState = (state$: Observable<fromAppStore.State>) => {
-    storeMock.pipe.and.callFake((...operators: any[]) => operators.reduce((source, operator) => operator(source), state$));
+    storeMock.pipe.and.returnValue(state$.pipe(map((state: any) => state.appConfig.userDetails)));
   };
 
   beforeEach(() => {
@@ -44,13 +43,7 @@ describe('NavigationAccessGuard', () => {
         waSupportedJurisdictions: [],
       })
     );
-    userDetailsSelector = fromAppStore.getUserDetails as MemoizedSelector<fromAppStore.State, any>;
-    userDetailsSelector.clearResult();
     guard = new NavigationAccessGuard(routerMock, storeMock, headerConfigServiceMock, waVerificationServiceMock);
-  });
-
-  afterEach(() => {
-    userDetailsSelector.clearResult();
   });
 
   it('allows access when the visible header config contains the required nav item', async () => {

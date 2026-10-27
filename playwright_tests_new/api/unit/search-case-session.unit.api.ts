@@ -146,6 +146,17 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual([]);
   });
 
+  test('declares the Case File View mock-session tag without captured identities', () => {
+    expect(
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration', '@integration-case-file-view-mock-session'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-case-file-view-mock-session'],
+        suiteTag: '@integration',
+      })
+    ).toEqual([]);
+  });
+
   test('does not declare case-file-view session when the full run excludes that tag', () => {
     expect(
       resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {

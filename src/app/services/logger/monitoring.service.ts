@@ -96,6 +96,7 @@ export class MonitoringService implements IMonitoringService {
         const connStr = monitor['connectionString'];
         this.config = {
           connectionString: connStr,
+          samplingPercentage: monitor['samplingPercentage'],
         };
         if (!this.areCookiesEnabled) {
           this.config = {

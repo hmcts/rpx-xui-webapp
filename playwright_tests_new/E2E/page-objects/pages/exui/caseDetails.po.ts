@@ -3,6 +3,13 @@ import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
 import { TIMEOUTS } from '../../../test/documentUpload/constants';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { redactText, redactUrl } = require('../../../../common/reporters/failure-context.cjs') as {
+  redactText: (value: unknown) => string;
+  redactUrl: (value: unknown) => string;
+};
 
 const validatorUtils = new ValidatorUtils();
 const tableUtils = new TableUtils();
@@ -19,6 +26,25 @@ export function extractCaseNumberFromUrl(url: string): string | null {
     return trailingDigitsMatch?.[1] ?? null;
   } catch {
     return null;
+  }
+}
+
+export async function scrollTabIntoViewWithDetachedRetry(
+  tab: Pick<Locator, 'scrollIntoViewIfNeeded'>,
+  deadline: number,
+  now: () => number = Date.now
+): Promise<void> {
+  const scroll = () => tab.scrollIntoViewIfNeeded({ timeout: Math.max(1, deadline - now()) });
+  try {
+    await scroll();
+  } catch (error) {
+    if (
+      !(error instanceof Error) ||
+      !/^locator\.scrollIntoViewIfNeeded: Element is not attached to the DOM(?:\n|$)/.test(error.message)
+    ) {
+      throw error;
+    }
+    await scroll();
   }
 }
 
@@ -492,6 +518,7 @@ export class CaseDetailsPage extends Base {
     options: {
       expectedLocator?: Locator;
       expectedPath?: string | RegExp;
+      expectedTarget?: string;
       timeoutMs?: number;
       retry?: boolean;
     } = {}
@@ -544,11 +571,22 @@ export class CaseDetailsPage extends Base {
       await waitForExpected();
     } catch (error) {
       const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+      if (options.retry === false) {
+        const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+        const spinnerVisible = await spinner.isVisible().catch(() => false);
+        const expectedTarget =
+          options.expectedTarget ??
+          (typeof options.expectedPath === 'string' ? options.expectedPath : options.expectedPath?.toString()) ??
+          options.expectedLocator?.toString() ??
+          'unspecified';
+        throw new Error(
+          `Case action "${redactText(action)}" did not reach expected target "${redactText(expectedTarget)}" ` +
+            `(url=${redactUrl(this.page.url())}; selectedOption=${redactText(`${matchingOption.label} (${matchingOption.value})`)}; ` +
+            `spinnerVisible=${spinnerVisible}; eventErrorVisible=${eventErrorVisible}; cause=${redactText(error)})`
+        );
+      }
       if (eventErrorVisible) {
         throw new Error(`Case event failed after selecting "${action}": The event could not be created.`);
-      }
-      if (options.retry === false) {
-        throw error;
       }
       const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
       const spinnerWasVisible = await spinner.isVisible().catch(() => false);
@@ -705,7 +743,28 @@ export class CaseDetailsPage extends Base {
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
-    await tab.click();
+    // Material translates its tab strip; visible DOM tabs can still be clipped outside it.
+    const deadline = Date.now() + tabLoadTimeoutMs;
+    while (Date.now() < deadline) {
+      await scrollTabIntoViewWithDetachedRetry(tab, deadline);
+      const direction = await tab.evaluate((element) => {
+        const viewport = element.closest('mat-tab-header')?.querySelector('.mat-tab-label-container');
+        if (!viewport) return undefined;
+        const bounds = viewport.getBoundingClientRect();
+        const target = element.getBoundingClientRect();
+        // Match the click point clipped to the browser viewport, even for wide tabs.
+        const clickX = (Math.max(0, target.left) + Math.min(window.innerWidth, target.right)) / 2;
+        if (clickX < bounds.left) return 'before';
+        if (clickX > bounds.right) return 'after';
+        return undefined;
+      });
+      if (!direction) break;
+      // Material supplies no accessible name for these native pagination buttons.
+      await this.container.locator(`mat-tab-header button.mat-tab-header-pagination-${direction}`).click({
+        timeout: Math.max(1, deadline - Date.now()),
+      });
+    }
+    await tab.click({ timeout: Math.max(1, deadline - Date.now()) });
     await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {
       // Some tabs render without spinner; readiness is verified via tabpanel checks below.
     });

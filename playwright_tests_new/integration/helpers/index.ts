@@ -9,6 +9,8 @@
 export * from './caseSearchMockRoutes.helper';
 export * from './caseList.helper';
 export * from './caseFileViewMockRoutes.helper';
+export * from './caseFileViewMockSession.helper';
+export * from './mockSessionRouteClosure.helper';
 export * from './caseLinkingMockRoutes.helper';
 export { applySessionCookies, applySessionCookiesFromPool } from '../../common/sessionCapture';
 export * from './searchCaseSession.helper';

@@ -2,11 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["local>hmcts/.github:renovate-config", "local>hmcts/.github//renovate/automerge-all"],
   "automerge": true,
-  "platformAutomerge": true,
+  "platformAutomerge": false,
   "prConcurrentLimit": 3,
   "prHourlyLimit": 1,
   "timezone": "Europe/London",
-  "schedule": ["* 7-16 * * 1-5"],
+  "schedule": ["* 7-10 * * 1-4"],
+  "automergeSchedule": ["* 7-10 * * 1-4"],
   "updateNotScheduled": false,
   "packageRules": [
     {
@@ -14,6 +15,7 @@
       "matchPackageNames": [
         "@hmcts/ccd-case-ui-toolkit",
         "@hmcts/ccpay-web-component",
+        "@hmcts/media-viewer",
         "@hmcts/rpx-xui-common-lib",
         "@hmcts/rpx-xui-node-lib",
         "rpx-xui-translation",

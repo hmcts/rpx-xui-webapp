@@ -1,5 +1,6 @@
 import { LaunchDarklyDefaultsConstants } from './launch-darkly-defaults.constants';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 
 describe('LaunchDarklyDefaultsConstants', () => {
   it('should return the production data for the prod environment', () => {
@@ -13,8 +14,8 @@ describe('LaunchDarklyDefaultsConstants', () => {
   });
 
   it('should enable WA only for Financial Remedy Consented in non-prod configs', () => {
-    const divorceCaseTypes = (config: { configurations: Array<{ serviceName: string; caseTypes: string[] }> }) =>
-      config.configurations.find((entry) => entry.serviceName === 'DIVORCE' && entry.caseTypes.includes('FinancialRemedyMVP2'))
+    const divorceCaseTypes = (config: WAFeatureConfig) =>
+      config.configurations?.find((entry) => entry.serviceName === 'DIVORCE' && entry.caseTypes.includes('FinancialRemedyMVP2'))
         ?.caseTypes;
 
     expect(divorceCaseTypes(LaunchDarklyDefaultsConstants.waServiceConfigTest)).toEqual(['FinancialRemedyMVP2']);

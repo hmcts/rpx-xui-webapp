@@ -618,36 +618,34 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const term = req.body.term;
     const services = req.body.services;
-    if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
-      res.status(403).send('Forbidden');
-      return;
-    }
-    if (services.length === 0) {
-      // TODO(EXUI-2645): Remove this defensive branch once Angular always sends explicit service scoping.
-      res.status(200).send([]);
-      return;
-    }
-
     let cachedUsers = [];
     let firstEntry = true;
-    if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
-      // if already ran just use the cache to avoid loading issues
-      firstEntry = false;
-      cachedUsers = FullUserDetailCache.getAllUserDetails();
+    if (currentUser.roles?.includes(PUI_CASE_MANAGER)) {
+      res.status(403).send('Forbidden');
+    } else if (services?.length === 0 || services[0]?.length === 0) {
+      // if no services selected return empty array with error to avoid showing all users from all services
+      // note: should never happen as frontend should always send at least one service
+      res.status(400).send('Bad Request');
+    } else {
+      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+        // if already ran just use the cache to avoid loading issues
+        firstEntry = false;
+        cachedUsers = FullUserDetailCache.getAllUserDetails();
 
-      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-      res.status(200).send(cachedUsers);
-      refreshUserCache();
-      return;
-    }
-    // always update the cache after getting the cache if needed
-    const cachedUserData = await fetchUserData();
-    cachedUsers = await fetchRoleAssignments(cachedUserData);
-    if (firstEntry) {
-      // if not previously ran ensure the new values are given back to angular layer
-      // note: this is now only a safeguard to ensure caching (caching should have run pre login)
-      cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
-      res.status(200).send(cachedUsers);
+        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+        res.status(200).send(cachedUsers);
+        refreshUserCache();
+        return;
+      }
+      // always update the cache after getting the cache if needed
+      const cachedUserData = await fetchUserData();
+      cachedUsers = await fetchRoleAssignments(cachedUserData);
+      if (firstEntry) {
+        // if not previously ran ensure the new values are given back to angular layer
+        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+        res.status(200).send(cachedUsers);
+      }
     }
   } catch (error) {
     next(error);

@@ -5,6 +5,7 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getCases, getMyCases, getUsersByServiceName, postTaskSearchForCompletable, searchTask } from './index';
 import * as router from './routes';
+import * as caseWorkerUserDataCacheService from './caseWorkerUserDataCacheService';
 
 const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
@@ -114,29 +115,62 @@ describe('workAllocation.routes', () => {
       expect(next).not.to.have.been.called;
     });
 
-    it('returns an empty result for POST /workallocation/caseworker/getUsersByServiceName when services is empty', async () => {
-      const req = mockReq({
-        body: {
-          term: 'john',
-          services: [],
-        },
-        session: {
-          passport: {
-            user: {
-              userinfo: {
-                roles: ['caseworker'],
+    [[], [''], [[]], [[], 'IA']].forEach((services) => {
+      it(`returns 400 for POST /workallocation/caseworker/getUsersByServiceName when services is ${JSON.stringify(services)}`, async () => {
+        const req = mockReq({
+          body: {
+            term: 'john',
+            services,
+          },
+          session: {
+            passport: {
+              user: {
+                userinfo: {
+                  roles: ['caseworker'],
+                },
               },
             },
           },
-        },
+        });
+        const res = mockRes();
+        const timestampExists = sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+        const fetchUserData = sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').resolves([]);
+        const fetchRoleAssignments = sandbox.stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments').resolves([]);
+
+        await getUsersByServiceName(req as any, res as any, next as any);
+
+        expect(res.status).to.have.been.calledOnceWithExactly(400);
+        expect(res.send).to.have.been.calledOnceWithExactly('Bad Request');
+        expect(next).not.to.have.been.called;
+        expect(timestampExists).not.to.have.been.called;
+        expect(fetchUserData).not.to.have.been.called;
+        expect(fetchRoleAssignments).not.to.have.been.called;
       });
-      const res = mockRes();
 
-      await getUsersByServiceName(req as any, res as any, next as any);
+      it(`returns 403 for a pui-case-manager before rejecting services ${JSON.stringify(services)}`, async () => {
+        const req = mockReq({
+          body: {
+            term: 'john',
+            services,
+          },
+          session: {
+            passport: {
+              user: {
+                userinfo: {
+                  roles: ['pui-case-manager'],
+                },
+              },
+            },
+          },
+        });
+        const res = mockRes();
 
-      expect(res.status).to.have.been.calledWith(200);
-      expect(res.send).to.have.been.calledWith([]);
-      expect(next).not.to.have.been.called;
+        await getUsersByServiceName(req as any, res as any, next as any);
+
+        expect(res.status).to.have.been.calledOnceWithExactly(403);
+        expect(res.send).to.have.been.calledOnceWithExactly('Forbidden');
+        expect(next).not.to.have.been.called;
+      });
     });
   });
 });

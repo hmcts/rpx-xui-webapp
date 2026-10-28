@@ -1,19 +1,18 @@
+import { Matchers } from '@pact-foundation/pact';
 import { expect } from 'chai';
 import { getDetails } from '../../../../services/idam';
 import { PactV3TestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
-const pactSetUp = new PactV3TestSetup({ provider: 'idamApi_users', port: 8000 });
+const { somethingLike, eachLike } = Matchers;
+const pactSetUp = new PactV3TestSetup({ provider: 'idamApi_oidc', port: 8000 });
 
 describe('Idam API user details', () => {
   const RESPONSE_BODY = {
-    id: somethingLike('abc123'),
-    forename: somethingLike('Joe'),
-    surname: somethingLike('Bloggs'),
-    email: somethingLike('joe.bloggs@hmcts.net'),
-    active: somethingLike(true),
-    roles: somethingLike([somethingLike('solicitor'), somethingLike('caseworker')]),
+    uid: somethingLike('abc123'),
+    given_name: somethingLike('Joe'),
+    family_name: somethingLike('Bloggs'),
+    sub: somethingLike('joe.bloggs@hmcts.net'),
+    roles: eachLike('solicitor'),
   };
 
   describe('get /o/userinfo', () => {
@@ -21,8 +20,8 @@ describe('Idam API user details', () => {
 
     before(async () => {
       const interaction = {
-        states: [{ description: 'a valid user exists' }],
-        uponReceiving: 'a request for that user:',
+        states: [{ description: 'userinfo is requested' }],
+        uponReceiving: 'a request for userinfo',
         withRequest: {
           method: 'GET',
           path: '/o/userinfo',
@@ -53,19 +52,17 @@ describe('Idam API user details', () => {
 });
 
 function assertResponses(dto: IdamGetDetailsResponseDto) {
-  expect(dto.active).to.be.equal(true);
-  expect(dto.email).to.be.equal('joe.bloggs@hmcts.net');
-  expect(dto.forename).to.be.equal('Joe');
-  expect(dto.surname).to.be.equal('Bloggs');
+  expect(dto.uid).to.be.equal('abc123');
+  expect(dto.sub).to.be.equal('joe.bloggs@hmcts.net');
+  expect(dto.given_name).to.be.equal('Joe');
+  expect(dto.family_name).to.be.equal('Bloggs');
   expect(dto.roles[0]).to.be.equal('solicitor');
-  expect(dto.roles[1]).to.be.equal('caseworker');
 }
 
 export interface IdamGetDetailsResponseDto {
-  id: string;
-  forename: string;
-  surname: string;
-  email: string;
-  active: boolean;
+  uid: string;
+  given_name: string;
+  family_name: string;
+  sub: string;
   roles: string[];
 }

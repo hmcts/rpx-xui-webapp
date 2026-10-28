@@ -12,6 +12,9 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
+    if (!party.hearingSubChannel) {
+      return '';
+    }
     const preferredHearingChannelRefData = refData.find((ref) => ref.key === party.hearingSubChannel);
     return preferredHearingChannelRefData?.value_en
       ? preferredHearingChannelRefData.value_en
@@ -53,7 +56,7 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
           .map((partyInfo) => {
             const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);
             const value = ParticipantAttendenceAnswerConverter.getPartyChannelValue(partyChannels, partyInfo);
-            return `${name} - ${value}`;
+            return value ? `${name} - ${value}` : name;
           })
           .join('<br>');
       })

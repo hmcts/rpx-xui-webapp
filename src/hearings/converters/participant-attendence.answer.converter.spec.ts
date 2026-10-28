@@ -45,6 +45,16 @@ describe('ParticipantAttendenceAnswerConverter', () => {
     expect(result$).toBeObservable(expected);
   });
 
+  [null, undefined, ''].forEach((channel) => {
+    it(`should display only the participant name for a missing scheduled channel (${channel})`, () => {
+      const state: State = JSON.parse(JSON.stringify(initialState.hearings));
+      const day = state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0];
+      day.attendees.forEach((attendee) => (attendee.hearingSubChannel = channel));
+
+      expect(converter.transformAnswer(of(state), 0)).toBeObservable(cold('(b|)', { b: 'Jane Smith' }));
+    });
+  });
+
   it('should transform hearing stage with error', () => {
     const STATE: State = {
       hearingList: null,

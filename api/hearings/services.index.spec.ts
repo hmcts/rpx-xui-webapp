@@ -555,6 +555,16 @@ describe('Hearings Services', () => {
       expect(getConfigValueStub).to.have.been.calledWith('services.hearings.sscs.serviceApi');
     });
 
+    it('should return service path for the PCS jurisdiction', () => {
+      getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'PCS']);
+      getConfigValueStub.withArgs('services.hearings.pcs.serviceApi').returns('http://pcs-api');
+
+      const result = servicesIndex.getServicePath('PCS');
+
+      expect(result).to.equal('http://pcs-api');
+      expect(getConfigValueStub).to.have.been.calledWith('services.hearings.pcs.serviceApi');
+    });
+
     it('should return empty string and log error for unsupported jurisdiction', () => {
       getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'CIVIL', 'PRIVATELAW']);
 

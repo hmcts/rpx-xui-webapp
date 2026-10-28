@@ -9,6 +9,7 @@ import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translat
 import { initialState } from '../../hearing.test.data';
 import { ACTION } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
+import * as fromHearingStore from '../../store';
 import * as hearingActualsActions from '../../store/actions/hearing-actuals.action';
 import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
@@ -74,6 +75,9 @@ describe('RequestHearingComponent', () => {
 
     expect(dispatchSpy).toHaveBeenCalledWith(new hearingActualsActions.ResetHearingActuals());
     expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.ResetHearingRequest());
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.ResetHearingRequestToCompare());
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.ResetHearingLinks());
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.ResetHearingConditions());
   });
 
   it('should retain the hearing request when returning to an existing hearing summary', () => {
@@ -84,6 +88,9 @@ describe('RequestHearingComponent', () => {
 
     expect(dispatchSpy).toHaveBeenCalledWith(new hearingActualsActions.ResetHearingActuals());
     expect(dispatchSpy).not.toHaveBeenCalledWith(new hearingRequestActions.ResetHearingRequest());
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.ResetHearingRequestToCompare());
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.ResetHearingLinks());
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.ResetHearingConditions());
   });
 
   it('should enable deferred updates for a finalised hearing edit journey', () => {
@@ -95,6 +102,11 @@ describe('RequestHearingComponent', () => {
     component.ngOnInit();
 
     expect(dispatchSpy).toHaveBeenCalledWith(new hearingActualsActions.SetHearingActualsEditMode(true));
+    const actions = dispatchSpy.calls.allArgs().map(([action]) => action);
+    const resetIndex = actions.findIndex((action) => action instanceof hearingActualsActions.ResetHearingActuals);
+    const editModeIndex = actions.findIndex((action) => action instanceof hearingActualsActions.SetHearingActualsEditMode);
+    expect(resetIndex).toBeGreaterThanOrEqual(0);
+    expect(editModeIndex).toBeGreaterThan(resetIndex);
   });
 
   afterEach(() => {

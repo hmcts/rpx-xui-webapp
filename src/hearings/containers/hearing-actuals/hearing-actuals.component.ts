@@ -26,11 +26,16 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     const navigationState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
     this.retainHearingRequestOnExit = !!navigationState?.isFinalisedEditMode;
-    this.store.dispatch(new hearingActualsActions.SetHearingActualsEditMode(this.retainHearingRequestOnExit));
 
     this.sub = this.route.params
       .pipe(withLatestFrom(this.store.pipe(select(fromHearingStore.getHearingValuesCaseInfo))))
       .subscribe(([params, caseInfo]) => {
+        this.store.dispatch(new hearingRequestActions.ResetHearingRequest());
+        this.store.dispatch(new fromHearingStore.ResetHearingRequestToCompare());
+        this.store.dispatch(new fromHearingStore.ResetHearingActuals());
+        this.store.dispatch(new fromHearingStore.ResetHearingLinks());
+        this.store.dispatch(new fromHearingStore.ResetHearingConditions());
+        this.store.dispatch(new hearingActualsActions.SetHearingActualsEditMode(this.retainHearingRequestOnExit));
         const caseRef = caseInfo?.caseReference;
         this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '', caseRef }));
         this.store.dispatch(new hearingActualsActions.GetHearingActuals({ id: params.id, caseRef }));
@@ -45,5 +50,8 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
     if (!this.retainHearingRequestOnExit) {
       this.store.dispatch(new hearingRequestActions.ResetHearingRequest());
     }
+    this.store.dispatch(new fromHearingStore.ResetHearingRequestToCompare());
+    this.store.dispatch(new fromHearingStore.ResetHearingLinks());
+    this.store.dispatch(new fromHearingStore.ResetHearingConditions());
   }
 }

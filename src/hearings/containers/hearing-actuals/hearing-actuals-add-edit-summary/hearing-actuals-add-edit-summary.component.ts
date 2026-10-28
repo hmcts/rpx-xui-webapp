@@ -65,7 +65,6 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
 
     // Retrieve data from Router NavigationExtras.state (or fallback to history.state after navigation)
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-    console.log('navState in changeWasThisHearingDayRequired:', navState);
     this.hearingStore.dispatch(
       new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,

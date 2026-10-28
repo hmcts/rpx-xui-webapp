@@ -200,10 +200,11 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     for (const endpoint of endpoints) {
       const tags = endpoint.endsWith('/myaccess') ? ['@svc-work-allocation-myaccess'] : [];
       const view = endpoint.endsWith('/myaccess') ? 'MyAccess' : 'MyCases';
-      test(`${endpoint} returns data or guarded status`, { tag: tags }, async ({ apiClient }) => {
-        const response = await withXsrf('solicitor', (headers) =>
+      test(`${endpoint} returns data or guarded status`, { tag: tags }, async ({ apiClientFor }) => {
+        const waClient = await apiClientFor('waSolicitor');
+        const response = await withXsrf('waSolicitor', (headers) =>
           guardedRequest(() =>
-            apiClient.post(endpoint, {
+            waClient.post(endpoint, {
               data: buildCaseSearchRequest(view),
               headers,
               throwOnError: false,
@@ -213,26 +214,11 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         );
         expectStatus(response.status, StatusSets.guardedExtended);
         assertMyWorkDashboardResponse(response.status, response.data);
+        if (view === 'MyCases') {
+          assertMyWorkTotalsResponse(response.status, response.data);
+        }
       });
     }
-
-    test('POST /workallocation/my-work/cases exposes case totals in response when data available', async ({ apiClient }) => {
-      // Given: A solicitor user authenticated with valid session
-      // When: Requesting my-work cases dashboard
-      // Then: Response includes totals field with case counts when cases exist
-      const response = await withXsrf('solicitor', (headers) =>
-        guardedRequest(() =>
-          apiClient.post('workallocation/my-work/cases', {
-            data: buildCaseSearchRequest('MyCases'),
-            headers,
-            throwOnError: false,
-            timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
-          })
-        )
-      );
-      expectStatus(response.status, StatusSets.guardedExtended);
-      assertMyWorkTotalsResponse(response.status, response.data);
-    });
   });
 
   test.describe('task actions (negative)', { tag: '@wa-action' }, () => {

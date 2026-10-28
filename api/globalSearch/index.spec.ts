@@ -127,6 +127,53 @@ describe('Jurisdiction', () => {
         'WillLodgement',
       ],
     },
+    {
+      jurisdiction: 'Family',
+      service_id: 8,
+      org_unit: 'HMCTS',
+      business_area: 'Civil, Family and Tribunals',
+      sub_business_area: 'Civil and Family',
+      service_description: 'Divorce',
+      service_code: 'ABA1',
+      service_short_description: 'Divorce',
+      ccd_service_name: 'DIVORCE',
+      last_update: '2020-11-02T16:28:37.259752',
+      ccd_case_types: [
+        'DIVORCE',
+        'DIVORCE_BulkAction',
+        'DIVORCE_ExceptionRecord',
+        'DIVORCE_NOTICE_OF_ACTING',
+        'NFD_BulkAction',
+        'NFD',
+        'NFD_ExceptionRecord',
+      ],
+    },
+    {
+      jurisdiction: 'Family',
+      service_id: 9,
+      org_unit: 'HMCTS',
+      business_area: 'Civil, Family and Tribunals',
+      sub_business_area: 'Civil and Family',
+      service_description: 'Financial Remedy',
+      service_code: 'ABA2',
+      service_short_description: 'Financial Remedy',
+      ccd_service_name: 'DIVORCE',
+      last_update: '2020-11-02T16:28:37.259752',
+      ccd_case_types: ['FinancialRemedyContested', 'FinancialRemedyMVP2', 'FINREM_ExceptionRecord'],
+    },
+    {
+      jurisdiction: 'Civil',
+      service_id: 3,
+      org_unit: 'HMCTS',
+      business_area: 'Civil, Family and Tribunals',
+      sub_business_area: 'Civil and Family',
+      service_description: 'Mortgage and Landlord Possession Claims',
+      service_code: 'AAA3',
+      service_short_description: 'Mortgage and Landlord Possession Claims',
+      ccd_service_name: 'PCS',
+      last_update: '2020-11-02T16:28:37.259752',
+      ccd_case_types: ['PCS'],
+    },
   ];
   const serviceList: HMCTSServiceDetails[] = [
     { serviceId: 'IA', serviceName: 'Immigration and Asylum Appeals' },
@@ -136,7 +183,8 @@ describe('Jurisdiction', () => {
     { serviceId: 'EMPLOYMENT', serviceName: 'Employment Claims' },
     { serviceId: 'ST_CIC', serviceName: 'Criminal Injuries Compensation' },
     { serviceId: 'PROBATE', serviceName: 'Probate' },
-    { serviceId: 'PCS', serviceName: 'PCS' },
+    { serviceId: 'PCS', serviceName: 'Mortgage and Landlord Possession Claims' },
+    { serviceId: 'DIVORCE', serviceName: 'Divorce' },
   ];
 
   beforeEach(() => {
@@ -172,17 +220,16 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async () => {
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(8);
+    expect(services.length).to.equal(9);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(8);
+    expect(services.length).to.equal(9);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(8);
+    expect(services.length).to.equal(9);
   });
 
   it('should return global search services2', async () => {
-    console.log('refDataHMCTS size: ' + refDataHMCTS.length);
     const services = globalSearchServices.generateServices(refDataHMCTS);
     expect(services).to.deep.equal(serviceList);
   });

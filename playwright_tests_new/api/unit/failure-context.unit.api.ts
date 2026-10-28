@@ -4,15 +4,29 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const contextModule = require('../../common/reporters/failure-context.cjs') as {
   buildFailureContext: (input: Record<string, unknown>) => Record<string, unknown>;
+  nextChecksFor: (classification: string) => string[];
   redactText: (value: unknown) => string;
   redactUrl: (value: string) => string;
   redactValue: (value: unknown) => unknown;
 };
 
 test.describe('failure context', { tag: '@svc-internal' }, () => {
+  test('suggests transport-focused checks for TLS network errors', () => {
+    expect(contextModule.nextChecksFor('NETWORK_ERROR')[0]).toContain('TLS/SSL, DNS, or connection failure');
+  });
+
   test('redacts query strings, credentials, case-like path segments and sensitive values', () => {
     expect(contextModule.redactUrl('https://xui.example/cases/1791906281904747?token=SECRET')).toBe(
       'https://xui.example/cases/:id'
+    );
+    expect(contextModule.redactUrl('https://xui.example/users/alice@example.com/profile')).toBe(
+      'https://xui.example/users/:email/profile'
+    );
+    expect(contextModule.redactUrl('https://xui.example/users/alice%40example.com/profile')).toBe(
+      'https://xui.example/users/:email/profile'
+    );
+    expect(contextModule.redactUrl('https://xui.example/users/alice%40example%ZZ.com/profile')).toBe(
+      'https://xui.example/users/:email/profile'
     );
     expect(
       contextModule.redactValue({
@@ -60,6 +74,18 @@ test.describe('failure context', { tag: '@svc-internal' }, () => {
     expect(JSON.stringify(context)).not.toContain('1791906281904747');
     expect(JSON.stringify(context)).not.toContain('SECRET');
     expect((context.nextChecks as string[])[0]).toContain('trace');
+  });
+
+  test('preserves worker index zero in structured failure context', () => {
+    const context = contextModule.buildFailureContext({
+      testInfo: { title: 'worker-zero failure', file: 'playwright_tests_new/example.spec.ts' },
+      status: 'failed',
+      retry: 0,
+      project: 'chromium',
+      worker: 0,
+    });
+
+    expect(context.worker).toBe(0);
   });
 
   test('preserves safe primitive telemetry while redacting nested request data', () => {

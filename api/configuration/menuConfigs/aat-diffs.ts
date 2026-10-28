@@ -1,7 +1,7 @@
 export const aatDifferences = {
   '(judge)|(judiciary)|(panelmember)': [
     {
-      roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember', 'caseworker-divorce-financialremedy-judiciary'],
+      roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember'],
       text: 'Search',
     },
   ],
@@ -13,7 +13,7 @@ export const aatDifferences = {
   ],
   '.+': [
     {
-      roles: ['caseworker-befta_master', 'caseworker-probate', 'caseworker-divorce-financialremedy'],
+      roles: ['caseworker-befta_master'],
       text: 'Search',
     },
   ],

@@ -64,6 +64,7 @@ export class RequestHearingComponent implements OnDestroy {
       if (!HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
         this.showMismatchErrorMessage = true;
         this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST };
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       } else {
         this.submitRequestFailed = false;
         this.hearingsService.hearingRequestForSubmitValid = true;

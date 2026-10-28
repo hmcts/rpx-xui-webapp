@@ -84,7 +84,6 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "FinancialRemedyContested",
         "FinancialRemedyMVP2"
       ],
       "releaseVersion": "4",
@@ -271,7 +270,6 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "FinancialRemedyContested",
         "FinancialRemedyMVP2"
       ],
       "releaseVersion": "4",

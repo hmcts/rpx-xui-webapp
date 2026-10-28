@@ -14,6 +14,31 @@ describe('Hearing Request Reducer', () => {
       });
     });
 
+    describe('Load action', () => {
+      it('should clear the existing hearing request before loading the new request', () => {
+        const currentState: HearingRequestStateData = {
+          ...fromHearingRequestReducer.initialHearingRequestState,
+          hearingRequestMainModel: {
+            ...fromHearingRequestReducer.initialHearingRequestState.hearingRequestMainModel,
+            caseDetails: {
+              ...fromHearingRequestReducer.initialHearingRequestState.hearingRequestMainModel.caseDetails,
+              hearingID: 'hearing-a',
+            },
+          },
+        };
+        const action = new fromHearingRequestActions.LoadHearingRequest({
+          hearingID: 'hearing-b',
+          targetURL: '',
+          caseRef: 'case-b',
+        });
+
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(currentState, action);
+
+        expect(hearingsState).toEqual(fromHearingRequestReducer.initialHearingRequestState);
+        expect(hearingsState.hearingRequestMainModel.caseDetails.hearingID).not.toBe('hearing-a');
+      });
+    });
+
     describe('Initialization action', () => {
       it('should initialize hearing request', () => {
         const initialHearingRequestState: HearingRequestStateData = {
@@ -241,6 +266,25 @@ describe('Hearing Request Reducer', () => {
         const action = new fromHearingRequestActions.ResetHearingRequestLastError();
         const hearingsState = fromHearingRequestReducer.hearingRequestReducer(initialHearingRequestState, action);
         expect(hearingsState.lastError).toEqual(null);
+      });
+    });
+
+    describe('Unrelated actions', () => {
+      it('should preserve lastError for unrelated actions', () => {
+        const error = {
+          status: 500,
+          errors: null,
+          message: 'Internal server error',
+        };
+        const currentState: HearingRequestStateData = {
+          ...fromHearingRequestReducer.initialHearingRequestState,
+          lastError: error,
+        };
+        const action = new fromHearingRequestActions.NavigateBackHearingRequest();
+
+        const hearingsState = fromHearingRequestReducer.hearingRequestReducer(currentState, action);
+
+        expect(hearingsState.lastError).toEqual(error);
       });
     });
 

@@ -140,6 +140,33 @@ test.describe(
       });
     });
 
+    test('removes a collection row from check your answers and the submitted case', async ({ createCasePage, page }) => {
+      const people = createCasePage.additionalPeople;
+      await createCasePage.addNewPersonButton.first().click();
+      await createCasePage.addNewPersonButton.first().click();
+      await people.getByLabel('First Name (Optional)', { exact: true }).nth(0).fill('Remove Me');
+      await people.getByLabel('First Name (Optional)', { exact: true }).nth(1).fill('Keep Me');
+      const removeButtons = people.getByRole('button', { name: /Remove/ });
+      await expect(removeButtons).toHaveCount(2);
+
+      await removeButtons.first().click();
+      await page.locator('ccd-remove-dialog').getByRole('button', { name: 'Remove', exact: true }).click();
+      await expect(removeButtons).toHaveCount(1);
+      await expect(people.getByLabel('First Name (Optional)', { exact: true })).toHaveValue('Keep Me');
+
+      await createCasePage.fillDivorcePocSections({
+        data: { firstName: 'Primary', lastName: 'Person', gender: 'Male' },
+        textFields: { textField0: 'Collection retention', textField1: '', textField2: '', textField3: '' },
+      });
+      await expect(createCasePage.checkYourAnswers).toContainText('Keep Me');
+      await expect(createCasePage.checkYourAnswers).not.toContainText('Remove Me');
+
+      const request = (await submitCaseAndCaptureRequest(page, createCasePage)) as { data?: Record<string, unknown> };
+      expect(request.data?.People).toEqual([
+        expect.objectContaining({ value: expect.objectContaining({ FirstName: 'Keep Me' }) }),
+      ]);
+    });
+
     test(`Creating a case with hidden and omitted fields, shows the expected answers and JSON request body`, async ({
       createCasePage,
       caseDetailsPage,
@@ -208,9 +235,9 @@ test.describe(
 
       await test.step('Check the case tab Data, matches previously entered data (EXUI-848/EXUI-811/EXUI-433)', async () => {
         await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:${jurisdiction}/${caseType}/)?1234123412341234(?:$|#)`));
-        await caseDetailsPage.divorceDataTable.waitFor({ state: 'visible', timeout: 30_000 });
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible', timeout: 30_000 });
 
-        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
+        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.caseViewerTable);
         const expectedCaseGender = caseData.gender === 'Not given' ? caseData.gender : caseData.gender.toLowerCase();
         expect(table).toMatchObject({
           'Select your gender': expectedCaseGender,
@@ -240,75 +267,75 @@ test.describe(
       });
     });
 
-    // EXUI-4317: the journey still stalls after changing gender and cannot reach check-your-answers reliably.
-    test.skip(`When you change the gender of Person 1, the previously filled 'maiden name' field is hidden, and not sent in the API request`, async ({
-      createCasePage,
-      caseDetailsPage,
-      page,
-    }) => {
-      const caseData = await createCasePage.generateDivorcePoCData();
-      const person1Data = await createCasePage.generateDivorcePoCPersonData({
-        gender: 'Female',
-      });
-
-      await test.step('User fills out the form', async () => {
-        await createCasePage.fillDivorcePocSections({
-          data: person1Data,
-          textFields: {
-            textField0: caseData.textField0,
-            textField1: caseData.textField1,
-            textField2: caseData.textField2,
-            textField3: caseData.textField3,
-          },
-          gender: caseData.gender,
+    // EXUI-4317: changing gender hides Maiden Name, but the submitted Person1 payload still includes MaidenName.
+    test(
+      `When you change the gender of Person 1, the previously filled 'maiden name' field is hidden, and not sent in the API request`,
+      { tag: ['@blocked-exui-4317'] },
+      async ({ createCasePage, caseDetailsPage, page }) => {
+        const caseData = await createCasePage.generateDivorcePoCData();
+        const person1Data = await createCasePage.generateDivorcePoCPersonData({
+          gender: 'Female',
         });
-      });
 
-      await test.step('Check the form matches previously entered data', async () => {
-        await createCasePage.checkYourAnswersChangeLinks.first().click();
-        await expect(createCasePage.person1FirstNameInput).toHaveValue(person1Data.firstName ?? '');
-        await expect(createCasePage.person1MaidenNameInput).toHaveValue(person1Data.maidenName ?? '');
-        await expect(createCasePage.person1LastNameInput).toHaveValue(person1Data.lastName ?? '');
-        await expect(createCasePage.person1TitleInput).toHaveValue(person1Data.title ?? '');
-        expect(await createCasePage.person1GenderSelect.inputValue()).toContain(person1Data.gender?.toLowerCase());
-        await expect(createCasePage.person1JobTitleInput).toHaveValue(person1Data.jobTitle ?? '');
-        await expect(createCasePage.person1JobDescriptionInput).toHaveValue(person1Data.jobDescription ?? '');
-      });
-
-      await test.step('Update the gender to male, wait for maiden name to be hidden, advance to the check your answers page', async () => {
-        await createCasePage.person1GenderSelect.selectOption('Male');
-        await createCasePage.person1MaidenNameInput.waitFor({ state: 'hidden' });
-        await createCasePage.clickContinueAndWait('after changing gender to male');
-        await createCasePage.clickContinueAndWait('advancing to check your answers after changing person 1 gender');
-      });
-
-      await test.step(`Check the answers page, post update, doesn't contain 'maiden name'`, async () => {
-        const person1 = await caseDetailsPage.trRowsToObjectInPage(await createCasePage.findTableInCheckAnswers('Person 1'));
-
-        expect(person1).toMatchObject({
-          Title: person1Data.title,
-          Gender: 'Male',
-          'First Name': person1Data.firstName,
-          'Last Name': person1Data.lastName,
+        await test.step('User fills out the form', async () => {
+          await createCasePage.fillDivorcePocSections({
+            data: person1Data,
+            textFields: {
+              textField0: caseData.textField0,
+              textField1: caseData.textField1,
+              textField2: caseData.textField2,
+              textField3: caseData.textField3,
+            },
+            gender: caseData.gender,
+          });
         });
-        expect(person1).not.toHaveProperty('Maiden Name');
-        const jobSubTable = await caseDetailsPage.trRowsToObjectInPage(
-          await createCasePage.findSubTableInCheckAnswers('Person 1')
-        );
-        expect(jobSubTable).toMatchObject({ Title: person1Data.jobTitle, Description: person1Data.jobDescription });
-      });
 
-      await test.step('Submit the case for creation and capture the request body', async () => {
-        interceptedCreateCaseRequestBody = await submitCaseAndCaptureRequest(page, createCasePage);
-      });
+        await test.step('Check the form matches previously entered data', async () => {
+          await createCasePage.checkYourAnswersChangeLinks.first().click();
+          await expect(createCasePage.person1FirstNameInput).toHaveValue(person1Data.firstName ?? '');
+          await expect(createCasePage.person1MaidenNameInput).toHaveValue(person1Data.maidenName ?? '');
+          await expect(createCasePage.person1LastNameInput).toHaveValue(person1Data.lastName ?? '');
+          await expect(createCasePage.person1TitleInput).toHaveValue(person1Data.title ?? '');
+          expect(await createCasePage.person1GenderSelect.inputValue()).toContain(person1Data.gender?.toLowerCase());
+          await expect(createCasePage.person1JobTitleInput).toHaveValue(person1Data.jobTitle ?? '');
+          await expect(createCasePage.person1JobDescriptionInput).toHaveValue(person1Data.jobDescription ?? '');
+        });
 
-      await test.step(`Check the JSON sent in the creation request doesn't contain 'maiden name' and shows the updated gender field`, async () => {
-        expect(interceptedCreateCaseRequestBody).toBeTruthy();
-        const submittedData = interceptedCreateCaseRequestBody?.data;
-        expect(submittedData).toBeTruthy();
-        expect(submittedData.Person1?.PersonGender).toBe('male');
-        expect(submittedData.Person1).not.toHaveProperty('MaidenName');
-      });
-    });
+        await test.step('Update the gender to male, wait for maiden name to be hidden, advance to the check your answers page', async () => {
+          await createCasePage.person1GenderSelect.selectOption('Male');
+          await createCasePage.person1MaidenNameInput.waitFor({ state: 'hidden' });
+          await createCasePage.clickContinueAndWait('after changing gender to male');
+          await createCasePage.clickContinueAndWait('advancing to check your answers after changing person 1 gender');
+        });
+
+        await test.step(`Check the answers page, post update, doesn't contain 'maiden name'`, async () => {
+          const person1 = await caseDetailsPage.trRowsToObjectInPage(await createCasePage.findTableInCheckAnswers('Person 1'));
+
+          expect(person1).toMatchObject({
+            Title: person1Data.title,
+            Gender: 'Male',
+            'First Name': person1Data.firstName,
+            'Last Name': person1Data.lastName,
+          });
+          expect(person1).not.toHaveProperty('Maiden Name');
+          const jobSubTable = await caseDetailsPage.trRowsToObjectInPage(
+            await createCasePage.findSubTableInCheckAnswers('Person 1')
+          );
+          expect(jobSubTable).toMatchObject({ Title: person1Data.jobTitle, Description: person1Data.jobDescription });
+        });
+
+        await test.step('Submit the case for creation and capture the request body', async () => {
+          interceptedCreateCaseRequestBody = await submitCaseAndCaptureRequest(page, createCasePage);
+        });
+
+        await test.step(`Check the JSON sent in the creation request doesn't contain 'maiden name' and shows the updated gender field`, async () => {
+          expect(interceptedCreateCaseRequestBody).toBeTruthy();
+          const submittedData = interceptedCreateCaseRequestBody?.data;
+          expect(submittedData).toBeTruthy();
+          expect(submittedData.Person1?.PersonGender).toBe('male');
+          expect(submittedData.Person1).not.toHaveProperty('MaidenName');
+        });
+      }
+    );
   }
 );

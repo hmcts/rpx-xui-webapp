@@ -27,6 +27,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-booking-ui': (env) => resolveBookingUiSessionCandidates({ parallelIndex: 0 }, env),
   '@integration-case-details': (env) => resolveStaffAdminSessionUsers(env),
   [caseFileViewIntegrationTag]: () => [caseFileViewUser],
+  '@integration-case-file-view-mock-session': () => [],
   '@integration-case-linking': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_Judge_WA_R1'],
   '@integration-case-list': () => ['SOLICITOR'],
   '@integration-ccd-toolkit': () => ['SOLICITOR'],
@@ -38,6 +39,8 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
     ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 0 }, env),
     ...resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 0 }, env),
   ],
+  // Authentication and user details are route-mocked by this suite.
+  '@integration-hearing-link': () => [],
   '@integration-manage-tasks': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
   // Authentication and user details are route-mocked by this suite.
   '@integration-platform-services': () => [],
@@ -89,7 +92,7 @@ function uniqueSessionIdentities(identities: SessionIdentityInput[]): SessionIde
 function resolveSelectedIntegrationTags(selection: IntegrationTagSelection): string[] {
   const suiteTag = selection.suiteTag ?? integrationSuiteTag;
   const requestedFeatureTags = selection.includeTags.filter((tag) => tag !== suiteTag);
-  return requestedFeatureTags.filter((tag) => !selection.excludedTags.includes(tag));
+  return requestedFeatureTags.filter((tag) => tag.startsWith(`${suiteTag}-`) && !selection.excludedTags.includes(tag));
 }
 
 function isFullIntegrationRun(selection: IntegrationTagSelection): boolean {
@@ -118,7 +121,7 @@ export function resolveIntegrationSessionUsers(
   }
 
   const suiteTag = tagSelection.suiteTag ?? integrationSuiteTag;
-  const availableFeatureTags = tagSelection.availableTags.filter((tag) => tag !== suiteTag);
+  const availableFeatureTags = tagSelection.availableTags.filter((tag) => tag !== suiteTag && tag.startsWith(`${suiteTag}-`));
   assertIntegrationSessionMappings(availableFeatureTags);
 
   const selectedTags = isFullIntegrationRun(tagSelection)

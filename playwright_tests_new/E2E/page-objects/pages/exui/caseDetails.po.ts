@@ -3,6 +3,13 @@ import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
 import { TIMEOUTS } from '../../../test/documentUpload/constants';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { redactText, redactUrl } = require('../../../../common/reporters/failure-context.cjs') as {
+  redactText: (value: unknown) => string;
+  redactUrl: (value: unknown) => string;
+};
 
 const validatorUtils = new ValidatorUtils();
 const tableUtils = new TableUtils();
@@ -19,6 +26,25 @@ export function extractCaseNumberFromUrl(url: string): string | null {
     return trailingDigitsMatch?.[1] ?? null;
   } catch {
     return null;
+  }
+}
+
+export async function scrollTabIntoViewWithDetachedRetry(
+  tab: Pick<Locator, 'scrollIntoViewIfNeeded'>,
+  deadline: number,
+  now: () => number = Date.now
+): Promise<void> {
+  const scroll = () => tab.scrollIntoViewIfNeeded({ timeout: Math.max(1, deadline - now()) });
+  try {
+    await scroll();
+  } catch (error) {
+    if (
+      !(error instanceof Error) ||
+      !/^locator\.scrollIntoViewIfNeeded: Element is not attached to the DOM(?:\n|$)/.test(error.message)
+    ) {
+      throw error;
+    }
+    await scroll();
   }
 }
 
@@ -92,7 +118,7 @@ export class CaseDetailsPage extends Base {
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
   readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
-  readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
+  readonly divorceDataSubTable = this.caseViewerTable.locator('table.complex-panel-table table').first();
 
   // Task List tab
   readonly taskListContainer = this.page.locator('.active-tasks-container');
@@ -275,16 +301,22 @@ export class CaseDetailsPage extends Base {
       });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')).filter(
-          (cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
+        // Only the row's own direct-child cells: querySelectorAll would also pull in
+        // header/data cells from any nested table rendered inside a value cell (e.g. a
+        // multi-select-list field's own accessible table), double-counting them as cells.
+        const cells = Array.from(row.children).filter(
+          (cell) =>
+            (cell.tagName === 'TH' || cell.tagName === 'TD') &&
+            !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
         );
         if (cells.length < 2) {
           continue;
         }
 
-        // Clone the key cell and strip nested tables so nested content is ignored
+        // Clone the key cell and strip nested table headers/captions so visually-hidden
+        // accessible text (e.g. "Value", "Multi selection table") isn't picked up as the label.
         const keyCellClone = cells[0].cloneNode(true) as Element;
-        keyCellClone.querySelectorAll('table').forEach((t) => t.remove());
+        keyCellClone.querySelectorAll('thead, th, caption').forEach((t) => t.remove());
         const rawKey = findFirstText(keyCellClone).replace(trailingSortIndicatorRegex, '').trim();
         if (!rawKey) {
           continue;
@@ -293,7 +325,9 @@ export class CaseDetailsPage extends Base {
           .slice(1)
           .map((c) => {
             const clone = c.cloneNode(true) as Element;
-            clone.querySelectorAll('table').forEach((t) => t.remove());
+            // Strip nested table headers/captions only, keeping the actual data cells (e.g. a
+            // multi-select-list field's selected values) so the real value survives.
+            clone.querySelectorAll('thead, th, caption').forEach((t) => t.remove());
             return findFirstText(clone).replace(trailingSortIndicatorRegex, '').trim();
           })
           .filter(Boolean);
@@ -484,6 +518,7 @@ export class CaseDetailsPage extends Base {
     options: {
       expectedLocator?: Locator;
       expectedPath?: string | RegExp;
+      expectedTarget?: string;
       timeoutMs?: number;
       retry?: boolean;
     } = {}
@@ -536,11 +571,22 @@ export class CaseDetailsPage extends Base {
       await waitForExpected();
     } catch (error) {
       const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+      if (options.retry === false) {
+        const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
+        const spinnerVisible = await spinner.isVisible().catch(() => false);
+        const expectedTarget =
+          options.expectedTarget ??
+          (typeof options.expectedPath === 'string' ? options.expectedPath : options.expectedPath?.toString()) ??
+          options.expectedLocator?.toString() ??
+          'unspecified';
+        throw new Error(
+          `Case action "${redactText(action)}" did not reach expected target "${redactText(expectedTarget)}" ` +
+            `(url=${redactUrl(this.page.url())}; selectedOption=${redactText(`${matchingOption.label} (${matchingOption.value})`)}; ` +
+            `spinnerVisible=${spinnerVisible}; eventErrorVisible=${eventErrorVisible}; cause=${redactText(error)})`
+        );
+      }
       if (eventErrorVisible) {
         throw new Error(`Case event failed after selecting "${action}": The event could not be created.`);
-      }
-      if (options.retry === false) {
-        throw error;
       }
       const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
       const spinnerWasVisible = await spinner.isVisible().catch(() => false);
@@ -645,19 +691,8 @@ export class CaseDetailsPage extends Base {
     if (await this.hasCallbackValidationErrorAlert()) {
       throw new Error('Callback data failed validation before selecting party flag target.');
     }
-    const exactLabel = this.page.getByLabel(`${target} (${target})`);
-    // Escape regex special characters to prevent unintended matches
-    const escapedTarget = target.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-    const fallbackLabel = this.page.getByLabel(new RegExp(escapedTarget, 'i'));
-    try {
-      await exactLabel.waitFor({ state: 'visible', timeout: 15000 });
-      await exactLabel.check();
-    } catch (error) {
-      // Exact label format not found, use case-insensitive fallback
-      this.logger.warn('Exact label not found, using regex fallback', { error });
-      await fallbackLabel.waitFor({ state: 'visible', timeout: 15000 });
-      await fallbackLabel.check();
-    }
+    const targetRadio = this.page.getByRole('radio', { name: `${target} (${target})`, exact: true });
+    await targetRadio.check();
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after selecting party flag target');
     await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
@@ -708,7 +743,31 @@ export class CaseDetailsPage extends Base {
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
-    await tab.click();
+    // Material translates its tab strip; visible DOM tabs can still be clipped outside it.
+    const deadline = Date.now() + tabLoadTimeoutMs;
+    while (Date.now() < deadline) {
+      await scrollTabIntoViewWithDetachedRetry(tab, deadline);
+      const direction = await tab.evaluate((element) => {
+        const viewport = element
+          .closest('mat-tab-header, .mat-mdc-tab-header')
+          ?.querySelector('.mat-mdc-tab-label-container, .mat-tab-label-container');
+        if (!viewport) return undefined;
+        const bounds = viewport.getBoundingClientRect();
+        const target = element.getBoundingClientRect();
+        // Match the click point clipped to the browser viewport, even for wide tabs.
+        const clickX = (Math.max(0, target.left) + Math.min(window.innerWidth, target.right)) / 2;
+        if (clickX < bounds.left) return 'before';
+        if (clickX > bounds.right) return 'after';
+        return undefined;
+      });
+      if (!direction) break;
+      // Material supplies no accessible name for these pagination controls.
+      await this.container
+        .locator(`.mat-mdc-tab-header-pagination-${direction}, .mat-tab-header-pagination-${direction}`)
+        .first()
+        .click({ timeout: Math.max(1, deadline - Date.now()) });
+    }
+    await tab.click({ timeout: Math.max(1, deadline - Date.now()) });
     await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {
       // Some tabs render without spinner; readiness is verified via tabpanel checks below.
     });

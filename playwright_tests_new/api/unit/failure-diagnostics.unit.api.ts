@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 
 import { __test__ as diagnosticsTest } from '../../E2E/fixtures.js';
 import { TEST_AVAILABLE_TASKS_URL, TEST_SERVICE_DOWN_URL } from './testAppUrls.js';
@@ -13,6 +14,55 @@ const baseExecutionSignals = {
 };
 
 test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
+  test('attaches diagnosis for interrupted Playwright executions', () => {
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('interrupted')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('failed')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('timedOut')).toBe(true);
+    expect(diagnosticsTest.shouldAttachFailureDiagnosis('passed')).toBe(false);
+  });
+
+  test('persists redacted structured diagnostics in the test output directory and attaches the file', async ({
+    browserName,
+  }, playwrightTestInfo) => {
+    const attachments: Array<{ name: string; path?: string }> = [];
+    const testInfo = {
+      annotations: [],
+      attach: async (name: string, options?: { path?: string }) => attachments.push({ name, path: options?.path }),
+      error: { message: 'Browser closed before the assertion completed' },
+      file: 'playwright_tests_new/example.spec.ts',
+      project: { name: browserName },
+      retry: 0,
+      status: 'interrupted',
+      title: 'interrupted diagnostic test',
+      workerIndex: 0,
+      outputPath: (...segments: string[]) => playwrightTestInfo.outputPath('failure-data-fixture', ...segments),
+    } as unknown as Parameters<typeof diagnosticsTest.attachFailureDiagnosisIfNeeded>[0];
+
+    await diagnosticsTest.attachFailureDiagnosisIfNeeded(testInfo, () => ({
+      error: 'Browser closed before the assertion completed',
+      primaryError: 'Browser closed before the assertion completed',
+      actionableError: '',
+      setupMarker: 'none',
+      apiErrors: [],
+      failedRequests: [],
+      slowCalls: [],
+      networkTimeout: false,
+      slowThreshold: 1000,
+      executionSignals: {
+        ...baseExecutionSignals,
+        lastMainFrameUrl: 'https://xui.example/cases/1234567890123456?token=secret',
+      },
+    }));
+
+    expect(attachments.map(({ name }) => name)).toEqual(['Failure diagnosis', 'failure-data.json', 'failure-context.json']);
+    const failureDataPath = attachments.find(({ name }) => name === 'failure-data.json')?.path;
+    expect(failureDataPath).toBe(playwrightTestInfo.outputPath('failure-data-fixture', 'failure-data.json'));
+    const savedFailureData = await readFile(failureDataPath!, 'utf8');
+    expect(JSON.parse(savedFailureData)).toMatchObject({ failureType: 'UNKNOWN' });
+    expect(savedFailureData).not.toContain('secret');
+    expect(savedFailureData).not.toContain('1234567890123456');
+  });
+
   test('classifyFailure treats direct CCD event-token 502 failures as backend 5xx', () => {
     const failureType = diagnosticsTest.classifyFailure({
       error: "Error: Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",
@@ -33,6 +83,60 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     });
 
     expect(failureType).toBe('DOWNSTREAM_API_5XX');
+  });
+
+  test('classifies browser DNS and connection failures before a companion API 504', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Error: expect(received).toBe(expected) Expected: 200 Received: 504',
+      serverErrors: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          status: 504,
+          method: 'GET',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          method: 'GET',
+          errorText: 'net::ERR_NAME_NOT_RESOLVED',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('NETWORK_ERROR');
+  });
+
+  test('classifies Chromium connection refusal as a network error', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Error: expect(received).toBe(expected) Expected: 200 Received: 504',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [
+        {
+          url: 'https://manage-case.aat.platform.hmcts.net/api/caseshare/orgs',
+          method: 'GET',
+          errorText: 'net::ERR_CONNECTION_REFUSED',
+          initiatedFrom: 'https://manage-case.aat.platform.hmcts.net',
+          resourceType: 'xhr',
+        },
+      ],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('NETWORK_ERROR');
   });
 
   test('classifies a direct CCD case-create 504 with its owning route', () => {

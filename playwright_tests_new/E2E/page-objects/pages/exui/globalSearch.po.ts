@@ -27,6 +27,10 @@ export class GlobalSearchPage extends Base {
     await this.searchLinkOnMenuBar.click();
     await this.page.waitForURL(/\/search/, { timeout: EXUI_TIMEOUTS.GLOBAL_SEARCH_NAVIGATION });
     await this.searchForm.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.GLOBAL_SEARCH_NAVIGATION });
+    await this.submitSearchWithCase(caseId, caseType, applicantOrPartyName);
+  }
+
+  async submitSearchWithCase(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
     await this.caseIdTextBox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await this.caseIdTextBox.click();
     await this.caseIdTextBox.fill(caseId);

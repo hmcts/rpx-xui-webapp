@@ -11,7 +11,7 @@ import { CaseFlagGroup } from '../../../models/caseFlagGroup.model';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { HearingConditions, KEY_IS_INIT, KEY_MODE } from '../../../models/hearingConditions';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
-import { ACTION, CaseFlagType, Mode } from '../../../models/hearings.enum';
+import { ACTION, CaseFlagType, Mode, PartyType } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -40,6 +40,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public showReasonableAdjustmentFlagsWarningMessage: boolean;
   public showMismatchErrorMessage = false;
   public showPageMismatchErrorMessage = false;
+  private mismatchPopupLogged = false;
 
   public validationErrors: { id: string; message: string[] };
 
@@ -69,6 +70,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   @ViewChild('mismatchDialogLink')
   public set mismatchDialogLink(link: ElementRef<HTMLAnchorElement> | undefined) {
     if (link) {
+      if (!this.mismatchPopupLogged) {
+        this.logMismatchPopupDisplayed();
+        this.mismatchPopupLogged = true;
+      }
       setTimeout(() => link.nativeElement.focus());
     }
   }
@@ -270,6 +275,44 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     if (this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesRequired) {
       this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.reasonableAdjustmentChangesConfirmed = true;
     }
+  }
+
+  private logMismatchPopupDisplayed(): void {
+    const hmcIndividualPartyCount = this.hearingRequestMainModel.partyDetails.filter(
+      (party) => party.partyType === PartyType.IND
+    ).length;
+    const shvIndividualPartyCount = this.serviceHearingValuesModel.parties.filter(
+      (party) => party.partyType === PartyType.IND
+    ).length;
+    this.loggerService.warn('Hearing request party ID or case information mismatch popup displayed', {
+      caseId: this.hearingRequestMainModel.caseDetails?.caseRef || this.serviceHearingValuesModel.caseId || this.caseReference,
+      hearingId:
+        this.hearingRequestMainModel.requestDetails?.hearingRequestID || this.hearingRequestMainModel.caseDetails?.hearingID,
+      hearingRequestServiceCode: this.hearingRequestMainModel.caseDetails?.hmctsServiceCode,
+      serviceHearingValuesServiceCode: this.serviceHearingValuesModel.hmctsServiceID,
+      hearingRequestStatus: this.hearingRequestMainModel.requestDetails?.status,
+      hearingJourneyMode: this.hearingCondition.mode,
+      hmcIndividualPartyCount,
+      shvIndividualPartyCount,
+      partyIdMismatchDetected: !HearingsUtils.checkHearingPartiesConsistency(
+        this.hearingRequestMainModel,
+        this.serviceHearingValuesModel
+      ),
+      routeCaseReferenceMismatchDetected:
+        !!this.caseReference && this.caseReference !== this.hearingRequestMainModel.caseDetails?.caseRef,
+      serviceCaseReferenceMismatchDetected:
+        !!this.serviceHearingValuesModel.caseId &&
+        this.serviceHearingValuesModel.caseId !== this.hearingRequestMainModel.caseDetails?.caseRef,
+      serviceCodeMismatchDetected:
+        !!this.hearingRequestMainModel.caseDetails?.hmctsServiceCode &&
+        !!this.serviceHearingValuesModel.hmctsServiceID &&
+        this.hearingRequestMainModel.caseDetails.hmctsServiceCode !== this.serviceHearingValuesModel.hmctsServiceID,
+      caseInformationMismatchDetected: !HearingsUtils.checkHearingCaseConsistency(
+        this.hearingRequestMainModel,
+        this.serviceHearingValuesModel,
+        this.caseReference
+      ),
+    });
   }
 
   private setReasonableAdjustmentFlags(): void {

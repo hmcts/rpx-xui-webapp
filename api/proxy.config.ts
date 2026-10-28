@@ -68,16 +68,22 @@ export const initProxy = (app: Express) => {
     middlewares: [bodyParser.json()],
     onReq: searchCases.modifyRequest,
     onRes: searchCases.handleElasticSearchResponse,
-    rewrite: false,
+    rewriteUrl: (path: string) => `/internal/searchCases${path.includes('?') ? path.substring(path.indexOf('?')) : ''}`,
     source: '/data/internal/searchCases',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/print',
     target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });
 
   applyProxy(app, {
     filter: ['!/data/internal/searchCases'],
-    rewrite: false,
-    source: ['/print', '/data'],
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+    rewrite: true,
+    source: '/data',
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {
@@ -88,11 +94,14 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-    onReq: amendedJurisdictions.checkCachedJurisdictions,
+    onReq: (proxyReq, req) => {
+      amendedJurisdictions.rewriteCaseworkerUid(proxyReq, req);
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req);
+    },
     onRes: amendedJurisdictions.getJurisdictions,
     rewrite: false,
     source: '/aggregated',
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {

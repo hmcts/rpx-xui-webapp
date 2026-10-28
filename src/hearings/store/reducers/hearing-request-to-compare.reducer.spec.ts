@@ -5,6 +5,26 @@ import * as fromHearingRequestToCompareReducer from './hearing-request-to-compar
 
 describe('Hearing Request To Compare Reducer', () => {
   describe('Actions', () => {
+    describe('Reset action', () => {
+      it('should reset the hearing request to compare state', () => {
+        const currentState: HearingRequestStateData = {
+          ...fromHearingRequestToCompareReducer.initialHearingRequestToCompareState,
+          hearingRequestMainModel: {
+            ...fromHearingRequestToCompareReducer.initialHearingRequestToCompareState.hearingRequestMainModel,
+            caseDetails: {
+              ...fromHearingRequestToCompareReducer.initialHearingRequestToCompareState.hearingRequestMainModel.caseDetails,
+              hearingID: 'hearing-a',
+            },
+          },
+        };
+        const action = new fromHearingRequestToCompareActions.ResetHearingRequestToCompare();
+
+        const hearingsState = fromHearingRequestToCompareReducer.hearingRequestToCompareReducer(currentState, action);
+
+        expect(hearingsState).toEqual(fromHearingRequestToCompareReducer.initialHearingRequestToCompareState);
+      });
+    });
+
     describe('Initialization action', () => {
       it('should initialize hearing request to compare', () => {
         const initialHearingRequestState: HearingRequestStateData = {

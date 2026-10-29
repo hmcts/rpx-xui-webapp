@@ -3093,13 +3093,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.18-4775-5008-CVEs":
-  version: 7.4.18-4775-5008-CVEs
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.18-4775-5008-CVEs"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.19":
+  version: 7.4.19
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.19"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
-    "@hmcts/media-viewer": "npm:4.2.45-ngrx-store-freeze-removal"
+    "@hmcts/media-viewer": "npm:4.2.46"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
@@ -3142,7 +3142,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/51b7f6a2c1d8a5a6733c642b4bb15a43d2ab12bfbb579a819878ebba6087f37a3b27dfb925f71cffdcc5cf24ce9bba37ffd50dfa4128f2d7319e6a71724e3a52
+  checksum: 10/e07b085ea4a12d205d83467f659acc8f76806c838ff1a77d01b8705e34ec654077bfa922a4939fe4899dd753589cfa415fcabc2299fc5a7e760fd4bc85c1a9d1
   languageName: node
   linkType: hard
 
@@ -3160,9 +3160,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.45-ngrx-store-freeze-removal":
-  version: 4.2.45-ngrx-store-freeze-removal
-  resolution: "@hmcts/media-viewer@npm:4.2.45-ngrx-store-freeze-removal"
+"@hmcts/media-viewer@npm:4.2.46":
+  version: 4.2.46
+  resolution: "@hmcts/media-viewer@npm:4.2.46"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^23.0.1"
     moment-timezone: "npm:^0.6.2"
@@ -3183,9 +3183,9 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.18-ts-node-update
+    rpx-xui-translation: 1.2.18
     rxjs: ^7.8.2
-  checksum: 10/4825a3a40bbedd322f211d031ba85f0667d0caff0ddaffb8e8b8ef942fa25c737d5c4f5110287a3ca398622a3094b7dc41fa3308cbb9dabfaae3abdfd50637fe
+  checksum: 10/f21dcf3f6dabb8b8c375e4b19df1935b16e942e02994506339fd9cb5789655137259de7ac6ed41ac64dc7140056edc7fb498b01970321271a43dcfd86b1742b5
   languageName: node
   linkType: hard
 
@@ -3253,9 +3253,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.26-ts-node-update":
-  version: 3.2.26-ts-node-update
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.26-ts-node-update"
+"@hmcts/rpx-xui-common-lib@npm:3.2.27":
+  version: 3.2.27
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.27"
   dependencies:
     govuk-frontend: "npm:5.13.0"
     tslib: "npm:^2.0.0"
@@ -3278,13 +3278,13 @@ __metadata:
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/9a4cc7da516602f80a47d657c94e497c783211b8a7e9a4610e898f056f17495e2902682cac9f88faf7cc682fee7b4a8f6630ac3a0b1f863c9826fcc170ae46e3
+  checksum: 10/ed662f2bae37ad96c18f75063039c2684a79cccad521d4f75a9a71062b2275aa00e04c5ede521f4554effb3780e9186ec26583e00d61c7788cf81f143ce80b83
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.35-4952-5094-CVEs":
-  version: 2.30.35-4952-5094-CVEs
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.35-4952-5094-CVEs"
+"@hmcts/rpx-xui-node-lib@npm:2.30.35":
+  version: 2.30.35
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.35"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.20.0"
@@ -3303,7 +3303,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/3716f3d154e03669a210001603eb80bf6aa8c5b838e0d88afba65ae7dea6117a7d952addbd65ea1c144bf70963df3f892b53acb28eb50bab5490cf5563ec7123
+  checksum: 10/f26ea55c6e4e549bdb400f0c220973bace9f452f02c594fdd5fe5c0c83a33d03fa706acc0aca05a9db25bb9342950510c27a41b87bf702753cda040242b96469
   languageName: node
   linkType: hard
 
@@ -19010,14 +19010,14 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.18-4775-5008-CVEs"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.19"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
-    "@hmcts/media-viewer": "npm:4.2.45-ngrx-store-freeze-removal"
+    "@hmcts/media-viewer": "npm:4.2.46"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"
     "@hmcts/properties-volume": "npm:^1.4.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.26-ts-node-update"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.35-4952-5094-CVEs"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.27"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.35"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -19115,7 +19115,7 @@ __metadata:
     playwright-core: "npm:1.64.1"
     prettier: "npm:^3.9.5"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.18-ts-node-update"
+    rpx-xui-translation: "npm:1.2.18"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.2"
     sass: "npm:^1.97.3"
@@ -19146,9 +19146,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.18-ts-node-update":
-  version: 1.2.18-ts-node-update
-  resolution: "rpx-xui-translation@npm:1.2.18-ts-node-update"
+"rpx-xui-translation@npm:1.2.18":
+  version: 1.2.18
+  resolution: "rpx-xui-translation@npm:1.2.18"
   dependencies:
     dexie: "npm:^4.4.4"
     luxon: "npm:^2.5.2"
@@ -19157,7 +19157,7 @@ __metadata:
     "@angular/common": ^20.3.27
     "@angular/core": ^20.3.27
     rxjs: ^7.8.0
-  checksum: 10/8a35895b2db99ec231f6cedf97343b1e25c8a47b27446376c88c243726d11edb183a5cc374f23711fe9591cd236ea97d4863603a4a7a47c609ed43866608a140
+  checksum: 10/a1ab0ed0d989d68f78d319db1f851ca2fe283cf3aa5273453dad210a2509f9cbb30b5dcde06fb49b192322085aa5c78d17d7b618aa29731572814afd0cb4a5ac
   languageName: node
   linkType: hard
 

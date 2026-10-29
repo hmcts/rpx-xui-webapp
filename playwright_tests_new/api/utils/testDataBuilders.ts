@@ -213,8 +213,26 @@ export class TaskListBuilder {
 export class TaskSearchBuilder {
   private readonly searchRequest: Record<string, unknown> = {
     view: 'MyTasks',
-    searchRequest: [],
+    searchRequest: {
+      search_parameters: [],
+      sorting_parameters: [{ sort_by: 'dueDate', sort_order: 'asc' }],
+      pagination_parameters: { page_number: 1, page_size: 25 },
+    },
   };
+
+  private get requestBody(): {
+    pagination_parameters: { page_number: number; page_size: number };
+    search_by?: string;
+    search_parameters: Array<{ key: string; operator: string; values: string[] }>;
+    sorting_parameters: Array<{ sort_by: string; sort_order: 'asc' | 'desc' }>;
+  } {
+    return this.searchRequest.searchRequest as {
+      pagination_parameters: { page_number: number; page_size: number };
+      search_by?: string;
+      search_parameters: Array<{ key: string; operator: string; values: string[] }>;
+      sorting_parameters: Array<{ sort_by: string; sort_order: 'asc' | 'desc' }>;
+    };
+  }
 
   /**
    * Set search view
@@ -228,8 +246,8 @@ export class TaskSearchBuilder {
    * Filter by location IDs
    */
   inLocations(locationIds: string[]): this {
-    this.searchRequest.searchRequest = [
-      ...(this.searchRequest.searchRequest as unknown[]),
+    this.requestBody.search_parameters = [
+      ...this.requestBody.search_parameters,
       { key: 'location', operator: 'IN', values: locationIds },
     ];
     return this;
@@ -239,8 +257,8 @@ export class TaskSearchBuilder {
    * Filter by task states
    */
   withStates(states: string[]): this {
-    this.searchRequest.searchRequest = [
-      ...(this.searchRequest.searchRequest as unknown[]),
+    this.requestBody.search_parameters = [
+      ...this.requestBody.search_parameters,
       { key: 'state', operator: 'IN', values: states },
     ];
     return this;
@@ -250,9 +268,9 @@ export class TaskSearchBuilder {
    * Filter by jurisdiction
    */
   forJurisdiction(jurisdiction: string): this {
-    this.searchRequest.searchRequest = [
-      ...(this.searchRequest.searchRequest as unknown[]),
-      { key: 'jurisdiction', operator: 'EQUAL', values: [jurisdiction] },
+    this.requestBody.search_parameters = [
+      ...this.requestBody.search_parameters,
+      { key: 'jurisdiction', operator: 'IN', values: [jurisdiction] },
     ];
     return this;
   }
@@ -261,16 +279,18 @@ export class TaskSearchBuilder {
    * Search by caseworker
    */
   searchByCaseworker(): this {
-    this.searchRequest.searchBy = 'caseworker';
+    this.requestBody.search_by = 'caseworker';
     return this;
   }
 
   /**
    * Pagination settings
    */
-  paginate(first: number, pageSize: number): this {
-    this.searchRequest.first = first;
-    this.searchRequest.pageSize = pageSize;
+  paginate(pageNumber: number, pageSize: number): this {
+    this.requestBody.pagination_parameters = {
+      page_number: pageNumber,
+      page_size: pageSize,
+    };
     return this;
   }
 
@@ -278,7 +298,7 @@ export class TaskSearchBuilder {
    * Sort settings
    */
   sortBy(field: string, order: 'asc' | 'desc' = 'asc'): this {
-    this.searchRequest.sortedBy = { field, order };
+    this.requestBody.sorting_parameters = [{ sort_by: field, sort_order: order }];
     return this;
   }
 

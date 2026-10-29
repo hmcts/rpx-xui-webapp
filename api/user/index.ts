@@ -1,5 +1,6 @@
 import { getUserSessionTimeout, RoleGroupSessionTimeout } from '@hmcts/rpx-xui-node-lib';
 import { AxiosResponse } from 'axios';
+import { createHash } from 'crypto';
 import { NextFunction, Response } from 'express';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue } from '../configuration';
@@ -37,7 +38,12 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     if (containsDangerousCode(bearerToken)) {
       return res.send('Invalid bearer token').status(400);
     }
-    const userInfo = { ...rawUserInfo, token: `Bearer ${bearerToken}` };
+    const userId = rawUserInfo.id || rawUserInfo.uid;
+    const userInfo = {
+      ...rawUserInfo,
+      token: `Bearer ${bearerToken}`,
+      filterOwnerHash: userId ? createHash('sha256').update(`exui-filter-owner:${userId}`).digest('hex') : undefined,
+    };
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
     const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
     /**

@@ -12,6 +12,7 @@
     "api/unit/odhin-adaptive-reporter.unit.api.ts",
     "api/unit/odhin-report-enhancer.unit.api.ts",
     "api/unit/odhin-reporters.unit.api.ts",
+    "api/unit/exui-header.unit.api.ts",
     "api/unit/search-case-session.unit.api.ts",
     "api/unit/mock-session-route-closure.unit.api.ts",
     "integration/helpers/index.ts",

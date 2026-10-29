@@ -48,12 +48,7 @@ export const aatHearingJurisdictions = {
     {
       includeCaseTypes: ['PCS', '(PCS-)\\d+'],
       jurisdiction: 'PCS',
-      roles: [
-        'hmcts-ctsc',
-        'hmcts-admin',
-        'hmcts-legal-operations',
-        'hmcts-judiciary',
-      ],
+      roles: ['hmcts-ctsc', 'hmcts-admin', 'hmcts-legal-operations', 'hmcts-judiciary'],
     },
   ],
 };

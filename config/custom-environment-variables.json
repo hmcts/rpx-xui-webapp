@@ -72,7 +72,12 @@
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",
         "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
       },
-      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
+      "pcs": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_PCS",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_PCS"
+      },
+
+    "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
       "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS",
       "previewDeploymentId": "PREVIEW_DEPLOYMENT_ID"
     },

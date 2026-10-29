@@ -6,6 +6,7 @@ export interface UserInfo {
   active: boolean;
   roles: string[];
   uid?: string;
+  filterOwnerHash?: string;
   roleCategories?: string[];
 }
 

@@ -23,6 +23,7 @@ export class QueryManagementPage extends Base {
   readonly querySubjectInput = this.raiseQueryForm.locator('input#subject');
   readonly queryDetailInput = this.raiseQueryForm.locator('textarea#body');
   readonly responseDetailInput = this.respondQueryForm.locator('textarea#body');
+  readonly closeQueryCheckbox = this.respondQueryForm.getByRole('checkbox', { name: 'I want to close this query' });
   readonly hearingRelatedNoRadio = this.raiseQueryForm.locator('input#isHearingRelated-no');
   readonly respondToQueryHeading = this.respondQueryForm.locator('h1.govuk-heading-m');
   readonly reviewQueryDetailsHeading = this.reviewQueryDetails.locator('h1.govuk-heading-l');

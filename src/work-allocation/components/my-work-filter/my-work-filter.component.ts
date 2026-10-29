@@ -254,7 +254,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
         this.bookingLocations.length === 0 &&
         !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
       if (isFeePaidJudgeWithNoBooking) {
-        this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
+        localStorage.removeItem(MyWorkFilterComponent.FILTER_NAME);
       } else if (!isLocationsAvailable) {
         const baseLocations: string[] = [];
         userDetails.roleAssignmentInfo.forEach((roleAssignment) => {

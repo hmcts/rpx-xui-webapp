@@ -24,6 +24,7 @@ import {
   isBrowserLifecycleFailure,
   isDependencyEnvironmentFailure,
   isTransientWorkflowFailure,
+  retryOnTransientFailure,
 } from '../../E2E/utils/transient-failure.utils.js';
 
 test.describe.configure({ mode: 'serial' });
@@ -450,6 +451,71 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
         overrides: { TextFieldd: 'typo' } as never,
       })
     ).toThrow(/Unknown override field 'TextFieldd'/);
+  });
+
+  for (const [message, expected] of [
+    ['ResourceNotFoundException', false],
+    ['Civil create failed: returned HTTP 404 ResourceNotFoundException', false],
+    ['request failed: ENOTFOUND example.invalid', true],
+    ['getaddrinfo failed for example.invalid', true],
+    ['read ECONNRESET while calling api/user/details', true],
+    ['connect ETIMEDOUT example.invalid', true],
+  ] as const) {
+    test(`classifies network error tokens: ${message}`, () => {
+      for (const error of [message, new Error(message)]) {
+        expect.soft(isTransientWorkflowFailure(error)).toBe(expected);
+        expect.soft(isDependencyEnvironmentFailure(error)).toBe(expected);
+      }
+    });
+  }
+
+  test('does not retry ResourceNotFoundException and preserves the original error', async () => {
+    const originalError = new Error('Civil create failed: returned HTTP 404 ResourceNotFoundException');
+    let attempts = 0;
+    let retries = 0;
+
+    await expect(
+      retryOnTransientFailure(
+        async () => {
+          attempts += 1;
+          throw originalError;
+        },
+        {
+          maxAttempts: 3,
+          onRetry: () => {
+            retries += 1;
+          },
+        }
+      )
+    ).rejects.toBe(originalError);
+    expect(attempts).toBe(1);
+    expect(retries).toBe(0);
+  });
+
+  test('retries a genuine network error and returns the successful result', async () => {
+    const networkError = new Error('getaddrinfo ENOTFOUND example.invalid');
+    let attempts = 0;
+    const retries: Array<{ attempt: number; error: unknown }> = [];
+
+    const result = await retryOnTransientFailure(
+      async () => {
+        attempts += 1;
+        if (attempts === 1) {
+          throw networkError;
+        }
+        return 'created';
+      },
+      {
+        maxAttempts: 3,
+        onRetry: (attempt, error) => {
+          retries.push({ attempt, error });
+        },
+      }
+    );
+
+    expect(result).toBe('created');
+    expect(attempts).toBe(2);
+    expect(retries).toEqual([{ attempt: 1, error: networkError }]);
   });
 
   test('fails closed when create-access jurisdictions remains unavailable', async () => {

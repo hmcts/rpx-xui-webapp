@@ -1,3 +1,4 @@
+import { fetchOrgServices } from './orgServices';
 import { NextFunction } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_REF_API_URL, SERVICE_REF_DATA_MAPPING } from '../configuration/references';
@@ -11,16 +12,13 @@ import { RefDataRegion } from './models/ref-data-region.model';
 const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
 
 export async function getServices(req, res, next: NextFunction) {
-  const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;
   const enabledServiceCodes = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING).reduce(
     (prevValue, currentValue) => [...prevValue, ...currentValue.serviceCodes],
     [] as string[]
   );
 
   try {
-    const { status, data }: { status: number; data: RefDataHMCTSService[] } = await http.get(`${apiPath}`, {
-      headers: setHeaders(req),
-    });
+    const { status, data }: { status: number; data: RefDataHMCTSService[] } = await fetchOrgServices(req);
     const enabledServicesData = data.filter((service) => enabledServiceCodes.includes(service.service_code));
     // mock the data for HRS service as it is not available in reference data API.
     enabledServicesData.push({

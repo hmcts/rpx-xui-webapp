@@ -59,6 +59,7 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
       this.titleService.setTitle('View Document');
     }
 
+    this.mediaURL = this.withLegacyDocumentAccessContext(this.mediaURL);
     this.initialiseFeatureFlags();
   }
 
@@ -130,6 +131,18 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
     this.icpEnabled$ = of(true);
     this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
+  }
+
+  private withLegacyDocumentAccessContext(mediaUrl: string): string {
+    if (!mediaUrl || !this.caseId || !/^\/documents\/[^/]+\/binary(?:\?.*)?$/.test(mediaUrl)) {
+      return mediaUrl;
+    }
+
+    // Legacy document-store links need case context so XUI can authorise the binary request before proxying it.
+    const [path, query = ''] = mediaUrl.split('?');
+    const searchParams = new URLSearchParams(query);
+    searchParams.set('caseId', this.caseId);
+    return `${path}?${searchParams.toString()}`;
   }
 
   private cleanUrl(token: string | null): void {

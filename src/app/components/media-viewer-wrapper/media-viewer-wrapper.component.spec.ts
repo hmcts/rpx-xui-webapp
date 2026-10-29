@@ -20,6 +20,11 @@ const MEDIA_VIEWER_DATA = {
   document_filename: 'sample.pdf',
   content_type: 'pdf',
 };
+const LEGACY_MEDIA_VIEWER_DATA = {
+  ...MEDIA_VIEWER_DATA,
+  document_binary_url: '/documents/doc-123/binary',
+  case_id: 'case-123',
+};
 
 describe('MediaViewerWrapperComponent', () => {
   let component: MediaViewerWrapperComponent;
@@ -81,16 +86,31 @@ describe('MediaViewerWrapperComponent', () => {
   });
 
   describe('ngOnInit', () => {
+    it('should load media viewer data from session storage', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(MEDIA_VIEWER_DATA));
+      component.ngOnInit();
+
+      expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
+      expect(component.mediaFilename).toBe('sample.pdf');
+      expect(component.mediaContentType).toBe('pdf');
+    });
+
+    it('should add case context to legacy document binary media urls', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(LEGACY_MEDIA_VIEWER_DATA));
+      component.ngOnInit();
+
+      expect(component.mediaURL).toBe('/documents/doc-123/binary?caseId=case-123');
+    });
+
     it('should not render the media viewer before metadata is received', () => {
       expect(component.mediaReady).toBeFalse();
       expect(fixture.debugElement.query(By.css('mv-media-viewer'))).toBeNull();
     });
 
-    it('should not set the session or remove the local storage media viewer data if there is already media viewer data in session storage', () => {
-      sessionStorageService.getItem.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
+    it('should not rewrite media viewer data already in session storage', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(MEDIA_VIEWER_DATA));
       component.ngOnInit();
+
       expect(sessionStorageService.setItem).toHaveBeenCalledTimes(0);
     });
 

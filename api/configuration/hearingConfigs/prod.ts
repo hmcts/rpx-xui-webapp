@@ -8,6 +8,10 @@ export const prodEnableHearingAmendment = {
       includeCaseTypes: ['Asylum', 'Bail'],
       jurisdiction: 'IA',
     },
+    {
+      includeCaseTypes: ['PCS', '(PCS-)\\d+'],
+      jurisdiction: 'PCS',
+    },
   ],
 };
 
@@ -40,6 +44,11 @@ export const prodHearingJurisdictions = {
     {
       includeCaseTypes: ['CIVIL'],
       jurisdiction: 'CIVIL',
+    },
+    {
+      includeCaseTypes: ['PCS', '(PCS-)\\d+'],
+      jurisdiction: 'PCS',
+      roles: ['hmcts-ctsc', 'hmcts-admin', 'hmcts-legal-operations', 'hmcts-judiciary'],
     },
   ],
 };

@@ -41,7 +41,11 @@ function debug(...messages: any[]) {
 
 function trackRequest(obj: any) {
   if (client) {
-    client.trackRequest(obj);
+    try {
+      client.trackRequest(obj);
+    } catch (error) {
+      this._logger.warn('Failed to track request telemetry', error);
+    }
   }
 }
 

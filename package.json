@@ -134,7 +134,7 @@
     "@ngrx/store": "^20.1.0",
     "@ngrx/store-devtools": "^20",
     "@ngxmc/datetime-picker": "20.1.0",
-    "applicationinsights": "2.9.8",
+    "applicationinsights": "^3.17.0",
     "axios": "^1.20.0",
     "axios-mock-adapter": "^2.1.0",
     "class-transformer": "^0.5.1",
@@ -260,7 +260,7 @@
     "underscore": "^1.13.6",
     "uuid": "^11.1.1",
     "wait-on": "^8",
-    "webpack": "^5.94.0",
+    "webpack": "5.112.0",
     "webpack-cli": "^6.0.0",
     "webpack-node-externals": "^3.0.0",
     "zod": "^3.23.8"
@@ -271,7 +271,7 @@
   "resolutions": {
     "archiver-utils@npm:^2.1.0": "npm:5.0.2",
     "archiver-utils@npm:^3.0.4": "npm:5.0.2",
-    "@opentelemetry/core": "^2.8.0",
+    "@opentelemetry/core": "^3.0.0",
     "unzipper@npm:^0.10.11": "npm:0.12.5",
     "@types/jsdom": "^27",
     "axios@npm:^0.24.0": "npm:1.20.0",
@@ -302,7 +302,7 @@
     "typed-rest-client": "^2.0.0",
     "unzipper": "0.12.5",
     "uuid": "^11.1.1",
-    "webpack": "^5.94.0",
+    "webpack": "5.112.0",
     "ws": "8.21.3",
     "xml2js": "^0.6.2"
   },

@@ -48,9 +48,9 @@ nodejs:
   autoscaling:
     enabled: false
   devmemoryRequests: 512Mi
-  devcpuRequests: 400m
+  devcpuRequests: 500m
   devmemoryLimits: 2Gi
-  devcpuLimits: 2
+  devcpuLimits: 1000m
   livenessTimeout: 15
   readinessTimeout: 15
   livenessFailureThreshold: 10

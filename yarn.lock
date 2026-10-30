@@ -3093,13 +3093,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.18":
-  version: 7.4.18
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.18"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.19-exui-5450-rc1":
+  version: 7.4.19-exui-5450-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.19-exui-5450-rc1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
-    "@hmcts/media-viewer": "npm:4.2.45"
+    "@hmcts/media-viewer": "npm:4.2.46"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:5.13.0"
     lz-string: "npm:^1.5.0"
@@ -3127,7 +3127,7 @@ __metadata:
     "@ngxmc/datetime-picker": 20.1.0
     class-transformer: ^0.5.1
     lodash: ^4.17.22
-    moment: ^2.30.1
+    moment: ^2.31.0
     moment-timezone: ^0.5.31
     ngx-chips: ^3.0.0
     ngx-editor: 19.0.0-beta.1
@@ -3142,7 +3142,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/034a195f55ac5b518c275cb0d8f355e5fb4bca394cee26950b16a12221fe29ac7d18610139f1abeabe00c693396a09b4abbe7ab705e6456d459d0e701e9fdec9
+  checksum: 10/209f3c23b550a52ac7e7e05b959f00df9bf4159427330c70d67b79eac1bbc84311c0ca57684a153c6afa959cfb54aa6e031a127509cd71fca51bbfef422503f9
   languageName: node
   linkType: hard
 
@@ -3186,6 +3186,35 @@ __metadata:
     rpx-xui-translation: 1.2.14
     rxjs: ^7.8.2
   checksum: 10/1637eb09b96597d302e7a6565d653652c3614a158d77a7b2267af4ab94f217d7c1924842a97d78deef1fce300b3f2f79ca429a3760550d3b8c6c4eee36b91f33
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.46":
+  version: 4.2.46
+  resolution: "@hmcts/media-viewer@npm:4.2.46"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^23.0.1"
+    moment-timezone: "npm:^0.6.2"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.1.1"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.18
+    rxjs: ^7.8.2
+  checksum: 10/f21dcf3f6dabb8b8c375e4b19df1935b16e942e02994506339fd9cb5789655137259de7ac6ed41ac64dc7140056edc7fb498b01970321271a43dcfd86b1742b5
   languageName: node
   linkType: hard
 
@@ -19051,7 +19080,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.18"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.19-exui-5450-rc1"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
     "@hmcts/media-viewer": "npm:4.2.45"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

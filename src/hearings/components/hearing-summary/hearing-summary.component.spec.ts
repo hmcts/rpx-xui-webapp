@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { HearingConditions } from '../../models/hearingConditions';
-import { Mode } from '../../models/hearings.enum';
+import { HearingSummaryEnum, Mode } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../store';
 import { HearingSummaryComponent } from './hearing-summary.component';
@@ -63,6 +63,37 @@ describe('HearingSummaryComponent', () => {
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should select the validation error message based on the HTTP status range', () => {
+    spyOn(window, 'scrollTo');
+
+    const testCases = [
+      { status: 399, expectedMessage: HearingSummaryEnum.BackendError },
+      { status: 400, expectedMessage: HearingSummaryEnum.RequestServiceError },
+      { status: 599, expectedMessage: HearingSummaryEnum.RequestServiceError },
+      { status: 600, expectedMessage: HearingSummaryEnum.BackendError },
+    ];
+
+    testCases.forEach(({ status, expectedMessage }) => {
+      store.setState({
+        ...initialState,
+        hearings: {
+          ...initialState.hearings,
+          hearingRequest: {
+            ...initialState.hearings.hearingRequest,
+            lastError: { status },
+          },
+        },
+      });
+
+      expect(component.validationErrors).toEqual([
+        {
+          id: 'submit-hearing-error',
+          message: expectedMessage,
+        },
+      ]);
+    });
   });
 
   it('should change answer', () => {

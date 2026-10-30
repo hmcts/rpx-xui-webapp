@@ -534,6 +534,64 @@ describe('HearingsUtils', () => {
     });
   });
 
+  describe('checkHearingConsistency', () => {
+    it('should reject a service response for a different case when submitting', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1111222233334444',
+          hmctsServiceCode: 'ABA5',
+        },
+      };
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        caseId: '9999000011112222',
+        hmctsServiceID: 'ABA5',
+      };
+
+      expect(HearingsUtils.checkHearingConsistency(hearingRequestMainModel, serviceHearingValuesModel)).toBeFalse();
+    });
+
+    it('should reject a response when its service code belongs to a different case', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1111222233334444',
+          hmctsServiceCode: 'ABA5',
+        },
+      };
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        caseId: '1111222233334444',
+        hmctsServiceID: 'BBA3',
+      };
+
+      expect(HearingsUtils.checkHearingConsistency(hearingRequestMainModel, serviceHearingValuesModel)).toBeFalse();
+    });
+
+    it('should reject a response when the parties belong to a different case', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1111222233334444',
+          hmctsServiceCode: 'ABA5',
+        },
+        partyDetails: [{ partyID: 'current-case-party', partyType: PartyType.IND, partyRole: 'appellant' }],
+      };
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        caseId: '1111222233334444',
+        hmctsServiceID: 'ABA5',
+        parties: [{ partyID: 'different-case-party', partyType: PartyType.IND, partyRole: 'appellant' }],
+      };
+
+      expect(HearingsUtils.checkHearingConsistency(hearingRequestMainModel, serviceHearingValuesModel)).toBeFalse();
+    });
+  });
+
   describe('checkHearingCaseConsistency', () => {
     it('should return true when HRM case details match SHV and caseReference matches HRM caseRef', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {

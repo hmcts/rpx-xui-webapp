@@ -200,6 +200,11 @@ describe('LinkedHearingsWithCaseComponent', () => {
               ...initialState.hearings,
               hearingLinks: {
                 ...initialState.hearings.hearingLinks,
+                serviceLinkedCases: linkedCasesWithHearings.map((linkedCase) => ({
+                  caseReference: linkedCase.caseRef,
+                  caseName: linkedCase.caseName,
+                  reasonsForLink: linkedCase.reasonsForLink,
+                })),
                 serviceLinkedCasesWithHearings: linkedCasesWithHearings,
               },
             },
@@ -237,6 +242,71 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show the reason message without the linked cases table when no other case has the hearing link reason', () => {
+    const currentCase = { ...linkedCasesWithHearings[0], reasonsForLink: ['Other reason'] };
+    const otherCase = linkedCasesWithHearings[1];
+    component.caseId = currentCase.caseRef;
+    component.hearingId = currentCase.caseHearings[0].hearingID;
+    store.setState({
+      ...initialState,
+      hearings: {
+        ...initialState.hearings,
+        hearingLinks: {
+          ...initialState.hearings.hearingLinks,
+          serviceLinkedCases: [
+            { caseReference: otherCase.caseRef, caseName: otherCase.caseName, reasonsForLink: otherCase.reasonsForLink },
+          ],
+          serviceLinkedCasesWithHearings: [currentCase, otherCase],
+        },
+      },
+    });
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    expect(page.querySelector('h1.govuk-heading-l').textContent).toContain(
+      'No linked cases have the reason needed to link hearings'
+    );
+    expect(page.querySelector('.no-linked-cases').textContent).toContain(
+      "There are linked cases, but none have the 'Linked for a hearing' reason."
+    );
+    expect(page.querySelector('#linked-form')).toBeNull();
+    expect(page.querySelector('.no-linked-cases .govuk-link').textContent).toContain('Return to hearings');
+  });
+
+  it('should keep the linked cases table when another case has the hearing link reason', () => {
+    const page = fixture.nativeElement as HTMLElement;
+
+    expect(component.showIncorrectLinkReasonMessage).toBe(false);
+    expect(page.querySelector('#linked-form')).not.toBeNull();
+    expect(page.textContent).not.toContain('No linked cases have the reason needed to link hearings');
+  });
+
+  it('should show the existing no hearings title when a linked case is displayed without hearings', () => {
+    const currentCase = linkedCasesWithHearings[0];
+    const otherCase = { ...linkedCasesWithHearings[1], reasonsForLink: ['CLRC017'], caseHearings: [] };
+    component.caseId = currentCase.caseRef;
+    component.hearingId = currentCase.caseHearings[0].hearingID;
+    store.setState({
+      ...initialState,
+      hearings: {
+        ...initialState.hearings,
+        hearingLinks: {
+          ...initialState.hearings.hearingLinks,
+          serviceLinkedCases: [
+            { caseReference: otherCase.caseRef, caseName: otherCase.caseName, reasonsForLink: ['Other reason'] },
+          ],
+          serviceLinkedCasesWithHearings: [currentCase, otherCase],
+        },
+      },
+    });
+    fixture.detectChanges();
+
+    const page = fixture.nativeElement as HTMLElement;
+    expect(page.querySelector('h1.govuk-heading-l').textContent).toContain('There are no hearings available to link to');
+    expect(page.querySelector('#linked-form')).not.toBeNull();
+    expect(page.textContent).not.toContain('No linked cases have the reason needed to link hearings');
   });
 
   it('should check on submit error', () => {

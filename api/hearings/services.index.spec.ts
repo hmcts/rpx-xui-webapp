@@ -612,8 +612,7 @@ describe('Hearings Services', () => {
         const jurisdictionConfig = hearingsConfig[jurisdiction.toLowerCase()];
 
         expect(jurisdictionConfig, `Missing hearings config section for ${jurisdiction}`).to.exist;
-        expect(jurisdictionConfig.serviceApi, `Missing serviceApi for hearings jurisdiction ${jurisdiction}`)
-          .to.be.a('string')
+        expect(jurisdictionConfig.serviceApi, `Missing serviceApi for hearings jurisdiction ${jurisdiction}`).to.be.a('string')
           .and.not.empty;
       });
     });

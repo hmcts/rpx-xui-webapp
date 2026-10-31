@@ -198,7 +198,7 @@ describe('HearingChangeReasonsComponent', () => {
     expect((hearingsService.hearingRequestForSubmitValid = false));
   });
 
-  it('should log hearing consistency messages on submit when form is valid', () => {
+  it('should not log private hearing consistency messages and still submit when form is valid', () => {
     spyOn(HearingsUtils, 'getHearingConsistencyLogMessages').and.returnValue([
       'Hearing internal name mismatch detected. HRM: A SHV: B for caseId: 1234567890123456',
     ]);
@@ -208,9 +208,7 @@ describe('HearingChangeReasonsComponent', () => {
 
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
 
-    expect(appConfig.logMessage).toHaveBeenCalledWith(
-      'Hearing internal name mismatch detected. HRM: A SHV: B for caseId: 1234567890123456'
-    );
+    expect(appConfig.logMessage).not.toHaveBeenCalled();
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
     expect(hearingsService.hearingRequestForSubmitValid).toBeTrue();
   });

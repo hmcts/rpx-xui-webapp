@@ -1,4 +1,5 @@
 import { APP_BASE_HREF } from '@angular/common';
+import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
@@ -20,6 +21,7 @@ describe('CaseTypesResolver', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([])],
       providers: [
+        { provide: HearingsTelemetryService, useValue: null },
         provideMockStore({ initialState }),
         CaseTypesResolver,
         LovRefDataService,

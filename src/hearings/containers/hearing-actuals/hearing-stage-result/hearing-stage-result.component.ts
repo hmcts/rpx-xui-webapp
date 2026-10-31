@@ -1,8 +1,9 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { HearingsService } from '../../../services/hearings.service';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
@@ -38,7 +39,8 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly location: Location,
     private readonly formBuilder: FormBuilder,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    @Optional() private readonly hearingsService?: HearingsService
   ) {
     this.route.params.subscribe((params) => {
       this.id = params.id;
@@ -112,6 +114,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
+    this.hearingsService?.recordAction('continue');
     this.submitted = true;
     if (this.hearingResult) {
       this.hearingStageResultForm.get('hearingResult').setValue(this.hearingResult);
@@ -139,10 +142,13 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
           caseId: this.hearingActualsMainModel.caseDetails.caseRef,
         })
       );
+    } else {
+      this.hearingsService?.recordValidationFailure('form', this.validationErrors.length);
     }
   }
 
   public onBack(): void {
+    this.hearingsService?.recordAction('back');
     this.location.back();
   }
 

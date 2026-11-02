@@ -7,7 +7,9 @@ import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { WALandingPageRoles } from '../../../work-allocation/models/common/service-config.model';
+import { WAVerificationService } from '../../../work-allocation/services';
 import * as fromActions from '../../store';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
   standalone: false,
@@ -17,7 +19,9 @@ export class ApplicationRoutingComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromActions.State>,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly waVerificationService: WAVerificationService,
+    private readonly loggerService: LoggerService
   ) {}
 
   public static defaultWAPage = '/work/my-work/list';
@@ -32,10 +36,11 @@ export class ApplicationRoutingComponent implements OnInit {
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     const waLandingPageRoles$ = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
-    const userAccess$ = combineLatest([userDetails$, waLandingPageRoles$]);
+    const waVerification$ = this.waVerificationService.getWAVerification();
+    const userAccess$ = combineLatest([userDetails$, waLandingPageRoles$, waVerification$]);
     userAccess$
       .pipe(
-        map(([userDetails, landingRoles]) => {
+        map(([userDetails, landingRoles, waVerification]) => {
           if (this.router.url !== '/') {
             return;
           }
@@ -43,10 +48,12 @@ export class ApplicationRoutingComponent implements OnInit {
             return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
           }
           if (!userDetails?.userInfo?.roles?.includes('pui-case-manager')) {
-            const userRoles = userDetails.userInfo.roles;
             let rolePresent = false;
-            for (let i = 0, len = landingRoles?.roles?.length; i < len; i++) {
-              if (userRoles.includes(landingRoles?.roles[i])) {
+
+            for (let i = 0, len = landingRoles?.roles?.length || 0; i < len; i++) {
+              const landingRole = landingRoles.roles[i];
+              if (AppUtils.checkRoleIsSupported(waVerification, landingRole, userDetails)) {
+                this.loggerService.log(`ApplicationRoutingComponent: matched landing role ${landingRole}`);
                 rolePresent = true;
                 break;
               }

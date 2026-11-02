@@ -27,24 +27,16 @@ variable "application_type" {
   description = "Type of Application Insights (Web/Other)"
 }
 
-variable "sampling_percentage" {
-  default     = 1
-  description = "Specifies the sampling percentage for Application Insights"
+variable "managed_redis_sku_name" {
+  default     = "Balanced_B0"
+  description = "The SKU to use for Azure Managed Redis."
+  type        = string
 }
 
-variable "redis_family" {
-  default     = "C"
-  description = "The SKU family/pricing group to use. Valid values are `C` (for Basic/Standard SKU family) and `P` (for Premium). Use P for higher availability, but beware it costs a lot more."
-}
-
-variable "redis_sku_name" {
-  default     = "Basic"
-  description = "The SKU of Redis to use. Possible values are `Basic`, `Standard` and `Premium`."
-}
-
-variable "redis_capacity" {
-  default     = "1"
-  description = "The size of the Redis cache to deploy. Valid values are 1, 2, 3, 4, 5"
+variable "private_dns_subscription_id" {
+  default     = "1baf5470-1c3e-40d3-a6f7-74bfbce4b348"
+  description = "Subscription ID containing the shared Azure Managed Redis private DNS zone."
+  type        = string
 }
 
 variable "welsh_reporting_enabled" {

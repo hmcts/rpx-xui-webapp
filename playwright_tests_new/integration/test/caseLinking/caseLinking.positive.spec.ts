@@ -9,7 +9,7 @@ import {
   CASE_LINKING_REASON_LABEL,
   CASE_LINKING_RELATED_CASE_REFERENCE,
   CASE_LINKING_SECOND_RELATED_CASE_REFERENCE,
-  CASE_LINKING_SECONDARY_REASON_CODE,
+  CASE_LINKING_HEARING_REASON_CODE,
   formatCaseReferenceForDisplay,
 } from '../../mocks/caseLinking.mock';
 
@@ -96,7 +96,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
         },
         {
           linkedCaseReference: CASE_LINKING_SECOND_RELATED_CASE_REFERENCE,
-          reasonCode: CASE_LINKING_SECONDARY_REASON_CODE,
+          reasonCode: CASE_LINKING_HEARING_REASON_CODE,
         },
       ],
     });

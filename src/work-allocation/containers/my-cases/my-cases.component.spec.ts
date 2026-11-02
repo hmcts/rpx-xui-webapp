@@ -13,12 +13,7 @@ import * as fromActions from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants, ListConstants, SortConstants } from '../../../work-allocation/components/constants';
 import { SortOrder } from '../../../work-allocation/enums';
-import {
-  CaseworkerDataService,
-  LocationDataService,
-  WASupportedJurisdictionsService,
-  WorkAllocationCaseService,
-} from '../../services';
+import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
 import { MyCasesComponent } from './my-cases.component';
 
@@ -41,12 +36,11 @@ describe('MyCasesComponent', () => {
     infoMessageCommService = {},
     sessionStorageService = {},
     alertService = {},
-    caseworkerDataService = {},
     loadingService = {},
     featureToggleService = {},
     locationDataService = {},
     waSupportedJurisdictionsService = {},
-    filterService = {},
+    filterService = { get: () => null },
     jurisdictionsService = {},
     allocateRoleService = {},
     httpClient = {},
@@ -58,12 +52,11 @@ describe('MyCasesComponent', () => {
     new MyCasesComponent(
       changeDetectorRef as ChangeDetectorRef,
       workAllocationTaskService as WorkAllocationCaseService,
-      filterService as FilterService,
+      filterService as unknown as FilterService,
       router as Router,
       infoMessageCommService as InfoMessageCommService,
       sessionStorageService as SessionStorageService,
       alertService as AlertService,
-      caseworkerDataService as CaseworkerDataService,
       loadingService as LoadingService,
       locationDataService as LocationDataService,
       featureToggleService as FeatureToggleService,
@@ -93,12 +86,11 @@ describe('MyCasesComponent', () => {
       };
 
       const userInfo = { roles: [UserRole.Admin], id: 'One' };
-      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
       const locations = { fields: [{ name: 'services', value: 'serviceValue' }] };
 
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
-      localStorageGetItemSpy.and.returnValue(JSON.stringify(locations));
-      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Admin);
+      const filterGetSpy = spyOn(component['filterService'], 'get').and.returnValue(locations as any);
+      spyOn(AppUtils, 'getUserRoleNames').and.returnValue([UserRole.Admin]);
 
       const actual = component.getSearchCaseRequestPagination();
 
@@ -120,7 +112,26 @@ describe('MyCasesComponent', () => {
       );
 
       mockSessionStorageService.getItem.calls.reset();
-      localStorageGetItemSpy.calls.reset();
+      expect(filterGetSpy).toHaveBeenCalledWith('my-work-filter');
+    });
+
+    it('does not use stored selections rejected by the ownership check', () => {
+      const filterService = jasmine.createSpyObj('FilterService', ['get']);
+      filterService.get.and.returnValue(null);
+      component = initializeComponent({ sessionStorageService: mockSessionStorageService, filterService });
+      component.sortedBy = { fieldName: 'fieldName', order: SortOrder.ASC };
+      mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify({ id: 'user-b', roles: [] }));
+      spyOn(AppUtils, 'getUserRoleNames').and.returnValue([]);
+      const localRead = spyOn(localStorage, 'getItem');
+
+      const request = component.getSearchCaseRequestPagination();
+
+      expect(request.search_parameters).toEqual([
+        { key: 'user', operator: 'IN', values: ['user-b'] },
+        { key: 'services', operator: 'IN', values: [] },
+        { key: 'locations', operator: 'IN', values: [] },
+      ]);
+      expect(localRead).not.toHaveBeenCalled();
     });
 
     it("should return a SearchCaseRequest with user 'uid'", () => {
@@ -137,8 +148,8 @@ describe('MyCasesComponent', () => {
       const userInfo = { roles: [UserRole.Admin], uid: 'UID' };
       const locations = { fields: [{ name: 'locations', value: [{ epimms_id: 'locationID' }] }] };
       mockSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify(userInfo));
-      spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(locations));
-      spyOn(AppUtils, 'getUserRole').and.returnValue(UserRole.Admin);
+      spyOn(component['filterService'], 'get').and.returnValue(locations as any);
+      spyOn(AppUtils, 'getUserRoleNames').and.returnValue([UserRole.Admin]);
 
       const actual = component.getSearchCaseRequestPagination();
 

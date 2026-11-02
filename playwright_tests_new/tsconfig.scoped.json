@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "files": [
+    "E2E/fixtures.ts",
+    "E2E/page-objects/pages/exui/caseDetails.po.ts",
+    "E2E/test/updateCase/updateCase.spec.ts",
+    "api/unit/case-details-case-action.unit.api.ts",
+    "api/unit/failure-diagnostics.unit.api.ts",
+    "api/unit/odhin-adaptive-reporter.unit.api.ts",
+    "api/unit/odhin-report-enhancer.unit.api.ts",
+    "api/unit/odhin-reporters.unit.api.ts",
+    "api/unit/search-case-session.unit.api.ts",
+    "api/unit/mock-session-route-closure.unit.api.ts",
+    "integration/helpers/index.ts",
+    "integration/helpers/integrationSessionUsers.helper.ts",
+    "integration/helpers/caseFileViewMockSession.helper.ts",
+    "integration/helpers/mockSessionRouteClosure.helper.ts",
+    "integration/mocks/caseFileView.mock.ts",
+    "integration/test/caseFileView/caseFileView.positive.spec.ts"
+  ],
+  "include": []
+}

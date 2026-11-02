@@ -2,7 +2,11 @@ import * as applicationinsights from 'applicationinsights';
 import type { Contracts } from 'applicationinsights';
 import * as express from 'express';
 import { getConfigValue, showFeature } from '../configuration/';
-import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
+import {
+  APP_INSIGHTS_CONNECTION_STRING,
+  APP_INSIGHTS_SAMPLING_PERCENTAGE,
+  FEATURE_APP_INSIGHTS_ENABLED,
+} from '../configuration/references';
 function fineGrainedSampling(envelope: Contracts.EnvelopeTelemetry): boolean {
   if (['RequestData', 'RemoteDependencyData'].includes(envelope.data.baseType)) {
     const name = (envelope.data.baseData.name || '').toLowerCase();
@@ -29,7 +33,7 @@ function fineGrainedSampling(envelope: Contracts.EnvelopeTelemetry): boolean {
 export let client: applicationinsights.TelemetryClient;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
-  applicationinsights
+  const appInsightsConfiguration = applicationinsights
     .setup(getConfigValue(APP_INSIGHTS_CONNECTION_STRING))
     .setAutoDependencyCorrelation(true)
     .setAutoCollectRequests(true)
@@ -38,11 +42,13 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     .setAutoCollectDependencies(true)
     .setAutoCollectConsole(true, true)
     .setUseDiskRetryCaching(true)
-    .setSendLiveMetrics(true)
-    .start();
+    .setSendLiveMetrics(true);
 
   client = applicationinsights.defaultClient;
+  client.config.samplingPercentage = getConfigValue<number>(APP_INSIGHTS_SAMPLING_PERCENTAGE);
   client.addTelemetryProcessor(fineGrainedSampling);
+  appInsightsConfiguration.start();
+  console.log(`Application Insights sampling percentage: ${client.config.samplingPercentage}%`);
   client.trackTrace({ message: 'App Insight Activated' });
 } else {
   client = null;

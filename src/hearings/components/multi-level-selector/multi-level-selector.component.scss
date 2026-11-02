@@ -9,10 +9,13 @@
   margin-top: 10px;
 }
 
+// The item wraps the checkbox row and its nested child selector, so it stays a plain block. govuk-frontend v5
+// lays checkboxes out as a flex row of input + label, which here is the inner top-level div.
 .govuk-checkboxes__item {
-  padding-left: 4px;
+  display: block;
 }
 
 .govuk-checkboxes__item_top-level {
-  padding-left: 40px;
+  display: flex;
+  position: relative;
 }

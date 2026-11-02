@@ -5,12 +5,15 @@ export interface KnownAxeViolation {
   id: string;
   description: string;
   maxNodes: number;
+  /** Optional exact target allow-list for rules whose known node is stable. */
+  targets?: string[];
 }
 
 export interface AxeViolationSummary {
   id: string;
   description: string;
   nodeCount: number;
+  targets?: string[];
 }
 
 interface AxeViolationLike {
@@ -21,11 +24,18 @@ interface AxeViolationLike {
 
 export function summarizeAxeViolations(violations: AxeViolationLike[]): AxeViolationSummary[] {
   return violations
-    .map((violation) => ({
-      id: violation.id,
-      description: violation.description,
-      nodeCount: violation.nodes?.length ?? 0,
-    }))
+    .map((violation) => {
+      const targets = violation.nodes?.flatMap((node) => {
+        const target = (node as { target?: unknown }).target;
+        return Array.isArray(target) ? target.map((item) => (typeof item === 'string' ? item : JSON.stringify(item))) : [];
+      });
+      return {
+        id: violation.id,
+        description: violation.description,
+        nodeCount: violation.nodes?.length ?? 0,
+        ...(targets?.length ? { targets } : {}),
+      };
+    })
     .sort(compareViolationSummary);
 }
 
@@ -37,7 +47,12 @@ export function findUnexpectedAxeViolations(
     const knownViolation = knownViolations.find(
       (known) => known.id === violation.id && known.description === violation.description
     );
-    return !knownViolation || violation.nodeCount > knownViolation.maxNodes;
+    return (
+      !knownViolation ||
+      violation.nodeCount > knownViolation.maxNodes ||
+      (knownViolation.targets &&
+        (!violation.targets || violation.targets.some((target) => !knownViolation.targets?.includes(target))))
+    );
   });
 }
 

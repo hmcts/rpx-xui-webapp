@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
@@ -106,9 +106,9 @@ describe('TaskAssignmentContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: {
+                taskAndCaseworker: {
                   task: { task: mockTasks[0] },
-                  caseworkers: [],
+                  caseworker: {},
                 },
                 ...TaskActionConstants.Reassign,
               },
@@ -186,7 +186,7 @@ describe('TaskAssignmentContainerComponent', () => {
       surname: 'Smith',
       email: 'john.smith@email.com',
       roles: [AppTestConstants.IA_JUDGE_ROLE],
-      roleCategory: 'JUDICIAL',
+      roleCategories: ['JUDICIAL'],
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     component.isCurrentUserJudicial();
@@ -211,9 +211,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -248,9 +248,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -263,7 +263,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'JUDICIAL',
+          roleCategories: ['JUDICIAL'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -277,9 +277,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -292,7 +292,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -306,9 +306,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -321,7 +321,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -335,9 +335,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -350,7 +350,7 @@ describe('TaskAssignmentContainerComponent', () => {
       };
       mockSessionStorageService.getItem.and.returnValue(
         JSON.stringify({
-          roleCategory: 'LEGAL_OPERATIONS',
+          roleCategories: ['LEGAL_OPERATIONS'],
         })
       );
       mockRouter.url = '/work/task1111111/reassign';
@@ -434,7 +434,7 @@ describe('TaskAssignmentContainerComponent', () => {
   });
 
   describe('showAssigneeColumn getter', () => {
-    it('should return true when showAssigneeColumn is true in history state', () => {
+    it('should return true when showAssigneeColumn is true in location state', () => {
       locationStub.getState.and.returnValue({ showAssigneeColumn: true });
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
@@ -442,7 +442,7 @@ describe('TaskAssignmentContainerComponent', () => {
       expect(showAssigneeColumn).toBe(true);
     });
 
-    it('should return false when showAssigneeColumn is false in history state', () => {
+    it('should return false when showAssigneeColumn is false in location state', () => {
       locationStub.getState.and.returnValue({ showAssigneeColumn: false });
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
@@ -450,7 +450,7 @@ describe('TaskAssignmentContainerComponent', () => {
       expect(showAssigneeColumn).toBe(false);
     });
 
-    it('should return false when showAssigneeColumn is not in history state', () => {
+    it('should return false when showAssigneeColumn is not in location state', () => {
       locationStub.getState.and.returnValue({});
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;

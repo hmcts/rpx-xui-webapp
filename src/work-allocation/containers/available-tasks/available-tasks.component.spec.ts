@@ -67,7 +67,7 @@ describe('AvailableTasksComponent', () => {
   const mockRouter = new MockRouter();
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getUsersFromServices']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getUsersByIdamId']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -126,7 +126,7 @@ describe('AvailableTasksComponent', () => {
         },
       ],
     };
-    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([]));
+    mockCaseworkerDataService.getUsersByIdamId.and.returnValue(of(null));
     mockFilterService.getStream.and.returnValue(of(filterFields));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     const tasks: Task[] = getMockTasks();
@@ -183,11 +183,11 @@ describe('AvailableTasksComponent', () => {
           expect(headerCells[i].textContent).toContain(fields[i].columnLabel);
         }
       } else {
-        expect(headerCells[i].textContent).toEqual('  ');
+        expect(headerCells[i].textContent.trim()).toEqual(fields[i].hiddenColumnLabel || '');
       }
     }
-    // Make sure Manage + heading is blank.
-    expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
+    // Make sure Manage + heading contains the visually-hidden "Manage" label.
+    expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('Manage');
   });
 
   it('should not show the footer when there are tasks', fakeAsync(() => {

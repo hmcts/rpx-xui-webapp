@@ -179,14 +179,300 @@ describe('getFeatureToggledUrl', () => {
   });
 });
 
-describe('getUserRole', () => {
+describe('getAMRoleBuckets', () => {
+  it('should separate matching role assignment names into AM roles', () => {
+    const result = AppUtils.getAMRoleBuckets(
+      ['caseworker-civil', 'task-supervisor', 'caseworker'],
+      [{ roleName: 'task-supervisor' } as any, { roleName: 'caseworker-civil' } as any]
+    );
+
+    expect(result).toEqual({
+      amRoles: ['caseworker-civil', 'task-supervisor'],
+      nonAMRoles: ['caseworker'],
+    });
+  });
+
+  it('should put unmatched user roles into non-AM roles', () => {
+    const result = AppUtils.getAMRoleBuckets(['caseworker-civil', 'caseworker-ia'], [{ roleName: 'task-supervisor' } as any]);
+
+    expect(result).toEqual({
+      amRoles: [],
+      nonAMRoles: ['caseworker-civil', 'caseworker-ia'],
+    });
+  });
+
+  it('should ignore role assignments without a role name', () => {
+    const result = AppUtils.getAMRoleBuckets(
+      ['caseworker-civil', 'caseworker-ia'],
+      [{ roleName: '' } as any, {} as any, { roleName: 'caseworker-ia' } as any]
+    );
+
+    expect(result).toEqual({
+      amRoles: ['caseworker-ia'],
+      nonAMRoles: ['caseworker-civil'],
+    });
+  });
+
+  it('should treat all user roles as non-AM roles when there are no role assignments', () => {
+    const result = AppUtils.getAMRoleBuckets(['caseworker-civil', 'caseworker-ia']);
+
+    expect(result).toEqual({
+      amRoles: [],
+      nonAMRoles: ['caseworker-civil', 'caseworker-ia'],
+    });
+  });
+});
+
+describe('getDistinctJurisdictionsForRoleAssignment', () => {
+  it('should return distinct jurisdictions from roles with the same category and type', () => {
+    const result = AppUtils.getDistinctJurisdictionsForRoleAssignment(
+      [
+        { jurisdiction: 'IA', roleCategory: 'LEGAL_OPERATIONS', roleType: 'CASE' } as any,
+        { jurisdiction: 'IA', roleCategory: 'LEGAL_OPERATIONS', roleType: 'CASE' } as any,
+        { jurisdiction: 'CIVIL', roleCategory: 'LEGAL_OPERATIONS', roleType: 'CASE' } as any,
+        { jurisdiction: 'SSCS', roleCategory: 'JUDICIAL', roleType: 'CASE' } as any,
+        { jurisdiction: 'PUBLICLAW', roleCategory: 'LEGAL_OPERATIONS', roleType: 'ORGANISATION' } as any,
+        { roleCategory: 'LEGAL_OPERATIONS', roleType: 'CASE' } as any,
+      ],
+      { roleCategory: 'LEGAL_OPERATIONS', roleType: 'CASE' } as any
+    );
+
+    expect(result).toEqual(['IA', 'CIVIL']);
+  });
+
+  it('should return an empty list when there are no matching category and type jurisdictions', () => {
+    const result = AppUtils.getDistinctJurisdictionsForRoleAssignment(
+      [
+        { jurisdiction: 'IA', roleCategory: 'JUDICIAL', roleType: 'CASE' } as any,
+        { jurisdiction: 'CIVIL', roleCategory: 'LEGAL_OPERATIONS', roleType: 'ORGANISATION' } as any,
+      ],
+      { roleCategory: 'LEGAL_OPERATIONS', roleType: 'CASE' } as any
+    );
+
+    expect(result).toEqual([]);
+  });
+});
+
+describe('checkRoleIsSupported', () => {
+  const waVerification = {
+    waSupportedCategories: [],
+    waSupportedRoleTypes: [],
+    waSupportedJurisdictions: [],
+  };
+
+  const userDetails = {
+    userInfo: {
+      roles: ['caseworker-civil', 'task-supervisor'],
+    },
+    roleAssignmentInfo: [{ roleName: 'task-supervisor' }],
+  } as UserDetails;
+
+  it('should return false when the landing role is not in the user roles', () => {
+    expect(AppUtils.checkRoleIsSupported(waVerification, 'caseworker-ia', userDetails)).toBe(false);
+  });
+
+  it('should return true when the landing role is in the user roles', () => {
+    expect(AppUtils.checkRoleIsSupported(waVerification, 'caseworker-civil', userDetails)).toBe(true);
+  });
+
+  it('should return true when the landing role is an AM role with supported role assignment details', () => {
+    const supportedWaVerification = {
+      waSupportedCategories: ['LEGAL_OPERATIONS'],
+      waSupportedRoleTypes: ['CASE'],
+      waSupportedJurisdictions: ['IA'],
+    };
+    const userDetailsWithSupportedAMRole = {
+      userInfo: {
+        roles: ['case-manager'],
+      },
+      roleAssignmentInfo: [
+        {
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'CASE',
+        },
+      ],
+    } as UserDetails;
+
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithSupportedAMRole)).toBe(true);
+  });
+
+  it('should return true for a config AM role when a later matching role assignment has a supported jurisdiction', () => {
+    const supportedWaVerification = {
+      waSupportedCategories: ['LEGAL_OPERATIONS'],
+      waSupportedRoleTypes: ['CASE'],
+      waSupportedJurisdictions: ['IA'],
+    };
+    const userDetailsWithSupportedAMRole = {
+      userInfo: {
+        roles: ['case-manager'],
+      },
+      roleAssignmentInfo: [
+        {
+          jurisdiction: 'CIVIL',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'CASE',
+        },
+        {
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'CASE',
+        },
+      ],
+    } as UserDetails;
+
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithSupportedAMRole)).toBe(true);
+  });
+
+  it('should return false when the AM role jurisdiction is not supported', () => {
+    const supportedWaVerification = {
+      waSupportedCategories: ['LEGAL_OPERATIONS'],
+      waSupportedRoleTypes: ['CASE'],
+      waSupportedJurisdictions: ['IA'],
+    };
+    const userDetailsWithUnsupportedAMRole = {
+      userInfo: {
+        roles: ['case-manager'],
+      },
+      roleAssignmentInfo: [
+        {
+          jurisdiction: 'CIVIL',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'CASE',
+        },
+      ],
+    } as UserDetails;
+
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(false);
+  });
+
+  it('should return false when the AM role category is not supported', () => {
+    const supportedWaVerification = {
+      waSupportedCategories: ['JUDICIAL'],
+      waSupportedRoleTypes: ['CASE'],
+      waSupportedJurisdictions: ['IA'],
+    };
+    const userDetailsWithUnsupportedAMRole = {
+      userInfo: {
+        roles: ['case-manager'],
+      },
+      roleAssignmentInfo: [
+        {
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'CASE',
+        },
+      ],
+    } as UserDetails;
+
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(false);
+  });
+
+  it('should return false when the AM role type is not supported', () => {
+    const supportedWaVerification = {
+      waSupportedCategories: ['LEGAL_OPERATIONS'],
+      waSupportedRoleTypes: ['ORGANISATION'],
+      waSupportedJurisdictions: ['IA'],
+    };
+    const userDetailsWithUnsupportedAMRole = {
+      userInfo: {
+        roles: ['case-manager'],
+      },
+      roleAssignmentInfo: [
+        {
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'CASE',
+        },
+      ],
+    } as UserDetails;
+
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(false);
+  });
+
+  it('should return true when a jurisdiction-less AM role has a supported jurisdiction from matching role assignments', () => {
+    const supportedWaVerification = {
+      waSupportedCategories: ['LEGAL_OPERATIONS'],
+      waSupportedRoleTypes: ['CASE'],
+      waSupportedJurisdictions: ['IA'],
+    };
+    const userDetailsWithJurisdictionlessAMRole = {
+      userInfo: {
+        roles: ['case-manager'],
+      },
+      roleAssignmentInfo: [
+        {
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'CASE',
+        },
+        {
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'other-role',
+          roleType: 'CASE',
+        },
+      ],
+    } as UserDetails;
+
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithJurisdictionlessAMRole)).toBe(
+      true
+    );
+  });
+
+  it('should return false when a jurisdiction-less AM role has no supported jurisdictions from matching role assignments', () => {
+    const supportedWaVerification = {
+      waSupportedCategories: ['LEGAL_OPERATIONS'],
+      waSupportedRoleTypes: ['CASE'],
+      waSupportedJurisdictions: ['IA'],
+    };
+    const userDetailsWithJurisdictionlessAMRole = {
+      userInfo: {
+        roles: ['case-manager'],
+      },
+      roleAssignmentInfo: [
+        {
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'case-manager',
+          roleType: 'CASE',
+        },
+        {
+          jurisdiction: 'CIVIL',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'other-role',
+          roleType: 'CASE',
+        },
+      ],
+    } as UserDetails;
+
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithJurisdictionlessAMRole)).toBe(
+      false
+    );
+  });
+
+  it('should not build AM role buckets when the landing role is not in the user roles', () => {
+    const getAMRoleBucketsSpy = spyOn(AppUtils, 'getAMRoleBuckets').and.callThrough();
+
+    AppUtils.checkRoleIsSupported(waVerification, 'caseworker-ia', userDetails);
+
+    expect(getAMRoleBucketsSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe('getUserRoleNames', () => {
   it('should return legal ops role if user has any legal ops role', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker-ia-caseofficer']);
-    expect(roleCategory).toBe(UserRole.LegalOps);
+    const roleNames = AppUtils.getUserRoleNames(['caseworker-ia-caseofficer']);
+    expect(roleNames).toEqual([UserRole.LegalOps]);
   });
 
   it('should return Judicial', () => {
-    const roleCategory = AppUtils.getUserRole([
+    const roleNames = AppUtils.getUserRoleNames([
       'caseworker',
       'caseworker-civil',
       'caseworker-civil-judge',
@@ -199,29 +485,31 @@ describe('getUserRole', () => {
       'caseworker-publiclaw-judiciary',
       'judiciary',
     ]);
-    expect(roleCategory).toBe(UserRole.Judicial);
+    expect(roleNames).toEqual([UserRole.Judicial, UserRole.LegalOps]);
   });
 
   it('should return judicial role if user has any judicial role', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker-ia-iacjudge']);
-    expect(roleCategory).toBe(UserRole.Judicial);
+    const roleNames = AppUtils.getUserRoleNames(['caseworker-ia-iacjudge']);
+    expect(roleNames).toEqual([UserRole.Judicial]);
   });
 
-  it('should return null if user has no judicial or legal ops role', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker']);
-    expect(roleCategory).toBeNull();
+  it('should return empty array if user has no mapped roles', () => {
+    const roleNames = AppUtils.getUserRoleNames(['caseworker']);
+    expect(roleNames).toEqual([]);
   });
 
   it('should return legal ops role if user is an task supervisor', () => {
-    const roleCategory = AppUtils.getUserRole(['task-supervisor']);
-    expect(roleCategory).toBe('legalops');
+    const roleNames = AppUtils.getUserRoleNames(['task-supervisor']);
+    expect(roleNames).toEqual([UserRole.LegalOps]);
   });
 
   it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker-ia-admofficer']);
-    expect(roleCategory).toBe('legalops');
+    const roleNames = AppUtils.getUserRoleNames(['caseworker-ia-admofficer']);
+    expect(roleNames).toEqual([UserRole.LegalOps]);
   });
+});
 
+describe('convertDomainToLabel', () => {
   it('should return the judicial domain from the user list', () => {
     const role = AppUtils.convertDomainToLabel(UserRole.Judicial);
     expect(role).toBe('Judicial');
@@ -270,18 +558,6 @@ describe('setThemeBasedOnUserType', () => {
 });
 
 describe('getFilterPersistenceByRoleType', () => {
-  it('should return local persistence if user is a judicial user', () => {
-    const persistence = AppUtils.getFilterPersistenceByRoleType(initialMockState.appConfig.userDetails);
-    expect(persistence).toEqual('local');
-  });
-
-  it('should return local persistence if user is a legalOps user', () => {
-    const userDetails = initialMockState.appConfig.userDetails;
-    userDetails.userInfo.roles = LEGAL_OPS_ROLE_LIST;
-    const persistence = AppUtils.getFilterPersistenceByRoleType(userDetails);
-    expect(persistence).toEqual('session');
-  });
-
   describe('isBookableAndJudicialRole', () => {
     it('should set true/false base on the user details', () => {
       const USER_2: UserDetails = {
@@ -303,7 +579,7 @@ describe('getFilterPersistenceByRoleType', () => {
           forename: 'Luke',
           surname: 'Wilson',
           email: 'lukesuperuserxui@mailnesia.com',
-          roleCategory: RoleCategory.JUDICIAL,
+          roleCategories: [RoleCategory.JUDICIAL],
           active: true,
           roles: ['caseworker', 'caseworker-sscs-judge', 'fee-paid-judge'],
         },
@@ -314,7 +590,7 @@ describe('getFilterPersistenceByRoleType', () => {
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
       USER_2.roleAssignmentInfo[0].bookable = false;
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
-      USER_2.userInfo.roleCategory = RoleCategory.LEGAL_OPERATIONS;
+      USER_2.userInfo.roleCategories = [RoleCategory.LEGAL_OPERATIONS];
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
     });
   });

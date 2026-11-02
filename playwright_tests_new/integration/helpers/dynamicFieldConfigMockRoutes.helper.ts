@@ -14,7 +14,7 @@ export async function openDynamicFieldConfigJourney(page: Page, options: { skipS
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
   }, userDetails.userInfo);
 
-  await page.route('**/api/user/details*', async (route) => {
+  await page.route('**/api/user/o/userinfo*', async (route) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(userDetails) });
   });
   await page.route(`**/data/internal/case-types/${CASE_TYPE}/event-triggers/createCase*`, async (route) => {

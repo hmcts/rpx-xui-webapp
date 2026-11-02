@@ -103,7 +103,7 @@ test.describe('task list bootstrap routes helper', { tag: '@svc-internal' }, () 
 
     await setupTaskListBootstrapRoutes(fakePage as never, ['IA']);
 
-    const userDetailsRoute = getRegisteredRoute(fakePage.routes, '**/api/user/details*');
+    const userDetailsRoute = getRegisteredRoute(fakePage.routes, '**/api/user/o/userinfo*');
     const roleCategoriesRoute = getRegisteredRoute(fakePage.routes, '**/api/wa-supported-role-details/getRoleCategories*');
     const roleTypesRoute = getRegisteredRoute(fakePage.routes, '**/api/wa-supported-role-details/getRoleTypes*');
 

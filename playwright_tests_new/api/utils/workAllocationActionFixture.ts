@@ -236,7 +236,7 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
         return { status: response.status(), data: response.status() === 200 ? await response.json() : {} };
       }
     );
-    const userResponse = await context.get('/api/user/details?refreshRoleAssignments=true');
+    const userResponse = await context.get('/api/user/o/userinfo?refreshRoleAssignments=true');
     if (userResponse.status() !== 200) throw new Error(`WA fixture actor lookup failed (HTTP ${userResponse.status()}).`);
     const userDetails = await userResponse.json();
     requireAuthenticatedUser(userDetails, credentials.email);
@@ -248,7 +248,7 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
       const assigneeSession = await ensureSessionCookies(assigneeUserIdentifier);
       const assigneeContext = await request.newContext({ baseURL: baseUrl, storageState: assigneeSession.storageFile });
       try {
-        const response = await assigneeContext.get('/api/user/details?refreshRoleAssignments=true');
+        const response = await assigneeContext.get('/api/user/o/userinfo?refreshRoleAssignments=true');
         if (response.status() !== 200) throw new Error(`WA assignment target lookup failed (HTTP ${response.status()}).`);
         assigneeDetails = await response.json();
       } finally {

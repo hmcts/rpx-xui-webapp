@@ -56,7 +56,7 @@ export async function setupRolesAndAccessMockRoutes(
     });
   });
 
-  await page.route('**/api/user/details*', async (route) => {
+  await page.route('**/api/user/o/userinfo*', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

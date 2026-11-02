@@ -9,7 +9,7 @@ export async function getDetails(idamUrl: string, token: string = null) {
   // lets try and see if we have these already
 
   const options = { headers: { Authorization: `Bearer ${token}` } };
-  const response = await http.get(`${idamUrl}/details`, options);
+  const response = await http.get(`${idamUrl}/o/userinfo`, options);
   return response.data;
 }
 

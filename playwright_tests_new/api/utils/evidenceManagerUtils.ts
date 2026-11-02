@@ -154,7 +154,7 @@ export async function buildBookmark(apiClient: ApiClient, docId: string, created
 }
 
 export async function fetchUserId(apiClient: ApiClient): Promise<string | undefined> {
-  const res = await apiClient.get('api/user/details', {
+  const res = await apiClient.get('api/user/o/userinfo', {
     throwOnError: false,
   });
   return resolveUserInfoId(res.data as { userInfo?: { uid?: string; id?: string } });

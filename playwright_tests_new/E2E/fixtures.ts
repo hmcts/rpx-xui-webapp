@@ -1,9 +1,13 @@
 import { test as baseTest, type Request, type Response, type TestInfo } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
+import { mkdir, writeFile } from 'node:fs/promises';
 import getPort from 'get-port';
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
+import { isNetworkTransportError } from '../common/failureClassification.js';
 import {
   acquireIdentityLease,
   resolveIdentityLeaseTestTimeouts,
@@ -11,6 +15,14 @@ import {
   type IdentityLease,
 } from '../common/identityLease';
 import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
+
+const require = createRequire(import.meta.url);
+const { buildFailureContext, redactText, redactUrl, redactValue } = require('../common/reporters/failure-context.cjs') as {
+  buildFailureContext: (input: Record<string, unknown>) => Record<string, unknown>;
+  redactText: (value: unknown) => string;
+  redactUrl: (value: unknown) => string;
+  redactValue: (value: unknown) => unknown;
+};
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
 
@@ -20,6 +32,7 @@ type FailureType =
   | 'DOWNSTREAM_API_4XX'
   | 'SLOW_API_RESPONSE'
   | 'NETWORK_TIMEOUT'
+  | 'NETWORK_ERROR'
   | 'IDENTITY_SCHEDULING_TIMEOUT'
   | 'TIMEOUT_NO_API_ACTIVITY'
   | 'GLOBAL_TIMEOUT_UI_STALL'
@@ -65,6 +78,7 @@ interface ExecutionSignals {
   mainFrameNavigationCount: number;
   totalRequestsObserved: number;
   backendRequestsObserved: number;
+  finalScreenshotError?: string;
 }
 
 interface ErrorContext {
@@ -130,7 +144,7 @@ const TRUTHY_ENV_VALUES = new Set(['1', 'true', 'yes', 'on']);
  * @returns URL without query parameters
  */
 function sanitizeUrl(url: string): string {
-  return url.split('?')[0];
+  return redactUrl(url);
 }
 
 function stripAnsi(value: string): string {
@@ -277,6 +291,13 @@ function buildTopSuspect(
     return timeoutSuspects[0];
   }
 
+  if (failureType === 'NETWORK_ERROR') {
+    const request = failedRequests.find((entry) => isNetworkTransportError(entry.errorText));
+    if (request) {
+      return `${request.method} ${request.url} -> NETWORK_ERROR (${stripAnsi(request.errorText).substring(0, 120)})`;
+    }
+  }
+
   const summarizedFailedCalls = summarizeApiFailures(serverErrors, clientErrors, failedRequests);
   if (summarizedFailedCalls.length > 0) {
     return summarizedFailedCalls[0];
@@ -332,6 +353,9 @@ function deriveFailureSource(failureType: FailureType, error: string, topSuspect
   }
   if (failureType === 'NETWORK_TIMEOUT' || failureType === 'SLOW_API_RESPONSE') {
     return describeApiFailureSource(topSuspect) ?? 'Backend/network dependency';
+  }
+  if (failureType === 'NETWORK_ERROR') {
+    return describeApiFailureSource(topSuspect) ?? 'Backend/network transport';
   }
   return 'Test/application behaviour';
 }
@@ -425,6 +449,9 @@ function deriveBackendWaitFlag(
 ): 'yes' | 'no' {
   if (failureType === 'GLOBAL_TIMEOUT_UI_STALL') {
     return 'no';
+  }
+  if (failureType === 'NETWORK_ERROR') {
+    return 'yes';
   }
   const hasTimeoutFailedRequest = failedRequests.some((request) => /timeout|timed out|ETIMEDOUT/i.test(request.errorText));
   const hasBackendFailureSignal =
@@ -529,6 +556,9 @@ function derivePhaseMarker(
   }
   if (failureType === 'DOWNSTREAM_API_4XX') {
     return 'backend-4xx';
+  }
+  if (failureType === 'NETWORK_ERROR') {
+    return 'backend-network-error';
   }
   if (failureType === 'AUTHENTICATION_SESSION_UNAVAILABLE') {
     return 'session-capture-authentication';
@@ -831,6 +861,9 @@ function deriveLikelyRootCause({
   if (failureType === 'DOWNSTREAM_API_4XX') {
     return `Downstream 4xx response likely blocked workflow (${topSuspect})`;
   }
+  if (failureType === 'NETWORK_ERROR') {
+    return `Backend transport failure observed (${topSuspect})`;
+  }
 
   if (isPageClosed && testStatus === 'timedOut') {
     return 'Page was closed because the test exceeded the global timeout budget';
@@ -905,6 +938,9 @@ function classifyFailure({
     if (directCcdSetupFailureStatus >= 400) {
       return 'DOWNSTREAM_API_4XX';
     }
+  }
+  if (failedRequests.some((request) => isNetworkTransportError(request.errorText))) {
+    return 'NETWORK_ERROR';
   }
   if (serverErrors.length > 0) {
     return 'DOWNSTREAM_API_5XX';
@@ -1041,7 +1077,7 @@ function createRequestFailedHandler(failedRequests: FailedRequest[], maxTracked:
       failedRequests.push({
         url: sanitizeUrl(url),
         method: request.method(),
-        errorText: failure?.errorText ?? 'Unknown request failure',
+        errorText: redactText(failure?.errorText ?? 'Unknown request failure'),
         initiatedFrom,
         resourceType,
       });
@@ -1068,6 +1104,12 @@ interface FailureDiagnosisContext {
   networkTimeout: boolean;
   slowThreshold: number;
   executionSignals: ExecutionSignals;
+}
+
+const failureDiagnosisStatuses = new Set<TestInfo['status']>(['failed', 'timedOut', 'interrupted']);
+
+function shouldAttachFailureDiagnosis(status: TestInfo['status']): boolean {
+  return failureDiagnosisStatuses.has(status);
 }
 
 /**
@@ -1130,23 +1172,34 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   const executionSignalSummary = summarizeExecutionSignals(executionSignals);
   const failureSource = deriveFailureSource(failureType, error, topSuspect);
   const slowEndpointDetails = buildBoundedApiDetails(slowEndpointSummary, MAX_API_ERRORS_DETAILS_CHARS);
+  const safeFailureSource = redactText(failureSource);
+  const safePhaseMarker = redactText(phaseMarker);
+  const safeSetupMarker = redactText(setupMarker);
+  const safeBackendWait = redactText(backendWait);
+  const safeLikelyRootCause = redactText(likelyRootCause);
+  const safeFailureLocation = redactText(failureLocation);
+  const safeExecutionSignalSummary = redactText(executionSignalSummary);
+  const safeActionableError = redactText(actionableError);
+  const safeTopSuspect = redactText(topSuspect);
+  const safeSlowEndpointDetails = redactText(slowEndpointDetails);
+  const safeTimeoutSummary = redactText(timeoutSummary);
 
   const diagnosis = [
-    `Test failed: ${testInfo.title}`,
+    `Test failed: ${redactText(testInfo.title)}`,
     `Status: ${testStatus}`,
     `Failure type: ${failureType}`,
-    `Failure source: ${failureSource}`,
-    `Phase marker: ${phaseMarker}`,
-    `Setup marker: ${setupMarker}`,
-    `Backend wait: ${backendWait}`,
-    `Likely root cause: ${likelyRootCause}`,
-    `Failure location: ${failureLocation}`,
-    `Execution signals: ${executionSignalSummary}`,
-    actionableError ? `Actionable error: ${actionableError}` : '',
-    primaryError ? `Error: ${primaryError.substring(0, 300)}` : '',
+    `Failure source: ${safeFailureSource}`,
+    `Phase marker: ${safePhaseMarker}`,
+    `Setup marker: ${safeSetupMarker}`,
+    `Backend wait: ${safeBackendWait}`,
+    `Likely root cause: ${safeLikelyRootCause}`,
+    `Failure location: ${safeFailureLocation}`,
+    `Execution signals: ${safeExecutionSignalSummary}`,
+    safeActionableError ? `Actionable error: ${safeActionableError}` : '',
+    primaryError ? `Error: ${redactText(primaryError)}` : '',
     `API summary: total=${apiErrors.length + failedRequests.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, requestfailed=${failedRequests.length}, slow>${slowThreshold}ms=${slowCalls.length}`,
-    slowEndpointDetails ? `Slow endpoint summary: ${slowEndpointDetails}` : '',
-    timeoutSummary ? `Timeout suspects: ${timeoutSummary}` : '',
+    safeSlowEndpointDetails ? `Slow endpoint summary: ${safeSlowEndpointDetails}` : '',
+    safeTimeoutSummary ? `Timeout suspects: ${safeTimeoutSummary}` : '',
   ]
     .filter(Boolean)
     .join('\n');
@@ -1156,20 +1209,20 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   // Surface to Odhín report as annotations
   testInfo.annotations.push(
     { type: 'Failure type', description: failureType },
-    { type: 'Failure source', description: failureSource },
-    { type: 'Phase marker', description: phaseMarker },
-    { type: 'Setup marker', description: setupMarker },
-    { type: 'Backend wait', description: backendWait },
-    { type: 'Likely root cause', description: likelyRootCause },
-    { type: 'Failure location', description: failureLocation },
-    { type: 'Execution signals', description: executionSignalSummary },
-    { type: 'Top suspect', description: topSuspect }
+    { type: 'Failure source', description: safeFailureSource },
+    { type: 'Phase marker', description: safePhaseMarker },
+    { type: 'Setup marker', description: safeSetupMarker },
+    { type: 'Backend wait', description: safeBackendWait },
+    { type: 'Likely root cause', description: safeLikelyRootCause },
+    { type: 'Failure location', description: safeFailureLocation },
+    { type: 'Execution signals', description: safeExecutionSignalSummary },
+    { type: 'Top suspect', description: safeTopSuspect }
   );
   if (actionableError) {
-    testInfo.annotations.push({ type: 'Actionable error', description: actionableError });
+    testInfo.annotations.push({ type: 'Actionable error', description: safeActionableError });
   }
 
-  if (testInfo.error && !testInfo.error.message.startsWith('[Failure source:')) {
+  if (testInfo.error && !testInfo.error.message?.startsWith('[Failure source:')) {
     testInfo.error.message = `[Failure source: ${failureSource}]\n${testInfo.error.message}`;
   }
 
@@ -1212,31 +1265,64 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     contentType: 'text/plain',
   });
 
-  // Also attach as JSON for programmatic analysis
+  // Persist a redacted file in this test's isolated output directory for Jenkins archiving.
+  const failureData = JSON.stringify(
+    {
+      failureType,
+      phaseMarker: safePhaseMarker,
+      setupMarker: safeSetupMarker,
+      backendWait: safeBackendWait,
+      likelyRootCause: safeLikelyRootCause,
+      failureLocation: safeFailureLocation,
+      actionableError: safeActionableError,
+      executionSignals: redactValue(executionSignals),
+      topSuspect: safeTopSuspect,
+      slowEndpointSummary: slowEndpointSummary.map(redactText),
+      apiErrors: redactValue(apiErrors),
+      failedRequests: redactValue(failedRequests),
+      slowCalls: redactValue(slowCalls),
+      networkTimeout,
+      timestamp: new Date().toISOString(),
+    },
+    null,
+    2
+  );
+  const failureDataPath = testInfo.outputPath('failure-data.json');
+  await mkdir(dirname(failureDataPath), { recursive: true });
+  await writeFile(failureDataPath, failureData, 'utf8');
   await testInfo.attach('failure-data.json', {
+    path: failureDataPath,
+    contentType: 'application/json',
+  });
+
+  await testInfo.attach('failure-context.json', {
     body: JSON.stringify(
-      {
-        failureType,
-        phaseMarker,
-        setupMarker,
-        backendWait,
-        likelyRootCause,
+      buildFailureContext({
+        testInfo,
+        status: testStatus,
+        retry: testInfo.retry,
+        project: testInfo.project.name,
+        worker: testInfo.workerIndex,
+        annotations: testInfo.annotations,
         failureLocation,
         actionableError,
         executionSignals,
-        topSuspect,
-        slowEndpointSummary,
-        apiErrors,
-        failedRequests,
-        slowCalls,
-        networkTimeout,
-        timestamp: new Date().toISOString(),
-      },
+        likelyRootCause,
+      }),
       null,
       2
     ),
     contentType: 'application/json',
   });
+}
+
+async function attachFailureDiagnosisIfNeeded(
+  testInfo: TestInfo,
+  buildContext: () => Omit<FailureDiagnosisContext, 'testInfo' | 'testStatus'>
+): Promise<void> {
+  if (shouldAttachFailureDiagnosis(testInfo.status)) {
+    await attachFailureDiagnosis({ testInfo, testStatus: testInfo.status, ...buildContext() });
+  }
 }
 
 // Gather all fixture types into a common type
@@ -1376,20 +1462,24 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
       }
     }
 
+    let finalScreenshotError = '';
     if (finalScreenshotEnabled && !page.isClosed() && testInfo.status !== 'skipped') {
-      const finalScreenshot = await page.screenshot({ fullPage: true });
-      await testInfo.attach('final-state.png', {
-        body: finalScreenshot,
-        contentType: 'image/png',
-      });
+      try {
+        const finalScreenshot = await page.screenshot({ fullPage: true });
+        await testInfo.attach('final-state.png', {
+          body: finalScreenshot,
+          contentType: 'image/png',
+        });
+      } catch (error) {
+        finalScreenshotError = redactText(error instanceof Error ? error.message : error);
+        logger.warn('Optional final screenshot capture failed', { error: finalScreenshotError });
+      }
     }
 
     // On test failure, classify the root cause and attach diagnosis
-    if (testInfo.status === 'failed' || testInfo.status === 'timedOut') {
+    await attachFailureDiagnosisIfNeeded(testInfo, () => {
       const errorContext = collectErrorContext(testInfo);
-      await attachFailureDiagnosis({
-        testInfo,
-        testStatus: testInfo.status,
+      return {
         error: errorContext.diagnosticText,
         primaryError: errorContext.primaryMessage,
         actionableError: errorContext.actionableLine,
@@ -1404,9 +1494,10 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
           mainFrameNavigationCount,
           totalRequestsObserved,
           backendRequestsObserved,
+          finalScreenshotError,
         },
-      });
-    }
+      };
+    });
 
     if (liveTimerEnabled) {
       const elapsedMs = Date.now() - testStartEpochMs;
@@ -1435,6 +1526,11 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
 export const expect = test.expect;
 
 export const __test__ = {
+  shouldAttachFailureDiagnosis: (status: TestInfo['status']) => shouldAttachFailureDiagnosis(status),
+  attachFailureDiagnosisIfNeeded: (
+    testInfo: TestInfo,
+    buildContext: () => Omit<FailureDiagnosisContext, 'testInfo' | 'testStatus'>
+  ) => attachFailureDiagnosisIfNeeded(testInfo, buildContext),
   classifyFailure: (context: ClassifyFailureContext) => classifyFailure(context),
   deriveFailureSource: (failureType: FailureType, error: string, topSuspect: string) =>
     deriveFailureSource(failureType, error, topSuspect),

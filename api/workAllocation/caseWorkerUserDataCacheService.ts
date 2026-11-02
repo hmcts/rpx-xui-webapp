@@ -360,7 +360,8 @@ export function getUniqueUsersFromResponse(userResponse: StaffUserDetails[]): St
               baseLocationList.push(firstBaseLocation);
             }
           }
-          userServices.push(matchingUser.ccd_service_name);
+          // EXUI-5291 - Services added must be capitalized
+          userServices.push(matchingUser.ccd_service_name.toUpperCase());
           // will add more combined base locations
           if (matchingUser.staff_profile.base_location?.length > 0) {
             const newBaseLocation = getNewBaseLocation(baseLocationList, matchingUser);

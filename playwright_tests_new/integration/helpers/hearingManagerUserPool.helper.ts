@@ -26,6 +26,11 @@ function hasSupportedRuntimeCredentials(userIdentifier: string, env: EnvMap): us
 }
 
 function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = process.env): number {
+  const forcedPoolIndex = Number(env.PW_HEARING_MANAGER_POOL_INDEX);
+  if (Number.isInteger(forcedPoolIndex) && forcedPoolIndex >= 0) {
+    return forcedPoolIndex;
+  }
+
   if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) >= 0) {
     return Number(source?.parallelIndex);
   }
@@ -52,12 +57,15 @@ export function resolveHearingManagerUserIdentifier(
   env: EnvMap = process.env
 ): HearingManagerUserIdentifier {
   if (userIdentifier !== HEARING_MANAGER_CR84_ON_USER && userIdentifier !== HEARING_MANAGER_CR84_OFF_USER) {
+    if (!hasSupportedRuntimeCredentials(userIdentifier, env)) {
+      throw new Error(`No configured hearing manager identity is available for ${userIdentifier}.`);
+    }
     return userIdentifier;
   }
 
   const configuredUserIdentifiers = getConfiguredHearingManagerUserIdentifiers(userIdentifier, env);
   if (configuredUserIdentifiers.length === 0) {
-    return userIdentifier;
+    throw new Error(`No configured hearing manager identity is available for ${userIdentifier}.`);
   }
 
   return configuredUserIdentifiers[resolveParallelIndex(source, env) % configuredUserIdentifiers.length];
@@ -68,11 +76,15 @@ export function resolveHearingManagerSessionCandidates(
   source?: ParallelIndexSource,
   env: EnvMap = process.env
 ): HearingManagerUserIdentifier[] {
-  const selected = resolveHearingManagerUserIdentifier(userIdentifier, source, env);
   if (userIdentifier !== HEARING_MANAGER_CR84_ON_USER && userIdentifier !== HEARING_MANAGER_CR84_OFF_USER) {
-    return [selected];
+    return [userIdentifier];
   }
 
   const configuredUserIdentifiers = getConfiguredHearingManagerUserIdentifiers(userIdentifier, env);
-  return configuredUserIdentifiers.length > 0 ? Array.from(new Set([selected, ...configuredUserIdentifiers])) : [userIdentifier];
+  if (configuredUserIdentifiers.length === 0) {
+    return [userIdentifier];
+  }
+
+  const selected = resolveHearingManagerUserIdentifier(userIdentifier, source, env);
+  return [selected, ...configuredUserIdentifiers.filter((candidate) => candidate !== selected)];
 }

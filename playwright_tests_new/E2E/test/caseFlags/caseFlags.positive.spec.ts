@@ -117,7 +117,7 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
   });
 });
 
-test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
+test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags', '@nightly'] }, () => {
   test.describe.configure({ timeout: PARTY_LEVEL_SUITE_TIMEOUT_MS });
   const testValue = faker.person.firstName();
   let caseNumber: string;

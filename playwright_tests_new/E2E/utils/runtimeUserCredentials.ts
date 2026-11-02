@@ -28,6 +28,10 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'WA_SOLICITOR_USERNAME',
     password: 'WA_SOLICITOR_PASSWORD',
   },
+  WA_TASK_ADMIN: {
+    username: 'WA_TASK_ADMIN_USERNAME',
+    password: 'WA_TASK_ADMIN_PASSWORD',
+  },
   WA_SOLICITOR: {
     username: 'WA_SOLICITOR_USERNAME',
     password: 'WA_SOLICITOR_PASSWORD',

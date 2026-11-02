@@ -185,7 +185,7 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
         id: CREATED_CASE_ID,
         caseId: CREATED_CASE_ID,
         jurisdiction: CREATED_CASE_JURISDICTION,
-        caseType: CREATED_CASE_TYPE,
+        case_type: CREATED_CASE_TYPE,
       }),
     });
   });

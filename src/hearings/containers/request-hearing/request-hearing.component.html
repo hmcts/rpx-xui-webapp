@@ -20,14 +20,21 @@
           <ul class="govuk-list govuk-error-summary__list">
             <li>
               <span id="error-answers-not-correct" class="govuk-error-message">
-                {{ validationErrors.message | rpxTranslate }} <a href="/">Reload the application</a>
+                {{ validationErrors.message[0] | rpxTranslate }} <a href="/">{{ validationErrors.message[1] | rpxTranslate }}</a>
+                {{ validationErrors.message[2] | rpxTranslate }}
               </span>
             </li>
           </ul>
         </div>
       </div>
       <router-outlet></router-outlet>
-      <button *ngIf="isChildPage" class="govuk-button" data-module="govuk-button" (click)="onContinue()">
+      <button
+        *ngIf="isChildPage"
+        [disabled]="buttonDisabled(action.CONTINUE)"
+        class="govuk-button"
+        data-module="govuk-button"
+        (click)="onContinue()"
+      >
         {{ 'Continue' | rpxTranslate }}
       </button>
       <button

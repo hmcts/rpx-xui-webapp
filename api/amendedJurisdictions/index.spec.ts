@@ -175,4 +175,33 @@ describe('Amended Jurisdiction', () => {
       expect(() => amendedJurisdictions.checkCachedJurisdictions(proxyRes, req)).to.throw();
     });
   });
+
+  describe('rewriteCaseworkerUid', () => {
+    it('replaces the UID placeholder with the authenticated user UID', () => {
+      req.session.passport = { user: { userinfo: { id: 'user-id', uid: 'user/uid' } } };
+      const proxyRequest = { path: '/aggregated/caseworkers/:uid/jurisdictions?access=read' };
+
+      amendedJurisdictions.rewriteCaseworkerUid(proxyRequest, req);
+
+      expect(proxyRequest.path).to.equal('/aggregated/caseworkers/user%2Fuid/jurisdictions?access=read');
+    });
+
+    it('falls back to the authenticated user ID when UID is unavailable', () => {
+      req.session.passport = { user: { userinfo: { id: 'user-id' } } };
+      const proxyRequest = { path: '/aggregated/caseworkers/:uid/jurisdictions?access=read' };
+
+      amendedJurisdictions.rewriteCaseworkerUid(proxyRequest, req);
+
+      expect(proxyRequest.path).to.equal('/aggregated/caseworkers/user-id/jurisdictions?access=read');
+    });
+
+    it('does not change a request without an authenticated user ID', () => {
+      req.session.passport = { user: { userinfo: {} } };
+      const proxyRequest = { path: '/aggregated/caseworkers/:uid/jurisdictions?access=read' };
+
+      amendedJurisdictions.rewriteCaseworkerUid(proxyRequest, req);
+
+      expect(proxyRequest.path).to.equal('/aggregated/caseworkers/:uid/jurisdictions?access=read');
+    });
+  });
 });

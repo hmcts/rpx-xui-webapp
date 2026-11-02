@@ -101,6 +101,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectLocation=search',
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
+      title: 'Location',
       enableAddButton: false,
       type: 'find-location',
       radioSelectionChange: 'selectLocation=search',
@@ -181,6 +182,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelectedError: null,
       enableCondition: 'selectPerson=Specific person',
       findPersonField: 'person',
+      title: 'Role type',
       disabledText: 'Select a role type',
       type: 'select',
     };

@@ -7,6 +7,7 @@ import { test, expect } from './fixtures';
 import { expectStatus, guardedRequest, StatusSets } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
+import { buildTaskSearchRequest } from './utils/work-allocation';
 import { z } from 'zod';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
@@ -47,10 +48,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
   }) => {
     const apiClient = await apiClientFor('waSolicitor');
     // Given: A task search request for MyTasks view
-    const searchRequest = {
-      view: 'MyTasks',
-      searchRequest: [],
-    };
+    const searchRequest = buildTaskSearchRequest('MyTasks', { states: ['assigned'] });
 
     // When: Searching for tasks
     const response = await apiClient.post('workallocation/task', {
@@ -58,29 +56,11 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
       throwOnError: false,
     });
 
-    // Then: Response status is within expected range
-    expectStatus(response.status, [200, 401, 403, 500, 502]);
-
-    // And: Response structure matches TaskList contract when successful
-    if (response.status === 200) {
-      expectContract(response.data, WorkAllocationSchemas.TaskList, {
-        context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
-      });
-
-      // And: tasks array is present
-      const taskListData = response.data as { tasks: unknown[] };
-      expect(taskListData).toHaveProperty('tasks');
-      expect(Array.isArray(taskListData.tasks)).toBe(true);
-
-      // And: Each task has required fields
-      if (taskListData.tasks.length > 0) {
-        const firstTask = taskListData.tasks[0] as { id: unknown; task_state: unknown };
-        expect(firstTask).toHaveProperty('id');
-        expect(firstTask).toHaveProperty('task_state');
-        expect(typeof firstTask.id).toBe('string');
-        expect(typeof firstTask.task_state).toBe('string');
-      }
-    }
+    // Then: The contract endpoint succeeds and returns a valid TaskList
+    expectStatus(response.status, [200]);
+    expectContract(response.data, WorkAllocationSchemas.TaskList, {
+      context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
+    });
   });
 
   test('GET /workallocation/task/types-of-work contract: returns array of work type classifications', async ({

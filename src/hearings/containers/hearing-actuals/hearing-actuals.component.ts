@@ -28,6 +28,11 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
       .pipe(withLatestFrom(this.store.pipe(select(fromHearingStore.getHearingValuesCaseInfo))))
       .subscribe(([params, caseInfo]) => {
         this.caseInfo = caseInfo;
+        this.store.dispatch(new hearingRequestActions.ResetHearingRequest());
+        this.store.dispatch(new fromHearingStore.ResetHearingRequestToCompare());
+        this.store.dispatch(new fromHearingStore.ResetHearingActuals());
+        this.store.dispatch(new fromHearingStore.ResetHearingLinks());
+        this.store.dispatch(new fromHearingStore.ResetHearingConditions());
         const caseRef = caseInfo?.caseReference;
         this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '', caseRef }));
         this.store.dispatch(new hearingActualsActions.GetHearingActuals({ id: params.id, caseRef }));
@@ -64,7 +69,10 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
-    this.store.dispatch(new hearingActualsActions.ResetHearingActuals());
     this.store.dispatch(new hearingRequestActions.ResetHearingRequest());
+    this.store.dispatch(new fromHearingStore.ResetHearingRequestToCompare());
+    this.store.dispatch(new hearingActualsActions.ResetHearingActuals());
+    this.store.dispatch(new fromHearingStore.ResetHearingLinks());
+    this.store.dispatch(new fromHearingStore.ResetHearingConditions());
   }
 }

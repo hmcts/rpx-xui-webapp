@@ -203,6 +203,53 @@ describe('Hearing Values Reducer', () => {
         const hearingsState2 = fromHearingValuesReducer.hearingValuesReducer(currState, action2);
         expect(hearingsState2).toEqual(finalState);
       });
+
+      it('should replace Hearing A values with Hearing B values', () => {
+        const hearingA = { caseId: 'CASE-A' } as ServiceHearingValuesModel;
+        const hearingB = { caseId: 'CASE-B' } as ServiceHearingValuesModel;
+
+        const hearingAState = fromHearingValuesReducer.hearingValuesReducer(
+          fromHearingValuesReducer.initialHearingValuesState,
+          new fromHearingValuesActions.LoadHearingValuesSuccess(hearingA)
+        );
+        const hearingBState = fromHearingValuesReducer.hearingValuesReducer(
+          hearingAState,
+          new fromHearingValuesActions.LoadHearingValuesSuccess(hearingB)
+        );
+
+        expect(hearingBState.serviceHearingValuesModel).toEqual(hearingB);
+        expect(hearingBState.serviceHearingValuesModel).not.toEqual(hearingA);
+      });
+
+      it('should clear old hearing values when the new hearing load fails', () => {
+        const currentCase = {
+          jurisdictionId: 'CIVIL',
+          caseReference: 'CASE-B',
+          caseType: 'CIVIL',
+        };
+        const hearingA = { caseId: 'CASE-A' } as ServiceHearingValuesModel;
+        const stateWithOldValues = fromHearingValuesReducer.hearingValuesReducer(
+          {
+            ...fromHearingValuesReducer.initialHearingValuesState,
+            caseInfo: currentCase,
+          },
+          new fromHearingValuesActions.LoadHearingValuesSuccess(hearingA)
+        );
+        const failure = {
+          status: 500,
+          errors: null,
+          message: 'Unable to load Hearing B',
+        };
+
+        const failedState = fromHearingValuesReducer.hearingValuesReducer(
+          stateWithOldValues,
+          new fromHearingValuesActions.LoadHearingValuesFailure(failure)
+        );
+
+        expect(failedState.serviceHearingValuesModel).toBeNull();
+        expect(failedState.caseInfo).toEqual(currentCase);
+        expect(failedState.lastError).toEqual(failure);
+      });
     });
     describe('reset hearing actuals last error action', () => {
       it('should set correct object', () => {

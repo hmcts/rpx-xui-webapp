@@ -20,9 +20,8 @@ import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { MetaReducer, Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { storeFreeze } from 'ngrx-store-freeze';
 import { LoggerModule, NGXLogger, NgxLoggerLevel, NGXLoggerMapperService } from 'ngx-logger';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import {
@@ -50,8 +49,11 @@ import { effects } from './store/effects';
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
 import { InitialisationSyncService } from './services/ccd-config/initialisation-sync-service';
-// enforces immutability
-export const metaReducers: MetaReducer<any>[] = !environment.production ? [storeFreeze] : [];
+
+export const STORE_RUNTIME_CHECKS = {
+  strictStateImmutability: true,
+  strictActionImmutability: true,
+};
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
@@ -70,7 +72,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     BrowserAnimationsModule,
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
-    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreModule.forRoot(reducers, {
+      runtimeChecks: STORE_RUNTIME_CHECKS,
+    }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({

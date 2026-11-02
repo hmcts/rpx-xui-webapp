@@ -38,6 +38,23 @@ test.describe('Node API client failure diagnosis', { tag: '@svc-internal' }, () 
     ).toBe('NETWORK_TIMEOUT');
   });
 
+  test('classifies TLS transport failures separately from slow API responses', () => {
+    expect(fixturesTest.isNetworkTransportError({ status: 0, error: 'tls_get_more_records: bad record mac' })).toBe(true);
+    expect(fixturesTest.isNetworkTransportError({ status: 0, error: 'net::ERR_NAME_NOT_RESOLVED' })).toBe(true);
+    expect(fixturesTest.isNetworkTransportError({ status: 0, error: 'net::ERR_CONNECTION_REFUSED' })).toBe(true);
+    expect(fixturesTest.isNetworkTransportError({ status: 504, error: 'gateway timeout' })).toBe(false);
+    expect(
+      fixturesTest.classifyFailure(
+        'Error: expect(received).toBe(expected) Expected: 200 Received: 504',
+        [{ url: 'https://example.test/route', status: 504, method: 'GET' }],
+        [],
+        [{ url: 'https://example.test/route', duration: 30_000, method: 'GET' }],
+        false,
+        true
+      )
+    ).toBe('NETWORK_ERROR');
+  });
+
   test('identifies a Work Allocation timeout without exposing transport details', () => {
     const message = fixturesTest.formatApiClientFailure({
       status: 0,

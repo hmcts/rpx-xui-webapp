@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as config from 'config';
+import config = require('config');
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
@@ -81,7 +81,7 @@ describe('Locations ref data api, get matching location by Id', () => {
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json',
+            'Content-Type': 'application/json',
           },
           body: RESPONSE_BODY,
         },
@@ -97,7 +97,7 @@ describe('Locations ref data api, get matching location by Id', () => {
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getPrdLocationsRefDataAPIOverrides(mockServer.url);
-        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop: string) => {
           return configValues[prop];
         });
 

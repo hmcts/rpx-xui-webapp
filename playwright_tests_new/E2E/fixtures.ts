@@ -1,10 +1,13 @@
 import { test as baseTest, type Request, type Response, type TestInfo } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
+import { mkdir, writeFile } from 'node:fs/promises';
 import getPort from 'get-port';
 import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
+import { isNetworkTransportError } from '../common/failureClassification.js';
 import {
   acquireIdentityLease,
   resolveIdentityLeaseTestTimeouts,
@@ -29,6 +32,7 @@ type FailureType =
   | 'DOWNSTREAM_API_4XX'
   | 'SLOW_API_RESPONSE'
   | 'NETWORK_TIMEOUT'
+  | 'NETWORK_ERROR'
   | 'IDENTITY_SCHEDULING_TIMEOUT'
   | 'TIMEOUT_NO_API_ACTIVITY'
   | 'GLOBAL_TIMEOUT_UI_STALL'
@@ -287,6 +291,13 @@ function buildTopSuspect(
     return timeoutSuspects[0];
   }
 
+  if (failureType === 'NETWORK_ERROR') {
+    const request = failedRequests.find((entry) => isNetworkTransportError(entry.errorText));
+    if (request) {
+      return `${request.method} ${request.url} -> NETWORK_ERROR (${stripAnsi(request.errorText).substring(0, 120)})`;
+    }
+  }
+
   const summarizedFailedCalls = summarizeApiFailures(serverErrors, clientErrors, failedRequests);
   if (summarizedFailedCalls.length > 0) {
     return summarizedFailedCalls[0];
@@ -342,6 +353,9 @@ function deriveFailureSource(failureType: FailureType, error: string, topSuspect
   }
   if (failureType === 'NETWORK_TIMEOUT' || failureType === 'SLOW_API_RESPONSE') {
     return describeApiFailureSource(topSuspect) ?? 'Backend/network dependency';
+  }
+  if (failureType === 'NETWORK_ERROR') {
+    return describeApiFailureSource(topSuspect) ?? 'Backend/network transport';
   }
   return 'Test/application behaviour';
 }
@@ -435,6 +449,9 @@ function deriveBackendWaitFlag(
 ): 'yes' | 'no' {
   if (failureType === 'GLOBAL_TIMEOUT_UI_STALL') {
     return 'no';
+  }
+  if (failureType === 'NETWORK_ERROR') {
+    return 'yes';
   }
   const hasTimeoutFailedRequest = failedRequests.some((request) => /timeout|timed out|ETIMEDOUT/i.test(request.errorText));
   const hasBackendFailureSignal =
@@ -539,6 +556,9 @@ function derivePhaseMarker(
   }
   if (failureType === 'DOWNSTREAM_API_4XX') {
     return 'backend-4xx';
+  }
+  if (failureType === 'NETWORK_ERROR') {
+    return 'backend-network-error';
   }
   if (failureType === 'AUTHENTICATION_SESSION_UNAVAILABLE') {
     return 'session-capture-authentication';
@@ -841,6 +861,9 @@ function deriveLikelyRootCause({
   if (failureType === 'DOWNSTREAM_API_4XX') {
     return `Downstream 4xx response likely blocked workflow (${topSuspect})`;
   }
+  if (failureType === 'NETWORK_ERROR') {
+    return `Backend transport failure observed (${topSuspect})`;
+  }
 
   if (isPageClosed && testStatus === 'timedOut') {
     return 'Page was closed because the test exceeded the global timeout budget';
@@ -915,6 +938,9 @@ function classifyFailure({
     if (directCcdSetupFailureStatus >= 400) {
       return 'DOWNSTREAM_API_4XX';
     }
+  }
+  if (failedRequests.some((request) => isNetworkTransportError(request.errorText))) {
+    return 'NETWORK_ERROR';
   }
   if (serverErrors.length > 0) {
     return 'DOWNSTREAM_API_5XX';
@@ -1239,29 +1265,33 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     contentType: 'text/plain',
   });
 
-  // Also attach as JSON for programmatic analysis
+  // Persist a redacted file in this test's isolated output directory for Jenkins archiving.
+  const failureData = JSON.stringify(
+    {
+      failureType,
+      phaseMarker: safePhaseMarker,
+      setupMarker: safeSetupMarker,
+      backendWait: safeBackendWait,
+      likelyRootCause: safeLikelyRootCause,
+      failureLocation: safeFailureLocation,
+      actionableError: safeActionableError,
+      executionSignals: redactValue(executionSignals),
+      topSuspect: safeTopSuspect,
+      slowEndpointSummary: slowEndpointSummary.map(redactText),
+      apiErrors: redactValue(apiErrors),
+      failedRequests: redactValue(failedRequests),
+      slowCalls: redactValue(slowCalls),
+      networkTimeout,
+      timestamp: new Date().toISOString(),
+    },
+    null,
+    2
+  );
+  const failureDataPath = testInfo.outputPath('failure-data.json');
+  await mkdir(dirname(failureDataPath), { recursive: true });
+  await writeFile(failureDataPath, failureData, 'utf8');
   await testInfo.attach('failure-data.json', {
-    body: JSON.stringify(
-      {
-        failureType,
-        phaseMarker: safePhaseMarker,
-        setupMarker: safeSetupMarker,
-        backendWait: safeBackendWait,
-        likelyRootCause: safeLikelyRootCause,
-        failureLocation: safeFailureLocation,
-        actionableError: safeActionableError,
-        executionSignals: redactValue(executionSignals),
-        topSuspect: safeTopSuspect,
-        slowEndpointSummary: slowEndpointSummary.map(redactText),
-        apiErrors: redactValue(apiErrors),
-        failedRequests: redactValue(failedRequests),
-        slowCalls: redactValue(slowCalls),
-        networkTimeout,
-        timestamp: new Date().toISOString(),
-      },
-      null,
-      2
-    ),
+    path: failureDataPath,
     contentType: 'application/json',
   });
 

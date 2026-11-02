@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -12,6 +12,8 @@ import { HearingResult, HearingStageResultEnum } from '../../../models/hearings.
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
 
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
+
 @Component({
   standalone: false,
   selector: 'exui-hearing-stage-result',
@@ -19,6 +21,8 @@ import * as fromHearingStore from '../../../store';
   styleUrls: ['./hearing-stage-result.component.scss'],
 })
 export class HearingStageResultComponent implements OnInit, OnDestroy {
+  private readonly hearingCancellation = inject(HearingCancellationService);
+
   public hearingStageResultForm: FormGroup;
   public validationErrors: { id: string; message: string }[] = [];
   public hearingResult: HearingResult;
@@ -156,15 +160,17 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    void this.router.navigate([
-      '/',
-      'cases',
-      'case-details',
-      this.caseInfo?.jurisdictionId,
-      this.caseInfo?.caseType,
-      this.caseInfo?.caseReference || this.hearingActualsMainModel?.caseDetails?.caseRef,
-      'hearings',
-    ]);
+    this.hearingCancellation.confirm(() => {
+      void this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.caseInfo?.jurisdictionId,
+        this.caseInfo?.caseType,
+        this.caseInfo?.caseReference || this.hearingActualsMainModel?.caseDetails?.caseRef,
+        'hearings',
+      ]);
+    });
   }
 
   private isFormValid(): boolean {

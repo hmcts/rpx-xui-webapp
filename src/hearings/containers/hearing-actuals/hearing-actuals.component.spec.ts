@@ -1,3 +1,5 @@
+import { MatDialogModule } from '@angular/material/dialog';
+import { HearingCancellationService } from '../../services/hearing-cancellation.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,7 +38,7 @@ describe('RequestHearingComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [MatDialogModule, RouterTestingModule],
       declarations: [HearingActualsComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -50,6 +52,15 @@ describe('RequestHearingComponent', () => {
     fixture = TestBed.createComponent(HearingActualsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should wait for confirmation before leaving the current page', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should create', () => {
@@ -77,6 +88,7 @@ describe('RequestHearingComponent', () => {
   });
 
   it('should navigate back to the case hearings page when cancelled', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm').and.callFake((onConfirmed) => onConfirmed());
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     (component as any).caseInfo = { caseReference: '1111222233334444', jurisdictionId: 'IA', caseType: 'Asylum' };
 

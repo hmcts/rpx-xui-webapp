@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
@@ -11,6 +11,8 @@ import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { Subscription } from 'rxjs';
 
+import { HearingCancellationService } from '../../services/hearing-cancellation.service';
+
 @Component({
   standalone: false,
   selector: 'exui-request-hearing',
@@ -18,6 +20,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./request-hearing.component.scss'],
 })
 export class RequestHearingComponent implements OnDestroy {
+  private readonly hearingCancellation = inject(HearingCancellationService);
+
   public action = ACTION;
   public hearingStateSub: Subscription;
   public serviceHearingValuesModel: ServiceHearingValuesModel;
@@ -41,15 +45,17 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public onCancel(): void {
-    void this.router.navigate([
-      '/',
-      'cases',
-      'case-details',
-      this.caseInfo?.jurisdictionId,
-      this.caseInfo?.caseType,
-      this.caseInfo?.caseReference || this.hearingRequestMainModel?.caseDetails?.caseRef,
-      'hearings',
-    ]);
+    this.hearingCancellation.confirm(() => {
+      void this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.caseInfo?.jurisdictionId,
+        this.caseInfo?.caseType,
+        this.caseInfo?.caseReference || this.hearingRequestMainModel?.caseDetails?.caseRef,
+        'hearings',
+      ]);
+    });
   }
 
   public onBack(): void {

@@ -1,8 +1,10 @@
+import { MatDialogModule } from '@angular/material/dialog';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -47,6 +49,7 @@ describe('HearingActualsTimingComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe],
       imports: [
+        MatDialogModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           { path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent },
@@ -73,6 +76,29 @@ describe('HearingActualsTimingComponent', () => {
     store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should navigate back to the case hearings page when cancellation is confirmed', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm').and.callFake((onConfirmed) => onConfirmed());
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    (component as any).caseInfo = {
+      jurisdictionId: 'IA',
+      caseType: 'Asylum',
+      caseReference: '1111222233334444',
+    };
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '1111222233334444', 'hearings']);
+  });
+
+  it('should wait for confirmation before leaving the current page', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should create', () => {

@@ -1,3 +1,5 @@
+import { MatDialogModule } from '@angular/material/dialog';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -189,7 +191,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
-      imports: [RouterTestingModule, ReactiveFormsModule],
+      imports: [MatDialogModule, RouterTestingModule, ReactiveFormsModule],
       providers: [
         LoadingService,
         provideMockStore({ initialState }),
@@ -224,11 +226,21 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     fixture.detectChanges();
   });
 
+  it('should wait for confirmation before leaving the current page', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should navigate back to the case hearings page when cancelled', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm').and.callFake((onConfirmed) => onConfirmed());
     const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
     (component as any).caseInfo = {
       jurisdictionId: 'IA',

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,8 @@ import * as fromHearingStore from '../../store';
 import * as hearingActualsActions from '../../store/actions/hearing-actuals.action';
 import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 
+import { HearingCancellationService } from '../../services/hearing-cancellation.service';
+
 @Component({
   standalone: false,
   selector: 'exui-hearing-actuals',
@@ -14,6 +16,8 @@ import * as hearingRequestActions from '../../store/actions/hearing-request.acti
   styleUrls: ['./hearing-actuals.component.scss'],
 })
 export class HearingActualsComponent implements OnInit, OnDestroy {
+  private readonly hearingCancellation = inject(HearingCancellationService);
+
   private sub: Subscription;
   private caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
 
@@ -40,15 +44,17 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    void this.router.navigate([
-      '/',
-      'cases',
-      'case-details',
-      this.caseInfo?.jurisdictionId,
-      this.caseInfo?.caseType,
-      this.caseInfo?.caseReference,
-      'hearings',
-    ]);
+    this.hearingCancellation.confirm(() => {
+      void this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.caseInfo?.jurisdictionId,
+        this.caseInfo?.caseType,
+        this.caseInfo?.caseReference,
+        'hearings',
+      ]);
+    });
   }
 
   public get isConfirmationPage(): boolean {

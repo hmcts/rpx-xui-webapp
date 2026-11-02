@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, inject, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
@@ -19,6 +19,8 @@ import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
+
 @Component({
   standalone: false,
   selector: 'exui-hearing-actuals-view-edit-parties',
@@ -26,6 +28,8 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   templateUrl: './hearing-actuals-view-edit-parties.component.html',
 })
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
+  private readonly hearingCancellation = inject(HearingCancellationService);
+
   public partyChannels: LovRefDataModel[];
   public hearingRoles: LovRefDataModel[] = [];
   public mutablePartyRoles: LovRefDataModel[] = [];
@@ -353,15 +357,17 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public onCancel(): void {
-    void this.router.navigate([
-      '/',
-      'cases',
-      'case-details',
-      this.caseInfo?.jurisdictionId,
-      this.caseInfo?.caseType,
-      this.caseInfo?.caseReference || this.hearingActualsMainModel?.caseDetails?.caseRef,
-      'hearings',
-    ]);
+    this.hearingCancellation.confirm(() => {
+      void this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.caseInfo?.jurisdictionId,
+        this.caseInfo?.caseType,
+        this.caseInfo?.caseReference || this.hearingActualsMainModel?.caseDetails?.caseRef,
+        'hearings',
+      ]);
+    });
   }
 
   private getAllRowErrors(controls: { [p: string]: AbstractControl }): { [p: string]: string } {

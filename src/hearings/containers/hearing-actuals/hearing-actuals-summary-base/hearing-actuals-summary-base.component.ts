@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
@@ -13,12 +13,16 @@ import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
+
 @Component({
   standalone: false,
   selector: 'exui-hearing-actual-summary-base',
   template: '',
 })
 export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
+  private readonly hearingCancellation = inject(HearingCancellationService);
+
   public hearingState$: Observable<fromHearingStore.State>;
   public isPaperHearing: boolean;
   public hearingActualsMainModel: HearingActualsMainModel;
@@ -117,15 +121,17 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    void this.router.navigate([
-      '/',
-      'cases',
-      'case-details',
-      this.caseInfo?.jurisdictionId,
-      this.caseInfo?.caseType,
-      this.caseInfo?.caseReference || this.hearingActualsCaseRef,
-      'hearings',
-    ]);
+    this.hearingCancellation.confirm(() => {
+      void this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.caseInfo?.jurisdictionId,
+        this.caseInfo?.caseType,
+        this.caseInfo?.caseReference || this.hearingActualsCaseRef,
+        'hearings',
+      ]);
+    });
   }
 
   public getHearingDateText(): string {

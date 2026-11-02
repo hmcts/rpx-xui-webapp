@@ -39,6 +39,7 @@ describe('getNoCQuestions API', () => {
   describe('when a request is made to retrieve NoC questions', () => {
     const expectedResponse = {
       questions: eachLike({
+        case_type_id: string('Probate'),
         order: integer(1),
         question_text: string('What is their Email?'),
         answer_field_type: {
@@ -95,6 +96,7 @@ describe('getNoCQuestions API', () => {
 
 function assertResponse(returnedResponse: any) {
   expect(returnedResponse.questions.length).to.be.equal(1);
+  expect(returnedResponse.questions[0].case_type_id).to.be.equal('Probate');
   expect(returnedResponse.questions[0].order).to.be.equal(1);
   expect(returnedResponse.questions[0].question_text).to.be.equal('What is their Email?');
   expect(returnedResponse.questions[0].answer_field_type.type).to.be.equal('Email');

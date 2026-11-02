@@ -35,7 +35,9 @@ test.describe(
         await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
         await caseDetailsPage.selectCaseAction('Update case', {
           expectedLocator: createCasePage.person2FirstNameInput,
+          expectedTarget: 'Update Case person 2 first-name input',
           timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
+          retry: false,
         });
       });
 

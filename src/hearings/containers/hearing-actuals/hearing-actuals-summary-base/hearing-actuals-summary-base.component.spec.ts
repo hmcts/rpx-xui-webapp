@@ -1,5 +1,4 @@
 import { MatDialogModule } from '@angular/material/dialog';
-import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -20,6 +19,7 @@ import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsSummaryBaseComponent } from './hearing-actuals-summary-base.component';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Pipe({

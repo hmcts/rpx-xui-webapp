@@ -1,5 +1,4 @@
 import { MatDialogModule } from '@angular/material/dialog';
-import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
@@ -10,13 +9,14 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs/internal/observable/of';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   standalone: false,

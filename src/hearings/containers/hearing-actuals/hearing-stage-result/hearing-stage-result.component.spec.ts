@@ -1,5 +1,4 @@
 import { MatDialogModule } from '@angular/material/dialog';
-import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
@@ -9,12 +8,13 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingStageResultComponent } from './hearing-stage-result.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 
 describe('HearingStageResultComponent', () => {
   let component: HearingStageResultComponent;

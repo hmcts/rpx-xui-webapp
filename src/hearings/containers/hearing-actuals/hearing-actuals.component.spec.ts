@@ -1,5 +1,4 @@
 import { MatDialogModule } from '@angular/material/dialog';
-import { HearingCancellationService } from '../../services/hearing-cancellation.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +14,7 @@ import * as hearingActualsActions from '../../store/actions/hearing-actuals.acti
 import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import { HearingActualsComponent } from './hearing-actuals.component';
+import { HearingCancellationService } from '../../services/hearing-cancellation.service';
 
 describe('RequestHearingComponent', () => {
   let component: HearingActualsComponent;

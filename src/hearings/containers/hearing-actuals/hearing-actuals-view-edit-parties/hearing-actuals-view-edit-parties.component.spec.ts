@@ -1,5 +1,4 @@
 import { MatDialogModule } from '@angular/material/dialog';
-import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -11,13 +10,14 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { CategoryType, HMCStatus } from '../../../models/hearings.enum';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 
 const hearingRole = [
   {

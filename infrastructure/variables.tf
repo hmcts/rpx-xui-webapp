@@ -94,7 +94,7 @@ variable "exui_mo_logins_stats_enabled" {
 }
 
 variable "exui_mo_logins_stats_recipient_address" {
-  default     = "cftcommoncomponents@justice.gov.uk"
-  description = "Group email address that receives the ExUI Manage Organisation login stats report."
+  default     = ""
+  description = "Group email address that receives the ExUI Manage Organisation login stats report. Set explicitly when enabling reporting."
   type        = string
 }

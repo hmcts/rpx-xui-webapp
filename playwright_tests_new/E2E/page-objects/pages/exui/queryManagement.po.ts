@@ -37,7 +37,7 @@ export class QueryManagementPage extends Base {
   readonly queryDetails = this.page.locator('ccd-query-details');
   readonly readQueryManagementField = this.page.locator('ccd-read-query-management-field');
   readonly queryDetailsCaption = this.queryDetails.locator('table.query-details-table').first().locator('.govuk-table__caption');
-  readonly followUpQueryButton = this.readQueryManagementField.locator('button#ask-follow-up-question');
+  readonly followUpQueryButton = this.readQueryManagementField.locator('button#ask-follow-up-question-external');
   readonly activeTasks = this.page.locator('.active-tasks-container');
   readonly respondToQueryTaskLink = this.activeTasks
     .locator('a[href*="/query-management/query/"]')

@@ -41,6 +41,16 @@ describe('LinkedHearingsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should unsubscribe from hearing state and case context changes when destroyed', () => {
+    const hearingStateUnsubscribeSpy = spyOn(component.sub, 'unsubscribe').and.callThrough();
+    const caseInfoUnsubscribeSpy = spyOn(component.caseInfoSub, 'unsubscribe').and.callThrough();
+
+    component.ngOnDestroy();
+
+    expect(hearingStateUnsubscribeSpy).toHaveBeenCalled();
+    expect(caseInfoUnsubscribeSpy).toHaveBeenCalled();
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

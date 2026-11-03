@@ -50,6 +50,41 @@ E2E/session helpers load the workspace `.env` through `E2E/utils/config.utils.ts
 
 ## Quick Command Reference (AAT, DEMO, ITHC and LOCAL)
 
+### Playwright upgrade and order-dependency checks
+
+The runner is pinned to Playwright **1.64.1**. Run `yarn test:setup:playwright-version`
+after an immutable install to check that `@playwright/test`, `playwright` and
+`playwright-core` match the manifest. Jenkins and the Docker dependency build use
+the same check; the application image does not install browser binaries.
+
+The opt-in support-suite stability command uses Playwright 1.64's seeded shuffle
+with retries disabled. It does not alter normal CI ordering or retry defaults:
+
+```bash
+# Generate a seed (printed by Playwright), then replay a reported seed.
+yarn test:playwright:stability
+yarn test:playwright:stability 271828182 --workers=4
+```
+
+This runs `api/unit` support tests, including browser-backed checks, not live AAT
+journeys. Install Chromium first and load the environment as described above:
+some support modules validate solicitor credentials at import time even when
+their tests stub transport. The command does not inject dummy credentials or
+bypass those checks. Reports default to
+`functional-output/tests/playwright-stability/` and are replaced on the next run.
+For retained comparisons, set unique `PLAYWRIGHT_OUTPUT_DIR`,
+`PLAYWRIGHT_REPORT_FOLDER` and `PLAYWRIGHT_JUNIT_OUTPUT` paths per run and retain
+the console log with its seed. A seed reproduces shuffled order, not OS scheduling.
+For an affected E2E/integration journey, pass `--shuffle <seed> --retries=0`
+through its existing runner instead of adding it to this support-suite command.
+
+Existing DOM/ARIA/screen traces and Perfetto timelines remain enabled; video
+remains off. Use `--add-reporter=html` to add native step subtitles/parameters and
+the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Only use
+non-sensitive step metadata; native reports and traces remain restricted artefacts.
+Named test locks coordinate one Playwright run, not independent Jenkins jobs:
+keep the existing physical-identity and session leases for cross-process isolation.
+
 By default, Playwright tests run against **AAT** from your local machine. Override `TEST_URL` to point the same suite at DEMO, ITHC, preview, or LOCAL.
 
 | Environment | `TEST_URL`                                     |
@@ -379,7 +414,7 @@ The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_n
 | E2E                 | `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`                                                                                                                                                                   | `PREVIEW Playwright E2E`, `AAT Playwright E2E`, `Nightly Playwright E2E Cross Browser`                     |
 | Accessibility       | `functional-output/tests/playwright-accessibility/odhin-report/xui-playwright-accessibility.html`                                                                                                                                               | `PREVIEW Playwright Accessibility`, `Nightly Playwright Accessibility Test Report`                         |
 | Load profile        | `functional-output/tests/playwright-integration/load-profile/ci/load-profile.html` in CNP/nightly parent monitoring                                                                                                                             | `PREVIEW CI System Load`, `AAT CI System Load`, `Nightly CI System Load`                                   |
-| Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json`; `test-results/**/trace.zip` for failed or timed-out browser tests                                                           | Archived as Jenkins artifacts                                                                              |
+| Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json` and `failure-context.json`; `test-results/**/trace.zip` and screenshots for failed or timed-out browser tests                | Archived as Jenkins artifacts                                                                              |
 
 The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, and `test:playwright:integration` also create local System Load reports through `scripts/playwright-load-monitor.js`. Raw CI commands rely on the parent Jenkins load monitor instead.
 
@@ -399,7 +434,9 @@ The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, a
 - Prefer `data-testid` selectors and Playwright CSS classes.
 - Use `@hmcts/playwright-common` table utilities for table assertions.
 - Do not commit `.env`, `.sessions/`, `test-results/`, or generated `functional-output/` reports.
-- When triaging failures, check Odhín first, then attached API logs or `failure-data.json`, then session/dynamic-user provisioning evidence before changing retries or worker counts.
+- When triaging failures, open the failed test's details and expand its **Failed test triage** block. It shows the observed classification, retry, source location, project, actionable signal, hypothesis label, and next checks alongside the raw Playwright error, trace, and screenshots.
+- Then inspect the bounded `failure-context.json` attachment for facts versus hypotheses. It is redacted by default and must not be treated as a substitute for approved restricted trace/screenshot handling.
+- Use `failure-data.json`, attached API logs, and session/dynamic-user provisioning evidence for supporting detail before changing retries or worker counts.
 
 ---
 

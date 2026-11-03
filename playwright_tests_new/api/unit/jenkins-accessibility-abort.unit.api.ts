@@ -109,6 +109,7 @@ test.describe('Jenkins accessibility cancellation contract', { tag: '@svc-intern
 
       expect(source).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
       expect(source).toContain('functional-output/tests/**/test-results/**/trace.zip');
+      expect(source).toContain('functional-output/tests/**/test-results/**/failure-context.json');
       expect(source).toContain('functional-output/tests/**/test-results/**/*.png');
     });
   }

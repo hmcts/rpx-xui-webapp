@@ -55,7 +55,7 @@ describe('get /am/role-mapping/judicial/refresh', () => {
   it('returns the correct response', async () => {
     return pactSetUp.provider.executeTest(async (mockServer) => {
       const configValues = getAccessManagementRoleMappingServiceAPIOverrides(mockServer.url);
-      sandbox.stub(config, 'get').callsFake((prop) => {
+      sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
         return configValues[prop];
       });
 

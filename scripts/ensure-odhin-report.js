@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* global console, module, process, require */
+/* eslint-disable @typescript-eslint/no-require-imports */
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -115,9 +116,13 @@ function listFiles(directory) {
 }
 
 function collectDiagnostics(reportDir) {
-  const candidates = [reportDir, path.join(reportDir, 'test-results')];
+  const candidates = [reportDir, path.join(reportDir, 'test-results'), path.join(reportDir, '..', 'test-results')].filter(
+    (candidate, index, all) => all.indexOf(candidate) === index
+  );
 
-  return candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => formatDiagnostic(candidate, file)));
+  return Array.from(
+    new Set(candidates.flatMap((candidate) => listInterestingFiles(candidate).map((file) => formatDiagnostic(candidate, file))))
+  );
 }
 
 function formatDiagnostic(directory, file) {
@@ -142,7 +147,7 @@ function listInterestingFiles(directory) {
         return;
       }
       if (
-        /(failure-data\.json|error-context\.md|trace\.zip|summary\.json|load-profile\.html|runner-failure\.txt|[^/]+\.(png|jpe?g))$/i.test(
+        /(failure-data\.json|failure-context\.json|error-context\.md|trace\.zip|summary\.json|load-profile\.html|runner-failure\.txt|[^/]+\.(png|jpe?g))$/i.test(
           entry.name
         )
       ) {

@@ -2,6 +2,21 @@ import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
+const caseworkerUidPlaceholder = /(\/caseworkers\/):uid(?=\/)/;
+
+/**
+ * Replace the UI route placeholder with the authenticated user's UID before
+ * forwarding the request to CCD Data Store. Data Store validates the UID in
+ * the path against the authenticated user.
+ */
+export const rewriteCaseworkerUid = (proxyReq, req) => {
+  const userInfo = req.session?.passport?.user?.userinfo;
+  const userId = userInfo?.uid || userInfo?.id;
+
+  if (userId && proxyReq.path) {
+    proxyReq.path = proxyReq.path.replace(caseworkerUidPlaceholder, (_match, prefix) => `${prefix}${encodeURIComponent(userId)}`);
+  }
+};
 
 /**
  * Manually filtering returned jurisdictions

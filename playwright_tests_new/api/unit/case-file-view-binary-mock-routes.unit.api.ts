@@ -83,6 +83,7 @@ test.describe('case file view binary mock routes', { tag: '@svc-internal' }, () 
     await setupCaseFileViewDocumentBinaryMockRoutes(page, undefined, CASE_FILE_VIEW_BINARY_FAILURE_RESPONSE);
     let fulfilled: unknown;
     await handle?.({
+      request: () => ({ url: () => 'https://xui.example/documents/document-a/binary', headerValue: async () => '' }),
       fulfill: async (response: unknown) => {
         fulfilled = response;
       },

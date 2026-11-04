@@ -41,9 +41,9 @@ test.describe('Case file view binary mock routes', { tag: '@svc-internal' }, () 
   for (const gateway of ['documents', 'documentsv2']) {
     for (const query of ['', '?case_id=1690807693531270', '?caseId=1690807693531270&download=true']) {
       test(`records and fulfills ${gateway} binary requests with query ${query || '(none)'}`, async () => {
-        const registrations: Array<{ pattern: RegExp; handler: (route: unknown) => Promise<void> }> = [];
+        const registrations: Array<{ pattern: (url: URL) => boolean; handler: (route: unknown) => Promise<void> }> = [];
         const page = {
-          route: async (pattern: RegExp, handler: (route: unknown) => Promise<void>) => {
+          route: async (pattern: (url: URL) => boolean, handler: (route: unknown) => Promise<void>) => {
             registrations.push({ pattern, handler });
           },
         } as unknown as Page;
@@ -51,12 +51,12 @@ test.describe('Case file view binary mock routes', { tag: '@svc-internal' }, () 
         await setupCaseFileViewDocumentBinaryMockRoutes(page, (url) => observedRequests.push(url));
 
         const url = `https://exui.test/${gateway}/33333333-3333-3333-3333-333333333333/binary${query}`;
-        const matches = registrations.filter(({ pattern }) => pattern.test(url));
+        const matches = registrations.filter(({ pattern }) => pattern(new URL(url)));
         expect(matches).toHaveLength(1);
 
         const fulfilledResponses: unknown[] = [];
         await matches[0].handler({
-          request: () => ({ url: () => url }),
+          request: () => ({ url: () => url, headerValue: async () => '' }),
           fulfill: async (response: unknown) => {
             fulfilledResponses.push(response);
           },
@@ -69,8 +69,8 @@ test.describe('Case file view binary mock routes', { tag: '@svc-internal' }, () 
             body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF,
           },
         ]);
-        expect(registrations.some(({ pattern }) => pattern.test(`${url.split('?')[0]}/other`))).toBe(false);
-        expect(registrations.some(({ pattern }) => pattern.test(`${url.split('?')[0]}-extra`))).toBe(false);
+        expect(registrations.some(({ pattern }) => pattern(new URL(`${url.split('?')[0]}/other`)))).toBe(false);
+        expect(registrations.some(({ pattern }) => pattern(new URL(`${url.split('?')[0]}-extra`)))).toBe(false);
       });
     }
   }

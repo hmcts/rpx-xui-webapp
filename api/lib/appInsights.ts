@@ -1,5 +1,3 @@
-import * as http from 'http';
-
 import * as applicationinsights from 'applicationinsights';
 import type * as express from 'express';
 
@@ -103,9 +101,12 @@ const FAILED_REQUEST_STATUS_CODE_THRESHOLD = 400;
 export function markFailedServerSpanStatus(
   span: Span,
   _request: unknown,
-  response: http.IncomingMessage | http.ServerResponse
+  response: {
+    statusCode?: number;
+    setHeader?: (name: string, value: string | number | readonly string[]) => unknown;
+  }
 ): void {
-  if (!(response instanceof http.ServerResponse)) {
+  if (typeof response?.setHeader !== 'function') {
     return;
   }
 

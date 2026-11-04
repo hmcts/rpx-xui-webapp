@@ -54,6 +54,10 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-share-case': () => ['SOLICITOR'],
   '@integration-case-viewer': () => ['STAFF_ADMIN'],
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
+  '@blocked-exui-4272': () => ['SOLICITOR'],
+  '@blocked-exui-4276': () => ['STAFF_ADMIN'],
+  '@blocked-exui-4317': () => ['SOLICITOR'],
+  '@blocked-exui-4318': () => ['STAFF_ADMIN'],
 };
 
 function resolveStaffAdminSessionUsers(env: NodeJS.ProcessEnv): SessionIdentityInput[] {
@@ -92,7 +96,9 @@ function uniqueSessionIdentities(identities: SessionIdentityInput[]): SessionIde
 function resolveSelectedIntegrationTags(selection: IntegrationTagSelection): string[] {
   const suiteTag = selection.suiteTag ?? integrationSuiteTag;
   const requestedFeatureTags = selection.includeTags.filter((tag) => tag !== suiteTag);
-  return requestedFeatureTags.filter((tag) => tag.startsWith(`${suiteTag}-`) && !selection.excludedTags.includes(tag));
+  return requestedFeatureTags.filter(
+    (tag) => (tag.startsWith(`${suiteTag}-`) || tag.startsWith('@blocked-exui-')) && !selection.excludedTags.includes(tag)
+  );
 }
 
 function isFullIntegrationRun(selection: IntegrationTagSelection): boolean {
@@ -121,7 +127,9 @@ export function resolveIntegrationSessionUsers(
   }
 
   const suiteTag = tagSelection.suiteTag ?? integrationSuiteTag;
-  const availableFeatureTags = tagSelection.availableTags.filter((tag) => tag !== suiteTag && tag.startsWith(`${suiteTag}-`));
+  const availableFeatureTags = tagSelection.availableTags.filter(
+    (tag) => tag !== suiteTag && (tag.startsWith(`${suiteTag}-`) || tag.startsWith('@blocked-exui-'))
+  );
   assertIntegrationSessionMappings(availableFeatureTags);
 
   const selectedTags = isFullIntegrationRun(tagSelection)

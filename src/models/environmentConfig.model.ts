@@ -1,5 +1,7 @@
 import { InjectionToken } from '@angular/core';
 import { WAFeatureConfig } from '../work-allocation/models/common/service-config.model';
+import { DecentralisedService } from '../../common/decentralisation/decentralised-service';
+import { CaseTypeMap, FrontendDecentralisedCaseType } from '../../common/decentralisation/decentralised-casetype';
 
 export const ENVIRONMENT_CONFIG = new InjectionToken<EnvironmentConfig>('environment.config');
 
@@ -19,4 +21,6 @@ export interface EnvironmentConfig {
     hearingJurisdictions: object;
     hearingAmendment: object;
   };
+  decentralisedCaseTypeConfig?: CaseTypeMap<FrontendDecentralisedCaseType>;
+  decentralisedServiceMap?: Record<string, DecentralisedService>;
 }

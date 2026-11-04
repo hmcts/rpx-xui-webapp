@@ -87,7 +87,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();
     // Get the task from the route, which will have been put there by the resolver.
-    const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
+    const task = this.route.snapshot.data.taskAndCaseworker.task.task;
     this.assignedUser = task.assignee;
     this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
@@ -106,8 +106,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
       if (!userInfo) {
         return false;
       }
-      // EXUI-2907 - Role category is used instead of roles
-      return userInfo.roleCategory === RoleCategory.JUDICIAL;
+      return !!userInfo.roleCategories?.includes(RoleCategory.JUDICIAL);
     }
     return false;
   }

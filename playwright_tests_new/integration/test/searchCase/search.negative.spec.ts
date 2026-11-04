@@ -42,7 +42,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   await page.route('**/api/wa-supported-jurisdiction/get', async (route) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(['PUBLICLAW']) });
   });
-  await page.route('**/workallocation/caseworker/getUsersByServiceName', async (route) => {
+  await page.route('**/workallocation/caseworker/getUsersByIdamIds', async (route) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
   });
   await page.route('**/api/prd/judicial/searchJudicialUserByIdamId', async (route) => {
@@ -51,7 +51,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 });
 
 test.describe(
-  'Header quick search negative flows with prewarmed search session',
+  'Header quick search negative flows with lazy search session',
   { tag: ['@integration', '@integration-search-case'] },
   () => {
     for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {

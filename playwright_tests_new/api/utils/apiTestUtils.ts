@@ -1,7 +1,6 @@
 import { expect } from '@playwright/test';
 
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
-
 // Central map of commonly reused status code sets to reduce magic arrays in tests.
 export const StatusSets = {
   guardedBasic: [200, 401, 403, 502, 504] as const,
@@ -13,8 +12,6 @@ export const StatusSets = {
   globalSearch: [200, 400, 401, 403, 500, 502, 504] as const,
   okOnly: [200] as const,
   okOrBadRequest: [200, 400, 403] as const,
-  corsAllowed: [200, 204, 400, 401, 403] as const,
-  corsDisallowed: [200, 204, 400, 401, 403, 404] as const,
   retryable: [200, 401, 403, 404, 500, 502, 504] as const,
   roleAccessRetryable: [200, 400, 401, 403, 404, 409, 500, 502, 504] as const,
   /** WA read-only endpoints: guards against downstream 5xx while accepting auth rejections */
@@ -29,6 +26,13 @@ export function expectStatus(actual: number, allowed: ReadonlyArray<number>, mes
     // Emit a Playwright diff if it fails, but keep the message readable.
     expect({ status: actual }, hint).toEqual({ status: allowed[0] });
   }
+}
+
+export function isRequestTimeoutError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up|Request context disposed|apiRequestContext\.fetch: aborted|transport: request failure/i.test(
+    message
+  );
 }
 
 export async function buildXsrfHeaders(role: ApiUserRole): Promise<Record<string, string>> {
@@ -94,15 +98,15 @@ export async function guardedRequest<T extends { status: number; data?: unknown 
   try {
     return await fn();
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (/timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(message)) {
-      if (options.failOnRequestError === true) {
-        throw error;
-      }
-      options.onRequestTimeout?.(message);
-      return { data: undefined, status: options.timeoutStatus ?? 504 };
+    if (!isRequestTimeoutError(error)) {
+      throw error;
     }
-    throw error;
+    if (options.failOnRequestError === true) {
+      throw error;
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    options.onRequestTimeout?.(message);
+    return { data: undefined, status: options.timeoutStatus ?? 504 };
   }
 }
 

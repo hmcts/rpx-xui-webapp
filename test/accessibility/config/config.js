@@ -7,7 +7,7 @@ const conf = {
   appName: 'EXUI Manage Cases a11y Test Report',
   baseUrl: baseUrl,
   params: {
-    username: process.env.A11Y_TEST_USERNAME || 'lukesuperuserxui@mailnesia.com',
+    username: process.env.A11Y_TEST_USERNAME || process.env.TEST_EMAIL,
     password: process.env.A11Y_TEST_PASSWORD || process.env.TEST_PASSWORD,
   },
   unauthenticatedUrls: ['accessibility', 'cookies', 'privacy-policy', 'get-help'],

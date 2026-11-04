@@ -11,12 +11,17 @@ let OdhinAdaptiveReporter: {
   new (options?: Record<string, unknown>): {
     onTestEnd: (test: unknown, result: unknown) => Promise<void>;
     onEnd: (result: unknown) => Promise<void>;
+    runtimeHookTimeoutMs: number;
     runtimeHookStats: { queued: number; completed: number; timedOut: number; failed: number };
   };
   __test__: {
     trimResult: (
       result: Record<string, unknown>,
-      options: { lightweight: boolean; testOutputMode: true | false | 'only-on-failure' }
+      options: {
+        lightweight: boolean;
+        testOutputMode: true | false | 'only-on-failure';
+        trimFailedArtifacts?: boolean;
+      }
     ) => {
       nextResult: Record<string, unknown>;
       trimmedCounts: { output: number; heavyArtifacts: number };
@@ -38,7 +43,7 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
     OdhinProgressReporter = (progressModule.default ?? progressModule) as typeof OdhinProgressReporter;
 
     const adaptiveModule = await import('../../common/reporters/odhin-adaptive.reporter.cjs');
-    OdhinAdaptiveReporter = (adaptiveModule.default ?? adaptiveModule) as typeof OdhinAdaptiveReporter;
+    OdhinAdaptiveReporter = (adaptiveModule.default ?? adaptiveModule) as unknown as typeof OdhinAdaptiveReporter;
 
     const flakeGateModule = await import('../../common/reporters/flake-gate.reporter.cjs');
     FlakeGateReporter = (flakeGateModule.default ?? flakeGateModule) as typeof FlakeGateReporter;
@@ -135,18 +140,19 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
       stdout: [{ text: 'stdout' }],
       stderr: [{ text: 'stderr' }],
       steps: [{ title: 'step' }],
-      attachments: [{ name: 'trace.zip' }],
+      attachments: [{ name: 'trace.zip', contentType: 'application/zip', path: '/tmp/playwright-results/trace.zip' }],
     };
 
     const { nextResult, trimmedCounts } = OdhinAdaptiveReporter.__test__.trimResult(result, {
       lightweight: true,
       testOutputMode: 'only-on-failure',
+      trimFailedArtifacts: false,
     });
 
     expect(nextResult).toEqual(result);
     expect(trimmedCounts).toEqual({
       output: 0,
-      heavyArtifacts: 0,
+      heavyArtifacts: 1,
     });
   });
 
@@ -353,13 +359,21 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
     expect(stderrWrites.some((entry) => entry.includes('onTestEnd timed out'))).toBe(true);
   });
 
-  test('adaptive reporter can trim failed-test artifacts before handing results to Odhín', async () => {
-    let forwardedResult: {
-      stdout?: unknown[];
-      stderr?: unknown[];
-      steps?: unknown[];
-      attachments?: unknown[];
-    };
+  test('adaptive reporter keeps a finite runtime hook timeout in CI by default', () => {
+    const originalCi = process.env.CI;
+    process.env.CI = 'true';
+
+    try {
+      const reporter = new OdhinAdaptiveReporter({ profile: false });
+      expect(reporter.runtimeHookTimeoutMs).toBe(15_000);
+    } finally {
+      if (originalCi === undefined) delete process.env.CI;
+      else process.env.CI = originalCi;
+    }
+  });
+
+  test('adaptive reporter retains failed timelines while trimming inline attachments before handing results to Odhín', async () => {
+    let forwardedResult: unknown = undefined;
     const reporter = new OdhinAdaptiveReporter({
       lightweight: true,
       profile: false,
@@ -376,18 +390,21 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
       { title: 'failed accessibility test' },
       {
         status: 'failed',
-        stdout: [{ text: 'failure output' }],
-        stderr: [{ text: 'failure error' }],
+        stdout: ['failure output'],
+        stderr: ['failure error'],
         steps: [{ title: 'step' }],
         attachments: [{ name: 'highlighted screenshot' }],
       }
     );
     await reporter.onEnd({ status: 'failed' });
 
-    expect(forwardedResult.stdout).toEqual([{ text: 'failure output' }]);
-    expect(forwardedResult.stderr).toEqual([{ text: 'failure error' }]);
-    expect(forwardedResult.steps).toEqual([]);
-    expect(forwardedResult.attachments).toEqual([]);
+    expect(forwardedResult).toEqual({
+      status: 'failed',
+      stdout: ['failure output'],
+      stderr: ['failure error'],
+      steps: [{ title: 'step' }],
+      attachments: [],
+    });
   });
 
   test('adaptive reporter bounds stalled Odhín finalization', async () => {

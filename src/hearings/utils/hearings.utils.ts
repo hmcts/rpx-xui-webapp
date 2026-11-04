@@ -4,18 +4,22 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { HearingChannelEnum, HearingDateEnum } from '../models/hearings.enum';
+import { HearingChannelEnum, HearingDateEnum, PartyType } from '../models/hearings.enum';
 import { IndividualDetailsModel } from '../models/individualDetails.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
-import { PartyType } from 'api/hearings/models/hearings.enum';
 
 type DateOption = 'noDate' | 'specificDate' | 'dateRange';
 
 export class HearingsUtils {
-  public static readonly DISCREPANCY_MESSAGE =
-    'The Party IDs and/or case information for this request appear mismatched, please reload and start the request again.';
+  // Code for hearing link reason
+  public static readonly HEARING_LINK_REASON_CODE = 'CLRC017';
+  public static readonly DISCREPANCY_MESSAGE_LIST = [
+    'Please select ',
+    'Reload the application',
+    'to refresh the case data before continuing. The hearing request cannot continue until refreshed.',
+  ];
 
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
     return conditions && conditions.hasOwnProperty(propertyName) && conditions[propertyName] === propertyValue;
@@ -295,16 +299,10 @@ export class HearingsUtils {
       logMessages.push(
         `Hearing internal name mismatch detected. HRM: ${hrmInternalName} SHV: ${shvInternalName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
       );
-      console.log(
-        `Hearing internal name mismatch detected. HRM: ${hrmInternalName} SHV: ${shvInternalName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
-      );
     }
 
     if (hrmPublicName && shvPublicName && hrmPublicName !== shvPublicName) {
       logMessages.push(
-        `Hearing public name mismatch detected. HRM: ${hrmPublicName} SHV: ${shvPublicName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
-      );
-      console.log(
         `Hearing public name mismatch detected. HRM: ${hrmPublicName} SHV: ${shvPublicName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
       );
     }

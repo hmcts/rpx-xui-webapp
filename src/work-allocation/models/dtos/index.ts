@@ -18,7 +18,7 @@ export interface Caseworker {
   lastName: string;
   email: string;
   location: Location;
-  roleCategory: RoleCategory;
+  roleCategories: RoleCategory[];
 }
 
 export interface CaseworkersByService {
@@ -168,9 +168,4 @@ export interface TaskSearchParameter {
 
 export interface TaskSearchParameters {
   parameters: TaskSearchParameter[];
-}
-
-export interface TaskNamesResponse {
-  taskName: string;
-  taskId: number;
 }

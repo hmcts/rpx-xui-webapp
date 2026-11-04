@@ -80,6 +80,16 @@ test.describe('case details tab pagination', { tag: '@svc-internal' }, () => {
     await expect(page.getByRole('tab', { name: 'Documents', exact: true })).toHaveAttribute('aria-selected', 'true');
   });
 
+  test('selects an off-screen tab in the legacy Material tab strip', async ({ page }) => {
+    await page.setContent(caseDetailsTabsMarkup(400, true, false, 300, 'legacy'));
+    const details = new CaseDetailsPage(page);
+    Object.assign(details, { getRecommendedTimeoutMs: () => 5000 });
+
+    await details.selectCaseDetailsTab('Documents');
+
+    await expect(page.getByRole('tab', { name: 'Documents', exact: true })).toHaveAttribute('aria-selected', 'true');
+  });
+
   test('fails rather than bypassing a disabled pagination control', async ({ page }) => {
     await page.setContent(caseDetailsTabsMarkup(400, true, true));
     const details = new CaseDetailsPage(page);

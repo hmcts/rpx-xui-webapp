@@ -99,6 +99,14 @@ function percentOf(total, value) {
   return ((value / total) * 100).toFixed(2);
 }
 
+function effectivePassTotal(feature) {
+  return Number(feature?.passed ?? 0) + Number(feature?.flaky ?? 0);
+}
+
+function passRateDenominator(feature) {
+  return Math.max(0, Number(feature?.totalTests ?? 0) - Number(feature?.skipped ?? 0));
+}
+
 function formatDuration(durationMs) {
   const safeDuration = Math.max(0, Math.round(Number(durationMs) || 0));
   const hours = Math.floor(safeDuration / 3600000);
@@ -479,6 +487,9 @@ function buildFeatureOverviewBlock(featureStats) {
   const rows = featureStats
     .map((feature) => {
       const color = colorForFeature(feature.name);
+      const effectivePassed = effectivePassTotal(feature);
+      const passDenominator = passRateDenominator(feature);
+      const passPercentage = passDenominator ? `${percentOf(passDenominator, effectivePassed)}%` : '—';
       return `
                 <tr>
                   <td class="text-start fs-6 text-secondary-emphasis summary-row-left-column" style="border-left: 8px solid ${color};">
@@ -486,7 +497,7 @@ function buildFeatureOverviewBlock(featureStats) {
                   </td>
                   <td class="text-secondary-emphasis">${feature.totalTests}</td>
                   <td class="text-secondary-emphasis">${formatDuration(feature.durationMs)}</td>
-                  <td class="result-status-passed">${feature.passed} (<label class="fst-italic">${percentOf(feature.totalTests, feature.passed)}%</label>)</td>
+                  <td class="result-status-passed">${effectivePassed} (<label class="fst-italic">${passPercentage}</label>)</td>
                   <td class="result-status-failed">${feature.failed} (<label class="fst-italic">${percentOf(feature.totalTests, feature.failed)}%</label>)</td>
                   <td class="result-status-timedOut">${feature.timedOut} (<label class="fst-italic">${percentOf(feature.totalTests, feature.timedOut)}%</label>)</td>
                   <td class="result-status-skipped">${feature.skipped} (<label class="fst-italic">${percentOf(feature.totalTests, feature.skipped)}%</label>)</td>

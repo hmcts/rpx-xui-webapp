@@ -84,7 +84,6 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "FinancialRemedyContested",
         "FinancialRemedyMVP2"
       ],
       "releaseVersion": "4",
@@ -92,10 +91,7 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "GrantOfRepresentation",
-        "Caveat",
-        "StandingSearch",
-        "WillLodgement"
+        "GrantOfRepresentation"
       ],
       "releaseVersion": "4",
        "serviceName": "PROBATE"
@@ -261,17 +257,13 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "GrantOfRepresentation",
-        "Caveat",
-        "StandingSearch",
-        "WillLodgement"
+        "GrantOfRepresentation"
       ],
       "releaseVersion": "4",
        "serviceName": "PROBATE"
     },
     {
       "caseTypes": [
-        "FinancialRemedyContested",
         "FinancialRemedyMVP2"
       ],
       "releaseVersion": "4",

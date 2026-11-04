@@ -41,11 +41,24 @@ function applyPresentation(root, metadata = []) {
       'beforeend',
       `<style id="webapp-report-theme">${fs.readFileSync(path.join(__dirname, 'report.css'), 'utf8')}</style>`
     );
-  root
-    .querySelector('body')
-    ?.insertAdjacentHTML(
-      'beforeend',
-      `<script id="webapp-report-ui">${fs.readFileSync(path.join(__dirname, 'report.js'), 'utf8')}</script>`
-    );
+  let body = root.querySelector('body');
+  if (!body) {
+    const html = root.querySelector('html');
+    const head = root.querySelector('head');
+    if (html) {
+      html.insertAdjacentHTML('beforeend', '<body id="body-content"></body>');
+      body = html.querySelector('body');
+      html.childNodes
+        .filter((node) => node !== head && node !== body)
+        .forEach((node) => {
+          node.remove();
+          body.appendChild(node);
+        });
+    }
+  }
+  body?.insertAdjacentHTML(
+    'beforeend',
+    `<script id="webapp-report-ui">${fs.readFileSync(path.join(__dirname, 'report.js'), 'utf8')}</script>`
+  );
 }
 module.exports = { applyPresentation };

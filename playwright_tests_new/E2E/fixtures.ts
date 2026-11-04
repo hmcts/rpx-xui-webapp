@@ -1,7 +1,9 @@
 import { test as baseTest, type Request, type Response, type TestInfo } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
+import { mkdir, writeFile } from 'node:fs/promises';
 import getPort from 'get-port';
 import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
 import { getSetupMarker } from '../common/sessionCapture';
@@ -1263,29 +1265,33 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     contentType: 'text/plain',
   });
 
-  // Also attach as JSON for programmatic analysis
+  // Persist a redacted file in this test's isolated output directory for Jenkins archiving.
+  const failureData = JSON.stringify(
+    {
+      failureType,
+      phaseMarker: safePhaseMarker,
+      setupMarker: safeSetupMarker,
+      backendWait: safeBackendWait,
+      likelyRootCause: safeLikelyRootCause,
+      failureLocation: safeFailureLocation,
+      actionableError: safeActionableError,
+      executionSignals: redactValue(executionSignals),
+      topSuspect: safeTopSuspect,
+      slowEndpointSummary: slowEndpointSummary.map(redactText),
+      apiErrors: redactValue(apiErrors),
+      failedRequests: redactValue(failedRequests),
+      slowCalls: redactValue(slowCalls),
+      networkTimeout,
+      timestamp: new Date().toISOString(),
+    },
+    null,
+    2
+  );
+  const failureDataPath = testInfo.outputPath('failure-data.json');
+  await mkdir(dirname(failureDataPath), { recursive: true });
+  await writeFile(failureDataPath, failureData, 'utf8');
   await testInfo.attach('failure-data.json', {
-    body: JSON.stringify(
-      {
-        failureType,
-        phaseMarker: safePhaseMarker,
-        setupMarker: safeSetupMarker,
-        backendWait: safeBackendWait,
-        likelyRootCause: safeLikelyRootCause,
-        failureLocation: safeFailureLocation,
-        actionableError: safeActionableError,
-        executionSignals: redactValue(executionSignals),
-        topSuspect: safeTopSuspect,
-        slowEndpointSummary: slowEndpointSummary.map(redactText),
-        apiErrors: redactValue(apiErrors),
-        failedRequests: redactValue(failedRequests),
-        slowCalls: redactValue(slowCalls),
-        networkTimeout,
-        timestamp: new Date().toISOString(),
-      },
-      null,
-      2
-    ),
+    path: failureDataPath,
     contentType: 'application/json',
   });
 

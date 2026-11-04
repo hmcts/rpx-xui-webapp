@@ -117,9 +117,11 @@ test.describe('Legacy document authorization', { tag: ['@e2e', '@e2e-media-viewe
       failOnStatusCode: false,
       maxRedirects: 0,
     });
-    expect(response.status()).toBe(403);
-    expect(response.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
-    expect((await response.body()).includes(Buffer.from('%PDF-'))).toBe(false);
+    const body = await response.body();
+    expect.soft(response.status()).toBe(403);
+    expect.soft(response.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+    expect.soft(body.includes(Buffer.from('%PDF-'))).toBe(false);
+    expect.soft(body).not.toEqual(caseA.expectedContent);
   });
 
   test('rejects document A with case A for U2 without case access', async ({ baseURL }) => {
@@ -128,9 +130,11 @@ test.describe('Legacy document authorization', { tag: ['@e2e', '@e2e-media-viewe
       failOnStatusCode: false,
       maxRedirects: 0,
     });
-    expect(response.status()).toBe(deniedCaseStatus);
-    expect(response.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
-    expect((await response.body()).includes(Buffer.from('%PDF-'))).toBe(false);
+    const body = await response.body();
+    expect.soft(response.status()).toBe(deniedCaseStatus);
+    expect.soft(response.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+    expect.soft(body.includes(Buffer.from('%PDF-'))).toBe(false);
+    expect.soft(body).not.toEqual(caseA.expectedContent);
   });
 
   test('rejects anonymous access to the same valid document and case', async ({ page }) => {
@@ -163,11 +167,11 @@ test.describe('Legacy document authorization', { tag: ['@e2e', '@e2e-media-viewe
     expect(await deniedCase.text()).not.toContain(caseB.document.document_url);
 
     const afterRevocation = await secondPage.request.get(knownBinaryPath, secondUserRequest);
-    expect(afterRevocation.status()).toBe(deniedCaseBStatus);
-    expect(afterRevocation.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
     const deniedBody = await afterRevocation.body();
-    expect(deniedBody.includes(Buffer.from('%PDF-'))).toBe(false);
-    expect(deniedBody.includes(caseB.expectedContent)).toBe(false);
+    expect.soft(afterRevocation.status()).toBe(deniedCaseBStatus);
+    expect.soft(afterRevocation.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+    expect.soft(deniedBody.includes(Buffer.from('%PDF-'))).toBe(false);
+    expect.soft(deniedBody).not.toEqual(caseB.expectedContent);
 
     const ownerControl = await page.request.get(knownBinaryPath, {
       headers: await documentXsrfHeaders(page),

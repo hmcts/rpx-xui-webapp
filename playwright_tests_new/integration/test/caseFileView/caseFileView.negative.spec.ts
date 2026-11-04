@@ -5,6 +5,7 @@ import {
 } from '../../helpers/caseFileViewMockRoutes.helper';
 import {
   buildEmptyCaseFileViewCategoriesMock,
+  CASE_FILE_VIEW_BINARY_DENIAL_RESPONSE,
   CASE_FILE_VIEW_BINARY_FAILURE_RESPONSE,
   CASE_FILE_VIEW_DOC_IDS,
   CASE_FILE_VIEW_DOCUMENT_GATEWAYS,
@@ -40,46 +41,51 @@ test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integr
   });
 
   for (const gateway of CASE_FILE_VIEW_DOCUMENT_GATEWAYS) {
-    test(`Mocked ${gateway.label} binary failure does not display document content`, async ({
-      caseDetailsPage,
-      caseFileViewPage,
-      page,
-    }) => {
-      const binaryRequests: { url: string; referer: string }[] = [];
-      await test.step('Set up case file view mocks with a failing binary endpoint', async () => {
-        await setupCaseFileViewMockRoutes(page, caseId, { cdamExclusionList: gateway.cdamExclusionList });
-        await setupCaseFileViewDocumentBinaryMockRoutes(
-          page,
-          (url, referer) => binaryRequests.push({ url, referer }),
-          CASE_FILE_VIEW_BINARY_FAILURE_RESPONSE
-        );
-      });
+    for (const scenario of [
+      {
+        label: 'denial',
+        response: { ...CASE_FILE_VIEW_BINARY_DENIAL_RESPONSE, status: gateway.deniedStatus },
+        expectedStatus: gateway.deniedStatus,
+      },
+      { label: 'failure', response: CASE_FILE_VIEW_BINARY_FAILURE_RESPONSE, expectedStatus: 500 },
+    ]) {
+      test(`Mocked ${gateway.label} binary ${scenario.label} does not display document content`, async ({
+        caseDetailsPage,
+        caseFileViewPage,
+        page,
+      }) => {
+        const binaryRequests: string[] = [];
+        await test.step('Set up case file view mocks with a rejected binary endpoint', async () => {
+          await setupCaseFileViewMockRoutes(page, caseId, { cdamExclusionList: gateway.cdamExclusionList });
+          await setupCaseFileViewDocumentBinaryMockRoutes(page, (url) => binaryRequests.push(url), scenario.response);
+        });
 
-      await test.step('Open the Case File View tab', async () => {
-        await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
-        await caseDetailsPage.selectCaseDetailsTab('Case File View');
-        await caseFileViewPage.waitForReady();
-      });
+        await test.step('Open the Case File View tab', async () => {
+          await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
+          await caseDetailsPage.selectCaseDetailsTab('Case File View');
+          await caseFileViewPage.waitForReady();
+        });
 
-      await test.step('Keep the page shell visible after a document load failure', async () => {
-        const responsePromise = page.waitForResponse((response) =>
-          new URL(response.url()).pathname.endsWith(`/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`)
-        );
-        await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
-        const response = await responsePromise;
-        expect(response.status()).toBe(500);
-        await response.finished();
-        const caseUrl = new URL(page.url());
-        caseUrl.hash = '';
-        await expect.poll(() => binaryRequests.length).toBeGreaterThan(0);
-        const expectedUrl = `${caseUrl.origin}${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`;
-        expect([expectedUrl, `${expectedUrl}?caseId=${caseId}`]).toContain(binaryRequests.at(-1)?.url);
-        await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
-        await expect(caseFileViewPage.treeContainer).toContainText('Evidence');
-        await expect(caseFileViewPage.mediaViewerToolbar).not.toBeVisible();
-        await expect(caseFileViewPage.mediaViewPanel).not.toBeVisible();
+        await test.step('Keep the page shell visible without document content', async () => {
+          const responsePromise = page.waitForResponse((response) =>
+            new URL(response.url()).pathname.endsWith(`/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`)
+          );
+          await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
+          const response = await responsePromise;
+          expect(response.status()).toBe(scenario.expectedStatus);
+          await response.finished();
+          const caseUrl = new URL(page.url());
+          caseUrl.hash = '';
+          await expect.poll(() => binaryRequests.length).toBeGreaterThan(0);
+          const expectedUrl = `${caseUrl.origin}${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`;
+          expect([expectedUrl, `${expectedUrl}?caseId=${caseId}`]).toContain(binaryRequests.at(-1));
+          await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
+          await expect(caseFileViewPage.treeContainer).toContainText('Evidence');
+          await expect(caseFileViewPage.mediaViewerToolbar).not.toBeVisible();
+          await expect(caseFileViewPage.mediaViewPanel).not.toBeVisible();
+        });
       });
-    });
+    }
   }
 
   test('Mocked categories failure shows the service error instead of a ready case file', async ({

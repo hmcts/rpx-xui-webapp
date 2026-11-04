@@ -110,6 +110,16 @@
     {
       "project": "chromium",
       "spec": "playwright_tests_new/integration/test/caseFileView/caseFileView.negative.spec.ts",
+      "title": "Case file view negative with RESTRICTED_CASE_FILE_VIEW_ON › Mocked V1 legacy binary denial does not display document content"
+    },
+    {
+      "project": "chromium",
+      "spec": "playwright_tests_new/integration/test/caseFileView/caseFileView.negative.spec.ts",
+      "title": "Case file view negative with RESTRICTED_CASE_FILE_VIEW_ON › Mocked V2 CDAM binary denial does not display document content"
+    },
+    {
+      "project": "chromium",
+      "spec": "playwright_tests_new/integration/test/caseFileView/caseFileView.negative.spec.ts",
       "title": "Case file view negative with RESTRICTED_CASE_FILE_VIEW_ON › Mocked V1 legacy binary failure does not display document content"
     },
     {

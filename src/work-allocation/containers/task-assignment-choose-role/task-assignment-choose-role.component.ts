@@ -1,4 +1,3 @@
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';

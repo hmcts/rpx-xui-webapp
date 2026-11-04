@@ -24,6 +24,13 @@ const CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF_PATH = path.resolve(
 
 export const CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF = readFileSync(CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF_PATH);
 
+export const CASE_FILE_VIEW_BINARY_FAILURE_RESPONSE = {
+  status: 500,
+  contentType: 'application/json',
+  body: JSON.stringify({ message: 'forced document binary failure' }),
+};
+
+// These fictional document records and shared PDF bytes prove UI contracts only, not real case membership or delivery.
 const buildDocument = (documentId: string, filename: string, uploadTimestamp: string) => ({
   document_url: `http://localhost:3000/documents/${documentId}`,
   document_filename: filename,

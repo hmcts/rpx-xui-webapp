@@ -3093,9 +3093,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.19-exui-5450-rc1":
-  version: 7.4.19-exui-5450-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.19-exui-5450-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.19-exui-5450-rc2":
+  version: 7.4.19-exui-5450-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.19-exui-5450-rc2"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
@@ -3142,7 +3142,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/209f3c23b550a52ac7e7e05b959f00df9bf4159427330c70d67b79eac1bbc84311c0ca57684a153c6afa959cfb54aa6e031a127509cd71fca51bbfef422503f9
+  checksum: 10/7b307e2c57c532e532292ba1cb3bcdb6eda1a0e847045defa836cd7b8c3b0bfe2ed2c70bf0746f0f1f492d050f3822d13e87b7202939a3777d18234058e28b85
   languageName: node
   linkType: hard
 
@@ -19009,7 +19009,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.19-exui-5450-rc1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.19-exui-5450-rc2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
     "@hmcts/media-viewer": "npm:4.2.47"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

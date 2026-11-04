@@ -23,7 +23,13 @@ export async function setupMediaViewerHandoffAnnotationRoutes(viewer: Page, base
 
 export async function openMockMediaViewer(opener: Page, baseURL: string) {
   const openerUrl = new URL('/exui-4461-handoff-harness', baseURL).href;
-  await opener.route(openerUrl, (route) => route.fulfill({ contentType: 'text/html', body: MEDIA_VIEWER_OPENER_HTML }));
+  await opener.route(openerUrl, (route) =>
+    route.fulfill({
+      contentType: 'text/html',
+      headers: { 'Cross-Origin-Opener-Policy': 'same-origin' },
+      body: MEDIA_VIEWER_OPENER_HTML,
+    })
+  );
   await opener.goto(openerUrl);
   const [viewer] = await Promise.all([
     opener.waitForEvent('popup'),

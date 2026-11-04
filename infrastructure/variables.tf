@@ -86,3 +86,15 @@ variable "exui_pui_activations_email_address_key" {
   description = "Email address key in Azure Key Vault for ExUI PUI activations reporting."
   type        = string
 }
+
+variable "exui_mo_logins_stats_enabled" {
+  default     = false
+  description = "Enable ExUI Manage Organisation login stats weekly reporting"
+  type        = bool
+}
+
+variable "exui_mo_logins_stats_email_address_key" {
+  default     = "exui-mo-logins-stats-email"
+  description = "Email address key in Azure Key Vault for ExUI Manage Organisation login redirect stats reporting."
+  type        = string
+}

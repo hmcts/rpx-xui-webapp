@@ -127,9 +127,18 @@ data "azurerm_key_vault_secret" "exui_pui_activations_email" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+data "azurerm_key_vault_secret" "exui_mo_logins_stats_email" {
+  count        = var.exui_mo_logins_stats_enabled ? 1 : 0
+  name         = var.exui_mo_logins_stats_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
 locals {
   welsh_emails                 = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
   exui_weekly_stats_emails     = var.exui_weekly_stats_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_weekly_stats_email.0.value)) : []
   exui_throughput_stats_emails = var.exui_throughput_stats_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_throughput_stats_email.0.value)) : []
   exui_pui_activations_emails  = var.exui_pui_activations_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_pui_activations_email.0.value)) : []
+  exui_mo_logins_stats_emails = var.exui_mo_logins_stats_enabled ? compact([
+    for email in split(",", data.azurerm_key_vault_secret.exui_mo_logins_stats_email.0.value) : trimspace(email)
+  ]) : []
 }

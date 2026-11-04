@@ -18,4 +18,5 @@ exui_throughput_stats_enabled = true
 exui_pui_activations_enabled = true
 
 # ExUI Manage Organisation Login Stats Reporting
-exui_mo_logins_stats_enabled = true
+# Enable only after the exui-mo-logins-stats-email secret is configured in the shared vault.
+exui_mo_logins_stats_enabled = false

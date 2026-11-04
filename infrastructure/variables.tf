@@ -93,8 +93,8 @@ variable "exui_mo_logins_stats_enabled" {
   type        = bool
 }
 
-variable "exui_mo_logins_stats_recipient_address" {
-  default     = ""
-  description = "Group email address that receives the ExUI Manage Organisation login stats report. Set explicitly when enabling reporting."
+variable "exui_mo_logins_stats_email_address_key" {
+  default     = "exui-mo-logins-stats-email"
+  description = "Email address key in Azure Key Vault for ExUI Manage Organisation login redirect stats reporting."
   type        = string
 }

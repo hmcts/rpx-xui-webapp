@@ -1536,7 +1536,7 @@ resource "azurerm_automation_runbook" "exui_mo_logins_stats_runbook" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   log_verbose             = true
   log_progress            = true
-  description             = "Generates a weekly 31-day ExUI Manage Organisation login report from Application Insights"
+  description             = "Generates a weekly 31-day ExUI Manage Organisation login redirect report from Application Insights"
   runbook_type            = "PowerShell"
   content                 = <<EOT
 param(
@@ -1548,6 +1548,16 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+$recipientAddrList = @($recipientaddress -split "," | ForEach-Object {
+    $address = $_.Trim()
+    if (-not [string]::IsNullOrWhiteSpace($address)) {
+        @{ address = $address }
+    }
+})
+if ($recipientAddrList.Count -eq 0) {
+    throw "ExUI MO login redirect report recipient address is missing."
+}
 
 try {
     Connect-AzAccount -Identity
@@ -1563,8 +1573,7 @@ requests
 | where name == "POST /login"
 | where timestamp >= ago(31d)
 | project timestamp, url
-| extend service = tostring(parse_url(url)["Query Parameters"]["client_id"]),
-    app = tostring(parse_url(url)["Query Parameters"]["redirect_uri"])
+| extend service = tostring(parse_url(url)["Query Parameters"]["client_id"])
 | where service == "xuimowebapp"
 | summarize logins_per_day = count() by service, bin(timestamp, 1d)
 | sort by timestamp asc, service asc
@@ -1632,8 +1641,8 @@ else {
 </div>
 "@
 
-    $htmlTable = "<table><thead><tr><th>Date</th><th>MO logins</th></tr></thead><tbody>"
-    $htmlChart = "<h3>Daily Manage Organisation logins</h3><div class=`"chart`">"
+    $htmlTable = "<table><thead><tr><th>Date</th><th>MO login redirects</th></tr></thead><tbody>"
+    $htmlChart = "<h3>Daily Manage Organisation login redirects</h3><div class=`"chart`">"
     foreach ($row in $dataRows) {
         $loginCount = if ($null -ne $row.logins_per_day) { [int]$row.logins_per_day } else { 0 }
         $date = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
@@ -1685,10 +1694,10 @@ tfoot th { background: #005ea5; }
 </style>
 </head>
 <body>
-<h2>ExUI Manage Organisation Logins Stats</h2>
+<h2>ExUI Manage Organisation Login Redirect Stats</h2>
 <p>Environment: <strong>$environment</strong></p>
 <p>Reporting date: <strong>$reportDate</strong></p>
-<p>Successful <code>POST /login</code> redirects for the <code>xuimowebapp</code> client over the last 31 days.</p>
+<p>Successful <code>POST /login</code> redirects for the <code>xuimowebapp</code> client over the last 31 days. This counts login redirects rather than completed authenticated sessions. The average per active day includes only days with at least one matching redirect.</p>
 $htmlSummary
 $htmlTable
 $htmlChart
@@ -1703,10 +1712,10 @@ try {
     $emailPayload = @{
         senderAddress = $senderaddress
         recipients = @{
-            to = @(@{ address = $recipientaddress })
+            to = $recipientAddrList
         }
         content = @{
-            subject = "ExUI MO Logins Stats - $environment - $reportDate"
+            subject = "ExUI MO Login Redirect Stats - $environment - $reportDate"
             html = $emailBody
         }
         attachments = @(
@@ -1751,7 +1760,7 @@ resource "azurerm_automation_schedule" "exui_mo_logins_stats_schedule" {
   frequency               = "Week"
   interval                = 1
   start_time              = timeadd(timestamp(), "10m")
-  timezone                = "UTC"
+  timezone                = "Etc/UTC"
   week_days               = ["Thursday"]
 
   lifecycle {
@@ -1770,8 +1779,15 @@ resource "azurerm_automation_job_schedule" "exui_mo_logins_stats_job" {
     appinsightsappid = module.application_insights.app_id
     acsresourcename  = azurerm_communication_service.comm_service.0.name
     senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
-    recipientaddress = var.exui_mo_logins_stats_recipient_address
+    recipientaddress = join(",", local.exui_mo_logins_stats_emails)
     environment      = var.env
+  }
+
+  lifecycle {
+    precondition {
+      condition     = length(local.exui_mo_logins_stats_emails) > 0
+      error_message = "Configure at least one recipient in the ExUI MO login stats Key Vault secret before enabling reporting."
+    }
   }
 
   depends_on = [

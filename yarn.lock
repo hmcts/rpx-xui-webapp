@@ -3093,9 +3093,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.23":
-  version: 7.4.23
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.23"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.24":
+  version: 7.4.24
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.24"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
@@ -3142,7 +3142,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/b49493b3552fc2215c1cd43223b0562aeafdd32620fc3690b2a113d43b80ed3f39eb8d75b8e9905cb670ad59ec4981856fa1271ca56bd612f0762dd3fba4af93
+  checksum: 10/af6631c32279efd475fa9fd355eed76501bbcb18b73a8e1605a4d161d707ac3270bbc747de133765fd323c29d944d57dbf27aa67c6beecf6e74788b36e99371d
   languageName: node
   linkType: hard
 
@@ -14328,22 +14328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^18.0.1, joi@npm:^18.0.2":
-  version: 18.2.9
-  resolution: "joi@npm:18.2.9"
-  dependencies:
-    "@hapi/address": "npm:^5.1.1"
-    "@hapi/formula": "npm:^3.0.2"
-    "@hapi/hoek": "npm:^11.0.7"
-    "@hapi/pinpoint": "npm:^2.0.1"
-    "@hapi/tlds": "npm:^1.1.1"
-    "@hapi/topo": "npm:^6.0.2"
-    "@standard-schema/spec": "npm:^1.1.0"
-  checksum: 10/b6cb61b45513415131ffa9617405713d54cc50392f2c3872c9841c6509b575bbb53145edd1fd7464075aa1f8a3eb0092171f36eb65dbb9aff06afaebc88ea46b
-  languageName: node
-  linkType: hard
-
-"joi@npm:^18.3.0":
+"joi@npm:^18.0.1, joi@npm:^18.0.2, joi@npm:^18.3.0":
   version: 18.3.1
   resolution: "joi@npm:18.3.1"
   dependencies:
@@ -19050,7 +19035,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.23"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.24"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
     "@hmcts/media-viewer": "npm:4.2.47"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

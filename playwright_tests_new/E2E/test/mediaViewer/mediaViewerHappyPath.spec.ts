@@ -265,7 +265,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer', '@
     }
   });
 
-  test('Opens a legacy HTML document directly without adding referrer or case context', async ({
+  test('Opens a legacy HTML document directly with case context and no referrer', async ({
     page,
     createCasePage,
     caseDetailsPage,
@@ -301,6 +301,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer', '@
       expect(observations).toHaveLength(1);
       expect(observations[0].gateway, `Fixture capability: ${fixture.caseTypeId} must use the legacy gateway`).toBe('legacy');
       await expect(opened).toHaveURL((url) => url.pathname === browserBinaryPath);
+      expect(new URL(opened.url()).searchParams.getAll('caseId')).toEqual([fixture.caseId]);
       await expect(opened.getByRole('heading', { name: 'Document access HTML fixture', exact: true })).toBeVisible();
       await expect(opened.getByText('EXUI-4461 synthetic direct-open document.', { exact: true })).toBeVisible();
       expect(await opened.evaluate(() => ({ referrer: document.referrer, hasOpener: !!window.opener }))).toEqual({
@@ -316,9 +317,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer', '@
       });
       const requestUrl = new URL(observations[0].url);
       expect(requestUrl.origin).toBe(new URL(page.url()).origin);
-      if (requestUrl.searchParams.has('caseId')) {
-        expect(requestUrl.searchParams.getAll('caseId')).toEqual([fixture.caseId]);
-      }
+      expect(requestUrl.searchParams.getAll('caseId')).toEqual([fixture.caseId]);
     } finally {
       monitor.dispose();
       if (htmlPage && !htmlPage.isClosed()) {

@@ -29,9 +29,12 @@ test.describe('Media viewer mocked handoff guards', { tag: ['@integration', '@in
       await expect(viewer).toHaveTitle('Alpha evidence.pdf - View Document');
       await expect(viewerPage.standaloneMediaViewPanel).toContainText('Case File View - Document Delivery Fixture');
       expect(await viewer.evaluate(() => sessionStorage.getItem('media-viewer-info'))).toBe(MEDIA_VIEWER_HANDOFF_PAYLOAD);
-      const expectedBinary = new URL(`/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`, baseURL).href;
+      const expectedBinary = new URL(
+        `/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary?caseId=${MEDIA_VIEWER_HANDOFF_CASE_ID}`,
+        baseURL
+      ).href;
       expect(binaryRequests).toHaveLength(1);
-      expect([expectedBinary, `${expectedBinary}?caseId=${MEDIA_VIEWER_HANDOFF_CASE_ID}`]).toContain(binaryRequests[0]);
+      expect(binaryRequests[0]).toBe(expectedBinary);
       expect(routeClosure.getUnexpectedRequests()).toEqual([]);
     });
   }
@@ -46,9 +49,12 @@ test.describe('Media viewer mocked handoff guards', { tag: ['@integration', '@in
     await dispatchInvalidMediaViewerHandoff(viewer, MEDIA_VIEWER_REPLAY_PAYLOAD, {});
     expect(await viewer.evaluate(() => sessionStorage.getItem('media-viewer-info'))).toBe(MEDIA_VIEWER_HANDOFF_PAYLOAD);
     await expect(viewer).toHaveTitle('Alpha evidence.pdf - View Document');
-    const expectedBinary = new URL(`/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`, baseURL).href;
+    const expectedBinary = new URL(
+      `/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary?caseId=${MEDIA_VIEWER_HANDOFF_CASE_ID}`,
+      baseURL
+    ).href;
     expect(binaryRequests).toHaveLength(1);
-    expect([expectedBinary, `${expectedBinary}?caseId=${MEDIA_VIEWER_HANDOFF_CASE_ID}`]).toContain(binaryRequests[0]);
+    expect(binaryRequests[0]).toBe(expectedBinary);
     expect(routeClosure.getUnexpectedRequests()).toEqual([]);
   });
 });

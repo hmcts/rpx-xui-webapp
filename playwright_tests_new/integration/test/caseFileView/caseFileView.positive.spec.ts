@@ -96,7 +96,9 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
         await caseFileViewPage.clickFile('Evidence', 'Zeta evidence.pdf');
         await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeZeta);
         const expectedUrl = `${caseUrl.origin}${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceZeta}/binary`;
-        expect([expectedUrl, `${expectedUrl}?caseId=${caseId}`]).toContain(binaryRequests.at(-1)?.url);
+        expect(binaryRequests.at(-1)?.url).toBe(
+          gateway.binaryPath === '/documents' ? `${expectedUrl}?caseId=${caseId}` : expectedUrl
+        );
       });
 
       await test.step('Select Alpha evidence and update the binary request target', async () => {
@@ -104,7 +106,9 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
         await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
         await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeAlpha);
         const expectedUrl = `${caseUrl.origin}${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`;
-        expect([expectedUrl, `${expectedUrl}?caseId=${caseId}`]).toContain(binaryRequests.at(-1)?.url);
+        expect(binaryRequests.at(-1)?.url).toBe(
+          gateway.binaryPath === '/documents' ? `${expectedUrl}?caseId=${caseId}` : expectedUrl
+        );
         await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
       });
 

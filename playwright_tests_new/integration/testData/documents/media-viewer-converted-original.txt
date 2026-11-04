@@ -1,0 +1,4 @@
+EXUI-4461 original text document
+
+This synthetic TXT document is displayed as a converted PDF.
+Download must preserve these original text bytes and the .txt filename.

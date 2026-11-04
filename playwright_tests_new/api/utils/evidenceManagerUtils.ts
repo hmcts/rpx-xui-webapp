@@ -1,4 +1,4 @@
-import { expect, request as playwrightRequest } from '@playwright/test';
+import { request as playwrightRequest } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
 
 import { config } from './apiTestRuntimeConfig';
@@ -19,16 +19,6 @@ export async function resolveSharedDocId(configured: string | undefined, uploadF
     return configured;
   }
   return uploadFn();
-}
-
-export function assertBinaryResponse(status: number, data?: ArrayBuffer | string): void {
-  if (status === 200) {
-    if (typeof data === 'string') {
-      expect(data.length).toBeGreaterThan(0);
-      return;
-    }
-    expect(data?.byteLength ?? 0).toBeGreaterThan(0);
-  }
 }
 
 export function assertAnnotationResponse(status: number, data: unknown): void {
@@ -74,10 +64,11 @@ export function buildXsrfHeader(xsrf?: string): Record<string, string> {
 }
 
 export function resolveUploadedDocId(body: unknown): string | undefined {
-  if (typeof body !== 'object' || body === null || !('documents' in body)) {
+  if (typeof body !== 'object' || body === null) {
     return undefined;
   }
-  const documents = (body as { documents?: unknown }).documents;
+  const payload = body as { documents?: unknown; _embedded?: { documents?: unknown } };
+  const documents = payload._embedded?.documents ?? payload.documents;
   if (!Array.isArray(documents) || documents.length === 0) {
     return undefined;
   }
@@ -85,9 +76,21 @@ export function resolveUploadedDocId(body: unknown): string | undefined {
   if (typeof first !== 'object' || first === null) {
     return undefined;
   }
-  const doc = first as { originalDocumentId?: unknown; documentId?: unknown; id?: unknown };
+  const doc = first as {
+    originalDocumentId?: unknown;
+    documentId?: unknown;
+    id?: unknown;
+    _links?: { self?: { href?: string } };
+  };
   const candidate = doc.originalDocumentId ?? doc.documentId ?? doc.id;
-  return typeof candidate === 'string' ? candidate : undefined;
+  if (typeof candidate === 'string' && candidate.trim()) return candidate;
+  const href = doc._links?.self?.href;
+  if (!href) return undefined;
+  try {
+    return new URL(href).pathname.match(/^\/documents\/([^/]+)\/?$/)?.[1];
+  } catch {
+    return undefined;
+  }
 }
 
 export async function resolveAnnotationSetId(
@@ -113,7 +116,7 @@ export async function buildAnnotation(
   headers: Record<string, string>,
   docId: string,
   annotationSetId?: string
-): Promise<AnnotationPayload> {
+): Promise<AnnotationPayload & { id: string }> {
   const annoId = uuid();
   const rectangleId = uuid();
   const setId = annotationSetId ?? (await resolveAnnotationSetId(apiClient, headers, docId));
@@ -138,7 +141,11 @@ export async function buildAnnotation(
   };
 }
 
-export async function buildBookmark(apiClient: ApiClient, docId: string, createdBy?: string): Promise<BookmarkPayload> {
+export async function buildBookmark(
+  apiClient: ApiClient,
+  docId: string,
+  createdBy?: string
+): Promise<BookmarkPayload & { id: string }> {
   const userId = createdBy ?? (await fetchUserId(apiClient));
   return {
     id: uuid(),
@@ -165,48 +172,39 @@ type UploadDeps = {
   getStoredCookie?: typeof getStoredCookie;
   requestFactory?: typeof playwrightRequest.newContext;
   resolveUploadedDocId?: typeof resolveUploadedDocId;
-  uuidFn?: typeof uuid;
 };
 
 export async function uploadSyntheticDoc(deps: UploadDeps = {}): Promise<string> {
-  // Try to upload a tiny text blob to DM via the proxy using the stored session.
   const ensure = deps.ensureStorageState ?? ensureStorageState;
   const getCookie = deps.getStoredCookie ?? getStoredCookie;
   const requestFactory = deps.requestFactory ?? ((options) => playwrightRequest.newContext(options));
   const resolveId = deps.resolveUploadedDocId ?? resolveUploadedDocId;
-  const uuidFn = deps.uuidFn ?? uuid;
+  const storageState = await ensure('solicitor');
+  const xsrf = await getCookie('solicitor', 'XSRF-TOKEN');
+  const ctx = await requestFactory({
+    baseURL: config.baseUrl.replace(/\/+$/, ''),
+    storageState,
+    ignoreHTTPSErrors: true,
+  });
   try {
-    const storageState = await ensure('solicitor');
-    const xsrf = await getCookie('solicitor', 'XSRF-TOKEN');
-    const ctx = await requestFactory({
-      baseURL: config.baseUrl.replace(/\/+$/, ''),
-      storageState,
-      ignoreHTTPSErrors: true,
-    });
-
     const res = await ctx.post('documents', {
       multipart: {
         files: {
-          name: 'file',
+          name: 'evidence-manager-fixture.txt',
           mimeType: 'text/plain',
           buffer: Buffer.from('synthetic evidence-manager upload'),
         },
       },
       headers: buildXsrfHeader(xsrf),
+      failOnStatusCode: false,
     });
-    if (res.ok()) {
-      const body = await res.json();
-      const id = resolveId(body);
-      if (id) {
-        await ctx.dispose();
-        return id;
-      }
-    }
+    if (!res.ok()) throw new Error(`Evidence Manager fixture upload failed with HTTP ${res.status()}.`);
+    const id = resolveId(await res.json());
+    if (!id) throw new Error('Evidence Manager fixture upload returned no document ID.');
+    return id;
+  } finally {
     await ctx.dispose();
-  } catch {
-    // best-effort; fall through
   }
-  return uuidFn();
 }
 
 function getAnnotations(data: unknown): unknown[] {

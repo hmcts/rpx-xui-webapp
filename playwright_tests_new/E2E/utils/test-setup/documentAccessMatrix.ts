@@ -37,8 +37,16 @@ type PrlDocumentInput = DocumentUploadInput & {
   testInfo?: TestInfo;
 };
 
-async function bindPrlApplicantOrganisation(page: Page, caseId: string): Promise<void> {
-  const response = await page.request.get('/api/organisation', { failOnStatusCode: false, maxRedirects: 0 });
+export async function createPrlDocumentCase(
+  options: PrlDocumentInput,
+  dependencies = {
+    setupCaseForJourney,
+    uploadLegacyDocument,
+  }
+): Promise<CaseBoundDocument & { savedPaths: string[] }> {
+  const jurisdictionId = 'PRIVATELAW';
+  const caseTypeId = 'PRLAPPS';
+  const response = await options.page.request.get('/api/organisation', { failOnStatusCode: false, maxRedirects: 0 });
   if (response.status() !== 200) throw new Error(`PRL fixture organisation lookup failed with HTTP ${response.status()}.`);
   const organisation = await response.json();
   if (
@@ -49,61 +57,64 @@ async function bindPrlApplicantOrganisation(page: Page, caseId: string): Promise
   ) {
     throw new Error('PRL fixture organisation metadata is missing.');
   }
-  const solicitorOrg = { OrganisationID: organisation.organisationIdentifier, OrganisationName: organisation.name };
-  const event = await page.request.get(
-    `/data/internal/cases/${encodeURIComponent(caseId)}/event-triggers/applicantsDetails?ignore-warning=false`,
+  const creation = await options.page.request.get(
+    '/data/internal/case-types/PRLAPPS/event-triggers/solicitorCreate?ignore-warning=false',
     {
       failOnStatusCode: false,
       maxRedirects: 0,
-      headers: { experimental: 'true', Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json' },
+      headers: {
+        experimental: 'true',
+        Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-case-trigger.v2+json;charset=UTF-8',
+      },
     }
   );
-  if (event.status() !== 200) throw new Error(`PRL applicant details event trigger failed with HTTP ${event.status()}.`);
-  const trigger = (await event.json()) as {
-    case_id?: string | number;
-    event_token?: string;
-    case_fields?: Array<{ id: string; value: unknown }>;
+  if (creation.status() !== 200) throw new Error(`PRL normal creation event trigger failed with HTTP ${creation.status()}.`);
+  const trigger = (await creation.json()) as {
+    id?: string;
+    case_fields?: Array<{
+      id: string;
+      value?: { OrgPolicyCaseAssignedRole?: string };
+      field_type?: { id: string; complex_fields?: Array<{ id: string; value?: string }> };
+    }>;
   };
-  if (typeof trigger.event_token !== 'string' || !trigger.event_token.trim()) {
-    throw new Error('PRL applicant details event token is missing.');
-  }
   const fields = Array.isArray(trigger.case_fields) ? trigger.case_fields : [];
-  const applicants = fields.find((field) => field.id === 'applicants')?.value;
-  const caseType = fields.find((field) => field.id === 'caseTypeOfApplication')?.value;
+  const policy = fields.find((field) => field.id === 'applicantOrganisationPolicy');
+  // Match the toolkit's prepareValue: a supplied complex value takes precedence over its child defaults.
+  const role = policy?.value
+    ? policy.value.OrgPolicyCaseAssignedRole
+    : policy?.field_type?.complex_fields?.find((field) => field.id === 'OrgPolicyCaseAssignedRole')?.value;
   if (
-    String(trigger.case_id) !== caseId ||
-    caseType !== 'C100' ||
-    !Array.isArray(applicants) ||
-    !applicants.length ||
-    applicants.some((applicant) => typeof applicant?.id !== 'string' || !applicant.id || !applicant.value) ||
-    typeof applicants[0].value.representativeFirstName !== 'string' ||
-    !applicants[0].value.representativeFirstName.trim() ||
-    typeof applicants[0].value.representativeLastName !== 'string' ||
-    !applicants[0].value.representativeLastName.trim()
+    trigger.id !== 'solicitorCreate' ||
+    policy?.field_type?.id !== 'OrganisationPolicy' ||
+    role !== '[APPLICANTSOLICITOR]' ||
+    !fields.some((field) => field.id === 'caseTypeOfApplication') ||
+    !fields.some((field) => field.id === 'c100ConfidentialityStatementDisclaimer')
   ) {
-    throw new Error('PRL applicant details event did not return the saved C100 applicants and representative names.');
+    throw new Error('PRL normal creation event did not declare the supported C100 fields and organisation policy role.');
   }
-  // The supported callback derives organisation policies from party details; never post a fabricated case-role policy.
-  const submitted = await page.request.post(`/data/cases/${encodeURIComponent(caseId)}/events`, {
-    failOnStatusCode: false,
-    maxRedirects: 0,
-    headers: {
-      experimental: 'true',
-      Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json',
-      'Content-Type': 'application/json',
-    },
-    data: {
-      data: {
-        caseTypeOfApplication: caseType,
-        applicants: [{ ...applicants[0], value: { ...applicants[0].value, solicitorOrg } }, ...applicants.slice(1)],
+  const organisationPolicy = {
+    Organisation: { OrganisationID: organisation.organisationIdentifier, OrganisationName: organisation.name },
+    OrgPolicyCaseAssignedRole: role,
+  };
+  const { caseNumber: caseId } = await dependencies.setupCaseForJourney({
+    scenario: 'document-access-prl',
+    jurisdiction: jurisdictionId,
+    caseType: caseTypeId,
+    apiEventId: 'solicitorCreate',
+    mode: 'api-required',
+    apiPayload: {
+      fieldValues: {
+        caseTypeOfApplication: 'C100',
+        c100ConfidentialityStatementDisclaimer: ['confidentialityStatementUnderstood'],
+        applicantOrganisationPolicy: organisationPolicy,
       },
-      event: { id: 'applicantsDetails', summary: 'Bind synthetic applicant to the authenticated organisation' },
-      event_token: trigger.event_token,
-      ignore_warning: false,
     },
+    page: options.page,
+    createCasePage: options.createCasePage,
+    caseDetailsPage: options.caseDetailsPage,
+    testInfo: options.testInfo,
   });
-  if (!submitted.ok()) throw new Error(`PRL applicant details submission failed with HTTP ${submitted.status()}.`);
-  const readback = await page.request.get(`/data/cases/${encodeURIComponent(caseId)}`, {
+  const policyReadback = await options.page.request.get(`/data/cases/${encodeURIComponent(caseId)}`, {
     failOnStatusCode: false,
     maxRedirects: 0,
     headers: {
@@ -111,44 +122,22 @@ async function bindPrlApplicantOrganisation(page: Page, caseId: string): Promise
       Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.case.v2+json;charset=UTF-8',
     },
   });
-  if (readback.status() !== 200) {
-    throw new Error(`PRL applicant organisation readback failed with HTTP ${readback.status()}.`);
+  if (policyReadback.status() !== 200) {
+    throw new Error(`PRL organisation policy readback failed with HTTP ${policyReadback.status()}.`);
   }
-  const saved = await readback.json();
-  // Role-restricted policies can be omitted; the real sharing and access controls prove the resulting case binding.
-  const applicant = saved?.data?.applicants?.[0];
+  const saved = await policyReadback.json();
+  const savedPolicy = saved?.data?.applicantOrganisationPolicy;
   if (
     String(saved?.id) !== caseId ||
-    applicant?.id !== applicants[0].id ||
-    applicant?.value?.solicitorOrg?.OrganisationID !== solicitorOrg.OrganisationID ||
-    applicant?.value?.solicitorOrg?.OrganisationName !== solicitorOrg.OrganisationName
+    saved?.data?.caseTypeOfApplication !== 'C100' ||
+    savedPolicy?.Organisation?.OrganisationID !== organisationPolicy.Organisation.OrganisationID ||
+    savedPolicy?.Organisation?.OrganisationName !== organisationPolicy.Organisation.OrganisationName ||
+    savedPolicy?.OrgPolicyCaseAssignedRole !== role
   ) {
-    throw new Error('PRL applicant organisation readback did not confirm the saved applicant and authenticated organisation.');
+    throw new Error(
+      'PRL organisation policy readback did not confirm the C100 case, authenticated organisation and declared role.'
+    );
   }
-}
-
-export async function createPrlDocumentCase(
-  options: PrlDocumentInput,
-  dependencies = {
-    setupCaseForJourney,
-    uploadLegacyDocument,
-  }
-): Promise<CaseBoundDocument & { savedPaths: string[] }> {
-  const jurisdictionId = 'PRIVATELAW';
-  const caseTypeId = 'PRLAPPS';
-  const { caseNumber: caseId } = await dependencies.setupCaseForJourney({
-    scenario: 'document-access-prl',
-    jurisdiction: jurisdictionId,
-    caseType: caseTypeId,
-    apiEventId: 'testingSupportDummySolicitorCreate',
-    mode: 'api-required',
-    apiPayload: { fieldValues: { caseTypeOfApplication: 'C100', applicantCaseName: options.fileName } },
-    page: options.page,
-    createCasePage: options.createCasePage,
-    caseDetailsPage: options.caseDetailsPage,
-    testInfo: options.testInfo,
-  });
-  await bindPrlApplicantOrganisation(options.page, caseId);
   const document = await dependencies.uploadLegacyDocument(options);
   const documentId = documentIdFromMetadata(document);
   const event = await options.page.request.get(

@@ -89,7 +89,7 @@ test.describe('Legacy document authorization', { tag: ['@e2e', '@e2e-media-viewe
       body: JSON.stringify({
         jurisdiction: 'PRIVATELAW',
         caseType: 'PRLAPPS',
-        createEvent: 'testingSupportDummySolicitorCreate',
+        createEvent: 'solicitorCreate',
         attachEvent: 'otherProceedings',
         gateway: 'legacy',
         distinctResolvedUsers: true,

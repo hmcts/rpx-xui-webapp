@@ -19,50 +19,32 @@ const readback = {
 };
 
 const organisation = { OrganisationID: 'ACTUAL-ORG', OrganisationName: 'Synthetic organisation' };
-const applicants = [
-  {
-    id: 'applicant-a',
-    value: {
-      firstName: 'Synthetic',
-      representativeFirstName: 'Test',
-      representativeLastName: 'Solicitor',
-      solicitorOrg: { OrganisationID: 'CANNED', OrganisationName: 'Canned organisation' },
-    },
-  },
-  {
-    id: 'applicant-b',
-    value: {
-      firstName: 'Other synthetic applicant',
-      representativeFirstName: 'Other',
-      representativeLastName: 'Solicitor',
-      solicitorOrg: { OrganisationID: 'OTHER', OrganisationName: 'Other organisation' },
-    },
-  },
-];
-const boundApplicants = [{ ...applicants[0], value: { ...applicants[0].value, solicitorOrg: organisation } }, applicants[1]];
-const applicantEvent = {
-  case_id: 'case-a',
-  event_token: 'applicants-token',
+const organisationPolicy = { Organisation: organisation, OrgPolicyCaseAssignedRole: '[APPLICANTSOLICITOR]' };
+const creationEvent = {
+  id: 'solicitorCreate',
+  event_token: 'create-token',
   case_fields: [
-    { id: 'applicants', value: applicants },
-    { id: 'caseTypeOfApplication', value: 'C100' },
+    { id: 'caseTypeOfApplication' },
+    { id: 'c100ConfidentialityStatementDisclaimer' },
+    {
+      id: 'applicantOrganisationPolicy',
+      field_type: {
+        id: 'OrganisationPolicy',
+        complex_fields: [{ id: 'OrgPolicyCaseAssignedRole', value: '[APPLICANTSOLICITOR]' }],
+      },
+    },
   ],
 };
 const caseReadback = {
   id: 'case-a',
-  data: {
-    applicants: boundApplicants,
-  },
+  data: { caseTypeOfApplication: 'C100', applicantOrganisationPolicy: organisationPolicy },
 };
 
 type Reply = { status: number; body: unknown };
-function fixtureHarness(
-  overrides: Partial<Record<'organisation' | 'applicants' | 'applicantSubmit' | 'persistedCase' | 'attachment', Reply>> = {}
-) {
+function fixtureHarness(overrides: Partial<Record<'organisation' | 'creation' | 'persistedCase' | 'attachment', Reply>> = {}) {
   const replies = {
     organisation: { status: 200, body: { organisationIdentifier: 'ACTUAL-ORG', name: 'Synthetic organisation' } },
-    applicants: { status: 200, body: applicantEvent },
-    applicantSubmit: { status: 201, body: caseReadback },
+    creation: { status: 200, body: creationEvent },
     persistedCase: { status: 200, body: caseReadback },
     attachment: { status: 200, body: { event_token: 'document-token' } },
     ...overrides,
@@ -79,7 +61,17 @@ function fixtureHarness(
       get: async (url: string, options?: unknown) => {
         operations.push(url);
         if (url === '/api/organisation') return response(replies.organisation);
-        if (url.includes('event-triggers/applicantsDetails')) return response(replies.applicants);
+        if (url === '/data/internal/case-types/PRLAPPS/event-triggers/solicitorCreate?ignore-warning=false') {
+          expect(options).toEqual({
+            failOnStatusCode: false,
+            maxRedirects: 0,
+            headers: {
+              experimental: 'true',
+              Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-case-trigger.v2+json;charset=UTF-8',
+            },
+          });
+          return response(replies.creation);
+        }
         if (url === '/data/cases/case-a') {
           expect(options).toEqual({
             failOnStatusCode: false,
@@ -99,7 +91,7 @@ function fixtureHarness(
         expect(url).toBe('/data/cases/case-a/events');
         operations.push(options.data.event.id);
         submissions.push(options.data);
-        return response(options.data.event.id === 'applicantsDetails' ? replies.applicantSubmit : { status: 201, body: {} });
+        return response({ status: 201, body: {} });
       },
     },
   } as unknown as Page;
@@ -117,8 +109,14 @@ function fixtureHarness(
     dependencies: {
       setupCaseForJourney: async (options: { apiEventId?: string; apiPayload?: unknown; mode?: string }) => {
         operations.push('create');
-        expect(options.apiEventId).toBe('testingSupportDummySolicitorCreate');
-        expect(options.apiPayload).toEqual({ fieldValues: { caseTypeOfApplication: 'C100', applicantCaseName: 'known.pdf' } });
+        expect(options.apiEventId).toBe('solicitorCreate');
+        expect(options.apiPayload).toEqual({
+          fieldValues: {
+            caseTypeOfApplication: 'C100',
+            c100ConfidentialityStatementDisclaimer: ['confidentialityStatementUnderstood'],
+            applicantOrganisationPolicy: organisationPolicy,
+          },
+        });
         expect(options.mode).toBe('api-required');
         return { caseNumber: 'case-a', mode: 'api' as const };
       },
@@ -141,23 +139,16 @@ test.describe('PRL document access matrix fixture', { tag: '@svc-internal' }, ()
     const harness = fixtureHarness();
     const fixture = await createPrlDocumentCase(harness.options, harness.dependencies);
     expect(harness.operations).toEqual([
-      'create',
       '/api/organisation',
-      '/data/internal/cases/case-a/event-triggers/applicantsDetails?ignore-warning=false',
-      'applicantsDetails',
+      '/data/internal/case-types/PRLAPPS/event-triggers/solicitorCreate?ignore-warning=false',
+      'create',
       '/data/cases/case-a',
       'upload',
       '/data/internal/cases/case-a/event-triggers/otherProceedings?ignore-warning=false',
       'otherProceedings',
       '/data/internal/cases/case-a',
     ]);
-    expect(harness.submissions[0]).toEqual({
-      data: { caseTypeOfApplication: 'C100', applicants: boundApplicants },
-      event: { id: 'applicantsDetails', summary: 'Bind synthetic applicant to the authenticated organisation' },
-      event_token: 'applicants-token',
-      ignore_warning: false,
-    });
-    expect(harness.submissions[1]).toMatchObject({
+    expect(harness.submissions[0]).toMatchObject({
       data: {
         previousOrOngoingProceedingsForChildren: 'yes',
         existingProceedings: [{ value: { uploadRelevantOrder: document } }],
@@ -165,9 +156,27 @@ test.describe('PRL document access matrix fixture', { tag: '@svc-internal' }, ()
       event: { id: 'otherProceedings' },
       event_token: 'document-token',
     });
-    expect(applicants[0].value.solicitorOrg.OrganisationID).toBe('CANNED');
+    expect(harness.submissions).toHaveLength(1);
     expect(fixture.savedPaths).toEqual(['existingProceedings', 'existingProceedingsWithDoc']);
     expect(fixture.binaryPath).toBe('/documents/doc-a/binary?caseId=case-a');
+  });
+
+  test('uses the normal creation policy value when supplied by the event metadata', async () => {
+    const harness = fixtureHarness({
+      creation: {
+        status: 200,
+        body: {
+          ...creationEvent,
+          case_fields: creationEvent.case_fields.map((field) =>
+            field.id === 'applicantOrganisationPolicy'
+              ? { ...field, value: { OrgPolicyCaseAssignedRole: '[APPLICANTSOLICITOR]' } }
+              : field
+          ),
+        },
+      },
+    });
+    await createPrlDocumentCase(harness.options, harness.dependencies);
+    expect(harness.operations).toContain('upload');
   });
 
   for (const fault of [
@@ -182,78 +191,82 @@ test.describe('PRL document access matrix fixture', { tag: '@svc-internal' }, ()
       error: 'organisation metadata is missing',
     },
     {
-      name: 'applicant event unavailable',
-      replies: { applicants: { status: 403, body: {} } },
-      error: 'applicant details event trigger failed with HTTP 403',
+      name: 'normal creation event unavailable',
+      replies: { creation: { status: 403, body: {} } },
+      error: 'normal creation event trigger failed with HTTP 403',
     },
     {
-      name: 'applicant event token absent',
-      replies: { applicants: { status: 200, body: { ...applicantEvent, event_token: '' } } },
-      error: 'applicant details event token is missing',
+      name: 'wrong creation event returned',
+      replies: { creation: { status: 200, body: { ...creationEvent, id: 'testingSupportDummySolicitorCreate' } } },
+      error: 'normal creation event did not declare',
     },
     {
-      name: 'applicant records absent',
-      replies: { applicants: { status: 200, body: { ...applicantEvent, case_fields: [] } } },
-      error: 'applicant details event did not return the saved C100 applicants',
+      name: 'creation policy or required fields absent',
+      replies: { creation: { status: 200, body: { ...creationEvent, case_fields: [] } } },
+      error: 'normal creation event did not declare',
     },
     {
-      name: 'applicant submission failed',
-      replies: { applicantSubmit: { status: 422, body: {} } },
-      error: 'applicant details submission failed with HTTP 422',
+      name: 'creation policy role differs from the supported default',
+      replies: {
+        creation: {
+          status: 200,
+          body: {
+            ...creationEvent,
+            case_fields: creationEvent.case_fields.map((field) =>
+              field.id === 'applicantOrganisationPolicy'
+                ? { ...field, value: { OrgPolicyCaseAssignedRole: '[UNEXPECTED]' } }
+                : field
+            ),
+          },
+        },
+      },
+      error: 'normal creation event did not declare',
     },
     {
-      name: 'applicant readback failed',
+      name: 'policy readback failed',
       replies: { persistedCase: { status: 403, body: {} } },
-      error: 'applicant organisation readback failed with HTTP 403',
+      error: 'organisation policy readback failed with HTTP 403',
     },
     {
       name: 'wrong case read back',
       replies: { persistedCase: { status: 200, body: { ...caseReadback, id: 'other-case' } } },
-      error: 'applicant organisation readback did not confirm',
+      error: 'organisation policy readback did not confirm',
     },
     {
-      name: 'saved applicant absent',
-      replies: { persistedCase: { status: 200, body: { id: 'case-a', data: {} } } },
-      error: 'applicant organisation readback did not confirm',
+      name: 'wrong application type persisted',
+      replies: {
+        persistedCase: { status: 200, body: { ...caseReadback, data: { ...caseReadback.data, caseTypeOfApplication: 'FL401' } } },
+      },
+      error: 'organisation policy readback did not confirm',
     },
     {
-      name: 'wrong applicant read back',
+      name: 'saved policy absent',
+      replies: { persistedCase: { status: 200, body: { id: 'case-a', data: { caseTypeOfApplication: 'C100' } } } },
+      error: 'organisation policy readback did not confirm',
+    },
+    ...[
+      {
+        name: 'organisation ID not persisted',
+        policy: { ...organisationPolicy, Organisation: { ...organisation, OrganisationID: 'CANNED' } },
+      },
+      {
+        name: 'organisation name not persisted',
+        policy: { ...organisationPolicy, Organisation: { ...organisation, OrganisationName: 'Canned organisation' } },
+      },
+      {
+        name: 'declared policy role not persisted',
+        policy: { ...organisationPolicy, OrgPolicyCaseAssignedRole: '[UNEXPECTED]' },
+      },
+    ].map(({ name, policy }) => ({
+      name,
       replies: {
         persistedCase: {
           status: 200,
-          body: { id: 'case-a', data: { applicants: [{ ...boundApplicants[0], id: 'different-applicant' }] } },
+          body: { ...caseReadback, data: { ...caseReadback.data, applicantOrganisationPolicy: policy } },
         },
       },
-      error: 'applicant organisation readback did not confirm',
-    },
-    {
-      name: 'organisation name not persisted',
-      replies: {
-        persistedCase: {
-          status: 200,
-          body: {
-            id: 'case-a',
-            data: {
-              applicants: [
-                {
-                  ...boundApplicants[0],
-                  value: {
-                    ...boundApplicants[0].value,
-                    solicitorOrg: { ...organisation, OrganisationName: 'Wrong organisation' },
-                  },
-                },
-              ],
-            },
-          },
-        },
-      },
-      error: 'applicant organisation readback did not confirm',
-    },
-    {
-      name: 'applicant organisation not persisted',
-      replies: { persistedCase: { status: 200, body: { id: 'case-a', data: { ...caseReadback.data, applicants } } } },
-      error: 'applicant organisation readback did not confirm',
-    },
+      error: 'organisation policy readback did not confirm',
+    })),
   ]) {
     test(`stops before document upload when ${fault.name}`, async () => {
       const harness = fixtureHarness(fault.replies);

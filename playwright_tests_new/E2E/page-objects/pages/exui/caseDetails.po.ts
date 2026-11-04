@@ -891,6 +891,10 @@ export class CaseDetailsPage extends Base {
     await this.documentOneAction.click();
   }
 
+  getDocumentAction(fileName: string): Locator {
+    return this.caseDocumentsTable.getByRole('button', { name: fileName, exact: true });
+  }
+
   async openDocumentOneInMediaViewer(): Promise<Page> {
     const timeout = this.getRecommendedTimeoutMs({ max: 45_000, fallback: 45_000 });
     const maxAttempts = 2;

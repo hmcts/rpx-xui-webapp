@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 import { SessionCaptureError } from '../utils/errors.js';
 import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
 import {
@@ -7,6 +8,10 @@ import {
   resolveSearchCaseSessionUsers,
   resolveSearchCaseUserIdentifier,
 } from '../../integration/helpers/searchCaseSession.helper.js';
+
+const integrationTagRegistry: { availableTags: string[]; excludedTags: string[] } = JSON.parse(
+  readFileSync('playwright_tests_new/integration/tag-filter.json', 'utf8')
+);
 
 test.describe('search case session helper', { tag: '@svc-internal' }, () => {
   test('uses the default shared user pool when no env override is provided', () => {
@@ -124,6 +129,111 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual(['RESTRICTED_CASE_FILE_VIEW_ON', 'HEARING_MANAGER_CR84_ON', 'HEARING_MANAGER_CR84_OFF']);
   });
 
+  for (const includeTags of [[], ['@integration']]) {
+    test(`declares default sessions from the real integration registry for ${JSON.stringify(includeTags)}`, () => {
+      expect(resolveIntegrationSessionUsers({}, { ...integrationTagRegistry, includeTags })).toEqual([
+        'STAFF_ADMIN',
+        'BOOKING_UI-FT-ON',
+        'RESTRICTED_CASE_FILE_VIEW_ON',
+        'IAC_Judge_WA_R1',
+        'SOLICITOR',
+        'HEARING_MANAGER_CR84_ON',
+        'HEARING_MANAGER_CR84_OFF',
+        'IAC_CaseOfficer_R2',
+        'PROBATE_CASEWORKER',
+        'FPL_GLOBAL_SEARCH',
+      ]);
+    });
+  }
+
+  test('declares an unaffected feature with excluded blocked tags in the real registry', () => {
+    expect(resolveIntegrationSessionUsers({}, { ...integrationTagRegistry, includeTags: ['@integration-ccd-toolkit'] })).toEqual([
+      'SOLICITOR',
+    ]);
+  });
+
+  for (const [tag, user] of [
+    ['@blocked-exui-4272', 'SOLICITOR'],
+    ['@blocked-exui-4276', 'STAFF_ADMIN'],
+    ['@blocked-exui-4317', 'SOLICITOR'],
+    ['@blocked-exui-4318', 'STAFF_ADMIN'],
+  ]) {
+    test(`declares the exact session used by ${tag} when explicitly enabled`, () => {
+      const env = {
+        STAFF_ADMIN_POOL_ENABLED: 'true',
+        STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+        STAFF_ADMIN_1_PASSWORD: 'unit-password',
+      };
+      expect(resolveIntegrationSessionUsers(env, { ...integrationTagRegistry, includeTags: [tag], excludedTags: [] })).toEqual([
+        user,
+      ]);
+    });
+
+    test(`does not declare sessions for excluded ${tag}`, () => {
+      expect(resolveIntegrationSessionUsers({}, { ...integrationTagRegistry, includeTags: [tag] })).toEqual([]);
+    });
+  }
+
+  test('deduplicates enabled blocked and feature sessions from the real registry', () => {
+    expect(
+      resolveIntegrationSessionUsers(
+        {},
+        {
+          ...integrationTagRegistry,
+          includeTags: [
+            '@integration-ccd-toolkit',
+            '@blocked-exui-4272',
+            '@blocked-exui-4317',
+            '@blocked-exui-4276',
+            '@blocked-exui-4318',
+          ],
+          excludedTags: [],
+        }
+      )
+    ).toEqual(['SOLICITOR', 'STAFF_ADMIN']);
+  });
+
+  test('rejects unknown registry tags even when excluded from a focused run', () => {
+    expect(() =>
+      resolveIntegrationSessionUsers(
+        {},
+        {
+          includeTags: ['@integration-ccd-toolkit'],
+          excludedTags: [...integrationTagRegistry.excludedTags, '@integration-unmapped'],
+          availableTags: [...integrationTagRegistry.availableTags, '@integration-unmapped'],
+        }
+      )
+    ).toThrow('Integration session mappings missing for: @integration-unmapped');
+  });
+
+  for (const includeTags of [[], ['@integration-ccd-toolkit', '@smoke', '@blocked-other']]) {
+    test(`ignores metadata tags while declaring integration sessions for ${JSON.stringify(includeTags)}`, () => {
+      expect(
+        resolveIntegrationSessionUsers(
+          {},
+          {
+            includeTags,
+            excludedTags: [],
+            availableTags: ['@integration', '@integration-ccd-toolkit', '@smoke', '@blocked-other'],
+          }
+        )
+      ).toEqual(['SOLICITOR']);
+    });
+  }
+
+  test('rejects unknown blocked integration tags even when excluded', () => {
+    expect(() =>
+      resolveIntegrationSessionUsers(
+        {},
+        {
+          includeTags: ['@integration-ccd-toolkit'],
+          excludedTags: ['@blocked-exui-unmapped'],
+          availableTags: ['@integration', '@integration-ccd-toolkit', '@blocked-exui-unmapped'],
+        }
+      )
+    ).toThrow('Integration session mappings missing for: @blocked-exui-unmapped');
+  });
+
   test('requires every selected integration feature tag to declare its session identities', () => {
     expect(() =>
       resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
@@ -210,11 +320,11 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     const selectedUserIdentifier = await applySearchCaseSessionCookies({} as never, testInfo, env, (page, candidates) =>
       sessionCaptureTest.applySessionCookiesFromPoolWith(
         page,
-        candidates.map((userIdentifier) => ({
-          userIdentifier,
-          email: `${userIdentifier.toLowerCase()}@example.test`,
-          password: 'unit-password',
-        })),
+        candidates.map((identity) =>
+          typeof identity === 'string'
+            ? { userIdentifier: identity, email: `${identity.toLowerCase()}@example.test`, password: 'unit-password' }
+            : identity
+        ),
         async (_page, identity) => {
           const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
           attempts.push(userIdentifier);

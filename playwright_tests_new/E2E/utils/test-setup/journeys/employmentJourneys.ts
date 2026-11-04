@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
 import type { Page } from '@playwright/test';
-import { uploadDocumentViaApi } from '../uploadDocumentViaApi';
+import { uploadDocumentViaApi, type CcdDocumentValue } from '../uploadDocumentViaApi';
 import { firstNonEmpty, resolveDynamicOrganisationRunId } from '../../dynamicOrganisationRunId.js';
 import { createPayloadFaker } from '../payloads/core/helpers';
 
@@ -47,7 +47,7 @@ export async function uploadEmploymentDraftDocument(
   createCasePage: CreateCasePage,
   fileName: string,
   mimeType: string,
-  fileContent: string | Buffer
+  fileContent: string
 ): Promise<void> {
   await prepareEmploymentDraftUploadPage(createCasePage);
   await clickEmploymentDocumentCollectionAddButton(createCasePage);
@@ -78,6 +78,16 @@ export async function uploadEmploymentDraftDocumentViaApi(options: {
     fileContent: options.fileContent,
   });
 
+  await attachEmploymentDraftDocumentViaApi({ ...options, uploadedDocument });
+}
+
+export async function attachEmploymentDraftDocumentViaApi(options: {
+  page: Page;
+  caseNumber: string;
+  uploadedDocument: CcdDocumentValue;
+  topLevelDocuments?: string;
+  miscDocuments?: string;
+}): Promise<void> {
   const eventId = 'uploadDocument';
   const eventTriggerPath = `data/internal/cases/${encodeURIComponent(options.caseNumber)}/event-triggers/${encodeURIComponent(
     eventId
@@ -107,7 +117,7 @@ export async function uploadEmploymentDraftDocumentViaApi(options: {
         {
           id: randomUUID(),
           value: {
-            uploadedDocument: uploadedDocument,
+            uploadedDocument: options.uploadedDocument,
             topLevelDocuments: options.topLevelDocuments ?? 'Misc',
             miscDocuments: options.miscDocuments ?? 'Other',
           },

@@ -93,15 +93,20 @@ export async function setupCaseFileViewMockRoutes(
   });
 }
 
-export async function setupCaseFileViewDocumentBinaryMockRoutes(page: Page, onRequest?: (url: string) => void): Promise<void> {
-  await page.route(/\/documentsv2\/[^/?]+\/binary(?:\?[^#]*)?$/, async (route) => {
-    onRequest?.(route.request().url());
-    await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
-  });
-
-  // Legacy binary requests carry case context as a query parameter for XUI's server-side access check.
-  await page.route(/\/documents\/[^/?]+\/binary(?:\?[^#]*)?$/, async (route) => {
-    onRequest?.(route.request().url());
-    await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
-  });
+export async function setupCaseFileViewDocumentBinaryMockRoutes(
+  page: Page,
+  onRequest?: (url: string, referer: string) => void,
+  response: { status: number; contentType: string; body: string | Buffer } = {
+    status: 200,
+    contentType: 'application/pdf',
+    body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF,
+  }
+): Promise<void> {
+  await page.route(
+    (url) => /^\/documents(?:v2)?\/[^/]+\/binary$/.test(url.pathname),
+    async (route) => {
+      onRequest?.(route.request().url(), (await route.request().headerValue('referer')) ?? '');
+      await route.fulfill(response);
+    }
+  );
 }

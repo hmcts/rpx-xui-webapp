@@ -3,6 +3,7 @@ import path from 'node:path';
 import { request, type BrowserContext, type Page } from '@playwright/test';
 import { test, expect } from '../../fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
+import { resolveSessionIdentity } from '../../../common/sessionIdentity';
 import { acquireDocumentAccessIdentityPair } from '../../utils/test-setup/documentAccessIdentityPair';
 import {
   documentXsrfHeaders,
@@ -30,10 +31,10 @@ test.describe('Legacy document authorization', { tag: ['@e2e', '@e2e-media-viewe
 
   test.beforeEach(async ({ page, browser, baseURL, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
     const [firstLease, secondLease] = await acquireDocumentAccessIdentityPair(identityLease);
-    await applySessionCookies(page, firstLease.identity.userIdentifier);
+    await applySessionCookies(page, resolveSessionIdentity(firstLease.identity.userIdentifier));
     secondContext = await browser.newContext({ baseURL });
     secondPage = await secondContext.newPage();
-    await applySessionCookies(secondPage, secondLease.identity.userIdentifier);
+    await applySessionCookies(secondPage, resolveSessionIdentity(secondLease.identity.userIdentifier));
     const firstId = await resolveDocumentUserId(page.request);
     secondUserId = await resolveDocumentUserId(secondPage.request);
     expect(firstId, 'U1 and U2 must resolve to separate authenticated users').not.toBe(secondUserId);

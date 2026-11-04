@@ -21,6 +21,7 @@
     "api/evidence-manager.api.ts",
     "api/fixtures.ts",
     "api/unit/case-file-view-binary-mock-routes.unit.api.ts",
+    "api/unit/case-file-view-binary-routes.unit.api.ts",
     "api/unit/critical-scenario-receipt.unit.api.ts",
     "api/unit/document-access-fixtures.unit.api.ts",
     "api/unit/document-access-identity-pair.unit.api.ts",

@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { createRequire } from 'node:module';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -45,6 +46,58 @@ const validReport = {
 };
 
 test.describe('critical scenario execution receipt', { tag: '@svc-internal' }, () => {
+  test('required browser identities match current Playwright discovery', () => {
+    const manifest = require('../../common/document-download-required-scenarios.json');
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'document-scenario-discovery-'));
+    try {
+      for (const [config, lanes] of [
+        ['playwright.e2e.config.ts', ['e2e-capability', 'e2e-downloads', 'e2e-authorization']],
+        ['playwright-nightly.config.ts', ['nightly-e2e']],
+      ] as const) {
+        const output = path.join(directory, `${config}.json`);
+        const startedAt = Date.now();
+        execFileSync(
+          process.execPath,
+          [
+            'node_modules/@playwright/test/cli.js',
+            'test',
+            `--config=${config}`,
+            '--list',
+            '--reporter=json',
+            'playwright_tests_new/E2E/test/mediaViewer',
+            'playwright_tests_new/E2E/test/caseFileView/caseFileView.spec.ts',
+          ],
+          {
+            env: {
+              ...process.env,
+              PLAYWRIGHT_JSON_OUTPUT_FILE: output,
+              E2E_PW_INCLUDE_TAGS: '@e2e',
+              E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
+              PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'true',
+            },
+            stdio: 'pipe',
+          }
+        );
+        const receipt = checkCriticalScenarios(
+          JSON.parse(fs.readFileSync(output, 'utf8')),
+          lanes.flatMap((lane) => manifest[lane]),
+          {
+            startedAt,
+            finishedAt: Date.now(),
+            repositoryRoot: process.cwd(),
+            exitCode: 0,
+          }
+        );
+        // Listing proves identities exist, not that their browser journeys passed.
+        expect(receipt.scenarios.filter(({ status }: { status: string }) => ['absent', 'ambiguous'].includes(status))).toEqual(
+          []
+        );
+      }
+    } finally {
+      fs.rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
   test('matches project, repository-relative spec and stable title through nested suites', () => {
     const receipt = checkCriticalScenarios(validReport, required, invocation);
     expect(receipt.passed).toBe(true);

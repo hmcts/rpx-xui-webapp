@@ -1,11 +1,18 @@
 import { expect, test } from '@playwright/test';
 import { mkdtemp, readdir, rm } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
+import ts from 'typescript';
 import os from 'node:os';
 import path from 'node:path';
 import { test as e2eTest } from '../../E2E/fixtures';
 import { acquireDocumentAccessIdentityPair } from '../../E2E/utils/test-setup/documentAccessIdentityPair';
 import { acquireIdentityLease, IdentityLeaseTimeoutError, type IdentityLease } from '../../common/identityLease';
 import { resolveConfiguredPoolIdentities } from '../../common/identityPoolRegistry';
+import { resolveSessionIdentity } from '../../common/sessionIdentity';
+import { __test__ as sessionCaptureTest } from '../../common/sessionCapture';
+import { withOrderedSessionFallback } from '../../common/orderedSessionFallback';
+import { SessionCaptureError } from '../utils/errors';
 
 const pairEnvironment = {
   PRL_SOLICITOR_USERNAME: 'z-user@example.test',
@@ -15,6 +22,81 @@ const pairEnvironment = {
 };
 
 test.describe('Document access identity pair', { tag: '@svc-internal' }, () => {
+  test('authorization setup pins each leased account across worker slots and rejects without pool fallback', async () => {
+    const specPath = 'playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts';
+    const source = ts.createSourceFile(specPath, readFileSync(specPath, 'utf8'), ts.ScriptTarget.Latest, true);
+    const pending: ts.Node[] = [source];
+    const sessionArguments: string[] = [];
+    while (pending.length) {
+      const node = pending.shift()!;
+      if (ts.isCallExpression(node) && node.expression.getText(source) === 'applySessionCookies') {
+        sessionArguments.push(node.arguments[1].getText(source));
+      }
+      node.forEachChild((child) => {
+        pending.push(child);
+      });
+    }
+    expect(sessionArguments).toHaveLength(2);
+    const poolKeys = Array.from({ length: 8 }, (_, index) => `PRL_SOLICITOR${index ? index + 1 : ''}`).flatMap((id) => [
+      `${id}_USERNAME`,
+      `${id}_PASSWORD`,
+    ]);
+    const previous = Object.fromEntries(poolKeys.map((key) => [key, process.env[key]]));
+    try {
+      for (const size of [2, 3]) {
+        for (const key of poolKeys) delete process.env[key];
+        Object.assign(
+          process.env,
+          pairEnvironment,
+          size === 3
+            ? {
+                PRL_SOLICITOR3_USERNAME: 'third-user@example.test',
+                PRL_SOLICITOR3_PASSWORD: 'unit-only',
+              }
+            : {}
+        );
+        const [firstLease, secondLease] = await acquireDocumentAccessIdentityPair({
+          acquire: async (requirements) => ({
+            identity: resolveConfiguredPoolIdentities(process.env, requirements)[0],
+            release: async () => {},
+          }),
+        });
+        const inputs = sessionArguments.map((expression) =>
+          runInNewContext(expression, {
+            firstLease,
+            secondLease,
+            resolveSessionIdentity,
+          })
+        );
+        for (const parallelIndex of [0, 1, 2]) {
+          for (const [index, input] of inputs.entries()) {
+            const candidates = sessionCaptureTest.resolveSessionCandidates(input, parallelIndex);
+            expect(candidates.map((candidate) => resolveSessionIdentity(candidate).email)).toEqual([
+              [firstLease, secondLease][index].identity.email,
+            ]);
+            const attempted: string[] = [];
+            const rejection = new SessionCaptureError(
+              'Login failed: IDAM page message: Email or password is incorrect',
+              [firstLease, secondLease][index].identity.userIdentifier
+            );
+            await expect(
+              withOrderedSessionFallback(candidates, async (identity) => {
+                attempted.push(identity.email);
+                throw rejection;
+              })
+            ).rejects.toBe(rejection);
+            expect(attempted).toEqual([[firstLease, secondLease][index].identity.email]);
+          }
+        }
+      }
+    } finally {
+      for (const [key, value] of Object.entries(previous)) {
+        if (value === undefined) delete process.env[key];
+        else process.env[key] = value;
+      }
+    }
+  });
+
   test('two competing workers acquire the same ordered pair without each holding one identity', async () => {
     const held = new Map<string, { leaseId: string; worker: string }>();
     const requestedWorkers = new Set<string>();
@@ -159,8 +241,6 @@ const fixtureTest = e2eTest.extend<{
         ...pairEnvironment,
         PW_IDENTITY_LEASE_DIR: directory,
         PW_IDENTITY_LEASE_ENDPOINT: '',
-        PW_IDENTITY_LEASE_WAIT_MS: '100',
-        PW_IDENTITY_LEASE_POLL_MS: '1',
       };
       const previous = Object.fromEntries(Object.keys(env).map((key) => [key, process.env[key]]));
       Object.assign(process.env, env);
@@ -191,19 +271,28 @@ fixtureTest.describe('Document access pair fixture teardown', { tag: '@svc-inter
   fixtureTest(
     'releases the first acquired identity when the second acquisition fails',
     async ({ identityLease, isolatedPairEnvironment }) => {
-      const second = await acquireIdentityLease(
+      const secondFailure = new IdentityLeaseTimeoutError(
         { pool: 'PRL_SOLICITOR', userIdentifier: 'PRL_SOLICITOR' },
-        isolatedPairEnvironment
+        100,
+        'local'
       );
-      try {
-        await expect(acquireDocumentAccessIdentityPair(identityLease, isolatedPairEnvironment)).rejects.toBeInstanceOf(
-          IdentityLeaseTimeoutError
-        );
-        const files = await readdir(isolatedPairEnvironment.PW_IDENTITY_LEASE_DIR);
-        expect(files.filter((entry) => entry.endsWith('.lock'))).toHaveLength(2);
-      } finally {
-        await second.release();
-      }
+      const acquired: IdentityLease[] = [];
+      await expect(
+        acquireDocumentAccessIdentityPair(
+          {
+            acquire: async (requirements) => {
+              if (acquired.length === 1) throw secondFailure;
+              const lease = await identityLease.acquire(requirements);
+              acquired.push(lease);
+              return lease;
+            },
+          },
+          isolatedPairEnvironment
+        )
+      ).rejects.toBe(secondFailure);
+      expect(acquired.map((lease) => lease.identity.email)).toEqual(['a-user@example.test']);
+      const files = await readdir(isolatedPairEnvironment.PW_IDENTITY_LEASE_DIR);
+      expect(files.filter((entry) => entry.endsWith('.lock'))).toHaveLength(1);
     }
   );
 });

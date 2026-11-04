@@ -196,7 +196,7 @@
     {
       "project": "chromium",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/mediaViewerHappyPath.spec.ts",
-      "title": "Media Viewer happy path › Opens a legacy HTML document directly without adding referrer or case context"
+      "title": "Media Viewer happy path › Opens a legacy HTML document directly with case context and no referrer"
     },
     {
       "project": "chromium",
@@ -277,7 +277,7 @@
     {
       "project": "firefox",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/mediaViewerHappyPath.spec.ts",
-      "title": "Media Viewer happy path › Opens a legacy HTML document directly without adding referrer or case context"
+      "title": "Media Viewer happy path › Opens a legacy HTML document directly with case context and no referrer"
     },
     {
       "project": "firefox",
@@ -337,7 +337,7 @@
     {
       "project": "webkit",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/mediaViewerHappyPath.spec.ts",
-      "title": "Media Viewer happy path › Opens a legacy HTML document directly without adding referrer or case context"
+      "title": "Media Viewer happy path › Opens a legacy HTML document directly with case context and no referrer"
     },
     {
       "project": "webkit",

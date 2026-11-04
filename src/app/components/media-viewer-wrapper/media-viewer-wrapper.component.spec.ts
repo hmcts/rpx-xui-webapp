@@ -167,6 +167,16 @@ describe('MediaViewerWrapperComponent', () => {
       );
     });
 
+    it('should add case context when legacy document metadata arrives through hand-off', () => {
+      const legacyPayload = JSON.stringify(LEGACY_MEDIA_VIEWER_DATA);
+
+      (component as any).receiveHandoff(
+        handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload: legacyPayload })
+      );
+
+      expect(component.mediaURL).toBe('/documents/doc-123/binary?caseId=case-123');
+    });
+
     it('should ignore metadata from an unexpected origin', () => {
       (component as any).receiveHandoff(
         handoffEvent(

@@ -59,7 +59,6 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
       this.titleService.setTitle('View Document');
     }
 
-    this.mediaURL = this.withLegacyDocumentAccessContext(this.mediaURL);
     this.initialiseFeatureFlags();
   }
 
@@ -123,6 +122,7 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     this.mediaAnnotationApiUrl = media.annotation_api_url;
     this.caseId = media.case_id;
     this.caseJurisdiction = media.case_jurisdiction;
+    this.mediaURL = this.withLegacyDocumentAccessContext(this.mediaURL);
     this.mediaReady = true;
     this.titleService.setTitle(this.mediaFilename + ' - View Document');
   }

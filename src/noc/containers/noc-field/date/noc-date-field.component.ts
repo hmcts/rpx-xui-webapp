@@ -40,6 +40,9 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
         this.dateGroup.value.day !== null ? AppUtils.pad(this.dateGroup.value.day) : '',
       ].join('-');
       this.dateControl.setValue(val);
+      if (this.dateGroup.dirty) {
+        this.dateControl.markAsDirty();
+      }
     });
   }
 

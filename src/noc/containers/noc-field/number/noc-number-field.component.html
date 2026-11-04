@@ -1,9 +1,9 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !numberControl.valid }">
+<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !numberControl.valid && numberControl.dirty }">
   <label class="govuk-label" [for]="id()">
     <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
       questionField.question_text | rpxTranslate
     }}</span>
-    <span class="error-message" *ngIf="numberControl.errors && numberControl.touched">{{
+    <span class="error-message" *ngIf="numberControl.errors && numberControl.dirty">{{
       numberControl.errors | nocError | rpxTranslate
     }}</span>
   </label>

@@ -5,9 +5,9 @@
       personFormGroup.controls.selectedFormControl.errors && personFormGroup.controls.selectedFormControl.errors.error,
   }"
 >
-  <div id="sub-title-hint" class="govuk-hint">
+  <label id="sub-title-hint" class="govuk-hint" [for]="'inputSelectPerson' + idValue">
     {{ subTitle | rpxTranslate }}
-  </div>
+  </label>
   <span id="validation-error" class="govuk-error-message" *ngIf="personFormGroup.controls.selectedFormControl.errors">
     <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
     {{ personFormGroup.controls.selectedFormControl.errors.error | rpxTranslate }}

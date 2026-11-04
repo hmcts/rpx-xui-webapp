@@ -1,9 +1,9 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !timeControl.valid }">
+<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !timeControl.valid && timeControl.dirty }">
   <label class="govuk-label" [for]="id()">
     <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
       questionField.question_text | rpxTranslate
     }}</span>
-    <span class="error-message" *ngIf="timeControl.errors && timeGroup.touched">{{
+    <span class="error-message" *ngIf="timeControl.errors && timeControl.dirty">{{
       timeControl.errors | nocError | rpxTranslate
     }}</span>
   </label>

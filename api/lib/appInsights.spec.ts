@@ -109,6 +109,7 @@ describe('appInsights', () => {
         name: 'GET /cases/:caseId',
         properties: {
           'enduser.pseudo.id': 'user@123',
+          'http.method': 'GET',
           'session.id': 'session|123',
         },
         resultCode: '403',

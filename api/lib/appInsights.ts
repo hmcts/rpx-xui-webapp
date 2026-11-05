@@ -322,7 +322,9 @@ export function createIncomingRequestTelemetry(
   const requestPath = request.path || '/';
   const host = request.get('host');
   const routePath = typeof request.route?.path === 'string' ? request.route.path : requestPath;
-  const properties: Record<string, string> = {};
+  const properties: Record<string, string> = {
+    'http.method': request.method,
+  };
   const userId = readCookie(request.headers.cookie, getConfigValue(COOKIES_USER_ID));
   const sessionId = readCookie(request.headers.cookie, getConfigValue(COOKIES_SESSION_ID));
 

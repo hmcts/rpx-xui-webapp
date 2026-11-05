@@ -6,6 +6,7 @@ import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-h
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
+import { enableTelemetryDiagnostics } from './telemetryDiagnostics';
 import {
   APP_INSIGHTS_CONNECTION_STRING,
   COOKIES_SESSION_ID,
@@ -178,6 +179,7 @@ class HealthStaticFilteringProcessor implements SpanProcessor {
 export let client: applicationinsights.TelemetryClient | null = null;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
+  const diagnosticProcessor = enableTelemetryDiagnostics();
   const connectionString = getConfigValue(APP_INSIGHTS_CONNECTION_STRING);
   const healthStaticFilteringProcessor = new HealthStaticFilteringProcessor();
 
@@ -208,7 +210,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
 
   appInsightsSetup.setAzureMonitorOptions({
     tracesPerSecond: 0,
-    spanProcessors: [healthStaticFilteringProcessor],
+    spanProcessors: [healthStaticFilteringProcessor, ...(diagnosticProcessor ? [diagnosticProcessor] : [])],
     instrumentationOptions: {
       http: {
         applyCustomAttributesOnSpan: (span, request, response) => {

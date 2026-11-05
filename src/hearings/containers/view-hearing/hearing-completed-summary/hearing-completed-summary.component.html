@@ -1,6 +1,11 @@
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
+    <div *ngIf="showEditButton" id="edit-hearing-actuals" class="align-right">
+      <button type="button" class="govuk-button" data-module="govuk-button" (click)="onEdit()">
+        {{ 'Edit' | rpxTranslate }}
+      </button>
+    </div>
     <h1 class="govuk-heading-l">
       <span class="govuk-caption-l">{{ hearingActualsMainModel?.caseDetails.publicCaseName }}</span>
       {{ 'Hearing details' | rpxTranslate }}

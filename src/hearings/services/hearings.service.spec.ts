@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import * as _ from 'lodash';
 import { initialState } from '../hearing.test.data';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { GroupLinkType } from '../models/hearings.enum';
+import { GroupLinkType, HMCStatus } from '../models/hearings.enum';
 import { LinkedHearingGroupMainModel } from '../models/linkHearings.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { HearingsService } from './hearings.service';
@@ -231,6 +231,22 @@ describe('HearingsService', () => {
         req.flush(null);
       }
     ));
+
+    it('should update a finalised hearing with its status', inject(
+      [HttpTestingController, HearingsService],
+      (httpMock: HttpTestingController, service: HearingsService) => {
+        service.updateHearingActuals('1111222233334444', payload, '1234', HMCStatus.COMPLETED).subscribe((response) => {
+          expect(response).toBeNull();
+        });
+
+        const req = httpMock.expectOne(
+          'api/hearings/hearingActuals?hearingId=1111222233334444&caseId=1234&hearingStatus=COMPLETED'
+        );
+        expect(req.request.method).toEqual('PUT');
+        expect(req.request.body).toEqual(payload);
+        req.flush(null);
+      }
+    ));
   });
 
   describe('submitHearingActuals', () => {
@@ -243,6 +259,7 @@ describe('HearingsService', () => {
 
         const req = httpMock.expectOne('api/hearings/hearingActualsCompletion/1111222233334444?caseRef=1234');
         expect(req.request.method).toEqual('POST');
+        expect(req.request.body).toBeNull();
         req.flush(null);
       }
     ));

@@ -3,6 +3,7 @@ import { getConfigValue } from '../configuration';
 import { LOG4_J_CONFIG, LOGGING } from '../configuration/references';
 import { client } from './appInsights';
 import { JUILogger } from './models';
+import { probeRequestTelemetry } from './telemetryDiagnostics';
 
 // the longest category length we have currently
 const maxCatLength = 14;
@@ -40,6 +41,7 @@ function debug(...messages: any[]) {
 }
 
 function trackRequest(obj: any) {
+  probeRequestTelemetry('outbound', Boolean(client));
   if (client) {
     try {
       client.trackRequest(obj);

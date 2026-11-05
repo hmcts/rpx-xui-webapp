@@ -6,7 +6,7 @@ import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-h
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
-import { enableTelemetryDiagnostics } from './telemetryDiagnostics';
+import { enableTelemetryDiagnostics, probeRequestTelemetry } from './telemetryDiagnostics';
 import {
   APP_INSIGHTS_CONNECTION_STRING,
   COOKIES_SESSION_ID,
@@ -297,6 +297,7 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
   }
 
   _res.once('finish', () => {
+    probeRequestTelemetry('incoming', Boolean(client));
     if (!client || shouldExcludeTelemetryPath(requestPath)) {
       return;
     }

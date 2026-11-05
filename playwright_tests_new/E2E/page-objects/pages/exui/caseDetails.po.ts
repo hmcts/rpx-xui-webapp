@@ -118,6 +118,19 @@ export class CaseDetailsPage extends Base {
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
   readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
+  readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
+  // FT_MasterCaseType (FT-All Field Data Types) renders its Details tab as table.NameTab.
+  readonly nameTabDataTable = this.page.locator('table.NameTab');
+  // "Rich Text Area" also prefixes "Rich Text Area with minimum length", so the plain row
+  // is matched with a negative lookahead to keep the two rows distinct.
+  readonly richTextAreaRow = this.nameTabDataTable
+    .locator('tr')
+    .filter({ hasText: /Rich Text Area(?! with minimum)/ })
+    .first();
+  readonly richTextAreaMinRow = this.nameTabDataTable
+    .locator('tr')
+    .filter({ hasText: 'Rich Text Area with minimum length' })
+    .first();
   readonly divorceDataSubTable = this.caseViewerTable.locator('table.complex-panel-table table').first();
 
   // Task List tab

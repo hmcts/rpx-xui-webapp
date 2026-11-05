@@ -6,6 +6,7 @@ import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-h
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
+import { withTracingUnsuppressed } from './telemetryContext';
 import { enableTelemetryDiagnostics, probeRequestTelemetry } from './telemetryDiagnostics';
 import {
   APP_INSIGHTS_CONNECTION_STRING,
@@ -303,7 +304,7 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
     }
 
     try {
-      client.trackRequest(createIncomingRequestTelemetry(_req, _res, startedAt, new Date()));
+      withTracingUnsuppressed(() => client.trackRequest(createIncomingRequestTelemetry(_req, _res, startedAt, new Date())));
     } catch (error) {
       console.warn('Failed to track incoming request telemetry', error);
     }

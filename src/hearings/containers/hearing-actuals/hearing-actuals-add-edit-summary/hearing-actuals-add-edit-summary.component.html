@@ -54,6 +54,7 @@
     <span class="govuk-body align-right">
       <a
         [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
+        (click)="hearingsService.recordAction('change')"
         id="hearing-stage-result-update-link"
         class="govuk-link"
         >{{ 'Update' | rpxTranslate }}</a
@@ -151,6 +152,7 @@
                         >&nbsp;
                         <a
                           [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-timing', actualHearingDay.hearingDate]"
+                          (click)="hearingsService.recordAction('change')"
                           class="govuk-link"
                           >{{ 'Update' | rpxTranslate }}</a
                         >
@@ -216,6 +218,7 @@
                           <a
                             *ngIf="!isPaperHearing"
                             [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
+                            (click)="hearingsService.recordAction('change')"
                             class="govuk-link"
                             >{{ 'Update' | rpxTranslate }}</a
                           >

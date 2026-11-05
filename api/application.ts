@@ -29,6 +29,7 @@ import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
+import { hearingsTelemetryCorrelation } from './lib/hearings-telemetry-correlation';
 
 const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
 
@@ -69,6 +70,7 @@ function injectTemplateValues(html: string, nonce: string): string {
 
 export async function createApp() {
   const app = express();
+  app.use(hearingsTelemetryCorrelation);
 
   const logger: JUILogger = log4jui.getLogger('Application');
   if (showFeature(FEATURE_HELMET_ENABLED)) {

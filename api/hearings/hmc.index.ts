@@ -8,49 +8,28 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID,
 } from '../configuration/references';
-import { EnhancedRequest, JUILogger } from '../lib/models';
+import { EnhancedRequest } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { LinkedHearingGroupMainModel, LinkedHearingGroupResponseModel } from './models/linkHearings.model';
-import { trackTrace } from '../lib/appInsights';
-import * as log4jui from '../lib/log4jui';
+import { HearingsTraceOperation, traceHearingsDiagnostic } from './hearings-telemetry';
 
 export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
-const logger: JUILogger = log4jui.getLogger('hmc-index');
 
 /**
  * handleHearingError - reusable error handler for hearing requests
  */
 function handleHearingError(
   error: any,
-  caseId: string,
-  operationName: string,
-  req: EnhancedRequest,
-  markupPath: string,
+  _caseId: string,
+  operationName: HearingsTraceOperation,
+  _req: EnhancedRequest,
+  _markupPath: string,
   next: NextFunction
 ): void {
-  const hearingId = req.query.hearingId;
-  const deepLink: string | undefined = req.body?.caseDetails?.caseDeepLink;
-  let inferredCaseId: string | undefined;
-  if (typeof deepLink === 'string') {
-    const specific = deepLink.match(/\/case-details\/(\d+)/);
-    inferredCaseId = specific?.[1] ?? deepLink.match(/\d{10,}/)?.[0];
-  }
-  const errorData = error?.data ?? error?.errors ?? null;
-  const caseRef = typeof caseId === 'string' && caseId.trim() ? caseId.trim() : inferredCaseId;
-  const caseInfo = caseRef ? ` caseID: ${caseRef}` : '';
-  const hearingInfo = hearingId ? ` hearingID: ${hearingId}` : '';
-  const idInfo = `${caseInfo}${hearingInfo}`;
-  logger.error(
-    `HMC-Index | ${operationName} error:${idInfo} : ${error.status} ${markupPath}`,
-    error.statusText,
-    JSON.stringify(errorData)
-  );
-  if (error.status >= 400 && error.status < 600) {
-    trackTrace(`HMC-Index | ${operationName} error${idInfo} : (${error.status}) : ${JSON.stringify(errorData)}`);
-  }
+  traceHearingsDiagnostic(operationName, 'failed', error);
   next(error);
 }
 
@@ -99,11 +78,11 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
-    trackTrace('submitting hearing request');
+    traceHearingsDiagnostic('submitHearingRequest', 'started');
     const { status, data }: { status: number; data: any } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
-    handleHearingError(error, null, 'SubmitHearingRequest', req, markupPath, next);
+    handleHearingError(error, null, 'submitHearingRequest', req, markupPath, next);
   }
 }
 

@@ -193,6 +193,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public onLinkHearings(): void {
+    this.hearingsService.recordAction('submit');
     this.hearingStore.dispatch(
       new fromHearingStore.SubmitLinkedHearingGroup({
         linkedHearingGroup: this.linkedHearingGroup,
@@ -205,6 +206,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public onManageLinkHearings(): void {
+    this.hearingsService.recordAction('submit');
     this.hearingStore.dispatch(
       new fromHearingStore.ManageLinkedHearingGroup({
         linkedHearingGroup: this.linkedHearingGroup,
@@ -216,6 +218,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public onEdit(): void {
+    this.hearingsService.recordAction('change');
     this.router.navigate([
       '/',
       'hearings',
@@ -228,6 +231,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public onUnlinkHearings(): void {
+    this.hearingsService.recordAction('submit');
     this.hearingStore.dispatch(
       new fromHearingStore.ManageLinkedHearingGroup({
         linkedHearingGroup: null,
@@ -239,11 +243,13 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public onChange(): void {
+    this.hearingsService.recordAction('change');
     this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());
     this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
   }
 
   public onBack(): void {
+    this.hearingsService.recordAction('back');
     if (this.isManageJourneyFinalPage) {
       this.router.navigate([
         '/',
@@ -263,6 +269,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public onCancel(): void {
+    this.hearingsService.recordAction('cancel');
     this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']);
   }
 

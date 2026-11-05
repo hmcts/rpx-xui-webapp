@@ -1,6 +1,7 @@
 import * as applicationinsights from 'applicationinsights';
 import type { Contracts } from 'applicationinsights';
 import * as express from 'express';
+import { addHearingsJourneyToTelemetry } from './hearings-telemetry-correlation';
 import { getConfigValue, showFeature } from '../configuration/';
 import {
   APP_INSIGHTS_CONNECTION_STRING,
@@ -47,6 +48,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   client = applicationinsights.defaultClient;
   client.config.samplingPercentage = getConfigValue<number>(APP_INSIGHTS_SAMPLING_PERCENTAGE);
   client.addTelemetryProcessor(fineGrainedSampling);
+  client.addTelemetryProcessor(addHearingsJourneyToTelemetry);
   appInsightsConfiguration.start();
   console.log(`Application Insights sampling percentage: ${client.config.samplingPercentage}%`);
   client.trackTrace({ message: 'App Insight Activated' });

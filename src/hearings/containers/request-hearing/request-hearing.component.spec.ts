@@ -403,7 +403,7 @@ describe('RequestHearingComponent', () => {
     expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST });
   });
 
-  it('should log public name when names are mismatched and still submit successfully', () => {
+  it('should not log private case names when public names differ and still submit successfully', () => {
     component.hearingRequestMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       caseDetails: {
@@ -423,9 +423,7 @@ describe('RequestHearingComponent', () => {
     spyOn(hearingsService, 'navigateAction');
     component.submitRequest(ACTION.SUBMIT);
 
-    expect(appConfig.logMessage).toHaveBeenCalledWith(
-      'Hearing public name mismatch detected. HRM: Public Name SHV: Different Public Name for caseId: 1234567890 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED'
-    );
+    expect(appConfig.logMessage).not.toHaveBeenCalled();
     expect(component.showMismatchErrorMessage).toBeFalsy();
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.SUBMIT);
   });

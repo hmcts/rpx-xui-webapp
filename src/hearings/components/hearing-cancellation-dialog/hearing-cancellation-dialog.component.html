@@ -1,0 +1,20 @@
+<div class="hearing-cancellation-dialog">
+  <h2 id="hearing-cancellation-title" class="govuk-heading-m">{{ 'Cancel hearing changes' | rpxTranslate }}</h2>
+  <p id="hearing-cancellation-message" class="govuk-body">
+    {{
+      'You are about to return to the main hearings screen, any entries you have made will be lost. Do you still want to cancel?'
+        | rpxTranslate
+    }}
+  </p>
+  <div class="govuk-button-group">
+    <button type="button" class="govuk-button" (click)="dialogRef.close(true)">{{ 'Yes' | rpxTranslate }}</button>
+    <button
+      id="hearing-cancellation-no"
+      type="button"
+      class="govuk-button govuk-button--secondary"
+      (click)="dialogRef.close(false)"
+    >
+      {{ 'No' | rpxTranslate }}
+    </button>
+  </div>
+</div>

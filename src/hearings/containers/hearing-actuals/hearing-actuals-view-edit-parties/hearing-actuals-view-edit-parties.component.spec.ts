@@ -1,21 +1,23 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { CategoryType, HMCStatus } from '../../../models/hearings.enum';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 
 const hearingRole = [
   {
@@ -189,7 +191,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
-      imports: [RouterTestingModule, ReactiveFormsModule],
+      imports: [MatDialogModule, RouterTestingModule, ReactiveFormsModule],
       providers: [
         LoadingService,
         provideMockStore({ initialState }),
@@ -224,8 +226,31 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     fixture.detectChanges();
   });
 
+  it('should wait for confirmation before leaving the current page', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigate back to the case hearings page when cancelled', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm').and.callFake((onConfirmed) => onConfirmed());
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    (component as any).caseInfo = {
+      jurisdictionId: 'IA',
+      caseType: 'Asylum',
+      caseReference: '1111222233334444',
+    };
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '1111222233334444', 'hearings']);
   });
 
   it('getRole should return the correct english role value', () => {

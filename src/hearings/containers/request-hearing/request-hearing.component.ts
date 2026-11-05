@@ -1,4 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { ACTION, HearingRequestPageRouteNames } from '../../models/hearings.enum';
@@ -10,6 +11,8 @@ import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { Subscription } from 'rxjs';
 
+import { HearingCancellationService } from '../../services/hearing-cancellation.service';
+
 @Component({
   standalone: false,
   selector: 'exui-request-hearing',
@@ -17,22 +20,41 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./request-hearing.component.scss'],
 })
 export class RequestHearingComponent implements OnDestroy {
+  private readonly hearingCancellation = inject(HearingCancellationService);
+
   public action = ACTION;
   public hearingStateSub: Subscription;
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;
   public showMismatchErrorMessage: boolean;
   public validationErrors: { id: string; message: string[] };
+  private caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
 
   constructor(
     private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
     private readonly hearingsService: HearingsService,
-    private readonly appConfig: AbstractAppConfig
+    private readonly appConfig: AbstractAppConfig,
+    private readonly router: Router
   ) {
     this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe((hearingState) => {
       this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
       this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
+      this.caseInfo = hearingState.hearingValues.caseInfo;
+    });
+  }
+
+  public onCancel(): void {
+    this.hearingCancellation.confirm(() => {
+      void this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.caseInfo?.jurisdictionId,
+        this.caseInfo?.caseType,
+        this.caseInfo?.caseReference || this.hearingRequestMainModel?.caseDetails?.caseRef,
+        'hearings',
+      ]);
     });
   }
 

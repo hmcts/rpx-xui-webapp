@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,8 @@ import * as fromHearingStore from '../../store';
 import * as hearingActualsActions from '../../store/actions/hearing-actuals.action';
 import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 
+import { HearingCancellationService } from '../../services/hearing-cancellation.service';
+
 @Component({
   standalone: false,
   selector: 'exui-hearing-actuals',
@@ -14,7 +16,10 @@ import * as hearingRequestActions from '../../store/actions/hearing-request.acti
   styleUrls: ['./hearing-actuals.component.scss'],
 })
 export class HearingActualsComponent implements OnInit, OnDestroy {
+  private readonly hearingCancellation = inject(HearingCancellationService);
+
   private sub: Subscription;
+  private caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
 
   public constructor(
     private readonly store: Store<fromHearingStore.State>,
@@ -26,6 +31,7 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
     this.sub = this.route.params
       .pipe(withLatestFrom(this.store.pipe(select(fromHearingStore.getHearingValuesCaseInfo))))
       .subscribe(([params, caseInfo]) => {
+        this.caseInfo = caseInfo;
         this.store.dispatch(new hearingRequestActions.ResetHearingRequest());
         this.store.dispatch(new fromHearingStore.ResetHearingRequestToCompare());
         this.store.dispatch(new fromHearingStore.ResetHearingActuals());
@@ -35,6 +41,34 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
         this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '', caseRef }));
         this.store.dispatch(new hearingActualsActions.GetHearingActuals({ id: params.id, caseRef }));
       });
+  }
+
+  public onCancel(): void {
+    this.hearingCancellation.confirm(() => {
+      void this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.caseInfo?.jurisdictionId,
+        this.caseInfo?.caseType,
+        this.caseInfo?.caseReference,
+        'hearings',
+      ]);
+    });
+  }
+
+  public get isConfirmationPage(): boolean {
+    return this.router.url.endsWith('/hearing-actuals-confirmation');
+  }
+
+  public get isSummaryPage(): boolean {
+    return (
+      this.router.url.includes('/hearing-actual-add-edit-summary') ||
+      this.router.url.includes('/hearing-actual-edit-summary') ||
+      this.router.url.includes('/hearing-stage-result') ||
+      this.router.url.includes('/actuals-parties/') ||
+      this.router.url.includes('/hearing-timing/')
+    );
   }
 
   public ngOnDestroy(): void {

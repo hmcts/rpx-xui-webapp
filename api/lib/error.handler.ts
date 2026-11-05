@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { STATUS_CODES } from 'http';
 import * as log4jui from './log4jui';
 import { propsExist } from './objectUtilities';
 
@@ -21,12 +22,13 @@ export default function errorHandler(err, req: Request, res: Response, next: Nex
     logger._logger.error(err.data);
   } else {
     if (err) {
-      logger._logger.error(err.toString());
+      logger._logger.error(err.stack || err.toString());
     } else {
       logger._logger.error('errorHanndler called with no error');
     }
   }
-  const errorStatus = err.status ? err.status : 500;
-  const errorContent = err.data ? err.data : { message: 'Internal Server Error' };
+  const status = err?.status ?? err?.statusCode;
+  const errorStatus = Number.isInteger(status) && status >= 400 && status <= 599 ? status : 500;
+  const errorContent = { message: STATUS_CODES[errorStatus] || 'Internal Server Error' };
   res.status(errorStatus).send(errorContent);
 }

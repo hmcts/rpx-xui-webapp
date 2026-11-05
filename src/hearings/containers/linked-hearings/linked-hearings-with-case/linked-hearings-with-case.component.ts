@@ -38,6 +38,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public caseTitle: string;
   public caseReference: string;
   public isHearingsAvailable: boolean;
+  public showIncorrectLinkReasonMessage: boolean = false;
   public linkedHearingEnum = HearingLinkedSelectionEnum;
   public mode: Mode;
   public showSpinner: boolean = true;
@@ -72,6 +73,17 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         const serviceLinkedCasesWithHearings = state.hearingLinks.serviceLinkedCasesWithHearings;
         this.isHearingsSelected(serviceLinkedCasesWithHearings);
         this.linkedCases = serviceLinkedCasesWithHearings.filter((caseInfo) => this.shouldIncludeCase(caseInfo));
+        const otherLinkedCaseReasons = state.hearingLinks.serviceLinkedCases
+          ? state.hearingLinks.serviceLinkedCases
+              .filter((linkedCase) => String(linkedCase.caseReference) !== String(this.caseId))
+              .map((linkedCase) => linkedCase.reasonsForLink)
+          : serviceLinkedCasesWithHearings
+              .filter((linkedCase) => String(linkedCase.caseRef) !== String(this.caseId))
+              .map((linkedCase) => linkedCase.reasonsForLink);
+        this.showIncorrectLinkReasonMessage =
+          !this.linkedCases.some((caseInfo) => String(caseInfo.caseRef) !== String(this.caseId)) &&
+          otherLinkedCaseReasons.length > 0 &&
+          otherLinkedCaseReasons.every((reasons) => !reasons?.includes(HearingsUtils.HEARING_LINK_REASON_CODE));
         this.linkedCasesWithNoAccessToLoggedInUser =
           this.linkedCases &&
           state.hearingLinks.serviceLinkedCases?.filter(

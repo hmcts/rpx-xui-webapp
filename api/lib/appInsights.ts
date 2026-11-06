@@ -223,8 +223,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     /*
      * Continue collecting useful application telemetry.
      */
-    /* Express middleware below records incoming requests; avoid duplicate SDK-generated request records. */
-    .setAutoCollectRequests(false)
+    .setAutoCollectRequests(true)
     .setAutoCollectDependencies(true)
     .setAutoCollectExceptions(true)
     .setAutoCollectPerformance(true, true)
@@ -274,8 +273,6 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
  * incoming request cookies while the auto-instrumented server span is active.
  */
 export function appInsights(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
-  const startedAt = new Date();
-  const requestPath = _req.path || _req.url?.split('?')[0] || '/';
   const span = trace.getActiveSpan();
 
   if (span) {
@@ -294,53 +291,7 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
     }
   }
 
-  _res.once('finish', () => {
-    if (!client || shouldExcludeTelemetryPath(requestPath)) {
-      return;
-    }
-
-    try {
-      withTracingUnsuppressed(() => client.trackRequest(createIncomingRequestTelemetry(_req, _res, startedAt, new Date())));
-    } catch (error) {
-      console.warn('Failed to track incoming request telemetry', error);
-    }
-  });
-
   next();
-}
-
-export function createIncomingRequestTelemetry(
-  request: Pick<express.Request, 'headers' | 'method' | 'path' | 'protocol' | 'route' | 'get'>,
-  response: Pick<express.Response, 'statusCode'>,
-  startedAt: Date,
-  completedAt: Date
-) {
-  const requestPath = request.path || '/';
-  const host = request.get('host');
-  const routePath = typeof request.route?.path === 'string' ? request.route.path : requestPath;
-  const properties: Record<string, string> = {
-    'http.method': request.method,
-  };
-  const userId = readCookie(request.headers.cookie, getConfigValue(COOKIES_USER_ID));
-  const sessionId = readCookie(request.headers.cookie, getConfigValue(COOKIES_SESSION_ID));
-
-  if (userId) {
-    properties['enduser.pseudo.id'] = userId;
-  }
-
-  if (sessionId) {
-    properties['session.id'] = sessionId;
-  }
-
-  return {
-    duration: completedAt.getTime() - startedAt.getTime(),
-    name: `${request.method} ${routePath}`,
-    properties,
-    resultCode: String(response.statusCode),
-    success: response.statusCode < FAILED_REQUEST_STATUS_CODE_THRESHOLD,
-    time: startedAt,
-    url: host ? `${request.protocol}://${host}${requestPath}` : requestPath,
-  };
 }
 
 /**

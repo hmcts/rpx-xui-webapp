@@ -1,9 +1,9 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !postcodeControl.valid }">
+<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !postcodeControl.valid && postcodeControl.dirty }">
   <label class="govuk-label" [for]="id()">
     <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
       questionField.question_text | rpxTranslate
     }}</span>
-    <span class="error-message" *ngIf="postcodeControl.errors && postcodeControl.touched">{{
+    <span class="error-message" *ngIf="postcodeControl.errors && postcodeControl.dirty">{{
       postcodeControl.errors | nocError | rpxTranslate
     }}</span>
   </label>

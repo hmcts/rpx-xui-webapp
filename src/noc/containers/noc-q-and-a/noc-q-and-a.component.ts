@@ -124,6 +124,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
         !this.formGroup.controls[controlKey].errors.hasOwnProperty('possibleIncorrectAnswer') &&
         this.formGroup.controls[controlKey].invalid
       ) {
+        this.formGroup.controls[controlKey].markAsDirty();
         return false;
       }
     }

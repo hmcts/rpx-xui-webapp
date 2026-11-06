@@ -40,6 +40,9 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
         this.timeGroup.value.second !== null ? AppUtils.pad(this.timeGroup.value.second) : '',
       ].join(':');
       this.timeControl.setValue(val);
+      if (this.timeGroup.dirty) {
+        this.timeControl.markAsDirty();
+      }
     });
   }
 

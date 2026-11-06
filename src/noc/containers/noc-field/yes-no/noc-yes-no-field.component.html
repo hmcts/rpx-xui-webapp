@@ -1,10 +1,10 @@
-<div class="govuk-form-group" [id]="id()" [ngClass]="{ 'form-group-error': !yesNoControl.valid }">
+<div class="govuk-form-group" [id]="id()" [ngClass]="{ 'form-group-error': !yesNoControl.valid && yesNoControl.dirty }">
   <fieldset class="inline">
     <legend>
       <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
         questionField.question_text | rpxTranslate
       }}</span>
-      <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{
+      <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.dirty">{{
         yesNoControl.errors | nocError | rpxTranslate
       }}</span>
     </legend>

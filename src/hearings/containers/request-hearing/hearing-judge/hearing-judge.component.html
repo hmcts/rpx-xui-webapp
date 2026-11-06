@@ -36,9 +36,11 @@
                 class="govuk-form-group govuk-!-width-one-half"
                 [ngClass]="{ 'govuk-form-group--error': !!selectJudgeNameError }"
               >
-                <fieldset class="govuk-fieldset" aria-describedby="sub-title-hint">
+                <fieldset class="govuk-fieldset">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                    <h1 class="govuk-fieldset__heading">{{ 'Name of the judge' | rpxTranslate }}</h1>
+                    <h2 class="govuk-fieldset__heading">
+                      <label for="inputSelectPerson">{{ 'Name of the judge' | rpxTranslate }}</label>
+                    </h2>
                   </legend>
                   <span id="validation-error" class="govuk-error-message" *ngIf="selectJudgeNameError">
                     <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>

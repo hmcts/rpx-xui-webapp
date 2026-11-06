@@ -55,6 +55,9 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
         this.datetimeGroup.value.second !== null ? AppUtils.pad(this.datetimeGroup.value.second) : '',
       ].join(':');
       this.datetimeControl.setValue(`${date}T${time}.000`);
+      if (this.datetimeGroup.dirty) {
+        this.datetimeControl.markAsDirty();
+      }
     });
   }
 

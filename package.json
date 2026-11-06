@@ -119,9 +119,9 @@
     "@angular/ssr": "20.3.32",
     "@dr.pogodin/csurf": "^1.17.1",
     "@edium/fsm": "^3.0.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.4.25",
+    "@hmcts/ccd-case-ui-toolkit": "patch:@hmcts/ccd-case-ui-toolkit@npm%3A7.4.25#~/.yarn/patches/@hmcts-ccd-case-ui-toolkit-npm-7.4.25-484a412663.patch",
     "@hmcts/ccpay-web-component": "6.5.28",
-    "@hmcts/media-viewer": "4.2.47",
+    "@hmcts/media-viewer": "patch:@hmcts/media-viewer@npm%3A4.2.47#~/.yarn/patches/@hmcts-media-viewer-npm-4.2.47-261e79cab6.patch",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.4.1",
     "@hmcts/rpx-xui-common-lib": "3.2.28",
@@ -304,7 +304,8 @@
     "uuid": "^11.1.1",
     "webpack": "^5.94.0",
     "ws": "8.21.3",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "@hmcts/media-viewer@npm:4.2.47": "patch:@hmcts/media-viewer@npm%3A4.2.47#~/.yarn/patches/@hmcts-media-viewer-npm-4.2.47-261e79cab6.patch"
   },
   "packageManager": "yarn@4.17.1"
 }

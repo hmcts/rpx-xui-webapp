@@ -168,6 +168,11 @@
       "project": "chromium",
       "spec": "playwright_tests_new/integration/test/caseFileView/mediaViewerHandoff.negative.spec.ts",
       "title": "Media viewer mocked handoff guards › replayed handoff cannot replace the accepted document"
+    },
+    {
+      "project": "chromium",
+      "spec": "playwright_tests_new/integration/test/caseFileView/mediaViewerHandoff.positive.spec.ts",
+      "title": "Media viewer real toolkit handoff › retains the selected document when popup bootstrap exceeds the sender lifetime"
     }
   ],
   "e2e-capability": [

@@ -142,6 +142,65 @@ describe('MediaViewerWrapperComponent', () => {
       postMessageSpy = spyOn(window, 'postMessage');
     });
 
+    afterEach(() => {
+      delete (window as Window & { __exuiTakeMediaViewerHandoff?: () => boolean }).__exuiTakeMediaViewerHandoff;
+    });
+
+    it('should take ownership of an early handoff and reject a later replay', () => {
+      const bootstrapWindow = window as Window & { __exuiTakeMediaViewerHandoff?: () => boolean };
+      const takeHandoff = jasmine.createSpy('takeHandoff').and.returnValue(true);
+      bootstrapWindow.__exuiTakeMediaViewerHandoff = takeHandoff;
+      sessionStorageService.getItem.and.returnValue(payload);
+
+      component.ngOnInit();
+      (component as any).receiveHandoff(handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload }));
+
+      expect(takeHandoff).toHaveBeenCalledTimes(1);
+      expect(bootstrapWindow.__exuiTakeMediaViewerHandoff).toBeUndefined();
+      expect(component.mediaFilename).toBe('sample.pdf');
+      expect(sessionStorageService.setItem).not.toHaveBeenCalled();
+      expect(postMessageSpy).not.toHaveBeenCalled();
+    });
+
+    it('should detach the early receiver before installing the Angular receiver', () => {
+      const bootstrapWindow = window as Window & { __exuiTakeMediaViewerHandoff?: () => boolean };
+      const takeHandoff = jasmine.createSpy('takeHandoff').and.returnValue(false);
+      bootstrapWindow.__exuiTakeMediaViewerHandoff = takeHandoff;
+      spyOn(window, 'addEventListener').and.callFake(() => expect(takeHandoff).toHaveBeenCalled());
+
+      component.ngOnInit();
+      (component as any).receiveHandoff(handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload }));
+
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('media-viewer-info', payload);
+      expect(component.mediaReady).toBeTrue();
+    });
+
+    it('should reject a handoff with no URL token or opener', () => {
+      activatedRoute.snapshot.queryParamMap = convertToParamMap({});
+      (component as any).receiveHandoff(handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token: null, payload }));
+      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: token });
+      (Object.getOwnPropertyDescriptor(window, 'opener')?.get as jasmine.Spy).and.returnValue(null);
+      (component as any).receiveHandoff(
+        handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload }, window.location.origin, null)
+      );
+
+      expect(sessionStorageService.setItem).not.toHaveBeenCalled();
+      expect(postMessageSpy).not.toHaveBeenCalled();
+    });
+
+    it('should allow a later handoff attempt after session storage fails', () => {
+      const event = handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload });
+      sessionStorageService.setItem.and.throwError('Storage unavailable');
+      expect(() => (component as any).receiveHandoff(event)).not.toThrow();
+      expect(postMessageSpy).not.toHaveBeenCalled();
+      expect(component.mediaReady).toBeFalse();
+
+      sessionStorageService.setItem.and.stub();
+      (component as any).receiveHandoff(event);
+      expect(component.mediaReady).toBeTrue();
+      expect(postMessageSpy).toHaveBeenCalledTimes(1);
+    });
+
     it('should accept valid metadata, store it in session storage, and render the viewer', () => {
       const replaceStateSpy = spyOn(window.history, 'replaceState');
 

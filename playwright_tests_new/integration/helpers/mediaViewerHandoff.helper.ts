@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { CaseFileViewPage } from '../../E2E/page-objects/pages/exui/caseFileView.po';
 import { setupCaseFileViewMockSession } from './caseFileViewMockSession.helper';
 import { setupCaseFileViewDocumentBinaryMockRoutes } from './caseFileViewMockRoutes.helper';
@@ -72,4 +73,51 @@ export async function dispatchInvalidMediaViewerHandoff(
     },
     { payload, fault, token: MEDIA_VIEWER_HANDOFF_TOKEN }
   );
+}
+
+export const MEDIA_VIEWER_BOOTSTRAP_DELAY_MS = 12_000;
+
+export async function openCaseFileViewerWithDelayedBootstrap(opener: Page, baseURL: string) {
+  const openerRouteClosure = await setupCaseFileViewMockSession(opener, MEDIA_VIEWER_HANDOFF_CASE_ID, baseURL);
+  const caseDetails = new CaseDetailsPage(opener);
+  const caseFileView = new CaseFileViewPage(opener);
+  await caseDetails.openCaseDetails('PRIVATELAW', 'PRLAPPS', MEDIA_VIEWER_HANDOFF_CASE_ID);
+  await caseDetails.selectCaseDetailsTab('Case File View');
+  await caseFileView.waitForReady();
+  const folder = await caseFileView.getFolderNode('Evidence');
+  const documentRow = folder.locator('cdk-nested-tree-node').filter({
+    has: opener.getByRole('button', { name: 'Alpha evidence.pdf', exact: true }),
+  });
+  await documentRow.getByRole('button', { name: 'More document options', exact: true }).click();
+
+  let delayed = false;
+  let bootstrapDelayMs = 0;
+  await opener.context().route(/\/main[-.][^/]+\.js(?:\?.*)?$/, async (route) => {
+    if (route.request().frame().page() === opener || delayed) {
+      await route.fallback();
+      return;
+    }
+    delayed = true;
+    const started = Date.now();
+    // Hold the real popup beyond the toolkit sender's 100 x 100 ms lifetime.
+    await new Promise((resolve) => setTimeout(resolve, MEDIA_VIEWER_BOOTSTRAP_DELAY_MS));
+    bootstrapDelayMs = Date.now() - started;
+    await route.fallback();
+  });
+  const [viewer] = await Promise.all([
+    opener.waitForEvent('popup'),
+    opener.getByText('Open in a new tab', { exact: true }).click(),
+  ]);
+  const routeClosure = await setupCaseFileViewMockSession(viewer, MEDIA_VIEWER_HANDOFF_CASE_ID, baseURL);
+  await setupMediaViewerHandoffAnnotationRoutes(viewer, baseURL);
+  const binaryRequests: string[] = [];
+  await setupCaseFileViewDocumentBinaryMockRoutes(viewer, (url) => binaryRequests.push(url));
+  return {
+    viewer,
+    viewerPage: new CaseFileViewPage(viewer),
+    binaryRequests,
+    routeClosure,
+    openerRouteClosure,
+    getBootstrapDelayMs: () => bootstrapDelayMs,
+  };
 }

@@ -39,6 +39,11 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    const bootstrapWindow = window as Window & { __exuiTakeMediaViewerHandoff?: () => boolean };
+    if (bootstrapWindow.__exuiTakeMediaViewerHandoff) {
+      this.handoffConsumed = bootstrapWindow.__exuiTakeMediaViewerHandoff();
+      delete bootstrapWindow.__exuiTakeMediaViewerHandoff;
+    }
     window.addEventListener('message', this.messageListener);
     const sessionStorageMedia = this.sessionStorageService.getItem(MEDIA_VIEWER);
 
@@ -71,6 +76,8 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     const token = this.route.snapshot.queryParamMap.get('mvToken');
 
     if (
+      !token ||
+      !window.opener ||
       event.origin !== window.location.origin ||
       event.source !== window.opener ||
       !data ||
@@ -100,8 +107,12 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
       return;
     }
 
+    try {
+      this.sessionStorageService.setItem(MEDIA_VIEWER, data.payload);
+    } catch {
+      return;
+    }
     this.handoffConsumed = true;
-    this.sessionStorageService.setItem(MEDIA_VIEWER, data.payload);
     this.populateMedia(media);
     this.initialiseFeatureFlags();
     this.cleanUrl(token);

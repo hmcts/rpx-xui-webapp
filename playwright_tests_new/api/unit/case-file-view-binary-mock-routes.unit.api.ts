@@ -17,7 +17,15 @@ test.describe('case file view binary mock routes', { tag: '@svc-internal' }, () 
     const prefix = 'https://xui.example/em-anno';
     const documentId = '11111111-1111-1111-1111-111111111111';
     await setupMediaViewerHandoffAnnotationRoutes(page, 'https://xui.example');
-    expect([...routes.keys()]).toEqual([`${prefix}/${documentId}/bookmarks`, `${prefix}/metadata/${documentId}`]);
+    const expectedResponses = new Map<string, unknown>([
+      [
+        `${prefix}/annotation-sets/filter?documentId=${documentId}`,
+        { id: 'fictional-annotation-set', documentId, annotations: [] },
+      ],
+      [`${prefix}/${documentId}/bookmarks`, []],
+      [`${prefix}/metadata/${documentId}`, { documentId, rotationAngle: 0 }],
+    ]);
+    expect([...routes.keys()]).toEqual([...expectedResponses.keys()]);
 
     for (const [url, handler] of routes) {
       let fulfilled: unknown;
@@ -33,7 +41,7 @@ test.describe('case file view binary mock routes', { tag: '@svc-internal' }, () 
           },
         } as unknown as Route);
         if (method === 'GET') {
-          expect(fulfilled).toEqual({ status: 200, json: url.endsWith('/bookmarks') ? [] : { documentId, rotationAngle: 0 } });
+          expect(fulfilled).toEqual({ status: 200, json: expectedResponses.get(url) });
           expect(fellBack).toBe(false);
           fulfilled = undefined;
         } else {

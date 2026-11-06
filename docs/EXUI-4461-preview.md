@@ -5,6 +5,22 @@ regression coverage (#5612), and the library repairs below. It is a validation
 candidate; production acceptance requires the complete live test evidence and
 human review.
 
+## Slow viewer startup repair
+
+Live testing also exposed a handoff race: the toolkit sender stops after roughly
+10 seconds, while a successful popup script download can take longer. A
+nonce-protected receiver in the initial HTML now validates and stores the payload
+before Angular loads. The component takes ownership synchronously, preserves the
+consumed state and removes the early hook. Origin, opener, token, metadata and
+replay checks apply; failed storage is never acknowledged. Existing sender retries
+are unchanged. The regression uses the real toolkit menu action and delays popup
+bootstrap for 12 seconds, then checks the selected document rendering and its
+case-bound binary request. Existing live E2E tests separately require exact
+download filenames and bytes.
+
+This addresses delayed application bootstrap. If the initial HTML itself arrives
+after the sender deadline, a future toolkit readiness protocol is still needed.
+
 ## Temporary library patches
 
 The fixed npm releases were unavailable on 6 November 2026. The existing Yarn

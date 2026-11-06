@@ -25,6 +25,10 @@ export const MEDIA_VIEWER_INVALID_HANDOFFS = [
 ] as const;
 
 export const MEDIA_VIEWER_ANNOTATION_RESPONSES = [
+  {
+    pathname: `/em-anno/annotation-sets/filter?documentId=${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}`,
+    body: { id: 'fictional-annotation-set', documentId: CASE_FILE_VIEW_DOC_IDS.evidenceAlpha, annotations: [] },
+  },
   { pathname: `/em-anno/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/bookmarks`, body: [] },
   {
     pathname: `/em-anno/metadata/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}`,

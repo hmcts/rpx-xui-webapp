@@ -138,8 +138,7 @@
     { "service": "SSCS", "serviceCodes": ["BBA3"] },
     { "service": "ST_CIC", "serviceCodes": ["BBA2"] },
     { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] },
-    { "service": "DIVORCE", "serviceCodes": ["ABA1"] },
-    { "service": "FR", "serviceCodes": ["ABA2"] },
+    { "service": "DIVORCE", "serviceCodes": ["ABA1", "ABA2"] },
     { "service": "PROBATE", "serviceCodes": ["ABA6"] },
     { "service": "HRS", "serviceCodes": ["HRS"] },
     { "service": "PCS", "serviceCodes": ["AAA3"] }

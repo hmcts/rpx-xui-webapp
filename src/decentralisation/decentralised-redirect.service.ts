@@ -3,9 +3,7 @@ import { SessionStorageService } from '../app/services';
 import { EnvironmentService } from '../app/shared/services/environment.service';
 import { getWebUrlForCaseType } from '../../common/decentralisation/decentralised-redirect.util';
 import { UserInfo } from '../app/models/user-details.model';
-import { Params } from '@angular/router';
-import { BuildDecentralisedEventUrlInput } from './event-url-types';
-import { CaseTypeMap, FrontendDecentralisedCaseType } from 'common/decentralisation/decentralised-casetype';
+import { DecentralisedEvent } from './decentralised-event';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +12,14 @@ export class DecentralisedRedirectService {
   /** environment variable name where the service map is configured */
   static readonly SERVICE_MAP_ENV_VAR_NAME = 'decentralisedServiceMap';
 
-  private static readonly DECENTRALISED_EVENT_PREFIX = 'ext:';
-  private static readonly USER_ID_REQUEST_PARAM_NAME = 'expected_sub';
+  /** environment variable name where the case type map is configured */
+  static readonly CASE_TYPE_MAP_ENV_VAR_NAME = 'decentralisedCaseTypeConfig';
+
+  /** all decentralised events must have this prefix */
+  static readonly DECENTRALISED_EVENT_PREFIX = 'ext:';
+
+  /** name of parameter added to a request query parameters to capture the logged in user ID */
+  static readonly USER_ID_REQUEST_PARAM_NAME = 'expected_sub';
 
   constructor(
     private readonly environmentService: EnvironmentService,
@@ -36,80 +40,41 @@ export class DecentralisedRedirectService {
     }
   }
 
-  public tryEventRedirect(params: BuildDecentralisedEventUrlInput): boolean {
-    return this.redirect(
-      this.buildDecentralisedEventUrl(
-        params,
-        this.environmentService.get('decentralisedCaseTypeConfig'),
-        DecentralisedRedirectService.getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
-      )
-    );
-  }
-
   public getUrl(serviceId: string, serviceUrl: string, userInfo: UserInfo): string {
     const absoluteUrl = this.getAbsoluteUrl(serviceId, serviceUrl);
     return absoluteUrl ? this.addUserInfo(absoluteUrl, userInfo).toString() : serviceUrl;
   }
 
-  buildDecentralisedEventUrl(
-    params: BuildDecentralisedEventUrlInput,
-    caseTypeConfig: CaseTypeMap<FrontendDecentralisedCaseType>,
-    expectedSub?: string
-  ): string | null {
-    if (!this.isDecentralisedEvent(params.eventId)) {
-      return null;
-    }
-
-    const webUrl = getWebUrlForCaseType(caseTypeConfig, params.caseType);
-    if (!webUrl) {
-      return null;
-    }
-
-    let eventPath: string;
-    if (params.isCaseCreate === true) {
-      eventPath = `/cases/case-create/${encodeURIComponent(params.jurisdiction)}/${encodeURIComponent(params.caseType)}/${encodeURIComponent(params.eventId)}`;
-    } else {
-      eventPath = `/cases/${encodeURIComponent(params.caseId)}/event/${encodeURIComponent(params.eventId)}`;
-    }
-
-    const searchParams = new URLSearchParams();
-    this.appendQueryParams(searchParams, params.queryParams);
-    if (expectedSub) {
-      searchParams.set(DecentralisedRedirectService.USER_ID_REQUEST_PARAM_NAME, expectedSub);
-    }
-
-    const queryString = searchParams.toString();
-    return queryString ? `${webUrl}${eventPath}?${queryString}` : `${webUrl}${eventPath}`;
-  }
-
-  private isDecentralisedEvent(eventId?: string): eventId is string {
+  public isDecentralisedEvent(eventId?: string | null): eventId is string {
     return !!eventId && eventId.startsWith(DecentralisedRedirectService.DECENTRALISED_EVENT_PREFIX);
   }
 
-  private appendQueryParams(params: URLSearchParams, queryParams?: Params): void {
-    if (!queryParams) {
-      return;
+  public tryRedirectEvent(event: DecentralisedEvent): boolean {
+    const baseUrl = this.getBaseUrl(event.getCaseType());
+
+    if (baseUrl) {
+      this.redirectEvent(baseUrl, event);
+      return true;
+    } else {
+      // fail fast since decentralised events should have the required configuration
+      throw new Error(
+        `Event ${event.getEventId()} is decentralised for case type ${event.getCaseType()} but the required parameters are not provided`
+      );
     }
-    Object.keys(queryParams).forEach((key) => {
-      const value = queryParams[key];
-      if (value === undefined || value === null) {
-        return;
-      }
-      if (Array.isArray(value)) {
-        value.forEach((item) => params.append(key, String(item)));
-      } else {
-        params.set(key, String(value));
-      }
-    });
   }
 
-  private redirect(url: string | null): boolean {
-    if (!url) {
-      return false;
-    }
+  private redirectEvent(baseUrl: string, event: DecentralisedEvent): void {
+    const expectedSub = DecentralisedRedirectService.getExpectedSubFromUserDetails(
+      this.sessionStorageService.getItem('userDetails')
+    );
+    const absoluteUrl = event.getAbsoluteUrl(baseUrl, expectedSub);
 
-    this.window.location.assign(url);
-    return true;
+    this.window.location.assign(absoluteUrl);
+  }
+
+  private getBaseUrl(caseType: string): string | null {
+    const caseTypeMap = this.environmentService.get(DecentralisedRedirectService.CASE_TYPE_MAP_ENV_VAR_NAME);
+    return getWebUrlForCaseType(caseTypeMap, caseType);
   }
 
   private addUserInfo(url: URL, userInfo: UserInfo): URL {

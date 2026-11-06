@@ -91,10 +91,7 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "GrantOfRepresentation",
-        "Caveat",
-        "StandingSearch",
-        "WillLodgement"
+        "GrantOfRepresentation"
       ],
       "releaseVersion": "4",
        "serviceName": "PROBATE"
@@ -260,10 +257,7 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "GrantOfRepresentation",
-        "Caveat",
-        "StandingSearch",
-        "WillLodgement"
+        "GrantOfRepresentation"
       ],
       "releaseVersion": "4",
        "serviceName": "PROBATE"

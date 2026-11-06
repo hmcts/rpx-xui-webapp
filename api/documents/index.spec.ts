@@ -291,14 +291,116 @@ describe('Documents Uploading', () => {
       expect(next).to.not.have.been.called;
     });
 
-    it('should preserve canonical metadata, upload and CDAM neighbours', async () => {
+    for (const method of ['GET', 'HEAD']) {
+      for (const suffix of ['', '/versions', '/versions/version-123', '/auditEntries']) {
+        it(`should reject controlled legacy metadata ${method} ${suffix || 'document'}`, async () => {
+          const getStub = sandbox.stub(axios, 'get');
+          if (suffix === '/versions/version-123') {
+            getStub.onFirstCall().resolves({
+              data: { _links: { document: { href: 'http://dm-store/documents/doc-123' } } },
+            });
+            getStub.onSecondCall().resolves({ data: { metadata: { pending_access_controlled: 'true' } } });
+          } else {
+            getStub.resolves({ data: { metadata: { pending_access_controlled: 'true' } } });
+          }
+          const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+          const next = sandbox.stub();
+          await validateLegacyDocumentAccess(
+            {
+              method,
+              originalUrl: `/documents/doc-123${suffix}?pendingAccess=false`,
+            } as any,
+            response,
+            next
+          );
+          expect(response.status).to.have.been.calledWith(403);
+          expect(next).to.not.have.been.called;
+        });
+
+        it(`should preserve unmarked historical metadata ${method} ${suffix || 'document'}`, async () => {
+          const getStub = sandbox.stub(axios, 'get');
+          if (suffix === '/versions/version-123') {
+            getStub.onFirstCall().resolves({
+              data: { _links: { document: { href: 'http://dm-store/documents/doc-123' } } },
+            });
+            getStub.onSecondCall().resolves({ data: { metadata: {} } });
+          } else {
+            getStub.resolves({ data: { metadata: {} } });
+          }
+          const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+          const next = sandbox.stub();
+          await validateLegacyDocumentAccess({ method, originalUrl: `/documents/doc-123${suffix}` } as any, response, next);
+          expect(next).to.have.been.calledOnce;
+          expect(response.status).to.not.have.been.called;
+          expect(getStub.lastCall.args[0]).to.equal(`${getConfigValue(SERVICES_DOCUMENTS_API_PATH)}/documents/doc-123`);
+        });
+      }
+    }
+
+    it('should classify version metadata by its actual parent using only the configured DM origin', async () => {
+      const getStub = sandbox.stub(axios, 'get');
+      getStub.onFirstCall().resolves({
+        data: { _links: { document: { href: 'https://untrusted.example/documents/actual-parent' } } },
+      });
+      getStub.onSecondCall().resolves({ data: { metadata: { pending_access_controlled: 'true' } } });
+      const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+      const next = sandbox.stub();
+      await validateLegacyDocumentAccess(
+        {
+          method: 'GET',
+          originalUrl: '/documents/wrong-parent/versions/version-123',
+        } as any,
+        response,
+        next
+      );
+      expect(response.status).to.have.been.calledWith(403);
+      expect(next).to.not.have.been.called;
+      expect(getStub.secondCall.args[0]).to.equal(`${getConfigValue(SERVICES_DOCUMENTS_API_PATH)}/documents/actual-parent`);
+    });
+
+    for (const path of [
+      '/documents',
+      '/documents/doc-123/metadata',
+      '/documents/doc-123/unknown',
+      '/documents/doc-123/versions/version-123/auditEntries',
+    ]) {
+      it(`should reject unknown legacy metadata routes ${path}`, async () => {
+        const getStub = sandbox.stub(axios, 'get');
+        const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+        const next = sandbox.stub();
+        await validateLegacyDocumentAccess({ method: 'GET', originalUrl: path } as any, response, next);
+        expect(response.status).to.have.been.calledWith(400);
+        expect(next).to.not.have.been.called;
+        expect(getStub).to.not.have.been.called;
+      });
+    }
+
+    for (const scenario of ['missing parent', 'encoded parent', 'lookup denied', 'lookup missing', 'invalid metadata']) {
+      it(`should fail closed when legacy metadata classification fails: ${scenario}`, async () => {
+        const getStub = sandbox.stub(axios, 'get');
+        let path = '/documents/doc-123';
+        if (scenario === 'missing parent' || scenario === 'encoded parent') {
+          path += '/versions/version-123';
+          getStub.resolves({
+            data: { _links: { document: { href: scenario === 'encoded parent' ? '/documents/%64oc-123' : undefined } } },
+          });
+        } else if (scenario === 'invalid metadata') {
+          getStub.resolves({ data: '<html>not document metadata</html>' });
+        } else {
+          getStub.rejects({ response: { status: scenario === 'lookup missing' ? 404 : 403 } });
+        }
+        const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+        const next = sandbox.stub();
+        await validateLegacyDocumentAccess({ method: 'GET', originalUrl: path } as any, response, next);
+        expect(response.status).to.have.been.calledWith(scenario === 'lookup missing' ? 404 : 403);
+        expect(next).to.not.have.been.called;
+        expect(getStub).to.have.been.calledOnce;
+      });
+    }
+
+    it('should preserve root uploads and CDAM neighbours without legacy classification', async () => {
       const getStub = sandbox.stub(axios, 'get');
       for (const [method, originalUrl] of [
-        ['GET', '/documents'],
-        ['GET', '/documents/doc-123?name=a%20b'],
-        ['HEAD', '/documents/doc-123/'],
-        ['GET', '/documents/doc-123/versions/version-123'],
-        ['GET', '/documents/doc-123/auditEntries'],
         ['POST', '/documents'],
         ['GET', '/documentsv2/doc-123/binary'],
       ]) {

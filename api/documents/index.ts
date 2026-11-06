@@ -13,6 +13,7 @@ const INITIAL_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_I
 const MAX_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_MAX_MS);
 
 const LEGACY_BINARY_DOCUMENT_PATH = /^\/documents\/([^/]+)(?:\/versions\/([^/]+))?\/binary\/?$/;
+const LEGACY_METADATA_DOCUMENT_PATH = /^\/documents\/([^/]+)(?:\/versions(?:\/([^/]+))?|\/auditEntries)?\/?$/;
 const LEGACY_HTML_CSP = [
   "default-src 'none'",
   "base-uri 'none'",
@@ -41,6 +42,26 @@ function extractLegacyDocumentId(req): string | null {
   const path = getRequestPath(req);
   const match = isCanonicalLegacyDocumentPath(path) && path.match(LEGACY_BINARY_DOCUMENT_PATH);
   return match ? match[1] : null;
+}
+
+async function isControlledLegacyMetadata(path: string, match: RegExpMatchArray, req: EnhancedRequest): Promise<boolean> {
+  const documentStore = getConfigValue(SERVICES_DOCUMENTS_API_PATH);
+  const headers = getValidationHeaders(req);
+  let parentPath = `/documents/${match[1]}`;
+  if (match[2]) {
+    const version = await axios.get(`${documentStore}${path.replace(/\/$/, '')}`, { headers });
+    const documentUrl = version.data?._links?.document?.href;
+    parentPath = typeof documentUrl === 'string' ? new URL(documentUrl, documentStore).pathname : '';
+    if (!/^\/documents\/[^/]+\/?$/.test(parentPath) || !isCanonicalLegacyDocumentPath(parentPath)) {
+      throw new Error('Legacy version metadata does not identify a canonical parent');
+    }
+  }
+  // Resolve only at the configured DM service, never at the host supplied in a HAL link.
+  const document = await axios.get(`${documentStore}${parentPath}`, { headers });
+  if (!document.data || typeof document.data !== 'object' || Array.isArray(document.data)) {
+    throw new Error('Legacy document metadata could not be classified');
+  }
+  return document.data.metadata?.pending_access_controlled === 'true';
 }
 
 function isCanonicalLegacyDocumentPath(path: string): boolean {
@@ -220,7 +241,20 @@ export async function validateLegacyDocumentAccess(req: EnhancedRequest, res, ne
 
   const documentId = extractLegacyDocumentId(req);
   if (!documentId) {
-    next();
+    const metadata = path.match(LEGACY_METADATA_DOCUMENT_PATH);
+    if (!metadata) {
+      res.status(400).send({ message: 'Bad Request' });
+      return;
+    }
+    try {
+      if (await isControlledLegacyMetadata(path, metadata, req)) {
+        res.status(403).send({ message: 'Forbidden' });
+        return;
+      }
+      next();
+    } catch (error) {
+      res.status(error?.response?.status === 404 ? 404 : 403).send({ message: 'Forbidden' });
+    }
     return;
   }
   const caseId =

@@ -1,17 +1,201 @@
-/* global clearTimeout, process, require, module, setTimeout */
+/* global Buffer, clearTimeout, process, require, module, setTimeout */
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { nextChecksFor, redactText, safeSourceFile } = require('./failure-context.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
+const failureStatuses = new Set(['failed', 'timedOut', 'interrupted']);
+const maxFailureOutputBytes = 64 * 1024;
+
+function safeUtf8Prefix(buffer, maxBytes) {
+  if (buffer.length <= maxBytes) {
+    return buffer;
+  }
+
+  let end = maxBytes;
+  while (end > 0 && (buffer[end] & 0xc0) === 0x80) {
+    end -= 1;
+  }
+  if (end < maxBytes) {
+    const firstByte = buffer[end];
+    const characterBytes = firstByte < 0x80 ? 1 : firstByte < 0xe0 ? 2 : firstByte < 0xf0 ? 3 : 4;
+    if (end + characterBytes > maxBytes) {
+      return buffer.subarray(0, end);
+    }
+  }
+  return buffer.subarray(0, maxBytes);
+}
+
+function safeUtf8StringPrefix(value, maxBytes) {
+  let byteLength = 0;
+  let end = 0;
+
+  for (const character of value) {
+    const codePoint = character.codePointAt(0);
+    const characterBytes = codePoint < 0x80 ? 1 : codePoint < 0x800 ? 2 : codePoint < 0x10000 ? 3 : 4;
+    if (byteLength + characterBytes > maxBytes) {
+      break;
+    }
+
+    byteLength += characterBytes;
+    end += character.length;
+    if (byteLength === maxBytes) {
+      break;
+    }
+  }
+
+  return { text: value.slice(0, end), byteLength, truncated: end < value.length };
+}
+
+function limitOutputChunks(chunks, maxBytes) {
+  const limited = [];
+  let remainingBytes = maxBytes;
+  let truncated = false;
+
+  for (const chunk of chunks) {
+    if (remainingBytes <= 0) {
+      truncated = true;
+      break;
+    }
+
+    if (typeof chunk === 'string') {
+      const retained = safeUtf8StringPrefix(chunk, remainingBytes);
+      limited.push(Buffer.from(retained.text).toString('utf8'));
+      remainingBytes -= retained.byteLength;
+      truncated ||= retained.truncated;
+      continue;
+    }
+
+    const retained = Buffer.from(safeUtf8Prefix(chunk, remainingBytes));
+    limited.push(retained);
+    remainingBytes -= retained.length;
+    truncated ||= retained.length < chunk.length;
+  }
+
+  if (limited.length < chunks.length) {
+    truncated = true;
+  }
+  return { chunks: limited, truncated };
+}
+
+function pathBackedAttachments(attachments) {
+  if (!Array.isArray(attachments)) {
+    return [];
+  }
+
+  return attachments.flatMap((attachment) => {
+    if (!attachment) {
+      return [];
+    }
+    if (typeof attachment.path === 'string') {
+      const { name, contentType, path } = attachment;
+      return [{ name, contentType, path }];
+    }
+
+    return [];
+  });
+}
+
+function hasBodyBackedStepAttachments(steps) {
+  return (
+    Array.isArray(steps) &&
+    steps.some(
+      (step) =>
+        (Array.isArray(step?.attachments) && step.attachments.some((attachment) => attachment?.body !== undefined)) ||
+        hasBodyBackedStepAttachments(step?.steps)
+    )
+  );
+}
+
+function sanitizeStepAttachments(steps) {
+  if (!Array.isArray(steps)) {
+    return steps;
+  }
+
+  return steps.map((step) => {
+    if (!step || typeof step !== 'object') {
+      return step;
+    }
+
+    return {
+      ...step,
+      ...(Array.isArray(step.attachments) ? { attachments: pathBackedAttachments(step.attachments) } : {}),
+      ...(Array.isArray(step.steps) ? { steps: sanitizeStepAttachments(step.steps) } : {}),
+    };
+  });
+}
+
+function trimResult(result, { lightweight, testOutputMode, trimFailedArtifacts = true }) {
+  let nextResult = result;
+  const trimmedCounts = { output: 0, heavyArtifacts: 0 };
+  const passedOrSkipped = result?.status === 'passed' || result?.status === 'skipped';
+  const shouldTrimHeavyArtifacts =
+    (lightweight && passedOrSkipped) || (trimFailedArtifacts && failureStatuses.has(result?.status));
+  const shouldFilterAttachments =
+    !(shouldTrimHeavyArtifacts && passedOrSkipped) &&
+    (failureStatuses.has(result?.status) ||
+      result?.attachments?.some((attachment) => attachment?.body !== undefined) ||
+      hasBodyBackedStepAttachments(result?.steps));
+  const shouldDropTestOutput = testOutputMode === false || (testOutputMode === 'only-on-failure' && passedOrSkipped);
+  const shouldBoundFailureOutput = trimFailedArtifacts && testOutputMode !== false && failureStatuses.has(result?.status);
+
+  if (shouldTrimHeavyArtifacts || shouldFilterAttachments || shouldDropTestOutput || shouldBoundFailureOutput) {
+    nextResult = { ...result };
+
+    if (shouldDropTestOutput) {
+      nextResult.stdout = [];
+      nextResult.stderr = [];
+      trimmedCounts.output += 1;
+    } else if (shouldBoundFailureOutput) {
+      const stdout = limitOutputChunks(result.stdout, maxFailureOutputBytes);
+      const stderr = limitOutputChunks(result.stderr, maxFailureOutputBytes);
+      nextResult.stdout = stdout.chunks;
+      nextResult.stderr = stderr.chunks;
+      if (stdout.truncated || stderr.truncated) {
+        trimmedCounts.output += 1;
+      }
+    }
+
+    if (shouldTrimHeavyArtifacts || shouldFilterAttachments) {
+      if (shouldTrimHeavyArtifacts && passedOrSkipped) {
+        nextResult.steps = [];
+      } else if (shouldFilterAttachments) {
+        nextResult.steps = sanitizeStepAttachments(result.steps);
+      }
+      nextResult.attachments = shouldTrimHeavyArtifacts && passedOrSkipped ? [] : pathBackedAttachments(result.attachments);
+      trimmedCounts.heavyArtifacts += 1;
+    }
+  }
+
+  return { nextResult, trimmedCounts };
+}
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
-    this.options = options;
-    this.outputFolder = options.outputFolder;
-    const configuredLightweight = options.lightweight;
+    // Keep traces and screenshots beside the published report; never serialize them into Odhín HTML.
+    const reporterOptions = {
+      ...options,
+      embedAttachments: false,
+      testListColumns: [
+        ...new Set([
+          ...String(options.testListColumns ?? '')
+            .toUpperCase()
+            .split(',')
+            .map((column) => column.trim())
+            .filter(Boolean),
+          'PROJECT',
+          'FILE',
+        ]),
+      ],
+    };
+    this.testMetadata = [];
+    this.outputFolder = reporterOptions.outputFolder;
+    const configuredLightweight = reporterOptions.lightweight;
     const envLightweight = process.env.PW_ODHIN_LIGHTWEIGHT;
     this.lightweight =
       typeof configuredLightweight === 'boolean'
@@ -37,18 +221,21 @@ class OdhinAdaptiveReporter {
     };
 
     // Keep stdout/stderr only for failed tests in default mode.
-    this.testOutputMode = normalizeTestOutputMode(options.testOutput);
+    this.testOutputMode = normalizeTestOutputMode(reporterOptions.testOutput);
     this.profileEnabled =
-      typeof options.profile === 'boolean'
-        ? options.profile
+      typeof reporterOptions.profile === 'boolean'
+        ? reporterOptions.profile
         : process.env.PW_ODHIN_PROFILE
           ? process.env.PW_ODHIN_PROFILE.toLowerCase() === 'true'
           : true;
-    const configuredRuntimeHookTimeoutMs = options.runtimeHookTimeoutMs ?? process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS;
-    this.runtimeHookTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredRuntimeHookTimeoutMs, process.env.CI ? 0 : 15000);
-    const configuredFinalizationTimeoutMs = options.finalizationTimeoutMs ?? process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS;
+    const configuredRuntimeHookTimeoutMs = reporterOptions.runtimeHookTimeoutMs ?? process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS;
+    this.runtimeHookTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredRuntimeHookTimeoutMs, 15000);
+    const configuredFinalizationTimeoutMs = reporterOptions.finalizationTimeoutMs ?? process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS;
     this.finalizationTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredFinalizationTimeoutMs, 30000);
-    this.trimFailedArtifacts = normalizeBoolean(options.trimFailedArtifacts ?? process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS, false);
+    this.trimFailedArtifacts = normalizeBoolean(
+      reporterOptions.trimFailedArtifacts ?? process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS,
+      true
+    );
     this.statusCounts = {
       passed: 0,
       failed: 0,
@@ -71,7 +258,9 @@ class OdhinAdaptiveReporter {
     this.finalizationStartedAt = 0;
     this.pendingInnerCallbacks = Promise.resolve();
     this.inner =
-      typeof options.createInnerReporter === 'function' ? options.createInnerReporter(options) : new OdhinReporter(options);
+      typeof reporterOptions.createInnerReporter === 'function'
+        ? reporterOptions.createInnerReporter(reporterOptions)
+        : new OdhinReporter(reporterOptions);
   }
 
   async onBegin(config, suite) {
@@ -85,28 +274,25 @@ class OdhinAdaptiveReporter {
       return;
     }
 
-    let nextResult = result;
-    const passedOrSkipped = result?.status === 'passed' || result?.status === 'skipped';
-    const shouldTrimHeavyArtifacts = this.lightweight && (passedOrSkipped || (this.trimFailedArtifacts && !passedOrSkipped));
+    const { nextResult, trimmedCounts } = trimResult(addFailureSource(test, result), {
+      lightweight: this.lightweight,
+      testOutputMode: this.testOutputMode,
+      trimFailedArtifacts: this.trimFailedArtifacts,
+    });
+    this.trimmedCounts.output += trimmedCounts.output;
+    this.trimmedCounts.heavyArtifacts += trimmedCounts.heavyArtifacts;
 
-    const shouldDropTestOutput = this.testOutputMode === false || (this.testOutputMode === 'only-on-failure' && passedOrSkipped);
-
-    if (shouldTrimHeavyArtifacts || shouldDropTestOutput) {
-      nextResult = { ...result };
-
-      if (shouldDropTestOutput) {
-        nextResult.stdout = [];
-        nextResult.stderr = [];
-        this.trimmedCounts.output += 1;
-      }
-
-      if (shouldTrimHeavyArtifacts) {
-        nextResult.steps = [];
-        nextResult.attachments = [];
-        this.trimmedCounts.heavyArtifacts += 1;
-      }
-    }
-
+    const failure = buildFailureMetadata(test, result);
+    this.testMetadata.push({
+      target: `#${test.id}-${result.retry}`,
+      testId: redactText(test.id),
+      feature: deriveFeatureName(test?.location?.file, test?.annotations),
+      tags: Array.isArray(test.tags) ? test.tags.map(redactText) : [],
+      durationMs: result.duration || 0,
+      retry: result.retry,
+      status: redactText(result?.status),
+      ...(failure ? { failure } : {}),
+    });
     this.recordStatus(result?.status);
     this.recordFeatureStat(test, result);
     this.enqueueInnerCallback('onTestEnd', () => this.inner.onTestEnd(test, nextResult), { test });
@@ -134,7 +320,7 @@ class OdhinAdaptiveReporter {
       }
     }
     try {
-      enhanceGeneratedReport(this.outputFolder, this.featureStats);
+      enhanceGeneratedReport(this.outputFolder, this.featureStats, this.testMetadata);
     } catch (error) {
       process.stderr.write(`[odhin-profile] report enhancement failed: ${formatErrorMessage(error)}\n`);
     }
@@ -145,12 +331,18 @@ class OdhinAdaptiveReporter {
   }
 
   async onStdOut(chunk, test, result) {
+    if (this.testOutputMode !== true || this.trimFailedArtifacts) {
+      return;
+    }
     if (typeof this.inner.onStdOut === 'function') {
       this.enqueueInnerCallback('onStdOut', () => this.inner.onStdOut(chunk, test, result), { test });
     }
   }
 
   async onStdErr(chunk, test, result) {
+    if (this.testOutputMode !== true || this.trimFailedArtifacts) {
+      return;
+    }
     if (typeof this.inner.onStdErr === 'function') {
       this.enqueueInnerCallback('onStdErr', () => this.inner.onStdErr(chunk, test, result), { test });
     }
@@ -184,7 +376,7 @@ class OdhinAdaptiveReporter {
       return;
     }
 
-    const featureName = deriveFeatureName(test?.location?.file);
+    const featureName = deriveFeatureName(test?.location?.file, test?.annotations);
     const current = this.featureStats.get(featureName) ?? createEmptyFeatureStat(featureName);
     current.totalTests += 1;
     current.durationMs += Number(result?.duration ?? 0);
@@ -241,6 +433,123 @@ class OdhinAdaptiveReporter {
   async flushInnerCallbacks() {
     await this.pendingInnerCallbacks;
   }
+}
+
+function buildFailureMetadata(test, result) {
+  if (!failureStatuses.has(result?.status)) {
+    return null;
+  }
+
+  const annotations = Array.isArray(test?.annotations) ? test.annotations : [];
+  const annotation = (type) => annotations.find((item) => item?.type === type)?.description ?? '';
+  const classification = annotation('Failure type') || 'UNKNOWN';
+  const location = test?.location ?? {};
+  const title = redactText(test?.title ?? 'Unnamed test');
+  const project = resolveProjectName(test);
+  const error = Array.isArray(result?.errors) ? result.errors[0] : result?.error;
+
+  return {
+    title,
+    file: safeSourceFile(location.file),
+    line: Number.isInteger(location.line) ? location.line : null,
+    column: Number.isInteger(location.column) ? location.column : null,
+    project: redactText(project),
+    retry: Number.isInteger(Number(result?.retry)) ? Number(result.retry) : 0,
+    status: redactText(result.status),
+    classification: redactText(classification),
+    confidence: 'observed',
+    source: redactText(annotation('Failure source')),
+    failureLocation: redactText(annotation('Failure location')),
+    phase: redactText(annotation('Phase marker')),
+    actionableError: redactText(annotation('Actionable error') || error?.message || ''),
+    hypothesis: redactText(annotation('Likely root cause')),
+    nextChecks: nextChecksFor(classification),
+  };
+}
+
+function resolveProjectName(test) {
+  let suite = test?.parent;
+  let depth = 0;
+  while (suite && depth < 20) {
+    if (typeof suite.project === 'function') {
+      const project = suite.project();
+      if (project?.name) {
+        return project.name;
+      }
+    }
+    suite = suite.parent;
+    depth += 1;
+  }
+  return process.env.PW_PROJECT_NAME || 'unknown';
+}
+
+function addFailureSource(test, result) {
+  if (!result || !['failed', 'timedOut', 'interrupted'].includes(result.status)) {
+    return result;
+  }
+
+  const errors = Array.isArray(result.errors) ? result.errors : result.error ? [result.error] : [];
+  const errorText = errors.map((error) => `${error?.message ?? ''}\n${error?.stack ?? ''}`).join('\n');
+  const source = deriveFailureSource(`${test?.title ?? ''}\n${errorText}`);
+  if (!source || errors.some((error) => String(error?.stack ?? error?.message ?? '').startsWith('[Failure source:'))) {
+    return result;
+  }
+
+  return {
+    ...result,
+    ...(result.error ? { error: prefixFailureSource(result.error, source) } : {}),
+    ...(Array.isArray(result.errors)
+      ? {
+          // Odhín renders result.errors (and its stack), not result.error.
+          errors: result.errors.map((error) => prefixFailureSource(error, source)),
+        }
+      : {}),
+  };
+}
+
+function prefixFailureSource(error, source) {
+  return {
+    ...error,
+    message: `[Failure source: ${source}]\n${error?.message ?? ''}`,
+    stack: error?.stack ? `[Failure source: ${source}]\n${error.stack}` : error?.stack,
+  };
+}
+
+function deriveFailureSource(errorMessage) {
+  const message = String(errorMessage);
+  const normalized = message.toLowerCase();
+
+  if (/sessioncaptureerror|session capture|idam login|login surface|app shell not detected within/.test(normalized)) {
+    return 'XUI/IDAM authentication session capture';
+  }
+  if (/direct ccd case create failed/.test(normalized)) {
+    return 'CCD Data Store direct case-create route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases?ignore-warning=false';
+  }
+  if (/direct ccd case validate failed/.test(normalized)) {
+    return 'CCD Data Store direct case-validation route: POST /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/validate';
+  }
+  if (/failed to fetch direct ccd event token/.test(normalized)) {
+    return 'CCD Data Store direct event-token route: GET /data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/event-triggers/:eventId/token';
+  }
+  if (/\/auth\/login/.test(normalized)) {
+    return 'XUI authentication route /auth/login';
+  }
+  if (/\/external\/(?:config\/ui|configuration-ui)/.test(normalized)) {
+    return 'XUI external configuration route';
+  }
+  if (/serves external (?:configuration|config\/ui alias)/.test(normalized)) {
+    return 'XUI external configuration route';
+  }
+  if (/\/aggregated\/caseworkers\//.test(normalized)) {
+    return 'XUI aggregated caseworker route';
+  }
+  if (/\/workallocation\//.test(normalized)) {
+    return 'Work Allocation API';
+  }
+  if (/\/data\/(?:cases|caseworkers)|\/caseworkers\//.test(normalized)) {
+    return 'CCD Data Store route';
+  }
+  return null;
 }
 
 const normalizeRuntimeHookTimeoutMs = (raw, fallbackMs) => {
@@ -317,6 +626,8 @@ const formatHookContext = ({ test } = {}) => {
 
 const exportedReporter = OdhinAdaptiveReporter;
 exportedReporter.__test__ = {
+  addFailureSource,
+  deriveFailureSource,
   isFinalResult,
   normalizeFinalStatus,
   normalizeTestOutputMode(raw) {
@@ -334,38 +645,10 @@ exportedReporter.__test__ = {
     }
     return 'only-on-failure';
   },
-  trimResult(result, { lightweight, testOutputMode }) {
-    const reporter = {
-      lightweight,
-      testOutputMode,
-      trimmedCounts: { output: 0, heavyArtifacts: 0 },
-    };
-    let nextResult = result;
-    const passedOrSkipped = result?.status === 'passed' || result?.status === 'skipped';
-    const shouldTrimHeavyArtifacts = reporter.lightweight && passedOrSkipped;
-    const shouldDropTestOutput =
-      reporter.testOutputMode === false || (reporter.testOutputMode === 'only-on-failure' && passedOrSkipped);
-
-    if (shouldTrimHeavyArtifacts || shouldDropTestOutput) {
-      nextResult = { ...result };
-
-      if (shouldDropTestOutput) {
-        nextResult.stdout = [];
-        nextResult.stderr = [];
-        reporter.trimmedCounts.output += 1;
-      }
-
-      if (shouldTrimHeavyArtifacts) {
-        nextResult.steps = [];
-        nextResult.attachments = [];
-        reporter.trimmedCounts.heavyArtifacts += 1;
-      }
-    }
-
-    return { nextResult, trimmedCounts: reporter.trimmedCounts };
-  },
+  trimResult,
   normalizeBoolean,
   normalizeRuntimeHookTimeoutMs,
   withTimeout,
+  buildFailureMetadata,
 };
 module.exports = exportedReporter;

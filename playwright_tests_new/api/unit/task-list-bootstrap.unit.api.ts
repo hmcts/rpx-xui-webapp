@@ -97,4 +97,44 @@ test.describe('task list bootstrap routes helper', { tag: '@svc-internal' }, () 
       { id: 'SSCS', name: 'Social security and child support', caseTypes: [] },
     ]);
   });
+
+  test('adds AM-backed staff navigation assignments to the bootstrap user', async () => {
+    const fakePage = createFakePage();
+
+    await setupTaskListBootstrapRoutes(fakePage as never, ['IA']);
+
+    const userDetailsRoute = getRegisteredRoute(fakePage.routes, '**/api/user/details*');
+    const roleCategoriesRoute = getRegisteredRoute(fakePage.routes, '**/api/wa-supported-role-details/getRoleCategories*');
+    const roleTypesRoute = getRegisteredRoute(fakePage.routes, '**/api/wa-supported-role-details/getRoleTypes*');
+
+    expect(userDetailsRoute).toBeTruthy();
+    expect(roleCategoriesRoute).toBeTruthy();
+    expect(roleTypesRoute).toBeTruthy();
+
+    const userDetailsPayload = (await invokeRoute(userDetailsRoute!))[0] as { body: string };
+    const userDetails = JSON.parse(userDetailsPayload.body) as {
+      roleAssignmentInfo: Array<Record<string, unknown>>;
+      userInfo: { roles: string[] };
+    };
+
+    expect(userDetails.userInfo.roles).toEqual(expect.arrayContaining(['task-supervisor', 'hmcts-legal-operations']));
+    expect(userDetails.roleAssignmentInfo).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          jurisdiction: 'IA',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'hmcts-legal-operations',
+          roleType: 'ORGANISATION',
+          substantive: 'Y',
+        }),
+      ])
+    );
+    expect(JSON.parse(((await invokeRoute(roleCategoriesRoute!))[0] as { body: string }).body)).toEqual([
+      'LEGAL_OPERATIONS',
+      'ADMIN',
+      'CTSC',
+      'JUDICIAL',
+    ]);
+    expect(JSON.parse(((await invokeRoute(roleTypesRoute!))[0] as { body: string }).body)).toEqual(['ORGANISATION']);
+  });
 });

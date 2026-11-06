@@ -3,6 +3,7 @@ export type FailureType =
   | 'DOWNSTREAM_API_4XX'
   | 'SLOW_API_RESPONSE'
   | 'NETWORK_TIMEOUT'
+  | 'IDENTITY_SCHEDULING_TIMEOUT'
   | 'UI_ELEMENT_MISSING'
   | 'ASSERTION_FAILURE'
   | 'UNKNOWN';
@@ -57,6 +58,12 @@ export function hasNetworkErrorSignal(value: string): boolean {
   return NETWORK_ERROR_PATTERNS.some((pattern) => pattern.test(value));
 }
 
+export function isNetworkTransportError(errorText: string): boolean {
+  return /TLS|SSL|bad record mac|decryption failed|ECONNREFUSED|ENOTFOUND|EAI_AGAIN|ERR_NAME_NOT_RESOLVED|ERR_CONNECTION_REFUSED/i.test(
+    errorText
+  );
+}
+
 export function collectDependencySignals(
   errorMessage: string,
   serverErrors: ApiError[],
@@ -98,6 +105,9 @@ export function classifyFailure(
   failedRequests: FailedRequest[],
   networkFailureSignal: boolean
 ): FailureType {
+  if (/IdentityLeaseTimeoutError|Identity scheduling timed out/i.test(error)) {
+    return 'IDENTITY_SCHEDULING_TIMEOUT';
+  }
   if (serverErrors.length > 0) {
     return 'DOWNSTREAM_API_5XX';
   }

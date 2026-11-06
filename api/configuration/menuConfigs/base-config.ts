@@ -5,6 +5,7 @@ export const baseConfig = {
       flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
       roles: [
+        'hmcts-judiciary',
         'caseworker-civil',
         'caseworker-ia-iacjudge',
         'caseworker-privatelaw',
@@ -65,6 +66,7 @@ export const baseConfig = {
       flags: ['feature-global-search'],
       href: '/search',
       roles: [
+        'hmcts-judiciary',
         'caseworker-civil',
         'caseworker-ia-iacjudge',
         'caseworker-privatelaw',
@@ -74,6 +76,7 @@ export const baseConfig = {
         'caseworker-employment-etjudge',
         'caseworker-st_cic',
         'caseworker-pcs',
+        'caseworker-divorce-financialremedy-judiciary',
       ],
       text: 'Search',
     },
@@ -138,6 +141,9 @@ export const baseConfig = {
       flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
       roles: [
+        'hmcts-admin',
+        'hmcts-ctsc',
+        'hmcts-legal-operations',
         'caseworker-civil',
         'caseworker-civil-staff',
         'caseworker-ia-caseofficer',
@@ -210,6 +216,9 @@ export const baseConfig = {
       flags: ['feature-global-search'],
       href: '/search',
       roles: [
+        'hmcts-admin',
+        'hmcts-ctsc',
+        'hmcts-legal-operations',
         'caseworker-civil',
         'caseworker-ia-caseofficer',
         'senior-tribunal-caseworker',
@@ -223,6 +232,8 @@ export const baseConfig = {
         'caseworker-sscs',
         'caseworker-employment',
         'caseworker-pcs',
+        'caseworker-probate',
+        'caseworker-divorce-financialremedy',
       ],
       text: 'Search',
     },

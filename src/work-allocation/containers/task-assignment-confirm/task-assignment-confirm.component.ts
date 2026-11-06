@@ -64,7 +64,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
       const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (userInfo) {
         // EXUI-2907 - Use roleCategory instead of roles
-        this.isUserJudicial = userInfo.roleCategory === RoleCategory.JUDICIAL;
+        this.isUserJudicial = !!userInfo.roleCategories?.includes(RoleCategory.JUDICIAL);
       }
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;
@@ -72,7 +72,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     if (this.router?.url) {
       this.rootPath = this.router.url.split('/')[1];
     }
-    this.task = this.route.snapshot.data.taskAndCaseworkers.task.task;
+    this.task = this.route.snapshot.data.taskAndCaseworker.task.task;
     this.assignHintText = this.verb === 'Assign' ? AssignHintText.CHECK_ASSIGNING : AssignHintText.CHECK_REASSIGNING;
   }
 

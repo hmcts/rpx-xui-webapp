@@ -211,5 +211,60 @@ describe('Search Cases Elastic Search', () => {
       const wildCardSearchQuery = result.native_es_query.query.bool.must[2].match['data.generatedSurname'];
       expect(wildCardSearchQuery.query).to.equal('Beckham');
     });
+
+    it('should not throw when the body is undefined', async () => {
+      const queryParams = { ctid: 'PCS', page: 1, use_case: 'WORKBASKET', view: 'WORKBASKET' };
+      const userInfo: UserInfo = {
+        forename: 'Thomas',
+        roles: ['case'],
+        surname: 'Jones',
+      };
+
+      const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, undefined, userInfo);
+
+      expect(result.native_es_query.size).to.equal(10);
+      expect(result.native_es_query.from).to.equal(0);
+      expect(result.native_es_query.sort).to.deep.equal([]);
+    });
+  });
+
+  describe('modifyRequest', () => {
+    const userInfo: UserInfo = {
+      forename: 'Thomas',
+      roles: ['case'],
+      surname: 'Jones',
+    };
+
+    const buildReq = (body?: any) => ({
+      body,
+      query: { ctid: 'PCS', page: 1 },
+      session: { passport: { user: { userinfo: userInfo } } },
+    });
+
+    const buildProxyReq = () => ({
+      end: sinon.spy(),
+      setHeader: sinon.spy(),
+      write: sinon.spy(),
+    });
+
+    it('should write the rebuilt query and end the stream', async () => {
+      const req: any = buildReq({ size: 25 });
+      const proxyReq: any = buildProxyReq();
+
+      searchCases.modifyRequest(proxyReq, req);
+
+      expect(proxyReq.write).to.have.been.calledOnce;
+      expect(proxyReq.end).to.have.been.calledOnce;
+      expect(req.body).to.be.undefined;
+    });
+
+    it('should not throw when the request has no parsed body', async () => {
+      const req: any = buildReq(undefined);
+      const proxyReq: any = buildProxyReq();
+
+      expect(() => searchCases.modifyRequest(proxyReq, req)).to.not.throw();
+      expect(proxyReq.write).to.have.been.calledOnce;
+      expect(proxyReq.end).to.have.been.calledOnce;
+    });
   });
 });

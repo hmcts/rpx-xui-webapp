@@ -9,6 +9,7 @@ const ACCESS_VIEW_LINK: FieldConfig = {
   name: 'accessView',
   type: FieldType.ACCESS_VIEW,
   columnLabel: null,
+  hiddenColumnLabel: 'View',
   views: TaskView.ALL_VIEWS,
 };
 const CASE_REFERENCE_AS_LINK: FieldConfig = {
@@ -127,6 +128,7 @@ const DERIVED_ICON: FieldConfig = {
   name: 'derivedIcon',
   type: FieldType.DERIVED_ICON,
   columnLabel: null,
+  hiddenColumnLabel: 'Warning',
   views: TaskView.ALL_VIEWS,
   // sourceColumn and matchValue values currently defined in DI constants file
   sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,

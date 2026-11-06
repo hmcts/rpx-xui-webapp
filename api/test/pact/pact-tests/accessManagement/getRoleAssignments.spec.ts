@@ -25,8 +25,8 @@ describe('access management service, get role assignments of actor', () => {
         grantType: somethingLike('STANDARD'),
         roleCategory: somethingLike('LEGAL_OPERATIONS'),
         readOnly: somethingLike(false),
-        beginTime: somethingLike(Date.now() - 60_000),
-        endTime: somethingLike(Date.now() + 3_600_000),
+        beginTime: somethingLike(4070908740000),
+        endTime: somethingLike(4070912400000),
         process: somethingLike('process'),
         reference: somethingLike('reference'),
         statusSequence: somethingLike(10),
@@ -84,7 +84,7 @@ describe('access management service, get role assignments of actor', () => {
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
 

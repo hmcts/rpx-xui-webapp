@@ -31,6 +31,7 @@ nodejs:
     SERVICES_IDAM_SERVICE_OVERRIDE: false
     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
     FEATURE_OIDC_ENABLED: true
+    FEATURE_DYNATRACE_ENABLED: false
   keyVaults:
     rpx:
       secrets:
@@ -46,9 +47,9 @@ nodejs:
   autoscaling:
     enabled: false
   devmemoryRequests: 512Mi
-  devcpuRequests: 400m
+  devcpuRequests: 500m
   devmemoryLimits: 2Gi
-  devcpuLimits: 2
+  devcpuLimits: 1000m
   livenessTimeout: 15
   readinessTimeout: 15
   livenessFailureThreshold: 10

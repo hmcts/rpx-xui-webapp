@@ -39,7 +39,7 @@ export interface Caseworker {
   idamId: string;
   email: string;
   location: Location;
-  roleCategory: string;
+  roleCategories: string[];
   service?: string;
 }
 
@@ -49,7 +49,7 @@ export interface CachedCaseworker {
   idamId: string;
   email: string;
   locations: Location[];
-  roleCategory: string;
+  roleCategories: string[];
   services?: string[];
 }
 

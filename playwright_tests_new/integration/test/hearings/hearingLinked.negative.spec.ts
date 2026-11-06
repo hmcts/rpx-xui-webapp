@@ -22,6 +22,9 @@ test.describe(
         routeConfig: {
           userRoles: hearingManagerRoles,
           hearings: [{ ...LISTED_HEARING_SCENARIO, hearingIsLinkedFlag: true }],
+          caseConfig: { jurisdictionId: 'SSCS', caseTypeId: 'Benefit' },
+          enabledCaseVariations: [{ jurisdiction: 'SSCS', caseType: 'Benefit' }],
+          amendmentCaseVariations: [{ jurisdiction: 'CIVIL', caseType: 'CIVIL' }],
           hearingsApiOverrides: {
             postLinkedHearingGroup: {
               status: 500,
@@ -31,7 +34,7 @@ test.describe(
         },
       });
 
-      await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);
+      await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID, 'link');
       await hearingsTabPage.openLinkHearing(HEARINGS_LISTED_HEARING_ID);
       await expect(page.getByRole('heading', { name: /which hearings should be linked\?/i })).toBeVisible();
 

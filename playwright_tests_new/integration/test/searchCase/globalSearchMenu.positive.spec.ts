@@ -47,7 +47,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 });
 
 test.describe(
-  'Global search from menu bar with prewarmed search session',
+  'Global search from menu bar with lazy search session',
   { tag: ['@integration', '@integration-search-case'] },
   () => {
     test('searches by 16-digit case reference and navigates to case details', async ({

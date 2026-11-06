@@ -54,7 +54,7 @@ describe('Index', () => {
         },
       },
     ];
-    mockUserInfo = { roles: ['caseworker-test', 'caseworker-test2'], roleCategory: null };
+    mockUserInfo = { roles: ['caseworker-test', 'caseworker-test2'] };
     mockRoleAssignments = [
       {
         id: '1',
@@ -180,7 +180,7 @@ describe('Index', () => {
         },
       ];
       expect(setUserRoles(mockUserInfo, mockReqData, mockUserId)).to.deep.equal(mockUserRoles);
-      expect(mockUserInfo.roleCategory).to.equal('ADMIN');
+      expect(mockUserInfo.roleCategories).to.deep.equal(['ADMIN']);
       expect(mockUserInfo.roles).to.deep.equal(['caseworker-test', 'caseworker-test2', 'test role', 'test role 2']);
     });
   });
@@ -344,6 +344,87 @@ describe('Index', () => {
       expect(callArgs.userInfo.roles).to.include('pui-case-manager');
     });
 
+    it('returns a stable filter owner hash for id hash-user-a', async () => {
+      req.session = {
+        passport: {
+          user: {
+            userinfo: { id: 'hash-user-a', roles: ['caseworker'] },
+            tokenset: { accessToken: 'valid-token' },
+          },
+        },
+        roleAssignmentResponse: [],
+      };
+      sandbox.stub(userUtils, 'userDetailsValid').returns(true);
+      sandbox.stub(config, 'getConfigValue').returns([]);
+      sandbox.stub(nodeLib, 'getUserSessionTimeout').returns({
+        idleModalDisplayTime: 10,
+        totalIdleTime: 20,
+        pattern: 'caseworker',
+      });
+      sandbox.stub(utils, 'containsDangerousCode').returns(false);
+
+      await getUserDetails(req, res, next);
+
+      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal(
+        'f5f1b0776101acadd9d3171e4343b5de5ebfb15187d1ec2ddf8ec1acf3aa1ea6'
+      );
+      expect(req.session.passport.user.userinfo).not.to.have.property('filterOwnerHash');
+    });
+
+    it('returns a stable filter owner hash for id hash-user-b', async () => {
+      req.session = {
+        passport: {
+          user: {
+            userinfo: { id: 'hash-user-b', roles: ['caseworker'] },
+            tokenset: { accessToken: 'valid-token' },
+          },
+        },
+        roleAssignmentResponse: [],
+      };
+      sandbox.stub(userUtils, 'userDetailsValid').returns(true);
+      sandbox.stub(config, 'getConfigValue').returns([]);
+      sandbox.stub(nodeLib, 'getUserSessionTimeout').returns({
+        idleModalDisplayTime: 10,
+        totalIdleTime: 20,
+        pattern: 'caseworker',
+      });
+      sandbox.stub(utils, 'containsDangerousCode').returns(false);
+
+      await getUserDetails(req, res, next);
+
+      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal(
+        '7abb8f7e388ed61a565b3ae0f6e770f6f46c868fe8ed450566b59baa762250a2'
+      );
+      expect(req.session.passport.user.userinfo).not.to.have.property('filterOwnerHash');
+    });
+
+    it('returns a stable filter owner hash for uid hash-user-a', async () => {
+      req.session = {
+        passport: {
+          user: {
+            userinfo: { uid: 'hash-user-a', roles: ['caseworker'] },
+            tokenset: { accessToken: 'valid-token' },
+          },
+        },
+        roleAssignmentResponse: [],
+      };
+      sandbox.stub(userUtils, 'userDetailsValid').returns(true);
+      sandbox.stub(config, 'getConfigValue').returns([]);
+      sandbox.stub(nodeLib, 'getUserSessionTimeout').returns({
+        idleModalDisplayTime: 10,
+        totalIdleTime: 20,
+        pattern: 'caseworker',
+      });
+      sandbox.stub(utils, 'containsDangerousCode').returns(false);
+
+      await getUserDetails(req, res, next);
+
+      expect(res.send.getCall(0).args[0].userInfo.filterOwnerHash).to.equal(
+        'f5f1b0776101acadd9d3171e4343b5de5ebfb15187d1ec2ddf8ec1acf3aa1ea6'
+      );
+      expect(req.session.passport.user.userinfo).not.to.have.property('filterOwnerHash');
+    });
+
     it('should handle errors and call next', async () => {
       const error = new Error('Test error');
       req.session = {
@@ -501,14 +582,14 @@ describe('Index', () => {
   });
 
   describe('extractRoleCategories', () => {
-    it('should return undefined when input is null', () => {
-      const result = extractRoleCategories(null);
-      expect(result).to.be.undefined;
+    it('should return empty set when input is empty set', () => {
+      const result = extractRoleCategories([]);
+      expect(result).to.deep.equal([]);
     });
 
-    it('should return undefined when input is undefined', () => {
-      const result = extractRoleCategories(undefined);
-      expect(result).to.be.undefined;
+    it('should return empty set when input is undefined', () => {
+      const result = extractRoleCategories([undefined]);
+      expect(result).to.deep.equal([]);
     });
 
     it('should return empty array when input is empty array', () => {

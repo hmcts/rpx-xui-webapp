@@ -14,6 +14,7 @@ import { HeaderConfigService } from '../../services/header-config/header-config.
 import { LoggerService } from '../../services/logger/logger.service';
 import { environment } from '../../../environments/environment';
 import * as fromActions from '../../store';
+import { getUserRolesExcludingSpecificAccessApprover } from '../../shared/utils/role.utils';
 
 @Component({
   standalone: false,
@@ -126,10 +127,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public setApplicationThemeForUser(): void {
     const availableThemes = environment.themes;
-    const userRoles = this.userRoles;
-    const userTheme = Object.keys(availableThemes).find((themeRegex) =>
-      userRoles.some((role) => new RegExp(themeRegex).test(role))
-    );
+    const userRoles = getUserRolesExcludingSpecificAccessApprover(this.userRoles);
+    const userTheme =
+      Object.keys(availableThemes).find((themeRegex) => userRoles.some((role) => new RegExp(themeRegex).test(role))) || '.+';
 
     const applicationTheme = availableThemes[userTheme] as ApplicationTheme;
     // Set the app header properties based on the retrieved application theme

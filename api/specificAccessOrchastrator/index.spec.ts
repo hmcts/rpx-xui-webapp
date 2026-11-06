@@ -528,6 +528,7 @@ describe('specificAccessRequestUpdateAttributes', () => {
   let next;
   let spyDelete: any;
   let postSpy: any;
+  let refreshStub: sinon.SinonStub;
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const data = {
     roleAssignmentResponse: [
@@ -573,6 +574,7 @@ describe('specificAccessRequestUpdateAttributes', () => {
     spyDelete = sinon.stub(http, 'delete').callsFake(() => {
       return Promise.resolve(res);
     });
+    refreshStub = sandbox.stub(user, 'refreshRoleAssignmentForUser').resolves();
   });
 
   afterEach(() => {
@@ -586,7 +588,7 @@ describe('specificAccessRequestUpdateAttributes', () => {
     expect(spyDelete).to.be.calledWith(`${basePath}/am/role-assignments/37cb4517-20b7-4709-adea-472986e78088`);
   });
 
-  it('should not call delete', async () => {
+  it('should not delete a role assignment that was not queried', async () => {
     await specificAccessRequestUpdateAttributes(req, res, next);
     expect(spyDelete).not.to.be.calledWith(`${basePath}/am/role-assignments/37cb4517-20b7-4709-adea-472986e78089`);
   });
@@ -618,8 +620,6 @@ describe('specificAccessRequestUpdateAttributes', () => {
     postSpy = sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({ data: deniedData, status: 200 });
     postSpy.onCall(1).resolves({ status: 201 });
-
-    const refreshStub = sandbox.stub(user, 'refreshRoleAssignmentForUser').resolves();
 
     await specificAccessRequestUpdateAttributes(req, res, next);
 

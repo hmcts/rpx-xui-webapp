@@ -118,7 +118,7 @@ describe('access management service, create specific access deny role', () => {
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
 

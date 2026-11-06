@@ -146,6 +146,29 @@ describe('Documents Uploading', () => {
   });
 
   describe('validateLegacyDocumentAccess', () => {
+    for (const method of ['PATCH', 'PUT', 'DELETE']) {
+      it(`should reject unsupported legacy ${method} mutations before proxying`, async () => {
+        const get = sandbox.stub(axios, 'get');
+        const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub(), setHeader: sandbox.stub() };
+        const next = sandbox.stub();
+
+        await validateLegacyDocumentAccess({ method, originalUrl: '/documents' } as any, response, next);
+
+        expect(response.status).to.have.been.calledWith(405);
+        expect(response.setHeader).to.have.been.calledWith('Allow', 'GET, HEAD, POST');
+        expect(next).not.to.have.been.called;
+        expect(get).not.to.have.been.called;
+      });
+    }
+
+    it('should not expose legacy version uploads through the browser proxy', async () => {
+      const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub(), setHeader: sandbox.stub() };
+      const next = sandbox.stub();
+      await validateLegacyDocumentAccess({ method: 'POST', originalUrl: '/documents/doc-123' } as any, response, next);
+      expect(response.status).to.have.been.calledWith(405);
+      expect(next).not.to.have.been.called;
+    });
+
     for (const path of [
       '/documents/doc-123/%62inary',
       '/documents/doc-123/%2562inary',

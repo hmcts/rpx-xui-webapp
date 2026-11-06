@@ -197,6 +197,17 @@ export function handleRequest(proxyReq, req, res) {
 
 export async function validateLegacyDocumentAccess(req: EnhancedRequest, res, next): Promise<void> {
   const path = getRequestPath(req);
+  // Browser callers cannot mutate DM metadata that CDAM uses as its authorization authority.
+  if (['PATCH', 'PUT', 'DELETE'].includes(req.method)) {
+    res.setHeader('Allow', 'GET, HEAD, POST');
+    res.status(405).send({ message: 'Method Not Allowed' });
+    return;
+  }
+  if (req.method === 'POST' && !/^\/documents\/?$/.test(path)) {
+    res.setHeader('Allow', 'GET, HEAD');
+    res.status(405).send({ message: 'Method Not Allowed' });
+    return;
+  }
   if (!['GET', 'HEAD'].includes(req.method) || !/^\/documents(?:\/|$)/i.test(path)) {
     next();
     return;

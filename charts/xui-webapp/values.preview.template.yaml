@@ -33,7 +33,6 @@ nodejs:
     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
     FEATURE_OIDC_ENABLED: true
     FEATURE_DYNATRACE_ENABLED: false
-    APPINSIGHTS_SAMPLING_PERCENTAGE: 100
   keyVaults:
     rpx:
       secrets:

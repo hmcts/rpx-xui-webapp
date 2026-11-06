@@ -1,104 +1,83 @@
-import { Page, Response } from '@playwright/test';
+import type { BrowserContext, Page, Request, Response } from '@playwright/test';
 
-export const MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN = /\/documents(?:v2)?\/[^/]+\/binary$/;
+export const MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN = /^\/(documents|documentsv2)\/([^/]+)\/binary\/?$/;
 
-const DOCUMENT_BINARY_WAIT_TIMEOUT_MS = 20_000;
-const CRITICAL_BACKEND_ROUTE_PATTERNS = [
-  MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN,
-  /\/data\/internal\/cases\/[^/]+$/,
-  /\/aggregated\/caseworkers\/[^/]+\/jurisdictions(?:\/|$)/,
-];
+export type DocumentBinaryAction = {
+  documentId: string;
+  id: number;
+};
+
+export type DocumentBinaryObservation = {
+  url: string;
+  pathname: string;
+  search: string;
+  gateway: 'legacy' | 'v2';
+  documentId: string;
+  status: number;
+  contentType: string;
+  referer: string;
+};
 
 export class MediaViewerBackendMonitor {
-  private readonly documentBinaryUrls: string[] = [];
-  private readonly blockingFailures: string[] = [];
-  private readonly failureWaiters: Array<(failure: string) => void> = [];
+  private actionId = 0;
+  private readonly requestActions = new WeakMap<Request, number>();
+  private readonly responses: Array<{ actionId: number; response: Response; observation: DocumentBinaryObservation }> = [];
 
-  readonly onResponse = (response: Response): void => {
-    const pathname = new URL(response.url()).pathname;
-    const isDocumentBinaryResponse = MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN.test(pathname);
+  constructor(private readonly context: BrowserContext) {
+    context.on('request', this.onRequest);
+    context.on('response', this.onResponse);
+  }
 
-    if (isDocumentBinaryResponse && response.ok()) {
-      this.documentBinaryUrls.push(response.url());
-    }
-
-    if (response.status() < 500 || response.request().method() !== 'GET') {
-      return;
-    }
-
-    if (!CRITICAL_BACKEND_ROUTE_PATTERNS.some((pattern) => pattern.test(pathname))) {
-      return;
-    }
-
-    const failure = `${response.status()} ${response.url()}`;
-    if (!this.blockingFailures.includes(failure)) {
-      this.blockingFailures.push(failure);
-      this.failureWaiters.splice(0).forEach((resolve) => resolve(failure));
-    }
+  readonly onRequest = (request: Request): void => {
+    this.requestActions.set(request, this.actionId);
   };
 
-  get lastDocumentBinaryUrl(): string {
-    return this.documentBinaryUrls.at(-1) ?? '';
-  }
-
-  failIfCriticalBackendFailure(stage: string): void {
-    if (this.blockingFailures.length === 0) {
+  readonly onResponse = (response: Response): void => {
+    const request = response.request();
+    const actionId = this.requestActions.get(request);
+    const url = new URL(response.url());
+    const match = MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN.exec(url.pathname);
+    if (!actionId || request.method() !== 'GET' || !match) {
       return;
     }
 
-    throw new Error(
-      `Media Viewer ${stage} hit a downstream 5xx before the document could be opened: ${this.blockingFailures[0]}`
-    );
-  }
+    const refererHeader = request.headers()['referer'];
+    const referer = refererHeader ? new URL(refererHeader) : undefined;
+    referer?.searchParams.delete('mvToken');
 
-  async waitForDocumentBinaryResponse(page: Page): Promise<void> {
-    if (this.documentBinaryUrls.length > 0) {
-      return;
-    }
-
-    await this.failFastOnCriticalBackendFailure(
-      'load',
-      page
-        .waitForResponse(
-          (response) =>
-            response.request().method() === 'GET' &&
-            MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN.test(new URL(response.url()).pathname) &&
-            response.ok(),
-          { timeout: DOCUMENT_BINARY_WAIT_TIMEOUT_MS }
-        )
-        .then((response) => {
-          this.onResponse(response);
-        })
-        .catch((error) => {
-          throw new Error(
-            `Media Viewer did not request the uploaded document binary within ${DOCUMENT_BINARY_WAIT_TIMEOUT_MS}ms. ` +
-              `Observed blocking failures: ${this.blockingFailures.join(' | ') || 'none'}. ` +
-              `Last wait error: ${error instanceof Error ? error.message : String(error)}`
-          );
-        })
-    );
-  }
-
-  async failFastOnCriticalBackendFailure<T>(stage: string, action: Promise<T>): Promise<T> {
-    this.failIfCriticalBackendFailure(stage);
-
-    let resolveFailure: ((failure: string) => void) | undefined;
-    const failurePromise = new Promise<never>((_, reject) => {
-      resolveFailure = (failure: string): void => {
-        reject(new Error(`Media Viewer ${stage} hit a downstream 5xx before the document could be opened: ${failure}`));
-      };
-      this.failureWaiters.push(resolveFailure);
+    this.responses.push({
+      actionId,
+      response,
+      observation: {
+        url: url.href,
+        pathname: url.pathname,
+        search: url.search,
+        gateway: match[1] === 'documents' ? 'legacy' : 'v2',
+        documentId: decodeURIComponent(match[2]),
+        status: response.status(),
+        contentType: response.headers()['content-type'] ?? '',
+        referer: referer?.href ?? '',
+      },
     });
+  };
 
-    try {
-      return await Promise.race([action, failurePromise]);
-    } finally {
-      if (resolveFailure) {
-        const waiterIndex = this.failureWaiters.indexOf(resolveFailure);
-        if (waiterIndex >= 0) {
-          this.failureWaiters.splice(waiterIndex, 1);
-        }
-      }
-    }
+  beginAction(documentId: string): DocumentBinaryAction {
+    return { documentId, id: ++this.actionId };
+  }
+
+  observationsFor(action: DocumentBinaryAction, page: Page): DocumentBinaryObservation[] {
+    return this.responses
+      .filter(
+        (entry) =>
+          entry.actionId === action.id &&
+          entry.observation.documentId === action.documentId &&
+          entry.response.frame().page() === page
+      )
+      .map((entry) => entry.observation);
+  }
+
+  dispose(): void {
+    this.context.off('request', this.onRequest);
+    this.context.off('response', this.onResponse);
   }
 }

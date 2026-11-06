@@ -108,7 +108,12 @@ const buildNightlyConfig = (env: EnvMap) =>
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { baseURL: string };
-    projects: Array<{ name: string; grep?: RegExp; grepInvert?: RegExp; use?: { headless?: boolean; trace?: string } }>;
+    projects: Array<{
+      name: string;
+      grep?: RegExp;
+      grepInvert?: RegExp;
+      use?: { headless?: boolean; trace?: string; browserName?: string; defaultBrowserType?: string };
+    }>;
   };
 
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
@@ -857,6 +862,14 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       screenshots: true,
       sources: true,
     });
+  });
+
+  test('nightly project names select their actual browser engines', () => {
+    const config = buildNightlyConfig({ TEST_URL: 'https://example.test' });
+    expect(config.projects.map(({ name, use }) => ({ name, engine: use?.browserName ?? use?.defaultBrowserType }))).toEqual([
+      { name: 'firefox', engine: 'firefox' },
+      { name: 'webkit', engine: 'webkit' },
+    ]);
   });
 
   test('nightly config honours report folder and file overrides', async () => {

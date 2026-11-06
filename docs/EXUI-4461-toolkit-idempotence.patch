@@ -1,0 +1,109 @@
+diff --git a/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.ts b/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.ts
+index e12543b..6fd845b 100644
+--- a/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.ts
++++ b/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.ts
+@@ -194,8 +194,19 @@ export class DocumentManagementService {
+   private transformDocumentUrl(documentBinaryUrl: string): string {
+     const remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
+     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
++    const documentStoreUrl = this.getDocStoreUrl();
++    const documentStorePrefix = documentStoreUrl?.replace(/\/+$/, '');
++    const origin = typeof window === 'undefined' ? '' : window.location?.origin;
++    const localBinaryUrl = origin && documentStorePrefix?.startsWith('/') && documentBinaryUrl.startsWith(`${origin}/`)
++      ? documentBinaryUrl.slice(origin.length)
++      : documentBinaryUrl;
++    // Viewer handoff can resolve a URL that the selected document store already resolved.
++    if (documentStorePrefix && localBinaryUrl.startsWith(documentStorePrefix)
++      && ['', '/', '?', '#'].includes(localBinaryUrl.charAt(documentStorePrefix.length))) {
++      return documentBinaryUrl;
++    }
+     const remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
+-    return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.getDocStoreUrl());
++    return documentBinaryUrl.replace(remoteDocumentManagementPattern, documentStoreUrl);
+   }
+ 
+   private normaliseMimeType(contentType: string): string {
+diff --git a/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.spec.ts b/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.spec.ts
+index a8199a7..6100757 100644
+--- a/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.spec.ts
++++ b/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.spec.ts
+@@ -63,6 +63,79 @@ describe('DocumentManagementService', () => {
+     }, '1234123412341234')).toBe('/documentsv2/new-file/binary?preview=true');
+   });
+ 
++  describe('document gateway URL idempotence', () => {
++    const caseId = '1234123412341234';
++
++    beforeEach(() => {
++      appConfig.getRemoteDocumentManagementUrl.and.returnValue('.*(/documents)');
++      appConfig.getDocumentManagementUrl.and.returnValue('/documents');
++      appConfig.getDocumentManagementUrlV2.and.returnValue('/documentsv2');
++    });
++
++    for (const input of [
++      '/documents/file/binary',
++      '/documentsv2/file/binary',
++      'https://store.example/documents/file/binary'
++    ]) {
++      it(`resolves ${input} once before serializing the viewer handoff`, () => {
++        const document = { document_binary_url: input, document_filename: 'file.pdf', id: caseId };
++        const binaryUrl = documentManagementService.getDocumentBinaryUrl(document, caseId);
++        const info = JSON.parse(documentManagementService.getMediaViewerInfo({ ...document, document_binary_url: binaryUrl }));
++        expect(binaryUrl).toBe('/documentsv2/file/binary');
++        expect(info.document_binary_url).toBe(binaryUrl);
++        expect(info.case_id).toBe(caseId);
++      });
++    }
++
++    for (const suffix of ['', '?preview=true', '#page=2', '/file/binary?caseId=1234123412341234#page=2']) {
++      it(`preserves the canonical gateway boundary and suffix ${suffix}`, () => {
++        const binaryUrl = `/documentsv2${suffix}`;
++        expect(documentManagementService.getDocumentBinaryUrl({ document_binary_url: binaryUrl })).toBe(binaryUrl);
++      });
++    }
++
++    for (const target of ['/gateway/documents', '/gateway/documents/', 'https://proxy.example/gateway/documents/']) {
++      it(`preserves the configured custom gateway ${target}`, () => {
++        appConfig.getDocumentManagementUrlV2.and.returnValue(target);
++        const binaryUrl = `${target.replace(/\/+$/, '')}/file/binary?preview=true#page=2`;
++        expect(documentManagementService.getDocumentBinaryUrl({ document_binary_url: binaryUrl })).toBe(binaryUrl);
++      });
++    }
++
++    it('preserves a same-origin absolute canonical gateway', () => {
++      const binaryUrl = `${window.location.origin}/documentsv2/file/binary?preview=true#page=2`;
++      expect(documentManagementService.getDocumentBinaryUrl({ document_binary_url: binaryUrl })).toBe(binaryUrl);
++    });
++
++    it('does not mistake a near-miss prefix for the selected gateway', () => {
++      appConfig.getRemoteDocumentManagementUrl.and.returnValue('^/documentsv2-extra');
++      expect(documentManagementService.getDocumentBinaryUrl({
++        document_binary_url: '/documentsv2-extra/file/binary?preview=true#page=2'
++      })).toBe('/documentsv2/file/binary?preview=true#page=2');
++    });
++
++    it('does not bypass remote rewriting for an unrelated origin', () => {
++      appConfig.getRemoteDocumentManagementUrl.and.returnValue('^https://remote.example/documentsv2');
++      expect(documentManagementService.getDocumentBinaryUrl({
++        document_binary_url: 'https://remote.example/documentsv2/file/binary'
++      })).toBe('/documentsv2/file/binary');
++    });
++
++    it('preserves legacy context through repeated viewer serialization', () => {
++      appConfig.getCdamExclusionList.and.returnValue('sessionCaseType');
++      const document = { document_binary_url: '/documents/file/binary?preview=true&caseId=old#page=2', id: caseId };
++      const binaryUrl = documentManagementService.getDocumentBinaryUrl(document, caseId);
++      const info = JSON.parse(documentManagementService.getMediaViewerInfo({ ...document, document_binary_url: binaryUrl }));
++      expect(info.document_binary_url).toBe(`/documents/file/binary?preview=true&caseId=${caseId}#page=2`);
++    });
++
++    it('preserves the HRS rewrite', () => {
++      expect(documentManagementService.getDocumentBinaryUrl({
++        document_binary_url: `${REMOTE_HRS_URL}/file?preview=true#time=2`
++      })).toBe(`${HRS_URL}/file?preview=true#time=2`);
++    });
++  });
++
+   describe('uploadFile', () => {
+     const RESPONSE: DocumentData = {
+       _embedded: {

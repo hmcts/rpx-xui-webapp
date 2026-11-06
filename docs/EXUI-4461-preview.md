@@ -33,6 +33,13 @@ candidate: record the webapp commit, lockfile and patch hashes as well.
 | `@hmcts/ccd-case-ui-toolkit@7.4.25` | [#2352](https://github.com/hmcts/ccd-case-ui-toolkit/pull/2352) | `c84bb66b57bb52fc67d81ff9793b843bd80b5cd0` |
 | `@hmcts/media-viewer@4.2.47`        | [#133](https://github.com/hmcts/rpx-xui-media-viewer/pull/133)  | `adf5b3f490c2d49b0cbf8a934e7bba8cc29840b5` |
 
+The toolkit patch combines the frozen upstream repair with the additional
+[source repair and regression tests](EXUI-4461-toolkit-idempotence.patch). Live CI
+found that callers could transform a CDAM URL twice, producing
+`/documentsv2v2/...`. The shared transformation now preserves an already resolved
+URL for the current case’s configured document store, with exact path boundaries
+and origin checks. HRS rewriting and legacy case context remain intact.
+
 The toolkit patch includes its rebuilt full Angular output, input/template
 metadata, declarations and source maps. Rebuilding the source baseline produced
 byte-identical output to the published package before the repair was applied.
@@ -67,14 +74,17 @@ Acceptance requires authorised owner/shared-user access with exact original
 filename/bytes and denial for wrong-case, inaccessible-case, anonymous and revoked
 access. Also verify direct HTML, Case File View open/download/print, fresh viewer
 handoff/reload, annotations/bookmarks, conversion/original download, uploads and
-legacy/CDAM neighbours. Include actual Firefox and WebKit journeys. Mocked browser
+legacy/CDAM neighbours. Include actual Firefox and WebKit journeys. The nightly WebKit project now
+selects `Desktop Safari`; its former project name alone selected the default
+Chromium engine. Mocked browser
 checks cannot establish real CCD authorization or case-revocation behavior.
 
 ## Replace with official releases
 
 After reviewed packages containing these fixes are published (currently planned
 as toolkit 7.4.26 and viewer 4.2.48), verify their contents and update the two root
-dependencies. Remove the exact viewer patch resolution and both EXUI-4461 patch
+dependencies. The toolkit release must also include the additional idempotence
+repair: the frozen #2352 head alone is insufficient. Remove the exact viewer patch resolution and both EXUI-4461 patch
 files. Keep the unrelated existing Odhín patch. Regenerate `yarn.lock`, assess the
 audit delta, perform a fresh immutable install/build and rerun the same regression
 matrix on the official package candidate. Passing this preview does not remove

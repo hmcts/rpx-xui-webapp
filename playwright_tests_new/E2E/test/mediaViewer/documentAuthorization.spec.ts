@@ -134,7 +134,8 @@ test.describe('Legacy document authorization', { tag: ['@e2e', '@e2e-media-viewe
     for (const endpoint of ['%62inary', '%2562inary', 'binary;download']) {
       const response = await page.request.get(`/documents/${caseA.documentId}/${endpoint}?caseId=${caseB.caseId}`, options);
       const body = await response.body();
-      expect.soft(response.status(), `Reject raw endpoint ${endpoint} before proxying`).toBe(400);
+      // The public gateway can canonicalize an alias; either boundary must deny wrong-case access.
+      expect.soft([400, 403], `Deny wrong-case access through endpoint ${endpoint}`).toContain(response.status());
       expect.soft(response.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
       expect.soft(body.includes(Buffer.from('%PDF-'))).toBe(false);
       expect.soft(body).not.toEqual(caseA.expectedContent);

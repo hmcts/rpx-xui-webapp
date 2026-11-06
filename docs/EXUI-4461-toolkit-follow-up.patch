@@ -1,7 +1,16 @@
 diff --git a/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.ts b/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.ts
-index e12543b..6fd845b 100644
+index e12543b..b20dbb5 100644
 --- a/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.ts
 +++ b/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.ts
+@@ -13,7 +13,7 @@ export function withLegacyDocumentAccessContext(binaryUrl: string, caseId?: stri
+   }
+ 
+   const url = new URL(binaryUrl, window.location.origin);
+-  if (!/^\/documents\/[^/]+\/binary\/?$/.test(url.pathname)) {
++  if (!/^\/documents\/[^/]+(?:\/versions\/[^/]+)?\/binary\/?$/.test(url.pathname)) {
+     return binaryUrl;
+   }
+ 
 @@ -194,8 +194,19 @@ export class DocumentManagementService {
    private transformDocumentUrl(documentBinaryUrl: string): string {
      const remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
@@ -24,13 +33,75 @@ index e12543b..6fd845b 100644
  
    private normaliseMimeType(contentType: string): string {
 diff --git a/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.spec.ts b/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.spec.ts
-index a8199a7..6100757 100644
+index a8199a7..473d6ac 100644
 --- a/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.spec.ts
 +++ b/projects/ccd-case-ui-toolkit/src/lib/shared/services/document-management/document-management.service.spec.ts
-@@ -63,6 +63,79 @@ describe('DocumentManagementService', () => {
+@@ -5,7 +5,7 @@ import { of } from 'rxjs';
+ import { AbstractAppConfig } from '../../../app.config';
+ import { CaseField, DocumentData, FieldType } from '../../domain';
+ import { HttpService } from '../http';
+-import { DocumentManagementService } from './document-management.service';
++import { DocumentManagementService, withLegacyDocumentAccessContext } from './document-management.service';
+ import { CaseNotifier } from '../../components/case-editor/services/case.notifier';
+ import { JurisdictionService } from '../jurisdiction';
+ import { SessionStorageService } from '../session/session-storage.service';
+@@ -63,6 +63,132 @@ describe('DocumentManagementService', () => {
      }, '1234123412341234')).toBe('/documentsv2/new-file/binary?preview=true');
    });
  
++  describe('legacy version binary access context', () => {
++    const caseId = '1234123412341234';
++
++    it('preserves a version query and fragment while replacing stale case context', () => {
++      expect(withLegacyDocumentAccessContext(
++        '/documents/file/versions/version/binary?preview=true&caseId=old&caseId=older#page=2', caseId
++      )).toBe(`/documents/file/versions/version/binary?preview=true&caseId=${caseId}#page=2`);
++    });
++
++    it('uses the local proxy for an absolute version binary URL', () => {
++      expect(withLegacyDocumentAccessContext(
++        'https://store.example/documents/file/versions/version/binary#page=2', caseId
++      )).toBe(`/documents/file/versions/version/binary?caseId=${caseId}#page=2`);
++    });
++
++    it('preserves a trailing slash on the version binary path', () => {
++      expect(withLegacyDocumentAccessContext('/documents/file/versions/version/binary/', caseId))
++        .toBe(`/documents/file/versions/version/binary/?caseId=${caseId}`);
++    });
++
++    it('retains version context through the shared resolver and viewer serialization', () => {
++      appConfig.getRemoteDocumentManagementUrl.and.returnValue('.*(/documents)');
++      appConfig.getDocumentManagementUrl.and.returnValue('/documents');
++      appConfig.getCdamExclusionList.and.returnValue('sessionCaseType');
++      const document = { document_binary_url: '/documents/file/versions/version/binary?preview=true#page=2', id: caseId };
++      const binaryUrl = documentManagementService.getDocumentBinaryUrl(document, caseId);
++      const info = JSON.parse(documentManagementService.getMediaViewerInfo({ ...document, document_binary_url: binaryUrl }));
++      expect(info.document_binary_url).toBe(`/documents/file/versions/version/binary?preview=true&caseId=${caseId}#page=2`);
++    });
++
++    for (const binaryUrl of [
++      '/documents//versions/version/binary',
++      '/documents/file/versions//binary',
++      '/documents/file/versions/version',
++      '/documents/file/versions/version/binary/extra',
++      '/documents/file?query=/versions/version/binary',
++      '/documents/file/versions/version?query=/binary',
++      '/documents/file/versions/version#fragment/binary',
++      '/documents/file/versions/one/two/binary',
++      '/documentsv2/file/versions/version/binary?preview=true#page=2',
++      '/hearing-recordings/file/versions/version/binary?preview=true#time=2'
++    ]) {
++      it(`leaves unsupported version path unchanged: ${binaryUrl}`, () => {
++        expect(withLegacyDocumentAccessContext(binaryUrl, caseId)).toBe(binaryUrl);
++      });
++    }
++
++    it('does not add context without a case ID', () => {
++      const binaryUrl = '/documents/file/versions/version/binary?preview=true#page=2';
++      expect(withLegacyDocumentAccessContext(binaryUrl)).toBe(binaryUrl);
++    });
++  });
++
 +  describe('document gateway URL idempotence', () => {
 +    const caseId = '1234123412341234';
 +

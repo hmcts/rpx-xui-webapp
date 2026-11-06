@@ -125,6 +125,84 @@ test.describe('Legacy document authorization', { tag: ['@e2e', '@e2e-media-viewe
     expect.soft(body).not.toEqual(caseA.expectedContent);
   });
 
+  test('rejects encoded legacy binary aliases and wrong-case HEAD requests', async ({ page }) => {
+    const options = {
+      headers: await documentXsrfHeaders(page),
+      failOnStatusCode: false,
+      maxRedirects: 0,
+    };
+    for (const endpoint of ['%62inary', '%2562inary', 'binary;download']) {
+      const response = await page.request.get(`/documents/${caseA.documentId}/${endpoint}?caseId=${caseB.caseId}`, options);
+      const body = await response.body();
+      expect.soft(response.status(), `Reject raw endpoint ${endpoint} before proxying`).toBe(400);
+      expect.soft(response.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+      expect.soft(body.includes(Buffer.from('%PDF-'))).toBe(false);
+      expect.soft(body).not.toEqual(caseA.expectedContent);
+    }
+
+    const authorizedHead = await page.request.head(caseA.binaryPath, options);
+    expect(authorizedHead.status(), 'An authorized HEAD must succeed before its denial can count').toBe(200);
+    expect(authorizedHead.headers()['content-type']?.split(';')[0].trim()).toBe('application/pdf');
+    const deniedHead = await page.request.head(`/documents/${caseA.documentId}/binary?caseId=${caseB.caseId}`, options);
+    expect.soft(deniedHead.status()).toBe(403);
+    expect.soft(deniedHead.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+    expect.soft(await deniedHead.body()).toHaveLength(0);
+  });
+
+  test('authorizes a version only for its actual document and accessible case', async ({ page, baseURL }, testInfo) => {
+    const options = {
+      headers: await documentXsrfHeaders(page),
+      failOnStatusCode: false,
+      maxRedirects: 0,
+    };
+    const metadataResponse = await page.request.get(`/documents/${caseA.documentId}`, options);
+    expect(metadataResponse.status(), 'The fresh legacy document must expose its version metadata').toBe(200);
+    const metadata = await metadataResponse.json();
+    await testInfo.attach('persisted-legacy-document-metadata', {
+      body: JSON.stringify({
+        caseIdPresent: typeof metadata.metadata?.case_id === 'string' && metadata.metadata.case_id.length > 0,
+        ttlPresent: metadata.ttl !== undefined && metadata.ttl !== null,
+      }),
+      contentType: 'application/json',
+    });
+    const versions = metadata._embedded?.allDocumentVersions?._embedded?.documentVersions;
+    expect(Array.isArray(versions), 'DM must expose the documented documentVersions collection').toBe(true);
+    expect(versions, 'The fresh upload must have exactly one original version').toHaveLength(1);
+    const binaryUrl = versions[0]._links?.binary?.href;
+    expect(typeof binaryUrl).toBe('string');
+    const versionPath = new URL(binaryUrl).pathname;
+    const versionMatch = versionPath.match(/^\/documents\/([^/]+)\/versions\/([^/]+)\/binary$/);
+    expect(versionMatch, 'The version link must contain its parent and version IDs').not.toBeNull();
+    const [, documentId, versionId] = versionMatch!;
+    expect(documentId).toBe(caseA.documentId);
+    const authorizedPath = `${versionPath}?caseId=${caseA.caseId}`;
+    const authorized = await page.request.get(authorizedPath, options);
+    expect(authorized.status(), 'The actual-parent version must deliver bytes before substitution is tested').toBe(200);
+    expect(authorized.headers()['content-type']?.split(';')[0].trim()).toBe('application/pdf');
+    expect(await authorized.body()).toEqual(caseA.expectedContent);
+
+    const substituted = await page.request.get(
+      `/documents/${caseB.documentId}/versions/${versionId}/binary?caseId=${caseB.caseId}`,
+      options
+    );
+    const substitutedBody = await substituted.body();
+    expect.soft(substituted.status()).toBe(403);
+    expect.soft(substituted.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+    expect.soft(substitutedBody.includes(Buffer.from('%PDF-'))).toBe(false);
+    expect.soft(substitutedBody).not.toEqual(caseA.expectedContent);
+
+    const inaccessible = await secondPage.request.get(authorizedPath, {
+      headers: await documentXsrfHeaders(secondPage, baseURL),
+      failOnStatusCode: false,
+      maxRedirects: 0,
+    });
+    const inaccessibleBody = await inaccessible.body();
+    expect.soft(inaccessible.status()).toBe(deniedCaseStatus);
+    expect.soft(inaccessible.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+    expect.soft(inaccessibleBody.includes(Buffer.from('%PDF-'))).toBe(false);
+    expect.soft(inaccessibleBody).not.toEqual(caseA.expectedContent);
+  });
+
   test('rejects document A with case A for U2 without case access', async ({ baseURL }) => {
     const response = await secondPage.request.get(caseA.binaryPath, {
       headers: await documentXsrfHeaders(secondPage, baseURL),

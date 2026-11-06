@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParse, withLegacyDocumentAccessContext } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
@@ -133,7 +133,9 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     this.mediaAnnotationApiUrl = media.annotation_api_url;
     this.caseId = media.case_id;
     this.caseJurisdiction = media.case_jurisdiction;
-    this.mediaURL = this.withLegacyDocumentAccessContext(this.mediaURL);
+    if (typeof this.mediaURL === 'string' && this.mediaURL.startsWith('/documents/')) {
+      this.mediaURL = withLegacyDocumentAccessContext(this.mediaURL, this.caseId);
+    }
     this.mediaReady = true;
     this.titleService.setTitle(this.mediaFilename + ' - View Document');
   }
@@ -142,18 +144,6 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
     this.icpEnabled$ = of(true);
     this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
-  }
-
-  private withLegacyDocumentAccessContext(mediaUrl: string): string {
-    if (!mediaUrl || !this.caseId || !/^\/documents\/[^/]+\/binary(?:\?.*)?$/.test(mediaUrl)) {
-      return mediaUrl;
-    }
-
-    // Legacy document-store links need case context so XUI can authorise the binary request before proxying it.
-    const [path, query = ''] = mediaUrl.split('?');
-    const searchParams = new URLSearchParams(query);
-    searchParams.set('caseId', this.caseId);
-    return `${path}?${searchParams.toString()}`;
   }
 
   private cleanUrl(token: string | null): void {

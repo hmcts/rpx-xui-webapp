@@ -10,6 +10,7 @@
     "E2E/test/caseFileView/caseFileView.spec.ts",
     "E2E/test/mediaViewer/documentAuthorization.spec.ts",
     "E2E/test/mediaViewer/documentFixtureCapability.spec.ts",
+    "E2E/test/mediaViewer/documentPendingUpload.spec.ts",
     "E2E/test/mediaViewer/mediaViewerHappyPath.spec.ts",
     "E2E/utils/test-setup/documentAccessFixtures.ts",
     "E2E/utils/test-setup/documentAccessIdentityPair.ts",

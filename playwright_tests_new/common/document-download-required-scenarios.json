@@ -190,6 +190,11 @@
   "e2e-downloads": [
     {
       "project": "chromium",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentPendingUpload.spec.ts",
+      "title": "Pending legacy document upload › previews and downloads a replacement document before submitting the event"
+    },
+    {
+      "project": "chromium",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/mediaViewerHappyPath.spec.ts",
       "title": "Media Viewer happy path › Downloads legacy PDF from a fresh viewer and after reload"
     },
@@ -256,11 +261,31 @@
       "project": "chromium",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
       "title": "Legacy document authorization › rejects the same known document URL after U2 case access is revoked"
+    },
+    {
+      "project": "chromium",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › rejects encoded legacy binary aliases and wrong-case HEAD requests"
+    },
+    {
+      "project": "chromium",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › authorizes a version only for its actual document and accessible case"
     }
   ],
   "nightly-e2e": [
     {
       "project": "firefox",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentPendingUpload.spec.ts",
+      "title": "Pending legacy document upload › previews and downloads a replacement document before submitting the event"
+    },
+    {
+      "project": "webkit",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentPendingUpload.spec.ts",
+      "title": "Pending legacy document upload › previews and downloads a replacement document before submitting the event"
+    },
+    {
+      "project": "firefox",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/documentFixtureCapability.spec.ts",
       "title": "Document fixture capability › legacy upload is saved on a case and delivers the known PDF"
     },
@@ -378,6 +403,26 @@
       "project": "webkit",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
       "title": "Legacy document authorization › rejects the same known document URL after U2 case access is revoked"
+    },
+    {
+      "project": "firefox",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › rejects encoded legacy binary aliases and wrong-case HEAD requests"
+    },
+    {
+      "project": "firefox",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › authorizes a version only for its actual document and accessible case"
+    },
+    {
+      "project": "webkit",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › rejects encoded legacy binary aliases and wrong-case HEAD requests"
+    },
+    {
+      "project": "webkit",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › authorizes a version only for its actual document and accessible case"
     }
   ]
 }

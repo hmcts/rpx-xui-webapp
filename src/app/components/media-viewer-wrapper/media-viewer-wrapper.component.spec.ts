@@ -102,6 +102,35 @@ describe('MediaViewerWrapperComponent', () => {
       expect(component.mediaURL).toBe('/documents/doc-123/binary?caseId=case-123');
     });
 
+    for (const suffix of ['#t=30', '?caseId=old#t=30', '?preview=true&caseId=old#t=30']) {
+      it(`preserves the media fragment when adding case context to ${suffix}`, () => {
+        sessionStorageService.getItem.and.returnValue(
+          JSON.stringify({
+            ...LEGACY_MEDIA_VIEWER_DATA,
+            document_binary_url: `/documents/doc-123/binary${suffix}`,
+          })
+        );
+        component.ngOnInit();
+
+        const url = new URL(component.mediaURL, window.location.origin);
+        expect(url.hash).toBe('#t=30');
+        expect(url.searchParams.getAll('caseId')).toEqual(['case-123']);
+        expect(url.searchParams.get('preview')).toBe(suffix.includes('preview') ? 'true' : null);
+      });
+    }
+
+    it('does not parse an unsupported URL when restoring stored media', () => {
+      sessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          ...LEGACY_MEDIA_VIEWER_DATA,
+          document_binary_url: 'http://[',
+        })
+      );
+
+      expect(() => component.ngOnInit()).not.toThrow();
+      expect(component.mediaURL).toBe('http://[');
+    });
+
     it('should not render the media viewer before metadata is received', () => {
       expect(component.mediaReady).toBeFalse();
       expect(fixture.debugElement.query(By.css('mv-media-viewer'))).toBeNull();
@@ -232,6 +261,25 @@ describe('MediaViewerWrapperComponent', () => {
       (component as any).receiveHandoff(handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload: legacyPayload }));
 
       expect(component.mediaURL).toBe('/documents/doc-123/binary?caseId=case-123');
+    });
+
+    it('keeps unsupported URLs out of legacy enrichment during handoff', () => {
+      const unsupportedPayload = JSON.stringify({ ...LEGACY_MEDIA_VIEWER_DATA, document_binary_url: 'http://[' });
+      const replaceStateSpy = spyOn(window.history, 'replaceState');
+
+      expect(() =>
+        (component as any).receiveHandoff(
+          handoffEvent({
+            type: 'MEDIA_VIEWER_HANDOFF',
+            token,
+            payload: unsupportedPayload,
+          })
+        )
+      ).not.toThrow();
+
+      expect(component.mediaURL).toBe('http://[');
+      expect(postMessageSpy).toHaveBeenCalledTimes(1);
+      expect(replaceStateSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should ignore metadata from an unexpected origin', () => {

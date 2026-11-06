@@ -3148,7 +3148,7 @@ __metadata:
 
 "@hmcts/ccd-case-ui-toolkit@patch:@hmcts/ccd-case-ui-toolkit@npm%3A7.4.25#~/.yarn/patches/@hmcts-ccd-case-ui-toolkit-npm-7.4.25-484a412663.patch":
   version: 7.4.25
-  resolution: "@hmcts/ccd-case-ui-toolkit@patch:@hmcts/ccd-case-ui-toolkit@npm%3A7.4.25#~/.yarn/patches/@hmcts-ccd-case-ui-toolkit-npm-7.4.25-484a412663.patch::version=7.4.25&hash=6410e5"
+  resolution: "@hmcts/ccd-case-ui-toolkit@patch:@hmcts/ccd-case-ui-toolkit@npm%3A7.4.25#~/.yarn/patches/@hmcts-ccd-case-ui-toolkit-npm-7.4.25-484a412663.patch::version=7.4.25&hash=e21e5c"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
@@ -3195,7 +3195,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/95583120ac0fbad8bafc31b6867ee3d18fa63b68bf88b922003e8be3d09f1aa4ed7d0d9ff49fbc107b6bc753373e92b4c82759c1860b23944b94629e20dd4baf
+  checksum: 10/a99343c343494e286acc7a81a532067d738c307d4206fe6d64197fbcf5e8edd27c4511adb2dc07c9916c3318cec87d4ed4c8c1558cb69d624d13d073aba00f62
   languageName: node
   linkType: hard
 

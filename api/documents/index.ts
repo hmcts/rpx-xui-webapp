@@ -4,6 +4,7 @@ import {
   DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS,
   DOCUMENT_UPLOAD_THROTTLE_MAX_MS,
   SERVICES_CCD_DATA_STORE_API_PATH,
+  SERVICES_DOCUMENTS_API_PATH,
 } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 
@@ -11,8 +12,7 @@ import { EnhancedRequest } from '../lib/models';
 const INITIAL_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS);
 const MAX_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_MAX_MS);
 
-const LEGACY_BINARY_DOCUMENT_PATH = /^\/documents\/[^/]+\/binary\/?$/;
-const LEGACY_BINARY_DOCUMENT_PATH_WITH_ID = /^\/documents\/([^/]+)\/binary\/?$/;
+const LEGACY_BINARY_DOCUMENT_PATH = /^\/documents\/([^/]+)(?:\/versions\/([^/]+))?\/binary\/?$/;
 const LEGACY_HTML_CSP = [
   "default-src 'none'",
   "base-uri 'none'",
@@ -38,8 +38,14 @@ function getRequestPath(req): string {
 }
 
 function extractLegacyDocumentId(req): string | null {
-  const match = getRequestPath(req).match(LEGACY_BINARY_DOCUMENT_PATH_WITH_ID);
-  return match ? decodeURIComponent(match[1]) : null;
+  const path = getRequestPath(req);
+  const match = isCanonicalLegacyDocumentPath(path) && path.match(LEGACY_BINARY_DOCUMENT_PATH);
+  return match ? match[1] : null;
+}
+
+function isCanonicalLegacyDocumentPath(path: string): boolean {
+  // Document IDs are URL-safe; reject aliases before the proxy or backend can normalise them.
+  return /^\/documents(?:\/|$)/.test(path) && !/[%;#\\]|\/\/|(?:^|\/)\.{1,2}(?:\/|$)/.test(path);
 }
 
 function getQueryValue(value: unknown): string | null {
@@ -129,7 +135,7 @@ function findDocumentBinaryUrl(node: unknown, documentId: string): boolean {
 function getDocumentIdFromBinaryUrl(documentBinaryUrl: string): string | null {
   try {
     const path = documentBinaryUrl.startsWith('http') ? new URL(documentBinaryUrl).pathname : documentBinaryUrl.split('?')[0];
-    const match = path.match(/\/documents\/([^/]+)\/binary\/?$/);
+    const match = path.match(/\/documents\/([^/]+)(?:\/versions\/[^/]+)?\/binary\/?$/);
     return match ? decodeURIComponent(match[1]) : null;
   } catch {
     return null;
@@ -143,7 +149,7 @@ function isTextHtmlResponse(proxyRes): boolean {
 }
 
 function isLegacyBinaryDocumentRequest(req): boolean {
-  return LEGACY_BINARY_DOCUMENT_PATH.test(getRequestPath(req));
+  return extractLegacyDocumentId(req) !== null;
 }
 
 function applyLegacyHtmlCsp(res): void {
@@ -190,31 +196,54 @@ export function handleRequest(proxyReq, req, res) {
 }
 
 export async function validateLegacyDocumentAccess(req: EnhancedRequest, res, next): Promise<void> {
-  if (req.method !== 'GET' || !isLegacyBinaryDocumentRequest(req)) {
+  const path = getRequestPath(req);
+  if (!['GET', 'HEAD'].includes(req.method) || !/^\/documents(?:\/|$)/i.test(path)) {
     next();
     return;
   }
 
+  if (!isCanonicalLegacyDocumentPath(path)) {
+    res.status(400).send({ message: 'Bad Request' });
+    return;
+  }
+
   const documentId = extractLegacyDocumentId(req);
+  if (!documentId) {
+    next();
+    return;
+  }
   const caseId =
     getQueryValue(req.query?.caseId) ||
     getQueryValue(req.query?.case_id) ||
     getQueryValue(req.query?.caseReference) ||
     getCaseIdFromReferrer(req);
 
-  if (!documentId || !caseId) {
+  if (!caseId) {
     res.status(403).send({ message: 'Forbidden' });
     return;
   }
 
   try {
-    const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/categoriesAndDocuments/${encodeURIComponent(caseId)}`;
-    const response = await axios.get(path, { headers: getValidationHeaders(req) });
+    const casePath = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/categoriesAndDocuments/${encodeURIComponent(caseId)}`;
+    const headers = getValidationHeaders(req);
+    const response = await axios.get(casePath, { headers });
 
     // CCD enforces case access for this user; the returned tree is then used to prove the requested document belongs to that case.
     if (!findDocumentBinaryUrl(response.data, documentId)) {
       res.status(403).send({ message: 'Forbidden' });
       return;
+    }
+
+    if (path.match(LEGACY_BINARY_DOCUMENT_PATH)?.[2]) {
+      const documentStore = getConfigValue(SERVICES_DOCUMENTS_API_PATH);
+      const version = await axios.get(`${documentStore}${path.replace(/\/binary\/?$/, '')}`, { headers });
+      const documentUrl = version.data?._links?.document?.href;
+      const parentPath = typeof documentUrl === 'string' ? new URL(documentUrl, documentStore).pathname : '';
+      // DM resolves versions by version ID alone; its metadata proves the actual parent document.
+      if (parentPath !== `/documents/${documentId}` && parentPath !== `/documents/${documentId}/`) {
+        res.status(403).send({ message: 'Forbidden' });
+        return;
+      }
     }
 
     removeAuthorisationQueryParams(req);

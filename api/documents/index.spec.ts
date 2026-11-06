@@ -3,7 +3,7 @@ import { expect, use } from 'chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getConfigValue } from '../configuration';
-import { DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS } from '../configuration/references';
+import { DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS, SERVICES_DOCUMENTS_API_PATH } from '../configuration/references';
 import { handleRequest, handleResponse, validateLegacyDocumentAccess } from './index';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -146,6 +146,148 @@ describe('Documents Uploading', () => {
   });
 
   describe('validateLegacyDocumentAccess', () => {
+    for (const path of [
+      '/documents/doc-123/%62inary',
+      '/documents/doc-123/%2562inary',
+      '/documents/doc-123/binary;download',
+      '/documents/%/binary',
+      '/documents/doc-123\\binary',
+      '/documents//doc-123/binary',
+      '/documents/other/../doc-123/binary',
+      '/documents/./doc-123/binary',
+      '/Documents/doc-123/binary',
+    ]) {
+      it(`should reject unsupported legacy read path ${path} before proxying`, async () => {
+        const getStub = sandbox.stub(axios, 'get');
+        const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+        const next = sandbox.stub();
+
+        await validateLegacyDocumentAccess({ method: 'GET', originalUrl: path } as any, response, next);
+
+        expect(response.status).to.have.been.calledWith(400);
+        expect(next).to.not.have.been.called;
+        expect(getStub).to.not.have.been.called;
+      });
+    }
+
+    for (const scenario of ['valid GET', 'valid HEAD', 'wrong parent', 'missing parent', 'metadata denied']) {
+      it(`should verify the authoritative version parent: ${scenario}`, async () => {
+        const getStub = sandbox.stub(axios, 'get');
+        getStub.onFirstCall().resolves({
+          data: { documents: [{ document_binary_url: '/documents/doc-123/versions/version-123/binary' }] },
+        });
+        if (scenario === 'metadata denied') {
+          getStub.onSecondCall().rejects({ response: { status: 403 } });
+        } else {
+          getStub.onSecondCall().resolves({
+            data:
+              scenario === 'missing parent'
+                ? {}
+                : {
+                    _links: {
+                      document: { href: `http://dm-store/documents/${scenario === 'wrong parent' ? 'other-doc' : 'doc-123'}` },
+                    },
+                  },
+          });
+        }
+        const request = {
+          method: scenario === 'valid HEAD' ? 'HEAD' : 'GET',
+          originalUrl: '/documents/doc-123/versions/version-123/binary?caseId=case-123',
+          url: '/doc-123/versions/version-123/binary?caseId=case-123',
+          query: { caseId: 'case-123' },
+          headers: {},
+        };
+        const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+        const next = sandbox.stub();
+
+        await validateLegacyDocumentAccess(request as any, response, next);
+
+        expect(getStub).to.have.been.calledTwice;
+        expect(getStub.secondCall.args[0]).to.equal(
+          `${getConfigValue(SERVICES_DOCUMENTS_API_PATH)}/documents/doc-123/versions/version-123`
+        );
+        if (scenario.startsWith('valid')) {
+          expect(next).to.have.been.calledOnce;
+          expect(request.url).to.equal('/doc-123/versions/version-123/binary');
+          const cspResponse = { setHeader: sandbox.stub(), removeHeader: sandbox.stub() };
+          handleResponse({ headers: { 'content-type': 'text/html' } }, request, cspResponse);
+          expect(cspResponse.setHeader).to.have.been.calledWith('Content-Security-Policy', sinon.match("script-src 'none'"));
+        } else {
+          expect(response.status).to.have.been.calledWith(403);
+          expect(next).to.not.have.been.called;
+        }
+      });
+    }
+
+    for (const allowed of [true, false]) {
+      it(`should ${allowed ? 'allow' : 'deny'} HEAD using the same case membership check as GET`, async () => {
+        const getStub = sandbox.stub(axios, 'get').resolves({
+          data: { documents: [{ document_binary_url: `/documents/${allowed ? 'doc-123' : 'other-doc'}/binary` }] },
+        });
+        const request = {
+          method: 'HEAD',
+          originalUrl: '/documents/doc-123/binary?caseId=case-123&name=a%20b',
+          url: '/doc-123/binary?caseId=case-123&name=a%20b',
+          query: { caseId: 'case-123' },
+          headers: {},
+        };
+        const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+        const next = sandbox.stub();
+
+        await validateLegacyDocumentAccess(request as any, response, next);
+
+        expect(getStub).to.have.been.calledOnce;
+        if (allowed) {
+          expect(next).to.have.been.calledOnce;
+          expect(request.url).to.equal('/doc-123/binary?name=a+b');
+        } else {
+          expect(response.status).to.have.been.calledWith(403);
+          expect(next).to.not.have.been.called;
+        }
+      });
+    }
+
+    it('should not look up version metadata when CCD denies case access', async () => {
+      const getStub = sandbox.stub(axios, 'get').rejects({ response: { status: 403 } });
+      const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+      const next = sandbox.stub();
+
+      await validateLegacyDocumentAccess(
+        {
+          method: 'HEAD',
+          originalUrl: '/documents/doc-123/versions/version-123/binary?caseId=case-123',
+          query: { caseId: 'case-123' },
+          headers: {},
+        } as any,
+        response,
+        next
+      );
+
+      expect(getStub).to.have.been.calledOnce;
+      expect(response.status).to.have.been.calledWith(403);
+      expect(next).to.not.have.been.called;
+    });
+
+    it('should preserve canonical metadata, upload and CDAM neighbours', async () => {
+      const getStub = sandbox.stub(axios, 'get');
+      for (const [method, originalUrl] of [
+        ['GET', '/documents'],
+        ['GET', '/documents/doc-123?name=a%20b'],
+        ['HEAD', '/documents/doc-123/'],
+        ['GET', '/documents/doc-123/versions/version-123'],
+        ['GET', '/documents/doc-123/auditEntries'],
+        ['POST', '/documents'],
+        ['GET', '/documentsv2/doc-123/binary'],
+      ]) {
+        const next = sandbox.stub();
+        const response = { status: sandbox.stub().returnsThis(), send: sandbox.stub() };
+        await validateLegacyDocumentAccess({ method, originalUrl } as any, response, next);
+        expect(next, `${method} ${originalUrl}`).to.have.been.calledOnce;
+        expect(response.status).to.not.have.been.called;
+      }
+      expect(getStub).to.not.have.been.called;
+    });
+
     it('should deny legacy binary document requests without case context', async () => {
       const request = {
         method: 'GET',

@@ -9,7 +9,7 @@
     <!-- ▸ expose the per-request nonce -->
     <meta name="csp-nonce" content="{{cspNonce}}" />
 
-    <!-- Receive the document before Angular downloads can outlast the opener's handoff window. -->
+    <!-- shortcut: initial HTML must arrive within the sender timeout; use a readiness handshake if HTML also becomes slow. -->
     <script id="media-viewer-bootstrap-handoff" nonce="{{cspNonce}}">
       (() => {
         const token = new URLSearchParams(window.location.search).get('mvToken');

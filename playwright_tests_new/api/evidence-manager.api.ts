@@ -1,5 +1,14 @@
-import { request as playwrightRequest } from '@playwright/test';
+import { request as playwrightRequest, type APIRequestContext } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { test as documentTest } from '../E2E/fixtures';
+import { applySessionCookies } from '../common/sessionCapture';
+import {
+  createCaseBoundDocument,
+  documentXsrfHeaders,
+  type CaseBoundDocument,
+} from '../E2E/utils/test-setup/documentAccessFixtures';
 
 import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState, getStoredCookie } from './utils/auth';
@@ -8,7 +17,6 @@ import { EM_DOC_ID } from './data/testIds';
 import { expectStatus, guardedRequest, withXsrf } from './utils/apiTestUtils';
 import {
   assertAnnotationResponse,
-  assertBinaryResponse,
   assertBookmarkResponse,
   buildAnnotation,
   buildBookmark,
@@ -25,7 +33,6 @@ import {
 
 const configuredDocId = resolveConfiguredDocId(EM_DOC_ID, config.em[config.testEnv as keyof typeof config.em]?.docId);
 let sharedDocId = '';
-const invalidDocId = uuid();
 const guardedDocumentUploadRejectionStatuses = [400, 401, 403, 415, 422, 429, 500] as const;
 const ANNOTATION_SET_LOOKUP_TIMEOUT_MS = 120_000;
 const USER_DETAILS_LOOKUP_TIMEOUT_MS = 120_000;
@@ -42,22 +49,6 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
     }
   });
 
-  test('returns document binary with XSRF', async ({ apiClient }) => {
-    await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.get<ArrayBuffer | string>(`documents/${sharedDocId}/binary`, {
-        headers: { ...headers, experimental: 'true' },
-        throwOnError: false,
-      });
-      expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
-      assertBinaryResponse(res.status, res.data);
-    });
-  });
-
-  test('rejects unauthenticated binary fetch', async ({ anonymousClient }) => {
-    const res = await anonymousClient.get(`documents/${sharedDocId}/binary`, { throwOnError: false });
-    expectStatus(res.status, [401, 403]);
-  });
-
   test('annotations metadata guarded by session', async ({ apiClient, anonymousClient }) => {
     const anon = await anonymousClient.get(`em-anno/metadata/${sharedDocId}`, { throwOnError: false });
     expectStatus(anon.status, [401, 403]);
@@ -68,16 +59,6 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
         throwOnError: false,
       });
       expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
-    });
-  });
-
-  test('returns 404 for missing document', async ({ apiClient }) => {
-    await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.get(`documents/${invalidDocId}/binary`, {
-        headers,
-        throwOnError: false,
-      });
-      expectStatus(res.status, [400, 401, 403, 404, 500]);
     });
   });
 
@@ -141,7 +122,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
   test('bookmarks lifecycle', async ({ apiClient }) => {
     test.setTimeout(LARGE_EVIDENCE_MANAGER_TEST_TIMEOUT_MS);
     await withXsrf('solicitor', async (headers) => {
-      const listRes = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
+      const listRes = await apiClient.get<unknown[]>(`em-anno/${sharedDocId}/bookmarks`, {
         headers,
         throwOnError: false,
       });
@@ -363,11 +344,6 @@ test.describe('Evidence Manager helper coverage', { tag: '@svc-evidence-manager'
     expect(resolveUploadedDocId({})).toBeUndefined();
   });
 
-  test('assertBinaryResponse handles binary payloads', () => {
-    assertBinaryResponse(200, new ArrayBuffer(4));
-    assertBinaryResponse(204, new ArrayBuffer(0));
-  });
-
   test('uploadSyntheticDoc returns uploaded id when ok', async () => {
     let disposed = false;
 
@@ -385,18 +361,18 @@ test.describe('Evidence Manager helper coverage', { tag: '@svc-evidence-manager'
     const uploaded = await uploadSyntheticDoc({
       ensureStorageState: async () => 'state.json',
       getStoredCookie: async () => 'token',
-      requestFactory: async () => ctx as any,
-      uuidFn: () => 'fallback-id',
+      requestFactory: async () => ctx as unknown as APIRequestContext,
     });
     expect(uploaded).toBe('doc-1');
     expect(disposed).toBe(true);
   });
 
-  test('uploadSyntheticDoc falls back when response is not ok', async () => {
+  test('uploadSyntheticDoc rejects failed upload and disposes its context', async () => {
     let disposed = false;
 
     const response = {
       ok: () => false,
+      status: () => 403,
       json: async () => ({}),
     };
     const ctx = {
@@ -406,23 +382,101 @@ test.describe('Evidence Manager helper coverage', { tag: '@svc-evidence-manager'
       },
     };
 
-    const uploaded = await uploadSyntheticDoc({
-      ensureStorageState: async () => 'state.json',
-      getStoredCookie: async () => undefined,
-      requestFactory: async () => ctx as any,
-      uuidFn: () => 'fallback-id',
-    });
-    expect(uploaded).toBe('fallback-id');
+    await expect(
+      uploadSyntheticDoc({
+        ensureStorageState: async () => 'state.json',
+        getStoredCookie: async () => undefined,
+        requestFactory: async () => ctx as unknown as APIRequestContext,
+      })
+    ).rejects.toThrow('HTTP 403');
     expect(disposed).toBe(true);
   });
 
-  test('uploadSyntheticDoc falls back on errors', async () => {
-    const uploaded = await uploadSyntheticDoc({
-      ensureStorageState: async () => {
-        throw new Error('boom');
-      },
-      uuidFn: () => 'fallback-id',
-    });
-    expect(uploaded).toBe('fallback-id');
+  test('uploadSyntheticDoc preserves setup errors', async () => {
+    await expect(
+      uploadSyntheticDoc({
+        ensureStorageState: async () => {
+          throw new Error('boom');
+        },
+      })
+    ).rejects.toThrow('boom');
   });
+});
+
+documentTest.describe('Case-bound document binary API', { tag: '@svc-evidence-manager' }, () => {
+  documentTest.describe.configure({ timeout: 5 * 60_000 });
+  let document: CaseBoundDocument;
+
+  documentTest.beforeEach(async ({ page, createCasePage, caseDetailsPage, identityLease }, testInfo) => {
+    const lease = await identityLease.acquire({ pool: 'DIVORCE_SOLICITOR' });
+    await applySessionCookies(page, lease.identity.userIdentifier);
+    document = await createCaseBoundDocument({
+      page,
+      createCasePage,
+      caseDetailsPage,
+      testInfo,
+      gateway: 'legacy',
+      fileName: `binary-api-${Date.now()}-${testInfo.workerIndex}.pdf`,
+      mimeType: 'application/pdf',
+      content: readFileSync(
+        path.resolve('playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf')
+      ),
+    });
+  });
+
+  documentTest('returns document binary with XSRF', async ({ page }) => {
+    const response = await page.request.get(document.binaryPath, {
+      headers: await documentXsrfHeaders(page),
+      failOnStatusCode: false,
+      maxRedirects: 0,
+    });
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']?.split(';')[0].trim()).toBe(document.expectedContentType);
+    expect(await response.body()).toEqual(document.expectedContent);
+  });
+
+  documentTest('rejects unauthenticated binary fetch', async () => {
+    const anonymous = await playwrightRequest.newContext({ baseURL: config.baseUrl });
+    try {
+      const response = await anonymous.get(document.binaryPath, { failOnStatusCode: false, maxRedirects: 0 });
+      expect(response.status()).toBe(401);
+      expect(response.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+      expect((await response.body()).includes(Buffer.from('%PDF-'))).toBe(false);
+    } finally {
+      await anonymous.dispose();
+    }
+  });
+
+  documentTest(
+    'rejects a document absent from the accessible case',
+    async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+      const headers = await documentXsrfHeaders(page);
+      const control = await page.request.get(document.binaryPath, { headers, failOnStatusCode: false, maxRedirects: 0 });
+      expect(control.status()).toBe(200);
+      expect(await control.body()).toEqual(document.expectedContent);
+      const otherCase = await createCaseBoundDocument({
+        page,
+        createCasePage,
+        caseDetailsPage,
+        testInfo,
+        gateway: 'legacy',
+        fileName: `binary-other-case-${Date.now()}-${testInfo.workerIndex}.pdf`,
+        mimeType: document.expectedContentType,
+        content: document.expectedContent,
+      });
+      expect(otherCase.caseId).not.toBe(document.caseId);
+      expect(otherCase.documentId).not.toBe(document.documentId);
+      const response = await page.request.get(`/documents/${document.documentId}/binary?caseId=${otherCase.caseId}`, {
+        headers: await documentXsrfHeaders(page),
+        failOnStatusCode: false,
+        maxRedirects: 0,
+      });
+      expect([403, 404], 'A known document must be denied when it does not belong to the supplied case').toContain(
+        response.status()
+      );
+      expect(response.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+      expect((await response.body()).includes(Buffer.from('%PDF-'))).toBe(false);
+      expect(await response.body()).not.toEqual(document.expectedContent);
+    }
+  );
 });

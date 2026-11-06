@@ -208,7 +208,6 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
   const appInsightsSetup = applicationinsights.setup(connectionString);
 
   appInsightsSetup.setAzureMonitorOptions({
-    tracesPerSecond: 0,
     spanProcessors: [healthStaticFilteringProcessor],
     instrumentationOptions: {
       http: {

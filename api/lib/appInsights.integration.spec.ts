@@ -1,5 +1,4 @@
 import * as http from 'http';
-import { execFileSync } from 'child_process';
 import { AddressInfo } from 'net';
 import { trace, SpanKind, SpanStatusCode } from '@opentelemetry/api';
 import { InMemorySpanExporter, NodeTracerProvider, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-node';
@@ -10,39 +9,6 @@ import * as sinon from 'sinon';
 import * as telemetry from './appInsights';
 
 describe('App Insights in-memory span integration', () => {
-  it('creates sampled request spans after real SDK initialization', function () {
-    this.timeout(15000);
-    const output = execFileSync(
-      process.execPath,
-      [
-        '-e',
-        `
-      const ai = require('applicationinsights');
-      const spans = [];
-      const diagnostics = [];
-      const { diag, DiagLogLevel } = require('@opentelemetry/api');
-      diag.setLogger({ error: (...args) => diagnostics.push(args.join(' ')), warn() {}, info() {}, debug() {}, verbose() {} }, DiagLogLevel.ERROR);
-      ai.setup('InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=https://example.invalid/')
-        .setAzureMonitorOptions({ tracesPerSecond: 0, spanProcessors: [{
-          onStart() {},
-          onEnd: span => spans.push({ name: span.name, sampled: Boolean(span.spanContext().traceFlags & 1) }),
-          forceFlush: async () => {}, shutdown: async () => {}
-        }] })
-        .setAutoCollectRequests(false)
-        .setAutoCollectDependencies(true)
-        .start();
-      ai.defaultClient.trackRequest({ name: 'SDK initialized request', duration: 1, resultCode: '200', success: true });
-      console.log(JSON.stringify({ spans, diagnostics }));
-      process.exit(0);
-    `,
-      ],
-      { encoding: 'utf8', timeout: 10000 }
-    );
-    const result = JSON.parse(output.trim().split('\n').pop()!);
-    expect(result.diagnostics).to.deep.equal([]);
-    expect(result.spans).to.deep.include({ name: 'SDK initialized request', sampled: true });
-  });
-
   let sandbox: sinon.SinonSandbox;
   let exporter: InMemorySpanExporter;
   let provider: NodeTracerProvider;

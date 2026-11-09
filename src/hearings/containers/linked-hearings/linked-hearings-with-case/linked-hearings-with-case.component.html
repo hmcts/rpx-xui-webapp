@@ -6,23 +6,23 @@
   *ngIf="errors && errors.length"
 >
 </xuilib-hmcts-error-summary>
-<exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
-<h1 class="govuk-heading-l" *ngIf="showIncorrectLinkReasonMessage">
+<exui-linked-hearings-case-title *ngIf="!showSpinner" [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
+<h1 class="govuk-heading-l" *ngIf="!showSpinner && showIncorrectLinkReasonMessage">
   {{ 'No linked cases have the reason needed to link hearings' | rpxTranslate }}
 </h1>
-<h1 class="govuk-heading-l" *ngIf="!showIncorrectLinkReasonMessage && !linkedCases?.length">
+<h1 class="govuk-heading-l" *ngIf="!showSpinner && !showIncorrectLinkReasonMessage && !linkedCases?.length">
   {{ linkedHearingEnum.NoLinkedCases | rpxTranslate }}
 </h1>
-<h1 class="govuk-heading-l" *ngIf="!showIncorrectLinkReasonMessage && linkedCases?.length">
+<h1 class="govuk-heading-l" *ngIf="!showSpinner && !showIncorrectLinkReasonMessage && linkedCases?.length">
   {{ isHearingsAvailable ? linkedHearingEnum.HearingSelection : (linkedHearingEnum.NoHearingSelection | rpxTranslate) }}
 </h1>
-<p class="govuk-hint" *ngIf="linkedCases?.length && isHearingsAvailable && !showIncorrectLinkReasonMessage">
+<p class="govuk-hint" *ngIf="!showSpinner && linkedCases?.length && isHearingsAvailable && !showIncorrectLinkReasonMessage">
   {{ message | rpxTranslate }}
 </p>
-<p class="govuk-hint" *ngIf="!isHearingsAvailable && !showIncorrectLinkReasonMessage">
+<p class="govuk-hint" *ngIf="!showSpinner && !isHearingsAvailable && !showIncorrectLinkReasonMessage">
   {{ linkedHearingEnum.NoHearingsAvailable | rpxTranslate }}
 </p>
-<div class="govuk-!-margin-top-5" *ngIf="linkedCases?.length && !showIncorrectLinkReasonMessage">
+<div class="govuk-!-margin-top-5" *ngIf="!showSpinner && linkedCases?.length && !showIncorrectLinkReasonMessage">
   <h3 class="govuk-heading-m">{{ 'Linked cases' | rpxTranslate }}</h3>
   <form class="form" [formGroup]="linkHearingForm" id="linked-form">
     <div
@@ -167,7 +167,7 @@
     </div>
   </form>
 </div>
-<div class="govuk-!-margin-top-9" *ngIf="linkedCasesWithNoAccessToLoggedInUser && linkedCasesWithNoAccessToLoggedInUser.length">
+<div class="govuk-!-margin-top-9" *ngIf="!showSpinner && linkedCasesWithNoAccessToLoggedInUser?.length">
   <h3 class="govuk-heading-m">{{ 'Other cases' | rpxTranslate }}</h3>
   {{ 'You do not have access to the following cases.' | rpxTranslate }}
   <div class="govuk-form-group govuk-!-margin-top-3">
@@ -180,7 +180,10 @@
 </div>
 <br />
 
-<div *ngIf="showIncorrectLinkReasonMessage || !linkedCases?.length || !isHearingsAvailable" class="no-linked-cases">
+<div
+  *ngIf="!showSpinner && (showIncorrectLinkReasonMessage || !linkedCases?.length || !isHearingsAvailable)"
+  class="no-linked-cases"
+>
   <p *ngIf="showIncorrectLinkReasonMessage">
     {{
       "There are linked cases, but none have the 'Linked for a hearing' reason. Check the reasons for these cases in the 'Linked cases' tab."
@@ -197,7 +200,7 @@
   </div>
 </div>
 
-<div *ngIf="linkedCases?.length && isHearingsAvailable && !showIncorrectLinkReasonMessage">
+<div *ngIf="!showSpinner && linkedCases?.length && isHearingsAvailable && !showIncorrectLinkReasonMessage">
   <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">{{ 'Continue' | rpxTranslate }}</button>
   <a href="#" class="link-cancel" (click)="onCancel(); $event.preventDefault()">{{ 'Cancel' | rpxTranslate }}</a>
 </div>

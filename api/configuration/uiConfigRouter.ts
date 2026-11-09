@@ -1,4 +1,6 @@
 import * as express from 'express';
+import { CaseTypeMap, FrontendDecentralisedCaseType } from '../../common/decentralisation/decentralised-casetype';
+import { DecentralisedService } from '../../common/decentralisation/decentralised-service';
 import { getConfigValue, showFeature } from './index';
 import { setupMenuConfig } from './menuConfigs/configs';
 import {
@@ -13,9 +15,7 @@ import {
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
-  SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_PAYMENT_RETURN_URL,
-  SERVICES_WA_WORKFLOW_API_URL,
 } from './references';
 import { setupHearingConfigs } from './hearingConfigs/configs';
 
@@ -49,6 +49,69 @@ function getHearingJurisdictions() {
   return hearingJurisdictionsConfigCache;
 }
 
+function isPublicBrowserUrl(value: unknown): value is string {
+  if (typeof value !== 'string') {
+    return false;
+  }
+
+  if (value.startsWith('/')) {
+    return true;
+  }
+
+  try {
+    const url = new URL(value);
+    const hostname = url.hostname.toLowerCase();
+    const privateIpv4 =
+      /^10\./.test(hostname) ||
+      /^127\./.test(hostname) ||
+      /^169\.254\./.test(hostname) ||
+      /^192\.168\./.test(hostname) ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(hostname);
+
+    return (
+      (url.protocol === 'https:' || url.protocol === 'http:') &&
+      hostname !== 'localhost' &&
+      !hostname.endsWith('.internal') &&
+      !privateIpv4
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Runtime case-type configuration contains both browser and server-only
+ * values. Only public web URLs are required by the Angular application;
+ * nocBaseUrl and any future backend properties must remain server-side.
+ */
+function getFrontendDecentralisedCaseTypeConfig(): CaseTypeMap<FrontendDecentralisedCaseType> {
+  const config = getConfigValue<CaseTypeMap<FrontendDecentralisedCaseType>>(DECENTRALISED_CASE_TYPE_CONFIG);
+
+  if (!config || typeof config !== 'object' || Array.isArray(config)) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(config)
+      .filter(([, value]) => isPublicBrowserUrl(value?.webUrl))
+      .map(([caseType, value]) => [caseType, { webUrl: value.webUrl }])
+  );
+}
+
+function getFrontendDecentralisedServiceMap(): Record<string, DecentralisedService> {
+  const config = getConfigValue<Record<string, DecentralisedService>>(DECENTRALISED_SERVICE_MAP);
+
+  if (!config || typeof config !== 'object' || Array.isArray(config)) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(config)
+      .filter(([, value]) => value && typeof value.id === 'string' && isPublicBrowserUrl(value.baseUrl))
+      .map(([service, value]) => [service, { id: value.id, baseUrl: value.baseUrl }])
+  );
+}
+
 /**
  * UI Configuration Route
  *
@@ -69,10 +132,8 @@ async function uiConfigurationRouter(req, res) {
     protocol: getConfigValue(PROTOCOL),
     substantiveEnabled: showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED),
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
-    decentralisedCaseTypeConfig: getConfigValue(DECENTRALISED_CASE_TYPE_CONFIG),
-    decentralisedServiceMap: getConfigValue(DECENTRALISED_SERVICE_MAP),
-    waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
-    judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
+    decentralisedCaseTypeConfig: getFrontendDecentralisedCaseTypeConfig(),
+    decentralisedServiceMap: getFrontendDecentralisedServiceMap(),
     headerConfig: getHeaderConfig(),
     hearingJurisdictionConfig: getHearingJurisdictions(),
   });

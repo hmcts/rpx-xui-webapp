@@ -8,7 +8,7 @@ import { HearingsTelemetryService } from './hearings-telemetry.service';
 describe('Hearings journey interceptor', () => {
   const journeyA = 'a'.repeat(32);
   const journeyB = 'b'.repeat(32);
-  let currentJourney: { journeyId: string; caseId?: string; hearingId?: string; jurisdiction?: string; caseName?: string } | null;
+  let currentJourney: { journeyId: string; caseId?: string; hearingId?: string; jurisdiction?: string; serviceID?: string; caseName?: string } | null;
   let http: HttpClient;
   let requests: HttpTestingController;
   let readJourney: jasmine.Spy;
@@ -68,6 +68,7 @@ describe('Hearings journey interceptor', () => {
       caseId: '1234567890123456',
       hearingId: '20000001',
       jurisdiction: 'SSCS',
+      serviceID: 'BBA3',
       caseName: 'private-name',
     };
     http.get('/api/hearings/getHearing').subscribe();
@@ -75,6 +76,7 @@ describe('Hearings journey interceptor', () => {
     expect(first.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.caseId)).toBe('1234567890123456');
     expect(first.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.hearingId)).toBe('20000001');
     expect(first.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.jurisdiction)).toBe('SSCS');
+    expect(first.request.headers.get(HEARINGS_IDENTIFIER_HEADERS.serviceID)).toBe('BBA3');
     expect(JSON.stringify(first.request.headers.keys())).not.toContain('caseName');
     first.flush({});
     http.get('https://external.example/api/hearings/getHearing').subscribe();

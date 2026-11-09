@@ -15,6 +15,7 @@ describe('Hearings exception privacy filter', () => {
           caseId: '1234567890123456',
           hearingId: '20000001',
           jurisdiction: 'SSCS',
+          serviceID: 'BBA3',
           caseName: 'private-name',
           formValue: 'private-value',
           response: 'private-response',
@@ -49,6 +50,7 @@ describe('Hearings exception privacy filter', () => {
       caseId: '1234567890123456',
       hearingId: '20000001',
       jurisdiction: 'SSCS',
+      serviceID: 'BBA3',
     });
     expect(item.baseData.exceptions[0].parsedStack[0]).toEqual({
       level: 0,

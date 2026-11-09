@@ -26,6 +26,7 @@ describe('Hearings server telemetry correlation', () => {
         [HEARINGS_IDENTIFIER_HEADERS.caseId]: '1234567890123456',
         [HEARINGS_IDENTIFIER_HEADERS.hearingId]: '20000001',
         [HEARINGS_IDENTIFIER_HEADERS.jurisdiction]: 'SSCS',
+        [HEARINGS_IDENTIFIER_HEADERS.serviceID]: 'BBA3',
         'x-case-name': 'private-name',
       });
       req.body = { caseName: 'private-name', formValue: 'private-form' };
@@ -37,6 +38,7 @@ describe('Hearings server telemetry correlation', () => {
         caseId: '1234567890123456',
         hearingId: '20000001',
         jurisdiction: 'SSCS',
+        serviceID: 'BBA3',
       });
       expect(JSON.stringify(item)).not.to.contain('private-');
     });
@@ -45,7 +47,7 @@ describe('Hearings server telemetry correlation', () => {
   it('captures explicit request identifiers without requiring a browser journey header', () => {
     const req = request(
       '',
-      '/api/hearings/getHearing?caseRef=1234567890123456&hearingId=20000001&jurisdictionId=CIVIL&caseName=private-name'
+      '/api/hearings/getHearing?caseRef=1234567890123456&hearingId=20000001&jurisdictionId=CIVIL&serviceId=BBA3&caseName=private-name'
     );
     const item = envelope();
     hearingsTelemetryCorrelation(req, {} as Response, () => {});
@@ -56,6 +58,7 @@ describe('Hearings server telemetry correlation', () => {
       caseId: '1234567890123456',
       hearingId: '20000001',
       jurisdiction: 'CIVIL',
+      serviceID: 'BBA3',
     });
   });
 
@@ -65,6 +68,7 @@ describe('Hearings server telemetry correlation', () => {
       [HEARINGS_IDENTIFIER_HEADERS.caseId]: 'case-a',
       [HEARINGS_IDENTIFIER_HEADERS.hearingId]: 'hearing-a',
       [HEARINGS_IDENTIFIER_HEADERS.jurisdiction]: 'OLD',
+      [HEARINGS_IDENTIFIER_HEADERS.serviceID]: 'OLD',
     });
     const item = envelope();
     hearingsTelemetryCorrelation(req, {} as Response, () => addHearingsJourneyToTelemetry(item));
@@ -82,6 +86,7 @@ describe('Hearings server telemetry correlation', () => {
       [HEARINGS_IDENTIFIER_HEADERS.caseId]: 'person@example.com',
       [HEARINGS_IDENTIFIER_HEADERS.hearingId]: ['one', 'two'],
       [HEARINGS_IDENTIFIER_HEADERS.jurisdiction]: 'SSCS\n',
+      [HEARINGS_IDENTIFIER_HEADERS.serviceID]: 'person@example.com',
     });
     const item = envelope();
     hearingsTelemetryCorrelation(req, {} as Response, () => addHearingsJourneyToTelemetry(item));

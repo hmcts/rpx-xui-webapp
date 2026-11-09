@@ -53,6 +53,34 @@ describe('Hearings permitted telemetry identifiers', () => {
     });
   });
 
+  it('records the service ID from hearing values throughout the matching journey', () => {
+    const value = caseState('case-a', 'CIVIL');
+    value.hearings.hearingValues.serviceHearingValuesModel = { caseId: 'case-a', hmctsServiceID: 'BBA3' };
+    state.next(value);
+    telemetry.enterStep('/hearings/request/hearing-stage', {}, 0);
+    telemetry.recordAction('continue');
+    telemetry.endJourney('left-hearings', 10);
+    monitoring.logEvent.calls.allArgs().forEach(([, properties]) => {
+      expect(properties.serviceID).toBe('BBA3');
+    });
+  });
+
+  it('does not attach the previous case service ID to another case', () => {
+    const value = caseState('case-a', 'CIVIL');
+    value.hearings.hearingValues.serviceHearingValuesModel = { caseId: 'case-a', hmctsServiceID: 'BBA3' };
+    state.next(value);
+    telemetry.enterStep('/hearings/cancel/:hearingId', { caseId: 'case-b', hearingId: 'hearing-b' }, 0);
+    expect(telemetry.currentIdentifiers.serviceID).toBeUndefined();
+  });
+
+  it('uses the hearing request service code when hearing values are unavailable', () => {
+    const value = caseState('case-a', 'CIVIL', 'hearing-a');
+    value.hearings.hearingRequest.hearingRequestMainModel.caseDetails.hmctsServiceCode = 'BBA3';
+    state.next(value);
+    telemetry.enterStep('/hearings/request/hearing-view-summary', {}, 0);
+    expect(telemetry.currentIdentifiers.serviceID).toBe('BBA3');
+  });
+
   it('records the existing hearing ID for matching view/amend data only', () => {
     state.next(caseState('case-a', 'CIVIL', 'hearing-a'));
     telemetry.enterStep('/hearings/request/hearing-view-edit-summary', {}, 0);

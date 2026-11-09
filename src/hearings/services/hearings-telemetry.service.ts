@@ -28,10 +28,13 @@ export type HearingsJourneyContext = HearingsTelemetryIdentifiers;
 
 export interface HearingsTelemetryStoreState {
   hearings?: {
-    hearingValues?: { caseInfo?: HearingValuesCaseContext | null };
+    hearingValues?: {
+      caseInfo?: HearingValuesCaseContext | null;
+      serviceHearingValuesModel?: { caseId?: string; hmctsServiceID?: string } | null;
+    };
     hearingRequest?: {
       hearingRequestMainModel?: {
-        caseDetails?: { caseRef?: string; hearingID?: string };
+        caseDetails?: { caseRef?: string; hearingID?: string; hmctsServiceCode?: string };
         requestDetails?: { hearingRequestID?: string };
       };
     };
@@ -282,7 +285,7 @@ export class HearingsTelemetryService {
       hearingTelemetryIdentifiers(context),
       Object.keys(supplied).length ? this.resolveIdentifiers(supplied, context.step) : {}
     );
-    for (const key of ['caseId', 'hearingId', 'jurisdiction']) {
+    for (const key of ['caseId', 'hearingId', 'jurisdiction', 'serviceID']) {
       delete context[key];
     }
     Object.assign(context, identifiers);
@@ -357,6 +360,9 @@ export class HearingsTelemetryService {
     let caseInfo: HearingValuesCaseContext | null | undefined;
     let requestCaseId: string | undefined;
     let requestHearingId: string | undefined;
+    let valuesServiceID: string | undefined;
+    let valuesCaseId: string | undefined;
+    let requestServiceID: string | undefined;
     try {
       // ErrorHandler depends on this service, while StoreDevtools depends on ErrorHandler.
       // Resolve the store only when reading identifiers, never during service construction.
@@ -364,7 +370,10 @@ export class HearingsTelemetryService {
         ?.get<Store<HearingsTelemetryStoreState>>(Store, null)
         ?.select((state) => ({
           caseInfo: state?.hearings?.hearingValues?.caseInfo,
+          valuesServiceID: state?.hearings?.hearingValues?.serviceHearingValuesModel?.hmctsServiceID,
+          valuesCaseId: state?.hearings?.hearingValues?.serviceHearingValuesModel?.caseId,
           requestCaseId: state?.hearings?.hearingRequest?.hearingRequestMainModel?.caseDetails?.caseRef,
+          requestServiceID: state?.hearings?.hearingRequest?.hearingRequestMainModel?.caseDetails?.hmctsServiceCode,
           requestHearingId:
             state?.hearings?.hearingRequest?.hearingRequestMainModel?.requestDetails?.hearingRequestID ||
             state?.hearings?.hearingRequest?.hearingRequestMainModel?.caseDetails?.hearingID,
@@ -373,7 +382,10 @@ export class HearingsTelemetryService {
         .subscribe({
           next: (value) => {
             caseInfo = value.caseInfo;
+            valuesServiceID = value.valuesServiceID;
+            valuesCaseId = value.valuesCaseId;
             requestCaseId = value.requestCaseId;
+            requestServiceID = value.requestServiceID;
             requestHearingId = value.requestHearingId;
           },
           error: () => {},
@@ -381,10 +393,17 @@ export class HearingsTelemetryService {
     } catch {
       // Telemetry must not require the lazy Hearings feature or change application state.
     }
+    const caseReference = caseInfo?.caseReference;
+    const serviceID = caseReference
+      ? (valuesCaseId === caseReference && valuesServiceID) ||
+        (requestCaseId === caseReference && requestServiceID) ||
+        undefined
+      : undefined;
     const stored = hearingTelemetryIdentifiers({
       caseId: caseInfo?.caseReference,
       hearingId: caseInfo?.hearingId,
       jurisdiction: caseInfo?.jurisdictionId,
+      serviceID,
     });
     const type = STEP_TYPES.get(step);
     const existingHearing =

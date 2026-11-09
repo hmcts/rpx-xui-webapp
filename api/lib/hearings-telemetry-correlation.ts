@@ -30,6 +30,7 @@ function identifiersForRequest(request: IncomingMessage): HearingsTelemetryIdent
       caseId: request.headers?.[HEARINGS_IDENTIFIER_HEADERS.caseId],
       hearingId: request.headers?.[HEARINGS_IDENTIFIER_HEADERS.hearingId],
       jurisdiction: request.headers?.[HEARINGS_IDENTIFIER_HEADERS.jurisdiction],
+      serviceID: request.headers?.[HEARINGS_IDENTIFIER_HEADERS.serviceID],
     }),
     hearingsUrlIdentifiers(url)
   );

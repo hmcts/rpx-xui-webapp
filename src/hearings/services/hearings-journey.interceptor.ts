@@ -25,7 +25,7 @@ export const hearingsJourneyInterceptor: HttpInterceptorFn = (request, next) => 
           hearingTelemetryIdentifiers(telemetry.requestIdentifiers),
           hearingsUrlIdentifiers(url)
         );
-        for (const key of ['caseId', 'hearingId', 'jurisdiction'] as const) {
+        for (const key of ['caseId', 'hearingId', 'jurisdiction', 'serviceID'] as const) {
           if (identifiers[key]) {
             headers[HEARINGS_IDENTIFIER_HEADERS[key]] = identifiers[key];
           }

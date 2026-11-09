@@ -63,25 +63,11 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
       requireAssignmentTarget({ ...details, userInfo: { roles: details.userInfo.roles } }, '234946', 'operator')
     ).toThrow('identified');
   });
-  test('selects explicit workflow URL or authenticated configuration and fails closed', async () => {
-    const configuredUrl = 'http://wa-workflow-api-aat.service.core-compute-aat.internal';
+  test('selects an explicit workflow URL and fails closed without private runtime configuration', async () => {
     const explicitUrl = 'https://wa-workflow-api.aat.platform.hmcts.net';
-    expect(
-      await resolveActionWorkflowUrl(explicitUrl, async () => {
-        throw new Error('Unexpected configuration lookup');
-      })
-    ).toBe(explicitUrl);
-    expect(await resolveActionWorkflowUrl(undefined, async () => ({ status: 200, data: { waWorkflowApi: configuredUrl } }))).toBe(
-      configuredUrl
-    );
-    await expect(resolveActionWorkflowUrl(undefined, async () => ({ status: 503, data: {} }))).rejects.toThrow('HTTP 503');
-    await expect(resolveActionWorkflowUrl(undefined, async () => ({ status: 200, data: {} }))).rejects.toThrow('no workflow URL');
-    await expect(
-      resolveActionWorkflowUrl(undefined, async () => ({
-        status: 200,
-        data: { waWorkflowApi: 'https://manage-case.platform.hmcts.net' },
-      }))
-    ).rejects.toThrow('approved AAT');
+    expect(await resolveActionWorkflowUrl(explicitUrl)).toBe(explicitUrl);
+    await expect(resolveActionWorkflowUrl(undefined)).rejects.toThrow('private workflow runtime configuration');
+    await expect(resolveActionWorkflowUrl('https://manage-case.platform.hmcts.net')).rejects.toThrow('approved AAT');
   });
   test('cleanup completes only its verified owned task and proves the final state', async () => {
     for (const initialState of ['unassigned', 'assigned', 'completed', 'cancelled', 'wrong-case']) {

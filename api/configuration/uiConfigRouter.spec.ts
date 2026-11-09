@@ -107,12 +107,9 @@ describe('uiConfigRouter', () => {
       getConfigValueStub.withArgs('decentralisedServiceMap').returns({
         PCS: {
           id: 'PCS',
-          baseUrl: 'http://pcs-api.service.core-compute.internal',
+          baseUrl: 'https://pcs.aat.platform.hmcts.net',
         },
       });
-      getConfigValueStub.withArgs('services.waWorkflowApi').returns('https://wa.workflow.api');
-      getConfigValueStub.withArgs('services.judicialBookingApi').returns('https://judicial.booking.api');
-
       showFeatureStub.withArgs('accessManagementEnabled').returns(true);
       showFeatureStub.withArgs('oidcEnabled').returns(false);
       showFeatureStub.withArgs('substantiveRoleEnabled').returns(true);
@@ -134,17 +131,14 @@ describe('uiConfigRouter', () => {
         decentralisedCaseTypeConfig: {
           PCS: {
             webUrl: 'https://pcs-frontend.service.gov.uk',
-            nocBaseUrl: 'http://pcs-api.service.core-compute.internal',
           },
         },
         decentralisedServiceMap: {
           PCS: {
             id: 'PCS',
-            baseUrl: 'http://pcs-api.service.core-compute.internal',
+            baseUrl: 'https://pcs.aat.platform.hmcts.net',
           },
         },
-        waWorkflowApi: 'https://wa.workflow.api',
-        judicialBookingApi: 'https://judicial.booking.api',
         headerConfig: mockMenuConfig,
         hearingJurisdictionConfig: mockHearingConfig,
       });
@@ -170,11 +164,39 @@ describe('uiConfigRouter', () => {
       expect(responseData).to.have.property('protocol', undefined);
       expect(responseData).to.have.property('substantiveEnabled', undefined);
       expect(responseData).to.have.property('paymentReturnUrl', undefined);
-      expect(responseData).to.have.property('waWorkflowApi', undefined);
-      expect(responseData).to.have.property('judicialBookingApi', undefined);
       expect(responseData).to.have.property('headerConfig', mockMenuConfig);
       expect(responseData).to.have.property('hearingJurisdictionConfig', mockHearingConfig);
-      expect(responseData).to.have.property('decentralisedServiceMap', undefined);
+      expect(responseData).to.deep.include({ decentralisedCaseTypeConfig: {}, decentralisedServiceMap: {} });
+    });
+
+    it('does not expose server-only service URLs', async () => {
+      getConfigValueStub.returns(undefined);
+      getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://idam.aat.platform.hmcts.net');
+      getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({
+        PUBLIC_LAW: {
+          webUrl: 'https://public-law.aat.platform.hmcts.net',
+          nocBaseUrl: 'http://prl-cos-aat.service.core-compute-aat.internal',
+        },
+      });
+      getConfigValueStub.withArgs('decentralisedServiceMap').returns({
+        PUBLIC_LAW: {
+          id: 'PUBLIC_LAW',
+          baseUrl: 'http://prl-cos-aat.service.core-compute-aat.internal',
+        },
+      });
+      showFeatureStub.returns(false);
+
+      await routeHandler(req, res, next);
+
+      const responseData = res.send.firstCall.args[0];
+      expect(responseData).not.to.have.property('waWorkflowApi');
+      expect(responseData).not.to.have.property('judicialBookingApi');
+      expect(responseData.decentralisedCaseTypeConfig).to.deep.equal({
+        PUBLIC_LAW: { webUrl: 'https://public-law.aat.platform.hmcts.net' },
+      });
+      expect(responseData.decentralisedServiceMap).to.deep.equal({});
+      expect(JSON.stringify(responseData)).not.to.include('.service.core-compute-');
+      expect(JSON.stringify(responseData)).not.to.include('.internal');
     });
 
     it('should handle errors in setupMenuConfig', async () => {

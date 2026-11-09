@@ -38,19 +38,9 @@ export function requireExuiUrl(value: string | undefined): string {
   return requireAatUrl(value, 'EXUI URL');
 }
 
-export async function resolveActionWorkflowUrl(
-  override: string | undefined,
-  readConfiguration: () => Promise<{ status: number; data: { waWorkflowApi?: string } }>
-): Promise<string> {
+export async function resolveActionWorkflowUrl(override: string | undefined): Promise<string> {
   if (override?.trim()) return requireAatUrl(override, 'workflow URL');
-  const configuration = await readConfiguration();
-  if (configuration.status !== 200) {
-    throw new Error(`WA fixture configuration lookup failed (HTTP ${configuration.status}).`);
-  }
-  if (!configuration.data.waWorkflowApi?.trim()) {
-    throw new Error('WA fixture has no workflow URL in environment or authenticated configuration.');
-  }
-  return requireAatUrl(configuration.data.waWorkflowApi, 'workflow URL');
+  throw new Error('WA fixture requires private workflow runtime configuration.');
 }
 
 export function requireOwnedActionTask(task: Task, caseReference: string, taskName: string): string {
@@ -230,11 +220,7 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
   const serviceContext = await request.newContext();
   try {
     const workflowUrl = await resolveActionWorkflowUrl(
-      process.env.SERVICES_WA_WORKFLOW_API_URL ?? process.env.WA_WORKFLOW_API_URL,
-      async () => {
-        const response = await context.get('/external/config/ui');
-        return { status: response.status(), data: response.status() === 200 ? await response.json() : {} };
-      }
+      process.env.SERVICES_WA_WORKFLOW_API_URL ?? process.env.WA_WORKFLOW_API_URL
     );
     const userResponse = await context.get('/api/user/details?refreshRoleAssignments=true');
     if (userResponse.status() !== 200) throw new Error(`WA fixture actor lookup failed (HTTP ${userResponse.status()}).`);

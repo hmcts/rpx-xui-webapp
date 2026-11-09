@@ -6,7 +6,12 @@ import { runSeededAction } from './utils/workAllocationUtils';
 const OWNED_TASK_ACTION_TEST_TIMEOUT_MS = 10 * 60_000;
 
 test.describe('Work allocation owned task actions', { tag: ['@svc-work-allocation', '@wa-action'] }, () => {
-  test('supports the owned task action lifecycle for a newly provisioned task', async ({}, testInfo) => {
+  test('supports the owned task action lifecycle for a newly provisioned task', async ({ browserName }, testInfo) => {
+    void browserName;
+    test.skip(
+      !process.env.SERVICES_WA_WORKFLOW_API_URL && !process.env.WA_WORKFLOW_API_URL,
+      'Requires private Work Allocation workflow runtime configuration.'
+    );
     testInfo.setTimeout(OWNED_TASK_ACTION_TEST_TIMEOUT_MS);
     const fixture = await createWorkAllocationActionFixture();
     const errors: unknown[] = [];

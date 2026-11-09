@@ -63,10 +63,10 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
       requireAssignmentTarget({ ...details, userInfo: { roles: details.userInfo.roles } }, '234946', 'operator')
     ).toThrow('identified');
   });
-  test('selects an explicit workflow URL and fails closed when it is not configured', async () => {
+  test('selects an explicit workflow URL and fails closed without private runtime configuration', async () => {
     const explicitUrl = 'https://wa-workflow-api.aat.platform.hmcts.net';
     expect(await resolveActionWorkflowUrl(explicitUrl)).toBe(explicitUrl);
-    await expect(resolveActionWorkflowUrl(undefined)).rejects.toThrow('SERVICES_WA_WORKFLOW_API_URL');
+    await expect(resolveActionWorkflowUrl(undefined)).rejects.toThrow('private workflow runtime configuration');
     await expect(resolveActionWorkflowUrl('https://manage-case.platform.hmcts.net')).rejects.toThrow('approved AAT');
   });
   test('cleanup completes only its verified owned task and proves the final state', async () => {

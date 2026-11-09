@@ -40,7 +40,7 @@ export function requireExuiUrl(value: string | undefined): string {
 
 export async function resolveActionWorkflowUrl(override: string | undefined): Promise<string> {
   if (override?.trim()) return requireAatUrl(override, 'workflow URL');
-  throw new Error('WA fixture requires SERVICES_WA_WORKFLOW_API_URL or WA_WORKFLOW_API_URL.');
+  throw new Error('WA fixture requires private workflow runtime configuration.');
 }
 
 export function requireOwnedActionTask(task: Task, caseReference: string, taskName: string): string {

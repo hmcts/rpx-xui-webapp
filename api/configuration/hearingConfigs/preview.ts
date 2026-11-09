@@ -8,6 +8,10 @@ export const previewEnableHearingAmendments = {
       includeCaseTypes: ['Asylum', 'Bail'],
       jurisdiction: 'IA',
     },
+    {
+      includeCaseTypes: ['PCS', '(PCS-)\\d+'],
+      jurisdiction: 'PCS',
+    },
   ],
 };
 
@@ -45,6 +49,11 @@ export const previewHearingJurisdictions = {
       includeCaseTypes: ['ET_EnglandWales', 'ET_Scotland'],
       jurisdiction: 'EMPLOYMENT',
       roles: ['caseworker-employment'],
+    },
+    {
+      includeCaseTypes: ['PCS', '(PCS-)\\d+'],
+      jurisdiction: 'PCS',
+      roles: ['hmcts-ctsc', 'hmcts-admin', 'hmcts-legal-operations', 'hmcts-judiciary'],
     },
   ],
 };

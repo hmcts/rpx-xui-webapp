@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
+import * as fs from 'fs';
+import * as path from 'path';
 import { Response } from 'express';
 import { EnhancedRequest } from '../lib/models';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
@@ -535,6 +537,14 @@ describe('Hearings Services', () => {
 
       expect(() => servicesIndex.isJurisdictionSupported('SSCS')).to.throw();
     });
+
+    it('should support comma-separated jurisdiction values from config', () => {
+      getConfigValueStub.returns('SSCS,PRIVATELAW,CIVIL,IA,PCS');
+
+      expect(servicesIndex.isJurisdictionSupported('SSCS')).to.be.true;
+      expect(servicesIndex.isJurisdictionSupported('PCS')).to.be.true;
+      expect(servicesIndex.isJurisdictionSupported('EMPLOYMENT')).to.be.false;
+    });
   });
 
   describe('getServicePath', () => {
@@ -573,6 +583,38 @@ describe('Hearings Services', () => {
 
       expect(result).to.equal('http://private-law-api');
       expect(getConfigValueStub).to.have.been.calledWith('services.hearings.privatelaw.serviceApi');
+    });
+
+    it('should resolve service path when hearingsJurisdictions is comma-separated string', () => {
+      getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns('SSCS,PRIVATELAW,CIVIL,IA,PCS');
+      getConfigValueStub.withArgs('services.hearings.pcs.serviceApi').returns('http://pcs-api');
+
+      const result = servicesIndex.getServicePath('PCS');
+
+      expect(result).to.equal('http://pcs-api');
+      expect(getConfigValueStub).to.have.been.calledWith('services.hearings.pcs.serviceApi');
+    });
+  });
+
+  describe('hearings config contract (default.json)', () => {
+    it('should define a serviceApi entry for each configured hearings jurisdiction', () => {
+      const defaultConfigPath = path.resolve(__dirname, '../../config/default.json');
+      const defaultConfig = JSON.parse(fs.readFileSync(defaultConfigPath, 'utf8'));
+      const hearingsConfig = defaultConfig.services.hearings;
+      const configuredJurisdictions = hearingsConfig.hearingsJurisdictions
+        .split(',')
+        .map((jurisdiction: string) => jurisdiction.trim())
+        .filter(Boolean);
+
+      expect(configuredJurisdictions).to.not.be.empty;
+
+      configuredJurisdictions.forEach((jurisdiction: string) => {
+        const jurisdictionConfig = hearingsConfig[jurisdiction.toLowerCase()];
+
+        expect(jurisdictionConfig, `Missing hearings config section for ${jurisdiction}`).to.exist;
+        expect(jurisdictionConfig.serviceApi, `Missing serviceApi for hearings jurisdiction ${jurisdiction}`).to.be.a('string')
+          .and.not.empty;
+      });
     });
   });
 

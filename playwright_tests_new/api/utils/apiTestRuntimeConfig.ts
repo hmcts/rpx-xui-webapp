@@ -83,8 +83,6 @@ const sharedUiConfigKeys = [
   'ccdGatewayUrl',
   'substantiveEnabled',
   'accessManagementEnabled',
-  'judicialBookingApi',
-  'waWorkflowApi',
 ] as const;
 
 const solicitorUsername = resolveCredential(

@@ -584,7 +584,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline(type, product, component) {
-    enableBuildCache()
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_ENV = 'aat'

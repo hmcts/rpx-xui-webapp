@@ -116,6 +116,42 @@ export function markFailedServerSpanStatus(
   }
 }
 
+/** Remove query values from known current and legacy HTTP URL attributes. */
+export function sanitizeIncomingServerSpanUrl(span: Span, request: unknown, response: unknown): void {
+  if (typeof (response as { setHeader?: unknown })?.setHeader !== 'function') {
+    return;
+  }
+
+  const incoming = request as {
+    url?: string;
+    headers?: { host?: string };
+    socket?: { encrypted?: boolean };
+  };
+  const rawUrl = incoming?.url || '/';
+  let path = '/';
+  let fullUrl = '/';
+
+  try {
+    const scheme = incoming.socket?.encrypted ? 'https' : 'http';
+    const url = new URL(rawUrl, `${scheme}://${incoming.headers?.host || 'localhost'}`);
+    url.search = '';
+    url.hash = '';
+    url.username = '';
+    url.password = '';
+    path = url.pathname;
+    fullUrl = url.toString();
+  } catch {
+    // A malformed URL must not leave its original value in telemetry.
+  }
+
+  span.setAttribute('url.path', path);
+  span.setAttribute('url.full', fullUrl);
+  span.setAttribute('url.query', '');
+  span.setAttribute('http.url', fullUrl);
+  span.setAttribute('http.target', path);
+  span.setAttribute('http.request.query', '');
+}
+
 function readCookie(cookieHeader: string | string[] | undefined, cookieName: string): string | undefined {
   const cookieHeaderValue = Array.isArray(cookieHeader) ? cookieHeader.join(';') : cookieHeader;
   const cookie = cookieHeaderValue
@@ -201,6 +237,9 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
    *   production         -> 100%
    *   performance        -> 100%
    *
+   * Production and performance values come from the Flux HelmRelease
+   * nodejs.environment overrides in cnp-flux-config/apps/xui/xui-webapp/.
+   *
    * Disable the Azure Monitor default rate limit so the configured fixed
    * percentage is applied, as it was with the 2.x SDK.
    */
@@ -214,6 +253,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
       http: {
         applyCustomAttributesOnSpan: (span, request, response) => {
           markFailedServerSpanStatus(span, request, response);
+          sanitizeIncomingServerSpanUrl(span, request, response);
         },
       } as HttpInstrumentationConfig,
     },

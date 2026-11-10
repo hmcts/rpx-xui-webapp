@@ -1,5 +1,5 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Router } from '@angular/router';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo } from '../models';
 import { SessionStorageService } from '../services';
 

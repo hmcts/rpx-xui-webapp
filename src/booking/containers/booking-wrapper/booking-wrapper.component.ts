@@ -1,7 +1,7 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import {
   bookingBackButtonVisibilityStates,

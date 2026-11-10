@@ -8,8 +8,7 @@ import {
   SessionJsonErrorLogger,
   WindowService,
   FocusService,
-} from '@hmcts/ccd-case-ui-toolkit';
-import { MediaViewerModule } from '@hmcts/media-viewer';
+} from '@hmcts/ccd-case-ui-toolkit/core';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import * as fromAppComponents from '../components';
@@ -31,7 +30,6 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
   imports: [
     RouterModule,
     CommonModule,
-    MediaViewerModule,
     ExuiCommonLibModule,
     ReactiveFormsModule,
     SessionErrorPageComponent,

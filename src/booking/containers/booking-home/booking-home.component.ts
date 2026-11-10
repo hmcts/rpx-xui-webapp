@@ -1,7 +1,8 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
-import { WindowService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import moment from 'moment';
 import { Subscription } from 'rxjs';

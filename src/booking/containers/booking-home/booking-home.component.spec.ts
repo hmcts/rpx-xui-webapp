@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 

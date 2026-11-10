@@ -1,6 +1,7 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { CaseNotifier, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';

@@ -191,17 +191,14 @@ describe('TaskListComponent', () => {
   it('should reset sorting', fakeAsync(async () => {
     component = fixture.componentInstance.appComponentRef;
     component.taskServiceConfig.defaultSortFieldName = 'dueDate';
-    component.defaultSortElement = document.createElement('button');
     component.pageSessionKey = 'pageSessionKey';
-    /// mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
-    spyOn(component.defaultSortElement, 'click');
     component.onResetSorting();
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the new field defined which is caseName
     expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('pageSessionKey', '1');
-    expect(component.defaultSortElement.click).toHaveBeenCalled();
+    expect(component.pagination.page_number).toBe(1);
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
   }));
 
   it('should allow sorting for different columns.', fakeAsync(async () => {

@@ -1,8 +1,8 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   standalone: false,

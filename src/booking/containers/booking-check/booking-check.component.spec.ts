@@ -3,7 +3,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit/core';
 import { of } from 'rxjs';
 import { BookingProcess } from '../../models';
 import { BookingService } from '../../services';

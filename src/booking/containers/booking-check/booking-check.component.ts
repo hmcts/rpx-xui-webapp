@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit/core';
 import { throwError } from 'rxjs';
 import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';

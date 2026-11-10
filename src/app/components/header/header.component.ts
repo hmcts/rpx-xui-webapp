@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FocusService } from '@hmcts/ccd-case-ui-toolkit';
+import { FocusService } from '@hmcts/ccd-case-ui-toolkit/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppTitleModel } from '../../models/app-title.model';

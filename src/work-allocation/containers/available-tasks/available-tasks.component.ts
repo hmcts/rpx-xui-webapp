@@ -1,8 +1,8 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component } from '@angular/core';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';

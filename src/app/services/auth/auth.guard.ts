@@ -1,9 +1,9 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '..';
 import { WindowLocationService } from '../window-location/window-location.service';
 import { AuthService } from './auth.service';

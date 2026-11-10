@@ -1,8 +1,9 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Location as StateLocation } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 

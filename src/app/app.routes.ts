@@ -1,15 +1,11 @@
 import { ExtraOptions, Routes } from '@angular/router';
 import { FeatureToggleGuard, RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
-import { BookingServiceDownComponent, RefreshBookingServiceDownComponent } from '../booking/containers';
-import { BookingSystemErrorComponent } from '../booking/containers/utils/booking-system-error/booking-system-error.component';
-import { MyTasksComponent } from '../work-allocation/containers';
 import {
   AccessibilityComponent,
   AccessDeniedComponent,
   ApplicationRoutingComponent,
   CookiePolicyComponent,
   GetHelpComponent,
-  MediaViewerWrapperComponent,
   NotAuthorisedComponent,
   PrivacyPolicyComponent,
   ServiceDownComponent,
@@ -17,7 +13,7 @@ import {
   ExpiredLoginLinkComponent,
   SessionErrorWrapperComponent,
 } from './components';
-import { SessionStorageGuard } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageGuard } from '@hmcts/ccd-case-ui-toolkit/core';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
@@ -53,9 +49,8 @@ export const ROUTES: Routes = [
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks/:subRoute',
-    pathMatch: 'prefix',
-    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
-    component: MyTasksComponent,
+    redirectTo: 'work/my-work/list',
+    pathMatch: 'full',
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
@@ -165,28 +160,38 @@ export const ROUTES: Routes = [
   },
   {
     path: 'booking-service-down',
-    component: BookingServiceDownComponent,
+    loadComponent: () =>
+      import('../booking/containers/utils/booking-service-down/booking-service-down.component').then(
+        (m) => m.BookingServiceDownComponent
+      ),
     data: {
       title: 'Service Unavailable',
     },
   },
   {
     path: 'booking-system-error',
-    component: BookingSystemErrorComponent,
+    loadComponent: () =>
+      import('../booking/containers/utils/booking-system-error/booking-system-error.component').then(
+        (m) => m.BookingSystemErrorComponent
+      ),
     data: {
       title: 'Service Unavailable',
     },
   },
   {
     path: 'refresh-booking-service-down',
-    component: RefreshBookingServiceDownComponent,
+    loadComponent: () =>
+      import('../booking/containers/utils/refresh-booking-service-down/refresh-booking-service-down.component').then(
+        (m) => m.RefreshBookingServiceDownComponent
+      ),
     data: {
       title: 'Service Unavailable',
     },
   },
   {
     path: 'media-viewer',
-    component: MediaViewerWrapperComponent,
+    loadChildren: () =>
+      import('./components/media-viewer-wrapper/media-viewer-wrapper.module').then((m) => m.MediaViewerWrapperModule),
     data: {
       title: 'View Document',
     },
@@ -194,7 +199,6 @@ export const ROUTES: Routes = [
   { path: 'service-down', component: ServiceDownComponent },
   { path: 'not-authorised', component: NotAuthorisedComponent },
   { path: 'expired-login-link', component: ExpiredLoginLinkComponent, data: { title: 'Expired Login Link' } },
-  { path: 'media-viewer', component: MediaViewerWrapperComponent },
   {
     path: 'get-help',
     component: GetHelpComponent,

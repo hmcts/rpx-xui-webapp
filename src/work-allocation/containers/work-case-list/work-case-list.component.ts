@@ -1,8 +1,8 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Location as StateLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';

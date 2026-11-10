@@ -1,13 +1,7 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {
-  CaseState,
-  CaseType,
-  Jurisdiction,
-  PaginationMetadata,
-  SearchResultView,
-  safeJsonParse,
-} from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { decompressFromUTF16 } from 'lz-string';

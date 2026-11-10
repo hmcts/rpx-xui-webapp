@@ -1,10 +1,10 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { first } from 'rxjs/operators';
 
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';

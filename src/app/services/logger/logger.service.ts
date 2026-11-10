@@ -1,8 +1,8 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Injectable } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { environment as config } from '../../../environments/environment';
 import { UserInfo } from '../../models/user-details.model';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { MonitoringService } from './monitoring.service';
 import { EnvironmentService } from '../../shared/services/environment.service';

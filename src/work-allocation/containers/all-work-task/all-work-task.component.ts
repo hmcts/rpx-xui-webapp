@@ -1,10 +1,10 @@
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit/json-utils';
 import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';

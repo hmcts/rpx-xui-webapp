@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -16,12 +16,16 @@ import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
+
 @Component({
   standalone: false,
   selector: 'exui-hearing-actuals-timing',
   templateUrl: './hearing-actuals-timing.component.html',
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
+  private readonly hearingCancellation = inject(HearingCancellationService);
+
   public formGroup: FormGroup;
   public caseTitle: string;
   public submitted: boolean = false;
@@ -29,6 +33,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   private hearingActuals: HearingActualsMainModel;
   private sub1$: Subscription;
   private sub2$: Subscription;
+  private caseInfoSub: Subscription;
+  private caseInfo: { jurisdictionId?: string; caseType?: string; caseReference?: string };
   private id: string;
   private hearingDate: string;
   private readonly defaultHearingStartTimeValidators = [
@@ -115,6 +121,9 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
+    this.caseInfoSub = this.hearingStore.select(fromHearingStore.getHearingValuesCaseInfo).subscribe((caseInfo) => {
+      this.caseInfo = caseInfo;
+    });
     this.sub1$ = combineLatest([this.hearingStore.select(fromHearingStore.getHearingActuals), this.route.paramMap])
       .pipe(
         filter(([state]: [HearingActualsStateData, ParamMap]) => !!state.hearingActualsMainModel),
@@ -134,6 +143,9 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.sub1$.unsubscribe();
     this.sub2$.unsubscribe();
+    if (this.caseInfoSub) {
+      this.caseInfoSub.unsubscribe();
+    }
   }
 
   public onSubmit(value: any, valid: boolean): void {
@@ -200,13 +212,27 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
     if (this.id) {
       this.ngZone.run(() => {
-        this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
+        void this.router.navigate([`/hearings/actuals/${this.id}/hearing-actual-add-edit-summary`]);
       });
     }
   }
 
   public onBack(): void {
     this.location.back();
+  }
+
+  public onCancel(): void {
+    this.hearingCancellation.confirm(() => {
+      void this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.caseInfo?.jurisdictionId,
+        this.caseInfo?.caseType,
+        this.caseInfo?.caseReference || this.hearingActuals?.caseDetails?.caseRef,
+        'hearings',
+      ]);
+    });
   }
 
   private getHearingTime(value: string, actualIndex: number): string {

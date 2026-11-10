@@ -1,6 +1,7 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
@@ -18,6 +19,7 @@ import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsSummaryBaseComponent } from './hearing-actuals-summary-base.component';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Pipe({
@@ -89,6 +91,7 @@ describe('HearingActualsSummaryBaseComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsSummaryBaseComponent, ConvertToValuePipe, MockHearingAnswersPipe],
       imports: [
+        MatDialogModule,
         RouterTestingModule.withRoutes([
           { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent },
         ]),
@@ -127,6 +130,29 @@ describe('HearingActualsSummaryBaseComponent', () => {
     fixture = TestBed.createComponent(HearingActualsSummaryBaseComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should navigate back to the case hearings page when cancellation is confirmed', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm').and.callFake((onConfirmed) => onConfirmed());
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    (component as any).caseInfo = {
+      jurisdictionId: 'IA',
+      caseType: 'Asylum',
+      caseReference: '1111222233334444',
+    };
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '1111222233334444', 'hearings']);
+  });
+
+  it('should wait for confirmation before leaving the current page', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should create', () => {

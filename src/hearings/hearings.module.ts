@@ -1,3 +1,4 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
@@ -20,6 +21,7 @@ import * as fromContainers from './containers';
 import { HearingsEditGuard } from './guards/hearings-edit-guard';
 import { HearingsViewGuard } from './guards/hearings-view-guard';
 import { HearingAmendmentsGuard } from './guards/hearing-amendments-guard';
+import { HearingCancellationDialogComponent } from './components/hearing-cancellation-dialog/hearing-cancellation-dialog.component';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsPipesModule } from './pipes/hearings.pipes.module';
 import { HearingsService } from './services/hearings.service';
@@ -30,8 +32,14 @@ import { PageFlow } from './utils/page-flow';
 import { WarningAndErrorSectionComponent } from './containers/request-hearing/hearing-edit-summary/warning-and-error-section/warning-and-error-section.component';
 
 @NgModule({
-  declarations: [...fromComponents.components, ...fromContainers.containers, WarningAndErrorSectionComponent],
+  declarations: [
+    HearingCancellationDialogComponent,
+    ...fromComponents.components,
+    ...fromContainers.containers,
+    WarningAndErrorSectionComponent,
+  ],
   imports: [
+    MatDialogModule,
     CommonModule,
     StoreModule.forFeature('hearings', reducers),
     EffectsModule.forFeature(effects),

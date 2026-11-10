@@ -1,12 +1,14 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
-import { initialState } from '../../hearing.test.data';
+import { caseInfoStore, initialState } from '../../hearing.test.data';
 import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { ACTION, PartyType } from '../../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
@@ -14,6 +16,7 @@ import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import { HearingsUtils } from '../../utils/hearings.utils';
+import { HearingCancellationService } from '../../services/hearing-cancellation.service';
 import { RequestHearingComponent } from './request-hearing.component';
 
 describe('RequestHearingComponent', () => {
@@ -25,18 +28,28 @@ describe('RequestHearingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const requestHearingInitialState = {
+    ...initialState,
+    hearings: {
+      ...initialState.hearings,
+      hearingValues: {
+        ...initialState.hearings.hearingValues,
+        caseInfo: { ...caseInfoStore },
+      },
+    },
+  };
 
   beforeEach(() => {
     appConfig.logMessage.calls.reset();
     hearingsService.hearingRequestContinueDisabled = false;
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [MatDialogModule, RouterTestingModule],
       declarations: [RequestHearingComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },
         { provide: AbstractAppConfig, useValue: appConfig },
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: requestHearingInitialState }),
         { provide: HearingsService, useValue: hearingsService },
       ],
     }).compileComponents();
@@ -44,6 +57,15 @@ describe('RequestHearingComponent', () => {
     fixture = TestBed.createComponent(RequestHearingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should wait for confirmation before leaving the current page', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should create', () => {
@@ -54,6 +76,15 @@ describe('RequestHearingComponent', () => {
     spyOn(hearingsService, 'navigateAction');
     component.onBack();
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
+  });
+
+  it('should navigate back to the case hearings page when cancelled', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm').and.callFake((onConfirmed) => onConfirmed());
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '1111222233334444', 'hearings']);
   });
 
   it('should check continue method', () => {

@@ -1,17 +1,20 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingStageResultComponent } from './hearing-stage-result.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingCancellationService } from '../../../services/hearing-cancellation.service';
 
 describe('HearingStageResultComponent', () => {
   let component: HearingStageResultComponent;
@@ -66,7 +69,7 @@ describe('HearingStageResultComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HearingStageResultComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [ReactiveFormsModule, RouterTestingModule],
+      imports: [MatDialogModule, ReactiveFormsModule, RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -81,6 +84,15 @@ describe('HearingStageResultComponent', () => {
     store = TestBed.inject(Store);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should wait for confirmation before leaving the current page', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should create', () => {
@@ -98,6 +110,21 @@ describe('HearingStageResultComponent', () => {
     spyOn(component.sub, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.sub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should navigate back to the case hearings page when cancelled', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm').and.callFake((onConfirmed) => onConfirmed());
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, 'navigate');
+    (component as any).caseInfo = {
+      jurisdictionId: 'IA',
+      caseType: 'Asylum',
+      caseReference: '1111222233334444',
+    };
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '1111222233334444', 'hearings']);
   });
 
   it('should return the correct hearing result based on the option selected', () => {

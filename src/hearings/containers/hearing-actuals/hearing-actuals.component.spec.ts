@@ -1,6 +1,7 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -13,6 +14,7 @@ import * as hearingActualsActions from '../../store/actions/hearing-actuals.acti
 import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import { HearingActualsComponent } from './hearing-actuals.component';
+import { HearingCancellationService } from '../../services/hearing-cancellation.service';
 
 describe('RequestHearingComponent', () => {
   let component: HearingActualsComponent;
@@ -23,16 +25,26 @@ describe('RequestHearingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const hearingActualsInitialState = {
+    ...initialState,
+    hearings: {
+      ...initialState.hearings,
+      hearingValues: {
+        ...initialState.hearings.hearingValues,
+        caseInfo: { caseReference: '1111222233334444', jurisdictionId: 'IA', caseType: 'Asylum' },
+      },
+    },
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [MatDialogModule, RouterTestingModule],
       declarations: [HearingActualsComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },
         { provide: ActivatedRoute, useValue: { params: of({ id: 'h100001' }) } },
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: hearingActualsInitialState }),
         { provide: HearingsService, useValue: hearingsService },
       ],
     }).compileComponents();
@@ -40,6 +52,15 @@ describe('RequestHearingComponent', () => {
     fixture = TestBed.createComponent(HearingActualsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should wait for confirmation before leaving the current page', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should create', () => {
@@ -64,6 +85,16 @@ describe('RequestHearingComponent', () => {
         caseRef: '1111222233334444',
       })
     );
+  });
+
+  it('should navigate back to the case hearings page when cancelled', () => {
+    spyOn(TestBed.inject(HearingCancellationService), 'confirm').and.callFake((onConfirmed) => onConfirmed());
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    (component as any).caseInfo = { caseReference: '1111222233334444', jurisdictionId: 'IA', caseType: 'Asylum' };
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '1111222233334444', 'hearings']);
   });
 
   afterEach(() => {

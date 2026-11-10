@@ -48,7 +48,7 @@ describe('Hearings shared server error telemetry', () => {
     expect(trace.calledOnce).to.equal(true);
     expect(trace.firstCall.args[0]).to.deep.equal({
       message: 'Hearings.OperationFailed',
-      severity: 3,
+      severity: 'Error',
       properties: { telemetryArea: 'Hearings', operation, outcome: 'failed', httpStatus: 503 },
     });
     expect(JSON.stringify(trace.args)).not.to.contain('private-');

@@ -1,7 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import type { IncomingMessage } from 'node:http';
 import type { RequestHandler } from 'express';
-import type { Contracts } from 'applicationinsights';
 import {
   HEARINGS_JOURNEY_HEADER,
   isHearingsJourneyId,
@@ -77,24 +76,38 @@ export const hearingsTelemetryCorrelation: RequestHandler = (request, _response,
   hearingRequests.run(hearings, () => journeys.run(journeyId, () => identifiers.run(context, next)));
 };
 
-export function addHearingsJourneyToTelemetry(
-  envelope: Contracts.EnvelopeTelemetry,
-  contextObjects?: { [name: string]: unknown }
-): boolean {
+export function hearingsTelemetryProperties(request?: IncomingMessage): Record<string, string> {
   try {
     // Request telemetry may be finalized outside the route's async context by the SDK.
-    const request = contextObjects?.['http.ServerRequest'] as IncomingMessage | undefined;
     const journeyId = request
       ? requestJourneys.has(request)
         ? requestJourneys.get(request)
         : requestJourneyId(request)
       : journeys.getStore();
     const context = request ? requestIdentifiers.get(request) || identifiersForRequest(request) : identifiers.getStore() || {};
-    if ((journeyId || Object.keys(context).length) && envelope.data?.baseData) {
+    return { ...(journeyId ? { journeyId } : {}), ...context };
+  } catch {
+    // Retain the original telemetry even when optional correlation is unavailable.
+    return {};
+  }
+}
+
+export interface HearingsTelemetryEnvelope {
+  tags?: Record<string, string>;
+  data: { baseType?: string; baseData: { properties: Record<string, unknown> } };
+}
+
+export function addHearingsJourneyToTelemetry(
+  envelope: HearingsTelemetryEnvelope,
+  contextObjects?: { [name: string]: unknown }
+): boolean {
+  try {
+    const request = contextObjects?.['http.ServerRequest'] as IncomingMessage | undefined;
+    const properties = hearingsTelemetryProperties(request);
+    if (Object.keys(properties).length && envelope.data?.baseData) {
       envelope.data.baseData.properties = {
         ...envelope.data.baseData.properties,
-        ...(journeyId ? { journeyId } : {}),
-        ...context,
+        ...properties,
       };
     }
   } catch {

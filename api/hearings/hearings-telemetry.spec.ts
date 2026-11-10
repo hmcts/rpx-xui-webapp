@@ -2,12 +2,11 @@ import { expect } from 'chai';
 import { AxiosHeaders } from 'axios';
 import * as sinon from 'sinon';
 import type { Response } from 'express';
-import type { Contracts } from 'applicationinsights';
 import * as appInsights from '../lib/appInsights';
 import * as crud from '../common/crudService';
 import * as configuration from '../configuration';
 import { EnhancedRequest } from '../lib/models';
-import { addHearingsJourneyToTelemetry, hearingsTelemetryCorrelation } from '../lib/hearings-telemetry-correlation';
+import { addHearingsJourneyToTelemetry, HearingsTelemetryEnvelope, hearingsTelemetryCorrelation } from '../lib/hearings-telemetry-correlation';
 import { HEARINGS_JOURNEY_HEADER } from '../../common/hearings/telemetry-correlation';
 import * as hmc from './hmc.index';
 import * as services from './services.index';
@@ -39,7 +38,7 @@ describe('Structured Hearings traces', () => {
     expect(trackTrace.firstCall.args).to.deep.equal([
       {
         message: 'Hearings.OperationFailed',
-        severity: 3,
+        severity: 'Error',
         properties: { telemetryArea: 'Hearings', operation: 'getHearing', outcome: 'failed', httpStatus: 503 },
       },
     ]);
@@ -52,12 +51,12 @@ describe('Structured Hearings traces', () => {
     traceHearingsDiagnostic('getServicePath', 'service-not-configured');
     expect(trackTrace.firstCall.args[0]).to.deep.equal({
       message: 'Hearings.OperationStarted',
-      severity: 1,
+      severity: 'Information',
       properties: { telemetryArea: 'Hearings', operation: 'loadLinkedCasesWithHearings', outcome: 'started' },
     });
     expect(trackTrace.secondCall.args[0]).to.deep.equal({
       message: 'Hearings.ServiceNotConfigured',
-      severity: 2,
+      severity: 'Warning',
       properties: { telemetryArea: 'Hearings', operation: 'getServicePath', outcome: 'service-not-configured' },
     });
   });
@@ -112,7 +111,7 @@ describe('Structured Hearings traces', () => {
     } as unknown as EnhancedRequest;
     let properties: unknown;
     trackTrace.callsFake((trace) => {
-      const envelope = { data: { baseType: 'MessageData', baseData: trace } } as unknown as Contracts.EnvelopeTelemetry;
+      const envelope = { data: { baseType: 'MessageData', baseData: trace } } as HearingsTelemetryEnvelope;
       addHearingsJourneyToTelemetry(envelope);
       properties = envelope.data.baseData.properties;
     });

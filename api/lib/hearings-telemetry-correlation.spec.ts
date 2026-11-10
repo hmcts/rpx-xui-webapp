@@ -1,8 +1,7 @@
 import { expect } from 'chai';
-import type { Contracts } from 'applicationinsights';
 import type { Request, Response } from 'express';
 import { HEARINGS_JOURNEY_HEADER, HEARINGS_IDENTIFIER_HEADERS } from '../../common/hearings/telemetry-correlation';
-import { addHearingsJourneyToTelemetry, hearingsTelemetryCorrelation } from './hearings-telemetry-correlation';
+import { addHearingsJourneyToTelemetry, HearingsTelemetryEnvelope, hearingsTelemetryCorrelation } from './hearings-telemetry-correlation';
 
 describe('Hearings server telemetry correlation', () => {
   const journeyA = 'a'.repeat(32);
@@ -12,11 +11,11 @@ describe('Hearings server telemetry correlation', () => {
     return { url, headers: { [HEARINGS_JOURNEY_HEADER]: value } } as unknown as Request;
   }
 
-  function envelope(baseType = 'RequestData'): Contracts.EnvelopeTelemetry {
+  function envelope(baseType = 'RequestData'): HearingsTelemetryEnvelope {
     return {
       tags: { 'ai.operation.id': 'existing-operation', 'ai.operation.parentId': 'existing-parent' },
       data: { baseType, baseData: { properties: { existing: 'property' } } },
-    } as unknown as Contracts.EnvelopeTelemetry;
+    } as HearingsTelemetryEnvelope;
   }
 
   ['RequestData', 'RemoteDependencyData', 'ExceptionData', 'MessageData'].forEach((baseType) => {
@@ -197,7 +196,7 @@ describe('Hearings server telemetry correlation', () => {
   });
 
   it('isolates concurrent users and retains the initiating journey when a slow response finishes last', async () => {
-    const results: Contracts.EnvelopeTelemetry[] = [];
+    const results: HearingsTelemetryEnvelope[] = [];
     let finishFirst: () => void;
     const first = new Promise<void>((resolve) => {
       hearingsTelemetryCorrelation(request(journeyA), {} as Response, () => {

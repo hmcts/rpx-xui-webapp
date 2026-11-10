@@ -1,4 +1,5 @@
 import { client } from '../lib/appInsights';
+import { hearingsTelemetryProperties } from '../lib/hearings-telemetry-correlation';
 
 const OPERATIONS = [
   'loadServiceHearingValues',
@@ -26,9 +27,9 @@ const OPERATIONS = [
 export type HearingsTraceOperation = (typeof OPERATIONS)[number];
 
 const DIAGNOSTICS = {
-  started: { message: 'Hearings.OperationStarted', severity: 1 },
-  failed: { message: 'Hearings.OperationFailed', severity: 3 },
-  'service-not-configured': { message: 'Hearings.ServiceNotConfigured', severity: 2 },
+  started: { message: 'Hearings.OperationStarted', severity: 'Information' },
+  failed: { message: 'Hearings.OperationFailed', severity: 'Error' },
+  'service-not-configured': { message: 'Hearings.ServiceNotConfigured', severity: 'Warning' },
 } as const;
 
 /** Native traces with a closed schema: never pass an error, request or response as properties. */
@@ -46,10 +47,9 @@ export function traceHearingsDiagnostic(
     const status = detail?.status ?? detail?.response?.status;
     const httpStatus =
       typeof status === 'number' && Number.isInteger(status) && status >= 0 && status <= 599 ? { httpStatus: status } : {};
-    // The registered server telemetry processor adds the request-scoped anonymous journeyId.
     client.trackTrace({
       ...DIAGNOSTICS[outcome],
-      properties: { telemetryArea: 'Hearings', operation, outcome, ...httpStatus },
+      properties: { telemetryArea: 'Hearings', operation, outcome, ...httpStatus, ...hearingsTelemetryProperties() },
     });
   } catch {
     // Diagnostics must not change the response, replace the original error or block next(error).

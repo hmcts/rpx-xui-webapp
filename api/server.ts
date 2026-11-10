@@ -6,7 +6,7 @@
  */
 import 'source-map-support/register';
 // App Insights must patch console before application imports initialise node-lib loggers.
-import { appInsights } from './lib/appInsights';
+import './lib/appInsights';
 import { createApp } from './application';
 
 import * as ejs from 'ejs';
@@ -38,7 +38,6 @@ createApp().then((app: express.Application) => {
     });
   });
 
-  app.use(appInsights);
   app.use(errorHandler);
 
   const port = process.env.PORT || 3000;

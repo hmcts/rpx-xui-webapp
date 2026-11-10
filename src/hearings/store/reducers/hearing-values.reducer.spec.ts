@@ -148,6 +148,43 @@ describe('Hearing Values Reducer', () => {
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialState, action);
         expect(hearingsState).toEqual(initialState);
       });
+
+      it('should preserve the current case context when hearing values are reset', () => {
+        const currentState: HearingValuesStateData = {
+          ...fromHearingValuesReducer.initialHearingValuesState,
+          caseInfo: {
+            jurisdictionId: 'CIVIL',
+            caseReference: '1111222233334444',
+            caseType: 'CIVIL',
+            hearingId: '1234567890',
+          },
+        };
+
+        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(
+          currentState,
+          new fromHearingValuesActions.ResetHearingValues()
+        );
+
+        expect(hearingsState.caseInfo).toEqual(currentState.caseInfo);
+        expect(hearingsState.serviceHearingValuesModel).toBeNull();
+      });
+
+      it('should clear case context when the case context reset action is dispatched', () => {
+        const currentState: HearingValuesStateData = {
+          ...fromHearingValuesReducer.initialHearingValuesState,
+          caseInfo: {
+            jurisdictionId: 'CIVIL',
+            caseReference: '1111222233334444',
+          },
+        };
+
+        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(
+          currentState,
+          new fromHearingValuesActions.ResetJurisdictionAndCaseRef()
+        );
+
+        expect(hearingsState.caseInfo).toBeNull();
+      });
     });
 
     describe('Load service hearing values success action', () => {

@@ -27,7 +27,7 @@ describe('Hearings shared server error telemetry', () => {
     sandbox.stub(crud.logger, 'info');
     rawError = sandbox.stub(crud.logger, 'error');
     req = {
-      url: '/api/hearings/getHearing?hearingId=private-hearing',
+      url: '/api/hearings/getHearing?hearingId=20000001',
       headers: {},
       body: { caseName: 'private-name' },
       query: {},
@@ -44,12 +44,12 @@ describe('Hearings shared server error telemetry', () => {
     return Object.assign(new Error('private-message'), { status: 503, statusText: 'private-status', data });
   }
 
-  function expectSafeTrace(operation: string) {
+  function expectSafeTrace(operation: string, correlation: { hearingId?: string } = {}) {
     expect(trace.calledOnce).to.equal(true);
     expect(trace.firstCall.args[0]).to.deep.equal({
       message: 'Hearings.OperationFailed',
       severity: 'Error',
-      properties: { telemetryArea: 'Hearings', operation, outcome: 'failed', httpStatus: 503 },
+      properties: { telemetryArea: 'Hearings', operation, outcome: 'failed', httpStatus: 503, ...correlation },
     });
     expect(JSON.stringify(trace.args)).not.to.contain('private-');
   }
@@ -119,7 +119,7 @@ describe('Hearings shared server error telemetry', () => {
       expect(isHearingsTelemetryRequest(req)).to.equal(true);
       await expectOriginalFailure(() => crud.sendGet('http://downstream/private-case', req), original);
     });
-    expectSafeTrace('sendGet');
+    expectSafeTrace('sendGet', { hearingId: '20000001' });
     expect(isHearingsTelemetryRequest()).to.equal(false);
   });
 
@@ -161,7 +161,7 @@ describe('Hearings shared server error telemetry', () => {
       },
     };
     await inScope(() => expectOriginalFailure(() => errorInterceptor(error), response));
-    expectSafeTrace('outboundRequest');
+    expectSafeTrace('outboundRequest', { hearingId: '20000001' });
     expect(logger.error.called).to.equal(false);
     // The SDK's existing native dependency collection remains enabled; no duplicate custom request with raw IDs.
     expect(logger.trackRequest.called).to.equal(false);

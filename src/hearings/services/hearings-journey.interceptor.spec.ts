@@ -8,7 +8,14 @@ import { HearingsTelemetryService } from './hearings-telemetry.service';
 describe('Hearings journey interceptor', () => {
   const journeyA = 'a'.repeat(32);
   const journeyB = 'b'.repeat(32);
-  let currentJourney: { journeyId: string; caseId?: string; hearingId?: string; jurisdiction?: string; serviceID?: string; caseName?: string } | null;
+  let currentJourney: {
+    journeyId: string;
+    caseId?: string;
+    hearingId?: string;
+    jurisdiction?: string;
+    serviceID?: string;
+    caseName?: string;
+  } | null;
   let http: HttpClient;
   let requests: HttpTestingController;
   let readJourney: jasmine.Spy;

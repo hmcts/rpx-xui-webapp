@@ -395,9 +395,7 @@ export class HearingsTelemetryService {
     }
     const caseReference = caseInfo?.caseReference;
     const serviceID = caseReference
-      ? (valuesCaseId === caseReference && valuesServiceID) ||
-        (requestCaseId === caseReference && requestServiceID) ||
-        undefined
+      ? (valuesCaseId === caseReference && valuesServiceID) || (requestCaseId === caseReference && requestServiceID) || undefined
       : undefined;
     const stored = hearingTelemetryIdentifiers({
       caseId: caseInfo?.caseReference,

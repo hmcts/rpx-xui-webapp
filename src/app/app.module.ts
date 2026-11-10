@@ -3,6 +3,7 @@ import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from 
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import {
   CookieService,
   ExuiCommonLibModule,
@@ -64,6 +65,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     }),
     BrowserModule,
     BrowserAnimationsModule,
+    // Root payment services need this module's HTTP client and logger providers.
+    PaymentLibModule,
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, {

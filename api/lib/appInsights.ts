@@ -6,9 +6,9 @@ import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-h
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
-import { withTracingUnsuppressed } from './telemetryContext';
 import {
   APP_INSIGHTS_CONNECTION_STRING,
+  APP_INSIGHTS_SAMPLING_PERCENTAGE,
   COOKIES_SESSION_ID,
   COOKIES_USER_ID,
   FEATURE_APP_INSIGHTS_ENABLED,
@@ -116,6 +116,42 @@ export function markFailedServerSpanStatus(
   }
 }
 
+/** Remove query values from known current and legacy HTTP URL attributes. */
+export function sanitizeIncomingServerSpanUrl(span: Span, request: unknown, response: unknown): void {
+  if (typeof (response as { setHeader?: unknown })?.setHeader !== 'function') {
+    return;
+  }
+
+  const incoming = request as {
+    url?: string;
+    headers?: { host?: string };
+    socket?: { encrypted?: boolean };
+  };
+  const rawUrl = incoming?.url || '/';
+  let path = '/';
+  let fullUrl = '/';
+
+  try {
+    const scheme = incoming.socket?.encrypted ? 'https' : 'http';
+    const url = new URL(rawUrl, `${scheme}://${incoming.headers?.host || 'localhost'}`);
+    url.search = '';
+    url.hash = '';
+    url.username = '';
+    url.password = '';
+    path = url.pathname;
+    fullUrl = url.toString();
+  } catch {
+    // A malformed URL must not leave its original value in telemetry.
+  }
+
+  span.setAttribute('url.path', path);
+  span.setAttribute('url.full', fullUrl);
+  span.setAttribute('url.query', '');
+  span.setAttribute('http.url', fullUrl);
+  span.setAttribute('http.target', path);
+  span.setAttribute('http.request.query', '');
+}
+
 function readCookie(cookieHeader: string | string[] | undefined, cookieName: string): string | undefined {
   const cookieHeaderValue = Array.isArray(cookieHeader) ? cookieHeader.join(';') : cookieHeader;
   const cookie = cookieHeaderValue
@@ -192,27 +228,32 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
    * to reduce health/static telemetry to approximately 1%.
    *
    * Request/dependency/exception/performance collection remains on the
-   * compatibility SDK chain. Azure Monitor OpenTelemetry options are used
-   * only for exporter configuration and the health/static SpanProcessor.
+   * compatibility SDK chain. Azure Monitor OpenTelemetry options configure
+   * sampling and the health/static SpanProcessor.
    *
-   * Telemetry continues to follow the existing environment sampling
-   * configuration:
+   * Telemetry follows the existing environment sampling configuration:
    *
    *   lower environments -> 1%
    *   production         -> 100%
    *   performance        -> 100%
    *
-   * Those environment percentages remain managed by the existing
-   * Terraform/Application Insights resource configuration.
+   * Production and performance values come from the Flux HelmRelease
+   * nodejs.environment overrides in cnp-flux-config/apps/xui/xui-webapp/.
+   *
+   * Disable the Azure Monitor default rate limit so the configured fixed
+   * percentage is applied, as it was with the 2.x SDK.
    */
   const appInsightsSetup = applicationinsights.setup(connectionString);
 
   appInsightsSetup.setAzureMonitorOptions({
+    tracesPerSecond: 0,
+    samplingRatio: getConfigValue<number>(APP_INSIGHTS_SAMPLING_PERCENTAGE) / 100,
     spanProcessors: [healthStaticFilteringProcessor],
     instrumentationOptions: {
       http: {
         applyCustomAttributesOnSpan: (span, request, response) => {
           markFailedServerSpanStatus(span, request, response);
+          sanitizeIncomingServerSpanUrl(span, request, response);
         },
       } as HttpInstrumentationConfig,
     },
@@ -223,8 +264,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     /*
      * Continue collecting useful application telemetry.
      */
-    /* Express middleware below records incoming requests; avoid duplicate SDK-generated request records. */
-    .setAutoCollectRequests(false)
+    .setAutoCollectRequests(true)
     .setAutoCollectDependencies(true)
     .setAutoCollectExceptions(true)
     .setAutoCollectPerformance(true, true)
@@ -261,21 +301,11 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
 }
 
 /**
- * Legacy Express middleware.
- *
- * Application Insights 2.x manually called:
- *
- *   client.trackNodeHttpRequest(...)
- *
- * Application Insights 3.x automatically instruments incoming HTTP
- * requests through OpenTelemetry.
- *
- * Identity is added here because Express provides direct access to the
- * incoming request cookies while the auto-instrumented server span is active.
+ * Adds identity to the automatically instrumented incoming HTTP span.
+ * Express provides direct access to the incoming request cookies while
+ * the server span is active.
  */
 export function appInsights(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
-  const startedAt = new Date();
-  const requestPath = _req.path || _req.url?.split('?')[0] || '/';
   const span = trace.getActiveSpan();
 
   if (span) {
@@ -294,53 +324,7 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
     }
   }
 
-  _res.once('finish', () => {
-    if (!client || shouldExcludeTelemetryPath(requestPath)) {
-      return;
-    }
-
-    try {
-      withTracingUnsuppressed(() => client.trackRequest(createIncomingRequestTelemetry(_req, _res, startedAt, new Date())));
-    } catch (error) {
-      console.warn('Failed to track incoming request telemetry', error);
-    }
-  });
-
   next();
-}
-
-export function createIncomingRequestTelemetry(
-  request: Pick<express.Request, 'headers' | 'method' | 'path' | 'protocol' | 'route' | 'get'>,
-  response: Pick<express.Response, 'statusCode'>,
-  startedAt: Date,
-  completedAt: Date
-) {
-  const requestPath = request.path || '/';
-  const host = request.get('host');
-  const routePath = typeof request.route?.path === 'string' ? request.route.path : requestPath;
-  const properties: Record<string, string> = {
-    'http.method': request.method,
-  };
-  const userId = readCookie(request.headers.cookie, getConfigValue(COOKIES_USER_ID));
-  const sessionId = readCookie(request.headers.cookie, getConfigValue(COOKIES_SESSION_ID));
-
-  if (userId) {
-    properties['enduser.pseudo.id'] = userId;
-  }
-
-  if (sessionId) {
-    properties['session.id'] = sessionId;
-  }
-
-  return {
-    duration: completedAt.getTime() - startedAt.getTime(),
-    name: `${request.method} ${routePath}`,
-    properties,
-    resultCode: String(response.statusCode),
-    success: response.statusCode < FAILED_REQUEST_STATUS_CODE_THRESHOLD,
-    time: startedAt,
-    url: host ? `${request.protocol}://${host}${requestPath}` : requestPath,
-  };
 }
 
 /**

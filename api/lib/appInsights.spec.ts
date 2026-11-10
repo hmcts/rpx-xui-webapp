@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 
-import { appInsights, createIncomingRequestTelemetry, markFailedServerSpanStatus } from './appInsights';
+import { appInsights, markFailedServerSpanStatus } from './appInsights';
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
@@ -84,39 +84,6 @@ describe('appInsights', () => {
 
       expect(setAttribute).not.to.have.been.called;
       expect(next).to.have.been.calledOnce;
-    });
-  });
-
-  describe('createIncomingRequestTelemetry', () => {
-    it('builds a request record with route, response, timing, and identity context', () => {
-      const startedAt = new Date('2026-11-04T10:00:00.000Z');
-      const completedAt = new Date('2026-11-04T10:00:00.125Z');
-      const request = {
-        headers: {
-          cookie: '__userid__=user%40123; __sessionId__=session%7C123',
-        },
-        method: 'GET',
-        path: '/cases/123',
-        protocol: 'https',
-        route: { path: '/cases/:caseId' },
-        get: () => 'manage-case.example.test',
-      };
-
-      const telemetry = createIncomingRequestTelemetry(request as any, { statusCode: 403 }, startedAt, completedAt);
-
-      expect(telemetry).to.deep.equal({
-        duration: 125,
-        name: 'GET /cases/:caseId',
-        properties: {
-          'enduser.pseudo.id': 'user@123',
-          'http.method': 'GET',
-          'session.id': 'session|123',
-        },
-        resultCode: '403',
-        success: false,
-        time: startedAt,
-        url: 'https://manage-case.example.test/cases/123',
-      });
     });
   });
 

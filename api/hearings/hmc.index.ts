@@ -161,13 +161,36 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
  */
 export async function updateHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const hearingId = req.query.hearingId;
+  const hearingId = req.query.hearingId as string;
   const caseId = req.query.caseId as string;
+  const hearingStatus = req.query.hearingStatus as string;
+  const isFinalisedHearingEdit = ['COMPLETED', 'ADJOURNED', 'CANCELLED'].includes(hearingStatus);
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
+    if (isFinalisedHearingEdit) {
+      trackTrace('HMC-Index | finalised hearing edit update started', {
+        caseId,
+        hearingId,
+        hearingStatus,
+      });
+    }
     const { status, data }: { status: number; data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
+    if (isFinalisedHearingEdit) {
+      trackTrace('HMC-Index | finalised hearing edit update succeeded', {
+        caseId,
+        hearingId,
+        hearingStatus,
+      });
+    }
     res.status(status).send(data);
   } catch (error) {
+    if (isFinalisedHearingEdit) {
+      trackTrace('HMC-Index | finalised hearing edit update failed', {
+        caseId,
+        hearingId,
+        hearingStatus,
+      });
+    }
     handleHearingError(error, caseId, 'updateHearingActuals', req, markupPath, next);
   }
 }

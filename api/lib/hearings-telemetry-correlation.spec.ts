@@ -1,7 +1,11 @@
 import { expect } from 'chai';
 import type { Request, Response } from 'express';
 import { HEARINGS_JOURNEY_HEADER, HEARINGS_IDENTIFIER_HEADERS } from '../../common/hearings/telemetry-correlation';
-import { addHearingsJourneyToTelemetry, HearingsTelemetryEnvelope, hearingsTelemetryCorrelation } from './hearings-telemetry-correlation';
+import {
+  addHearingsJourneyToTelemetry,
+  HearingsTelemetryEnvelope,
+  hearingsTelemetryCorrelation,
+} from './hearings-telemetry-correlation';
 
 describe('Hearings server telemetry correlation', () => {
   const journeyA = 'a'.repeat(32);

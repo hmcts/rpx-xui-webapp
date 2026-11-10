@@ -6,7 +6,11 @@ import * as appInsights from '../lib/appInsights';
 import * as crud from '../common/crudService';
 import * as configuration from '../configuration';
 import { EnhancedRequest } from '../lib/models';
-import { addHearingsJourneyToTelemetry, HearingsTelemetryEnvelope, hearingsTelemetryCorrelation } from '../lib/hearings-telemetry-correlation';
+import {
+  addHearingsJourneyToTelemetry,
+  HearingsTelemetryEnvelope,
+  hearingsTelemetryCorrelation,
+} from '../lib/hearings-telemetry-correlation';
 import { HEARINGS_JOURNEY_HEADER } from '../../common/hearings/telemetry-correlation';
 import * as hmc from './hmc.index';
 import * as services from './services.index';

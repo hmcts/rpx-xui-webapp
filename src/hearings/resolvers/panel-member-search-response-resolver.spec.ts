@@ -1,15 +1,15 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { initialState } from '../hearing.test.data';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { PanelMemberSearchResponseResolver } from './panel-member-search-response-resolver';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Panel Member Search Response Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;

@@ -1,15 +1,15 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LocationByEPIMMSModel as LocationByEpimmsModel, LocationModel } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { initialState } from '../hearing.test.data';
 import { LocationsDataService } from '../services/locations-data.service';
 import { CourtLocationsDataResolver } from './court-locations-resolver.resolve';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CourtLocationsData Resolver', () => {
   let locationsDataService: LocationsDataService;

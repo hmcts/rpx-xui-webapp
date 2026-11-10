@@ -248,16 +248,15 @@ export class HearingsTelemetryService {
 
   public recordValidationFailure(category: HearingsValidationCategory, errorCount = 1): void {
     if (
-      !this.journey ||
-      !['form', 'case-context-mismatch'].includes(category) ||
-      !Number.isSafeInteger(errorCount) ||
-      errorCount < 1
+      this.journey &&
+      ['form', 'case-context-mismatch'].includes(category) &&
+      Number.isSafeInteger(errorCount) &&
+      errorCount >= 1
     ) {
-      return;
+      // Closed identifiers, never a control value, validation message or dynamic field ID.
+      const validationId = category === 'form' ? 'form-invalid' : 'case-context-mismatch';
+      this.monitoring.logEvent('Hearings.ValidationFailed', { ...this.properties(), category, validationId }, { errorCount });
     }
-    // Closed identifiers, never a control value, validation message or dynamic field ID.
-    const validationId = category === 'form' ? 'form-invalid' : 'case-context-mismatch';
-    this.monitoring.logEvent('Hearings.ValidationFailed', { ...this.properties(), category, validationId }, { errorCount });
   }
 
   public captureException(
@@ -419,8 +418,7 @@ export class HearingsTelemetryService {
     if (
       !stored.caseId ||
       (route.caseId && route.caseId !== stored.caseId) ||
-      (route.hearingId && stored.hearingId && route.hearingId !== stored.hearingId) ||
-      (route.hearingId && !route.caseId && route.hearingId !== stored.hearingId)
+      (route.hearingId && (stored.hearingId || !route.caseId) && route.hearingId !== stored.hearingId)
     ) {
       return route;
     }

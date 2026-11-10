@@ -30,6 +30,7 @@ export abstract class RequestHearingPageFlow {
   ) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe((action: ACTION) => {
       this.actionNavigated = false;
+      // executeAction can call navigateAction, which sets actionNavigated to true.
       this.executeAction(action);
       if (
         !this.actionNavigated &&

@@ -1,5 +1,5 @@
-import { JudicialRefDataService } from './judicial-ref-data.service';
 import { of } from 'rxjs';
+import { JudicialRefDataService } from './judicial-ref-data.service';
 
 describe('Judicial RefData service', () => {
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);

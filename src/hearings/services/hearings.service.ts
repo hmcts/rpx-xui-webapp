@@ -210,8 +210,12 @@ export class HearingsService {
   }
 
   public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
+    const hearingId = hearingRequestMainModel.requestDetails?.hearingRequestID;
+    if (!hearingId) {
+      throw new Error('A hearing request ID is required to update a hearing request');
+    }
     const options = {
-      params: new HttpParams().set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID),
+      params: new HttpParams().set('hearingId', hearingId),
     };
     return this.observeErrors(
       'updateHearingRequest',
@@ -220,7 +224,7 @@ export class HearingsService {
         this.prepareHearingRequestModel(hearingRequestMainModel),
         options
       ),
-      { caseId: hearingRequestMainModel.caseDetails?.caseRef, hearingId: hearingRequestMainModel.requestDetails.hearingRequestID }
+      { caseId: hearingRequestMainModel.caseDetails?.caseRef, hearingId }
     );
   }
 

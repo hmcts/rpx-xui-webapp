@@ -1,6 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { HearingsTelemetryAction, HearingsTelemetryService, HearingsValidationCategory } from './hearings-telemetry.service';
 import { MonitoringService } from '../../app/services/logger/monitoring.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 describe('Hearings telemetry service', () => {
   let service: HearingsTelemetryService;

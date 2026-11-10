@@ -121,7 +121,7 @@
     "@azure/web-pubsub-client": "^1.0.4",
     "@dr.pogodin/csurf": "^1.17.1",
     "@edium/fsm": "^3.0.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.4.15-exui-2906-activity-tracker-web-pubsub-4",
+    "@hmcts/ccd-case-ui-toolkit": "7.4.15-exui-2906-activity-tracker-web-pubsub-5",
     "@hmcts/ccpay-web-component": "6.5.27",
     "@hmcts/media-viewer": "4.2.44",
     "@hmcts/nodejs-healthcheck": "^1.8.6",

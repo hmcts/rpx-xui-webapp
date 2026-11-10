@@ -43,7 +43,11 @@ describe('App Insights in-memory span integration', () => {
     await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
     const port = (server.address() as AddressInfo).port;
 
-    for (const path of ['/oauth2/callback?code=secret-auth-code&state=secret-state', '/health', '/assets/app.js?v=secret-cache']) {
+    for (const path of [
+      '/oauth2/callback?code=secret-auth-code&state=secret-state',
+      '/health',
+      '/assets/app.js?v=secret-cache',
+    ]) {
       await new Promise<void>((resolve, reject) => {
         http
           .get({ host: '127.0.0.1', port, path }, (response) => {

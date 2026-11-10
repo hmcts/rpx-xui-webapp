@@ -6,6 +6,7 @@ import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-h
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
+import { withTracingUnsuppressed } from './telemetryContext';
 import {
   APP_INSIGHTS_CONNECTION_STRING,
   APP_INSIGHTS_SAMPLING_PERCENTAGE,
@@ -244,10 +245,12 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
    * percentage is applied, as it was with the 2.x SDK.
    */
   const appInsightsSetup = applicationinsights.setup(connectionString);
+  // The 3.x compatibility client overwrites Azure Monitor's samplingRatio
+  // from this setting when start() parses its configuration.
+  applicationinsights.defaultClient.config.samplingPercentage = getConfigValue<number>(APP_INSIGHTS_SAMPLING_PERCENTAGE);
 
   appInsightsSetup.setAzureMonitorOptions({
     tracesPerSecond: 0,
-    samplingRatio: getConfigValue<number>(APP_INSIGHTS_SAMPLING_PERCENTAGE) / 100,
     spanProcessors: [healthStaticFilteringProcessor],
     instrumentationOptions: {
       http: {
@@ -264,7 +267,9 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     /*
      * Continue collecting useful application telemetry.
      */
-    .setAutoCollectRequests(true)
+    // Incoming requests are recorded by the middleware below. Keeping auto
+    // collection off prevents duplicates when runtime instrumentation succeeds.
+    .setAutoCollectRequests(false)
     .setAutoCollectDependencies(true)
     .setAutoCollectExceptions(true)
     .setAutoCollectPerformance(true, true)
@@ -301,11 +306,13 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
 }
 
 /**
- * Adds identity to the automatically instrumented incoming HTTP span.
- * Express provides direct access to the incoming request cookies while
- * the server span is active.
+ * Records incoming requests explicitly so telemetry does not depend on HTTP
+ * module patching in the deployed bundle. Identity is also added to any active
+ * span for correlation with outgoing telemetry.
  */
 export function appInsights(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
+  const startedAt = new Date();
+  const requestPath = _req.path || _req.url?.split(/[?#]/, 1)[0] || '/';
   const span = trace.getActiveSpan();
 
   if (span) {
@@ -324,7 +331,50 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
     }
   }
 
+  _res.once('finish', () => {
+    if (!client || shouldExcludeTelemetryPath(requestPath)) {
+      return;
+    }
+
+    try {
+      withTracingUnsuppressed(() => client.trackRequest(createIncomingRequestTelemetry(_req, _res, startedAt, new Date())));
+    } catch (error) {
+      console.warn('Failed to track incoming request telemetry', error);
+    }
+  });
+
   next();
+}
+
+export function createIncomingRequestTelemetry(
+  request: Pick<express.Request, 'headers' | 'method' | 'path' | 'protocol' | 'route' | 'get'>,
+  response: Pick<express.Response, 'statusCode'>,
+  startedAt: Date,
+  completedAt: Date
+) {
+  const requestPath = (request.path || '/').split(/[?#]/, 1)[0];
+  const host = request.get('host');
+  const routePath = typeof request.route?.path === 'string' ? request.route.path.split(/[?#]/, 1)[0] : requestPath;
+  const properties: Record<string, string> = { 'http.method': request.method };
+  const userId = readCookie(request.headers.cookie, getConfigValue(COOKIES_USER_ID));
+  const sessionId = readCookie(request.headers.cookie, getConfigValue(COOKIES_SESSION_ID));
+
+  if (userId) {
+    properties['enduser.pseudo.id'] = userId;
+  }
+  if (sessionId) {
+    properties['session.id'] = sessionId;
+  }
+
+  return {
+    duration: completedAt.getTime() - startedAt.getTime(),
+    name: `${request.method} ${routePath}`,
+    properties,
+    resultCode: String(response.statusCode),
+    success: response.statusCode < FAILED_REQUEST_STATUS_CODE_THRESHOLD,
+    time: startedAt,
+    url: host ? `${request.protocol}://${host}${requestPath}` : requestPath,
+  };
 }
 
 /**

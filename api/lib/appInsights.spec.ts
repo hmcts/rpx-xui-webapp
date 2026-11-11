@@ -24,6 +24,7 @@ describe('appInsights', () => {
 
       getActiveSpanStub = sinon.stub(trace, 'getActiveSpan').returns({
         setAttribute,
+        setAttributes: sinon.stub(),
       } as any);
     });
 

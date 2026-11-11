@@ -3,9 +3,12 @@
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
-      <a [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']" class="govuk-back-link">{{
-        'Back' | rpxTranslate
-      }}</a>
+      <a
+        (click)="recordBack()"
+        [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']"
+        class="govuk-back-link"
+        >{{ 'Back' | rpxTranslate }}</a
+      >
 
       <div class="govuk-grid-row">
         <xuilib-hmcts-error-summary

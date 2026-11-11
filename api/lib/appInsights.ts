@@ -6,6 +6,7 @@ import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-h
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 import { getConfigValue, showFeature } from '../configuration/';
+import { hearingsTelemetryProperties } from './hearings-telemetry-correlation';
 import { withTracingUnsuppressed } from './telemetryContext';
 import {
   APP_INSIGHTS_CONNECTION_STRING,
@@ -316,6 +317,7 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
   const span = trace.getActiveSpan();
 
   if (span) {
+    span.setAttributes(hearingsTelemetryProperties(_req));
     const cookieHeader = _req.headers.cookie;
 
     const userId = readCookie(cookieHeader, getConfigValue(COOKIES_USER_ID));
@@ -356,6 +358,7 @@ export function createIncomingRequestTelemetry(
   const host = request.get('host');
   const routePath = typeof request.route?.path === 'string' ? request.route.path.split(/[?#]/, 1)[0] : requestPath;
   const properties: Record<string, string> = { 'http.method': request.method };
+  Object.assign(properties, hearingsTelemetryProperties(request as express.Request));
   const userId = readCookie(request.headers.cookie, getConfigValue(COOKIES_USER_ID));
   const sessionId = readCookie(request.headers.cookie, getConfigValue(COOKIES_SESSION_ID));
 
@@ -387,7 +390,7 @@ export function trackTrace(trace: string, properties?: Record<string, unknown>):
   if (client) {
     client.trackTrace({
       message: trace,
-      properties,
+      properties: { ...properties, ...hearingsTelemetryProperties() },
     });
   }
 }

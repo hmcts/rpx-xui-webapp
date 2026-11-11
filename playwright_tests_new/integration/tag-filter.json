@@ -6,6 +6,7 @@
     "@integration-booking-ui",
     "@integration-case-details",
     "@integration-case-file-view",
+    "@integration-case-file-view-mock-session",
     "@integration-case-linking",
     "@integration-event-behaviour",
     "@integration-case-viewer",

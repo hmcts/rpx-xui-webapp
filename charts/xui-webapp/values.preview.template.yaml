@@ -2,6 +2,7 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
+    OTEL_SERVICE_NAME: Web
     LOGGING: debug
     NODE_TLS_REJECT_UNAUTHORIZED: 1
     SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
@@ -47,9 +48,9 @@ nodejs:
   autoscaling:
     enabled: false
   devmemoryRequests: 512Mi
-  devcpuRequests: 400m
+  devcpuRequests: 500m
   devmemoryLimits: 2Gi
-  devcpuLimits: 2
+  devcpuLimits: 1000m
   livenessTimeout: 15
   readinessTimeout: 15
   livenessFailureThreshold: 10

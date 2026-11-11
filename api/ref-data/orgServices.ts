@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_REF_API_URL } from '../configuration/references';
 import { http } from '../lib/http';
+import { trackTrace } from '../lib/appInsights';
 import { setHeaders } from '../lib/proxy';
 import * as log4jui from '../lib/log4jui';
 import { RefDataHMCTSService } from './models/ref-data-hmcts-service.model';
@@ -55,16 +56,19 @@ export async function fetchOrgServices(req: Request, query = ''): Promise<OrgSer
     if (status === 200 && Array.isArray(data)) {
       OrgServicesCache.setServices(result);
       logger.info('orgServices local cache stored after fresh API call');
+      trackTrace('orgServices local cache stored after fresh API call');
     }
   }
 
   if (!params.size || result.status !== 200 || !Array.isArray(result.data)) {
     logger.info('Returning unfiltered org services from cached:', result.data);
+    trackTrace(`Returning unfiltered org services from cached: ${JSON.stringify(result.data)}`);
     return result;
   }
   const filtered = filterServices(result.data, params);
   if (filtered?.length) {
     logger.info('Returning filtered org services from cached:', result.data);
+    trackTrace(`Returning filtered org services from cached: ${JSON.stringify(result.data)}`);
     return { status: result.status, data: filtered };
   }
   if (filtered && [...params.values()].filter((value) => value.trim()).length > 1) {
@@ -77,6 +81,7 @@ export async function fetchOrgServices(req: Request, query = ''): Promise<OrgSer
   // Preserve upstream validation and 404 responses (which trigger toolkit's fallback lookup).
   const { status, data } = await http.get<RefDataHMCTSService[]>(`${url}?${params.toString()}`, { headers });
   logger.info('Returning org services from upstream API call with status:', status, 'and data:', data);
+  trackTrace(`Returning org services from upstream API call with status: ${status} and data: ${JSON.stringify(data)}`);
   return { status, data };
 }
 
@@ -86,6 +91,7 @@ export async function getOrgServices(req: Request, res: Response, next: NextFunc
     const query = req.originalUrl.split('?').slice(1).join('?');
     const { status, data } = await fetchOrgServices(req, query);
     logger.info('Returning org services from toolkit:', data);
+    trackTrace(`Returning org services from toolkit: ${JSON.stringify(data)}`);
     res.status(status).send(data);
   } catch (error) {
     next(error);

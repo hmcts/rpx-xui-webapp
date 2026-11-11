@@ -4,6 +4,8 @@ import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { isHearingsTelemetryRequest } from '../lib/hearings-telemetry-correlation';
+import { traceHearingsDiagnostic } from '../hearings/hearings-telemetry';
 
 export const logger: JUILogger = log4jui.getLogger('crud-service');
 
@@ -33,7 +35,11 @@ export async function sendGet(
     };
     return await http.get(path, { headers });
   } catch (e) {
-    logger.error('sendGet: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
+    if (isHearingsTelemetryRequest(req)) {
+      traceHearingsDiagnostic('sendGet', 'failed', e);
+    } else {
+      logger.error('sendGet: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
+    }
     throw e;
   }
 }
@@ -57,7 +63,11 @@ export async function sendPost<T>(path: string, body: T, req: EnhancedRequest, n
     const headers = setHeaders(req);
     return await http.post(path, body, { headers });
   } catch (e) {
-    logger.error('sendPost: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
+    if (isHearingsTelemetryRequest(req)) {
+      traceHearingsDiagnostic('sendPost', 'failed', e);
+    } else {
+      logger.error('sendPost: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
+    }
     if (next) {
       next(e);
     } else {
@@ -107,7 +117,11 @@ export async function sendPut<T>(path: string, body: T, req: EnhancedRequest): P
     const headers = setHeaders(req);
     return await http.put(path, body, { headers });
   } catch (e) {
-    logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    if (isHearingsTelemetryRequest(req)) {
+      traceHearingsDiagnostic('sendPut', 'failed', e);
+    } else {
+      logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    }
     throw e;
   }
 }
@@ -140,7 +154,11 @@ export async function sendDelete<T>(path: string, body: T, req: EnhancedRequest)
       headers,
     });
   } catch (e) {
-    logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    if (isHearingsTelemetryRequest(req)) {
+      traceHearingsDiagnostic('sendDelete', 'failed', e);
+    } else {
+      logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    }
     throw e;
   }
 }

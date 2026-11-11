@@ -3,6 +3,7 @@ import { getConfigValue } from '../configuration';
 import { LOG4_J_CONFIG, LOGGING } from '../configuration/references';
 import { client } from './appInsights';
 import { JUILogger } from './models';
+import { withTracingUnsuppressed } from './telemetryContext';
 
 // the longest category length we have currently
 const maxCatLength = 14;
@@ -41,7 +42,11 @@ function debug(...messages: any[]) {
 
 function trackRequest(obj: any) {
   if (client) {
-    client.trackRequest(obj);
+    try {
+      withTracingUnsuppressed(() => client.trackRequest(obj));
+    } catch (error) {
+      this._logger.warn('Failed to track request telemetry', error);
+    }
   }
 }
 

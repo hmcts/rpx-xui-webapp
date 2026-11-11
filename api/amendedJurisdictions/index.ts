@@ -3,7 +3,6 @@ import { JURISDICTIONS } from '../configuration/references';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
 const caseworkerUidPlaceholder = /(\/caseworkers\/):uid(?=\/)/;
-const requestUrl = (req) => req.originalUrl ?? req.url;
 
 /**
  * Replace the UI route placeholder with the authenticated user's UID before
@@ -24,13 +23,12 @@ export const rewriteCaseworkerUid = (proxyReq, req) => {
  * to make available jurisdiction in filters array only
  */
 export const getJurisdictions = (data, req) => {
-  const url = requestUrl(req);
-  if (!Array.isArray(data) || !jurisdictions.test(url)) {
+  if (!Array.isArray(data) || !jurisdictions.test(req.url)) {
     return data;
   }
 
   const filters = getConfigValue(JURISDICTIONS);
-  const params = new URLSearchParams(url.split('?')[1]);
+  const params = new URLSearchParams(req.url.split('?')[1]);
   const access = params.get('access');
   const filtered = data.filter((o) => filters.includes(o.id));
 
@@ -55,11 +53,10 @@ export const getJurisdictions = (data, req) => {
  * Returns the cached jurisdictions array for the given access type, or undefined if not cached.
  */
 export const checkCachedJurisdictions = (proxyReq, req) => {
-  const url = requestUrl(req);
-  if (!jurisdictions.test(url)) {
+  if (!jurisdictions.test(req.url)) {
     return undefined;
   }
-  const params = new URLSearchParams(url.split('?')[1]);
+  const params = new URLSearchParams(req.url.split('?')[1]);
   const access = params.get('access');
   let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
   if (access === 'read') {

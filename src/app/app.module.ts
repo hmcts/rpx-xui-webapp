@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi, withXsrfConfiguration } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,9 +20,8 @@ import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { MetaReducer, Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { storeFreeze } from 'ngrx-store-freeze';
 import { LoggerModule, NGXLogger, NgxLoggerLevel, NGXLoggerMapperService } from 'ngx-logger';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import {
@@ -44,14 +43,19 @@ import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
 import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
+import { hearingsJourneyInterceptor } from '../hearings/services/hearings-journey.interceptor';
+import { HearingsPageTrackingService, initializeHearingsPageTracking } from './services/logger/hearings-page-tracking.service';
 import { SharedModule } from './shared/shared.module';
 import { effects } from './store/effects';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
 import { InitialisationSyncService } from './services/ccd-config/initialisation-sync-service';
-// enforces immutability
-export const metaReducers: MetaReducer<any>[] = !environment.production ? [storeFreeze] : [];
+
+export const STORE_RUNTIME_CHECKS = {
+  strictStateImmutability: true,
+  strictActionImmutability: true,
+};
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
@@ -70,7 +74,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     BrowserAnimationsModule,
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
-    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreModule.forRoot(reducers, {
+      runtimeChecks: STORE_RUNTIME_CHECKS,
+    }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
@@ -104,6 +110,12 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       multi: true,
     },
     MonitoringService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeHearingsPageTracking,
+      deps: [HearingsPageTrackingService],
+      multi: true,
+    },
     LoggerService,
     {
       provide: ErrorHandler,
@@ -123,6 +135,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     InitialisationSyncService,
     { provide: Window, useValue: window },
     provideHttpClient(
+      withInterceptors([hearingsJourneyInterceptor]),
       withInterceptorsFromDi(),
       withXsrfConfiguration({
         cookieName: 'XSRF-TOKEN',

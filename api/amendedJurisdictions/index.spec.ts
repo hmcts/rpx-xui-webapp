@@ -61,6 +61,17 @@ describe('Amended Jurisdiction', () => {
     expect(response).to.eql(expected);
   });
 
+  it('should filter jurisdictions when Express has stripped the mounted proxy path', () => {
+    const data = [{ id: 'PROBATE' }, { id: 'RANDOM' }];
+    req.originalUrl = '/aggregated/caseworkers/:uid/jurisdictions?access=read';
+    req.url = '/caseworkers/:uid/jurisdictions?access=read';
+
+    const response = amendedJurisdictions.getJurisdictions(data, req);
+
+    expect(response).to.eql([{ id: 'PROBATE' }]);
+    expect(req.session.readJurisdictions).to.eql([{ id: 'PROBATE' }]);
+  });
+
   it('should not filter jurisdictions for non-jurisdictions endpoint', () => {
     const expected = [
       {
@@ -131,6 +142,16 @@ describe('Amended Jurisdiction', () => {
       req.url = 'aggregated/caseworkers/123/jurisdictions?access=read';
       req.session.readJurisdictions = [{ id: 'PROBATE' }];
       const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
+      expect(result).to.eql([{ id: 'PROBATE' }]);
+    });
+
+    it('should use the original URL when Express has stripped the mounted proxy path', () => {
+      req.originalUrl = '/aggregated/caseworkers/123/jurisdictions?access=read';
+      req.url = '/caseworkers/123/jurisdictions?access=read';
+      req.session.readJurisdictions = [{ id: 'PROBATE' }];
+
+      const result = amendedJurisdictions.checkCachedJurisdictions(proxyReq, req);
+
       expect(result).to.eql([{ id: 'PROBATE' }]);
     });
 

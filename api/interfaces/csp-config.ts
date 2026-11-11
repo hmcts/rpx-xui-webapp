@@ -82,6 +82,7 @@ export const MC_CSP: Parameters<typeof csp>[0] = {
     //below is put in in case the WEBPUBSUB_URL double dot causes issues
     'wss://em-icp-webpubsub.platform.hmcts.net',
     process.env.WEBPUBSUB_URL || '',
+    process.env.ACTIVITY_WEBPUBSUB_URL || '',
     dynatraceBeaconOrigin || '',
   ].filter(Boolean),
 };

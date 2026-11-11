@@ -140,6 +140,33 @@ test.describe(
       });
     });
 
+    test('removes a collection row from check your answers and the submitted case', async ({ createCasePage, page }) => {
+      const people = createCasePage.additionalPeople;
+      await createCasePage.addNewPersonButton.first().click();
+      await createCasePage.addNewPersonButton.first().click();
+      await people.getByLabel('First Name (Optional)', { exact: true }).nth(0).fill('Remove Me');
+      await people.getByLabel('First Name (Optional)', { exact: true }).nth(1).fill('Keep Me');
+      const removeButtons = people.getByRole('button', { name: /Remove/ });
+      await expect(removeButtons).toHaveCount(2);
+
+      await removeButtons.first().click();
+      await page.locator('ccd-remove-dialog').getByRole('button', { name: 'Remove', exact: true }).click();
+      await expect(removeButtons).toHaveCount(1);
+      await expect(people.getByLabel('First Name (Optional)', { exact: true })).toHaveValue('Keep Me');
+
+      await createCasePage.fillDivorcePocSections({
+        data: { firstName: 'Primary', lastName: 'Person', gender: 'Male' },
+        textFields: { textField0: 'Collection retention', textField1: '', textField2: '', textField3: '' },
+      });
+      await expect(createCasePage.checkYourAnswers).toContainText('Keep Me');
+      await expect(createCasePage.checkYourAnswers).not.toContainText('Remove Me');
+
+      const request = (await submitCaseAndCaptureRequest(page, createCasePage)) as { data?: Record<string, unknown> };
+      expect(request.data?.People).toEqual([
+        expect.objectContaining({ value: expect.objectContaining({ FirstName: 'Keep Me' }) }),
+      ]);
+    });
+
     test(`Creating a case with hidden and omitted fields, shows the expected answers and JSON request body`, async ({
       createCasePage,
       caseDetailsPage,
@@ -208,9 +235,9 @@ test.describe(
 
       await test.step('Check the case tab Data, matches previously entered data (EXUI-848/EXUI-811/EXUI-433)', async () => {
         await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:${jurisdiction}/${caseType}/)?1234123412341234(?:$|#)`));
-        await caseDetailsPage.divorceDataTable.waitFor({ state: 'visible', timeout: 30_000 });
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible', timeout: 30_000 });
 
-        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
+        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.caseViewerTable);
         const expectedCaseGender = caseData.gender === 'Not given' ? caseData.gender : caseData.gender.toLowerCase();
         expect(table).toMatchObject({
           'Select your gender': expectedCaseGender,

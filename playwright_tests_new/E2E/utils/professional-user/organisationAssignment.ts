@@ -109,7 +109,7 @@ const logger = createLogger({
 const EXTERNAL_ASSIGNMENT_RETRY_DELAY_MS = 2_000;
 const DEFAULT_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 12;
 const MAX_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 20;
-const MANAGE_ORG_ASSIGNMENT_PRINCIPAL_ROLES = new Set(SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE['manage-org']);
+const MANAGE_ORG_ASSIGNMENT_PRINCIPAL_ROLES = new Set<string>(SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE['manage-org']);
 
 type RdModeAttemptOutcome =
   { kind: 'success'; result: OrganisationAssignmentResult } | { kind: 'retry' } | { kind: 'break-mode'; lastError: unknown };

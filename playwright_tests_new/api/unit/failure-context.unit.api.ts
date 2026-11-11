@@ -4,12 +4,17 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const contextModule = require('../../common/reporters/failure-context.cjs') as {
   buildFailureContext: (input: Record<string, unknown>) => Record<string, unknown>;
+  nextChecksFor: (classification: string) => string[];
   redactText: (value: unknown) => string;
   redactUrl: (value: string) => string;
   redactValue: (value: unknown) => unknown;
 };
 
 test.describe('failure context', { tag: '@svc-internal' }, () => {
+  test('suggests transport-focused checks for TLS network errors', () => {
+    expect(contextModule.nextChecksFor('NETWORK_ERROR')[0]).toContain('TLS/SSL, DNS, or connection failure');
+  });
+
   test('redacts query strings, credentials, case-like path segments and sensitive values', () => {
     expect(contextModule.redactUrl('https://xui.example/cases/1791906281904747?token=SECRET')).toBe(
       'https://xui.example/cases/:id'

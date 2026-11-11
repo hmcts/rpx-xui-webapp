@@ -10,6 +10,7 @@ import {
   QUERY_MANAGEMENT_CASE_TYPE,
   QUERY_MANAGEMENT_CONFIRMATION_HEADER,
   QUERY_MANAGEMENT_EXISTING_QUERY_ID,
+  QUERY_MANAGEMENT_EXISTING_RESPONSE_ID,
   QUERY_MANAGEMENT_FOLLOW_UP_DETAIL,
   QUERY_MANAGEMENT_FOLLOW_UP_MESSAGE_TYPE,
   QUERY_MANAGEMENT_JURISDICTION,
@@ -91,6 +92,7 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
         name: 'Query Solicitor',
         attachments: [],
       });
+      expect(queryMessage?.id).toBeTruthy();
       expect(queryMessage).not.toHaveProperty('isHmctsStaff');
     });
 
@@ -177,6 +179,9 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
         description: QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_NAME,
       });
       expect(submittedEvent.event_token).toBe(`mock-${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}-event-token`);
+      expect(queryCollection.caseMessages).toHaveLength(2);
+      expect(responseMessage?.id).toBeTruthy();
+      expect(responseMessage?.id).not.toBe(QUERY_MANAGEMENT_EXISTING_QUERY_ID);
       expect(responseMessage).toMatchObject({
         subject: QUERY_MANAGEMENT_QUERY_SUBJECT,
         body: QUERY_MANAGEMENT_RESPONSE_DETAIL,
@@ -196,6 +201,62 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
         },
       ]);
     });
+  });
+
+  test('allows a caseworker to close a query when responding from the Tasks tab', async ({
+    page,
+    caseDetailsPage,
+    queryManagementPage,
+  }) => {
+    const submissionCapture = await openCaseworkerRespondToQueryFromTasksTab(page, caseDetailsPage, queryManagementPage);
+
+    await queryManagementPage.responseDetailInput.fill(QUERY_MANAGEMENT_RESPONSE_DETAIL);
+    await queryManagementPage.closeQueryCheckbox.check();
+    await queryManagementPage.continueButton.click();
+
+    await expect(queryManagementPage.reviewQueryDetailsHeading).toContainText('Review query response details');
+    await expect(queryManagementPage.reviewSummaryValues.nth(2)).toContainText('I want to close this query');
+
+    const submitResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(`/data/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
+    );
+    const completeTaskResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes(`/workallocation/task/${QUERY_MANAGEMENT_RESPOND_TASK_ID}/complete`) &&
+        response.request().method() === 'POST'
+    );
+    await queryManagementPage.submitQuery();
+    await submitResponse;
+    await completeTaskResponse;
+
+    await expect(queryManagementPage.querySubmittedHeading).toContainText('Query response submitted');
+    expect(submissionCapture.submittedEvents).toHaveLength(1);
+    const submittedEvent = submissionCapture.submittedEvents[0];
+    const queryCollection = getQueryManagementSubmittedQueryCollection(submittedEvent);
+    const responseMessage = queryCollection.caseMessages?.find(
+      (message) => message.value?.parentId === QUERY_MANAGEMENT_EXISTING_QUERY_ID
+    )?.value;
+
+    expect(queryCollection.caseMessages).toHaveLength(2);
+    expect(submittedEvent.event?.id).toBe(QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID);
+    expect(responseMessage?.id).toBeTruthy();
+    expect(responseMessage?.id).not.toBe(QUERY_MANAGEMENT_EXISTING_QUERY_ID);
+    expect(responseMessage).toMatchObject({
+      body: QUERY_MANAGEMENT_RESPONSE_DETAIL,
+      parentId: QUERY_MANAGEMENT_EXISTING_QUERY_ID,
+      messageType: QUERY_MANAGEMENT_RESPOND_MESSAGE_TYPE,
+      isClosed: 'Yes',
+    });
+    expect(submissionCapture.completedTasks).toEqual([
+      {
+        taskId: QUERY_MANAGEMENT_RESPOND_TASK_ID,
+        body: {
+          actionByEvent: true,
+          eventName: QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_NAME,
+        },
+      },
+    ]);
   });
 
   test('allows a solicitor to raise a follow-up query from query details', async ({
@@ -250,6 +311,9 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
       });
       expect(submittedEvent.event_token).toBe(`mock-${QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID}-event-token`);
       expect(queryCollection.caseMessages).toHaveLength(3);
+      expect(followUpMessage?.id).toBeTruthy();
+      expect(followUpMessage?.id).not.toBe(QUERY_MANAGEMENT_EXISTING_QUERY_ID);
+      expect(followUpMessage?.id).not.toBe(QUERY_MANAGEMENT_EXISTING_RESPONSE_ID);
       expect(followUpMessage).toMatchObject({
         subject: QUERY_MANAGEMENT_QUERY_SUBJECT,
         body: QUERY_MANAGEMENT_FOLLOW_UP_DETAIL,

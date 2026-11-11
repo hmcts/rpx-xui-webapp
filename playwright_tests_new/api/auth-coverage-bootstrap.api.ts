@@ -7,6 +7,7 @@
 import { test, expect } from '@playwright/test';
 
 import { __test__ as authTest } from './utils/auth';
+import { AuthenticationError } from './utils/errors';
 import { withEnv } from './utils/testEnv';
 
 type FakeResponse = {
@@ -175,9 +176,39 @@ test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, ()
   test('labels unavailable login routes as a shared XUI authentication prerequisite', () => {
     expect(
       authTest.describeLoginRouteFailure({
+        status: statusFn(503),
         headers: () => ({ 'x-azure-ref': 'safe-gateway-reference' }),
       })
     ).toBe('XUI authentication route unavailable before IDAM form submission; gatewayRef=safe-gateway-reference');
+  });
+
+  test('rejects a login response without a text reader before submitting credentials', async () => {
+    const operations: string[] = [];
+    await expect(
+      authTest.createStorageStateViaForm(mockCredentials, 'state.json', 'solicitor', {
+        requestFactory: async () => ({
+          get: async (url) => {
+            operations.push(`get:${url}`);
+            return { status: statusFn(200) };
+          },
+          post: async () => {
+            operations.push('post');
+            return { status: statusFn(200) };
+          },
+          storageState: async () => {
+            operations.push('persist');
+          },
+          dispose: async () => {
+            operations.push('dispose');
+          },
+        }),
+      })
+    ).rejects.toMatchObject({
+      name: AuthenticationError.name,
+      message: 'Login page response has no text reader',
+      context: { role: 'solicitor', endpoint: 'auth/login', status: 200 },
+    });
+    expect(operations).toEqual(['get:auth/login', 'dispose']);
   });
 
   test('includes the selected login identity without exposing its password', () => {

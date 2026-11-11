@@ -1,0 +1,10 @@
+// Support the legacy GOV.UK path used by media-viewer with GOV.UK Frontend 5.
+@forward 'govuk-frontend/dist/govuk/base';
+@use 'govuk-frontend/dist/govuk/base' as govuk;
+
+// GOV.UK 5 renamed the media query mixin that media-viewer still uses.
+@mixin mq($from: null, $until: null, $and: null) {
+  @include govuk.govuk-media-query($from: $from, $until: $until, $and: $and) {
+    @content;
+  }
+}

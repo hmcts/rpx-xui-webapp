@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi, withXsrfConfiguration } from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -43,6 +43,8 @@ import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
 import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
+import { hearingsJourneyInterceptor } from '../hearings/services/hearings-journey.interceptor';
+import { HearingsPageTrackingService, initializeHearingsPageTracking } from './services/logger/hearings-page-tracking.service';
 import { SharedModule } from './shared/shared.module';
 import { effects } from './store/effects';
 // ngrx modules - END
@@ -108,6 +110,12 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       multi: true,
     },
     MonitoringService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeHearingsPageTracking,
+      deps: [HearingsPageTrackingService],
+      multi: true,
+    },
     LoggerService,
     {
       provide: ErrorHandler,
@@ -127,6 +135,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     InitialisationSyncService,
     { provide: Window, useValue: window },
     provideHttpClient(
+      withInterceptors([hearingsJourneyInterceptor]),
       withInterceptorsFromDi(),
       withXsrfConfiguration({
         cookieName: 'XSRF-TOKEN',

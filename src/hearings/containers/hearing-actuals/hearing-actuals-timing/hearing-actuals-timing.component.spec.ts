@@ -37,7 +37,11 @@ const mockActivatedRoute = {
 };
 
 describe('HearingActualsTimingComponent', () => {
-  const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
+  const hearingsService = jasmine.createSpyObj('HearingsService', [
+    'updateHearingActuals',
+    'recordAction',
+    'recordValidationFailure',
+  ]);
   let store: Store<any>;
   let component: HearingActualsTimingComponent;
   let fixture: ComponentFixture<HearingActualsTimingComponent>;
@@ -201,7 +205,11 @@ describe('HearingActualsTimingComponent', () => {
 });
 
 describe('HearingActualsTimingComponent', () => {
-  const hearingsService = jasmine.createSpyObj('HearingsService', ['updateHearingActuals']);
+  const hearingsService = jasmine.createSpyObj('HearingsService', [
+    'updateHearingActuals',
+    'recordAction',
+    'recordValidationFailure',
+  ]);
 
   let store: Store<any>;
   let component: HearingActualsTimingComponent;

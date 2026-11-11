@@ -162,6 +162,7 @@ export const servicesMap: { [key: string]: string } = {
   PUBLICLAW: 'Public Law',
   EMPLOYMENT: 'Employment',
   PCS: 'Mortgage and Landlord Possession Claims',
+  DIVORCE: 'Divorce',
 };
 
 export function getOptions(taskRoles: TaskRole[], sessionStorageService: SessionStorageService): OptionsModel[] {

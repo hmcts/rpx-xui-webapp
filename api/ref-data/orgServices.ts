@@ -54,7 +54,7 @@ export async function fetchOrgServices(req: Request, query = ''): Promise<OrgSer
     if (status === 200 && Array.isArray(data)) {
       OrgServicesCache.setServices(result);
       trackTrace(
-        'Organisation services: fetched the full list from the Location Reference API and stored it in the application cache'
+        'Organisation services: freshly fetched the full list from the Location Reference API and stored it in the application cache'
       );
     }
   }

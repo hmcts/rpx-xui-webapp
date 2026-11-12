@@ -4,12 +4,9 @@ import { SERVICES_LOCATION_REF_API_URL } from '../configuration/references';
 import { http } from '../lib/http';
 import { trackTrace } from '../lib/appInsights';
 import { setHeaders } from '../lib/proxy';
-import * as log4jui from '../lib/log4jui';
 import { RefDataHMCTSService } from './models/ref-data-hmcts-service.model';
 
 import { OrgServicesCache, OrgServicesResponse } from './orgServicesCache';
-
-const logger = log4jui.getLogger('orgServicesCache');
 
 /** Filter a full response; leave validation and unmatched lookups to the upstream API. */
 function filterServices(data: RefDataHMCTSService[], params: URLSearchParams): RefDataHMCTSService[] | undefined {
@@ -50,25 +47,29 @@ export async function fetchOrgServices(req: Request, query = ''): Promise<OrgSer
   const params = new URLSearchParams(query);
   const headers = setHeaders(req);
   let result = OrgServicesCache.getServices();
+  const cacheHit = !!result;
   if (!result) {
     const { status, data } = await http.get<RefDataHMCTSService[]>(url, { headers });
     result = { status, data };
     if (status === 200 && Array.isArray(data)) {
       OrgServicesCache.setServices(result);
-      logger.info('orgServices local cache stored after fresh API call');
-      trackTrace('orgServices local cache stored after fresh API call');
+      trackTrace(
+        'Organisation services: fetched the full list from the Location Reference API and stored it in the application cache'
+      );
     }
   }
 
   if (!params.size || result.status !== 200 || !Array.isArray(result.data)) {
-    logger.info('Returning unfiltered org services from cached:', result.data);
-    trackTrace(`Returning unfiltered org services from cached: ${JSON.stringify(result.data)}`);
+    if (cacheHit) {
+      trackTrace('Organisation services: returning the full list from the application cache without an upstream API call');
+    }
     return result;
   }
   const filtered = filterServices(result.data, params);
   if (filtered?.length) {
-    logger.info('Returning filtered org services from cached:', result.data);
-    trackTrace(`Returning filtered org services from cached: ${JSON.stringify(result.data)}`);
+    if (cacheHit) {
+      trackTrace('Organisation services: returning matching services from the application cache without an upstream API call');
+    }
     return { status: result.status, data: filtered };
   }
   if (filtered && [...params.values()].filter((value) => value.trim()).length > 1) {
@@ -80,8 +81,11 @@ export async function fetchOrgServices(req: Request, query = ''): Promise<OrgSer
   }
   // Preserve upstream validation and 404 responses (which trigger toolkit's fallback lookup).
   const { status, data } = await http.get<RefDataHMCTSService[]>(`${url}?${params.toString()}`, { headers });
-  logger.info('Returning org services from upstream API call with status:', status, 'and data:', data);
-  trackTrace(`Returning org services from upstream API call with status: ${status} and data: ${JSON.stringify(data)}`);
+  if (cacheHit) {
+    trackTrace(
+      'Organisation services: returning the Location Reference API response after forwarding query filters for validation or lookup'
+    );
+  }
   return { status, data };
 }
 
@@ -90,8 +94,6 @@ export async function getOrgServices(req: Request, res: Response, next: NextFunc
   try {
     const query = req.originalUrl.split('?').slice(1).join('?');
     const { status, data } = await fetchOrgServices(req, query);
-    logger.info('Returning org services from toolkit:', data);
-    trackTrace(`Returning org services from toolkit: ${JSON.stringify(data)}`);
     res.status(status).send(data);
   } catch (error) {
     next(error);

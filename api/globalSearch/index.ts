@@ -4,6 +4,7 @@ import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { GLOBAL_SEARCH_SERVICES, SERVICES_CCD_DATA_STORE_API_PATH } from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
+import { trackTrace } from '../lib/appInsights';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 import { toTitleCase } from '../utils';
@@ -19,6 +20,7 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
   try {
     // Return global search services from session if available
     if (req.session.globalSearchServices && req.session.globalSearchServices.length !== 0) {
+      trackTrace('Search menu: returning the service dropdown list from the user session cache without an upstream API call');
       return res.json(req.session.globalSearchServices);
     }
 

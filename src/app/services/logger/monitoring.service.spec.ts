@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import type { IConfiguration } from '@microsoft/applicationinsights-web';
 import { of, Subject, throwError } from 'rxjs';
-import { MonitoringService } from './monitoring.service';
+import { MonitorConfig, MonitoringService } from './monitoring.service';
 
 describe('Monitoring service', () => {
   const connectionString = 'InstrumentationKey=dummy';
@@ -280,19 +281,21 @@ describe('Monitoring service', () => {
     service.logEvent('initialize');
     service.enableCookies();
     expect(appInsights.getCookieMgr().setEnabled).toHaveBeenCalledWith(true);
-    expect(appInsights.updateCfg).toHaveBeenCalledWith({
+    const enabledConfig: IConfiguration & MonitorConfig = {
       cookieCfg: { enabled: true },
       isStorageUseDisabled: false,
       enableSessionStorageBuffer: true,
-    });
+    };
+    expect(appInsights.updateCfg).toHaveBeenCalledWith(enabledConfig);
     service.disableCookies();
     expect(service.areCookiesEnabled).toBeFalse();
     expect(appInsights.getCookieMgr().setEnabled).toHaveBeenCalledWith(false);
-    expect(appInsights.updateCfg).toHaveBeenCalledWith({
+    const disabledConfig: IConfiguration & MonitorConfig = {
       cookieCfg: { enabled: false },
       isStorageUseDisabled: true,
       enableSessionStorageBuffer: false,
-    });
+    };
+    expect(appInsights.updateCfg).toHaveBeenCalledWith(disabledConfig);
     expect(createAppInsights).toHaveBeenCalledTimes(1);
   });
 

@@ -1,4 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, NavigationEnd, Router } from '@angular/router';
@@ -28,8 +29,33 @@ import { LovRefDataService } from '../../../hearings/services/lov-ref-data.servi
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingsTelemetryService } from '../../../hearings/services/hearings-telemetry.service';
 
 describe('CaseHearingsComponent', () => {
+  it('records a retry without changing reload dispatches, including when telemetry fails', () => {
+    const telemetry = jasmine.createSpyObj<HearingsTelemetryService>('telemetry', ['recordAction']);
+    const reloader = Object.create(CaseHearingsComponent.prototype) as CaseHearingsComponent;
+    const store = jasmine.createSpyObj('store', ['dispatch']);
+    const load = jasmine.createSpy('loadHearingsForCurrentCase');
+    Object.assign(reloader, {
+      telemetry,
+      hearingStore: store,
+      loadHearingsForCurrentCase: load,
+      jurisdiction: 'CIVIL',
+      caseId: 'case-a',
+      caseType: 'CIVIL',
+    });
+    reloader.reloadHearings();
+    expect(telemetry.recordAction).toHaveBeenCalledOnceWith('retry');
+    expect(load).toHaveBeenCalledTimes(1);
+    expect(store.dispatch).toHaveBeenCalledOnceWith(
+      new fromHearingStore.LoadHearingValues({ jurisdictionId: 'CIVIL', caseReference: 'case-a', caseType: 'CIVIL' })
+    );
+    telemetry.recordAction.and.throwError('Telemetry unavailable');
+    expect(() => reloader.reloadHearings()).not.toThrow();
+    expect(load).toHaveBeenCalledTimes(2);
+    expect(store.dispatch).toHaveBeenCalledTimes(2);
+  });
   let component: CaseHearingsComponent;
   let fixture: ComponentFixture<CaseHearingsComponent>;
   let mockStore: Store<fromHearingStore.State>;
@@ -455,9 +481,10 @@ describe('CaseHearingsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule],
+      imports: [CommonModule, RouterTestingModule],
       providers: [
         LoadingService,
+        { provide: HearingsTelemetryService, useValue: jasmine.createSpyObj('telemetry', ['recordAction']) },
         provideMockStore({ initialState }),
         {
           provide: Router,

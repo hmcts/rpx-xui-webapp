@@ -133,7 +133,11 @@ describe('CancelHearingComponent', () => {
   });
 
   it('should not call cancelHearingRequest when executeAction is called with a valid form', () => {
+    spyOn(hearingsService, 'recordAction');
+    spyOn(hearingsService, 'recordValidationFailure');
     component.executeContinue();
+    expect(hearingsService.recordAction).toHaveBeenCalledOnceWith('submit');
+    expect(hearingsService.recordValidationFailure).toHaveBeenCalledOnceWith('form', 1);
     expect(mockHearingService.cancelHearingRequest).not.toHaveBeenCalled();
   });
 
@@ -203,9 +207,11 @@ describe('CancelHearingComponent', () => {
   });
 
   it('should reset cancelActioned to false when cancelHearingRequest fails', () => {
+    spyOn(hearingsService, 'recordValidationFailure');
     (component.hearingCancelForm.controls.reasons as FormArray).controls.forEach((reason) => (reason.value.selected = true));
     hearingsService.cancelHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.executeContinue();
+    expect(hearingsService.recordValidationFailure).not.toHaveBeenCalled();
     expect(component.cancelActioned).toBe(false);
   });
 

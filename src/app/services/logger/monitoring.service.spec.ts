@@ -12,8 +12,10 @@ describe('Monitoring service', () => {
 
   beforeEach(() => {
     http = jasmine.createSpyObj('HttpClient', ['get']);
-    http.get.and.returnValue(of({ connectionString }));
+    http.get.and.returnValue(of({ enabled: true, connectionString }));
     appInsights = jasmine.createSpyObj('ApplicationInsights', [
+      'getCookieMgr',
+      'updateCfg',
       'loadAppInsights',
       'addTelemetryInitializer',
       'trackEvent',
@@ -21,6 +23,7 @@ describe('Monitoring service', () => {
       'trackException',
       'trackMetric',
     ]);
+    appInsights.getCookieMgr.and.returnValue({ setEnabled: jasmine.createSpy('setEnabled') } as any);
     service = new MonitoringService(http);
     createAppInsights = spyOn<any>(service, 'createAppInsights').and.returnValue(appInsights);
   });
@@ -65,7 +68,7 @@ describe('Monitoring service', () => {
   });
 
   it('should share one initialization across concurrent telemetry calls and reuse it afterwards', () => {
-    const response = new Subject<{ connectionString: string }>();
+    const response = new Subject<{ enabled: boolean; connectionString: string }>();
     http.get.and.returnValue(response);
     const exception = new Error('Test failure');
     service.logEvent('Hearings.JourneyStarted');
@@ -76,7 +79,7 @@ describe('Monitoring service', () => {
     expect(appInsights.trackEvent).not.toHaveBeenCalled();
     expect(appInsights.trackPageView).not.toHaveBeenCalled();
     expect(appInsights.trackException).not.toHaveBeenCalled();
-    response.next({ connectionString });
+    response.next({ enabled: true, connectionString });
     response.complete();
     service.logEvent('Hearings.Action');
     expect(createAppInsights).toHaveBeenCalledTimes(1);
@@ -162,12 +165,12 @@ describe('Monitoring service', () => {
   });
 
   it('should retain the measured page start time when SDK initialization is delayed', () => {
-    const response = new Subject<{ connectionString: string }>();
+    const response = new Subject<{ enabled: boolean; connectionString: string }>();
     http.get.and.returnValue(response);
     const clock = spyOn(Date, 'now').and.returnValue(10000);
     service.logPageView('Hearings: /hearings/request', '/hearings/request', undefined, undefined, 5000);
     clock.and.returnValue(20000);
-    response.next({ connectionString });
+    response.next({ enabled: true, connectionString });
     expect(appInsights.trackPageView.calls.first().args[0].startTime.getTime()).toBe(5000);
     expect(appInsights.trackPageView.calls.first().args[0].properties.duration).toBe(5000);
   });
@@ -178,13 +181,13 @@ describe('Monitoring service', () => {
       connectionString,
       isCookieUseDisabled: true,
       isStorageUseDisabled: true,
-      enableSessionStorageBuffer: true,
+      enableSessionStorageBuffer: false,
     });
   });
 
   [0, 25, 100].forEach((samplingPercentage) => {
     it(`should preserve environment-configured sampling of ${samplingPercentage} with shared initialization`, () => {
-      http.get.and.returnValue(of({ connectionString, samplingPercentage }));
+      http.get.and.returnValue(of({ enabled: true, connectionString, samplingPercentage }));
       service.logEvent('Hearings.Action');
       service.logException(new Error('Test failure'));
       expect(createAppInsights).toHaveBeenCalledOnceWith({
@@ -192,7 +195,7 @@ describe('Monitoring service', () => {
         samplingPercentage,
         isCookieUseDisabled: true,
         isStorageUseDisabled: true,
-        enableSessionStorageBuffer: true,
+        enableSessionStorageBuffer: false,
       });
       expect(http.get).toHaveBeenCalledTimes(1);
       expect(appInsights.loadAppInsights).toHaveBeenCalledTimes(1);
@@ -202,17 +205,17 @@ describe('Monitoring service', () => {
   });
 
   it('should respect cookies enabled before initialization completes', () => {
-    const response = new Subject<{ connectionString: string }>();
+    const response = new Subject<{ enabled: boolean; connectionString: string }>();
     http.get.and.returnValue(response);
     service.logEvent('Hearings.Action');
     service.enableCookies();
-    response.next({ connectionString });
+    response.next({ enabled: true, connectionString });
     expect(service.areCookiesEnabled).toBeTrue();
     expect(createAppInsights).toHaveBeenCalledOnceWith({ connectionString });
   });
 
   it('should safely drop queued and later telemetry when the configuration request fails', () => {
-    const response = new Subject<{ connectionString: string }>();
+    const response = new Subject<{ enabled: boolean; connectionString: string }>();
     http.get.and.returnValue(response);
     service.logEvent('Hearings.Action');
     service.logPageView('Hearings');
@@ -271,5 +274,46 @@ describe('Monitoring service', () => {
     expect(appInsights.trackPageView).toHaveBeenCalledTimes(1);
     expect(appInsights.loadAppInsights).toHaveBeenCalledTimes(1);
     expect(http.get).toHaveBeenCalledTimes(1);
+  });
+
+  it('should apply acceptance and rejection to an already initialized SDK', () => {
+    service.logEvent('initialize');
+    service.enableCookies();
+    expect(appInsights.getCookieMgr().setEnabled).toHaveBeenCalledWith(true);
+    expect(appInsights.updateCfg).toHaveBeenCalledWith({
+      cookieCfg: { enabled: true },
+      isStorageUseDisabled: false,
+      enableSessionStorageBuffer: true,
+    });
+    service.disableCookies();
+    expect(service.areCookiesEnabled).toBeFalse();
+    expect(appInsights.getCookieMgr().setEnabled).toHaveBeenCalledWith(false);
+    expect(appInsights.updateCfg).toHaveBeenCalledWith({
+      cookieCfg: { enabled: false },
+      isStorageUseDisabled: true,
+      enableSessionStorageBuffer: false,
+    });
+    expect(createAppInsights).toHaveBeenCalledTimes(1);
+  });
+
+  it('should retain rejection while initialization is in flight', () => {
+    const response = new Subject<{ enabled: boolean; connectionString: string }>();
+    http.get.and.returnValue(response);
+    service.enableCookies();
+    service.logEvent('initialize');
+    service.disableCookies();
+    response.next({ enabled: true, connectionString });
+    expect(createAppInsights).toHaveBeenCalledWith(jasmine.objectContaining({ isCookieUseDisabled: true }));
+  });
+
+  [false, undefined].forEach((enabled) => {
+    it(`should drop telemetry unless explicitly enabled (${enabled})`, () => {
+      http.get.and.returnValue(of({ enabled, connectionString }));
+      service.logEvent('disabled');
+      service.logException(new Error('disabled'));
+      expect(createAppInsights).not.toHaveBeenCalled();
+      expect(appInsights.trackEvent).not.toHaveBeenCalled();
+      expect(appInsights.trackException).not.toHaveBeenCalled();
+    });
   });
 });

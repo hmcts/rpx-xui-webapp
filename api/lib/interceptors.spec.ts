@@ -115,7 +115,7 @@ describe('interceptors', () => {
       getLoggerStub.restore();
     });
 
-    it('Should track successful outbound response status as a string resultCode', () => {
+    it('should leave successful outbound telemetry to dependency instrumentation', () => {
       const trackRequest = sinon.spy();
       const getLoggerStub = sinon.stub(log4jui, 'getLogger').returns({
         info: sinon.spy(),
@@ -124,20 +124,7 @@ describe('interceptors', () => {
 
       successInterceptor(response);
 
-      expect(trackRequest).to.have.been.calledOnce;
-      expect(trackRequest.firstCall.args[0]).to.include({
-        name: 'Service POST call',
-        resultCode: '200',
-        success: true,
-      });
-      expect(trackRequest.firstCall.args[0]).not.to.have.property('url');
-      expect(trackRequest.firstCall.args[0].properties).to.include({
-        'http.host': 'test2.com',
-        'http.method': 'POST',
-        'http.scheme': 'http',
-        'http.status_code': '200',
-        'http.target': '/',
-      });
+      expect(trackRequest).not.to.have.been.called;
       getLoggerStub.restore();
     });
   });
@@ -162,7 +149,7 @@ describe('interceptors', () => {
       });
     });
 
-    it('Should track failed outbound response status as a string resultCode', async () => {
+    it('should leave failed outbound telemetry to dependency instrumentation', async () => {
       const trackRequest = sinon.spy();
       const getLoggerStub = sinon.stub(log4jui, 'getLogger').returns({
         error: sinon.spy(),
@@ -185,20 +172,7 @@ describe('interceptors', () => {
 
       await errorInterceptor(failedRequest).catch(() => undefined);
 
-      expect(trackRequest).to.have.been.calledOnce;
-      expect(trackRequest.firstCall.args[0]).to.include({
-        name: 'Service GET call',
-        resultCode: '403',
-        success: false,
-      });
-      expect(trackRequest.firstCall.args[0]).not.to.have.property('url');
-      expect(trackRequest.firstCall.args[0].properties).to.include({
-        'http.host': 'test.com',
-        'http.method': 'GET',
-        'http.scheme': 'http',
-        'http.status_code': '403',
-        'http.target': '/',
-      });
+      expect(trackRequest).not.to.have.been.called;
       getLoggerStub.restore();
     });
   });

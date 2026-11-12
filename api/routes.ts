@@ -7,6 +7,7 @@ import {
   APP_INSIGHTS_CONNECTION_STRING,
   APP_INSIGHTS_KEY,
   APP_INSIGHTS_SAMPLING_PERCENTAGE,
+  FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_DOCS_ENABLED,
 } from './configuration/references';
 import docsRouter from './docs/routes';
@@ -30,12 +31,20 @@ const router = express.Router({ mergeParams: true });
 
 router.use('/healthCheck', healthCheck);
 
-router.get('/monitoring-tools', (req, res) => {
-  res.send({
+export function getMonitoringConfig() {
+  if (!showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
+    return { enabled: false };
+  }
+  return {
+    enabled: true,
     key: getConfigValue(APP_INSIGHTS_KEY),
     connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING),
     samplingPercentage: getConfigValue<number>(APP_INSIGHTS_SAMPLING_PERCENTAGE),
-  });
+  };
+}
+
+router.get('/monitoring-tools', (req, res) => {
+  res.send(getMonitoringConfig());
 });
 
 router.get('/configuration', (req, res) => {

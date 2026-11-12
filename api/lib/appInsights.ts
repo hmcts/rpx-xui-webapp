@@ -1,7 +1,7 @@
 import * as applicationinsights from 'applicationinsights';
 import type * as express from 'express';
 
-import { Span, SpanKind, SpanStatusCode, TraceFlags, trace } from '@opentelemetry/api';
+import { context, propagation, ROOT_CONTEXT, Span, SpanKind, SpanStatusCode, TraceFlags, trace } from '@opentelemetry/api';
 import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
@@ -268,9 +268,9 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     /*
      * Continue collecting useful application telemetry.
      */
-    // Incoming requests are recorded by the middleware below. Keeping auto
-    // collection off prevents duplicates when runtime instrumentation succeeds.
-    .setAutoCollectRequests(false)
+    // Keep the incoming context active so dependencies and logs share its trace.
+    // The middleware only creates a span when HTTP instrumentation is unavailable.
+    .setAutoCollectRequests(true)
     .setAutoCollectDependencies(true)
     .setAutoCollectExceptions(true)
     .setAutoCollectPerformance(true, true)
@@ -307,14 +307,28 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
 }
 
 /**
- * Records incoming requests explicitly so telemetry does not depend on HTTP
- * module patching in the deployed bundle. Identity is also added to any active
- * span for correlation with outgoing telemetry.
+ * Enrich the instrumented request, or establish a request context when HTTP
+ * module patching is unavailable. Only the owner of a span ends it.
  */
 export function appInsights(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
   const startedAt = new Date();
   const requestPath = _req.path || _req.url?.split(/[?#]/, 1)[0] || '/';
-  const span = trace.getActiveSpan();
+  let span = trace.getActiveSpan();
+  let requestContext = context.active();
+  let ownsSpan = false;
+
+  if (!span && client && !shouldExcludeTelemetryPath(requestPath)) {
+    requestContext = propagation.extract(ROOT_CONTEXT, _req.headers);
+    span = withTracingUnsuppressed(() =>
+      trace
+        .getTracer('exui.incoming-requests')
+        .startSpan(`${_req.method} ${requestPath}`, { kind: SpanKind.SERVER, startTime: startedAt }, requestContext)
+    );
+    ownsSpan = true;
+    // Capture the URL before mounted routers can rewrite request.url.
+    sanitizeIncomingServerSpanUrl(span, _req, _res);
+    span.setAttribute('http.method', _req.method);
+  }
 
   if (span) {
     span.setAttributes(hearingsTelemetryProperties(_req));
@@ -333,51 +347,29 @@ export function appInsights(_req: express.Request, _res: express.Response, next:
     }
   }
 
-  _res.once('finish', () => {
-    if (!client || shouldExcludeTelemetryPath(requestPath)) {
-      return;
-    }
+  if (ownsSpan) {
+    let ended = false;
+    const finish = () => {
+      if (ended) {
+        return;
+      }
+      ended = true;
+      span.setAttribute('http.status_code', _res.statusCode);
+      span.setStatus({
+        code:
+          !_res.writableFinished || _res.statusCode >= FAILED_REQUEST_STATUS_CODE_THRESHOLD
+            ? SpanStatusCode.ERROR
+            : SpanStatusCode.OK,
+      });
+      span.end();
+    };
+    _res.once('finish', finish);
+    _res.once('close', finish);
 
-    try {
-      withTracingUnsuppressed(() => client.trackRequest(createIncomingRequestTelemetry(_req, _res, startedAt, new Date())));
-    } catch (error) {
-      console.warn('Failed to track incoming request telemetry', error);
-    }
-  });
-
-  next();
-}
-
-export function createIncomingRequestTelemetry(
-  request: Pick<express.Request, 'headers' | 'method' | 'path' | 'protocol' | 'route' | 'get'>,
-  response: Pick<express.Response, 'statusCode'>,
-  startedAt: Date,
-  completedAt: Date
-) {
-  const requestPath = (request.path || '/').split(/[?#]/, 1)[0];
-  const host = request.get('host');
-  const routePath = typeof request.route?.path === 'string' ? request.route.path.split(/[?#]/, 1)[0] : requestPath;
-  const properties: Record<string, string> = { 'http.method': request.method };
-  Object.assign(properties, hearingsTelemetryProperties(request as express.Request));
-  const userId = readCookie(request.headers.cookie, getConfigValue(COOKIES_USER_ID));
-  const sessionId = readCookie(request.headers.cookie, getConfigValue(COOKIES_SESSION_ID));
-
-  if (userId) {
-    properties['enduser.pseudo.id'] = userId;
+    withTracingUnsuppressed(() => context.with(trace.setSpan(requestContext, span), next));
+  } else {
+    next();
   }
-  if (sessionId) {
-    properties['session.id'] = sessionId;
-  }
-
-  return {
-    duration: completedAt.getTime() - startedAt.getTime(),
-    name: `${request.method} ${routePath}`,
-    properties,
-    resultCode: String(response.statusCode),
-    success: response.statusCode < FAILED_REQUEST_STATUS_CODE_THRESHOLD,
-    time: startedAt,
-    url: host ? `${request.protocol}://${host}${requestPath}` : requestPath,
-  };
 }
 
 /**

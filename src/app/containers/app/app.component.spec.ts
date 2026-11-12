@@ -29,7 +29,7 @@ describe('AppComponent', () => {
     ]);
     featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue', 'initialize']);
     cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch', 'checkCookie']);
-    loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies', 'log']);
+    loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies', 'disableCookies', 'log']);
     authService = jasmine.createSpyObj('AuthService', ['keepAlive', 'loginRedirect']);
     authService.keepAlive.and.returnValue(of(true));
     environmentService = jasmine.createSpyObj('environmentService', ['config$']);
@@ -338,6 +338,7 @@ describe('AppComponent', () => {
     describe('notifyRejection()', () => {
       it('should make a call to cookieService', () => {
         appComponent.notifyRejection();
+        expect(loggerService.disableCookies).toHaveBeenCalled();
         expect(cookieService.deleteCookieByPartialMatch).toHaveBeenCalled();
       });
     });

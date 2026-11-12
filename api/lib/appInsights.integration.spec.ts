@@ -1,6 +1,7 @@
 import * as http from 'http';
 import { AddressInfo } from 'net';
-import { trace, SpanKind, SpanStatusCode } from '@opentelemetry/api';
+import { EventEmitter } from 'events';
+import { context, propagation, ROOT_CONTEXT, trace, SpanKind, SpanStatusCode, TraceFlags } from '@opentelemetry/api';
 import { InMemorySpanExporter, NodeTracerProvider, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-node';
 import { TelemetryClient } from 'applicationinsights';
 import { expect } from 'chai';
@@ -65,7 +66,7 @@ describe('App Insights in-memory span integration', () => {
     expect(spans[0].name).to.equal('GET /oauth2/callback');
     expect(spans[0].kind).to.equal(SpanKind.SERVER);
     expect(spans[0].status.code).to.equal(SpanStatusCode.ERROR);
-    expect(spans[0].attributes['http.status_code']).to.equal('403');
+    expect(spans[0].attributes['http.status_code']).to.equal(403);
     expect(spans[0].attributes['http.url']).to.equal(`http://127.0.0.1:${port}/oauth2/callback`);
     expect(JSON.stringify(spans[0].attributes)).not.to.include('secret-auth-code');
     expect(JSON.stringify(spans[0].attributes)).not.to.include('secret-state');
@@ -110,5 +111,64 @@ describe('App Insights in-memory span integration', () => {
     expect(attributes['http.request.query']).to.equal('');
     expect(Object.values(attributes).join(' ')).not.to.include('secret-auth-code');
     expect(Object.values(attributes).join(' ')).not.to.include('secret-state');
+  });
+
+  it('keeps the incoming parent and makes a fallback server span available to route processing', async () => {
+    const traceId = 'a'.repeat(32);
+    const parentSpanId = 'b'.repeat(16);
+    sandbox.stub(trace, 'getActiveSpan').returns(undefined);
+    sandbox.stub(propagation, 'extract').returns(
+      trace.setSpanContext(ROOT_CONTEXT, {
+        traceId,
+        spanId: parentSpanId,
+        traceFlags: TraceFlags.SAMPLED,
+        isRemote: true,
+      })
+    );
+    const withContext = sandbox.spy(context, 'with');
+    const response = Object.assign(new EventEmitter(), {
+      setHeader: () => undefined,
+      statusCode: 200,
+      writableFinished: true,
+    });
+    const request = {
+      method: 'GET',
+      path: '/api/example',
+      url: '/api/example?secret=redacted',
+      headers: { host: 'example.test' },
+    };
+    telemetry.appInsights(request as any, response as any, () => {
+      const routeContext = withContext.lastCall.args[0];
+      const requestSpan = trace.getSpan(routeContext);
+      expect(requestSpan).not.to.equal(undefined);
+      expect(requestSpan.spanContext().traceId).to.equal(traceId);
+      const dependency = provider.getTracer('route').startSpan('downstream', { kind: SpanKind.CLIENT }, routeContext);
+      dependency.end();
+    });
+    response.emit('finish');
+    response.emit('close');
+    await provider.forceFlush();
+    const spans = exporter.getFinishedSpans();
+    const serverSpan = spans.find((span) => span.kind === SpanKind.SERVER);
+    const dependency = spans.find((span) => span.kind === SpanKind.CLIENT);
+    expect(spans).to.have.length(2);
+    expect(serverSpan.parentSpanContext.spanId).to.equal(parentSpanId);
+    expect(dependency.parentSpanContext.spanId).to.equal(serverSpan.spanContext().spanId);
+    expect(serverSpan.attributes['http.url']).to.equal('http://example.test/api/example');
+  });
+
+  it('enriches an instrumented request without creating or ending another server span', async () => {
+    const serverSpan = provider.getTracer('http').startSpan('GET /api/example', { kind: SpanKind.SERVER });
+    sandbox.stub(trace, 'getActiveSpan').returns(serverSpan);
+    const end = sandbox.spy(serverSpan, 'end');
+    const response = new EventEmitter();
+    const next = sandbox.spy();
+    telemetry.appInsights({ headers: {} } as any, response as any, next);
+    response.emit('finish');
+    expect(next.calledOnce).to.equal(true);
+    expect(end.called).to.equal(false);
+    serverSpan.end();
+    await provider.forceFlush();
+    expect(exporter.getFinishedSpans()).to.have.length(1);
   });
 });

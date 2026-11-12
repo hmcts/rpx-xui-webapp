@@ -3343,40 +3343,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.5-govuk6":
-  version: 7.4.5-govuk6
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.5-govuk6"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.26-govuk6":
+  version: 7.4.26-govuk6
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.26-govuk6"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.22"
-    "@hmcts/media-viewer": "npm:4.2.39"
+    "@hmcts/ccpay-web-component": "npm:6.5.28-v1"
+    "@hmcts/media-viewer": "npm:4.2.48"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:6.4.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"
+    peggy: "npm:^5.1.0"
     tslib: "npm:^2.3.0"
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
   peerDependencies:
-    "@angular-material-components/datetime-picker": 16.0.1
-    "@angular-material-components/moment-adapter": 16.0.1
     "@angular/animations": ^20.3.27
-    "@angular/cdk": 17.3.5
+    "@angular/cdk": ^20.2.14
     "@angular/common": ^20.3.27
     "@angular/compiler": ^20.3.27
     "@angular/core": ^20.3.27
     "@angular/forms": ^20.3.27
     "@angular/localize": ^20.3.27
-    "@angular/material": ^16.2.0
+    "@angular/material": ^20.2.14
+    "@angular/material-moment-adapter": ^20.0.0
     "@angular/platform-browser": ^20.3.27
     "@angular/platform-browser-dynamic": ^20.3.27
     "@angular/router": ^20.3.27
     "@angular/upgrade": ^20.3.27
     "@ngrx/effects": ^20.1.0
     "@ngrx/store": ^20.1.0
+    "@ngxmc/datetime-picker": 20.1.0
     class-transformer: ^0.5.1
     lodash: ^4.17.22
-    moment: ^2.30.1
+    moment: ^2.31.0
     moment-timezone: ^0.5.31
     ngx-chips: ^3.0.0
     ngx-editor: 19.0.0-beta.1
@@ -3391,21 +3392,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/de1381dd8192305321eac5a1a06a9fb6e81f49aa4ae7d1f4add1e3b55fcc1423bb9030be9c5ce5d0292f95e2ec964a0a03f007a6e6a0729ca33c736bb31ee930
-  languageName: node
-  linkType: hard
-
-"@hmcts/ccpay-web-component@npm:6.5.22":
-  version: 6.5.22
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.22"
-  dependencies:
-    exceljs: "npm:^4.4.0"
-    file-saver: "npm:^2.0.2"
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^20.3.1
-    "@angular/core": ~20.3.1
-  checksum: 10/532536dcf2ac3bdfda4ca1e352bc9fe88e5c72b46aac9b37746f2926f86f9d553bba9454c2403fd0ba6edec6380ad614709fb91296d8eeeb1823d4ceef098d58
+  checksum: 10/0d41f2402352e97d4bbe90e14790c3e82c6bf1c472043c534a4fc589260b6d025ab333f61e66f05b22c9fdcf1a7ee8cbefdfceb7a559585aa736812684b89276
   languageName: node
   linkType: hard
 
@@ -3421,35 +3408,6 @@ __metadata:
     "@angular/core": ~20.3.1
     govuk-frontend: ^6.4.0
   checksum: 10/ee5c681491e0c124a480ce728a5ec1be2c3acc0492b8e85e66aca0073703df86744bce797c2896c61e9ddd0ef9f080d5ca79451a46483d604cedbbdb8c85145e
-  languageName: node
-  linkType: hard
-
-"@hmcts/media-viewer@npm:4.2.39":
-  version: 4.2.39
-  resolution: "@hmcts/media-viewer@npm:4.2.39"
-  dependencies:
-    "@swimlane/ngx-datatable": "npm:^23.0.1"
-    moment-timezone: "npm:^0.6.2"
-    mutable-div: "npm:^2.0.0"
-    pdfjs-dist: "npm:^4.10.38"
-    socket.io-client: "npm:^4.8.0"
-    tslib: "npm:^2.3.0"
-    uuid: "npm:^11.1.1"
-  peerDependencies:
-    "@angular/animations": ^20.0.0
-    "@angular/cdk": ^17.3.8
-    "@angular/common": ^20.0.0
-    "@angular/core": ^20.0.0
-    "@angular/forms": ^20.0.0
-    "@angular/platform-browser": ^20.0.0
-    "@angular/router": ^20.0.0
-    "@ngrx/effects": ^20
-    "@ngrx/store": ^20
-    "@ngrx/store-devtools": ^20
-    ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.14
-    rxjs: ^7.8.2
-  checksum: 10/9012b83de83563c372ef9244bb6b2fe84de3b45d9d57b46df49c6814857c129d2ca91d86d6dedcbf244b6ba1122528733d59dfc42a0f9370bd976a7f632ce8c6
   languageName: node
   linkType: hard
 
@@ -6689,6 +6647,15 @@ __metadata:
     tslib: "npm:^2.8.1"
     tsyringe: "npm:^4.10.0"
   checksum: 10/d37c56fa5f2c644141948d85010e14f0e4963089e3b0b81edd0bfe85bdfea0eb3f38ab6ff20d322db2bd6977117824cc498a77b2d35af111983b4d58b5e2ccd1
+  languageName: node
+  linkType: hard
+
+"@peggyjs/from-mem@npm:4.0.0":
+  version: 4.0.0
+  resolution: "@peggyjs/from-mem@npm:4.0.0"
+  dependencies:
+    semver: "npm:~7.8.5"
+  checksum: 10/ab444bcc4a8b7eab6950b0458214469e3295d8af49a21a7d7bea38438cea2731c272a287f32139d14c35ea0b548025efbb37554e177c176d27a9bfec16d41cf8
   languageName: node
   linkType: hard
 
@@ -10729,6 +10696,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:^14.0.3, commander@npm:~14.0.0":
+  version: 14.0.3
+  resolution: "commander@npm:14.0.3"
+  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
+  languageName: node
+  linkType: hard
+
 "commander@npm:^2.19.0, commander@npm:^2.20.0, commander@npm:^2.3.0":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
@@ -10740,13 +10714,6 @@ __metadata:
   version: 8.3.0
   resolution: "commander@npm:8.3.0"
   checksum: 10/6b7b5d334483ce24bd73c5dac2eab901a7dbb25fd983ea24a1eeac6e7166bb1967f641546e8abf1920afbde86a45fbfe5812fbc69d0dc451bb45ca416a12a3a3
-  languageName: node
-  linkType: hard
-
-"commander@npm:~14.0.0":
-  version: 14.0.3
-  resolution: "commander@npm:14.0.3"
-  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
   languageName: node
   linkType: hard
 
@@ -18735,6 +18702,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"peggy@npm:^5.1.0":
+  version: 5.1.1
+  resolution: "peggy@npm:5.1.1"
+  dependencies:
+    "@peggyjs/from-mem": "npm:4.0.0"
+    commander: "npm:^14.0.3"
+    source-map-generator: "npm:2.0.7"
+  bin:
+    peggy: bin/peggy.js
+  checksum: 10/204392f76afc2244b8bf452ac5b64347f674dbf51190a6117a7fbcc68d46510b780e21478ca572f7c78ed1b789dbf2ded75791d8efd1fbd138a91316fd5883b2
+  languageName: node
+  linkType: hard
+
 "pegjs@npm:^0.10.0":
   version: 0.10.0
   resolution: "pegjs@npm:0.10.0"
@@ -20320,7 +20300,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.5-govuk6"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.26-govuk6"
     "@hmcts/ccpay-web-component": "npm:6.5.28-v1"
     "@hmcts/media-viewer": "npm:4.2.48"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
@@ -21147,6 +21127,13 @@ __metadata:
   dependencies:
     atomic-sleep: "npm:^1.0.0"
   checksum: 10/e03c9611e43fa81132cd2ce0fe4eb7fbcf19db267e9dec20dc6c586f82465c9c906e91a02f72150c740463ad9335536ea2131850307aaa6686d1fb5d4cc4be3e
+  languageName: node
+  linkType: hard
+
+"source-map-generator@npm:2.0.7":
+  version: 2.0.7
+  resolution: "source-map-generator@npm:2.0.7"
+  checksum: 10/70557922ecb3806eb4df6365da30622ce442f96ddf060f427cd376437a18695fce6faa17e191c5a0ef75d845b457fd4f3173c591fdd27c4caa2068cbfe9c7ec9
   languageName: node
   linkType: hard
 

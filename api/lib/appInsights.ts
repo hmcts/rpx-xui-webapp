@@ -1,63 +1,396 @@
 import * as applicationinsights from 'applicationinsights';
-import type { Contracts } from 'applicationinsights';
-import * as express from 'express';
-import { getConfigValue, showFeature } from '../configuration/';
-import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
-function fineGrainedSampling(envelope: Contracts.EnvelopeTelemetry): boolean {
-  if (['RequestData', 'RemoteDependencyData'].includes(envelope.data.baseType)) {
-    const name = (envelope.data.baseData.name || '').toLowerCase();
+import type * as express from 'express';
 
-    if (
-      name.includes('/health') ||
-      name.includes('/assets/') ||
-      name.includes('/media/') ||
-      name.endsWith('.js') ||
-      name.endsWith('.css') ||
-      name.endsWith('.woff2') ||
-      name.endsWith('.svg') ||
-      name.endsWith('.png') ||
-      name.endsWith('.gif') ||
-      name.endsWith('.ico') ||
-      name.endsWith('.json') ||
-      name.includes('/polyfills')
-    ) {
-      envelope.sampleRate = 1;
+import { Span, SpanKind, SpanStatusCode, TraceFlags, trace } from '@opentelemetry/api';
+import type { HttpInstrumentationConfig } from '@opentelemetry/instrumentation-http';
+import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
+
+import { getConfigValue, showFeature } from '../configuration/';
+import { hearingsTelemetryProperties } from './hearings-telemetry-correlation';
+import { withTracingUnsuppressed } from './telemetryContext';
+import {
+  APP_INSIGHTS_CONNECTION_STRING,
+  APP_INSIGHTS_SAMPLING_PERCENTAGE,
+  COOKIES_SESSION_ID,
+  COOKIES_USER_ID,
+  FEATURE_APP_INSIGHTS_ENABLED,
+} from '../configuration/references';
+
+/**
+ * High-volume, low-value incoming requests that should not be exported
+ * to Application Insights.
+ *
+ * These requests were previously sampled at approximately 1% by the
+ * Application Insights 2.x TelemetryProcessor.
+ *
+ * They are no longer required in Application Insights and are therefore
+ * excluded completely (0%).
+ */
+const EXCLUDED_TELEMETRY_PATHS = ['/health', '/liveness', '/readiness', '/assets/', '/media/', '/polyfills'];
+
+/**
+ * Static resource types identified as high-volume Application Insights
+ * ingestion contributors.
+ */
+const EXCLUDED_TELEMETRY_EXTENSIONS = ['.js', '.css', '.woff2', '.svg', '.png', '.gif', '.ico', '.json'];
+
+/**
+ * Determines whether a URL/path belongs to the high-volume health/static
+ * telemetry that should not be exported.
+ *
+ * Query strings are removed so URLs such as:
+ *
+ *   /main-123.js?v=1
+ *   /styles-123.css?cache=456
+ *
+ * are still correctly identified.
+ */
+function shouldExcludeTelemetryPath(path = ''): boolean {
+  const telemetryPath = path.toLowerCase().split('?')[0];
+
+  return (
+    EXCLUDED_TELEMETRY_PATHS.some((excludedPath) => telemetryPath.includes(excludedPath)) ||
+    EXCLUDED_TELEMETRY_EXTENSIONS.some((extension) => telemetryPath.endsWith(extension))
+  );
+}
+
+/**
+ * Extract the HTTP path/URL from an OpenTelemetry HTTP server span.
+ *
+ * Different OpenTelemetry semantic-convention versions can expose the
+ * request target under different attribute names, so check the relevant
+ * current and legacy HTTP attributes.
+ */
+function getSpanRequestPath(span: ReadableSpan): string {
+  const attributes = span.attributes;
+
+  const path =
+    attributes['url.path'] ??
+    attributes['url.full'] ??
+    attributes['http.target'] ??
+    attributes['http.url'] ??
+    attributes['http.route'];
+
+  return typeof path === 'string' ? path : span.name;
+}
+
+/**
+ * Response status code, inclusive, from which an incoming HTTP request
+ * is considered failed for Application Insights "Failed requests"
+ * purposes, matching the classic Application Insights 2.x behaviour
+ * (success = statusCode < 400).
+ */
+const FAILED_REQUEST_STATUS_CODE_THRESHOLD = 400;
+
+/**
+ * Marks incoming (server) HTTP spans with an ERROR status for 4xx/5xx
+ * responses.
+ *
+ * The OpenTelemetry HTTP instrumentation only sets SERVER span status
+ * to ERROR for 5xx responses; 4xx is left UNSET because it is treated
+ * as a client-side outcome under OpenTelemetry semantic conventions.
+ *
+ * Azure Monitor's preaggregated "Failed requests" standard metric is
+ * derived from `span.status.code` at span-end time. Left as-is, 4xx
+ * responses are counted as successful in that metric even though the
+ * `requests` table (which reports the raw response code) shows them as
+ * failed, producing a chart/table mismatch.
+ *
+ * This must run via the HTTP instrumentation's applyCustomAttributesOnSpan
+ * hook rather than a SpanProcessor: it fires before span.end(), ahead of
+ * the SpanProcessor chain, and Azure Monitor's own metric-preaggregation
+ * SpanProcessor is registered before any SpanProcessors this module adds.
+ */
+export function markFailedServerSpanStatus(
+  span: Span,
+  _request: unknown,
+  response: {
+    statusCode?: number;
+    setHeader?: (name: string, value: string | number | readonly string[]) => unknown;
+  }
+): void {
+  if (typeof response?.setHeader !== 'function') {
+    return;
+  }
+
+  if (typeof response.statusCode === 'number' && response.statusCode >= FAILED_REQUEST_STATUS_CODE_THRESHOLD) {
+    span.setStatus({ code: SpanStatusCode.ERROR });
+  }
+}
+
+/** Remove query values from known current and legacy HTTP URL attributes. */
+export function sanitizeIncomingServerSpanUrl(span: Span, request: unknown, response: unknown): void {
+  if (typeof (response as { setHeader?: unknown })?.setHeader !== 'function') {
+    return;
+  }
+
+  const incoming = request as {
+    url?: string;
+    headers?: { host?: string };
+    socket?: { encrypted?: boolean };
+  };
+  const rawUrl = incoming?.url || '/';
+  let path = '/';
+  let fullUrl = '/';
+
+  try {
+    const scheme = incoming.socket?.encrypted ? 'https' : 'http';
+    const url = new URL(rawUrl, `${scheme}://${incoming.headers?.host || 'localhost'}`);
+    url.search = '';
+    url.hash = '';
+    url.username = '';
+    url.password = '';
+    path = url.pathname;
+    fullUrl = url.toString();
+  } catch {
+    // A malformed URL must not leave its original value in telemetry.
+  }
+
+  span.setAttribute('url.path', path);
+  span.setAttribute('url.full', fullUrl);
+  span.setAttribute('url.query', '');
+  span.setAttribute('http.url', fullUrl);
+  span.setAttribute('http.target', path);
+  span.setAttribute('http.request.query', '');
+}
+
+function readCookie(cookieHeader: string | string[] | undefined, cookieName: string): string | undefined {
+  const cookieHeaderValue = Array.isArray(cookieHeader) ? cookieHeader.join(';') : cookieHeader;
+  const cookie = cookieHeaderValue
+    ?.split(';')
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${cookieName}=`));
+
+  if (!cookie) {
+    return undefined;
+  }
+
+  const value = cookie.slice(cookieName.length + 1);
+
+  try {
+    return decodeURIComponent(value) || undefined;
+  } catch {
+    return value || undefined;
+  }
+}
+
+/**
+ * Replaces the Application Insights 2.x fine-grained TelemetryProcessor
+ * used for health/static request telemetry.
+ *
+ * The compatibility SDK exposes Azure Monitor span processors, but not
+ * the lower-level HTTP ignoreIncomingRequestHook type. Keep this scoped
+ * to SERVER spans so outgoing service telemetry is not affected.
+ */
+class HealthStaticFilteringProcessor implements SpanProcessor {
+  forceFlush(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  shutdown(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  onStart(): void {
+    // No processing required when the span starts.
+  }
+
+  onEnd(span: ReadableSpan): void {
+    if (span.kind !== SpanKind.SERVER) {
+      return;
+    }
+
+    if (shouldExcludeTelemetryPath(getSpanRequestPath(span))) {
+      span.spanContext().traceFlags = TraceFlags.NONE;
     }
   }
-  return true;
 }
-export let client: applicationinsights.TelemetryClient;
+
+/**
+ * Application Insights telemetry client.
+ *
+ * This export is retained because other parts of the application,
+ * including log4jui.ts, use the client directly.
+ *
+ * The client remains null when Application Insights is disabled.
+ */
+export let client: applicationinsights.TelemetryClient | null = null;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
-  applicationinsights
-    .setup(getConfigValue(APP_INSIGHTS_CONNECTION_STRING))
-    .setAutoDependencyCorrelation(true)
-    .setAutoCollectRequests(true)
-    .setAutoCollectPerformance(true)
-    .setAutoCollectExceptions(true)
+  const connectionString = getConfigValue(APP_INSIGHTS_CONNECTION_STRING);
+  const healthStaticFilteringProcessor = new HealthStaticFilteringProcessor();
+
+  /**
+   * Application Insights 3.x uses Azure Monitor OpenTelemetry.
+   *
+   * The previous Application Insights 2.x implementation used:
+   *
+   *   client.addTelemetryProcessor(...)
+   *
+   * to reduce health/static telemetry to approximately 1%.
+   *
+   * Request/dependency/exception/performance collection remains on the
+   * compatibility SDK chain. Azure Monitor OpenTelemetry options configure
+   * sampling and the health/static SpanProcessor.
+   *
+   * Telemetry follows the existing environment sampling configuration:
+   *
+   *   lower environments -> 1%
+   *   production         -> 100%
+   *   performance        -> 100%
+   *
+   * Production and performance values come from the Flux HelmRelease
+   * nodejs.environment overrides in cnp-flux-config/apps/xui/xui-webapp/.
+   *
+   * Disable the Azure Monitor default rate limit so the configured fixed
+   * percentage is applied, as it was with the 2.x SDK.
+   */
+  const appInsightsSetup = applicationinsights.setup(connectionString);
+  // The 3.x compatibility client overwrites Azure Monitor's samplingRatio
+  // from this setting when start() parses its configuration.
+  applicationinsights.defaultClient.config.samplingPercentage = getConfigValue<number>(APP_INSIGHTS_SAMPLING_PERCENTAGE);
+
+  appInsightsSetup.setAzureMonitorOptions({
+    tracesPerSecond: 0,
+    spanProcessors: [healthStaticFilteringProcessor],
+    instrumentationOptions: {
+      http: {
+        applyCustomAttributesOnSpan: (span, request, response) => {
+          markFailedServerSpanStatus(span, request, response);
+          sanitizeIncomingServerSpanUrl(span, request, response);
+        },
+      } as HttpInstrumentationConfig,
+    },
+  });
+
+  appInsightsSetup
+
+    /*
+     * Continue collecting useful application telemetry.
+     */
+    // Incoming requests are recorded by the middleware below. Keeping auto
+    // collection off prevents duplicates when runtime instrumentation succeeds.
+    .setAutoCollectRequests(false)
     .setAutoCollectDependencies(true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectPerformance(true, true)
+
+    /*
+     * Preserve request/dependency correlation.
+     */
+    .setAutoDependencyCorrelation(true)
+
+    /*
+     * Preserve existing console telemetry collection.
+     */
     .setAutoCollectConsole(true, true)
+
+    /*
+     * Preserve disk retry caching.
+     */
     .setUseDiskRetryCaching(true)
+
+    /*
+     * Preserve Live Metrics through the compatibility SDK chain.
+     * Do not move this to setAzureMonitorOptions as enableLiveMetrics;
+     * the compatibility API exposes it as setSendLiveMetrics.
+     */
     .setSendLiveMetrics(true)
+
     .start();
 
   client = applicationinsights.defaultClient;
-  client.addTelemetryProcessor(fineGrainedSampling);
-  client.trackTrace({ message: 'App Insight Activated' });
-} else {
-  client = null;
+
+  client.trackTrace({
+    message: 'App Insight Activated',
+  });
 }
 
-export function appInsights(req: express.Request, res: express.Response, next) {
-  if (client) {
-    client.trackNodeHttpRequest({ request: req, response: res });
+/**
+ * Records incoming requests explicitly so telemetry does not depend on HTTP
+ * module patching in the deployed bundle. Identity is also added to any active
+ * span for correlation with outgoing telemetry.
+ */
+export function appInsights(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
+  const startedAt = new Date();
+  const requestPath = _req.path || _req.url?.split(/[?#]/, 1)[0] || '/';
+  const span = trace.getActiveSpan();
+
+  if (span) {
+    span.setAttributes(hearingsTelemetryProperties(_req));
+    const cookieHeader = _req.headers.cookie;
+
+    const userId = readCookie(cookieHeader, getConfigValue(COOKIES_USER_ID));
+
+    const sessionId = readCookie(cookieHeader, getConfigValue(COOKIES_SESSION_ID));
+
+    if (userId) {
+      span.setAttribute('enduser.pseudo.id', userId);
+    }
+
+    if (sessionId) {
+      span.setAttribute('session.id', sessionId);
+    }
   }
+
+  _res.once('finish', () => {
+    if (!client || shouldExcludeTelemetryPath(requestPath)) {
+      return;
+    }
+
+    try {
+      withTracingUnsuppressed(() => client.trackRequest(createIncomingRequestTelemetry(_req, _res, startedAt, new Date())));
+    } catch (error) {
+      console.warn('Failed to track incoming request telemetry', error);
+    }
+  });
 
   next();
 }
 
-export function trackTrace(trace: string, properties?: { [key: string]: any }) {
+export function createIncomingRequestTelemetry(
+  request: Pick<express.Request, 'headers' | 'method' | 'path' | 'protocol' | 'route' | 'get'>,
+  response: Pick<express.Response, 'statusCode'>,
+  startedAt: Date,
+  completedAt: Date
+) {
+  const requestPath = (request.path || '/').split(/[?#]/, 1)[0];
+  const host = request.get('host');
+  const routePath = typeof request.route?.path === 'string' ? request.route.path.split(/[?#]/, 1)[0] : requestPath;
+  const properties: Record<string, string> = { 'http.method': request.method };
+  Object.assign(properties, hearingsTelemetryProperties(request as express.Request));
+  const userId = readCookie(request.headers.cookie, getConfigValue(COOKIES_USER_ID));
+  const sessionId = readCookie(request.headers.cookie, getConfigValue(COOKIES_SESSION_ID));
+
+  if (userId) {
+    properties['enduser.pseudo.id'] = userId;
+  }
+  if (sessionId) {
+    properties['session.id'] = sessionId;
+  }
+
+  return {
+    duration: completedAt.getTime() - startedAt.getTime(),
+    name: `${request.method} ${routePath}`,
+    properties,
+    resultCode: String(response.statusCode),
+    success: response.statusCode < FAILED_REQUEST_STATUS_CODE_THRESHOLD,
+    time: startedAt,
+    url: host ? `${request.protocol}://${host}${requestPath}` : requestPath,
+  };
+}
+
+/**
+ * Existing trace wrapper retained unchanged.
+ *
+ * Existing callers continue generating Application Insights trace
+ * telemetry without needing to migrate to OpenTelemetry APIs directly.
+ */
+export function trackTrace(trace: string, properties?: Record<string, unknown>): void {
   if (client) {
-    client.trackTrace({ message: trace, properties });
+    client.trackTrace({
+      message: trace,
+      properties: { ...properties, ...hearingsTelemetryProperties() },
+    });
   }
 }

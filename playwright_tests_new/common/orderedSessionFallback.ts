@@ -1,6 +1,11 @@
 import { ConfigurationError } from '../api/utils/errors.js';
 import { type SessionIdentity, type SessionIdentityInput, resolveSessionIdentity } from './sessionIdentity.js';
-import { isExplicitIdamLoginRejection, isUnexplainedIdamLoginRejection } from './sessionCaptureRetry.js';
+import {
+  isExplicitIdamLoginRejection,
+  isIdentityScopedCaptureTimeout,
+  isIdentityScopedLoginSurfaceTimeout,
+  isUnexplainedIdamLoginRejection,
+} from './sessionCaptureRetry.js';
 
 export type OrderedSessionResult<T> = {
   selectedUserIdentifier: string;
@@ -37,6 +42,15 @@ export async function withOrderedSessionFallback<T>(
         throw error;
       }
       if (isExplicitIdamLoginRejection(error)) {
+        lastIdentityError = error;
+        continue;
+      }
+      if (isIdentityScopedLoginSurfaceTimeout(error)) {
+        lastIdentityError = error;
+        continue;
+      }
+      if (isIdentityScopedCaptureTimeout(error)) {
+        nextCandidateIsBoundedProbe = true;
         lastIdentityError = error;
         continue;
       }

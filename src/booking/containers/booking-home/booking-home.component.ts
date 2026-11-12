@@ -6,7 +6,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
-import { TaskListFilterComponent } from '../../../work-allocation/components';
+import { MyWorkFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 
@@ -119,8 +119,8 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public onExistingBookingSelected(locationId) {
     this.refreshAssignmentsSubscription = this.bookingService.refreshRoleAssignments(this.userId).subscribe(() => {
-      this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
-      this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
+      this.sessionStorageService.removeItem(MyWorkFilterComponent.FILTER_NAME);
+      this.windowService.removeLocalStorage(MyWorkFilterComponent.FILTER_NAME);
       this.router.navigate(['/work/my-work/list'], {
         state: {
           location: {

@@ -14,10 +14,6 @@ import {
   getTasksByCaseId,
   getTasksByCaseIdAndEventId,
   postTaskCompletionForAccess,
-  getAllCaseWorkersForLocation,
-  getCaseWorkersForService,
-  getCaseWorkersForLocationAndService,
-  searchCaseWorker,
   postTaskSearchForCompletable,
   getRolesCategory,
   showAllocateRoleLink,
@@ -98,11 +94,11 @@ describe('workAllocation', () => {
   });
 
   describe('getUsersByServiceName', () => {
-    it('should return a set of users for the given service name', async () => {
+    it('should return only users for the requested service', async () => {
       const req = mockReq({
         body: {
           term: null,
-          services: ['service1'],
+          services: ['IA'],
         },
         session: {
           passport: {
@@ -124,8 +120,8 @@ describe('workAllocation', () => {
           lastName: 'One',
           email: 'one@one.com',
           roleCategories: ['role1'],
-          services: ['service1'],
-          locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }],
+          services: ['IA'],
+          locations: [{ id: 'location1', locationName: 'Location One', services: ['IA'] }],
         },
         {
           idamId: 'user2',
@@ -133,20 +129,32 @@ describe('workAllocation', () => {
           lastName: 'Two',
           email: 'two@two.com',
           roleCategories: ['role1'],
-          services: ['service1'],
-          locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }],
+          services: ['CIVIL'],
+          locations: [{ id: 'location2', locationName: 'Location Two', services: ['CIVIL'] }],
         },
       ];
 
-      FullUserDetailCache.setUserDetails(mockUserData);
-      // Call this to ensure the timeout is set, so the isTimestampExpired function returns true.
-      hasTTLExpired();
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
+      sandbox.stub(FullUserDetailCache, 'getAllUserDetails').returns(mockUserData);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').resolves([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments').resolves([]);
       await getUsersByServiceName(req, res, next);
-      expect(res.send).to.have.been.called;
-      expect(res.status).to.have.been.calledWith(200);
+      expect(res.status).to.have.been.calledOnceWithExactly(200);
+      expect(res.send).to.have.been.calledOnceWithExactly([
+        {
+          idamId: 'user1',
+          firstName: 'User',
+          lastName: 'One',
+          email: 'one@one.com',
+          roleCategories: ['role1'],
+          service: 'IA',
+          location: mockUserData[0].locations[0],
+        },
+      ]);
+      expect(next).not.to.have.been.called;
     });
 
-    it('should return 400 when services contains an empty list', async () => {
+    it('should reject requests when services contains an empty list', async () => {
       const req = mockReq({
         body: {
           term: null,
@@ -170,6 +178,7 @@ describe('workAllocation', () => {
 
       expect(response.status).to.have.been.calledWith(400);
       expect(response.send).to.have.been.calledWith('Bad Request');
+      expect(next).not.to.have.been.called;
     });
   });
 
@@ -661,142 +670,6 @@ describe('workAllocation', () => {
 
       expect(next).to.have.been.calledWith(error);
       expect(result).to.equal(error);
-    });
-  });
-
-  describe('getAllCaseWorkersForLocation', () => {
-    it('should get all case workers for a location', async () => {
-      const mockCaseWorkers = [
-        { id: 'worker1', firstName: 'John', lastName: 'Doe' },
-        { id: 'worker2', firstName: 'Jane', lastName: 'Smith' },
-      ];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocation').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { locationId: 'locase123' },
-      });
-      const response = mockRes();
-
-      await getAllCaseWorkersForLocation(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for location', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocation').rejects(error);
-
-      const req = mockReq({
-        params: { locationId: 'locase123' },
-      });
-      const response = mockRes();
-
-      await getAllCaseWorkersForLocation(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('getCaseWorkersForService', () => {
-    it('should get case workers for a service', async () => {
-      const mockCaseWorkers = [{ id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA' }];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForService').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForService(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for service', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForService').rejects(error);
-
-      const req = mockReq({
-        params: { serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForService(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('getCaseWorkersForLocationAndService', () => {
-    it('should get case workers for location and service', async () => {
-      const mockCaseWorkers = [{ id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA', location: 'locase123' }];
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocationAndService').resolves(mockCaseWorkers);
-
-      const req = mockReq({
-        params: { locationId: 'locase123', serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForLocationAndService(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockCaseWorkers);
-    });
-
-    it('should handle errors when getting case workers for location and service', async () => {
-      const error = new Error('Get caseworkers failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocationAndService').rejects(error);
-
-      const req = mockReq({
-        params: { locationId: 'locase123', serviceId: 'IA' },
-      });
-      const response = mockRes();
-
-      await getCaseWorkersForLocationAndService(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
-  describe('searchCaseWorker', () => {
-    it('should search for case workers', async () => {
-      const mockSearchResults = {
-        caseworkers: [{ id: 'worker1', firstName: 'John', lastName: 'Doe' }],
-      };
-      spy = sandbox.stub(caseWorkerServiceModule, 'handlePostSearch').resolves({ status: 200, data: mockSearchResults });
-
-      const req = mockReq({
-        body: {
-          searchTerm: 'John',
-          services: ['IA'],
-          userType: 'caseworker',
-        },
-      });
-      const response = mockRes();
-
-      await searchCaseWorker(req, response, next);
-
-      expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith(mockSearchResults);
-    });
-
-    it('should handle errors when searching case workers', async () => {
-      const error = new Error('Search failed');
-      spy = sandbox.stub(caseWorkerServiceModule, 'handlePostSearch').rejects(error);
-
-      const req = mockReq({
-        body: {
-          searchTerm: 'John',
-          services: ['IA'],
-        },
-      });
-      const response = mockRes();
-
-      await searchCaseWorker(req, response, next);
-
-      expect(next).to.have.been.calledWith(error);
     });
   });
 

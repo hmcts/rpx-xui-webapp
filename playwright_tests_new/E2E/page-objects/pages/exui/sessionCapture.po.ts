@@ -3,7 +3,9 @@ import { IdamPage } from '@hmcts/playwright-common';
 
 const IDAM_USERNAME_FALLBACK_SELECTOR =
   'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
+const IDAM_PASSWORD_FALLBACK_SELECTOR = 'input#password, input[name="password"], input[type="password"]';
 const IDAM_SUBMIT_FALLBACK_SELECTOR = 'button:has-text("Sign in"), button:has-text("Continue")';
+const IDAM_PRIMARY_SUBMIT_NAME = /^(continue|sign in)$/i;
 
 export class SessionCapturePage {
   constructor(private readonly page: Page) {}
@@ -40,8 +42,16 @@ export class SessionCapturePage {
     return [idamPage.usernameInput.first(), this.page.locator(IDAM_USERNAME_FALLBACK_SELECTOR).first()];
   }
 
+  idamPasswordCandidates(idamPage: IdamPage): Locator[] {
+    return [idamPage.passwordInput.first(), this.page.locator(IDAM_PASSWORD_FALLBACK_SELECTOR).first()];
+  }
+
+  idamPrimarySubmitButton(): Locator {
+    return this.page.getByRole('button', { name: IDAM_PRIMARY_SUBMIT_NAME }).first();
+  }
+
   idamSubmitCandidates(idamPage: IdamPage): Locator[] {
-    return [idamPage.submitBtn.first(), this.page.locator(IDAM_SUBMIT_FALLBACK_SELECTOR).first()];
+    return [this.idamPrimarySubmitButton(), idamPage.submitBtn.first(), this.page.locator(IDAM_SUBMIT_FALLBACK_SELECTOR).first()];
   }
 
   idamLoginErrorCandidates(): Locator[] {

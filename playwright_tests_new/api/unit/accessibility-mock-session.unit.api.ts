@@ -56,10 +56,25 @@ test.describe('Accessibility mocked session helper', { tag: '@svc-internal' }, (
         /\/external\/config\/ui(?:\/|\?|$)/,
         '**/auth/isAuthenticated*',
         '**/api/healthCheck*',
+        '**/api/monitoring-tools*',
+        /\/api\/configuration\?configurationKey=termsAndConditionsEnabled(?:&|$)/,
         '**/api/organisation*',
         '**/*launchdarkly.com/**',
       ])
     );
+
+    for (const [url, expectedBody] of [
+      ['/api/monitoring-tools', []],
+      ['/api/configuration?configurationKey=termsAndConditionsEnabled', false],
+    ] as const) {
+      const matched = fakePage.routes.find(({ pattern }) =>
+        typeof pattern === 'string' ? pattern === `**${url}*` : pattern.test(url)
+      );
+      expect(matched, url).toBeDefined();
+      expect(await invokeRoute(matched as RegisteredRoute)).toEqual([
+        { status: 200, contentType: 'application/json', body: JSON.stringify(expectedBody) },
+      ]);
+    }
 
     const authRoute = fakePage.routes.find(({ pattern }) => pattern === '**/auth/isAuthenticated*');
     expect(authRoute).toBeDefined();

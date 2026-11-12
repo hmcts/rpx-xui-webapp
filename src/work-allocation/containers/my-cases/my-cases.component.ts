@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { MyWorkFilterComponent } from '../../components';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
@@ -42,8 +43,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
       const userRole: UserRole = userRoleNames[0] || undefined;
 
-      // get 'locations' key from local storage
-      const locationsFromLS = safeJsonParse<any>(localStorage.getItem('locations'), null);
+      // Read saved selections through the filter ownership check.
+      const locationsFromLS = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
 
       // set service and location filters using data from local storage
       let serviceFilters = [];

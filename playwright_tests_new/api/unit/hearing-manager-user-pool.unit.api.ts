@@ -9,6 +9,10 @@ import {
 } from '../../integration/helpers/hearingManagerUserPool.helper.js';
 
 const configuredEnv = {
+  HEARING_MANAGER_CR84_OFF_USERNAME: 'hearing-off-base@example.test',
+  HEARING_MANAGER_CR84_OFF_PASSWORD: 'secret-base',
+  HEARING_MANAGER_CR84_ON_USERNAME: 'hearing-on-base@example.test',
+  HEARING_MANAGER_CR84_ON_PASSWORD: 'secret-base',
   HEARING_MANAGER_CR84_OFF_1_USERNAME: 'hearing-off-1@example.test',
   HEARING_MANAGER_CR84_OFF_1_PASSWORD: 'secret-1',
   HEARING_MANAGER_CR84_OFF_2_USERNAME: 'hearing-off-2@example.test',
@@ -28,11 +32,15 @@ const configuredEnv = {
 };
 
 test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, () => {
-  test('falls back to the legacy hearing manager users when no pooled users are configured', () => {
+  test('fails when no pooled hearing manager is configured instead of falling back to the base alias', () => {
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, {})).toEqual([]);
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_OFF_USER, {})).toEqual([]);
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, undefined, {})).toBe(HEARING_MANAGER_CR84_ON_USER);
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_OFF_USER, undefined, {})).toBe(HEARING_MANAGER_CR84_OFF_USER);
+    expect(() => resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, undefined, {})).toThrow(
+      /no configured hearing manager identity/i
+    );
+    expect(() => resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_OFF_USER, undefined, {})).toThrow(
+      /no configured hearing manager identity/i
+    );
   });
 
   test('returns only fully configured pooled users for the requested CR84 mode', () => {
@@ -48,10 +56,40 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_OFF_USER, env)).toEqual([]);
   });
 
-  test('distributes configured CR84 ON users by parallel index', () => {
-    expect(resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex: 2 }, configuredEnv)).toBe(
-      'HEARING_MANAGER_CR84_ON-3'
-    );
+  test('discovers, deduplicates, and only routes identities supported by the runtime credential map', () => {
+    const env = {
+      HEARING_MANAGER_CR84_ON_1_USERNAME: 'shared-hearing@example.test',
+      HEARING_MANAGER_CR84_ON_1_PASSWORD: 'secret-1',
+      HEARING_MANAGER_CR84_ON_2_USERNAME: 'SHARED-HEARING@example.test',
+      HEARING_MANAGER_CR84_ON_2_PASSWORD: 'secret-2',
+      HEARING_MANAGER_CR84_ON_4_USERNAME: 'hearing-on-4@example.test',
+      HEARING_MANAGER_CR84_ON_4_PASSWORD: 'secret-4',
+      HEARING_MANAGER_CR84_ON_9_USERNAME: 'unsupported@example.test',
+      HEARING_MANAGER_CR84_ON_9_PASSWORD: 'secret-9',
+    };
+
+    expect(getConfiguredHearingManagerUserIdentifiers(HEARING_MANAGER_CR84_ON_USER, env)).toEqual([
+      'HEARING_MANAGER_CR84_ON-1',
+      'HEARING_MANAGER_CR84_ON-4',
+    ]);
+  });
+
+  test('uses four distinct CR84 ON users before reusing the pool by parallel index', () => {
+    expect(
+      [0, 1, 2, 3].map((parallelIndex) =>
+        resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex }, configuredEnv)
+      )
+    ).toEqual([
+      'HEARING_MANAGER_CR84_ON-1',
+      'HEARING_MANAGER_CR84_ON-2',
+      'HEARING_MANAGER_CR84_ON-3',
+      'HEARING_MANAGER_CR84_ON-4',
+    ]);
+    expect(
+      [4, 5, 6].map((parallelIndex) =>
+        resolveHearingManagerUserIdentifier(HEARING_MANAGER_CR84_ON_USER, { parallelIndex }, configuredEnv)
+      )
+    ).toEqual(['HEARING_MANAGER_CR84_ON-1', 'HEARING_MANAGER_CR84_ON-2', 'HEARING_MANAGER_CR84_ON-3']);
   });
 
   test('uses the Playwright parallel index env when no source is provided', () => {
@@ -63,7 +101,7 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     ).toBe('HEARING_MANAGER_CR84_OFF-4');
   });
 
-  test('honours an explicit zero parallel index over a configured environment index', () => {
+  test('honours an explicit zero parallel index over the Playwright environment index', () => {
     expect(
       resolveHearingManagerUserIdentifier(
         HEARING_MANAGER_CR84_ON_USER,
@@ -76,13 +114,41 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
     ).toBe('HEARING_MANAGER_CR84_ON-1');
   });
 
+  test('allows a diagnostic pool-index override for one-worker AAT proof runs', () => {
+    expect(
+      resolveHearingManagerUserIdentifier(
+        HEARING_MANAGER_CR84_ON_USER,
+        { parallelIndex: 0 },
+        {
+          ...configuredEnv,
+          PW_HEARING_MANAGER_POOL_INDEX: '2',
+        }
+      )
+    ).toBe('HEARING_MANAGER_CR84_ON-3');
+  });
+
   test('keeps an already pooled user identifier unchanged', () => {
     expect(resolveHearingManagerUserIdentifier('HEARING_MANAGER_CR84_OFF-2', undefined, configuredEnv)).toBe(
       'HEARING_MANAGER_CR84_OFF-2'
     );
   });
 
-  test('returns fallback session candidates after the worker-selected CR84 user', () => {
+  test('rejects an explicitly selected pooled identity without configured credentials', () => {
+    expect(() => resolveHearingManagerUserIdentifier('HEARING_MANAGER_CR84_OFF-2', undefined, {})).toThrow(
+      /no configured hearing manager identity/i
+    );
+  });
+
+  test('keeps base aliases as shared session candidates when no pool is configured', () => {
+    expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_ON_USER, undefined, {})).toEqual([
+      HEARING_MANAGER_CR84_ON_USER,
+    ]);
+    expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, undefined, {})).toEqual([
+      HEARING_MANAGER_CR84_OFF_USER,
+    ]);
+  });
+
+  test('orders shared session candidates from the worker-selected CR84 identity without the legacy base alias', () => {
     expect(resolveHearingManagerSessionCandidates(HEARING_MANAGER_CR84_OFF_USER, { parallelIndex: 3 }, configuredEnv)).toEqual([
       'HEARING_MANAGER_CR84_OFF-4',
       'HEARING_MANAGER_CR84_OFF-1',

@@ -2,10 +2,7 @@ import { Router } from 'express';
 import { getJudicialUsers } from '../roleAccess';
 
 import {
-  getAllCaseWorkersForLocation,
   getCases,
-  getCaseWorkersForLocationAndService,
-  getCaseWorkersForService,
   getMyAccess,
   getMyCases,
   getRolesCategory,
@@ -16,7 +13,6 @@ import {
   getTypesOfWork,
   postTaskAction,
   postTaskSearchForCompletable,
-  searchCaseWorker,
   searchTask,
   searchTypesOfWork,
   showAllocateRoleLink,
@@ -36,10 +32,6 @@ router.use(authInterceptor);
 router.post('/caseworker/getUsersByServiceName', getUsersByServiceName);
 router.post('/caseworker/getUsersByIdamIds', getUsersByIdamIds);
 router.post('/caseworker/getUserByIdamId', getUserByIdamId);
-router.use('/caseworker/location/:locationId/service/:serviceId', getCaseWorkersForLocationAndService);
-router.use('/caseworker/location/:locationId', getAllCaseWorkersForLocation);
-router.use('/caseworker/service/:serviceId', getCaseWorkersForService);
-router.use('/caseworker/search', searchCaseWorker);
 
 router.use('/findPerson', postFindPersonSearch);
 

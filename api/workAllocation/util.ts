@@ -90,24 +90,8 @@ export function prepareRoleApiUrl(baseUrl: string) {
   return `${baseUrl}/am/role-assignments/query`;
 }
 
-export function prepareCaseWorkerSearchUrl(baseUrl: string) {
-  return `${baseUrl}/caseworker/search`;
-}
-
 export function prepareTaskSearchForCompletable(baseUrl: string) {
   return `${baseUrl}/task/search-for-completable`;
-}
-
-export function prepareCaseWorkerForLocation(baseUrl: string, locationId: string) {
-  return `${baseUrl}/caseworker/location/${locationId}`;
-}
-
-export function prepareCaseWorkerForService(baseUrl: string, serviceId: string) {
-  return `${baseUrl}/caseworker/service/${serviceId}`;
-}
-
-export function prepareCaseWorkerForLocationAndService(baseUrl: string, locationId: string, serviceId: string) {
-  return `${baseUrl}/caseworker/location/${locationId}/service/${serviceId}`;
 }
 
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {

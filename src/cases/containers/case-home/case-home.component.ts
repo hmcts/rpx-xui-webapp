@@ -17,7 +17,7 @@ import { GoActionParams } from '../../../cases/models/go-action-params.model';
 import { HeaderComponent } from '../../../app/components';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
-import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
+import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 @Component({
   standalone: false,

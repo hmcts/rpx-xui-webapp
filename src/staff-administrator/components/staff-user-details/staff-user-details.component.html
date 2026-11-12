@@ -30,6 +30,12 @@
         </div>
         <br />
         <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">IDAM ID</dt>
+          <dd class="govuk-summary-list__value">{{ userDetails.case_worker_id }}</dd>
+          <dd class="govuk-summary-list__actions"></dd>
+        </div>
+        <br />
+        <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Service</dt>
           <div class="govuk-summary-list__value">
             <span *ngFor="let service of userDetails.services; let isLast = last">

@@ -27,6 +27,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-booking-ui': (env) => resolveBookingUiSessionCandidates({ parallelIndex: 0 }, env),
   '@integration-case-details': (env) => resolveStaffAdminSessionUsers(env),
   [caseFileViewIntegrationTag]: () => [caseFileViewUser],
+  '@integration-case-file-view-mock-session': () => [],
   '@integration-case-linking': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_Judge_WA_R1'],
   '@integration-case-list': () => ['SOLICITOR'],
   '@integration-ccd-toolkit': () => ['SOLICITOR'],

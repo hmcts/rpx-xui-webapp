@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { CaseNotifier, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
+import { HttpError } from '../../../models/httpError.model';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
@@ -21,6 +22,7 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { SessionStorageService } from '../../../app/services';
+import { HearingsTelemetryService } from '../../../hearings/services/hearings-telemetry.service';
 
 @Component({
   standalone: false,
@@ -41,8 +43,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingsActions: Actions[];
-  public hearingListLastErrorState$: Observable<fromHearingStore.State>;
-  public hearingValuesLastErrorState$: Observable<fromHearingStore.State>;
+  public hearingListLastErrorState$: Observable<HttpError>;
+  public hearingValuesLastErrorState$: Observable<HttpError>;
   public lastErrorSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public hasRequestAction: boolean = false;
@@ -65,7 +67,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     private readonly lovRefDataService: LovRefDataService,
     private readonly loadingService: LoadingService,
     private readonly sessionSvc: SessionStorageService,
-    private readonly caseNotifier: CaseNotifier
+    private readonly caseNotifier: CaseNotifier,
+    @Optional() private readonly telemetry?: HearingsTelemetryService
   ) {
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
@@ -76,6 +79,11 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     There is a possibility case ID not present for reload but hearing list load would also fail indicating issue to user
   */
   public reloadHearings() {
+    try {
+      this.telemetry?.recordAction('retry');
+    } catch {
+      // Telemetry must not prevent the original reload or dispatches.
+    }
     this.loadHearingsForCurrentCase();
     this.hearingStore.dispatch(
       new fromHearingStore.LoadHearingValues({
@@ -120,6 +128,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.hearingValuesSubscription = this.hearingStore
       .pipe(select(fromHearingStore.getHearingValuesModel))
       .subscribe((serviceHearingValuesModel) => {
+        // Dispose the previous ref-data request before starting one for new hearing values.
+        this.refDataSubscription?.unsubscribe();
         if (serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID) {
           this.refDataSubscription = this.lovRefDataService
             .getListOfValues(HearingCategory.HearingType, serviceHearingValuesModel.hmctsServiceID, false)
@@ -129,7 +139,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         }
       });
     this.lastErrorSubscription = combineLatest([this.hearingListLastErrorState$, this.hearingValuesLastErrorState$]).subscribe({
-      next: ([hearingListlastError, hearingValuesLastError]: [fromHearingStore.State, fromHearingStore.State]) => {
+      next: ([hearingListlastError, hearingValuesLastError]: [HttpError, HttpError]) => {
         if (hearingListlastError || hearingValuesLastError) {
           this.serverError = {
             id: 'backendError',

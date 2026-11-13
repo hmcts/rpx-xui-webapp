@@ -127,6 +127,9 @@ function nextChecksFor(classification) {
       'Open the trace at the first missing element and confirm the intended route and accessible locator contract.',
     ],
     NETWORK_TIMEOUT: ['Inspect the bounded failed-request list and service timing before changing test timeouts.'],
+    NETWORK_ERROR: [
+      'Inspect the transport error (TLS/SSL, DNS, or connection failure) and gateway or service connectivity rather than treating it as a slow response.',
+    ],
     SLOW_API_RESPONSE: ['Inspect the slow-call summary and compare service latency with the test timeout budget.'],
     ASSERTION_FAILURE: [
       'Compare the expected and observed values in the test step and check whether the fixture data is deterministic.',

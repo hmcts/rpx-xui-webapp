@@ -40,20 +40,25 @@ function escapeRegExp(value: string): string {
 
 function buildUserDetails(userId: string) {
   const details = nodeAppDataModels.getUserDetails_oauth();
-  details.userInfo.id = userId;
-  details.userInfo.uid = userId;
-  details.userInfo.email = `${userId}@example.com`;
-  details.userInfo.roles = ['caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
-  details.userInfo.roleCategories = ['LEGAL_OPERATIONS'];
-  details.roleAssignmentInfo = [
-    {
-      jurisdiction: caseDetailsEventErrorsJurisdictionId,
-      isCaseAllocator: true,
-      substantive: true,
-      roleType: 'ORGANISATION',
+  return {
+    ...details,
+    userInfo: {
+      ...details.userInfo,
+      id: userId,
+      uid: userId,
+      email: `${userId}@example.com`,
+      roles: ['caseworker-ia-caseofficer', 'caseworker-ia-admofficer'],
+      roleCategories: ['LEGAL_OPERATIONS'],
     },
-  ];
-  return details;
+    roleAssignmentInfo: [
+      {
+        jurisdiction: caseDetailsEventErrorsJurisdictionId,
+        isCaseAllocator: true,
+        substantive: true,
+        roleType: 'ORGANISATION',
+      },
+    ],
+  };
 }
 
 export function registerCaseDetailsEventErrorsBenignRule(
@@ -71,8 +76,12 @@ export function registerCaseDetailsEventErrorsBenignRule(
 export async function seedCaseDetailsEventErrorsSession(page: Page): Promise<void> {
   const session = await applySessionCookies(page, 'STAFF_ADMIN');
   const sessionUserId = extractUserIdFromCookies(session.cookies) ?? caseDetailsEventErrorsUserIdentifier;
-  const userDetails = buildUserDetails(sessionUserId);
   const profileDetails = buildUserDetails(sessionUserId);
+  const userDetails = {
+    userId: sessionUserId,
+    roleCategory: profileDetails.userInfo.roleCategories[0],
+    roles: profileDetails.userInfo.roles,
+  };
   const targetOrigin = resolveTargetOrigin();
 
   await setupXuiAppShellBaseRoutes(page, {

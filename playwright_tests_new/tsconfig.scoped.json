@@ -19,7 +19,19 @@
     "integration/helpers/caseFileViewMockSession.helper.ts",
     "integration/helpers/mockSessionRouteClosure.helper.ts",
     "integration/mocks/caseFileView.mock.ts",
-    "integration/test/caseFileView/caseFileView.positive.spec.ts"
+    "integration/test/caseFileView/caseFileView.positive.spec.ts",
+    "E2E/page-objects/pages/exui/roleAccess.po.ts",
+    "api/unit/role-journey-mocks.unit.api.ts",
+    "integration/helpers/roleJourneys.helper.ts",
+    "integration/helpers/rolesAndAccessMockRoutes.helper.ts",
+    "integration/mocks/roleJourneys.mock.ts",
+    "integration/test/roleAccess/caseExclusion.negative.spec.ts",
+    "integration/test/roleAccess/caseExclusion.positive.spec.ts",
+    "integration/test/roleAccess/exclusionDeletion.negative.spec.ts",
+    "integration/test/roleAccess/exclusionDeletion.positive.spec.ts",
+    "api/unit/exclusion-session-actor.mock.ts",
+    "api/unit/exclusion-session-actor.unit.api.ts",
+    "api/unit/all-work-cases-request-helper.unit.api.ts"
   ],
   "include": []
 }

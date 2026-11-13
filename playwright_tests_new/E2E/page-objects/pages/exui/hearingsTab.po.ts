@@ -19,6 +19,30 @@ export class HearingsTabPage {
   readonly additionalSecurityYes = this.page.locator('#addition-security-confirmation #additionalSecurityYes');
   readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
 
+  readonly doNotCancelHearingLink = this.page.getByRole('link', { name: 'Do not cancel hearing', exact: true });
+  readonly linkedSummaryRows = this.page.locator('exui-check-your-answers tbody tr');
+  readonly editLinkedHearingsButton = this.page.getByRole('button', { name: 'Edit', exact: true });
+  readonly submitLinkedHearingsButton = this.page.getByRole('button', { name: 'Link hearings', exact: true });
+  readonly cancelLinkedHearingsLink = this.page.getByRole('link', { name: 'Cancel', exact: true });
+  readonly confirmationHearingsLink = this.page.getByRole('link', {
+    name: 'view the status of this hearing in the hearings tab',
+  });
+
+  cancellationReason(key: string): Locator {
+    return this.page.locator(`#hearing-option-container #${key}`);
+  }
+
+  manageLinksButton(hearingId: string): Locator {
+    return this.page.locator(`#link-manage-links-${hearingId}`);
+  }
+
+  linkedHearingOrder(hearingId: string): Locator {
+    return this.page
+      .getByRole('row')
+      .filter({ has: this.page.getByRole('cell', { name: hearingId, exact: true }) })
+      .getByRole('combobox');
+  }
+
   sectionHeading(name: string): Locator {
     return this.page.getByText(name, { exact: true }).first();
   }

@@ -99,7 +99,7 @@ export class RemoveRoleComponent implements OnInit {
           () => {
             const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
             this.router
-              .navigateByUrl(this.backUrl, {
+              .navigate([this.backUrl], {
                 state: {
                   showMessage: true,
                   retainMessages: true,

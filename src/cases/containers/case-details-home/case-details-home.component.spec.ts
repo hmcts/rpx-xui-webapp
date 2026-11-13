@@ -41,44 +41,6 @@ describe('CaseDetailsHomeComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    mockAlertService.success.calls.reset();
-    mockAlertService.setPreserveAlerts.calls.reset();
-  });
-
-  it('shows a completed available-task message from the current history entry', () => {
-    spyOn(TestBed.inject(Router), 'getCurrentNavigation').and.returnValue(null);
-    spyOnProperty(window.history, 'state', 'get').and.returnValue({
-      showMessage: true,
-      messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
-    });
-    fixture = TestBed.createComponent(CaseDetailsHomeComponent);
-    fixture.detectChanges();
-    expect(mockAlertService.success).toHaveBeenCalledWith({ phrase: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS });
-    expect(mockAlertService.setPreserveAlerts).toHaveBeenCalledWith(true);
-  });
-
-  it('does not borrow an old history message during a new navigation', () => {
-    spyOn(TestBed.inject(Router), 'getCurrentNavigation').and.returnValue({ extras: {} } as Navigation);
-    spyOnProperty(window.history, 'state', 'get').and.returnValue({
-      showMessage: true,
-      messageText: 'Message for the previous case',
-    });
-    fixture = TestBed.createComponent(CaseDetailsHomeComponent);
-    fixture.detectChanges();
-    expect(mockAlertService.success).not.toHaveBeenCalled();
-  });
-
-  for (const state of [null, { showMessage: false, messageText: 'Hidden' }, { showMessage: true }]) {
-    it(`does not show an incomplete notification: ${JSON.stringify(state)}`, () => {
-      spyOn(TestBed.inject(Router), 'getCurrentNavigation').and.returnValue(null);
-      spyOnProperty(window.history, 'state', 'get').and.returnValue(state);
-      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
-      fixture.detectChanges();
-      expect(mockAlertService.success).not.toHaveBeenCalled();
-    });
-  }
-
   describe('entering page normally', () => {
     beforeEach(() => {
       store = TestBed.inject(Store);

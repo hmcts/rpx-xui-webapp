@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { CreateCaseLoaded } from '../../../cases/store';
-import { LoggerService } from '../../../app/services/logger/logger.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
-import { EMPTY, from, Observable, of } from 'rxjs';
-import { catchError, filter, map, mergeMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as routeAction from '../../../app/store/index';
 import { Actions as RoleActions, Role, RoleAccessHttpError } from '../../models';
 import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
@@ -37,7 +34,7 @@ export class AllocateRoleEffects {
       ofType<ConfirmAllocation>(AllocateRoleActionTypes.CONFIRM_ALLOCATION),
       mergeMap((data) =>
         this.allocateRoleService.confirmAllocation(data.payload).pipe(
-          mergeMap(() => {
+          map(() => {
             const message: any = {
               type: 'success',
               message:
@@ -46,8 +43,10 @@ export class AllocateRoleEffects {
                   : RoleAllocationMessageText.Reallocate,
             };
             this.store.dispatch(new fromRoot.LoadUserDetails(true));
-            return from(
-              this.router.navigateByUrl(this.allocateRoleService.backUrl, {
+            return new routeAction.CreateCaseGo({
+              path: [this.allocateRoleService.backUrl],
+              caseId: data.payload.caseId,
+              extras: {
                 state: {
                   showMessage: true,
                   retainMessages: true,
@@ -57,15 +56,8 @@ export class AllocateRoleEffects {
                       ? RoleAllocationMessageText.Add
                       : RoleAllocationMessageText.Reallocate,
                 },
-              })
-            ).pipe(
-              filter((navigated) => navigated),
-              map(() => new CreateCaseLoaded(data.payload.caseId)),
-              catchError((error) => {
-                this.loggerService.error(`Error navigating to ${this.allocateRoleService.backUrl}`, error);
-                return EMPTY;
-              })
-            );
+              },
+            });
           }),
           catchError((error) => {
             return AllocateRoleEffects.handleError(error);
@@ -80,9 +72,7 @@ export class AllocateRoleEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly allocateRoleService: AllocateRoleService,
-    private readonly store: Store<fromRoot.State>,
-    private readonly router: Router,
-    private readonly loggerService: LoggerService
+    private readonly store: Store<fromRoot.State>
   ) {}
 
   public static handleError(error: RoleAccessHttpError): Observable<Action> {

@@ -46,6 +46,19 @@ export class HeaderComponent {
     return this.currentUrl?.split('#')[0] + HeaderComponent.contentHash;
   }
 
+  public skipToMainContent(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = document.getElementById('content');
+    if (content) {
+      content.setAttribute('tabindex', '-1');
+      content.focus();
+      content.scrollIntoView();
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${HeaderComponent.contentHash}`);
+    }
+  }
+
   /**
    * @param url to test
    * @return true if the given url will navigate to the main content

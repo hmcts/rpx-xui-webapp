@@ -43,10 +43,11 @@ describe('RemoveRoleComponent', () => {
   let sessionStorageServiceMock: jasmine.SpyObj<any>;
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate', 'getCurrentNavigation']);
   routerMock.navigate.and.returnValue(Promise.resolve(true));
+  routerMock.navigateByUrl.and.returnValue(Promise.resolve(true));
   const locationMock = jasmine.createSpyObj('Location', ['back']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll', 'getUserByIdamId']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
-  const allworkUrl = 'work/all-work/cases';
+  const allworkUrl = '/cases/case-details/IA/Asylum/1000000000000100?view=case#Roles%20and%20access';
 
   class AllocateRoleMockService extends AllocateRoleService {
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
@@ -204,7 +205,7 @@ describe('RemoveRoleComponent', () => {
     const additionalState = {
       state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage },
     };
-    expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(allworkUrl, additionalState);
   });
 
   it('should not set email when caseworkers JSON is invalid', () => {

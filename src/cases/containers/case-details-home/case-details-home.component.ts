@@ -18,9 +18,8 @@ export class CaseDetailsHomeComponent implements OnInit {
     private readonly loggerService: LoggerService
   ) {
     const navigation = this.router.getCurrentNavigation();
-    if (navigation) {
-      this.extras = navigation.extras;
-    }
+    // Routed components can initialise after navigation has completed.
+    this.extras = navigation ? navigation.extras : { state: window.history.state };
   }
 
   public ngOnInit() {

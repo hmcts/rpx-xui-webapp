@@ -51,7 +51,7 @@ test.describe('Existing linked hearing maintenance', { tag: ['@integration', '@i
     expect(mutations).toHaveLength(1);
   });
 
-  test('unlinks the intended group on Continue and retains an unrelated group on refresh', async ({
+  test('reviews removal before unlinking the intended group and retains an unrelated group on refresh', async ({
     page,
     caseDetailsPage,
     hearingsTabPage,
@@ -64,6 +64,11 @@ test.describe('Existing linked hearing maintenance', { tag: ['@integration', '@i
     expect(mutations).toHaveLength(0);
     config.hearingsApiOverrides.getHearings = { body: unlinkedReadback };
     await hearingsTabPage.continueFlow();
+    await expect(page).toHaveURL(/check-your-answers$/);
+    await expect(page.getByRole('heading', { name: 'Check your answers', exact: true })).toBeVisible();
+    await expect(page.getByText('No linked hearings.', { exact: true })).toBeVisible();
+    expect(mutations).toHaveLength(0);
+    await page.getByRole('button', { name: 'Unlink hearings', exact: true }).click();
     await expect(page).toHaveURL(/final-confirmation$/);
     await expect(page.getByRole('heading', { name: 'All hearings are now unlinked', exact: true })).toBeVisible();
     expect(mutations).toHaveLength(1);

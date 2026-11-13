@@ -120,6 +120,7 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
       ['playwright_tests_new/E2E/test/createCase/createCase.spec.ts', ['DIVORCE_SOLICITOR']],
       ['playwright_tests_new/E2E/test/updateCase/updateCase.spec.ts', ['DIVORCE_SOLICITOR']],
       ['playwright_tests_new/E2E/test/updateCase/updateCase.nullTranslation.spec.ts', ['DIVORCE_SOLICITOR']],
+      ['playwright_tests_new/E2E/test/mediaViewer/mediaViewerHappyPath.spec.ts', ['DIVORCE_SOLICITOR']],
       [
         'playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts',
         ['DIVORCE_SOLICITOR', 'SEARCH_EMPLOYMENT_CASE'],
@@ -141,13 +142,6 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
         expect(source, `${relativePath} must lease ${pool}`).toContain(`identityLease.acquire({ pool: '${pool}' })`);
       }
     }
-    const viewerSource = readFileSync(
-      path.resolve(process.cwd(), 'playwright_tests_new/E2E/test/mediaViewer/mediaViewerHappyPath.spec.ts'),
-      'utf8'
-    );
-    expect(viewerSource).toMatch(
-      /identityLease\.acquire\(\{\s*pool: gateway === 'legacy' \? 'SEARCH_EMPLOYMENT_CASE' : 'DIVORCE_SOLICITOR',?\s*\}\)/
-    );
   });
 
   test('filters compatibility before deduplicating the same physical identity', () => {
@@ -225,8 +219,7 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
   test('waits for a coordinator lease and releases the leased compatible identity', async () => {
     const calls: Array<{ url: string; method?: string; body?: string }> = [];
     let acquireAttempts = 0;
-    const fetchApi: typeof fetch = async (input, init) => {
-      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    const fetchApi = async (url: string, init?: RequestInit) => {
       calls.push({ url, method: init?.method, body: init?.body ? String(init.body) : undefined });
       if (url.endsWith('/acquire')) {
         acquireAttempts += 1;
@@ -268,8 +261,7 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
 
   test('gives coordinator aliases of one physical account the same opaque lease key', async () => {
     const leaseKeys: string[] = [];
-    const fetchApi: typeof fetch = async (input, init) => {
-      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    const fetchApi = async (url: string, init?: RequestInit) => {
       if (url.endsWith('/acquire')) {
         const payload = JSON.parse(String(init?.body)) as {
           candidates: Array<{ userIdentifier: string; leaseKey: string; email?: string }>;
@@ -307,8 +299,7 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
     let heldKey: string | undefined;
     let activeLeaseId: string | undefined;
     let leaseSequence = 0;
-    const fetchApi: typeof fetch = async (input, init) => {
-      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    const fetchApi = async (url: string, init?: RequestInit) => {
       if (url.endsWith('/acquire')) {
         const payload = JSON.parse(String(init?.body)) as {
           candidates: Array<{ userIdentifier: string; leaseKey: string }>;

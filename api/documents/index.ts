@@ -1,19 +1,11 @@
-import axios from 'axios';
 import { getConfigValue } from '../configuration';
-import {
-  DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS,
-  DOCUMENT_UPLOAD_THROTTLE_MAX_MS,
-  SERVICES_CCD_DATA_STORE_API_PATH,
-  SERVICES_DOCUMENTS_API_PATH,
-} from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
+import { DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS, DOCUMENT_UPLOAD_THROTTLE_MAX_MS } from '../configuration/references';
 
 // Time configuration
 const INITIAL_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS);
 const MAX_TIMEOUT_PERIOD = getConfigValue<number>(DOCUMENT_UPLOAD_THROTTLE_MAX_MS);
 
-const LEGACY_BINARY_DOCUMENT_PATH = /^\/documents\/([^/]+)(?:\/versions\/([^/]+))?\/binary\/?$/;
-const LEGACY_METADATA_DOCUMENT_PATH = /^\/documents\/([^/]+)(?:\/versions(?:\/([^/]+))?|\/auditEntries)?\/?$/;
+const LEGACY_BINARY_DOCUMENT_PATH = /^\/documents\/[^/]+\/binary\/?$/;
 const LEGACY_HTML_CSP = [
   "default-src 'none'",
   "base-uri 'none'",
@@ -30,139 +22,6 @@ const LEGACY_HTML_CSP = [
 
 const LEGACY_CSP_HEADERS_TO_REMOVE = ['Content-Security-Policy-Report-Only', 'X-Content-Security-Policy', 'X-WebKit-CSP'];
 
-function getRequestPath(req): string {
-  const requestUrl =
-    typeof req?.originalUrl === 'string'
-      ? req.originalUrl
-      : `${typeof req?.baseUrl === 'string' ? req.baseUrl : ''}${typeof req?.url === 'string' ? req.url : ''}`;
-  return requestUrl.split('?')[0];
-}
-
-function extractLegacyDocumentId(req): string | null {
-  const path = getRequestPath(req);
-  const match = isCanonicalLegacyDocumentPath(path) && path.match(LEGACY_BINARY_DOCUMENT_PATH);
-  return match ? match[1] : null;
-}
-
-async function isControlledLegacyMetadata(path: string, match: RegExpMatchArray, req: EnhancedRequest): Promise<boolean> {
-  const documentStore = getConfigValue(SERVICES_DOCUMENTS_API_PATH);
-  const headers = getValidationHeaders(req);
-  let parentPath = `/documents/${match[1]}`;
-  if (match[2]) {
-    const version = await axios.get(`${documentStore}${path.replace(/\/$/, '')}`, { headers });
-    const documentUrl = version.data?._links?.document?.href;
-    parentPath = typeof documentUrl === 'string' ? new URL(documentUrl, documentStore).pathname : '';
-    if (!/^\/documents\/[^/]+\/?$/.test(parentPath) || !isCanonicalLegacyDocumentPath(parentPath)) {
-      throw new Error('Legacy version metadata does not identify a canonical parent');
-    }
-  }
-  // Resolve only at the configured DM service, never at the host supplied in a HAL link.
-  const document = await axios.get(`${documentStore}${parentPath}`, { headers });
-  if (!document.data || typeof document.data !== 'object' || Array.isArray(document.data)) {
-    throw new Error('Legacy document metadata could not be classified');
-  }
-  return document.data.metadata?.pending_access_controlled === 'true';
-}
-
-function isCanonicalLegacyDocumentPath(path: string): boolean {
-  // Document IDs are URL-safe; reject aliases before the proxy or backend can normalise them.
-  return /^\/documents(?:\/|$)/.test(path) && !/[%;#\\]|\/\/|(?:^|\/)\.{1,2}(?:\/|$)/.test(path);
-}
-
-function getQueryValue(value: unknown): string | null {
-  if (Array.isArray(value)) {
-    return typeof value[0] === 'string' ? value[0] : null;
-  }
-  return typeof value === 'string' && value.trim() ? value : null;
-}
-
-function getCaseIdFromReferrer(req: EnhancedRequest): string | null {
-  const referrer = req.headers?.referer || req.headers?.referrer;
-  if (typeof referrer !== 'string') {
-    return null;
-  }
-
-  try {
-    const parsedReferrer = new URL(referrer, `${req.protocol}://${req.headers?.host}`);
-    if (parsedReferrer.host !== req.headers?.host) {
-      return null;
-    }
-
-    // Direct legacy HTML document opens do not pass through the media viewer, so use only same-origin case pages as fallback context.
-    const match = parsedReferrer.pathname.match(/\/cases\/case-details\/[^/]+\/[^/]+\/([^/]+)/);
-    return match ? decodeURIComponent(match[1]) : null;
-  } catch {
-    return null;
-  }
-}
-
-function getValidationHeaders(req: EnhancedRequest): Record<string, string> {
-  const headers: Record<string, string> = {};
-  const sourceHeaders = req.headers || {};
-  const forwardHeader = (targetName: string, ...sourceNames: string[]) => {
-    const value = sourceNames
-      .map((sourceName) => sourceHeaders[sourceName])
-      .find((headerValue) => typeof headerValue === 'string');
-    if (typeof value === 'string') {
-      headers[targetName] = value;
-    }
-  };
-
-  forwardHeader('accept', 'accept');
-  forwardHeader('Authorization', 'authorization', 'Authorization');
-  forwardHeader('ServiceAuthorization', 'serviceauthorization', 'ServiceAuthorization');
-  forwardHeader('experimental', 'experimental');
-  forwardHeader('user-roles', 'user-roles');
-
-  return headers;
-}
-
-function removeAuthorisationQueryParams(req): void {
-  const queryIndex = req.url?.indexOf('?');
-  if (queryIndex < 0) {
-    return;
-  }
-
-  const path = req.url.substring(0, queryIndex);
-  const searchParams = new URLSearchParams(req.url.substring(queryIndex + 1));
-  // The case id is for XUI's server-side check only; legacy document store should still receive the original binary path.
-  searchParams.delete('caseId');
-  searchParams.delete('case_id');
-  searchParams.delete('caseReference');
-
-  const query = searchParams.toString();
-  req.url = query ? `${path}?${query}` : path;
-}
-
-function findDocumentBinaryUrl(node: unknown, documentId: string): boolean {
-  if (!node || typeof node !== 'object') {
-    return false;
-  }
-
-  const value = node as Record<string, unknown>;
-  const documentBinaryUrl = value.document_binary_url;
-  if (typeof documentBinaryUrl === 'string' && getDocumentIdFromBinaryUrl(documentBinaryUrl) === documentId) {
-    return true;
-  }
-
-  return Object.values(value).some((child) => {
-    if (Array.isArray(child)) {
-      return child.some((item) => findDocumentBinaryUrl(item, documentId));
-    }
-    return findDocumentBinaryUrl(child, documentId);
-  });
-}
-
-function getDocumentIdFromBinaryUrl(documentBinaryUrl: string): string | null {
-  try {
-    const path = documentBinaryUrl.startsWith('http') ? new URL(documentBinaryUrl).pathname : documentBinaryUrl.split('?')[0];
-    const match = path.match(/\/documents\/([^/]+)(?:\/versions\/[^/]+)?\/binary\/?$/);
-    return match ? decodeURIComponent(match[1]) : null;
-  } catch {
-    return null;
-  }
-}
-
 function isTextHtmlResponse(proxyRes): boolean {
   const rawContentType = proxyRes?.headers?.['content-type'] ?? proxyRes?.headers?.['Content-Type'];
   const contentType = Array.isArray(rawContentType) ? rawContentType[0] : rawContentType;
@@ -170,7 +29,12 @@ function isTextHtmlResponse(proxyRes): boolean {
 }
 
 function isLegacyBinaryDocumentRequest(req): boolean {
-  return extractLegacyDocumentId(req) !== null;
+  const requestUrl =
+    typeof req?.originalUrl === 'string'
+      ? req.originalUrl
+      : `${typeof req?.baseUrl === 'string' ? req.baseUrl : ''}${typeof req?.url === 'string' ? req.url : ''}`;
+  const pathOnly = requestUrl.split('?')[0];
+  return LEGACY_BINARY_DOCUMENT_PATH.test(pathOnly);
 }
 
 function applyLegacyHtmlCsp(res): void {
@@ -214,88 +78,6 @@ export function handleRequest(proxyReq, req, res) {
     }
   }
   return true;
-}
-
-export async function validateLegacyDocumentAccess(req: EnhancedRequest, res, next): Promise<void> {
-  const path = getRequestPath(req);
-  // Browser callers cannot mutate DM metadata that CDAM uses as its authorization authority.
-  if (['PATCH', 'PUT', 'DELETE'].includes(req.method)) {
-    res.setHeader('Allow', 'GET, HEAD, POST');
-    res.status(405).send({ message: 'Method Not Allowed' });
-    return;
-  }
-  if (req.method === 'POST' && !/^\/documents\/?$/.test(path)) {
-    res.setHeader('Allow', 'GET, HEAD');
-    res.status(405).send({ message: 'Method Not Allowed' });
-    return;
-  }
-  if (!['GET', 'HEAD'].includes(req.method) || !/^\/documents(?:\/|$)/i.test(path)) {
-    next();
-    return;
-  }
-
-  if (!isCanonicalLegacyDocumentPath(path)) {
-    res.status(400).send({ message: 'Bad Request' });
-    return;
-  }
-
-  const documentId = extractLegacyDocumentId(req);
-  if (!documentId) {
-    const metadata = path.match(LEGACY_METADATA_DOCUMENT_PATH);
-    if (!metadata) {
-      res.status(400).send({ message: 'Bad Request' });
-      return;
-    }
-    try {
-      if (await isControlledLegacyMetadata(path, metadata, req)) {
-        res.status(403).send({ message: 'Forbidden' });
-        return;
-      }
-      next();
-    } catch (error) {
-      res.status(error?.response?.status === 404 ? 404 : 403).send({ message: 'Forbidden' });
-    }
-    return;
-  }
-  const caseId =
-    getQueryValue(req.query?.caseId) ||
-    getQueryValue(req.query?.case_id) ||
-    getQueryValue(req.query?.caseReference) ||
-    getCaseIdFromReferrer(req);
-
-  if (!caseId) {
-    res.status(403).send({ message: 'Forbidden' });
-    return;
-  }
-
-  try {
-    const casePath = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/categoriesAndDocuments/${encodeURIComponent(caseId)}`;
-    const headers = getValidationHeaders(req);
-    const response = await axios.get(casePath, { headers });
-
-    // CCD enforces case access for this user; the returned tree is then used to prove the requested document belongs to that case.
-    if (!findDocumentBinaryUrl(response.data, documentId)) {
-      res.status(403).send({ message: 'Forbidden' });
-      return;
-    }
-
-    if (path.match(LEGACY_BINARY_DOCUMENT_PATH)?.[2]) {
-      const documentStore = getConfigValue(SERVICES_DOCUMENTS_API_PATH);
-      const version = await axios.get(`${documentStore}${path.replace(/\/binary\/?$/, '')}`, { headers });
-      const documentUrl = version.data?._links?.document?.href;
-      const parentPath = typeof documentUrl === 'string' ? new URL(documentUrl, documentStore).pathname : '';
-      // DM resolves versions by version ID alone; its metadata proves the actual parent document.
-      if (parentPath !== `/documents/${documentId}` && parentPath !== `/documents/${documentId}/`) {
-        res.status(403).send({ message: 'Forbidden' });
-        return;
-      }
-    }
-
-    removeAuthorisationQueryParams(req);
-    next();
-  } catch (error) {
-    res.status(error?.response?.status === 404 ? 404 : 403).send({ message: 'Forbidden' });
-  }
 }
 
 // Handle responses being sent back to the client

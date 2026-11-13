@@ -20,11 +20,6 @@ const MEDIA_VIEWER_DATA = {
   document_filename: 'sample.pdf',
   content_type: 'pdf',
 };
-const LEGACY_MEDIA_VIEWER_DATA = {
-  ...MEDIA_VIEWER_DATA,
-  document_binary_url: '/documents/doc-123/binary',
-  case_id: 'case-123',
-};
 
 describe('MediaViewerWrapperComponent', () => {
   let component: MediaViewerWrapperComponent;
@@ -86,60 +81,16 @@ describe('MediaViewerWrapperComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('should load media viewer data from session storage', () => {
-      sessionStorageService.getItem.and.returnValue(JSON.stringify(MEDIA_VIEWER_DATA));
-      component.ngOnInit();
-
-      expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
-      expect(component.mediaFilename).toBe('sample.pdf');
-      expect(component.mediaContentType).toBe('pdf');
-    });
-
-    it('should add case context to legacy document binary media urls', () => {
-      sessionStorageService.getItem.and.returnValue(JSON.stringify(LEGACY_MEDIA_VIEWER_DATA));
-      component.ngOnInit();
-
-      expect(component.mediaURL).toBe('/documents/doc-123/binary?caseId=case-123');
-    });
-
-    for (const suffix of ['#t=30', '?caseId=old#t=30', '?preview=true&caseId=old#t=30']) {
-      it(`preserves the media fragment when adding case context to ${suffix}`, () => {
-        sessionStorageService.getItem.and.returnValue(
-          JSON.stringify({
-            ...LEGACY_MEDIA_VIEWER_DATA,
-            document_binary_url: `/documents/doc-123/binary${suffix}`,
-          })
-        );
-        component.ngOnInit();
-
-        const url = new URL(component.mediaURL, window.location.origin);
-        expect(url.hash).toBe('#t=30');
-        expect(url.searchParams.getAll('caseId')).toEqual(['case-123']);
-        expect(url.searchParams.get('preview')).toBe(suffix.includes('preview') ? 'true' : null);
-      });
-    }
-
-    it('does not parse an unsupported URL when restoring stored media', () => {
-      sessionStorageService.getItem.and.returnValue(
-        JSON.stringify({
-          ...LEGACY_MEDIA_VIEWER_DATA,
-          document_binary_url: 'http://[',
-        })
-      );
-
-      expect(() => component.ngOnInit()).not.toThrow();
-      expect(component.mediaURL).toBe('http://[');
-    });
-
     it('should not render the media viewer before metadata is received', () => {
       expect(component.mediaReady).toBeFalse();
       expect(fixture.debugElement.query(By.css('mv-media-viewer'))).toBeNull();
     });
 
-    it('should not rewrite media viewer data already in session storage', () => {
-      sessionStorageService.getItem.and.returnValue(JSON.stringify(MEDIA_VIEWER_DATA));
+    it('should not set the session or remove the local storage media viewer data if there is already media viewer data in session storage', () => {
+      sessionStorageService.getItem.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
+      fixture.detectChanges();
+      expect(component).toBeTruthy();
       component.ngOnInit();
-
       expect(sessionStorageService.setItem).toHaveBeenCalledTimes(0);
     });
 
@@ -171,65 +122,6 @@ describe('MediaViewerWrapperComponent', () => {
       postMessageSpy = spyOn(window, 'postMessage');
     });
 
-    afterEach(() => {
-      delete (window as Window & { __exuiTakeMediaViewerHandoff?: () => boolean }).__exuiTakeMediaViewerHandoff;
-    });
-
-    it('should take ownership of an early handoff and reject a later replay', () => {
-      const bootstrapWindow = window as Window & { __exuiTakeMediaViewerHandoff?: () => boolean };
-      const takeHandoff = jasmine.createSpy('takeHandoff').and.returnValue(true);
-      bootstrapWindow.__exuiTakeMediaViewerHandoff = takeHandoff;
-      sessionStorageService.getItem.and.returnValue(payload);
-
-      component.ngOnInit();
-      (component as any).receiveHandoff(handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload }));
-
-      expect(takeHandoff).toHaveBeenCalledTimes(1);
-      expect(bootstrapWindow.__exuiTakeMediaViewerHandoff).toBeUndefined();
-      expect(component.mediaFilename).toBe('sample.pdf');
-      expect(sessionStorageService.setItem).not.toHaveBeenCalled();
-      expect(postMessageSpy).not.toHaveBeenCalled();
-    });
-
-    it('should detach the early receiver before installing the Angular receiver', () => {
-      const bootstrapWindow = window as Window & { __exuiTakeMediaViewerHandoff?: () => boolean };
-      const takeHandoff = jasmine.createSpy('takeHandoff').and.returnValue(false);
-      bootstrapWindow.__exuiTakeMediaViewerHandoff = takeHandoff;
-      spyOn(window, 'addEventListener').and.callFake(() => expect(takeHandoff).toHaveBeenCalled());
-
-      component.ngOnInit();
-      (component as any).receiveHandoff(handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload }));
-
-      expect(sessionStorageService.setItem).toHaveBeenCalledWith('media-viewer-info', payload);
-      expect(component.mediaReady).toBeTrue();
-    });
-
-    it('should reject a handoff with no URL token or opener', () => {
-      activatedRoute.snapshot.queryParamMap = convertToParamMap({});
-      (component as any).receiveHandoff(handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token: null, payload }));
-      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: token });
-      (Object.getOwnPropertyDescriptor(window, 'opener')?.get as jasmine.Spy).and.returnValue(null);
-      (component as any).receiveHandoff(
-        handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload }, window.location.origin, null)
-      );
-
-      expect(sessionStorageService.setItem).not.toHaveBeenCalled();
-      expect(postMessageSpy).not.toHaveBeenCalled();
-    });
-
-    it('should allow a later handoff attempt after session storage fails', () => {
-      const event = handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload });
-      sessionStorageService.setItem.and.throwError('Storage unavailable');
-      expect(() => (component as any).receiveHandoff(event)).not.toThrow();
-      expect(postMessageSpy).not.toHaveBeenCalled();
-      expect(component.mediaReady).toBeFalse();
-
-      sessionStorageService.setItem.and.stub();
-      (component as any).receiveHandoff(event);
-      expect(component.mediaReady).toBeTrue();
-      expect(postMessageSpy).toHaveBeenCalledTimes(1);
-    });
-
     it('should accept valid metadata, store it in session storage, and render the viewer', () => {
       const replaceStateSpy = spyOn(window.history, 'replaceState');
 
@@ -253,33 +145,6 @@ describe('MediaViewerWrapperComponent', () => {
         { type: 'MEDIA_VIEWER_HANDOFF_RECEIVED', token },
         window.location.origin
       );
-    });
-
-    it('should add case context when legacy document metadata arrives through hand-off', () => {
-      const legacyPayload = JSON.stringify(LEGACY_MEDIA_VIEWER_DATA);
-
-      (component as any).receiveHandoff(handoffEvent({ type: 'MEDIA_VIEWER_HANDOFF', token, payload: legacyPayload }));
-
-      expect(component.mediaURL).toBe('/documents/doc-123/binary?caseId=case-123');
-    });
-
-    it('keeps unsupported URLs out of legacy enrichment during handoff', () => {
-      const unsupportedPayload = JSON.stringify({ ...LEGACY_MEDIA_VIEWER_DATA, document_binary_url: 'http://[' });
-      const replaceStateSpy = spyOn(window.history, 'replaceState');
-
-      expect(() =>
-        (component as any).receiveHandoff(
-          handoffEvent({
-            type: 'MEDIA_VIEWER_HANDOFF',
-            token,
-            payload: unsupportedPayload,
-          })
-        )
-      ).not.toThrow();
-
-      expect(component.mediaURL).toBe('http://[');
-      expect(postMessageSpy).toHaveBeenCalledTimes(1);
-      expect(replaceStateSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should ignore metadata from an unexpected origin', () => {

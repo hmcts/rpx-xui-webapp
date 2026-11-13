@@ -9,55 +9,6 @@
     <!-- ▸ expose the per-request nonce -->
     <meta name="csp-nonce" content="{{cspNonce}}" />
 
-    <!-- shortcut: initial HTML must arrive within the sender timeout; use a readiness handshake if HTML also becomes slow. -->
-    <script id="media-viewer-bootstrap-handoff" nonce="{{cspNonce}}">
-      (() => {
-        const token = new URLSearchParams(window.location.search).get('mvToken');
-        if (window.location.pathname !== '/media-viewer' || !token || !window.opener) return;
-
-        let consumed = false;
-        const takeHandoff = () => {
-          window.removeEventListener('message', receive);
-          return consumed;
-        };
-        const receive = (event) => {
-          const data = event.data;
-          if (
-            consumed ||
-            !window.opener ||
-            event.origin !== window.location.origin ||
-            event.source !== window.opener ||
-            !data ||
-            data.type !== 'MEDIA_VIEWER_HANDOFF' ||
-            data.token !== token ||
-            typeof data.payload !== 'string'
-          )
-            return;
-
-          try {
-            const media = JSON.parse(data.payload);
-            if (
-              !media ||
-              typeof media.document_binary_url !== 'string' ||
-              typeof media.document_filename !== 'string' ||
-              typeof media.content_type !== 'string'
-            )
-              return;
-            window.sessionStorage.setItem('media-viewer-info', data.payload);
-          } catch {
-            return;
-          }
-
-          consumed = true;
-          takeHandoff();
-          window.history.replaceState({}, document.title, window.location.pathname);
-          event.source.postMessage({ type: 'MEDIA_VIEWER_HANDOFF_RECEIVED', token }, event.origin);
-        };
-        window.__exuiTakeMediaViewerHandoff = takeHandoff;
-        window.addEventListener('message', receive);
-      })();
-    </script>
-
     <!-- ▸ MONKEY-PATCH – must run before any vendor script -->
     <script nonce="{{cspNonce}}">
       (() => {

@@ -44,7 +44,7 @@ function sanitizeUrl(url: string): string {
 
 function redactRequestContextDetails(message: string): string {
   return message
-    .replace(new RegExp(String.raw`\u001B\[[0-?]*[ -/]*[@-~]`, 'g'), '')
+    .replace(/\u001B\[[0-?]*[ -/]*[@-~]/g, '')
     .replace(/^(\s*-\s*(?:authorization|cookie|x-xsrf-token):\s*).+$/gim, '$1[REDACTED]');
 }
 
@@ -167,7 +167,7 @@ export const test = base.extend<ApiFixtures>({
     void _browserName;
     const entries: ApiLogEntry[] = [];
     await use(entries);
-    const needsDiagnostics = ['failed', 'timedOut', 'skipped'].includes(testInfo.status ?? '');
+    const needsDiagnostics = ['failed', 'timedOut', 'skipped'].includes(testInfo.status);
 
     if (entries.length && needsDiagnostics) {
       const pretty = entries.map((entry) => JSON.stringify(entry, null, 2)).join('\n\n---\n\n');

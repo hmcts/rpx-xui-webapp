@@ -170,7 +170,6 @@ const buildConfig = (env: EnvMap = process.env) => {
         grep: e2eTagFilters.grep,
         grepInvert: buildTagRegex([...e2eTagFilters.excludedTags, ...nightlyCrossBrowserExcludedTags]),
         use: {
-          ...devices['Desktop Safari'],
           headless: headlessMode,
           trace: {
             mode: 'retain-on-failure',

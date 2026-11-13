@@ -51,9 +51,6 @@ export async function setupCaseFileViewMockRoutes(
     await page.route('**/assets/config/config.json*', async (route) => {
       const response = await route.fetch();
       const appConfig = await response.json();
-      appConfig.caseEditorConfig.remote_document_management_url = 'http://localhost:3000/documents';
-      appConfig.caseEditorConfig.document_management_url = '/documents';
-      appConfig.caseEditorConfig.document_management_url_v2 = '/documentsv2';
       appConfig.caseEditorConfig.documentSecureModeCaseTypeExclusions = cdamExclusionList;
       appConfig.caseEditorConfig.mc_cdam_exclusion_list = cdamExclusionList;
       await route.fulfill({ response, json: appConfig });
@@ -93,20 +90,14 @@ export async function setupCaseFileViewMockRoutes(
   });
 }
 
-export async function setupCaseFileViewDocumentBinaryMockRoutes(
-  page: Page,
-  onRequest?: (url: string, referer: string) => void,
-  response: { status: number; contentType: string; body: string | Buffer } = {
-    status: 200,
-    contentType: 'application/pdf',
-    body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF,
-  }
-): Promise<void> {
-  await page.route(
-    (url) => /^\/documents(?:v2)?\/[^/]+\/binary$/.test(url.pathname),
-    async (route) => {
-      onRequest?.(route.request().url(), (await route.request().headerValue('referer')) ?? '');
-      await route.fulfill(response);
-    }
-  );
+export async function setupCaseFileViewDocumentBinaryMockRoutes(page: Page, onRequest?: (url: string) => void): Promise<void> {
+  await page.route('**/documentsv2/*/binary', async (route) => {
+    onRequest?.(route.request().url());
+    await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
+  });
+
+  await page.route('**/documents/*/binary', async (route) => {
+    onRequest?.(route.request().url());
+    await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
+  });
 }

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { safeJsonParse, withLegacyDocumentAccessContext } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
@@ -39,11 +39,6 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    const bootstrapWindow = window as Window & { __exuiTakeMediaViewerHandoff?: () => boolean };
-    if (bootstrapWindow.__exuiTakeMediaViewerHandoff) {
-      this.handoffConsumed = bootstrapWindow.__exuiTakeMediaViewerHandoff();
-      delete bootstrapWindow.__exuiTakeMediaViewerHandoff;
-    }
     window.addEventListener('message', this.messageListener);
     const sessionStorageMedia = this.sessionStorageService.getItem(MEDIA_VIEWER);
 
@@ -76,8 +71,6 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     const token = this.route.snapshot.queryParamMap.get('mvToken');
 
     if (
-      !token ||
-      !window.opener ||
       event.origin !== window.location.origin ||
       event.source !== window.opener ||
       !data ||
@@ -107,12 +100,8 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
       return;
     }
 
-    try {
-      this.sessionStorageService.setItem(MEDIA_VIEWER, data.payload);
-    } catch {
-      return;
-    }
     this.handoffConsumed = true;
+    this.sessionStorageService.setItem(MEDIA_VIEWER, data.payload);
     this.populateMedia(media);
     this.initialiseFeatureFlags();
     this.cleanUrl(token);
@@ -133,9 +122,6 @@ export class MediaViewerWrapperComponent implements OnInit, OnDestroy {
     this.mediaAnnotationApiUrl = media.annotation_api_url;
     this.caseId = media.case_id;
     this.caseJurisdiction = media.case_jurisdiction;
-    if (typeof this.mediaURL === 'string' && this.mediaURL.startsWith('/documents/')) {
-      this.mediaURL = withLegacyDocumentAccessContext(this.mediaURL, this.caseId);
-    }
     this.mediaReady = true;
     this.titleService.setTitle(this.mediaFilename + ' - View Document');
   }

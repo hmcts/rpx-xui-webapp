@@ -16,6 +16,7 @@ test.describe('Exclusion deletion', { tag: ['@integration', '@integration-case-d
     await journey.deleteExclusionLink('Bob Judge').click();
     await expect(page).toHaveURL(new RegExp(`caseId=${roleCaseId}`));
     await expect(journey.summaryValue('Person')).toHaveText('Bob Judge');
+    await expect(journey.summaryValue('Case reference')).toHaveText(roleCaseId);
     await expect(journey.summaryValue('Describe the exclusion')).toHaveText('Judicial conflict flagged.');
     await setupRoleReadback(
       page,

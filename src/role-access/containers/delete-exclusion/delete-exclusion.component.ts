@@ -89,6 +89,7 @@ export class DeleteExclusionComponent implements OnInit {
       label: AnswerLabelText.DateAdded,
       value: moment.parseZone(new Date(exclusion.added)).format('D MMMM YYYY'),
     });
+    this.answers.push({ label: AnswerLabelText.CaseReference, value: this.caseId });
   }
 
   private getNamesIfNeeded(): void {

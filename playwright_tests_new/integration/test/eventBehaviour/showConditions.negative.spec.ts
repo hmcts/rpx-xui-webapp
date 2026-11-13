@@ -27,6 +27,7 @@ test.describe('Nonmatching show-condition references', { tag: ['@integration', '
     await caseDetailsPage.continueCaseEvent();
     await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
     const answers = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersTable);
+    expect(answers).toHaveProperty('Show source page', 'no');
     expect(answers).not.toHaveProperty('Dependent detail');
     expect(answers).not.toHaveProperty('Skipped page source');
   });

@@ -87,6 +87,35 @@ test.describe('Show-condition reference coverage', { tag: ['@integration', '@int
     await expect(conditions.dependentDetail).toBeHidden();
   });
 
+  test('reveals a dependent answer after a later-page source changes to matching and preserves it at CYA', async ({
+    page,
+    caseDetailsPage,
+    createCasePage,
+  }) => {
+    const conditions = new ShowConditionsComponent(page);
+    await openShowConditionsJourney(page, caseDetailsPage, buildLaterPageShowConditionsTrigger('hide'));
+    await caseDetailsPage.selectCaseAction(EVENT_BEHAVIOUR_TRIGGER_NAME, {
+      expectedLocator: conditions.firstPageNote,
+    });
+    await expect(conditions.dependentDetail).toBeHidden();
+    await caseDetailsPage.continueCaseEvent();
+    await expect(conditions.laterPageSource).toHaveValue('hide');
+    await conditions.laterPageSource.fill('show');
+    await conditions.previousButton.click();
+    await expect(conditions.firstPageNote).toBeVisible();
+    await expect(conditions.dependentDetail).toBeVisible();
+    await conditions.dependentDetail.fill('Revealed after changing the later source');
+    await caseDetailsPage.continueCaseEvent();
+    await expect(conditions.laterPageSource).toHaveValue('show');
+    await caseDetailsPage.continueCaseEvent();
+    await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
+    const answers = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersTable);
+    expect(answers).toMatchObject({
+      'Later page source': 'show',
+      'Dependent detail': 'Revealed after changing the later source',
+    });
+  });
+
   test('evaluates real case metadata outside the event fields', async ({ page, caseDetailsPage }) => {
     const conditions = new ShowConditionsComponent(page);
     await openShowConditionsJourney(page, caseDetailsPage, buildMetadataShowConditionsTrigger('withDwp'));

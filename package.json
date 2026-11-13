@@ -283,7 +283,7 @@
     "exceljs/uuid": "11.1.1",
     "flat": "~5.0.1",
     "form-data": "4.0.6",
-    "glob@npm:^10.0.0": "npm:13.0.1",
+    "glob@npm:^10.0.0": "npm:glob@13.0.7",
     "jsdom": "^27.4.0",
     "jsonwebtoken@npm:^9.0.0": "npm:9.0.3",
     "launchdarkly-js-sdk-common/uuid": "11.1.1",

@@ -127,20 +127,6 @@ describe('Amended Jurisdiction', () => {
       };
     });
 
-    for (const [query, sessionKey] of [
-      ['access=read', 'readJurisdictions'],
-      ['access=create', 'createJurisdictions'],
-      ['other=value', 'jurisdictions'],
-    ]) {
-      it(`reads ${sessionKey} using the original mounted URL`, () => {
-        req.originalUrl = `/aggregated/caseworkers/123/jurisdictions?${query}`;
-        req.url = `/caseworkers/123/jurisdictions?${query}`;
-        req.session[sessionKey] = [{ id: 'PROBATE' }];
-
-        expect(amendedJurisdictions.checkCachedJurisdictions(proxyReq, req)).to.equal(req.session[sessionKey]);
-      });
-    }
-
     it('should return cached jurisdictions for access=read', () => {
       req.url = 'aggregated/caseworkers/123/jurisdictions?access=read';
       req.session.readJurisdictions = [{ id: 'PROBATE' }];

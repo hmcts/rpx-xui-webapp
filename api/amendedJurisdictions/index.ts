@@ -23,27 +23,14 @@ export const rewriteCaseworkerUid = (proxyReq, req) => {
  * to make available jurisdiction in filters array only
  */
 export const getJurisdictions = (data, req) => {
-  const url = req.originalUrl ?? req.url;
-  if (!jurisdictions.test(url)) {
-    return data;
-  }
-
-  let jurisdictionData = data;
-  if (typeof data === 'string') {
-    try {
-      jurisdictionData = JSON.parse(data);
-    } catch {
-      return data;
-    }
-  }
-  if (!Array.isArray(jurisdictionData)) {
+  if (!Array.isArray(data) || !jurisdictions.test(req.url)) {
     return data;
   }
 
   const filters = getConfigValue(JURISDICTIONS);
-  const params = new URLSearchParams(url.split('?')[1]);
+  const params = new URLSearchParams(req.url.split('?')[1]);
   const access = params.get('access');
-  const filtered = jurisdictionData.filter((o) => filters.includes(o.id));
+  const filtered = data.filter((o) => filters.includes(o.id));
 
   let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
   if (access === 'read') {
@@ -66,11 +53,10 @@ export const getJurisdictions = (data, req) => {
  * Returns the cached jurisdictions array for the given access type, or undefined if not cached.
  */
 export const checkCachedJurisdictions = (proxyReq, req) => {
-  const url = req.originalUrl ?? req.url;
-  if (!jurisdictions.test(url)) {
+  if (!jurisdictions.test(req.url)) {
     return undefined;
   }
-  const params = new URLSearchParams(url.split('?')[1]);
+  const params = new URLSearchParams(req.url.split('?')[1]);
   const access = params.get('access');
   let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
   if (access === 'read') {

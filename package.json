@@ -119,7 +119,7 @@
     "@angular/ssr": "20.3.32",
     "@dr.pogodin/csurf": "^1.17.1",
     "@edium/fsm": "^3.0.2",
-    "@hmcts/ccd-case-ui-toolkit": "7.4.26",
+    "@hmcts/ccd-case-ui-toolkit": "7.4.27-exui-3768-tab-order",
     "@hmcts/ccpay-web-component": "6.5.28",
     "@hmcts/media-viewer": "4.2.48",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
@@ -179,9 +179,9 @@
     "zone.js": "0.16.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.3.18",
+    "@angular-devkit/build-angular": "20.3.42",
     "@angular-eslint/builder": "20.4.0",
-    "@angular/cli": "^20.3.18",
+    "@angular/cli": "20.3.42",
     "@angular/compiler": "^20.3.31",
     "@angular/compiler-cli": "^20.3.31",
     "@angular/material-moment-adapter": "^20.0.0",

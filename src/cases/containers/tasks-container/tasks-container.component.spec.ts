@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { AlertService, CaseField, CaseNotifier, CasesService, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
@@ -250,6 +250,19 @@ describe('TasksContainerComponent', () => {
     expect(mockLoadingService.unregister).toHaveBeenCalledWith(loadingToken);
   });
 
+  it('should unregister loading token when the component is destroyed during task loading', () => {
+    const loadingToken = 'tasks-loading-token';
+    const tasksSubject = new Subject<Task[]>();
+    mockLoadingService.register.and.returnValue(loadingToken);
+    mockWACaseService.getTasksByCaseId.and.returnValue(tasksSubject.asObservable());
+
+    const loadingFixture = TestBed.createComponent(TasksContainerComponent);
+    loadingFixture.detectChanges();
+    loadingFixture.destroy();
+
+    expect(mockLoadingService.unregister).toHaveBeenCalledWith(loadingToken);
+  });
+
   it('should request judicial user details when task assignee name is not found', () => {
     component.caseworkers = [];
     component.tasks = [
@@ -297,6 +310,24 @@ describe('TasksContainerComponent', () => {
     mockWACaseService.getTasksByCaseId.and.returnValue(of([firstTask]));
     component.onTaskRefreshRequired();
     expect(component.tasks.length).toEqual(1);
+  });
+
+  it('should wait for a valid case before requesting tasks', () => {
+    const originalCaseView = mockCaseNotifier.caseView;
+    const caseViewSubject = new Subject<CaseView>();
+    mockCaseNotifier.caseView = caseViewSubject.asObservable();
+
+    const delayedFixture = TestBed.createComponent(TasksContainerComponent);
+    delayedFixture.detectChanges();
+
+    expect(mockWACaseService.getTasksByCaseId).not.toHaveBeenCalled();
+
+    caseViewSubject.next(CASE_VIEW);
+
+    expect(mockWACaseService.getTasksByCaseId).toHaveBeenCalledWith(CASE_VIEW.case_id);
+
+    mockCaseNotifier.caseView = originalCaseView;
+    delayedFixture.destroy();
   });
 
   afterEach(() => {

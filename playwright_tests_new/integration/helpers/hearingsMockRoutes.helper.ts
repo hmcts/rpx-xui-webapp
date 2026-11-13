@@ -23,6 +23,7 @@ import {
 import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 
 type HearingsEndpoint =
+  | 'cancelHearings'
   | 'getHearings'
   | 'loadServiceHearingValues'
   | 'getHearing'
@@ -265,6 +266,9 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
     const path = requestPath(route);
 
     switch (path) {
+      case '/api/hearings/cancelHearings':
+        await fulfillHearingsEndpoint(route, hearingsApiOverrides.cancelHearings, {});
+        return;
       case '/api/hearings/getHearings':
         await fulfillHearingsEndpoint(route, hearingsApiOverrides.getHearings, hearingsList);
         return;

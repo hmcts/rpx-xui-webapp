@@ -5,11 +5,15 @@ import { setupXuiAppShellBaseRoutes } from './xuiAppShellMockRoutes.helper';
 import { buildHearingsUserDetailsMock } from '../mocks/hearings.mock';
 import {
   DOCUMENT_UPLOAD_RECOVERY_REPLACEMENT_FILE,
+  DOCUMENT_UPLOAD_REJECTION_BODY,
   documentUploadRecoveryCaseData,
   successfulDocumentUploadResponse,
 } from '../mocks/documentUploadRecovery.mock';
 
-export async function openDocumentUploadRecoveryJourney(page: Page): Promise<{
+export async function openDocumentUploadRecoveryJourney(
+  page: Page,
+  scenario: 'recovery' | 'first-attempt-success' | 'repeated-rejection' = 'recovery'
+): Promise<{
   uploadRequests: Request[];
   createCaseRequests: Request[];
 }> {
@@ -43,7 +47,11 @@ export async function openDocumentUploadRecoveryJourney(page: Page): Promise<{
 
   await page.route('**/documentsv2', async (route) => {
     uploadRequests.push(route.request());
-    if (uploadRequests.length === 1) {
+    if (scenario === 'repeated-rejection') {
+      await route.fulfill({ status: 422, contentType: 'text/plain', body: DOCUMENT_UPLOAD_REJECTION_BODY });
+      return;
+    }
+    if (scenario === 'recovery' && uploadRequests.length === 1) {
       await route.fulfill({ status: 502, contentType: 'application/json', body: '{}' });
       return;
     }

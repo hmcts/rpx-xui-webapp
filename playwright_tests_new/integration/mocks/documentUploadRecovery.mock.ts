@@ -3,6 +3,8 @@ import { dynamicFieldConfigCaseData } from './dynamicFieldConfig.mock';
 export const DOCUMENT_UPLOAD_RECOVERY_FILE = 'case-file-view-document-delivery.pdf';
 export const DOCUMENT_UPLOAD_RECOVERY_REPLACEMENT_FILE = 'replacement-evidence.pdf';
 export const DOCUMENT_UPLOAD_RECOVERY_ERROR = 'Error Uploading File';
+export const DOCUMENT_UPLOAD_SECOND_REJECTED_FILE = 'second-rejected-evidence.pdf';
+export const DOCUMENT_UPLOAD_REJECTION_BODY = 'Synthetic upload rejected';
 
 export function documentUploadRecoveryCaseData() {
   const caseData = dynamicFieldConfigCaseData();

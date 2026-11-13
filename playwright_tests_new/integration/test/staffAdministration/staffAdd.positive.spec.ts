@@ -1,35 +1,36 @@
+import { StaffAdministrationPage } from '../../../E2E/page-objects/pages/exui/staffAdministration.po';
 import { expect, test } from '../../../E2E/fixtures';
+import { secondStaffUser, secondStaffUserId } from '../../mocks/staffAdministration.mock';
 import { applySessionCookies, setupStaffAdministrationMockRoutes } from '../../helpers';
 
 test.describe('Add a staff user', { tag: ['@integration', '@integration-staff-admin'] }, () => {
   test('reviews and submits a new user with a primary location', async ({ page }) => {
+    const staff = new StaffAdministrationPage(page);
     await applySessionCookies(page, 'STAFF_ADMIN');
-    const { addRequests } = await setupStaffAdministrationMockRoutes(page);
+    const { addRequests, detailsRequests } = await setupStaffAdministrationMockRoutes(page);
     await page.goto('/staff');
 
-    await page.getByRole('button', { name: 'Add new user' }).click();
-    await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
-    await page.getByLabel('First name').fill('Alex');
-    await page.getByLabel('Last name').fill('Rivera');
-    await page.getByLabel('Email').fill('alex.rivera@example.test');
-    await page.getByLabel('Region').selectOption({ label: 'London' });
-    await page.getByLabel('Immigration and Asylum').check();
-    await page.getByLabel('User type').selectOption({ label: 'Legal operations' });
-    await page.getByLabel('Case allocator').check();
-    await page.getByLabel('Caseworker', { exact: true }).check();
-    await page.locator('#location-primary').fill('Taylor');
-    await page.getByRole('option', { name: 'Taylor House' }).click();
-    await page.getByRole('link', { name: 'Add primary location' }).click();
-    await expect(page.locator('#base_locations_primary')).toContainText('Taylor House');
-    await page.getByRole('button', { name: 'Continue', exact: true }).click();
+    await staff.addUserButton.click();
+    await expect(staff.addUserHeading).toBeVisible();
+    await staff.firstName.fill('Alex');
+    await staff.lastName.fill('Rivera');
+    await staff.email.fill('alex.rivera@example.test');
+    await staff.region.selectOption({ label: 'London' });
+    await staff.immigrationAndAsylum.check();
+    await staff.userType.selectOption({ label: 'Legal operations' });
+    await staff.caseAllocator.check();
+    await staff.caseworker.check();
+    await staff.addPrimaryLocation('Taylor', 'Taylor House');
+    await expect(staff.primaryLocation).toContainText('Taylor House');
+    await staff.continueButton.click();
 
     await expect(page.getByText('Check your answers before adding a new user')).toBeVisible();
     await expect(page.getByText('Alex Rivera')).toBeVisible();
     await expect(page.getByText('alex.rivera@example.test')).toBeVisible();
     await expect(page.getByText('Taylor House')).toBeVisible();
-    const userTypeRow = page.locator('.govuk-summary-list__row').filter({ hasText: 'User type' }).first();
+    const userTypeRow = staff.summaryRow('User type');
     await expect(userTypeRow).toContainText('Legal operations');
-    await page.getByRole('button', { name: 'Submit', exact: true }).click();
+    await staff.submitButton.click();
 
     await expect(page).toHaveURL(/\/staff$/);
     await expect(page.getByText('You have added a new user.')).toBeVisible();
@@ -48,15 +49,19 @@ test.describe('Add a staff user', { tag: ['@integration', '@integration-staff-ad
       roles: [{ role_id: 'role-1', role: 'Caseworker', is_primary: true }],
     });
 
-    await page.getByRole('textbox', { name: 'Search for a user by name' }).fill('Alex');
-    await page.getByRole('button', { name: 'Search', exact: true }).click();
-    const addedRow = page.getByRole('row', { name: /Alex Rivera/ });
+    await staff.searchForUser('Alex');
+    const addedRow = staff.userRow(/Alex Rivera/);
     await expect(addedRow).toContainText('Taylor House');
     await addedRow.getByRole('link', { name: 'Alex Rivera' }).click();
     await expect(page).toHaveURL(/\/staff\/user-details\/staff-added-001$/);
-    const details = page.getByRole('heading', { name: 'User details' }).locator('..');
+    const details = staff.userDetails;
     await expect(details).toContainText('alex.rivera@example.test');
     await expect(details).toContainText('Taylor House');
     await expect(details).toContainText('Legal operations');
+    expect(detailsRequests).toEqual(['staff-added-001']);
+    await page.goto(`/staff/user-details/${secondStaffUserId}`);
+    await expect(staff.userDetails).toContainText(secondStaffUser.email_id);
+    await expect(staff.userDetails).not.toContainText('alex.rivera@example.test');
+    await expect(staff.summaryRow('Status')).toContainText('ACTIVE');
   });
 });

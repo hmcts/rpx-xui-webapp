@@ -1,3 +1,4 @@
+import { StaffAdministrationPage } from '../../../E2E/page-objects/pages/exui/staffAdministration.po';
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies, setupStaffAdministrationMockRoutes } from '../../helpers';
 
@@ -8,11 +9,25 @@ test.describe('Staff administration search', { tag: ['@integration', '@integrati
   });
 
   test('shows no user when the search has no matches', async ({ page }) => {
+    const staff = new StaffAdministrationPage(page);
     await page.goto('/staff');
-    await page.getByRole('textbox', { name: 'Search for a user by name' }).fill('Nobody');
-    await page.getByRole('button', { name: 'Search', exact: true }).click();
+    await staff.searchForUser('Nobody');
 
-    await expect(page.locator('#user-list-no-results')).toHaveText('No results found');
-    await expect(page.getByRole('row', { name: /Jane Smith/ })).toHaveCount(0);
+    await expect(staff.noResults).toHaveText('No results found');
+    await expect(staff.userRow(/Jane Smith/)).toHaveCount(0);
+  });
+
+  test('shows an inline validation error for a rejected cold search without inventing rows', async ({ page }) => {
+    const staff = new StaffAdministrationPage(page);
+    await setupStaffAdministrationMockRoutes(page, { searchStatus: 400 });
+    await page.goto('/staff');
+    const response = page.waitForResponse((response) => response.url().includes('/getUsersByPartialName'));
+    await staff.searchForUser('Jane');
+    expect((await response).status()).toBe(400);
+    await expect(page.getByText('Invalid search string. Please input a valid string.')).toBeVisible();
+    await expect(staff.userListHeading).toBeVisible();
+    await expect(staff.userRow(/Jane Smith/)).toHaveCount(0);
+    await expect(staff.noResults).toHaveCount(0);
+    await expect(page).toHaveURL(/\/staff$/);
   });
 });

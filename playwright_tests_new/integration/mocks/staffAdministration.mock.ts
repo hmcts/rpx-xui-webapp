@@ -46,3 +46,26 @@ export const staffFilterOptions = {
 export function staffSearchResults(items: (typeof staffUser)[] = [staffUser]) {
   return { items, pageNumber: 1, pageSize: 15, totalItems: items.length };
 }
+
+export const staffAdvancedFirstPage = Array.from({ length: 15 }, (_, index) => ({
+  ...staffUser,
+  case_worker_id: `staff-filtered-${index + 1}`,
+  first_name: 'Filtered',
+  last_name: `User ${index + 1}`,
+  email_id: `filtered.user.${index + 1}@example.test`,
+}));
+
+export const staffAddFailureCases = [
+  { status: 400, name: 'duplicate email', error: 'A user with this email address already exists' },
+  { status: 503, name: 'unavailable service', error: 'Staff creation service is unavailable' },
+];
+
+export const newStaffUserDetails = {
+  firstName: 'Alex',
+  lastName: 'Rivera',
+  email: 'alex.rivera@example.test',
+  region: 'London',
+  service: 'Immigration and Asylum',
+  userType: 'Legal operations',
+  jobTitle: 'Caseworker',
+};

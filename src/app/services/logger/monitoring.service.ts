@@ -95,6 +95,24 @@ export class MonitoringService implements IMonitoringService {
 
   public enableCookies() {
     this.areCookiesEnabled = true;
+    this.applyCookieConsent();
+  }
+
+  public disableCookies(): void {
+    this.areCookiesEnabled = false;
+    this.applyCookieConsent();
+  }
+
+  private applyCookieConsent(): void {
+    if (!this.appInsights) {
+      return;
+    }
+    this.appInsights.getCookieMgr().setEnabled(this.areCookiesEnabled);
+    this.appInsights.updateCfg({
+      cookieCfg: { enabled: this.areCookiesEnabled },
+      isStorageUseDisabled: !this.areCookiesEnabled,
+      enableSessionStorageBuffer: this.areCookiesEnabled,
+    });
   }
 
   public captureOperationContext(): Record<string, string> {
@@ -126,12 +144,12 @@ export class MonitoringService implements IMonitoringService {
   private initialize(): Observable<boolean> {
     if (!this.initialization$) {
       this.initialization$ = defer(() =>
-        this.http.get<{ connectionString?: string; samplingPercentage?: number }>('/api/monitoring-tools')
+        this.http.get<{ enabled?: boolean; connectionString?: string; samplingPercentage?: number }>('/api/monitoring-tools')
       ).pipe(
         take(1),
         map((monitor) => {
           const connectionString = monitor?.connectionString;
-          if (typeof connectionString !== 'string' || !connectionString.trim()) {
+          if (monitor?.enabled !== true || typeof connectionString !== 'string' || !connectionString.trim()) {
             return false;
           }
 
@@ -143,7 +161,7 @@ export class MonitoringService implements IMonitoringService {
             Object.assign(config, {
               isCookieUseDisabled: true,
               isStorageUseDisabled: true,
-              enableSessionStorageBuffer: true,
+              enableSessionStorageBuffer: false,
             });
           }
 

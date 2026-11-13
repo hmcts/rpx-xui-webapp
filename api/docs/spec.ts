@@ -232,7 +232,9 @@ const openApiSpec = {
       },
       MonitoringConfig: {
         type: 'object',
+        required: ['enabled'],
         properties: {
+          enabled: { type: 'boolean', description: 'Whether browser telemetry is enabled.' },
           key: { type: 'string', nullable: true },
           connectionString: { type: 'string', nullable: true },
           samplingPercentage: { type: 'number', minimum: 0, maximum: 100 },

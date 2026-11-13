@@ -66,6 +66,18 @@ describe('orgServices cache', () => {
     expect(upstream.callCount).to.equal(1);
   });
 
+  it('matches service names containing ALL as complete names instead of wildcards', async () => {
+    const smallService = { service_code: 'AAA8', ccd_service_name: 'SMALL', ccd_case_types: ['SmallCase'] };
+    upstream.resolves({ status: 200, data: [...data, smallService] });
+    expect((await fetchOrgServices(request(), 'ccdServiceNames=%20small%20')).data).to.deep.equal([smallService]);
+    expect((await fetchOrgServices(request(), 'ccdServiceNames=SMALL,CIVIL')).data).to.deep.equal([
+      ...data.slice(1),
+      smallService,
+    ]);
+    expect((await fetchOrgServices(request(), 'ccdServiceNames=%20all%20')).data).to.deep.equal([...data, smallService]);
+    expect(upstream.callCount).to.equal(1);
+  });
+
   it('returns 404 locally when combined filters conflict', async () => {
     const next = sandbox.spy();
     const res = mockRes();

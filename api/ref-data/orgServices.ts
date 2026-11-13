@@ -26,7 +26,7 @@ function filterServices(data: RefDataHMCTSService[], params: URLSearchParams): R
       if (names.some((item) => !item)) {
         return undefined;
       }
-      if (!normalized.includes('ALL')) {
+      if (!names.includes('ALL')) {
         filtered = filtered.filter((service) => names.includes(service.ccd_service_name?.toUpperCase()));
       }
     } else if (name === 'ccdCaseType') {

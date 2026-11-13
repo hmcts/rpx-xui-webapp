@@ -17,7 +17,7 @@
       <!-- Logo for Case Manager Users -->
       <ng-container *ngSwitchCase="'myhmcts'">
         <div class="govuk-header__logo">
-          <a href="#" class="govuk-header__link govuk-header__link--homepage">
+          <a href="#" class="govuk-header__homepage-link">
             <span class="govuk-header__logotype">
               <span class="govuk-header__logotype-text"> MyHMCTS </span>
             </span>
@@ -30,7 +30,7 @@
       <!-- Logo for Users (Default) -->
       <ng-container *ngSwitchDefault>
         <div *ngIf="!headerTitle?.name" class="govuk-header__logo">
-          <a href="#" class="govuk-header__link govuk-header__link--homepage">
+          <a href="#" class="govuk-header__homepage-link">
             <span class="govuk-header__logotype">
               <span class="govuk-header__logotype-text"> MyHMCTS </span>
             </span>

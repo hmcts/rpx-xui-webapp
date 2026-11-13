@@ -1,49 +1,59 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !dateControl.valid }">
-  <label class="govuk-label" [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
-      questionField.question_text | rpxTranslate
-    }}</span>
-    <span class="error-message" *ngIf="dateControl.errors && dateGroup.touched">{{
-      dateControl.errors | nocError | rpxTranslate
-    }}</span>
-  </label>
+<div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': dateControl.errors && dateGroup.touched }">
+  <fieldset class="govuk-fieldset" [attr.aria-describedby]="dateControl.errors && dateGroup.touched ? id() + '-error' : null">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s govuk-!-font-weight-bold">
+      <ng-container *ngIf="questionField.question_text">{{ questionField.question_text | rpxTranslate }}</ng-container>
+    </legend>
+    <span class="govuk-error-message" *ngIf="dateControl.errors && dateGroup.touched" [id]="id() + '-error'">
+      <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+      {{ dateControl.errors | nocError | rpxTranslate }}
+    </span>
 
-  <div class="form-date" [formGroup]="dateGroup">
-    <div class="form-group form-group-day">
-      <label class="form-label" [for]="dayId()">{{ 'Day' | rpxTranslate }}</label>
-      <input
-        #dayInput
-        class="form-control govuk-input govuk-input--width-10"
-        [id]="dayId()"
-        type="number"
-        oninput="this.value = this.value.slice(0, this.maxLength)"
-        maxlength="2"
-        formControlName="day"
-      />
+    <div class="govuk-date-input" [id]="id()" [formGroup]="dateGroup">
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" [for]="dayId()">{{ 'Day' | rpxTranslate }}</label>
+          <input
+            #dayInput
+            class="govuk-input govuk-date-input__input govuk-input--width-2"
+            [id]="dayId()"
+            type="text"
+            inputmode="numeric"
+            oninput="this.value = this.value.slice(0, this.maxLength)"
+            maxlength="2"
+            formControlName="day"
+          />
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" [for]="monthId()">{{ 'Month' | rpxTranslate }}</label>
+          <input
+            #monthInput
+            class="govuk-input govuk-date-input__input govuk-input--width-2"
+            [id]="monthId()"
+            type="text"
+            inputmode="numeric"
+            oninput="this.value = this.value.slice(0, this.maxLength)"
+            maxlength="2"
+            formControlName="month"
+          />
+        </div>
+      </div>
+      <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" [for]="yearId()">{{ 'Year' | rpxTranslate }}</label>
+          <input
+            #yearInput
+            class="govuk-input govuk-date-input__input govuk-input--width-4"
+            [id]="yearId()"
+            type="text"
+            inputmode="numeric"
+            oninput="this.value = this.value.slice(0, this.maxLength)"
+            maxlength="4"
+            formControlName="year"
+          />
+        </div>
+      </div>
     </div>
-    <div class="form-group form-group-month">
-      <label class="form-label" [for]="monthId()">{{ 'Month' | rpxTranslate }}</label>
-      <input
-        #monthInput
-        class="form-control govuk-input govuk-input--width-10"
-        [id]="monthId()"
-        type="number"
-        oninput="this.value = this.value.slice(0, this.maxLength)"
-        maxlength="2"
-        formControlName="month"
-      />
-    </div>
-    <div class="form-group form-group-year">
-      <label class="form-label" [for]="yearId()">{{ 'Year' | rpxTranslate }}</label>
-      <input
-        #yearInput
-        class="form-control govuk-input govuk-input--width-10"
-        [id]="yearId()"
-        type="number"
-        oninput="this.value = this.value.slice(0, this.maxLength)"
-        maxlength="4"
-        formControlName="year"
-      />
-    </div>
-  </div>
+  </fieldset>
 </div>

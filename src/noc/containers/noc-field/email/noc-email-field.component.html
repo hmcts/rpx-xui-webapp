@@ -1,12 +1,17 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !emailControl.valid }">
-  <label [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" questionField.question_text>{{
-      questionField.question_text | rpxTranslate
-    }}</span>
-    <span class="error-message" *ngIf="emailControl.errors && emailControl.touched">{{
-      emailControl.errors | nocError | rpxTranslate
-    }}</span>
+<div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': emailControl.errors && emailControl.touched }">
+  <label class="govuk-label govuk-!-font-weight-bold" [for]="id()">
+    <ng-container *ngIf="questionField.question_text">{{ questionField.question_text | rpxTranslate }}</ng-container>
   </label>
-
-  <input class="govuk-input govuk-input--width-10" [id]="id()" type="email" [formControl]="emailControl" />
+  <span class="govuk-error-message" *ngIf="emailControl.errors && emailControl.touched" [id]="id() + '-error'">
+    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+    {{ emailControl.errors | nocError | rpxTranslate }}
+  </span>
+  <input
+    class="govuk-input govuk-input--width-10"
+    [class.govuk-input--error]="emailControl.errors && emailControl.touched"
+    [id]="id()"
+    type="email"
+    [formControl]="emailControl"
+    [attr.aria-describedby]="emailControl.errors && emailControl.touched ? id() + '-error' : null"
+  />
 </div>

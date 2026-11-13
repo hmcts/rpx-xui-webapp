@@ -1,3 +1,4 @@
+import type { Route } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
 import { setupCaseFileViewMockRoutes } from '../../helpers';
 import { buildEmptyCaseFileViewCategoriesMock } from '../../mocks/caseFileView.mock';
@@ -34,23 +35,19 @@ test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integr
   test('Document binary failure keeps the case file view stable', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     let failedBinaryRequest = false;
     await test.step('Set up case file view mocks with a failing binary endpoint', async () => {
-      await setupCaseFileViewMockRoutes(page, caseId);
+      // Pin the CDAM exclusion list so the binary path does not depend on the live LaunchDarkly flag.
+      await setupCaseFileViewMockRoutes(page, caseId, { cdamExclusionList: 'PRLAPPS' });
 
-      await page.route('**/documentsv2/*/binary', async (route) => {
-        await route.fulfill({
-          status: 500,
-          contentType: 'application/json',
-          body: JSON.stringify({ message: 'forced document binary failure' }),
-        });
-      });
-      await page.route('**/documents/*/binary', async (route) => {
+      const failBinary = async (route: Route) => {
         failedBinaryRequest = true;
         await route.fulfill({
           status: 500,
           contentType: 'application/json',
           body: JSON.stringify({ message: 'forced document binary failure' }),
         });
-      });
+      };
+      await page.route('**/documentsv2/*/binary', failBinary);
+      await page.route('**/documents/*/binary', failBinary);
     });
 
     await test.step('Open the Case File View tab', async () => {

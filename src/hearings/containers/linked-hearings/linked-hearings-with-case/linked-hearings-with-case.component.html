@@ -153,8 +153,8 @@
               </tr>
             </ng-container>
 
-            <tr class="govuk-table__row" class="govuk-table__row" *ngIf="case.caseHearings.length === 0">
-              <td scope="row" class="govuk-table__cell align-middle">{{ 'No hearings requested' | rpxTranslate }}</td>
+            <tr class="govuk-table__row" *ngIf="case.caseHearings.length === 0">
+              <td class="govuk-table__cell align-middle">{{ 'No hearings requested' | rpxTranslate }}</td>
             </tr>
           </tbody>
         </table>
@@ -167,9 +167,11 @@
   {{ 'You do not have access to the following cases.' | rpxTranslate }}
   <div class="govuk-form-group govuk-!-margin-top-3">
     <table class="govuk-table">
-      <tr class="govuk-table__row" *ngFor="let case of linkedCasesWithNoAccessToLoggedInUser">
-        <td scope="col">{{ case.caseName }} &nbsp;{{ case.caseReference | caseReference }}</td>
-      </tr>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngFor="let case of linkedCasesWithNoAccessToLoggedInUser">
+          <td class="govuk-table__cell">{{ case.caseName }} &nbsp;{{ case.caseReference | caseReference }}</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>

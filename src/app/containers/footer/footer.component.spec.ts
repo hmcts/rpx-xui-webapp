@@ -78,6 +78,10 @@ describe('FooterComponent', () => {
     expect(component.navigationData).toBe(AppConstants.FOOTER_DATA_NAVIGATION);
   });
 
+  it('should include a site map link', () => {
+    expect(component.navigationData.items).toContain(jasmine.objectContaining({ text: 'Site map', href: '/sitemap' }));
+  });
+
   describe('ngOnInit', () => {
     it('should expose the logged in user email in lower environments', (done) => {
       mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.AAT);

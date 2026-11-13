@@ -74,5 +74,7 @@ test.describe('Multi-day work booking', { tag: ['@integration', '@integration-bo
     });
     await expect(page).toHaveURL(/\/work\/my-work\/list/);
     await expect(taskListPage.taskRows).toHaveCount(3);
+    await taskListPage.openFilterPanel();
+    await expect(taskListPage.selectedLocationTags).toHaveText([singleLocationMock[0].site_name]);
   });
 });

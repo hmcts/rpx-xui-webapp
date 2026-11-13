@@ -9,23 +9,18 @@ import {
 } from '../mocks/shareCase.mock';
 
 export type ShareCaseAssignmentCapture = {
-  requests: Array<{ sharedCases: SharedCaseMock[] }>;
+  requests: Array<{ method: string; sharedCases: SharedCaseMock[] }>;
+  cases: SharedCaseMock[];
+  caseRequests: string[][];
 };
 
 type ShareCaseMockRouteOptions = {
   caseIds?: string[];
   users?: typeof shareCaseUsers;
+  cases?: SharedCaseMock[];
+  assignmentResponse?: SharedCaseMock[];
+  assignmentStatus?: number;
 };
-
-const featureValues = {
-  'shareable-jurisdictions': [shareableJurisdiction],
-  'mc-remove-user-from-case': false,
-  'remove-user-from-case-mc': false,
-};
-
-const launchDarklyFlagSet = Object.fromEntries(
-  Object.entries(featureValues).map(([flagName, value]) => [flagName, { value, version: 1 }])
-);
 
 async function fulfillJson(route: Route, body: unknown, status = 200): Promise<void> {
   await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
@@ -42,21 +37,30 @@ export function hasExpectedShareCaseIds(searchParams: URLSearchParams, expectedC
   return [...parseShareCaseIds(searchParams)].sort().join(',') === [...expectedCaseIds].sort().join(',');
 }
 
-export async function setupShareCaseBootstrapRoutes(page: Page): Promise<void> {
+export async function setupShareCaseBootstrapRoutes(page: Page, removalEnabled = false): Promise<void> {
+  const launchDarklyFlagSet = Object.fromEntries(
+    Object.entries({
+      'shareable-jurisdictions': [shareableJurisdiction],
+      'remove-user-from-case-mc': removalEnabled,
+    }).map(([name, value]) => [name, { value, version: 1 }])
+  );
   const userDetails = buildShareCaseUserDetails();
 
-  await page.addInitScript((seededUserInfo) => {
-    window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
-    window.sessionStorage.setItem(
-      'savedQueryParams',
-      JSON.stringify({
-        jurisdiction: shareableJurisdiction,
-        'case-type': 'xuiTestJurisdiction',
-        'case-state': null,
-      })
-    );
-    window.sessionStorage.setItem('workbasket-filter-form-group-value', JSON.stringify({}));
-  }, userDetails.userInfo);
+  await page.addInitScript(
+    ({ seededUserInfo, jurisdiction }) => {
+      window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
+      window.sessionStorage.setItem(
+        'savedQueryParams',
+        JSON.stringify({
+          jurisdiction,
+          'case-type': 'xuiTestJurisdiction',
+          'case-state': null,
+        })
+      );
+      window.sessionStorage.setItem('workbasket-filter-form-group-value', JSON.stringify({}));
+    },
+    { seededUserInfo: userDetails.userInfo, jurisdiction: shareableJurisdiction }
+  );
 
   await page.route('**/auth/isAuthenticated*', async (route) => fulfillJson(route, true));
   await page.route('**/api/user/details*', async (route) => fulfillJson(route, userDetails));
@@ -94,26 +98,39 @@ export async function setupShareCaseApiRoutes(
   page: Page,
   options: ShareCaseMockRouteOptions = {}
 ): Promise<ShareCaseAssignmentCapture> {
-  const capture: ShareCaseAssignmentCapture = { requests: [] };
-  const seededCaseIds = options.caseIds ?? [];
+  const capture: ShareCaseAssignmentCapture = {
+    requests: [],
+    cases: structuredClone(options.cases ?? buildSharedCases(options.caseIds ?? [])),
+    caseRequests: [],
+  };
   const users = options.users ?? shareCaseUsers;
 
   await page.route('**/api/caseshare/users*', async (route) => fulfillJson(route, users));
   await page.route('**/api/caseshare/cases*', async (route) => {
     const requestUrl = new URL(route.request().url());
     const caseIds = parseShareCaseIds(requestUrl.searchParams);
-    await fulfillJson(route, buildSharedCases(caseIds.length > 0 ? caseIds : seededCaseIds));
+    capture.caseRequests.push(caseIds);
+    await fulfillJson(
+      route,
+      (caseIds.length > 0 ? capture.cases.filter((aCase) => caseIds.includes(aCase.caseId)) : capture.cases).map(
+        ({ caseId, sharedWith }) => ({ caseId, sharedWith })
+      )
+    );
   });
   await page.route('**/api/caseshare/case-assignments*', async (route) => {
     if (route.request().method() === 'GET') {
-      await fulfillJson(route, buildSharedCases(seededCaseIds));
+      await fulfillJson(route, capture.cases);
       return;
     }
 
     const requestBody = (route.request().postDataJSON() as { sharedCases?: SharedCaseMock[] }) ?? {};
     const sharedCases = requestBody.sharedCases ?? [];
-    capture.requests.push({ sharedCases });
-    await fulfillJson(route, buildAssignedSharedCases(sharedCases));
+    capture.requests.push({ method: route.request().method(), sharedCases });
+    await fulfillJson(
+      route,
+      options.assignmentResponse ?? buildAssignedSharedCases(sharedCases),
+      options.assignmentStatus ?? 200
+    );
   });
 
   return capture;

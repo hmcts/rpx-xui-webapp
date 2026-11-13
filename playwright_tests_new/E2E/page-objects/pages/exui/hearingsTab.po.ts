@@ -39,6 +39,10 @@ export class HearingsTabPage {
     return this.page.locator(`#link-view-or-edit-${hearingId}`);
   }
 
+  hearingIdCell(hearingId: string): Locator {
+    return this.container.getByRole('cell', { name: hearingId, exact: true });
+  }
+
   viewDetailsButton(hearingId: string): Locator {
     return this.page.locator(`#link-view-details-${hearingId}`);
   }

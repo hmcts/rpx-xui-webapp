@@ -116,6 +116,12 @@ export class BookingUiPage extends Base {
     await this.bookingDateRadio.filter({ hasText: 'Select a date range' }).click();
   }
 
+  public async enterBookingDate(field: 'startDate' | 'endDate', day: string, month: string, year: string): Promise<void> {
+    await this.page.locator(`#${field}-day`).fill(day);
+    await this.page.locator(`#${field}-month`).fill(month);
+    await this.page.locator(`#${field}-year`).fill(year);
+  }
+
   public async confirmBooking(): Promise<void> {
     await this.bookingButton.click();
   }

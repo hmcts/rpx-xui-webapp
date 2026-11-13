@@ -64,6 +64,10 @@ export async function setupBookingUiMockRoutes(page: Page, options: BookingUiMoc
     });
   });
 
+  await page.route('**/workallocation/full-location*', async (route) => {
+    await route.fulfill({ json: locationResponseBody });
+  });
+
   await page.route('**/am/getBookings', async (route) => {
     onGetBookings?.();
     await route.fulfill({

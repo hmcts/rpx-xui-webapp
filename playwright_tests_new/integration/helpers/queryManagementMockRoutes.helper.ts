@@ -62,6 +62,7 @@ export type QueryManagementSubmissionCapture = {
     taskId: string;
   }>;
   submittedEvents: QueryManagementSubmittedEvent[];
+  submittedEventMethods: string[];
 };
 
 type QueryManagementRouteOverride = {
@@ -72,6 +73,8 @@ type QueryManagementRouteOverride = {
 type QueryManagementRouteUser = 'solicitor' | 'caseworker';
 
 type QueryManagementMockRoutesOptions = {
+  caseReference?: string;
+  featureFlags?: Record<string, unknown>;
   caseTasks?: unknown[];
   completableTasks?: unknown[];
   includeQueryTab?: boolean;
@@ -90,10 +93,6 @@ const QUERY_MANAGEMENT_FEATURE_FLAGS = {
     messages: [],
   },
 };
-
-const launchDarklyFlagSet = Object.fromEntries(
-  Object.entries(QUERY_MANAGEMENT_FEATURE_FLAGS).map(([flagName, value]) => [flagName, { value, version: 1 }])
-);
 
 async function fulfillJson(route: Route, body: unknown, status = 200): Promise<void> {
   await route.fulfill({
@@ -116,7 +115,10 @@ async function fulfillJsonRoute(
   });
 }
 
-async function setupQueryManagementLaunchDarklyRoute(page: Page): Promise<void> {
+async function setupQueryManagementLaunchDarklyRoute(page: Page, flags: Record<string, unknown>): Promise<void> {
+  const launchDarklyFlagSet = Object.fromEntries(
+    Object.entries(flags).map(([flagName, value]) => [flagName, { value, version: 1 }])
+  );
   await page.route('**/*launchdarkly.com/**', async (route) => {
     const request = route.request();
     const pathname = new URL(request.url()).pathname;
@@ -126,7 +128,7 @@ async function setupQueryManagementLaunchDarklyRoute(page: Page): Promise<void> 
       return;
     }
 
-    if (request.method() !== 'GET') {
+    if (request.method() !== 'GET' && !pathname.includes('/sdk/eval')) {
       await route.fulfill({ status: 202, body: '' });
       return;
     }
@@ -222,31 +224,32 @@ export async function setupQueryManagementMockRoutes(
   options: QueryManagementMockRoutesOptions = {}
 ): Promise<QueryManagementSubmissionCapture> {
   const user = options.user ?? 'solicitor';
+  const caseReference = options.caseReference ?? QUERY_MANAGEMENT_CASE_REFERENCE;
+  const featureFlags = { ...QUERY_MANAGEMENT_FEATURE_FLAGS, ...options.featureFlags };
   let queryCollection = options.queryCollection;
   const buildCaseDetails = () =>
     buildQueryManagementCaseDetailsMock({
       includeQueryTab: options.includeQueryTab || Boolean(queryCollection),
       queryCollection,
+      caseReference,
     });
-  const raiseQueryEventTrigger = buildQueryManagementRaiseQueryEventTriggerMock(
-    QUERY_MANAGEMENT_CASE_REFERENCE,
-    queryCollection ?? null
-  );
+  const raiseQueryEventTrigger = buildQueryManagementRaiseQueryEventTriggerMock(caseReference, queryCollection ?? null);
   const respondQueryEventTrigger = buildQueryManagementRespondQueryEventTriggerMock(
-    QUERY_MANAGEMENT_CASE_REFERENCE,
+    caseReference,
     queryCollection ?? buildQueryManagementExistingQueryCollection()
   );
   const capture: QueryManagementSubmissionCapture = {
     completedTasks: [],
     submittedEvents: [],
+    submittedEventMethods: [],
   };
 
   await setupXuiAppShellBaseRoutes(page, {
     userDetails: buildQueryManagementUserDetails(user),
-    clientContextFeatureFlags: QUERY_MANAGEMENT_FEATURE_FLAGS,
+    clientContextFeatureFlags: featureFlags,
   });
 
-  await setupQueryManagementLaunchDarklyRoute(page);
+  await setupQueryManagementLaunchDarklyRoute(page, featureFlags);
   await setupCaseworkerJurisdictionsRoute(page, [QUERY_MANAGEMENT_JURISDICTION]);
 
   await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
@@ -271,19 +274,19 @@ export async function setupQueryManagementMockRoutes(
     });
   });
 
-  await page.route(`**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}*`, async (route) => {
+  await page.route(`**/data/internal/cases/${caseReference}*`, async (route) => {
     await fulfillJson(route, buildCaseDetails());
   });
 
   if (options.caseTasks) {
-    await page.route(`**/workallocation/case/task/${QUERY_MANAGEMENT_CASE_REFERENCE}*`, async (route) => {
+    await page.route(`**/workallocation/case/task/${caseReference}*`, async (route) => {
       await fulfillJson(route, options.caseTasks);
     });
   }
 
   if (options.completableTasks) {
     await page.route(
-      `**/workallocation/case/tasks/${QUERY_MANAGEMENT_CASE_REFERENCE}/event/${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}/caseType/${QUERY_MANAGEMENT_CASE_TYPE}/jurisdiction/${QUERY_MANAGEMENT_JURISDICTION}*`,
+      `**/workallocation/case/tasks/${caseReference}/event/${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}/caseType/${QUERY_MANAGEMENT_CASE_TYPE}/jurisdiction/${QUERY_MANAGEMENT_JURISDICTION}*`,
       async (route) => {
         await fulfillJson(route, {
           task_required_for_event: true,
@@ -301,28 +304,28 @@ export async function setupQueryManagementMockRoutes(
   });
 
   await page.route(
-    `**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/event-triggers/${QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID}/validate*`,
+    `**/data/internal/cases/${caseReference}/event-triggers/${QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID}/validate*`,
     async (route) => {
       await fulfillJsonRoute(route, options.raiseQueryEventTrigger, raiseQueryEventTrigger);
     }
   );
 
   await page.route(
-    `**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/event-triggers/${QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID}*`,
+    `**/data/internal/cases/${caseReference}/event-triggers/${QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID}*`,
     async (route) => {
       await fulfillJsonRoute(route, options.raiseQueryEventTrigger, raiseQueryEventTrigger);
     }
   );
 
   await page.route(
-    `**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/event-triggers/${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}/validate*`,
+    `**/data/internal/cases/${caseReference}/event-triggers/${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}/validate*`,
     async (route) => {
       await fulfillJsonRoute(route, options.respondQueryEventTrigger, respondQueryEventTrigger);
     }
   );
 
   await page.route(
-    `**/data/internal/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/event-triggers/${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}*`,
+    `**/data/internal/cases/${caseReference}/event-triggers/${QUERY_MANAGEMENT_RESPOND_QUERY_TRIGGER_ID}*`,
     async (route) => {
       await fulfillJsonRoute(route, options.respondQueryEventTrigger, respondQueryEventTrigger);
     }
@@ -332,9 +335,10 @@ export async function setupQueryManagementMockRoutes(
     await fulfillJsonRoute(route, options.validateQueryEvent, buildQueryManagementValidationResponse(route));
   });
 
-  await page.route(`**/data/cases/${QUERY_MANAGEMENT_CASE_REFERENCE}/events*`, async (route) => {
+  await page.route(`**/data/cases/${caseReference}/events*`, async (route) => {
     const submittedEvent = route.request().postDataJSON?.() as QueryManagementSubmittedEvent;
     capture.submittedEvents.push(submittedEvent);
+    capture.submittedEventMethods.push(route.request().method());
     const successfulSubmit =
       !options.submitQueryEvent?.status || (options.submitQueryEvent.status >= 200 && options.submitQueryEvent.status < 300);
 
@@ -359,10 +363,11 @@ export async function setupQueryManagementMockRoutes(
 export async function openSolicitorRaiseQueryFromNextStep(
   page: Page,
   caseDetailsPage: CaseDetailsPage,
-  queryManagementPage = new QueryManagementPage(page)
+  queryManagementPage = new QueryManagementPage(page),
+  options: QueryManagementMockRoutesOptions = {}
 ): Promise<QueryManagementSubmissionCapture> {
   await applySessionCookies(page, TEST_USERS.SOLICITOR);
-  const capture = await setupQueryManagementMockRoutes(page);
+  const capture = await setupQueryManagementMockRoutes(page, options);
 
   await caseDetailsPage.openCaseDetails(
     QUERY_MANAGEMENT_JURISDICTION,

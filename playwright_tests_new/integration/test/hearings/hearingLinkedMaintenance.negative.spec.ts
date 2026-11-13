@@ -86,6 +86,8 @@ test.describe('Existing linked hearing maintenance failures', { tag: ['@integrat
     await hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID).click();
     await hearingsTabPage.editLinkedHearingsButton.click();
     await hearingsTabPage.clearLinkedCaseLink('Maintenance partner').click();
+    await expect(hearingsTabPage.linkedCaseSelection('Maintenance partner')).not.toBeChecked();
+    expect(mutations).toHaveLength(0);
     await hearingsTabPage.continueFlow();
     await expect(
       page.getByText('There was a system error and your request could not be processed. Please try again.', { exact: true })
@@ -93,6 +95,7 @@ test.describe('Existing linked hearing maintenance failures', { tag: ['@integrat
     await expect(page).not.toHaveURL(/final-confirmation$/);
     expect(mutations).toHaveLength(1);
     expect(mutations[0].method()).toBe('DELETE');
+    expect(new URL(mutations[0].url()).pathname).toBe('/api/hearings/deleteLinkedHearingGroup');
     await expect(hearingsTabPage.linkedCaseSelection('Maintenance partner')).not.toBeChecked();
     expect(Object.fromEntries(new URL(mutations[0].url()).searchParams)).toEqual({
       hearingGroupId: MAINTENANCE_GROUP_ID,

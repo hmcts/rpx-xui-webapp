@@ -14,30 +14,28 @@ const evidenceFile = fileURLToPath(new URL(`../../testData/documents/${DOCUMENT_
 test.describe('Create case document upload recovery', { tag: ['@integration', '@integration-create-case'] }, () => {
   test('retains entered work after an unavailable upload and submits one valid replacement', async ({ page, createCasePage }) => {
     const requests = await openDocumentUploadRecoveryJourney(page);
-    const fileInput = page.locator('ccd-write-document-field input[type="file"]');
-    const uploadError = page.locator('ccd-write-document-field [role="alert"]');
 
-    await expect(page.getByLabel('Case title')).toBeVisible();
-    await page.getByLabel('Case title').fill('Evidence upload recovery');
-    await page.locator('#CaseReference').fill('123');
+    await expect(createCasePage.caseTitleInput).toBeVisible();
+    await createCasePage.caseTitleInput.fill('Evidence upload recovery');
+    await createCasePage.caseReferenceInput.fill('123');
 
-    await fileInput.setInputFiles(evidenceFile);
-    await expect(uploadError).toBeVisible();
-    await expect(uploadError).toContainText(DOCUMENT_UPLOAD_RECOVERY_ERROR);
+    await createCasePage.evidenceDocumentInput.setInputFiles(evidenceFile);
+    await expect(createCasePage.evidenceDocumentUploadError).toBeVisible();
+    await expect(createCasePage.evidenceDocumentUploadError).toContainText(DOCUMENT_UPLOAD_RECOVERY_ERROR);
     expect(requests.uploadRequests).toHaveLength(1);
 
     await createCasePage.continueButton.click();
-    await expect(page.getByLabel('Case title')).toHaveValue('Evidence upload recovery');
-    await expect(page.locator('#CaseReference')).toHaveValue('123');
+    await expect(createCasePage.caseTitleInput).toHaveValue('Evidence upload recovery');
+    await expect(createCasePage.caseReferenceInput).toHaveValue('123');
     await expect(createCasePage.checkYourAnswersHeading).toBeHidden();
     expect(requests.createCaseRequests).toHaveLength(0);
 
-    await fileInput.setInputFiles({
+    await createCasePage.evidenceDocumentInput.setInputFiles({
       name: DOCUMENT_UPLOAD_RECOVERY_REPLACEMENT_FILE,
       mimeType: 'application/pdf',
       buffer: readFileSync(evidenceFile),
     });
-    await expect(uploadError).toBeHidden();
+    await expect(createCasePage.evidenceDocumentUploadError).toBeHidden();
     expect(requests.uploadRequests).toHaveLength(2);
     expect(requests.uploadRequests[1].postData()).toContain(`filename="${DOCUMENT_UPLOAD_RECOVERY_REPLACEMENT_FILE}"`);
 

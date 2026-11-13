@@ -1,4 +1,5 @@
 import type { Page, Request } from '@playwright/test';
+import { installSameOriginApiRouteClosure } from './mockSessionRouteClosure.helper';
 import { buildSupportedAMRoleAssignments, defaultStaffAMMenuRole } from './amRoleAssignmentMock.helper';
 import { buildRolesAndAccessUserDetails, setupRolesAndAccessMockRoutes } from './rolesAndAccessMockRoutes.helper';
 import { buildEntityToUsersAccessView } from './workAllocationAccessScenarios.helper';
@@ -6,14 +7,13 @@ import {
   allocatedCaseworker,
   allocatedRecord,
   allocationCaseId,
+  allocationOrganisation,
   existingJudicialRole,
   validAllocationRoles,
 } from '../mocks/roleAllocation.mock';
 
-export async function setupRoleAllocationMockRoutes(
-  page: Page,
-  options: { status?: number; isCaseAllocator?: boolean } = {}
-): Promise<Request[]> {
+export async function setupRoleAllocationMockRoutes(page: Page, options: { status?: number; isCaseAllocator?: boolean } = {}) {
+  const routeClosure = await installSameOriginApiRouteClosure(page);
   await setupRolesAndAccessMockRoutes(page, {
     caseId: allocationCaseId,
     records: [existingJudicialRole],
@@ -31,6 +31,7 @@ export async function setupRoleAllocationMockRoutes(
   userDetails.userInfo.forename = 'Synthetic';
   userDetails.userInfo.surname = 'Allocator';
   userDetails.userInfo.email = 'role-allocator@example.invalid';
+  await page.route('**/api/organisation', (route) => route.fulfill({ json: allocationOrganisation }));
   await page.route('**/api/user/details*', (route) => route.fulfill({ json: userDetails }));
   await page.route('**/api/role-access/allocate-role/valid-roles*', (route) => route.fulfill({ json: validAllocationRoles }));
   await page.route('**/workallocation/caseworker/getUsersByServiceName*', (route) =>
@@ -52,5 +53,5 @@ export async function setupRoleAllocationMockRoutes(
     confirmed = (options.status ?? 200) === 200;
     await route.fulfill({ status: options.status ?? 200, contentType: 'application/json', body: '{}' });
   });
-  return requests;
+  return { requests, ...routeClosure };
 }

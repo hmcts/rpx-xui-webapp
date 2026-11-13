@@ -32,3 +32,11 @@ export const allocatedRecord = {
 export const validAllocationRoles = [
   { service: 'IA', roles: [{ roleId: 'case-manager', roleName: 'Case manager', roleCategory: 'LEGAL_OPERATIONS' }] },
 ];
+
+export const allocationOrganisation = {
+  name: 'Playwright Organisation',
+  organisationIdentifier: 'PLAYWRIGHT_ORG',
+  status: 'ACTIVE',
+  contactInformation: [],
+  paymentAccount: [],
+};

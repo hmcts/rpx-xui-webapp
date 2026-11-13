@@ -22,6 +22,7 @@
     "@integration-probate-find-case",
     "@integration-query-management",
     "@integration-restricted-case",
+    "@integration-role-allocation-mock-session",
     "@integration-search-case",
     "@integration-share-case",
     "@integration-welsh-language",

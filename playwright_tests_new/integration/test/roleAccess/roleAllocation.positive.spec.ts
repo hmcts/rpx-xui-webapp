@@ -1,6 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { RoleAllocationPage } from '../../../E2E/page-objects/pages/exui/roleAllocation.po';
-import { applySessionCookies } from '../../../common/sessionCapture';
 import { setupRoleAllocationMockRoutes } from '../../helpers/roleAllocationMockRoutes.helper';
 import {
   allocatedPerson,
@@ -11,13 +10,12 @@ import {
 } from '../../mocks/roleAllocation.mock';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, 'STAFF_ADMIN');
   await page.clock.install({ time: new Date('2030-01-15T12:00:00.000Z') });
 });
 
-test.describe('Case-role allocation', { tag: ['@integration', '@integration-case-details'] }, () => {
+test.describe('Case-role allocation', { tag: ['@integration', '@integration-role-allocation-mock-session'] }, () => {
   test('allocates the reviewed role to the selected person and reads back that assignment', async ({ page, caseDetailsPage }) => {
-    const requests = await setupRoleAllocationMockRoutes(page);
+    const { requests, getUnexpectedRequests } = await setupRoleAllocationMockRoutes(page);
     const journey = new RoleAllocationPage(page);
     await caseDetailsPage.openRolesAndAccessTab(allocationCaseId);
     const existingRow = caseDetailsPage
@@ -66,5 +64,6 @@ test.describe('Case-role allocation', { tag: ['@integration', '@integration-case
     await expect(allocatedRow).toContainText('15 January 2030');
     await expect(existingRow).toHaveCount(1);
     await expect(existingRow).toContainText(existingJudicialRole.roleName);
+    expect(getUnexpectedRequests()).toEqual([]);
   });
 });

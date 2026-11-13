@@ -2,7 +2,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import { RoleAccessPage } from '../../../E2E/page-objects/pages/exui/roleAccess.po';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { setupRoleJourney, setupRoleReadback } from '../../helpers/roleJourneys.helper';
-import { roleCaseId, roleCasePath, reallocatedRecords, expectedReallocation } from '../../mocks/roleJourneys.mock';
+import { roleCaseId, reallocatedRecords, expectedReallocation } from '../../mocks/roleJourneys.mock';
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, 'STAFF_ADMIN');
@@ -28,6 +28,10 @@ test.describe('Role reallocation', { tag: ['@integration', '@integration-case-de
     await journey.reviewReallocation();
     await expect(journey.summaryValue('Person')).toHaveText('Clara Replacement\nclara@example.com', { useInnerText: true });
     await expect(journey.summaryValue('Duration of role')).toHaveText('Indefinite');
+    await test.info().attach('mutation-return-context', {
+      body: JSON.stringify(await page.evaluate(() => ({ backUrl: window.history.state?.backUrl }))),
+      contentType: 'application/json',
+    });
     await setupRoleReadback(page, reallocatedRecords);
     const mutationResponse = page.waitForResponse('**/api/role-access/allocate-role/reallocate');
     await journey.confirmButton.click();
@@ -36,10 +40,13 @@ test.describe('Role reallocation', { tag: ['@integration', '@integration-case-de
     expect(requests[0].method()).toBe('POST');
     expect(new URL(requests[0].url()).pathname).toBe('/api/role-access/allocate-role/reallocate');
     expect(requests[0].postDataJSON()).toEqual(expectedReallocation);
-    await expect(page).toHaveURL(new RegExp(`${roleCasePath}$`));
-    await expect(page.getByText("You've reallocated a role", { exact: true })).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(`/cases/case-details/IA/Asylum/${roleCaseId}(?:#.*)?$`));
+    await test.info().attach('automatic-return-url', { body: page.url(), contentType: 'text/plain' });
+    await expect.soft(page.getByText("You've reallocated a role", { exact: true })).toBeVisible();
 
+    // The ticket requires refreshed roles, not an automatic selected-tab return.
     await page.reload();
+    await caseDetailsPage.selectCaseDetailsTab('Roles and access');
     await expect(caseDetailsPage.getRoleAccessSection('Legal Ops').locator('tbody tr')).toHaveCount(1);
     await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).toContainText('Clara Replacement');
     await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).not.toContainText('Alice Example');

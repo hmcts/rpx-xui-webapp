@@ -19,7 +19,11 @@
     "integration/helpers/caseFileViewMockSession.helper.ts",
     "integration/helpers/mockSessionRouteClosure.helper.ts",
     "integration/mocks/caseFileView.mock.ts",
-    "integration/test/caseFileView/caseFileView.positive.spec.ts"
+    "integration/test/caseFileView/caseFileView.positive.spec.ts",
+    "api/unit/role-allocation-mocks.unit.api.ts",
+    "integration/helpers/roleAllocationMockRoutes.helper.ts",
+    "integration/test/roleAccess/roleAllocation.positive.spec.ts",
+    "integration/test/roleAccess/roleAllocation.negative.spec.ts"
   ],
   "include": []
 }

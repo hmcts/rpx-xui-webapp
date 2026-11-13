@@ -46,3 +46,4 @@ export * from './caseShareMockRoutes.helper';
 export * from './platformServicesMockRoutes.helper';
 export * from './restrictedCaseAccessContainer.helper';
 export * from './caseDetailsEventErrors.helper';
+export * from './staffAdministrationMockRoutes.helper';

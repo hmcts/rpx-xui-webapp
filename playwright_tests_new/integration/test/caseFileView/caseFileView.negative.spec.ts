@@ -37,6 +37,7 @@ test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integr
       await setupCaseFileViewMockRoutes(page, caseId);
 
       await page.route('**/documentsv2/*/binary', async (route) => {
+        failedBinaryRequest = true;
         await route.fulfill({
           status: 500,
           contentType: 'application/json',

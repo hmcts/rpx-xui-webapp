@@ -1,3 +1,5 @@
+import { PlatformLocation } from '@angular/common';
+import { MockPlatformLocation } from '@angular/common/testing';
 import {
   HTTP_INTERCEPTORS,
   HttpClient,
@@ -33,6 +35,8 @@ describe('Lazy Cases/Hearings HTTP correlation provider', () => {
       providers: [
         provideHttpClient(withInterceptors([hearingsJourneyInterceptor, rootInterceptor]), withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        // XSRF origin checks need an absolute URL; the default mock location has no origin.
+        { provide: PlatformLocation, useFactory: () => new MockPlatformLocation({ startUrl: 'https://xui.example.test/' }) },
         { provide: Window, useValue: window },
         { provide: HTTP_INTERCEPTORS, multi: true, useValue: { intercept: legacyInterceptor } },
         {

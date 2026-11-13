@@ -27,6 +27,8 @@ test.describe('Role removal failures', { tag: ['@integration', '@integration-cas
     await new RoleAccessPage(page).removeAllocationButton.click();
     await expect(page).toHaveURL(/\/service-down$/);
     expect(requests).toHaveLength(1);
+    expect(requests[0].method()).toBe('POST');
+    expect(new URL(requests[0].url()).pathname).toBe('/api/role-access/allocate-role/delete');
     expect(requests[0].postDataJSON()).toEqual({ assigmentId: 'assignment-legal-ops-case-100' });
     await expect(page.getByText("You've removed a role allocation.", { exact: false })).toHaveCount(0);
     await caseDetailsPage.openRolesAndAccessTab(roleCaseId);

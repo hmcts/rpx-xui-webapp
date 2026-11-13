@@ -51,6 +51,8 @@ test.describe('Case exclusion failures', { tag: ['@integration', '@integration-c
     await new RoleAccessPage(page).confirmExclusionButton.click();
     await expect(page).toHaveURL(/\/service-down$/);
     expect(requests).toHaveLength(1);
+    expect(requests[0].method()).toBe('POST');
+    expect(new URL(requests[0].url()).pathname).toBe('/api/role-access/exclusions/confirm');
     expect(requests[0].postDataJSON()).toEqual(expectedSelfExclusion);
     await expect(page.getByText("You've excluded yourself from a case.", { exact: true })).toHaveCount(0);
     await caseDetailsPage.openRolesAndAccessTab(roleCaseId);

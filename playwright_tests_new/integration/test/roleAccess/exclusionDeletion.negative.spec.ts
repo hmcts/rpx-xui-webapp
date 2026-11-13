@@ -25,6 +25,8 @@ test.describe('Exclusion deletion failures', { tag: ['@integration', '@integrati
     await new RoleAccessPage(page).deleteExclusionButton.click();
     await expect(page).toHaveURL(/\/service-down$/);
     expect(requests).toHaveLength(1);
+    expect(requests[0].method()).toBe('POST');
+    expect(new URL(requests[0].url()).pathname).toBe('/api/role-access/exclusions/delete');
     expect(requests[0].postDataJSON()).toEqual({ roleExclusion: expectedDeletedExclusion });
     await expect(page.getByText("You've deleted an exclusion.", { exact: true })).toHaveCount(0);
     await caseDetailsPage.openRolesAndAccessTab(roleCaseId);

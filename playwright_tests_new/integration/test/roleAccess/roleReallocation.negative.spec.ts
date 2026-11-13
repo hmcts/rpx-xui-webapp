@@ -35,6 +35,8 @@ test.describe('Role reallocation failures', { tag: ['@integration', '@integratio
     await journey.confirmButton.click();
     await expect(page).toHaveURL(/\/role-access\/user-not-assignable$/);
     expect(requests).toHaveLength(1);
+    expect(requests[0].method()).toBe('POST');
+    expect(new URL(requests[0].url()).pathname).toBe('/api/role-access/allocate-role/reallocate');
     expect(requests[0].postDataJSON()).toEqual(expectedReallocation);
     await caseDetailsPage.openRolesAndAccessTab(roleCaseId);
     await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).toContainText('Alice Example');

@@ -5,7 +5,10 @@ import { dynamicFieldConfigCaseData } from '../mocks/dynamicFieldConfig.mock';
 
 const CASE_TYPE = 'xuiTestJurisdiction';
 
-export async function openDynamicFieldConfigJourney(page: Page, options: { skipSessionCookies?: boolean } = {}): Promise<void> {
+export async function openDynamicFieldConfigJourney(
+  page: Page,
+  options: { skipSessionCookies?: boolean; caseData?: ReturnType<typeof dynamicFieldConfigCaseData> } = {}
+): Promise<void> {
   if (!options.skipSessionCookies) {
     await applySessionCookies(page, 'SOLICITOR');
   }
@@ -18,7 +21,11 @@ export async function openDynamicFieldConfigJourney(page: Page, options: { skipS
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(userDetails) });
   });
   await page.route(`**/data/internal/case-types/${CASE_TYPE}/event-triggers/createCase*`, async (route) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(dynamicFieldConfigCaseData()) });
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(options.caseData ?? dynamicFieldConfigCaseData()),
+    });
   });
   await page.route(`**/data/case-types/${CASE_TYPE}/validate*`, async (route) => {
     const requestBody = route.request().postDataJSON() as { data?: unknown } | undefined;

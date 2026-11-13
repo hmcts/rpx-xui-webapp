@@ -8,6 +8,8 @@ export class RoleAllocationPage {
   readonly cancelLink = this.page.getByRole('link', { name: 'Cancel', exact: true });
   readonly personSearch = this.page.getByRole('combobox', { name: 'select a person' });
   readonly errorSummary = this.page.locator('exui-error-message');
+  readonly caseManagerRadio = this.page.getByRole('radio', { name: 'Case manager', exact: true });
+  readonly chooseRoleError = this.page.locator('#chooseRole-error');
 
   summaryValue(label: string) {
     return this.page
@@ -24,7 +26,7 @@ export class RoleAllocationPage {
   }
 
   async reviewAllocation() {
-    await this.page.getByRole('radio', { name: 'Case manager', exact: true }).check();
+    await this.caseManagerRadio.check();
     await this.continueButton.click();
     await this.page.getByRole('radio', { name: 'Allocate to another person', exact: true }).check();
     await this.continueButton.click();

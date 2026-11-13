@@ -17,11 +17,8 @@ test.describe('Case-role allocation failures', { tag: ['@integration', '@integra
     await caseDetailsPage.getAllocateLegalOpsRoleLink().click();
     await journey.continueButton.click();
     await expect(journey.errorSummary).toContainText('Please select an option');
-    await expect(page.getByRole('radio', { name: 'Case manager', exact: true })).toHaveAttribute(
-      'aria-describedby',
-      'chooseRole-error'
-    );
-    await expect(page.locator('#chooseRole-error')).toContainText('Please select an option');
+    await expect(journey.caseManagerRadio).toHaveAttribute('aria-describedby', 'chooseRole-error');
+    await expect(journey.chooseRoleError).toContainText('Please select an option');
     expect(requests).toHaveLength(0);
   });
 
@@ -30,7 +27,7 @@ test.describe('Case-role allocation failures', { tag: ['@integration', '@integra
     const journey = new RoleAllocationPage(page);
     await caseDetailsPage.openRolesAndAccessTab(allocationCaseId);
     await caseDetailsPage.getAllocateLegalOpsRoleLink().click();
-    await page.getByRole('radio', { name: 'Case manager', exact: true }).check();
+    await journey.caseManagerRadio.check();
     await journey.continueButton.click();
     await journey.cancelLink.click();
     await expect(page).toHaveURL(new RegExp(`${allocationCasePath}$`));
@@ -47,7 +44,7 @@ test.describe('Case-role allocation failures', { tag: ['@integration', '@integra
     );
     await expect(page).toHaveURL(/\/cases$/);
     await expect(new RoleAllocationPage(page).confirmButton).toHaveCount(0);
-    await expect(page.getByText("You've allocated a role.", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("You've allocated a role", { exact: true })).toHaveCount(0);
     expect(requests).toHaveLength(0);
   });
 
@@ -62,7 +59,7 @@ test.describe('Case-role allocation failures', { tag: ['@integration', '@integra
     expect(requests).toHaveLength(1);
     expect(requests[0].method()).toBe('POST');
     expect(new URL(requests[0].url()).pathname).toBe('/api/role-access/allocate-role/confirm');
-    await expect(page.getByText("You've allocated a role.", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("You've allocated a role", { exact: true })).toHaveCount(0);
     await caseDetailsPage.openRolesAndAccessTab(allocationCaseId);
     await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).toContainText('There are no legal Ops roles for this case.');
     await expect(caseDetailsPage.getRoleAccessSection('Judiciary')).toContainText(existingJudicialRole.actorName);

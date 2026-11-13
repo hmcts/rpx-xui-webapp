@@ -12,6 +12,7 @@ export enum AnswerLabelText {
   Person = 'Person',
   DescribeExclusion = 'Describe the exclusion',
   DateAdded = 'Added',
+  CaseReference = 'Case reference',
   TypeOfRole = 'Type of role',
   WhoBeAllocatedTo = 'Who the role will be allocated to',
   DurationOfRole = 'Duration of role',

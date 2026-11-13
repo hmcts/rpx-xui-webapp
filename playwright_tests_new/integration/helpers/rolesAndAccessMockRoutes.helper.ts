@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 import nodeAppDataModels from '../../api/data/nodeAppDataModels';
 import { buildAsylumCaseMock } from '../mocks/cases/asylumCase.mock';
 import { buildEntityToUsersAccessView, type WorkAllocationAccessScenarioRecord } from './workAllocationAccessScenarios.helper';
+import { buildXuiAppShellEnvironmentConfigMock, setupXuiAppShellBaseRoutes } from './xuiAppShellMockRoutes.helper';
 import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 
 type RolesAndAccessMockRouteOptions = {
@@ -19,13 +20,17 @@ export function buildRolesAndAccessUserDetails(
   } = {}
 ) {
   const userDetails = nodeAppDataModels.getUserDetails_oauth();
-  userDetails.userInfo.roles = Array.from(new Set([...(userDetails.userInfo.roles ?? []), 'case-allocator']));
+  const roles = ((userDetails.userInfo.roles ?? []) as string[]).filter((role) => role !== 'case-allocator');
+  if (options.isCaseAllocator !== false) {
+    roles.push('case-allocator');
+  }
+  userDetails.userInfo.roles = roles;
 
   userDetails.roleAssignmentInfo = [
     {
       jurisdiction: options.jurisdiction ?? 'IA',
       isCaseAllocator: options.isCaseAllocator ?? true,
-      substantive: true,
+      substantive: 'Y',
       roleType: 'ORGANISATION',
     },
   ];
@@ -46,15 +51,63 @@ export async function setupRolesAndAccessMockRoutes(
   });
   const jurisdiction = options.jurisdiction ?? 'IA';
 
-  await setupCaseworkerJurisdictionsRoute(page, [jurisdiction]);
-
-  await page.route(`**data/internal/cases/${options.caseId}*`, async (route) => {
+  await setupXuiAppShellBaseRoutes(page, {
+    userDetails: { roles: userDetails.userInfo.roles as string[] },
+    environmentConfig: { ccdGatewayUrl: '', launchDarklyClientId: '' },
+    waSupportedJurisdictions: [jurisdiction],
+  });
+  await page.route('**/auth/isAuthenticated*', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(true) });
+  });
+  await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
     await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(caseMockResponse),
+      json: {
+        ...buildXuiAppShellEnvironmentConfigMock({ ccdGatewayUrl: '', launchDarklyClientId: '' }),
+        hearingJurisdictionConfig: { hearingJurisdictions: { '.+': [] }, hearingAmendment: { '.+': [] } },
+      },
     });
   });
+  await page.route('**/*launchdarkly.com/**', async (route) => {
+    await route.fulfill({ status: 202, body: '' });
+  });
+  await page.route('**/*launchdarkly.com/sdk/eval**', async (route) => {
+    await route.fulfill({
+      json: {
+        MC_Work_Allocation: { value: true, version: 1 },
+        'mc-work-allocation-active-feature': { value: 'WorkAllocationRelease2', version: 1 },
+      },
+    });
+  });
+  await page.route('**/*launchdarkly.com/sdk/goals/**', async (route) => {
+    await route.fulfill({ json: [] });
+  });
+  await page.route('**/activity*', async (route) => {
+    await route.fulfill({ json: [] });
+  });
+  await page.route(/\/api\/configuration\?configurationKey=termsAndConditionsEnabled(?:&|$)/, async (route) => {
+    await route.fulfill({ json: false });
+  });
+  await page.route('**/api/monitoring-tools*', async (route) => {
+    await route.fulfill({ json: [] });
+  });
+  await page.route('**/aggregated/activity/cases/*/activity*', async (route) => {
+    await route.fulfill({ json: [] });
+  });
+  await page.route(`**/workallocation/case/task/${options.caseId}`, async (route) => {
+    await route.fulfill({ json: [] });
+  });
+  await setupCaseworkerJurisdictionsRoute(page, [jurisdiction]);
+
+  await page.route(
+    (url) => url.pathname === `/data/internal/cases/${options.caseId}`,
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(caseMockResponse),
+      });
+    }
+  );
 
   await page.route('**/api/user/details*', async (route) => {
     await route.fulfill({

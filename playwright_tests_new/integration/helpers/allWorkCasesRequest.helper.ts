@@ -26,8 +26,10 @@ export async function waitForFilteredAllWorkCasesRequest(page: Page, actorId: st
     }
 
     const requestBody = parseAllWorkCasesRequest(request);
-    return requestBody.searchRequest?.search_parameters?.some(
-      (parameter) => parameter.key === 'actorId' && parameter.values === actorId
+    return (
+      requestBody.searchRequest?.search_parameters?.some(
+        (parameter) => parameter.key === 'actorId' && parameter.values === actorId
+      ) ?? false
     );
   });
 }

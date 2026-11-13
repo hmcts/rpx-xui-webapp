@@ -210,11 +210,11 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     const selectedUserIdentifier = await applySearchCaseSessionCookies({} as never, testInfo, env, (page, candidates) =>
       sessionCaptureTest.applySessionCookiesFromPoolWith(
         page,
-        candidates.map((userIdentifier) => ({
-          userIdentifier,
-          email: `${userIdentifier.toLowerCase()}@example.test`,
-          password: 'unit-password',
-        })),
+        candidates.map((identity) =>
+          typeof identity === 'string'
+            ? { userIdentifier: identity, email: `${identity.toLowerCase()}@example.test`, password: 'unit-password' }
+            : identity
+        ),
         async (_page, identity) => {
           const userIdentifier = typeof identity === 'string' ? identity : identity.userIdentifier;
           attempts.push(userIdentifier);

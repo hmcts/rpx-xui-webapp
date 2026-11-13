@@ -91,9 +91,9 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     private readonly appStore: Store<fromAppStore.State>,
     private readonly featureToggleService: FeatureToggleService
   ) {
-    if (this.router.getCurrentNavigation()?.extras?.state?.location) {
-      this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
-    }
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation ? navigation.extras.state : history.state;
+    this.bookingLocations = state?.location?.ids ?? [];
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -164,6 +164,16 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
         LocationByEpimmsModel[],
         any,
       ]) => {
+        if (this.fieldsConfig.fields.length > 0) {
+          // Only service labels are live; keep the user's filter selections and subscriptions.
+          const serviceField = this.fieldsConfig.fields.find((field) => field.name === 'services');
+          serviceField?.options?.forEach((option) => {
+            if (!option.selectAll) {
+              option.label = serviceNamesMap[option.key] || option.key;
+            }
+          });
+          return;
+        }
         this.setUpServicesFilter(services, serviceNamesMap);
         this.setUpLocationFilter(locations);
         this.setUpTypesOfWorkFilter(typesOfWork);

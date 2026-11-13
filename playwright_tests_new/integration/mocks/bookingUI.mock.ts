@@ -52,3 +52,9 @@ export { buildExistingBookingsMock };
 export { getUtcDayRangeForLocalDate } from '../../E2E/page-objects/pages/exui/bookingUi.po';
 export { normalizeCreateBookingDates } from '../../E2E/page-objects/pages/exui/bookingUi.po';
 export { getExpectedTodayOnlyCreateBookingRange } from '../../E2E/page-objects/pages/exui/bookingUi.po';
+
+export const BOOKING_RANGE_YEAR = String(new Date().getFullYear() + 1);
+export const BOOKING_MULTI_DAY_RANGE = {
+  beginDate: `${BOOKING_RANGE_YEAR}-07-17T00:00:00.000Z`,
+  endDate: `${BOOKING_RANGE_YEAR}-07-19T23:59:59.999Z`,
+};

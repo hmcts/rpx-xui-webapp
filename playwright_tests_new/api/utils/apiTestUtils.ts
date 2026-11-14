@@ -22,7 +22,7 @@ export type StatusSetName = keyof typeof StatusSets;
 
 export function expectStatus(actual: number, allowed: ReadonlyArray<number>, message?: string) {
   if (!allowed.includes(actual)) {
-    const hint = message ?? `Expected status to be one of: ${allowed.join(', ')}`;
+    const hint = `Received HTTP ${actual}. ${message ?? `Expected status to be one of: ${allowed.join(', ')}`}`;
     // Emit a Playwright diff if it fails, but keep the message readable.
     expect({ status: actual }, hint).toEqual({ status: allowed[0] });
   }

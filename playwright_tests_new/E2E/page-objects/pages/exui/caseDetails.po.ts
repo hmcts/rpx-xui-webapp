@@ -10,6 +10,8 @@ const { redactText, redactUrl } = require('../../../../common/reporters/failure-
   redactText: (value: unknown) => string;
   redactUrl: (value: unknown) => string;
 };
+import { remainingNavigationTimeout } from '../../../utils/test-setup/navigationDeadline.js';
+import { CaseActionOptions, waitForCaseActionDestination } from '../../../utils/test-setup/caseActionDestination.js';
 
 const validatorUtils = new ValidatorUtils();
 const tableUtils = new TableUtils();
@@ -34,7 +36,11 @@ export async function scrollTabIntoViewWithDetachedRetry(
   deadline: number,
   now: () => number = Date.now
 ): Promise<void> {
-  const scroll = () => tab.scrollIntoViewIfNeeded({ timeout: Math.max(1, deadline - now()) });
+  const scroll = () => {
+    const remaining = deadline - now();
+    if (remaining <= 0) throw new Error('Timed out while scrolling to case details tab.');
+    return tab.scrollIntoViewIfNeeded({ timeout: remaining });
+  };
   try {
     await scroll();
   } catch (error) {
@@ -513,103 +519,50 @@ export class CaseDetailsPage extends Base {
     throw new Error(`Unable to find case viewer row with first-cell label "${rowName}"`);
   }
 
-  async selectCaseAction(
-    action: string,
-    options: {
-      expectedLocator?: Locator;
-      expectedPath?: string | RegExp;
-      expectedTarget?: string;
-      timeoutMs?: number;
-      retry?: boolean;
-    } = {}
-  ) {
-    const timeoutMs = options.timeoutMs ?? 30000;
-    await this.caseActionGoButton.waitFor({ state: 'visible' });
-    await this.caseActionsDropdown.waitFor({ state: 'visible' });
+  async selectCaseAction(action: string, options: CaseActionOptions = {}) {
+    const deadlineMs = Date.now() + (options.timeoutMs ?? 30_000);
+    const remaining = () => remainingNavigationTimeout(deadlineMs, `selecting case action "${action}"`);
+    await this.caseActionGoButton.waitFor({ state: 'visible', timeout: remaining() });
+    await this.caseActionsDropdown.waitFor({ state: 'visible', timeout: remaining() });
     const availableOptions = await this.caseActionsDropdown.locator('option').evaluateAll((options) =>
       options
         .map((option) => ({
           label: (option.textContent ?? '').trim(),
-          value: (option.getAttribute('value') ?? '').trim(),
+          value: (option as HTMLOptionElement).value,
         }))
         .filter((option) => option.label || option.value)
     );
-    const matchingOption = availableOptions.find((option) => option.label === action || option.value === action);
+    const matchingOption = availableOptions.find((option) => option.label === action || option.value.trim() === action);
     if (!matchingOption) {
       throw new Error(
         `Case action "${action}" is not available. Available actions: ${availableOptions.map((option) => option.label || option.value).join(', ')}`
       );
     }
+    await this.caseActionsDropdown.selectOption(matchingOption.value, { timeout: remaining() });
+    await this.waitForSpinnerToComplete('before submitting case action', remaining());
+    await this.caseActionGoButton.click({ timeout: remaining() });
+    await this.waitForSpinnerToComplete('after selecting case action', remaining());
+    await this.page.waitForLoadState('domcontentloaded', { timeout: remaining() });
     try {
-      if (matchingOption.label === action) {
-        await this.caseActionsDropdown.selectOption({ label: action });
-      } else {
-        await this.caseActionsDropdown.selectOption(action);
-      }
+      await waitForCaseActionDestination(this.page, action, options, deadlineMs, this.eventCreationErrorHeading);
     } catch (error) {
-      // Fallback: some dropdowns don't support label selector, use value directly
-      this.logger.warn('Failed to select option by label, falling back to value selector', { error });
-      await this.caseActionsDropdown.selectOption(matchingOption.value || action);
-    }
-    await this.clickCaseActionGoButton(timeoutMs);
-    await this.waitForSpinnerToComplete('after selecting case action', options.timeoutMs);
-    await this.page.waitForLoadState('domcontentloaded');
-    if (!options.expectedLocator && !options.expectedPath) {
-      return;
-    }
-    const waitForExpected = async () => {
-      if (options.expectedPath) {
-        const matcher =
-          typeof options.expectedPath === 'string'
-            ? (url: URL) => url.pathname.includes(options.expectedPath as string)
-            : (url: URL) => (options.expectedPath as RegExp).test(url.pathname);
-        await this.page.waitForURL(matcher, { timeout: timeoutMs });
-      }
-      await options.expectedLocator?.waitFor({ state: 'visible', timeout: timeoutMs });
-    };
-    try {
-      await waitForExpected();
-    } catch (error) {
+      if (options.retry !== false) throw error;
+      const spinnerVisible = await this.page
+        .locator('xuilib-loading-spinner:visible')
+        .first()
+        .isVisible()
+        .catch(() => false);
       const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
-      if (options.retry === false) {
-        const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
-        const spinnerVisible = await spinner.isVisible().catch(() => false);
-        const expectedTarget =
-          options.expectedTarget ??
-          (typeof options.expectedPath === 'string' ? options.expectedPath : options.expectedPath?.toString()) ??
-          options.expectedLocator?.toString() ??
-          'unspecified';
-        throw new Error(
-          `Case action "${redactText(action)}" did not reach expected target "${redactText(expectedTarget)}" ` +
-            `(url=${redactUrl(this.page.url())}; selectedOption=${redactText(`${matchingOption.label} (${matchingOption.value})`)}; ` +
-            `spinnerVisible=${spinnerVisible}; eventErrorVisible=${eventErrorVisible}; cause=${redactText(error)})`
-        );
-      }
-      if (eventErrorVisible) {
-        throw new Error(`Case event failed after selecting "${action}": The event could not be created.`);
-      }
-      const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
-      const spinnerWasVisible = await spinner.isVisible().catch(() => false);
-      await this.waitForSpinnerToComplete(`before retrying case action "${action}"`, timeoutMs);
-      if (spinnerWasVisible) {
-        await waitForExpected();
-        return;
-      }
-      this.logger.warn('Expected locator not visible after case action; retrying action', { action });
-      try {
-        if (matchingOption.label === action) {
-          await this.caseActionsDropdown.selectOption({ label: action });
-        } else {
-          await this.caseActionsDropdown.selectOption(action);
-        }
-      } catch (retryError) {
-        this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
-        await this.caseActionsDropdown.selectOption(matchingOption.value || action);
-      }
-      await this.clickCaseActionGoButton(timeoutMs);
-      await this.waitForSpinnerToComplete('after retrying case action', timeoutMs);
-      await this.page.waitForLoadState('domcontentloaded');
-      await waitForExpected();
+      const expectedTarget =
+        options.expectedTarget ??
+        (typeof options.expectedPath === 'string' ? options.expectedPath : options.expectedPath?.toString()) ??
+        options.expectedLocator?.toString() ??
+        'unspecified';
+      throw new Error(
+        `Case action "${redactText(action)}" did not reach expected target "${redactText(expectedTarget)}" ` +
+          `(url=${redactUrl(this.page.url())}; selectedOption=${redactText(`${matchingOption.label} (${matchingOption.value})`)}; ` +
+          `spinnerVisible=${spinnerVisible}; eventErrorVisible=${eventErrorVisible}; cause=${redactText(error)})`
+      );
     }
   }
 
@@ -624,20 +577,6 @@ export class CaseDetailsPage extends Base {
         throw new Error(`Spinner still visible ${context}`);
       }
       this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });
-    }
-  }
-
-  private async clickCaseActionGoButton(timeoutMs: number): Promise<void> {
-    await this.waitForSpinnerToComplete('before submitting case action', timeoutMs);
-    try {
-      await this.caseActionGoButton.click();
-    } catch (error) {
-      const spinner = this.page.locator('xuilib-loading-spinner:visible').first();
-      if (!(await spinner.isVisible().catch(() => false))) {
-        throw error;
-      }
-      await this.waitForSpinnerToComplete('after case action click was blocked by spinner', timeoutMs);
-      await this.caseActionGoButton.click();
     }
   }
 
@@ -739,14 +678,16 @@ export class CaseDetailsPage extends Base {
       multiplier: 3,
       fallback: 15_000,
     });
-    await this.waitForCaseDetailsTabsReady(tabLoadTimeoutMs);
+    const deadlineMs = Date.now() + tabLoadTimeoutMs;
+    const remaining = () => remainingNavigationTimeout(deadlineMs, `selecting "${tabName}" tab`);
+    await this.waitForCaseDetailsTabsReady(tabLoadTimeoutMs, deadlineMs);
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
-    await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
+    await tab.waitFor({ state: 'visible', timeout: remaining() });
     // Material translates its tab strip; visible DOM tabs can still be clipped outside it.
-    const deadline = Date.now() + tabLoadTimeoutMs;
-    while (Date.now() < deadline) {
-      await scrollTabIntoViewWithDetachedRetry(tab, deadline);
+    while (Date.now() < deadlineMs) {
+      remaining();
+      await scrollTabIntoViewWithDetachedRetry(tab, deadlineMs);
       const direction = await tab.evaluate((element) => {
         const viewport = element
           .closest('mat-tab-header, .mat-mdc-tab-header')
@@ -765,22 +706,16 @@ export class CaseDetailsPage extends Base {
       await this.container
         .locator(`.mat-mdc-tab-header-pagination-${direction}, .mat-tab-header-pagination-${direction}`)
         .first()
-        .click({ timeout: Math.max(1, deadline - Date.now()) });
+        .click({ timeout: remaining() });
     }
-    await tab.click({ timeout: Math.max(1, deadline - Date.now()) });
-    await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {
-      // Some tabs render without spinner; readiness is verified via tabpanel checks below.
-    });
+    await tab.click({ timeout: remaining() });
+    await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, remaining());
 
-    const controlledPanelId = await tab.getAttribute('aria-controls');
-    if (controlledPanelId) {
-      const controlledPanel = this.page.locator(`#${controlledPanelId}`);
-      await this.waitForTabPanelReadiness(controlledPanel, tabLoadTimeoutMs);
-      return;
-    }
-
-    const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
-    await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+    const controlledPanelId = await tab.getAttribute('aria-controls', { timeout: remaining() });
+    const tabPanel = controlledPanelId
+      ? this.page.locator(`#${controlledPanelId}`)
+      : this.page.locator('[role="tabpanel"]:visible').first();
+    await this.waitForTabPanelReadiness(tabPanel, deadlineMs);
   }
 
   async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {
@@ -949,12 +884,12 @@ export class CaseDetailsPage extends Base {
     return tabsCount;
   }
 
-  private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
-    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
-    await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
+  private async waitForCaseDetailsTabsReady(timeoutMs: number, deadlineMs = Date.now() + timeoutMs): Promise<void> {
+    const remaining = () => remainingNavigationTimeout(deadlineMs, 'waiting for case details tabs');
+    await this.container.waitFor({ state: 'visible', timeout: remaining() });
+    await this.tabList.waitFor({ state: 'visible', timeout: remaining() });
 
-    const deadline = Date.now() + timeoutMs;
-    while (Date.now() < deadline) {
+    while (Date.now() < deadlineMs) {
       const visibleTabCount = await this.tablist2.evaluateAll(
         (tabs) =>
           tabs.filter((tab) => {
@@ -962,32 +897,29 @@ export class CaseDetailsPage extends Base {
             return !element.hidden && element.offsetParent !== null;
           }).length
       );
-
       if (visibleTabCount > 0) {
         return;
       }
-
-      await this.page.waitForTimeout(200);
+      await this.page.waitForTimeout(Math.min(200, remaining()));
     }
-
     throw new Error(`Case details tabs did not become visible within ${timeoutMs}ms.`);
   }
 
-  private async waitForTabPanelReadiness(tabPanel: Locator, timeoutMs: number): Promise<void> {
-    await tabPanel.waitFor({ state: 'visible', timeout: timeoutMs });
+  private async waitForTabPanelReadiness(tabPanel: Locator, deadlineMs: number): Promise<void> {
+    const remaining = () => remainingNavigationTimeout(deadlineMs, 'waiting for case details tab panel');
+    await tabPanel.waitFor({ state: 'visible', timeout: remaining() });
     const structuredContent = tabPanel.locator('table, form, ccd-read-collection-field, ccd-read-complex-type-field');
     const structuredContentCount = await structuredContent.count();
     if (structuredContentCount > 0) {
-      await structuredContent.first().waitFor({ state: 'visible', timeout: timeoutMs });
+      await structuredContent.first().waitFor({ state: 'visible', timeout: remaining() });
       return;
     }
 
-    const panelText = (await tabPanel.innerText()).trim();
+    const panelText = (await tabPanel.innerText({ timeout: remaining() })).trim();
     if (panelText.length > 0) {
       return;
     }
-
-    await tabPanel.locator('*').first().waitFor({ state: 'attached', timeout: timeoutMs });
+    await tabPanel.locator('*').first().waitFor({ state: 'attached', timeout: remaining() });
   }
 
   /**

@@ -1,5 +1,6 @@
 import { expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
+import { remainingNavigationTimeout } from '../../../utils/test-setup/navigationDeadline.js';
 
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
 const TASK_LIST_BLANK_DOCUMENT_RECOVERY_MS = 3_000;
@@ -291,10 +292,12 @@ export class TaskListPage extends Base {
     return Number.isNaN(resolvedPriorityDate.getTime()) ? null : resolvedPriorityDate;
   }
 
-  private async waitForTaskListSpinnerToSettle(timeoutMs: number): Promise<void> {
-    await this.page
-      .waitForFunction(() => document.querySelectorAll('xuilib-loading-spinner').length === 0, undefined, { timeout: timeoutMs })
-      .catch(() => undefined);
+  private async waitForTaskListSpinnerToSettle(timeoutMs: number, required = false): Promise<void> {
+    try {
+      await this.page.locator('xuilib-loading-spinner:visible').first().waitFor({ state: 'hidden', timeout: timeoutMs });
+    } catch (error) {
+      if (required) throw error;
+    }
   }
 
   private async navigateToTaskListView(path: string, urlPattern: RegExp, context: string, options: { timeoutMs?: number } = {}) {
@@ -493,12 +496,14 @@ export class TaskListPage extends Base {
   }
 
   async waitForTaskListShellReady(context: string, timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
+    const deadlineMs = Date.now() + timeoutMs;
+    const remaining = () => remainingNavigationTimeout(deadlineMs, `waiting for task list shell (${context})`);
     await this.page
       .waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases)))/, {
-        timeout: timeoutMs,
+        timeout: remaining(),
       })
       .catch(() => undefined);
-    await this.waitForTaskListSpinnerToSettle(10_000);
+    await this.waitForTaskListSpinnerToSettle(remaining(), true);
     const bootstrapSignal = await this.waitForVisibleSignal(
       [
         ['heading', this.myWorkHeading],
@@ -511,14 +516,14 @@ export class TaskListPage extends Base {
         ['error-page', this.errorPageHeading],
       ],
       `task list shell (${context})`,
-      timeoutMs
+      remaining()
     );
 
     if (bootstrapSignal === 'error-page') {
       await this.assertTaskListHealthy(`waiting for task list shell (${context})`);
     }
 
-    await this.waitForTaskListSpinnerToSettle(5_000);
+    await this.waitForTaskListSpinnerToSettle(remaining(), true);
     await this.assertTaskListHealthy(`waiting for task list shell (${context})`);
   }
 
@@ -540,13 +545,15 @@ export class TaskListPage extends Base {
           return signal;
         }
       }
-      await this.page.waitForTimeout(Math.min(pollMs, Math.max(0, deadlineMs - Date.now())));
+      const remainingMs = deadlineMs - Date.now();
+      if (remainingMs > 0) {
+        await this.page.waitForTimeout(Math.min(pollMs, remainingMs));
+      }
     }
 
     const headingText = await this.page
       .locator('main h1, main h2, main h3')
-      .first()
-      .textContent()
+      .evaluateAll((headings) => headings[0]?.textContent ?? '')
       .catch(() => '');
     throw new Error(
       `No visible ${context} signal appeared within ${timeoutMs}ms. url=${this.page.url()} heading=${

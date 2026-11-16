@@ -161,6 +161,13 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
     });
   });
 
+  await page.route(/\/api\/configuration\?configurationKey=termsAndConditionsEnabled(?:&|$)/, (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(false) })
+  );
+  await page.route('**/api/monitoring-tools*', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) })
+  );
+
   const jurisdictionId = String(caseDetails.case_type?.jurisdiction?.id ?? 'IA');
   const jurisdictionName = String(caseDetails.case_type?.jurisdiction?.name ?? jurisdictionId);
   await setupCaseworkerJurisdictionsRoute(page, [jurisdictionId], [{ serviceId: jurisdictionId, serviceName: jurisdictionName }]);

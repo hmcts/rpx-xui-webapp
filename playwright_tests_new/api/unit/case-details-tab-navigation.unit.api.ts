@@ -94,9 +94,11 @@ test.describe('case details tab pagination', { tag: '@svc-internal' }, () => {
     await page.setContent(caseDetailsTabsMarkup(400, true, true));
     const details = new CaseDetailsPage(page);
     await details.waitForCaseDetailsReady(5_000);
-    Object.assign(details, { getRecommendedTimeoutMs: () => 3_000 });
+    Object.assign(details, { getRecommendedTimeoutMs: () => 5_000 });
 
-    await expect(details.selectCaseDetailsTab('Documents')).rejects.toThrow(/timeout|timed out/i);
+    await expect(details.selectCaseDetailsTab('Documents')).rejects.toThrow(
+      /locator\.click: Timeout[\s\S]*mat-mdc-tab-header-pagination-before/
+    );
     await expect(page.getByRole('tab', { name: 'Documents', exact: true })).toHaveAttribute('aria-selected', 'false');
   });
 });

@@ -10,7 +10,8 @@ test.describe('Staff administration access', { tag: ['@integration', '@integrati
     const { updateRequests, addRequests } = await setupStaffAdministrationMockRoutes(page, { adminRole: false });
     await page.goto(`/staff/user-details/${staffUserId}`);
 
-    await expect(page).toHaveURL('/');
+    await expect(page).toHaveURL('/cases');
+    await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
     await expect(staff.userDetailsHeading).toHaveCount(0);
     expect(updateRequests).toHaveLength(0);
     expect(addRequests).toHaveLength(0);
@@ -21,7 +22,8 @@ test.describe('Staff administration access', { tag: ['@integration', '@integrati
       await applySessionCookies(page, 'STAFF_ADMIN');
       const { updateRequests, addRequests } = await setupStaffAdministrationMockRoutes(page, { adminRole: false });
       await page.goto(path);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL('/cases');
+      await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
       expect(addRequests).toHaveLength(0);
       expect(updateRequests).toHaveLength(0);
     });

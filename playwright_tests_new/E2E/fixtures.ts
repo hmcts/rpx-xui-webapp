@@ -15,6 +15,7 @@ import {
   type IdentityLease,
 } from '../common/identityLease';
 import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
+import { annotatePhase, FrameworkError, inPhase } from './utils/frameworkError.js';
 
 const require = createRequire(import.meta.url);
 const { buildFailureContext, redactText, redactUrl, redactValue } = require('../common/reporters/failure-context.cjs') as {
@@ -1357,8 +1358,6 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
   // eslint-disable-next-line no-empty-pattern
   identityLease: async ({}, use, testInfo) => {
     const releases: Array<() => Promise<void>> = [];
-    let testFailed = false;
-    let teardownFailure: Error | undefined;
     const timing = resolveIdentityLeaseTiming();
     const originalTimeoutMs = testInfo.timeout;
     const fixtureStartedAt = Date.now();
@@ -1366,7 +1365,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
       const elapsedBeforeAcquireMs = Date.now() - fixtureStartedAt;
       const timeouts = resolveIdentityLeaseTestTimeouts(originalTimeoutMs, elapsedBeforeAcquireMs, timing);
       testInfo.setTimeout(timeouts.duringAcquireMs);
-      const lease = await leaseFactory();
+      const lease = await inPhase(testInfo, 'setup', leaseFactory);
       releases.push(lease.release);
       testInfo.setTimeout(
         resolveIdentityLeaseTestTimeouts(originalTimeoutMs, Date.now() - fixtureStartedAt, timing).afterAcquireMs
@@ -1377,23 +1376,18 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
       await use({
         acquire: (requirements) => acquire(() => acquireIdentityLease(requirements, process.env, fetch, originalTimeoutMs)),
       });
-    } catch (error) {
-      testFailed = true;
-      throw error;
     } finally {
       const releaseResults = await Promise.allSettled(releases.reverse().map((release) => release()));
       const releaseFailures = releaseResults.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
       if (releaseFailures.length > 0) {
-        releaseFailures.forEach(({ reason }) => {
-          console.warn('[identity-lease] lease release failed during test teardown', reason);
-        });
-        if (!testFailed) {
-          teardownFailure = new Error(`Failed to release ${releaseFailures.length} identity lease(s) during test teardown`);
-        }
+        annotatePhase(testInfo, 'teardown');
+        const reasons = releaseFailures.map(({ reason }) => (reason instanceof Error ? reason.message : String(reason)));
+        throw new FrameworkError(
+          'LEASE_RELEASE_FAILED',
+          'teardown',
+          `Failed to release ${releaseFailures.length} identity lease(s) during test teardown: ${reasons.join('; ')}`
+        );
       }
-    }
-    if (teardownFailure) {
-      throw teardownFailure;
     }
   },
 
@@ -1454,6 +1448,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     page.on('requestfinished', createRequestFinishedHandler(slowCalls, slowThreshold, maxTracked));
     page.on('requestfailed', createRequestFailedHandler(failedRequests, maxTracked, networkTimeoutRef));
 
+    annotatePhase(testInfo, 'test');
     try {
       await use(page);
     } finally {

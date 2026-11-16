@@ -1,4 +1,4 @@
-import { chromium, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { chromium, test, type BrowserContext, type Locator, type Page, type TestInfo } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -7,6 +7,7 @@ import { UserUtils } from '../E2E/utils/user.utils.js';
 import { IdamPage, createLogger } from '@hmcts/playwright-common';
 import type { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
+import { inPhase } from '../E2E/utils/frameworkError.js';
 import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
 import { SessionCaptureError, StorageStateCorruptedError } from '../api/utils/errors';
 import {
@@ -915,7 +916,26 @@ async function probeAuthenticatedShell(
 export async function ensureAuthenticatedPage(
   page: Page,
   userIdentifier: SessionIdentityInput,
-  options: { targetUrl?: string; waitForSelector?: string | false; timeoutMs?: number } = {}
+  options: AuthenticatedPageOptions = {}
+): Promise<LoadedSession> {
+  const { testInfo, ...pageOptions } = options;
+  return testInfo
+    ? inPhase(testInfo, 'auth', () => authenticatePage(page, userIdentifier, pageOptions))
+    : authenticatePage(page, userIdentifier, pageOptions);
+}
+
+type AuthenticatedPageOptions = {
+  targetUrl?: string;
+  waitForSelector?: string | false;
+  timeoutMs?: number;
+  /** When provided, the `phase` annotation reads `auth` while authentication runs. */
+  testInfo?: Pick<TestInfo, 'annotations'>;
+};
+
+async function authenticatePage(
+  page: Page,
+  userIdentifier: SessionIdentityInput,
+  options: Omit<AuthenticatedPageOptions, 'testInfo'>
 ): Promise<LoadedSession> {
   const resolveLoadedIdentity = (loadedSession: LoadedSession) => {
     if (

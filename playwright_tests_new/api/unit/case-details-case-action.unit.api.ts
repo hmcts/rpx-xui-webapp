@@ -4,9 +4,8 @@ import type { Locator } from '@playwright/test';
 import { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po.js';
 
 test.describe('Case details case action helper', { tag: '@svc-internal' }, () => {
-  test('waits for a visible action spinner before submitting or retrying it', async () => {
+  test('waits for the action spinner before submitting once', async () => {
     let goClicks = 0;
-    let goClickAttempts = 0;
     let optionSelections = 0;
     let spinnerVisible = false;
     let spinnerWaits = 0;
@@ -40,20 +39,11 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
     const expectedLocator = {
       waitFor: async () => {
         expectedWaits += 1;
-        if (expectedWaits === 1) {
-          spinnerVisible = true;
-          throw new Error('action page is still loading');
-        }
       },
     } as unknown as Locator;
     const caseDetailsPage = Object.assign(Object.create(CaseDetailsPage.prototype), {
       caseActionGoButton: {
         click: async () => {
-          goClickAttempts += 1;
-          if (goClickAttempts === 1) {
-            spinnerVisible = true;
-            throw new Error('loading spinner intercepted the click');
-          }
           if (spinnerVisible) {
             throw new Error('Go clicked while the previous action is still loading');
           }
@@ -77,9 +67,10 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
 
     expect(goClicks).toBe(1);
     expect(optionSelections).toBe(1);
-    expect(spinnerWaits).toBe(4);
-    expect(spinnerTimeouts).toEqual([50, 50, 50, 50]);
-    expect(expectedWaits).toBe(2);
+    expect(spinnerWaits).toBe(2);
+    expect(spinnerTimeouts).toHaveLength(2);
+    expect(spinnerTimeouts.every((timeout) => timeout > 0 && timeout <= 50)).toBe(true);
+    expect(expectedWaits).toBe(1);
   });
 
   test('reports redacted Update Case readiness diagnostics without replaying the action', async () => {

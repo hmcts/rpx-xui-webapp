@@ -3230,9 +3230,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.15-exui-2906-activity-tracker-web-pubsub-6":
-  version: 7.4.15-exui-2906-activity-tracker-web-pubsub-6
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.15-exui-2906-activity-tracker-web-pubsub-6"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.15-exui-2906-activity-tracker-web-pubsub-7":
+  version: 7.4.15-exui-2906-activity-tracker-web-pubsub-7
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.15-exui-2906-activity-tracker-web-pubsub-7"
   dependencies:
     "@azure/web-pubsub-client": "npm:^1.0.4"
     "@edium/fsm": "npm:^3.0.2"
@@ -3280,7 +3280,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/cbd80a6295fa61177aec5a7c92b58149c8c88f3e0e9271b4d4d7d9dc9fc01041fd92f10d2a12a85eb2d6c7a770a4db0300d338472c934d0a42ccd8b2bdd16f3e
+  checksum: 10/81f3c458a1b011a374d28126bc78c87c8ba9c55d681fce90d179eb3b0dc2b249cfe2901702c01b3d9af2c05f3fc7b551f3b9f8d425e52853363a1bb8bef44790
   languageName: node
   linkType: hard
 
@@ -20099,7 +20099,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.15-exui-2906-activity-tracker-web-pubsub-6"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.15-exui-2906-activity-tracker-web-pubsub-7"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
     "@hmcts/media-viewer": "npm:4.2.48"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

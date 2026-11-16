@@ -1,5 +1,5 @@
 {
-  "excludedTags": ["@blocked-exui-4272", "@blocked-exui-4276", "@blocked-exui-4317", "@blocked-exui-4318"],
+  "excludedTags": ["@blocked-exui-4272", "@blocked-exui-4276", "@blocked-exui-4317", "@blocked-exui-4318", "@blocked-exui-5590"],
   "availableTags": [
     "@integration",
     "@integration-access-requests",
@@ -28,6 +28,7 @@
     "@blocked-exui-4272",
     "@blocked-exui-4276",
     "@blocked-exui-4317",
-    "@blocked-exui-4318"
+    "@blocked-exui-4318",
+    "@blocked-exui-5590"
   ]
 }

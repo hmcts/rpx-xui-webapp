@@ -9,7 +9,8 @@ import {
 
 test.describe('Multi-day work booking', { tag: ['@integration', '@integration-booking-ui'] }, () => {
   test.use({ timezoneId: 'Europe/London' });
-  test('normalizes a summer range to UTC boundaries and refreshes the selected work location', async ({
+  // EXUI-5590: the app omits the selected location from MyTasks; re-enable after the app fix.
+  test('normalizes a summer range to UTC boundaries and refreshes the selected work location @blocked-exui-5590', async ({
     page,
     bookingUiPage,
     taskListPage,

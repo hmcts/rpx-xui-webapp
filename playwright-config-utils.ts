@@ -45,6 +45,31 @@ export type ResolveTagFiltersOptions = {
   globalExcludedTagsPattern?: RegExp;
 };
 
+export const DEFAULT_ACTION_TIMEOUT_MS = 20_000;
+export const DEFAULT_NAVIGATION_TIMEOUT_MS = 30_000;
+
+const parsePositiveInt = (raw: string | undefined): number | undefined => {
+  const parsed = parseNonNegativeInt(raw);
+  return parsed && parsed > 0 ? parsed : undefined;
+};
+
+/**
+ * Per-action and navigation timeouts for `use`. Without them an un-timed click or goto waits for the whole
+ * test timeout, and every retry repeats that wait. `PW_ACTION_TIMEOUT_MS` / `PW_NAVIGATION_TIMEOUT_MS` override.
+ */
+export function resolveActionTimeouts(
+  env: EnvMap = process.env,
+  defaults: { actionTimeout: number; navigationTimeout: number } = {
+    actionTimeout: DEFAULT_ACTION_TIMEOUT_MS,
+    navigationTimeout: DEFAULT_NAVIGATION_TIMEOUT_MS,
+  }
+): { actionTimeout: number; navigationTimeout: number } {
+  return {
+    actionTimeout: parsePositiveInt(env.PW_ACTION_TIMEOUT_MS) ?? defaults.actionTimeout,
+    navigationTimeout: parsePositiveInt(env.PW_NAVIGATION_TIMEOUT_MS) ?? defaults.navigationTimeout,
+  };
+}
+
 /**
  * Parses a string environment variable as a non-negative integer.
  * Returns undefined for absent, empty, non-numeric, or negative values.

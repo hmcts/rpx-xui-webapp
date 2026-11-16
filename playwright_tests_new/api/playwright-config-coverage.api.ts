@@ -991,4 +991,35 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       'functional-output/tests/playwright-e2e/odhin-report'
     );
   });
+
+  test('every Playwright config sets action and navigation timeouts with env overrides', () => {
+    const env = { CI: undefined, TEST_URL: 'https://example.test' };
+    const timeoutsOf = (config: unknown) => (config as { use: Record<string, unknown> }).use;
+    const defaults = { actionTimeout: 20_000, navigationTimeout: 30_000 };
+    const overrides = { PW_ACTION_TIMEOUT_MS: '5000', PW_NAVIGATION_TIMEOUT_MS: '7000' };
+
+    for (const build of [buildConfig, buildE2eConfig, buildIntegrationConfig]) {
+      expect(timeoutsOf(build(env))).toMatchObject(defaults);
+      expect(timeoutsOf(build({ ...env, ...overrides }))).toMatchObject({ actionTimeout: 5000, navigationTimeout: 7000 });
+      expect(timeoutsOf(build({ ...env, PW_ACTION_TIMEOUT_MS: '0', PW_NAVIGATION_TIMEOUT_MS: 'abc' }))).toMatchObject(defaults);
+    }
+    expect(timeoutsOf(buildNightlyConfig(env))).toMatchObject({ actionTimeout: 60_000, navigationTimeout: 60_000 });
+    expect(timeoutsOf(buildNightlyConfig({ ...env, ...overrides }))).toMatchObject({
+      actionTimeout: 5000,
+      navigationTimeout: 7000,
+    });
+  });
+
+  test('main and integration configs take retries from env and default to 2', () => {
+    const env = { CI: undefined, TEST_URL: 'https://example.test', PW_E2E_RETRIES: undefined, PW_INTEGRATION_RETRIES: undefined };
+    const retriesOf = (config: unknown) => (config as { retries: number }).retries;
+
+    expect(retriesOf(buildConfig(env))).toBe(2);
+    expect(retriesOf(buildConfig({ ...env, PW_E2E_RETRIES: '0' }))).toBe(0);
+    expect(retriesOf(buildConfig({ ...env, PW_E2E_RETRIES: '-1' }))).toBe(2);
+    expect(retriesOf(buildIntegrationConfig(env))).toBe(2);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_INTEGRATION_RETRIES: '1' }))).toBe(1);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_INTEGRATION_RETRIES: '0' }))).toBe(0);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_E2E_RETRIES: '0' }))).toBe(2);
+  });
 });

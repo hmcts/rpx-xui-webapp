@@ -170,6 +170,34 @@ describe('WA Supported Jurisdictions', () => {
       expect(res.send).to.have.been.calledWith(['']);
       expect(res.status).to.have.been.calledWith(200);
     });
+
+    it('should add configured jurisdictions for the current user and remove duplicates', async () => {
+      req.session = { passport: { user: { userinfo: { uid: 'user-1' } } } };
+      getConfigValueStub.withArgs('waSupportedJurisdictionUsers').returns([{ uid: 'user-1', jurisdictions: 'CIVIL,SSCS, SSCS' }]);
+
+      await waSupportedJurisdictions.getWASupportedJurisdictions(req, res, next);
+
+      expect(res.send).to.have.been.calledWith(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC', 'SSCS']);
+    });
+
+    it('should use only the global jurisdictions when the current user has no override', async () => {
+      req.session = { passport: { user: { userinfo: { uid: 'user-2' } } } };
+      getConfigValueStub.withArgs('waSupportedJurisdictionUsers').returns([{ uid: 'user-1', jurisdictions: 'SSCS' }]);
+
+      await waSupportedJurisdictions.getWASupportedJurisdictions(req, res, next);
+
+      expect(res.send).to.have.been.calledWith(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC']);
+    });
+
+    it('should ignore an invalid user override configuration', async () => {
+      req.session = { passport: { user: { userinfo: { uid: 'user-1' } } } };
+      getConfigValueStub.withArgs('waSupportedJurisdictionUsers').returns({ uid: 'user-1', jurisdictions: 'SSCS' });
+
+      await waSupportedJurisdictions.getWASupportedJurisdictions(req, res, next);
+
+      expect(res.send).to.have.been.calledWith(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC']);
+      expect(next).not.to.have.been.called;
+    });
   });
 
   describe('getWASupportedJurisdictionsList', () => {
@@ -196,6 +224,15 @@ describe('WA Supported Jurisdictions', () => {
       const jurisdictionList = waSupportedJurisdictions.getWASupportedJurisdictionsList();
 
       expect(jurisdictionList).to.deep.equal(['']);
+    });
+
+    it('should apply a user override for internal consumers', () => {
+      req.session = { passport: { user: { userinfo: { uid: 'user-1' } } } };
+      getConfigValueStub.withArgs('waSupportedJurisdictionUsers').returns([{ uid: 'user-1', jurisdictions: 'SSCS' }]);
+
+      const jurisdictionList = waSupportedJurisdictions.getWASupportedJurisdictionsList(req);
+
+      expect(jurisdictionList).to.include('SSCS');
     });
   });
 

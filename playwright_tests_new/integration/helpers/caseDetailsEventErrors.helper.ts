@@ -87,9 +87,6 @@ export async function seedCaseDetailsEventErrorsSession(page: Page): Promise<voi
     [caseDetailsEventErrorsJurisdictionId],
     [{ serviceId: caseDetailsEventErrorsJurisdictionId, serviceName: 'Immigration and Asylum' }],
     {
-      userId: userDetails.userId,
-      roleCategory: userDetails.roleCategory,
-      roles: userDetails.roles,
       replaceRoleAssignments: true,
     }
   );

@@ -48,6 +48,56 @@ test.describe('framework error and phase helpers', { tag: '@svc-internal' }, () 
     expect(testInfo.annotations).toEqual([{ type: 'phase', description: 'test' }]);
   });
 
+  test('inPhase restores the absence of a phase after a successful first call', async () => {
+    const testInfo = buildTestInfo([{ type: 'session-user', description: 'SOLICITOR' }]);
+
+    await inPhase(testInfo, 'auth', async () => undefined);
+
+    expect(testInfo.annotations).toEqual([{ type: 'session-user', description: 'SOLICITOR' }]);
+  });
+
+  test('inPhase restores the original phase after an external retry succeeds', async () => {
+    const testInfo = buildTestInfo([{ type: 'phase', description: 'test' }]);
+    await expect(
+      inPhase(testInfo, 'auth', async () => {
+        throw new Error('first attempt');
+      })
+    ).rejects.toThrow('first attempt');
+    expect(testInfo.annotations).toEqual([{ type: 'phase', description: 'auth' }]);
+
+    await inPhase(testInfo, 'auth', async () => undefined);
+
+    expect(testInfo.annotations).toEqual([{ type: 'phase', description: 'test' }]);
+  });
+
+  test('inPhase restores nested scopes when an inner failure is recovered', async () => {
+    const testInfo = buildTestInfo([{ type: 'phase', description: 'test' }]);
+    await inPhase(testInfo, 'setup', async () => {
+      await expect(
+        inPhase(testInfo, 'auth', async () => {
+          throw new Error('inner failure');
+        })
+      ).rejects.toThrow('inner failure');
+      await inPhase(testInfo, 'auth', async () => undefined);
+      expect(testInfo.annotations).toEqual([{ type: 'phase', description: 'setup' }]);
+    });
+    expect(testInfo.annotations).toEqual([{ type: 'phase', description: 'test' }]);
+  });
+
+  test('inPhase keeps the innermost failing phase and restores the outer baseline on retry', async () => {
+    const testInfo = buildTestInfo([{ type: 'phase', description: 'test' }]);
+    await expect(
+      inPhase(testInfo, 'setup', () =>
+        inPhase(testInfo, 'auth', async () => {
+          throw new Error('nested failure');
+        })
+      )
+    ).rejects.toThrow('nested failure');
+    expect(testInfo.annotations).toEqual([{ type: 'phase', description: 'auth' }]);
+    await inPhase(testInfo, 'setup', async () => undefined);
+    expect(testInfo.annotations).toEqual([{ type: 'phase', description: 'test' }]);
+  });
+
   test('inPhase keeps the phase annotation and rethrows the original error', async () => {
     const testInfo = buildTestInfo();
     const failure = new Error('boom');

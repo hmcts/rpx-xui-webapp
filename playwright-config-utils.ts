@@ -312,7 +312,12 @@ function validateExclusions(exclusions: unknown): asserts exclusions is TagExclu
       throw new TypeError(`exclusions[${index}] is missing ${missing.join(', ')}`);
     }
     const expires = candidate!.expires as string;
-    if (!ISO_DATE_PATTERN.test(expires) || Number.isNaN(Date.parse(`${expires}T00:00:00Z`))) {
+    const expiryDate = new Date(`${expires}T00:00:00Z`);
+    if (
+      !ISO_DATE_PATTERN.test(expires) ||
+      Number.isNaN(expiryDate.getTime()) ||
+      expiryDate.toISOString().slice(0, 10) !== expires
+    ) {
       throw new TypeError(`exclusions[${index}].expires must be a valid YYYY-MM-DD date, received "${expires}"`);
     }
   });

@@ -918,17 +918,15 @@ export async function ensureAuthenticatedPage(
   userIdentifier: SessionIdentityInput,
   options: AuthenticatedPageOptions = {}
 ): Promise<LoadedSession> {
-  const { testInfo, ...pageOptions } = options;
-  return testInfo
-    ? inPhase(testInfo, 'auth', () => authenticatePage(page, userIdentifier, pageOptions))
-    : authenticatePage(page, userIdentifier, pageOptions);
+  const { testInfo = test.info(), ...pageOptions } = options;
+  return inPhase(testInfo, 'auth', () => authenticatePage(page, userIdentifier, pageOptions));
 }
 
 type AuthenticatedPageOptions = {
   targetUrl?: string;
   waitForSelector?: string | false;
   timeoutMs?: number;
-  /** When provided, the `phase` annotation reads `auth` while authentication runs. */
+  /** Defaults to the current test; pass explicitly when composing test contexts. */
   testInfo?: Pick<TestInfo, 'annotations'>;
 };
 
@@ -1264,7 +1262,7 @@ async function confirmAuthenticatedLogin(
     acceptCookies?: typeof acceptAccessCookiesIfPresent;
     waitForShell?: typeof waitForAuthenticatedShell;
     waitForAuthCookies?: typeof waitForRequiredAuthCookies;
-    info?: typeof logger.info;
+    info?: (message: string, metadata: Record<string, unknown>) => void;
   } = {}
 ): Promise<void> {
   const acceptCookies = deps.acceptCookies ?? acceptAccessCookiesIfPresent;

@@ -85,6 +85,49 @@ non-sensitive step metadata; native reports and traces remain restricted artefac
 Named test locks coordinate one Playwright run, not independent Jenkins jobs:
 keep the existing physical-identity and session leases for cross-process isolation.
 
+### Framework limits and diagnostics
+
+Run `yarn tsc --project playwright_tests_new/tsconfig.scoped.json` to check the
+maintained Playwright support, configs and affected journeys with strict types.
+The broad `tsconfig.json` also includes application sources and is a separate check.
+
+Action and navigation defaults are 20 seconds and 30 seconds respectively;
+cross-browser nightly uses 60 seconds for both. Override with positive
+`PW_ACTION_TIMEOUT_MS` and `PW_NAVIGATION_TIMEOUT_MS` values. Explicit action
+budgets still apply. Task-list navigation shares its existing 30-second allowance
+across navigation, bootstrap and row readiness. Header search shares a single
+budget comprising its existing click and response allowances; it requires the
+requested case with readable tabs, or a matching missing-case response followed
+by the no-results view.
+
+Retries remain two by default. `PW_API_RETRIES`, `PW_E2E_RETRIES` and
+`PW_INTEGRATION_RETRIES` configure their respective runners; zero disables retries.
+Cross-browser nightly retains its existing CI/local retry policy.
+
+The flake reporter stays report-only unless `PW_FLAKE_GATE=enforce`. It fails the
+run when flaky tests exceed either `PW_MAX_FLAKY_TESTS` (default 20) or
+`PW_MAX_FLAKY_RATE` (default 0.2). Enabling enforcement is a deliberate CI policy
+choice; it does not fix the underlying flake.
+
+Tag-filter files also accept owned exclusions alongside legacy `excludedTags`:
+
+```json
+{
+  "exclusions": [{ "tag": "@existing-feature-tag", "ticket": "EXUI-1234", "owner": "owning-team", "expires": "2026-12-31" }]
+}
+```
+
+Use a tag from the file's available tags. Expiry uses UTC calendar dates, includes
+the expiry day and warns afterwards while retaining the exclusion. Set
+`PW_TAG_FILTER_ENFORCE_EXPIRY=true` to fail configuration loading for expired
+exclusions. Explicit exclusion overrides retain their existing precedence.
+
+Failure annotations distinguish authentication, setup, test, teardown and runner
+phases. Authentication uses the current Playwright test context automatically.
+Document setup errors retain operation and HTTP status without raw upstream
+response bodies. Compare CI JSON attempt durations, Odhín results and the existing
+`stage-events.jsonl`/load-profile evidence before changing worker or retry budgets.
+
 By default, Playwright tests run against **AAT** from your local machine. Override `TEST_URL` to point the same suite at DEMO, ITHC, preview, or LOCAL.
 
 | Environment | `TEST_URL`                                     |

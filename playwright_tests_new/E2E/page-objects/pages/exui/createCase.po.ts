@@ -770,7 +770,7 @@ export class CreateCasePage extends Base {
   async uploadFile(
     fileName: string,
     mimeType: string,
-    fileContent: string,
+    fileContent: string | Buffer,
     fileInput?: Locator,
     fileContentEncoding?: BufferEncoding
   ) {
@@ -779,7 +779,7 @@ export class CreateCasePage extends Base {
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
-        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
+        buffer: Buffer.isBuffer(fileContent) ? fileContent : Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
       });
     });
   }

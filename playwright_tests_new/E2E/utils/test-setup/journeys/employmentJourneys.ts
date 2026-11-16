@@ -88,14 +88,15 @@ export async function uploadEmploymentDraftDocumentViaApi(options: {
     timeout: 60_000,
   });
   if (!eventTriggerResponse.ok()) {
-    const body = await eventTriggerResponse.text().catch(() => '');
-    throw new Error(
-      `Employment document setup failed to fetch event trigger (HTTP ${eventTriggerResponse.status()}). ` +
-        `Path='${eventTriggerPath}'. Body='${body.slice(0, 500)}'`
-    );
+    throw new Error(`Employment document setup failed to fetch event trigger (HTTP ${eventTriggerResponse.status()}).`);
   }
 
-  const eventTrigger = (await eventTriggerResponse.json()) as InternalEventTriggerResponse;
+  let eventTrigger: InternalEventTriggerResponse;
+  try {
+    eventTrigger = (await eventTriggerResponse.json()) as InternalEventTriggerResponse;
+  } catch {
+    throw new Error(`Employment document setup event trigger returned invalid JSON (HTTP ${eventTriggerResponse.status()}).`);
+  }
   const eventToken = eventTrigger.event_token?.trim();
   if (!eventToken) {
     throw new Error('Employment document setup event trigger did not include event_token.');
@@ -131,11 +132,7 @@ export async function uploadEmploymentDraftDocumentViaApi(options: {
     timeout: 60_000,
   });
   if (!submitResponse.ok()) {
-    const body = await submitResponse.text().catch(() => '');
-    throw new Error(
-      `Employment document setup submit failed (HTTP ${submitResponse.status()}). ` +
-        `Path='${submitPath}'. Body='${body.slice(0, 500)}'`
-    );
+    throw new Error(`Employment document setup submit failed (HTTP ${submitResponse.status()}).`);
   }
 }
 

@@ -19,17 +19,22 @@ export class FrameworkError extends Error {
   }
 }
 
-const readPhase = (testInfo: Pick<TestInfo, 'annotations'>): string | undefined =>
-  [...testInfo.annotations].reverse().find((annotation) => annotation.type === PHASE_ANNOTATION_TYPE)?.description;
+const failedPhaseBaselines = new WeakMap<Pick<TestInfo, 'annotations'>, Phase | undefined>();
 
-/** Sets the single `phase` annotation, replacing any earlier one so the last phase entered wins. */
-export function annotatePhase(testInfo: Pick<TestInfo, 'annotations'>, phase: Phase): void {
+const readPhase = (testInfo: Pick<TestInfo, 'annotations'>): Phase | undefined =>
+  [...testInfo.annotations].reverse().find((annotation) => annotation.type === PHASE_ANNOTATION_TYPE)?.description as
+    Phase | undefined;
+
+/** Replaces the `phase` annotation, or removes it when the previous scope had no phase. */
+export function annotatePhase(testInfo: Pick<TestInfo, 'annotations'>, phase: Phase | undefined): void {
   for (let index = testInfo.annotations.length - 1; index >= 0; index -= 1) {
     if (testInfo.annotations[index].type === PHASE_ANNOTATION_TYPE) {
       testInfo.annotations.splice(index, 1);
     }
   }
-  testInfo.annotations.push({ type: PHASE_ANNOTATION_TYPE, description: phase });
+  if (phase) {
+    testInfo.annotations.push({ type: PHASE_ANNOTATION_TYPE, description: phase });
+  }
 }
 
 /**
@@ -37,13 +42,19 @@ export function annotatePhase(testInfo: Pick<TestInfo, 'annotations'>, phase: Ph
  * left labelled as setup or auth; on failure the phase stays so the failure is attributed to where it happened.
  */
 export async function inPhase<T>(testInfo: Pick<TestInfo, 'annotations'>, phase: Phase, action: () => Promise<T>): Promise<T> {
-  const previous = readPhase(testInfo);
+  // Keep the pre-failure baseline so an external retry can restore it after succeeding.
+  const previous = failedPhaseBaselines.has(testInfo) ? failedPhaseBaselines.get(testInfo) : readPhase(testInfo);
+  failedPhaseBaselines.delete(testInfo);
   annotatePhase(testInfo, phase);
-  const result = await action();
-  if (previous) {
-    annotatePhase(testInfo, previous as Phase);
+  try {
+    const result = await action();
+    failedPhaseBaselines.delete(testInfo);
+    annotatePhase(testInfo, previous);
+    return result;
+  } catch (error) {
+    failedPhaseBaselines.set(testInfo, previous);
+    throw error;
   }
-  return result;
 }
 
 const RUNNER_ERROR_PATTERN = /browser has been closed|worker process exited|worker teardown timeout/i;

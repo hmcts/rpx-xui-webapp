@@ -1382,7 +1382,9 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
       const releaseResults = await Promise.allSettled(releases.reverse().map((release) => release()));
       const releaseFailures = releaseResults.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
       if (releaseFailures.length > 0) {
-        annotatePhase(testInfo, 'teardown');
+        if (testInfo.errors.length === 0) {
+          annotatePhase(testInfo, 'teardown');
+        }
         const reasons = releaseFailures.map(({ reason }) => (reason instanceof Error ? reason.message : String(reason)));
         throw new FrameworkError(
           'LEASE_RELEASE_FAILED',

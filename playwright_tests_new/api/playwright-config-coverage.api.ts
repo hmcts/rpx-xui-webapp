@@ -37,7 +37,14 @@ let e2eConfigModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
 let nightlyConfigModule: TestableConfigModule;
 
-const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
+const buildConfig = (env: EnvMap) =>
+  configModule.__test__.buildConfig(env) as {
+    workers: number;
+    reporter: [string, Record<string, unknown> | undefined][];
+    testIgnore: string[];
+    use: { baseURL: string };
+    projects: Array<{ name: string; workers?: number; use: { headless: boolean } }>;
+  };
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
 const resolveApiProjectWorkerCount = (env: EnvMap) =>
   (
@@ -79,7 +86,8 @@ const buildIntegrationConfig = (env: EnvMap) =>
     workers?: number;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
-    use: { trace: string | { mode: string; snapshots: { dom: boolean; aria: boolean; screen: boolean } } };
+    expect: { timeout: number };
+    use: { timezoneId: string; trace: string | { mode: string; snapshots: { dom: boolean; aria: boolean; screen: boolean } } };
     projects: Array<{
       name: string;
       workers?: number;

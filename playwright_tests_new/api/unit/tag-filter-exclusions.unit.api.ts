@@ -1,47 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { resolveWithConfig } from './tag-filter-exclusions.fixture';
 
-const require = createRequire(import.meta.url);
-const { resolveTagFilters } = require('../../../playwright-config-utils') as typeof import('../../../playwright-config-utils');
-
-const today = new Date('2026-06-15T10:00:00Z');
 const activeExclusion = { tag: '@feature-b', ticket: 'EXUI-1', owner: 'team-a', expires: '2026-12-31' };
 const expiredExclusion = { tag: '@feature-c', ticket: 'EXUI-2', owner: 'team-b', expires: '2026-06-14' };
-
-let configDir: string;
-
-test.beforeAll(() => {
-  configDir = mkdtempSync(join(tmpdir(), 'tag-filter-exclusions-'));
-});
-
-test.afterAll(() => {
-  rmSync(configDir, { recursive: true, force: true });
-});
-
-const resolveWithConfig = (name: string, config: Record<string, unknown>, env: NodeJS.ProcessEnv = {}) => {
-  const configPath = join(configDir, `${name}.json`);
-  writeFileSync(configPath, JSON.stringify({ availableTags: ['@e2e', '@feature-a', '@feature-b', '@feature-c'], ...config }));
-  const warnings: string[] = [];
-  const originalWarn = console.warn;
-  console.warn = (message: string) => warnings.push(message);
-  try {
-    const filters = resolveTagFilters({
-      env: { CI: undefined, E2E_PW_TAG_FILTER_CONFIG: configPath, ...env },
-      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
-      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
-      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
-      defaultConfigPath: configPath,
-      suiteTag: '@e2e',
-      now: today,
-    });
-    return { filters, warnings };
-  } finally {
-    console.warn = originalWarn;
-  }
-};
 
 test.describe('tag filter exclusions', { tag: '@svc-internal' }, () => {
   test('merges exclusions with excludedTags without warning while they are current', () => {
@@ -109,5 +70,19 @@ test.describe('tag filter exclusions', { tag: '@svc-internal' }, () => {
     expect(() => resolveWithConfig('unknown-tag', { exclusions: [{ ...activeExclusion, tag: '@nope' }] })).toThrow(
       /unknown tag\(s\): @nope/
     );
+  });
+
+  for (const expires of ['2026-02-29', '2026-02-31', '2026-04-31']) {
+    test(`rejects the impossible calendar date ${expires}`, () => {
+      expect(() => resolveWithConfig(expires, { exclusions: [{ ...activeExclusion, expires }] })).toThrow(
+        /must be a valid YYYY-MM-DD date/
+      );
+    });
+  }
+
+  test('accepts a leap day in a leap year', () => {
+    expect(
+      resolveWithConfig('leap-day', { exclusions: [{ ...activeExclusion, expires: '2028-02-29' }] }).filters.excludedTags
+    ).toEqual(['@feature-b']);
   });
 });

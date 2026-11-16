@@ -64,18 +64,14 @@ test.describe('Search quick find with lazy search session', { tag: ['@integratio
     expect(caseNumberFromUrl).toBe(VALID_SEARCH_CASE_REFERENCE);
   });
 
-  test('User remains on case list with no cases message for non-existent 16-digit header search', async ({
-    caseListPage,
-    searchCasePage,
-    page,
-  }) => {
+  test('User sees no-results view for non-existent 16-digit header search', async ({ caseListPage, searchCasePage, page }) => {
     await caseListPage.navigateTo();
     await expect(searchCasePage.caseIdTextBox).toBeVisible();
 
     await searchCasePage.searchWith16DigitCaseId(INVALID_SEARCH_CASE_REFERENCE);
 
-    await expect(page).not.toHaveURL(/\/cases\/case-details\//);
-    await expect(page).toHaveURL(/\/cases(?:[/?#]|$)/);
-    await expect(page.getByText('No cases found. Try using different filters.')).toBeVisible();
+    await expect(page).toHaveURL(/\/search\/noresults(?:[/?#]|$)/);
+    await expect(searchCasePage.noResultsHeading).toBeVisible();
+    await expect(searchCasePage.backLink).toBeVisible();
   });
 });

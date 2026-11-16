@@ -1,10 +1,9 @@
 import { Page } from '@playwright/test';
 import { Base } from '../../base';
+import { remainingNavigationTimeout } from '../../../utils/test-setup/navigationDeadline';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, CCD_CASE_REFERENCE_PATTERN } from './exui-timeouts';
 
 export class SearchCasePage extends Base {
-  private static readonly QUICK_SEARCH_OUTCOME_PROBE_MS = 10_000;
-
   // Locators
   readonly pageHeading = this.page.locator('main h1');
   readonly quickSearchContainer = this.page.locator('form:has(#exuiCaseReferenceSearch)');
@@ -22,7 +21,7 @@ export class SearchCasePage extends Base {
    * Searches for a case using the 16-digit CCD case reference from header search box.
    *
    * Handles UI variations (primary vs fallback Find button) and overlay interceptions.
-   * Waits for search spinner cycle before returning.
+   * Waits for the searched case or a no-results view, and for the spinner to clear.
    *
    * @param caseId - 16-digit CCD case reference (format: DDDDDDDDDDDDDDDD)
    * @throws {Error} If case ID format is invalid
@@ -38,63 +37,63 @@ export class SearchCasePage extends Base {
     const findButton = primaryFindButtonVisible ? this.searchCaseFindButton : this.searchCaseFindButtonFallback;
     await findButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_VISIBLE });
     await findButton.scrollIntoViewIfNeeded();
+    const deadlineMs = Date.now() + EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK + EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN;
+    const remaining = () => remainingNavigationTimeout(deadlineMs, 'completing the header search');
+    // A previous no-results view can remain visible while a new search is still loading.
+    const missingCaseResponse = this.page
+      .waitForResponse(
+        (response) =>
+          new URL(response.url()).pathname.endsWith(`/internal/cases/${caseId}`) && [400, 404].includes(response.status()),
+        { timeout: remaining() }
+      )
+      .then(
+        () => true,
+        () => false
+      );
     try {
-      await findButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
+      await findButton.click({ timeout: Math.min(EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK, remaining()) });
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
       if (!errorMsg.includes('intercepts pointer events')) {
         throw error;
       }
-      await this.waitForPostSearchSpinnerCycle();
-      await findButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
+      await this.waitForPostSearchSpinnerCycle(remaining());
+      await findButton.click({ timeout: Math.min(EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK, remaining()) });
     }
-    await this.waitForPostSearchSpinnerCycle();
-    const immediateOutcomeReached = await this.waitForImmediateSearchOutcome(SearchCasePage.QUICK_SEARCH_OUTCOME_PROBE_MS);
-    if (!immediateOutcomeReached) {
-      this.logger.warn('Header quick-search produced no immediate outcome after submit', {
-        caseId,
-        currentUrl: this.page.url(),
-      });
-    }
+    await this.waitForImmediateSearchOutcome(caseId, deadlineMs, missingCaseResponse);
+    await this.waitForPostSearchSpinnerCycle(remainingNavigationTimeout(deadlineMs, 'waiting for the search spinner'));
   }
 
-  /**
-   * Waits for the EXUI loading spinner cycle to complete after search submission.
-   *
-   * CCD search operations can return very quickly (< 100ms) or take several seconds.
-   * The spinner may never render for fast responses, which is a valid success path.
-   *
-   * Strategy:
-   * 1. Wait briefly for spinner to appear (timeout: 1s)
-   * 2. If spinner appears, wait for it to disappear (timeout: 60s)
-   * 3. If spinner never appears, continue immediately (fast response)
-   *
-   * Uses Playwright's built-in smart waiting instead of manual polling.
-   *
-   * @private
-   * @throws Never throws - treats no-spinner as success
-   */
-  private async waitForPostSearchSpinnerCycle(): Promise<void> {
-    const spinner = this.page.locator('xuilib-loading-spinner').first();
-
-    try {
-      // Wait for spinner to appear (brief timeout - may not show for fast responses)
-      await spinner.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SPINNER_APPEAR_BRIEF });
-      // If visible, wait for it to disappear
-      await spinner.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
-    } catch {
-      // Spinner never appeared - fast response, continue
-      return;
-    }
+  private async waitForPostSearchSpinnerCycle(timeoutMs: number = EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN): Promise<void> {
+    // An absent spinner is already hidden; a spinner that stays visible must fail the search.
+    await this.page.locator('xuilib-loading-spinner').first().waitFor({
+      state: 'hidden',
+      timeout: timeoutMs,
+    });
   }
 
-  private async waitForImmediateSearchOutcome(timeoutMs: number): Promise<boolean> {
-    const urlBeforeSubmit = this.page.url();
-
-    return Promise.any([
-      this.page.waitForURL((url) => url.toString() !== urlBeforeSubmit, { timeout: timeoutMs }).then(() => true),
-      this.noResultsContainer.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
-    ]).catch(() => false);
+  private async waitForImmediateSearchOutcome(
+    caseId: string,
+    deadlineMs: number,
+    missingCaseResponse: Promise<boolean>
+  ): Promise<void> {
+    const remaining = () => remainingNavigationTimeout(deadlineMs, 'waiting for the header search result');
+    await Promise.any([
+      this.page
+        .waitForURL((url) => /^\/cases\/case-details\//.test(url.pathname) && url.pathname.split('/').includes(caseId), {
+          timeout: remaining(),
+        })
+        .then(() => this.page.getByRole('tablist').waitFor({ state: 'visible', timeout: remaining() })),
+      missingCaseResponse.then(async (missing) => {
+        if (!missing) throw new Error('No missing-case response was received for this search');
+        await this.page.waitForURL((url) => url.pathname === '/search/noresults', { timeout: remaining() });
+        await this.noResultsContainer.waitFor({ state: 'visible', timeout: remaining() });
+      }),
+    ]).catch(() => {
+      throw new Error(
+        `Header quick-search did not reach the searched case or a no-results view (path=${new URL(this.page.url()).pathname})`
+      );
+    });
   }
 
   constructor(page: Page) {

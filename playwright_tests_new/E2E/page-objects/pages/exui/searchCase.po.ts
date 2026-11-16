@@ -15,13 +15,14 @@ export class SearchCasePage extends Base {
   readonly caseProgressPanel = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly noResultsHeading = this.page.locator('exui-no-results .govuk-heading-xl');
   readonly noResultsContainer = this.page.locator('exui-no-results');
+  readonly restrictedCaseAccessContainer = this.page.locator('exui-restricted-case-access-container');
   readonly backLink = this.page.locator('exui-no-results .govuk-back-link');
 
   /**
    * Searches for a case using the 16-digit CCD case reference from header search box.
    *
    * Handles UI variations (primary vs fallback Find button) and overlay interceptions.
-   * Waits for the searched case or a no-results view, and for the spinner to clear.
+   * Waits for the searched case, restricted-access shell, or no-results view, and for the spinner to clear.
    *
    * @param caseId - 16-digit CCD case reference (format: DDDDDDDDDDDDDDDD)
    * @throws {Error} If case ID format is invalid
@@ -40,15 +41,15 @@ export class SearchCasePage extends Base {
     const deadlineMs = Date.now() + EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK + EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN;
     const remaining = () => remainingNavigationTimeout(deadlineMs, 'completing the header search');
     // A previous no-results view can remain visible while a new search is still loading.
-    const missingCaseResponse = this.page
+    const caseLookupResponse = this.page
       .waitForResponse(
         (response) =>
-          new URL(response.url()).pathname.endsWith(`/internal/cases/${caseId}`) && [400, 404].includes(response.status()),
+          new URL(response.url()).pathname.endsWith(`/internal/cases/${caseId}`) && [400, 403, 404].includes(response.status()),
         { timeout: remaining() }
       )
       .then(
-        () => true,
-        () => false
+        (response) => response.status(),
+        () => null
       );
     try {
       await findButton.click({ timeout: Math.min(EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK, remaining()) });
@@ -60,7 +61,7 @@ export class SearchCasePage extends Base {
       await this.waitForPostSearchSpinnerCycle(remaining());
       await findButton.click({ timeout: Math.min(EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK, remaining()) });
     }
-    await this.waitForImmediateSearchOutcome(caseId, deadlineMs, missingCaseResponse);
+    await this.waitForImmediateSearchOutcome(caseId, deadlineMs, caseLookupResponse);
     await this.waitForPostSearchSpinnerCycle(remainingNavigationTimeout(deadlineMs, 'waiting for the search spinner'));
   }
 
@@ -75,7 +76,7 @@ export class SearchCasePage extends Base {
   private async waitForImmediateSearchOutcome(
     caseId: string,
     deadlineMs: number,
-    missingCaseResponse: Promise<boolean>
+    caseLookupResponse: Promise<number | null>
   ): Promise<void> {
     const remaining = () => remainingNavigationTimeout(deadlineMs, 'waiting for the header search result');
     await Promise.any([
@@ -84,14 +85,24 @@ export class SearchCasePage extends Base {
           timeout: remaining(),
         })
         .then(() => this.page.getByRole('tablist').waitFor({ state: 'visible', timeout: remaining() })),
-      missingCaseResponse.then(async (missing) => {
-        if (!missing) throw new Error('No missing-case response was received for this search');
-        await this.page.waitForURL((url) => url.pathname === '/search/noresults', { timeout: remaining() });
-        await this.noResultsContainer.waitFor({ state: 'visible', timeout: remaining() });
+      caseLookupResponse.then(async (status) => {
+        if (status === 403) {
+          await this.page.waitForURL((url) => url.pathname === `/cases/restricted-case-access/${caseId}`, {
+            timeout: remaining(),
+          });
+          await this.restrictedCaseAccessContainer.waitFor({ state: 'visible', timeout: remaining() });
+          return;
+        }
+        if (status === 400 || status === 404) {
+          await this.page.waitForURL((url) => url.pathname === '/search/noresults', { timeout: remaining() });
+          await this.noResultsContainer.waitFor({ state: 'visible', timeout: remaining() });
+          return;
+        }
+        throw new Error('No missing-case or restricted-case response was received for this search');
       }),
     ]).catch(() => {
       throw new Error(
-        `Header quick-search did not reach the searched case or a no-results view (path=${new URL(this.page.url()).pathname})`
+        `Header quick-search did not reach the searched case, restricted-access shell, or no-results view (path=${new URL(this.page.url()).pathname})`
       );
     });
   }

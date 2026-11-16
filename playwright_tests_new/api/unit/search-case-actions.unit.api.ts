@@ -9,6 +9,13 @@ test.describe('Search case action helper unit tests', { tag: '@svc-internal' }, 
     ['searching the current case again', { initialPath: CASE_DETAILS_PATH }],
     ['the dedicated no-results page', { destination: '/search/noresults', noResults: true }],
     ['a repeated no-results search', { initialPath: '/search/noresults', destination: '/search/noresults', noResults: true }],
+    [
+      'a restricted case after a forbidden case lookup',
+      {
+        destination: `/cases/restricted-case-access/${CASE_REFERENCE}`,
+        restrictedAccess: true,
+      },
+    ],
     ['a read-only case without event actions', { readOnly: true }],
   ] as const) {
     test(`waits for ${name} after submitting once`, async () => {
@@ -24,6 +31,7 @@ test.describe('Search case action helper unit tests', { tag: '@svc-internal' }, 
     ['an unchanged case-list no-cases message', { destination: '/cases', noCases: true }],
     ['a service-down route', { destination: '/service-down' }],
     ['a login route', { destination: '/login' }],
+    ['a forbidden response without the restricted-access shell', { destination: '/cases', caseLookupStatus: 403 }],
     ['a different case', { destination: '/cases/case-details/9999888877776666' }],
     ['case details without usable controls', { detailsReady: false }],
     ['a stuck spinner', { stuckSpinner: true }],

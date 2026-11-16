@@ -8,6 +8,8 @@ type SearchState = {
   destination?: string;
   delayed?: boolean;
   noResults?: boolean;
+  restrictedAccess?: boolean;
+  caseLookupStatus?: number;
   noCases?: boolean;
   stuckSpinner?: boolean;
   detailsReady?: boolean;
@@ -62,6 +64,7 @@ export function buildSearch(state: SearchState = {}) {
     searchCaseFindButton: findButton,
     searchCaseFindButtonFallback: findButton,
     noResultsContainer: visibleLocator(state.noResults ?? false),
+    restrictedCaseAccessContainer: visibleLocator(state.restrictedAccess ?? false),
     logger: { warn: () => undefined },
     page: {
       url: () => `https://example.test${currentPath}`,
@@ -76,7 +79,9 @@ export function buildSearch(state: SearchState = {}) {
         if (state.delayed) await navigation;
         const response = {
           url: () => `https://example.test/data/internal/cases/${CASE_REFERENCE}`,
-          status: () => (destination === '/search/noresults' ? 404 : 200),
+          status: () =>
+            state.caseLookupStatus ??
+            (destination === '/search/noresults' ? 404 : destination.startsWith('/cases/restricted-case-access/') ? 403 : 200),
         };
         if (!matches(response)) throw new Error('No matching missing-case response');
         return response;

@@ -15,7 +15,7 @@ import {
   type IdentityLease,
 } from '../common/identityLease';
 import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
-import { annotatePhase, FrameworkError, inPhase } from './utils/frameworkError.js';
+import { annotatePhase, derivePhase, FrameworkError, inPhase, PHASE_ANNOTATION_TYPE } from './utils/frameworkError.js';
 
 const require = createRequire(import.meta.url);
 const { buildFailureContext, redactText, redactUrl, redactValue } = require('../common/reporters/failure-context.cjs') as {
@@ -1159,6 +1159,8 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
       : '';
   const backendWait = deriveBackendWaitFlag(failureType, serverErrors, clientErrors, slowCalls, failedRequests);
   const phaseMarker = derivePhaseMarker(failureType, error, executionSignals, backendWait, failureLocation, actionableError);
+  const currentPhase = testInfo.annotations.find((annotation) => annotation.type === PHASE_ANNOTATION_TYPE)?.description;
+  annotatePhase(testInfo, derivePhase(failureType, error, currentPhase));
   const likelyRootCause = deriveLikelyRootCause({
     failureType,
     testStatus,

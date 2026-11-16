@@ -45,3 +45,26 @@ export async function inPhase<T>(testInfo: Pick<TestInfo, 'annotations'>, phase:
   }
   return result;
 }
+
+const RUNNER_ERROR_PATTERN = /browser has been closed|worker process exited|worker teardown timeout/i;
+const SETUP_ERROR_PATTERN = /beforeEach|beforeAll|\bhook\b|\[LEASE_[A-Z_]+\]|case setup|setupCaseForJourney/i;
+
+/**
+ * Maps a classified failure to the coarse phase the harness understands. A phase already left on the test by
+ * `inPhase`/`annotatePhase` (anything other than `test`) means the failure happened there, so it is kept.
+ */
+export function derivePhase(failureType: string, error: string, currentPhase?: string): Phase {
+  if (RUNNER_ERROR_PATTERN.test(error)) {
+    return 'runner';
+  }
+  if (failureType === 'AUTHENTICATION_SESSION_UNAVAILABLE') {
+    return 'auth';
+  }
+  if (currentPhase === 'auth' || currentPhase === 'setup' || currentPhase === 'teardown') {
+    return currentPhase;
+  }
+  if (failureType === 'IDENTITY_SCHEDULING_TIMEOUT' || SETUP_ERROR_PATTERN.test(error)) {
+    return 'setup';
+  }
+  return 'test';
+}

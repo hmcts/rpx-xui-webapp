@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { annotatePhase, FrameworkError, inPhase } from '../../E2E/utils/frameworkError.js';
+import { annotatePhase, derivePhase, FrameworkError, inPhase } from '../../E2E/utils/frameworkError.js';
 
 const buildTestInfo = (annotations: Array<{ type: string; description?: string }> = []) => ({ annotations });
 
@@ -59,4 +59,23 @@ test.describe('framework error and phase helpers', { tag: '@svc-internal' }, () 
     ).rejects.toBe(failure);
     expect(testInfo.annotations).toEqual([{ type: 'phase', description: 'auth' }]);
   });
+
+  const phaseCases: Array<[string, string, string, string | undefined, string]> = [
+    ['session capture failure', 'AUTHENTICATION_SESSION_UNAVAILABLE', 'Session capture failed', 'test', 'auth'],
+    ['auth beats a leftover setup phase', 'AUTHENTICATION_SESSION_UNAVAILABLE', 'login failed', 'setup', 'auth'],
+    ['identity scheduling timeout', 'IDENTITY_SCHEDULING_TIMEOUT', 'Timed out waiting for lease', 'test', 'setup'],
+    ['lease failure code', 'UNKNOWN', '[LEASE_ACQUIRE_FAILED] no identity', 'test', 'setup'],
+    ['beforeEach hook failure', 'ASSERTION_FAILURE', 'Error in beforeEach hook', undefined, 'setup'],
+    ['phase left as setup by inPhase', 'UI_ELEMENT_MISSING', 'locator not found', 'setup', 'setup'],
+    ['phase left as teardown by lease release', 'UNKNOWN', '[LEASE_RELEASE_FAILED] x', 'teardown', 'teardown'],
+    ['browser closed', 'UNKNOWN', 'Target page, context or browser has been closed', 'test', 'runner'],
+    ['worker exited', 'UNKNOWN', 'Worker process exited unexpectedly', 'setup', 'runner'],
+    ['assertion in test body', 'ASSERTION_FAILURE', 'expect(received).toBe(expected)', 'test', 'test'],
+    ['backend 5xx in test body', 'DOWNSTREAM_API_5XX', 'status 500', undefined, 'test'],
+  ];
+  for (const [name, failureType, error, currentPhase, expected] of phaseCases) {
+    test(`derivePhase maps ${name} to ${expected}`, () => {
+      expect(derivePhase(failureType, error, currentPhase)).toBe(expected);
+    });
+  }
 });

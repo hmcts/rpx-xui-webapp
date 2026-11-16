@@ -51,39 +51,40 @@ test.describe('Existing linked hearing maintenance', { tag: ['@integration', '@i
     expect(mutations).toHaveLength(1);
   });
 
-  test('reviews removal before unlinking the intended group and retains an unrelated group on refresh', async ({
-    page,
-    caseDetailsPage,
-    hearingsTabPage,
-  }) => {
-    const { config, mutations } = await openHearingMaintenance(page, caseDetailsPage);
-    await hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID).click();
-    await hearingsTabPage.editLinkedHearingsButton.click();
-    await hearingsTabPage.clearLinkedCaseLink('Maintenance partner').click();
-    await expect(hearingsTabPage.linkedCaseSelection('Maintenance partner')).not.toBeChecked();
-    expect(mutations).toHaveLength(0);
-    config.hearingsApiOverrides.getHearings = { body: unlinkedReadback };
-    await hearingsTabPage.continueFlow();
-    await expect(page).toHaveURL(/check-your-answers$/);
-    await expect(page.getByRole('heading', { name: 'Check your answers', exact: true })).toBeVisible();
-    await expect(page.getByText('No linked hearings.', { exact: true })).toBeVisible();
-    expect(mutations).toHaveLength(0);
-    await page.getByRole('button', { name: 'Unlink hearings', exact: true }).click();
-    await expect(page).toHaveURL(/final-confirmation$/);
-    await expect(page.getByRole('heading', { name: 'All hearings are now unlinked', exact: true })).toBeVisible();
-    expect(mutations).toHaveLength(1);
-    expect(mutations[0].method()).toBe('DELETE');
-    expect(new URL(mutations[0].url()).pathname).toBe('/api/hearings/deleteLinkedHearingGroup');
-    expect(Object.fromEntries(new URL(mutations[0].url()).searchParams)).toEqual({
-      hearingGroupId: MAINTENANCE_GROUP_ID,
-      caseId: HEARINGS_CASE_REFERENCE,
-      hearingId: HEARINGS_LISTED_HEARING_ID,
-    });
-    await hearingsTabPage.confirmationHearingsLink.click();
-    await expect(hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID)).toHaveCount(0);
-    await expect(hearingsTabPage.linkHearingButton(HEARINGS_LISTED_HEARING_ID)).toBeVisible();
-    await expect(hearingsTabPage.manageLinksButton(OTHER_HEARING_ID)).toBeVisible();
-    await expect(hearingsTabPage.hearingRow(OTHER_HEARING_ID, 'cancel')).toContainText('LISTED');
-    expect(mutations).toHaveLength(1);
-  });
+  // EXUI-5591: unlinking skips the required review screen and opens final confirmation.
+  test(
+    'reviews removal before unlinking the intended group and retains an unrelated group on refresh',
+    { tag: ['@blocked-exui-5591'] },
+    async ({ page, caseDetailsPage, hearingsTabPage }) => {
+      const { config, mutations } = await openHearingMaintenance(page, caseDetailsPage);
+      await hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID).click();
+      await hearingsTabPage.editLinkedHearingsButton.click();
+      await hearingsTabPage.clearLinkedCaseLink('Maintenance partner').click();
+      await expect(hearingsTabPage.linkedCaseSelection('Maintenance partner')).not.toBeChecked();
+      expect(mutations).toHaveLength(0);
+      config.hearingsApiOverrides.getHearings = { body: unlinkedReadback };
+      await hearingsTabPage.continueFlow();
+      await expect(page).toHaveURL(/check-your-answers$/);
+      await expect(page.getByRole('heading', { name: 'Check your answers', exact: true })).toBeVisible();
+      await expect(page.getByText('No linked hearings.', { exact: true })).toBeVisible();
+      expect(mutations).toHaveLength(0);
+      await page.getByRole('button', { name: 'Unlink hearings', exact: true }).click();
+      await expect(page).toHaveURL(/final-confirmation$/);
+      await expect(page.getByRole('heading', { name: 'All hearings are now unlinked', exact: true })).toBeVisible();
+      expect(mutations).toHaveLength(1);
+      expect(mutations[0].method()).toBe('DELETE');
+      expect(new URL(mutations[0].url()).pathname).toBe('/api/hearings/deleteLinkedHearingGroup');
+      expect(Object.fromEntries(new URL(mutations[0].url()).searchParams)).toEqual({
+        hearingGroupId: MAINTENANCE_GROUP_ID,
+        caseId: HEARINGS_CASE_REFERENCE,
+        hearingId: HEARINGS_LISTED_HEARING_ID,
+      });
+      await hearingsTabPage.confirmationHearingsLink.click();
+      await expect(hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID)).toHaveCount(0);
+      await expect(hearingsTabPage.linkHearingButton(HEARINGS_LISTED_HEARING_ID)).toBeVisible();
+      await expect(hearingsTabPage.manageLinksButton(OTHER_HEARING_ID)).toBeVisible();
+      await expect(hearingsTabPage.hearingRow(OTHER_HEARING_ID, 'cancel')).toContainText('LISTED');
+      expect(mutations).toHaveLength(1);
+    }
+  );
 });

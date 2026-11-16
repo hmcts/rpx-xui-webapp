@@ -5,7 +5,6 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as HealthCheck from '@hmcts/nodejs-healthcheck';
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
-import * as auth from '../auth';
 import * as configuration from '../configuration';
 import * as log4jui from '../lib/log4jui';
 import { checkServiceHealth } from './index';
@@ -160,6 +159,8 @@ describe('Health Check', (): void => {
 
   describe('addReformHealthCheck', () => {
     it('reports authentication readiness dynamically as background initialization recovers', () => {
+      // Other suites reload auth, so stub the same instance the health module will import.
+      const auth = require('../auth') as typeof import('../auth');
       const ready = sandbox.stub(auth, 'isAuthenticationReady').returns(false);
       let checkAuthentication: () => unknown;
       healthCheckRawStub.callsFake((callback) => {

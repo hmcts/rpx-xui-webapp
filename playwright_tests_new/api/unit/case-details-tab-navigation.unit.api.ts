@@ -93,9 +93,10 @@ test.describe('case details tab pagination', { tag: '@svc-internal' }, () => {
   test('fails rather than bypassing a disabled pagination control', async ({ page }) => {
     await page.setContent(caseDetailsTabsMarkup(400, true, true));
     const details = new CaseDetailsPage(page);
-    Object.assign(details, { getRecommendedTimeoutMs: () => 500 });
+    await details.waitForCaseDetailsReady(5_000);
+    Object.assign(details, { getRecommendedTimeoutMs: () => 3_000 });
 
-    await expect(details.selectCaseDetailsTab('Documents')).rejects.toThrow(/Timeout/);
+    await expect(details.selectCaseDetailsTab('Documents')).rejects.toThrow(/timeout|timed out/i);
     await expect(page.getByRole('tab', { name: 'Documents', exact: true })).toHaveAttribute('aria-selected', 'false');
   });
 });

@@ -77,7 +77,7 @@
             >
               {{ linkedCase.caseReference | caseReference }}
               <br />
-              {{ linkedCase.caseName }}
+              {{ linkedCase.caseName }} {{ '(opens in a new tab)' | rpxTranslate }}
             </a>
           </td>
           <td class="govuk-table__cell">{{ linkedCase.reasonsForLink | convertArrayToString }}</td>

@@ -5,6 +5,7 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as HealthCheck from '@hmcts/nodejs-healthcheck';
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import * as auth from '../auth';
 import * as configuration from '../configuration';
 import * as log4jui from '../lib/log4jui';
 import { checkServiceHealth } from './index';
@@ -158,6 +159,25 @@ describe('Health Check', (): void => {
   });
 
   describe('addReformHealthCheck', () => {
+    it('reports authentication readiness dynamically as background initialization recovers', () => {
+      const ready = sandbox.stub(auth, 'isAuthenticationReady').returns(false);
+      let checkAuthentication: () => unknown;
+      healthCheckRawStub.callsFake((callback) => {
+        checkAuthentication = callback;
+        return 'authenticationCheck';
+      });
+      delete require.cache[require.resolve('./index')];
+      const healthModule = require('./index');
+      healthModule.addReformHealthCheck(mockApp);
+
+      const config = healthCheckAddToStub.firstCall.args[1];
+      expect(config.readinessChecks.authentication).to.equal('authenticationCheck');
+      expect(config.checks.authentication).to.equal('authenticationCheck');
+      expect(checkAuthentication()).to.equal('down');
+      ready.returns(true);
+      expect(checkAuthentication()).to.equal('up');
+    });
+
     beforeEach(() => {
       delete require.cache[require.resolve('./index')];
     });
@@ -237,10 +257,13 @@ describe('Health Check', (): void => {
 
       healthModule.addReformHealthCheck(mockApp);
 
+      // Isolate Redis registration from the authentication check created on import.
+      healthCheckRawStub.resetHistory();
       redisReadyCallback(mockRedisClient);
 
       expect(loggerInfoStub).to.have.been.calledWith('REDIS EVENT FIRED!!');
       expect(healthCheckRawStub).to.have.been.calledOnce;
+      expect(healthCheckRawStub.firstCall.args[0]()).to.equal('up');
     });
 
     it('should handle Redis client ready event with unavailable client', () => {

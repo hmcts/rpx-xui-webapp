@@ -16,36 +16,41 @@ import errorHandler from './lib/error.handler';
 import { removeCacheHeaders } from './lib/middleware/removeCacheHeaders';
 import { corsMw } from './security/cors';
 
-createApp().then((app: express.Application) => {
-  app.engine('html', ejs.renderFile);
-  app.set('view engine', 'html');
-  app.set('views', __dirname);
+createApp()
+  .then((app: express.Application) => {
+    app.engine('html', ejs.renderFile);
+    app.set('view engine', 'html');
+    app.set('views', __dirname);
 
-  app.set('view engine', 'html');
-  app.set('views', __dirname);
+    app.set('view engine', 'html');
+    app.set('views', __dirname);
 
-  app.use(corsMw);
+    app.use(corsMw);
 
-  app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
-  app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })]);
+    app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
+    app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })]);
 
-  app.use('/{*splat}', (req, res) => {
-    res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
-    res.render('../index', {
-      providers: [
-        { provide: 'REQUEST', useValue: req },
-        { provide: 'RESPONSE', useValue: res },
-      ],
-      req,
-      res,
+    app.use('/{*splat}', (req, res) => {
+      res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
+      res.render('../index', {
+        providers: [
+          { provide: 'REQUEST', useValue: req },
+          { provide: 'RESPONSE', useValue: res },
+        ],
+        req,
+        res,
+      });
     });
-  });
 
-  app.use(errorHandler);
-  app.listen(process.env.PORT || 3000, (error) => {
-    if (error) {
-      throw error;
-    }
-    console.log('Server listening on port 3000!');
+    app.use(errorHandler);
+    app.listen(process.env.PORT || 3000, (error) => {
+      if (error) {
+        throw error;
+      }
+      console.log('Server listening on port 3000!');
+    });
+  })
+  .catch((error: unknown) => {
+    console.error('Application startup failed; the server will not accept traffic.', error);
+    process.exit(1);
   });
-});

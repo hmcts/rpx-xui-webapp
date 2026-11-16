@@ -1,5 +1,6 @@
 import * as HealthCheck from '@hmcts/nodejs-healthcheck';
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import { isAuthenticationReady } from '../auth';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   FEATURE_REDIS_ENABLED,
@@ -31,7 +32,9 @@ export const checkServiceHealth = (service) =>
   });
 
 export interface HealthChecks {
+  readinessChecks: { authentication: ReturnType<typeof HealthCheck.raw> };
   checks: {
+    authentication: ReturnType<typeof HealthCheck.raw>;
     ccdComponentApi: any;
     ccdDataApi: any;
     documentsApi: any;
@@ -47,8 +50,12 @@ export interface HealthChecks {
   };
 }
 
+const authenticationCheck = HealthCheck.raw(() => (isAuthenticationReady() ? HealthCheck.up() : HealthCheck.down()));
+
 const config: HealthChecks = {
+  readinessChecks: { authentication: authenticationCheck },
   checks: {
+    authentication: authenticationCheck,
     ccdComponentApi: checkServiceHealth(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)),
     ccdDataApi: checkServiceHealth(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)),
     docassemblyApi: checkServiceHealth(getConfigValue(SERVICES_EM_DOCASSEMBLY_API_URL)),

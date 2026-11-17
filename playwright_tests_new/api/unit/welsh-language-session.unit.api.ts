@@ -1,10 +1,22 @@
 import { expect, test } from '@playwright/test';
 import {
+  describeWelshLanguageSessionPool,
   resolveWelshLanguageSessionUser,
   resolveWelshLanguageSessionUsers,
 } from '../../integration/helpers/welshLanguageSession.helper.js';
 
 test.describe('welsh language session helper', { tag: '@svc-internal' }, () => {
+  test('describes the pool size and flags the single-user fallback', () => {
+    expect(describeWelshLanguageSessionPool(resolveWelshLanguageSessionUsers({} as NodeJS.ProcessEnv))).toBe(
+      '1 (fallback: no extra solicitor credentials configured)'
+    );
+    const env = {
+      SOLICITOR_USERNAME: 'solicitor@example.test',
+      SOLICITOR_PASSWORD: 'sol-password',
+    } as NodeJS.ProcessEnv;
+    expect(describeWelshLanguageSessionPool(resolveWelshLanguageSessionUsers(env))).toBe('1 (configured)');
+  });
+
   test('falls back to the shared SOLICITOR account when no extra solicitor credentials are configured', () => {
     expect(resolveWelshLanguageSessionUsers({} as NodeJS.ProcessEnv)).toEqual(['SOLICITOR']);
   });

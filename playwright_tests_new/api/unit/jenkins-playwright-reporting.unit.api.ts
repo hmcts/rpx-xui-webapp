@@ -273,12 +273,16 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
       const outputDir = path.join(testsRoot, 'playwright-diagnostics/failure-data');
       const copiedFiles = fs.readdirSync(outputDir);
 
-      expect(manifest).toContain('diagnostic_status=present');
-      expect(manifest).toContain('diagnostic_count=7');
-      expect(manifest).toContain('failure_data_count=2');
-      expect(manifest).toContain('failure_context_count=1');
-      expect(manifest).toContain('trace_count=1');
-      expect(manifest).toContain('screenshot_count=3');
+      expect(manifest, `manifest missing diagnostic_status=present; manifest was:\n${manifest}`).toContain(
+        'diagnostic_status=present'
+      );
+      expect(manifest, `manifest missing diagnostic_count=7; manifest was:\n${manifest}`).toContain('diagnostic_count=7');
+      expect(manifest, `manifest missing failure_data_count=2; manifest was:\n${manifest}`).toContain('failure_data_count=2');
+      expect(manifest, `manifest missing failure_context_count=1; manifest was:\n${manifest}`).toContain(
+        'failure_context_count=1'
+      );
+      expect(manifest, `manifest missing trace_count=1; manifest was:\n${manifest}`).toContain('trace_count=1');
+      expect(manifest, `manifest missing screenshot_count=3; manifest was:\n${manifest}`).toContain('screenshot_count=3');
       expect(copiedFiles.some((file) => file.includes('playwright-e2e') && file.includes('failure-data.json__'))).toBe(true);
       expect(copiedFiles.some((file) => file.includes('aat-workers-7') && file.includes('failure-data.json__'))).toBe(true);
       expect(copiedFiles.some((file) => file.endsWith('.webm'))).toBe(false);

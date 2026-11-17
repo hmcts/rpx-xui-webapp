@@ -110,7 +110,7 @@ type TaskListShellNavigationMethod = (
   this: TaskListShellNavigationHarness,
   urlPattern: RegExp,
   context: string,
-  timeoutMs: number
+  deadlineMs: number
 ) => Promise<void>;
 
 const waitForTaskListShellReadyAfterNavigation = (
@@ -122,18 +122,24 @@ const waitForTaskListShellReadyAfterNavigation = (
 test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, () => {
   test('keeps the caller readiness budget after task-list navigation', async () => {
     const observedTimeouts: number[] = [];
+    const originalNow = Date.now;
+    Date.now = () => 0;
 
-    await waitForTaskListShellReadyAfterNavigation.call(
-      {
-        page: { url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/list' },
-        waitForTaskListShellReady: async (_context, timeoutMs) => {
-          observedTimeouts.push(timeoutMs);
+    try {
+      await waitForTaskListShellReadyAfterNavigation.call(
+        {
+          page: { url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/list' },
+          waitForTaskListShellReady: async (_context, timeoutMs) => {
+            observedTimeouts.push(timeoutMs);
+          },
         },
-      },
-      /\/work\/my-work\/list$/,
-      'unit task-list shell',
-      30_000
-    );
+        /\/work\/my-work\/list$/,
+        'unit task-list shell',
+        30_000
+      );
+    } finally {
+      Date.now = originalNow;
+    }
 
     expect(observedTimeouts).toEqual([30_000]);
   });

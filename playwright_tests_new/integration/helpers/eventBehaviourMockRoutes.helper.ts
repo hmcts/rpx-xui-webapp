@@ -22,6 +22,7 @@ export type EventBehaviourSubmitOverride = {
 
 export type EventBehaviourMockConfig = {
   trigger?: ReturnType<typeof buildEventBehaviourTrigger>;
+  caseFields?: ReturnType<typeof buildEventBehaviourTrigger>['case_fields'];
   richTextReadValue?: string;
   eventReturnedByCaseView?: boolean;
   submit?: EventBehaviourSubmitOverride;
@@ -93,6 +94,7 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
         eventRecorded,
         eventReturnedByCaseView: config.eventReturnedByCaseView !== false,
         richTextReadValue: config.richTextReadValue,
+        caseFields: config.caseFields,
       })
     );
   });
@@ -136,6 +138,7 @@ export async function setupEventBehaviourMockRoutes(page: Page, config: EventBeh
           eventRecorded,
           eventReturnedByCaseView: config.eventReturnedByCaseView !== false,
           richTextReadValue: config.richTextReadValue,
+          caseFields: config.caseFields,
         }),
       submit?.abortErrorCode
     );

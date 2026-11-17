@@ -4,10 +4,10 @@ import { buildSupportedAMRoleAssignments, defaultStaffAMMenuRole } from './amRol
 import { buildEntityToUsersAccessView, type WorkAllocationAccessScenarioRecord } from './workAllocationAccessScenarios.helper';
 import { replacementCaseworker, roleCaseId, roleRecords } from '../mocks/roleJourneys.mock';
 
-export async function captureExclusionMutations(page: Page, status = 200) {
+async function captureMutations(page: Page, pattern: RegExp, status: number) {
   const requests: Request[] = [];
   const successfulRequests: Request[] = [];
-  await page.route(/\/api\/role-access\/exclusions\/(delete|confirm)$/, async (route) => {
+  await page.route(pattern, async (route) => {
     const request = route.request();
     requests.push(request);
     await route.fulfill({ status, contentType: 'application/json', body: '{}' });
@@ -16,6 +16,18 @@ export async function captureExclusionMutations(page: Page, status = 200) {
     }
   });
   return { requests, successfulRequests };
+}
+
+export function captureExclusionMutations(page: Page, status = 200) {
+  return captureMutations(page, /\/api\/role-access\/exclusions\/(delete|confirm)$/, status);
+}
+
+export function captureRoleMutations(page: Page, status = 200) {
+  return captureMutations(
+    page,
+    /\/api\/role-access\/(allocate-role\/(delete|reallocate|confirm)|exclusions\/(delete|confirm))$/,
+    status
+  );
 }
 
 export async function setupRoleJourney(page: Page, options: { status?: number; isCaseAllocator?: boolean } = {}) {
@@ -45,20 +57,30 @@ export async function setupRoleJourney(page: Page, options: { status?: number; i
   await page.route('**/workallocation/exclusion/rolesCategory*', async (route) => {
     await route.fulfill({ json: [{ roleId: 'LEGAL_OPERATIONS', roleName: 'Legal Ops' }] });
   });
-  return captureExclusionMutations(page, options.status);
+  return captureRoleMutations(page, options.status);
 }
 
 type ReadbackTarget = { operation: 'confirm'; personId: string } | { operation: 'delete'; assignmentId: string };
 
-export async function setupRoleReadback(
+export function setupRoleReadback(page: Page, records: WorkAllocationAccessScenarioRecord[]): Promise<void>;
+export function setupRoleReadback(
   page: Page,
   records: WorkAllocationAccessScenarioRecord[],
   successfulRequests: Request[],
   target: ReadbackTarget
+): Promise<void>;
+export async function setupRoleReadback(
+  page: Page,
+  records: WorkAllocationAccessScenarioRecord[],
+  successfulRequests?: Request[],
+  target?: ReadbackTarget
 ): Promise<void> {
   const initialView = buildEntityToUsersAccessView(roleRecords, roleCaseId);
   const changedView = buildEntityToUsersAccessView(records, roleCaseId);
   const currentView = () => {
+    if (!successfulRequests || !target) {
+      return changedView;
+    }
     const matched = successfulRequests.some((request) => {
       if (request.method() !== 'POST') {
         return false;

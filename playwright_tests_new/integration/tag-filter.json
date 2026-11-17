@@ -24,6 +24,7 @@
     "@integration-restricted-case",
     "@integration-search-case",
     "@integration-share-case",
+    "@integration-staff-admin",
     "@integration-welsh-language",
     "@blocked-exui-4272",
     "@blocked-exui-4276",

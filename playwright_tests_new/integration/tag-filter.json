@@ -1,5 +1,12 @@
 {
-  "excludedTags": ["@blocked-exui-4272", "@blocked-exui-4276", "@blocked-exui-4317", "@blocked-exui-4318", "@blocked-exui-5590"],
+  "excludedTags": [
+    "@blocked-exui-4272",
+    "@blocked-exui-4276",
+    "@blocked-exui-4317",
+    "@blocked-exui-4318",
+    "@blocked-exui-5590",
+    "@blocked-exui-5591"
+  ],
   "availableTags": [
     "@integration",
     "@integration-access-requests",
@@ -29,6 +36,9 @@
     "@blocked-exui-4276",
     "@blocked-exui-4317",
     "@blocked-exui-4318",
-    "@blocked-exui-5590"
+    "@blocked-exui-5590",
+    "@integration-role-allocation-mock-session",
+    "@integration-staff-admin",
+    "@blocked-exui-5591"
   ]
 }

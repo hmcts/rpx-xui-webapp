@@ -4,7 +4,7 @@ import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { AnswersComponent } from '../../components/answers/answers.component';
@@ -107,6 +107,11 @@ describe('DeleteExclusionComponent', () => {
     routerMock.navigate.calls.reset();
     routerMock.navigateByUrl.calls.reset();
     mockCaseworkerDataService.getUserByIdamId.and.returnValue(of(mockCaseworker));
+    mockRoleExclusionService.getCurrentUserRoleExclusions.and.returnValue(
+      of([
+        { ...exclusion, id: exclusionId, actorId: mockCaseworker.idamId, notes: 'Test exclusion', added: new Date(2021, 6, 1) },
+      ])
+    );
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -172,7 +177,16 @@ describe('DeleteExclusionComponent', () => {
     });
   });
 
-  it('populateAnswers', () => {
+  it('shows the selected person and case reference before deletion', () => {
+    const rows = fixture.nativeElement.querySelectorAll('.govuk-summary-list__row');
+    expect(rows.length).toBe(4);
+    expect(rows[0].querySelector('dt').textContent.trim()).toBe('Person');
+    expect(rows[0].querySelector('dd').textContent.trim()).toBe(exclusion.name);
+    expect(rows[3].querySelector('dt').textContent.trim()).toBe('Case reference');
+    expect(rows[3].querySelector('dd').textContent.trim()).toBe(exampleCaseId);
+  });
+
+  it('populates the selected exclusion details and case reference', () => {
     const someExclusion = {
       actorId: null,
       id: '',
@@ -180,16 +194,17 @@ describe('DeleteExclusionComponent', () => {
       name: 'some name',
       userType: null,
       notes: 'notes',
-      added: new Date(2021, 12, 31),
+      added: new Date(2021, 11, 31),
       email: '',
     };
+    component.answers = [];
     component.populateAnswers(someExclusion);
-    component.answers[0].label = AnswerLabelText.Person;
-    component.answers[0].value = exclusion.name;
-    component.answers[1].label = AnswerLabelText.DescribeExclusion;
-    component.answers[1].value = someExclusion.notes;
-    component.answers[2].label = AnswerLabelText.DateAdded;
-    component.answers[2].value = new Date(someExclusion.added).toLocaleDateString('en-GB');
+    expect(component.answers).toEqual([
+      { label: AnswerLabelText.Person, value: 'some name' },
+      { label: AnswerLabelText.DescribeExclusion, value: 'notes' },
+      { label: AnswerLabelText.DateAdded, value: '31 December 2021' },
+      { label: 'Case reference', value: exampleCaseId },
+    ]);
   });
 });
 
@@ -272,6 +287,9 @@ describe('DeleteExclusionComponent with no name', () => {
     routerMock.navigate.calls.reset();
     routerMock.navigateByUrl.calls.reset();
     mockCaseworkerDataService.getUserByIdamId.and.returnValue(of(mockCaseworker));
+    mockRoleExclusionService.getCurrentUserRoleExclusions.and.returnValue(
+      of([{ ...exclusion, name: null, actorId: mockCaseworker.idamId }])
+    );
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -344,10 +362,14 @@ describe('DeleteExclusionComponent with no name', () => {
       added: new Date(2021, 11, 31),
       email: '',
     };
+    component.answers = [];
     component.populateAnswers(someExclusion);
-    expect(component.answers[0].value).toBe('Awaiting person details');
-    expect(component.answers[1].value).toBe(someExclusion.notes);
-    expect(component.answers[2].value).toBe('31 December 2021');
+    expect(component.answers).toEqual([
+      { label: AnswerLabelText.Person, value: 'Awaiting person details' },
+      { label: AnswerLabelText.DescribeExclusion, value: 'notes' },
+      { label: AnswerLabelText.DateAdded, value: '31 December 2021' },
+      { label: 'Case reference', value: exampleCaseId },
+    ]);
   });
 });
 
@@ -455,7 +477,7 @@ describe('DeleteExclusionComponent names and answers', () => {
     (component as any).getNamesIfNeeded();
     expect(mockCaseworkerDataService.getUserByIdamId).toHaveBeenCalledWith(noNameExclusion.actorId);
     expect(component.roleExclusion.name).toBe('Case Worker');
-    expect(component.answers.length).toBe(3);
+    expect(component.answers.length).toBe(4);
     expect(component.answers[0].value).toBe('Case Worker');
   });
 
@@ -474,19 +496,28 @@ describe('DeleteExclusionComponent names and answers', () => {
     expect(component.answers[2].value).toBe('15 January 2024');
   });
 
-  it('answers are rebuilt after late name resolution', () => {
+  it('retains the case reference when the person name resolves later', () => {
     const noNameExclusion = { ...baseExclusion, name: undefined };
-    component.roleExclusion = noNameExclusion as any;
-    component.populateAnswers(noNameExclusion as any);
-    const initialAnswersRef = component.answers;
-    mockCaseworkerDataService.getUserByIdamId.and.returnValue(
-      of({
-        firstName: 'Late',
-        lastName: 'Name',
-      })
-    );
-    (component as any).getNamesIfNeeded();
-    expect(component.answers).not.toBe(initialAnswersRef); // replaced
-    expect(component.answers[0].value).toBe('Late Name');
+    const caseworker = new Subject<Caseworker>();
+    mockCaseworkerDataService.getUserByIdamId.and.returnValue(caseworker);
+    component.answers = [];
+
+    component.findAndSetExclusion([noNameExclusion]);
+    fixture.detectChanges();
+
+    const pendingRows = fixture.nativeElement.querySelectorAll('.govuk-summary-list__row');
+    expect(pendingRows.length).toBe(4);
+    expect(pendingRows[0].querySelector('dd').textContent.trim()).toBe('Awaiting person details');
+    expect(pendingRows[3].querySelector('dt').textContent.trim()).toBe('Case reference');
+    expect(pendingRows[3].querySelector('dd').textContent.trim()).toBe(caseId);
+
+    caseworker.next({ ...mockCaseworker, firstName: 'Late', lastName: 'Name' });
+    fixture.detectChanges();
+
+    const resolvedRows = fixture.nativeElement.querySelectorAll('.govuk-summary-list__row');
+    expect(resolvedRows.length).toBe(4);
+    expect(resolvedRows[0].querySelector('dd').textContent.trim()).toBe('Late Name');
+    expect(resolvedRows[3].querySelector('dt').textContent.trim()).toBe('Case reference');
+    expect(resolvedRows[3].querySelector('dd').textContent.trim()).toBe(caseId);
   });
 });

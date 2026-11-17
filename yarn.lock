@@ -3282,6 +3282,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/ccpay-web-component@npm:6.5.28-v3":
+  version: 6.5.28-v3
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.28-v3"
+  dependencies:
+    exceljs: "npm:^4.4.0"
+    file-saver: "npm:^2.0.2"
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^20.3.1
+    "@angular/core": ~20.3.1
+    govuk-frontend: ^6.4.0
+  checksum: 10/b2932168dc1e746739cefb607cb4dcb125455f9597c00d622d578a5d3095f8580cf2a73b095fc66da4845c145dccf73a0d278b0f32b329753b5251d18324ad5b
+  languageName: node
+  linkType: hard
+
 "@hmcts/media-viewer@npm:4.2.48":
   version: 4.2.48
   resolution: "@hmcts/media-viewer@npm:4.2.48"
@@ -20072,7 +20087,7 @@ __metadata:
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.4.26"
-    "@hmcts/ccpay-web-component": "npm:6.5.28"
+    "@hmcts/ccpay-web-component": "npm:6.5.28-v3"
     "@hmcts/media-viewer": "npm:4.2.48"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"

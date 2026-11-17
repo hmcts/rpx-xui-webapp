@@ -673,10 +673,10 @@ export class CaseDetailsPage extends Base {
 
   async selectCaseDetailsTab(tabName: string) {
     const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
-      min: TIMEOUTS.TAB_LOAD,
+      min: 15_000,
       max: 30_000,
       multiplier: 3,
-      fallback: 15_000,
+      fallback: 30_000,
     });
     const deadlineMs = Date.now() + tabLoadTimeoutMs;
     const remaining = () => remainingNavigationTimeout(deadlineMs, `selecting "${tabName}" tab`);

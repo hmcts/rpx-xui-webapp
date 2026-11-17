@@ -78,6 +78,19 @@ test.describe('all work cases request helper', { tag: '@svc-internal' }, () => {
     expect(request).toBe(matchingRequest);
   });
 
+  test('returns false when a candidate request has no search parameters', async () => {
+    const request = buildRequest();
+    await waitForFilteredAllWorkCasesRequest(
+      {
+        waitForRequest: async (predicate: (candidate: FakeRequest) => boolean) => {
+          expect(predicate(request)).toBe(false);
+          return request;
+        },
+      } as never,
+      'target-user'
+    );
+  });
+
   test('waits for the requested all-work cases pagination page number', async () => {
     const nonMatchingRouteRequest = buildRequest({
       url: () => 'https://manage-case.aat.platform.hmcts.net/workallocation/my-work/cases',

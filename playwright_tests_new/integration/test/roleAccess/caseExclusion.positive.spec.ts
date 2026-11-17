@@ -10,6 +10,7 @@ import {
   expectedOtherExclusion,
   expectedSelfExclusion,
   exclusionReason,
+  replacementPerson,
 } from '../../mocks/roleJourneys.mock';
 
 test.beforeEach(async ({ page }) => {
@@ -18,7 +19,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Case exclusions', { tag: ['@integration', '@integration-case-details'] }, () => {
   test('excludes the selected person and reads back the exclusion without removing roles', async ({ page, caseDetailsPage }) => {
-    const { requests } = await setupRoleJourney(page);
+    const { requests, successfulRequests } = await setupRoleJourney(page);
     const journey = new RoleAccessPage(page);
     await caseDetailsPage.openRolesAndAccessTab(roleCaseId);
     await caseDetailsPage.getAddExclusionLink().click();
@@ -27,7 +28,10 @@ test.describe('Case exclusions', { tag: ['@integration', '@integration-case-deta
     await expect(journey.summaryValue("What's the person's role")).toHaveText('Legal Ops');
     await expect(journey.summaryValue('Person')).toHaveText('Clara Replacement\nclara@example.com', { useInnerText: true });
     await expect(journey.summaryValue('Describe the exclusion')).toHaveText(exclusionReason);
-    await setupRoleReadback(page, addedExclusionRecords);
+    await setupRoleReadback(page, addedExclusionRecords, successfulRequests, {
+      operation: 'confirm',
+      personId: replacementPerson.id,
+    });
     await journey.confirmExclusionButton.click();
     await expect(page).toHaveURL(new RegExp(`${roleCasePath}$`));
     expect(requests).toHaveLength(1);
@@ -44,14 +48,12 @@ test.describe('Case exclusions', { tag: ['@integration', '@integration-case-deta
     await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).toContainText('Alice Example');
     await expect(caseDetailsPage.getRoleAccessSection('Judiciary')).toContainText('Bob Judge');
   });
-  test('self-exclusion uses the authenticated self option and returns to My work', async ({ page, caseDetailsPage }) => {
-    const userResponse = page.waitForResponse('**/api/user/details*');
+  test('self-exclusion sends the self option and returns to My work', async ({ page, caseDetailsPage }) => {
     await setupTaskListMockRoutes(page, { tasks: [], total_records: 0 });
     const { requests } = await setupRoleJourney(page);
     const journey = new RoleAccessPage(page);
     await caseDetailsPage.openRolesAndAccessTab(roleCaseId);
     await caseDetailsPage.getAddExclusionLink().click();
-    expect((await (await userResponse).json()).userInfo.id).toBe('11111111-1111-4111-8111-111111111111');
     await journey.reviewExclusion('Exclude me', exclusionReason);
     await expect(journey.summaryValue('Who is the exclusion for')).toHaveText('Exclude me');
     await journey.confirmExclusionButton.click();

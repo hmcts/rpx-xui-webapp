@@ -4,16 +4,30 @@ import { buildSupportedAMRoleAssignments, defaultStaffAMMenuRole } from './amRol
 import { buildEntityToUsersAccessView, type WorkAllocationAccessScenarioRecord } from './workAllocationAccessScenarios.helper';
 import { replacementCaseworker, roleCaseId, roleRecords } from '../mocks/roleJourneys.mock';
 
-export async function captureRoleMutations(page: Page, status = 200): Promise<Request[]> {
+async function captureMutations(page: Page, pattern: RegExp, status: number) {
   const requests: Request[] = [];
-  await page.route(
-    /\/api\/role-access\/(allocate-role\/(delete|reallocate|confirm)|exclusions\/(delete|confirm))$/,
-    async (route) => {
-      requests.push(route.request());
-      await route.fulfill({ status, contentType: 'application/json', body: '{}' });
+  const successfulRequests: Request[] = [];
+  await page.route(pattern, async (route) => {
+    const request = route.request();
+    requests.push(request);
+    await route.fulfill({ status, contentType: 'application/json', body: '{}' });
+    if (status >= 200 && status < 300) {
+      successfulRequests.push(request);
     }
+  });
+  return { requests, successfulRequests };
+}
+
+export function captureExclusionMutations(page: Page, status = 200) {
+  return captureMutations(page, /\/api\/role-access\/exclusions\/(delete|confirm)$/, status);
+}
+
+export function captureRoleMutations(page: Page, status = 200) {
+  return captureMutations(
+    page,
+    /\/api\/role-access\/(allocate-role\/(delete|reallocate|confirm)|exclusions\/(delete|confirm))$/,
+    status
   );
-  return requests;
 }
 
 export async function setupRoleJourney(page: Page, options: { status?: number; isCaseAllocator?: boolean } = {}) {
@@ -43,15 +57,50 @@ export async function setupRoleJourney(page: Page, options: { status?: number; i
   await page.route('**/workallocation/exclusion/rolesCategory*', async (route) => {
     await route.fulfill({ json: [{ roleId: 'LEGAL_OPERATIONS', roleName: 'Legal Ops' }] });
   });
-  return { requests: await captureRoleMutations(page, options.status) };
+  return captureRoleMutations(page, options.status);
 }
 
-export async function setupRoleReadback(page: Page, records: WorkAllocationAccessScenarioRecord[]): Promise<void> {
-  const entityView = buildEntityToUsersAccessView(records, roleCaseId);
+type ReadbackTarget = { operation: 'confirm'; personId: string } | { operation: 'delete'; assignmentId: string };
+
+export function setupRoleReadback(page: Page, records: WorkAllocationAccessScenarioRecord[]): Promise<void>;
+export function setupRoleReadback(
+  page: Page,
+  records: WorkAllocationAccessScenarioRecord[],
+  successfulRequests: Request[],
+  target: ReadbackTarget
+): Promise<void>;
+export async function setupRoleReadback(
+  page: Page,
+  records: WorkAllocationAccessScenarioRecord[],
+  successfulRequests?: Request[],
+  target?: ReadbackTarget
+): Promise<void> {
+  const initialView = buildEntityToUsersAccessView(roleRecords, roleCaseId);
+  const changedView = buildEntityToUsersAccessView(records, roleCaseId);
+  const currentView = () => {
+    if (!successfulRequests || !target) {
+      return changedView;
+    }
+    const matched = successfulRequests.some((request) => {
+      if (request.method() !== 'POST') {
+        return false;
+      }
+      const body = request.postDataJSON() as {
+        caseId?: string;
+        person?: { id?: string };
+        roleExclusion?: { id?: string };
+      };
+      const path = new URL(request.url()).pathname;
+      return target.operation === 'confirm'
+        ? path === '/api/role-access/exclusions/confirm' && body.caseId === roleCaseId && body.person?.id === target.personId
+        : path === '/api/role-access/exclusions/delete' && body.roleExclusion?.id === target.assignmentId;
+    });
+    return matched ? changedView : initialView;
+  };
   await page.route('**/api/role-access/roles/post*', async (route) => {
-    await route.fulfill({ json: entityView.roles });
+    await route.fulfill({ json: currentView().roles });
   });
   await page.route('**/api/role-access/exclusions/post*', async (route) => {
-    await route.fulfill({ json: entityView.exclusions });
+    await route.fulfill({ json: currentView().exclusions });
   });
 }

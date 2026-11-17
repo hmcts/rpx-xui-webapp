@@ -10,16 +10,19 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Exclusion deletion', { tag: ['@integration', '@integration-case-details'] }, () => {
   test('deletes the selected exclusion and retains the other exclusion and active roles', async ({ page, caseDetailsPage }) => {
-    const { requests } = await setupRoleJourney(page);
+    const { requests, successfulRequests } = await setupRoleJourney(page);
     const journey = new RoleAccessPage(page);
     await caseDetailsPage.openRolesAndAccessTab(roleCaseId);
     await journey.deleteExclusionLink('Bob Judge').click();
     await expect(page).toHaveURL(new RegExp(`caseId=${roleCaseId}`));
     await expect(journey.summaryValue('Person')).toHaveText('Bob Judge');
+    await expect(journey.summaryValue('Case reference')).toHaveText(roleCaseId);
     await expect(journey.summaryValue('Describe the exclusion')).toHaveText('Judicial conflict flagged.');
     await setupRoleReadback(
       page,
-      roleRecords.filter((record) => record.assignmentId !== 'assignment-judge-case-100-excluded')
+      roleRecords.filter((record) => record.assignmentId !== 'assignment-judge-case-100-excluded'),
+      successfulRequests,
+      { operation: 'delete', assignmentId: expectedDeletedExclusion.id }
     );
     await journey.deleteExclusionButton.click();
     await expect(page).toHaveURL(new RegExp(`${roleCasePath}$`));

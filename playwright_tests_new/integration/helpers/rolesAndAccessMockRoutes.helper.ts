@@ -56,6 +56,9 @@ export async function setupRolesAndAccessMockRoutes(
     environmentConfig: { ccdGatewayUrl: '', launchDarklyClientId: '' },
     waSupportedJurisdictions: [jurisdiction],
   });
+  await page.route('**/auth/isAuthenticated*', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(true) });
+  });
   await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
     await route.fulfill({
       json: {

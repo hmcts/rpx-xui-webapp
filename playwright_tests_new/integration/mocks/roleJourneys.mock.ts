@@ -55,21 +55,6 @@ export const addedExclusionRecords = [
     created: '2026-11-13T12:00:00.000Z',
   },
 ];
-export const expectedReallocation = {
-  caseId: roleCaseId,
-  jurisdiction: 'IA',
-  assignmentId: 'assignment-legal-ops-case-100',
-  state: 4,
-  typeOfRole: { id: 'case-manager', name: 'Case manager' },
-  allocateTo: 'Allocate to another person',
-  personToBeRemoved: { id: 'user-alice', name: null, domain: 'LEGAL_OPERATIONS' },
-  person: replacementPerson,
-  durationOfRole: 'Indefinite',
-  roleCategory: 'LEGAL_OPERATIONS',
-  action: 'reallocate',
-  period: { startDate: '2026-11-13T00:00:00.000Z', endDate: null },
-  lastError: null,
-};
 export const expectedOtherExclusion = {
   caseId: roleCaseId,
   jurisdiction: 'IA',
@@ -86,6 +71,21 @@ export const expectedSelfExclusion = {
   exclusionOption: 'Exclude me',
   personRole: null,
   person: null,
+};
+export const expectedReallocation = {
+  caseId: roleCaseId,
+  jurisdiction: 'IA',
+  assignmentId: 'assignment-legal-ops-case-100',
+  state: 4,
+  typeOfRole: { id: 'case-manager', name: 'Case manager' },
+  allocateTo: 'Allocate to another person',
+  personToBeRemoved: { id: 'user-alice', name: null, domain: 'LEGAL_OPERATIONS' },
+  person: replacementPerson,
+  durationOfRole: 'Indefinite',
+  roleCategory: 'LEGAL_OPERATIONS',
+  action: 'reallocate',
+  period: { startDate: '2026-11-13T00:00:00.000Z', endDate: null },
+  lastError: null,
 };
 export const expectedDeletedExclusion = {
   actorId: 'judge-bob',

@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { AppConstants } from '../../app.constants';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
@@ -10,6 +11,7 @@ import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
   templateUrl: './phase-banner.component.html',
 })
 export class PhaseBannerComponent implements OnInit, OnDestroy {
+  public readonly newTabWarningText = AppConstants.NEW_TAB_WARNING_TEXT;
   @Input() public type: string;
   public bannerPresent: boolean;
   private readonly bannerClosedSessionKey = 'bannerClosed';

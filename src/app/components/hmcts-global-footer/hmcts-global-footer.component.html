@@ -55,7 +55,7 @@
             <a class="govuk-footer__link" [routerLink]="item.href" [target]="item.target"
               >{{ item.text | rpxTranslate
               }}<span *ngIf="item.target === '_blank'" class="footer-new-window-hint">
-                {{ '(opens in a new tab)' | rpxTranslate }}</span
+                {{ newTabWarningText | rpxTranslate }}</span
               ></a
             >
           </li>

@@ -2,6 +2,7 @@ import { Component, ElementRef, OnDestroy, OnInit, AfterViewInit } from '@angula
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
+import { AppConstants } from '../../../app/app.constants';
 import * as fromCaseCreate from '../../store';
 
 /**
@@ -46,13 +47,13 @@ export class CaseDetailsComponent implements AfterViewInit, OnDestroy, OnInit {
         const hint = document.createElement('span');
         hint.className = 'case-event-new-window-hint';
         hint.dataset.newWindowHint = 'true';
-        hint.textContent = ' (opens in a new tab)';
+        hint.textContent = ` ${AppConstants.NEW_TAB_WARNING_TEXT}`;
         link.appendChild(hint);
       }
 
       const ariaLabel = link.getAttribute('aria-label');
       if (ariaLabel && !/new tab/i.test(ariaLabel)) {
-        link.setAttribute('aria-label', `${ariaLabel} (opens in a new tab)`);
+        link.setAttribute('aria-label', `${ariaLabel} ${AppConstants.NEW_TAB_WARNING_TEXT}`);
       }
     });
   }

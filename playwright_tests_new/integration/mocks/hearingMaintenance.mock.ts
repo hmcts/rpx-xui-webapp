@@ -81,3 +81,7 @@ export const cancelledReadback = buildHearingsListMock(
   [{ ...maintenanceHearings[0], hmcStatus: 'CANCELLED' }, maintenanceHearings[1]],
   { jurisdictionId: 'SSCS', caseTypeId: 'Benefit' }
 );
+export const unlinkedReadback = buildHearingsListMock(
+  [{ ...maintenanceHearings[0], hearingGroupRequestId: null }, maintenanceHearings[1]],
+  { jurisdictionId: 'SSCS', caseTypeId: 'Benefit' }
+);

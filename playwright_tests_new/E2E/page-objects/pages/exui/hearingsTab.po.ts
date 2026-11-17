@@ -36,6 +36,20 @@ export class HearingsTabPage {
     return this.page.locator(`#link-manage-links-${hearingId}`);
   }
 
+  linkedCaseTable(caseName: string): Locator {
+    return this.page
+      .locator('#linked-form table')
+      .filter({ has: this.page.getByRole('columnheader', { name: new RegExp(caseName) }) });
+  }
+
+  clearLinkedCaseLink(caseName: string): Locator {
+    return this.linkedCaseTable(caseName).getByRole('link', { name: 'Clear', exact: true });
+  }
+
+  linkedCaseSelection(caseName: string): Locator {
+    return this.linkedCaseTable(caseName).getByRole('radio');
+  }
+
   linkedHearingOrder(hearingId: string): Locator {
     return this.page
       .getByRole('row')

@@ -60,4 +60,55 @@ test.describe('Existing linked hearing maintenance failures', { tag: ['@integrat
     ]);
     expect(mutations).toHaveLength(0);
   });
+
+  test('cancels cleared membership without DELETE and preserves the original group', async ({
+    page,
+    caseDetailsPage,
+    hearingsTabPage,
+  }) => {
+    const { mutations } = await openHearingMaintenance(page, caseDetailsPage);
+    await hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID).click();
+    await hearingsTabPage.editLinkedHearingsButton.click();
+    await hearingsTabPage.clearLinkedCaseLink('Maintenance partner').click();
+    await expect(hearingsTabPage.linkedCaseSelection('Maintenance partner')).not.toBeChecked();
+    await hearingsTabPage.cancelLinkedHearingsLink.click();
+    await hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID).click();
+    await expect(hearingsTabPage.linkedSummaryRows).toHaveText([
+      /Maintenance primary.*1705614528106\s*1\s*$/s,
+      /Maintenance partner.*1705614528222\s*2\s*$/s,
+    ]);
+    expect(mutations).toHaveLength(0);
+  });
+
+  test('shows a failed DELETE without claiming saved removal', async ({ page, caseDetailsPage, hearingsTabPage }) => {
+    const { config, mutations } = await openHearingMaintenance(page, caseDetailsPage);
+    config.hearingsApiOverrides.deleteLinkedHearingGroup = { status: 500, body: { message: 'deletion-failed' } };
+    await hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID).click();
+    await hearingsTabPage.editLinkedHearingsButton.click();
+    await hearingsTabPage.clearLinkedCaseLink('Maintenance partner').click();
+    await expect(hearingsTabPage.linkedCaseSelection('Maintenance partner')).not.toBeChecked();
+    expect(mutations).toHaveLength(0);
+    await hearingsTabPage.continueFlow();
+    await expect(
+      page.getByText('There was a system error and your request could not be processed. Please try again.', { exact: true })
+    ).toBeVisible();
+    await expect(page).not.toHaveURL(/final-confirmation$/);
+    expect(mutations).toHaveLength(1);
+    expect(mutations[0].method()).toBe('DELETE');
+    expect(new URL(mutations[0].url()).pathname).toBe('/api/hearings/deleteLinkedHearingGroup');
+    await expect(hearingsTabPage.linkedCaseSelection('Maintenance partner')).not.toBeChecked();
+    expect(Object.fromEntries(new URL(mutations[0].url()).searchParams)).toEqual({
+      hearingGroupId: MAINTENANCE_GROUP_ID,
+      caseId: HEARINGS_CASE_REFERENCE,
+      hearingId: HEARINGS_LISTED_HEARING_ID,
+    });
+    await hearingsTabPage.cancelLinkedHearingsLink.click();
+    await expect(hearingsTabPage.manageLinksButton(OTHER_HEARING_ID)).toBeVisible();
+    await hearingsTabPage.manageLinksButton(HEARINGS_LISTED_HEARING_ID).click();
+    await expect(hearingsTabPage.linkedSummaryRows).toHaveText([
+      /Maintenance primary.*1705614528106\s*1\s*$/s,
+      /Maintenance partner.*1705614528222\s*2\s*$/s,
+    ]);
+    expect(mutations).toHaveLength(1);
+  });
 });

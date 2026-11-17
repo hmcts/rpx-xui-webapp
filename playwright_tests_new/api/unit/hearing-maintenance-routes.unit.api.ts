@@ -1,5 +1,6 @@
 import { test, expect, type Page, type Route } from '@playwright/test';
 import { setupHearingsMockRoutes } from '../../integration/helpers/hearingsMockRoutes.helper';
+import { buildLovRefDataMock } from '../../integration/mocks/hearings.mock';
 
 test.describe('hearing maintenance mock boundaries', { tag: '@svc-internal' }, () => {
   for (const status of [200, 500]) {
@@ -29,4 +30,11 @@ test.describe('hearing maintenance mock boundaries', { tag: '@svc-internal' }, (
       expect(replies).toEqual([{ status, contentType: 'application/json', body: JSON.stringify({ cancellation: status }) }]);
     });
   }
+  test('provides distinct cancellation reason codes through shared reference data', () => {
+    expect(buildLovRefDataMock('CaseManagementCancellationReasons').map((reason) => reason.key)).toEqual([
+      'reasonOne',
+      'reasonTwo',
+      'reasonThree',
+    ]);
+  });
 });

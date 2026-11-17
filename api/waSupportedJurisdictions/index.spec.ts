@@ -180,6 +180,15 @@ describe('WA Supported Jurisdictions', () => {
       expect(res.send).to.have.been.calledWith(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC', 'SSCS']);
     });
 
+    it('should add configured jurisdictions when the current user is identified by id', async () => {
+      req.session = { passport: { user: { userinfo: { id: 'user-1' } } } };
+      getConfigValueStub.withArgs('waSupportedJurisdictionUsers').returns([{ uid: 'user-1', jurisdictions: 'SSCS' }]);
+
+      await waSupportedJurisdictions.getWASupportedJurisdictions(req, res, next);
+
+      expect(res.send).to.have.been.calledWith(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC', 'SSCS']);
+    });
+
     it('should use only the global jurisdictions when the current user has no override', async () => {
       req.session = { passport: { user: { userinfo: { uid: 'user-2' } } } };
       getConfigValueStub.withArgs('waSupportedJurisdictionUsers').returns([{ uid: 'user-1', jurisdictions: 'SSCS' }]);

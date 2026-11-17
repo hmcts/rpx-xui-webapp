@@ -20,7 +20,8 @@ interface WASupportedJurisdictionUser {
 }
 
 function getUserJurisdictions(req: EnhancedRequest): string[] {
-  const userId = req?.session?.passport?.user?.userinfo?.uid;
+  const userInfo = req?.session?.passport?.user?.userinfo;
+  const userId = userInfo?.id ? userInfo.id : userInfo?.uid;
   if (!userId) {
     return [];
   }

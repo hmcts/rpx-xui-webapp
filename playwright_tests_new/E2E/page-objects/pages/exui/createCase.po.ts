@@ -64,6 +64,10 @@ export class CreateCasePage extends Base {
   readonly startButton!: Locator;
   readonly submitButton!: Locator;
   readonly continueButton!: Locator;
+  readonly caseTitleInput!: Locator;
+  readonly caseReferenceInput!: Locator;
+  readonly evidenceDocumentInput!: Locator;
+  readonly evidenceDocumentUploadError!: Locator;
 
   readonly legalRepParty1Block!: Locator;
   readonly legalRepParty2Block!: Locator;

@@ -4,6 +4,7 @@ class FlakeGateReporter {
     this.finalOutcomesByTest = new Map();
     this.maxFlakyTests = Number.isFinite(Number(process.env.PW_MAX_FLAKY_TESTS)) ? Number(process.env.PW_MAX_FLAKY_TESTS) : 20;
     this.maxFlakyRate = Number.isFinite(Number(process.env.PW_MAX_FLAKY_RATE)) ? Number(process.env.PW_MAX_FLAKY_RATE) : 0.2;
+    this.mode = process.env.PW_FLAKE_GATE === 'enforce' ? 'enforce' : 'report-only';
   }
 
   projectName(test) {
@@ -59,6 +60,9 @@ class FlakeGateReporter {
     const denominator = uniqueFinalTests > 0 ? uniqueFinalTests : 1;
     const flakyRate = flakyCount / denominator;
 
+    const exceedsThresholds = flakyCount > this.maxFlakyTests || flakyRate > this.maxFlakyRate;
+    const enforced = this.mode === 'enforce' && exceedsThresholds;
+
     const summary = [
       `[flake-gate] finished=${uniqueFinalTests}`,
       `[flake-gate] attempts=${this.totalAttempts}`,
@@ -67,10 +71,16 @@ class FlakeGateReporter {
       `[flake-gate] failed=${failedCount}`,
       `[flake-gate] flaky-rate=${(flakyRate * 100).toFixed(2)}%`,
       `[flake-gate] thresholds: maxFlakyTests=${this.maxFlakyTests}, maxFlakyRate=${(this.maxFlakyRate * 100).toFixed(2)}%`,
-      `[flake-gate] mode=report-only`,
+      `[flake-gate] mode=${this.mode}`,
+      ...(enforced ? ['[flake-gate] FAILED: flaky tests exceed thresholds'] : []),
     ].join('\n');
 
     process.stdout.write(`${summary}\n`);
+
+    if (enforced) {
+      process.exitCode = 1;
+      return { status: 'failed' };
+    }
   }
 }
 

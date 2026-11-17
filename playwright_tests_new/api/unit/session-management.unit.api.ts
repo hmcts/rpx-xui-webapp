@@ -766,8 +766,10 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         '/login?state=secret',
         1,
         {
-          acceptCookies: async () => undefined,
-          waitForShell: async () => null,
+          acceptCookies: async () => false,
+          waitForShell: async () => {
+            throw new Error('App shell not detected within 1ms');
+          },
           waitForAuthCookies: async () => true,
           info: (_message, meta) => {
             infoCalls.push(meta);
@@ -800,8 +802,10 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         '/login',
         1,
         {
-          acceptCookies: async () => undefined,
-          waitForShell: async () => null,
+          acceptCookies: async () => false,
+          waitForShell: async () => {
+            throw new Error('App shell not detected within 1ms');
+          },
           waitForAuthCookies: async () => false,
           info: () => undefined,
         }
@@ -839,8 +843,10 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         'https://manage-case.example.test',
         1,
         {
-          acceptCookies: async () => undefined,
-          waitForShell: async () => null,
+          acceptCookies: async () => false,
+          waitForShell: async () => {
+            throw new Error('App shell not detected within 1ms');
+          },
           waitForAuthCookies: async () => false,
           info: () => undefined,
         }
@@ -2432,7 +2438,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
-  test('ensureAuthenticatedPage does not retry navigation when the app shell is missing', async () => {
+  test('ensureAuthenticatedPage marks auth failures and clears the phase after recovery without retrying navigation', async ({}, testInfo) => {
+    const initialAnnotations = [...testInfo.annotations];
+    const navigationPhases: Array<string | undefined> = [];
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-shell-unit-'));
     const previousCwd = process.cwd();
     const previousTestUrl = process.env.TEST_URL;
@@ -2482,6 +2490,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         getByRole: () => hiddenLocator(),
         goto: async () => {
           gotoCount += 1;
+          navigationPhases.push(testInfo.annotations.find((annotation) => annotation.type === 'phase')?.description);
         },
         locator: () => hiddenLocator(),
         url: () => 'https://manage-case.aat.platform.hmcts.net',
@@ -2494,6 +2503,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       );
 
       expect(gotoCount).toBe(1);
+      expect(testInfo.annotations.find((annotation) => annotation.type === 'phase')?.description).toBe('auth');
+      await sessionCaptureTest.ensureAuthenticatedPage(page as never, identity, { waitForSelector: false });
+      expect(gotoCount).toBe(2);
+      expect(navigationPhases).toEqual(['auth', 'auth']);
+      expect(testInfo.annotations).toEqual(initialAnnotations);
     } finally {
       process.chdir(previousCwd);
       if (previousTestUrl === undefined) {

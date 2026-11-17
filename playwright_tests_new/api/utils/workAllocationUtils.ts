@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import type { ApiClient } from '@hmcts/playwright-common';
+import type { ApiClient, ApiRequestOptions } from '@hmcts/playwright-common';
 
 import { expectStatus, withRetry, withXsrf } from './apiTestUtils';
 import { expectTaskList } from './assertions';
@@ -139,7 +139,9 @@ export function assertCaseworkerListResponse(status: number, data: unknown): voi
   }
 }
 
-type WorkAllocationApiClient = Pick<ApiClient, 'post'> & Partial<Pick<ApiClient, 'get'>>;
+type WorkAllocationApiClient = {
+  post: (path: string, options: ApiRequestOptions) => Promise<{ status: number; data: unknown }>;
+} & Partial<Pick<ApiClient, 'get'>>;
 
 type FetchFirstTaskOptions = {
   failOnRequestError?: boolean;

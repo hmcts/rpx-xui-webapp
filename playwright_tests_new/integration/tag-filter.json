@@ -25,6 +25,7 @@
     "@integration-role-allocation-mock-session",
     "@integration-search-case",
     "@integration-share-case",
+    "@integration-staff-admin",
     "@integration-welsh-language",
     "@blocked-exui-4272",
     "@blocked-exui-4276",

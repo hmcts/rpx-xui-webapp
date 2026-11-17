@@ -33,6 +33,7 @@ describe('CookiePolicyComponentTest', () => {
   }));
 
   beforeEach(() => {
+    translationServiceMock.language = 'cy';
     fixture = TestBed.createComponent(CookiePolicyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -44,6 +45,22 @@ describe('CookiePolicyComponentTest', () => {
   it('should be created by angular', () => {
     expect(fixture).not.toBeNull();
   });
+
+  it('should include a new-tab warning in every link that opens a new tab', () => {
+    const expectNewTabWarnings = () => {
+      const links = fixture.nativeElement.querySelectorAll('a[target="_blank"]') as NodeListOf<HTMLAnchorElement>;
+      const expectedWarning = component.showWelshTranslation ? component.newTabWarningTextWelsh : component.newTabWarningText;
+      expect(links.length).toBeGreaterThan(0);
+      links.forEach((link) => expect(link.textContent).toContain(expectedWarning));
+    };
+
+    expectNewTabWarnings();
+
+    translationServiceMock.language = 'en';
+    fixture.detectChanges();
+    expectNewTabWarnings();
+  });
+
   it('should include 4 security cookies', () => {
     expect(component.countCookies(component.SECURITY)).toBe(4);
   });

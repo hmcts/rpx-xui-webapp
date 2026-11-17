@@ -35,7 +35,11 @@
     "integration/test/roleAccess/roleRemoval.positive.spec.ts",
     "api/unit/exclusion-session-actor.mock.ts",
     "api/unit/exclusion-session-actor.unit.api.ts",
-    "api/unit/all-work-cases-request-helper.unit.api.ts"
+    "api/unit/all-work-cases-request-helper.unit.api.ts",
+    "api/unit/role-allocation-mocks.unit.api.ts",
+    "integration/helpers/roleAllocationMockRoutes.helper.ts",
+    "integration/test/roleAccess/roleAllocation.positive.spec.ts",
+    "integration/test/roleAccess/roleAllocation.negative.spec.ts"
   ],
   "include": []
 }

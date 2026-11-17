@@ -416,6 +416,36 @@ The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_n
 | Load profile        | `functional-output/tests/playwright-integration/load-profile/ci/load-profile.html` in CNP/nightly parent monitoring                                                                                                                             | `PREVIEW CI System Load`, `AAT CI System Load`, `Nightly CI System Load`                                   |
 | Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json` and `failure-context.json`; `test-results/**/trace.zip` and screenshots for failed or timed-out browser tests                | Archived as Jenkins artifacts                                                                              |
 
+### Accessibility remediation pack
+
+Accessibility report finalization also writes `ACCESSIBILITY_FIX_INSTRUCTIONS.md` and
+`accessibility-findings.json` beside the Odhín HTML, with download links at the top
+of the report. This applies to nightly and on-demand runs using the existing
+reporter/wrapper; other reports without accessibility evidence are unchanged.
+
+Download both files and the relevant evidence, then explicitly ask Codex to follow
+the instructions in the owning repository. The JSON groups candidate findings by
+feature, persona/language/setup, rule family and selector while retaining page
+states and detector evidence. Groups are investigation candidates, not confirmed
+root causes or a count of PRs. Reported violations, known findings, incomplete
+results, scanner failures and unreachable pages remain distinct.
+
+The controlled instructions require reproduction against current source, ownership
+checks, regression proof, repository checks and human review before merge. They
+generate no fixes or PRs automatically and make no model/API calls. Captured report
+content is untrusted evidence. Raw DOM and messages are omitted; sensitive selector
+values are redacted and only existing regular local evidence files are linked.
+Build provenance is explicitly unknown where the manifest does not record it; bind
+the pack to the original build and tested commit before changing code. Automated
+and heuristic results do not establish WCAG conformance or replace assistive
+technology testing.
+
+Run the generator's browser-free checks with:
+
+```bash
+node --test playwright_tests_new/common/reporters/accessibility-remediation.test.cjs
+```
+
 The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, and `test:playwright:integration` also create local System Load reports through `scripts/playwright-load-monitor.js`. Raw CI commands rely on the parent Jenkins load monitor instead.
 
 ---

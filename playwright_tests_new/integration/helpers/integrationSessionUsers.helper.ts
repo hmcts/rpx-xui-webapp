@@ -44,6 +44,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-manage-tasks': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
   // Authentication and user details are route-mocked by this suite.
   '@integration-platform-services': () => [],
+  '@integration-role-allocation-mock-session': () => [],
   '@integration-probate-find-case': () => ['PROBATE_CASEWORKER'],
   '@integration-query-management': (env) => ['SOLICITOR', ...resolveStaffAdminSessionUsers(env)],
   '@integration-restricted-case': () => ['FPL_GLOBAL_SEARCH'],
@@ -52,6 +53,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
       userIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionUsers(env) : [userIdentifier]
     ),
   '@integration-share-case': () => ['SOLICITOR'],
+  '@integration-staff-admin': () => ['STAFF_ADMIN'],
   '@integration-case-viewer': () => ['STAFF_ADMIN'],
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
 };

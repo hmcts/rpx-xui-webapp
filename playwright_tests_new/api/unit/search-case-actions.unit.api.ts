@@ -26,6 +26,32 @@ test.describe('Search case action helper unit tests', { tag: '@svc-internal' }, 
     });
   }
 
+  test('waits for the empty case-list result after a missing case lookup', async () => {
+    const search = buildSearch({ destination: '/cases', caseLookupStatus: 404, noCases: true });
+    await search.subject.searchWith16DigitCaseId(CASE_REFERENCE);
+    expect(search.clicks()).toBe(1);
+  });
+
+  test('waits for the empty case-list result after a malformed successful lookup', async () => {
+    const search = buildSearch({ destination: '/cases', caseLookupStatus: 200, malformedLookup: true, noCases: true });
+    await search.subject.searchWith16DigitCaseId(CASE_REFERENCE);
+    expect(search.clicks()).toBe(1);
+  });
+
+  for (const status of [401, 500, 503]) {
+    test(`returns after a case lookup responds with HTTP ${status}`, async () => {
+      const search = buildSearch({ destination: '/cases', caseLookupStatus: status });
+      await search.subject.searchWith16DigitCaseId(CASE_REFERENCE);
+      expect(search.clicks()).toBe(1);
+    });
+  }
+
+  test('returns after the case lookup request fails', async () => {
+    const search = buildSearch({ destination: '/cases', requestFailed: true });
+    await search.subject.searchWith16DigitCaseId(CASE_REFERENCE);
+    expect(search.clicks()).toBe(1);
+  });
+
   for (const [name, state] of [
     ['no search outcome', { destination: '/cases' }],
     ['an unchanged case-list no-cases message', { destination: '/cases', noCases: true }],

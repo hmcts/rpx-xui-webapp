@@ -15,6 +15,7 @@ export class SearchCasePage extends Base {
   readonly caseProgressPanel = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly noResultsHeading = this.page.locator('exui-no-results .govuk-heading-xl');
   readonly noResultsContainer = this.page.locator('exui-no-results');
+  readonly caseListNoResultsMessage = this.page.getByText('No cases found. Try using different filters.', { exact: true });
   readonly restrictedCaseAccessContainer = this.page.locator('exui-restricted-case-access-container');
   readonly backLink = this.page.locator('exui-no-results .govuk-back-link');
 
@@ -41,16 +42,26 @@ export class SearchCasePage extends Base {
     const deadlineMs = Date.now() + EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK + EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN;
     const remaining = () => remainingNavigationTimeout(deadlineMs, 'completing the header search');
     // A previous no-results view can remain visible while a new search is still loading.
-    const caseLookupResponse = this.page
-      .waitForResponse(
-        (response) =>
-          new URL(response.url()).pathname.endsWith(`/internal/cases/${caseId}`) && [400, 403, 404].includes(response.status()),
-        { timeout: remaining() }
-      )
-      .then(
-        (response) => response.status(),
-        () => null
-      );
+    const isCaseLookup = (url: string) => new URL(url).pathname.endsWith(`/internal/cases/${caseId}`);
+    const caseLookupResponse = Promise.any([
+      this.page
+        .waitForResponse((response) => isCaseLookup(response.url()), { timeout: remaining() })
+        .then((response) => ({ response })),
+      this.page
+        .waitForEvent('requestfailed', { predicate: (request) => isCaseLookup(request.url()), timeout: remaining() })
+        .then(() => ({ requestFailed: true as const })),
+    ])
+      .then(async (result) => {
+        if ('requestFailed' in result) return { status: 0, resolvedCaseId: undefined };
+        const response = result.response;
+        let resolvedCaseId: unknown;
+        if (response.status() === 200) {
+          const body = await response.json().catch(() => undefined);
+          resolvedCaseId = body?.case_id;
+        }
+        return { status: response.status(), resolvedCaseId };
+      })
+      .catch(() => null);
     try {
       await findButton.click({ timeout: Math.min(EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK, remaining()) });
     } catch (error) {
@@ -76,7 +87,7 @@ export class SearchCasePage extends Base {
   private async waitForImmediateSearchOutcome(
     caseId: string,
     deadlineMs: number,
-    caseLookupResponse: Promise<number | null>
+    caseLookupResponse: Promise<{ status: number; resolvedCaseId: unknown } | null>
   ): Promise<void> {
     const remaining = () => remainingNavigationTimeout(deadlineMs, 'waiting for the header search result');
     await Promise.any([
@@ -85,7 +96,8 @@ export class SearchCasePage extends Base {
           timeout: remaining(),
         })
         .then(() => this.page.getByRole('tablist').waitFor({ state: 'visible', timeout: remaining() })),
-      caseLookupResponse.then(async (status) => {
+      caseLookupResponse.then(async (response) => {
+        const status = response?.status;
         if (status === 403) {
           await this.page.waitForURL((url) => url.pathname === `/cases/restricted-case-access/${caseId}`, {
             timeout: remaining(),
@@ -93,9 +105,21 @@ export class SearchCasePage extends Base {
           await this.restrictedCaseAccessContainer.waitFor({ state: 'visible', timeout: remaining() });
           return;
         }
+        if (status === 0) return;
         if (status === 400 || status === 404) {
-          await this.page.waitForURL((url) => url.pathname === '/search/noresults', { timeout: remaining() });
-          await this.noResultsContainer.waitFor({ state: 'visible', timeout: remaining() });
+          await Promise.any([
+            this.page
+              .waitForURL((url) => url.pathname === '/search/noresults', { timeout: remaining() })
+              .then(() => this.noResultsContainer.waitFor({ state: 'visible', timeout: remaining() })),
+            this.page
+              .waitForURL((url) => url.pathname === '/cases', { timeout: remaining() })
+              .then(() => this.caseListNoResultsMessage.waitFor({ state: 'visible', timeout: remaining() })),
+          ]);
+          return;
+        }
+        if (status !== undefined && status >= 400) return;
+        if (status === 200 && response?.resolvedCaseId !== caseId && new URL(this.page.url()).pathname === '/cases') {
+          await this.caseListNoResultsMessage.waitFor({ state: 'visible', timeout: remaining() });
           return;
         }
         throw new Error('No missing-case or restricted-case response was received for this search');

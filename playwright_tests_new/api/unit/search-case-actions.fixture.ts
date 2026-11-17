@@ -10,6 +10,8 @@ type SearchState = {
   noResults?: boolean;
   restrictedAccess?: boolean;
   caseLookupStatus?: number;
+  malformedLookup?: boolean;
+  requestFailed?: boolean;
   noCases?: boolean;
   stuckSpinner?: boolean;
   detailsReady?: boolean;
@@ -64,6 +66,7 @@ export function buildSearch(state: SearchState = {}) {
     searchCaseFindButton: findButton,
     searchCaseFindButtonFallback: findButton,
     noResultsContainer: visibleLocator(state.noResults ?? false),
+    caseListNoResultsMessage: visibleLocator(state.noCases ?? false),
     restrictedCaseAccessContainer: visibleLocator(state.restrictedAccess ?? false),
     logger: { warn: () => undefined },
     page: {
@@ -77,14 +80,28 @@ export function buildSearch(state: SearchState = {}) {
       waitForResponse: async (matches: (response: { url: () => string; status: () => number }) => boolean) => {
         await submission;
         if (state.delayed) await navigation;
+        if (state.requestFailed) throw new Error('Request failed');
         const response = {
           url: () => `https://example.test/data/internal/cases/${CASE_REFERENCE}`,
           status: () =>
             state.caseLookupStatus ??
             (destination === '/search/noresults' ? 404 : destination.startsWith('/cases/restricted-case-access/') ? 403 : 200),
+          json: async () => {
+            if (state.malformedLookup) throw new Error('Malformed response');
+            return { case_id: CASE_REFERENCE };
+          },
         };
         if (!matches(response)) throw new Error('No matching missing-case response');
         return response;
+      },
+      waitForEvent: async (event: string, options: { predicate: (request: { url: () => string }) => boolean }) => {
+        await submission;
+        if (state.delayed) await navigation;
+        const request = { url: () => `https://example.test/data/internal/cases/${CASE_REFERENCE}` };
+        if (event !== 'requestfailed' || !state.requestFailed || !options.predicate(request)) {
+          throw new Error('No matching failed request');
+        }
+        return request;
       },
       waitForURL: async (matches: (url: URL) => boolean) => {
         if (matches(new URL(`https://example.test${currentPath}`))) return;

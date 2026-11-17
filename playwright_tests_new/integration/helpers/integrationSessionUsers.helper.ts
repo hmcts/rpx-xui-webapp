@@ -52,6 +52,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
       userIdentifier === STAFF_ADMIN_USER ? resolveStaffAdminSessionUsers(env) : [userIdentifier]
     ),
   '@integration-share-case': () => ['SOLICITOR'],
+  '@integration-staff-admin': () => ['STAFF_ADMIN'],
   '@integration-case-viewer': () => ['STAFF_ADMIN'],
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
 };

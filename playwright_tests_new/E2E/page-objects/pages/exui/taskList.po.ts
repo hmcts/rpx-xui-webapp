@@ -433,6 +433,10 @@ export class TaskListPage extends Base {
   }
 
   private async reloadBlankTaskListDocumentIfNeeded(urlPattern: RegExp, context: string, deadlineMs: number): Promise<void> {
+    if (urlPattern.test(this.page.url()) && (await this.taskListTable.isVisible().catch(() => false))) {
+      return;
+    }
+
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
     if (
       !(await this.isBlankTaskListDocument(urlPattern, Math.min(500, remaining()))) &&
@@ -480,8 +484,8 @@ export class TaskListPage extends Base {
     const bodyText = await this.page
       .locator('body')
       .innerText({ timeout: timeoutMs })
-      .catch(() => '');
-    return bodyText.trim().length === 0;
+      .catch(() => null);
+    return bodyText !== null && bodyText.trim().length === 0;
   }
 
   private async isRecoverableBrowserNavigationDocument(urlPattern: RegExp, timeoutMs = 500): Promise<boolean> {

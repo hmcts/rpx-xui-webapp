@@ -1,6 +1,6 @@
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <a class="govuk-back-link" href="#" (click)="onBack(); $event.preventDefault()">{{ 'Back' | rpxTranslate }}</a>
-<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="content" role="main">
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
   <div
     class="govuk-error-summary"
     aria-labelledby="error-summary-title"
@@ -185,4 +185,4 @@
       </form>
     </div>
   </div>
-</main>
+</div>

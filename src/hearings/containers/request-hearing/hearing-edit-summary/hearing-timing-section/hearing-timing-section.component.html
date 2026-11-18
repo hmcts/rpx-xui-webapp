@@ -40,7 +40,7 @@
         </div>
       </div>
       <div *ngIf="specificDateSelection === radioOptions.YES">
-        <dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>
+        <div class="heading-h3 bottom-0">The first date of the hearing must be</div>
         {{ firstHearingDate }}
         <exui-amendment-label *ngIf="firstDateTimeMustBeChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
         </exui-amendment-label>

@@ -240,6 +240,11 @@
     {
       "project": "chromium",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › rejects a known document without case context while its owner retains access"
+    },
+    {
+      "project": "chromium",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
       "title": "Legacy document authorization › rejects document A with case A for U2 without case access"
     },
     {
@@ -302,6 +307,11 @@
     {
       "project": "firefox",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › rejects a known document without case context while its owner retains access"
+    },
+    {
+      "project": "firefox",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
       "title": "Legacy document authorization › rejects document A with case A for U2 without case access"
     },
     {
@@ -358,6 +368,11 @@
       "project": "webkit",
       "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
       "title": "Legacy document authorization › rejects document A with case B for U1 who can access both cases"
+    },
+    {
+      "project": "webkit",
+      "spec": "playwright_tests_new/E2E/test/mediaViewer/documentAuthorization.spec.ts",
+      "title": "Legacy document authorization › rejects a known document without case context while its owner retains access"
     },
     {
       "project": "webkit",

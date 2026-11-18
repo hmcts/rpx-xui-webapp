@@ -231,6 +231,11 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.status).toBe('success');
   });
 
+  it('should display the IDAM ID from the RD user profile', () => {
+    const renderedText = fixture.nativeElement.textContent.replace(/\s/g, '');
+    expect(renderedText).toContain('IDAMID123');
+  });
+
   it('should set userDetails property from resolver', () => {
     const testStaffUserObject = StaffUser.from(testStaffUserData);
     expect(component.userDetails).toEqual(testStaffUserObject);

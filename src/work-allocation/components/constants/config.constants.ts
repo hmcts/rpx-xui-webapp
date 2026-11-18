@@ -81,7 +81,7 @@ const CASE_CATEGORY_DISABLE_SORT: FieldConfig = {
 const NEXT_HEARING_DATE: FieldConfig = {
   name: 'next_hearing_date',
   type: FieldType.FORMATTED_DATE,
-  columnLabel: 'Hearing date',
+  columnLabel: 'Next hearing date',
   sortName: 'next_hearing_date',
   views: TaskView.ALL_VIEWS,
 };

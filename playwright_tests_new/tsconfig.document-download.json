@@ -20,6 +20,7 @@
     "E2E/utils/test-setup/mediaViewerLifecycleObservation.ts",
     "api/evidence-manager.api.ts",
     "api/fixtures.ts",
+    "api/playwright-config-coverage.api.ts",
     "api/unit/case-file-view-binary-mock-routes.unit.api.ts",
     "api/unit/case-file-view-binary-routes.unit.api.ts",
     "api/unit/critical-scenario-receipt.unit.api.ts",
@@ -40,7 +41,10 @@
     "integration/test/caseFileView/caseFileView.negative.spec.ts",
     "integration/test/caseFileView/caseFileView.positive.spec.ts",
     "integration/test/caseFileView/mediaViewerHandoff.negative.spec.ts",
-    "integration/test/caseFileView/mediaViewerHandoff.positive.spec.ts"
+    "integration/test/caseFileView/mediaViewerHandoff.positive.spec.ts",
+    "../playwright.config.ts",
+    "../playwright.e2e.config.ts",
+    "../playwright-nightly.config.ts"
   ],
   "include": []
 }

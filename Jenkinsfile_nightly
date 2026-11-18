@@ -757,6 +757,7 @@ withNightlyPipeline(type, product, component) {
                                 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
                                 'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results',
+                                'CI=true',
                                 "PLAYWRIGHT_JSON_OUTPUT=${evidenceDir}/playwright.json",
                                 'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                             ]) {

@@ -6,7 +6,11 @@ import os from 'node:os';
 import path from 'node:path';
 
 const require = createRequire(import.meta.url);
-const { checkCriticalScenarios, runCriticalScenarioReceipt, verifyCriticalScenarioReports } = require('../../common/critical-scenario-receipt.cjs');
+const {
+  checkCriticalScenarios,
+  runCriticalScenarioReceipt,
+  verifyCriticalScenarioReports,
+} = require('../../common/critical-scenario-receipt.cjs');
 const required = [
   {
     project: 'chromium',
@@ -233,12 +237,18 @@ test.describe('critical scenario execution receipt', { tag: '@svc-internal' }, (
       expect(verifyCriticalScenarioReports(manifestPath, 'e2e', receiptPath, [firstEntry]).passed).toBe(false);
       const cli = path.join(process.cwd(), 'playwright_tests_new/common/critical-scenario-receipt.cjs');
       expect(() =>
-        execFileSync(process.execPath, [cli, 'verify', manifestPath, 'e2e', receiptPath, firstPath, String(startedAt), String(startedAt + 1_000)], { stdio: 'pipe' })
+        execFileSync(
+          process.execPath,
+          [cli, 'verify', manifestPath, 'e2e', receiptPath, firstPath, String(startedAt), String(startedAt + 1_000)],
+          { stdio: 'pipe' }
+        )
       ).toThrow();
       second.suites[0].suites[0].specs[0].tests[0].results[0].status = 'skipped';
       fs.writeFileSync(secondPath, JSON.stringify(second));
       expect(verifyCriticalScenarioReports(manifestPath, 'e2e', receiptPath, [firstEntry, secondEntry]).passed).toBe(false);
-      expect(() => verifyCriticalScenarioReports(manifestPath, 'e2e', receiptPath, [{ ...firstEntry, startedAt: startedAt + 100 }])).toThrow(/invocation/);
+      expect(() =>
+        verifyCriticalScenarioReports(manifestPath, 'e2e', receiptPath, [{ ...firstEntry, startedAt: startedAt + 100 }])
+      ).toThrow(/invocation/);
     } finally {
       fs.rmSync(directory, { recursive: true, force: true });
     }

@@ -392,6 +392,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 def criticalStartedAt = criticalScenarioTime()
                 withEnv([
                     "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
+                    'CI=true',
                     "PLAYWRIGHT_JSON_OUTPUT=${runConfig.reportDir}/ci-evidence/playwright.json",
                     "PLAYWRIGHT_OUTPUT_DIR=${outputDir}",
                     "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
@@ -811,6 +812,7 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=6",
                                 'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-api/test-results',
+                                'CI=true',
                                 'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json',
                                 'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'
                             ]) {
@@ -884,6 +886,7 @@ withPipeline(type, product, component) {
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                     'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results',
+                                    'CI=true',
                                     'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json',
                                     'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                                 ]) {
@@ -1028,6 +1031,7 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=6",
                                 'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-api/test-results',
+                                'CI=true',
                                 'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json',
                                 'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'
                             ]) {
@@ -1101,6 +1105,7 @@ withPipeline(type, product, component) {
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                     'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results',
+                                    'CI=true',
                                     'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json',
                                     'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                                 ]) {

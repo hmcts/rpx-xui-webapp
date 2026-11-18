@@ -164,7 +164,9 @@ if (require.main === module) {
     if (reportFile === 'verify') {
       const [manifest, lanes, receiptFile, ...values] = process.argv.slice(3);
       if (!manifest || !lanes || !receiptFile || !values.length || values.length % 3 !== 0) {
-        throw new Error('Usage: critical-scenario-receipt.cjs verify MANIFEST LANES RECEIPT REPORT START END [REPORT START END ...]');
+        throw new Error(
+          'Usage: critical-scenario-receipt.cjs verify MANIFEST LANES RECEIPT REPORT START END [REPORT START END ...]'
+        );
       }
       const entries = [];
       for (let index = 0; index < values.length; index += 3) {

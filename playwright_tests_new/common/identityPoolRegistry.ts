@@ -14,6 +14,7 @@ const registry = require('./identityPoolRegistry.cjs') as {
 
 export type IdentityCompatibilityRequirements = {
   pool?: string;
+  userIdentifier?: string;
   tags?: string[];
   role?: string;
   organisation?: string;

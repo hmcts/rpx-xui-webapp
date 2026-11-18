@@ -256,7 +256,7 @@ const buildConfig = (env = process.env) => {
       },
     ]);
   }
-  if (env.CI) {
+  if (env.CI || env.PLAYWRIGHT_JSON_OUTPUT) {
     reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {

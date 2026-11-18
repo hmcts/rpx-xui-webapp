@@ -165,7 +165,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
     ],
   ];
-  if (env.CI && !isAccessibilityRun) {
+  if ((env.CI || env.PLAYWRIGHT_JSON_OUTPUT) && !isAccessibilityRun) {
     reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
   }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {

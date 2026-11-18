@@ -1,4 +1,4 @@
-/* global module */
+/* global module, process */
 
 const poolRegistry = [
   {
@@ -126,6 +126,7 @@ function isCompatible(identity, requirements = {}) {
   const requiredTags = requirements.tags ?? [];
   if (requiredTags.some((tag) => !identity.tags.includes(tag))) return false;
   if (requirements.pool && identity.pool !== requirements.pool) return false;
+  if (requirements.userIdentifier !== undefined && identity.userIdentifier !== requirements.userIdentifier) return false;
   if (requirements.role && identity.role !== requirements.role) return false;
   if (requirements.organisation && identity.organisation !== requirements.organisation) return false;
   if (

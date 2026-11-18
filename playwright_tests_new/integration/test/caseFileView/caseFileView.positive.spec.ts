@@ -3,8 +3,8 @@ import {
   setupCaseFileViewDocumentBinaryMockRoutes,
   setupCaseFileViewMockRoutes,
   setupCaseFileViewUserDetailsRoute,
-  setupCaseFileViewMockSession,
-} from '../../helpers';
+} from '../../helpers/caseFileViewMockRoutes.helper';
+import { setupCaseFileViewMockSession } from '../../helpers/caseFileViewMockSession.helper';
 import { CASE_FILE_VIEW_DOC_IDS, CASE_FILE_VIEW_DOCUMENT_GATEWAYS } from '../../mocks/caseFileView.mock';
 import { applySessionCookies } from '../../../common/sessionCapture';
 
@@ -67,13 +67,17 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
   });
 
   for (const gateway of CASE_FILE_VIEW_DOCUMENT_GATEWAYS) {
-    test(`Case view delivers documents through ${gateway.label}`, async ({ caseDetailsPage, caseFileViewPage, page }) => {
-      const binaryRequests: string[] = [];
+    test(`Case view requests selected mocked documents through ${gateway.label}`, async ({
+      caseDetailsPage,
+      caseFileViewPage,
+      page,
+    }) => {
+      const binaryRequests: { url: string; referer: string }[] = [];
       await test.step('Set up case file and binary document mocks', async () => {
         await applySessionCookies(page, fileViewOnUser);
         await setupCaseFileViewMockRoutes(page, caseId, { cdamExclusionList: gateway.cdamExclusionList });
 
-        await setupCaseFileViewDocumentBinaryMockRoutes(page, (url) => binaryRequests.push(new URL(url).pathname));
+        await setupCaseFileViewDocumentBinaryMockRoutes(page, (url, referer) => binaryRequests.push({ url, referer }));
       });
 
       await test.step('Open the Case File View tab', async () => {
@@ -83,29 +87,34 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
         await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
       });
 
+      const caseUrl = new URL(page.url());
+      caseUrl.hash = '';
+      expect(caseUrl.pathname).toContain(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+
       await test.step('Select Zeta evidence and verify its binary request', async () => {
         const requestCountBeforeZeta = binaryRequests.length;
         await caseFileViewPage.clickFile('Evidence', 'Zeta evidence.pdf');
         await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeZeta);
-        await expect
-          .poll(() => binaryRequests.at(-1) || '')
-          .toBe(`${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceZeta}/binary`);
+        const expectedUrl = `${caseUrl.origin}${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceZeta}/binary`;
+        expect(binaryRequests.at(-1)?.url).toBe(
+          gateway.binaryPath === '/documents' ? `${expectedUrl}?caseId=${caseId}` : expectedUrl
+        );
       });
 
       await test.step('Select Alpha evidence and update the binary request target', async () => {
         const requestCountBeforeAlpha = binaryRequests.length;
         await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
         await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeAlpha);
-        await expect
-          .poll(() => binaryRequests.at(-1) || '')
-          .toBe(`${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`);
+        const expectedUrl = `${caseUrl.origin}${gateway.binaryPath}/${CASE_FILE_VIEW_DOC_IDS.evidenceAlpha}/binary`;
+        expect(binaryRequests.at(-1)?.url).toBe(
+          gateway.binaryPath === '/documents' ? `${expectedUrl}?caseId=${caseId}` : expectedUrl
+        );
         await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
       });
 
       await test.step('Verify media viewer content and toolbar', async () => {
-        await caseFileViewPage.mediaViewPanel.waitFor();
-        expect(await caseFileViewPage.mediaViewerToolbar.isVisible()).toBe(true);
-        expect(await caseFileViewPage.mediaViewPanel.textContent()).toContain('Case File View - Document Delivery Fixture');
+        await expect(caseFileViewPage.mediaViewerToolbar).toBeVisible();
+        await expect(caseFileViewPage.mediaViewPanel).toContainText('Case File View - Document Delivery Fixture');
       });
     });
   }

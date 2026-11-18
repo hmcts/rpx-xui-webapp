@@ -67,6 +67,18 @@ function assertPostRunFallback(jenkinsfile: string, stage: string, runnerCommand
   expect(publishIndex).toBeGreaterThan(fallbackIndex);
 }
 
+function assertSharedPostRunFallback(stage: string, runnerCommand: string, suiteName: string): void {
+  const stageIndex = source.indexOf(stage);
+  const runnerIndex = source.indexOf(runnerCommand, stageIndex);
+  const fallbackIndex = source.indexOf('ensureHtmlReportForPublishing(', runnerIndex);
+  const publishIndex = source.indexOf(`reportName           : "${suiteName}"`, fallbackIndex);
+
+  expect(stageIndex).toBeGreaterThanOrEqual(0);
+  expect(runnerIndex).toBeGreaterThan(stageIndex);
+  expect(fallbackIndex).toBeGreaterThan(runnerIndex);
+  expect(publishIndex).toBeGreaterThan(fallbackIndex);
+}
+
 function expectInterruptedOutcomesToBypassFailure(jenkinsfile: string, expectedFailureOutcomes: number): void {
   const failureOutcomes = [
     ...jenkinsfile.matchAll(/(?:outcome = runnerCompleted \? 'completed' : |(?:apiOutcome|e2eOutcome) = )'test-failure'/g),
@@ -99,21 +111,24 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
       source.indexOf("stage('Preview Functional Tests")
     );
     expect(previewCleanup).not.toContain('ensureHtmlReportForPublishing');
-    expect(fallbackCount(source, 'PREVIEW Playwright E2E')).toBe(1);
-    expect(fallbackCount(source, 'PREVIEW API Functional Test')).toBe(1);
-    expect(fallbackCount(source, 'AAT Playwright E2E')).toBe(1);
-    expect(fallbackCount(source, 'AAT API Functional Test')).toBe(1);
+    expect(
+      source.match(/ensureHtmlReportForPublishing\(\s*'functional-output\/tests\/playwright-e2e\/odhin-report'/g)
+    ).toHaveLength(1);
+    expect(
+      source.match(/ensureHtmlReportForPublishing\(\s*'functional-output\/tests\/playwright-api\/odhin-report'/g)
+    ).toHaveLength(1);
     expect(fallbackCount(nightlySource, 'Nightly Playwright E2E Cross Browser')).toBe(1);
     expect(fallbackCount(nightlySource, 'Nightly API Functional Test')).toBe(1);
-    assertPostRunFallback(source, "stage('API Tests')", "yarnBuilder.yarn('test:api:pw:raw')", 'PREVIEW API Functional Test');
-    assertPostRunFallback(
-      source,
-      "stage('Playwright E2E')",
-      "yarnBuilder.yarn('test:playwrightE2E:raw')",
-      'PREVIEW Playwright E2E'
+    assertSharedPostRunFallback(
+      "stage('API Tests')",
+      "runCriticalScenarioSuite('test:api:pw:raw'",
+      '${label} API Functional Test'
     );
-    assertPostRunFallback(source, "stage('API Tests')", "yarnBuilder.yarn('test:api:pw:raw')", 'AAT API Functional Test');
-    assertPostRunFallback(source, "stage('Playwright E2E')", "yarnBuilder.yarn('test:playwrightE2E:raw')", 'AAT Playwright E2E');
+    assertSharedPostRunFallback(
+      "stage('Playwright E2E')",
+      "runCriticalScenarioSuite('test:playwrightE2E:raw'",
+      '${label} Playwright E2E'
+    );
     assertPostRunFallback(
       nightlySource,
       "stage('API Tests')",
@@ -126,7 +141,29 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
       "yarnBuilder.yarn('test:crossbrowser:raw')",
       'Nightly Playwright E2E Cross Browser'
     );
-    expect(source).toContain("reportName           : 'PREVIEW Playwright E2E'");
+    expect(source).toContain('reportName           : "${label} Playwright E2E"');
+  });
+
+  test('runs the suite and verifies its JSON receipt within the shared pipeline closure', () => {
+    const helper = source.slice(
+      source.indexOf('def runCriticalScenarioSuite = {'),
+      source.indexOf('\n}\n', source.indexOf('def runCriticalScenarioSuite = {'))
+    );
+    expect(helper).toContain('yarnBuilder.yarn(command)');
+    expect(helper).toContain('env.PLAYWRIGHT_JSON_OUTPUT');
+    expect(helper).toContain('verifyCriticalScenarios(lanes,');
+  });
+
+  test('keeps preview and AAT API/E2E stages in their parallel suite maps', () => {
+    expect(source).toContain('def apiFunctionalStage = { String profile, String label ->');
+    expect(source).toContain('def e2eFunctionalStage = { String profile, String label ->');
+    expect(source).toContain('playwrightLoadProfileEventsFile(profile)');
+    expect(source).toContain('"${label} API Functional Test"');
+    expect(source).toContain('"${label} Playwright E2E"');
+    expect(source).toContain("api: apiFunctionalStage('preview', 'PREVIEW'),");
+    expect(source).toContain("playwrightE2E: e2eFunctionalStage('preview', 'PREVIEW')");
+    expect(source).toContain("api: apiFunctionalStage('aat', 'AAT'),");
+    expect(source).toContain("playwrightE2E: e2eFunctionalStage('aat', 'AAT')");
   });
 
   test('keeps report diagnostics and JUnit output lane-local', () => {
@@ -177,7 +214,7 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
   });
 
   test('preserves interrupted outcomes before creating fallback failure reports', () => {
-    expectInterruptedOutcomesToBypassFailure(source, 5);
+    expectInterruptedOutcomesToBypassFailure(source, 3);
     expectInterruptedOutcomesToBypassFailure(nightlySource, 3);
   });
 
@@ -223,8 +260,8 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
   });
 
   test('keeps seven E2E workers while bounding concurrent direct CCD case setup', () => {
-    expect(source.match(/"FUNCTIONAL_TESTS_WORKERS=7"/g)).toHaveLength(2);
-    expect(source.match(/"PW_E2E_CCD_SETUP_CONCURRENCY=1"/g)).toHaveLength(2);
+    expect(source.match(/"FUNCTIONAL_TESTS_WORKERS=7"/g)).toHaveLength(1);
+    expect(source.match(/"PW_E2E_CCD_SETUP_CONCURRENCY=1"/g)).toHaveLength(1);
     expect(nightlySource).toContain("'FUNCTIONAL_TESTS_WORKERS=7'");
     expect(nightlySource).toContain("'PW_E2E_CCD_SETUP_CONCURRENCY=1'");
   });

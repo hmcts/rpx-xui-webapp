@@ -744,6 +744,7 @@ withNightlyPipeline(type, product, component) {
                 playwrightE2E: {
                     stage('Playwright E2E Cross Browser') {
                         def e2eOutcome = 'interrupted'
+                        def evidenceDir = 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence'
                         try {
                             recordPlaywrightLoadEvent('E2E', 'start')
                             withEnv([
@@ -756,9 +757,18 @@ withNightlyPipeline(type, product, component) {
                                 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
                                 'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results',
+                                "PLAYWRIGHT_JSON_OUTPUT=${evidenceDir}/playwright.json",
                                 'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                             ]) {
+                                def criticalStartedAt = sh(returnStdout: true, script: 'node -p Date.now()').trim()
                                 yarnBuilder.yarn('test:crossbrowser:raw')
+                                def criticalFinishedAt = sh(returnStdout: true, script: 'node -p Date.now()').trim()
+                                sh(
+                                    "node playwright_tests_new/common/critical-scenario-receipt.cjs verify " +
+                                    "'playwright_tests_new/common/document-download-required-scenarios.json' 'nightly-e2e' " +
+                                    "'${evidenceDir}/critical-scenarios.receipt.json' '${evidenceDir}/playwright.json' " +
+                                    "${criticalStartedAt} ${criticalFinishedAt}"
+                                )
                                 e2eOutcome = 'completed'
                             }
                         } catch (Exception e) {

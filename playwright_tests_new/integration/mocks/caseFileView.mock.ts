@@ -13,9 +13,14 @@ export const CASE_FILE_VIEW_DOC_IDS = {
 } as const;
 
 export const CASE_FILE_VIEW_DOCUMENT_GATEWAYS = [
-  { label: 'V1 legacy', cdamExclusionList: 'PRLAPPS', binaryPath: '/documents' },
-  { label: 'V2 CDAM', cdamExclusionList: '', binaryPath: '/documentsv2' },
+  { label: 'V1 legacy', cdamExclusionList: 'PRLAPPS', binaryPath: '/documents', deniedStatus: 403 },
+  { label: 'V2 CDAM', cdamExclusionList: '', binaryPath: '/documentsv2', deniedStatus: 404 },
 ] as const;
+
+export const CASE_FILE_VIEW_BINARY_DENIAL_RESPONSE = {
+  contentType: 'application/json',
+  body: JSON.stringify({ message: 'document access denied' }),
+};
 
 const CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF_PATH = path.resolve(
   process.cwd(),
@@ -24,6 +29,13 @@ const CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF_PATH = path.resolve(
 
 export const CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF = readFileSync(CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF_PATH);
 
+export const CASE_FILE_VIEW_BINARY_FAILURE_RESPONSE = {
+  status: 500,
+  contentType: 'application/json',
+  body: JSON.stringify({ message: 'forced document binary failure' }),
+};
+
+// These fictional document records and shared PDF bytes prove UI contracts only, not real case membership or delivery.
 const buildDocument = (documentId: string, filename: string, uploadTimestamp: string) => ({
   document_url: `http://localhost:3000/documents/${documentId}`,
   document_filename: filename,

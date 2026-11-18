@@ -968,6 +968,18 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(containsEvidence(buildIntegrationConfig(env) as never)).toBe(true);
   });
 
+  test('explicit JSON output enables receipts without changing non-CI runner settings', () => {
+    const env = { CI: undefined, TEST_URL: 'https://example.test' };
+    const outputFile = 'functional-output/tests/proof/ci-evidence/playwright.json';
+    for (const build of [buildConfig, buildE2eConfig, buildNightlyConfig, buildIntegrationConfig]) {
+      const baseline = build(env);
+      const configured = build({ ...env, PLAYWRIGHT_JSON_OUTPUT: outputFile });
+      expect(getReporterTuple(configured.reporter, 'json')[1]?.outputFile).toBe(outputFile);
+      expect(configured.reporter.filter(([name]) => name !== 'json')).toEqual(baseline.reporter);
+      expect((configured as { retries?: number }).retries).toBe((baseline as { retries?: number }).retries);
+    }
+  });
+
   test('all Playwright configs write Perfetto into the configured Odhín suite directory', () => {
     const reportFolder = 'functional-output/tests/playwright-integration/odhin-report';
     const expected = ['perfetto', { outputFile: 'functional-output/tests/playwright-integration/test-results/perfetto.json' }];

@@ -29,6 +29,8 @@ export class CaseFileViewPage extends Base {
   readonly standaloneMediaViewerContainer = this.page.locator('exui-media-viewer');
   readonly standaloneMediaViewerToolbar = this.page.locator('#mvToolbarMain');
   readonly standaloneMediaViewPanel = this.page.locator('#viewerContainer');
+  readonly visibleDownloadButton = this.page.locator('#mvDownloadBtn:visible');
+  readonly visibleMoreOptionsButton = this.page.locator('#mvMoreOptionsBtn:visible');
 
   readonly documentHeader = this.container.locator('.document-folders-header .document-folders-header__title');
   readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort button').first();
@@ -40,6 +42,13 @@ export class CaseFileViewPage extends Base {
 
   constructor(page: Page) {
     super(page);
+  }
+
+  public async downloadDocument(): Promise<void> {
+    if (!(await this.visibleDownloadButton.isVisible())) {
+      await this.visibleMoreOptionsButton.click();
+    }
+    await this.visibleDownloadButton.click();
   }
 
   public async waitForReady(): Promise<void> {

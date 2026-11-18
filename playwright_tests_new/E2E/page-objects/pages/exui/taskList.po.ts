@@ -480,8 +480,8 @@ export class TaskListPage extends Base {
     const bodyText = await this.page
       .locator('body')
       .innerText({ timeout: timeoutMs })
-      .catch(() => '');
-    return bodyText.trim().length === 0;
+      .catch(() => null);
+    return bodyText !== null && bodyText.trim().length === 0;
   }
 
   private async isRecoverableBrowserNavigationDocument(urlPattern: RegExp, timeoutMs = 500): Promise<boolean> {

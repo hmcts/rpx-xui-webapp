@@ -120,6 +120,27 @@ const waitForTaskListShellReadyAfterNavigation = (
 ).waitForTaskListShellReadyAfterNavigation;
 
 test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, () => {
+  test('a timed-out body probe does not classify a loading task list as a blank document', async () => {
+    let bodyText: string | Error = new Error('locator.innerText: Timeout 500ms exceeded');
+    const taskList = Object.assign(Object.create(TaskListPage.prototype), {
+      page: {
+        url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/my-access',
+        locator: () => ({
+          innerText: async () => {
+            if (bodyText instanceof Error) throw bodyText;
+            return bodyText;
+          },
+        }),
+      },
+    }) as { isBlankTaskListDocument: (urlPattern: RegExp, timeoutMs: number) => Promise<boolean> };
+
+    await expect(taskList.isBlankTaskListDocument(/\/work\/my-work\/my-access$/, 500)).resolves.toBe(false);
+    bodyText = 'My work\nMy access\n497 cases';
+    await expect(taskList.isBlankTaskListDocument(/\/work\/my-work\/my-access$/, 500)).resolves.toBe(false);
+    bodyText = '';
+    await expect(taskList.isBlankTaskListDocument(/\/work\/my-work\/my-access$/, 500)).resolves.toBe(true);
+  });
+
   test('keeps the caller readiness budget after task-list navigation', async () => {
     const observedTimeouts: number[] = [];
     const originalNow = Date.now;

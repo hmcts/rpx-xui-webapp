@@ -119,7 +119,38 @@ const waitForTaskListShellReadyAfterNavigation = (
   }
 ).waitForTaskListShellReadyAfterNavigation;
 
+const isBlankTaskListDocument = (
+  TaskListPage.prototype as unknown as {
+    isBlankTaskListDocument: (
+      this: { page: { url: () => string; locator: (selector: string) => unknown } },
+      urlPattern: RegExp
+    ) => Promise<boolean>;
+  }
+).isBlankTaskListDocument;
+
 test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, () => {
+  test('only treats a successfully read empty body as a blank task-list page', async () => {
+    const pageUrl = 'https://manage-case.aat.platform.hmcts.net/work/my-work/my-access';
+    const pageFor = (innerText: () => Promise<string>) => ({
+      url: () => pageUrl,
+      locator: () => ({ innerText }),
+    });
+    const pattern = /\/work\/my-work\/my-access$/;
+
+    await expect(isBlankTaskListDocument.call({ page: pageFor(async () => 'My work') }, pattern)).resolves.toBe(false);
+    await expect(isBlankTaskListDocument.call({ page: pageFor(async () => '  ') }, pattern)).resolves.toBe(true);
+    await expect(
+      isBlankTaskListDocument.call(
+        {
+          page: pageFor(async () => {
+            throw new Error('probe timed out');
+          }),
+        },
+        pattern
+      )
+    ).resolves.toBe(false);
+  });
+
   test('keeps the caller readiness budget after task-list navigation', async () => {
     const observedTimeouts: number[] = [];
     const originalNow = Date.now;

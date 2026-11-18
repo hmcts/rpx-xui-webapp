@@ -101,6 +101,12 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
 }
 
+def criticalScenarioTime = { steps.sh(returnStdout: true, script: 'node -p Date.now()').trim() }
+def verifyCriticalScenarios = { String lanes, String receiptFile, List reports ->
+    def reportArgs = reports.collect { "'${it.path}' ${it.startedAt} ${it.finishedAt}" }.join(' ')
+    steps.sh "node playwright_tests_new/common/critical-scenario-receipt.cjs verify 'playwright_tests_new/common/document-download-required-scenarios.json' '${lanes}' '${receiptFile}' ${reportArgs}"
+}
+
 def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName, String outcome = 'unknown' ->
     def reportPath = "${reportDir}/${reportFile}"
     if (fileExists(reportPath)) {
@@ -365,6 +371,7 @@ def resolveIntegrationRunConfigs = { String testType ->
 
 def runPlaywrightIntegrationProfileMatrix = { String testType, String reportNamePrefix ->
     def failures = []
+    def criticalReports = []
     def matrixFailure = null
     def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
     def runConfigs = resolveIntegrationRunConfigs(testType)
@@ -382,8 +389,10 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
             def runnerCompleted = false
             sh "rm -f -- '${sessionConfigCompleteFile}'"
             try {
+                def criticalStartedAt = criticalScenarioTime()
                 withEnv([
                     "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
+                    "PLAYWRIGHT_JSON_OUTPUT=${runConfig.reportDir}/ci-evidence/playwright.json",
                     "PLAYWRIGHT_OUTPUT_DIR=${outputDir}",
                     "PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}",
                     "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
@@ -398,6 +407,12 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 ]) {
                     yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
                 }
+                criticalReports << [
+                    path: "${runConfig.reportDir}/ci-evidence/playwright.json",
+                    startedAt: criticalStartedAt,
+                    finishedAt: criticalScenarioTime(),
+                    shard: runConfig.shard
+                ]
                 runnerCompleted = true
                 outcome = 'completed'
                 echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
@@ -444,6 +459,15 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                     echo "[playwright-integration] ${publishFailure}"
                 }
             }
+        }
+        if (!failures) {
+            def completeRun = criticalReports.find { !it.shard }
+            def reports = completeRun ? [completeRun] : criticalReports
+            verifyCriticalScenarios(
+                'integration-case-file,integration-handoff',
+                "${reportRoot}/ci-evidence/critical-scenarios.receipt.json",
+                reports
+            )
         }
     } catch (Exception originalFailure) {
         matrixFailure = originalFailure
@@ -788,11 +812,18 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=6",
                                 'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-api/test-results',
+                                'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json',
                                 'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'
                             ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
+                                    def criticalStartedAt = criticalScenarioTime()
                                     yarnBuilder.yarn('test:api:pw:raw')
+                                    verifyCriticalScenarios(
+                                        'support,api-binary',
+                                        'functional-output/tests/playwright-api/odhin-report/ci-evidence/critical-scenarios.receipt.json',
+                                        [[path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json', startedAt: criticalStartedAt, finishedAt: criticalScenarioTime()]]
+                                    )
                                     apiOutcome = 'completed'
                                 } catch (Exception e) {
                                     if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
@@ -854,9 +885,16 @@ withPipeline(type, product, component) {
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                     'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results',
+                                    'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json',
                                     'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                                 ]) {
+                                    def criticalStartedAt = criticalScenarioTime()
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
+                                    verifyCriticalScenarios(
+                                        'e2e-capability,e2e-downloads,e2e-authorization',
+                                        'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/critical-scenarios.receipt.json',
+                                        [[path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json', startedAt: criticalStartedAt, finishedAt: criticalScenarioTime()]]
+                                    )
                                     e2eOutcome = 'completed'
                                 }
                             } catch (Exception e) {
@@ -991,11 +1029,18 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=6",
                                 'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-api/test-results',
+                                'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json',
                                 'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'
                             ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
+                                    def criticalStartedAt = criticalScenarioTime()
                                     yarnBuilder.yarn('test:api:pw:raw')
+                                    verifyCriticalScenarios(
+                                        'support,api-binary',
+                                        'functional-output/tests/playwright-api/odhin-report/ci-evidence/critical-scenarios.receipt.json',
+                                        [[path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json', startedAt: criticalStartedAt, finishedAt: criticalScenarioTime()]]
+                                    )
                                     apiOutcome = 'completed'
                                 } catch (Exception e) {
                                     if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
@@ -1057,9 +1102,16 @@ withPipeline(type, product, component) {
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                     'PLAYWRIGHT_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results',
+                                    'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json',
                                     'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                                 ]) {
+                                    def criticalStartedAt = criticalScenarioTime()
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
+                                    verifyCriticalScenarios(
+                                        'e2e-capability,e2e-downloads,e2e-authorization',
+                                        'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/critical-scenarios.receipt.json',
+                                        [[path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json', startedAt: criticalStartedAt, finishedAt: criticalScenarioTime()]]
+                                    )
                                     e2eOutcome = 'completed'
                                 }
                             } catch (Exception e) {

@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 const require = createRequire(import.meta.url);
-const { checkCriticalScenarios, runCriticalScenarioReceipt } = require('../../common/critical-scenario-receipt.cjs');
+const { checkCriticalScenarios, runCriticalScenarioReceipt, verifyCriticalScenarioReports } = require('../../common/critical-scenario-receipt.cjs');
 const required = [
   {
     project: 'chromium',
@@ -114,6 +114,24 @@ test.describe('critical scenario execution receipt', { tag: '@svc-internal' }, (
     expect(receipt.scenarios.map(({ status }: { status: string }) => status)).toEqual(['passed', 'absent']);
   });
 
+  test('nightly manifest fails when a required browser scenario is missing or skipped', () => {
+    const nightly = require('../../common/document-download-required-scenarios.json')['nightly-e2e'];
+    const missing = checkCriticalScenarios({ ...validReport, suites: [] }, nightly, invocation);
+    expect(missing.passed).toBe(false);
+    expect(missing.scenarios.every(({ status }: { status: string }) => status === 'absent')).toBe(true);
+
+    const skippedReport = structuredClone(validReport);
+    const [suiteTitle, testTitle] = nightly[0].title.split(' › ');
+    skippedReport.suites[0].suites[0].title = suiteTitle;
+    skippedReport.suites[0].suites[0].specs[0].title = testTitle;
+    skippedReport.suites[0].suites[0].specs[0].file = nightly[0].spec.replace('playwright_tests_new/E2E/', '');
+    skippedReport.suites[0].suites[0].specs[0].tests[0].projectName = nightly[0].project;
+    skippedReport.suites[0].suites[0].specs[0].tests[0].results[0].status = 'skipped';
+    const skipped = checkCriticalScenarios(skippedReport, nightly, invocation);
+    expect(skipped.passed).toBe(false);
+    expect(skipped.scenarios[0].status).toBe('skipped-or-interrupted');
+  });
+
   for (const field of ['project', 'spec', 'title'] as const) {
     test(`does not match a different ${field}`, () => {
       expect(checkCriticalScenarios(validReport, [{ ...required[0], [field]: 'wrong' }], invocation).passed).toBe(false);
@@ -187,6 +205,40 @@ test.describe('critical scenario execution receipt', { tag: '@svc-internal' }, (
       expect(() => runCriticalScenarioReceipt(reportPath, manifestPath, 'unit', [process.execPath, '-e', source])).toThrow(
         /existing report/
       );
+    } finally {
+      fs.rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
+  test('combines shard reports and rejects a missing or skipped required scenario', () => {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'critical-scenario-shards-'));
+    const manifestPath = path.join(directory, 'required.json');
+    const firstPath = path.join(directory, 'first.json');
+    const secondPath = path.join(directory, 'second.json');
+    const receiptPath = path.join(directory, 'receipt.json');
+    const startedAt = Date.now();
+    const first = structuredClone(validReport);
+    first.config.rootDir = path.join(process.cwd(), 'playwright_tests_new/E2E');
+    first.stats.startTime = new Date(startedAt).toISOString();
+    const second = structuredClone(first);
+    second.suites[0].suites[0].specs[0].title = 'reloads selected document';
+    const requiredForShards = [...required, { ...required[0], title: 'Download journeys › reloads selected document' }];
+    fs.writeFileSync(manifestPath, JSON.stringify({ e2e: requiredForShards }));
+    fs.writeFileSync(firstPath, JSON.stringify(first));
+    fs.writeFileSync(secondPath, JSON.stringify(second));
+    const firstEntry = { reportFile: firstPath, startedAt, finishedAt: startedAt + 1_000 };
+    const secondEntry = { reportFile: secondPath, startedAt, finishedAt: startedAt + 1_000 };
+    try {
+      expect(verifyCriticalScenarioReports(manifestPath, 'e2e', receiptPath, [firstEntry, secondEntry]).passed).toBe(true);
+      expect(verifyCriticalScenarioReports(manifestPath, 'e2e', receiptPath, [firstEntry]).passed).toBe(false);
+      const cli = path.join(process.cwd(), 'playwright_tests_new/common/critical-scenario-receipt.cjs');
+      expect(() =>
+        execFileSync(process.execPath, [cli, 'verify', manifestPath, 'e2e', receiptPath, firstPath, String(startedAt), String(startedAt + 1_000)], { stdio: 'pipe' })
+      ).toThrow();
+      second.suites[0].suites[0].specs[0].tests[0].results[0].status = 'skipped';
+      fs.writeFileSync(secondPath, JSON.stringify(second));
+      expect(verifyCriticalScenarioReports(manifestPath, 'e2e', receiptPath, [firstEntry, secondEntry]).passed).toBe(false);
+      expect(() => verifyCriticalScenarioReports(manifestPath, 'e2e', receiptPath, [{ ...firstEntry, startedAt: startedAt + 100 }])).toThrow(/invocation/);
     } finally {
       fs.rmSync(directory, { recursive: true, force: true });
     }

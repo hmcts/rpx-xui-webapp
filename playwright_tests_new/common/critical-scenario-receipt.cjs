@@ -126,21 +126,67 @@ function runCriticalScenarioReceipt(reportFile, manifestFile, lane, command) {
   return receipt;
 }
 
+function verifyCriticalScenarioReports(manifestFile, lanes, receiptFile, entries) {
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  const required = lanes.split(',').flatMap((lane) => manifest[lane] ?? []);
+  if (!entries.length || lanes.split(',').some((lane) => !Array.isArray(manifest[lane]) || !manifest[lane].length)) {
+    throw new Error('A nonempty manifest lane and at least one report are required');
+  }
+  const reports = entries.map(({ reportFile, startedAt, finishedAt }) => {
+    const bytes = fs.readFileSync(reportFile);
+    const report = JSON.parse(bytes.toString('utf8'));
+    checkCriticalScenarios(report, required, { repositoryRoot: process.cwd(), startedAt, finishedAt, exitCode: 0 });
+    return { report, sha256: createHash('sha256').update(bytes).digest('hex'), reportFile, startedAt, finishedAt };
+  });
+  const roots = new Set(reports.map(({ report }) => report.config.rootDir));
+  if (roots.size !== 1) throw new Error('Reports must have the same Playwright rootDir');
+  const startedAt = Math.min(...reports.map((entry) => entry.startedAt));
+  const finishedAt = Math.max(...reports.map((entry) => entry.finishedAt));
+  const mergedReport = {
+    config: reports[0].report.config,
+    stats: { startTime: new Date(startedAt).toISOString(), duration: finishedAt - startedAt },
+    errors: reports.flatMap(({ report }) => report.errors),
+    suites: reports.flatMap(({ report }) => report.suites),
+  };
+  const receipt = {
+    lanes: lanes.split(','),
+    reports: reports.map(({ reportFile, sha256 }) => ({ reportFile, sha256 })),
+    ...checkCriticalScenarios(mergedReport, required, { repositoryRoot: process.cwd(), startedAt, finishedAt, exitCode: 0 }),
+  };
+  fs.mkdirSync(path.dirname(receiptFile), { recursive: true });
+  fs.writeFileSync(receiptFile, `${JSON.stringify(receipt, null, 2)}\n`);
+  return receipt;
+}
+
 if (require.main === module) {
   const [reportFile, manifestFile, lane, separator, ...command] = process.argv.slice(2);
   try {
-    if (!reportFile || !manifestFile || !lane || separator !== '--') {
-      throw new Error(
-        'Usage: critical-scenario-receipt.cjs REPORT MANIFEST LANE -- RUNNER [ARGS including --reporter=list,json]'
-      );
+    if (reportFile === 'verify') {
+      const [manifest, lanes, receiptFile, ...values] = process.argv.slice(3);
+      if (!manifest || !lanes || !receiptFile || !values.length || values.length % 3 !== 0) {
+        throw new Error('Usage: critical-scenario-receipt.cjs verify MANIFEST LANES RECEIPT REPORT START END [REPORT START END ...]');
+      }
+      const entries = [];
+      for (let index = 0; index < values.length; index += 3) {
+        entries.push({ reportFile: values[index], startedAt: Number(values[index + 1]), finishedAt: Number(values[index + 2]) });
+      }
+      const receipt = verifyCriticalScenarioReports(manifest, lanes, receiptFile, entries);
+      process.stdout.write(`${JSON.stringify(receipt, null, 2)}\n`);
+      process.exitCode = receipt.passed ? 0 : 1;
+    } else {
+      if (!reportFile || !manifestFile || !lane || separator !== '--') {
+        throw new Error(
+          'Usage: critical-scenario-receipt.cjs REPORT MANIFEST LANE -- RUNNER [ARGS including --reporter=list,json]'
+        );
+      }
+      const receipt = runCriticalScenarioReceipt(reportFile, manifestFile, lane, command);
+      process.stdout.write(`${JSON.stringify(receipt, null, 2)}\n`);
+      process.exitCode = receipt.runnerExitCode || (receipt.passed ? 0 : 1);
     }
-    const receipt = runCriticalScenarioReceipt(reportFile, manifestFile, lane, command);
-    process.stdout.write(`${JSON.stringify(receipt, null, 2)}\n`);
-    process.exitCode = receipt.runnerExitCode || (receipt.passed ? 0 : 1);
   } catch (error) {
     process.stderr.write(`Critical-scenario receipt failed: ${error.message}\n`);
     process.exitCode = 1;
   }
 }
 
-module.exports = { checkCriticalScenarios, runCriticalScenarioReceipt };
+module.exports = { checkCriticalScenarios, runCriticalScenarioReceipt, verifyCriticalScenarioReports };

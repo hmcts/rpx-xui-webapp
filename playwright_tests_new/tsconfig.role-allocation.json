@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "files": [
+    "api/unit/role-allocation-mocks.unit.api.ts",
+    "api/unit/search-case-session.unit.api.ts",
+    "integration/helpers/roleAllocationMockRoutes.helper.ts",
+    "integration/helpers/integrationSessionUsers.helper.ts",
+    "integration/test/roleAccess/roleAllocation.positive.spec.ts",
+    "integration/test/roleAccess/roleAllocation.negative.spec.ts"
+  ],
+  "include": []
+}

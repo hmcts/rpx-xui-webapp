@@ -44,7 +44,7 @@ Use Playwright integration tests for local UI coverage with mocked backend route
 ### Prerequisites
 
 ```bash
-node -v   # requires >= 24.22.1
+node -v   # requires >= 24.22.2
 yarn install
 ```
 
@@ -521,4 +521,4 @@ Extended version of script below:
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
 
 END
-Trigger2 Trigger3 Trigger4
+Trigger2 Trigger3

@@ -441,8 +441,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     });
 
     await taskListPage.gotoAndWaitForTaskRow('restoring work filter base locations');
-    await expect.poll(() => fullLocationServiceCodes.length).toBeGreaterThan(0);
-    expect(fullLocationServiceCodes.at(-1)?.split(',').sort()).toEqual(['CIVIL', 'IA']);
+    await expect.poll(() => fullLocationServiceCodes.at(-1)?.split(',').sort()).toEqual(['CIVIL', 'IA']);
 
     await taskListPage.openFilterPanel();
 

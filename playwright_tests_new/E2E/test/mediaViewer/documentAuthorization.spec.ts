@@ -125,6 +125,29 @@ test.describe('Legacy document authorization', { tag: ['@e2e', '@e2e-media-viewe
     expect.soft(body).not.toEqual(caseA.expectedContent);
   });
 
+  test('rejects a known document without case context while its owner retains access', async ({ page }) => {
+    const headers = { ...(await documentXsrfHeaders(page)), referer: '' };
+    const withoutCase = await page.request.get(caseA.binaryPath.split('?')[0], {
+      headers,
+      failOnStatusCode: false,
+      maxRedirects: 0,
+    });
+    const deniedBody = await withoutCase.body();
+    expect(withoutCase.status()).toBe(403);
+    expect(withoutCase.headers()['content-type']?.split(';')[0].trim()).not.toBe('application/pdf');
+    expect(deniedBody.includes(Buffer.from('%PDF-'))).toBe(false);
+    expect(deniedBody).not.toEqual(caseA.expectedContent);
+
+    const ownerControl = await page.request.get(caseA.binaryPath, {
+      headers,
+      failOnStatusCode: false,
+      maxRedirects: 0,
+    });
+    expect(ownerControl.status()).toBe(200);
+    expect(ownerControl.headers()['content-type']?.split(';')[0].trim()).toBe('application/pdf');
+    expect(await ownerControl.body()).toEqual(caseA.expectedContent);
+  });
+
   test('rejects document A with case A for U2 without case access', async ({ baseURL }) => {
     const response = await secondPage.request.get(caseA.binaryPath, {
       headers: await documentXsrfHeaders(secondPage, baseURL),

@@ -624,25 +624,25 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
         outputFolder,
         reportFolder: outputFolder,
         sampleIntervalMs: 5,
-        childIdleTimeoutMs: 20,
+        childIdleTimeoutMs: 150,
         childCloseGraceMs: 0,
-        childTerminateGraceMs: 20,
+        childTerminateGraceMs: 150,
         label: 'active-child',
         eventsFile: '',
         spawnProcess: () => child,
       });
 
       setTimeout(() => child.stdout.emit('data', Buffer.from('tick 1\n')), 10);
-      setTimeout(() => child.stdout.emit('data', Buffer.from('tick 2\n')), 25);
-      setTimeout(() => child.emit('close', 0, null), 35);
+      setTimeout(() => child.stdout.emit('data', Buffer.from('tick 2\n')), 100);
+      setTimeout(() => child.emit('close', 0, null), 190);
 
       await expect(runPromise).resolves.toBe(0);
     } finally {
       process.stdout.write = originalWrite;
     }
 
-    expect(signals).toEqual([]);
-    expect(fs.existsSync(path.join(outputFolder, 'summary.json'))).toBe(true);
+    expect(signals, 'watchdog must not signal a child that keeps emitting output').toEqual([]);
+    expect(fs.existsSync(path.join(outputFolder, 'summary.json')), 'summary.json written after active child').toBe(true);
   });
 
   test('continues after child exit when stdio close never arrives', async () => {

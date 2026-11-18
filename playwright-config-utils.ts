@@ -7,8 +7,17 @@ import * as path from 'node:path';
  */
 
 type EnvMap = NodeJS.ProcessEnv;
+export type TagExclusion = {
+  tag: string;
+  ticket: string;
+  owner: string;
+  /** ISO date (YYYY-MM-DD); the exclusion is expired once this day has passed. */
+  expires: string;
+};
+
 type TagFilterConfig = {
   excludedTags?: string[];
+  exclusions?: TagExclusion[];
   availableTags?: string[];
   availableServiceTags?: string[];
 };
@@ -43,7 +52,34 @@ export type ResolveTagFiltersOptions = {
   globalExcludedTagsEnvVar?: string;
   ignoreGlobalExcludesEnvVar?: string;
   globalExcludedTagsPattern?: RegExp;
+  /** Clock used to evaluate exclusion expiry; defaults to now. */
+  now?: Date;
 };
+
+export const DEFAULT_ACTION_TIMEOUT_MS = 20_000;
+export const DEFAULT_NAVIGATION_TIMEOUT_MS = 30_000;
+
+const parsePositiveInt = (raw: string | undefined): number | undefined => {
+  const parsed = parseNonNegativeInt(raw);
+  return parsed && parsed > 0 ? parsed : undefined;
+};
+
+/**
+ * Per-action and navigation timeouts for `use`. Without them an un-timed click or goto waits for the whole
+ * test timeout, and every retry repeats that wait. `PW_ACTION_TIMEOUT_MS` / `PW_NAVIGATION_TIMEOUT_MS` override.
+ */
+export function resolveActionTimeouts(
+  env: EnvMap = process.env,
+  defaults: { actionTimeout: number; navigationTimeout: number } = {
+    actionTimeout: DEFAULT_ACTION_TIMEOUT_MS,
+    navigationTimeout: DEFAULT_NAVIGATION_TIMEOUT_MS,
+  }
+): { actionTimeout: number; navigationTimeout: number } {
+  return {
+    actionTimeout: parsePositiveInt(env.PW_ACTION_TIMEOUT_MS) ?? defaults.actionTimeout,
+    navigationTimeout: parsePositiveInt(env.PW_NAVIGATION_TIMEOUT_MS) ?? defaults.navigationTimeout,
+  };
+}
 
 /**
  * Parses a string environment variable as a non-negative integer.
@@ -245,6 +281,9 @@ function readTagFilterConfig(configPath: string): TagFilterConfig {
     if (parsed.excludedTags !== undefined && !Array.isArray(parsed.excludedTags)) {
       throw new TypeError('excludedTags must be an array');
     }
+    if (parsed.exclusions !== undefined) {
+      validateExclusions(parsed.exclusions);
+    }
     if (parsed.availableTags !== undefined && !Array.isArray(parsed.availableTags)) {
       throw new TypeError('availableTags must be an array');
     }
@@ -256,6 +295,59 @@ function readTagFilterConfig(configPath: string): TagFilterConfig {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to read tag filter config at "${configPath}": ${message}`);
   }
+}
+
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+function validateExclusions(exclusions: unknown): asserts exclusions is TagExclusion[] {
+  if (!Array.isArray(exclusions)) {
+    throw new TypeError('exclusions must be an array');
+  }
+  exclusions.forEach((entry, index) => {
+    const candidate = entry as Partial<Record<keyof TagExclusion, unknown>> | null;
+    const missing = (['tag', 'ticket', 'owner', 'expires'] as const).filter(
+      (field) => typeof candidate?.[field] !== 'string' || !(candidate[field] as string).trim()
+    );
+    if (missing.length) {
+      throw new TypeError(`exclusions[${index}] is missing ${missing.join(', ')}`);
+    }
+    const expires = candidate!.expires as string;
+    const expiryDate = new Date(`${expires}T00:00:00Z`);
+    if (
+      !ISO_DATE_PATTERN.test(expires) ||
+      Number.isNaN(expiryDate.getTime()) ||
+      expiryDate.toISOString().slice(0, 10) !== expires
+    ) {
+      throw new TypeError(`exclusions[${index}].expires must be a valid YYYY-MM-DD date, received "${expires}"`);
+    }
+  });
+}
+
+function findExpiredExclusions(exclusions: TagExclusion[], now: Date): TagExclusion[] {
+  const today = now.toISOString().slice(0, 10);
+  return exclusions.filter((exclusion) => exclusion.expires < today);
+}
+
+function reportExpiredExclusions({
+  expired,
+  configPath,
+  env,
+}: {
+  expired: TagExclusion[];
+  configPath: string;
+  env: EnvMap;
+}): void {
+  if (!expired.length) {
+    return;
+  }
+  const details = expired
+    .map(({ tag, ticket, owner, expires }) => `${tag} (ticket ${ticket}, owner ${owner}, expired ${expires})`)
+    .join('; ');
+  const message = `Tag exclusion(s) in "${configPath}" are past their expiry: ${details}`;
+  if (resolveBooleanEnvFlag(env.PW_TAG_FILTER_ENFORCE_EXPIRY)) {
+    throw new Error(`${message}. Remove or renew them, or unset PW_TAG_FILTER_ENFORCE_EXPIRY.`);
+  }
+  console.warn(`[playwright-tags] WARNING: ${message}`);
 }
 
 function resolveAvailableTags(config: TagFilterConfig, configPath: string): string[] {
@@ -334,6 +426,7 @@ export function resolveTagFilters({
   globalExcludedTagsEnvVar,
   ignoreGlobalExcludesEnvVar,
   globalExcludedTagsPattern,
+  now = new Date(),
 }: ResolveTagFiltersOptions): ResolvedTagFilters {
   const includeTags = splitTagInput(env[includeTagsEnvVar]);
   const configPath = resolveTagFilterConfigPath(env, configPathEnvVar, defaultConfigPath);
@@ -345,7 +438,11 @@ export function resolveTagFilters({
     throw new Error(`Tag filter config at "${configPath}" must include suite tag "${suiteTag}" in its available tags`);
   }
 
-  const configuredExcludedTags = normalizeConfiguredTags(config.excludedTags);
+  const configuredExclusions = config.exclusions ?? [];
+  const configuredExcludedTags = mergeTags(
+    normalizeConfiguredTags(config.excludedTags),
+    normalizeConfiguredTags(configuredExclusions.map((exclusion) => exclusion.tag))
+  );
   const rawOverrideExcludedTags = splitTagInput(env[excludedTagsEnvVar]);
   const clearExcludedTagsOverride = rawOverrideExcludedTags.includes('@none');
   const overrideExcludedTags = rawOverrideExcludedTags.filter((tag) => tag !== '@none');
@@ -354,6 +451,9 @@ export function resolveTagFilters({
     : overrideExcludedTags.length > 0
       ? overrideExcludedTags
       : configuredExcludedTags;
+  if (!clearExcludedTagsOverride && overrideExcludedTags.length === 0) {
+    reportExpiredExclusions({ expired: findExpiredExclusions(configuredExclusions, now), configPath, env });
+  }
   const { globalExcludedTags, ignoredGlobalExcludedTags, ignoreGlobalExcludes } = resolveGlobalExcludedTags({
     env,
     globalExcludedTagsEnvVar,

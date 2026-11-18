@@ -267,6 +267,28 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     ).toEqual([]);
   });
 
+  test('declares role allocation mock sessions without credentials and preserves mixed case-details sessions', () => {
+    const selection = {
+      includeTags: ['@integration-role-allocation-mock-session'],
+      excludedTags: [],
+      availableTags: ['@integration', '@integration-role-allocation-mock-session', '@integration-case-details'],
+      suiteTag: '@integration',
+    };
+    expect(resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, selection)).toEqual([]);
+    expect(
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
+        ...selection,
+        includeTags: ['@integration-case-details'],
+      })
+    ).toEqual(['STAFF_ADMIN']);
+    expect(
+      resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {
+        ...selection,
+        includeTags: ['@integration-role-allocation-mock-session', '@integration-case-details'],
+      })
+    ).toEqual(['STAFF_ADMIN']);
+  });
+
   test('does not declare case-file-view session when the full run excludes that tag', () => {
     expect(
       resolveIntegrationSessionUsers({} as NodeJS.ProcessEnv, {

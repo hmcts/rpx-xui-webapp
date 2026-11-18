@@ -21,6 +21,10 @@ export function buildCreateCaseLocators(page: Page) {
     startButton: page.locator('button[type="submit"]'),
     submitButton: page.getByRole('button', { name: /\b(submit|cyflwyno)\b/i }),
     continueButton: page.getByRole('button', { name: /^(continue|parhau)\b/i }),
+    caseTitleInput: page.getByLabel('Case title'),
+    caseReferenceInput: page.locator('#CaseReference'),
+    evidenceDocumentInput: page.locator('ccd-write-document-field input[type="file"]'),
+    evidenceDocumentUploadError: page.locator('ccd-write-document-field [role="alert"]'),
 
     legalRepParty1Block: page.locator('#LegalRepParty1Flags_LegalRepParty1Flags'),
     legalRepParty2Block: page.locator('#LegalRepParty2Flags_LegalRepParty2Flags'),

@@ -11,7 +11,7 @@
     "noEmit": true,
     "allowJs": true,
     "noImplicitAny": false,
-    "lib": ["ES2021", "dom"]
+    "lib": ["ES2021", "ES2022.Error", "dom"]
   },
   "include": ["../**/*.ts", "../E2E/**/*.*.ts", "../E2E/utils/config.utils.ts", "../E2E/fixtures.ts"],
   "extends": "../tsconfig.json"

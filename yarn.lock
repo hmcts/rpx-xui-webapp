@@ -8927,8 +8927,8 @@ __metadata:
   linkType: hard
 
 "accessibility-checker@npm:^4.0.0":
-  version: 4.0.34
-  resolution: "accessibility-checker@npm:4.0.34"
+  version: 4.0.35
+  resolution: "accessibility-checker@npm:4.0.35"
   dependencies:
     "@ibm/telemetry-js": "npm:^1.9.1"
     chromedriver: "npm:*"
@@ -8938,7 +8938,7 @@ __metadata:
     write-excel-file: "npm:^4.1.1"
   bin:
     achecker: bin/achecker.js
-  checksum: 10/d0c3a1f42b4d28bb5fb661d8c42c833f99dbebdcf8b7724614bc406af1f5768d17c024c3df293e48f6f4eb55ec689e4235b0752aacf20a26ec4a9165e471252f
+  checksum: 10/d93070f52044ad690062afe46475712cc61202f4ae153fde523a0d91c546620eaab1360bfb9ebb22c0394ef307b8cd7988efa6cdfaaf58a05313d89716701706
   languageName: node
   linkType: hard
 
@@ -19328,13 +19328,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:6.16.0":
-  version: 6.16.0
-  resolution: "qs@npm:6.16.0"
+"qs@npm:6.16.1":
+  version: 6.16.1
+  resolution: "qs@npm:6.16.1"
   dependencies:
     es-define-property: "npm:^1.0.1"
     side-channel: "npm:^1.1.1"
-  checksum: 10/7fbf9c2eb9c9bbd8997700caecc4b057ac259635873deefd5027fb26d06d79426cf468da55da87ffd147a24e93d3641352d8ac6664bd84688ad5b2f0b8d04828
+  checksum: 10/e33e0a5ceecb7bef81ea1f855365482045f55ba55278f40b8dbf9ee18eae8ef82d44246fe4e4009d6b6f102cbf2885a34b88c4272536cd628cde40b4ac9912c2
   languageName: node
   linkType: hard
 

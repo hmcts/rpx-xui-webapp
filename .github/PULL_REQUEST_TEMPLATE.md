@@ -1,18 +1,12 @@
+### Please include ticket number in PR title e.g. EXUI-1234 - Ticket description
+
 ### Jira link
 
-<!--
-Replace PROJ-XXXXXX with your Jira key
-Remove this section if its not applicable, or replace it with another reference link
--->
-
-See [PROJ-XXXXXX](https://tools.hmcts.net/jira/browse/PROJ-XXXXXX)
+See [EXUI-XXXXXX](https://hmcts.atlassian.net/browse/EXUI-XXXXXX)
 
 ### Change description
 
-<!--
-Provide a description of what change you are proposing.
-A short summary here and then you can add comments in your pull request explaining your change to others.
--->
+<!-- Provide a description of what change you are proposing. -->
 
 ### Dependency PRs
 

@@ -85,6 +85,49 @@ non-sensitive step metadata; native reports and traces remain restricted artefac
 Named test locks coordinate one Playwright run, not independent Jenkins jobs:
 keep the existing physical-identity and session leases for cross-process isolation.
 
+### Framework limits and diagnostics
+
+Run `yarn tsc --project playwright_tests_new/tsconfig.scoped.json` to check the
+maintained Playwright support, configs and affected journeys with strict types.
+The broad `tsconfig.json` also includes application sources and is a separate check.
+
+Action and navigation defaults are 20 seconds and 30 seconds respectively;
+cross-browser nightly uses 60 seconds for both. Override with positive
+`PW_ACTION_TIMEOUT_MS` and `PW_NAVIGATION_TIMEOUT_MS` values. Explicit action
+budgets still apply. Task-list navigation shares its existing 30-second allowance
+across navigation, bootstrap and row readiness. Header search shares a single
+budget comprising its existing click and response allowances; it requires the
+requested case with readable tabs, or a matching missing-case response followed
+by the no-results view.
+
+Retries remain two by default. `PW_API_RETRIES`, `PW_E2E_RETRIES` and
+`PW_INTEGRATION_RETRIES` configure their respective runners; zero disables retries.
+Cross-browser nightly retains its existing CI/local retry policy.
+
+The flake reporter stays report-only unless `PW_FLAKE_GATE=enforce`. It fails the
+run when flaky tests exceed either `PW_MAX_FLAKY_TESTS` (default 20) or
+`PW_MAX_FLAKY_RATE` (default 0.2). Enabling enforcement is a deliberate CI policy
+choice; it does not fix the underlying flake.
+
+Tag-filter files also accept owned exclusions alongside legacy `excludedTags`:
+
+```json
+{
+  "exclusions": [{ "tag": "@existing-feature-tag", "ticket": "EXUI-1234", "owner": "owning-team", "expires": "2026-12-31" }]
+}
+```
+
+Use a tag from the file's available tags. Expiry uses UTC calendar dates, includes
+the expiry day and warns afterwards while retaining the exclusion. Set
+`PW_TAG_FILTER_ENFORCE_EXPIRY=true` to fail configuration loading for expired
+exclusions. Explicit exclusion overrides retain their existing precedence.
+
+Failure annotations distinguish authentication, setup, test, teardown and runner
+phases. Authentication uses the current Playwright test context automatically.
+Document setup errors retain operation and HTTP status without raw upstream
+response bodies. Compare CI JSON attempt durations, Odhín results and the existing
+`stage-events.jsonl`/load-profile evidence before changing worker or retry budgets.
+
 By default, Playwright tests run against **AAT** from your local machine. Override `TEST_URL` to point the same suite at DEMO, ITHC, preview, or LOCAL.
 
 | Environment | `TEST_URL`                                     |
@@ -416,6 +459,36 @@ The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_n
 | Load profile        | `functional-output/tests/playwright-integration/load-profile/ci/load-profile.html` in CNP/nightly parent monitoring                                                                                                                             | `PREVIEW CI System Load`, `AAT CI System Load`, `Nightly CI System Load`                                   |
 | Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json` and `failure-context.json`; `test-results/**/trace.zip` and screenshots for failed or timed-out browser tests                | Archived as Jenkins artifacts                                                                              |
 
+### Accessibility remediation pack
+
+Accessibility report finalization also writes `ACCESSIBILITY_FIX_INSTRUCTIONS.md` and
+`accessibility-findings.json` beside the Odhín HTML, with download links at the top
+of the report. This applies to nightly and on-demand runs using the existing
+reporter/wrapper; other reports without accessibility evidence are unchanged.
+
+Download both files and the relevant evidence, then explicitly ask Codex to follow
+the instructions in the owning repository. The JSON groups candidate findings by
+feature, persona/language/setup, rule family and selector while retaining page
+states and detector evidence. Groups are investigation candidates, not confirmed
+root causes or a count of PRs. Reported violations, known findings, incomplete
+results, scanner failures and unreachable pages remain distinct.
+
+The controlled instructions require reproduction against current source, ownership
+checks, regression proof, repository checks and human review before merge. They
+generate no fixes or PRs automatically and make no model/API calls. Captured report
+content is untrusted evidence. Raw DOM and messages are omitted; sensitive selector
+values are redacted and only existing regular local evidence files are linked.
+Build provenance is explicitly unknown where the manifest does not record it; bind
+the pack to the original build and tested commit before changing code. Automated
+and heuristic results do not establish WCAG conformance or replace assistive
+technology testing.
+
+Run the generator's browser-free checks with:
+
+```bash
+node --test playwright_tests_new/common/reporters/accessibility-remediation.test.cjs
+```
+
 The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, and `test:playwright:integration` also create local System Load reports through `scripts/playwright-load-monitor.js`. Raw CI commands rely on the parent Jenkins load monitor instead.
 
 ---
@@ -434,7 +507,7 @@ The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, a
 - Prefer `data-testid` selectors and Playwright CSS classes.
 - Use `@hmcts/playwright-common` table utilities for table assertions.
 - Do not commit `.env`, `.sessions/`, `test-results/`, or generated `functional-output/` reports.
-- When triaging failures, start with the Odhín **Failed test triage** block. It shows the observed classification, retry, source location, project, actionable signal, hypothesis label, and next checks; open the test-details link for the raw Playwright error, trace, and screenshots.
+- When triaging failures, open the failed test's details and expand its **Failed test triage** block. It shows the observed classification, retry, source location, project, actionable signal, hypothesis label, and next checks alongside the raw Playwright error, trace, and screenshots.
 - Then inspect the bounded `failure-context.json` attachment for facts versus hypotheses. It is redacted by default and must not be treated as a substitute for approved restricted trace/screenshot handling.
 - Use `failure-data.json`, attached API logs, and session/dynamic-user provisioning evidence for supporting detail before changing retries or worker counts.
 

@@ -3,15 +3,18 @@ import {
   setupCaseFileViewDocumentBinaryMockRoutes,
   setupCaseFileViewMockRoutes,
   setupCaseFileViewUserDetailsRoute,
+  setupCaseFileViewMockSession,
 } from '../../helpers';
 import { CASE_FILE_VIEW_DOC_IDS, CASE_FILE_VIEW_DOCUMENT_GATEWAYS } from '../../mocks/caseFileView.mock';
-import { acceptAccessCookiesIfPresent, applySessionCookies } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
 const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
 const sortedDocumentOrderTimeoutMs = 15_000;
 const evidenceDocumentsAscending = ['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf'];
 const evidenceDocumentsDescending = ['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf'];
+const evidenceDocumentsRecentFirst = ['Middle evidence.pdf', 'Zeta evidence.pdf', 'Alpha evidence.pdf'];
+const evidenceDocumentsOldestFirst = ['Alpha evidence.pdf', 'Zeta evidence.pdf', 'Middle evidence.pdf'];
 const orderDocumentsOldestFirst = ['Approved order.pdf', 'Root order.pdf'];
 const fileViewV1ModeUser = {
   idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
@@ -58,8 +61,8 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
       const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
 
       await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('21 Oct 2023');
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('22 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('22 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('21 Oct 2023');
     });
   });
 
@@ -106,21 +109,31 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
       });
     });
   }
+});
 
-  test('sort options reorder documents as expected', async ({ caseDetailsPage, caseFileViewPage, page }) => {
+test.describe('Case File View mock session', { tag: ['@integration', '@integration-case-file-view-mock-session'] }, () => {
+  test('sort options reorder documents exactly with an isolated mock session', async ({
+    caseDetailsPage,
+    caseFileViewPage,
+    page,
+    baseURL,
+  }) => {
+    if (!baseURL) {
+      throw new Error('Case file view mock session requires a configured baseURL');
+    }
+    let routeClosure: Awaited<ReturnType<typeof setupCaseFileViewMockSession>>;
+
     await test.step('Set up case file and binary document mocks', async () => {
-      await applySessionCookies(page, fileViewOnUser);
-      await setupCaseFileViewMockRoutes(page, caseId);
-      await setupCaseFileViewDocumentBinaryMockRoutes(page);
+      routeClosure = await setupCaseFileViewMockSession(page, caseId, baseURL);
     });
 
     await test.step('Open the Case File View tab', async () => {
       await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
-      await acceptAccessCookiesIfPresent(page);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
       await expect(caseFileViewPage.sortButton).toBeVisible();
+      expect(routeClosure.getUnexpectedRequests()).toEqual([]);
     });
 
     await test.step('Show all sort options', async () => {
@@ -133,7 +146,6 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents A to Z', async () => {
       await caseFileViewPage.sortByAscending();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(evidenceDocumentsAscending);
@@ -141,7 +153,6 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents Z to A', async () => {
       await caseFileViewPage.sortByDescending();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(evidenceDocumentsDescending);
@@ -149,24 +160,22 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents by most recent first', async () => {
       await caseFileViewPage.sortByRecentFirst();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
-        .toEqual(evidenceDocumentsDescending);
+        .toEqual(evidenceDocumentsRecentFirst);
     });
 
     await test.step('Sort evidence documents by oldest first', async () => {
       await caseFileViewPage.getFolderNode('Orders.Approved orders');
       await caseFileViewPage.sortByOldestFirst();
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
-        .toEqual(evidenceDocumentsAscending);
+        .toEqual(evidenceDocumentsOldestFirst);
 
-      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Orders', orderDocumentsOldestFirst.length);
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'), { timeout: sortedDocumentOrderTimeoutMs })
         .toEqual(orderDocumentsOldestFirst);
+      expect(routeClosure.getUnexpectedRequests()).toEqual([]);
     });
   });
 });

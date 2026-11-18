@@ -1,4 +1,4 @@
-import { chromium, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { chromium, test, type BrowserContext, type Locator, type Page, type TestInfo } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -7,6 +7,7 @@ import { UserUtils } from '../E2E/utils/user.utils.js';
 import { IdamPage, createLogger } from '@hmcts/playwright-common';
 import type { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
+import { inPhase } from '../E2E/utils/frameworkError.js';
 import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
 import { SessionCaptureError, StorageStateCorruptedError } from '../api/utils/errors';
 import {
@@ -701,18 +702,21 @@ async function applySessionCookiesForIdentity(
   const targetUrl = process.env.TEST_URL?.trim() || config.urls.exuiDefaultUrl;
   const validation = await validateLoadedSessionForReuse(session, targetUrl);
   if (validation === 'unauthenticated') {
+    const identity = resolveSessionIdentity(
+      typeof userIdentifier === 'string' ? (session.userIdentifier ?? userIdentifier) : userIdentifier
+    );
     logger.warn('Cached session was rejected by auth/isAuthenticated; refreshing once', {
-      userIdentifier: session.userIdentifier,
+      userIdentifier: identity.userIdentifier,
       sessionPath: session.storageFile,
       operation: 'session-refresh',
     });
-    await refreshRejectedSession(session.userIdentifier, session);
-    session = await ensureSessionCookiesForIdentity(session.userIdentifier, captureDeadlineAt);
+    await refreshRejectedSession(identity, session);
+    session = await ensureSessionCookiesForIdentity(identity, captureDeadlineAt);
     const refreshedValidation = await validateLoadedSessionForReuse(session, targetUrl);
     if (refreshedValidation === 'unauthenticated') {
       throw new SessionCaptureError(
-        `Refreshed session was rejected by auth/isAuthenticated for ${session.userIdentifier}`,
-        session.userIdentifier,
+        `Refreshed session was rejected by auth/isAuthenticated for ${identity.userIdentifier}`,
+        identity.userIdentifier,
         { sessionPath: session.storageFile }
       );
     }
@@ -740,11 +744,12 @@ async function validateLoadedSessionForReuse(
     idamUrl: config.urls.idamWebUrl,
   });
   if (shouldRejectUnavailableSessionValidation(validation, env) || !reusable) {
+    const userIdentifier = session.userIdentifier ?? session.email;
     throw new SessionCaptureError(
-      `Unable to validate cached session for ${session.userIdentifier}; auth/isAuthenticated is unavailable${
+      `Unable to validate cached session for ${userIdentifier}; auth/isAuthenticated is unavailable${
         reusable ? '' : ' and the cached session is no longer reusable'
       }`,
-      session.userIdentifier,
+      userIdentifier,
       { sessionPath: session.storageFile, failureKind: AAT_AUTH_UNAVAILABLE_FAILURE }
     );
   }
@@ -911,7 +916,24 @@ async function probeAuthenticatedShell(
 export async function ensureAuthenticatedPage(
   page: Page,
   userIdentifier: SessionIdentityInput,
-  options: { targetUrl?: string; waitForSelector?: string | false; timeoutMs?: number } = {}
+  options: AuthenticatedPageOptions = {}
+): Promise<LoadedSession> {
+  const { testInfo = test.info(), ...pageOptions } = options;
+  return inPhase(testInfo, 'auth', () => authenticatePage(page, userIdentifier, pageOptions));
+}
+
+type AuthenticatedPageOptions = {
+  targetUrl?: string;
+  waitForSelector?: string | false;
+  timeoutMs?: number;
+  /** Defaults to the current test; pass explicitly when composing test contexts. */
+  testInfo?: Pick<TestInfo, 'annotations'>;
+};
+
+async function authenticatePage(
+  page: Page,
+  userIdentifier: SessionIdentityInput,
+  options: Omit<AuthenticatedPageOptions, 'testInfo'>
 ): Promise<LoadedSession> {
   const resolveLoadedIdentity = (loadedSession: LoadedSession) => {
     if (
@@ -1240,7 +1262,7 @@ async function confirmAuthenticatedLogin(
     acceptCookies?: typeof acceptAccessCookiesIfPresent;
     waitForShell?: typeof waitForAuthenticatedShell;
     waitForAuthCookies?: typeof waitForRequiredAuthCookies;
-    info?: typeof logger.info;
+    info?: (message: string, metadata: Record<string, unknown>) => void;
   } = {}
 ): Promise<void> {
   const acceptCookies = deps.acceptCookies ?? acceptAccessCookiesIfPresent;
@@ -1577,7 +1599,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     }
 
     // Acquire filesystem lock (blocks across all workers)
-    let release: SessionLockRelease | null = null;
+    const lock: { release: SessionLockRelease | null } = { release: null };
     let captureError: unknown;
     try {
       await (async () => {
@@ -1617,7 +1639,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           remainingCaptureBudgetMsBeforeLock === undefined
             ? deps.lockWaitMs
             : Math.min(deps.lockWaitMs ?? SESSION_CAPTURE_LOCK_WAIT_MS, remainingCaptureBudgetMsBeforeLock);
-        release = await acquireSessionLock({
+        const release = await acquireSessionLock({
           lockfileApi,
           lockFilePath,
           userIdentifier: identity.userIdentifier,
@@ -1630,6 +1652,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           fsApi,
           recoverStaleLock: shouldRecoverStaleSessionLocks(env),
         });
+        lock.release = release;
         const lockWaitMs = Math.max(0, now() - lockStartedAt);
 
         if (!release) {
@@ -1798,11 +1821,11 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           maxAttempts,
         })
           .then(() => {
-            release!.assertOwned();
+            release.assertOwned();
             clearSessionCaptureFailure(fsApi, failurePath);
           })
           .catch((error: Error) => {
-            release!.assertOwned();
+            release.assertOwned();
             const reusableSessionWasPersisted = isFresh(sessionPath, sessionMaxAgeMs, {
               targetUrl,
               idamUrl: activeConfig.urls.idamWebUrl,
@@ -1824,9 +1847,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
       captureError = error;
     }
 
-    if (release) {
+    if (lock.release) {
       try {
-        await release();
+        await lock.release();
         logger.info('Lock released', {
           userIdentifier: identity.userIdentifier,
           operation: 'session-capture',

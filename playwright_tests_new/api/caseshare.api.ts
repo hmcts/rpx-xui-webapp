@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
-import { guardedRequest, withXsrf } from './utils/apiTestUtils';
+import { guardedRequest, withRetry, withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { assertCaseShareEntries, resolveEntries } from './utils/caseShareUtils';
 import { resolveHeader } from './utils/nodeAppUtils';
@@ -13,7 +13,7 @@ const CASESHARE_ENDPOINTS = [
   {
     path: 'api/caseshare/orgs',
     timeoutMs: LARGE_CONTRACT_RESPONSE_TIMEOUT_MS,
-    testTimeoutMs: LARGE_CONTRACT_RESPONSE_TIMEOUT_MS + 30_000,
+    testTimeoutMs: LARGE_CONTRACT_RESPONSE_TIMEOUT_MS * 2 + 30_000,
     property: 'organisations',
     schema: expect.objectContaining({
       organisationIdentifier: expect.any(String),
@@ -60,14 +60,16 @@ test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
         test.setTimeout(testTimeoutMs);
       }
       await withXsrf('solicitor', async (headers) => {
-        const response = await guardedRequest(() =>
-          apiClient.get(path, {
-            headers: { ...headers, experimental: 'true' },
-            query,
-            timeoutMs: timeoutMs ?? 20_000,
-            throwOnError: false,
-          })
-        );
+        const request = () =>
+          guardedRequest(() =>
+            apiClient.get(path, {
+              headers: { ...headers, experimental: 'true' },
+              query,
+              timeoutMs: timeoutMs ?? 20_000,
+              throwOnError: false,
+            })
+          );
+        const response = path === 'api/caseshare/orgs' ? await withRetry(request, { retries: 1 }) : await request();
         if (requiresConfiguredCaseIds && !configuredCaseShareCaseIds) {
           expect(response.status).toBe(400);
           return;

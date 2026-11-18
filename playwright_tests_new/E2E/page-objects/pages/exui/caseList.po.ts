@@ -20,7 +20,7 @@ export class CaseListPage extends Base {
   readonly textField0FallbackInput = this.page
     .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
     .first();
-  readonly quickSearchContainer = this.page.locator('.hmcts-primary-navigation__global-search');
+  readonly quickSearchContainer = this.page.locator('form:has(#exuiCaseReferenceSearch)');
   readonly quickSearchCaseReferenceInput = this.page.locator('#exuiCaseReferenceSearch');
   readonly quickSearchFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
   readonly caseSearchResultsMessage = this.page.locator('#search-result');

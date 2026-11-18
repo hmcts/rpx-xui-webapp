@@ -58,6 +58,12 @@ export function hasNetworkErrorSignal(value: string): boolean {
   return NETWORK_ERROR_PATTERNS.some((pattern) => pattern.test(value));
 }
 
+export function isNetworkTransportError(errorText: string): boolean {
+  return /TLS|SSL|bad record mac|decryption failed|ECONNREFUSED|ENOTFOUND|EAI_AGAIN|ERR_NAME_NOT_RESOLVED|ERR_CONNECTION_REFUSED/i.test(
+    errorText
+  );
+}
+
 export function collectDependencySignals(
   errorMessage: string,
   serverErrors: ApiError[],

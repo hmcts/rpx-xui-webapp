@@ -155,9 +155,14 @@ export class ExuiHeaderComponent {
       const startedAt = Date.now();
       const deadline = startedAt + ExuiHeaderComponent.LANGUAGE_STATE_MAX_TIMEOUT_MS;
       lastBackendActivityAt = startedAt;
+      let lastTimeoutError: unknown;
       while (true) {
+        const remainingMs = deadline - Date.now();
+        if (remainingMs <= 0) {
+          throw lastTimeoutError ?? new Error('Timed out waiting for rendered language state');
+        }
         try {
-          await waitForState(Math.min(ExuiHeaderComponent.LANGUAGE_STATE_TIMEOUT_MS, deadline - Date.now()));
+          await waitForState(Math.min(ExuiHeaderComponent.LANGUAGE_STATE_TIMEOUT_MS, remainingMs));
           return;
         } catch (error) {
           const remainingMs = deadline - Date.now();
@@ -172,6 +177,7 @@ export class ExuiHeaderComponent {
           ) {
             throw error;
           }
+          lastTimeoutError = error;
         }
       }
     } finally {

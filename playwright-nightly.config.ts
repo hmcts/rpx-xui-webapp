@@ -5,6 +5,7 @@ import { version as appVersion } from './package.json';
 import {
   buildTagRegex,
   logResolvedTagFilters,
+  resolveActionTimeouts,
   resolveLocalWorktreeTestIgnorePatterns,
   resolveTagFilters,
   resolveWorkerCount,
@@ -123,6 +124,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     ],
     use: {
       baseURL: baseUrl,
+      ...resolveActionTimeouts(env, { actionTimeout: 60_000, navigationTimeout: 60_000 }),
     },
     /* Run tests in files in parallel */
     fullyParallel: true,

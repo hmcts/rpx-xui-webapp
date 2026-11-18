@@ -41,6 +41,16 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     await expect(withRetry(async () => ({ status: 200 }), { retries: -1 })).rejects.toThrow('withRetry failed unexpectedly');
   });
 
+  test('expectStatus reports the received status before the expected contract or custom context', () => {
+    expect(() => expectStatus(201, [200, 201])).not.toThrow();
+    expect(() => expectStatus(503, [200, 401, 403, 502, 504])).toThrow(
+      /^Received HTTP 503\. Expected status to be one of: 200, 401, 403, 502, 504(?:\n|$)/
+    );
+    expect(() => expectStatus(503, [401, 403], 'Authenticated route must reject anonymous callers')).toThrow(
+      /^Received HTTP 503\. Authenticated route must reject anonymous callers(?:\n|$)/
+    );
+  });
+
   test('guardedRequest converts request timeouts into guarded downstream status', async () => {
     let timeoutAnnotations = 0;
     const timeoutResult = await guardedRequest(
@@ -226,9 +236,9 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
       }
     );
 
-    expect(timeoutResult).toEqual({ data: undefined, status: 504 });
-    expect(timeoutAnnotations).toBe(1);
-    expect(timeoutCalls).toBe(3);
+    expect(timeoutResult, 'guardedTaskSearch result after exhausting timeout retries').toEqual({ data: undefined, status: 504 });
+    expect(timeoutAnnotations, 'onRequestTimeout callback count').toBe(1);
+    expect(timeoutCalls, 'post attempts for retries: 2 (1 initial + 2 retries)').toBe(3);
 
     await expect(
       guardedTaskSearch(timeoutClient, { view: 'AvailableTasks' }, { failOnRequestError: true, retries: 0 })

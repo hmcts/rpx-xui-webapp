@@ -94,11 +94,11 @@ describe('workAllocation', () => {
   });
 
   describe('getUsersByServiceName', () => {
-    it('should return a set of users for the given service name', async () => {
+    it('should return only users for the requested service', async () => {
       const req = mockReq({
         body: {
           term: null,
-          services: ['service1'],
+          services: ['IA'],
         },
         session: {
           passport: {
@@ -120,8 +120,8 @@ describe('workAllocation', () => {
           lastName: 'One',
           email: 'one@one.com',
           roleCategories: ['role1'],
-          services: ['service1'],
-          locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }],
+          services: ['IA'],
+          locations: [{ id: 'location1', locationName: 'Location One', services: ['IA'] }],
         },
         {
           idamId: 'user2',
@@ -129,20 +129,32 @@ describe('workAllocation', () => {
           lastName: 'Two',
           email: 'two@two.com',
           roleCategories: ['role1'],
-          services: ['service1'],
-          locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }],
+          services: ['CIVIL'],
+          locations: [{ id: 'location2', locationName: 'Location Two', services: ['CIVIL'] }],
         },
       ];
 
-      FullUserDetailCache.setUserDetails(mockUserData);
-      // Call this to ensure the timeout is set, so the isTimestampExpired function returns true.
-      hasTTLExpired();
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(true);
+      sandbox.stub(FullUserDetailCache, 'getAllUserDetails').returns(mockUserData);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').resolves([]);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchRoleAssignments').resolves([]);
       await getUsersByServiceName(req, res, next);
-      expect(res.send).to.have.been.called;
-      expect(res.status).to.have.been.calledWith(200);
+      expect(res.status).to.have.been.calledOnceWithExactly(200);
+      expect(res.send).to.have.been.calledOnceWithExactly([
+        {
+          idamId: 'user1',
+          firstName: 'User',
+          lastName: 'One',
+          email: 'one@one.com',
+          roleCategories: ['role1'],
+          service: 'IA',
+          location: mockUserData[0].locations[0],
+        },
+      ]);
+      expect(next).not.to.have.been.called;
     });
 
-    it('should return 400 when services contains an empty list', async () => {
+    it('should reject requests when services contains an empty list', async () => {
       const req = mockReq({
         body: {
           term: null,
@@ -166,6 +178,7 @@ describe('workAllocation', () => {
 
       expect(response.status).to.have.been.calledWith(400);
       expect(response.send).to.have.been.calledWith('Bad Request');
+      expect(next).not.to.have.been.called;
     });
   });
 

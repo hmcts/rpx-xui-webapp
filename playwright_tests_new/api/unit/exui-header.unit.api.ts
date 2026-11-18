@@ -33,7 +33,7 @@ function createHeaderHarness({ toggleText = 'Cymraeg' } = {}) {
   return { events, header };
 }
 
-function createRenderedStateHarness() {
+function createRenderedStateHarness(waitForState?: (listeners: Map<string, (value: unknown) => void>) => void) {
   const events: string[] = [];
   const listeners = new Map<string, (value: unknown) => void>();
   const header = Object.assign(Object.create(ExuiHeaderComponent.prototype), {
@@ -64,6 +64,7 @@ function createRenderedStateHarness() {
       },
       async waitForFunction() {
         events.push('rendered-language-state');
+        waitForState?.(listeners);
       },
     },
   }) as ExuiHeaderComponent;
@@ -120,5 +121,102 @@ test.describe('EXUI header language switch', { tag: '@svc-internal' }, () => {
       'off:response',
       'off:requestfailed',
     ]);
+  });
+
+  test('continues waiting while a translation request started during the click remains pending', async () => {
+    const originalNow = Date.now;
+    let now = 0;
+    let attempts = 0;
+    Date.now = () => now;
+    const { events, header } = createRenderedStateHarness(() => {
+      if (++attempts === 1) {
+        now = 20_000;
+        const timeout = new Error('rendered language timed out');
+        timeout.name = 'TimeoutError';
+        throw timeout;
+      }
+    });
+
+    try {
+      await header.switchLanguage('Cymraeg');
+      expect(attempts).toBe(2);
+      expect(events.slice(-3)).toEqual(['off:request', 'off:response', 'off:requestfailed']);
+    } finally {
+      Date.now = originalNow;
+    }
+  });
+
+  test('stops on a failed translation request and removes its listeners', async () => {
+    let attempts = 0;
+    const timeout = new Error('rendered language timed out');
+    timeout.name = 'TimeoutError';
+    const { events, header } = createRenderedStateHarness((listeners) => {
+      attempts++;
+      listeners.get('requestfailed')?.({ url: () => '/api/translation/cy' });
+      throw timeout;
+    });
+
+    await expect(header.switchLanguage('Cymraeg')).rejects.toBe(timeout);
+    expect(attempts).toBe(1);
+    expect(events.slice(-3)).toEqual(['off:request', 'off:response', 'off:requestfailed']);
+  });
+
+  test('stops at the deadline even if a translation request is still pending', async () => {
+    const originalNow = Date.now;
+    let now = 0;
+    let attempts = 0;
+    Date.now = () => now;
+    const timeout = new Error('rendered language timed out');
+    timeout.name = 'TimeoutError';
+    const { events, header } = createRenderedStateHarness(() => {
+      attempts++;
+      now = 60_000;
+      throw timeout;
+    });
+
+    try {
+      await expect(header.switchLanguage('Cymraeg')).rejects.toBe(timeout);
+      expect(attempts).toBe(1);
+      expect(events.slice(-3)).toEqual(['off:request', 'off:response', 'off:requestfailed']);
+    } finally {
+      Date.now = originalNow;
+    }
+  });
+
+  test('does not start an unbounded wait if the deadline expires between attempts', async () => {
+    const originalNow = Date.now;
+    let now = 0;
+    let attempts = 0;
+    Date.now = () => (now === 59_999 ? now++ : now);
+    const timeout = new Error('rendered language timed out');
+    timeout.name = 'TimeoutError';
+    const { header } = createRenderedStateHarness(() => {
+      attempts++;
+      if (attempts === 1) {
+        now = 59_999;
+        throw timeout;
+      }
+      throw new Error('started another wait after the deadline');
+    });
+
+    try {
+      await expect(header.switchLanguage('Cymraeg')).rejects.toBe(timeout);
+      expect(attempts).toBe(1);
+    } finally {
+      Date.now = originalNow;
+    }
+  });
+
+  test('removes listeners if the language switch fails before waiting', async () => {
+    const { events, header } = createRenderedStateHarness();
+    const error = new Error('click failed');
+
+    await expect(
+      header.waitForRenderedLanguageState('Cymraeg', async () => {
+        throw error;
+      })
+    ).rejects.toBe(error);
+    expect(events.slice(-3)).toEqual(['off:request', 'off:response', 'off:requestfailed']);
+    expect(events).not.toContain('rendered-language-state');
   });
 });

@@ -74,7 +74,8 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
     });
 
     await test.step('Open My cases with the large dataset', async () => {
-      await taskListPage.gotoMyCases();
+      // Nightly's 999-row DOM can consume the default navigation budget during already-satisfied visibility checks.
+      await taskListPage.gotoMyCases(60_000);
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });

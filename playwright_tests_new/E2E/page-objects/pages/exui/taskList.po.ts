@@ -162,8 +162,10 @@ export class TaskListPage extends Base {
     await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs: remaining() });
   }
 
-  async gotoMyCases() {
-    await this.navigateToTaskListView('/work/my-work/my-cases', /\/work\/my-work\/my-cases(?:\?.*)?$/, 'my cases navigation');
+  async gotoMyCases(timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
+    await this.navigateToTaskListView('/work/my-work/my-cases', /\/work\/my-work\/my-cases(?:\?.*)?$/, 'my cases navigation', {
+      timeoutMs,
+    });
   }
 
   async gotoMyCasesExpectingServiceDown() {

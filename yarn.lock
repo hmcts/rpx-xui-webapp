@@ -8949,8 +8949,8 @@ __metadata:
   linkType: hard
 
 "accessibility-checker@npm:^4.0.0":
-  version: 4.0.34
-  resolution: "accessibility-checker@npm:4.0.34"
+  version: 4.0.35
+  resolution: "accessibility-checker@npm:4.0.35"
   dependencies:
     "@ibm/telemetry-js": "npm:^1.9.1"
     chromedriver: "npm:*"
@@ -8960,7 +8960,7 @@ __metadata:
     write-excel-file: "npm:^4.1.1"
   bin:
     achecker: bin/achecker.js
-  checksum: 10/d0c3a1f42b4d28bb5fb661d8c42c833f99dbebdcf8b7724614bc406af1f5768d17c024c3df293e48f6f4eb55ec689e4235b0752aacf20a26ec4a9165e471252f
+  checksum: 10/d93070f52044ad690062afe46475712cc61202f4ae153fde523a0d91c546620eaab1360bfb9ebb22c0394ef307b8cd7988efa6cdfaaf58a05313d89716701706
   languageName: node
   linkType: hard
 

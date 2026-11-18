@@ -8,7 +8,7 @@ type UserDetails = {
     pattern: string;
     totalIdleTime: number;
   };
-  userInfo: Record<string, unknown>;
+  userInfo: Record<string, unknown> & { roles: string[] };
 };
 
 function getUserDetails_oidc(): UserDetails {

@@ -149,6 +149,11 @@ export function resolveWelshLanguageSessionUsers(env: NodeJS.ProcessEnv = proces
   return uniqueByEmail.length > 0 ? uniqueByEmail : ['SOLICITOR'];
 }
 
+export function describeWelshLanguageSessionPool(users: readonly SessionIdentityInput[]): string {
+  const isFallback = users.length === 1 && typeof users[0] === 'string';
+  return `${users.length} (${isFallback ? 'fallback: no extra solicitor credentials configured' : 'configured'})`;
+}
+
 export function resolveWelshLanguageSessionUser(
   testInfo: Pick<TestInfo, 'parallelIndex'>,
   env: NodeJS.ProcessEnv = process.env
@@ -187,6 +192,7 @@ export async function setupWelshLanguageSession(
     ]);
     const annotationValue = typeof userIdentifier === 'string' ? userIdentifier : userIdentifier.userIdentifier;
     testInfo.annotations.push({ type: 'session-user', description: annotationValue });
+    testInfo.annotations.push({ type: 'session-pool-size', description: describeWelshLanguageSessionPool(users) });
     return { release, userIdentifier };
   } catch (error) {
     await release().catch(() => undefined);

@@ -3215,12 +3215,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.26":
-  version: 7.4.26
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.26"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.27-5516":
+  version: 7.4.27-5516
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.27-5516"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.28"
+    "@hmcts/ccpay-web-component": "npm:6.7.1-beta3"
     "@hmcts/media-viewer": "npm:4.2.48"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:5.13.0"
@@ -3264,13 +3264,12 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/66ac69ca5793f3c674d294a077c31bed429a925a0fb3782b7d27e21665da8bf5a257c18fe819e77d83c81c02a6b36e19fdc07a36a622c15a8adb7e66d37c18ac
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.5.28":
-  version: 6.5.28
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.28"
+"@hmcts/ccpay-web-component@npm:6.7.1-beta3":
+  version: 6.7.1-beta3
+  resolution: "@hmcts/ccpay-web-component@npm:6.7.1-beta3"
   dependencies:
     exceljs: "npm:^4.4.0"
     file-saver: "npm:^2.0.2"
@@ -3278,7 +3277,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
-  checksum: 10/fb7de5a176d7284f17494e928565bc0f8157c1576234ed016ca6944e43e129f9bd6b09b7450675e36317b8e938b2072ebdf28a4dcc483d3267945c68eff25f88
+  checksum: 10/384fdd8e28542c62f7827318ddc68126b7534563499c2f7bf8aad82406ec9d8750f1ea871f6922af6384d70f647e656039dfe19b26fcde85ee99534a0d50224a
   languageName: node
   linkType: hard
 
@@ -20071,8 +20070,8 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.26"
-    "@hmcts/ccpay-web-component": "npm:6.5.28"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.27-5516"
+    "@hmcts/ccpay-web-component": "npm:6.7.1-beta3"
     "@hmcts/media-viewer": "npm:4.2.48"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.3"

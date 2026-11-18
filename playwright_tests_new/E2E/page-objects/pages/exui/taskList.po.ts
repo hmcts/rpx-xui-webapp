@@ -433,6 +433,10 @@ export class TaskListPage extends Base {
   }
 
   private async reloadBlankTaskListDocumentIfNeeded(urlPattern: RegExp, context: string, deadlineMs: number): Promise<void> {
+    if (urlPattern.test(this.page.url()) && (await this.taskListTable.isVisible().catch(() => false))) {
+      return;
+    }
+
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
     if (
       !(await this.isBlankTaskListDocument(urlPattern, Math.min(500, remaining()))) &&

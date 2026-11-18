@@ -1,9 +1,10 @@
+import axios from 'axios';
 import { expect, use } from 'chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getConfigValue } from '../configuration';
 import { DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS } from '../configuration/references';
-import { handleRequest, handleResponse } from './index';
+import { handleRequest, handleResponse, validateLegacyDocumentAccess } from './index';
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
@@ -142,5 +143,134 @@ describe('Documents Uploading', () => {
 
     expect(response.setHeader).to.not.have.been.called;
     expect(response.removeHeader).to.not.have.been.called;
+  });
+
+  describe('validateLegacyDocumentAccess', () => {
+    it('should deny legacy binary document requests without case context', async () => {
+      const request = {
+        method: 'GET',
+        originalUrl: '/documents/doc-123/binary',
+        query: {},
+        url: '/doc-123/binary',
+      };
+      const response = {
+        status: sandbox.stub().returnsThis(),
+        send: sandbox.stub(),
+      };
+      const next = sandbox.stub();
+
+      await validateLegacyDocumentAccess(request as any, response, next);
+
+      expect(response.status).to.have.been.calledWith(403);
+      expect(response.send).to.have.been.calledWith({ message: 'Forbidden' });
+      expect(next).to.not.have.been.called;
+    });
+
+    it('should allow legacy binary document requests when CCD confirms document belongs to the case', async () => {
+      const getStub = sandbox.stub(axios, 'get').resolves({
+        data: {
+          categories: [
+            {
+              documents: [
+                {
+                  document_binary_url: 'http://dm-store/documents/doc-123/binary',
+                },
+              ],
+            },
+          ],
+        },
+      });
+      const request = {
+        method: 'GET',
+        headers: {},
+        originalUrl: '/documents/doc-123/binary?caseId=case-123',
+        query: { caseId: 'case-123' },
+        url: '/doc-123/binary?caseId=case-123',
+      };
+      const response = {
+        status: sandbox.stub().returnsThis(),
+        send: sandbox.stub(),
+      };
+      const next = sandbox.stub();
+
+      await validateLegacyDocumentAccess(request as any, response, next);
+
+      expect(getStub).to.have.been.calledWith(sinon.match('/categoriesAndDocuments/case-123'));
+      expect(request.url).to.equal('/doc-123/binary');
+      expect(next).to.have.been.calledOnce;
+      expect(response.status).to.not.have.been.called;
+    });
+
+    it('should allow legacy binary document requests with same-origin case-details referrer', async () => {
+      const getStub = sandbox.stub(axios, 'get').resolves({
+        data: {
+          categories: [
+            {
+              documents: [
+                {
+                  document_binary_url: '/documents/doc-123/binary',
+                },
+              ],
+            },
+          ],
+        },
+      });
+      const request = {
+        method: 'GET',
+        protocol: 'https',
+        headers: {
+          host: 'manage-case.hmcts.net',
+          referer: 'https://manage-case.hmcts.net/cases/case-details/IA/Asylum/case-123',
+        },
+        originalUrl: '/documents/doc-123/binary',
+        query: {},
+        url: '/doc-123/binary',
+      };
+      const response = {
+        status: sandbox.stub().returnsThis(),
+        send: sandbox.stub(),
+      };
+      const next = sandbox.stub();
+
+      await validateLegacyDocumentAccess(request as any, response, next);
+
+      expect(getStub).to.have.been.calledWith(sinon.match('/categoriesAndDocuments/case-123'));
+      expect(next).to.have.been.calledOnce;
+      expect(response.status).to.not.have.been.called;
+    });
+
+    it('should deny legacy binary document requests when the document is not in the case document list', async () => {
+      sandbox.stub(axios, 'get').resolves({
+        data: {
+          categories: [
+            {
+              documents: [
+                {
+                  document_binary_url: 'http://dm-store/documents/another-doc/binary',
+                },
+              ],
+            },
+          ],
+        },
+      });
+      const request = {
+        method: 'GET',
+        headers: {},
+        originalUrl: '/documents/doc-123/binary?caseId=case-123',
+        query: { caseId: 'case-123' },
+        url: '/doc-123/binary?caseId=case-123',
+      };
+      const response = {
+        status: sandbox.stub().returnsThis(),
+        send: sandbox.stub(),
+      };
+      const next = sandbox.stub();
+
+      await validateLegacyDocumentAccess(request as any, response, next);
+
+      expect(response.status).to.have.been.calledWith(403);
+      expect(response.send).to.have.been.calledWith({ message: 'Forbidden' });
+      expect(next).to.not.have.been.called;
+    });
   });
 });

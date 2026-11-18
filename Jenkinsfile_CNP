@@ -106,6 +106,12 @@ def verifyCriticalScenarios = { String lanes, String receiptFile, List reports -
     def reportArgs = reports.collect { "'${it.path}' ${it.startedAt} ${it.finishedAt}" }.join(' ')
     steps.sh "node playwright_tests_new/common/critical-scenario-receipt.cjs verify 'playwright_tests_new/common/document-download-required-scenarios.json' '${lanes}' '${receiptFile}' ${reportArgs}"
 }
+def runCriticalScenarioSuite = { String command, String lanes ->
+    def startedAt = criticalScenarioTime()
+    yarnBuilder.yarn(command)
+    def jsonFile = env.PLAYWRIGHT_JSON_OUTPUT
+    verifyCriticalScenarios(lanes, jsonFile.replace('playwright.json', 'critical-scenarios.receipt.json'), [[path: jsonFile, startedAt: startedAt, finishedAt: criticalScenarioTime()]])
+}
 
 def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName, String outcome = 'unknown' ->
     def reportPath = "${reportDir}/${reportFile}"
@@ -816,13 +822,7 @@ withPipeline(type, product, component) {
                             ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
-                                    def criticalStartedAt = criticalScenarioTime()
-                                    yarnBuilder.yarn('test:api:pw:raw')
-                                    verifyCriticalScenarios(
-                                        'support,api-binary',
-                                        'functional-output/tests/playwright-api/odhin-report/ci-evidence/critical-scenarios.receipt.json',
-                                        [[path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json', startedAt: criticalStartedAt, finishedAt: criticalScenarioTime()]]
-                                    )
+                                    runCriticalScenarioSuite('test:api:pw:raw', 'support,api-binary')
                                     apiOutcome = 'completed'
                                 } catch (Exception e) {
                                     if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
@@ -887,13 +887,7 @@ withPipeline(type, product, component) {
                                     'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json',
                                     'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                                 ]) {
-                                    def criticalStartedAt = criticalScenarioTime()
-                                    yarnBuilder.yarn('test:playwrightE2E:raw')
-                                    verifyCriticalScenarios(
-                                        'e2e-capability,e2e-downloads,e2e-authorization',
-                                        'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/critical-scenarios.receipt.json',
-                                        [[path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json', startedAt: criticalStartedAt, finishedAt: criticalScenarioTime()]]
-                                    )
+                                    runCriticalScenarioSuite('test:playwrightE2E:raw', 'e2e-capability,e2e-downloads,e2e-authorization')
                                     e2eOutcome = 'completed'
                                 }
                             } catch (Exception e) {
@@ -1033,13 +1027,7 @@ withPipeline(type, product, component) {
                             ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
-                                    def criticalStartedAt = criticalScenarioTime()
-                                    yarnBuilder.yarn('test:api:pw:raw')
-                                    verifyCriticalScenarios(
-                                        'support,api-binary',
-                                        'functional-output/tests/playwright-api/odhin-report/ci-evidence/critical-scenarios.receipt.json',
-                                        [[path: 'functional-output/tests/playwright-api/odhin-report/ci-evidence/playwright.json', startedAt: criticalStartedAt, finishedAt: criticalScenarioTime()]]
-                                    )
+                                    runCriticalScenarioSuite('test:api:pw:raw', 'support,api-binary')
                                     apiOutcome = 'completed'
                                 } catch (Exception e) {
                                     if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
@@ -1104,13 +1092,7 @@ withPipeline(type, product, component) {
                                     'PLAYWRIGHT_JSON_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json',
                                     'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-e2e/odhin-report/playwright-junit.xml'
                                 ]) {
-                                    def criticalStartedAt = criticalScenarioTime()
-                                    yarnBuilder.yarn('test:playwrightE2E:raw')
-                                    verifyCriticalScenarios(
-                                        'e2e-capability,e2e-downloads,e2e-authorization',
-                                        'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/critical-scenarios.receipt.json',
-                                        [[path: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json', startedAt: criticalStartedAt, finishedAt: criticalScenarioTime()]]
-                                    )
+                                    runCriticalScenarioSuite('test:playwrightE2E:raw', 'e2e-capability,e2e-downloads,e2e-authorization')
                                     e2eOutcome = 'completed'
                                 }
                             } catch (Exception e) {

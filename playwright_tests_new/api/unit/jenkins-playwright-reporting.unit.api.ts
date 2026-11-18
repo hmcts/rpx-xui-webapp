@@ -105,15 +105,25 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(fallbackCount(source, 'AAT API Functional Test')).toBe(1);
     expect(fallbackCount(nightlySource, 'Nightly Playwright E2E Cross Browser')).toBe(1);
     expect(fallbackCount(nightlySource, 'Nightly API Functional Test')).toBe(1);
-    assertPostRunFallback(source, "stage('API Tests')", "yarnBuilder.yarn('test:api:pw:raw')", 'PREVIEW API Functional Test');
+    assertPostRunFallback(
+      source,
+      "stage('API Tests')",
+      "runCriticalScenarioSuite('test:api:pw:raw'",
+      'PREVIEW API Functional Test'
+    );
     assertPostRunFallback(
       source,
       "stage('Playwright E2E')",
-      "yarnBuilder.yarn('test:playwrightE2E:raw')",
+      "runCriticalScenarioSuite('test:playwrightE2E:raw'",
       'PREVIEW Playwright E2E'
     );
-    assertPostRunFallback(source, "stage('API Tests')", "yarnBuilder.yarn('test:api:pw:raw')", 'AAT API Functional Test');
-    assertPostRunFallback(source, "stage('Playwright E2E')", "yarnBuilder.yarn('test:playwrightE2E:raw')", 'AAT Playwright E2E');
+    assertPostRunFallback(source, "stage('API Tests')", "runCriticalScenarioSuite('test:api:pw:raw'", 'AAT API Functional Test');
+    assertPostRunFallback(
+      source,
+      "stage('Playwright E2E')",
+      "runCriticalScenarioSuite('test:playwrightE2E:raw'",
+      'AAT Playwright E2E'
+    );
     assertPostRunFallback(
       nightlySource,
       "stage('API Tests')",
@@ -127,6 +137,16 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
       'Nightly Playwright E2E Cross Browser'
     );
     expect(source).toContain("reportName           : 'PREVIEW Playwright E2E'");
+  });
+
+  test('runs the suite and verifies its JSON receipt within the shared pipeline closure', () => {
+    const helper = source.slice(
+      source.indexOf('def runCriticalScenarioSuite = {'),
+      source.indexOf('\n}\n', source.indexOf('def runCriticalScenarioSuite = {'))
+    );
+    expect(helper).toContain('yarnBuilder.yarn(command)');
+    expect(helper).toContain('env.PLAYWRIGHT_JSON_OUTPUT');
+    expect(helper).toContain('verifyCriticalScenarios(lanes,');
   });
 
   test('keeps report diagnostics and JUnit output lane-local', () => {

@@ -149,6 +149,13 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(helper).toContain('verifyCriticalScenarios(lanes,');
   });
 
+  test('keeps preview and AAT API/E2E stages in their parallel suite maps', () => {
+    expect(source).toContain('api: previewApiFunctionalStage,');
+    expect(source).toContain('playwrightE2E: previewE2EFunctionalStage');
+    expect(source).toContain('api: aatApiFunctionalStage,');
+    expect(source).toContain('playwrightE2E: aatE2EFunctionalStage');
+  });
+
   test('keeps report diagnostics and JUnit output lane-local', () => {
     expect(source).toContain('node scripts/collect-playwright-diagnostics.cjs');
     expect(source).not.toContain('find test-results -type f');

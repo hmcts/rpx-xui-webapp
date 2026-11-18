@@ -73,9 +73,9 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
         })
         .toBe(true);
       await caseDetailsPage.openCaseDetails(jurisdiction, caseType, caseNumber, 60_000);
-      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.isVisible()).toBe(true);
-      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
-      expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
+      await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toBeVisible();
+      await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toContainText('Important');
+      await expect.soft(caseDetailsPage.caseNotificationBannerBody).toContainText('There is 1 active flag on this case.');
     });
 
     await test.step('Verify the case level flag is shown in the flags tab', async () => {
@@ -197,9 +197,9 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags', '@nig
           { timeout: 45000, intervals: [1000, 2000, 3000] }
         )
         .toBe(true);
-      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.isVisible()).toBe(true);
-      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
-      expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
+      await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toBeVisible();
+      await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toContainText('Important');
+      await expect.soft(caseDetailsPage.caseNotificationBannerBody).toContainText('There is 1 active flag on this case.');
     });
 
     await test.step('Verify the party level case flag is shown in the flags tab', async () => {

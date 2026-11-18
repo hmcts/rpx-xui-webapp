@@ -356,12 +356,13 @@ export function buildQueryManagementExistingQueryCollection(options?: {
 }
 
 export function buildQueryManagementCaseDetailsMock(options?: {
+  caseReference?: string;
   data?: Record<string, unknown>;
   includeQueryTab?: boolean;
   queryCollection?: QueryManagementCaseQueriesCollection;
 }) {
   const caseDetails = deepClone(caseDetailsTemplate) as Record<string, unknown>;
-  caseDetails.case_id = QUERY_MANAGEMENT_CASE_REFERENCE;
+  caseDetails.case_id = options?.caseReference ?? QUERY_MANAGEMENT_CASE_REFERENCE;
   applyQueryManagementCaseType(caseDetails);
   caseDetails.triggers = [
     buildQueryManagementTrigger(QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_ID, QUERY_MANAGEMENT_RAISE_QUERY_TRIGGER_NAME, 1),
@@ -485,3 +486,56 @@ export function buildQueryManagementCreateEventResponse(
     },
   };
 }
+
+// Source contract: QueryManagementContainerComponent.getQualifyingQuestions/getAttachmentHintText.
+export const QUERY_MANAGEMENT_CONFIGURED_FLAGS = {
+  'qm-qualifying-questions': {
+    asylum: [
+      {
+        name: 'Read case guidance',
+        markdown: 'Guidance for case ${[CASE_REFERENCE]}. Check case ${[CASE_REFERENCE]} before continuing.',
+        url: '/query-management/query/${[CASE_REFERENCE]}/raiseAQuery',
+      },
+      { name: 'Go directly to a query', url: '/query-management/query/${[CASE_REFERENCE]}/raiseAQuery' },
+      { name: 'Read information only', markdown: 'This information does not require a query.' },
+    ],
+    UnrelatedCaseType: [{ name: 'Unrelated case guidance', markdown: 'Other service content' }],
+  },
+  'qm-service-messages': {
+    attachment: [
+      { jurisdiction: 'IA', caseType: 'Asylum', hintText: 'Attach evidence relevant to this asylum query.' },
+      { jurisdiction: 'CIVIL', caseType: 'UnrelatedCaseType', hintText: 'Unrelated attachment guidance.' },
+    ],
+    messages: [],
+  },
+};
+
+export const QUERY_MANAGEMENT_DOCUMENT = {
+  originalDocumentName: 'query-evidence.pdf',
+  mimeType: 'application/pdf',
+  hashToken: 'synthetic-query-document-hash',
+  _links: {
+    self: { href: 'http://dm-store/documents/11111111-2222-4333-8444-555555555555' },
+    binary: { href: 'http://dm-store/documents/11111111-2222-4333-8444-555555555555/binary' },
+  },
+};
+export const QUERY_MANAGEMENT_EXPECTED_ATTACHMENT = {
+  document_url: QUERY_MANAGEMENT_DOCUMENT._links.self.href,
+  document_binary_url: QUERY_MANAGEMENT_DOCUMENT._links.binary.href,
+  document_filename: QUERY_MANAGEMENT_DOCUMENT.originalDocumentName,
+};
+
+export const QUERY_MANAGEMENT_SECOND_CASE_REFERENCE = '1652161372854645';
+export const QUERY_MANAGEMENT_CROSS_CASE_FLAGS = {
+  ...QUERY_MANAGEMENT_CONFIGURED_FLAGS,
+  'qm-qualifying-questions': {
+    asylum: [
+      ...QUERY_MANAGEMENT_CONFIGURED_FLAGS['qm-qualifying-questions'].asylum,
+      {
+        name: 'Read another case',
+        markdown: 'Check the current guidance before changing case.',
+        url: `/cases/case-details/IA/Asylum/${QUERY_MANAGEMENT_SECOND_CASE_REFERENCE}`,
+      },
+    ],
+  },
+};

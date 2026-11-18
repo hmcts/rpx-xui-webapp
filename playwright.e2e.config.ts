@@ -5,6 +5,7 @@ import { version as appVersion } from './package.json';
 import {
   logResolvedTagFilters,
   parseNonNegativeInt,
+  resolveActionTimeouts,
   resolveDefaultReporter,
   resolveLocalWorktreeTestIgnorePatterns,
   resolveTagFilters,
@@ -187,6 +188,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     reporter,
     use: {
       baseURL: baseUrl,
+      ...resolveActionTimeouts(env),
       trace: disableGenericFailureArtifacts
         ? 'off'
         : { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true },

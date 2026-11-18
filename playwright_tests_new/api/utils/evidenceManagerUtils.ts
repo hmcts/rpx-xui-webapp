@@ -113,7 +113,7 @@ export async function buildAnnotation(
   headers: Record<string, string>,
   docId: string,
   annotationSetId?: string
-): Promise<AnnotationPayload> {
+): Promise<AnnotationPayload & { id: string }> {
   const annoId = uuid();
   const rectangleId = uuid();
   const setId = annotationSetId ?? (await resolveAnnotationSetId(apiClient, headers, docId));
@@ -138,7 +138,11 @@ export async function buildAnnotation(
   };
 }
 
-export async function buildBookmark(apiClient: ApiClient, docId: string, createdBy?: string): Promise<BookmarkPayload> {
+export async function buildBookmark(
+  apiClient: ApiClient,
+  docId: string,
+  createdBy?: string
+): Promise<BookmarkPayload & { id: string }> {
   const userId = createdBy ?? (await fetchUserId(apiClient));
   return {
     id: uuid(),

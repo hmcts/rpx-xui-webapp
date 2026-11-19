@@ -19,6 +19,7 @@ test.describe.configure({ mode: 'serial' });
 function fakeSessionPage() {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     textContent: async () => '',
   };
 
@@ -32,6 +33,7 @@ function fakeSessionPage() {
 function hiddenLocator() {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     click: async () => undefined,
     fill: async () => undefined,
     isVisible: async () => false,
@@ -43,6 +45,7 @@ function hiddenLocator() {
 function visibleLocator(actions: string[], name: string, visible: () => boolean = () => true, onClick?: () => void) {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     click: async () => {
       actions.push(`${name}:click`);
       onClick?.();
@@ -823,10 +826,12 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
   test('confirmAuthenticatedLogin includes accessible IDAM rejection evidence', async () => {
     const emptyLocator = {
       first: () => emptyLocator,
+      filter: () => emptyLocator,
       textContent: async () => '',
     };
     const alertLocator = {
       first: () => alertLocator,
+      filter: () => alertLocator,
       textContent: async () => 'Incorrect email or password',
     };
     const page = {
@@ -948,12 +953,14 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       const visible = selector === 'exui-header' || selector === 'exui-service-down';
       const locator = {
         first: () => locator,
+        filter: () => locator,
         isVisible: async () => visible,
       };
       return locator;
     };
     const hiddenRoleLocator = {
       first: () => hiddenRoleLocator,
+      filter: () => hiddenRoleLocator,
       isVisible: async () => false,
     };
     const page = {
@@ -986,12 +993,14 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       const visible = selector === 'exui-header';
       const locator = {
         first: () => locator,
+        filter: () => locator,
         isVisible: async () => visible,
       };
       return locator;
     };
     const errorHeading = {
       first: () => errorHeading,
+      filter: () => errorHeading,
       isVisible: async () => true,
     };
     const page = {
@@ -2154,7 +2163,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             password: 'not-used',
           }),
         })
-      ).rejects.toThrow('Recent session capture failed for IAC_Judge_WA_R1');
+      ).rejects.toMatchObject({
+        message: expect.stringContaining('Recent session capture failed for IAC_Judge_WA_R1'),
+        // Machine-readable so CI intelligence can attribute cascades to the first failure, not each suppressed test.
+        context: expect.objectContaining({ cooldownSuppressed: true }),
+      });
 
       expect(lockCalled).toBe(false);
       expect(loginCalled).toBe(false);

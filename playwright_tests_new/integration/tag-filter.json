@@ -4,9 +4,10 @@
     "@blocked-exui-4276",
     "@blocked-exui-4317",
     "@blocked-exui-4318",
-    "@blocked-exui-5590",
+    "@blocked-exui-5589",
     "@blocked-exui-5591",
-    "@blocked-exui-5589"
+    "@blocked-exui-1004",
+    "@blocked-exui-5590"
   ],
   "availableTags": [
     "@integration",
@@ -30,17 +31,18 @@
     "@integration-probate-find-case",
     "@integration-query-management",
     "@integration-restricted-case",
+    "@integration-role-allocation-mock-session",
     "@integration-search-case",
     "@integration-share-case",
+    "@integration-staff-admin",
     "@integration-welsh-language",
     "@blocked-exui-4272",
     "@blocked-exui-4276",
     "@blocked-exui-4317",
     "@blocked-exui-4318",
-    "@blocked-exui-5590",
-    "@integration-role-allocation-mock-session",
-    "@integration-staff-admin",
+    "@blocked-exui-5589",
     "@blocked-exui-5591",
-    "@blocked-exui-5589"
+    "@blocked-exui-1004",
+    "@blocked-exui-5590"
   ]
 }

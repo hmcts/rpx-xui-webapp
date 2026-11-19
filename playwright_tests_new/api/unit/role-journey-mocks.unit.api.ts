@@ -1,6 +1,11 @@
 import { expect, test, type Page, type Route, type Request } from '@playwright/test';
 import { buildRolesAndAccessUserDetails } from '../../integration/helpers/rolesAndAccessMockRoutes.helper';
-import { captureExclusionMutations, setupRoleJourney, setupRoleReadback } from '../../integration/helpers/roleJourneys.helper';
+import {
+  captureExclusionMutations,
+  captureRoleMutations,
+  setupRoleJourney,
+  setupRoleReadback,
+} from '../../integration/helpers/roleJourneys.helper';
 import type { WorkAllocationAccessScenarioRecord } from '../../integration/helpers/workAllocationAccessScenarios.helper';
 
 import {
@@ -48,6 +53,30 @@ test.describe('Role journey mock contracts', () => {
       expect(pattern!.test('http://localhost/api/role-access/allocate-role/delete')).toBe(false);
       expect(pattern!.test('http://localhost/api/role-access/exclusions/confirm')).toBe(true);
       expect(pattern!.test('http://localhost/api/role-access/roles/post')).toBe(false);
+
+      let roleHandler: ((route: Route) => Promise<void>) | undefined;
+      let rolePattern: RegExp | undefined;
+      const rolePage = {
+        route: async (url: RegExp, callback: (route: Route) => Promise<void>) => {
+          rolePattern = url;
+          roleHandler = callback;
+        },
+      } as unknown as Page;
+      const roleCapture = await captureRoleMutations(rolePage, status);
+      let roleResponse: unknown;
+      await roleHandler!({
+        request: () => request,
+        fulfill: async (value: unknown) => {
+          roleResponse = value;
+        },
+      } as unknown as Route);
+      expect(roleCapture.requests).toEqual([request]);
+      expect(roleCapture.successfulRequests).toEqual(status === 200 ? [request] : []);
+      expect(roleResponse).toEqual({ status, contentType: 'application/json', body: '{}' });
+      expect(rolePattern!.test('http://localhost/api/role-access/allocate-role/delete')).toBe(true);
+      expect(rolePattern!.test('http://localhost/api/role-access/allocate-role/reallocate')).toBe(true);
+      expect(rolePattern!.test('http://localhost/api/role-access/exclusions/confirm')).toBe(true);
+      expect(rolePattern!.test('http://localhost/api/role-access/roles/post')).toBe(false);
     });
   }
 });

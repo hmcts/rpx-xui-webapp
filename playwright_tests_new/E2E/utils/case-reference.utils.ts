@@ -256,7 +256,11 @@ export async function resolveCaseReferenceWithFallback(
  *   jurisdictionIds: ['PUBLICLAW']
  * });
  * await searchPage.searchWith16DigitCaseId(nonExistentRef);
- * await expect(searchPage.noResultsHeading).toBeVisible();
+ * if (await searchPage.noResultsContainer.isVisible()) {
+ *   await expect(searchPage.noResultsHeading).toBeVisible();
+ * } else {
+ *   await expect(caseListPage.caseSearchResultsMessage).toContainText(/No cases found/i);
+ * }
  */
 // NOSONAR typescript:S3776 - Cognitive Complexity 26 acceptable per agents.md Section 6.2.10
 export async function resolveNonExistentCaseReference(

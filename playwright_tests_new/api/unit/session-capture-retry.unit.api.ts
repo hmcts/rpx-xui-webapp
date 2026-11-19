@@ -394,45 +394,50 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
   test('retries an unavailable IDAM login surface before credentials are submitted', async () => {
     const page = {
       url: () => 'https://manage-case.example.test/',
-      title: async () => 'Sorry, there is a problem with the service',
     } as unknown as Page;
 
     const error = await sessionCaptureTest.unavailableIdamLoginSurfaceError(page, 'FPL_GLOBAL_SEARCH');
 
     expect(error.message).toBe(
-      'IDAM login surface did not render within 20000ms for FPL_GLOBAL_SEARCH ' +
-        '(url=https://manage-case.example.test/, title="Sorry, there is a problem with the service")'
+      'IDAM login surface did not render within 20000ms for FPL_GLOBAL_SEARCH ' + '(origin=https://manage-case.example.test)'
     );
     expect(error.context.failureKind).toBe(SERVICE_DOWN_SESSION_CAPTURE_FAILURE);
     expect(isTransientSessionCaptureError(error)).toBe(true);
   });
 
-  test('IDAM login surface message omits query, fragment and credentials and bounds the title', async () => {
+  test('IDAM login surface message omits path, query, fragment and credentials', async () => {
     const page = {
       url: () => 'https://user:secret@idam.example.test/login?code=abc&state=xyz#access_token=tok',
-      title: async () => `  Sign\n in ${'x'.repeat(200)}`,
     } as unknown as Page;
 
     const error = await sessionCaptureTest.unavailableIdamLoginSurfaceError(page, 'FPL_GLOBAL_SEARCH');
 
-    expect(error.message).toContain('url=https://idam.example.test/login,');
+    expect(error.message).toContain('origin=https://idam.example.test)');
     expect(error.message).not.toMatch(/secret|code=|state=|access_token|tok\b/);
-    const title = /title="([^"]*)"/.exec(error.message)?.[1] ?? '';
-    expect(title.startsWith('Sign in x')).toBe(true);
-    expect(title).toHaveLength(80);
   });
 
-  test('IDAM login surface message survives a page title that throws', async () => {
+  test('IDAM login surface message handles a malformed landing URL', async () => {
     const page = {
-      url: () => 'https://manage-case.example.test/cases',
-      title: async () => {
-        throw new Error('Target page, context or browser has been closed');
-      },
+      url: () => 'not a URL with secret details',
     } as unknown as Page;
 
     const error = await sessionCaptureTest.unavailableIdamLoginSurfaceError(page, 'FPL_GLOBAL_SEARCH');
 
-    expect(error.message).toContain('(url=https://manage-case.example.test/cases, title="unknown")');
+    expect(error.message).toContain('(origin=unknown)');
+  });
+
+  test('does not include an unexpected document title or case path in login diagnostics', async () => {
+    const page = {
+      url: () => 'https://manage-case.example.test/cases/case-details/1234567890123456',
+      title: async () => 'Confidential witness statement.pdf - View Document',
+    } as unknown as Page;
+
+    const error = await sessionCaptureTest.unavailableIdamLoginSurfaceError(page, 'FPL_GLOBAL_SEARCH');
+
+    expect(JSON.stringify({ message: error.message, context: error.context })).not.toMatch(
+      /Confidential|witness|statement|1234567890123456/
+    );
+    expect(error.message).toContain('manage-case.example.test');
   });
 
   test('retries one transient failure cycle with a fresh context', async () => {

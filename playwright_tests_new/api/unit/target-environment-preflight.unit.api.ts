@@ -146,7 +146,7 @@ test.describe('target environment preflight', { tag: '@svc-internal' }, () => {
     expect(calls.gets).toHaveLength(3);
   });
 
-  test('does not retry a 404, which means no application is deployed', async () => {
+  test('reports a 404 from the probe without inferring the deployment state', async () => {
     const { deps, calls } = fakeDeps({
       httpGet: async (url) => {
         calls.gets.push(url);

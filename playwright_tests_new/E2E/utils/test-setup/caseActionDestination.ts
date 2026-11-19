@@ -7,8 +7,6 @@ export interface CaseActionOptions {
   expectedTarget?: string;
   timeoutMs?: number;
   retry?: boolean; // Retained for callers; Go is never repeated.
-  // Negative journeys that expect the event-trigger GET to fail (e.g. callback validation errors) opt out of fail-fast.
-  allowEventTriggerFailure?: boolean;
 }
 
 export async function waitForCaseActionDestination(

@@ -162,7 +162,9 @@ test('a post-dispatch click failure with a spinner never repeats Go', { tag: '@s
     isVisible: async () => true,
     waitFor: async () => undefined,
   });
-  await expect(harness.caseDetails.selectCaseAction('Upload Document')).rejects.toThrow('navigation failed after dispatch');
+  await expect(harness.caseDetails.selectCaseAction('Upload Document', { expectedPath: '/upload' })).rejects.toThrow(
+    'navigation failed after dispatch'
+  );
   expect(clicks).toBe(1);
 });
 

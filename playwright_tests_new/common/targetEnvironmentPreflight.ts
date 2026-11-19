@@ -117,8 +117,7 @@ async function probeOnce(
     }
     return { message: `${prefix} request to ${TARGET_PREFLIGHT_PROBE_PATH} failed (${errorCode(error)})`, retryable: true };
   }
-  // 401/403 still prove the app is answering; 404 means no app behind the
-  // ingress and 5xx means the deployment is not serving yet.
+  // A 404 proves only that this route is unavailable; it does not establish why.
   if (status === 404) {
     return { message: `${prefix} responded HTTP ${status} on ${TARGET_PREFLIGHT_PROBE_PATH}`, retryable: false };
   }

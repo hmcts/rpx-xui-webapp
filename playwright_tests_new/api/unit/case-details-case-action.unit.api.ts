@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import type { Locator } from '@playwright/test';
 
-import { CaseDetailsPage, isCaseEventTriggerResponse } from '../../E2E/page-objects/pages/exui/caseDetails.po.js';
+import { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po.js';
 
 const okEventTrigger = { status: () => 200, url: () => 'https://xui.example/data/internal/cases/1/event-triggers/x' };
 
@@ -203,7 +203,7 @@ for (const state of ['missing', 'wrong form', 'delayed upload form'] as const) {
   });
 }
 
-type EventTriggerState = { status: number } | 'none';
+type EventTriggerState = { status: number; url?: string } | 'none';
 
 function createEventTriggerHarness(eventTrigger: EventTriggerState) {
   let goClicks = 0;
@@ -239,7 +239,7 @@ function createEventTriggerHarness(eventTrigger: EventTriggerState) {
         if (eventTrigger === 'none') throw new Error('page.waitForResponse: Timeout exceeded');
         return {
           status: () => eventTrigger.status,
-          url: () => 'https://xui.example/data/internal/cases/1234567890123456/event-triggers/uploadDocument',
+          url: () => eventTrigger.url ?? 'https://xui.example/data/internal/cases/1234567890123456/event-triggers/uploadDocument',
         };
       },
     },
@@ -247,38 +247,7 @@ function createEventTriggerHarness(eventTrigger: EventTriggerState) {
   return { details, goClicks: () => goClicks, startedBeforeClick: () => responseWaitStartedBeforeClick };
 }
 
-test.describe('Case details event-trigger response', { tag: '@svc-internal' }, () => {
-  for (const status of [403, 500]) {
-    test(`fails fast with HTTP ${status} instead of waiting out the destination locator`, async () => {
-      const harness = createEventTriggerHarness({ status });
-      const neverVisible = { waitFor: () => new Promise<never>(() => undefined) } as unknown as Locator;
-      const started = Date.now();
-      await expect(
-        CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document', {
-          expectedLocator: neverVisible,
-          retry: false,
-          timeoutMs: 10_000,
-        })
-      ).rejects.toThrow(`Case action "Upload Document" event trigger request failed with HTTP ${status}`);
-      expect(Date.now() - started).toBeLessThan(5_000);
-      expect(harness.startedBeforeClick()).toBe(true);
-      expect(harness.goClicks()).toBe(1);
-    });
-  }
-
-  test('proves the event started from the trigger response when no destination is supplied', async () => {
-    const harness = createEventTriggerHarness({ status: 200 });
-    await CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document');
-    expect(harness.goClicks()).toBe(1);
-  });
-
-  test('fails when no destination is supplied and no trigger response arrives', async () => {
-    const harness = createEventTriggerHarness('none');
-    await expect(
-      CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document', { timeoutMs: 1_000 })
-    ).rejects.toThrow('received no event-trigger response before the deadline');
-  });
-
+test.describe('Case details action destination', { tag: '@svc-internal' }, () => {
   test('keeps waiting for the destination when no trigger response is observed', async () => {
     const harness = createEventTriggerHarness('none');
     const destination = { waitFor: async () => undefined } as unknown as Locator;
@@ -288,22 +257,22 @@ test.describe('Case details event-trigger response', { tag: '@svc-internal' }, (
     expect(harness.goClicks()).toBe(1);
   });
 
-  test('lets negative journeys opt in to a failed trigger response', async () => {
-    const harness = createEventTriggerHarness({ status: 400 });
-    await CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document', {
-      allowEventTriggerFailure: true,
+  test('ignores an unrelated failed event response while waiting for the selected destination', async () => {
+    const harness = createEventTriggerHarness({
+      status: 500,
+      url: 'https://xui.example/data/internal/cases/9876543210987654/event-triggers/otherAction',
     });
-    expect(harness.goClicks()).toBe(1);
+    const destination = { waitFor: () => new Promise<void>((resolve) => setTimeout(resolve, 20)) } as unknown as Locator;
+    await expect(
+      CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document', { expectedLocator: destination })
+    ).resolves.toBeUndefined();
   });
 
-  test('matches only the case event-trigger GET, not validate or create-case triggers', () => {
-    const response = (url: string, method = 'GET') => ({ url: () => url, request: () => ({ method: () => method }) });
-    const base = 'https://xui.example/data/internal';
-    expect(isCaseEventTriggerResponse(response(`${base}/cases/1/event-triggers/upload?ignore-warning=false`) as never)).toBe(
-      true
+  test('requires a destination before starting an action', async () => {
+    const harness = createEventTriggerHarness({ status: 200 });
+    await expect(CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document')).rejects.toThrow(
+      'requires an expected path or locator'
     );
-    expect(isCaseEventTriggerResponse(response(`${base}/cases/1/event-triggers/upload/validate`) as never)).toBe(false);
-    expect(isCaseEventTriggerResponse(response(`${base}/case-types/T/event-triggers/createCase`) as never)).toBe(false);
-    expect(isCaseEventTriggerResponse(response(`${base}/cases/1/event-triggers/upload`, 'POST') as never)).toBe(false);
+    expect(harness.goClicks()).toBe(0);
   });
 });

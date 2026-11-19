@@ -172,4 +172,25 @@ for (pipeline in ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
         }
     }
 }
-println 'Playwright Slack lifecycle checks passed'
+// Exercise the real publication closure: raw samples are optional when the monitor failed.
+def pipelineSource = new File('Jenkinsfile_CNP').text
+def loadPublishStart = pipelineSource.indexOf('def publishPlaywrightLoadProfile =')
+def loadPublishEnd = pipelineSource.indexOf('def startPlaywrightLoadProfile =', loadPublishStart)
+def loadPublishCalls = []
+def loadPublishBinding = new Binding([
+    playwrightLoadProfileReportFile: 'load-profile.html',
+    steps: [
+        sh: { command -> loadPublishCalls << ['sh', command] },
+        archiveArtifacts: { options -> loadPublishCalls << ['archive', options] }
+    ],
+    archiveArtifacts: { options -> loadPublishCalls << ['archive', options] },
+    publishHTML: { options -> loadPublishCalls << ['html', options] },
+    currentBuild: [result: null],
+    echo: { msg -> loadPublishCalls << ['echo', msg] }
+])
+new GroovyShell(loader, loadPublishBinding).evaluate(
+    pipelineSource.substring(loadPublishStart, loadPublishEnd) +
+        "\npublishPlaywrightLoadProfile('functional-output/tests/playwright-integration/load-profile/ci-12', 'PREVIEW CI System Load')"
+)
+assert loadPublishCalls.find { it[0] == 'archive' && it[1].artifacts == 'functional-output/tests/playwright-integration/load-profile/ci-12/samples.json' && it[1].allowEmptyArchive }
+println 'Playwright Slack and load-profile lifecycle checks passed'

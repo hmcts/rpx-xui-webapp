@@ -9,10 +9,10 @@ import { resolveConfiguredPoolIdentities } from './identityPoolRegistry.js';
 const DEFAULT_WAIT_MS = 15 * 60_000;
 const DEFAULT_EXECUTION_BUDGET_MS = 5 * 60_000;
 const DEFAULT_POLL_MS = 1_000;
+const DEFAULT_TTL_MS = 15 * 60_000;
 /**
- * Headroom added to the execution window for the default lease TTL, so release and teardown finish before a
- * coordinator lease expires. Local lockfiles are refreshed by proper-lockfile while held, so their TTL only bounds how
- * long a crashed owner blocks the identity; coordinator leases are not renewed, so the TTL must outlive the test.
+ * Headroom allows time for release and teardown. Local lockfiles are refreshed while held, but coordinator leases
+ * are not renewed; sequential acquisitions or slow teardown can still outlive a coordinator lease.
  */
 const DEFAULT_TTL_HEADROOM_MS = 60_000;
 export const IDENTITY_POOL_EXHAUSTED_CODE = 'IDENTITY_POOL_EXHAUSTED';
@@ -53,8 +53,8 @@ export function resolveIdentityLeaseRuntimeSettings(
   const timing = resolveIdentityLeaseTiming(env);
   const executionBudgetMs = Math.max(timing.executionBudgetMs, requiredExecutionMs);
   const ttlMs = Math.max(
-    positiveDuration(env.PW_IDENTITY_LEASE_TTL_MS, executionBudgetMs + DEFAULT_TTL_HEADROOM_MS),
-    executionBudgetMs
+    positiveDuration(env.PW_IDENTITY_LEASE_TTL_MS, DEFAULT_TTL_MS),
+    executionBudgetMs + DEFAULT_TTL_HEADROOM_MS
   );
   return {
     ...timing,

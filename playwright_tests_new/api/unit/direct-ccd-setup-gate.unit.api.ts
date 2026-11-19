@@ -178,33 +178,25 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
     expect(attempts()).toBe(3);
   });
 
-  test('caches a successful preflight per user, jurisdiction and case type but never caches failures', async () => {
-    caseSetupTest.clearResolvedAggregatedApiIds();
-    let status = 503;
-    const { request, attempts } = aggregatedPreflightRequest('identity-cache', () => ({
-      status: () => status,
-      json: async () => [{ id: 'DIVORCE', caseTypes: [{ id: 'XUI Case PoC' }] }],
-    }));
-    const resolve = (userId: string) =>
-      caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({ request, userId, effectiveTimeoutMs: 100 });
+  for (const status of [403, 503]) {
+    test(`checks create access again when a later session returns HTTP ${status}`, async () => {
+      const userId = `user-fresh-${status}`;
+      const first = aggregatedPreflightRequest('first-session', () => ({
+        status: () => 200,
+        json: async () => [{ id: 'DIVORCE', caseTypes: [{ id: 'XUI Case PoC' }] }],
+      }));
+      const second = aggregatedPreflightRequest('later-session', () => ({ status: () => status }));
 
-    try {
-      await expect(resolve('cache-user')).rejects.toThrow(/dependency unavailable/);
-      expect(attempts()).toBe(3);
-
-      status = 200;
-      const expected = { jurisdictionId: 'DIVORCE', caseTypeId: 'XUI Case PoC' };
-      await expect(resolve('cache-user')).resolves.toEqual(expected);
-      expect(attempts()).toBe(4);
-      await expect(resolve('cache-user')).resolves.toEqual(expected);
-      expect(attempts()).toBe(4);
-
-      await expect(resolve('other-user')).resolves.toEqual(expected);
-      expect(attempts()).toBe(5);
-    } finally {
-      caseSetupTest.clearResolvedAggregatedApiIds();
-    }
-  });
+      await expect(
+        caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({ request: first.request, userId, effectiveTimeoutMs: 100 })
+      ).resolves.toEqual({ jurisdictionId: 'DIVORCE', caseTypeId: 'XUI Case PoC' });
+      await expect(
+        caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({ request: second.request, userId, effectiveTimeoutMs: 100 })
+      ).rejects.toThrow(status === 403 ? /preflight failed with HTTP 403/ : /dependency unavailable/);
+      expect(first.attempts()).toBe(1);
+      expect(second.attempts()).toBe(status === 403 ? 1 : 3);
+    });
+  }
 
   test('fails closed when create access does not include the requested jurisdiction and case type', async () => {
     const request = {

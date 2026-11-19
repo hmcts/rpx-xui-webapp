@@ -19,7 +19,13 @@ const TASK_SEARCH_URL_PATTERN = /\/workallocation\/task$/;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
+type TaskSearch = { sequence: number; url: string; status?: number; completedAt?: number };
+
 export class TaskListPage extends Base {
+  private taskSearchSequence = 0;
+  private taskSearchNavigationSequence = 0;
+  private readonly taskSearches: TaskSearch[] = [];
+  private readonly taskSearchByRequest = new WeakMap<Request, TaskSearch>();
   readonly myWorkHeading = this.page.getByRole('heading', { name: /my work/i }).first();
   readonly myWorkFilterToggle = this.page.locator('exui-my-work-filter .govuk-button.hmcts-button--secondary').first();
   readonly filterPanel = this.page.locator('xuilib-generic-filter');
@@ -122,6 +128,31 @@ export class TaskListPage extends Base {
 
   constructor(page: Page) {
     super(page);
+    page.on('framenavigated', (frame) => {
+      if (frame === page.mainFrame()) this.taskSearchNavigationSequence = this.taskSearchSequence;
+    });
+    page.on('request', (request) => {
+      const url = request.url().split('?')[0];
+      if (request.method() !== 'POST' || !TASK_SEARCH_URL_PATTERN.test(url)) return;
+      const search = { sequence: ++this.taskSearchSequence, url };
+      this.taskSearchByRequest.set(request, search);
+      this.taskSearches.push(search);
+      if (this.taskSearches.length > 500) this.taskSearches.shift();
+    });
+    page.on('response', (response) => {
+      const search = this.taskSearchByRequest.get(response.request());
+      if (search) {
+        search.status = response.status();
+        search.completedAt = Date.now();
+      }
+    });
+    page.on('requestfailed', (request) => {
+      const search = this.taskSearchByRequest.get(request);
+      if (search) {
+        search.status = 0;
+        search.completedAt = Date.now();
+      }
+    });
   }
 
   async applyAllFilterOptions() {
@@ -152,6 +183,7 @@ export class TaskListPage extends Base {
     } = {}
   ) {
     const rowIndex = options.rowIndex ?? 0;
+    const observedSinceSequence = this.taskSearchSequence;
     const deadlineMs = Date.now() + (options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS);
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
 
@@ -161,7 +193,8 @@ export class TaskListPage extends Base {
     await this.waitForTaskListShellReadyAfterNavigation(
       /\/work\/my-work\/list(?:\?.*)?$/,
       `${context} shell bootstrap`,
-      deadlineMs
+      deadlineMs,
+      observedSinceSequence
     );
     await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs: remaining() });
   }
@@ -311,11 +344,12 @@ export class TaskListPage extends Base {
 
   private async navigateToTaskListView(path: string, urlPattern: RegExp, context: string, options: { timeoutMs?: number } = {}) {
     const navigationStartedMs = Date.now();
+    const observedSinceSequence = this.taskSearchSequence;
     const deadlineMs = navigationStartedMs + (options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS);
     await this.gotoTaskListPath(path, urlPattern, context, deadlineMs);
     await this.waitForTaskListSpinnerToSettle(Math.min(10_000, remainingNavigationTimeout(deadlineMs, context)));
     await this.recoverBlankTaskListDocumentAfterNavigation(urlPattern, context, deadlineMs);
-    await this.waitForTaskListShellReadyAfterNavigation(urlPattern, context, deadlineMs, navigationStartedMs);
+    await this.waitForTaskListShellReadyAfterNavigation(urlPattern, context, deadlineMs, observedSinceSequence);
   }
 
   private async navigateToTerminalTaskListView(
@@ -412,7 +446,7 @@ export class TaskListPage extends Base {
     urlPattern: RegExp,
     context: string,
     deadlineMs: number,
-    observedSinceMs = Date.now()
+    observedSinceSequence = this.taskSearchSequence
   ): Promise<void> {
     let lastError: unknown;
 
@@ -425,7 +459,7 @@ export class TaskListPage extends Base {
         await this.waitForTaskListShellReady(
           attempt === 1 ? context : `${context} after blank-page reload`,
           remainingTimeoutMs,
-          observedSinceMs
+          observedSinceSequence
         );
         if (!urlPattern.test(this.page.url())) {
           throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after shell bootstrap.`);
@@ -555,7 +589,11 @@ export class TaskListPage extends Base {
     return this.page.url().includes('/service-down') || (await this.serviceDownError.isVisible().catch(() => false));
   }
 
-  async waitForTaskListShellReady(context: string, timeoutMs = TASK_LIST_READY_TIMEOUT_MS, observedSinceMs = Date.now()) {
+  async waitForTaskListShellReady(
+    context: string,
+    timeoutMs = TASK_LIST_READY_TIMEOUT_MS,
+    observedSinceSequence = this.taskSearchSequence
+  ) {
     const deadlineMs = Date.now() + timeoutMs;
     const remaining = () => remainingNavigationTimeout(deadlineMs, `waiting for task list shell (${context})`);
     await this.page.waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases)))/, {
@@ -577,7 +615,7 @@ export class TaskListPage extends Base {
       `task list shell (${context})`,
       remaining(),
       250,
-      () => this.describeSettledTaskSearchFailure(observedSinceMs)
+      () => this.describeSettledTaskSearchFailure(observedSinceSequence)
     );
 
     if (bootstrapSignal === 'error-page') {
@@ -592,22 +630,19 @@ export class TaskListPage extends Base {
     await this.assertTaskListHealthy(context);
   }
 
-  private findFailedTaskSearch(observedSinceMs: number) {
-    return this.getApiCalls().find(
-      (call) =>
-        call.method === 'POST' &&
-        TASK_SEARCH_URL_PATTERN.test(call.url) &&
-        call.status >= 400 &&
-        Date.parse(call.timestamp) >= observedSinceMs
-    );
-  }
-
-  private describeSettledTaskSearchFailure(observedSinceMs: number): string | undefined {
-    const failed = this.findFailedTaskSearch(observedSinceMs);
-    if (!failed || Date.now() - Date.parse(failed.timestamp) < TASK_SEARCH_FAILURE_SETTLE_MS) {
+  private describeSettledTaskSearchFailure(observedSinceSequence: number): string | undefined {
+    const minimumSequence = Math.max(observedSinceSequence, this.taskSearchNavigationSequence ?? 0);
+    const latest = (this.taskSearches ?? []).filter((search) => search.sequence > minimumSequence).at(-1);
+    if (
+      !latest ||
+      latest.status === undefined ||
+      latest.status < 400 ||
+      latest.completedAt === undefined ||
+      Date.now() - latest.completedAt < TASK_SEARCH_FAILURE_SETTLE_MS
+    ) {
       return undefined;
     }
-    return `Task search ${failed.method} ${failed.url} returned HTTP ${failed.status}`;
+    return `Task search POST ${latest.url} returned HTTP ${latest.status}`;
   }
 
   private async waitForVisibleSignal(

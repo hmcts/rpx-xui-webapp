@@ -3,12 +3,13 @@ import { TaskListPage } from '../../E2E/page-objects/pages/exui/taskList.po.js';
 import { createReadinessHarness } from './navigation-readiness.helpers.js';
 
 type TrackedCall = { url: string; method: string; status: number; duration: number; timestamp: string };
+type Search = { sequence: number; url: string; status?: number; completedAt?: number };
 
 function taskSearchCall(status: number, atMs: number, url = 'https://xui.example/workallocation/task'): TrackedCall {
   return { url, method: 'POST', status, duration: 10, timestamp: new Date(atMs).toISOString() };
 }
 
-function shellHarness(options: { calls?: TrackedCall[]; signalVisibleAfterMs?: number } = {}) {
+function shellHarness(options: { calls?: TrackedCall[]; searches?: Search[]; signalVisibleAfterMs?: number } = {}) {
   const harness = createReadinessHarness();
   const shellSignal = {
     ...harness.hidden,
@@ -24,6 +25,14 @@ function shellHarness(options: { calls?: TrackedCall[]; signalVisibleAfterMs?: n
     taskListResultsAmount: harness.hidden,
     errorPageHeading: harness.hidden,
     getApiCalls: () => options.calls ?? [],
+    taskSearches:
+      options.searches ??
+      (options.calls ?? []).map((call, index) => ({
+        sequence: index + 1,
+        url: call.url,
+        status: call.status,
+        completedAt: Date.parse(call.timestamp),
+      })),
   });
   return harness;
 }
@@ -48,6 +57,71 @@ test.describe('Task list shell backend failure', { tag: '@svc-internal' }, () =>
     try {
       await harness.taskList.waitForTaskListShellReady('shell', 30_000, 0);
       expect(harness.elapsed()).toBe(1_000);
+    } finally {
+      harness.restore();
+    }
+  });
+
+  test('waits for the shell after a newer search succeeds', async () => {
+    const harness = shellHarness({ calls: [taskSearchCall(503, 0), taskSearchCall(200, 1_000)], signalVisibleAfterMs: 3_000 });
+    try {
+      await harness.taskList.waitForTaskListShellReady('shell', 10_000, 0);
+      expect(harness.elapsed()).toBe(3_000);
+    } finally {
+      harness.restore();
+    }
+  });
+
+  test('waits while a newer task search is pending', async () => {
+    const harness = shellHarness({
+      calls: [taskSearchCall(503, 0)],
+      searches: [
+        { sequence: 1, url: 'https://xui.example/workallocation/task', status: 503, completedAt: 0 },
+        { sequence: 2, url: 'https://xui.example/workallocation/task' },
+      ],
+      signalVisibleAfterMs: 3_000,
+    });
+    try {
+      await harness.taskList.waitForTaskListShellReady('shell', 10_000, 0);
+      expect(harness.elapsed()).toBe(3_000);
+    } finally {
+      harness.restore();
+    }
+  });
+
+  test('does not report an older failure that completes after a newer success', async () => {
+    const harness = shellHarness({
+      calls: [taskSearchCall(200, 1_000), taskSearchCall(503, 1_500)],
+      searches: [
+        { sequence: 1, url: 'https://xui.example/workallocation/task', status: 503, completedAt: 1_500 },
+        { sequence: 2, url: 'https://xui.example/workallocation/task', status: 200, completedAt: 1_000 },
+      ],
+      signalVisibleAfterMs: 4_000,
+    });
+    try {
+      await harness.taskList.waitForTaskListShellReady('shell', 10_000, 0);
+      expect(harness.elapsed()).toBe(4_000);
+    } finally {
+      harness.restore();
+    }
+  });
+
+  test('does not report an older HTTP failure after a newer transport failure', async () => {
+    const harness = shellHarness({ calls: [taskSearchCall(503, 0), taskSearchCall(0, 1_000)], signalVisibleAfterMs: 3_000 });
+    try {
+      await harness.taskList.waitForTaskListShellReady('shell', 10_000, 0);
+      expect(harness.elapsed()).toBe(3_000);
+    } finally {
+      harness.restore();
+    }
+  });
+
+  test('ignores a failed search from before the most recent navigation', async () => {
+    const harness = shellHarness({ calls: [taskSearchCall(503, 0)], signalVisibleAfterMs: 3_000 });
+    harness.taskList.taskSearchNavigationSequence = 1;
+    try {
+      await harness.taskList.waitForTaskListShellReady('shell', 10_000, 0);
+      expect(harness.elapsed()).toBe(3_000);
     } finally {
       harness.restore();
     }

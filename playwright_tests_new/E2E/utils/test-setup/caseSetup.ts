@@ -72,8 +72,6 @@ const TRANSIENT_EVENT_TOKEN_STATUS_CODES = new Set([404, 429, 500, 502, 503, 504
 const TRANSIENT_USER_DETAILS_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 const TRANSIENT_AGGREGATED_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 const IDENTITY_DENIED_AGGREGATED_STATUS_CODES = new Set([401, 403, 404]);
-// Successful create-access preflights per worker process; failures are never cached.
-const resolvedAggregatedApiIds = new Map<string, { jurisdictionId: string; caseTypeId: string }>();
 const TRANSIENT_API_REQUEST_ERROR_MARKERS = [
   'econnreset',
   'econnrefused',
@@ -324,12 +322,6 @@ async function resolveApiIdsFromAggregatedJurisdictions({
   effectiveTimeoutMs: number;
 }): Promise<{ jurisdictionId: string; caseTypeId: string }> {
   const requestedCaseTypeId = request.caseType;
-  const cacheKey = JSON.stringify([userId, request.jurisdiction, requestedCaseTypeId]);
-  const cached = resolvedAggregatedApiIds.get(cacheKey);
-  if (cached) {
-    return cached;
-  }
-
   const route = `aggregated/caseworkers/${encodeURIComponent(userId)}/jurisdictions?access=create`;
   const response = await requestAggregatedJurisdictionsWithRetry(request, route, effectiveTimeoutMs);
 
@@ -396,12 +388,10 @@ async function resolveApiIdsFromAggregatedJurisdictions({
     });
   }
 
-  const resolvedIds = {
+  return {
     jurisdictionId: matchedJurisdiction.id,
     caseTypeId: matchedCaseType.id,
   };
-  resolvedAggregatedApiIds.set(cacheKey, resolvedIds);
-  return resolvedIds;
 }
 
 async function requestAggregatedJurisdictionsWithRetry(
@@ -776,7 +766,6 @@ export const __test__ = {
   requestAggregatedJurisdictionsWithRetry,
   resolveCaseNumberFromCreateResponse,
   resolveApiIdsFromAggregatedJurisdictions,
-  clearResolvedAggregatedApiIds: () => resolvedAggregatedApiIds.clear(),
   resolveEventTokenRetryWindowMs,
   resolveValidateRetryWindowMs,
   summarizeDirectCcdValidationFailure,

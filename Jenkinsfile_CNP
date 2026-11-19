@@ -204,6 +204,7 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
             cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
         """
         steps.archiveArtifacts(allowEmptyArchive: false, artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}")
+        steps.archiveArtifacts(allowEmptyArchive: true, artifacts: "${reportDir}/samples.json")
         archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
         publishHTML([
           allowMissing         : false,

@@ -78,7 +78,8 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await test.step('Open My access with the large dataset', async () => {
-      await taskListPage.gotoMyAccess();
+      // A 999-row DOM can consume the default navigation budget during already-satisfied visibility checks.
+      await taskListPage.gotoMyAccess(60_000);
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });

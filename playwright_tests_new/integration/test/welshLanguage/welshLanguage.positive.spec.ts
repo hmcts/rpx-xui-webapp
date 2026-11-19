@@ -6,7 +6,7 @@ import {
   setupWelshLanguageSession,
   type WelshLanguageSessionLease,
 } from '../../helpers';
-import { welshTranslationsSmall } from '../../mocks/welshLanguage';
+import { welshTranslationsForPhrases } from '../../mocks/welshLanguage';
 
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   let welshSessionLease: WelshLanguageSessionLease | undefined;
@@ -14,7 +14,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
   test.beforeEach(async ({ page }, testInfo) => {
     welshSessionLease = await setupWelshLanguageSession(page, testInfo);
     await page.route('**api/translation/cy*', async (route) => {
-      const body = JSON.stringify(welshTranslationsSmall);
+      const body = JSON.stringify(welshTranslationsForPhrases(route.request().postDataJSON().phrases));
       await route.fulfill({ status: 200, contentType: 'application/json', body });
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });

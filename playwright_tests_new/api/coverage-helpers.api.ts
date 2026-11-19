@@ -236,9 +236,9 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
       }
     );
 
-    expect(timeoutResult).toEqual({ data: undefined, status: 504 });
-    expect(timeoutAnnotations).toBe(1);
-    expect(timeoutCalls).toBe(3);
+    expect(timeoutResult, 'guardedTaskSearch result after exhausting timeout retries').toEqual({ data: undefined, status: 504 });
+    expect(timeoutAnnotations, 'onRequestTimeout callback count').toBe(1);
+    expect(timeoutCalls, 'post attempts for retries: 2 (1 initial + 2 retries)').toBe(3);
 
     await expect(
       guardedTaskSearch(timeoutClient, { view: 'AvailableTasks' }, { failOnRequestError: true, retries: 0 })

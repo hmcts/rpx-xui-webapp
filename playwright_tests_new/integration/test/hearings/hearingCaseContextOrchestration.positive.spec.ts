@@ -37,14 +37,6 @@ test.describe(
       hearingViewEditSummaryPage,
       hearingViewSummaryPage,
     }) => {
-      const loadServiceValuesRequest = page.waitForRequest(
-        (request) => request.url().includes('/api/hearings/loadServiceHearingValues') && request.method() === 'POST'
-      );
-      const caseTypeLovRequest = page.waitForRequest(
-        (request) => request.url().includes('/api/prd/lov/getLovRefData') && request.url().includes('caseType')
-      );
-      const courtLocationRequest = page.waitForRequest((request) => request.url().includes('/api/prd/location/getLocationById'));
-
       await applyHearingManagerSessionCookies(page, HEARING_MANAGER_CR84_ON_USER);
       await setupHearingsMockRoutes(page, {
         userRoles: hearingManagerRoles,
@@ -105,6 +97,13 @@ test.describe(
         return captured ? JSON.parse(captured) : null;
       });
       expect(caseInfoAtRequest).toEqual(staleCaseInfo);
+      const loadServiceValuesRequest = page.waitForRequest(
+        (request) => request.url().includes('/api/hearings/loadServiceHearingValues') && request.method() === 'POST'
+      );
+      const caseTypeLovRequest = page.waitForRequest(
+        (request) => request.url().includes('/api/prd/lov/getLovRefData') && request.url().includes('caseType')
+      );
+      const courtLocationRequest = page.waitForRequest((request) => request.url().includes('/api/prd/location/getLocationById'));
       await hearingsTabPage.openViewDetails(HEARINGS_LISTED_HEARING_ID);
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-view-summary$/);
 
@@ -113,6 +112,8 @@ test.describe(
       expect(serviceValuesRequest.postDataJSON()).toEqual({
         caseReference: nonDefaultCaseConfig.caseReference,
       });
+      expect((await caseTypeLovRequest).url()).toContain('caseType');
+      expect((await courtLocationRequest).url()).toContain(nonDefaultCaseConfig.locationId);
 
       const additionalInstructions = 'Playwright case context orchestration verification';
       const updateRequest = await submitAdditionalInstructionsUpdate(
@@ -123,8 +124,6 @@ test.describe(
       );
       const updatePayload = updateRequest.postDataJSON();
 
-      expect((await caseTypeLovRequest).url()).toContain('caseType');
-      expect((await courtLocationRequest).url()).toContain(nonDefaultCaseConfig.locationId);
       expect(updatePayload).toEqual(
         expect.objectContaining({
           caseDetails: expect.objectContaining({

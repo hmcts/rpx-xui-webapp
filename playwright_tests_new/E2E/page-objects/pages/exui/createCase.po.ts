@@ -64,6 +64,10 @@ export class CreateCasePage extends Base {
   readonly startButton!: Locator;
   readonly submitButton!: Locator;
   readonly continueButton!: Locator;
+  readonly caseTitleInput!: Locator;
+  readonly caseReferenceInput!: Locator;
+  readonly evidenceDocumentInput!: Locator;
+  readonly evidenceDocumentUploadError!: Locator;
 
   readonly legalRepParty1Block!: Locator;
   readonly legalRepParty2Block!: Locator;
@@ -770,7 +774,7 @@ export class CreateCasePage extends Base {
   async uploadFile(
     fileName: string,
     mimeType: string,
-    fileContent: string,
+    fileContent: string | Buffer,
     fileInput?: Locator,
     fileContentEncoding?: BufferEncoding
   ) {
@@ -779,7 +783,7 @@ export class CreateCasePage extends Base {
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
-        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
+        buffer: Buffer.isBuffer(fileContent) ? fileContent : Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
       });
     });
   }

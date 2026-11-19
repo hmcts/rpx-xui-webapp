@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import type { Page } from '@playwright/test';
 import { applySessionCookies } from '../../helpers';
 import { ensureSession } from '../../../common/sessionCapture';
@@ -77,21 +78,26 @@ export async function setupWorkFiltersUser(page: Page, options: SetupWorkFilters
   const session = await applySessionCookies(page, workFiltersUserIdentifier);
   const sessionUserId = extractUserIdFromCookies(session.cookies) ?? workFiltersUserId;
 
-  const userDetails = buildHearingsUserDetailsMock(
-    options.roles ?? uniqueRoles(['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-civil', defaultStaffAMMenuRole])
-  );
+  const userDetails = {
+    ...buildHearingsUserDetailsMock(
+      options.roles ?? uniqueRoles(['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-civil', defaultStaffAMMenuRole])
+    ),
+    roleAssignmentInfo: ensureSupportedAMRoleAssignment(
+      options.roleAssignments ?? [
+        { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
+        { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
+      ],
+      defaultStaffAMMenuRole,
+      workFiltersSupportedJurisdictions
+    ),
+  };
 
   userDetails.userInfo.id = sessionUserId;
   userDetails.userInfo.uid = sessionUserId;
+  Object.assign(userDetails.userInfo, {
+    filterOwnerHash: createHash('sha256').update(`exui-filter-owner:${sessionUserId}`).digest('hex'),
+  });
   userDetails.userInfo.roleCategory = 'LEGAL_OPERATIONS';
-  userDetails.roleAssignmentInfo = ensureSupportedAMRoleAssignment(
-    options.roleAssignments ?? [
-      { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
-      { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
-    ],
-    defaultStaffAMMenuRole,
-    workFiltersSupportedJurisdictions
-  );
 
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));

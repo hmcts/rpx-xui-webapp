@@ -247,6 +247,56 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     });
   });
 
+  test('All-work type search starts at three characters and defaults to all types', async ({ taskListPage, page }) => {
+    const taskListMockResponse = buildTaskListMock(10, '', myActionsList);
+    const taskSearchRequests: Array<{ searchRequest?: { search_parameters?: Array<{ key?: string }> }; view?: string }> = [];
+    const workTypeSearchTerms: string[] = [];
+
+    await setupManageTasksBaseRoutes(page, {
+      taskListHandler: async (route) => {
+        taskSearchRequests.push(route.request().postDataJSON());
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(taskListMockResponse) });
+      },
+      supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+      supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
+    });
+    await page.route('**/workallocation/task/search-types-of-work', async (route) => {
+      const { searchTerm } = route.request().postDataJSON() as { searchTerm: string };
+      workTypeSearchTerms.push(searchTerm);
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([{ key: 'hearing_work', label: 'Hearing work' }]),
+      });
+    });
+
+    await taskListPage.gotoAllWorkTasks();
+    await expect(taskListPage.taskListTable).toBeVisible();
+    await taskListPage.exuiSpinnerComponent.wait();
+    await expect.poll(() => taskSearchRequests.filter((request) => request.view === 'AllWork').length).toBeGreaterThan(0);
+    expect(taskSearchRequests.find((request) => request.view === 'AllWork')?.searchRequest?.search_parameters).toEqual(
+      expect.any(Array)
+    );
+    expect(
+      taskSearchRequests
+        .find((request) => request.view === 'AllWork')
+        ?.searchRequest?.search_parameters?.some((parameter) => parameter.key === 'work_type')
+    ).not.toBe(true);
+
+    await taskListPage.waitForAllWorkFilterControlsReady();
+    const workTypeSearch = page.locator('#inputWorkTypeSearch');
+    await expect(workTypeSearch).toBeVisible();
+    await page.clock.install();
+    await workTypeSearch.fill('He');
+    await page.clock.runFor(1_000);
+    expect(workTypeSearchTerms).toEqual([]);
+
+    await workTypeSearch.fill('Hea');
+    await page.clock.runFor(1_000);
+    await expect.poll(() => workTypeSearchTerms).toEqual(['Hea']);
+    await expect(page.getByRole('option', { name: 'Hearing work' })).toBeVisible();
+  });
+
   test('All-work manage action matrix is rendered for each expected row', async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(25, '', myActionsList);
     const allActionIds = ['assign', 'claim', 'claim-and-go', 'reassign', 'unclaim', 'go', 'cancel', 'complete'];

@@ -25,7 +25,7 @@ describe('BookingCheckComponent', () => {
 
   beforeEach(waitForAsync(() => {
     mockBookingServiceSpy = jasmine.createSpyObj('BookingService', ['createBooking', 'refreshRoleAssignments']);
-    mockWindowService = jasmine.createSpyObj('WindowService', ['removeSessionStorage']);
+    mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
     mockBookingServiceSpy.createBooking.and.returnValue(
       of({
         bookingResponse: {

@@ -888,7 +888,7 @@ export class ProfessionalUserUtils {
     const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
     const supportedOrganisationAssignmentRoles = filterSupportedOrganisationAssignmentRoles(assignmentUserRoles.roles);
     logger.info('Resolved assignment principal roles for manage-org bearer invite.', {
-      assignmentPrincipalUsername: resolveTokenPrincipalUsername(assignmentBearerToken) ?? 'unknown',
+      assignmentPrincipalUsername: resolveTokenPrincipalUsername(decodeJwtPayload(assignmentBearerToken)) ?? 'unknown',
       targetEmail: params.user.email,
       source: assignmentUserRoles.source,
       profile: assignmentUserRoles.profile,
@@ -1172,7 +1172,7 @@ export class ProfessionalUserUtils {
     if (hydrated.source !== resolved.source) {
       const supportedOrganisationAssignmentRoles = filterSupportedOrganisationAssignmentRoles(hydrated.roles);
       logger.info('Hydrated assignment principal roles from IDAM userinfo after JWT claims were unmapped.', {
-        assignmentPrincipalUsername: resolveTokenPrincipalUsername(assignmentBearerToken) ?? 'unknown',
+        assignmentPrincipalUsername: resolveTokenPrincipalUsername(decodeJwtPayload(assignmentBearerToken)) ?? 'unknown',
         source: hydrated.source,
         roles: hydrated.roles,
         supportedOrganisationAssignmentRoles,

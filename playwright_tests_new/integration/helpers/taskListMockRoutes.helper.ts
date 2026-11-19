@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import type { Page } from '@playwright/test';
 import nodeAppDataModels from '../../api/data/nodeAppDataModels';
 import {
@@ -44,6 +45,7 @@ export type TaskListBootstrapUserOptions = {
   replaceRoleAssignments?: boolean;
   roleAssignments?: TaskListBootstrapRoleAssignment[];
   roleCategory?: string;
+  roleCategories?: string[];
   roles?: string[];
   userId?: string;
 };
@@ -107,13 +109,18 @@ export async function setupTaskListBootstrapRoutes(
     userDetails.userInfo.id = userOptions.userId;
     userDetails.userInfo.uid = userOptions.userId;
   }
+  Object.assign(userDetails.userInfo, {
+    filterOwnerHash: createHash('sha256')
+      .update(`exui-filter-owner:${userDetails.userInfo.id || userDetails.userInfo.uid}`)
+      .digest('hex'),
+  });
   const amMenuRole = userOptions.amMenuRole ?? defaultStaffAMMenuRole;
   userDetails.userInfo.roles = uniqueRoles([
     ...(userOptions.roles ?? defaultStaffWorkAllocationRoles),
     'task-supervisor',
     amMenuRole,
   ]);
-  userDetails.userInfo.roleCategories = [userOptions.roleCategory ?? 'LEGAL_OPERATIONS'];
+  userDetails.userInfo.roleCategories = userOptions.roleCategories ?? [userOptions.roleCategory ?? 'LEGAL_OPERATIONS'];
   const routeRoleAssignments = userOptions.roleAssignments
     ? ensureSupportedAMRoleAssignment(userOptions.roleAssignments, amMenuRole, supportedJurisdictions)
     : [

@@ -10,4 +10,4 @@ export const getHearingValuesCaseInfo = createSelector(getHearingValues, (hearin
 
 export const getHearingValuesModel = createSelector(getHearingValues, fromFeature.hearingValuesModel);
 
-export const getHearingValuesLastError = createSelector(getHearingValues, fromFeature.hearingRequestLastError);
+export const getHearingValuesLastError = createSelector(getHearingValues, (hearingValues) => hearingValues?.lastError);

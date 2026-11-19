@@ -37,6 +37,14 @@ import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import { setTaskHearingDatesFromCases } from './taskHearingDateService';
 import {
+  sendValidationError,
+  validateAllCasesBody,
+  validateGetUsersByServiceNameBody,
+  validateMyCasesBody,
+  validateSearchForCompletableBody,
+  validateSearchTaskBody,
+} from './validation';
+import {
   assignActionsToCases,
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
@@ -161,6 +169,11 @@ export async function getTaskRoles(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const validationFailure = validateSearchTaskBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
@@ -367,6 +380,11 @@ export async function postTaskCompletionForAccess(
 
 export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const validationFailure = validateSearchForCompletableBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
     const jurisdictions = getWASupportedJurisdictionsList();
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     const reqBody = {
@@ -440,6 +458,11 @@ export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
+    const validationFailure = validateMyCasesBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
@@ -497,6 +520,11 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 }
 
 export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const validationFailure = validateAllCasesBody(req.body);
+  if (validationFailure) {
+    return sendValidationError(res, validationFailure);
+  }
+
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
@@ -585,6 +613,12 @@ export async function getTaskNames(req: EnhancedRequest, res: Response): Promise
  */
 export async function getUsersByServiceName(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   try {
+    const validationFailure = validateGetUsersByServiceNameBody(req.body);
+    if (validationFailure) {
+      sendValidationError(res, validationFailure);
+      return;
+    }
+
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const term = req.body.term;
     const services = req.body.services;

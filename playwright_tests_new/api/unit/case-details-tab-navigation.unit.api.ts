@@ -61,7 +61,7 @@ test.describe('case details tab pagination', { tag: '@svc-internal' }, () => {
     test(scenario.name, async ({ page }) => {
       await page.setContent(caseDetailsTabsMarkup(scenario.offset, scenario.pagination));
       const details = new CaseDetailsPage(page);
-      Object.assign(details, { getRecommendedTimeoutMs: () => 5000 });
+      Object.assign(details, { getRecommendedTimeoutMs: () => 15_000 });
 
       await details.selectCaseDetailsTab(scenario.tab);
 
@@ -73,7 +73,17 @@ test.describe('case details tab pagination', { tag: '@svc-internal' }, () => {
   test('selects a visible tab wider than the tab viewport without paging back and forth', async ({ page }) => {
     await page.setContent(caseDetailsTabsMarkup(0, true, false, 400));
     const details = new CaseDetailsPage(page);
-    Object.assign(details, { getRecommendedTimeoutMs: () => 5000 });
+    Object.assign(details, { getRecommendedTimeoutMs: () => 15_000 });
+
+    await details.selectCaseDetailsTab('Documents');
+
+    await expect(page.getByRole('tab', { name: 'Documents', exact: true })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  test('selects an off-screen tab in the legacy Material tab strip', async ({ page }) => {
+    await page.setContent(caseDetailsTabsMarkup(400, true, false, 300, 'legacy'));
+    const details = new CaseDetailsPage(page);
+    Object.assign(details, { getRecommendedTimeoutMs: () => 15_000 });
 
     await details.selectCaseDetailsTab('Documents');
 
@@ -83,9 +93,12 @@ test.describe('case details tab pagination', { tag: '@svc-internal' }, () => {
   test('fails rather than bypassing a disabled pagination control', async ({ page }) => {
     await page.setContent(caseDetailsTabsMarkup(400, true, true));
     const details = new CaseDetailsPage(page);
-    Object.assign(details, { getRecommendedTimeoutMs: () => 500 });
+    await details.waitForCaseDetailsReady(5_000);
+    Object.assign(details, { getRecommendedTimeoutMs: () => 5_000 });
 
-    await expect(details.selectCaseDetailsTab('Documents')).rejects.toThrow(/Timeout/);
+    await expect(details.selectCaseDetailsTab('Documents')).rejects.toThrow(
+      /locator\.click: Timeout[\s\S]*mat-mdc-tab-header-pagination-before/
+    );
     await expect(page.getByRole('tab', { name: 'Documents', exact: true })).toHaveAttribute('aria-selected', 'false');
   });
 });

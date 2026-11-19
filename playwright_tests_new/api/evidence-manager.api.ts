@@ -96,7 +96,10 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
         typeof annotationSet.data === 'object' && annotationSet.data !== null && 'id' in annotationSet.data
           ? (annotationSet.data as { id?: unknown }).id
           : undefined;
-      expect(typeof annotationSetId).toBe('string');
+      expect(
+        typeof annotationSetId,
+        `annotation set lookup for document ${sharedDocId} returned no string id (status ${annotationSet.status})`
+      ).toBe('string');
       const annotation = await buildAnnotation(apiClient, headers, sharedDocId, annotationSetId as string);
       const createRes = await apiClient.put('em-anno/annotations', {
         data: annotation,
@@ -155,7 +158,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
       );
       expectStatus(profile.status, [200]);
       const userId = resolveUserInfoId(profile.data as { userInfo?: { uid?: string; id?: string } });
-      expect(typeof userId).toBe('string');
+      expect(typeof userId, `api/user/details returned no user id (status ${profile.status})`).toBe('string');
       const bookmark = await buildBookmark(apiClient, sharedDocId, userId as string);
       const createRes = await apiClient.put('em-anno/bookmarks', {
         data: bookmark,

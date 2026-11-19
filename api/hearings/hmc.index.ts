@@ -8,6 +8,7 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID,
 } from '../configuration/references';
+import { trackTrace } from '../lib/appInsights';
 import { EnhancedRequest } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';

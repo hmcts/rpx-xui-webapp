@@ -30,6 +30,7 @@ function navigationHarness(options: { initialPath?: string; reloadPath?: string;
       },
     },
     logger: { warn() {} },
+    taskListTable: { isVisible: async () => false },
     notAuthorisedHeading: heading,
     serviceDownHeading: heading,
   }) as TaskListPage;

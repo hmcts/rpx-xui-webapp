@@ -28,6 +28,19 @@ export const replacementCaseworker = {
   service: 'IA',
   location: { id: 227101, locationName: 'Taylor House' },
 };
+export const reallocatedRecords = roleRecords.map((record) =>
+  record.assignmentId === 'assignment-legal-ops-case-100'
+    ? {
+        ...record,
+        assignmentId: 'assignment-clara',
+        actorId: replacementPerson.id,
+        actorName: replacementPerson.name,
+        actorEmail: replacementPerson.email,
+        start: '2026-11-13T00:00:00.000Z',
+        end: '',
+      }
+    : record
+);
 export const exclusionReason = 'Synthetic conflict declared by the selected person.';
 export const addedExclusionRecords = [
   ...roleRecords,
@@ -58,6 +71,21 @@ export const expectedSelfExclusion = {
   exclusionOption: 'Exclude me',
   personRole: null,
   person: null,
+};
+export const expectedReallocation = {
+  caseId: roleCaseId,
+  jurisdiction: 'IA',
+  assignmentId: 'assignment-legal-ops-case-100',
+  state: 4,
+  typeOfRole: { id: 'case-manager', name: 'Case manager' },
+  allocateTo: 'Allocate to another person',
+  personToBeRemoved: { id: 'user-alice', name: null, domain: 'LEGAL_OPERATIONS' },
+  person: replacementPerson,
+  durationOfRole: 'Indefinite',
+  roleCategory: 'LEGAL_OPERATIONS',
+  action: 'reallocate',
+  period: { startDate: '2026-11-13T00:00:00.000Z', endDate: null },
+  lastError: null,
 };
 export const expectedDeletedExclusion = {
   actorId: 'judge-bob',

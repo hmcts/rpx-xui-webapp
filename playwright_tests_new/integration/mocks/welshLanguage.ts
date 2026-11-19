@@ -17,3 +17,9 @@ export const welshTranslationsSmall = {
     },
   },
 };
+
+export const welshTranslationsForPhrases = (phrases: string[]) => ({
+  translations: Object.fromEntries(
+    Object.entries(welshTranslationsSmall.translations).filter(([phrase]) => phrases.includes(phrase))
+  ),
+});

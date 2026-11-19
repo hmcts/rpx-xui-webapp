@@ -1621,7 +1621,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             throw new SessionCaptureError(
               `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
               identity.userIdentifier,
-              { sessionPath, failureKind: recentFailure.failureKind }
+              { sessionPath, failureKind: recentFailure.failureKind, cooldownSuppressed: true }
             );
           }
         }
@@ -1699,7 +1699,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             throw new SessionCaptureError(
               `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
               identity.userIdentifier,
-              { sessionPath, failureKind: lockedRecentFailure.failureKind }
+              { sessionPath, failureKind: lockedRecentFailure.failureKind, cooldownSuppressed: true }
             );
           }
 

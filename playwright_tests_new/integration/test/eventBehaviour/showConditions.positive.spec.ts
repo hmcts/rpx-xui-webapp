@@ -32,8 +32,10 @@ test.describe('Show-condition reference coverage', { tag: ['@integration', '@int
   });
 
   test(
-    'preserves a dependent answer at CYA when its source page was skipped',
-    { tag: '@blocked-exui-1004' },
+    'EXUI-1004: preserves a dependent answer at CYA when its source page was skipped',
+    {
+      tag: '@blocked-exui-1004',
+    },
     async ({ page, caseDetailsPage, createCasePage }) => {
       const conditions = new ShowConditionsComponent(page);
       await openShowConditionsJourney(page, caseDetailsPage, buildHiddenPageShowConditionsTrigger('show'));

@@ -72,6 +72,7 @@
     "test:functional": "echo 'Skipping functional tests' && exit 0",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ng": "ng test",
+    "test:node": "cd api && yarn coverage",
     "test:nodeMock": "nodemon api/test/pact/pact-mocks/app.js",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error dotenv_config_defaults=./api/.env.defaults NODE_OPTIONS=\"--disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=DEP0060\" mocha --timeout 10000 -r ts-node/register -r api/test/setup-config-env.ts -r dotenv-extended/config api/test/pact/**/*.spec.ts",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",

@@ -1,6 +1,8 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { setupCaseworkerJurisdictionsRoute } from '../../helpers/caseworkerJurisdictionMockRoutes.helper';
+import { setupCcdProfileMockRoute } from '../../helpers/ccdProfileMockRoute.helper';
+import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
 import { CCD_COLLECTION_FIELD_PERMISSIONS_PEOPLE_VALUE, CCD_COLLECTION_PERMISSION_SCENARIOS, TEST_USERS } from '../../testData';
 import { divorcePocCaseData } from '../../mocks/createCase.mock';
 
@@ -25,6 +27,10 @@ test.describe(
       }) => {
         await test.step('Mock create-case routes for the collection display context', async () => {
           await setupCaseworkerJurisdictionsRoute(page, [jurisdiction]);
+          await setupCcdProfileMockRoute(
+            page,
+            buildHearingsUserDetailsMock(['caseworker-divorce', 'caseworker-divorce-solicitor']).userInfo
+          );
           await page.route(`**/data/case-types/${caseType}/validate*`, async (route) => {
             const requestBody = route.request().postDataJSON?.() as { data?: unknown } | undefined;
 

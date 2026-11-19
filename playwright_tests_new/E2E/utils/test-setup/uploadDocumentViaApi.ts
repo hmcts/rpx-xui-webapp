@@ -291,17 +291,23 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
   }
 
   if (!response.ok) {
-    throw new Error(`Document upload API failed with HTTP ${response.status}: ${response.bodyText.slice(0, 500)}`);
+    throw new Error(`Document upload API failed with HTTP ${response.status}`);
   }
 
-  const payload = JSON.parse(response.bodyText) as DocumentsV2Response;
-  const uploaded = payload.documents?.[0];
+  let payload: DocumentsV2Response | null;
+  try {
+    payload = JSON.parse(response.bodyText) as DocumentsV2Response | null;
+  } catch {
+    // JSON parser errors can include the raw response body.
+    throw new Error(`Document upload API returned invalid JSON (HTTP ${response.status})`);
+  }
+  const uploaded = payload?.documents?.[0];
   const documentUrl = uploaded?._links?.self?.href?.trim();
   const documentBinaryUrl = uploaded?._links?.binary?.href?.trim();
   const documentFilename = uploaded?.originalDocumentName?.trim();
 
   if (!documentUrl || !documentBinaryUrl || !documentFilename) {
-    throw new Error(`Document upload API response missing CCD document fields: ${response.bodyText.slice(0, 500)}`);
+    throw new Error(`Document upload API response missing CCD document fields (HTTP ${response.status})`);
   }
 
   return {

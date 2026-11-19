@@ -19,6 +19,7 @@ test.describe.configure({ mode: 'serial' });
 function fakeSessionPage() {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     textContent: async () => '',
   };
 
@@ -32,6 +33,7 @@ function fakeSessionPage() {
 function hiddenLocator() {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     click: async () => undefined,
     fill: async () => undefined,
     isVisible: async () => false,
@@ -43,6 +45,7 @@ function hiddenLocator() {
 function visibleLocator(actions: string[], name: string, visible: () => boolean = () => true, onClick?: () => void) {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     click: async () => {
       actions.push(`${name}:click`);
       onClick?.();
@@ -766,8 +769,10 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         '/login?state=secret',
         1,
         {
-          acceptCookies: async () => undefined,
-          waitForShell: async () => null,
+          acceptCookies: async () => false,
+          waitForShell: async () => {
+            throw new Error('App shell not detected within 1ms');
+          },
           waitForAuthCookies: async () => true,
           info: (_message, meta) => {
             infoCalls.push(meta);
@@ -800,8 +805,10 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         '/login',
         1,
         {
-          acceptCookies: async () => undefined,
-          waitForShell: async () => null,
+          acceptCookies: async () => false,
+          waitForShell: async () => {
+            throw new Error('App shell not detected within 1ms');
+          },
           waitForAuthCookies: async () => false,
           info: () => undefined,
         }
@@ -819,10 +826,12 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
   test('confirmAuthenticatedLogin includes accessible IDAM rejection evidence', async () => {
     const emptyLocator = {
       first: () => emptyLocator,
+      filter: () => emptyLocator,
       textContent: async () => '',
     };
     const alertLocator = {
       first: () => alertLocator,
+      filter: () => alertLocator,
       textContent: async () => 'Incorrect email or password',
     };
     const page = {
@@ -839,8 +848,10 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         'https://manage-case.example.test',
         1,
         {
-          acceptCookies: async () => undefined,
-          waitForShell: async () => null,
+          acceptCookies: async () => false,
+          waitForShell: async () => {
+            throw new Error('App shell not detected within 1ms');
+          },
           waitForAuthCookies: async () => false,
           info: () => undefined,
         }
@@ -942,12 +953,14 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       const visible = selector === 'exui-header' || selector === 'exui-service-down';
       const locator = {
         first: () => locator,
+        filter: () => locator,
         isVisible: async () => visible,
       };
       return locator;
     };
     const hiddenRoleLocator = {
       first: () => hiddenRoleLocator,
+      filter: () => hiddenRoleLocator,
       isVisible: async () => false,
     };
     const page = {
@@ -980,12 +993,14 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       const visible = selector === 'exui-header';
       const locator = {
         first: () => locator,
+        filter: () => locator,
         isVisible: async () => visible,
       };
       return locator;
     };
     const errorHeading = {
       first: () => errorHeading,
+      filter: () => errorHeading,
       isVisible: async () => true,
     };
     const page = {
@@ -2148,7 +2163,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             password: 'not-used',
           }),
         })
-      ).rejects.toThrow('Recent session capture failed for IAC_Judge_WA_R1');
+      ).rejects.toMatchObject({
+        message: expect.stringContaining('Recent session capture failed for IAC_Judge_WA_R1'),
+        // Machine-readable so CI intelligence can attribute cascades to the first failure, not each suppressed test.
+        context: expect.objectContaining({ cooldownSuppressed: true }),
+      });
 
       expect(lockCalled).toBe(false);
       expect(loginCalled).toBe(false);
@@ -2432,7 +2451,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
-  test('ensureAuthenticatedPage does not retry navigation when the app shell is missing', async () => {
+  test('ensureAuthenticatedPage marks auth failures and clears the phase after recovery without retrying navigation', async ({}, testInfo) => {
+    const initialAnnotations = [...testInfo.annotations];
+    const navigationPhases: Array<string | undefined> = [];
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-shell-unit-'));
     const previousCwd = process.cwd();
     const previousTestUrl = process.env.TEST_URL;
@@ -2482,6 +2503,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         getByRole: () => hiddenLocator(),
         goto: async () => {
           gotoCount += 1;
+          navigationPhases.push(testInfo.annotations.find((annotation) => annotation.type === 'phase')?.description);
         },
         locator: () => hiddenLocator(),
         url: () => 'https://manage-case.aat.platform.hmcts.net',
@@ -2494,6 +2516,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       );
 
       expect(gotoCount).toBe(1);
+      expect(testInfo.annotations.find((annotation) => annotation.type === 'phase')?.description).toBe('auth');
+      await sessionCaptureTest.ensureAuthenticatedPage(page as never, identity, { waitForSelector: false });
+      expect(gotoCount).toBe(2);
+      expect(navigationPhases).toEqual(['auth', 'auth']);
+      expect(testInfo.annotations).toEqual(initialAnnotations);
     } finally {
       process.chdir(previousCwd);
       if (previousTestUrl === undefined) {

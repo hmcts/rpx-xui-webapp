@@ -31,7 +31,6 @@ describe('ActualHearingsUtils', () => {
     mainModel.hearingPlanned.plannedHearingDays.push(obj2);
     mainModel.hearingPlanned.plannedHearingDays.push(obj1);
     const hearingDays = ActualHearingsUtils.getActualHearingDays(mainModel, true);
-    console.log('HEARING DAYS', hearingDays);
     expect(hearingDays).toBeDefined();
     expect(hearingDays[0].hearingStartTime).toBeUndefined();
     expect(hearingDays[0].hearingEndTime).toBeUndefined();

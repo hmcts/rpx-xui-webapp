@@ -35,15 +35,19 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public onSubmitHearingDetails(): void {
+    this.hearingsService.recordAction('continue');
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
       const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
       this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary'], {
         state: { caseId: navState?.caseId },
       });
+    } else {
+      this.hearingsService.recordValidationFailure('form', this.validationErrors.length);
     }
   }
 
   public changeWasThisHearingDayRequired(hearingDay: ActualHearingDayModel) {
+    this.hearingsService.recordAction('change');
     this.resetErrorMessages();
 
     const dayRequired = !hearingDay.notRequired;
@@ -75,6 +79,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public confirmActualHearingTimeForDay(hearingDay: ActualHearingDayModel) {
+    this.hearingsService.recordAction('change');
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
     this.resetErrorMessages();
     const updatedActuals = {
@@ -99,6 +104,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public confirmActualPartiesForDay(hearingDay: ActualHearingDayModel) {
+    this.hearingsService.recordAction('change');
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
     this.resetErrorMessages();
     // Organisation parties do not have partyChannelSubType and can be ignored
@@ -152,6 +158,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public onBack(): void {
+    this.hearingsService.recordAction('back');
     this.location.back();
   }
 

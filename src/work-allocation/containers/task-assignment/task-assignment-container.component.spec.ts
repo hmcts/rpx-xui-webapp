@@ -434,7 +434,7 @@ describe('TaskAssignmentContainerComponent', () => {
   });
 
   describe('showAssigneeColumn getter', () => {
-    it('should return true when showAssigneeColumn is true in history state', () => {
+    it('should return true when showAssigneeColumn is true in location state', () => {
       locationStub.getState.and.returnValue({ showAssigneeColumn: true });
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
@@ -442,7 +442,7 @@ describe('TaskAssignmentContainerComponent', () => {
       expect(showAssigneeColumn).toBe(true);
     });
 
-    it('should return false when showAssigneeColumn is false in history state', () => {
+    it('should return false when showAssigneeColumn is false in location state', () => {
       locationStub.getState.and.returnValue({ showAssigneeColumn: false });
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
@@ -450,7 +450,7 @@ describe('TaskAssignmentContainerComponent', () => {
       expect(showAssigneeColumn).toBe(false);
     });
 
-    it('should return false when showAssigneeColumn is not in history state', () => {
+    it('should return false when showAssigneeColumn is not in location state', () => {
       locationStub.getState.and.returnValue({});
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;

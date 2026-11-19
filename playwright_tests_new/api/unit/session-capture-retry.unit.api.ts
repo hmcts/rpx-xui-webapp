@@ -437,6 +437,7 @@ test.describe('session capture retry', { tag: '@svc-internal' }, () => {
     const locatorFor = (selector: string) => {
       const locator = {
         first: () => locator,
+        filter: () => locator,
         isVisible: async () => selector === 'exui-service-down',
         click: async () => undefined,
       };

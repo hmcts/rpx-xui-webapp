@@ -306,7 +306,15 @@ describe('CaseViewerContainerComponent', () => {
     const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
     (component as any).caseDetailsSubject.next({
       ...currentCaseDetails,
-      tabs: [...currentCaseDetails.tabs, { id: 'tasks', label: 'Tasks', fields: [], show_condition: null }],
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdTasks',
+          label: 'CCD tasks',
+          fields: [Object.assign(new CaseField(), { id: 'TaskLauncher' })],
+          show_condition: null,
+        },
+      ],
     });
 
     (component as any).setPrependedCaseViewTabs();
@@ -320,7 +328,15 @@ describe('CaseViewerContainerComponent', () => {
     const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
     (component as any).caseDetailsSubject.next({
       ...currentCaseDetails,
-      tabs: [...currentCaseDetails.tabs, { id: 'roles-and-access', label: 'Roles and access', fields: [], show_condition: null }],
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdRoles',
+          label: 'CCD roles',
+          fields: [Object.assign(new CaseField(), { id: 'RolesLauncher' })],
+          show_condition: null,
+        },
+      ],
     });
 
     (component as any).setPrependedCaseViewTabs();
@@ -336,13 +352,51 @@ describe('CaseViewerContainerComponent', () => {
       ...currentCaseDetails,
       tabs: [
         ...currentCaseDetails.tabs,
-        { id: 'tasks', label: 'Tasks', fields: [], show_condition: null },
-        { id: 'roles-and-access', label: 'Roles and access', fields: [], show_condition: null },
+        {
+          id: 'ccdTasks',
+          label: 'CCD tasks',
+          fields: [Object.assign(new CaseField(), { id: 'TaskLauncher' })],
+          show_condition: null,
+        },
+        {
+          id: 'ccdRoles',
+          label: 'CCD roles',
+          fields: [Object.assign(new CaseField(), { id: 'RolesLauncher' })],
+          show_condition: null,
+        },
       ],
     });
 
     (component as any).setPrependedCaseViewTabs();
 
+    component.prependedTabs$.subscribe((tabs) => expect(tabs).toEqual([]));
+  });
+
+  it('should remove CCD-supplied prepended special tabs when the feature is not required', () => {
+    const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
+    (component as any).caseDetailsSubject.next({
+      ...currentCaseDetails,
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdTasks',
+          label: 'CCD tasks',
+          fields: [Object.assign(new CaseField(), { id: 'TaskLauncher' })],
+          show_condition: null,
+        },
+        {
+          id: 'ccdRoles',
+          label: 'CCD roles',
+          fields: [Object.assign(new CaseField(), { id: 'RolesLauncher' })],
+          show_condition: null,
+        },
+      ],
+    });
+    spyOn<any>(component, 'enablePrependedTabs').and.returnValue(false);
+
+    (component as any).setPrependedCaseViewTabs();
+
+    expect((component as any).currentCaseDetails.tabs.some((tab) => ['ccdTasks', 'ccdRoles'].includes(tab.id))).toBeFalse();
     component.prependedTabs$.subscribe((tabs) => expect(tabs).toEqual([]));
   });
 });
@@ -432,7 +486,15 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
     const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
     (component as any).caseDetailsSubject.next({
       ...currentCaseDetails,
-      tabs: [...currentCaseDetails.tabs, { id: 'hearings', label: 'Hearings', fields: [], show_condition: null }],
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdHearings',
+          label: 'CCD hearings',
+          fields: [Object.assign(new CaseField(), { id: 'HearingsLauncher' })],
+          show_condition: null,
+        },
+      ],
     });
     (component as any).checkSuppliedTabsByCCD();
 
@@ -446,13 +508,21 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
     const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
     (component as any).caseDetailsSubject.next({
       ...currentCaseDetails,
-      tabs: [...currentCaseDetails.tabs, { id: 'hearings', label: 'Hearings', fields: [], show_condition: null }],
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdHearings',
+          label: 'CCD hearings',
+          fields: [Object.assign(new CaseField(), { id: 'HearingsLauncher' })],
+          show_condition: null,
+        },
+      ],
     });
     (component as any).checkSuppliedTabsByCCD();
 
     (component as any).setAppendedCaseViewTabs();
 
-    expect((component as any).currentCaseDetails.tabs.some((tab) => tab.id === 'hearings')).toBeFalse();
+    expect((component as any).currentCaseDetails.tabs.some((tab) => tab.id === 'ccdHearings')).toBeFalse();
     component.appendedTabs$.subscribe((tabs) => expect(tabs).toEqual([]));
   });
 });

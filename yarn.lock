@@ -3265,58 +3265,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.27-exui-3768-tab-order":
-  version: 7.4.27-exui-3768-tab-order
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.27-exui-3768-tab-order"
-  dependencies:
-    "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.28"
-    "@hmcts/media-viewer": "npm:4.2.48"
-    file-saver: "npm:^2.0.5"
-    govuk-frontend: "npm:5.13.0"
-    lz-string: "npm:^1.5.0"
-    marked: "npm:^18.0.5"
-    peggy: "npm:^5.1.0"
-    tslib: "npm:^2.3.0"
-    yargs: "npm:17.7.2"
-    yargs-parser: "npm:^21.1.1"
-  peerDependencies:
-    "@angular/animations": ^20.3.27
-    "@angular/cdk": ^20.2.14
-    "@angular/common": ^20.3.27
-    "@angular/compiler": ^20.3.27
-    "@angular/core": ^20.3.27
-    "@angular/forms": ^20.3.27
-    "@angular/localize": ^20.3.27
-    "@angular/material": ^20.2.14
-    "@angular/material-moment-adapter": ^20.0.0
-    "@angular/platform-browser": ^20.3.27
-    "@angular/platform-browser-dynamic": ^20.3.27
-    "@angular/router": ^20.3.27
-    "@angular/upgrade": ^20.3.27
-    "@ngrx/effects": ^20.1.0
-    "@ngrx/store": ^20.1.0
-    "@ngxmc/datetime-picker": 20.1.0
-    class-transformer: ^0.5.1
-    lodash: ^4.17.22
-    moment: ^2.31.0
-    moment-timezone: ^0.5.31
-    ngx-chips: ^3.0.0
-    ngx-editor: 19.0.0-beta.1
-    ngx-markdown: ^20.1.0
-    ngx-pagination: 6.0.3
-    prosemirror-commands: 1.7.1
-    prosemirror-history: 1.5.0
-    prosemirror-model: 1.25.11
-    prosemirror-schema-list: 1.5.1
-    rpx-xui-translation: 1.2.14
-    rxjs: ^7.8.1
-    rxjs-compat: ^6.6.7
-    underscore: ^1.9.1
-    zone.js: ^0.15.1
-  checksum: 10/5386aed62543746546a02a6938f69896139fbf7b64eb765ed664d964e09c792f44eaec4a6c3615315e9cb485203ba4386ee288ca68f55e8e68ef99b69c6052ec
+"@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@hmcts/ccpay-web-component@npm:6.5.28":
   version: 6.5.28
@@ -6547,15 +6500,6 @@ __metadata:
     tslib: "npm:^2.8.1"
     tsyringe: "npm:^4.10.0"
   checksum: 10/d37c56fa5f2c644141948d85010e14f0e4963089e3b0b81edd0bfe85bdfea0eb3f38ab6ff20d322db2bd6977117824cc498a77b2d35af111983b4d58b5e2ccd1
-  languageName: node
-  linkType: hard
-
-"@peggyjs/from-mem@npm:4.0.0":
-  version: 4.0.0
-  resolution: "@peggyjs/from-mem@npm:4.0.0"
-  dependencies:
-    semver: "npm:~7.8.5"
-  checksum: 10/ab444bcc4a8b7eab6950b0458214469e3295d8af49a21a7d7bea38438cea2731c272a287f32139d14c35ea0b548025efbb37554e177c176d27a9bfec16d41cf8
   languageName: node
   linkType: hard
 
@@ -10472,13 +10416,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^14.0.3, commander@npm:~14.0.0":
-  version: 14.0.3
-  resolution: "commander@npm:14.0.3"
-  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
-  languageName: node
-  linkType: hard
-
 "commander@npm:^2.19.0, commander@npm:^2.20.0, commander@npm:^2.3.0":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
@@ -10490,6 +10427,13 @@ __metadata:
   version: 8.3.0
   resolution: "commander@npm:8.3.0"
   checksum: 10/6b7b5d334483ce24bd73c5dac2eab901a7dbb25fd983ea24a1eeac6e7166bb1967f641546e8abf1920afbde86a45fbfe5812fbc69d0dc451bb45ca416a12a3a3
+  languageName: node
+  linkType: hard
+
+"commander@npm:~14.0.0":
+  version: 14.0.3
+  resolution: "commander@npm:14.0.3"
+  checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
   languageName: node
   linkType: hard
 
@@ -18346,19 +18290,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"peggy@npm:^5.1.0":
-  version: 5.1.1
-  resolution: "peggy@npm:5.1.1"
-  dependencies:
-    "@peggyjs/from-mem": "npm:4.0.0"
-    commander: "npm:^14.0.3"
-    source-map-generator: "npm:2.0.7"
-  bin:
-    peggy: bin/peggy.js
-  checksum: 10/204392f76afc2244b8bf452ac5b64347f674dbf51190a6117a7fbcc68d46510b780e21478ca572f7c78ed1b789dbf2ded75791d8efd1fbd138a91316fd5883b2
-  languageName: node
-  linkType: hard
-
 "pegjs@npm:^0.10.0":
   version: 0.10.0
   resolution: "pegjs@npm:0.10.0"
@@ -19944,7 +19875,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.27-exui-3768-tab-order"
+    "@hmcts/ccd-case-ui-toolkit": "link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
     "@hmcts/media-viewer": "npm:4.2.48"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
@@ -20790,13 +20721,6 @@ __metadata:
   dependencies:
     atomic-sleep: "npm:^1.0.0"
   checksum: 10/e03c9611e43fa81132cd2ce0fe4eb7fbcf19db267e9dec20dc6c586f82465c9c906e91a02f72150c740463ad9335536ea2131850307aaa6686d1fb5d4cc4be3e
-  languageName: node
-  linkType: hard
-
-"source-map-generator@npm:2.0.7":
-  version: 2.0.7
-  resolution: "source-map-generator@npm:2.0.7"
-  checksum: 10/70557922ecb3806eb4df6365da30622ce442f96ddf060f427cd376437a18695fce6faa17e191c5a0ef75d845b457fd4f3173c591fdd27c4caa2068cbfe9c7ec9
   languageName: node
   linkType: hard
 
@@ -23075,21 +22999,6 @@ __metadata:
     flat: "npm:^5.0.2"
     is-plain-obj: "npm:^2.1.0"
   checksum: 10/68f9a542c6927c3768c2f16c28f71b19008710abd6b8f8efbac6dcce26bbb68ab6503bed1d5994bdbc2df9a5c87c161110c1dfe04c6a3fe5c6ad1b0e15d9a8a3
-  languageName: node
-  linkType: hard
-
-"yargs@npm:17.7.2":
-  version: 17.7.2
-  resolution: "yargs@npm:17.7.2"
-  dependencies:
-    cliui: "npm:^8.0.1"
-    escalade: "npm:^3.1.1"
-    get-caller-file: "npm:^2.0.5"
-    require-directory: "npm:^2.1.1"
-    string-width: "npm:^4.2.3"
-    y18n: "npm:^5.0.5"
-    yargs-parser: "npm:^21.1.1"
-  checksum: 10/abb3e37678d6e38ea85485ed86ebe0d1e3464c640d7d9069805ea0da12f69d5a32df8e5625e370f9c96dd1c2dc088ab2d0a4dd32af18222ef3c4224a19471576
   languageName: node
   linkType: hard
 

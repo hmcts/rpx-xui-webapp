@@ -18,6 +18,8 @@ import { DeploymentEnvironmentEnum } from '../../../app/enums/deployment-environ
 import { LaunchDarklyDefaultsConstants } from '../../../app/services/ccd-config/launch-darkly-defaults.constants';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
 
+type SpecialTabId = 'tasks' | 'roles-and-access' | 'hearings';
+
 @Component({
   standalone: false,
   selector: 'exui-case-viewer-container',
@@ -143,7 +145,9 @@ export class CaseViewerContainerComponent implements OnInit {
       .pipe(
         map(([feature, userRoles, supportedServices]: [WAFeatureConfig, string[], string[]]) => {
           const prependedTabsRequired = this.enablePrependedTabs(feature, userRoles, supportedServices);
-          const tabs = prependedTabsRequired ? this.prependedTabs.filter((tab) => !this.isTabSuppliedByCCD(tab.id)) : [];
+          const tabs = prependedTabsRequired
+            ? this.prependedTabs.filter((tab) => !this.isTabSuppliedByCCD(tab.id as SpecialTabId))
+            : [];
 
           return { prependedTabsRequired, tabs };
         }),
@@ -203,17 +207,36 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private checkSuppliedTabsByCCD(): void {
-    this.hearingTabSuppliedByCCD = this.currentCaseDetails.tabs.some((tab) => tab.id === 'hearings');
+    this.hearingTabSuppliedByCCD = this.isTabSuppliedByCCD('hearings');
   }
 
-  private isTabSuppliedByCCD(tabId: string): boolean {
-    return this.currentCaseDetails.tabs.some((tab) => tab.id === tabId);
+  private isTabSuppliedByCCD(tabId: SpecialTabId): boolean {
+    return this.currentCaseDetails.tabs.some((tab) => this.getSpecialTabId(tab) === tabId);
   }
 
-  private removeTabsFromTabList(tabIds: string[]): void {
+  private getSpecialTabId(tab: CaseTab): SpecialTabId | null {
+    const launcherFieldIds = new Set((tab.fields || []).map((field) => field.id?.toLowerCase()));
+
+    if (launcherFieldIds.has('tasklauncher')) {
+      return 'tasks';
+    }
+    if (launcherFieldIds.has('roleslauncher')) {
+      return 'roles-and-access';
+    }
+    if (launcherFieldIds.has('hearingslauncher')) {
+      return 'hearings';
+    }
+
+    return null;
+  }
+
+  private removeTabsFromTabList(tabIds: SpecialTabId[]): void {
     this.caseDetailsSubject.next({
       ...this.currentCaseDetails,
-      tabs: this.currentCaseDetails.tabs.filter((tab) => !tabIds.includes(tab.id)),
+      tabs: this.currentCaseDetails.tabs.filter((tab) => {
+        const specialTabId = this.getSpecialTabId(tab);
+        return !specialTabId || !tabIds.includes(specialTabId);
+      }),
     });
   }
 }

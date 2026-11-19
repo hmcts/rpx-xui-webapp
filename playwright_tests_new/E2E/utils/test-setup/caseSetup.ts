@@ -3,7 +3,7 @@ import type { APIResponse, Page, TestInfo } from '@playwright/test';
 
 import type { CaseDetailsPage } from '../../page-objects/pages/exui/caseDetails.po';
 import type { CreateCasePage } from '../../page-objects/pages/exui/createCase.po';
-import { inPhase } from '../frameworkError';
+import { FrameworkError, inPhase } from '../frameworkError';
 import { withDirectCcdSetupGate } from './directCcdSetupGate';
 
 type SetupMode = 'api-required' | 'api-first' | 'ui-only';
@@ -71,6 +71,9 @@ const TRANSIENT_VALIDATE_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 const TRANSIENT_EVENT_TOKEN_STATUS_CODES = new Set([404, 429, 500, 502, 503, 504]);
 const TRANSIENT_USER_DETAILS_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 const TRANSIENT_AGGREGATED_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
+const IDENTITY_DENIED_AGGREGATED_STATUS_CODES = new Set([401, 403, 404]);
+// Successful create-access preflights per worker process; failures are never cached.
+const resolvedAggregatedApiIds = new Map<string, { jurisdictionId: string; caseTypeId: string }>();
 const TRANSIENT_API_REQUEST_ERROR_MARKERS = [
   'econnreset',
   'econnrefused',
@@ -321,6 +324,11 @@ async function resolveApiIdsFromAggregatedJurisdictions({
   effectiveTimeoutMs: number;
 }): Promise<{ jurisdictionId: string; caseTypeId: string }> {
   const requestedCaseTypeId = request.caseType;
+  const cacheKey = JSON.stringify([userId, request.jurisdiction, requestedCaseTypeId]);
+  const cached = resolvedAggregatedApiIds.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
 
   const route = `aggregated/caseworkers/${encodeURIComponent(userId)}/jurisdictions?access=create`;
   const response = await requestAggregatedJurisdictionsWithRetry(request, route, effectiveTimeoutMs);
@@ -329,10 +337,25 @@ async function resolveApiIdsFromAggregatedJurisdictions({
     throw new Error(`Direct CCD identity preflight unavailable for '${request.scenario}'; create access was not verified.`);
   }
 
-  if (response.status() < 200 || response.status() >= 300) {
+  const status = response.status();
+  if (IDENTITY_DENIED_AGGREGATED_STATUS_CODES.has(status)) {
+    throw new FrameworkError(
+      'CCD_IDENTITY_PREFLIGHT_DENIED',
+      'setup',
+      `Direct CCD identity preflight failed with HTTP ${status} for '${request.scenario}': the selected user ` +
+        `was refused create-access jurisdictions. This is a user/test-data configuration problem, not a transient failure.`
+    );
+  }
+  if (TRANSIENT_AGGREGATED_STATUS_CODES.has(status)) {
     throw new Error(
-      `Direct CCD identity preflight failed with HTTP ${response.status()} for '${request.scenario}': ` +
-        `the selected user did not return create-access jurisdictions.`
+      `Direct CCD identity preflight dependency unavailable for '${request.scenario}': aggregated jurisdictions ` +
+        `returned HTTP ${status} after bounded retries; create access was not verified.`
+    );
+  }
+  if (status < 200 || status >= 300) {
+    throw new Error(
+      `Direct CCD identity preflight rejected for '${request.scenario}': aggregated jurisdictions returned HTTP ${status}; ` +
+        `create access was not verified.`
     );
   }
 
@@ -373,10 +396,12 @@ async function resolveApiIdsFromAggregatedJurisdictions({
     });
   }
 
-  return {
+  const resolvedIds = {
     jurisdictionId: matchedJurisdiction.id,
     caseTypeId: matchedCaseType.id,
   };
+  resolvedAggregatedApiIds.set(cacheKey, resolvedIds);
+  return resolvedIds;
 }
 
 async function requestAggregatedJurisdictionsWithRetry(
@@ -751,6 +776,7 @@ export const __test__ = {
   requestAggregatedJurisdictionsWithRetry,
   resolveCaseNumberFromCreateResponse,
   resolveApiIdsFromAggregatedJurisdictions,
+  clearResolvedAggregatedApiIds: () => resolvedAggregatedApiIds.clear(),
   resolveEventTokenRetryWindowMs,
   resolveValidateRetryWindowMs,
   summarizeDirectCcdValidationFailure,

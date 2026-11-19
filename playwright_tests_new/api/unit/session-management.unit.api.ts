@@ -1772,7 +1772,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
           },
           resolveSessionIdentity: () => identity,
         })
-      ).rejects.toThrow('Recent session capture failed for UNIT_AFTER_LOCK_CAUSAL_USER');
+      ).rejects.toThrow(/^\[cooldown-suppressed\] Recent session capture failed for UNIT_AFTER_LOCK_CAUSAL_USER/);
 
       expect(loginCalled).toBe(false);
       expect(fs.existsSync(failurePath)).toBe(true);
@@ -2164,7 +2164,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
           }),
         })
       ).rejects.toMatchObject({
-        message: expect.stringContaining('Recent session capture failed for IAC_Judge_WA_R1'),
+        message: expect.stringMatching(/^\[cooldown-suppressed\] Recent session capture failed for IAC_Judge_WA_R1/),
         // Machine-readable so CI intelligence can attribute cascades to the first failure, not each suppressed test.
         context: expect.objectContaining({ cooldownSuppressed: true }),
       });

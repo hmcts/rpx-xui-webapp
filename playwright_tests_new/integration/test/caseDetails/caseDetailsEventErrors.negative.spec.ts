@@ -26,7 +26,8 @@ test.describe(
           caseDetailsEventErrorsCaseTypeId,
           caseDetailsEventErrorsCaseId
         );
-        await caseDetailsPage.selectCaseAction(caseDetailsEventErrorsEventName);
+        // The event-trigger GET is mocked to fail; this journey asserts the error the UI shows for it.
+        await caseDetailsPage.selectCaseAction(caseDetailsEventErrorsEventName, { allowEventTriggerFailure: true });
       });
 
       await test.step('Verify the expected callback validation error is shown instead of the trim failure', async () => {

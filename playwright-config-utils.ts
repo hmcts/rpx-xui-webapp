@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import * as os from 'node:os';
 import * as path from 'node:path';
 
 /**
@@ -121,26 +122,47 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
 }
 
 /**
+ * Opt-in CPU-aware cap for agents that run several Playwright suites at once. When `PW_PARALLEL_SUITES` is a positive
+ * integer, each browser suite gets at most `max(MIN_CAPPED_WORKERS, floor(cpuCount / PW_PARALLEL_SUITES))` workers;
+ * otherwise the requested count is returned unchanged. The floor stops small agents from serialising a suite.
+ */
+const MIN_CAPPED_WORKERS = 4;
+
+export function capWorkerCountForParallelSuites(
+  requested: number,
+  env: EnvMap = process.env,
+  cpuCount: number = os.cpus().length,
+  log: (message: string) => void = console.log
+): number {
+  const parallelSuites = parsePositiveInt(env.PW_PARALLEL_SUITES?.trim());
+  if (parallelSuites === undefined || !Number.isFinite(cpuCount) || cpuCount <= 0) {
+    return requested;
+  }
+  const cap = Math.max(MIN_CAPPED_WORKERS, Math.floor(cpuCount / parallelSuites));
+  if (requested <= cap) {
+    return requested;
+  }
+  // Playwright re-evaluates the config in every worker; log once from the runner process.
+  if (!env.TEST_WORKER_INDEX) {
+    log(`[playwright-config] capping workers ${requested} -> ${cap} (cpus=${cpuCount}, PW_PARALLEL_SUITES=${parallelSuites})`);
+  }
+  return cap;
+}
+
+/**
  * Resolves Playwright worker count from FUNCTIONAL_TESTS_WORKERS or runtime defaults.
  * Browser-heavy E2E runs default to 7 workers unless explicitly overridden.
  */
-export function resolveWorkerCount(env: EnvMap = process.env): number {
-  const configured = resolveConfiguredWorkerCount(env);
-  if (configured !== undefined) {
-    return configured;
-  }
-  return 7;
+export function resolveWorkerCount(env: EnvMap = process.env, cpuCount?: number): number {
+  return capWorkerCountForParallelSuites(resolveConfiguredWorkerCount(env) ?? 7, env, cpuCount);
 }
 
 /**
  * Keeps node-api parallelism fixed unless Jenkins pins FUNCTIONAL_TESTS_WORKERS explicitly.
+ * Not CPU-capped: node-api runs no browsers, so it adds little agent load.
  */
 export function resolveApiProjectWorkerCount(env: EnvMap = process.env): number {
-  const configured = resolveConfiguredWorkerCount(env);
-  if (configured !== undefined) {
-    return configured;
-  }
-  return 6;
+  return resolveConfiguredWorkerCount(env) ?? 6;
 }
 
 function ensureTagPrefix(value: string): string {

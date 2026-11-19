@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { expect, Locator, Page, Response } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
@@ -63,6 +63,19 @@ export interface CaseFlagItem {
 }
 
 const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
+// CCD toolkit CasesService.buildEventTriggerUrl: GET <caseDataUrl>/internal/cases/:cid/event-triggers/:eid?ignore-warning=...
+const CASE_EVENT_TRIGGER_PATH_PATTERN = /\/data\/internal\/cases\/[^/]+\/event-triggers\/[^/]+$/;
+
+export function isCaseEventTriggerResponse(response: Pick<Response, 'url' | 'request'>): boolean {
+  if (response.request().method() !== 'GET') return false;
+  try {
+    return CASE_EVENT_TRIGGER_PATH_PATTERN.test(new URL(response.url()).pathname);
+  } catch {
+    return false;
+  }
+}
+
+class CaseEventTriggerFailure extends Error {}
 
 export class CaseDetailsPage extends Base {
   readonly container = this.page.locator('exui-case-details-home');
@@ -72,6 +85,7 @@ export class CaseDetailsPage extends Base {
   readonly caseActionsDropdown = this.page.locator('#next-step');
 
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
+  readonly enabledCaseActionGoButton = this.page.locator('.event-trigger button:enabled');
 
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
   readonly continueButton = this.container.getByRole('button', { name: 'Continue', exact: true });
@@ -540,13 +554,40 @@ export class CaseDetailsPage extends Base {
     }
     await this.caseActionsDropdown.selectOption(matchingOption.value, { timeout: remaining() });
     await this.waitForSpinnerToComplete('before submitting case action', remaining());
+    // The toolkit keeps Go disabled until the trigger form is valid, so this proves the selection was applied.
+    await this.enabledCaseActionGoButton.waitFor({ state: 'visible', timeout: remaining() });
+    const eventTriggerResponse = this.page
+      .waitForResponse(isCaseEventTriggerResponse, { timeout: remaining() })
+      .catch(() => null);
     await this.caseActionGoButton.click({ timeout: remaining() });
-    await this.waitForSpinnerToComplete('after selecting case action', remaining());
-    await this.page.waitForLoadState('domcontentloaded', { timeout: remaining() });
+    const eventTriggerOutcome = eventTriggerResponse.then((response) => {
+      const status = response?.status();
+      if (status !== undefined && status >= 400 && !options.allowEventTriggerFailure) {
+        throw new CaseEventTriggerFailure(
+          `Case action "${redactText(action)}" event trigger request failed with HTTP ${status} ` +
+            `(${redactUrl(response?.url())}).`
+        );
+      }
+      return response;
+    });
+    const reachDestination = async () => {
+      await this.waitForSpinnerToComplete('after selecting case action', remaining());
+      await this.page.waitForLoadState('domcontentloaded', { timeout: remaining() });
+      if (options.expectedPath || options.expectedLocator) {
+        await waitForCaseActionDestination(this.page, action, options, deadlineMs, this.eventCreationErrorHeading);
+        return;
+      }
+      if (!(await eventTriggerOutcome)) {
+        throw new Error(
+          `Case action "${redactText(action)}" received no event-trigger response before the deadline ` +
+            `(the request may have failed or been redirected; url=${redactUrl(this.page.url())}).`
+        );
+      }
+    };
     try {
-      await waitForCaseActionDestination(this.page, action, options, deadlineMs, this.eventCreationErrorHeading);
+      await Promise.race([reachDestination(), eventTriggerOutcome.then(() => new Promise<never>(() => undefined))]);
     } catch (error) {
-      if (options.retry !== false) throw error;
+      if (error instanceof CaseEventTriggerFailure || options.retry !== false) throw error;
       const spinnerVisible = await this.page
         .locator('xuilib-loading-spinner:visible')
         .first()
@@ -927,17 +968,22 @@ export class CaseDetailsPage extends Base {
    * Each object maps row label -> row value for a single task.
    */
   async getTaskKeyValueRows(): Promise<Record<string, string>[]> {
+    // The tasks tab renders its container and spinner on init; only a loaded, spinner-free container is "no tasks".
+    await this.taskListContainer.waitFor({ state: 'visible' });
+    await this.waitForSpinnerToComplete('while loading case tasks');
     try {
       await this.taskItem.first().waitFor({ state: 'visible' });
-    } catch {
-      return [];
+    } catch (error) {
+      const emptyTaskList =
+        (await this.taskItem.count()) === 0 &&
+        (await this.taskListContainer.isVisible()) &&
+        !(await this.page.locator('xuilib-loading-spinner:visible').first().isVisible());
+      if (emptyTaskList) {
+        return [];
+      }
+      throw error;
     }
     const taskCount = await this.taskItem.count();
-    if (taskCount === 0) {
-      return [];
-    }
-
-    await this.taskItem.first().waitFor({ state: 'visible' });
 
     const results: Record<string, string>[] = [];
 

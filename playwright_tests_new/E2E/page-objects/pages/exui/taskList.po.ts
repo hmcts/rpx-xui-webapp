@@ -12,6 +12,10 @@ const FILTER_APPLY_READY_TIMEOUT_MS = 2_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
 const FILTER_APPLY_CLICK_ATTEMPTS = 3;
 const TASK_LIST_NAVIGATION_ATTEMPTS = 3;
+// The shell still renders its empty-table state after a failed task search, so only fail fast once it has had time to.
+const TASK_SEARCH_FAILURE_SETTLE_MS = 2_000;
+// WorkAllocationTaskService.searchTask: POST /workallocation/task (tracked URLs have their query removed).
+const TASK_SEARCH_URL_PATTERN = /\/workallocation\/task$/;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
@@ -306,11 +310,12 @@ export class TaskListPage extends Base {
   }
 
   private async navigateToTaskListView(path: string, urlPattern: RegExp, context: string, options: { timeoutMs?: number } = {}) {
-    const deadlineMs = Date.now() + (options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS);
+    const navigationStartedMs = Date.now();
+    const deadlineMs = navigationStartedMs + (options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS);
     await this.gotoTaskListPath(path, urlPattern, context, deadlineMs);
     await this.waitForTaskListSpinnerToSettle(Math.min(10_000, remainingNavigationTimeout(deadlineMs, context)));
     await this.recoverBlankTaskListDocumentAfterNavigation(urlPattern, context, deadlineMs);
-    await this.waitForTaskListShellReadyAfterNavigation(urlPattern, context, deadlineMs);
+    await this.waitForTaskListShellReadyAfterNavigation(urlPattern, context, deadlineMs, navigationStartedMs);
   }
 
   private async navigateToTerminalTaskListView(
@@ -356,6 +361,7 @@ export class TaskListPage extends Base {
 
   private async gotoTaskListPath(path: string, urlPattern: RegExp, context: string, deadlineMs: number): Promise<void> {
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
+    let nameResolutionFailures = 0;
 
     for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
       try {
@@ -363,6 +369,11 @@ export class TaskListPage extends Base {
         break;
       } catch (error) {
         const navigationError = error as Error;
+        if (/net::ERR_NAME_NOT_RESOLVED/i.test(navigationError.message) && ++nameResolutionFailures > 1) {
+          throw new Error(`Target environment unavailable: ${this.unresolvedNavigationHost(navigationError)} did not resolve`, {
+            cause: navigationError,
+          });
+        }
         if (!this.isTransientTaskListNavigationError(navigationError, urlPattern) || attempt === TASK_LIST_NAVIGATION_ATTEMPTS) {
           throw navigationError;
         }
@@ -376,6 +387,18 @@ export class TaskListPage extends Base {
     await this.page.waitForURL(urlPattern, { timeout: remaining(), waitUntil: 'commit' });
   }
 
+  private unresolvedNavigationHost(error: Error): string {
+    for (const candidate of [/\bat (https?:\/\/\S+)/i.exec(error.message)?.[1], this.page.url()]) {
+      try {
+        const host = candidate ? new URL(candidate).host : '';
+        if (host) return host;
+      } catch {
+        // Not a navigable URL; try the next candidate.
+      }
+    }
+    return 'target host';
+  }
+
   private isTransientTaskListNavigationError(error: Error, urlPattern: RegExp): boolean {
     return (
       /net::ERR_NAME_NOT_RESOLVED|net::ERR_NETWORK_CHANGED|net::ERR_CONNECTION_TIMED_OUT|chrome-error:\/\/chromewebdata/i.test(
@@ -385,7 +408,12 @@ export class TaskListPage extends Base {
     );
   }
 
-  private async waitForTaskListShellReadyAfterNavigation(urlPattern: RegExp, context: string, deadlineMs: number): Promise<void> {
+  private async waitForTaskListShellReadyAfterNavigation(
+    urlPattern: RegExp,
+    context: string,
+    deadlineMs: number,
+    observedSinceMs = Date.now()
+  ): Promise<void> {
     let lastError: unknown;
 
     for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
@@ -394,7 +422,11 @@ export class TaskListPage extends Base {
         if (remainingTimeoutMs <= 0) {
           break;
         }
-        await this.waitForTaskListShellReady(attempt === 1 ? context : `${context} after blank-page reload`, remainingTimeoutMs);
+        await this.waitForTaskListShellReady(
+          attempt === 1 ? context : `${context} after blank-page reload`,
+          remainingTimeoutMs,
+          observedSinceMs
+        );
         if (!urlPattern.test(this.page.url())) {
           throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after shell bootstrap.`);
         }
@@ -523,7 +555,7 @@ export class TaskListPage extends Base {
     return this.page.url().includes('/service-down') || (await this.serviceDownError.isVisible().catch(() => false));
   }
 
-  async waitForTaskListShellReady(context: string, timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
+  async waitForTaskListShellReady(context: string, timeoutMs = TASK_LIST_READY_TIMEOUT_MS, observedSinceMs = Date.now()) {
     const deadlineMs = Date.now() + timeoutMs;
     const remaining = () => remainingNavigationTimeout(deadlineMs, `waiting for task list shell (${context})`);
     await this.page.waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases)))/, {
@@ -543,7 +575,9 @@ export class TaskListPage extends Base {
         ['error-page', this.errorPageHeading],
       ],
       `task list shell (${context})`,
-      remaining()
+      remaining(),
+      250,
+      () => this.describeSettledTaskSearchFailure(observedSinceMs)
     );
 
     if (bootstrapSignal === 'error-page') {
@@ -558,11 +592,30 @@ export class TaskListPage extends Base {
     await this.assertTaskListHealthy(context);
   }
 
+  private findFailedTaskSearch(observedSinceMs: number) {
+    return this.getApiCalls().find(
+      (call) =>
+        call.method === 'POST' &&
+        TASK_SEARCH_URL_PATTERN.test(call.url) &&
+        call.status >= 400 &&
+        Date.parse(call.timestamp) >= observedSinceMs
+    );
+  }
+
+  private describeSettledTaskSearchFailure(observedSinceMs: number): string | undefined {
+    const failed = this.findFailedTaskSearch(observedSinceMs);
+    if (!failed || Date.now() - Date.parse(failed.timestamp) < TASK_SEARCH_FAILURE_SETTLE_MS) {
+      return undefined;
+    }
+    return `Task search ${failed.method} ${failed.url} returned HTTP ${failed.status}`;
+  }
+
   private async waitForVisibleSignal(
     signals: Array<[string, Locator]>,
     context: string,
     timeoutMs: number,
-    pollMs = 250
+    pollMs = 250,
+    backendFailure?: () => string | undefined
   ): Promise<string> {
     const deadlineMs = Date.now() + timeoutMs;
 
@@ -571,6 +624,10 @@ export class TaskListPage extends Base {
         if (await locator.isVisible().catch(() => false)) {
           return signal;
         }
+      }
+      const failure = backendFailure?.();
+      if (failure) {
+        throw new Error(`${failure} and no ${context} signal appeared. url=${this.page.url()}`);
       }
       const remainingMs = deadlineMs - Date.now();
       if (remainingMs > 0) {

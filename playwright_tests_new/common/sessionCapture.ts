@@ -61,6 +61,9 @@ const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const DEFAULT_SESSION_CAPTURE_STAGGER_MS = 0;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
+const PAGE_TITLE_READ_TIMEOUT_MS = 2_000;
+const PAGE_TITLE_MAX_LENGTH = 80;
+export const COOLDOWN_SUPPRESSED_MESSAGE_MARKER = '[cooldown-suppressed]';
 const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
 const SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS = 10_000;
 const SESSION_CAPTURE_CONTEXT_CREATE_BUDGET_MS = 5_000;
@@ -1197,7 +1200,7 @@ async function executeLoginAttempt(
       });
     }
 
-    throw unavailableIdamLoginSurfaceError(page, userIdentifier);
+    throw await unavailableIdamLoginSurfaceError(page, userIdentifier);
   }
 
   const usernameInput = (await waitForFirstVisibleLocator(page, usernameCandidates, 1_000)) ?? idamPage.usernameInput.first();
@@ -1208,15 +1211,47 @@ async function executeLoginAttempt(
 // A successful navigation which renders neither IDAM nor XUI is an unavailable
 // login surface. Retrying with a fresh browser context is safe because no
 // credentials have been submitted yet.
-function unavailableIdamLoginSurfaceError(page: Page, userIdentifier: string): SessionCaptureError {
+// Reporters keep only message and stack, so the landing URL and title must be
+// in the message for CI analytics to separate wrong routes from slow IDAM.
+async function unavailableIdamLoginSurfaceError(page: Page, userIdentifier: string): Promise<SessionCaptureError> {
+  const currentUrl = sanitizedPageUrl(page);
+  const title = await boundedPageTitle(page);
   return new SessionCaptureError(
-    `IDAM login surface did not render within ${IDAM_LOGIN_SURFACE_TIMEOUT_MS}ms for ${userIdentifier}`,
+    `IDAM login surface did not render within ${IDAM_LOGIN_SURFACE_TIMEOUT_MS}ms for ${userIdentifier} (url=${messageSafeUrl(currentUrl)}, title=${JSON.stringify(title)})`,
     userIdentifier,
     {
-      currentUrl: sanitizedPageUrl(page),
+      currentUrl,
+      pageTitle: title,
       failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
     }
   );
+}
+
+// Origin and path only: drops query, fragment and any user:password@ credentials.
+function messageSafeUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return `${parsed.origin}${parsed.pathname}`;
+  } catch {
+    return sanitizeUrl(url).split('#')[0];
+  }
+}
+
+async function boundedPageTitle(page: Page): Promise<string> {
+  let timer: NodeJS.Timeout | undefined;
+  try {
+    const title = await Promise.race([
+      page.title(),
+      new Promise<string>((resolve) => {
+        timer = setTimeout(() => resolve('unknown'), PAGE_TITLE_READ_TIMEOUT_MS);
+      }),
+    ]);
+    return title.replace(/\s+/g, ' ').trim().slice(0, PAGE_TITLE_MAX_LENGTH) || 'empty';
+  } catch {
+    return 'unknown';
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function clickOrSubmitActiveField(page: Page, submitButton: Locator, activeField: Locator): Promise<void> {
@@ -1619,7 +1654,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           });
           if (!requiresLockedFailureClear && (!recentFailure.retryable || recentFailure.recoveryAttempted)) {
             throw new SessionCaptureError(
-              `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
+              `${COOLDOWN_SUPPRESSED_MESSAGE_MARKER} Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
               identity.userIdentifier,
               { sessionPath, failureKind: recentFailure.failureKind, cooldownSuppressed: true }
             );
@@ -1697,7 +1732,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           }
           if (!lockedRecentFailure.retryable || lockedRecentFailure.recoveryAttempted) {
             throw new SessionCaptureError(
-              `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
+              `${COOLDOWN_SUPPRESSED_MESSAGE_MARKER} Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
               identity.userIdentifier,
               { sessionPath, failureKind: lockedRecentFailure.failureKind, cooldownSuppressed: true }
             );

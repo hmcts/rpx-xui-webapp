@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 
 import { acquireDirectCcdSetupSlot, withDirectCcdSetupGate } from '../../E2E/utils/test-setup/directCcdSetupGate.js';
 import { __test__ as caseSetupTest } from '../../E2E/utils/test-setup/caseSetup.js';
+import { FrameworkError } from '../../E2E/utils/frameworkError.js';
+import { isDependencyEnvironmentFailure, isTransientWorkflowFailure } from '../../E2E/utils/transient-failure.utils.js';
 
 test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
   test('does not expose gateway HTML or field values in validation diagnostics', () => {
@@ -118,6 +120,90 @@ test.describe('direct CCD case setup gate', { tag: '@svc-internal' }, () => {
     await expect(
       caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({ request, userId: 'user-1', effectiveTimeoutMs: 100 })
     ).rejects.toThrow(/identity preflight failed with HTTP 404/);
+  });
+
+  function aggregatedPreflightRequest(scenario: string, respond: () => unknown) {
+    let attempts = 0;
+    const request = {
+      scenario,
+      jurisdiction: 'DIVORCE',
+      caseType: 'XUI Case PoC',
+      page: {
+        isClosed: () => false,
+        waitForTimeout: async () => undefined,
+        request: {
+          get: async () => {
+            attempts += 1;
+            return respond();
+          },
+        },
+      },
+    } as never;
+    return { request, attempts: () => attempts };
+  }
+
+  for (const status of [401, 403]) {
+    test(`reports HTTP ${status} identity preflight as a non-transient user/config problem without retrying`, async () => {
+      const { request, attempts } = aggregatedPreflightRequest('identity-denied', () => ({ status: () => status }));
+      const error = await caseSetupTest
+        .resolveApiIdsFromAggregatedJurisdictions({ request, userId: 'denied-user', effectiveTimeoutMs: 100 })
+        .catch((caught: unknown) => caught);
+
+      expect(error).toBeInstanceOf(FrameworkError);
+      expect((error as FrameworkError).code).toBe('CCD_IDENTITY_PREFLIGHT_DENIED');
+      expect((error as FrameworkError).phase).toBe('setup');
+      expect((error as Error).message).toBe(
+        `[CCD_IDENTITY_PREFLIGHT_DENIED] Direct CCD identity preflight failed with HTTP ${status} for 'identity-denied': ` +
+          'the selected user was refused create-access jurisdictions. This is a user/test-data configuration problem, ' +
+          'not a transient failure.'
+      );
+      expect(isTransientWorkflowFailure(error)).toBe(false);
+      expect(isDependencyEnvironmentFailure(error)).toBe(false);
+      expect(attempts()).toBe(1);
+    });
+  }
+
+  test('reports a 5xx left after bounded retries as an unavailable dependency, not a permission problem', async () => {
+    const { request, attempts } = aggregatedPreflightRequest('identity-dependency-down', () => ({ status: () => 503 }));
+    const error = await caseSetupTest
+      .resolveApiIdsFromAggregatedJurisdictions({ request, userId: 'user-503', effectiveTimeoutMs: 100 })
+      .catch((caught: unknown) => caught);
+
+    expect((error as Error).message).toBe(
+      "Direct CCD identity preflight dependency unavailable for 'identity-dependency-down': aggregated jurisdictions " +
+        'returned HTTP 503 after bounded retries; create access was not verified.'
+    );
+    expect(error).not.toBeInstanceOf(FrameworkError);
+    expect(isDependencyEnvironmentFailure(error)).toBe(true);
+    expect(attempts()).toBe(3);
+  });
+
+  test('caches a successful preflight per user, jurisdiction and case type but never caches failures', async () => {
+    caseSetupTest.clearResolvedAggregatedApiIds();
+    let status = 503;
+    const { request, attempts } = aggregatedPreflightRequest('identity-cache', () => ({
+      status: () => status,
+      json: async () => [{ id: 'DIVORCE', caseTypes: [{ id: 'XUI Case PoC' }] }],
+    }));
+    const resolve = (userId: string) =>
+      caseSetupTest.resolveApiIdsFromAggregatedJurisdictions({ request, userId, effectiveTimeoutMs: 100 });
+
+    try {
+      await expect(resolve('cache-user')).rejects.toThrow(/dependency unavailable/);
+      expect(attempts()).toBe(3);
+
+      status = 200;
+      const expected = { jurisdictionId: 'DIVORCE', caseTypeId: 'XUI Case PoC' };
+      await expect(resolve('cache-user')).resolves.toEqual(expected);
+      expect(attempts()).toBe(4);
+      await expect(resolve('cache-user')).resolves.toEqual(expected);
+      expect(attempts()).toBe(4);
+
+      await expect(resolve('other-user')).resolves.toEqual(expected);
+      expect(attempts()).toBe(5);
+    } finally {
+      caseSetupTest.clearResolvedAggregatedApiIds();
+    }
   });
 
   test('fails closed when create access does not include the requested jurisdiction and case type', async () => {

@@ -2,13 +2,20 @@ import { createHash, randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import * as lockfile from 'proper-lockfile';
+import { FrameworkError } from '../E2E/utils/frameworkError.js';
 import type { IdentityCompatibilityRequirements, IdentityPoolIdentity } from './identityPoolRegistry.js';
 import { resolveConfiguredPoolIdentities } from './identityPoolRegistry.js';
 
 const DEFAULT_WAIT_MS = 15 * 60_000;
 const DEFAULT_EXECUTION_BUDGET_MS = 5 * 60_000;
 const DEFAULT_POLL_MS = 1_000;
-const DEFAULT_TTL_MS = 15 * 60_000;
+/**
+ * Headroom added to the execution window for the default lease TTL, so release and teardown finish before a
+ * coordinator lease expires. Local lockfiles are refreshed by proper-lockfile while held, so their TTL only bounds how
+ * long a crashed owner blocks the identity; coordinator leases are not renewed, so the TTL must outlive the test.
+ */
+const DEFAULT_TTL_HEADROOM_MS = 60_000;
+export const IDENTITY_POOL_EXHAUSTED_CODE = 'IDENTITY_POOL_EXHAUSTED';
 
 export type IdentityLease = { identity: IdentityPoolIdentity; release: () => Promise<void> };
 export type IdentityLeaseTiming = { waitMs: number; executionBudgetMs: number };
@@ -16,9 +23,11 @@ export type IdentityLeaseRuntimeSettings = IdentityLeaseTiming & { pollMs: numbe
 type LeaseResponse = { status: 'acquired'; leaseId: string; userIdentifier: string } | { status: 'pending' };
 type FetchLike = typeof fetch;
 
-export class IdentityLeaseTimeoutError extends Error {
+export class IdentityLeaseTimeoutError extends FrameworkError {
   constructor(requirements: IdentityCompatibilityRequirements, waitMs: number, mode: 'local' | 'coordinator') {
     super(
+      IDENTITY_POOL_EXHAUSTED_CODE,
+      'setup',
       `Identity scheduling timed out after ${waitMs}ms waiting for a compatible configured account (${mode}; requirements=${JSON.stringify(requirements)}). No credential is missing; a previous owner may still hold or may have leaked the lease.`
     );
     this.name = 'IdentityLeaseTimeoutError';
@@ -43,7 +52,10 @@ export function resolveIdentityLeaseRuntimeSettings(
 ): IdentityLeaseRuntimeSettings {
   const timing = resolveIdentityLeaseTiming(env);
   const executionBudgetMs = Math.max(timing.executionBudgetMs, requiredExecutionMs);
-  const ttlMs = Math.max(positiveDuration(env.PW_IDENTITY_LEASE_TTL_MS, DEFAULT_TTL_MS), executionBudgetMs);
+  const ttlMs = Math.max(
+    positiveDuration(env.PW_IDENTITY_LEASE_TTL_MS, executionBudgetMs + DEFAULT_TTL_HEADROOM_MS),
+    executionBudgetMs
+  );
   return {
     ...timing,
     executionBudgetMs,

@@ -129,7 +129,7 @@ export function buildEventBehaviourTrigger(options: { showSummary?: boolean } = 
           { case_field_id: 'OutcomeType', order: 1, page_column_no: null, complex_field_overrides: [] },
           { case_field_id: 'OutcomeNote', order: 2, page_column_no: null, complex_field_overrides: [] },
         ],
-        show_condition: null,
+        show_condition: null as string | null,
         callback_url_mid_event: EVENT_BEHAVIOUR_CALLBACK_URL,
         retries_timeout_mid_event: [1, 2],
       },
@@ -141,7 +141,7 @@ export function buildEventBehaviourTrigger(options: { showSummary?: boolean } = 
           { case_field_id: 'DecisionReference', order: 1, page_column_no: null, complex_field_overrides: [] },
           { case_field_id: 'InternalNote', order: 2, page_column_no: null, complex_field_overrides: [] },
         ],
-        show_condition: null,
+        show_condition: null as string | null,
         callback_url_mid_event: null,
         retries_timeout_mid_event: [],
       },
@@ -163,7 +163,12 @@ export function buildEventBehaviourTrigger(options: { showSummary?: boolean } = 
 }
 
 export function buildEventBehaviourCaseDetails(
-  options: { eventRecorded?: boolean; eventReturnedByCaseView?: boolean; richTextReadValue?: string } = {}
+  options: {
+    eventRecorded?: boolean;
+    eventReturnedByCaseView?: boolean;
+    richTextReadValue?: string;
+    caseFields?: ReturnType<typeof buildEventBehaviourTrigger>['case_fields'];
+  } = {}
 ) {
   const caseDetails = JSON.parse(JSON.stringify(caseDetailsTemplate)) as Record<string, unknown>;
   caseDetails.case_id = EVENT_BEHAVIOUR_CASE_REFERENCE;
@@ -238,6 +243,16 @@ export function buildEventBehaviourCaseDetails(
       show_condition: null,
     },
   ];
+
+  if (options.caseFields) {
+    (caseDetails.tabs as Array<Record<string, unknown>>).push({
+      id: 'event-case-data',
+      label: 'Event case data',
+      order: 2,
+      fields: options.caseFields,
+      show_condition: null,
+    });
+  }
 
   if (options.richTextReadValue !== undefined) {
     (caseDetails.tabs as Array<Record<string, unknown>>).unshift({

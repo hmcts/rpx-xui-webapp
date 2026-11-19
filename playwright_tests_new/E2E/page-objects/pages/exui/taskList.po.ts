@@ -186,8 +186,10 @@ export class TaskListPage extends Base {
     );
   }
 
-  async gotoMyAccess() {
-    await this.navigateToTaskListView('/work/my-work/my-access', /\/work\/my-work\/my-access(?:\?.*)?$/, 'my access navigation');
+  async gotoMyAccess(timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
+    await this.navigateToTaskListView('/work/my-work/my-access', /\/work\/my-work\/my-access(?:\?.*)?$/, 'my access navigation', {
+      timeoutMs,
+    });
   }
 
   async gotoMyAccessExpectingServiceDown() {

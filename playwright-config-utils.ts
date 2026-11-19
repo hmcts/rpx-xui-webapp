@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import * as path from 'node:path';
 
+import workerCap from './playwright-worker-cap.cjs';
+
 /**
  * Shared Playwright configuration utility functions.
  * Used by Playwright config entrypoints to avoid duplication.
@@ -121,26 +123,31 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
 }
 
 /**
+ * Opt-in CPU-aware cap for agents that run several Playwright suites at once: `max(4, floor(cpus / PW_PARALLEL_SUITES))`
+ * when `PW_PARALLEL_SUITES` is a positive integer, otherwise unchanged. Implemented once in `playwright-worker-cap.cjs`
+ * so the CJS integration config support applies the same cap.
+ */
+export const capWorkerCountForParallelSuites = workerCap.capWorkerCountForParallelSuites as (
+  requested: number,
+  env?: EnvMap,
+  cpuCount?: number,
+  log?: (message: string) => void
+) => number;
+
+/**
  * Resolves Playwright worker count from FUNCTIONAL_TESTS_WORKERS or runtime defaults.
  * Browser-heavy E2E runs default to 7 workers unless explicitly overridden.
  */
-export function resolveWorkerCount(env: EnvMap = process.env): number {
-  const configured = resolveConfiguredWorkerCount(env);
-  if (configured !== undefined) {
-    return configured;
-  }
-  return 7;
+export function resolveWorkerCount(env: EnvMap = process.env, cpuCount?: number): number {
+  return capWorkerCountForParallelSuites(resolveConfiguredWorkerCount(env) ?? 7, env, cpuCount);
 }
 
 /**
  * Keeps node-api parallelism fixed unless Jenkins pins FUNCTIONAL_TESTS_WORKERS explicitly.
+ * Not CPU-capped: node-api runs no browsers, so it adds little agent load.
  */
 export function resolveApiProjectWorkerCount(env: EnvMap = process.env): number {
-  const configured = resolveConfiguredWorkerCount(env);
-  if (configured !== undefined) {
-    return configured;
-  }
-  return 6;
+  return resolveConfiguredWorkerCount(env) ?? 6;
 }
 
 function ensureTagPrefix(value: string): string {

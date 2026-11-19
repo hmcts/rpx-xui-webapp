@@ -12,6 +12,7 @@ type SearchState = {
   caseLookupStatus?: number;
   malformedLookup?: boolean;
   requestFailed?: boolean;
+  noLookupResponse?: boolean;
   noCases?: boolean;
   stuckSpinner?: boolean;
   detailsReady?: boolean;
@@ -81,6 +82,7 @@ export function buildSearch(state: SearchState = {}) {
         await submission;
         if (state.delayed) await navigation;
         if (state.requestFailed) throw new Error('Request failed');
+        if (state.noLookupResponse) throw new Error('page.waitForResponse: Timeout exceeded');
         const response = {
           url: () => `https://example.test/data/internal/cases/${CASE_REFERENCE}`,
           status: () =>

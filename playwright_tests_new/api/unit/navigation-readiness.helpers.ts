@@ -102,6 +102,7 @@ export function createCaseActionHarness(options: { eventError?: boolean; control
   const caseDetails = Object.assign(Object.create(CaseDetailsPage.prototype), {
     caseActionGoButton: controls,
     caseActionsDropdown: controls,
+    enabledCaseActionGoButton: controls,
     eventCreationErrorHeading: { isVisible: async () => options.eventError ?? false },
     logger: { warn: () => undefined },
     page: {
@@ -110,6 +111,9 @@ export function createCaseActionHarness(options: { eventError?: boolean; control
       waitForLoadState: async () => undefined,
       waitForURL: async () => {
         throw new Error('wrong destination');
+      },
+      waitForResponse: async () => {
+        throw new Error('page.waitForResponse: Timeout exceeded');
       },
     },
   });

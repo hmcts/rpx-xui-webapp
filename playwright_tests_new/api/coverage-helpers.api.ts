@@ -51,6 +51,39 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     );
   });
 
+  test('expectStatus tolerateDependencyUnavailable passes but records a degraded annotation', () => {
+    const annotations = test.info().annotations;
+    const before = annotations.length;
+
+    expectStatus(504, [200], { route: 'GET api/example', tolerateDependencyUnavailable: [502, 504] });
+    expect(annotations.slice(before)).toEqual([{ type: 'dependency-unavailable', description: 'GET api/example HTTP 504' }]);
+
+    expectStatus(200, [200], { route: 'GET api/example', tolerateDependencyUnavailable: [502, 504] });
+    expectStatus(502, [200], { tolerateDependencyUnavailable: [502] });
+    expect(annotations.slice(before)).toEqual([
+      { type: 'dependency-unavailable', description: 'GET api/example HTTP 504' },
+      { type: 'dependency-unavailable', description: 'unknown route HTTP 502' },
+    ]);
+  });
+
+  test('expectStatus tolerateDependencyUnavailable still fails on statuses outside both lists', () => {
+    const annotations = test.info().annotations;
+    const before = annotations.length;
+
+    expect(() =>
+      expectStatus(500, [200], {
+        route: 'GET api/example',
+        tolerateDependencyUnavailable: [502, 504],
+        message: 'Backend must not 500',
+      })
+    ).toThrow(/^Received HTTP 500\. Backend must not 500(?:\n|$)/);
+    expect(() => expectStatus(503, [200, 401], { tolerateDependencyUnavailable: [502] })).toThrow(
+      /^Received HTTP 503\. Expected status to be one of: 200, 401(?:\n|$)/
+    );
+    expect(() => expectStatus(502, [200], {})).toThrow(/^Received HTTP 502\./);
+    expect(annotations.length).toBe(before);
+  });
+
   test('guardedRequest converts request timeouts into guarded downstream status', async () => {
     let timeoutAnnotations = 0;
     const timeoutResult = await guardedRequest(

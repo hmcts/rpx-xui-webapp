@@ -34,8 +34,14 @@ export type PrlCourtLocation = {
   label: string;
 };
 
+export type PrlCaseManagementLocation = {
+  baseLocation: string;
+  region?: string;
+};
+
 export type PrlHearingsCaseSetupResult = {
   caseReference: string;
+  caseManagementLocation?: PrlCaseManagementLocation;
 };
 
 type CaseCreateResponse = {
@@ -458,7 +464,7 @@ async function getCaseInfo(
   return (await response.json()) as CcdCaseResponse;
 }
 
-function validateCreatedCase(caseInfo: CcdCaseResponse, primaryLocation: string): void {
+function validateCreatedCase(caseInfo: CcdCaseResponse, primaryLocation: string): PrlCaseManagementLocation {
   if (caseInfo.state !== JUDICIAL_REVIEW_STATE) {
     throw new Error(
       `PRL hearings setup expected state ${JUDICIAL_REVIEW_STATE} after creating the case, found ${caseInfo.state ?? 'missing'}.`
@@ -467,13 +473,15 @@ function validateCreatedCase(caseInfo: CcdCaseResponse, primaryLocation: string)
 
   const caseData = caseInfo.data ?? caseInfo.case_data ?? {};
 
-  const caseManagementLocation = caseData.caseManagementLocation as { baseLocation?: unknown } | undefined;
+  const caseManagementLocation = caseData.caseManagementLocation as { baseLocation?: unknown; region?: unknown } | undefined;
   const actualLocation = String(caseManagementLocation?.baseLocation ?? '').trim();
   if (actualLocation !== primaryLocation) {
     throw new Error(
       `PRL hearings setup expected case location ${primaryLocation} after creating the case, found ${actualLocation || 'missing'}.`
     );
   }
+  const region = String(caseManagementLocation?.region ?? '').trim();
+  return region ? { baseLocation: actualLocation, region } : { baseLocation: actualLocation };
 }
 
 export async function createPrlHearingsCase(
@@ -503,8 +511,8 @@ export async function createPrlHearingsCase(
     const createdCase = await createTestingSupportAdminCase(apiContext, config, courtAdminToken, serviceToken, userId);
     const caseReference = extractCaseReference(createdCase);
     const caseInfo = await getCaseInfo(apiContext, config, courtAdminToken, serviceToken, caseReference);
-    validateCreatedCase(caseInfo, primaryLocation);
-    return { caseReference };
+    const caseManagementLocation = validateCreatedCase(caseInfo, primaryLocation);
+    return { caseReference, caseManagementLocation };
   } finally {
     await apiContext.dispose();
   }

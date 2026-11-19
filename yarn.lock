@@ -9492,10 +9492,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:4.14.0, axe-core@npm:^4.11.1, axe-core@npm:^4.9.1, axe-core@npm:~4.14.0":
+"axe-core@npm:4.14.0":
   version: 4.14.0
   resolution: "axe-core@npm:4.14.0"
   checksum: 10/b41f9c5fb670b3e1812ba203b17570efa026071e6c722cd8384bacbe5f2be1578fc5d7544acf06df7758eb755c7d23629df922e86cc0655d656784157c0d8df5
+  languageName: node
+  linkType: hard
+
+"axe-core@npm:^4.11.1, axe-core@npm:^4.9.1, axe-core@npm:~4.14.0":
+  version: 4.14.1
+  resolution: "axe-core@npm:4.14.1"
+  checksum: 10/45c81d29170809bf48b0b34061f6f12bad27872695d3cbf83aacf7fe7d0d6c997214dff9c063c5e1ddc76e2de544da749eba518bc4c17494e79c56e93571888c
   languageName: node
   linkType: hard
 

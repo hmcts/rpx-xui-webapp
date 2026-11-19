@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { createLogger } from '@hmcts/playwright-common';
 
+import { POC_TEXT_FIELDS_VALIDATION_ERROR } from '../../../page-objects/pages/exui/createCase.flow';
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
 import { isTransientWorkflowFailure } from '../../transient-failure.utils';
 
@@ -197,7 +198,7 @@ export async function createDivorceCasePoC(
       const message = describeUnknownError(error);
       const isTransientCreationFailure =
         isTransientWorkflowFailure(error) ||
-        message.includes('Validation error after after PoC text fields') ||
+        message.includes(POC_TEXT_FIELDS_VALIDATION_ERROR) ||
         message.includes('The event could not be created') ||
         (await createCasePage.eventCreationErrorHeading.isVisible().catch(() => false));
       if (isTransientCreationFailure && attempt < maxAttempts) {

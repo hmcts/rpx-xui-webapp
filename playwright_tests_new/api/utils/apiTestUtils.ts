@@ -1,4 +1,4 @@
-import { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
 // Central map of commonly reused status code sets to reduce magic arrays in tests.
@@ -20,7 +20,31 @@ export const StatusSets = {
 
 export type StatusSetName = keyof typeof StatusSets;
 
-export function expectStatus(actual: number, allowed: ReadonlyArray<number>, message?: string) {
+export type ExpectStatusOptions = {
+  message?: string;
+  /**
+   * Statuses that mean a downstream dependency is unavailable. They do not fail the test, but each one
+   * records a `dependency-unavailable` annotation so reports show the run as degraded rather than green.
+   * Use only where the dependency is genuinely outside the system under test, with a comment saying why.
+   */
+  tolerateDependencyUnavailable?: ReadonlyArray<number>;
+  /** Route label used in the annotation description. */
+  route?: string;
+};
+
+export const DEPENDENCY_UNAVAILABLE_ANNOTATION = 'dependency-unavailable';
+
+export function expectStatus(actual: number, allowed: ReadonlyArray<number>, messageOrOptions?: string | ExpectStatusOptions) {
+  const options: ExpectStatusOptions =
+    typeof messageOrOptions === 'string' ? { message: messageOrOptions } : (messageOrOptions ?? {});
+  const message = options.message;
+  if (!allowed.includes(actual) && options.tolerateDependencyUnavailable?.includes(actual)) {
+    test.info().annotations.push({
+      type: DEPENDENCY_UNAVAILABLE_ANNOTATION,
+      description: `${options.route ?? 'unknown route'} HTTP ${actual}`,
+    });
+    return;
+  }
   if (!allowed.includes(actual)) {
     const hint = `Received HTTP ${actual}. ${message ?? `Expected status to be one of: ${allowed.join(', ')}`}`;
     // Emit a Playwright diff if it fails, but keep the message readable.

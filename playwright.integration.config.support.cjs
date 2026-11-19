@@ -9,10 +9,10 @@ const { cpus, totalmem } = require('node:os');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const {
-  resolveConfiguredSessionPoolCapacities,
-  resolveConfiguredPoolIdentities,
-} = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
+const identityPoolRegistry = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
+const { resolveConfiguredSessionPoolCapacities, resolveConfiguredPoolIdentities } = identityPoolRegistry;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { capWorkerCountForParallelSuites } = require('./playwright-worker-cap.cjs');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
 const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
@@ -48,7 +48,7 @@ const resolveDefaultReporter = (env = process.env) => {
   return env.CI ? 'dot' : 'list';
 };
 
-const resolveWorkerCount = (env = process.env) => {
+const resolveRequestedWorkerCount = (env) => {
   const configured = env.FUNCTIONAL_TESTS_WORKERS?.trim();
   if (configured) {
     const parsed = Number.parseInt(configured, 10);
@@ -59,6 +59,14 @@ const resolveWorkerCount = (env = process.env) => {
 
   return 7;
 };
+
+/**
+ * Same opt-in PW_PARALLEL_SUITES cap as the browser suites; a CLI --workers flag would bypass it.
+ * @param {NodeJS.ProcessEnv} [env]
+ * @param {number} [cpuCount] defaults to the agent CPU count
+ */
+const resolveWorkerCount = (env = process.env, cpuCount = undefined) =>
+  capWorkerCountForParallelSuites(resolveRequestedWorkerCount(env), env, cpuCount);
 
 const resolvePositiveInt = (raw) => {
   const parsed = Number.parseInt(raw ?? '', 10);

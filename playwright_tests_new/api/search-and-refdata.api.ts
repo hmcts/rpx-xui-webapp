@@ -69,7 +69,11 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
         ),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+    // Proxied to the CCD data store; gateway errors/timeouts (502/504, timeouts mapped to 504) are reported as degraded.
+    expectStatus(response.status, [200, 400, 401, 403, 404, 500], {
+      route: 'POST data/internal/searchCases',
+      tolerateDependencyUnavailable: [502, 504],
+    });
     assertSearchCasesResponse(response.status, response.data);
   });
 });

@@ -124,9 +124,15 @@ export class SearchCasePage extends Base {
         }
         throw new Error('No missing-case or restricted-case response was received for this search');
       }),
-    ]).catch(() => {
+    ]).catch(async (error: unknown) => {
+      const lookup = await caseLookupResponse;
+      const lookupStatus = lookup === null ? 'no response' : lookup.status === 0 ? 'request failed' : `HTTP ${lookup.status}`;
+      const innerErrors = error instanceof AggregateError ? error.errors : [error];
+      const firstInner = innerErrors[0] instanceof Error ? innerErrors[0].message : String(innerErrors[0]);
       throw new Error(
-        `Header quick-search did not reach the searched case, restricted-access shell, or no-results view (path=${new URL(this.page.url()).pathname})`
+        `Header quick-search did not reach the searched case, restricted-access shell, or no-results view ` +
+          `(path=${new URL(this.page.url()).pathname}; caseLookup=${lookupStatus}; firstError=${firstInner.split('\n')[0]})`,
+        { cause: error }
       );
     });
   }

@@ -180,4 +180,59 @@ describe('WASupportedJurisdictionsService', () => {
     httpMock.expectOne('/api/wa-supported-jurisdiction/detail').flush([]);
     expect(sessionStorageService.getItem).not.toHaveBeenCalled();
   });
+
+  it('should fall back to the API when reading session storage fails', () => {
+    sessionStorageService.getItem.and.throwError('SecurityError');
+    let result: string[];
+
+    service.getWASupportedJurisdictions().subscribe((jurisdictions) => (result = jurisdictions));
+    httpMock.expectOne('/api/wa-supported-jurisdiction/get').flush(['CIVIL']);
+
+    expect(result).toEqual(['CIVIL']);
+  });
+
+  it('should fall back to the API when removing invalid cached data fails', () => {
+    sessionStorageService.getItem.and.returnValue('{}');
+    sessionStorageService.removeItem.and.throwError('SecurityError');
+    let result: string[];
+
+    service.getWASupportedJurisdictions().subscribe((jurisdictions) => (result = jurisdictions));
+    httpMock.expectOne('/api/wa-supported-jurisdiction/get').flush(['CIVIL']);
+
+    expect(sessionStorageService.removeItem).toHaveBeenCalledWith(WASupportedJurisdictionsService.jurisdictionStorageKey);
+    expect(result).toEqual(['CIVIL']);
+  });
+
+  it('should deliver API responses to concurrent subscribers and allow later requests when cache writes fail', () => {
+    sessionStorageService.setItem.and.throwError('QuotaExceededError');
+    let firstResult: string[];
+    let secondResult: string[];
+
+    service.getWASupportedJurisdictions().subscribe((jurisdictions) => (firstResult = jurisdictions));
+    service.getWASupportedJurisdictions().subscribe((jurisdictions) => (secondResult = jurisdictions));
+    httpMock.expectOne('/api/wa-supported-jurisdiction/get').flush(['CIVIL']);
+
+    expect(firstResult).toEqual(['CIVIL']);
+    expect(secondResult).toEqual(['CIVIL']);
+
+    let laterResult: string[];
+    service.getWASupportedJurisdictions().subscribe((jurisdictions) => (laterResult = jurisdictions));
+    httpMock.expectOne('/api/wa-supported-jurisdiction/get').flush(['CIVIL', 'IA']);
+
+    expect(laterResult).toEqual(['CIVIL', 'IA']);
+  });
+
+  it('should allow a new request after an API failure', () => {
+    let failure: unknown;
+    service.getWASupportedJurisdictions().subscribe({ error: (error) => (failure = error) });
+    httpMock.expectOne('/api/wa-supported-jurisdiction/get').flush('Unavailable', { status: 503, statusText: 'Unavailable' });
+
+    expect(failure).toEqual(jasmine.objectContaining({ status: 503 }));
+
+    let result: string[];
+    service.getWASupportedJurisdictions().subscribe((jurisdictions) => (result = jurisdictions));
+    httpMock.expectOne('/api/wa-supported-jurisdiction/get').flush(['CIVIL']);
+
+    expect(result).toEqual(['CIVIL']);
+  });
 });

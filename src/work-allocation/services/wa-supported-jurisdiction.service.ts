@@ -36,14 +36,10 @@ export class WASupportedJurisdictionsService {
   }
 
   public getWASupportedJurisdictions(): Observable<string[]> {
-    const cachedJurisdictions = this.sessionStorageService.getItem(WASupportedJurisdictionsService.jurisdictionStorageKey);
+    const cachedJurisdictions = this.getCachedJurisdictions();
     if (cachedJurisdictions) {
-      const jurisdictions = safeJsonParse<string[]>(cachedJurisdictions, null);
-      if (Array.isArray(jurisdictions)) {
-        // Preserve asynchronous HTTP delivery so case-viewer tabs can finish initializing.
-        return scheduled([jurisdictions], asyncScheduler);
-      }
-      this.sessionStorageService.removeItem(WASupportedJurisdictionsService.jurisdictionStorageKey);
+      // Preserve asynchronous HTTP delivery so case-viewer tabs can finish initializing.
+      return scheduled([cachedJurisdictions], asyncScheduler);
     }
 
     if (!this.supportedJurisdictionsRequest$) {
@@ -58,10 +54,14 @@ export class WASupportedJurisdictionsService {
             )
           ),
           tap((jurisdictions) => {
-            this.sessionStorageService.setItem(
-              WASupportedJurisdictionsService.jurisdictionStorageKey,
-              JSON.stringify(jurisdictions)
-            );
+            try {
+              this.sessionStorageService.setItem(
+                WASupportedJurisdictionsService.jurisdictionStorageKey,
+                JSON.stringify(jurisdictions)
+              );
+            } catch {
+              // Cache failures must not prevent delivery of a successful API response.
+            }
           }),
           finalize(() => (this.supportedJurisdictionsRequest$ = null)),
           shareReplay({ bufferSize: 1, refCount: false })
@@ -69,5 +69,21 @@ export class WASupportedJurisdictionsService {
     }
 
     return this.supportedJurisdictionsRequest$;
+  }
+
+  private getCachedJurisdictions(): string[] | null {
+    try {
+      const cachedJurisdictions = this.sessionStorageService.getItem(WASupportedJurisdictionsService.jurisdictionStorageKey);
+      if (cachedJurisdictions) {
+        const jurisdictions = safeJsonParse<string[]>(cachedJurisdictions, null);
+        if (Array.isArray(jurisdictions)) {
+          return jurisdictions;
+        }
+        this.sessionStorageService.removeItem(WASupportedJurisdictionsService.jurisdictionStorageKey);
+      }
+    } catch {
+      // Fall back to the API when the cache cannot be read or cleared.
+    }
+    return null;
   }
 }

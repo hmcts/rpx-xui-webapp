@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
-import * as os from 'node:os';
 import * as path from 'node:path';
+
+import workerCap from './playwright-worker-cap.cjs';
 
 /**
  * Shared Playwright configuration utility functions.
@@ -122,32 +123,16 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
 }
 
 /**
- * Opt-in CPU-aware cap for agents that run several Playwright suites at once. When `PW_PARALLEL_SUITES` is a positive
- * integer, each browser suite gets at most `max(MIN_CAPPED_WORKERS, floor(cpuCount / PW_PARALLEL_SUITES))` workers;
- * otherwise the requested count is returned unchanged. The floor stops small agents from serialising a suite.
+ * Opt-in CPU-aware cap for agents that run several Playwright suites at once: `max(4, floor(cpus / PW_PARALLEL_SUITES))`
+ * when `PW_PARALLEL_SUITES` is a positive integer, otherwise unchanged. Implemented once in `playwright-worker-cap.cjs`
+ * so the CJS integration config support applies the same cap.
  */
-const MIN_CAPPED_WORKERS = 4;
-
-export function capWorkerCountForParallelSuites(
+export const capWorkerCountForParallelSuites = workerCap.capWorkerCountForParallelSuites as (
   requested: number,
-  env: EnvMap = process.env,
-  cpuCount: number = os.cpus().length,
-  log: (message: string) => void = console.log
-): number {
-  const parallelSuites = parsePositiveInt(env.PW_PARALLEL_SUITES?.trim());
-  if (parallelSuites === undefined || !Number.isFinite(cpuCount) || cpuCount <= 0) {
-    return requested;
-  }
-  const cap = Math.max(MIN_CAPPED_WORKERS, Math.floor(cpuCount / parallelSuites));
-  if (requested <= cap) {
-    return requested;
-  }
-  // Playwright re-evaluates the config in every worker; log once from the runner process.
-  if (!env.TEST_WORKER_INDEX) {
-    log(`[playwright-config] capping workers ${requested} -> ${cap} (cpus=${cpuCount}, PW_PARALLEL_SUITES=${parallelSuites})`);
-  }
-  return cap;
-}
+  env?: EnvMap,
+  cpuCount?: number,
+  log?: (message: string) => void
+) => number;
 
 /**
  * Resolves Playwright worker count from FUNCTIONAL_TESTS_WORKERS or runtime defaults.

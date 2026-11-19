@@ -2177,6 +2177,55 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  // Jenkins E2E sets PW_SESSION_CAPTURE_FAILURE_TTL_MS=60000; 0 (the old value) made every test re-attempt login.
+  for (const { ttlMs, expectLogin } of [
+    { ttlMs: '60000', expectLogin: false },
+    { ttlMs: '0', expectLogin: true },
+  ]) {
+    test(`a deterministic failure marker from another worker ${expectLogin ? 'is ignored' : 'suppresses login'} with PW_SESSION_CAPTURE_FAILURE_TTL_MS=${ttlMs}`, async () => {
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-ttl-env-'));
+      const previousCwd = process.cwd();
+      const sessionsDir = path.join(tempDir, '.sessions');
+      const identity = { userIdentifier: 'IAC_Judge_WA_R1', email: 'judge@example.test', password: 'not-used' };
+      const failurePath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.capture-failed.json`);
+      let loginCalls = 0;
+
+      try {
+        process.chdir(tempDir);
+        fs.mkdirSync(sessionsDir, { recursive: true });
+        fs.writeFileSync(
+          failurePath,
+          JSON.stringify({ timestamp: Date.now() - 30_000, message: 'IDAM rejected the credentials', retryable: false })
+        );
+
+        const capture = sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: { PW_SESSION_CAPTURE_FAILURE_TTL_MS: ttlMs },
+          isSessionFresh: () => false,
+          lockfile: { lock: async () => async () => undefined } as never,
+          loginAndPersistSession: async () => {
+            loginCalls += 1;
+          },
+          resolveSessionIdentity: () => identity,
+        });
+
+        if (expectLogin) {
+          await capture;
+          expect(loginCalls).toBe(1);
+        } else {
+          await expect(capture).rejects.toThrow(
+            /^\[cooldown-suppressed\] Recent session capture failed for IAC_Judge_WA_R1; .*IDAM rejected the credentials$/
+          );
+          expect(loginCalls).toBe(0);
+        }
+      } finally {
+        process.chdir(previousCwd);
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    });
+  }
+
   test('retries after a recent transient capture failure while retaining deterministic cooldowns', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-transient-cooldown-retry-unit-'));
     const previousCwd = process.cwd();

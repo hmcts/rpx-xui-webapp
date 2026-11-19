@@ -91,6 +91,35 @@ def archivePlaywrightDiagnostics = {
     )
 }
 
+// CI failure intelligence reads build-summary.json (schema xui-ci-build-summary/v1) at the artifact root to learn
+// which suite reports a build was expected to produce. Without it the suite inventory is always unknown and no build
+// can be counted as complete. Values are fixed suite labels and report paths only: no secrets, users or case data.
+def buildSummaryExpectedSuites = []
+def writeBuildSummary = { String testType, List reports ->
+    try {
+        reports.eachWithIndex { report, index ->
+            def evidence = report.path.toString()
+            if (!buildSummaryExpectedSuites.any { it.evidence == evidence }) {
+                def base = "${testType}-${report.suite}".toLowerCase()
+                def sameBase = buildSummaryExpectedSuites.count { it.suite == base || it.suite.startsWith("${base}-") }
+                buildSummaryExpectedSuites << [suite: sameBase == 0 ? base : "${base}-${sameBase + 1}", evidence: evidence]
+            }
+        }
+        def lane = (env.BRANCH_NAME ?: '').startsWith('PR-') ? 'pr' : 'master'
+        def suites = buildSummaryExpectedSuites.collect { "    { \"suite\": \"${it.suite}\", \"evidence\": \"${it.evidence}\" }" }.join(',\n')
+        writeFile(
+            file: 'build-summary.json',
+            text: "{\n  \"schema\": \"xui-ci-build-summary/v1\",\n  \"build_number\": ${env.BUILD_NUMBER ?: 0},\n  \"lane\": \"${lane}\",\n  \"expected_suites\": [\n${suites}\n  ]\n}\n"
+        )
+        archiveArtifacts(allowEmptyArchive: false, artifacts: 'build-summary.json')
+    } catch (Exception e) {
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+            throw e
+        }
+        echo "[build-summary] Non-blocking: could not write build-summary.json: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+}
+
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
 def playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
@@ -315,6 +344,14 @@ def playwrightLoadProfileEventsFile = { String testType ->
     ciLoadProfileEventsFile
 }
 
+def defaultIntegrationProfileRun = 'workers=7'
+
+// Only the default profile run takes the PW_PARALLEL_SUITES worker cap; explicit profile runs keep their worker count.
+def isExplicitIntegrationProfileRun = { String configuredRuns, String workersOverride ->
+    def configured = configuredRuns?.trim()
+    return (workersOverride?.trim() as boolean) || (configured && configured != defaultIntegrationProfileRun)
+}
+
 def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverride, String shardOverride ->
     def requestedWorkers = workersOverride?.trim()
     if (requestedWorkers) {
@@ -323,7 +360,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=7'
+        configured = defaultIntegrationProfileRun
     }
     return configured
         .split(/[\r\n;]+/)
@@ -331,7 +368,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
         .findAll { it }
 }
 
-def integrationProfileRunConfig = { String spec, String testType ->
+def integrationProfileRunConfig = { String spec, String testType, boolean capWorkers ->
     def workers = '7'
     def shard = ''
     spec.split(/\s+/).each { token ->
@@ -349,14 +386,18 @@ def integrationProfileRunConfig = { String spec, String testType ->
         shardArg: shard ? " --shard=${shard}" : '',
         label: "${testType}-${safeName}",
         reportDir: "functional-output/tests/playwright-integration/odhin-report/${testType}-${safeName}",
-        displayName: "${workers} workers${shard ? ", shard ${shard}" : ''}"
+        displayName: "${workers} workers${shard ? ", shard ${shard}" : ''}",
+        capWorkers: capWorkers
     ]
 }
 
 def resolveIntegrationRunConfigs = { String testType ->
     def reportRoot = 'functional-output/tests/playwright-integration/odhin-report'
-    def runConfigs = resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
-        integrationProfileRunConfig(spec, testType)
+    def configuredRuns = params.INTEGRATION_PW_PROFILE_RUNS ?: ''
+    def workersOverride = params.INTEGRATION_PW_WORKERS ?: ''
+    def capWorkers = !isExplicitIntegrationProfileRun(configuredRuns, workersOverride)
+    def runConfigs = resolveIntegrationProfileRuns(configuredRuns, workersOverride, params.INTEGRATION_PW_SHARD ?: '').collect { spec ->
+        integrationProfileRunConfig(spec, testType, capWorkers)
     }
     if (runConfigs.size() == 1) {
         runConfigs[0].reportDir = reportRoot
@@ -391,14 +432,16 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                     "TEST_TYPE=${testType}",
                     "ORG_USER_ASSIGNMENT_MODE=external",
                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                    // The integration config resolves workers from FUNCTIONAL_TESTS_WORKERS, capped by PW_PARALLEL_SUITES.
                     "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+                    "PW_PARALLEL_SUITES=${runConfig.capWorkers ? (env.PW_PARALLEL_SUITES ?: '') : ''}",
                     "PW_TARGET_PREFLIGHT=${testType == 'preview' ? 'true' : 'false'}",
                     "PW_INTEGRATION_SESSION_CONFIGURATION_COMPLETE_FILE=${sessionConfigCompleteFile}",
                     "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                     "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                 ]) {
-                    yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
+                    yarnBuilder.yarn("test:playwright:integration:raw${runConfig.shardArg ? " --${runConfig.shardArg}" : ''}")
                 }
                 runnerCompleted = true
                 outcome = 'completed'
@@ -852,7 +895,8 @@ withPipeline(type, product, component) {
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=7",
                                     "PW_E2E_CCD_SETUP_CONCURRENCY=1",
-                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    // Short cooldown: one deterministic login failure must not cost every later test an IDAM wait.
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=60000",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
@@ -951,6 +995,10 @@ withPipeline(type, product, component) {
                 }
             } finally {
                 failureSummary.publish(channel, 'PREVIEW', summaryReady ? failureReports : [])
+                if (failureReports) {
+                    // Smoke writes its own ci-evidence report earlier in the build, so it is part of the inventory.
+                    writeBuildSummary('preview', [[suite: 'Smoke', path: 'functional-output/tests/playwright-smoke/odhin-report/ci-evidence/playwright.json']] + failureReports)
+                }
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'finish')
                 archivePlaywrightDiagnostics()
                 publishCiLoadProfile('PREVIEW CI System Load')
@@ -1058,7 +1106,8 @@ withPipeline(type, product, component) {
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=7",
                                     "PW_E2E_CCD_SETUP_CONCURRENCY=1",
-                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    // Short cooldown: one deterministic login failure must not cost every later test an IDAM wait.
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=60000",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
@@ -1157,6 +1206,10 @@ withPipeline(type, product, component) {
                 }
             } finally {
                 failureSummary.publish(channel, 'AAT', summaryReady ? failureReports : [])
+                if (failureReports) {
+                    // Smoke writes its own ci-evidence report earlier in the build, so it is part of the inventory.
+                    writeBuildSummary('aat', [[suite: 'Smoke', path: 'functional-output/tests/playwright-smoke/odhin-report/ci-evidence/playwright.json']] + failureReports)
+                }
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'finish')
                 archivePlaywrightDiagnostics()
                 publishCiLoadProfile('AAT CI System Load')

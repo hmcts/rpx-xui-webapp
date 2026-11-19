@@ -71,6 +71,7 @@ properties([
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
 @Library("Infrastructure@2.13.6")
 
+import groovy.transform.Field
 import uk.gov.hmcts.contino.AppPipelineDsl
 
 def type      = "nodejs"
@@ -91,11 +92,12 @@ def archivePlaywrightDiagnostics = {
     )
 }
 
+// Script methods (not closures) keep their bodies out of the CPS script method, which is at the JVM 64 KB limit.
 // CI failure intelligence reads build-summary.json (schema xui-ci-build-summary/v1) at the artifact root to learn
 // which suite reports a build was expected to produce. Without it the suite inventory is always unknown and no build
 // can be counted as complete. Values are fixed suite labels and report paths only: no secrets, users or case data.
-def buildSummaryExpectedSuites = []
-def writeBuildSummary = { String testType, List reports ->
+@Field List buildSummaryExpectedSuites = []
+def writeBuildSummary(String testType, List reports) {
     try {
         reports.eachWithIndex { report, index ->
             def evidence = report.path.toString()
@@ -122,15 +124,15 @@ def writeBuildSummary = { String testType, List reports ->
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
-def playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
-def playwrightAccessibilityReportFile = 'xui-playwright-accessibility.html'
+@Field String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+@Field String playwrightAccessibilityReportFile = 'xui-playwright-accessibility.html'
 def playwrightAccessibilityJunitFile = 'functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml'
 
-def assertHtmlReportExists = { String reportDir, String reportFile ->
-    steps.sh "test -f '${reportDir}/${reportFile}'"
+def assertHtmlReportExists(String reportDir, String reportFile) {
+    sh "test -f '${reportDir}/${reportFile}'"
 }
 
-def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName, String outcome = 'unknown' ->
+def ensureHtmlReportForPublishing(String reportDir, String reportFile, String suiteName, String outcome = 'unknown') {
     def reportPath = "${reportDir}/${reportFile}"
     if (fileExists(reportPath)) {
         echo "[playwright-report] Reusing generated report at ${reportPath}"
@@ -145,7 +147,7 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
         "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}",
         "PW_ODHIN_ENSURE_OUTCOME=${outcome}"
     ]) {
-        steps.sh '''
+        sh '''
             node scripts/ensure-odhin-report.js \
               --report-dir "$PW_ODHIN_ENSURE_REPORT_DIR" \
               --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
@@ -155,7 +157,7 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
     }
 }
 
-def publishPlaywrightAccessibilityReport = { String reportName ->
+def publishPlaywrightAccessibilityReport(String reportName) {
     try {
         ensureHtmlReportForPublishing(
             playwrightAccessibilityReportDir,
@@ -272,8 +274,8 @@ def startPlaywrightLoadProfile = { String reportDir, String label, String events
     """
 }
 
-def stopPlaywrightLoadProfile = { String reportDir ->
-    steps.sh """
+def stopPlaywrightLoadProfile(String reportDir) {
+    sh """
         set +e
         touch '${reportDir}/stop'
         if [ -s '${reportDir}/monitor.pid' ]; then
@@ -312,9 +314,9 @@ def ciLoadProfileDir = "functional-output/tests/playwright-integration/load-prof
 def ciLoadProfileEventsFile = "${ciLoadProfileDir}/stage-events.jsonl"
 def ciLoadProfilePublished = false
 
-def recordPlaywrightLoadEvent = { String eventsFile, String label, String eventType ->
+def recordPlaywrightLoadEvent(String eventsFile, String label, String eventType) {
     try {
-        steps.sh "node scripts/playwright-load-event.js '${eventsFile}' '${label}' '${eventType}'"
+        sh "node scripts/playwright-load-event.js '${eventsFile}' '${label}' '${eventType}'"
     } catch (Exception e) {
         if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
             throw e

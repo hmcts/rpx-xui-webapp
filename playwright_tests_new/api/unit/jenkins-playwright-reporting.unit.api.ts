@@ -85,6 +85,22 @@ function expectInterruptedOutcomesToBypassFailure(jenkinsfile: string, expectedF
 }
 
 test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' }, () => {
+  test('keeps inline Jenkinsfile_CNP code under the CPS script method size limit', () => {
+    // Jenkins compiles the script body (top-level statements and closures) into one method capped at 64 KB of
+    // bytecode. Builds at 65,632 measured bytes failed with "Method too large"; 65,536 passed. Script methods
+    // (`def name(...) {`) compile separately and comments add no bytecode, so neither counts here.
+    const lines = source.split('\n');
+    let inlineBytes = 0;
+    for (let index = 0; index < lines.length; index += 1) {
+      if (/^def \w+\(.*\) \{$/.test(lines[index])) {
+        while (index < lines.length && lines[index] !== '}') index += 1;
+        continue;
+      }
+      if (!lines[index].trim().startsWith('//')) inlineBytes += Buffer.byteLength(lines[index]) + 1;
+    }
+    expect(inlineBytes, 'move a self-contained closure into a script method before adding more inline code').toBeLessThan(64_000);
+  });
+
   test('archives a build summary that declares the expected suite reports for CI failure intelligence', () => {
     expect(source).toContain('\\"schema\\": \\"xui-ci-build-summary/v1\\"');
     expect(source).toContain("archiveArtifacts(allowEmptyArchive: false, artifacts: 'build-summary.json')");

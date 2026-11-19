@@ -140,7 +140,12 @@ assert !calls.find { it[0] == 'slack' }[1].message.contains('<!channel>')
 // Execute the actual pipeline profile resolvers: publication must use the same paths as the runner.
 for (pipeline in ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
     def source = new File(pipeline).text
-    def resolvers = source.substring(source.indexOf('def resolveIntegrationProfileRuns ='), source.indexOf('def runPlaywrightIntegrationProfileMatrix ='))
+    // CNP declares the default profile run and its override check just before the resolvers they use.
+    def resolverStart = source.indexOf('def defaultIntegrationProfileRun =')
+    if (resolverStart < 0) {
+        resolverStart = source.indexOf('def resolveIntegrationProfileRuns =')
+    }
+    def resolvers = source.substring(resolverStart, source.indexOf('def runPlaywrightIntegrationProfileMatrix ='))
     def call = pipeline == 'Jenkinsfile_CNP' ? "resolveIntegrationRunConfigs('preview')" : 'resolveIntegrationRunConfigs()'
     def profileBinding = new Binding([params: [:]])
     def shell = new GroovyShell(profileBinding)

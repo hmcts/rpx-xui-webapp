@@ -167,7 +167,7 @@ export const test = base.extend<ApiFixtures>({
     void _browserName;
     const entries: ApiLogEntry[] = [];
     await use(entries);
-    const needsDiagnostics = ['failed', 'timedOut', 'skipped'].includes(testInfo.status);
+    const needsDiagnostics = ['failed', 'timedOut', 'skipped'].some((status) => status === testInfo.status);
 
     if (entries.length && needsDiagnostics) {
       const pretty = entries.map((entry) => JSON.stringify(entry, null, 2)).join('\n\n---\n\n');

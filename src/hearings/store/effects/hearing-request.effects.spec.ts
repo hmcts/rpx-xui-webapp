@@ -25,6 +25,7 @@ describe('Hearing Request Effects', () => {
     'loadHearingRequest',
     'updateHearingRequest',
     'submitHearingRequest',
+    'errorReporter',
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
@@ -35,6 +36,7 @@ describe('Hearing Request Effects', () => {
     region: 'Wales',
   };
   beforeEach(() => {
+    hearingsServiceMock.errorReporter.and.returnValue(() => {});
     mockRouter.navigate.and.returnValue(Promise.resolve(true));
     mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
 

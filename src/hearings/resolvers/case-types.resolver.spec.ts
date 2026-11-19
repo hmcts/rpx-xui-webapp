@@ -5,12 +5,13 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { initialState } from '../hearing.test.data';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
 import { CaseTypesResolver } from './case-types.resolver';
 import { JudgeTypesResolverService } from './judge-types-resolver.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CaseTypesResolver', () => {
   let lovRefDataService: LovRefDataService;
@@ -20,6 +21,7 @@ describe('CaseTypesResolver', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([])],
       providers: [
+        { provide: HearingsTelemetryService, useValue: null },
         provideMockStore({ initialState }),
         CaseTypesResolver,
         LovRefDataService,

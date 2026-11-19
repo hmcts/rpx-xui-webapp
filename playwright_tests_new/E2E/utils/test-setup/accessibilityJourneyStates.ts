@@ -1,7 +1,7 @@
 import type { Page, TestInfo } from '@playwright/test';
 import type { QueryManagementPage } from '../../page-objects/pages/exui/queryManagement.po';
 import { setupCaseListMocks, setupWelshLanguageSession } from '../../../integration/helpers';
-import { welshTranslationsSmall } from '../../../integration/mocks/welshLanguage';
+import { welshTranslationsForPhrases } from '../../../integration/mocks/welshLanguage';
 import { QUERY_MANAGEMENT_QUERY_DETAIL, QUERY_MANAGEMENT_QUERY_SUBJECT } from '../../../integration/mocks/queryManagement.mock';
 
 export type QueryAccessibilityState =
@@ -27,7 +27,7 @@ export async function setupAccessibilityHeader(page: Page, testInfo: TestInfo) {
   const lease = await setupWelshLanguageSession(page, testInfo);
   try {
     await page.route('**api/translation/cy*', async (route) => {
-      await route.fulfill({ json: welshTranslationsSmall });
+      await route.fulfill({ json: welshTranslationsForPhrases(route.request().postDataJSON().phrases) });
     });
     await setupCaseListMocks(page, {});
     return lease;

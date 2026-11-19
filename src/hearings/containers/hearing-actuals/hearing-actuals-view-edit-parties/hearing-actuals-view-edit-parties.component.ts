@@ -1,8 +1,9 @@
 import { Location } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, Renderer2, Optional } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { HearingsService } from '../../../services/hearings.service';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
@@ -64,7 +65,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
     private readonly renderer: Renderer2,
     private readonly router: Router,
     private readonly ngZone: NgZone,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    @Optional() private readonly hearingsService?: HearingsService
   ) {
     this.form = this.fb.group({
       parties: this.fb.array([], [Validators.maxLength(50)]),
@@ -308,9 +310,11 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public submitForm(parties: { parties: PlannedDayPartyModel[] }, valid: boolean): void {
+    this.hearingsService?.recordAction('continue');
     this.submitted = true;
     if (!valid) {
       this.displayErrors();
+      this.hearingsService?.recordValidationFailure('form', Math.max(1, this.errors.length));
       return;
     }
     if (valid) {
@@ -341,6 +345,7 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
   }
 
   public onBack(): void {
+    this.hearingsService?.recordAction('back');
     this.location.back();
   }
 

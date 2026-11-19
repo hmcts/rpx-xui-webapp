@@ -3,6 +3,7 @@ import type { APIResponse, Page, TestInfo } from '@playwright/test';
 
 import type { CaseDetailsPage } from '../../page-objects/pages/exui/caseDetails.po';
 import type { CreateCasePage } from '../../page-objects/pages/exui/createCase.po';
+import { inPhase } from '../frameworkError';
 import { withDirectCcdSetupGate } from './directCcdSetupGate';
 
 type SetupMode = 'api-required' | 'api-first' | 'ui-only';
@@ -683,6 +684,10 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<Dir
 }
 
 export async function setupCaseForJourney(request: SetupCaseRequest): Promise<SetupCaseResult> {
+  return request.testInfo ? inPhase(request.testInfo, 'setup', () => runCaseSetup(request)) : runCaseSetup(request);
+}
+
+async function runCaseSetup(request: SetupCaseRequest): Promise<SetupCaseResult> {
   const mode = resolveSetupMode(request.mode);
   const allowUiFallback = resolveUiFallbackFlag(request.allowUiFallback);
 

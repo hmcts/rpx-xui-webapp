@@ -412,6 +412,8 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     ) => {
       const locator = {
         first: () => locator,
+        // Chaining methods are used by @hmcts/playwright-common's IdamPage constructor (visibleSubmitBtn).
+        filter: () => locator,
         isVisible: async () => (handlers.isVisible ? handlers.isVisible() : false),
         waitFor: async () => {
           if (!handlers.waitFor) {
@@ -705,6 +707,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     };
     const submitBtn = {
       first: () => submitBtn,
+      filter: () => submitBtn,
       isVisible: async () => true,
       click: async () => {
         throw new Error('login failed');

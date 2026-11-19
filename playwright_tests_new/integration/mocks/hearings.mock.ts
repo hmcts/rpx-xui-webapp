@@ -449,6 +449,11 @@ export function buildLovRefDataMock(
         child_nodes: [],
       },
     ],
+    CaseManagementCancellationReasons: [
+      { key: 'reasonOne', value_en: 'Reason 1', lov_order: 1, active_flag: 'Y' },
+      { key: 'reasonTwo', value_en: 'Reason 2', lov_order: 2, active_flag: 'Y' },
+      { key: 'reasonThree', value_en: 'Reason 3', lov_order: 3, active_flag: 'Y' },
+    ],
     Facilities: [],
     HearingChannel: [
       {

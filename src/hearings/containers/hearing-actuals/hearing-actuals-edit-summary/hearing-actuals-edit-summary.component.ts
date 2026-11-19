@@ -34,6 +34,7 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
   }
 
   public onSubmitHearingDetails(): void {
+    this.hearingsService.recordAction('submit');
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
     const payload: { id: string; caseRef: string; hearingActuals?: HearingActualsModel; hearingStatus?: HMCStatus } = {
       id: this.id,
@@ -48,6 +49,7 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
 
   // Note: Already onBack on extended component but does not work for this use case
   public onBackPage(): void {
+    this.hearingsService.recordAction('back');
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingActualsLastError());
     // Prefer an in-app back when we can
     const sameOriginReferrer = document.referrer && new URL(document.referrer).origin === location.origin;

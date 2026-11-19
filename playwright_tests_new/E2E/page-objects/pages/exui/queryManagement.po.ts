@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import type { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 
@@ -24,6 +25,11 @@ export class QueryManagementPage extends Base {
   readonly queryDetailInput = this.raiseQueryForm.locator('textarea#body');
   readonly responseDetailInput = this.respondQueryForm.locator('textarea#body');
   readonly closeQueryCheckbox = this.respondQueryForm.getByRole('checkbox', { name: 'I want to close this query' });
+  readonly guidance = this.content.locator('ccd-qualifying-question-detail');
+  readonly previousButton = this.content.getByRole('button', { name: 'Previous', exact: true });
+  readonly hearingRelatedYesRadio = this.raiseQueryForm.locator('input#isHearingRelated-yes');
+  readonly hearingDate = this.raiseQueryForm.locator('ccd-query-write-date-input');
+  readonly documents = this.content.locator('ccd-query-write-add-documents');
   readonly hearingRelatedNoRadio = this.raiseQueryForm.locator('input#isHearingRelated-no');
   readonly respondToQueryHeading = this.respondQueryForm.locator('h1.govuk-heading-m');
   readonly reviewQueryDetailsHeading = this.reviewQueryDetails.locator('h1.govuk-heading-l');
@@ -57,6 +63,37 @@ export class QueryManagementPage extends Base {
     await this.queryDetailInput.fill(detail);
     await this.hearingRelatedNoRadio.check();
     await this.continueButton.click();
+  }
+
+  async attachDocument(filename: string): Promise<void> {
+    await this.documents.getByRole('button', { name: 'Add new', exact: true }).click();
+    await this.documents.locator('input[type="file"]').setInputFiles({
+      name: filename,
+      mimeType: 'application/pdf',
+      buffer: await readFile('playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf'),
+    });
+  }
+
+  async removeDocument(): Promise<void> {
+    await this.documents.getByRole('button', { name: /^Remove / }).click();
+    await this.page.locator('ccd-remove-dialog').getByRole('button', { name: 'Remove', exact: true }).click();
+  }
+
+  async selectGuidance(name: string): Promise<void> {
+    await this.qualifyingQuestionOptions.getByRole('radio', { name, exact: true }).check();
+    await this.continueButton.click();
+  }
+
+  async enterHearingDate(day: string, month: string, year: string): Promise<void> {
+    await this.hearingDate.getByLabel('Day', { exact: true }).fill(day);
+    await this.hearingDate.getByLabel('Month', { exact: true }).fill(month);
+    await this.hearingDate.getByLabel('Year', { exact: true }).fill(year);
+  }
+
+  reviewRow(label: string): Locator {
+    return this.reviewQueryDetails
+      .locator('.govuk-summary-list__row')
+      .filter({ has: this.page.locator('.govuk-summary-list__key', { hasText: label }) });
   }
 
   async openRespondToQueryTask(): Promise<void> {

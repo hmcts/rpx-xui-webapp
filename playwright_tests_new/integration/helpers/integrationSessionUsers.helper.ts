@@ -55,6 +55,8 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   '@integration-share-case': () => ['SOLICITOR'],
   '@integration-staff-admin': () => ['STAFF_ADMIN'],
   '@integration-case-viewer': () => ['STAFF_ADMIN'],
+  // Authentication and user details are route-mocked by this suite.
+  '@integration-case-viewer-mock-session': () => [],
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
 };
 

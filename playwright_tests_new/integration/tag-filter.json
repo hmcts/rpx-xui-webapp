@@ -17,6 +17,7 @@
     "@integration-case-linking",
     "@integration-event-behaviour",
     "@integration-case-viewer",
+    "@integration-case-viewer-mock-session",
     "@integration-dynamic-field-config",
     "@integration-case-list",
     "@integration-ccd-toolkit",

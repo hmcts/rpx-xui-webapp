@@ -2,7 +2,7 @@
   <div>
     <div>
       <ul class="hmcts-filter-tags selection-container">
-        <ng-container *ngFor="let location of selectedLocations">
+        @for (location of selectedLocations; track location) {
           <ng-template #locationSelectionTags>
             <li class="location-selection">
               <a class="hmcts-filter__tag" (click)="removeLocation(location); $event.preventDefault()" href="#">
@@ -10,15 +10,13 @@
               </a>
             </li>
           </ng-template>
-
-          <ng-container *ngIf="isPrimaryMode && location.is_primary">
+          @if (isPrimaryMode && location.is_primary) {
             <ng-container *ngTemplateOutlet="locationSelectionTags"></ng-container>
-          </ng-container>
-
-          <ng-container *ngIf="!isPrimaryMode && !location.is_primary">
+          }
+          @if (!isPrimaryMode && !location.is_primary) {
             <ng-container *ngTemplateOutlet="locationSelectionTags"></ng-container>
-          </ng-container>
-        </ng-container>
+          }
+        }
       </ul>
     </div>
 
@@ -37,18 +35,18 @@
 
       <div class="auto-complete-container">
         <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLocation="matAutocomplete">
-          <ng-container *ngIf="filteredList$ | async as filteredList">
-            <ng-container *ngIf="filteredList && filteredList.length >= 0">
-              <mat-option
-                *ngFor="let location of filteredList"
-                [value]="location.venue_name"
-                (onSelectionChange)="autocompleteSelectedLocation = location"
-              >
-                {{ location.venue_name }}
-              </mat-option>
-              <mat-option *ngIf="filteredList.length === 0">No results found</mat-option>
-            </ng-container>
-          </ng-container>
+          @if (filteredList$ | async; as filteredList) {
+            @if (filteredList && filteredList.length >= 0) {
+              @for (location of filteredList; track location) {
+                <mat-option [value]="location.venue_name" (onSelectionChange)="autocompleteSelectedLocation = location">
+                  {{ location.venue_name }}
+                </mat-option>
+              }
+              @if (filteredList.length === 0) {
+                <mat-option>No results found</mat-option>
+              }
+            }
+          }
         </mat-autocomplete>
       </div>
     </div>

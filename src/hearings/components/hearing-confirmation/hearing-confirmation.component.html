@@ -7,20 +7,26 @@
       </div>
       <div>
         <h2 class="govuk-heading-m">{{ subheading | rpxTranslate }}</h2>
-        <div class="govuk-body" *ngIf="subheadingDescription">
-          {{ subheadingDescription | rpxTranslate }}
-        </div>
-        <div class="govuk-body" *ngIf="caseId">
-          {{ 'You can' | rpxTranslate }}
-          <a
-            (click)="$event.preventDefault()"
-            [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']"
-            class="govuk-link"
-          >
-            {{ 'view the status of this hearing in the hearings tab' | rpxTranslate }} </a
-          >.
-        </div>
-        <div class="govuk-body" *ngIf="additionalDescription" [innerHtml]="additionalDescription | rpxTranslate"></div>
+        @if (subheadingDescription) {
+          <div class="govuk-body">
+            {{ subheadingDescription | rpxTranslate }}
+          </div>
+        }
+        @if (caseId) {
+          <div class="govuk-body">
+            {{ 'You can' | rpxTranslate }}
+            <a
+              (click)="$event.preventDefault()"
+              [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']"
+              class="govuk-link"
+            >
+              {{ 'view the status of this hearing in the hearings tab' | rpxTranslate }} </a
+            >.
+          </div>
+        }
+        @if (additionalDescription) {
+          <div class="govuk-body" [innerHtml]="additionalDescription | rpxTranslate"></div>
+        }
       </div>
     </div>
   </div>

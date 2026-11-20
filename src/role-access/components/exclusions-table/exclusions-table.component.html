@@ -1,34 +1,36 @@
-<table class="govuk-table" *ngIf="exclusions && exclusions.length > 0">
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Name</th>
-      <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">User type</th>
-      <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Notes</th>
-      <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Added</th>
-      <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19"></th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-    <ng-container *ngFor="let exclusion of exclusions">
+@if (exclusions && exclusions.length > 0) {
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ exclusion.name }}</td>
-        <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ exclusion.userType }}</td>
-        <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ exclusion.notes }}</td>
-        <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ exclusion.added | date: 'd MMMM yyyy' }}</td>
-        <td>
-          <a *ngIf="isCaseAllocator" [routerLink]="['/role-access/delete-exclusion']" [queryParams]="queryParams(exclusion)"
-            >Delete</a
-          >
-        </td>
+        <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Name</th>
+        <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">User type</th>
+        <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Notes</th>
+        <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Added</th>
+        <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19"></th>
       </tr>
-    </ng-container>
-  </tbody>
-</table>
+    </thead>
+    <tbody class="govuk-table__body">
+      @for (exclusion of exclusions; track exclusion) {
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ exclusion.name }}</td>
+          <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ exclusion.userType }}</td>
+          <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ exclusion.notes }}</td>
+          <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ exclusion.added | date: 'd MMMM yyyy' }}</td>
+          <td>
+            @if (isCaseAllocator) {
+              <a [routerLink]="['/role-access/delete-exclusion']" [queryParams]="queryParams(exclusion)">Delete</a>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
 
-<ng-container *ngIf="!exclusions || exclusions.length === 0">
+@if (!exclusions || exclusions.length === 0) {
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row">
       <dd class="govuk-summary-list__value">There are no exclusions for this case.</dd>
     </div>
   </dl>
-</ng-container>
+}

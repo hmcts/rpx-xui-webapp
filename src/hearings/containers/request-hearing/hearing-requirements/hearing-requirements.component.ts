@@ -44,7 +44,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public validationErrors: { id: string; message: string[] };
 
-  @HostListener('window:focus', ['$event'])
+  @HostListener('window:focus')
   public onFocus(): void {
     if (this.lostFocus) {
       this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
@@ -61,7 +61,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     }
   }
 
-  @HostListener('window:blur', ['$event'])
+  @HostListener('window:blur')
   public onBlur(): void {
     this.lostFocus = true;
   }

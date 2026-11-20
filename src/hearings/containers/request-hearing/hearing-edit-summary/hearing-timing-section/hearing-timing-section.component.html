@@ -1,24 +1,21 @@
 <h2 class="govuk-heading-m">
   Length, date and priority level of hearing
-  <exui-amendment-label
-    id="hearing-window-action-needed-label"
-    *ngIf="showActionNeededLabelForPageTitle"
-    [displayLabel]="amendmentLabelEnum.ACTION_NEEDED"
-  >
-  </exui-amendment-label>
-  <exui-amendment-label
-    id="hearing-window-amended-label"
-    *ngIf="showAmendedLabelForPageTitle"
-    [displayLabel]="amendmentLabelEnum.AMENDED"
-  >
-  </exui-amendment-label>
+  @if (showActionNeededLabelForPageTitle) {
+    <exui-amendment-label id="hearing-window-action-needed-label" [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+    </exui-amendment-label>
+  }
+  @if (showAmendedLabelForPageTitle) {
+    <exui-amendment-label id="hearing-window-amended-label" [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+  }
 </h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">Length of hearing</div>
     <div class="govuk-summary-list__value">
       {{ hearingLength }}
-      <exui-amendment-label *ngIf="hearingLengthChanged" [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+      @if (hearingLengthChanged) {
+        <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+      }
     </div>
     <div class="govuk-summary-list__actions">
       <button id="hearingLength" class="govuk-js-link" type="button" (click)="onChange('hearingLength')">Change</button>
@@ -28,23 +25,38 @@
     <div class="govuk-summary-list__key">Does the hearing need to take place on a specific date?</div>
     <div class="govuk-summary-list__value">
       {{ specificDateSelection }}
-      <exui-amendment-label *ngIf="specificDateOptionChanged" [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
-      <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">
-        <div *ngIf="earliestHearingDate.length > 0">
-          Must list after: {{ earliestHearingDate }}
-          <exui-amendment-label *ngIf="dateRangeStartChanged" [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+      @if (specificDateOptionChanged) {
+        <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+      }
+      @if (specificDateSelection === radioOptions.CHOOSE_DATE_RANGE) {
+        <div>
+          @if (earliestHearingDate.length > 0) {
+            <div>
+              Must list after: {{ earliestHearingDate }}
+              @if (dateRangeStartChanged) {
+                <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+              }
+            </div>
+          }
+          @if (latestHearingDate.length > 0) {
+            <div>
+              Must list before: {{ latestHearingDate }}
+              @if (dateRangeEndChanged) {
+                <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+              }
+            </div>
+          }
         </div>
-        <div *ngIf="latestHearingDate.length > 0">
-          Must list before: {{ latestHearingDate }}
-          <exui-amendment-label *ngIf="dateRangeEndChanged" [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+      }
+      @if (specificDateSelection === radioOptions.YES) {
+        <div>
+          <dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>
+          {{ firstHearingDate }}
+          @if (firstDateTimeMustBeChanged) {
+            <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+          }
         </div>
-      </div>
-      <div *ngIf="specificDateSelection === radioOptions.YES">
-        <dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>
-        {{ firstHearingDate }}
-        <exui-amendment-label *ngIf="firstDateTimeMustBeChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
-        </exui-amendment-label>
-      </div>
+      }
     </div>
     <div class="govuk-summary-list__actions">
       <button id="hearingSpecificDate" type="button" class="govuk-js-link" (click)="onChange('hearingSpecificDate')">
@@ -56,7 +68,9 @@
     <div class="govuk-summary-list__key">What is the priority of this hearing?</div>
     <div class="govuk-summary-list__value">
       {{ hearingPriority }}
-      <exui-amendment-label *ngIf="hearingPriorityChanged" [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+      @if (hearingPriorityChanged) {
+        <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+      }
     </div>
     <div class="govuk-summary-list__actions">
       <button id="hearingPriority" class="govuk-js-link" type="button" (click)="onChange('hearingPriority')">Change</button>

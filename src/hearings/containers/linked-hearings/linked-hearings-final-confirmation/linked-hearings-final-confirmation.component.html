@@ -1,1 +1,3 @@
-<exui-hearing-confirmation *ngIf="caseId" [caseId]="caseId" [heading]="heading"> </exui-hearing-confirmation>
+@if (caseId) {
+  <exui-hearing-confirmation [caseId]="caseId" [heading]="heading"> </exui-hearing-confirmation>
+}

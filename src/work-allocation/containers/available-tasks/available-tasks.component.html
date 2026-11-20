@@ -1,4 +1,6 @@
-<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
+@if (showSpinner$ | async) {
+  <xuilib-loading-spinner></xuilib-loading-spinner>
+}
 <exui-task-list
   [taskServiceConfig]="taskServiceConfig"
   [tasks]="tasks"

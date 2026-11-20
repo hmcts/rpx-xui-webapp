@@ -1,5 +1,5 @@
 <div>
-  <ng-container *ngIf="(validationErrors$ | async)?.message">
+  @if ((validationErrors$ | async)?.message) {
     <div
       class="govuk-error-summary"
       aria-labelledby="error-summary-title"
@@ -19,7 +19,7 @@
         </ul>
       </div>
     </div>
-  </ng-container>
+  }
 
   <div class="hmcts-page-heading">
     <div class="hmcts-page-heading__title">

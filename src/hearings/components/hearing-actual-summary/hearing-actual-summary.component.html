@@ -3,12 +3,11 @@
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">{{ 'Hearing date(s)' | rpxTranslate }}</dt>
       <dd class="govuk-summary-list__value">
-        <ng-container *ngIf="isMultiDayHearing; else singleDayHearingDate">
+        @if (isMultiDayHearing) {
           {{ actualMultiDaysHearingDates() }}
-        </ng-container>
-        <ng-template #singleDayHearingDate>
+        } @else {
           {{ actualHearingDate() | date: 'dd MMMM yyyy' }}
-        </ng-template>
+        }
       </dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
@@ -18,15 +17,19 @@
   <h1 class="govuk-heading-m" style="display: inline-block">{{ 'Hearing stage and result' | rpxTranslate }}</h1>
 
   <dl class="govuk-summary-list">
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="caseReference">
-      <dt class="govuk-summary-list__key">{{ 'Case reference' | rpxTranslate }}</dt>
-      <dd class="govuk-summary-list__value">{{ caseReference | caseReference }}</dd>
-    </div>
+    @if (caseReference) {
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">{{ 'Case reference' | rpxTranslate }}</dt>
+        <dd class="govuk-summary-list__value">{{ caseReference | caseReference }}</dd>
+      </div>
+    }
 
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="hearingId">
-      <dt class="govuk-summary-list__key">{{ 'Hearing Id' | rpxTranslate }}</dt>
-      <dd class="govuk-summary-list__value">{{ hearingId }}</dd>
-    </div>
+    @if (hearingId) {
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">{{ 'Hearing Id' | rpxTranslate }}</dt>
+        <dd class="govuk-summary-list__value">{{ hearingId }}</dd>
+      </div>
+    }
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">{{ 'Hearing stage' | rpxTranslate }}</dt>
@@ -40,19 +43,23 @@
       </dd>
     </div>
 
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
-      <dt class="govuk-summary-list__key">{{ 'Adjournment reason' | rpxTranslate }}</dt>
-      <dd class="govuk-summary-list__value">
-        {{ adjournReasonTypeValue }}
-      </dd>
-    </div>
+    @if (isAdjourned) {
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">{{ 'Adjournment reason' | rpxTranslate }}</dt>
+        <dd class="govuk-summary-list__value">
+          {{ adjournReasonTypeValue }}
+        </dd>
+      </div>
+    }
 
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="isAdjourned">
-      <dt class="govuk-summary-list__key">{{ 'Adjournment date' | rpxTranslate }}</dt>
-      <dd class="govuk-summary-list__value">
-        {{ hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate | date: 'dd MMMM yyyy' }}
-      </dd>
-    </div>
+    @if (isAdjourned) {
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">{{ 'Adjournment date' | rpxTranslate }}</dt>
+        <dd class="govuk-summary-list__value">
+          {{ hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate | date: 'dd MMMM yyyy' }}
+        </dd>
+      </div>
+    }
 
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">{{ 'Was this a paper hearing' | rpxTranslate }}</dt>
@@ -62,25 +69,23 @@
       ></dd>
     </div>
 
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="(isPaperHearing$ | async) === false">
-      <dt class="govuk-summary-list__key">{{ 'Hearing methods' | rpxTranslate }}</dt>
-      <dd
-        class="govuk-summary-list__value"
-        [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer: hearingState$ | async"
-      ></dd>
-    </div>
+    @if ((isPaperHearing$ | async) === false) {
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+        <dt class="govuk-summary-list__key">{{ 'Hearing methods' | rpxTranslate }}</dt>
+        <dd
+          class="govuk-summary-list__value"
+          [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer: hearingState$ | async"
+        ></dd>
+      </div>
+    }
   </dl>
   <br />
 
-  <h1
-    class="govuk-heading-m"
-    style="display: inline-block"
-    *ngIf="hearingActualsMainModel?.hearingActuals?.actualHearingDays?.length > 0"
-  >
-    Hearing date(s)
-  </h1>
+  @if (hearingActualsMainModel?.hearingActuals?.actualHearingDays?.length > 0) {
+    <h1 class="govuk-heading-m" style="display: inline-block">Hearing date(s)</h1>
+  }
 
-  <ng-container *ngFor="let actualHearingDay of hearingActualsMainModel?.hearingActuals?.actualHearingDays">
+  @for (actualHearingDay of hearingActualsMainModel?.hearingActuals?.actualHearingDays; track actualHearingDay) {
     <div>
       <details
         class="govuk-details govuk-!-margin-bottom-0"
@@ -102,5 +107,5 @@
         </div>
       </details>
     </div>
-  </ng-container>
+  }
 </div>

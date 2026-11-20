@@ -1,4 +1,6 @@
-<exui-error-message *ngIf="error" [error]="error"></exui-error-message>
+@if (error) {
+  <exui-error-message [error]="error"></exui-error-message>
+}
 
 <div>
   <form class="form" [formGroup]="welshForm" [ngClass]="{ 'govuk-form-group--error': error }">
@@ -13,10 +15,12 @@
         <div id="welsh-hint" class="govuk-hint">
           {{ 'This means the entire hearing will be carried out in Welsh.' | rpxTranslate }}
         </div>
-        <span id="hearing-welsh-location" [ngClass]="{ 'govuk-error-message': error }" *ngIf="error">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span
-          >{{ 'Select hearing need to be in Welsh or not' | rpxTranslate }}
-        </span>
+        @if (error) {
+          <span id="hearing-welsh-location" [ngClass]="{ 'govuk-error-message': error }">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span
+            >{{ 'Select hearing need to be in Welsh or not' | rpxTranslate }}
+          </span>
+        }
 
         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
           <div class="govuk-radios__item">

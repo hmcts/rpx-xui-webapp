@@ -1,4 +1,6 @@
-<exui-error-message *ngIf="error" [error]="error"></exui-error-message>
+@if (error) {
+  <exui-error-message [error]="error"></exui-error-message>
+}
 <div
   [formGroup]="formGroup"
   class="govuk-form-group"
@@ -8,13 +10,11 @@
     <span class="govuk-caption-l">{{ caption }}</span>
     {{ title }}
   </h1>
-  <span
-    id="more-detail-error"
-    class="govuk-error-message"
-    *ngIf="!formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted"
-  >
-    <span class="govuk-visually-hidden">Error:</span> Enter exclusion
-  </span>
+  @if (!formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted) {
+    <span id="more-detail-error" class="govuk-error-message">
+      <span class="govuk-visually-hidden">Error:</span> Enter exclusion
+    </span>
+  }
   <fieldset class="govuk-fieldset">
     <textarea
       [ngClass]="{

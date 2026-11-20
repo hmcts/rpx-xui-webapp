@@ -1,10 +1,8 @@
-<ng-container *ngIf="!(staffDataFilterService.tableData$ | async); else showTable">
+@if (!(staffDataFilterService.tableData$ | async)) {
   <p>Please select filters and click Search</p>
-</ng-container>
-
-<ng-template #showTable>
-  <ng-container *ngIf="staffDataFilterService.tableData$ | async as tableData">
-    <ng-container *ngIf="tableData.items.length; else noResultsFound">
+} @else {
+  @if (staffDataFilterService.tableData$ | async; as tableData) {
+    @if (tableData.items.length) {
       <div class="govuk-!-margin-bottom-4">
         <p class="hmcts-pagination__results">
           Showing <b>{{ tableData.pageNumber * tableData.pageSize - tableData.pageSize + 1 }}</b> to
@@ -16,7 +14,6 @@
           of <b>{{ tableData.totalItems }}</b> results
         </p>
       </div>
-
       <div>
         <table
           class="govuk-table"
@@ -35,34 +32,36 @@
               </a>
             </td>
           </ng-container>
-
           <ng-container cdkColumnDef="services">
             <th cdk-header-cell *cdkHeaderCellDef>Service</th>
             <td cdk-cell *cdkCellDef="let element">
-              <div *ngFor="let obj of element.services">
-                {{ obj.service }}
-              </div>
+              @for (obj of element.services; track obj) {
+                <div>
+                  {{ obj.service }}
+                </div>
+              }
             </td>
           </ng-container>
-
           <ng-container cdkColumnDef="locations">
             <th cdk-header-cell *cdkHeaderCellDef>Location</th>
             <td cdk-cell *cdkCellDef="let element">
-              <div *ngFor="let obj of element.base_locations">
-                {{ obj.location }}
-              </div>
+              @for (obj of element.base_locations; track obj) {
+                <div>
+                  {{ obj.location }}
+                </div>
+              }
             </td>
           </ng-container>
-
           <ng-container cdkColumnDef="jobTitle">
             <th cdk-header-cell *cdkHeaderCellDef>Job title</th>
             <td cdk-cell *cdkCellDef="let element">
-              <div *ngFor="let role of element.roles">
-                {{ role.role }}
-              </div>
+              @for (role of element.roles; track role) {
+                <div>
+                  {{ role.role }}
+                </div>
+              }
             </td>
           </ng-container>
-
           <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
           <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
         </table>
@@ -72,12 +71,10 @@
           [showResultCount]="false"
         ></xuilib-hmcts-pagination>
       </div>
-    </ng-container>
-
-    <ng-template #noResultsFound>
+    } @else {
       <div id="user-list-no-results">
         <h3 class="govuk-heading-s">{{ noResultsFoundText }}</h3>
       </div>
-    </ng-template>
-  </ng-container>
-</ng-template>
+    }
+  }
+}

@@ -25,7 +25,9 @@ import { CaseViewerContainerComponent } from './case-viewer-container.component'
   selector: 'ccd-case-viewer',
   template: `
     <mat-tab-group>
-      <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label"> </mat-tab>
+      @for (tab of prependedTabs; track tab) {
+        <mat-tab [id]="tab.id" [label]="tab.label"> </mat-tab>
+      }
     </mat-tab-group>
   `,
 })

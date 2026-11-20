@@ -17,18 +17,18 @@
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
               <h1 class="govuk-fieldset__heading">
                 {{ 'Length of hearing' | rpxTranslate }}
-                <exui-amendment-label
-                  id="length-of-hearing-label"
-                  *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && durationChanged"
-                  [displayLabel]="amendmentLabelEnum.AMENDED"
-                >
-                </exui-amendment-label>
+                @if (!hearingWindowChangesConfirmed && hearingWindowChangesRequired && durationChanged) {
+                  <exui-amendment-label id="length-of-hearing-label" [displayLabel]="amendmentLabelEnum.AMENDED">
+                  </exui-amendment-label>
+                }
               </h1>
             </legend>
-            <span class="govuk-error-message" *ngIf="hearingLengthErrorValue">
-              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-              {{ hearingLengthErrorValue | rpxTranslate }}
-            </span>
+            @if (hearingLengthErrorValue) {
+              <span class="govuk-error-message">
+                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+                {{ hearingLengthErrorValue | rpxTranslate }}
+              </span>
+            }
             <div class="govuk-date-input" formGroupName="durationLength">
               <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
@@ -81,20 +81,21 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h3 class="govuk-fieldset__heading">
               {{ 'Does the hearing need to take place on a specific date?' | rpxTranslate }}
-              <exui-amendment-label
-                id="hearing-specific-dates-label"
-                *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && hearingUnavailabilityDatesChanged"
-                [displayLabel]="amendmentLabelEnum.ACTION_NEEDED"
-              >
-              </exui-amendment-label>
+              @if (!hearingWindowChangesConfirmed && hearingWindowChangesRequired && hearingUnavailabilityDatesChanged) {
+                <exui-amendment-label id="hearing-specific-dates-label" [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
+                </exui-amendment-label>
+              }
             </h3>
           </legend>
           <div class="govuk-hint">
             {{ 'Availability of all the parties will be taken into account when scheduling this hearing' | rpxTranslate }}
           </div>
-          <span class="govuk-error-message" *ngIf="hearingPriorityDateError">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ hearingPriorityDateError | rpxTranslate }}
-          </span>
+          @if (hearingPriorityDateError) {
+            <span class="govuk-error-message">
+              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+              {{ hearingPriorityDateError | rpxTranslate }}
+            </span>
+          }
           <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
             <div class="govuk-radios__item">
               <input
@@ -131,12 +132,10 @@
                   [formGroup]="firstHearingFormGroup"
                   [errorMessage]="firstDateOfHearingError"
                 ></xuilib-gov-uk-date>
-                <exui-amendment-label
-                  id="first-date-amendment-label"
-                  *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && firstDateTimeMustBeChanged"
-                  [displayLabel]="amendmentLabelEnum.AMENDED"
-                >
-                </exui-amendment-label>
+                @if (!hearingWindowChangesConfirmed && hearingWindowChangesRequired && firstDateTimeMustBeChanged) {
+                  <exui-amendment-label id="first-date-amendment-label" [displayLabel]="amendmentLabelEnum.AMENDED">
+                  </exui-amendment-label>
+                }
               </div>
             </div>
             <div class="govuk-radios__item">
@@ -162,22 +161,22 @@
               </div>
               <div class="govuk-hint">{{ 'Start date: minus 1 day  End date: plus 1 day' | rpxTranslate }}</div>
               <div [ngClass]="{ 'govuk-form-group--error': dateRangeWeekendError }">
-                <span class="govuk-error-message" *ngIf="dateRangeWeekendError">
-                  <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-                  {{ dateRangeWeekendError | rpxTranslate }}
-                </span>
+                @if (dateRangeWeekendError) {
+                  <span class="govuk-error-message">
+                    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+                    {{ dateRangeWeekendError | rpxTranslate }}
+                  </span>
+                }
                 <div class="govuk-form-group" style="position: relative">
                   <xuilib-gov-uk-date
                     [config]="earliestHearingDate"
                     [formGroup]="earliestHearingFormGroup"
                     [errorMessage]="earliestDateOfHearingError"
                   ></xuilib-gov-uk-date>
-                  <exui-amendment-label
-                    id="earliest-hearing-date-amendment-label"
-                    *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeStartChanged"
-                    [displayLabel]="amendmentLabelEnum.AMENDED"
-                  >
-                  </exui-amendment-label>
+                  @if (!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeStartChanged) {
+                    <exui-amendment-label id="earliest-hearing-date-amendment-label" [displayLabel]="amendmentLabelEnum.AMENDED">
+                    </exui-amendment-label>
+                  }
                 </div>
                 <div class="govuk-form-group" style="position: relative">
                   <xuilib-gov-uk-date
@@ -185,12 +184,10 @@
                     [formGroup]="latestHearingFormGroup"
                     [errorMessage]="latestDateOfHearingError"
                   ></xuilib-gov-uk-date>
-                  <exui-amendment-label
-                    id="latest-hearing-date-amendment-label"
-                    *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeEndChanged"
-                    [displayLabel]="amendmentLabelEnum.AMENDED"
-                  >
-                  </exui-amendment-label>
+                  @if (!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeEndChanged) {
+                    <exui-amendment-label id="latest-hearing-date-amendment-label" [displayLabel]="amendmentLabelEnum.AMENDED">
+                    </exui-amendment-label>
+                  }
                 </div>
               </div>
             </div>
@@ -207,29 +204,31 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h3 class="govuk-fieldset__heading">
               {{ 'What is the priority of this hearing?' | rpxTranslate }}
-              <exui-amendment-label
-                id="hearing-priority-amendment-label"
-                *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && priorityChanged"
-                [displayLabel]="amendmentLabelEnum.AMENDED"
-              >
-              </exui-amendment-label>
+              @if (!hearingWindowChangesConfirmed && hearingWindowChangesRequired && priorityChanged) {
+                <exui-amendment-label id="hearing-priority-amendment-label" [displayLabel]="amendmentLabelEnum.AMENDED">
+                </exui-amendment-label>
+              }
             </h3>
           </legend>
-          <span class="govuk-error-message" *ngIf="hearingPriorityError">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ hearingPriorityError | rpxTranslate }}
-          </span>
+          @if (hearingPriorityError) {
+            <span class="govuk-error-message">
+              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ hearingPriorityError | rpxTranslate }}
+            </span>
+          }
           <div class="govuk-radios">
-            <div class="govuk-radios__item" *ngFor="let priority of priorities">
-              <input
-                class="govuk-radios__input"
-                id="{{ priority.key }}"
-                name="priority"
-                type="radio"
-                [value]="priority.key"
-                formControlName="priority"
-              />
-              <label class="govuk-label govuk-radios__label" [for]="priority.key">{{ priority.value_en | rpxTranslate }}</label>
-            </div>
+            @for (priority of priorities; track priority) {
+              <div class="govuk-radios__item">
+                <input
+                  class="govuk-radios__input"
+                  id="{{ priority.key }}"
+                  name="priority"
+                  type="radio"
+                  [value]="priority.key"
+                  formControlName="priority"
+                />
+                <label class="govuk-label govuk-radios__label" [for]="priority.key">{{ priority.value_en | rpxTranslate }}</label>
+              </div>
+            }
           </div>
         </fieldset>
       </div>

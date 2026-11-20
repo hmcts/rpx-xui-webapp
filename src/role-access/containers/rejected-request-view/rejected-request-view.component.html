@@ -13,12 +13,14 @@
         </h1>
         <h2 class="govuk-heading-m">Request details</h2>
         <dl class="govuk-summary-list">
-          <div *ngIf="caseName !== caseReference" class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-            <dt class="govuk-summary-list__key">Case name</dt>
-            <dd class="govuk-summary-list__value">
-              {{ caseName }}
-            </dd>
-          </div>
+          @if (caseName !== caseReference) {
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+              <dt class="govuk-summary-list__key">Case name</dt>
+              <dd class="govuk-summary-list__value">
+                {{ caseName }}
+              </dd>
+            </div>
+          }
           <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
             <dt class="govuk-summary-list__key">Case reference</dt>
             <dd class="govuk-summary-list__value">

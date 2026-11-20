@@ -1,69 +1,84 @@
-<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
-<div
-  class="govuk-error-summary"
-  aria-labelledby="error-summary-title"
-  role="alert"
-  tabindex="-1"
-  data-module="govuk-error-summary"
-  *ngIf="validationErrors.length > 0"
->
-  <h2 class="govuk-error-summary__title" id="error-summary-title">
-    {{ 'There is a problem' | rpxTranslate }}
-  </h2>
-  <div class="govuk-error-summary__body">
-    <ul class="govuk-list govuk-error-summary__list">
-      <li *ngFor="let error of validationErrors">
-        <span class="govuk-error-message">{{ error.message | rpxTranslate }}</span>
-      </li>
-    </ul>
+@if (showSpinner$ | async) {
+  <xuilib-loading-spinner></xuilib-loading-spinner>
+}
+@if (validationErrors.length > 0) {
+  <div
+    class="govuk-error-summary"
+    aria-labelledby="error-summary-title"
+    role="alert"
+    tabindex="-1"
+    data-module="govuk-error-summary"
+  >
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      {{ 'There is a problem' | rpxTranslate }}
+    </h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        @for (error of validationErrors; track error) {
+          <li>
+            <span class="govuk-error-message">{{ error.message | rpxTranslate }}</span>
+          </li>
+        }
+      </ul>
+    </div>
   </div>
-</div>
-<div id="hearing-summary" *ngFor="let section of template">
-  <div *ngIf="section.isHiddenSource === undefined ? true : !(section.isHiddenSource | isHidden: hearingState$ | async)">
-    <div *ngIf="section.insetInfo" class="govuk-inset-text">
-      {{ section.insetInfo | rpxTranslate }}
-    </div>
-    <div [ngSwitch]="section.sectionHTMLTitle">
-      <ng-container *ngSwitchCase="listingTemplate">
-        <exui-listing-information-summary></exui-listing-information-summary>
-      </ng-container>
-      <ng-container *ngSwitchCase="partiesTemplate">
-        <exui-hearing-case-name></exui-hearing-case-name>
-      </ng-container>
-      <ng-container *ngSwitchDefault>
-        <div [innerHtml]="section.sectionHTMLTitle | rpxTranslate"></div>
-      </ng-container>
-    </div>
-    <div class="govuk-summary-list govuk-!-margin-bottom-9" *ngIf="!section.isHiddenMargin">
-      <ng-container *ngFor="let answer of section.answers">
-        <div
-          *ngIf="answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden: hearingState$ | async)"
-          class="govuk-summary-list__row"
-        >
-          <div class="govuk-summary-list__key">
-            {{ answer.answerTitle | rpxTranslate }}
+}
+@for (section of template; track section) {
+  <div id="hearing-summary">
+    @if (section.isHiddenSource === undefined ? true : !(section.isHiddenSource | isHidden: hearingState$ | async)) {
+      <div>
+        @if (section.insetInfo) {
+          <div class="govuk-inset-text">
+            {{ section.insetInfo | rpxTranslate }}
           </div>
-          <div class="govuk-summary-list__value">
-            <div [innerHtml]="answer.answerSource | transformAnswer: hearingState$ | async"></div>
-          </div>
-          <div class="govuk-summary-list__actions">
-            <strong
-              *ngIf="answer.isAmendedSource === undefined ? false : (answer.isAmendedSource | isAmended: hearingState$ | async)"
-              class="govuk-tag govuk-tag--green amended-flag"
-              >{{ 'Amended' | rpxTranslate }}</strong
-            >
-            <a
-              [id]="answer.id"
-              *ngIf="answer.changeLink"
-              class="change-link"
-              href="#"
-              (click)="changeAnswer($event, answer.id, answer.changeLink); $event.preventDefault()"
-              attr.aria-label="{{ 'Change' | rpxTranslate }} {{ getDisplayChangeString(answer.id) | rpxTranslate }}"
-              >{{ 'Change' | rpxTranslate }}</a
-            >
-          </div>
+        }
+        <div>
+          @switch (section.sectionHTMLTitle) {
+            @case (listingTemplate) {
+              <exui-listing-information-summary></exui-listing-information-summary>
+            }
+            @case (partiesTemplate) {
+              <exui-hearing-case-name></exui-hearing-case-name>
+            }
+            @default {
+              <div [innerHtml]="section.sectionHTMLTitle | rpxTranslate"></div>
+            }
+          }
         </div>
-      </ng-container>
-    </div>
+        @if (!section.isHiddenMargin) {
+          <div class="govuk-summary-list govuk-!-margin-bottom-9">
+            @for (answer of section.answers; track answer) {
+              @if (answer.isHiddenSource === undefined ? true : !(answer.isHiddenSource | isHidden: hearingState$ | async)) {
+                <div class="govuk-summary-list__row">
+                  <div class="govuk-summary-list__key">
+                    {{ answer.answerTitle | rpxTranslate }}
+                  </div>
+                  <div class="govuk-summary-list__value">
+                    <div [innerHtml]="answer.answerSource | transformAnswer: hearingState$ | async"></div>
+                  </div>
+                  <div class="govuk-summary-list__actions">
+                    @if (
+                      answer.isAmendedSource === undefined ? false : (answer.isAmendedSource | isAmended: hearingState$ | async)
+                    ) {
+                      <strong class="govuk-tag govuk-tag--green amended-flag">{{ 'Amended' | rpxTranslate }}</strong>
+                    }
+                    @if (answer.changeLink) {
+                      <a
+                        [id]="answer.id"
+                        class="change-link"
+                        href="#"
+                        (click)="changeAnswer($event, answer.id, answer.changeLink); $event.preventDefault()"
+                        attr.aria-label="{{ 'Change' | rpxTranslate }} {{ getDisplayChangeString(answer.id) | rpxTranslate }}"
+                        >{{ 'Change' | rpxTranslate }}</a
+                      >
+                    }
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
   </div>
-</div>
+}

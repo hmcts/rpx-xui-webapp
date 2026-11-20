@@ -1,7 +1,9 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
   <exui-alert></exui-alert>
-  <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
+  @if (showSpinner$ | async) {
+    <xuilib-loading-spinner></xuilib-loading-spinner>
+  }
   <main class="govuk-main-wrapper govuk-!-padding-top-0" id="content" role="main">
     <router-outlet></router-outlet>
   </main>

@@ -26,8 +26,12 @@ export class ExuiHeaderComponent {
   readonly errorHeaderListItems = this.errorHeader.locator('ul.govuk-error-summary__list li');
 
   readonly results = this.page.locator('ccd-search-result');
-  readonly headerMenuItems = this.page.locator('.govuk-service-navigation li.govuk-service-navigation__item:not(.exui-service-navigation__item--account)');
-  readonly appHeaderLink = this.header.locator('.govuk-service-navigation__service-name a.govuk-service-navigation__link').first();
+  readonly headerMenuItems = this.page.locator(
+    '.govuk-service-navigation li.govuk-service-navigation__item:not(.exui-service-navigation__item--account)'
+  );
+  readonly appHeaderLink = this.header
+    .locator('.govuk-service-navigation__service-name a.govuk-service-navigation__link')
+    .first();
 
   readonly languageToggle = this.header.locator('button.language').first();
 
@@ -89,9 +93,13 @@ export class ExuiHeaderComponent {
     const waitForState = (timeoutMs: number) =>
       this.page.waitForFunction(
         ({ expectedAppHeaderLink, expectedLanguageCode, expectedSignOutLink, expectedToggleLabel }) => {
-          const appHeaderLink = document.querySelector('exui-header .govuk-service-navigation__service-name a.govuk-service-navigation__link');
+          const appHeaderLink = document.querySelector(
+            'exui-header .govuk-service-navigation__service-name a.govuk-service-navigation__link'
+          );
           const languageToggle = document.querySelector('exui-header button.language');
-          const signOutLink = document.querySelector('exui-header .exui-service-navigation__item--account .govuk-service-navigation__link');
+          const signOutLink = document.querySelector(
+            'exui-header .exui-service-navigation__item--account .govuk-service-navigation__link'
+          );
           const appHeaderText = appHeaderLink?.textContent?.trim() ?? '';
           const toggleText = languageToggle?.textContent?.trim() ?? '';
           const signOutText = signOutLink?.textContent?.trim() ?? '';

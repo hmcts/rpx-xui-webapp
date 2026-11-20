@@ -4606,7 +4606,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-web@npm:^3.4.6":
+"@microsoft/applicationinsights-web@npm:^3.4.3":
   version: 3.4.6
   resolution: "@microsoft/applicationinsights-web@npm:3.4.6"
   dependencies:
@@ -20137,7 +20137,7 @@ __metadata:
     "@hmcts/properties-volume": "npm:^1.4.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.29"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.36"
-    "@microsoft/applicationinsights-web": "npm:^3.4.6"
+    "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
     "@ngrx/effects": "npm:^20.1.0"

@@ -248,7 +248,7 @@
                         <dd class="govuk-summary-list__value">
                           @for (
                             party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate);
-                            track party
+                            track party.partyID
                           ) {
                             <div>
                               @if (party.individualDetails) {
@@ -265,7 +265,7 @@
                           <dd class="govuk-summary-list__value">
                             @for (
                               party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate);
-                              track party
+                              track party.partyID
                             ) {
                               <div>
                                 @if (party.individualDetails) {

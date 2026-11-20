@@ -308,7 +308,7 @@
           formGroupName="roles"
           id="checkbox_job_title"
         >
-          @for (group of groupItemsByGroupSize(this.staffFilterOptions.jobTitles, 8); track group; let i = $index) {
+          @for (group of groupItemsByGroupSize(this.staffFilterOptions.jobTitles, 8); track $index; let i = $index) {
             <div class="govuk-form-group govuk-form-group--limited-width">
               @for (item of group; track item; let j = $index) {
                 <div class="govuk-checkboxes__item">

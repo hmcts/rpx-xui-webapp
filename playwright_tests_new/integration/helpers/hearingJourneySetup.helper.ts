@@ -5,7 +5,7 @@ import { applySessionCookiesFromPool } from '../../common/sessionCapture';
 import {
   HEARING_MANAGER_CR84_ON_USER,
   type HearingManagerUserIdentifier,
-  resolveHearingManagerUserIdentifier,
+  resolveHearingManagerSessionCandidates,
 } from './hearingManagerUserPool.helper';
 import { setupHearingsMockRoutes, type HearingsMockRoutesConfig } from './hearingsMockRoutes.helper';
 import {
@@ -156,10 +156,10 @@ export async function applyHearingManagerSessionCookies(
   testInfo: Pick<TestInfo, 'annotations'> & Partial<Pick<TestInfo, 'parallelIndex'>> = test.info(),
   applyFromPool: typeof applySessionCookiesFromPool = applySessionCookiesFromPool
 ): Promise<string> {
-  const configuredUserIdentifier = resolveHearingManagerUserIdentifier(userIdentifier, {
+  const candidates = resolveHearingManagerSessionCandidates(userIdentifier, {
     parallelIndex: testInfo.parallelIndex,
   });
-  const { userIdentifier: selectedUserIdentifier } = await applyFromPool(page, [configuredUserIdentifier]);
+  const { userIdentifier: selectedUserIdentifier } = await applyFromPool(page, candidates);
 
   annotateHearingManagerSessionUser(testInfo, selectedUserIdentifier);
   return selectedUserIdentifier;

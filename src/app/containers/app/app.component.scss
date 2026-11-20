@@ -4,36 +4,35 @@
 
 $hmcts-images-path: '/assets/images/';
 
-// Width of main container
-$hmcts-page-width: 1920px;
-
-// TODO temporary solution to extend the width of the page until is addressed through govuk-frontend"
-header,
-footer.govuk-footer {
-  min-width: 1020px;
-}
-
-.govuk-footer__meta {
-  max-width: 1860px;
-  min-width: 960px;
-}
-
+// The header, service navigation, phase banner and page content use the full page width (with
+// GOV.UK gutters) so wide case and task tables have room.
 body .govuk-width-container {
-  padding-right: 30px;
-  padding-left: 30px;
-  max-width: 1920px;
-  min-width: 900px;
-  margin: auto;
+  max-width: none;
+
+  @include govuk-media-query($from: desktop) {
+    margin-right: $govuk-gutter;
+    margin-left: $govuk-gutter;
+  }
 }
 
-#content {
-  max-width: 1920px;
-  min-width: 900px;
+// The cookie banner and footer keep the GOV.UK Frontend v6 fixed page width (960px).
+body xuilib-cookie-banner .govuk-width-container,
+body .govuk-footer .govuk-width-container {
+  @include govuk-width-container;
 }
 
-.govuk-phase-banner {
-  max-width: 1920px;
-  min-width: 900px;
+// Some pages nest a width container inside the page's own one (e.g. the common-lib page wrapper);
+// the inner one must not add its gutters a second time.
+.govuk-width-container .govuk-width-container {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+// The common-lib page wrapper puts its heading and content straight into a grid row with no
+// grid column, so the row's negative gutters would pull the page 15px outside the container.
+exui-page-wrapper > .page > .govuk-width-container > .govuk-grid-row {
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .govuk-phase-banner .language {

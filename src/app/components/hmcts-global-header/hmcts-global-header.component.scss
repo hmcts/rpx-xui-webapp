@@ -1,6 +1,59 @@
 @use 'govuk-frontend/dist/govuk/base' as govuk;
 
-// Items aligned to the right of the service navigation (case search, Sign out).
+// Manage Cases is a staff service, not hosted on GOV.UK, so the header shows the service name
+// (and Sign out) instead of the GOV.UK logotype, as the HMCTS header did before.
+.exui-header__container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.exui-header__logo {
+  display: flex;
+  align-items: center;
+  gap: govuk.govuk-spacing(3);
+}
+
+.exui-header__service-name {
+  @include govuk.govuk-font($size: 24, $weight: bold);
+  // govuk-header__homepage-link removes word spacing to butt the logo parts together; restore it for text.
+  word-spacing: normal;
+}
+
+.exui-header__product-name {
+  margin-right: govuk.govuk-spacing(2);
+}
+
+.exui-header__account {
+  display: flex;
+  gap: govuk.govuk-spacing(4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// Sign out is an action, so it is a <button> styled as a white header link.
+.exui-header__account-link {
+  @include govuk.govuk-font($size: 19, $weight: bold);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: govuk.govuk-colour('white');
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+  }
+
+  &:focus {
+    @include govuk.govuk-focused-text;
+  }
+}
+
+// Case search sits at the right of the service navigation.
 .exui-service-navigation__item--end {
   @media (min-width: 40.0625em) {
     margin-left: auto;
@@ -10,31 +63,6 @@
 .govuk-service-navigation__list {
   @media (min-width: 40.0625em) {
     align-items: center;
-  }
-}
-
-// Sign out is an action, not a link, so it is a <button> styled as a service navigation link.
-// The v6 link colours are applied via :link/:visited, which never match a <button>, so set them here.
-.exui-service-navigation__button {
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  color: govuk.govuk-functional-colour(link);
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    color: govuk.govuk-functional-colour(link-hover);
-    text-decoration: underline;
-  }
-
-  &:active {
-    color: govuk.govuk-functional-colour(link-active);
-  }
-
-  &:focus {
-    @include govuk.govuk-focused-text;
   }
 }
 

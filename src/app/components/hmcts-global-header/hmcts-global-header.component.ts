@@ -40,7 +40,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   public userDetails$: Observable<UserDetails>;
   public isUserCaseManager$: Observable<boolean>;
   public isGlobalSearchEnabled: boolean;
-  /** Where the service name in the service navigation links to. */
+  /** Where the service name in the header links to. */
   public get serviceUrl(): string {
     return this.logo === 'judicial' || this.logo === 'myhmcts' ? this.headerTitle?.url || '/' : '/';
   }

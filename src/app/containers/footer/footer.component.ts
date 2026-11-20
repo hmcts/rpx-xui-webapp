@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConstants } from '../../app.constants';
+import { AppConstants, getTermsAndConditionsHref } from '../../app.constants';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 import { UserDetails } from '../../models/user-details.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
@@ -36,7 +36,7 @@ export class FooterComponent implements OnInit {
     const tAndCNavItem = this.getNavigationItemForTandC(this.navigationData.items);
     if (tAndCNavItem) {
       this.store.pipe(select(fromRoot.getIsTermsAndConditionsFeatureEnabled)).subscribe((isEnabled) => {
-        tAndCNavItem.href = isEnabled ? '/terms-and-conditions' : '/legacy-terms-and-conditions';
+        tAndCNavItem.href = getTermsAndConditionsHref(isEnabled);
       });
     }
   }

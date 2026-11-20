@@ -13,6 +13,7 @@ import {
   NotAuthorisedComponent,
   PrivacyPolicyComponent,
   ServiceDownComponent,
+  SitemapComponent,
   SignedOutComponent,
   ExpiredLoginLinkComponent,
   SessionErrorWrapperComponent,
@@ -147,6 +148,14 @@ export const ROUTES: Routes = [
     component: AccessibilityComponent,
     data: {
       title: 'Accessibility Statement',
+    },
+  },
+  {
+    path: 'sitemap',
+    canActivate: [AuthGuard, SessionStorageGuard],
+    component: SitemapComponent,
+    data: {
+      title: 'Site map',
     },
   },
   {

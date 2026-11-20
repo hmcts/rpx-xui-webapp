@@ -82,7 +82,7 @@ export class ExuiHeaderComponent {
     );
   }
 
-  public async waitForRenderedLanguageState(language: string): Promise<void> {
+  public async waitForRenderedLanguageState(language: string, beforeWait?: () => Promise<void>): Promise<void> {
     const target = this.resolveLanguageTarget(language);
     const renderState = this.getExpectedRenderState(target.code);
 
@@ -121,9 +121,7 @@ export class ExuiHeaderComponent {
         },
         { timeout: timeoutMs }
       );
-    const startedAt = Date.now();
-    const deadline = startedAt + ExuiHeaderComponent.LANGUAGE_STATE_MAX_TIMEOUT_MS;
-    let lastBackendActivityAt = startedAt;
+    let lastBackendActivityAt = Date.now();
     let backendFailure = false;
     const pendingTranslationRequests = new Set<unknown>();
     const isLanguageBackendRequest = (url: string) =>
@@ -153,9 +151,18 @@ export class ExuiHeaderComponent {
     this.page.on('response', onResponse);
     this.page.on('requestfailed', onRequestFailed);
     try {
+      await beforeWait?.();
+      const startedAt = Date.now();
+      const deadline = startedAt + ExuiHeaderComponent.LANGUAGE_STATE_MAX_TIMEOUT_MS;
+      lastBackendActivityAt = startedAt;
+      let lastTimeoutError: unknown;
       while (true) {
+        const remainingMs = deadline - Date.now();
+        if (remainingMs <= 0) {
+          throw lastTimeoutError ?? new Error('Timed out waiting for rendered language state');
+        }
         try {
-          await waitForState(Math.min(ExuiHeaderComponent.LANGUAGE_STATE_TIMEOUT_MS, deadline - Date.now()));
+          await waitForState(Math.min(ExuiHeaderComponent.LANGUAGE_STATE_TIMEOUT_MS, remainingMs));
           return;
         } catch (error) {
           const remainingMs = deadline - Date.now();
@@ -170,6 +177,7 @@ export class ExuiHeaderComponent {
           ) {
             throw error;
           }
+          lastTimeoutError = error;
         }
       }
     } finally {
@@ -200,16 +208,15 @@ export class ExuiHeaderComponent {
       return;
     }
 
-    const languageStatePromise = waitForTranslatedContent
-      ? this.waitForRenderedLanguageState(language)
-      : this.waitForLanguageContext(language);
-    try {
+    if (waitForTranslatedContent) {
+      await this.waitForRenderedLanguageState(language, async () => {
+        await this.languageToggle.click();
+        await this.page.waitForLoadState('domcontentloaded');
+      });
+    } else {
       await this.languageToggle.click();
       await this.page.waitForLoadState('domcontentloaded');
-      await languageStatePromise;
-    } catch (error) {
-      await languageStatePromise.catch(() => undefined);
-      throw error;
+      await this.waitForLanguageContext(language);
     }
   }
 }

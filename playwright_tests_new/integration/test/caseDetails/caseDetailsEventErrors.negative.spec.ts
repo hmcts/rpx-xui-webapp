@@ -20,13 +20,16 @@ test.describe(
   { tag: ['@integration', '@integration-case-details'] },
   () => {
     test('shows the backend error message when Record remission decision cannot start', async ({ page, caseDetailsPage }) => {
+      const callbackValidationErrorSummary = caseDetailsPage.callbackValidationErrorSummary;
       await test.step('Open the case and trigger the event from the next step menu', async () => {
         await caseDetailsPage.openCaseDetails(
           caseDetailsEventErrorsJurisdictionId,
           caseDetailsEventErrorsCaseTypeId,
           caseDetailsEventErrorsCaseId
         );
-        await caseDetailsPage.selectCaseAction(caseDetailsEventErrorsEventName);
+        await caseDetailsPage.selectCaseAction(caseDetailsEventErrorsEventName, {
+          expectedLocator: callbackValidationErrorSummary,
+        });
       });
 
       await test.step('Verify the expected callback validation error is shown instead of the trim failure', async () => {

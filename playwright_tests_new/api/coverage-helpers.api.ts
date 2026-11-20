@@ -78,6 +78,22 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     ]);
   });
 
+  test('authenticated read failures are visible while expected success and anonymous rejections are not degraded', () => {
+    const annotations = test.info().annotations;
+    const before = annotations.length;
+
+    expectStatus(200, StatusSets.waReadOnly, { primary: 200 });
+    expectStatus(401, StatusSets.waReadOnly, { primary: 200 });
+    expectStatus(403, StatusSets.waReadOnly, { primary: 200 });
+    expect(annotations.slice(before)).toEqual([
+      { type: 'status-tolerated', description: 'actual=401 allowed=200,401,403,500,502,504' },
+      { type: 'status-tolerated', description: 'actual=403 allowed=200,401,403,500,502,504' },
+    ]);
+    expectStatus(401, [401, 403]);
+    expectStatus(403, [401, 403]);
+    expect(annotations.slice(before)).toHaveLength(2);
+  });
+
   test('expectStatus tolerateDependencyUnavailable passes but records one status-tolerated annotation per call', () => {
     const annotations = test.info().annotations;
     const before = annotations.length;

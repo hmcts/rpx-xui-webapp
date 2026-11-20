@@ -19,11 +19,10 @@ export type ResolveCaseReferenceOptions = {
 const CASE_REFERENCE_REGEX = /^\d{16}$/;
 const TRANSIENT_GLOBAL_SEARCH_STATUSES = new Set([429, 502, 503, 504]);
 const GLOBAL_SEARCH_REQUEST_TIMEOUT_MS = 30_000;
-// One budget for API attempts, backoff and the HTML fallback, so a slow search ends with a clear error well
+// One budget for API attempts and backoff, so a slow search ends with a clear error well
 // inside the caller's test timeout instead of a generic test timeout.
 const CASE_REFERENCE_RESOLUTION_BUDGET_MS = 90_000;
-const HTML_FALLBACK_BUDGET_MS = 30_000;
-// Status recorded when the request itself timed out, so the bounded retry and HTML fallback still apply.
+// Status recorded when the request itself timed out, so the bounded retry still applies.
 const GLOBAL_SEARCH_REQUEST_TIMED_OUT = 'request timeout';
 
 type GlobalSearchRequestBody = {
@@ -94,6 +93,12 @@ function randomDigitString(length: number): string {
   return value;
 }
 
+function normalizeCaseReference(value: unknown): string | undefined {
+  if (typeof value !== 'string' || !/^[\d\s-]+$/.test(value)) return undefined;
+  const digits = value.replaceAll(/[\s-]/g, '');
+  return CASE_REFERENCE_REGEX.test(digits) ? digits : undefined;
+}
+
 function normalize(value: string): string {
   return value.toLowerCase().replaceAll(/[\s_-]/g, '');
 }
@@ -111,7 +116,7 @@ function stateMatchesPreference(stateId: string, preferredStates: string[]): boo
  *
  * **Why Complexity is Acceptable:**
  * - Self-contained linear retry loop with clear exit conditions
- * - Multiple fallback strategies require sequential evaluation
+ * - Search, state preference and result selection share the same response
  * - Alternative (extracting 5+ tiny helpers) would obscure error handling flow
  * - Similar pattern to approved createCase.po.ts methods (agents.md Section 6.2.10)
  *
@@ -119,13 +124,11 @@ function stateMatchesPreference(stateId: string, preferredStates: string[]): boo
  * 1. Query /api/globalsearch/results with jurisdiction/state filters
  * 2. Retry on transient failures (429 rate limit, 502-504 gateway timeouts, request timeouts) with linear backoff
  * 3. Prefer results matching preferredStates, fallback to any valid result
- * 4. Final fallback to HTML page scraping if API unavailable
- * 5. API attempts, backoff and the HTML fallback share one 90s deadline (per request at most 30s)
+ * 4. API attempts and backoff share one 90s deadline (per request at most 30s)
  *
  * **Known AAT Environment Issues Handled:**
  * - Transient 429 rate limiting during parallel test execution
  * - Gateway timeouts (502-504) during infrastructure deployments
- * - API unavailability requiring HTML scraping fallback
  *
  * See: agents.md Section 6.2.10, docs/DECISIONS.md Decision 001
  *
@@ -136,7 +139,7 @@ function stateMatchesPreference(stateId: string, preferredStates: string[]): boo
  * @param options.caseReferencePattern - Search pattern (default: '*' for any case)
  * @param options.maxReturnRecordCount - Maximum results to retrieve (default: 50)
  * @returns 16-digit CCD case reference suitable for test execution
- * @throws Error if no valid case found after all retries and fallback strategies
+ * @throws Error if no valid case found after the bounded search attempts
  *
  * @example
  * const caseRef = await resolveCaseReferenceFromGlobalSearch(page, {
@@ -157,7 +160,7 @@ export async function resolveCaseReferenceFromGlobalSearch(
   const deadlineMs = Date.now() + CASE_REFERENCE_RESOLUTION_BUDGET_MS;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    const requestTimeoutMs = remainingRequestTimeout(deadlineMs - HTML_FALLBACK_BUDGET_MS);
+    const requestTimeoutMs = remainingRequestTimeout(deadlineMs);
     if (requestTimeoutMs <= 0) {
       break;
     }
@@ -188,40 +191,29 @@ export async function resolveCaseReferenceFromGlobalSearch(
     }
 
     const retryable = lastStatus === GLOBAL_SEARCH_REQUEST_TIMED_OUT || TRANSIENT_GLOBAL_SEARCH_STATUSES.has(lastStatus);
-    if (!retryable || attempt >= maxAttempts || Date.now() >= deadlineMs - HTML_FALLBACK_BUDGET_MS) {
+    if (!retryable || attempt >= maxAttempts || Date.now() >= deadlineMs) {
       break;
     }
-    await page.waitForTimeout(Math.max(0, Math.min(attempt * 1000, deadlineMs - HTML_FALLBACK_BUDGET_MS - Date.now())));
+    await page.waitForTimeout(Math.max(0, Math.min(attempt * 1000, deadlineMs - Date.now())));
   }
 
   if (lastStatus !== 200) {
-    const htmlFallbackCaseReference = await resolveCaseReferenceFromHtmlPages(page, deadlineMs);
-    if (htmlFallbackCaseReference) {
-      return htmlFallbackCaseReference;
-    }
     throw new Error(
       `Global search API returned status ${lastStatus} when resolving case reference after ${attempts}/${maxAttempts} attempts ` +
-        `within ${CASE_REFERENCE_RESOLUTION_BUDGET_MS}ms; HTML fallback found no case reference`
+        `within ${CASE_REFERENCE_RESOLUTION_BUDGET_MS}ms`
     );
   }
 
   const eligibleResults =
     preferredStates.length > 0
-      ? results.filter((result) => result.stateId && stateMatchesPreference(result.stateId, preferredStates))
+      ? results.filter((result) => result?.stateId && stateMatchesPreference(result.stateId, preferredStates))
       : results;
 
-  const selectedResult = eligibleResults.find(
-    (result) => result.caseReference && CASE_REFERENCE_REGEX.test(result.caseReference)
-  );
-  const fallbackResult = results.find((result) => result.caseReference && CASE_REFERENCE_REGEX.test(result.caseReference));
-  const resolvedCaseReference = selectedResult?.caseReference ?? fallbackResult?.caseReference;
+  const selectedResult = eligibleResults.find((result) => result && normalizeCaseReference(result.caseReference));
+  const fallbackResult = results.find((result) => result && normalizeCaseReference(result.caseReference));
+  const resolvedCaseReference = normalizeCaseReference(selectedResult?.caseReference ?? fallbackResult?.caseReference);
   if (resolvedCaseReference) {
     return resolvedCaseReference;
-  }
-
-  const htmlFallbackCaseReference = await resolveCaseReferenceFromHtmlPages(page, deadlineMs);
-  if (htmlFallbackCaseReference) {
-    return htmlFallbackCaseReference;
   }
 
   throw new Error('No 16-digit case references returned by global search API');
@@ -345,43 +337,18 @@ export async function resolveNonExistentCaseReference(
       throw new Error(errorMessage);
     }
 
-    const results = Array.isArray(responsePayload.results) ? responsePayload.results : [];
-    const exactMatchFound = results.some((result) => result.caseReference === candidateReference);
+    if (!Array.isArray(responsePayload.results)) {
+      throw new Error('Global search response must contain a results array');
+    }
+    const results = responsePayload.results;
+    if (results.some((result) => !result || !normalizeCaseReference(result.caseReference))) {
+      throw new Error('Global search results must contain valid case references');
+    }
+    const exactMatchFound = results.some((result) => normalizeCaseReference(result.caseReference) === candidateReference);
     if (!exactMatchFound) {
       return candidateReference;
     }
   }
 
   throw new Error(`Unable to generate a non-existent 16-digit case reference after ${maxAttempts} attempts`);
-}
-
-async function resolveCaseReferenceFromHtmlPages(page: Page, deadlineMs: number): Promise<string | null> {
-  const candidatePaths = ['/work/my-work/list', '/work/all-work/tasks', '/cases'];
-  for (const [index, path] of candidatePaths.entries()) {
-    const timeoutMs = Math.min(
-      GLOBAL_SEARCH_REQUEST_TIMEOUT_MS,
-      Math.floor((deadlineMs - Date.now()) / (candidatePaths.length - index))
-    );
-    if (timeoutMs <= 0) {
-      break;
-    }
-    let response: Awaited<ReturnType<Page['request']['get']>>;
-    try {
-      response = await page.request.get(path, { failOnStatusCode: false, timeout: timeoutMs });
-    } catch (error) {
-      if (!isRequestTimeoutError(error)) {
-        throw error;
-      }
-      continue;
-    }
-    if (response.status() !== 200) {
-      continue;
-    }
-
-    const html = await response.text();
-    const match = /\/cases\/case-details\/[^/\s]+\/[^/\s]+\/(\d{16})/.exec(html);
-    if (match) return match[1];
-  }
-
-  return null;
 }

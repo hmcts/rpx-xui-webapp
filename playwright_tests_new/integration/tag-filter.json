@@ -6,7 +6,8 @@
     "@blocked-exui-4318",
     "@blocked-exui-5589",
     "@blocked-exui-5591",
-    "@blocked-exui-1004"
+    "@blocked-exui-1004",
+    "@blocked-exui-5590"
   ],
   "availableTags": [
     "@integration",
@@ -41,6 +42,7 @@
     "@blocked-exui-4318",
     "@blocked-exui-5589",
     "@blocked-exui-5591",
-    "@blocked-exui-1004"
+    "@blocked-exui-1004",
+    "@blocked-exui-5590"
   ]
 }

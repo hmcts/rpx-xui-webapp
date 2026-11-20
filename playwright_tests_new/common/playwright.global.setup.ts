@@ -7,6 +7,7 @@ import {
   clearIntegrationSessionConfigurationMarker,
   validateIntegrationSessionConfiguration,
 } from './integrationSessionConfiguration';
+import { runTargetEnvironmentPreflight } from './targetEnvironmentPreflight';
 import { resolveIntegrationSessionUsers } from '../integration/helpers/integrationSessionUsers.helper';
 import * as playwrightConfigUtils from '../../playwright-config-utils';
 
@@ -220,6 +221,9 @@ function resolveIntegrationTagSelection(env: NodeJS.ProcessEnv) {
 }
 
 export async function globalSetup(fullConfig: FullConfig) {
+  // No-op unless PW_TARGET_PREFLIGHT=true.
+  await runTargetEnvironmentPreflight(fullConfig);
+
   const integrationTestProjects = resolveIntegrationTestProjects(fullConfig);
   if (integrationTestProjects.length === 0) {
     return;

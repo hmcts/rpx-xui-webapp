@@ -37,4 +37,5 @@ export async function openDynamicFieldConfigJourney(
   });
 
   await page.goto(`/cases/case-create/DIVORCE/${CASE_TYPE}/createCase/`);
+  await page.getByLabel('Case title').waitFor({ state: 'visible' });
 }

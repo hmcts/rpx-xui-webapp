@@ -6,8 +6,8 @@
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <ng-container [ngSwitch]="(lastError$ | async)?.error.code">
-          <ng-container *ngSwitchCase="nocErrorMap.HAS_REPRESENTED">
+        @switch ((lastError$ | async)?.error.code) {
+          @case (nocErrorMap.HAS_REPRESENTED) {
             <h1 class="govuk-heading-l" id="has-represented">
               {{ 'Your organisation already has access to this case' | rpxTranslate }}
             </h1>
@@ -15,16 +15,16 @@
             <p>
               <a href="/cases">{{ 'View case list' | rpxTranslate }}</a>
             </p>
-          </ng-container>
-          <ng-container *ngSwitchCase="nocErrorMap.NOC_IN_PROGRESS">
+          }
+          @case (nocErrorMap.NOC_IN_PROGRESS) {
             <h1 class="govuk-heading-l" id="noc-in-progress">{{ 'Something went wrong' | rpxTranslate }}</h1>
             <p class="govuk-body">{{ 'Your notice of change request has not been submitted.' | rpxTranslate }}</p>
             <p class="govuk-body">{{ 'A notice of change is already in progress for this case.' | rpxTranslate }}</p>
             <p class="govuk-body">
               <a [routerLink]="'/get-help'">{{ 'Contact us' | rpxTranslate }}</a> {{ 'for more information.' | rpxTranslate }}
             </p>
-          </ng-container>
-          <ng-container *ngSwitchCase="nocErrorMap.ANSWERS_NOT_IDENTIFY_LITIGANT">
+          }
+          @case (nocErrorMap.ANSWERS_NOT_IDENTIFY_LITIGANT) {
             <h1 class="govuk-heading-l" id="answers-not-identify-litigant">
               {{ 'Your request cannot be submitted online' | rpxTranslate }}
             </h1>
@@ -42,28 +42,28 @@
             <p>
               <a href="/cases">{{ 'View case list' | rpxTranslate }}</a>
             </p>
-          </ng-container>
-          <ng-container *ngSwitchCase="nocErrorMap.MULTIPLE_NOC_REQUESTS_ON_USER">
+          }
+          @case (nocErrorMap.MULTIPLE_NOC_REQUESTS_ON_USER) {
             <exui-noc-fill-form-offline> </exui-noc-fill-form-offline>
-          </ng-container>
-          <ng-container *ngSwitchCase="nocErrorMap.MULTIPLE_NOC_REQUESTS_ON_CASE">
+          }
+          @case (nocErrorMap.MULTIPLE_NOC_REQUESTS_ON_CASE) {
             <exui-noc-fill-form-offline> </exui-noc-fill-form-offline>
-          </ng-container>
-          <ng-container *ngSwitchCase="nocErrorMap.NO_ORG_POLICY">
+          }
+          @case (nocErrorMap.NO_ORG_POLICY) {
             <exui-noc-fill-form-offline> </exui-noc-fill-form-offline>
-          </ng-container>
-          <ng-container *ngSwitchCase="nocErrorMap.NOC_EVENT_UNAVAILABLE">
+          }
+          @case (nocErrorMap.NOC_EVENT_UNAVAILABLE) {
             <exui-noc-fill-form-offline> </exui-noc-fill-form-offline>
-          </ng-container>
-          <ng-container *ngSwitchDefault>
+          }
+          @default {
             <h1 class="govuk-heading-l" id="generic-error">{{ 'Something went wrong' | rpxTranslate }}</h1>
             <p class="govuk-body">{{ 'Your notice of change request has not been submitted.' | rpxTranslate }}</p>
             <p class="govuk-body">{{ (lastError$ | async)?.error.message | rpxTranslate }}</p>
             <p class="govuk-body">
               <a href="/get-help">{{ 'Contact us' | rpxTranslate }}</a> {{ 'for more information.' | rpxTranslate }}
             </p>
-          </ng-container>
-        </ng-container>
+          }
+        }
       </div>
     </div>
   </div>

@@ -8,10 +8,12 @@
   <div id="sub-title-hint" class="govuk-hint">
     {{ subTitle | rpxTranslate }}
   </div>
-  <span id="validation-error" class="govuk-error-message" *ngIf="personFormGroup.controls.selectedFormControl.errors">
-    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-    {{ personFormGroup.controls.selectedFormControl.errors.error | rpxTranslate }}
-  </span>
+  @if (personFormGroup.controls.selectedFormControl.errors) {
+    <span id="validation-error" class="govuk-error-message">
+      <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+      {{ personFormGroup.controls.selectedFormControl.errors.error | rpxTranslate }}
+    </span>
+  }
   <div class="exclude-person" [class.column-view]="isColumnView">
     <div class="person-input">
       <xuilib-search-judicials
@@ -31,10 +33,12 @@
     </div>
   </div>
   <ul class="hmcts-filter-tags selection-container">
-    <li class="location-selection" *ngFor="let judge of judgeList">
-      <a class="hmcts-filter__tag" (click)="removeSelectedJudge(judge); $event.preventDefault()" href="#">
-        {{ displayedJudgeName(judge) }}
-      </a>
-    </li>
+    @for (judge of judgeList; track judge) {
+      <li class="location-selection">
+        <a class="hmcts-filter__tag" (click)="removeSelectedJudge(judge); $event.preventDefault()" href="#">
+          {{ displayedJudgeName(judge) }}
+        </a>
+      </li>
+    }
   </ul>
 </div>

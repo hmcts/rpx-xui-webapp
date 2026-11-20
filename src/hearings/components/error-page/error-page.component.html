@@ -9,12 +9,14 @@
         <h1 class="govuk-heading-xl">{{ 'There was a system error and your request could not be processed.' | rpxTranslate }}</h1>
         <p class="govuk-body">{{ 'Please try again.' | rpxTranslate }}</p>
         <br /><br />
-        <p class="govuk-body" *ngIf="caseId">
-          {{ 'Go back to the' | rpxTranslate }}
-          <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']">
-            {{ 'hearings tab' | rpxTranslate }} </a
-          >.
-        </p>
+        @if (caseId) {
+          <p class="govuk-body">
+            {{ 'Go back to the' | rpxTranslate }}
+            <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']">
+              {{ 'hearings tab' | rpxTranslate }} </a
+            >.
+          </p>
+        }
       </div>
     </div>
   </main>

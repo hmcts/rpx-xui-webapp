@@ -1,7 +1,9 @@
-<h1 class="govuk-heading-l" *ngIf="title && showHeading">
-  <span class="govuk-caption-l">{{ caption }}</span>
-  {{ title }}
-</h1>
+@if (title && showHeading) {
+  <h1 class="govuk-heading-l">
+    <span class="govuk-caption-l">{{ caption }}</span>
+    {{ title }}
+  </h1>
+}
 <div
   class="govuk-form-group"
   [class.govuk-form-group--error]="formGroup.get(radioControlName).errors && submitted"
@@ -11,27 +13,37 @@
     class="govuk-fieldset"
     [attr.aria-describedby]="formGroup.get(radioControlName).errors && submitted ? radioControlName + '-error' : null"
   >
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" *ngIf="title && !showHeading">{{ title }}</legend>
-    <legend class="hidden-legend" *ngIf="title && showHeading">{{ title }}</legend>
-    <p *ngIf="description">{{ description }}</p>
-    <p [id]="radioControlName + '-error'" class="govuk-error-message" *ngIf="formGroup.get(radioControlName).errors && submitted">
-      <span class="govuk-visually-hidden">Error:</span> {{ errorText }}
-    </p>
+    @if (title && !showHeading) {
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ title }}</legend>
+    }
+    @if (title && showHeading) {
+      <legend class="hidden-legend">{{ title }}</legend>
+    }
+    @if (description) {
+      <p>{{ description }}</p>
+    }
+    @if (formGroup.get(radioControlName).errors && submitted) {
+      <p [id]="radioControlName + '-error'" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span> {{ errorText }}
+      </p>
+    }
     <div class="govuk-radios">
-      <div *ngFor="let option of optionsList" class="govuk-radios__item">
-        <input
-          class="govuk-radios__input"
-          formControlName="{{ radioControlName }}"
-          [id]="option.optionId"
-          type="radio"
-          [value]="option.optionValue"
-          [attr.name]="radioControlName"
-          [attr.aria-describedby]="formGroup.get(radioControlName)?.errors && submitted ? radioControlName + '-error' : null"
-        />
-        <label class="govuk-label govuk-radios__label" [for]="option.optionId">
-          {{ option.label || option.optionValue }}
-        </label>
-      </div>
+      @for (option of optionsList; track option) {
+        <div class="govuk-radios__item">
+          <input
+            class="govuk-radios__input"
+            formControlName="{{ radioControlName }}"
+            [id]="option.optionId"
+            type="radio"
+            [value]="option.optionValue"
+            [attr.name]="radioControlName"
+            [attr.aria-describedby]="formGroup.get(radioControlName)?.errors && submitted ? radioControlName + '-error' : null"
+          />
+          <label class="govuk-label govuk-radios__label" [for]="option.optionId">
+            {{ option.label || option.optionValue }}
+          </label>
+        </div>
+      }
     </div>
   </fieldset>
 </div>

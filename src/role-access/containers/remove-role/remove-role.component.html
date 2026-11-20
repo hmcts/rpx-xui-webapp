@@ -1,6 +1,8 @@
 <exui-app-header></exui-app-header>
 
-<xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
+@if (showSpinner) {
+  <xuilib-loading-spinner></xuilib-loading-spinner>
+}
 
 <div class="govuk-width-container">
   <div class="page">

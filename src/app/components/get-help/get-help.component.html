@@ -12,15 +12,17 @@
           <li>{{ 'a brief description of the problem' | rpxTranslate }}</li>
           <li>{{ 'a screenshot of the problem (if emailing)' | rpxTranslate }}</li>
         </ul>
-        <ng-container *ngIf="caseManager">
+        @if (caseManager) {
           <h2 class="govuk-heading-m">{{ 'MyHMCTS services' | rpxTranslate }}</h2>
           <div class="email">
             <span class="govuk-!-font-weight-bold">{{ 'Email:' | rpxTranslate }} </span>
             <a href="mailto:MyHMCTSsupport@justice.gov.uk">MyHMCTSsupport&#64;justice.gov.uk</a>
           </div>
           <div>{{ 'Contact us for help with registering your organisation or managing your account.' | rpxTranslate }}</div>
-        </ng-container>
-        <xuilib-contact-details *ngFor="let help of helpContactDetails" [data]="help"></xuilib-contact-details>
+        }
+        @for (help of helpContactDetails; track help) {
+          <xuilib-contact-details [data]="help"></xuilib-contact-details>
+        }
       </div>
     </div>
   </main>

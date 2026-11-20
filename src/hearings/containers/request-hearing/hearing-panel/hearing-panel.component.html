@@ -9,9 +9,9 @@
     <form class="form" [formGroup]="panelJudgeForm">
       <div class="govuk-form-group govuk-!-margin-top-5">
         <fieldset class="govuk-fieldset" id="specific-panel-selection">
-          <span class="govuk-error-message" *ngIf="panelSelectionError">
-            <span class="govuk-visually-hidden">Error:</span> {{ panelSelectionError }}
-          </span>
+          @if (panelSelectionError) {
+            <span class="govuk-error-message"> <span class="govuk-visually-hidden">Error:</span> {{ panelSelectionError }} </span>
+          }
           <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
             <div class="govuk-radios__item">
               <input
@@ -46,17 +46,20 @@
                     {{ 'Or select any other panel roles required' | rpxTranslate }}
                   </h1>
                 </legend>
-                <span class="govuk-error-message" *ngIf="childNodesValidationError">
-                  <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-                  {{ childNodesValidationError | rpxTranslate }}
-                </span>
-                <exui-multi-level-selector
-                  *ngIf="configLevels"
-                  id="panel-role-selector"
-                  [multiLevelSelect]="panelJudgeForm.controls.multiLevelSelect"
-                  [hasValidationRequested]="hasValidationRequested"
-                  [configLevels]="configLevels"
-                ></exui-multi-level-selector>
+                @if (childNodesValidationError) {
+                  <span class="govuk-error-message">
+                    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+                    {{ childNodesValidationError | rpxTranslate }}
+                  </span>
+                }
+                @if (configLevels) {
+                  <exui-multi-level-selector
+                    id="panel-role-selector"
+                    [multiLevelSelect]="panelJudgeForm.controls.multiLevelSelect"
+                    [hasValidationRequested]="hasValidationRequested"
+                    [configLevels]="configLevels"
+                  ></exui-multi-level-selector>
+                }
                 <div class="govuk-!-padding-top-8">
                   <exui-hearing-judge-names-list
                     #excludedJudge

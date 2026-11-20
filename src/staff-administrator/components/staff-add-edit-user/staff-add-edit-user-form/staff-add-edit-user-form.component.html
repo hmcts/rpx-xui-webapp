@@ -1,6 +1,8 @@
-<div *ngIf="errors">
-  <exui-error-message [error]="errors"></exui-error-message>
-</div>
+@if (errors) {
+  <div>
+    <exui-error-message [error]="errors"></exui-error-message>
+  </div>
+}
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="content" role="main">
   <a [routerLink]="'../'" class="govuk-back-link">Back</a>
@@ -22,9 +24,11 @@
       [class.govuk-form-group--error]="submitted && form.get('first_name')?.invalid"
     >
       <label class="govuk-label" for="first_name">First name</label>
-      <p *ngIf="submitted && form.get('first_name')?.errors?.required" id="first_name-required-error" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['first_name.required'] }}
-      </p>
+      @if (submitted && form.get('first_name')?.errors?.required) {
+        <p id="first_name-required-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['first_name.required'] }}
+        </p>
+      }
       <div class="govuk-body">
         <input
           type="text"
@@ -41,9 +45,11 @@
       [class.govuk-form-group--error]="submitted && form.get('last_name')?.invalid"
     >
       <label class="govuk-label" for="last_name">Last name</label>
-      <p *ngIf="submitted && form.get('last_name')?.errors?.required" id="last_name-required-error" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['last_name.required'] }}
-      </p>
+      @if (submitted && form.get('last_name')?.errors?.required) {
+        <p id="last_name-required-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['last_name.required'] }}
+        </p>
+      }
       <div class="govuk-body">
         <input
           type="text"
@@ -60,13 +66,17 @@
       [class.govuk-form-group--error]="submitted && form.get('email_id')?.invalid"
     >
       <label class="govuk-label" for="email_id">Email</label>
-      <ng-container *ngIf="!updateMode; else readOnlyEmail">
-        <p *ngIf="submitted && form.get('email_id')?.errors?.required" id="email_id-required-error" class="govuk-error-message">
-          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.required'] }}
-        </p>
-        <p *ngIf="submitted && form.get('email_id')?.errors?.email" id="email_id-email-error" class="govuk-error-message">
-          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.email'] }}
-        </p>
+      @if (!updateMode) {
+        @if (submitted && form.get('email_id')?.errors?.required) {
+          <p id="email_id-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.required'] }}
+          </p>
+        }
+        @if (submitted && form.get('email_id')?.errors?.email) {
+          <p id="email_id-email-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['email_id.email'] }}
+          </p>
+        }
         <div class="govuk-body">
           <input
             type="text"
@@ -76,13 +86,11 @@
             id="email_id"
           />
         </div>
-      </ng-container>
-
-      <ng-template #readOnlyEmail>
+      } @else {
         <div class="govuk-body">
           <input type="text" class="govuk-input" id="email_id" [value]="form.get('email_id')?.value" disabled />
         </div>
-      </ng-template>
+      }
     </div>
     <hr />
 
@@ -93,9 +101,11 @@
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h2 class="govuk-heading-m">Region</h2>
       </legend>
-      <p *ngIf="submitted && form.get('region_id')?.errors?.required" id="region_id-required-error" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['region_id.required'] }}
-      </p>
+      @if (submitted && form.get('region_id')?.errors?.required) {
+        <p id="region_id-required-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['region_id.required'] }}
+        </p>
+      }
       <div class="govuk-body">
         <label class="govuk-visually-hidden" for="region_id">Region</label>
         <select
@@ -105,9 +115,11 @@
           id="region_id"
           formControlName="region_id"
         >
-          <option *ngFor="let item of staffFilterOptions.regions" [value]="item.region_id">
-            {{ item.description }}
-          </option>
+          @for (item of staffFilterOptions.regions; track item) {
+            <option [value]="item.region_id">
+              {{ item.description }}
+            </option>
+          }
         </select>
       </div>
     </div>
@@ -121,22 +133,26 @@
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h2 class="govuk-heading-m">Service</h2>
       </legend>
-      <p *ngIf="submitted && form.get('services')?.errors?.minlength" id="services-required-error" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['services.minlength'] }}
-      </p>
+      @if (submitted && form.get('services')?.errors?.minlength) {
+        <p id="services-required-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['services.minlength'] }}
+        </p>
+      }
       <div class="govuk-body">
         <div class="govuk-checkboxes govuk-checkboxes--small" formGroupName="services" attr.field="service" id="checkbox_service">
-          <div *ngFor="let item of staffFilterOptions.services; let i = index" class="govuk-checkboxes__item">
-            <input
-              type="checkbox"
-              class="govuk-checkboxes__input"
-              [formControlName]="i"
-              [value]="item.key"
-              [id]="'checkbox_service' + item.key"
-              [name]="'checkbox_service' + item.key"
-            />
-            <label [for]="'checkbox_service' + item.key" class="govuk-label govuk-checkboxes__label">{{ item.label }}</label>
-          </div>
+          @for (item of staffFilterOptions.services; track item; let i = $index) {
+            <div class="govuk-checkboxes__item">
+              <input
+                type="checkbox"
+                class="govuk-checkboxes__input"
+                [formControlName]="i"
+                [value]="item.key"
+                [id]="'checkbox_service' + item.key"
+                [name]="'checkbox_service' + item.key"
+              />
+              <label [for]="'checkbox_service' + item.key" class="govuk-label govuk-checkboxes__label">{{ item.label }}</label>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -151,20 +167,16 @@
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h2 class="govuk-heading-m">Location</h2>
         </legend>
-        <p
-          *ngIf="submitted && form.get('base_locations')?.errors?.noPrimaryLocation"
-          id="location-required-error"
-          class="govuk-error-message"
-        >
-          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['base_locations.noPrimaryLocation'] }}
-        </p>
-        <p
-          *ngIf="submitted && form.get('base_locations')?.invalid && wrongLocationError"
-          id="location-incorrect-error"
-          class="govuk-error-message"
-        >
-          <span class="govuk-visually-hidden">Error: </span>{{ wrongLocationError }}
-        </p>
+        @if (submitted && form.get('base_locations')?.errors?.noPrimaryLocation) {
+          <p id="location-required-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['base_locations.noPrimaryLocation'] }}
+          </p>
+        }
+        @if (submitted && form.get('base_locations')?.invalid && wrongLocationError) {
+          <p id="location-incorrect-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error: </span>{{ wrongLocationError }}
+          </p>
+        }
       </legend>
 
       <div id="base_locations_primary" class="govuk-form-group govuk-form-group--limited-width">
@@ -204,9 +216,11 @@
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h2 class="govuk-heading-m">User type</h2>
       </legend>
-      <p *ngIf="submitted && form.get('user_type')?.errors?.required" id="user_type-required-error" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['user_type.required'] }}
-      </p>
+      @if (submitted && form.get('user_type')?.errors?.required) {
+        <p id="user_type-required-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['user_type.required'] }}
+        </p>
+      }
       <div class="govuk-body">
         <label class="govuk-visually-hidden" for="user_type">User type</label>
         <select
@@ -216,9 +230,11 @@
           id="user_type"
           formControlName="user_type"
         >
-          <option class="govuk-radios__item" *ngFor="let item of staffFilterOptions.userTypes" [value]="item.label">
-            {{ item.label }}
-          </option>
+          @for (item of staffFilterOptions.userTypes; track item) {
+            <option class="govuk-radios__item" [value]="item.label">
+              {{ item.label }}
+            </option>
+          }
         </select>
       </div>
     </div>
@@ -281,31 +297,36 @@
         <h2 class="govuk-heading-m">Job title</h2>
       </legend>
 
-      <p *ngIf="submitted && form.get('roles')?.errors?.minlength" id="roles-required-error" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['roles.minlength'] }}
-      </p>
+      @if (submitted && form.get('roles')?.errors?.minlength) {
+        <p id="roles-required-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['roles.minlength'] }}
+        </p>
+      }
       <div class="govuk-body">
         <div
           class="govuk-checkboxes govuk-checkboxes--multi-column govuk-checkboxes--small"
           formGroupName="roles"
           id="checkbox_job_title"
         >
-          <div
-            *ngFor="let group of groupItemsByGroupSize(this.staffFilterOptions.jobTitles, 8); let i = index"
-            class="govuk-form-group govuk-form-group--limited-width"
-          >
-            <div *ngFor="let item of group; let j = index" class="govuk-checkboxes__item">
-              <input
-                type="checkbox"
-                class="govuk-checkboxes__input"
-                [formControlName]="j + 8 * i"
-                [value]="item"
-                [id]="'checkbox_job_title' + item.key"
-                [name]="'checkbox_job_title' + item.key"
-              />
-              <label [for]="'checkbox_job_title' + item.key" class="govuk-label govuk-checkboxes__label">{{ item.label }}</label>
+          @for (group of groupItemsByGroupSize(this.staffFilterOptions.jobTitles, 8); track $index; let i = $index) {
+            <div class="govuk-form-group govuk-form-group--limited-width">
+              @for (item of group; track item; let j = $index) {
+                <div class="govuk-checkboxes__item">
+                  <input
+                    type="checkbox"
+                    class="govuk-checkboxes__input"
+                    [formControlName]="j + 8 * i"
+                    [value]="item"
+                    [id]="'checkbox_job_title' + item.key"
+                    [name]="'checkbox_job_title' + item.key"
+                  />
+                  <label [for]="'checkbox_job_title' + item.key" class="govuk-label govuk-checkboxes__label">{{
+                    item.label
+                  }}</label>
+                </div>
+              }
             </div>
-          </div>
+          }
         </div>
       </div>
     </div>
@@ -320,31 +341,32 @@
         attr.field="skills"
         id="checkbox_skills"
       >
-        <ng-container *ngIf="skillOptionGroups$ | async as skillOptionGroups">
-          <ng-container *ngFor="let skillGroup of skillOptionGroups">
+        @if (skillOptionGroups$ | async; as skillOptionGroups) {
+          @for (skillGroup of skillOptionGroups; track skillGroup) {
             <div class="govuk-form-group govuk-form-group--limited-width" [formGroupName]="skillGroup.group">
               <h3 class="govuk-heading-s">{{ getServiceLabelFromKey(skillGroup.group) }}</h3>
-              <div *ngFor="let item of skillGroup.options; let i = index" class="govuk-checkboxes__item">
-                <input
-                  type="checkbox"
-                  class="govuk-checkboxes__input"
-                  [formControlName]="i"
-                  [value]="item.key"
-                  [name]="'checkbox_skills_' + i + '_' + item.key"
-                  [id]="'checkbox_skills_' + i + '_' + item.key"
-                />
-
-                <label
-                  class="govuk-label govuk-checkboxes__label"
-                  [for]="'checkbox_skills_' + i + '_' + item.key"
-                  [ngClass]="{ 'govuk-!-font-weight-bold': item.selectAll }"
-                >
-                  {{ item.label }}
-                </label>
-              </div>
+              @for (item of skillGroup.options; track item; let i = $index) {
+                <div class="govuk-checkboxes__item">
+                  <input
+                    type="checkbox"
+                    class="govuk-checkboxes__input"
+                    [formControlName]="i"
+                    [value]="item.key"
+                    [name]="'checkbox_skills_' + i + '_' + item.key"
+                    [id]="'checkbox_skills_' + i + '_' + item.key"
+                  />
+                  <label
+                    class="govuk-label govuk-checkboxes__label"
+                    [for]="'checkbox_skills_' + i + '_' + item.key"
+                    [ngClass]="{ 'govuk-!-font-weight-bold': item.selectAll }"
+                  >
+                    {{ item.label }}
+                  </label>
+                </div>
+              }
             </div>
-          </ng-container>
-        </ng-container>
+          }
+        }
       </div>
     </div>
     <hr />

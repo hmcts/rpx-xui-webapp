@@ -1,6 +1,6 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
-  <ng-container *ngIf="isAnyError()">
+  @if (isAnyError()) {
     <div
       class="govuk-error-summary"
       aria-labelledby="error-summary-title"
@@ -11,13 +11,15 @@
       <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
-          <li *ngFor="let validationError of searchValidationErrors">
-            <a href="search#{{ validationError.documentHRef }}">{{ validationError.errorMessage }}</a>
-          </li>
+          @for (validationError of searchValidationErrors; track validationError) {
+            <li>
+              <a href="search#{{ validationError.documentHRef }}">{{ validationError.errorMessage }}</a>
+            </li>
+          }
         </ul>
       </div>
     </div>
-  </ng-container>
+  }
   <main id="content" role="main">
     <exui-page-wrapper [title]="'Search cases'">
       <form [formGroup]="formGroup" (submit)="onSubmit()">

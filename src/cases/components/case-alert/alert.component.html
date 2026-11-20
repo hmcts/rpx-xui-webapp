@@ -1,24 +1,30 @@
-<div class="exui-alert" *ngIf="successMessage?.length > 0">
-  <cut-alert [type]="'success'">
-    <i role="presentation" class="icon icon-tick" aria-hidden="false"></i>
-    <div class="alert-message">
-      {{ successMessage }}
-    </div>
-  </cut-alert>
-</div>
-<div class="exui-alert" *ngIf="errorMessage?.length > 0">
-  <cut-alert [type]="'error'">
-    <i role="presentation" class="icon icon-tick" aria-hidden="false"></i>
-    <div class="alert-message">
-      {{ errorMessage }}
-    </div>
-  </cut-alert>
-</div>
-<div class="exui-alert" *ngIf="warningMessage?.length > 0">
-  <cut-alert [type]="'warning'">
-    <i role="presentation" class="icon icon-tick" aria-hidden="false"></i>
-    <div class="alert-message">
-      {{ warningMessage }}
-    </div>
-  </cut-alert>
-</div>
+@if (successMessage?.length > 0) {
+  <div class="exui-alert">
+    <cut-alert [type]="'success'">
+      <i role="presentation" class="icon icon-tick" aria-hidden="false"></i>
+      <div class="alert-message">
+        {{ successMessage }}
+      </div>
+    </cut-alert>
+  </div>
+}
+@if (errorMessage?.length > 0) {
+  <div class="exui-alert">
+    <cut-alert [type]="'error'">
+      <i role="presentation" class="icon icon-tick" aria-hidden="false"></i>
+      <div class="alert-message">
+        {{ errorMessage }}
+      </div>
+    </cut-alert>
+  </div>
+}
+@if (warningMessage?.length > 0) {
+  <div class="exui-alert">
+    <cut-alert [type]="'warning'">
+      <i role="presentation" class="icon icon-tick" aria-hidden="false"></i>
+      <div class="alert-message">
+        {{ warningMessage }}
+      </div>
+    </cut-alert>
+  </div>
+}

@@ -1,7 +1,5 @@
 <div>
-  <ng-container
-    *ngIf="(lastError$ | async)?.error.code === 'answers-not-matched-any-litigant' || allAnswerEmpty || !allAnswerValid"
-  >
+  @if ((lastError$ | async)?.error.code === 'answers-not-matched-any-litigant' || allAnswerEmpty || !allAnswerValid) {
     <div
       class="govuk-error-summary"
       aria-labelledby="error-summary-title"
@@ -22,7 +20,7 @@
         </ul>
       </div>
     </div>
-  </ng-container>
+  }
 
   <div class="hmcts-page-heading">
     <div class="hmcts-page-heading__title">
@@ -39,15 +37,15 @@
     }}
   </p>
 
-  <ng-container *ngIf="(lastError$ | async)?.error.code === 'answers-not-matched-any-litigant' || allAnswerEmpty">
+  @if ((lastError$ | async)?.error.code === 'answers-not-matched-any-litigant' || allAnswerEmpty) {
     <span id="error-answers-not-matched" class="govuk-error-message">
       {{ "Enter the client details exactly as they're written on the case, including any mistakes" | rpxTranslate }}
     </span>
-  </ng-container>
+  }
 
   <form class="form" [formGroup]="formGroup">
     <fieldset id="fieldset-q-and-a-form">
-      <ng-container *ngFor="let question of questions$ | async">
+      @for (question of questions$ | async; track question) {
         <div>
           <ng-container>
             <exui-noc-field
@@ -58,7 +56,7 @@
             ></exui-noc-field>
           </ng-container>
         </div>
-      </ng-container>
+      }
     </fieldset>
   </form>
 </div>

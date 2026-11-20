@@ -1,5 +1,6 @@
-import { AUTH, AuthOptions, SessionMetadata, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import { AUTH, AuthOptions, SessionMetadata, oauth2, oidc, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import { CookieOptions, NextFunction, Response } from 'express';
+import { authenticationReadinessMiddleware, isStrategyReady, prepareAuthentication } from './startup';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   COOKIES_TOKEN,
@@ -109,6 +110,10 @@ xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback);
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_FAILURE, failureCallback);
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_ACCESS_DENIED, accessDeniedCallback);
 
+export const isAuthenticationReady = (): boolean => isStrategyReady(showFeature(FEATURE_OIDC_ENABLED) ? oidc : oauth2);
+
+export const requireAuthenticationReady = authenticationReadinessMiddleware(isAuthenticationReady);
+
 export const getXuiNodeMiddleware = () => {
   const idamWebUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
   const authorizationUrl = `${idamWebUrl}/login`;
@@ -208,5 +213,6 @@ export const getXuiNodeMiddleware = () => {
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
   nodeLibOptions.auth[type] = options;
   logger._logger.info('Setting XuiNodeLib options');
+  prepareAuthentication(type === 'oidc' ? oidc : oauth2, logger);
   return xuiNode.configure(nodeLibOptions);
 };

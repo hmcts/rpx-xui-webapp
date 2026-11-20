@@ -43,7 +43,7 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
     assertGlobalSearchServices(response.status, response.data);
   });
 
@@ -81,13 +81,13 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
 test.describe('Ref data and supported jurisdictions', { tag: '@svc-ref-data' }, () => {
   test('wa-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/wa-supported-jurisdiction', { throwOnError: false });
-    expectStatus(res.status, StatusSets.guardedBasic);
+    expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
     assertSupportedJurisdictions(res.status, res.data);
   });
 
   test('staff-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/staff-supported-jurisdiction', { throwOnError: false });
-    expectStatus(res.status, StatusSets.guardedBasic);
+    expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
     assertSupportedJurisdictions(res.status, res.data);
   });
 
@@ -97,7 +97,7 @@ test.describe('Ref data and supported jurisdictions', { tag: '@svc-ref-data' }, 
         headers,
         throwOnError: false,
       });
-      expectStatus(res.status, StatusSets.guardedBasic);
+      expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
       assertLocationsResponse(res.status, res.data);
     });
   });

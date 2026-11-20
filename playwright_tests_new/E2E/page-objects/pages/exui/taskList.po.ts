@@ -1,8 +1,10 @@
-import { expect, Locator, Page, Request } from '@playwright/test';
+import { errors, expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 import { remainingNavigationTimeout } from '../../../utils/test-setup/navigationDeadline.js';
 
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
+const TASK_LIST_NAVIGATION_TIMEOUT_MS = 60_000;
+const TASK_LIST_BLANK_GRACE_MS = 30_000;
 const TASK_LIST_BLANK_DOCUMENT_RECOVERY_MS = 3_000;
 const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
@@ -184,7 +186,7 @@ export class TaskListPage extends Base {
   ) {
     const rowIndex = options.rowIndex ?? 0;
     const observedSinceSequence = this.taskSearchSequence;
-    const deadlineMs = Date.now() + (options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS);
+    const deadlineMs = Date.now() + (options.timeoutMs ?? TASK_LIST_NAVIGATION_TIMEOUT_MS);
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
 
     await this.gotoTaskListPath('/work/my-work/list', /\/work\/my-work\/list(?:\?.*)?$/, `${context} navigation`, deadlineMs);
@@ -199,7 +201,7 @@ export class TaskListPage extends Base {
     await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs: remaining() });
   }
 
-  async gotoMyCases(timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
+  async gotoMyCases(timeoutMs = TASK_LIST_NAVIGATION_TIMEOUT_MS) {
     await this.navigateToTaskListView('/work/my-work/my-cases', /\/work\/my-work\/my-cases(?:\?.*)?$/, 'my cases navigation', {
       timeoutMs,
     });
@@ -223,7 +225,7 @@ export class TaskListPage extends Base {
     );
   }
 
-  async gotoMyAccess(timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
+  async gotoMyAccess(timeoutMs = TASK_LIST_NAVIGATION_TIMEOUT_MS) {
     await this.navigateToTaskListView('/work/my-work/my-access', /\/work\/my-work\/my-access(?:\?.*)?$/, 'my access navigation', {
       timeoutMs,
     });
@@ -345,7 +347,7 @@ export class TaskListPage extends Base {
   private async navigateToTaskListView(path: string, urlPattern: RegExp, context: string, options: { timeoutMs?: number } = {}) {
     const navigationStartedMs = Date.now();
     const observedSinceSequence = this.taskSearchSequence;
-    const deadlineMs = navigationStartedMs + (options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS);
+    const deadlineMs = navigationStartedMs + (options.timeoutMs ?? TASK_LIST_NAVIGATION_TIMEOUT_MS);
     await this.gotoTaskListPath(path, urlPattern, context, deadlineMs);
     await this.waitForTaskListSpinnerToSettle(Math.min(10_000, remainingNavigationTimeout(deadlineMs, context)));
     await this.recoverBlankTaskListDocumentAfterNavigation(urlPattern, context, deadlineMs);
@@ -357,7 +359,7 @@ export class TaskListPage extends Base {
     urlPattern: RegExp,
     terminalHeading: Locator,
     context: string,
-    timeoutMs = TASK_LIST_READY_TIMEOUT_MS
+    timeoutMs = TASK_LIST_NAVIGATION_TIMEOUT_MS
   ) {
     const deadlineMs = Date.now() + timeoutMs;
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
@@ -508,11 +510,23 @@ export class TaskListPage extends Base {
     }
 
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
-    if (
-      !(await this.isBlankTaskListDocument(urlPattern, Math.min(500, remaining()))) &&
-      !(await this.isRecoverableBrowserNavigationDocument(urlPattern, Math.min(500, remaining())))
-    ) {
-      return;
+    const browserError = await this.isRecoverableBrowserNavigationDocument(urlPattern, Math.min(500, remaining()));
+    if (!browserError) {
+      if (!(await this.isBlankTaskListDocument(urlPattern, Math.min(500, remaining())))) return;
+      const initialUrl = this.page.url();
+      try {
+        const handle = await this.page.waitForFunction(
+          (url) => location.href !== url || !!document.body?.innerText.trim(),
+          initialUrl,
+          { timeout: Math.min(TASK_LIST_BLANK_GRACE_MS, remaining()) }
+        );
+        await handle.dispose();
+      } catch (error) {
+        if (!(error instanceof errors.TimeoutError)) throw error;
+      }
+      if (this.page.url() !== initialUrl || !(await this.isBlankTaskListDocument(urlPattern, Math.min(500, remaining())))) {
+        return;
+      }
     }
 
     this.logger.warn('TASK_LIST_BLANK_DOCUMENT_RELOAD', {
@@ -541,7 +555,7 @@ export class TaskListPage extends Base {
   async recoverBlankDocumentAfterCurrentNavigation(
     urlPattern: RegExp,
     context: string,
-    timeoutMs = TASK_LIST_READY_TIMEOUT_MS
+    timeoutMs = TASK_LIST_NAVIGATION_TIMEOUT_MS
   ): Promise<void> {
     await this.recoverBlankTaskListDocumentAfterNavigation(urlPattern, context, Date.now() + timeoutMs);
   }

@@ -1,0 +1,15 @@
+# Used by GitHub's Generate release notes option when drafting a release.
+changelog:
+  categories:
+    - title: Features
+      labels:
+        - enhancement
+    - title: Bug fixes
+      labels:
+        - bug
+    - title: Dependencies
+      labels:
+        - dependencies
+    - title: Other changes
+      labels:
+        - '*'

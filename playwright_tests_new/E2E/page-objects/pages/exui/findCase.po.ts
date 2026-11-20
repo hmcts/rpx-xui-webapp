@@ -25,10 +25,10 @@ export class FindCasePage extends Base {
   readonly firstRowOfSearchResultsTable = this.searchResultsTable.locator('.govuk-link').first();
   readonly workBasketFilterPanel = this.page.locator('ccd-search-filters-wrapper').first();
   readonly findCaseLinkOnMenu = this.page
-    .locator('.hmcts-primary-navigation__nav .hmcts-primary-navigation__link[href*="case-search"]')
+    .locator('.exui-service-navigation__item--menu .govuk-service-navigation__link[href*="case-search"]')
     .first();
   readonly findCaseLinkOnTopRight = this.page
-    .locator('.hmcts-primary-navigation__search .hmcts-primary-navigation__link[href*="case-search"]')
+    .locator('.exui-service-navigation__item--search .govuk-service-navigation__link[href*="case-search"]')
     .first();
 
   readonly handOffReasonCollection = this.page.locator('ccd-write-collection-field #boHandoffReasonList');

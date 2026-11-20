@@ -1,15 +1,52 @@
-.govuk-header__logo {
-  width: 160px;
+@use 'govuk-frontend/dist/govuk/base' as govuk;
+
+// Items aligned to the right of the service navigation (case search, Sign out).
+.exui-service-navigation__item--end {
+  @media (min-width: 40.0625em) {
+    margin-left: auto;
+  }
 }
 
-.judicial-header__logo {
-  position: absolute;
+.govuk-service-navigation__list {
+  @media (min-width: 40.0625em) {
+    align-items: center;
+  }
 }
 
-.set-min-height {
-  min-height: 80px;
+// Sign out is an action, not a link, so it is a <button> styled as a service navigation link.
+// The v6 link colours are applied via :link/:visited, which never match a <button>, so set them here.
+.exui-service-navigation__button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: govuk.govuk-functional-colour(link);
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: govuk.govuk-functional-colour(link-hover);
+    text-decoration: underline;
+  }
+
+  &:active {
+    color: govuk.govuk-functional-colour(link-active);
+  }
+
+  &:focus {
+    @include govuk.govuk-focused-text;
+  }
 }
 
-.hmcts-header {
-  background-color: inherit;
+// The "Find case" menu item carries the legacy black search-toggle button class from the menu config.
+// On the light service navigation it must look like the other links.
+.govuk-service-navigation__link.hmcts-search-toggle__button {
+  padding: 0;
+  background-color: transparent;
+  color: inherit;
+  font-weight: inherit;
+
+  &:after {
+    background-image: url('/assets/images/icon-search-black.svg');
+  }
 }

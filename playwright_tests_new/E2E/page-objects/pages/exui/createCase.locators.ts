@@ -14,7 +14,7 @@ export function buildCreateCaseLocators(page: Page) {
     caseAlertSuccessMessage: page.locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message').first(),
     createCaseButton: page
       .getByRole('link', { name: 'Create case' })
-      .or(page.locator('a[href="/cases/case-filter"].hmcts-primary-navigation__link')),
+      .or(page.locator('a[href="/cases/case-filter"].govuk-service-navigation__link')),
     jurisdictionSelect: page.locator('#cc-jurisdiction'),
     caseTypeSelect: page.locator('#cc-case-type'),
     eventTypeSelect: page.locator('#cc-event'),

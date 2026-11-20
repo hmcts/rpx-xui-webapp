@@ -96,14 +96,6 @@ td {
   vertical-align: middle;
 }
 
-.hmcts-primary-navigation__search {
-  float: right;
-}
-
-.hmcts-primary-navigation__container {
-  text-align: initial;
-}
-
 // gov uk frond-end template is not installed on this
 .js-hidden {
   display: none;
@@ -112,10 +104,4 @@ td {
 
 // Find case button END
 
-.hmcts-header__navigation-link:hover {
-  color: inherit;
-}
 
-a.hmcts-header__navigation-link {
-  cursor: pointer;
-}

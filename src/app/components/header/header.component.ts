@@ -43,7 +43,8 @@ export class HeaderComponent {
   }
 
   public getSkipToMainContentUrl(): string {
-    return this.currentUrl?.split('#')[0] + HeaderComponent.contentHash;
+    const url = this.currentUrl || (typeof window !== 'undefined' ? window.location.pathname : '');
+    return url.split('#')[0] + HeaderComponent.contentHash;
   }
 
   /**

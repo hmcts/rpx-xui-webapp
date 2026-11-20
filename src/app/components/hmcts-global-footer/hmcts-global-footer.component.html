@@ -27,46 +27,22 @@
     </svg>
     <div class="govuk-footer__meta">
       <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-        <ng-container *ngIf="help">
-          <h2 class="hmcts-footer__heading">{{ help.heading | rpxTranslate }}</h2>
-          <ul class="hmcts-footer__list">
-            <li class="hmcts-footer__list-item">{{ help.probate.text | rpxTranslate }}</li>
-          </ul>
-          <br />
-          <ul class="hmcts-footer__list">
-            <li class="hmcts-footer__list-item">
-              {{ 'Email' | rpxTranslate }}:
-              <a class="hmcts-footer__link" href="mailto:{{ help.email.address }}">{{ help.email.text }}</a>
-            </li>
-            <li class="hmcts-footer__list-item">{{ 'Phone' | rpxTranslate }}: {{ help.phone.text }}</li>
-            <li class="hmcts-footer__list-item">{{ 'Opening times' | rpxTranslate }}: {{ help.opening.text }}</li>
-          </ul>
-          <br />
-          <ul class="hmcts-footer__list">
-            <li class="hmcts-footer__list-item">
-              {{ help.otherContact.text | rpxTranslate }}
-            </li>
-          </ul>
-        </ng-container>
-
-        <hr class="govuk-section-break govuk-section-break--l" />
-        <ul class="hmcts-footer__list hmcts-footer__list--inline">
-          <li class="hmcts-footer__list-item" *ngFor="let item of navigation.items">
+        <h2 class="govuk-visually-hidden">{{ 'Support links' | rpxTranslate }}</h2>
+        <ul class="govuk-footer__inline-list">
+          <li class="govuk-footer__inline-list-item" *ngFor="let item of navigation.items">
             <a class="govuk-footer__link" [routerLink]="item.href" [target]="item.target"
-              ><span class="govuk-visually-hidden">{{ '(Opens in a new window)' | rpxTranslate }}</span
-              >{{ item.text | rpxTranslate }}</a
+              >{{ item.text | rpxTranslate
+              }}<span class="govuk-visually-hidden"> {{ '(Opens in a new window)' | rpxTranslate }}</span></a
             >
           </li>
-          <li>
-            <ng-container *xuilibFeatureToggle="'welsh-language'">
-              <button
-                type="button"
-                class="govuk-footer__link govuk-js-link"
-                (click)="toggleLanguage(currentLang === 'cy' ? 'en' : 'cy')"
-              >
-                {{ currentLang === 'cy' ? 'English' : 'Cymraeg' }}
-              </button>
-            </ng-container>
+          <li class="govuk-footer__inline-list-item" *xuilibFeatureToggle="'welsh-language'">
+            <button
+              type="button"
+              class="govuk-footer__link exui-footer__language-toggle"
+              (click)="toggleLanguage(currentLang === 'cy' ? 'en' : 'cy')"
+            >
+              {{ currentLang === 'cy' ? 'English' : 'Cymraeg' }}
+            </button>
           </li>
         </ul>
 
@@ -85,13 +61,13 @@
           />
         </svg>
         <span class="govuk-footer__licence-description">
-          All content is available under the
+          {{ 'All content is available under the' | rpxTranslate }}
           <a
             class="govuk-footer__link"
             href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
             rel="license"
-            >Open Government Licence v3.0</a
-          >, except where otherwise stated
+            >{{ 'Open Government Licence v3.0' | rpxTranslate }}</a
+          >, {{ 'except where otherwise stated' | rpxTranslate }}
         </span>
       </div>
       <div class="govuk-footer__meta-item">

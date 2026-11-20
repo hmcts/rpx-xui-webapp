@@ -13,7 +13,7 @@
           name="radioSelected"
           type="radio"
           [value]="durationDesc.duration"
-          [attr.aria-describedby]="durationDesc.description"
+          [attr.aria-describedby]="'contact-' + durationDesc.id + '-item-hint'"
           formControlName="radioSelected"
           (change)="onItemChange(durationDesc.duration)"
           [checked]="durationDesc.checked"

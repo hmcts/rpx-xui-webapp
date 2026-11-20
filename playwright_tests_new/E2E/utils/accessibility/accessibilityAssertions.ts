@@ -18,7 +18,7 @@ export async function expectReachableMainContent(page: Page, path: string): Prom
 }
 
 export async function expectHeaderLinksHaveTextAlternative(page: Page): Promise<void> {
-  const unnamedHeaderLinks = await page.locator('header a, .hmcts-header a, .hmcts-header__link').evaluateAll((links) =>
+  const unnamedHeaderLinks = await page.locator('header a, .govuk-header a, .govuk-service-navigation a').evaluateAll((links) =>
     links
       .filter((link) => {
         const element = link as HTMLElement;

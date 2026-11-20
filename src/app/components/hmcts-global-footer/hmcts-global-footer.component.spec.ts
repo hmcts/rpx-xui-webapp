@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { AppConstants } from '../../app.constants';
-import { Helper, Navigation } from '../../containers/footer/footer.model';
+import { Navigation } from '../../containers/footer/footer.model';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
 
 @Pipe({
@@ -27,7 +27,6 @@ describe('HmctsGlobalFooterComponent', () => {
     ></exui-app-hmcts-global-footer>`,
   })
   class TestDummyHostComponent {
-    @Input() public help: Helper;
     @Input() public navigation: Navigation;
     @ViewChild(HmctsGlobalFooterComponent, { static: false })
     public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;

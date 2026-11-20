@@ -15,10 +15,10 @@ test.describe('platform services header parity', { tag: ['@integration', '@integ
       await expect(caseListPage.exuiHeader.header).toBeVisible();
 
       const leftNavigationTexts = await visibleNavigationTexts(
-        page.locator('.hmcts-primary-navigation__nav .hmcts-primary-navigation__link')
+        page.locator('.exui-service-navigation__item--menu .govuk-service-navigation__link')
       );
       const rightNavigationTexts = await visibleNavigationTexts(
-        page.locator('.hmcts-primary-navigation__search a.hmcts-primary-navigation__link')
+        page.locator('.exui-service-navigation__item--search a.govuk-service-navigation__link')
       );
 
       expect(leftNavigationTexts).toEqual(scenario.expectedLeft);

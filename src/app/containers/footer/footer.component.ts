@@ -7,7 +7,7 @@ import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-en
 import { UserDetails } from '../../models/user-details.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import * as fromRoot from '../../store';
-import { Helper, Navigation, NavigationItems } from './footer.model';
+import { Navigation, NavigationItems } from './footer.model';
 
 @Component({
   standalone: false,
@@ -16,7 +16,6 @@ import { Helper, Navigation, NavigationItems } from './footer.model';
   styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
-  public helpData: Helper = AppConstants.FOOTER_DATA;
   public navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
   public userEmail$: Observable<string>;
 

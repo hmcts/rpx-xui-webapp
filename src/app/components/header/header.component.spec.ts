@@ -69,6 +69,13 @@ describe('Header Component', () => {
     expect(translatePipeSpy).toHaveBeenCalledWith('Skip to main content');
   });
 
+  it('should point the skip link at the current path when currentUrl is not set', () => {
+    fixture.componentInstance.currentUrl = undefined;
+    const href = fixture.componentInstance.getSkipToMainContentUrl();
+    expect(href).toEqual(`${window.location.pathname}#content`);
+    expect(href).not.toContain('undefined');
+  });
+
   it('should call emitNavigate with event and this.navigate', () => {
     const event = {};
     spyOn(component, 'emitNavigate');

@@ -11,14 +11,16 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li *ngFor="let validationError of dateValidationErrors">
-            <a href="booking#{{ validationError.documentHRef }}">{{ validationError.errorMessage }}</a>
+            <a [attr.href]="'#' + validationError.documentHRef" (click)="focusField($event, validationError.documentHRef)">{{
+              validationError.errorMessage
+            }}</a>
           </li>
         </ul>
       </div>
     </div>
   </ng-container>
   <div class="govuk-form-group" [ngClass]="{ 'form-group-error': formGroup.get('dateOption').invalid && submitted }">
-    <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
+    <fieldset class="govuk-fieldset">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <span class="govuk-caption-l"> {{ caption }}</span>
         <h1 class="govuk-fieldset__heading test">

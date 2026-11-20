@@ -100,7 +100,7 @@ export class CaseDetailsPage extends Base {
   readonly caseFlagsHeading = this.page.getByRole('heading', { name: 'Case flags', exact: true });
   readonly caseLevelFlagRadio = this.page.getByLabel('Case level');
   readonly callbackValidationErrorSummary = this.page
-    .locator('.error-summary')
+    .locator('.govuk-error-summary')
     .filter({ hasText: /the callback data failed validation/i })
     .first();
 

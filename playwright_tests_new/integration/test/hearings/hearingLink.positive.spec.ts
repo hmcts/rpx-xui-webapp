@@ -267,10 +267,10 @@ test.describe('Hearings linked journeys integration', { tag: ['@integration', '@
     await openLinkedHearingsJourney(page, caseDetailsPage, hearingsTabPage);
     const currentHearingTable = page
       .locator('table.govuk-table')
-      .filter({ has: page.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId }) })
+      .filter({ has: page.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId, exact: true }) })
       .first();
     await expect(currentHearingTable.getByRole('columnheader', { name: /hearing id/i })).toBeVisible();
-    await expect(currentHearingTable.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId })).toBeVisible();
+    await expect(currentHearingTable.getByRole('cell', { name: LISTED_HEARING_SCENARIO.hearingId, exact: true })).toBeVisible();
 
     await selectOrderedLinkedHearings(page);
     await continueHearingsFlow(page);

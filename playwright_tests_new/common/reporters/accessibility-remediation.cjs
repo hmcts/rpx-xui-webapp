@@ -38,6 +38,126 @@ function familyFor(rule) {
   return ['label', 'accessible-name', 'sr-accessible-name'].includes(rule) ? 'accessible-name' : rule;
 }
 
+// Project only the structured facts needed for triage; raw report artifacts stay protected.
+function investigationData(evidenceDir, entries, warnings) {
+  const files = new Map();
+  const summaryFiles = new Set(entries.filter((entry) => entry.engine === 'summary').map((entry) => entry.jsonFileName));
+  for (const entry of entries) {
+    for (const name of [entry.htmlFileName, entry.jsonFileName, entry.screenshotFileName]) {
+      if (!name || files.has(name)) continue;
+      const file = safeEvidenceFile(evidenceDir, name);
+      if (!file) continue;
+      let descriptor;
+      try {
+        descriptor = fs.openSync(file, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
+        const stat = fs.fstatSync(descriptor);
+        if (!stat.isFile() || stat.size > 32 * 1024 * 1024) {
+          warnings.add(
+            'Some evidence artifacts exceed the digest size limit or are not regular files; their byte identity was not recorded.'
+          );
+          continue;
+        }
+        const bytes = fs.readFileSync(descriptor);
+        files.set(name, {
+          // Only page summaries need to remain in memory after hashing.
+          bytes: summaryFiles.has(name) && bytes.length <= 1024 * 1024 ? bytes : undefined,
+          sha256: createHash('sha256').update(bytes).digest('hex'),
+        });
+      } catch {
+        warnings.add(missingEvidence);
+      } finally {
+        if (descriptor !== undefined) fs.closeSync(descriptor);
+      }
+    }
+  }
+  const pages = [];
+  let missingPageSummaries = 0;
+  const strictValues = [];
+  const statuses = ['passed', 'failed', 'known-findings', 'issues-found', 'needs-review', 'error', 'blocked', 'unreachable'];
+  const countKeys = ['issueCount', 'reviewCount', 'knownIssueCount', 'unexpectedIssueCount'];
+  for (const entry of entries.filter((candidate) => candidate.engine === 'summary')) {
+    let summary;
+    try {
+      const bytes = files.get(entry.jsonFileName)?.bytes;
+      if (!bytes || bytes.length > 1024 * 1024) throw new Error('Missing or oversized page summary');
+      summary = JSON.parse(bytes.toString('utf8'));
+      if (!summary || !Array.isArray(summary.outcomes) || (summary.checks !== undefined && !Array.isArray(summary.checks))) {
+        throw new Error('Invalid page summary');
+      }
+      const conflictingPage = ['feature', 'pageState'].some(
+        (key) => summary[key] !== undefined && entry[key] !== undefined && summary[key] !== entry[key]
+      );
+      const conflictingContext = ['scenarioId', ...contextKeys].some(
+        (key) =>
+          summary.context?.[key] !== undefined &&
+          entry.context?.[key] !== undefined &&
+          summary.context[key] !== entry.context[key]
+      );
+      if (conflictingPage || conflictingContext) {
+        warnings.add('Some page summaries conflict with their manifest page/context identity; their projections were omitted.');
+        throw new Error('Conflicting page identity');
+      }
+    } catch {
+      missingPageSummaries += 1;
+      continue;
+    }
+    const strict = typeof summary.strict === 'boolean' ? summary.strict : null;
+    strictValues.push(strict);
+    pages.push({
+      feature: safeText(entry.feature),
+      pageState: safeText(entry.pageState),
+      scenarioId: safeText(entry.context?.scenarioId),
+      context: Object.fromEntries(
+        contextKeys.filter((key) => entry.context?.[key]).map((key) => [key, safeText(entry.context[key])])
+      ),
+      strict,
+      outcomes: summary.outcomes
+        .filter((outcome) => outcome && ['axe', 'wave-like', 'screen-reader', 'lighthouse'].includes(outcome.engine))
+        .map((outcome) => ({
+          engine: outcome.engine,
+          status: statuses.includes(outcome.status) ? outcome.status : 'unknown',
+          ...Object.fromEntries(
+            countKeys.filter((key) => Number.isSafeInteger(outcome[key]) && outcome[key] >= 0).map((key) => [key, outcome[key]])
+          ),
+          rules: Array.isArray(outcome.rules) ? outcome.rules.filter((rule) => typeof rule === 'string').map(safeText) : [],
+          reviewRules: Array.isArray(outcome.reviewRules)
+            ? outcome.reviewRules.filter((rule) => typeof rule === 'string').map(safeText)
+            : [],
+        })),
+      checks: (summary.checks ?? [])
+        .filter((check) => check && typeof check.name === 'string')
+        .map((check) => ({
+          name: safeText(check.name).slice(0, 200),
+          status: ['passed', 'failed'].includes(check.status) ? check.status : 'unknown',
+        })),
+    });
+  }
+  if (missingPageSummaries) warnings.add('Some page summaries are missing, invalid or oversized; embedded outcomes are partial.');
+  const observed = new Set(strictValues.filter((value) => value !== null));
+  const strictMode =
+    observed.size > 1
+      ? 'mixed'
+      : missingPageSummaries || strictValues.includes(null) || !strictValues.length
+        ? null
+        : strictValues[0];
+  return {
+    strictMode,
+    data: {
+      privacy:
+        'Privacy-minimized structured data, not guaranteed sanitized or publicly shareable. Protected raw artifacts are not embedded.',
+      completeness: 'not-established',
+      runAndAttemptIdentity: 'not-recorded',
+      missingPageSummaries,
+      pages,
+      artifacts: [...files]
+        .map(([name, file]) => ({ reference: `./accessibility-evidence/${name}`, sha256: file.sha256 }))
+        .sort((a, b) => a.reference.localeCompare(b.reference)),
+      digestMeaning:
+        'SHA-256 identifies the bytes read during export; it does not prove authenticity, completeness, historical run identity or privacy clearance.',
+    },
+  };
+}
+
 function writeAccessibilityRemediationPack(outputFolder, entries, evidenceWarnings = []) {
   const evidenceDir = path.join(outputFolder, 'accessibility-evidence');
   try {
@@ -46,6 +166,13 @@ function writeAccessibilityRemediationPack(outputFolder, entries, evidenceWarnin
     return null;
   }
   const warnings = new Set(evidenceWarnings);
+  warnings.add(
+    'Original runner checkout and deployed application revision are not recorded; verify them separately against original run evidence.'
+  );
+  warnings.add(
+    'Original run and attempt identity are not recorded; stale, mixed or overwritten evidence cannot be ruled out from these files.'
+  );
+  const investigation = investigationData(evidenceDir, entries, warnings);
   const groups = new Map();
   const summaries = entries.filter((entry) => entry.engine === 'summary');
   const engineEntries = entries.filter((entry) => entry.engine !== 'summary');
@@ -185,17 +312,18 @@ function writeAccessibilityRemediationPack(outputFolder, entries, evidenceWarnin
     }))
     .sort((left, right) => left.id.localeCompare(right.id));
   const pack = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     provenance: {
       testedCommit: null,
       buildUrl: null,
-      note: 'The evidence manifest does not record verified build provenance. Bind this pack to its original build and tested commit before changing code; the current checkout is not proof.',
+      note: 'Original runner checkout and deployed application revision are unknown. A checkout SHA does not prove a deployment. Bind historical claims to original evidence; identify a fresh current-source reproduction separately.',
     },
-    source: { entryCount: entries.length, pageSummaryCount: summaries.length, strictMode: null },
+    source: { entryCount: entries.length, pageSummaryCount: summaries.length, strictMode: investigation.strictMode },
     reportMode:
-      'Strict/report-only policy is not recorded in the manifest; report findings do not establish a blocking CI result.',
+      'Strict mode describes only readable observed page summaries (mixed or null means mixed or unknown/partial). Run completeness and blocking CI outcome are not established.',
     grouping:
       'Candidate groups by feature, persona/language/setup, rule family and selector. These are not confirmed root causes or PR counts.',
+    investigation: investigation.data,
     warnings: Array.from(warnings).sort(),
     findings,
   };

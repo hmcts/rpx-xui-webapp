@@ -53,7 +53,11 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
 
   test('auth/login responds', async ({ anonymousClient }) => {
     const response = await anonymousClient.get('auth/login', { throwOnError: false });
-    expectStatus(response.status, [200, 302, 401, 403, 500, 502, 504]);
+    // auth/login performs OIDC discovery against IDAM; an IDAM outage surfaces as 5xx and is reported as degraded.
+    expectStatus(response.status, [200, 302, 401, 403], {
+      route: 'GET auth/login',
+      tolerateDependencyUnavailable: [500, 502, 504],
+    });
   });
 
   test('returns enriched user details for dedicated work-allocation solicitor session', async ({ apiClientFor }, testInfo) => {
@@ -136,7 +140,8 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
 
   test('healthCheck responds with healthState', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<{ healthState?: boolean }>('api/healthCheck?path=', { throwOnError: false });
-    expectStatus(response.status, [200, 500, 502, 504]);
+    // An empty path makes no downstream health calls (api/healthCheck/index.ts), so only 200 is valid.
+    expectStatus(response.status, [200]);
     if (response.status === 200) {
       expect(typeof response.data?.healthState).toBe('boolean');
     }

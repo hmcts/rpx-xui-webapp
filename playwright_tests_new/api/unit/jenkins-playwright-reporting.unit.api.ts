@@ -85,6 +85,33 @@ function expectInterruptedOutcomesToBypassFailure(jenkinsfile: string, expectedF
 }
 
 test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' }, () => {
+  test('keeps inline Jenkinsfile_CNP code under the CPS script method size limit', () => {
+    // Jenkins compiles the script body (top-level statements and closures) into one method capped at 64 KB of
+    // bytecode. Builds at 65,632 measured bytes failed with "Method too large"; 65,536 passed. Script methods
+    // (`def name(...) {`) compile separately and comments add no bytecode, so neither counts here.
+    const lines = source.split('\n');
+    let inlineBytes = 0;
+    for (let index = 0; index < lines.length; index += 1) {
+      if (/^def \w+\(.*\) \{$/.test(lines[index])) {
+        while (index < lines.length && lines[index] !== '}') index += 1;
+        continue;
+      }
+      if (!lines[index].trim().startsWith('//')) inlineBytes += Buffer.byteLength(lines[index]) + 1;
+    }
+    expect(inlineBytes, 'move a self-contained closure into a script method before adding more inline code').toBeLessThan(64_000);
+  });
+
+  test('archives a build summary that declares the expected suite reports for CI failure intelligence', () => {
+    expect(source).toContain('\\"schema\\": \\"xui-ci-build-summary/v1\\"');
+    expect(source).toContain("archiveArtifacts(allowEmptyArchive: false, artifacts: 'build-summary.json')");
+    expect(source).toContain(
+      "writeBuildSummary('preview', [[suite: 'Smoke', path: 'functional-output/tests/playwright-smoke/odhin-report/ci-evidence/playwright.json']] + failureReports)"
+    );
+    expect(source).toContain(
+      "writeBuildSummary('aat', [[suite: 'Smoke', path: 'functional-output/tests/playwright-smoke/odhin-report/ci-evidence/playwright.json']] + failureReports)"
+    );
+  });
+
   test('keeps an integration configuration failure in the published report directory', () => {
     for (const jenkinsfile of [source, nightlySource]) {
       expect(jenkinsfile).toContain('runner-failure.txt');
@@ -227,6 +254,45 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source.match(/"PW_E2E_CCD_SETUP_CONCURRENCY=1"/g)).toHaveLength(2);
     expect(nightlySource).toContain("'FUNCTIONAL_TESTS_WORKERS=7'");
     expect(nightlySource).toContain("'PW_E2E_CCD_SETUP_CONCURRENCY=1'");
+  });
+
+  test('keeps a short session-capture failure cooldown for E2E instead of disabling it', () => {
+    const e2eStages = [...source.matchAll(/stage\('Playwright E2E'\) \{/g)].map((match) =>
+      source.slice(match.index, source.indexOf("stage('Playwright Accessibility Tests')", match.index))
+    );
+
+    expect(e2eStages).toHaveLength(2);
+    for (const stage of e2eStages) {
+      expect(stage).not.toContain('"PW_SESSION_CAPTURE_FAILURE_TTL_MS=0"');
+      expect(stage.match(/"PW_SESSION_CAPTURE_FAILURE_TTL_MS=60000"/g)).toHaveLength(1);
+    }
+  });
+
+  test('lets the integration config resolve its capped worker count instead of a CLI --workers override', () => {
+    const matrixStart = source.indexOf('def runPlaywrightIntegrationProfileMatrix = {');
+    const matrix = source.slice(matrixStart, source.indexOf('\n}\n', matrixStart));
+
+    expect(matrixStart).toBeGreaterThanOrEqual(0);
+    expect(matrix).not.toContain('--workers');
+    expect(matrix).toContain('"FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}"');
+    expect(matrix).toContain(`"PW_PARALLEL_SUITES=\${runConfig.capWorkers ? (env.PW_PARALLEL_SUITES ?: '') : ''}"`);
+    expect(matrix).toContain(
+      `yarnBuilder.yarn("test:playwright:integration:raw\${runConfig.shardArg ? " --\${runConfig.shardArg}" : ''}")`
+    );
+    // Explicit INTEGRATION_PW_WORKERS / non-default profile runs are diagnostics and keep their requested count.
+    expect(source).toContain(
+      'return (workersOverride?.trim() as boolean) || (configured && configured != defaultIntegrationProfileRun)'
+    );
+    expect(source).toContain('integrationProfileRunConfig(spec, testType, capWorkers)');
+    // The integration branch runs inside the parallel-suite block that sets PW_PARALLEL_SUITES.
+    for (const [suites, integrationStage] of [
+      ['previewFunctionalSuites', "runPlaywrightIntegrationProfileMatrix('preview', 'PREVIEW')"],
+      ['aatFunctionalSuites', "runPlaywrightIntegrationProfileMatrix('aat', 'AAT')"],
+    ]) {
+      const stageIndex = source.indexOf(integrationStage);
+      expect(stageIndex).toBeGreaterThan(source.indexOf(`def ${suites} = [`));
+      expect(stageIndex).toBeLessThan(source.indexOf(`withEnv(["PW_PARALLEL_SUITES=\${${suites}.size() - 1}"])`));
+    }
   });
 
   test('reproduces the old root-only diagnostic scan missing lane-local output', () => {

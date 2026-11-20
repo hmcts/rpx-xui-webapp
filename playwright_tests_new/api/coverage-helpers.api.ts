@@ -1,6 +1,6 @@
 import { test, expect, type APIRequestContext } from '@playwright/test';
 
-import { expectStatus, guardedRequest, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, StatusSets, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
@@ -8,6 +8,13 @@ import { fetchFirstTask, guardedTaskSearch, resolveWaCancellationTask } from './
 import { seedRoleAccessCaseId } from './utils/role-access';
 
 test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () => {
+  test.afterEach(() => {
+    const annotations = test.info().annotations;
+    for (let i = annotations.length - 1; i >= 0; i -= 1) {
+      if (['status-tolerated', 'retry-exhausted'].includes(annotations[i].type)) annotations.splice(i, 1);
+    }
+  });
+
   test('expectStatus and withRetry cover success and retry paths', async () => {
     expectStatus(200, [200, 201]);
     expect(() => expectStatus(500, [200])).toThrow();
@@ -41,28 +48,48 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     await expect(withRetry(async () => ({ status: 200 }), { retries: -1 })).rejects.toThrow('withRetry failed unexpectedly');
   });
 
-  test('expectStatus reports the received status before the expected contract or custom context', () => {
+  test('expectStatus reports the stable code and received status before the expected contract or custom context', () => {
     expect(() => expectStatus(201, [200, 201])).not.toThrow();
     expect(() => expectStatus(503, [200, 401, 403, 502, 504])).toThrow(
-      /^Received HTTP 503\. Expected status to be one of: 200, 401, 403, 502, 504(?:\n|$)/
+      /^API_STATUS_UNEXPECTED actual=503 Received HTTP 503\. Expected status to be one of: 200, 401, 403, 502, 504(?:\n|$)/
     );
     expect(() => expectStatus(503, [401, 403], 'Authenticated route must reject anonymous callers')).toThrow(
-      /^Received HTTP 503\. Authenticated route must reject anonymous callers(?:\n|$)/
+      /^API_STATUS_UNEXPECTED actual=503 Received HTTP 503\. Authenticated route must reject anonymous callers(?:\n|$)/
     );
   });
 
-  test('expectStatus tolerateDependencyUnavailable passes but records a degraded annotation', () => {
+  test('expectStatus records status-tolerated only when a pass hides a server failure or misses the named primary', () => {
+    const annotations = test.info().annotations;
+    const before = annotations.length;
+
+    expectStatus(200, [200, 401, 403, 502, 504]);
+    expectStatus(204, [200, 204, 409]);
+    // Allowed 4xx are usually the asserted contract (anonymous callers get 401/403), so they are not reported.
+    expectStatus(401, [200, 401, 403]);
+    expectStatus(403, [401, 403]);
+    expectStatus(403, [200, 403], { primary: 403 });
+    expect(annotations.slice(before)).toEqual([]);
+
+    expectStatus(502, [200, 401, 403, 502, 504]);
+    expectStatus(200, [200, 403], { primary: 403 });
+    expect(annotations.slice(before)).toEqual([
+      { type: 'status-tolerated', description: 'actual=502 allowed=200,401,403,502,504' },
+      { type: 'status-tolerated', description: 'actual=200 allowed=200,403' },
+    ]);
+  });
+
+  test('expectStatus tolerateDependencyUnavailable passes but records one status-tolerated annotation per call', () => {
     const annotations = test.info().annotations;
     const before = annotations.length;
 
     expectStatus(504, [200], { route: 'GET api/example', tolerateDependencyUnavailable: [502, 504] });
-    expect(annotations.slice(before)).toEqual([{ type: 'dependency-unavailable', description: 'GET api/example HTTP 504' }]);
+    expect(annotations.slice(before)).toEqual([{ type: 'status-tolerated', description: 'actual=504 allowed=200,502,504' }]);
 
     expectStatus(200, [200], { route: 'GET api/example', tolerateDependencyUnavailable: [502, 504] });
-    expectStatus(502, [200], { tolerateDependencyUnavailable: [502] });
+    expectStatus(502, [200, 502], { tolerateDependencyUnavailable: [502] });
     expect(annotations.slice(before)).toEqual([
-      { type: 'dependency-unavailable', description: 'GET api/example HTTP 504' },
-      { type: 'dependency-unavailable', description: 'unknown route HTTP 502' },
+      { type: 'status-tolerated', description: 'actual=504 allowed=200,502,504' },
+      { type: 'status-tolerated', description: 'actual=502 allowed=200,502' },
     ]);
   });
 
@@ -76,12 +103,58 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
         tolerateDependencyUnavailable: [502, 504],
         message: 'Backend must not 500',
       })
-    ).toThrow(/^Received HTTP 500\. Backend must not 500(?:\n|$)/);
+    ).toThrow(/^API_STATUS_UNEXPECTED actual=500 Received HTTP 500\. Backend must not 500 \(route: GET api\/example\)(?:\n|$)/);
     expect(() => expectStatus(503, [200, 401], { tolerateDependencyUnavailable: [502] })).toThrow(
-      /^Received HTTP 503\. Expected status to be one of: 200, 401(?:\n|$)/
+      /^API_STATUS_UNEXPECTED actual=503 Received HTTP 503\. Expected status to be one of: 200, 401(?:\n|$)/
     );
-    expect(() => expectStatus(502, [200], {})).toThrow(/^Received HTTP 502\./);
+    expect(() => expectStatus(502, [200], {})).toThrow(/^API_STATUS_UNEXPECTED actual=502 Received HTTP 502\./);
     expect(annotations.length).toBe(before);
+  });
+
+  test('withRetry records retry-exhausted only when it returns a retryable status after its last attempt', async () => {
+    const annotations = test.info().annotations;
+    const before = annotations.length;
+    const instant = { baseDelayMs: 0 };
+
+    let calls = 0;
+    const recovered = await withRetry(async () => ({ status: ++calls === 1 ? 502 : 200 }), { ...instant, retries: 2 });
+    expect(recovered.status).toBe(200);
+    const noRetryBudget = await withRetry(async () => ({ status: 502 }), { ...instant, retries: 0 });
+    expect(noRetryBudget.status).toBe(502);
+    expect(annotations.slice(before)).toEqual([]);
+
+    calls = 0;
+    const exhausted = await withRetry(async () => ({ status: ++calls === 1 ? 502 : 504 }), { ...instant, retries: 2 });
+    expect(exhausted.status).toBe(504);
+    expect(calls).toBe(3);
+    expect(annotations.slice(before)).toEqual([{ type: 'retry-exhausted', description: 'attempts=3 last=504' }]);
+
+    calls = 0;
+    const afterError = await withRetry(
+      async () => {
+        calls += 1;
+        if (calls === 1) throw new Error('socket hang up');
+        return { status: 503 };
+      },
+      { ...instant, retries: 1, retryStatuses: [503] }
+    );
+    expect(afterError.status).toBe(503);
+    expect(annotations.slice(before)).toEqual([
+      { type: 'retry-exhausted', description: 'attempts=3 last=504' },
+      { type: 'retry-exhausted', description: 'attempts=2 last=503' },
+    ]);
+  });
+
+  test('an unasserted exhausted retry does not suppress an independent tolerated response', async () => {
+    const annotations = test.info().annotations;
+    const before = annotations.length;
+
+    await withRetry(async () => ({ status: 502 }), { baseDelayMs: 0, retries: 1 });
+    expectStatus(502, StatusSets.guardedBasic);
+    expect(annotations.slice(before)).toEqual([
+      { type: 'retry-exhausted', description: 'attempts=2 last=502' },
+      { type: 'status-tolerated', description: 'actual=502 allowed=200,401,403,502,504' },
+    ]);
   });
 
   test('guardedRequest converts request timeouts into guarded downstream status', async () => {

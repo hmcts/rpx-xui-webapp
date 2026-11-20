@@ -18,6 +18,13 @@ export type ResolveCaseReferenceOptions = {
 
 const CASE_REFERENCE_REGEX = /^\d{16}$/;
 const TRANSIENT_GLOBAL_SEARCH_STATUSES = new Set([429, 502, 503, 504]);
+const GLOBAL_SEARCH_REQUEST_TIMEOUT_MS = 30_000;
+// One budget for API attempts, backoff and the HTML fallback, so a slow search ends with a clear error well
+// inside the caller's test timeout instead of a generic test timeout.
+const CASE_REFERENCE_RESOLUTION_BUDGET_MS = 90_000;
+const HTML_FALLBACK_BUDGET_MS = 30_000;
+// Status recorded when the request itself timed out, so the bounded retry and HTML fallback still apply.
+const GLOBAL_SEARCH_REQUEST_TIMED_OUT = 'request timeout';
 
 type GlobalSearchRequestBody = {
   searchCriteria: {
@@ -61,12 +68,22 @@ async function executeGlobalSearchRequest(
   page: Page,
   caseReferencePattern: string,
   jurisdictionIds: string[] | null,
-  maxReturnRecordCount = 10
+  maxReturnRecordCount = 10,
+  timeoutMs = GLOBAL_SEARCH_REQUEST_TIMEOUT_MS
 ) {
   return page.request.post('/api/globalsearch/results', {
     data: buildGlobalSearchRequestBody(caseReferencePattern, jurisdictionIds, maxReturnRecordCount),
     failOnStatusCode: false,
+    timeout: timeoutMs,
   });
+}
+
+function remainingRequestTimeout(deadlineMs: number): number {
+  return Math.min(GLOBAL_SEARCH_REQUEST_TIMEOUT_MS, deadlineMs - Date.now());
+}
+
+function isRequestTimeoutError(error: unknown): boolean {
+  return error instanceof Error && (error.name === 'TimeoutError' || /Timeout \d+ms exceeded/.test(error.message));
 }
 
 function randomDigitString(length: number): string {
@@ -100,9 +117,10 @@ function stateMatchesPreference(stateId: string, preferredStates: string[]): boo
  *
  * **Resolution Strategy:**
  * 1. Query /api/globalsearch/results with jurisdiction/state filters
- * 2. Retry on transient failures (429 rate limit, 502-504 gateway timeouts) with exponential backoff
+ * 2. Retry on transient failures (429 rate limit, 502-504 gateway timeouts, request timeouts) with linear backoff
  * 3. Prefer results matching preferredStates, fallback to any valid result
  * 4. Final fallback to HTML page scraping if API unavailable
+ * 5. API attempts, backoff and the HTML fallback share one 90s deadline (per request at most 30s)
  *
  * **Known AAT Environment Issues Handled:**
  * - Transient 429 rate limiting during parallel test execution
@@ -134,35 +152,56 @@ export async function resolveCaseReferenceFromGlobalSearch(
   const { jurisdictionIds, preferredStates = [], caseReferencePattern = '*', maxReturnRecordCount = 50 } = options;
   const maxAttempts = Number.parseInt(process.env.CASE_REFERENCE_RESOLVE_API_ATTEMPTS || '3', 10);
   let results: GlobalSearchResult[] = [];
-  let lastStatus = 0;
+  let lastStatus: number | typeof GLOBAL_SEARCH_REQUEST_TIMED_OUT = 0;
   let attempts = 0;
+  const deadlineMs = Date.now() + CASE_REFERENCE_RESOLUTION_BUDGET_MS;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    attempts = attempt;
-    const response = await executeGlobalSearchRequest(page, caseReferencePattern, jurisdictionIds ?? null, maxReturnRecordCount);
-
-    lastStatus = response.status();
-    if (lastStatus === 200) {
-      const payload = (await response.json()) as GlobalSearchResponse;
-      results = Array.isArray(payload.results) ? payload.results : [];
+    const requestTimeoutMs = remainingRequestTimeout(deadlineMs - HTML_FALLBACK_BUDGET_MS);
+    if (requestTimeoutMs <= 0) {
       break;
     }
-
-    if (TRANSIENT_GLOBAL_SEARCH_STATUSES.has(lastStatus) && attempt < maxAttempts) {
-      await page.waitForTimeout(attempt * 1000);
-      continue;
+    attempts = attempt;
+    let response: Awaited<ReturnType<typeof executeGlobalSearchRequest>> | undefined;
+    try {
+      response = await executeGlobalSearchRequest(
+        page,
+        caseReferencePattern,
+        jurisdictionIds ?? null,
+        maxReturnRecordCount,
+        requestTimeoutMs
+      );
+    } catch (error) {
+      if (!isRequestTimeoutError(error)) {
+        throw error;
+      }
+      lastStatus = GLOBAL_SEARCH_REQUEST_TIMED_OUT;
     }
 
-    break;
+    if (response) {
+      lastStatus = response.status();
+      if (lastStatus === 200) {
+        const payload = (await response.json()) as GlobalSearchResponse;
+        results = Array.isArray(payload.results) ? payload.results : [];
+        break;
+      }
+    }
+
+    const retryable = lastStatus === GLOBAL_SEARCH_REQUEST_TIMED_OUT || TRANSIENT_GLOBAL_SEARCH_STATUSES.has(lastStatus);
+    if (!retryable || attempt >= maxAttempts || Date.now() >= deadlineMs - HTML_FALLBACK_BUDGET_MS) {
+      break;
+    }
+    await page.waitForTimeout(Math.max(0, Math.min(attempt * 1000, deadlineMs - HTML_FALLBACK_BUDGET_MS - Date.now())));
   }
 
   if (lastStatus !== 200) {
-    const htmlFallbackCaseReference = await resolveCaseReferenceFromHtmlPages(page);
+    const htmlFallbackCaseReference = await resolveCaseReferenceFromHtmlPages(page, deadlineMs);
     if (htmlFallbackCaseReference) {
       return htmlFallbackCaseReference;
     }
     throw new Error(
-      `Global search API returned status ${lastStatus} when resolving case reference after ${attempts}/${maxAttempts} attempts`
+      `Global search API returned status ${lastStatus} when resolving case reference after ${attempts}/${maxAttempts} attempts ` +
+        `within ${CASE_REFERENCE_RESOLUTION_BUDGET_MS}ms; HTML fallback found no case reference`
     );
   }
 
@@ -174,16 +213,13 @@ export async function resolveCaseReferenceFromGlobalSearch(
   const selectedResult = eligibleResults.find(
     (result) => result.caseReference && CASE_REFERENCE_REGEX.test(result.caseReference)
   );
-  if (selectedResult?.caseReference) {
-    return selectedResult.caseReference;
-  }
-
   const fallbackResult = results.find((result) => result.caseReference && CASE_REFERENCE_REGEX.test(result.caseReference));
-  if (fallbackResult?.caseReference) {
-    return fallbackResult.caseReference;
+  const resolvedCaseReference = selectedResult?.caseReference ?? fallbackResult?.caseReference;
+  if (resolvedCaseReference) {
+    return resolvedCaseReference;
   }
 
-  const htmlFallbackCaseReference = await resolveCaseReferenceFromHtmlPages(page);
+  const htmlFallbackCaseReference = await resolveCaseReferenceFromHtmlPages(page, deadlineMs);
   if (htmlFallbackCaseReference) {
     return htmlFallbackCaseReference;
   }
@@ -319,25 +355,33 @@ export async function resolveNonExistentCaseReference(
   throw new Error(`Unable to generate a non-existent 16-digit case reference after ${maxAttempts} attempts`);
 }
 
-async function resolveCaseReferenceFromHtmlPages(page: Page): Promise<string | null> {
+async function resolveCaseReferenceFromHtmlPages(page: Page, deadlineMs: number): Promise<string | null> {
   const candidatePaths = ['/work/my-work/list', '/work/all-work/tasks', '/cases'];
-  const references = new Set<string>();
-
-  for (const path of candidatePaths) {
-    const response = await page.request.get(path, { failOnStatusCode: false });
+  for (const [index, path] of candidatePaths.entries()) {
+    const timeoutMs = Math.min(
+      GLOBAL_SEARCH_REQUEST_TIMEOUT_MS,
+      Math.floor((deadlineMs - Date.now()) / (candidatePaths.length - index))
+    );
+    if (timeoutMs <= 0) {
+      break;
+    }
+    let response: Awaited<ReturnType<Page['request']['get']>>;
+    try {
+      response = await page.request.get(path, { failOnStatusCode: false, timeout: timeoutMs });
+    } catch (error) {
+      if (!isRequestTimeoutError(error)) {
+        throw error;
+      }
+      continue;
+    }
     if (response.status() !== 200) {
       continue;
     }
 
     const html = await response.text();
-    const caseReferenceRegex = /\/cases\/case-details\/[^/\s]+\/[^/\s]+\/(\d{16})/g;
-    let match = caseReferenceRegex.exec(html);
-    while (match) {
-      references.add(match[1]);
-      match = caseReferenceRegex.exec(html);
-    }
+    const match = /\/cases\/case-details\/[^/\s]+\/[^/\s]+\/(\d{16})/.exec(html);
+    if (match) return match[1];
   }
 
-  const [firstReference] = Array.from(references);
-  return firstReference ?? null;
+  return null;
 }

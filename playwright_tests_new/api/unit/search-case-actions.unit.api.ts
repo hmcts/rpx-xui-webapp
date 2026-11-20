@@ -88,6 +88,34 @@ test.describe('Search case action helper unit tests', { tag: '@svc-internal' }, 
     });
   }
 
+  for (const [name, state, lookup, inner] of [
+    [
+      'a forbidden lookup without the restricted shell',
+      { destination: '/cases', caseLookupStatus: 403 },
+      'caseLookup=HTTP 403',
+      'Destination did not match',
+    ],
+    [
+      'a matching case lookup that never navigates',
+      { destination: '/cases' },
+      'caseLookup=HTTP 200',
+      'Destination did not match',
+    ],
+    ['an unanswered lookup', { destination: '/cases', noLookupResponse: true }, 'caseLookup=no response', ''],
+  ] as const) {
+    test(`reports the lookup status and first inner error for ${name}`, async () => {
+      const search = buildSearch(state);
+      const error = await search.subject.searchWith16DigitCaseId(CASE_REFERENCE).catch((caught: unknown) => caught);
+      expect(error).toBeInstanceOf(Error);
+      const message = (error as Error).message;
+      expect(message).toContain('Header quick-search did not reach');
+      expect(message).toContain(lookup);
+      expect(message).toMatch(/firstError=\S/);
+      if (inner) expect(message).toContain(inner);
+      expect((error as Error).cause).toBeInstanceOf(AggregateError);
+    });
+  }
+
   test('preserves action failures without resubmitting', async () => {
     const search = buildSearch({ clickError: 'Browser has been closed' });
     await expect(search.subject.searchWith16DigitCaseId(CASE_REFERENCE)).rejects.toThrow('Browser has been closed');

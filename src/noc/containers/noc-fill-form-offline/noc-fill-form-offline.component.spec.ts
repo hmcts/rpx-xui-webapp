@@ -31,4 +31,11 @@ describe('NocFillFormOfflineComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should include a new-tab warning in every link that opens a new tab', () => {
+    const links = fixture.nativeElement.querySelectorAll('a[target="_blank"]') as NodeListOf<HTMLAnchorElement>;
+
+    expect(links.length).toBe(3);
+    links.forEach((link) => expect(link.textContent).toContain(component.newTabWarningText));
+  });
 });

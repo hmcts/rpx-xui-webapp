@@ -6,6 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
+import { AppConstants } from '../../../../app/app.constants';
 import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
 import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';
@@ -20,6 +21,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   templateUrl: './hearing-link.component.html',
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  public readonly newTabWarningText = AppConstants.NEW_TAB_WARNING_TEXT;
   private caseLinkingReasons: LovRefDataByServiceModel;
   public caseId: string;
   public jurisdictionId: string;

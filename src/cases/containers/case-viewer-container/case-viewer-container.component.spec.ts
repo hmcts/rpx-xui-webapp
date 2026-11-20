@@ -301,6 +301,104 @@ describe('CaseViewerContainerComponent', () => {
     expect((tabLabels[0].nativeElement as HTMLElement).innerText).toBe('Tasks');
     expect((tabLabels[1].nativeElement as HTMLElement).innerText).toBe('Roles and access');
   });
+
+  it('should emit only the missing prepended tab when CCD supplies Tasks', () => {
+    const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
+    (component as any).caseDetailsSubject.next({
+      ...currentCaseDetails,
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdTasks',
+          label: 'CCD tasks',
+          fields: [Object.assign(new CaseField(), { id: 'TaskLauncher' })],
+          show_condition: null,
+        },
+      ],
+    });
+
+    (component as any).setPrependedCaseViewTabs();
+
+    component.prependedTabs$.subscribe((tabs) => {
+      expect(tabs.map((tab) => tab.id)).toEqual(['roles-and-access']);
+    });
+  });
+
+  it('should emit only Tasks when CCD supplies Roles and access', () => {
+    const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
+    (component as any).caseDetailsSubject.next({
+      ...currentCaseDetails,
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdRoles',
+          label: 'CCD roles',
+          fields: [Object.assign(new CaseField(), { id: 'RolesLauncher' })],
+          show_condition: null,
+        },
+      ],
+    });
+
+    (component as any).setPrependedCaseViewTabs();
+
+    component.prependedTabs$.subscribe((tabs) => {
+      expect(tabs.map((tab) => tab.id)).toEqual(['tasks']);
+    });
+  });
+
+  it('should emit no prepended tabs when CCD supplies both special tabs', () => {
+    const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
+    (component as any).caseDetailsSubject.next({
+      ...currentCaseDetails,
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdTasks',
+          label: 'CCD tasks',
+          fields: [Object.assign(new CaseField(), { id: 'TaskLauncher' })],
+          show_condition: null,
+        },
+        {
+          id: 'ccdRoles',
+          label: 'CCD roles',
+          fields: [Object.assign(new CaseField(), { id: 'RolesLauncher' })],
+          show_condition: null,
+        },
+      ],
+    });
+
+    (component as any).setPrependedCaseViewTabs();
+
+    component.prependedTabs$.subscribe((tabs) => expect(tabs).toEqual([]));
+  });
+
+  it('should remove CCD-supplied prepended special tabs when the feature is not required', () => {
+    const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
+    (component as any).caseDetailsSubject.next({
+      ...currentCaseDetails,
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdTasks',
+          label: 'CCD tasks',
+          fields: [Object.assign(new CaseField(), { id: 'TaskLauncher' })],
+          show_condition: null,
+        },
+        {
+          id: 'ccdRoles',
+          label: 'CCD roles',
+          fields: [Object.assign(new CaseField(), { id: 'RolesLauncher' })],
+          show_condition: null,
+        },
+      ],
+    });
+    spyOn<any>(component, 'enablePrependedTabs').and.returnValue(false);
+
+    (component as any).setPrependedCaseViewTabs();
+
+    expect((component as any).currentCaseDetails.tabs.some((tab) => ['ccdTasks', 'ccdRoles'].includes(tab.id))).toBeFalse();
+    component.prependedTabs$.subscribe((tabs) => expect(tabs).toEqual([]));
+  });
 });
 
 describe('CaseViewerContainerComponent - Hearings tab visible', () => {
@@ -378,6 +476,54 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
 
   it('should display Hearings tab', () => {
     component.appendedTabs$.subscribe((tabs) => expect(tabs[0].id).toEqual('hearings'));
+  });
+
+  it('should not emit an appended tab when CCD supplies Hearings', () => {
+    const hearingConfig = [{ jurisdiction: 'SSCS', includeCaseTypes: ['Benefit'] }];
+    spyOn(component['hearingJurisdictionConfigService'], 'getHearingJurisdictionsConfig').and.returnValue(
+      of(hearingConfig as any)
+    );
+    const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
+    (component as any).caseDetailsSubject.next({
+      ...currentCaseDetails,
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdHearings',
+          label: 'CCD hearings',
+          fields: [Object.assign(new CaseField(), { id: 'HearingsLauncher' })],
+          show_condition: null,
+        },
+      ],
+    });
+    (component as any).checkSuppliedTabsByCCD();
+
+    (component as any).setAppendedCaseViewTabs();
+
+    component.appendedTabs$.subscribe((tabs) => expect(tabs).toEqual([]));
+  });
+
+  it('should remove a CCD-supplied Hearings tab when the hearing checks do not apply', () => {
+    spyOn(component['hearingJurisdictionConfigService'], 'getHearingJurisdictionsConfig').and.returnValue(of([]));
+    const currentCaseDetails = (component as any).currentCaseDetails as CaseView;
+    (component as any).caseDetailsSubject.next({
+      ...currentCaseDetails,
+      tabs: [
+        ...currentCaseDetails.tabs,
+        {
+          id: 'ccdHearings',
+          label: 'CCD hearings',
+          fields: [Object.assign(new CaseField(), { id: 'HearingsLauncher' })],
+          show_condition: null,
+        },
+      ],
+    });
+    (component as any).checkSuppliedTabsByCCD();
+
+    (component as any).setAppendedCaseViewTabs();
+
+    expect((component as any).currentCaseDetails.tabs.some((tab) => tab.id === 'ccdHearings')).toBeFalse();
+    component.appendedTabs$.subscribe((tabs) => expect(tabs).toEqual([]));
   });
 });
 

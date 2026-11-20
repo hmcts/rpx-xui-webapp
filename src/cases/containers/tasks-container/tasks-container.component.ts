@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CaseNotifier, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable, of, Subscription } from 'rxjs';
-import { first, mergeMap, switchMap } from 'rxjs/operators';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { catchError, filter, finalize, first, mergeMap, switchMap, take, takeUntil } from 'rxjs/operators';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { Caseworker } from '../../../work-allocation/models/dtos';
@@ -16,7 +15,7 @@ import { getAssigneeIdsFromTasks, getAssigneeNameFromList } from '../../../work-
   templateUrl: './tasks-container.component.html',
   styleUrls: ['./tasks-container.component.scss'],
 })
-export class TasksContainerComponent implements OnInit {
+export class TasksContainerComponent implements OnInit, OnDestroy {
   public caseDetails: CaseView;
   public tasks: Task[] = [];
   public tasksRefreshed: boolean = false;
@@ -26,10 +25,11 @@ export class TasksContainerComponent implements OnInit {
   public showSpinner: boolean = true;
   public caseNotifierSubscription: Subscription;
   public caseId: string;
+  private loadingToken: string | null = null;
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly waCaseService: WorkAllocationCaseService,
-    private readonly route: ActivatedRoute,
     private readonly caseworkerService: CaseworkerDataService,
     private readonly rolesService: AllocateRoleService,
     private readonly loadingService: LoadingService,
@@ -37,18 +37,32 @@ export class TasksContainerComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.showSpinner$ = this.loadingService.isLoading as any;
-    const loadingToken = this.loadingService.register();
-    let caseId: string;
-    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseNotifDetails) => {
-      if (caseNotifDetails) {
-        caseId = caseNotifDetails.case_id;
-        this.caseId = caseId;
-      }
-    });
-    const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
+    this.showSpinner$ = this.loadingService.isLoading;
+    this.caseNotifierSubscription = this.caseNotifier.caseView
+      .pipe(
+        filter((caseNotifDetails) => !!caseNotifDetails?.case_id),
+        take(1)
+      )
+      .subscribe((caseNotifDetails) => {
+        this.caseDetails = caseNotifDetails;
+        this.caseId = caseNotifDetails.case_id;
+        this.loadingToken = this.loadingService.register();
+        this.loadTasks();
+      });
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.caseNotifierSubscription?.unsubscribe();
+    this.releaseLoadingToken();
+  }
+
+  private loadTasks(): void {
+    const tasksSearch$ = this.waCaseService.getTasksByCaseId(this.caseId);
     tasksSearch$
       .pipe(
+        takeUntil(this.destroy$),
         first(),
         mergeMap((tasks) => {
           this.tasks = tasks;
@@ -65,18 +79,20 @@ export class TasksContainerComponent implements OnInit {
           }
           this.caseworkers = [];
           return of([]);
-        })
+        }),
+        catchError(() => of(this.tasks)),
+        finalize(() => this.releaseLoadingToken())
       )
-      .subscribe(
-        (tasks) => {
-          this.tasks = tasks;
-          this.loadingService.unregister(loadingToken);
-        },
-        () => {
-          this.loadingService.unregister(loadingToken);
-        }
-      );
-    this.caseDetails = this.route.snapshot.data.case as CaseView;
+      .subscribe((tasks) => {
+        this.tasks = tasks;
+      });
+  }
+
+  private releaseLoadingToken(): void {
+    if (this.loadingToken) {
+      this.loadingService.unregister(this.loadingToken);
+      this.loadingToken = null;
+    }
   }
 
   public onTaskRefreshRequired(): void {

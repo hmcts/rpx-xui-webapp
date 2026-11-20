@@ -3,7 +3,10 @@ import type { Locator } from '@playwright/test';
 
 import { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po.js';
 
-const okEventTrigger = { status: () => 200, url: () => 'https://xui.example/data/internal/cases/1/event-triggers/x' };
+const okEventTrigger = {
+  status: () => 200,
+  url: () => 'https://xui.example/data/internal/cases/1234567890123456/event-triggers/updateCase?ignore-warning=false',
+};
 
 test.describe('Case details case action helper', { tag: '@svc-internal' }, () => {
   test('waits for the action spinner before submitting once', async () => {
@@ -31,7 +34,7 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
     };
     const dropdown = {
       locator: () => ({
-        evaluateAll: async () => [{ label: 'Upload Document', value: 'uploadDocument' }],
+        evaluateAll: async () => [{ label: 'Upload Document', value: '1: Object' }],
       }),
       selectOption: async () => {
         optionSelections += 1;
@@ -96,7 +99,7 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
       },
       caseActionsDropdown: {
         waitFor: async () => undefined,
-        locator: () => ({ evaluateAll: async () => [{ label: 'Update case', value: 'updateCase' }] }),
+        locator: () => ({ evaluateAll: async () => [{ label: 'Update case', value: '1: Object' }] }),
         selectOption: async () => {
           optionSelections += 1;
         },
@@ -168,7 +171,7 @@ for (const state of ['missing', 'wrong form', 'delayed upload form'] as const) {
       },
       caseActionsDropdown: {
         waitFor: async () => undefined,
-        locator: () => ({ evaluateAll: async () => [{ label: 'Upload Document', value: 'uploadDocument' }] }),
+        locator: () => ({ evaluateAll: async () => [{ label: 'Upload Document', value: '1: Object' }] }),
         selectOption: async () => undefined,
       },
       enabledCaseActionGoButton: { waitFor: async () => undefined },
@@ -222,7 +225,7 @@ function createEventTriggerHarness(eventTrigger: EventTriggerState) {
     },
     caseActionsDropdown: {
       waitFor: async () => undefined,
-      locator: () => ({ evaluateAll: async () => [{ label: 'Upload Document', value: 'uploadDocument' }] }),
+      locator: () => ({ evaluateAll: async () => [{ label: 'Upload Document', value: '1: Object' }] }),
       selectOption: async () => undefined,
     },
     enabledCaseActionGoButton: { waitFor: async () => undefined },

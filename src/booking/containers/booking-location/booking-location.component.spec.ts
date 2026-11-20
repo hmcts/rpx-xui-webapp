@@ -1,7 +1,9 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { UserDetails, UserInfo } from '../../../app/models';
@@ -35,14 +37,13 @@ describe('BookingLocationComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BookingLocationComponent],
-      imports: [ReactiveFormsModule, StoreModule.forRoot({})],
+      imports: [ReactiveFormsModule, StoreModule.forRoot({}), ExuiCommonLibModule, HttpClientTestingModule, NoopAnimationsModule],
       providers: [
         {
           provide: Store,
           useValue: storeMock,
         },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -56,6 +57,20 @@ describe('BookingLocationComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('labels the location input before and after validation', () => {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('#inputLocationSearch');
+    expect(input).toBeTruthy();
+    expect(input.labels?.length).toBe(1);
+    expect(input.labels?.item(0)?.textContent.trim()).toBe('Select a location');
+
+    component.onContinueClick();
+    fixture.detectChanges();
+
+    expect(component.formError).toBeTrue();
+    expect(input.labels?.length).toBe(1);
+    expect(input.labels?.item(0)?.textContent.trim()).toBe('Select a location');
   });
 
   describe('page link events', () => {

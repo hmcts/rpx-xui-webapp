@@ -134,7 +134,7 @@
     "@ngrx/store": "^20.1.0",
     "@ngrx/store-devtools": "^20",
     "@ngxmc/datetime-picker": "20.1.0",
-    "applicationinsights": "^3.17.0",
+    "applicationinsights": "^3.17.1",
     "axios": "^1.21.1",
     "axios-mock-adapter": "^2.1.0",
     "class-transformer": "^0.5.1",

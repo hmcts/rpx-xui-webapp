@@ -132,4 +132,12 @@ export class AllocateRoleService {
     }
     return of([]);
   }
+
+  // gets all role categories for specific user
+  public getRoleCategoriesByUserId(userId: string): Observable<string[]> {
+    if (userId) {
+      return this.http.post<string[]>(`${AllocateRoleService.roleUrl}/getRoleCategoriesByUserId`, { userId });
+    }
+    return of([]);
+  }
 }

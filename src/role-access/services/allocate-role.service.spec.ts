@@ -71,6 +71,25 @@ describe('AllocateRoleService', () => {
     });
   });
 
+  it('should get role categories by user id', () => {
+    const roleCategories = [RoleCategory.JUDICIAL, RoleCategory.LEGAL_OPERATIONS];
+    mockHttp.post.and.returnValue(of(roleCategories));
+
+    roleAssignmentService.getRoleCategoriesByUserId('user-123').subscribe((response) => {
+      expect(response).toEqual(roleCategories);
+    });
+
+    expect(mockHttp.post).toHaveBeenCalledWith('/api/role-access/roles/getRoleCategoriesByUserId', { userId: 'user-123' });
+  });
+
+  it('should return empty role categories without making an api call when no user id is provided', () => {
+    roleAssignmentService.getRoleCategoriesByUserId('').subscribe((response) => {
+      expect(response).toEqual([]);
+    });
+
+    expect(mockHttp.post).not.toHaveBeenCalled();
+  });
+
   describe('confirmAllocation', () => {
     const STATE_DATA: AllocateRoleStateData = {
       caseId: '111111',

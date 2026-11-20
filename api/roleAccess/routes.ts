@@ -9,6 +9,7 @@ import {
   getAccessRolesByCaseId,
   getJudicialUsers,
   getMyAccessNewCount,
+  getRoleCategoriesByUserId,
   getRolesByCaseId,
   manageLabellingRoleAssignment,
   reallocateRole,
@@ -31,6 +32,7 @@ router.post('/roles/post', getRolesByCaseId);
 router.post('/roles/access-get', getAccessRoles);
 router.post('/roles/access-get-by-caseId', getAccessRolesByCaseId);
 router.post('/roles/getJudicialUsers', getJudicialUsers);
+router.post('/roles/getRoleCategoriesByUserId', getRoleCategoriesByUserId);
 
 router.get('/roles/get-my-access-new-count', getMyAccessNewCount);
 router.post('/roles/manageLabellingRoleAssignment/:caseId', manageLabellingRoleAssignment);

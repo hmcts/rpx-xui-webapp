@@ -205,6 +205,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public notifyRejection() {
+    this.loggerService.disableCookies();
     // Disable Dynatrace monitoring
     this.disableDynatrace();
     // AppInsights

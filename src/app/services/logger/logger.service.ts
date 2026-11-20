@@ -113,6 +113,10 @@ export class LoggerService implements ILoggerService {
     this.monitoringService.enableCookies();
   }
 
+  public disableCookies(): void {
+    this.monitoringService.disableCookies();
+  }
+
   public static switchConsoleLogs(consoleConfig: any): void {
     console.info(`consoleConfig.switchOffAll = ${consoleConfig.switchOffAll}`);
     if (consoleConfig.switchOffAll === true) {

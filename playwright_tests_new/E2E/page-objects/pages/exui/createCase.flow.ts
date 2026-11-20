@@ -22,6 +22,30 @@ function buildCreateCaseBootstrapFailureMessage(context: string, failure: ApiCal
   return `Create case bootstrap failed ${context}: ${failure.method} ${failure.url} returned HTTP ${failure.status}`;
 }
 
+const AGGREGATED_JURISDICTIONS_PATTERN = CREATE_CASE_BOOTSTRAP_API_PATTERNS[0];
+
+/**
+ * Bootstrap responses that a page reload cannot fix: 403 anywhere (the user lacks access), and 400/404/422 from the
+ * aggregated jurisdictions lookup (the user or test data is misconfigured). 401 stays retryable because a reload can
+ * refresh a stale session, and a case-type event-trigger 404 stays retryable because preview definition imports lag.
+ */
+export function isNonRetryableBootstrapFailure(failure: ApiCall): boolean {
+  if (failure.status === 403) return true;
+  return [400, 404, 422].includes(failure.status) && AGGREGATED_JURISDICTIONS_PATTERN.test(failure.url);
+}
+
+/** Prefixes a step context with a single "after", so callers may pass either "PoC text fields" or "after PoC text fields". */
+export function afterStepContext(context: string): string {
+  return `after ${context.trim().replace(/^after\s+/i, '')}`;
+}
+
+export function buildWizardValidationErrorMessage(context: string): string {
+  return `Validation error ${afterStepContext(context)}`;
+}
+
+/** Validation banner after the PoC text-field step; the divorce PoC journeys treat it as a retryable creation failure. */
+export const POC_TEXT_FIELDS_VALIDATION_ERROR = buildWizardValidationErrorMessage('PoC text fields');
+
 function caseSummaryId(pathname: string): string | undefined {
   if (pathname.includes('/trigger/')) return undefined;
   return /^\/cases\/case-details\/(?:[^/]+\/[^/]+\/)?([^/]+)\/?$/.exec(pathname)?.[1];
@@ -308,6 +332,13 @@ export async function startCreateCaseFlow({
         bootstrapFailure?.url.includes('/aggregated/caseworkers/') && bootstrapFailure.url.includes('/jurisdictions');
       const onSomethingWentWrongPage = await somethingWentWrongHeading.isVisible().catch(() => false);
 
+      if (bootstrapFailure && isNonRetryableBootstrapFailure(bootstrapFailure)) {
+        throw new Error(
+          buildCreateCaseBootstrapFailureMessage(`(non-retryable, attempt ${attempt}/${maxAttempts})`, bootstrapFailure) +
+            '; the signed-in user lacks create-case access or the test data is misconfigured.',
+          { cause: error }
+        );
+      }
       if (attempt === maxAttempts) {
         if (bootstrapFailure) {
           throw new Error(buildCreateCaseBootstrapFailureMessage(`(attempt ${attempt}/${maxAttempts})`, bootstrapFailure));

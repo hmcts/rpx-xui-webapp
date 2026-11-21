@@ -53,7 +53,7 @@ class MockConfigService {
       mc_cdam_exclusion_list: 'DIVORCE,PROBATE',
       icp_jurisdictions: ['foo'],
       wa_service_config: { test: 'config' },
-      wa_supported_role_categories: 'LEGAL_OPERATIONS, ADMIN,CTSC,JUDICIAL',
+      wa_supported_role_categories: 'LEGAL_OPERATIONS, ADMIN,CTSC,JUDICIAL,ENFORCEMENT',
       wa_supported_role_types: 'ORGANISATION',
       events_to_hide: ['queryManagementRespondQuery'],
       enable_service_specific_multi_followups: ['SERVICE_1'],
@@ -222,7 +222,7 @@ describe('AppConfiguration', () => {
   }));
 
   it('should return WA-supported role categories and role types as exact arrays', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getWASupportedRoleCategories()).toEqual(['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL']);
+    expect(service.getWASupportedRoleCategories()).toEqual(['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL', 'ENFORCEMENT']);
     expect(service.getWASupportedRoleTypes()).toEqual(['ORGANISATION']);
   }));
 

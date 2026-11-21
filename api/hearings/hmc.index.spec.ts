@@ -362,8 +362,54 @@ xdescribe('HMC Hearings API', () => {
       await hmcIndex.updateHearingActuals(req, res, next);
 
       expect(sendPutStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`, req.body, req);
+      expect(trackTraceStub).not.to.have.been.called;
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
+    });
+
+    it('should track a successful finalised hearing edit update', async () => {
+      req.query = {
+        hearingId: 'h100001',
+        caseId: '1234567890123456',
+        hearingStatus: HMCStatus.ADJOURNED,
+      };
+      req.body = HEARING_ACTUAL_COMPLETED.hearingActuals;
+      sendPutStub.resolves({ status: 200, data: { message: 'Actuals updated' } });
+
+      await hmcIndex.updateHearingActuals(req, res, next);
+
+      expect(sendPutStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`, req.body, req);
+      expect(trackTraceStub).to.have.been.calledWith('HMC-Index | finalised hearing edit update started', {
+        caseId: '1234567890123456',
+        hearingId: 'h100001',
+        hearingStatus: HMCStatus.ADJOURNED,
+      });
+      expect(trackTraceStub).to.have.been.calledWith('HMC-Index | finalised hearing edit update succeeded', {
+        caseId: '1234567890123456',
+        hearingId: 'h100001',
+        hearingStatus: HMCStatus.ADJOURNED,
+      });
+      expect(res.status).to.have.been.calledWith(200);
+    });
+
+    it('should track a failed finalised hearing edit update', async () => {
+      req.query = {
+        hearingId: 'h100001',
+        caseId: '1234567890123456',
+        hearingStatus: HMCStatus.COMPLETED,
+      };
+      req.body = HEARING_ACTUAL_COMPLETED.hearingActuals;
+      const error = { status: 500, statusText: 'Server Error' };
+      sendPutStub.rejects(error);
+
+      await hmcIndex.updateHearingActuals(req, res, next);
+
+      expect(trackTraceStub).to.have.been.calledWith('HMC-Index | finalised hearing edit update failed', {
+        caseId: '1234567890123456',
+        hearingId: 'h100001',
+        hearingStatus: HMCStatus.COMPLETED,
+      });
+      expect(next).to.have.been.calledWith(error);
     });
 
     it('should handle updateHearingActuals error', async () => {
@@ -389,6 +435,7 @@ xdescribe('HMC Hearings API', () => {
       await hmcIndex.submitHearingActuals(req, res, next);
 
       expect(handlePostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActualsCompletion/h100001`, null, req);
+      expect(trackTraceStub).not.to.have.been.called;
       expect(res.status).to.have.been.calledWith(204);
       expect(res.send).to.have.been.calledWith(null);
     });

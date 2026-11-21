@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -37,6 +38,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   public linkedHearingGroup: LinkedHearingGroupMainModel;
   public cancelButtonText: string;
   public sub: Subscription;
+  private errorTitleSub: Subscription;
   public serverErrors: { id: string; message: string }[] = [
     { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' },
   ];
@@ -52,7 +54,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
     private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly hearingsService: HearingsService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly titleService: Title
   ) {
     this.isManageLink = this.route.snapshot.data.mode === Mode.MANAGE_HEARINGS;
     this.isManageJourneyFinalPage =
@@ -69,6 +72,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public ngOnInit(): void {
+    this.errorTitleSub = this.error$.subscribe((error) => this.setErrorTitlePrefix(!!error));
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe({
       next: (state: fromHearingStore.State) => {
         this.caseName = state.hearingValues.serviceHearingValuesModel
@@ -276,6 +280,20 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   public ngOnDestroy(): void {
     if (this.sub) {
       this.sub.unsubscribe();
+    }
+    if (this.errorTitleSub) {
+      this.errorTitleSub.unsubscribe();
+    }
+    this.setErrorTitlePrefix(false);
+  }
+
+  private setErrorTitlePrefix(hasError: boolean): void {
+    const prefix = 'Error: ';
+    const title = this.titleService.getTitle();
+    if (hasError && !title.startsWith(prefix)) {
+      this.titleService.setTitle(`${prefix}${title}`);
+    } else if (!hasError && title.startsWith(prefix)) {
+      this.titleService.setTitle(title.slice(prefix.length));
     }
   }
 }

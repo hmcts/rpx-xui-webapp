@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Helper, Navigation } from '../../containers/footer/footer.model';
+import { Navigation } from '../../containers/footer/footer.model';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
@@ -9,7 +9,6 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
   styleUrls: ['./hmcts-global-footer.component.scss'],
 })
 export class HmctsGlobalFooterComponent {
-  @Input() public help: Helper;
   @Input() public navigation: Navigation;
   @Input() public userEmail: string;
 

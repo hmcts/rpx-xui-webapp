@@ -17,7 +17,7 @@ export class FindCasePage extends Base {
   readonly ccdCaseReference = this.page
     .locator(String.raw`#dynamicFilters #\[CASE_REFERENCE\], input[id*="CASE_REFERENCE"]`)
     .first();
-  readonly pagination = this.page.locator('.ngx-pagination');
+  readonly pagination = this.page.locator('.govuk-pagination');
   readonly searchResultsContainer = this.page.locator('#search-result');
   readonly searchResultsSummary = this.page.locator('#search-result .pagination-top');
   readonly searchResultsTable = this.searchResultsContainer.locator('ccd-search-result');
@@ -25,10 +25,10 @@ export class FindCasePage extends Base {
   readonly firstRowOfSearchResultsTable = this.searchResultsTable.locator('.govuk-link').first();
   readonly workBasketFilterPanel = this.page.locator('ccd-search-filters-wrapper').first();
   readonly findCaseLinkOnMenu = this.page
-    .locator('.hmcts-primary-navigation__nav .hmcts-primary-navigation__link[href*="case-search"]')
+    .locator('.exui-service-navigation__item--menu .govuk-service-navigation__link[href*="case-search"]')
     .first();
   readonly findCaseLinkOnTopRight = this.page
-    .locator('.hmcts-primary-navigation__search .hmcts-primary-navigation__link[href*="case-search"]')
+    .locator('.exui-service-navigation__item--search .govuk-service-navigation__link[href*="case-search"]')
     .first();
 
   readonly handOffReasonCollection = this.page.locator('ccd-write-collection-field #boHandoffReasonList');

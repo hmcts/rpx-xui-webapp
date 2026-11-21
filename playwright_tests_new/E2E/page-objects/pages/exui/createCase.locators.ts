@@ -14,7 +14,7 @@ export function buildCreateCaseLocators(page: Page) {
     caseAlertSuccessMessage: page.locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message').first(),
     createCaseButton: page
       .getByRole('link', { name: 'Create case' })
-      .or(page.locator('a[href="/cases/case-filter"].hmcts-primary-navigation__link')),
+      .or(page.locator('a[href="/cases/case-filter"].govuk-service-navigation__link')),
     jurisdictionSelect: page.locator('#cc-jurisdiction'),
     caseTypeSelect: page.locator('#cc-case-type'),
     eventTypeSelect: page.locator('#cc-event'),
@@ -74,7 +74,7 @@ export function buildCreateCaseLocators(page: Page) {
     complexType4FirstTickBox: page.locator('#ComplexType_4_selectedCategories-item_1'),
     complexType4SelectList: page.locator('#ComplexType_4_FixedListField'),
 
-    genderRadioButtons: page.locator('#Gender .multiple-choice'),
+    genderRadioButtons: page.locator('#Gender'),
     person1Title: page.locator('#Person1_Title'),
     person1TitleInput: page.locator('#Person1_Title'),
     person1FirstNameInput: page.locator('#Person1_FirstName'),
@@ -103,8 +103,8 @@ export function buildCreateCaseLocators(page: Page) {
 
     fileUploadComponent: primaryDocumentUploadComponent,
     fileUploadInput: page.locator('#DocumentUrl'),
-    fileUploadCancelButton: primaryDocumentUploadComponent.locator('button.button-secondary').first(),
-    fileUploadStatusLabel: page.locator('ccd-write-document-field .error-message'),
+    fileUploadCancelButton: primaryDocumentUploadComponent.locator('button.govuk-button--secondary').first(),
+    fileUploadStatusLabel: page.locator('ccd-write-document-field .govuk-error-message'),
     textField0Input: page.locator('#TextField0'),
     textField1Input: page.locator('#TextField1'),
     textField2Input: page.locator('#TextField2'),

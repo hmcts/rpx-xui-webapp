@@ -1,3 +1,10 @@
-.hmcts-footer__list {
-  display: flex;
+// govuk-frontend v6 has no button variant of .govuk-footer__link, so reset
+// the native button styles to make the language toggle look like the other links.
+.exui-footer__language-toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
+  line-height: inherit;
+  cursor: pointer;
 }

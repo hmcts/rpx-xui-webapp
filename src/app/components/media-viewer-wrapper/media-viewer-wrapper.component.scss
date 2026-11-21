@@ -1,4 +1,4 @@
-@import 'govuk-frontend/dist/govuk/all';
+@use 'govuk-frontend/dist/govuk' as *;
 @import '../../../style/hmcts-frontend';
 @import '@hmcts/media-viewer/assets/all';
 

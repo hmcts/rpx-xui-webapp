@@ -40,6 +40,7 @@ import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
+import { ErrorTitleService, initializeErrorTitle } from './services/error-title/error-title.service';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
 import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
@@ -114,6 +115,12 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       provide: APP_INITIALIZER,
       useFactory: initializeHearingsPageTracking,
       deps: [HearingsPageTrackingService],
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeErrorTitle,
+      deps: [ErrorTitleService],
       multi: true,
     },
     LoggerService,

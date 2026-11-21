@@ -27,7 +27,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   @Input() public items: NavigationItem[];
-  @Input() public logoIsUsed: boolean;
   @Input() public headerTitle: { name: string; url: string };
   @Input() public navigation: UserNavModel;
   @Input() public logo: string;
@@ -41,6 +40,11 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   public userDetails$: Observable<UserDetails>;
   public isUserCaseManager$: Observable<boolean>;
   public isGlobalSearchEnabled: boolean;
+  /** Where the service name in the header links to. */
+  public get serviceUrl(): string {
+    return this.logo === 'judicial' || this.logo === 'myhmcts' ? this.headerTitle?.url || '/' : '/';
+  }
+
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   }

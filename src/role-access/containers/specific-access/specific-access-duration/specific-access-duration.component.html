@@ -13,7 +13,7 @@
           name="dateOption"
           type="radio"
           [value]="duration.duration"
-          [attr.aria-describedby]="duration.description"
+          [attr.aria-describedby]="'specific-access-' + duration.id + '-item-hint'"
           formControlName="dateOption"
           (change)="onDurationChange(duration.duration)"
           [checked]="duration.checked"

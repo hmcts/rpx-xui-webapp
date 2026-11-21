@@ -1,8 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import { HttpError } from '../../../../models/httpError.model';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
@@ -360,6 +363,21 @@ describe('LinkedHearingsCheckYourAnswersComponent', () => {
     };
     component.setHearingLinkedGroup(hearingLinksStateData);
     expect(component.linkedHearingGroup).toBe(linkedHearingGroup);
+  });
+
+  it('should prefix the page title with "Error: " while a submission error is shown and restore it afterwards', () => {
+    const titleService = TestBed.inject(Title);
+    titleService.setTitle('Check your answers - HM Courts & Tribunals Service - GOV.UK');
+    component.ngOnDestroy();
+    component.error$ = of({ status: 500 } as HttpError);
+    component.ngOnInit();
+    expect(titleService.getTitle()).toBe('Error: Check your answers - HM Courts & Tribunals Service - GOV.UK');
+
+    component.ngOnInit();
+    expect(titleService.getTitle()).toBe('Error: Check your answers - HM Courts & Tribunals Service - GOV.UK');
+
+    component.ngOnDestroy();
+    expect(titleService.getTitle()).toBe('Check your answers - HM Courts & Tribunals Service - GOV.UK');
   });
 
   afterEach(() => {

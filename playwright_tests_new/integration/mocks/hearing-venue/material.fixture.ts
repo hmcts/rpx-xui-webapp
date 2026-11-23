@@ -1,6 +1,6 @@
 import 'zone.js';
 import '@angular/compiler';
-import { Component } from '@angular/core';
+import { Component, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
@@ -31,6 +31,7 @@ Component({
 })(VenueFixture);
 bootstrapApplication(VenueFixture, {
   providers: [
+    provideZoneChangeDetection(),
     provideNoopAnimations(),
     {
       provide: LocationService,

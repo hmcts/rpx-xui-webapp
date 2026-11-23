@@ -721,6 +721,9 @@ withPipeline(type, product, component) {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Yarn install', 'finish')
             }
         }
+        stage('Playwright Typecheck') {
+            yarnBuilder.yarn('typecheck:playwright:all')
+        }
 
         stage('Playwright Install Chromium') {
             try {

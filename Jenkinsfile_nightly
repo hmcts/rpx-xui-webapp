@@ -604,6 +604,9 @@ withNightlyPipeline(type, product, component) {
             recordPlaywrightLoadEvent('Yarn install', 'finish')
           }
         }
+        stage('Playwright Typecheck') {
+          yarnBuilder.yarn('typecheck:playwright:all')
+        }
         try {
           recordPlaywrightLoadEvent('Yarn cache clean', 'start')
           yarnBuilder.yarn('cache clean')

@@ -33,6 +33,8 @@ Functional testing in this repo is the Playwright-based test set under `playwrig
 
 Default target environment is AAT (`https://manage-case.aat.platform.hmcts.net`). Set `TEST_URL=http://localhost:3000` for local EXUI runs.
 
+Run `yarn typecheck:playwright:all` to compile every tracked Playwright TypeScript file and the root Playwright configs. The gate fails if a file is omitted from compilation, a new diagnostic appears or a resolved diagnostic remains in the baseline. The 65 existing Playwright diagnostics are recorded in `scripts/playwright-type-errors.baseline.json`; the command reports their count rather than presenting the suite as type clean. Remove a baseline entry in the same change that fixes its error. Do not add new entries to make CI green. Root application diagnostics are outside this Playwright gate.
+
 Do not use `yarn test:functional` for this Playwright suite; it is currently a compatibility placeholder that prints `Skipping functional tests`. Use the suite commands in this README instead.
 
 ### Local Prerequisites

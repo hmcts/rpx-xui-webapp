@@ -102,7 +102,8 @@
     "cve:check": "bash -c 'if diff <(yarn npm audit --recursive --environment production --json) yarn-audit-known-issues > /dev/null; then true; else exit 1; fi'",
     "test:coverage:ng:prepush": "ng test --code-coverage --source-map",
     "prepush": "bash ./bin/prepush.sh",
-    "lint:playwright:locators": "node ./scripts/check-playwright-locators.mjs"
+    "lint:playwright:locators": "node ./scripts/check-playwright-locators.mjs",
+    "typecheck:playwright:all": "node scripts/check-playwright-types.cjs"
   },
   "private": true,
   "dependencies": {

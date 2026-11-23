@@ -20,7 +20,8 @@
   "ts-node": {
     "transpileOnly": true,
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "commonjs",
+      "moduleResolution": "node"
     }
   }
 }

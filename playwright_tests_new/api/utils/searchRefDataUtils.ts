@@ -1,14 +1,7 @@
 import { expect } from '@playwright/test';
 
 import { expectRoleAssignmentShape } from './assertions';
-import { expectContract, SearchSchemas } from './contractValidation';
 import type { RoleAssignmentContainer } from './types';
-
-export function assertGlobalSearchServices(status: number, data: unknown): void {
-  if (status === 200) {
-    expectContract(data, SearchSchemas.GlobalSearchServices);
-  }
-}
 
 export function assertGlobalSearchResults(status: number, data: unknown): void {
   if (status === 200 && data) {

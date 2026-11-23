@@ -3,7 +3,6 @@ import type { ApiClient, ApiRequestOptions } from '@hmcts/playwright-common';
 
 import { expectStatus, withRetry, withXsrf } from './apiTestUtils';
 import { expectTaskList } from './assertions';
-import { expectContract, WorkAllocationSchemas } from './contractValidation';
 import type { Task, TaskListResponse, UserDetailsResponse } from './types';
 import { buildTaskSearchRequest, type SeededTaskResult } from './work-allocation';
 import type { ApiUserRole } from './auth';
@@ -26,23 +25,6 @@ export function assertLocationsListResponse(status: number, data: unknown): void
   }
 }
 
-export function assertTaskNamesResponse(status: number, data: unknown): void {
-  if (status !== 200) {
-    return;
-  }
-  expect(Array.isArray(data)).toBe(true);
-  for (const taskType of data as unknown[]) {
-    expect(taskType).toEqual(expect.objectContaining({ id: expect.any(String), name: expect.any(String) }));
-  }
-}
-
-export function assertTypesOfWorkResponse(status: number, data: unknown): void {
-  if (status !== 200) {
-    return;
-  }
-  expectContract(data, WorkAllocationSchemas.TypesOfWork);
-}
-
 export function assertTaskSearchResponse(status: number, data: unknown): void {
   if (status === 200) {
     expectTaskList(data);
@@ -62,20 +44,6 @@ export function assertAllWorkResponse(status: number, data: unknown): void {
     return;
   }
   expectTaskList(data);
-}
-
-export function assertMyWorkDashboardResponse(status: number, data: unknown): void {
-  if (status === 200) {
-    expect(data).toEqual(expect.objectContaining({ cases: expect.any(Array) }));
-  }
-}
-
-export function assertMyWorkTotalsResponse(status: number, data: unknown): void {
-  if (status !== 200) {
-    return;
-  }
-  expect(data).toEqual(expect.objectContaining({ total_records: expect.any(Number), cases: expect.any(Array) }));
-  expect((data as { total_records: number }).total_records).toBeGreaterThanOrEqual(0);
 }
 
 export function assertCaseworkerListResponse(status: number, data: unknown): void {

@@ -2,19 +2,25 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import ts from 'typescript';
+import { expect } from '@playwright/test';
 import * as apiTestUtils from './apiTestUtils';
 import * as workAllocationUtils from './workAllocationUtils';
 
 type ApiClient = { get: (url: string, options: unknown) => Promise<{ status: number; data: unknown }> };
 type CaseCallback = (fixtures: { apiClient: ApiClient }) => Promise<void>;
+type DashboardCallback = (fixtures: {
+  apiClientFor: (
+    role: string
+  ) => Promise<{ post: (url: string, options: unknown) => Promise<{ status: number; data: unknown }> }>;
+}) => Promise<void>;
 
-/** Execute the registered catalogue test with a fake client but its real status and response checks. */
-export function loadTaskNamesTest(): CaseCallback {
-  let callback: CaseCallback | undefined;
-  const register = (name: string, optionsOrCallback: unknown, optionalCallback?: unknown) => {
+/** Execute a registered API test with fake transport and real assertions. */
+function loadRegisteredTest(name: string): unknown {
+  let callback: unknown;
+  const register = (registeredName: string, optionsOrCallback: unknown, optionalCallback?: unknown) => {
     const handler = optionalCallback ?? optionsOrCallback;
-    if (name === 'GET /workallocation/taskNames returns catalogue of available task type names') {
-      callback = handler as CaseCallback;
+    if (registeredName === name) {
+      callback = handler;
     }
   };
   const fakeTest = Object.assign(register, {
@@ -29,12 +35,30 @@ export function loadTaskNamesTest(): CaseCallback {
   vm.runInNewContext(outputText, {
     exports: {},
     require: (specifier: string) => {
-      if (specifier === './fixtures') return { test: fakeTest };
-      if (specifier === './utils/apiTestUtils') return apiTestUtils;
+      if (specifier === './fixtures') return { test: fakeTest, expect };
+      if (specifier === './utils/apiTestUtils')
+        return {
+          ...apiTestUtils,
+          withXsrf: async (_role: string, run: (headers: Record<string, string>) => Promise<unknown>) => run({}),
+        };
       if (specifier === './utils/workAllocationUtils') return workAllocationUtils;
+      if (specifier === './utils/work-allocation') return { buildCaseSearchRequest: () => ({}) };
       return {};
     },
+    Array,
+    Number,
+    Object,
+    Promise,
+    String,
   });
-  if (!callback) throw new Error('Task names test was not registered');
+  if (!callback) throw new Error(`${name} was not registered`);
   return callback;
+}
+
+export function loadTaskNamesTest(): CaseCallback {
+  return loadRegisteredTest('GET /workallocation/taskNames returns catalogue of available task type names') as CaseCallback;
+}
+
+export function loadMyWorkTest(endpoint: string): DashboardCallback {
+  return loadRegisteredTest(`${endpoint} returns data or guarded status`) as DashboardCallback;
 }

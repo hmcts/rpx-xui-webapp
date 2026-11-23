@@ -1,7 +1,21 @@
 import { expect, test } from '@playwright/test';
-import { loadTaskNamesTest } from '../utils/workAllocationSpecProbe';
+import { loadMyWorkTest, loadTaskNamesTest } from '../utils/workAllocationSpecProbe';
 
 test.describe('Authenticated work allocation status reporting', { tag: '@svc-internal' }, () => {
+  test('the my-work tests reject malformed HTTP 200 dashboards and totals', async () => {
+    for (const endpoint of ['workallocation/my-work/cases', 'workallocation/my-work/myaccess']) {
+      const dashboardTest = loadMyWorkTest(endpoint);
+      const fakeClient = (data: unknown) => ({
+        apiClientFor: async () => ({ post: async () => ({ status: 200, data }) }),
+      });
+      await expect(dashboardTest(fakeClient({ other: [] }))).rejects.toThrow();
+      if (endpoint.endsWith('/cases')) {
+        await expect(dashboardTest(fakeClient({ cases: [], total_records: 'bad' }))).rejects.toThrow();
+      }
+      await dashboardTest(fakeClient({ cases: [], total_records: 0 }));
+    }
+  });
+
   test('the task names test rejects malformed HTTP 200 catalogues', async () => {
     const taskNamesTest = loadTaskNamesTest();
     for (const data of [{ task_names: [] }, ['task'], [{ id: 'type-1' }]]) {

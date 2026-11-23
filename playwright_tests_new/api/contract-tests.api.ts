@@ -28,7 +28,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     const response = await apiClient.get(endpoint, { throwOnError: false });
 
     // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
 
     // And: Response structure matches LocationList contract when successful
     if (response.status === 200 && Array.isArray(response.data)) {
@@ -95,7 +95,7 @@ test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search',
     const response = await apiClient.get('api/globalSearch/services', { throwOnError: false });
 
     // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
 
     // And: Response structure matches GlobalSearchServices contract when successful
     if (response.status === 200 && Array.isArray(response.data)) {
@@ -118,7 +118,7 @@ test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search',
     const response = await apiClient.get('api/wa-supported-jurisdiction', { throwOnError: false });
 
     // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
 
     // And: Response is defined when successful (may be array or string)
     if (response.status === 200) {
@@ -133,7 +133,7 @@ test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search',
     const response = await apiClient.get('api/staff-supported-jurisdiction', { throwOnError: false });
 
     // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
 
     // And: Response is defined when successful (may be array or string)
     if (response.status === 200) {

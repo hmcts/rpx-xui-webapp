@@ -43,7 +43,7 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
     assertGlobalSearchServices(response.status, response.data);
   });
 
@@ -69,7 +69,11 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
         ),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+    // Proxied to the CCD data store; gateway errors/timeouts (502/504, timeouts mapped to 504) are reported as degraded.
+    expectStatus(response.status, [200, 400, 401, 403, 404, 500], {
+      route: 'POST data/internal/searchCases',
+      tolerateDependencyUnavailable: [502, 504],
+    });
     assertSearchCasesResponse(response.status, response.data);
   });
 });
@@ -77,13 +81,13 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
 test.describe('Ref data and supported jurisdictions', { tag: '@svc-ref-data' }, () => {
   test('wa-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/wa-supported-jurisdiction', { throwOnError: false });
-    expectStatus(res.status, StatusSets.guardedBasic);
+    expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
     assertSupportedJurisdictions(res.status, res.data);
   });
 
   test('staff-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/staff-supported-jurisdiction', { throwOnError: false });
-    expectStatus(res.status, StatusSets.guardedBasic);
+    expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
     assertSupportedJurisdictions(res.status, res.data);
   });
 
@@ -93,7 +97,7 @@ test.describe('Ref data and supported jurisdictions', { tag: '@svc-ref-data' }, 
         headers,
         throwOnError: false,
       });
-      expectStatus(res.status, StatusSets.guardedBasic);
+      expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
       assertLocationsResponse(res.status, res.data);
     });
   });

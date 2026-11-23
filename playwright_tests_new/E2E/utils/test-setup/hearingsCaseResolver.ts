@@ -2,9 +2,11 @@ import type { Page } from '@playwright/test';
 import { acceptAccessCookiesIfPresent, ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
 import { caseDetailsUrl } from '../../../integration/helpers/hearingJourneySetup.helper';
 import { EXUI_TIMEOUTS } from '../../page-objects/pages/exui/exui-timeouts';
+import { FrameworkError } from '../frameworkError';
 import { resolveRuntimeUserCredentialsForIdentifier } from '../runtimeUserCredentials';
 import type { HearingManagerUserIdentifier } from '../../../integration/helpers/hearingManagerUserPool.helper';
 import { createPrlHearingsCaseIfEnabled } from './prlHearingsCaseSetup';
+import type { PrlHearingsCaseSetupResult } from './prlHearingsCaseSetup';
 
 type HearingCaseRoute = {
   jurisdictionId: string;
@@ -24,13 +26,33 @@ type UserDetailsResponse = {
     jurisdiction?: string;
     roleName?: string;
     primaryLocation?: string;
+    region?: string;
     substantive?: string;
   }>;
 };
 
+type CaseViewAccessResponse = {
+  metadataFields?: Array<{ id?: string; value?: unknown }>;
+};
+
+export type CaseViewAccess = {
+  standard: boolean;
+  accessGranted?: string;
+  accessProcess?: string;
+};
+
+type CaseAccessProbe = { status: number; body?: CaseViewAccessResponse };
+
 type CaseDetailsProbeStatus = 'usable' | 'challenged-access' | 'unusable';
 
 const CASE_PROBE_TIMEOUT_MS = EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE;
+export const PRL_HEARINGS_CASE_ACCESS_DENIED_CODE = 'PRL_HEARINGS_CASE_ACCESS_DENIED';
+const CASE_VIEW_ACCEPT_HEADER = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json;charset=UTF-8';
+const ACCESS_PROCESS_FIELD_ID = '[ACCESS_PROCESS]';
+const ACCESS_GRANTED_FIELD_ID = '[ACCESS_GRANTED]';
+const BASIC_ACCESS_GRANT = 'BASIC';
+const NON_STANDARD_ACCESS_PROCESSES = ['CHALLENGED', 'SPECIFIC'];
+const CASE_ACCESS_DENIED_STATUSES = new Set([403, 404]);
 const REQUIRED_PRL_COURT_ADMIN_ROLE = 'caseworker-privatelaw-courtadmin';
 const REQUIRED_PRL_LOCATION_ROLES = [
   'hearing-centre-admin',
@@ -85,13 +107,106 @@ function resolveHearingManagerPrimaryLocation(userDetails: UserDetailsResponse, 
   return hearingManagerLocations[0];
 }
 
-async function getHearingManagerPrimaryLocation(page: Page, jurisdictionId: string): Promise<string> {
+function listPrlAccessRoleRegions(userDetails: UserDetailsResponse, jurisdictionId: string): string[] {
+  return Array.from(
+    new Set(
+      (userDetails.roleAssignmentInfo ?? [])
+        .filter(
+          (assignment) =>
+            assignment.jurisdiction === jurisdictionId &&
+            REQUIRED_PRL_LOCATION_ROLES.includes(assignment.roleName as (typeof REQUIRED_PRL_LOCATION_ROLES)[number]) &&
+            assignment.substantive === 'Y'
+        )
+        .map((assignment) => assignment.region?.trim())
+        .filter((region): region is string => Boolean(region))
+    )
+  );
+}
+
+async function readSignedInUserDetails(page: Page): Promise<UserDetailsResponse> {
   const response = await page.request.get('/api/user/details?refreshRoleAssignments=true', { failOnStatusCode: false });
   if (response.status() !== 200) {
     throw new Error(`PRL hearings setup could not read the signed-in user details (HTTP ${response.status()}).`);
   }
+  return (await response.json()) as UserDetailsResponse;
+}
 
-  return resolveHearingManagerPrimaryLocation((await response.json()) as UserDetailsResponse, jurisdictionId);
+async function getHearingManagerPrimaryLocation(page: Page, jurisdictionId: string): Promise<string> {
+  return resolveHearingManagerPrimaryLocation(await readSignedInUserDetails(page), jurisdictionId);
+}
+
+/** Mirrors ccd-case-ui-toolkit CaseViewerComponent.hasStandardAccess(): a BASIC grant with CHALLENGED/SPECIFIC process shows an access-request screen. */
+function resolveCaseViewAccess(caseView: CaseViewAccessResponse): CaseViewAccess {
+  const fields = Array.isArray(caseView.metadataFields) ? caseView.metadataFields : [];
+  const readField = (id: string) => {
+    const field = fields.find((entry) => entry.id === id);
+    return field?.value === undefined || field.value === null ? undefined : String(field.value);
+  };
+  const accessGranted = readField(ACCESS_GRANTED_FIELD_ID);
+  const accessProcess = readField(ACCESS_PROCESS_FIELD_ID);
+  const hasNonBasicGrant = accessGranted !== undefined && accessGranted !== BASIC_ACCESS_GRANT;
+  const standard = hasNonBasicGrant || !NON_STANDARD_ACCESS_PROCESSES.includes(accessProcess ?? '');
+  return { standard, accessGranted, accessProcess };
+}
+
+type CaseAccessContext = {
+  userLabel: string;
+  createdCase: PrlHearingsCaseSetupResult;
+  userAccessRegions: string[];
+};
+
+function describeCaseAccessGap(context: CaseAccessContext): string {
+  const location = context.createdCase.caseManagementLocation;
+  const caseRegion = location?.region ?? 'unknown';
+  const userRegions = context.userAccessRegions.length > 0 ? context.userAccessRegions.join(', ') : 'none';
+  return (
+    `case baseLocation ${location?.baseLocation ?? 'unknown'}, case region ${caseRegion}; ` +
+    `user substantive PRL access-role regions: ${userRegions}`
+  );
+}
+
+/**
+ * Fails fast, before any UI navigation, when the signed-in session cannot read the created case with standard access.
+ * Uses the same CCD internal case view (through the EXUI proxy) that decides whether the UI renders the challenged-access screen.
+ */
+function assertStandardCaseAccess(probe: CaseAccessProbe, context: CaseAccessContext): CaseViewAccess {
+  const { caseReference } = context.createdCase;
+  if (CASE_ACCESS_DENIED_STATUSES.has(probe.status)) {
+    throw new FrameworkError(
+      PRL_HEARINGS_CASE_ACCESS_DENIED_CODE,
+      'setup',
+      `PRL hearings setup user ${context.userLabel} cannot read created case ${caseReference} ` +
+        `(CCD case view HTTP ${probe.status}; ${describeCaseAccessGap(context)}). ` +
+        `Fix the user's PRIVATELAW role assignments; this is not a transient failure.`
+    );
+  }
+  if (probe.status !== 200 || !probe.body) {
+    throw new Error(
+      `PRL hearings setup could not verify access to created case ${caseReference} for ${context.userLabel} ` +
+        `(CCD case view HTTP ${probe.status}).`
+    );
+  }
+  const access = resolveCaseViewAccess(probe.body);
+  if (!access.standard) {
+    throw new FrameworkError(
+      PRL_HEARINGS_CASE_ACCESS_DENIED_CODE,
+      'setup',
+      `PRL hearings setup user ${context.userLabel} has only ${access.accessGranted ?? 'no'} access to created case ` +
+        `${caseReference} (access process ${access.accessProcess ?? 'missing'}; ${describeCaseAccessGap(context)}), ` +
+        `so EXUI would open the challenged-access screen. Fix the user's substantive PRIVATELAW org role ` +
+        `location/region to cover the case; this is not a transient failure.`
+    );
+  }
+  return access;
+}
+
+async function probeCaseAccess(page: Page, caseReference: string): Promise<CaseAccessProbe> {
+  const response = await page.request.get(`/data/internal/cases/${caseReference}`, {
+    headers: { experimental: 'true', Accept: CASE_VIEW_ACCEPT_HEADER },
+    failOnStatusCode: false,
+  });
+  const status = response.status();
+  return status === 200 ? { status, body: (await response.json()) as CaseViewAccessResponse } : { status };
 }
 
 async function getCaseDetailsProbeStatus(page: Page): Promise<CaseDetailsProbeStatus> {
@@ -133,14 +248,26 @@ async function openCaseDetailsProbe(page: Page, route: HearingCaseRoute, caseRef
   }
 }
 
-export async function openEligibleHearingsCase(page: Page, route: HearingCaseRoute, setupUserCredentials?: SetupUserCredentials) {
-  const primaryLocation = await getHearingManagerPrimaryLocation(page, route.jurisdictionId);
+export async function openEligibleHearingsCase(
+  page: Page,
+  route: HearingCaseRoute,
+  setupUserCredentials?: SetupUserCredentials,
+  userLabel = 'signed-in hearing manager'
+) {
+  const userDetails = await readSignedInUserDetails(page);
+  const primaryLocation = resolveHearingManagerPrimaryLocation(userDetails, route.jurisdictionId);
   const createdCase = await createPrlHearingsCaseIfEnabled(primaryLocation, setupUserCredentials);
   if (!createdCase) {
     throw new Error(
       'PRL hearings setup must be enabled so the journey can create a fresh case for the selected hearing manager.'
     );
   }
+
+  assertStandardCaseAccess(await probeCaseAccess(page, createdCase.caseReference), {
+    userLabel,
+    createdCase,
+    userAccessRegions: listPrlAccessRoleRegions(userDetails, route.jurisdictionId),
+  });
 
   await openCaseDetailsProbe(page, route, createdCase.caseReference);
   const probeStatus = await getCaseDetailsProbeStatus(page);
@@ -172,13 +299,21 @@ export async function openEligibleHearingsCaseForUser(
     throw new Error(`PRL hearings setup could not resolve runtime credentials for ${userIdentifier}.`);
   }
 
-  await openEligibleHearingsCase(page, route, {
-    username: setupCredentials.email,
-    password: setupCredentials.password,
-  });
+  await openEligibleHearingsCase(
+    page,
+    route,
+    {
+      username: setupCredentials.email,
+      password: setupCredentials.password,
+    },
+    userIdentifier
+  );
 }
 
 export const __test__ = {
   resolveHearingManagerPrimaryLocation,
   getHearingManagerPrimaryLocation,
+  resolveCaseViewAccess,
+  assertStandardCaseAccess,
+  listPrlAccessRoleRegions,
 };

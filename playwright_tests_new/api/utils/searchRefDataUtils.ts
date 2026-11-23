@@ -1,16 +1,12 @@
 import { expect } from '@playwright/test';
 
 import { expectRoleAssignmentShape } from './assertions';
+import { expectContract, SearchSchemas } from './contractValidation';
 import type { RoleAssignmentContainer } from './types';
 
 export function assertGlobalSearchServices(status: number, data: unknown): void {
-  if (status === 200 && Array.isArray(data) && data.length > 0) {
-    expect(data[0]).toEqual(
-      expect.objectContaining({
-        serviceId: expect.any(String),
-        serviceName: expect.any(String),
-      })
-    );
+  if (status === 200) {
+    expectContract(data, SearchSchemas.GlobalSearchServices);
   }
 }
 

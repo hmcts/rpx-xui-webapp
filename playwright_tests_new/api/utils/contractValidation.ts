@@ -250,6 +250,18 @@ export function expectContract(data: unknown, schema: Schema, options: ContractT
  * Pre-defined schemas for common Work Allocation API responses
  */
 export const WorkAllocationSchemas = {
+  TypesOfWork: {
+    type: 'array' as const,
+    items: {
+      type: 'object' as const,
+      required: ['key', 'label'],
+      properties: {
+        key: { type: 'string' as const },
+        label: { type: 'string' as const },
+      },
+    },
+  },
+
   Location: {
     type: 'object' as const,
     required: ['id', 'locationName'],

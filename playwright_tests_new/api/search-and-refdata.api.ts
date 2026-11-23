@@ -330,6 +330,8 @@ test.describe('Search/refdata helper coverage', { tag: ['@svc-global-search', '@
     assertGlobalSearchServices(200, [{ serviceId: 'svc', serviceName: 'Service' }]);
     assertGlobalSearchServices(200, []);
     assertGlobalSearchServices(401, []);
+    expect(() => assertGlobalSearchServices(200, { unexpected: 'shape' })).toThrow();
+    expect(() => assertGlobalSearchServices(200, [{ serviceId: 'svc' }])).toThrow();
   });
 
   test('assertGlobalSearchResults covers populated and empty results', () => {

@@ -16,7 +16,6 @@ import {
   assertTaskNamesResponse,
   assertTaskSearchResponse,
   assertTypesOfWorkResponse,
-  extractMyWorkCases,
   fetchFirstTask,
   guardedTaskSearch,
   hasSeededEnvTasks,
@@ -26,7 +25,6 @@ import {
   resolveSeededTaskIds,
   resolveUserId,
   selectTaskId,
-  toArray,
   toLocationList,
 } from './utils/workAllocationUtils';
 
@@ -76,7 +74,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     // Then: API returns success or guarded downstream status
     expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
 
-    // And: Response contains valid task names array
+    // And: Response contains task type objects returned by the XUI route
     assertTaskNamesResponse(response.status, response.data);
   });
 
@@ -311,17 +309,6 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
 });
 
 test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }, () => {
-  test('toArray utility normalizes API response formats (arrays, task_names, taskNames, typesOfWork) to consistent array output', () => {
-    // Given: Various API response payload formats from work allocation endpoints
-    // When: Normalizing different response shapes to arrays
-    // Then: toArray correctly extracts arrays from all known payload structures
-    expect(toArray(['a'])).toEqual(['a']);
-    expect(toArray({ task_names: ['b'] })).toEqual(['b']);
-    expect(toArray({ taskNames: ['c'] })).toEqual(['c']);
-    expect(toArray({ typesOfWork: ['d'] })).toEqual(['d']);
-    expect(toArray({})).toEqual([]);
-  });
-
   test('helper selectors cover ids, locations, and seeded tasks', () => {
     expect(resolveUserId({ userInfo: { id: 'id-1' } } as UserDetailsResponse)).toBe('id-1');
     expect(resolveUserId({ userInfo: { uid: 'uid-1' } } as UserDetailsResponse)).toBe('uid-1');
@@ -365,10 +352,6 @@ test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }
     expect(isActionSuccessStatus(200)).toBe(true);
     expect(isActionSuccessStatus(204)).toBe(true);
     expect(isActionSuccessStatus(400)).toBe(false);
-
-    expect(extractMyWorkCases([{ id: 'case-1' }])).toHaveLength(1);
-    expect(extractMyWorkCases({ cases: [{ id: 'case-2' }] })).toHaveLength(1);
-    expect(extractMyWorkCases({})).toEqual([]);
   });
 
   test('fetchFirstTask returns first task when available', async () => {
@@ -421,18 +404,21 @@ test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }
     assertLocationsListResponse(401, undefined);
   });
 
-  test('assertTaskNamesResponse covers array and empty data', () => {
-    assertTaskNamesResponse(200, ['task']);
-    assertTaskNamesResponse(200, { task_names: ['task'] });
+  test('assertTaskNamesResponse rejects malformed successful catalogues', () => {
+    assertTaskNamesResponse(200, [{ id: 'type-1', name: 'Task type 1' }]);
     assertTaskNamesResponse(200, []);
     assertTaskNamesResponse(500, undefined);
+    expect(() => assertTaskNamesResponse(200, { task_names: [] })).toThrow();
+    expect(() => assertTaskNamesResponse(200, ['task'])).toThrow();
+    expect(() => assertTaskNamesResponse(200, [{ id: 'type-1' }])).toThrow();
   });
 
-  test('assertTypesOfWorkResponse covers object shapes', () => {
-    assertTypesOfWorkResponse(200, [{ id: 'type-1' }]);
-    assertTypesOfWorkResponse(200, { typesOfWork: [{ id: 'type-2' }] });
+  test('assertTypesOfWorkResponse rejects malformed success payloads', () => {
+    assertTypesOfWorkResponse(200, [{ key: 'type-1', label: 'Type 1' }]);
     assertTypesOfWorkResponse(200, []);
     assertTypesOfWorkResponse(500, undefined);
+    expect(() => assertTypesOfWorkResponse(200, { typesOfWork: [] })).toThrow();
+    expect(() => assertTypesOfWorkResponse(200, [{ id: 'type-1' }])).toThrow();
   });
 
   test('assertTaskSearchResponse covers success and failure', () => {
@@ -450,19 +436,20 @@ test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }
     assertAllWorkResponse(500, undefined);
   });
 
-  test('assertMyWorkDashboardResponse covers case arrays', () => {
+  test('assertMyWorkDashboardResponse requires a cases array on success', () => {
     assertMyWorkDashboardResponse(200, { cases: [{ id: 'case-1' }] });
-    assertMyWorkDashboardResponse(200, []);
-    assertMyWorkDashboardResponse(200, { other: [] });
+    assertMyWorkDashboardResponse(200, { cases: [] });
     assertMyWorkDashboardResponse(401, undefined);
+    expect(() => assertMyWorkDashboardResponse(200, { other: [] })).toThrow();
+    expect(() => assertMyWorkDashboardResponse(200, [])).toThrow();
   });
 
-  test('assertMyWorkTotalsResponse covers totals and cases', () => {
+  test('assertMyWorkTotalsResponse rejects malformed success totals and cases', () => {
     assertMyWorkTotalsResponse(200, { total_records: 1, cases: [] });
-    assertMyWorkTotalsResponse(200, { cases: [{ id: 'case-1' }] });
-    assertMyWorkTotalsResponse(200, { total_records: 'nope', cases: null });
-    assertMyWorkTotalsResponse(200, undefined);
+    assertMyWorkTotalsResponse(200, { total_records: 1, cases: [{ id: 'case-1' }] });
     assertMyWorkTotalsResponse(401, undefined);
+    expect(() => assertMyWorkTotalsResponse(200, { total_records: 'nope', cases: null })).toThrow();
+    expect(() => assertMyWorkTotalsResponse(200, undefined)).toThrow();
   });
 
   test('assertCaseworkerListResponse covers list and empty payloads', () => {

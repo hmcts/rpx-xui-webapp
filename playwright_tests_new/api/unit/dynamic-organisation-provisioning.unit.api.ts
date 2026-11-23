@@ -44,6 +44,8 @@ type DynamicOrganisationEnvSnapshot = {
   PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS?: string;
   PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS?: string;
   PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS?: string;
+  PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS?: string;
+  PW_DYNAMIC_ORGANISATION_CACHE_DIR?: string;
 };
 
 function response(status: number, body: unknown) {
@@ -81,6 +83,8 @@ function snapshotDynamicOrganisationEnv(): DynamicOrganisationEnvSnapshot {
     PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS: process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS,
     PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS: process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS,
     PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS: process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS,
+    PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS: process.env.PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS,
+    PW_DYNAMIC_ORGANISATION_CACHE_DIR: process.env.PW_DYNAMIC_ORGANISATION_CACHE_DIR,
   };
 }
 
@@ -663,9 +667,9 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     }
   });
 
-  test('resolver directory lock retires stale lock directories before creating a dynamic organisation', async () => {
+  test('resolver directory lock never takes over an old lock without proving its owner stopped', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-stale-'));
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-old-'));
     const lockPath = path.join(tempDir, 'EXUI-4767-run-1.json.lock');
     await fs.mkdir(lockPath);
     const staleTime = new Date(Date.now() - 10_000);
@@ -675,16 +679,10 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS = '1';
 
     try {
-      const result = await organisationResolverTest.withDirectoryLock(lockPath, async () => {
-        const activeLock = await fs.stat(lockPath);
-        expect(activeLock.isDirectory()).toBe(true);
-        return 'created-after-stale-lock';
-      });
-
-      expect(result).toBe('created-after-stale-lock');
-      await expect(fs.stat(lockPath)).rejects.toMatchObject({ code: 'ENOENT' });
-      const remainingEntries = await fs.readdir(tempDir);
-      expect(remainingEntries).toEqual([]);
+      await expect(organisationResolverTest.withDirectoryLock(lockPath, async () => 'unsafe takeover')).rejects.toThrow(
+        /Timed out after 100ms waiting for dynamic organisation lock/
+      );
+      expect((await fs.stat(lockPath)).isDirectory()).toBe(true);
     } finally {
       restoreDynamicOrganisationEnv(originalEnv);
       await fs.rm(tempDir, { recursive: true, force: true });
@@ -698,14 +696,13 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     await fs.mkdir(lockPath);
     process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '5';
     process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
-    process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS = String(15 * 60_000);
 
     try {
       await expect(
         organisationResolverTest.withDirectoryLock(lockPath, async () => {
           throw new Error('fresh lock should not be acquired');
         })
-      ).rejects.toThrow(/Existing lock was not stale; stale threshold is 900000ms/);
+      ).rejects.toThrow(/verify ownership before cleanup/);
 
       const freshLock = await fs.stat(lockPath);
       expect(freshLock.isDirectory()).toBe(true);
@@ -715,14 +712,11 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     }
   });
 
-  test('resolver directory lock serialises contenders after stale lock retirement', async () => {
+  test('resolver directory lock serialises contenders after the former stale threshold', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-serial-'));
     const lockPath = path.join(tempDir, 'EXUI-4767-run-1.json.lock');
-    await fs.mkdir(lockPath);
-    const staleTime = new Date(Date.now() - 10_000);
-    await fs.utimes(lockPath, staleTime, staleTime);
-    process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '1000';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '5000';
     process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
     process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS = '1';
 
@@ -750,7 +744,8 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
         return 'second-result';
       });
 
-      await expect.poll(() => entered, { timeout: 100 }).toEqual(['first']);
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      expect(entered).toEqual(['first']);
       releaseFirst();
 
       await expect(Promise.all([first, second])).resolves.toEqual(['first-result', 'second-result']);
@@ -761,6 +756,215 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
       restoreDynamicOrganisationEnv(originalEnv);
       await fs.rm(tempDir, { recursive: true, force: true });
     }
+  });
+
+  test('resolver waiter outlasts a valid slow organisation owner', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    const realNow = Date.now;
+    const realMkdir = fs.mkdir;
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-budget-'));
+    const lockPath = path.join(tempDir, 'EXUI-4767-run-1.json.lock');
+    delete process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS;
+    process.env.PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS = '90000';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
+
+    let releaseOwner: () => void = () => undefined;
+    let signalOwner: () => void = () => undefined;
+    const ownerEntered = new Promise<void>((resolve) => {
+      signalOwner = resolve;
+    });
+    const ownerHeld = new Promise<void>((resolve) => {
+      releaseOwner = resolve;
+    });
+    let signalConflict: () => void = () => undefined;
+    const conflictObserved = new Promise<void>((resolve) => {
+      signalConflict = resolve;
+    });
+    const owner = organisationResolverTest.withDirectoryLock(lockPath, async () => {
+      signalOwner();
+      await ownerHeld;
+      return 'owner-success';
+    });
+    let waiter: Promise<{ value?: string; error?: string }> | undefined;
+
+    try {
+      await ownerEntered;
+      fs.mkdir = (async (...args: Parameters<typeof fs.mkdir>) => {
+        try {
+          return await realMkdir(...args);
+        } catch (error) {
+          if (args[0] === lockPath && (error as NodeJS.ErrnoException).code === 'EEXIST') signalConflict();
+          throw error;
+        }
+      }) as typeof fs.mkdir;
+      const startedAt = realNow();
+      let clockReads = 0;
+      Date.now = () => (++clockReads === 1 ? startedAt : startedAt + 90_001);
+      waiter = organisationResolverTest
+        .withDirectoryLock(lockPath, async () => 'reused-after-owner')
+        .then(
+          (value) => ({ value }),
+          (error: Error) => ({ error: error.message })
+        );
+      await conflictObserved;
+      releaseOwner();
+      expect(await owner).toBe('owner-success');
+      expect(await waiter).toEqual({ value: 'reused-after-owner' });
+    } finally {
+      Date.now = realNow;
+      fs.mkdir = realMkdir;
+      releaseOwner();
+      await Promise.allSettled(waiter ? [owner, waiter] : [owner]);
+      restoreDynamicOrganisationEnv(originalEnv);
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('resolver directory lock releases ownership when the action fails', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-error-'));
+    const lockPath = path.join(tempDir, 'EXUI-4767-run-1.json.lock');
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '100';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
+
+    try {
+      await expect(
+        organisationResolverTest.withDirectoryLock(lockPath, async () => {
+          throw new Error('provisioning failed');
+        })
+      ).rejects.toThrow('provisioning failed');
+      await expect(organisationResolverTest.withDirectoryLock(lockPath, async () => 'reacquired')).resolves.toBe('reacquired');
+      await expect(fs.stat(lockPath)).rejects.toMatchObject({ code: 'ENOENT' });
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('resolver rechecks the cache after a competing worker releases the lock', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-cache-'));
+    process.env.PW_DYNAMIC_ORGANISATION_RUN_ID = 'EXUI-4767-concurrent';
+    process.env.PW_DYNAMIC_ORGANISATION_CACHE_DIR = tempDir;
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '5000';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
+
+    const cache = new Map<string, unknown>();
+    let createCount = 0;
+    let releaseCreate: () => void = () => undefined;
+    let signalCreate: () => void = () => undefined;
+    const createHeld = new Promise<void>((resolve) => {
+      releaseCreate = resolve;
+    });
+    const createEntered = new Promise<void>((resolve) => {
+      signalCreate = resolve;
+    });
+    const deps = {
+      ensureSuperUserAccount: async () => undefined,
+      createApprovedOrganisation: async () => {
+        createCount += 1;
+        signalCreate();
+        await createHeld;
+        return {
+          organisationId: 'ORG-CONCURRENT',
+          name: 'Concurrent organisation',
+          status: 'ACTIVE' as const,
+          superUser: {
+            email: 'concurrent@example.test',
+            firstName: 'Playwright',
+            lastName: 'Dynamic',
+          },
+          createStatus: 201,
+          approveStatus: 200,
+          pollAttempts: 1,
+          approvalStrategy: 'rd-professional-api' as const,
+          timings: [],
+          totalElapsedMs: 1,
+        };
+      },
+      readCache: async (cachePath: string) => cache.get(cachePath) as never,
+      writeCache: async (cachePath: string, entry: unknown) => {
+        cache.set(cachePath, entry);
+      },
+      withLock: organisationResolverTest.withDirectoryLock,
+      nowIso: () => '2026-06-15T00:00:00.000Z',
+    };
+    const args = { professionalUserUtils: {} as never };
+    const first = organisationResolverTest.resolveDynamicOrganisationId(args, deps);
+    let second: ReturnType<typeof organisationResolverTest.resolveDynamicOrganisationId> | undefined;
+
+    try {
+      await createEntered;
+      second = organisationResolverTest.resolveDynamicOrganisationId(args, deps);
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      expect(createCount).toBe(1);
+      releaseCreate();
+      const [created, reused] = await Promise.all([first, second]);
+      expect(created.reusedFromCache).toBe(false);
+      expect(reused.reusedFromCache).toBe(true);
+      expect(createCount).toBe(1);
+    } finally {
+      releaseCreate();
+      await Promise.allSettled(second ? [first, second] : [first]);
+      restoreDynamicOrganisationEnv(originalEnv);
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('resolver waits for the lock when an unlocked cache read sees partial JSON', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    process.env.PW_DYNAMIC_ORGANISATION_RUN_ID = 'EXUI-4767-partial-cache';
+    let reads = 0;
+    try {
+      const result = await organisationResolverTest.resolveDynamicOrganisationId(
+        { professionalUserUtils: {} as never },
+        {
+          createApprovedOrganisation: async () => {
+            throw new Error('must reuse the completed cache');
+          },
+          readCache: async () => {
+            reads += 1;
+            if (reads === 1) throw new SyntaxError('Unexpected end of JSON input');
+            return {
+              organisationId: 'ORG-CACHED',
+              name: 'Cached organisation',
+              status: 'ACTIVE' as const,
+              cacheKey: organisationResolverTest.resolveDynamicOrganisationCacheKey(),
+              createdAt: '2026-11-23T00:00:00.000Z',
+            };
+          },
+          writeCache: async () => undefined,
+          withLock: async <T>(_lockPath: string, action: () => Promise<T>) => action(),
+          nowIso: () => '2026-11-23T00:00:00.000Z',
+        }
+      );
+      expect(reads).toBe(2);
+      expect(result).toMatchObject({ organisationId: 'ORG-CACHED', reusedFromCache: true });
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+    }
+  });
+
+  test('resolver fails closed when the cache remains corrupt under the lock', async () => {
+    let reads = 0;
+    await expect(
+      organisationResolverTest.resolveDynamicOrganisationId(
+        { professionalUserUtils: {} as never },
+        {
+          createApprovedOrganisation: async () => {
+            throw new Error('must not provision over corrupt cache');
+          },
+          readCache: async () => {
+            reads += 1;
+            throw new SyntaxError('corrupt cache');
+          },
+          writeCache: async () => undefined,
+          withLock: async <T>(_lockPath: string, action: () => Promise<T>) => action(),
+          nowIso: () => '2026-11-23T00:00:00.000Z',
+        }
+      )
+    ).rejects.toThrow('corrupt cache');
+    expect(reads).toBe(2);
   });
 
   test('resolver ignores a cache entry that belongs to a different run id', async () => {

@@ -28,6 +28,8 @@ test(
       api: [
         spec('api', 'playwright_tests_new/api/contracts.api.ts'),
         spec('unit', 'playwright_tests_new/api/unit/helper.unit.api.ts'),
+        spec('internal', 'playwright_tests_new/api/coverage-helpers.api.ts', ['svc-internal']),
+        spec('contract', 'playwright_tests_new/api/contract-tests.api.ts', ['svc-work-allocation']),
       ],
       integration: [spec('active', 'playwright_tests_new/integration/test/active.spec.ts')],
       integrationAll: [
@@ -42,7 +44,7 @@ test(
     });
 
     expect(summary).toMatchObject({
-      api: { serviceOrContract: 1, supportUnit: 1 },
+      api: { serviceOrContract: 2, supportUnit: 2 },
       integration: { runnable: 1, discovered: 2, defaultExcluded: 1 },
       e2e: { runnable: 1 },
       accessibility: { advisoryDiscovered: 1 },

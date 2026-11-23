@@ -40,14 +40,15 @@ function revisionMetadata(git = execFileSync) {
 function summarize({ api, integration, integrationAll, e2e, e2eA11y }) {
   const includedIntegration = new Set(integration.map(key));
   const includedE2e = new Set(e2e.map(key));
+  const supportUnit = api.filter((spec) => spec.file.includes('/api/unit/') || spec.tags?.includes('svc-internal')).length;
   const excluded = integrationAll
     .filter((spec) => !includedIntegration.has(key(spec)))
     .map(({ file, line, title, tags }) => ({ file, line, title, tags }))
     .sort((left, right) => key(left).localeCompare(key(right)));
   return {
     api: {
-      serviceOrContract: api.filter((spec) => !spec.file.includes('/api/unit/')).length,
-      supportUnit: api.filter((spec) => spec.file.includes('/api/unit/')).length,
+      serviceOrContract: api.length - supportUnit,
+      supportUnit,
     },
     integration: {
       runnable: integration.length,

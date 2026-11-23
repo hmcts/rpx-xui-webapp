@@ -33,6 +33,12 @@ Functional testing in this repo is the Playwright-based test set under `playwrig
 
 Default target environment is AAT (`https://manage-case.aat.platform.hmcts.net`). Set `TEST_URL=http://localhost:3000` for local EXUI runs.
 
+### Coverage and capacity evidence
+
+Run `mkdir -p functional-output/tests && yarn test:playwright:inventory > functional-output/tests/playwright-inventory.json` after loading the approved local test environment. The inventory uses Playwright discovery against the repository-default configs and reports separate counts for API service/contract tests, support unit tests, integration journeys, live E2E journeys, and advisory accessibility checks. It also lists integration scenarios omitted by the default blocked-tag filter and records the base Git revision plus a dirty-worktree marker. If API discovery needs credentials, supply them through the normal Key Vault-backed environment; the command fails instead of substituting a partial count. The JSON contains source file paths and test titles, never credentials.
+
+These are **discovered test counts**, not a requirement-to-test ledger, product coverage percentages or passing test results. The accessibility count is advisory and does not make accessibility a pipeline gate. Compare the inventory with the actual run's selected tags, final outcomes and retries before making a coverage claim. A twelve-worker setting is a requested process limit, not evidence of twelve active journeys or twelve compatible accounts; use `yarn test:playwright:preflight` for configured identity counts and the System Load profile for host pressure. Compare 4, 8 and 12 workers only on the same test selection and environment, recording first-attempt outcomes, identity wait, wall time and report finalization separately.
+
 Do not use `yarn test:functional` for this Playwright suite; it is currently a compatibility placeholder that prints `Skipping functional tests`. Use the suite commands in this README instead.
 
 ### Local Prerequisites

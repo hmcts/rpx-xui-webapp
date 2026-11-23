@@ -35,6 +35,10 @@ Default target environment is AAT (`https://manage-case.aat.platform.hmcts.net`)
 
 Do not use `yarn test:functional` for this Playwright suite; it is currently a compatibility placeholder that prints `Skipping functional tests`. Use the suite commands in this README instead.
 
+All Playwright configs reject `test.only`, including local runs. CNP and nightly run `yarn typecheck:playwright:critical` after dependency install; this checks the Playwright configs, shared support sources, and E2E utilities including the identity and dynamic organisation locks. The wider `playwright_tests_new/tsconfig.json` includes the webapp and API source and currently has existing errors, so this focused gate does not certify every Playwright spec.
+
+The System Load report labels the command's `--workers` override or `FUNCTIONAL_TESTS_WORKERS` value as **Requested workers**. Playwright may run fewer workers when the selected test set is smaller or a project cap applies.
+
 ### Local Prerequisites
 
 1. Install project dependencies with `yarn install --immutable`.

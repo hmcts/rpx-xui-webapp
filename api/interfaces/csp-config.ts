@@ -79,6 +79,7 @@ export const MC_CSP: Parameters<typeof csp>[0] = {
     'https://*.monitor.azure.com',
     'https://*.in.applicationinsights.azure.com',
     'wss://*.webpubsub.azure.com',
+    'wss://rpx-case-activity-api-webpubsub.perftest.platform.hmcts.net',
     //below is put in in case the WEBPUBSUB_URL double dot causes issues
     'wss://em-icp-webpubsub.platform.hmcts.net',
     process.env.WEBPUBSUB_URL || '',

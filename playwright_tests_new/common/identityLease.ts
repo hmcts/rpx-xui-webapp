@@ -101,6 +101,7 @@ async function acquireLocalIdentityLease(
   const directory = env.PW_IDENTITY_LEASE_DIR?.trim() || path.join(process.cwd(), '.sessions', 'identity-leases');
   await fs.mkdir(directory, { recursive: true });
 
+  let reportedWait = false;
   while (Date.now() < deadline) {
     for (const identity of candidates) {
       const leaseFile = path.join(directory, `${physicalIdentityKey(identity)}.lease`);
@@ -113,6 +114,12 @@ async function acquireLocalIdentityLease(
           throw error;
         }
       }
+    }
+    if (!reportedWait) {
+      console.log(
+        `[identity-lease] Waiting for an available identity (local; candidates=${candidates.length}; wait_limit_ms=${waitMs}).`
+      );
+      reportedWait = true;
     }
     await wait(Math.max(1, pollMs));
   }
@@ -151,6 +158,7 @@ async function acquireCompatibleIdentityLease(
       tags: identity.tags,
     })),
   };
+  let reportedWait = false;
   while (Date.now() < deadline) {
     const remainingMs = Math.max(1, deadline - Date.now());
     let response: Response;
@@ -170,6 +178,12 @@ async function acquireCompatibleIdentityLease(
     if (!response.ok) throw new Error(`Identity lease coordinator returned HTTP ${response.status}.`);
     const lease = (await response.json()) as LeaseResponse;
     if (lease.status === 'pending') {
+      if (!reportedWait) {
+        console.log(
+          `[identity-lease] Waiting for an available identity (coordinator; candidates=${candidates.length}; wait_limit_ms=${waitMs}).`
+        );
+        reportedWait = true;
+      }
       await wait(Math.min(Math.max(1, pollMs), Math.max(1, deadline - Date.now())));
       continue;
     }

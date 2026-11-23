@@ -52,7 +52,7 @@ E2E/session helpers load the workspace `.env` through `E2E/utils/config.utils.ts
 
 ### Playwright upgrade and order-dependency checks
 
-The runner is pinned to Playwright **1.64.1**. Run `yarn test:setup:playwright-version`
+The runner is pinned to Playwright **1.65.1**. Run `yarn test:setup:playwright-version`
 after an immutable install to check that `@playwright/test`, `playwright` and
 `playwright-core` match the manifest. Jenkins and the Docker dependency build use
 the same check; the application image does not install browser binaries.
@@ -80,7 +80,9 @@ through its existing runner instead of adding it to this support-suite command.
 
 Existing DOM/ARIA/screen traces and Perfetto timelines remain enabled; video
 remains off. Use `--add-reporter=html` to add native step subtitles/parameters and
-the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Only use
+the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Use
+`--add-reporter=failures` to also print failures and successful retries as they occur;
+keep the complete JUnit and Odhín reports for counts and assurance. Only use
 non-sensitive step metadata; native reports and traces remain restricted artefacts.
 Named test locks coordinate one Playwright run, not independent Jenkins jobs:
 keep the existing physical-identity and session leases for cross-process isolation.

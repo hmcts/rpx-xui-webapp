@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { errors, expect, test } from '@playwright/test';
 
 import { TaskListPage } from '../../E2E/page-objects/pages/exui/taskList.po.js';
 
@@ -170,6 +170,9 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
             reloads += 1;
           },
           waitForURL: async () => undefined,
+          waitForFunction: async () => {
+            throw new errors.TimeoutError('blank grace expired');
+          },
         },
         taskListTable: {
           isVisible: async () => {

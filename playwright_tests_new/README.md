@@ -33,6 +33,8 @@ Functional testing in this repo is the Playwright-based test set under `playwrig
 
 Default target environment is AAT (`https://manage-case.aat.platform.hmcts.net`). Set `TEST_URL=http://localhost:3000` for local EXUI runs.
 
+The [capability and exclusion ledger](COVERAGE_LEDGER.md) links representative requirements to mocked and live tests, records the owner and recheck criterion for every default integration exclusion, and identifies where a mocked response cannot prove backend persistence. Accessibility remains advisory.
+
 Do not use `yarn test:functional` for this Playwright suite; it is currently a compatibility placeholder that prints `Skipping functional tests`. Use the suite commands in this README instead.
 
 ### Local Prerequisites

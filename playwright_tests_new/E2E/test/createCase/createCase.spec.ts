@@ -127,12 +127,19 @@ test.describe(
           expect(readbackFromServiceWorker, 'CCD readback must use a network response').toBe(false);
           expect(await readbackDetails.getCaseNumberFromUrl()).toBe(caseNumber);
           await readbackDetails.selectCaseDetailsTab('Data');
-          const persistedData = await readbackDetails.trRowsToObjectInPage(readbackDetails.caseViewerTable);
-          expect(persistedData).toMatchObject({
+          const dataTab = readbackPage.getByRole('tab', { name: /^Data(?:,|$)/ });
+          if ((await dataTab.getAttribute('aria-selected')) !== 'true') {
+            await readbackDetails.selectCaseDetailsTab('Data');
+          }
+          await expect(dataTab).toHaveAttribute('aria-selected', 'true');
+          const expectedData = {
             'Text Field 0': caseData.textField0,
             'First Name': person1Data.firstName,
             'Last Name': person1Data.lastName,
-          });
+          };
+          await expect
+            .poll(() => readbackDetails.trRowsToObjectInPage(readbackDetails.caseViewerTable), { timeout: 30_000 })
+            .toMatchObject(expectedData);
         } finally {
           await readbackContext.close();
         }

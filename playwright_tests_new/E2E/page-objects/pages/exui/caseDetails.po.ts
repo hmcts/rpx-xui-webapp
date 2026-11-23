@@ -766,6 +766,7 @@ export class CaseDetailsPage extends Base {
       ? this.page.locator(`#${controlledPanelId}`)
       : this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(tabPanel, deadlineMs);
+    await tab.and(this.page.locator('[aria-selected="true"]')).waitFor({ state: 'visible', timeout: remaining() });
   }
 
   async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {

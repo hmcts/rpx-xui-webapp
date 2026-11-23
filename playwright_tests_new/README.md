@@ -84,6 +84,29 @@ the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Use
 `--add-reporter=failures` to also print failures and successful retries as they occur;
 keep the complete JUnit and Odhín reports for counts and assurance. Only use
 non-sensitive step metadata; native reports and traces remain restricted artefacts.
+
+For a controlled worker comparison, use a new output directory and the same selected
+suite, project, environment and account pool for every run:
+
+```bash
+yarn test:playwright:capacity --config playwright.config.ts --project node-api --suite playwright_tests_new/api/unit --output functional-output/tests/capacity-local-1
+```
+
+The command runs two sequential repeats each at 4, 8 and 12 workers with retries
+disabled. It preserves separate Odhín, load, Perfetto, JUnit and test-result
+artifacts per run, plus a `comparison.json` with exit status, wall time, observed
+worker processes, peak active tests, hook time, test-body time, identity wait and
+post-test/reporting time. It retains failures as failures and refuses to overwrite
+an existing comparison directory. The capacity reporter adds to the configured
+reporters; it does not replace them or capture test titles, URLs or credentials.
+When a live E2E journey uses an identity lease, the capacity run records every
+lease acquisition duration; otherwise `identityWaitSamples: 0` means no identity
+wait was observed, not that account capacity is unlimited. Hook and test-body
+durations are aggregate worker time, while wall and execution-window values are
+elapsed time. Test-body duration includes waits and cannot by itself prove useful
+business throughput. Compare first-attempt failures, identity waits, host pressure,
+and active concurrency before proposing a worker-limit change. Accessibility
+remains advisory and is not a failing capacity gate.
 Named test locks coordinate one Playwright run, not independent Jenkins jobs:
 keep the existing physical-identity and session leases for cross-process isolation.
 

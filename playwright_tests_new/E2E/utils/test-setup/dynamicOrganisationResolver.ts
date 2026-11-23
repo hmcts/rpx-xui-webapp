@@ -130,6 +130,7 @@ function resolveLockTimeoutMs(): number {
     return parsed;
   }
   const activeTimeoutMs = Number.parseInt(process.env.PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS ?? '', 10);
+  // shortcut: the default reserves 60 seconds outside active polling; raise the override for slower valid provisioning.
   return (
     (Number.isFinite(activeTimeoutMs) && activeTimeoutMs > 0 ? activeTimeoutMs : DEFAULT_ORGANISATION_ACTIVE_TIMEOUT_MS) +
     LOCK_WAIT_HEADROOM_MS
@@ -181,7 +182,8 @@ async function withDirectoryLock<T>(lockPath: string, action: () => Promise<T>):
       if (Date.now() >= deadline) {
         throw new Error(
           `Timed out after ${timeoutMs}ms waiting for dynamic organisation lock: ${lockPath}. ` +
-            'The lock may belong to another worker or a stopped owner; verify ownership before cleanup.'
+            'The finite wait can expire while a valid owner is still provisioning; set ' +
+            'PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS for known slower runs; verify ownership before cleanup.'
         );
       }
       await sleep(pollIntervalMs);

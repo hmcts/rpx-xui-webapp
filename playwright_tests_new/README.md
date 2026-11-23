@@ -391,6 +391,7 @@ Notes:
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers use a process-run `local-<parent-pid>` identifier instead of the shared literal `local`; CI runs with no recognised unique identifier fail fast instead of sharing a local organisation.
 - Approval uses the existing RD Professional internal approval endpoint. If RD Professional approval is unavailable, setup fails before dynamic users are created.
 - Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
+- The organisation lock wait is finite: by default it allows the active-poll timeout plus 60 seconds for earlier provisioning. A valid owner can still be working when a waiter times out; the waiter fails without replacing the lock. Set `PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS` for runs whose preliminary provisioning needs longer.
 - Do not commit `.env`.
 
 ### AM roles for top navigation

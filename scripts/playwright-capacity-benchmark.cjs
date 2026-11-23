@@ -57,7 +57,7 @@ function sourceSnapshot() {
   };
 }
 
-function reportArtifactsComplete(runDir) {
+function reportArtifactsComplete(runDir, tests) {
   if (!runDir) return false;
   const nonemptyFile = (file) => {
     try {
@@ -71,6 +71,13 @@ function reportArtifactsComplete(runDir) {
   if (process.env.PW_ENABLE_PERFETTO !== 'false') required.push('perfetto.json');
   if (!required.every((file) => nonemptyFile(path.join(runDir, file)))) return false;
   try {
+    const junit = fs.readFileSync(path.join(runDir, 'junit.xml'), 'utf8');
+    const junitTests = Number(junit.match(/<testsuites\b[^>]*\btests="(\d+)"/)?.[1]);
+    if (junitTests !== tests || (junit.match(/<testcase\b/g)?.length ?? 0) !== tests) return false;
+    if (process.env.PW_ENABLE_PERFETTO !== 'false') {
+      const traceEvents = readJson(path.join(runDir, 'perfetto.json'))?.traceEvents;
+      if (!Array.isArray(traceEvents) || traceEvents.length === 0) return false;
+    }
     const odhinDir = path.join(runDir, 'odhin-report');
     return (
       fs.statSync(path.join(runDir, 'test-results')).isDirectory() &&
@@ -116,7 +123,7 @@ function runComplete(run, runDir) {
     finite(load.durationMs) &&
     load.pressureSignals &&
     typeof load.pressureSignals === 'object' &&
-    reportArtifactsComplete(runDir)
+    reportArtifactsComplete(runDir, capacity.tests)
   );
 }
 

@@ -689,24 +689,47 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     }
   });
 
-  test('resolver directory lock times out without removing a fresh active lock', async () => {
+  test('resolver default waiter fails closed when an owner exceeds its finite budget', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
+    const realNow = Date.now;
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-fresh-'));
     const lockPath = path.join(tempDir, 'EXUI-4767-run-1.json.lock');
-    await fs.mkdir(lockPath);
-    process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '5';
+    delete process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS;
+    process.env.PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS = '90000';
     process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
+    let releaseOwner: () => void = () => undefined;
+    let signalOwner: () => void = () => undefined;
+    const ownerEntered = new Promise<void>((resolve) => {
+      signalOwner = resolve;
+    });
+    const ownerHeld = new Promise<void>((resolve) => {
+      releaseOwner = resolve;
+    });
+    const owner = organisationResolverTest.withDirectoryLock(lockPath, async () => {
+      signalOwner();
+      await ownerHeld;
+      return 'owner-success';
+    });
+    await ownerEntered;
+    const startedAt = realNow();
+    let clockReads = 0;
+    Date.now = () => (++clockReads === 1 ? startedAt : startedAt + 150_001);
 
     try {
       await expect(
         organisationResolverTest.withDirectoryLock(lockPath, async () => {
           throw new Error('fresh lock should not be acquired');
         })
-      ).rejects.toThrow(/verify ownership before cleanup/);
+      ).rejects.toThrow(/finite wait.*PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS.*verify ownership before cleanup/);
 
       const freshLock = await fs.stat(lockPath);
       expect(freshLock.isDirectory()).toBe(true);
+      releaseOwner();
+      expect(await owner).toBe('owner-success');
     } finally {
+      Date.now = realNow;
+      releaseOwner();
+      await Promise.allSettled([owner]);
       restoreDynamicOrganisationEnv(originalEnv);
       await fs.rm(tempDir, { recursive: true, force: true });
     }
@@ -758,7 +781,7 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     }
   });
 
-  test('resolver waiter outlasts a valid slow organisation owner', async () => {
+  test('resolver waiter outlasts the active poll budget when the owner releases within the finite wait', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
     const realNow = Date.now;
     const realMkdir = fs.mkdir;

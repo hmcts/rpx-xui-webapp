@@ -111,8 +111,9 @@ test('benchmark runs the same suite sequentially at 4, 8 and 12 workers and reta
     mkdirSync(path.join(runDir, 'odhin-report'));
     mkdirSync(path.join(runDir, 'test-results'));
     writeFileSync(path.join(runDir, 'odhin-report', 'report.html'), '<html>report</html>');
-    writeFileSync(path.join(runDir, 'junit.xml'), '<testsuites/>');
-    if (options.env.PW_ENABLE_PERFETTO !== 'false') writeFileSync(path.join(runDir, 'perfetto.json'), '{}');
+    writeFileSync(path.join(runDir, 'junit.xml'), '<testsuites tests="2"><testcase/><testcase/></testsuites>');
+    if (options.env.PW_ENABLE_PERFETTO !== 'false')
+      writeFileSync(path.join(runDir, 'perfetto.json'), '{"traceEvents":[{"ph":"X"}]}');
     return { status: calls.length === 2 ? 1 : 0 };
   };
 
@@ -262,12 +263,23 @@ test('benchmark does not mark a run complete when its reporter artifacts are mis
     mkdirSync(path.join(dir, 'odhin-report'));
     writeFileSync(path.join(dir, 'capacity.json'), '{}');
     writeFileSync(path.join(dir, 'load-profile', 'summary.json'), '{}');
-    writeFileSync(path.join(dir, 'junit.xml'), '<testsuites/>');
-    writeFileSync(path.join(dir, 'perfetto.json'), '{}');
+    writeFileSync(path.join(dir, 'junit.xml'), '<testsuites tests="1"><testcase/></testsuites>');
+    writeFileSync(path.join(dir, 'perfetto.json'), '{"traceEvents":[{"ph":"X"}]}');
     writeFileSync(path.join(dir, 'odhin-report', 'report.html'), '<html>report</html>');
     expect(capacityBenchmark.runComplete(run, dir)).toBe(false);
     mkdirSync(path.join(dir, 'test-results'));
     expect(capacityBenchmark.runComplete(run, dir)).toBe(true);
+    writeFileSync(path.join(dir, 'junit.xml'), '<testsuites/>');
+    expect(capacityBenchmark.runComplete(run, dir)).toBe(false);
+    writeFileSync(path.join(dir, 'junit.xml'), '<testsuites tests="2"/>');
+    expect(capacityBenchmark.runComplete(run, dir)).toBe(false);
+    writeFileSync(path.join(dir, 'junit.xml'), '<testsuites tests="1"/>');
+    expect(capacityBenchmark.runComplete(run, dir)).toBe(false);
+    writeFileSync(path.join(dir, 'junit.xml'), '<testsuites tests="1"><testcase/></testsuites>');
+    writeFileSync(path.join(dir, 'perfetto.json'), '{}');
+    expect(capacityBenchmark.runComplete(run, dir)).toBe(false);
+    writeFileSync(path.join(dir, 'perfetto.json'), '{"traceEvents":"not-an-array"}');
+    expect(capacityBenchmark.runComplete(run, dir)).toBe(false);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

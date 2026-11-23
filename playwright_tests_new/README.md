@@ -52,7 +52,7 @@ E2E/session helpers load the workspace `.env` through `E2E/utils/config.utils.ts
 
 ### Playwright upgrade and order-dependency checks
 
-The runner is pinned to Playwright **1.64.1**. Run `yarn test:setup:playwright-version`
+The runner is pinned to Playwright **1.65.1**. Run `yarn test:setup:playwright-version`
 after an immutable install to check that `@playwright/test`, `playwright` and
 `playwright-core` match the manifest. Jenkins and the Docker dependency build use
 the same check; the application image does not install browser binaries.
@@ -80,10 +80,55 @@ through its existing runner instead of adding it to this support-suite command.
 
 Existing DOM/ARIA/screen traces and Perfetto timelines remain enabled; video
 remains off. Use `--add-reporter=html` to add native step subtitles/parameters and
-the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Only use
+the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Use
+`--add-reporter=failures` to also print failures and successful retries as they occur;
+keep the complete JUnit and Odhín reports for counts and assurance. Only use
 non-sensitive step metadata; native reports and traces remain restricted artefacts.
 Named test locks coordinate one Playwright run, not independent Jenkins jobs:
 keep the existing physical-identity and session leases for cross-process isolation.
+
+### Framework limits and diagnostics
+
+Run `yarn tsc --project playwright_tests_new/tsconfig.scoped.json` to check the
+maintained Playwright support, configs and affected journeys with strict types.
+The broad `tsconfig.json` also includes application sources and is a separate check.
+
+Action and navigation defaults are 20 seconds and 30 seconds respectively;
+cross-browser nightly uses 60 seconds for both. Override with positive
+`PW_ACTION_TIMEOUT_MS` and `PW_NAVIGATION_TIMEOUT_MS` values. Explicit action
+budgets still apply. Task-list navigation shares its existing 30-second allowance
+across navigation, bootstrap and row readiness. Header search shares a single
+budget comprising its existing click and response allowances; it requires the
+requested case with readable tabs, or a matching missing-case response followed
+by the no-results view.
+
+Retries remain two by default. `PW_API_RETRIES`, `PW_E2E_RETRIES` and
+`PW_INTEGRATION_RETRIES` configure their respective runners; zero disables retries.
+Cross-browser nightly retains its existing CI/local retry policy.
+
+The flake reporter stays report-only unless `PW_FLAKE_GATE=enforce`. It fails the
+run when flaky tests exceed either `PW_MAX_FLAKY_TESTS` (default 20) or
+`PW_MAX_FLAKY_RATE` (default 0.2). Enabling enforcement is a deliberate CI policy
+choice; it does not fix the underlying flake.
+
+Tag-filter files also accept owned exclusions alongside legacy `excludedTags`:
+
+```json
+{
+  "exclusions": [{ "tag": "@existing-feature-tag", "ticket": "EXUI-1234", "owner": "owning-team", "expires": "2026-12-31" }]
+}
+```
+
+Use a tag from the file's available tags. Expiry uses UTC calendar dates, includes
+the expiry day and warns afterwards while retaining the exclusion. Set
+`PW_TAG_FILTER_ENFORCE_EXPIRY=true` to fail configuration loading for expired
+exclusions. Explicit exclusion overrides retain their existing precedence.
+
+Failure annotations distinguish authentication, setup, test, teardown and runner
+phases. Authentication uses the current Playwright test context automatically.
+Document setup errors retain operation and HTTP status without raw upstream
+response bodies. Compare CI JSON attempt durations, Odhín results and the existing
+`stage-events.jsonl`/load-profile evidence before changing worker or retry budgets.
 
 By default, Playwright tests run against **AAT** from your local machine. Override `TEST_URL` to point the same suite at DEMO, ITHC, preview, or LOCAL.
 
@@ -415,6 +460,36 @@ The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_n
 | Accessibility       | `functional-output/tests/playwright-accessibility/odhin-report/xui-playwright-accessibility.html`                                                                                                                                               | `PREVIEW Playwright Accessibility`, `Nightly Playwright Accessibility Test Report`                         |
 | Load profile        | `functional-output/tests/playwright-integration/load-profile/ci/load-profile.html` in CNP/nightly parent monitoring                                                                                                                             | `PREVIEW CI System Load`, `AAT CI System Load`, `Nightly CI System Load`                                   |
 | Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json` and `failure-context.json`; `test-results/**/trace.zip` and screenshots for failed or timed-out browser tests                | Archived as Jenkins artifacts                                                                              |
+
+### Accessibility remediation pack
+
+Accessibility report finalization also writes `ACCESSIBILITY_FIX_INSTRUCTIONS.md` and
+`accessibility-findings.json` beside the Odhín HTML, with download links at the top
+of the report. This applies to nightly and on-demand runs using the existing
+reporter/wrapper; other reports without accessibility evidence are unchanged.
+
+Download both files and the relevant evidence, then explicitly ask Codex to follow
+the instructions in the owning repository. The JSON groups candidate findings by
+feature, persona/language/setup, rule family and selector while retaining page
+states and detector evidence. Groups are investigation candidates, not confirmed
+root causes or a count of PRs. Reported violations, known findings, incomplete
+results, scanner failures and unreachable pages remain distinct.
+
+The controlled instructions require reproduction against current source, ownership
+checks, regression proof, repository checks and human review before merge. They
+generate no fixes or PRs automatically and make no model/API calls. Captured report
+content is untrusted evidence. Raw DOM and messages are omitted; sensitive selector
+values are redacted and only existing regular local evidence files are linked.
+Build provenance is explicitly unknown where the manifest does not record it; bind
+the pack to the original build and tested commit before changing code. Automated
+and heuristic results do not establish WCAG conformance or replace assistive
+technology testing.
+
+Run the generator's browser-free checks with:
+
+```bash
+node --test playwright_tests_new/common/reporters/accessibility-remediation.test.cjs
+```
 
 The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, and `test:playwright:integration` also create local System Load reports through `scripts/playwright-load-monitor.js`. Raw CI commands rely on the parent Jenkins load monitor instead.
 

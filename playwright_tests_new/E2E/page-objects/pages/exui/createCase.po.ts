@@ -7,7 +7,14 @@ import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
-import { clickSubmitAndWaitFlow, findCreateCaseBootstrapFailure, startCreateCaseFlow } from './createCase.flow.js';
+import {
+  afterStepContext,
+  buildWizardValidationErrorMessage,
+  clickSubmitAndWaitFlow,
+  findCreateCaseBootstrapFailure,
+  POC_TEXT_FIELDS_VALIDATION_ERROR,
+  startCreateCaseFlow,
+} from './createCase.flow.js';
 import { buildCreateCaseLocators } from './createCase.locators.js';
 
 export type PersonData = {
@@ -380,7 +387,7 @@ export class CreateCasePage extends Base {
         throw new Error(`Continue click still intercepted after spinner wait ${context}: ${retryMessage.slice(0, 220)}`);
       }
     }
-    await this.waitForSpinnerToComplete(`after ${context}`, stepTimeout);
+    await this.waitForSpinnerToComplete(afterStepContext(context), stepTimeout);
     await this.assertNoEventCreationError(context);
     const hasValidationError = await this.checkForErrorMessage();
     if (hasValidationError) {
@@ -388,7 +395,7 @@ export class CreateCasePage extends Base {
       if (this.isEventCreationValidationText(validationText)) {
         throw new Error(`Case event failed ${context}: ${validationText}`);
       }
-      throw new Error(`Validation error after ${context}`);
+      throw new Error(buildWizardValidationErrorMessage(context));
     }
   }
 
@@ -556,25 +563,26 @@ export class CreateCasePage extends Base {
       await waitForAdvance();
       return;
     } catch {
+      const stepContext = afterStepContext(context);
       if (this.page.isClosed()) {
-        throw new Error(`Page closed while waiting for wizard to advance after ${context}`);
+        throw new Error(`Page closed while waiting for wizard to advance ${stepContext}`);
       }
       const hasValidationError = await this.checkForErrorMessage();
       if (hasValidationError) {
         const validationText = await this.getValidationErrorText();
         if (this.isEventCreationValidationText(validationText)) {
-          throw new Error(`Case event failed after ${context}: ${validationText}`);
+          throw new Error(`Case event failed ${stepContext}: ${validationText}`);
         }
-        throw new Error(`Validation error after ${context}`);
+        throw new Error(buildWizardValidationErrorMessage(context));
       }
       if (this.page.isClosed()) {
-        throw new Error(`Page closed before retrying wizard advance after ${context}`);
+        throw new Error(`Page closed before retrying wizard advance ${stepContext}`);
       }
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
       if (!visibleContinueButton) {
-        throw new Error(`Continue button not visible while retrying wizard advance after ${context}`);
+        throw new Error(`Continue button not visible while retrying wizard advance ${stepContext}`);
       }
-      await this.clickContinueAndWait(`while retrying wizard advance after ${context}`, {
+      await this.clickContinueAndWait(`while retrying wizard advance ${stepContext}`, {
         continueButton: visibleContinueButton,
         timeoutMs,
       });
@@ -774,7 +782,7 @@ export class CreateCasePage extends Base {
   async uploadFile(
     fileName: string,
     mimeType: string,
-    fileContent: string,
+    fileContent: string | Buffer,
     fileInput?: Locator,
     fileContentEncoding?: BufferEncoding
   ) {
@@ -783,7 +791,7 @@ export class CreateCasePage extends Base {
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
-        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
+        buffer: Buffer.isBuffer(fileContent) ? fileContent : Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
       });
     });
   }
@@ -1269,7 +1277,7 @@ export class CreateCasePage extends Base {
         const message = this.normalizeUnknownError(error);
         const isTransientCreationFailure =
           isTransientWorkflowFailure(error) ||
-          message.includes('Validation error after after PoC text fields') ||
+          message.includes(POC_TEXT_FIELDS_VALIDATION_ERROR) ||
           message.includes('The event could not be created') ||
           (await this.eventCreationErrorHeading.isVisible().catch(() => false));
         if (isTransientCreationFailure && attempt < maxAttempts) {

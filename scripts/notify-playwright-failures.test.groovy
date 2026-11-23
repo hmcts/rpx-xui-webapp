@@ -140,7 +140,12 @@ assert !calls.find { it[0] == 'slack' }[1].message.contains('<!channel>')
 // Execute the actual pipeline profile resolvers: publication must use the same paths as the runner.
 for (pipeline in ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
     def source = new File(pipeline).text
-    def resolvers = source.substring(source.indexOf('def resolveIntegrationProfileRuns ='), source.indexOf('def runPlaywrightIntegrationProfileMatrix ='))
+    // CNP declares the default profile run and its override check just before the resolvers they use.
+    def resolverStart = source.indexOf('def defaultIntegrationProfileRun =')
+    if (resolverStart < 0) {
+        resolverStart = source.indexOf('def resolveIntegrationProfileRuns =')
+    }
+    def resolvers = source.substring(resolverStart, source.indexOf('def runPlaywrightIntegrationProfileMatrix ='))
     def call = pipeline == 'Jenkinsfile_CNP' ? "resolveIntegrationRunConfigs('preview')" : 'resolveIntegrationRunConfigs()'
     def profileBinding = new Binding([params: [:]])
     def shell = new GroovyShell(profileBinding)
@@ -172,4 +177,25 @@ for (pipeline in ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
         }
     }
 }
-println 'Playwright Slack lifecycle checks passed'
+// Exercise the real publication closure: raw samples are optional when the monitor failed.
+def pipelineSource = new File('Jenkinsfile_CNP').text
+def loadPublishStart = pipelineSource.indexOf('def publishPlaywrightLoadProfile =')
+def loadPublishEnd = pipelineSource.indexOf('def startPlaywrightLoadProfile =', loadPublishStart)
+def loadPublishCalls = []
+def loadPublishBinding = new Binding([
+    playwrightLoadProfileReportFile: 'load-profile.html',
+    steps: [
+        sh: { command -> loadPublishCalls << ['sh', command] },
+        archiveArtifacts: { options -> loadPublishCalls << ['archive', options] }
+    ],
+    archiveArtifacts: { options -> loadPublishCalls << ['archive', options] },
+    publishHTML: { options -> loadPublishCalls << ['html', options] },
+    currentBuild: [result: null],
+    echo: { msg -> loadPublishCalls << ['echo', msg] }
+])
+new GroovyShell(loader, loadPublishBinding).evaluate(
+    pipelineSource.substring(loadPublishStart, loadPublishEnd) +
+        "\npublishPlaywrightLoadProfile('functional-output/tests/playwright-integration/load-profile/ci-12', 'PREVIEW CI System Load')"
+)
+assert loadPublishCalls.find { it[0] == 'archive' && it[1].artifacts == 'functional-output/tests/playwright-integration/load-profile/ci-12/samples.json' && it[1].allowEmptyArchive }
+println 'Playwright Slack and load-profile lifecycle checks passed'

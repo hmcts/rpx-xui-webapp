@@ -7,6 +7,7 @@ import {
   parseNonNegativeInt,
   resolveLocalWorktreeTestIgnorePatterns,
   resolveApiProjectWorkerCount,
+  resolveActionTimeouts,
   resolveDefaultReporter,
   resolveTagFilters,
   resolveWorkerCount,
@@ -80,8 +81,9 @@ const resolveBranchName = (env: EnvMap = process.env): string => {
   return 'local';
 };
 
-const resolveApiRetries = (env: EnvMap = process.env) =>
-  parseNonNegativeInt(env.PW_API_RETRIES) ?? parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
+const resolveE2eRetries = (env: EnvMap = process.env) => parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
+
+const resolveApiRetries = (env: EnvMap = process.env) => parseNonNegativeInt(env.PW_API_RETRIES) ?? resolveE2eRetries(env);
 
 const resolveEnvironmentFromUrl = (baseUrl: string): string => {
   try {
@@ -182,6 +184,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   return defineConfig({
     use: {
       baseURL: resolveBaseUrl(env),
+      ...resolveActionTimeouts(env),
     },
     testDir: '.',
     testMatch: [
@@ -192,7 +195,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     fullyParallel: true,
     forbidOnly: !!env.CI,
-    retries: 2,
+    retries: resolveE2eRetries(env),
     timeout: 180_000,
     expect: {
       timeout: 60_000,
@@ -289,6 +292,7 @@ const config = buildConfig(process.env);
   resolveApiTagFilters,
   resolveE2eTagFilters,
   resolveApiRetries,
+  resolveE2eRetries,
   resolveDefaultReporter,
   buildConfig,
 };

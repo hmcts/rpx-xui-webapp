@@ -3,10 +3,12 @@ import type { Page } from '@playwright/test';
 export class RoleAccessPage {
   constructor(private readonly page: Page) {}
 
+  readonly removeAllocationButton = this.page.getByRole('button', { name: 'Remove allocation', exact: true });
   readonly confirmExclusionButton = this.page.getByRole('button', { name: 'Confirm exclusion', exact: true });
   readonly deleteExclusionButton = this.page.getByRole('button', { name: 'Delete exclusion', exact: true });
   readonly personSearch = this.page.getByRole('combobox', { name: 'select a person' });
   readonly continueButton = this.page.getByRole('button', { name: 'Continue', exact: true });
+  readonly confirmButton = this.page.getByRole('button', { name: 'Confirm allocation', exact: true });
   readonly cancelLink = this.page.getByRole('link', { name: 'Cancel', exact: true });
   readonly summary = this.page.locator('exui-answers');
   readonly errorSummary = this.page.locator('exui-error-message');
@@ -35,6 +37,12 @@ export class RoleAccessPage {
   async chooseReplacement() {
     await this.personSearch.fill('Clara');
     await this.page.getByRole('option', { name: 'Clara Replacement (clara@example.com)', exact: true }).click();
+    await this.continueButton.click();
+  }
+
+  async reviewReallocation() {
+    await this.chooseReplacement();
+    await this.page.getByRole('radio', { name: 'Indefinite', exact: true }).check();
     await this.continueButton.click();
   }
 

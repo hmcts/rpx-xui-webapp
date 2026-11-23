@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const { parse } = require('node-html-parser');
+const { safeEvidenceFile, writeAccessibilityRemediationPack } = require('./accessibility-remediation.cjs');
 const { applyPresentation } = require('./presentation/enhance.cjs');
 const { injectAccessibilityWorkspace } = require('./presentation/accessibility.cjs');
 const { redactText } = require('./failure-context.cjs');
@@ -1598,20 +1599,28 @@ function injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix = '../test-re
     );
 }
 
-function readAccessibilityEvidenceEntries(outputFolder) {
+function readAccessibilityEvidenceEntries(outputFolder, warnings = []) {
   const evidenceDir = path.join(outputFolder, 'accessibility-evidence');
-  if (!fs.existsSync(evidenceDir)) {
+  if (!fs.existsSync(evidenceDir) || !fs.lstatSync(evidenceDir).isDirectory()) {
     return [];
   }
 
   const entriesByKey = new Map();
 
   try {
-    const manifest = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'manifest.json'), 'utf8'));
-    normalizeEvidenceEntries(manifest).forEach((entry) => {
+    const manifestFile = safeEvidenceFile(evidenceDir, 'manifest.json');
+    if (!manifestFile) throw new Error('Missing or unsafe manifest');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    const normalized = normalizeEvidenceEntries(manifest);
+    if (!Array.isArray(manifest) || normalized.length !== manifest.length)
+      warnings.push('Some accessibility manifest entries were invalid; verify scan coverage against the original run.');
+    normalized.forEach((entry) => {
       entriesByKey.set(`${entry.testTitle}\u0000${entry.htmlFileName}`, entry);
     });
   } catch {
+    warnings.push(
+      'The aggregate accessibility manifest was unavailable; verify coverage against per-test evidence and the original run.'
+    );
     // Per-test entry files below are the source of truth when parallel workers race on the aggregate manifest.
   }
 
@@ -1619,10 +1628,15 @@ function readAccessibilityEvidenceEntries(outputFolder) {
     .filter((fileName) => fileName.startsWith('manifest-entry-') && fileName.endsWith('.json'))
     .forEach((fileName) => {
       try {
-        normalizeEvidenceEntries([JSON.parse(fs.readFileSync(path.join(evidenceDir, fileName), 'utf8'))]).forEach((entry) => {
+        const entryFile = safeEvidenceFile(evidenceDir, fileName);
+        if (!entryFile) throw new Error('Unsafe entry file');
+        const normalized = normalizeEvidenceEntries([JSON.parse(fs.readFileSync(entryFile, 'utf8'))]);
+        if (!normalized.length) throw new Error('Invalid entry');
+        normalized.forEach((entry) => {
           entriesByKey.set(`${entry.testTitle}\u0000${entry.htmlFileName}`, entry);
         });
       } catch {
+        warnings.push('Some per-test accessibility evidence could not be read; verify scan coverage before proposing fixes.');
         // Ignore corrupt per-test evidence so one bad entry cannot suppress the full report.
       }
     });
@@ -1636,7 +1650,9 @@ function enhanceGeneratedReport(outputFolder, featureStats, testMetadata = []) {
   }
 
   const normalizedStats = normalizeFeatureStats(featureStats);
-  const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
+  const evidenceWarnings = [];
+  const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder, evidenceWarnings);
+  const remediationPack = writeAccessibilityRemediationPack(outputFolder, evidenceEntries, evidenceWarnings);
   const testResultsFolder = [
     path.join(outputFolder, 'test-results'),
     path.join(outputFolder, '..', 'test-results'),
@@ -1660,7 +1676,21 @@ function enhanceGeneratedReport(outputFolder, featureStats, testMetadata = []) {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
     const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries, perfettoFiles, 'perfetto', testMetadata);
-    fs.writeFileSync(filePath, nextHtml, 'utf8');
+    if (!remediationPack && !nextHtml.includes('id="odhin-a11y-remediation"')) {
+      fs.writeFileSync(filePath, nextHtml, 'utf8');
+      return;
+    }
+    const root = parse(nextHtml);
+    root.querySelector('#odhin-a11y-remediation')?.remove();
+    if (remediationPack) {
+      root
+        .querySelector('body')
+        ?.insertAdjacentHTML(
+          'afterbegin',
+          `<section id="odhin-a11y-remediation" aria-labelledby="odhin-a11y-remediation-title"><h2 id="odhin-a11y-remediation-title">Accessibility remediation pack</h2><p>Investigate report findings with the developer instructions and structured evidence. Candidate groups require verification.</p><ul><li><a href="./ACCESSIBILITY_FIX_INSTRUCTIONS.md" download>Download remediation instructions</a></li><li><a href="./accessibility-findings.json" download>Download structured findings</a></li></ul></section>`
+        );
+    }
+    fs.writeFileSync(filePath, root.toString(), 'utf8');
   });
 }
 

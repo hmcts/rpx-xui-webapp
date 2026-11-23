@@ -9,10 +9,10 @@ const { cpus, totalmem } = require('node:os');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const {
-  resolveConfiguredSessionPoolCapacities,
-  resolveConfiguredPoolIdentities,
-} = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
+const identityPoolRegistry = require('./playwright_tests_new/common/identityPoolRegistry.cjs');
+const { resolveConfiguredSessionPoolCapacities, resolveConfiguredPoolIdentities } = identityPoolRegistry;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { capWorkerCountForParallelSuites } = require('./playwright-worker-cap.cjs');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
 const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
@@ -29,6 +29,8 @@ const resolvePerfettoOutputFile = (env = process.env) => {
   return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
 };
 const INTEGRATION_TEST_TIMEOUT_MS = 180_000;
+const DEFAULT_ACTION_TIMEOUT_MS = 20_000;
+const DEFAULT_NAVIGATION_TIMEOUT_MS = 30_000;
 const POST_SESSION_CAPTURE_JOURNEY_ALLOWANCE_MS = 30_000;
 const appVersion = (() => {
   try {
@@ -46,7 +48,7 @@ const resolveDefaultReporter = (env = process.env) => {
   return env.CI ? 'dot' : 'list';
 };
 
-const resolveWorkerCount = (env = process.env) => {
+const resolveRequestedWorkerCount = (env) => {
   const configured = env.FUNCTIONAL_TESTS_WORKERS?.trim();
   if (configured) {
     const parsed = Number.parseInt(configured, 10);
@@ -56,6 +58,29 @@ const resolveWorkerCount = (env = process.env) => {
   }
 
   return 7;
+};
+
+/**
+ * Same opt-in PW_PARALLEL_SUITES cap as the browser suites; a CLI --workers flag would bypass it.
+ * @param {NodeJS.ProcessEnv} [env]
+ * @param {number} [cpuCount] defaults to the agent CPU count
+ */
+const resolveWorkerCount = (env = process.env, cpuCount = undefined) =>
+  capWorkerCountForParallelSuites(resolveRequestedWorkerCount(env), env, cpuCount);
+
+const resolvePositiveInt = (raw) => {
+  const parsed = Number.parseInt(raw ?? '', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+};
+
+const resolveActionTimeouts = (env = process.env) => ({
+  actionTimeout: resolvePositiveInt(env.PW_ACTION_TIMEOUT_MS) ?? DEFAULT_ACTION_TIMEOUT_MS,
+  navigationTimeout: resolvePositiveInt(env.PW_NAVIGATION_TIMEOUT_MS) ?? DEFAULT_NAVIGATION_TIMEOUT_MS,
+});
+
+const resolveIntegrationRetries = (env = process.env) => {
+  const parsed = Number.parseInt(env.PW_INTEGRATION_RETRIES ?? '', 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 2;
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -254,7 +279,7 @@ const buildConfig = (env = process.env) => {
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
-    retries: 2,
+    retries: resolveIntegrationRetries(env),
     timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },
     outputDir: env.PLAYWRIGHT_OUTPUT_DIR?.trim() || 'test-results',
@@ -263,6 +288,7 @@ const buildConfig = (env = process.env) => {
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
+      ...resolveActionTimeouts(env),
       trace,
       screenshot: {
         mode: 'only-on-failure',
@@ -290,6 +316,8 @@ module.exports = {
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveWorkerCount,
+  resolveActionTimeouts,
+  resolveIntegrationRetries,
   resolveConfiguredSessionPoolCapacities,
   resolveConfiguredPoolIdentities,
   resolveOdhinTestOutput,

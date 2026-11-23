@@ -163,7 +163,7 @@ export async function cleanupOwnedActionTask(
   };
 
   let task = await readOwnedTask();
-  if (['completed', 'cancelled'].includes(String(task.task_state))) return;
+  if (['completed', 'cancelled', 'terminated'].includes(String(task.task_state))) return;
 
   if (task.task_state === 'unassigned') {
     const claimed = await client.post(`workallocation/task/${owned.taskId}/claim`, { data: {}, throwOnError: false });

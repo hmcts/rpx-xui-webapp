@@ -256,7 +256,7 @@ test.describe('identity pool registry', { tag: '@svc-internal' }, () => {
       { url: 'https://lease.example.test/acquire', method: 'POST' },
       { url: 'https://lease.example.test/release/lease-1', method: 'DELETE' },
     ]);
-    expect(JSON.parse(calls[0].body ?? '{}').ttlMs).toBe(35 * 60_000);
+    expect(JSON.parse(calls[0].body ?? '{}').ttlMs).toBe(35 * 60_000 + 60_000);
   });
 
   test('gives coordinator aliases of one physical account the same opaque lease key', async () => {

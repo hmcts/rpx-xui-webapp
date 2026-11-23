@@ -55,6 +55,8 @@ api/.nyc_output
 # Do not commit local files
 /config/local*.*
 .env
+.env.aat
+.env.demo
 .env_copy
 .tool-versions
 /.agent

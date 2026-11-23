@@ -1,4 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+import type { applySessionCookiesFromPool } from '../../common/sessionCapture.js';
+import { applyHearingManagerSessionCookies } from '../../integration/helpers/hearingJourneySetup.helper.js';
 
 import {
   getConfiguredHearingManagerUserIdentifiers,
@@ -155,5 +157,44 @@ test.describe('Hearing manager user pool unit tests', { tag: '@svc-internal' }, 
       'HEARING_MANAGER_CR84_OFF-2',
       'HEARING_MANAGER_CR84_OFF-3',
     ]);
+  });
+
+  test('passes ordered hearing manager users to session fallback and records the selected user', async () => {
+    const keys = [
+      'HEARING_MANAGER_CR84_OFF_1_USERNAME',
+      'HEARING_MANAGER_CR84_OFF_1_PASSWORD',
+      'HEARING_MANAGER_CR84_OFF_2_USERNAME',
+      'HEARING_MANAGER_CR84_OFF_2_PASSWORD',
+      'PW_HEARING_MANAGER_POOL_INDEX',
+    ];
+    const original = keys.map((key) => process.env[key]);
+    try {
+      process.env.HEARING_MANAGER_CR84_OFF_1_USERNAME = 'hearing-off-1@example.test';
+      process.env.HEARING_MANAGER_CR84_OFF_1_PASSWORD = 'test-password';
+      process.env.HEARING_MANAGER_CR84_OFF_2_USERNAME = 'hearing-off-2@example.test';
+      process.env.HEARING_MANAGER_CR84_OFF_2_PASSWORD = 'test-password';
+      process.env.PW_HEARING_MANAGER_POOL_INDEX = '0';
+      const annotations: { type: string; description?: string }[] = [];
+      let candidates: readonly unknown[] = [];
+      const applyFromPool = (async (_page: Page, values: readonly unknown[]) => {
+        candidates = values;
+        return { userIdentifier: 'HEARING_MANAGER_CR84_OFF-2', session: {} };
+      }) as typeof applySessionCookiesFromPool;
+
+      await applyHearingManagerSessionCookies(
+        {} as Page,
+        HEARING_MANAGER_CR84_OFF_USER,
+        { annotations, parallelIndex: 0 },
+        applyFromPool
+      );
+
+      expect(candidates.slice(0, 2)).toEqual(['HEARING_MANAGER_CR84_OFF-1', 'HEARING_MANAGER_CR84_OFF-2']);
+      expect(annotations).toContainEqual({ type: 'session-user', description: 'HEARING_MANAGER_CR84_OFF-2' });
+    } finally {
+      keys.forEach((key, index) => {
+        if (original[index] === undefined) delete process.env[key];
+        else process.env[key] = original[index];
+      });
+    }
   });
 });

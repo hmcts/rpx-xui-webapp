@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { request } from '@playwright/test';
 import { ApiClient } from '@hmcts/playwright-common';
 import { ensureSessionCookies } from '../../common/sessionCapture';
+import { FrameworkError } from '../../E2E/utils/frameworkError';
 import { resolveRuntimeUserCredentialsForIdentifier } from '../../E2E/utils/runtimeUserCredentials';
 import {
   createPrlHearingsCase,
@@ -15,6 +16,20 @@ const REQUIRED_ACTION_PERMISSIONS = ['read', 'own', 'claim', 'unclaim', 'complet
 const CASE_PROVISION_RETRY_STATUSES = [500, 502, 504];
 const CASE_PROVISION_RETRIES = 8;
 const TASK_MONITOR_INITIATION_TIMEOUT_MS = 6 * 60_000;
+export const WA_FIXTURE_ACTOR_CONFIG_ERROR_CODE = 'WA_FIXTURE_ACTOR_CONFIG';
+
+/** Deterministic actor/role configuration failure: retrying the same identity cannot change the outcome. */
+function actorConfigError(detail: string): FrameworkError {
+  return new FrameworkError(
+    WA_FIXTURE_ACTOR_CONFIG_ERROR_CODE,
+    'setup',
+    `${detail} This is a user/role-assignment configuration problem, not a transient failure.`
+  );
+}
+
+export function isWorkAllocationActorConfigError(error: unknown): boolean {
+  return error instanceof FrameworkError && error.code === WA_FIXTURE_ACTOR_CONFIG_ERROR_CODE;
+}
 
 export function requireAatUrl(value: string | undefined, label: string): string {
   const url = new URL(value ?? '');
@@ -78,6 +93,7 @@ type ProvisionDependencies = {
 };
 
 function isTransientCaseProvisioningError(error: unknown): boolean {
+  if (isWorkAllocationActorConfigError(error)) return false;
   const message = error instanceof Error ? error.message : String(error);
   return CASE_PROVISION_RETRY_STATUSES.some((status) => message.includes(`HTTP ${status}`));
 }
@@ -170,13 +186,16 @@ type ActionUserDetails = {
 export function requireAuthenticatedUser(userDetails: ActionUserDetails, expectedEmail: string): void {
   const actualEmail = userDetails.userInfo?.email?.trim().toLowerCase();
   if (actualEmail && actualEmail !== expectedEmail.trim().toLowerCase()) {
-    throw new Error(`WA fixture authenticated as ${actualEmail}, expected ${expectedEmail}.`);
+    // A stale or mismatched session file can be recovered by recapturing, so this is not cached as a config error.
+    throw new Error(
+      `WA fixture authenticated as ${actualEmail}, expected ${expectedEmail}; the stored session belongs to another user.`
+    );
   }
 }
 
 function listCourtAdminCourts(userDetails: ActionUserDetails): string[] {
   if (!userDetails.userInfo?.roles?.includes('caseworker-privatelaw-courtadmin')) {
-    throw new Error('WA fixture actor requires the PRL court-admin IDAM role.');
+    throw actorConfigError('WA fixture actor requires the PRL court-admin IDAM role.');
   }
   const assignments = userDetails.roleAssignmentInfo ?? [];
   return [
@@ -204,10 +223,61 @@ export function listSharedActionCourts(operatorDetails: ActionUserDetails, assig
 
 export function requireAssignmentTarget(userDetails: ActionUserDetails, court: string, operatorId: string): string {
   if (!listCourtAdminCourts(userDetails).includes(court))
-    throw new Error('WA assignment target must have access at the same PRL court.');
+    throw actorConfigError('WA assignment target must have access at the same PRL court.');
   const id = userDetails.userInfo?.id ?? userDetails.userInfo?.uid;
-  if (!id?.trim() || id === operatorId) throw new Error('WA unassign requires a different, identified court-admin assignee.');
+  if (!id?.trim() || id === operatorId)
+    throw actorConfigError('WA unassign requires a different, identified court-admin assignee.');
   return id;
+}
+
+export type ActionActorReadiness = { actorId: string; assigneeId: string; primaryLocation: string };
+
+type ActorReadinessDependencies = {
+  actorIdentifier: string;
+  expectedEmail: string;
+  readActorDetails: () => Promise<ActionUserDetails>;
+  readAssigneeDetails?: () => Promise<ActionUserDetails>;
+  findCourt: (candidateCourts: string[]) => Promise<string>;
+};
+
+/** Resolves the actor (and optional assignee) role/court contract; deterministic gaps throw WA_FIXTURE_ACTOR_CONFIG. */
+export async function resolveActionActorReadiness(deps: ActorReadinessDependencies): Promise<ActionActorReadiness> {
+  const userDetails = await deps.readActorDetails();
+  requireAuthenticatedUser(userDetails, deps.expectedEmail);
+  const actorId = userDetails.userInfo?.id ?? userDetails.userInfo?.uid;
+  if (typeof actorId !== 'string' || !actorId) throw new Error('WA fixture actor lookup returned no identity.');
+  const assigneeDetails = deps.readAssigneeDetails ? await deps.readAssigneeDetails() : undefined;
+  const candidateCourts = listSharedActionCourts(userDetails, assigneeDetails);
+  if (candidateCourts.length === 0)
+    throw actorConfigError(
+      assigneeDetails
+        ? `WA fixture actor ${deps.actorIdentifier} and assignment target have no shared substantive PRL court-admin court.`
+        : `WA fixture actor ${deps.actorIdentifier} has no substantive PRL court-admin court.`
+    );
+  const primaryLocation = await deps.findCourt(candidateCourts);
+  const assigneeId = assigneeDetails ? requireAssignmentTarget(assigneeDetails, primaryLocation, actorId) : actorId;
+  return { actorId, assigneeId, primaryLocation };
+}
+
+const actorReadinessByKey = new Map<string, Promise<ActionActorReadiness>>();
+
+/**
+ * Runs the actor readiness check once per worker per actor/assignee pair. A configuration failure stays cached so
+ * later fixtures in the worker fail immediately; any other failure is evicted so the next fixture re-checks.
+ */
+export function memoiseActionActorReadiness(
+  key: string,
+  resolve: () => Promise<ActionActorReadiness>,
+  cache: Map<string, Promise<ActionActorReadiness>> = actorReadinessByKey
+): Promise<ActionActorReadiness> {
+  const cached = cache.get(key);
+  if (cached) return cached;
+  const pending = resolve();
+  cache.set(key, pending);
+  pending.catch((error: unknown) => {
+    if (!isWorkAllocationActorConfigError(error) && cache.get(key) === pending) cache.delete(key);
+  });
+  return pending;
 }
 
 export async function createWorkAllocationActionFixture(assigneeUserIdentifier?: string) {
@@ -219,7 +289,7 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
   requireAatUrl(configuration.prlCosApiUrl, 'PRL URL');
   const userIdentifier = 'WA_TASK_ADMIN';
   const credentials = resolveRuntimeUserCredentialsForIdentifier(userIdentifier);
-  if (!credentials) throw new Error('WA fixture selected identity has no configured credentials.');
+  if (!credentials) throw actorConfigError(`WA fixture selected identity ${userIdentifier} has no configured credentials.`);
   const session = await ensureSessionCookies(userIdentifier);
   const xsrf = session.cookies.find((cookie) => cookie.name === 'XSRF-TOKEN')?.value;
   if (!xsrf) throw new Error('WA fixture session has no XSRF cookie.');
@@ -236,38 +306,37 @@ export async function createWorkAllocationActionFixture(assigneeUserIdentifier?:
         return { status: response.status(), data: response.status() === 200 ? await response.json() : {} };
       }
     );
-    const userResponse = await context.get('/api/user/details?refreshRoleAssignments=true');
-    if (userResponse.status() !== 200) throw new Error(`WA fixture actor lookup failed (HTTP ${userResponse.status()}).`);
-    const userDetails = await userResponse.json();
-    requireAuthenticatedUser(userDetails, credentials.email);
-    const actorId = userDetails.userInfo?.id ?? userDetails.userInfo?.uid;
-    if (typeof actorId !== 'string' || !actorId) throw new Error('WA fixture actor lookup returned no identity.');
-    let assigneeDetails: ActionUserDetails | undefined;
-    let assigneeId = actorId;
-    if (assigneeUserIdentifier) {
-      const assigneeSession = await ensureSessionCookies(assigneeUserIdentifier);
-      const assigneeContext = await request.newContext({ baseURL: baseUrl, storageState: assigneeSession.storageFile });
-      try {
-        const response = await assigneeContext.get('/api/user/details?refreshRoleAssignments=true');
-        if (response.status() !== 200) throw new Error(`WA assignment target lookup failed (HTTP ${response.status()}).`);
-        assigneeDetails = await response.json();
-      } finally {
-        await assigneeContext.dispose();
-      }
-    }
-    const candidateCourts = listSharedActionCourts(userDetails, assigneeDetails);
-    if (candidateCourts.length === 0)
-      throw new Error(
-        assigneeDetails
-          ? 'WA fixture actor and assignment target have no shared substantive PRL court-admin court.'
-          : 'WA fixture actor has no substantive PRL court-admin court.'
-      );
-    const primaryLocation = await findPrlWorkAllocationCourt(candidateCourts, {
-      username: credentials.email,
-      password: credentials.password,
-      bearerToken,
-    });
-    if (assigneeDetails) assigneeId = requireAssignmentTarget(assigneeDetails, primaryLocation, actorId);
+    const readiness = await memoiseActionActorReadiness(`${userIdentifier}->${assigneeUserIdentifier ?? 'self'}`, () =>
+      resolveActionActorReadiness({
+        actorIdentifier: userIdentifier,
+        expectedEmail: credentials.email,
+        readActorDetails: async () => {
+          const userResponse = await context.get('/api/user/details?refreshRoleAssignments=true');
+          if (userResponse.status() !== 200) throw new Error(`WA fixture actor lookup failed (HTTP ${userResponse.status()}).`);
+          return userResponse.json();
+        },
+        readAssigneeDetails: assigneeUserIdentifier
+          ? async () => {
+              const assigneeSession = await ensureSessionCookies(assigneeUserIdentifier);
+              const assigneeContext = await request.newContext({ baseURL: baseUrl, storageState: assigneeSession.storageFile });
+              try {
+                const response = await assigneeContext.get('/api/user/details?refreshRoleAssignments=true');
+                if (response.status() !== 200) throw new Error(`WA assignment target lookup failed (HTTP ${response.status()}).`);
+                return response.json();
+              } finally {
+                await assigneeContext.dispose();
+              }
+            }
+          : undefined,
+        findCourt: (candidateCourts) =>
+          findPrlWorkAllocationCourt(candidateCourts, {
+            username: credentials.email,
+            password: credentials.password,
+            bearerToken,
+          }),
+      })
+    );
+    const { actorId, assigneeId, primaryLocation } = readiness;
     const tokenResponse = await serviceContext.post(s2sUrl.toString(), { data: { microservice: 'xui_webapp' } });
     if (tokenResponse.status() !== 200) throw new Error(`WA fixture S2S lookup failed (HTTP ${tokenResponse.status()}).`);
     const serviceToken = (await tokenResponse.text()).trim();

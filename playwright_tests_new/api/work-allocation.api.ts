@@ -5,7 +5,6 @@ import { test, expect } from './fixtures';
 import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import type { UserDetailsResponse } from './utils/types';
 import { buildCaseSearchRequest, buildTaskSearchRequest } from './utils/work-allocation';
-import { createWorkAllocationActionFixture } from './utils/workAllocationActionFixture';
 import { requireWorkAllocationLocation, requireWorkAllocationUserId } from './utils/workAllocationSetup';
 import {
   assertAllWorkResponse,
@@ -26,7 +25,6 @@ import {
   resolveLocationId,
   resolveSeededTaskIds,
   resolveUserId,
-  runSeededAction,
   selectTaskId,
   toArray,
   toLocationList,
@@ -51,7 +49,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     );
 
     // Then: API responds with expected status codes
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
 
     // And: Response data structure is validated
     assertLocationsListResponse(response.status, response.data);
@@ -76,7 +74,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     );
 
     // Then: API returns success or guarded downstream status
-    expectStatus(response.status, StatusSets.waReadOnly);
+    expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
 
     // And: Response contains valid task names array
     assertTaskNamesResponse(response.status, response.data);
@@ -95,7 +93,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     );
 
     // Then: API returns success or guarded downstream status
-    expectStatus(response.status, StatusSets.waReadOnly);
+    expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
 
     // And: Response contains valid work types array
     assertTypesOfWorkResponse(response.status, response.data);
@@ -148,7 +146,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.waReadOnly);
+      expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
       assertTaskSearchResponse(response.status, response.data);
     });
 
@@ -167,7 +165,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.waReadOnly);
+      expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
       assertAvailableTasksResponse(response.status, response.data);
     });
 
@@ -190,7 +188,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.waReadOnly);
+      expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
       assertAllWorkResponse(response.status, response.data);
     });
   });
@@ -212,7 +210,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
             })
           )
         );
-        expectStatus(response.status, StatusSets.guardedExtended);
+        expectStatus(response.status, StatusSets.guardedExtended, { primary: 200 });
         assertMyWorkDashboardResponse(response.status, response.data);
         if (view === 'MyCases') {
           assertMyWorkTotalsResponse(response.status, response.data);
@@ -277,7 +275,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
           throwOnError: false,
         })
       );
-      expectStatus(response.status, StatusSets.guardedExtended);
+      expectStatus(response.status, StatusSets.guardedExtended, { primary: 200 });
       assertCaseworkerListResponse(response.status, response.data);
     });
 

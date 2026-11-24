@@ -79,6 +79,8 @@
     "test:playwright:integration:raw": "sh -c 'if [ \"${1:-}\" = \"--\" ]; then shift; fi; if [ \"${PLAYWRIGHT_SKIP_INSTALL}\" != \"true\" ]; then yarn playwright install; fi; STAFF_ADMIN_POOL_ENABLED=${STAFF_ADMIN_POOL_ENABLED:-true} PW_SESSION_CAPTURE_STAGGER_MS=${PW_SESSION_CAPTURE_STAGGER_MS:-10000} PW_SESSION_CAPTURE_RECOVER_STALE_LOCKS=${PW_SESSION_CAPTURE_RECOVER_STALE_LOCKS:-true} npx playwright test --config=playwright.integration.config.ts \"$@\"' --",
     "test:playwright:integration:profile": "sh -c 'if [ \"${1:-}\" = \"--\" ]; then shift; fi; yarn test:playwright:integration \"$@\"' --",
     "test:playwright:preflight": "node scripts/playwright-session-preflight.cjs",
+    "test:playwright:inventory": "node scripts/playwright-coverage-inventory.cjs",
+    "test:playwright:capacity": "node scripts/playwright-capacity-benchmark.cjs",
     "test:api:pw": "sh -c 'if [ \"${1:-}\" = \"--\" ]; then shift; fi; PW_LOAD_PROFILE_OUTPUT=${PW_LOAD_PROFILE_OUTPUT:-functional-output/tests/playwright-api/odhin-report/load-profile} node scripts/playwright-load-monitor.js --report-folder functional-output/tests/playwright-api/odhin-report --label \"${PW_LOAD_PROFILE_LABEL:-API}\" -- yarn test:api:pw:raw \"$@\"' --",
     "test:api:pw:raw": "yarn test:setup:playwright-api && sh -c 'if [ \"${1:-}\" = \"--\" ]; then shift; fi; rm -rf functional-output/tests/playwright-api/odhin-report reports/tests/coverage/api-playwright && PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-api/odhin-report PLAYWRIGHT_REPORT_INDEX_FILENAME=xui-playwright-api.html npx playwright test \"$@\" --project node-api; status=$?; exit $status' --",
     "test:api:pw:coverage": "sh -c 'if [ \"${1:-}\" = \"--\" ]; then shift; fi; PW_LOAD_PROFILE_OUTPUT=${PW_LOAD_PROFILE_OUTPUT:-functional-output/tests/playwright-api/odhin-report/load-profile} node scripts/playwright-load-monitor.js --report-folder functional-output/tests/playwright-api/odhin-report --label \"${PW_LOAD_PROFILE_LABEL:-API coverage}\" -- yarn test:api:pw:coverage:raw \"$@\"' --",
@@ -103,7 +105,9 @@
     "cve:check": "bash -c 'if diff <(yarn npm audit --recursive --environment production --json) yarn-audit-known-issues > /dev/null; then true; else exit 1; fi'",
     "test:coverage:ng:prepush": "ng test --code-coverage --source-map",
     "prepush": "bash ./bin/prepush.sh",
-    "lint:playwright:locators": "node ./scripts/check-playwright-locators.mjs"
+    "lint:playwright:locators": "node ./scripts/check-playwright-locators.mjs",
+    "typecheck:playwright:critical": "tsc --project playwright.tsconfig.ci.json --noEmit",
+    "typecheck:playwright:all": "node scripts/check-playwright-types.cjs"
   },
   "private": true,
   "dependencies": {

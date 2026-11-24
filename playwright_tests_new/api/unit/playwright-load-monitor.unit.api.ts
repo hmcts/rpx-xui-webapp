@@ -25,6 +25,7 @@ interface Summary {
 }
 
 const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
+  buildMetadata: (commandArgs: string[], options: Record<string, unknown>) => { workers: string };
   buildLoadProfileHtml: (summary: Summary, samples: unknown[]) => string;
   buildInlineSvgChart: (samples: unknown[], timelineEvents?: unknown[]) => string;
   buildPressureSignals: (samples: unknown[]) => PressureSignals;
@@ -59,6 +60,22 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
 };
 
 test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => {
+  test('reports the command worker override ahead of the environment default', () => {
+    const previous = process.env.FUNCTIONAL_TESTS_WORKERS;
+    process.env.FUNCTIONAL_TESTS_WORKERS = '6';
+    try {
+      const options = loadMonitor.parseArgs(['--', 'yarn', 'test:playwright:integration', '--workers=12']).options;
+      expect(loadMonitor.buildMetadata(['yarn', 'test:playwright:integration', '--workers=12'], options).workers).toBe('12');
+    } finally {
+      if (previous === undefined) delete process.env.FUNCTIONAL_TESTS_WORKERS;
+      else process.env.FUNCTIONAL_TESTS_WORKERS = previous;
+    }
+  });
+
+  test('reports the split-form worker override', () => {
+    const options = loadMonitor.parseArgs(['--', 'yarn', 'test:playwright:integration', '--workers', '12']).options;
+    expect(loadMonitor.buildMetadata(['yarn', 'test:playwright:integration', '--workers', '12'], options).workers).toBe('12');
+  });
   test('parses wrapper options and preserves Playwright command arguments', () => {
     const parsed = loadMonitor.parseArgs([
       '--sample-interval-ms',

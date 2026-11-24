@@ -33,7 +33,21 @@ Functional testing in this repo is the Playwright-based test set under `playwrig
 
 Default target environment is AAT (`https://manage-case.aat.platform.hmcts.net`). Set `TEST_URL=http://localhost:3000` for local EXUI runs.
 
+### Coverage and capacity evidence
+
+Run `mkdir -p functional-output/tests && yarn test:playwright:inventory > functional-output/tests/playwright-inventory.json` after loading the approved local test environment. The inventory uses Playwright discovery against the repository-default configs and reports separate counts for API service/contract tests, support unit tests, integration journeys, live E2E journeys, and advisory accessibility checks. It also lists integration scenarios omitted by the default blocked-tag filter and records the base Git revision plus a dirty-worktree marker. If API discovery needs credentials, supply them through the normal Key Vault-backed environment; the command fails instead of substituting a partial count. The JSON contains source file paths and test titles, never credentials.
+
+These are **discovered test counts**, not a requirement-to-test ledger, product coverage percentages or passing test results. The accessibility count is advisory and does not make accessibility a pipeline gate. Compare the inventory with the actual run's selected tags, final outcomes and retries before making a coverage claim. A twelve-worker setting is a requested process limit, not evidence of twelve active journeys or twelve compatible accounts; use `yarn test:playwright:preflight` for configured identity counts and the System Load profile for host pressure. Compare 4, 8 and 12 workers only on the same test selection and environment, recording first-attempt outcomes, identity wait, wall time and report finalization separately.
+
+Run `yarn typecheck:playwright:all` to compile every tracked Playwright TypeScript file and the root Playwright configs. The gate fails if a file is omitted from compilation, a new diagnostic appears or a resolved diagnostic remains in the baseline. The 65 existing Playwright diagnostics are recorded in `scripts/playwright-type-errors.baseline.json`; the command reports their count rather than presenting the suite as type clean. Remove a baseline entry in the same change that fixes its error. Do not add new entries to make CI green. Root application diagnostics are outside this Playwright gate.
+
+The [capability and exclusion ledger](COVERAGE_LEDGER.md) links representative requirements to mocked and live tests, records the owner and recheck criterion for every default integration exclusion, and identifies where a mocked response cannot prove backend persistence. Accessibility remains advisory.
+
 Do not use `yarn test:functional` for this Playwright suite; it is currently a compatibility placeholder that prints `Skipping functional tests`. Use the suite commands in this README instead.
+
+All Playwright configs reject `test.only`, including local runs. CNP and nightly run `yarn typecheck:playwright:critical` after dependency install; this checks the Playwright configs, shared support sources, and E2E utilities including the identity and dynamic organisation locks. The wider `playwright_tests_new/tsconfig.json` includes the webapp and API source and currently has existing errors, so this focused gate does not certify every Playwright spec.
+
+The System Load report labels the command's `--workers` override or `FUNCTIONAL_TESTS_WORKERS` value as **Requested workers**. Playwright may run fewer workers when the selected test set is smaller or a project cap applies.
 
 ### Local Prerequisites
 
@@ -84,6 +98,29 @@ the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Use
 `--add-reporter=failures` to also print failures and successful retries as they occur;
 keep the complete JUnit and Odhín reports for counts and assurance. Only use
 non-sensitive step metadata; native reports and traces remain restricted artefacts.
+
+For a controlled worker comparison, use a new output directory and the same selected
+suite, project, environment and account pool for every run:
+
+```bash
+yarn test:playwright:capacity --config playwright.config.ts --project node-api --suite playwright_tests_new/api/unit --output functional-output/tests/capacity-local-1
+```
+
+The command runs two sequential repeats each at 4, 8 and 12 workers with retries
+disabled. It preserves separate Odhín, load, Perfetto, JUnit and test-result
+artifacts per run, plus a `comparison.json` with exit status, wall time, observed
+worker processes, peak active tests, hook time, test-body time, identity wait and
+post-test/reporting time. It retains failures as failures and refuses to overwrite
+an existing comparison directory. The capacity reporter adds to the configured
+reporters; it does not replace them or capture test titles, URLs or credentials.
+When a live E2E journey uses an identity lease, the capacity run records every
+lease acquisition duration; otherwise `identityWaitSamples: 0` means no identity
+wait was observed, not that account capacity is unlimited. Hook and test-body
+durations are aggregate worker time, while wall and execution-window values are
+elapsed time. Test-body duration includes waits and cannot by itself prove useful
+business throughput. Compare first-attempt failures, identity waits, host pressure,
+and active concurrency before proposing a worker-limit change. Accessibility
+remains advisory and is not a failing capacity gate.
 Named test locks coordinate one Playwright run, not independent Jenkins jobs:
 keep the existing physical-identity and session leases for cross-process isolation.
 
@@ -354,6 +391,7 @@ Notes:
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers use a process-run `local-<parent-pid>` identifier instead of the shared literal `local`; CI runs with no recognised unique identifier fail fast instead of sharing a local organisation.
 - Approval uses the existing RD Professional internal approval endpoint. If RD Professional approval is unavailable, setup fails before dynamic users are created.
 - Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
+- The organisation lock wait is finite: by default it allows the active-poll timeout plus 60 seconds for earlier provisioning. A valid owner can still be working when a waiter times out; the waiter fails without replacing the lock. Set `PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS` for runs whose preliminary provisioning needs longer.
 - Do not commit `.env`.
 
 ### AM roles for top navigation
@@ -972,6 +1010,8 @@ Configured `STAFF_ADMIN_1` to `STAFF_ADMIN_8` credentials are discovered automat
 Before a live browser lane, run `yarn test:playwright:preflight -- --require=STAFF_ADMIN,HEARING_MANAGER_CR84_ON`. It reports distinct configured identities, never secret values, and warns about inherited Node inspector settings. Add `--tag=e2e,solicitor` to report only the compatibility pools selected by those tags. Pool capacity is advisory: a configured identity can be reused across workers. Add `--strict` only when a selected lane has no configured identity at all.
 
 State-changing live E2E journeys can opt into `identityLease` from `E2E/fixtures`. Call `await identityLease.acquire({ pool: 'PRL_SOLICITOR' })` before authentication, then use `lease.identity.userIdentifier` for session setup. Within one executor the fixture uses filesystem leases under `.sessions/identity-leases`; configure the approved cross-executor coordinator in `PW_IDENTITY_LEASE_ENDPOINT` when multiple executors share an identity pool. The fixture waits for a compatible exclusive account, always releases it in teardown, and never sends email addresses or passwords to the coordinator. Do not use this fixture for mocked integration tests or read-only journeys.
+
+Local identity leases use an exclusive file at `<opaque-key>.lease.lock`. They never expire by file age: a live owner remains protected even if a worker pauses longer than another worker's lease TTL. The file contains only PID, host, creation time, and a random owner token; it contains no account name or credential. After a worker crashes, verify that the recorded process has stopped on the recorded host and that no active run still owns the identity before removing that exact orphan lock file. A waiting worker reports `IDENTITY_POOL_EXHAUSTED` after its configured wait limit until the orphan is removed. Drain older workers that use `proper-lockfile` before rolling out this lock format; those workers can encounter the new file but cannot safely use it as their lock directory. Coordinator leases retain their TTL and are unaffected by local orphan cleanup.
 
 ### Session Capture Storage
 

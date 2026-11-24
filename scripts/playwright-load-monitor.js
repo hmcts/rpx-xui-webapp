@@ -441,6 +441,7 @@ async function runUntilStopFile(options) {
 }
 
 function buildMetadata(commandArgs, options) {
+  const splitWorkerIndex = commandArgs.indexOf('--workers');
   const cgroupCpuLimit = resolveCgroupCpuLimit();
   const cgroupMemoryLimitBytes = resolveCgroupMemoryLimitBytes();
   const logicalCpuCount = os.cpus().length || 1;
@@ -464,8 +465,9 @@ function buildMetadata(commandArgs, options) {
     memoryLimitSource: cgroupMemoryLimitBytes ? 'cgroup' : 'host',
     ci: Boolean(process.env.CI),
     workers:
-      process.env.FUNCTIONAL_TESTS_WORKERS ??
       commandArgs.find((arg) => arg.startsWith('--workers='))?.replace('--workers=', '') ??
+      (splitWorkerIndex >= 0 ? commandArgs[splitWorkerIndex + 1] : undefined) ??
+      process.env.FUNCTIONAL_TESTS_WORKERS ??
       'config-default',
     shard: commandArgs.find((arg) => arg.startsWith('--shard='))?.replace('--shard=', '') ?? process.env.PLAYWRIGHT_SHARD ?? '',
   };
@@ -693,7 +695,7 @@ function buildLoadProfileHtml(summary, samples) {
 function buildSummaryTable(summary, relativeProfilePath) {
   const rows = [
     ['Command', summary.command.join(' ')],
-    ['Workers', summary.workers],
+    ['Requested workers', summary.workers],
     ['Shard', summary.shard || 'none'],
     ['Duration', formatDuration(summary.durationMs)],
     ['CPU avg / p95 / max', `${summary.cpu.average}% / ${summary.cpu.p95}% / ${summary.cpu.max}%`],

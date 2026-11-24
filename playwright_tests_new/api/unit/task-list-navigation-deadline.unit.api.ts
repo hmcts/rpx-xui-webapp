@@ -156,6 +156,8 @@ test.describe('Task list navigation deadline', { tag: '@svc-internal' }, () => {
         },
       },
       getApiCalls: () => [],
+      getApiCallCursor: () => 0,
+      getApiCallsSince: () => [],
       assertTaskListInteractive: async () => {},
       taskRows: { count: async () => 0 },
     }) as TaskListPage;

@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, Input, NO_ERRORS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -9,7 +10,7 @@ import moment from 'moment';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
-import { initialState } from '../../../hearing.test.data';
+import { initialState as sharedInitialState } from '../../../hearing.test.data';
 import {
   ACTION,
   HearingDatePriorityEnum,
@@ -37,6 +38,8 @@ import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/com
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
+
+const initialStateSnapshot = cloneDeep(sharedInitialState);
 
 describe('HearingTimingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -78,7 +81,10 @@ describe('HearingTimingComponent', () => {
     },
   ];
 
+  let initialState = cloneDeep(initialStateSnapshot);
+
   beforeEach(() => {
+    initialState = cloneDeep(initialStateSnapshot);
     TestBed.configureTestingModule({
       declarations: [HearingTimingComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       schemas: [NO_ERRORS_SCHEMA],

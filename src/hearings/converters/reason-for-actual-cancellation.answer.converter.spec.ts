@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -5,10 +6,12 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { initialState } from '../hearing.test.data';
+import { initialState as sharedInitialState } from '../hearing.test.data';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { State } from '../store';
 import { ReasonForActualCancellationAnswerConverter } from './reason-for-actual-cancellation.answer.converter';
+
+const initialStateSnapshot = cloneDeep(sharedInitialState);
 
 describe('ReasonForActualCancellationAnswerConverter', () => {
   const CANCEL_HEARING_REQUEST_REASONS: LovRefDataModel[] = [
@@ -306,7 +309,10 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
   let store: Store<any>;
   let router: any;
 
+  let initialState = cloneDeep(initialStateSnapshot);
+
   beforeEach(() => {
+    initialState = cloneDeep(initialStateSnapshot);
     TestBed.configureTestingModule({
       providers: [
         provideMockStore({ initialState }),

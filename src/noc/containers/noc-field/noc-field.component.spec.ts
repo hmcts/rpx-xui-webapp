@@ -95,6 +95,14 @@ describe('NocFieldComponent', () => {
     });
 
     it('should have correct template structure', () => {
+      // Use the real ViewChild container for template rendering, rather than the hook-test spy.
+      fixture.destroy();
+      fixture = TestBed.createComponent(NocFieldComponent);
+      component = fixture.componentInstance;
+      component.questionField = mockNocQuestion;
+      component.formGroup = new FormGroup({});
+      component.answerValue$ = of('test-answer');
+      component.idPrefix = 'prefix-';
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
 
       fixture.detectChanges();

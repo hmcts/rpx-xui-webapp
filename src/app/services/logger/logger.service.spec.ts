@@ -3,6 +3,19 @@ import { LoggerService } from './logger.service';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 
 describe('Logger service', () => {
+  const originalConsole = {
+    log: console.log,
+    trace: console.trace,
+    debug: console.debug,
+    info: console.info,
+    warn: console.warn,
+    error: console.error,
+  };
+
+  afterEach(() => {
+    Object.assign(console, originalConsole);
+  });
+
   const mockedMonitoringService = jasmine.createSpyObj('mockedMonitoringService', ['logEvent', 'logException', 'enableCookies']);
   const mockedNgxLogger = jasmine.createSpyObj('mockedNgxLogger', ['trace', 'debug', 'info', 'log', 'warn', 'error', 'fatal']);
   const mockedSessionStorageService = jasmine.createSpyObj('mockedSessionStorageService', ['getItem']);

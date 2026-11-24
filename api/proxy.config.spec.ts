@@ -8,12 +8,14 @@ import { initProxy } from './proxy.config';
 import { SERVICES_CCD_COMPONENT_API_PATH, SERVICES_CCD_DATA_STORE_API_PATH } from './configuration/references';
 
 describe('proxy configuration', () => {
+  let app: { get: sinon.SinonStub };
   let sandbox: sinon.SinonSandbox;
   let applyProxyStub: sinon.SinonStub;
   let getConfigValueStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    app = { get: sandbox.stub() };
     applyProxyStub = sandbox.stub(middlewareProxy, 'applyProxy');
     getConfigValueStub = sandbox.stub(configuration, 'getConfigValue').callsFake((reference: string) => reference);
   });
@@ -23,7 +25,7 @@ describe('proxy configuration', () => {
   });
 
   it('routes case searches to the Data Store API', () => {
-    initProxy({} as any);
+    initProxy(app as any);
 
     const configs = applyProxyStub.getCalls().map((call) => call.args[1]);
 
@@ -34,7 +36,7 @@ describe('proxy configuration', () => {
   });
 
   it('rewrites case-search URLs for the Data Store API', () => {
-    initProxy({} as any);
+    initProxy(app as any);
 
     const configs = applyProxyStub.getCalls().map((call) => call.args[1]);
     const searchCasesConfig = configs.find((config) => config.source === '/data/internal/searchCases');
@@ -45,7 +47,7 @@ describe('proxy configuration', () => {
   });
 
   it('routes Data Store paths to the Data Store API with URL rewriting', () => {
-    initProxy({} as any);
+    initProxy(app as any);
 
     const configs = applyProxyStub.getCalls().map((call) => call.args[1]);
 
@@ -56,7 +58,7 @@ describe('proxy configuration', () => {
   });
 
   it('excludes case searches from the generic Data Store proxy', () => {
-    initProxy({} as any);
+    initProxy(app as any);
 
     const configs = applyProxyStub.getCalls().map((call) => call.args[1]);
 
@@ -64,7 +66,7 @@ describe('proxy configuration', () => {
   });
 
   it('routes aggregated data to the Data Store API without URL rewriting', () => {
-    initProxy({} as any);
+    initProxy(app as any);
 
     const configs = applyProxyStub.getCalls().map((call) => call.args[1]);
 
@@ -81,7 +83,7 @@ describe('proxy configuration', () => {
     const proxyRequest = {};
     const request = {};
 
-    initProxy({} as any);
+    initProxy(app as any);
 
     const configs = applyProxyStub.getCalls().map((call) => call.args[1]);
     const aggregatedConfig = configs.find((config) => config.source === '/aggregated');
@@ -94,7 +96,7 @@ describe('proxy configuration', () => {
   });
 
   it('keeps non-Data Store CCD proxy paths on the component gateway', () => {
-    initProxy({} as any);
+    initProxy(app as any);
 
     const configs = applyProxyStub.getCalls().map((call) => call.args[1]);
 

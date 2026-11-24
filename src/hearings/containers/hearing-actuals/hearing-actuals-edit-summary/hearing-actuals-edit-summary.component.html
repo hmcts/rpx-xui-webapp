@@ -54,9 +54,13 @@
     <div>
       <h2 class="govuk-heading-m">{{ 'Hearing stage and result' | rpxTranslate }}</h2>
       <span class="govuk-body align-right">
-        <a class="govuk-link" [routerLink]="hearingActualAddEditUrl()" fragment="hearingStageResult">{{
-          'Change' | rpxTranslate
-        }}</a>
+        <a
+          (click)="hearingsService.recordAction('change')"
+          class="govuk-link"
+          [routerLink]="hearingActualAddEditUrl()"
+          fragment="hearingStageResult"
+          >{{ 'Change' | rpxTranslate }}</a
+        >
       </span>
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
@@ -107,9 +111,13 @@
                     </div>
                   </dd>
                   <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" [routerLink]="hearingActualAddEditUrl()" fragment="hearingDate">{{
-                      'Change' | rpxTranslate
-                    }}</a>
+                    <a
+                      (click)="hearingsService.recordAction('change')"
+                      class="govuk-link"
+                      [routerLink]="hearingActualAddEditUrl()"
+                      fragment="hearingDate"
+                      >{{ 'Change' | rpxTranslate }}</a
+                    >
                   </dd>
                 </div>
                 <ng-container *ngIf="!actualHearingDay.notRequired">
@@ -121,9 +129,13 @@
                       </div>
                       <dd class="govuk-summary-list__value"></dd>
                       <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" [routerLink]="hearingActualAddEditUrl()" fragment="hearingDate">{{
-                          'Change' | rpxTranslate
-                        }}</a>
+                        <a
+                          (click)="hearingsService.recordAction('change')"
+                          class="govuk-link"
+                          [routerLink]="hearingActualAddEditUrl()"
+                          fragment="hearingDate"
+                          >{{ 'Change' | rpxTranslate }}</a
+                        >
                       </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -171,9 +183,13 @@
                       </div>
                       <dd class="govuk-summary-list__value"></dd>
                       <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" [routerLink]="hearingActualAddEditUrl()" fragment="hearingDate">{{
-                          'Change' | rpxTranslate
-                        }}</a>
+                        <a
+                          (click)="hearingsService.recordAction('change')"
+                          class="govuk-link"
+                          [routerLink]="hearingActualAddEditUrl()"
+                          fragment="hearingDate"
+                          >{{ 'Change' | rpxTranslate }}</a
+                        >
                       </dd>
                     </div>
                     <div class="govuk-summary-list__row">

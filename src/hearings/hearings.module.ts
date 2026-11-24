@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -23,6 +22,7 @@ import { HearingAmendmentsGuard } from './guards/hearing-amendments-guard';
 import { hearingsRouting } from './hearings.routes';
 import { HearingsPipesModule } from './pipes/hearings.pipes.module';
 import { HearingsService } from './services/hearings.service';
+import { provideHearingsHttpClient } from './services/hearings-http-client.provider';
 import { HearingsFeatureService } from './services/hearings-feature.service';
 import { effects, reducers } from './store';
 import { AbstractPageFlow } from './utils/abstract-page-flow';
@@ -61,7 +61,7 @@ import { WarningAndErrorSectionComponent } from './containers/request-hearing/he
     FormatTranslatorService,
     HearingAmendmentsGuard,
     HearingsFeatureService,
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHearingsHttpClient(),
   ],
 })
 /**

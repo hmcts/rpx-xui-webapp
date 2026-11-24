@@ -1,5 +1,4 @@
 import { Component, OnDestroy } from '@angular/core';
-import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { ACTION, HearingRequestPageRouteNames } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
@@ -27,8 +26,7 @@ export class RequestHearingComponent implements OnDestroy {
   constructor(
     private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
-    private readonly hearingsService: HearingsService,
-    private readonly appConfig: AbstractAppConfig
+    private readonly hearingsService: HearingsService
   ) {
     this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe((hearingState) => {
       this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
@@ -54,12 +52,9 @@ export class RequestHearingComponent implements OnDestroy {
       this.hearingsService.submitUpdatedRequestClicked = true;
       this.hearingsService.navigateAction(action);
     } else if (action === ACTION.SUBMIT) {
-      const mismatchLogMessages = HearingsUtils.getHearingConsistencyLogMessages(
-        this.hearingRequestMainModel,
-        this.serviceHearingValuesModel
-      );
-      mismatchLogMessages.forEach((message) => this.appConfig.logMessage(message));
       if (!HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
+        this.hearingsService.recordAction('submit');
+        this.hearingsService.recordValidationFailure('case-context-mismatch');
         this.showMismatchErrorMessage = true;
         this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE_LIST };
       } else {

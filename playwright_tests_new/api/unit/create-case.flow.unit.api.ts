@@ -1,10 +1,15 @@
 import { expect, test } from '@playwright/test';
 
 import {
+  afterStepContext,
+  buildWizardValidationErrorMessage,
   clickSubmitAndWaitFlow,
   findCreateCaseBootstrapFailure,
+  isNonRetryableBootstrapFailure,
+  POC_TEXT_FIELDS_VALIDATION_ERROR,
   startCreateCaseFlow,
 } from '../../E2E/page-objects/pages/exui/createCase.flow.js';
+import { isTransientWorkflowFailure } from '../../E2E/utils/transient-failure.utils.js';
 import { buildTestAppUrl } from './testAppUrls.js';
 import { SUBMIT_ENDPOINT, submitFlowScenario } from './create-case-submit-support.js';
 
@@ -56,7 +61,11 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
         submitCall: { method: 'POST', status: 502, url: SUBMIT_ENDPOINT },
         validationText: 'Secondary validation error',
       });
-      await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(`POST ${SUBMIT_ENDPOINT} returned HTTP 502`);
+      await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(
+        burstCount === 500
+          ? 'API call history cursor 500 is outside the retained range'
+          : `POST ${SUBMIT_ENDPOINT} returned HTTP 502`
+      );
       expect(scenario.clicks()).toBe(1);
     });
   }
@@ -215,7 +224,7 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
       submitButton: submitButton as never,
       continueButton: continueButton as never,
       somethingWentWrongHeading: somethingWentWrongHeading as never,
-      getApiCalls: () => [],
+      getApiCallCursor: () => 0,
       getVisibleActionButton: async (locator) => {
         if (locator === (submitButton as never)) {
           return submitVisible ? (submitButton as never) : undefined;
@@ -275,7 +284,7 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
       submitButton: submitButton as never,
       continueButton: continueButton as never,
       somethingWentWrongHeading: somethingWentWrongHeading as never,
-      getApiCalls: () => [],
+      getApiCallCursor: () => 0,
       getVisibleActionButton: async (locator) => (locator === (submitButton as never) ? (submitButton as never) : undefined),
       clickSubmitButtonWithRetry: async () => {
         actionSequence.push('submit');
@@ -333,7 +342,8 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
       eventTypeSelect: eventTypeSelect as never,
       startButton: startButton as never,
       somethingWentWrongHeading: somethingWentWrongHeading as never,
-      getApiCalls: () =>
+      getApiCallCursor: () => 0,
+      getApiCallsSince: () =>
         attempt === 1
           ? [
               {
@@ -402,7 +412,8 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
         eventTypeSelect: eventTypeSelect as never,
         startButton: startButton as never,
         somethingWentWrongHeading: somethingWentWrongHeading as never,
-        getApiCalls: () => apiCalls,
+        getApiCallCursor: () => apiCalls.length,
+        getApiCallsSince: (cursor) => apiCalls.slice(cursor),
         waitForSelectReady: async () => undefined,
         selectOptionSmart: async () => undefined,
         normalizeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
@@ -411,6 +422,120 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
       })
     ).rejects.toThrow(
       `Create case bootstrap failed (attempt 1/1): GET ${buildTestAppUrl('/data/internal/case-types/ET_EnglandWales/event-triggers/initiateCase')} returned HTTP 502`
+    );
+  });
+  function bootstrapStatusScenario(status: number) {
+    let currentUrl = buildTestAppUrl('/cases/case-filter');
+    let gotoCalls = 0;
+    let selectCalls = 0;
+    const apiCalls: Array<{ method: string; status: number; url: string }> = [];
+    const page = {
+      url: () => currentUrl,
+      goto: async (url: string) => {
+        gotoCalls += 1;
+        currentUrl = buildTestAppUrl(url);
+      },
+      waitForTimeout: async () => undefined,
+      isClosed: () => false,
+    };
+    const run = () =>
+      startCreateCaseFlow({
+        page: page as never,
+        jurisdiction: 'DIVORCE',
+        caseType: 'xuiTestCaseType',
+        maxAttempts: 3,
+        createCaseButton: createLocator() as never,
+        jurisdictionSelect: createLocator() as never,
+        caseTypeSelect: createLocator() as never,
+        eventTypeSelect: createLocator() as never,
+        startButton: createLocator() as never,
+        somethingWentWrongHeading: createLocator() as never,
+        getApiCallCursor: () => apiCalls.length,
+        getApiCallsSince: (cursor) => apiCalls.slice(cursor),
+        waitForSelectReady: async () => {
+          apiCalls.push({ method: 'GET', status, url: buildTestAppUrl('/aggregated/caseworkers/123/jurisdictions') });
+          throw new Error('Create case select "#cc-jurisdiction" did not become ready within 10ms');
+        },
+        selectOptionSmart: async () => {
+          selectCalls += 1;
+        },
+        normalizeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
+        warn: () => undefined,
+        debug: () => undefined,
+      });
+    return { run, gotoCalls: () => gotoCalls, selectCalls: () => selectCalls };
+  }
+
+  for (const status of [403, 404]) {
+    test(`startCreateCaseFlow fails on the first attempt for deterministic bootstrap HTTP ${status}`, async () => {
+      const scenario = bootstrapStatusScenario(status);
+      const error = await scenario.run().catch((caught: unknown) => caught);
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toBe(
+        `Create case bootstrap failed (non-retryable, attempt 1/3): GET ${buildTestAppUrl('/aggregated/caseworkers/123/jurisdictions')} ` +
+          `returned HTTP ${status}; the signed-in user lacks create-case access or the test data is misconfigured.`
+      );
+      expect(isTransientWorkflowFailure(error)).toBe(false);
+      expect(scenario.gotoCalls()).toBe(0);
+    });
+  }
+
+  for (const status of [401, 408, 429, 503]) {
+    test(`startCreateCaseFlow keeps retrying bootstrap HTTP ${status} until the attempt budget is spent`, async () => {
+      const scenario = bootstrapStatusScenario(status);
+
+      await expect(scenario.run()).rejects.toThrow(
+        `Create case bootstrap failed (attempt 3/3): GET ${buildTestAppUrl('/aggregated/caseworkers/123/jurisdictions')} returned HTTP ${status}`
+      );
+      expect(scenario.gotoCalls()).toBe(2);
+    });
+  }
+
+  test('isNonRetryableBootstrapFailure treats access and jurisdiction-config errors as deterministic', () => {
+    const jurisdictions = (status: number) => ({
+      method: 'GET',
+      status,
+      url: buildTestAppUrl('/aggregated/caseworkers/1/jurisdictions'),
+    });
+    const caseTypeTrigger = (status: number) => ({
+      method: 'GET',
+      status,
+      url: buildTestAppUrl('/data/internal/case-types/CT/event-triggers/createCase'),
+    });
+    expect([400, 403, 404, 422].map((status) => isNonRetryableBootstrapFailure(jurisdictions(status)))).toEqual([
+      true,
+      true,
+      true,
+      true,
+    ]);
+    // 401 can be a stale session and 5xx/408/429 are transient.
+    expect([401, 408, 429, 500, 502, 504].map((status) => isNonRetryableBootstrapFailure(jurisdictions(status)))).toEqual([
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ]);
+    // Preview definition imports lag, so a case-type trigger 404 is retried; 403 is still deterministic.
+    expect(isNonRetryableBootstrapFailure(caseTypeTrigger(404))).toBe(false);
+    expect(isNonRetryableBootstrapFailure(caseTypeTrigger(403))).toBe(true);
+  });
+
+  test('wizard step messages say "after" once whether or not the caller context already starts with it', () => {
+    expect(afterStepContext('after PoC personal details')).toBe('after PoC personal details');
+    expect(afterStepContext('PoC personal details')).toBe('after PoC personal details');
+    expect(buildWizardValidationErrorMessage('after PoC text fields')).toBe('Validation error after PoC text fields');
+  });
+
+  test('divorce PoC retry check matches the validation error produced for the PoC text-field step', () => {
+    // The journeys pass 'after PoC text fields' to clickContinueAndWait, which builds the message below.
+    const produced = buildWizardValidationErrorMessage('after PoC text fields');
+    expect(produced.includes(POC_TEXT_FIELDS_VALIDATION_ERROR)).toBe(true);
+    expect(produced).not.toContain('after after');
+    expect(buildWizardValidationErrorMessage('after PoC personal details').includes(POC_TEXT_FIELDS_VALIDATION_ERROR)).toBe(
+      false
     );
   });
 });

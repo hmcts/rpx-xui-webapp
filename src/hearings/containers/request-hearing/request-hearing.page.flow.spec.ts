@@ -82,6 +82,39 @@ describe('RequestHearingPageFlow', () => {
     requestHearingPageFlow = new RequestHearingPageFlowSpec(mockStore, hearingsService, mockFeatureToggleService);
   });
 
+  it('should report rejected form validation once per continue attempt without logging error text', () => {
+    const telemetry = jasmine.createSpyObj('telemetry', ['recordAction', 'recordValidationFailure']);
+    const source = new HearingsService(mockedHttpClient, telemetry);
+    class InvalidFlow extends RequestHearingPageFlow {
+      public validationErrors = [];
+      public executeAction(): void {
+        this.validationErrors = [
+          { id: 'private-case', message: 'private-form-value' },
+          { id: 'private-hearing', message: 'private-name' },
+        ];
+      }
+    }
+    const flow = new InvalidFlow(mockStore, source, mockFeatureToggleService);
+    source.navigateAction(ACTION.CONTINUE);
+    expect(telemetry.recordValidationFailure).toHaveBeenCalledOnceWith('form', 2);
+    expect(telemetry.recordAction).toHaveBeenCalledOnceWith('continue');
+    source.navigateAction(ACTION.CONTINUE);
+    expect(telemetry.recordValidationFailure).toHaveBeenCalledTimes(2);
+    expect(JSON.stringify(telemetry.recordValidationFailure.calls.allArgs())).not.toContain('private-');
+    flow.unsubscribe();
+  });
+
+  it('should not report validation for successful navigation or back actions', () => {
+    const telemetry = jasmine.createSpyObj('telemetry', ['recordAction', 'recordValidationFailure']);
+    const source = new HearingsService(mockedHttpClient, telemetry);
+    const flow = new RequestHearingPageFlowSpec(mockStore, source, mockFeatureToggleService);
+    Object.assign(flow, { validationErrors: [{ message: 'old-backend-error' }] });
+    source.navigateAction(ACTION.CONTINUE);
+    source.navigateAction(ACTION.BACK);
+    expect(telemetry.recordValidationFailure).not.toHaveBeenCalled();
+    flow.unsubscribe();
+  });
+
   it('should navigate continue', () => {
     requestHearingPageFlow.navigateAction(ACTION.CONTINUE);
     expect(mockStore.dispatch).toHaveBeenCalledWith(

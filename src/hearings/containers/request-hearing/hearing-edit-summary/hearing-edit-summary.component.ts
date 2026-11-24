@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -46,6 +46,7 @@ import { HearingWindowModel } from '../../../models/hearingWindow.model';
 @Component({
   standalone: false,
   selector: 'exui-hearing-edit-summary',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-edit-summary.component.html',
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {

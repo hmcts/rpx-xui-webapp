@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, Injector, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Injector, ViewChild, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { NocQuestion } from '../../models';
@@ -9,6 +9,7 @@ import { PaletteService } from './palette.service';
 @Component({
   standalone: false,
   selector: 'exui-noc-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div>
       <ng-container #fieldContainer></ng-container>
@@ -20,7 +21,6 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements Af
   public fieldContainer: ViewContainerRef;
 
   constructor(
-    private readonly resolver: ComponentFactoryResolver,
     private readonly paletteService: PaletteService,
     private readonly formValidatorsService: FormValidatorsService
   ) {
@@ -38,7 +38,7 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements Af
       providers: [],
       parent: this.fieldContainer.parentInjector,
     });
-    const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    const component = this.fieldContainer.createComponent(componentClass, { injector });
 
     // Provide component @Inputs
 
@@ -51,6 +51,5 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements Af
     component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
 
     component.instance['idPrefix'] = this.idPrefix;
-    this.fieldContainer.insert(component.hostView);
   }
 }

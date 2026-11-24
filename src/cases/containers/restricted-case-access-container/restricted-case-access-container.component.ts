@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -16,6 +16,7 @@ import { RestrictedCase } from '../../models/restricted-case.model';
 @Component({
   standalone: false,
   selector: 'exui-restricted-case-access-container',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './restricted-case-access-container.component.html',
 })
 export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy {

@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
 
 @Component({
   standalone: false,
   selector: 'exui-warning-and-error-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './warning-and-error-section.component.html',
 })
 export class WarningAndErrorSectionComponent {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-affirmation',
   templateUrl: './noc-affirmation.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./noc-affirmation.component.scss'],
 })
 export class NocAffirmationComponent implements OnInit {

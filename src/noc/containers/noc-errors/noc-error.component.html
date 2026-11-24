@@ -6,7 +6,7 @@
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        @switch ((lastError$ | async)?.error.code) {
+        @switch ($safeNavigationMigration((lastError$ | async)?.error.code)) {
           @case (nocErrorMap.HAS_REPRESENTED) {
             <h1 class="govuk-heading-l" id="has-represented">
               {{ 'Your organisation already has access to this case' | rpxTranslate }}
@@ -58,7 +58,7 @@
           @default {
             <h1 class="govuk-heading-l" id="generic-error">{{ 'Something went wrong' | rpxTranslate }}</h1>
             <p class="govuk-body">{{ 'Your notice of change request has not been submitted.' | rpxTranslate }}</p>
-            <p class="govuk-body">{{ (lastError$ | async)?.error.message | rpxTranslate }}</p>
+            <p class="govuk-body">{{ $safeNavigationMigration((lastError$ | async)?.error.message) | rpxTranslate }}</p>
             <p class="govuk-body">
               <a href="/get-help">{{ 'Contact us' | rpxTranslate }}</a> {{ 'for more information.' | rpxTranslate }}
             </p>

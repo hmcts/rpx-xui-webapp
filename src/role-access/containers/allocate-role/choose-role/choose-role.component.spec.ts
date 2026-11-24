@@ -11,7 +11,7 @@ import { CHOOSE_A_ROLE } from '../../../constants';
 import { AllocateRoleNavigationEvent, AllocateRoleState } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseRoleComponent } from './choose-role.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 const firstRoleOptions = [
   { optionId: 'lead-judge', optionValue: 'Lead judge' },
@@ -48,7 +48,7 @@ describe('ChooseRoleComponent', () => {
             },
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

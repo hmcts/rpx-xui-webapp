@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
@@ -12,6 +12,7 @@ import { HearingsUtils } from '../../utils/hearings.utils';
   standalone: false,
   selector: 'exui-listing-information-summary',
   templateUrl: './listing-information-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./listing-information-summary.component.scss'],
 })
 export class ListingInformationSummaryComponent implements OnInit, OnDestroy {

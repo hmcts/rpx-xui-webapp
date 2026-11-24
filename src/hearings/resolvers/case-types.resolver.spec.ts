@@ -5,7 +5,7 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { initialState } from '../hearing.test.data';
 import { LovRefDataModel } from '../models/lovRefData.model';
@@ -26,7 +26,7 @@ describe('CaseTypesResolver', () => {
         CaseTypesResolver,
         LovRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

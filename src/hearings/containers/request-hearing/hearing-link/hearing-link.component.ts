@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -17,6 +17,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 @Component({
   standalone: false,
   selector: 'exui-hearing-link',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-link.component.html',
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {

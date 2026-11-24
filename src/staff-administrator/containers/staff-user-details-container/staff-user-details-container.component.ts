@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'exui-staff-user-details-container',
   templateUrl: './staff-user-details-container.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./staff-user-details-container.component.scss'],
 })
 export class StaffUserDetailsContainerComponent {}

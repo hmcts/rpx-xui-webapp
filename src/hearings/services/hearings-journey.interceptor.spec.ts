@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, HttpHeaders, provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { HEARINGS_JOURNEY_HEADER, HEARINGS_IDENTIFIER_HEADERS } from '../../../common/hearings/telemetry-correlation';
@@ -25,7 +25,7 @@ describe('Hearings journey interceptor', () => {
     readJourney = jasmine.createSpy('readJourney').and.callFake(() => currentJourney);
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([hearingsJourneyInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([hearingsJourneyInterceptor])),
         provideHttpClientTesting(),
         { provide: Window, useValue: window },
         {

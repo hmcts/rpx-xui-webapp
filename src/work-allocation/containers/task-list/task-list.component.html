@@ -38,7 +38,12 @@
   @if (tasksTotal) {
     @for (
       field of fields
-        | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: tasksTotal };
+        | paginate
+          : {
+              itemsPerPage: $safeNavigationMigration(pagination?.page_size),
+              currentPage: $safeNavigationMigration(pagination?.page_number),
+              totalItems: tasksTotal,
+            };
       track field
     ) {
       <ng-container [cdkColumnDef]="field.name">

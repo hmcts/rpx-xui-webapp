@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { ACTION, Mode } from '../../../models/hearings.enum';
@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 @Component({
   standalone: false,
   selector: 'exui-hearing-create-edit-summary',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-create-edit-summary.component.html',
 })
 export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {

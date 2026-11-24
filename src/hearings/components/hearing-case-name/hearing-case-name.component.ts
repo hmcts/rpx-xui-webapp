@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
@@ -6,6 +6,7 @@ import * as fromHearingStore from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-hearing-case-name',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-case-name.component.html',
 })
 export class HearingCaseNameComponent implements OnInit, OnDestroy {

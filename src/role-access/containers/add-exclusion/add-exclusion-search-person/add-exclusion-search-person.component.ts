@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
@@ -11,6 +11,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-add-exclusion-search-person',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './add-exclusion-search-person.component.html',
 })
 export class AddExclusionSearchPersonComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { HearingJudgeSelectionEnum } from '../../models/hearings.enum';
 import { JudicialUserModel } from '../../models/judicialUser.model';
@@ -8,6 +8,7 @@ import { ValidatorsUtils } from '../../utils/validators.utils';
   standalone: false,
   selector: 'exui-hearing-judge-names-list',
   templateUrl: './hearing-judge-names-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hearing-judge-names-list.component.scss'],
 })
 export class HearingJudgeNamesListComponent {

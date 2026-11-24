@@ -13,7 +13,7 @@ import { Mode } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../store';
 import { HearingSummaryComponent } from './hearing-summary.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('HearingSummaryComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
@@ -44,7 +44,7 @@ describe('HearingSummaryComponent', () => {
             fragment: of('point-to-me'),
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

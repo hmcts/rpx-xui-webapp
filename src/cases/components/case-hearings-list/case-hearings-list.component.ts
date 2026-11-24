@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ import * as fromHearingStore from '../../../hearings/store';
   standalone: false,
   selector: 'exui-case-hearings-list',
   templateUrl: './case-hearings-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./case-hearings-list.component.scss'],
 })
 export class CaseHearingsListComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import moment from 'moment';
@@ -15,6 +15,7 @@ import { handleError } from '../../utils';
 @Component({
   standalone: false,
   selector: 'exui-delete-exclusion',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './delete-exclusion.component.html',
 })
 export class DeleteExclusionComponent implements OnInit {

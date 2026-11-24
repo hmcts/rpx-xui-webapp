@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PhaseBannerComponent } from '../../../app/components/phase-banner/phase-banner.component';
 import { CaseLoaderComponent } from './case-loader.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('Loader Component', () => {
   let component: CaseLoaderComponent;
@@ -16,7 +16,7 @@ describe('Loader Component', () => {
       declarations: [CaseLoaderComponent, PhaseBannerComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [RouterTestingModule],
-      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
   }));
 

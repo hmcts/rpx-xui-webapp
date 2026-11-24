@@ -1,7 +1,7 @@
 import * as fromContainers from './containers';
 
 import { CommonModule } from '@angular/common';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { SharedModule } from '../app/shared/shared.module';
@@ -16,6 +16,12 @@ import { BookingService } from './services';
 @NgModule({
   declarations: [...fromContainers.containers],
   imports: [FormsModule, ReactiveFormsModule, CommonModule, bookingRouting, SharedModule, bookingRouting, ExuiCommonLibModule],
-  providers: [AlertService, LocationDataService, BookingGuard, BookingService, provideHttpClient(withInterceptorsFromDi())],
+  providers: [
+    AlertService,
+    LocationDataService,
+    BookingGuard,
+    BookingService,
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
+  ],
 })
 export class BookingModule {}

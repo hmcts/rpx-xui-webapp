@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
@@ -17,6 +17,7 @@ import { HearingResponseError } from '../../../../hearings/models/hearingRespons
 @Component({
   standalone: false,
   selector: 'exui-hearing-view-edit-summary',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-view-edit-summary.component.html',
 })
 export class HearingViewEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {

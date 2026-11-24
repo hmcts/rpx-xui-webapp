@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
@@ -12,6 +12,7 @@ import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-b
   selector: 'exui-hearing-actuals-edit-summary',
   templateUrl: './hearing-actuals-edit-summary.component.html',
   styleUrls: ['./hearing-actuals-edit-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DatePipe],
 })
 export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBaseComponent {

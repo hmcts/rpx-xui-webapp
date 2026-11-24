@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as fromActions from '../../../app/store';
@@ -9,6 +9,7 @@ import { NoResultsMessageId } from '../../enums';
   standalone: false,
   selector: 'exui-no-results',
   templateUrl: './no-results.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./no-results.component.scss'],
 })
 export class NoResultsComponent implements OnInit {

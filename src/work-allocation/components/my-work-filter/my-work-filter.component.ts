@@ -1,5 +1,14 @@
 import { Location as AngularLocation } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import {
@@ -35,6 +44,7 @@ export const LOCATION_ERROR: ErrorMessage = {
   selector: 'exui-my-work-filter',
   templateUrl: './my-work-filter.component.html',
   styleUrls: ['my-work-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class MyWorkFilterComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { InfoMessage } from './../../shared/enums/info-message';
@@ -7,6 +7,7 @@ import { InfoMessageComponent } from './info-message.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<exui-info-message [type]="type" [message]="message"></exui-info-message>',
 })
 class WrapperComponent {

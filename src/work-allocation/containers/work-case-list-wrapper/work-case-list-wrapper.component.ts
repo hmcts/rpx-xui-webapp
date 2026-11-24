@@ -1,6 +1,6 @@
 import { Location as StateLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
@@ -27,6 +27,7 @@ import { handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN }
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'work-case-list-wrapper.component.html',
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {

@@ -1,5 +1,5 @@
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { Component, DebugElement, Input } from '@angular/core';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
+import { Component, DebugElement, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
@@ -23,6 +23,7 @@ import { CaseViewerContainerComponent } from './case-viewer-container.component'
 @Component({
   standalone: false,
   selector: 'ccd-case-viewer',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mat-tab-group>
       @for (tab of prependedTabs; track tab) {
@@ -272,7 +273,7 @@ describe('CaseViewerContainerComponent', () => {
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -362,7 +363,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -440,7 +441,7 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -520,7 +521,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

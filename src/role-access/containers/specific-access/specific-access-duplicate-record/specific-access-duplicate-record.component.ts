@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WorkAllocationTaskService } from '../../../../work-allocation/services';
 import { ACTION } from '../../../../work-allocation/services/work-allocation-task.service';
@@ -8,6 +8,7 @@ import { SpecificAccessNavigation } from '../../../models';
   standalone: false,
   selector: 'exui-specific-access-duplicate-record',
   templateUrl: './specific-access-duplicate-record.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./specific-access-duplicate-record.component.scss'],
 })
 export class SpecificAccessDuplicateRecordComponent implements OnInit {

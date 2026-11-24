@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { select, Store } from '@ngrx/store';
@@ -12,6 +12,7 @@ import { setErrorTitle } from '../../../utils';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-information',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './specific-access-information.component.html',
 })
 export class SpecificAccessInformationComponent implements OnDestroy, OnInit {

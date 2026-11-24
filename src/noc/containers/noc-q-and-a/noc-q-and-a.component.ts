@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -10,6 +10,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-q-and-a',
   templateUrl: './noc-q-and-a.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./noc-q-and-a.component.scss'],
 })
 export class NocQAndAComponent implements OnInit, OnDestroy {

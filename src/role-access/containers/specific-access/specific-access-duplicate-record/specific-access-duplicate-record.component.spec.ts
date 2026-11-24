@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { getMockTasks } from '../../../../work-allocation/tests/utils.spec';
 import { SpecificAccessDuplicateRecordComponent } from './specific-access-duplicate-record.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('SpecificAccessDuplicateRecordComponent', () => {
   let component: SpecificAccessDuplicateRecordComponent;
@@ -29,7 +29,7 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
             },
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -13,6 +13,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   standalone: false,
   selector: 'exui-all-work-cases',
   templateUrl: 'all-work-case.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['all-work-case.component.scss'],
 })
 export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implements OnInit {

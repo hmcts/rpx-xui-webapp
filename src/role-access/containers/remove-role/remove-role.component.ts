@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
@@ -17,6 +17,7 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
 @Component({
   standalone: false,
   selector: 'exui-remove-role',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './remove-role.component.html',
 })
 export class RemoveRoleComponent implements OnInit {

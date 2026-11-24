@@ -8,6 +8,7 @@ import {
   withInterceptors,
   withInterceptorsFromDi,
   HttpXsrfTokenExtractor,
+  withXhr,
 } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { createEnvironmentInjector, EnvironmentInjector } from '@angular/core';
@@ -33,7 +34,7 @@ describe('Lazy Cases/Hearings HTTP correlation provider', () => {
     rootInterceptor = jasmine.createSpy('rootInterceptor').and.callFake((request, next) => next(request));
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([hearingsJourneyInterceptor, rootInterceptor]), withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptors([hearingsJourneyInterceptor, rootInterceptor]), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         // XSRF origin checks need an absolute URL; the default mock location has no origin.
         { provide: PlatformLocation, useFactory: () => new MockPlatformLocation({ startUrl: 'https://xui.example.test/' }) },

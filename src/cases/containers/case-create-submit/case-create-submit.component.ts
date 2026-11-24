@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { CaseEventData, CaseEventTrigger, CasesService, Draft, DraftService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
@@ -10,6 +10,7 @@ import * as fromCaseCreate from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-case-create-submit',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'case-create-submit.component.html',
 })
 export class CaseCreateSubmitComponent implements OnInit {

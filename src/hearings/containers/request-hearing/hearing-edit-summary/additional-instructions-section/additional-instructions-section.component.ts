@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import * as _ from 'lodash';
 import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
@@ -8,6 +8,7 @@ import { HearingsService } from '../../../../services/hearings.service';
 @Component({
   standalone: false,
   selector: 'exui-additional-instructions-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './additional-instructions-section.component.html',
 })
 export class AdditionalInstructionsSectionComponent implements OnInit {

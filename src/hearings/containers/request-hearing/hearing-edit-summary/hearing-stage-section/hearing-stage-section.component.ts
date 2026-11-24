@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
@@ -10,6 +10,7 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 @Component({
   standalone: false,
   selector: 'exui-hearing-stage-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-stage-section.component.html',
 })
 export class HearingStageSectionComponent implements OnInit {

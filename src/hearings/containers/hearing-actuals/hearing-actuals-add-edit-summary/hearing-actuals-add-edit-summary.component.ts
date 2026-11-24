@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
@@ -16,6 +16,7 @@ import { SessionStorageService } from 'src/app/services';
   selector: 'exui-hearing-actuals-add-edit-summary',
   templateUrl: './hearing-actuals-add-edit-summary.component.html',
   styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DatePipe],
 })
 export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent {

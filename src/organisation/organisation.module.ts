@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -18,6 +18,6 @@ import { effects, reducers } from './store';
       disableConsoleLogging: false,
     }),
   ],
-  providers: [fromServices.services, LoggerService, provideHttpClient(withInterceptorsFromDi())],
+  providers: [fromServices.services, LoggerService, provideHttpClient(withXhr(), withInterceptorsFromDi())],
 })
 export class OrganisationModule {}

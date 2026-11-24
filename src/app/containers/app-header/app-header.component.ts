@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
@@ -19,6 +19,7 @@ import { getUserRolesExcludingSpecificAccessApprover } from '../../shared/utils/
 @Component({
   standalone: false,
   selector: 'exui-app-header',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './app-header.component.html',
 })
 

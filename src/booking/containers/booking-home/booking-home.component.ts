@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { WindowService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
@@ -14,6 +14,7 @@ import { BookingService } from '../../services';
   standalone: false,
   selector: 'exui-booking-home',
   templateUrl: './booking-home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./booking-home.component.scss'],
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {

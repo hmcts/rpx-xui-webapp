@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -22,6 +22,7 @@ import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclu
   standalone: false,
   selector: 'exui-add-exclusion-home',
   templateUrl: './add-exclusion-home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./add-exclusion-home.component.scss'],
 })
 export class AddExclusionHomeComponent implements OnInit, OnDestroy {

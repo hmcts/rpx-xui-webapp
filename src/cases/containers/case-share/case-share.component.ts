@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { UserDetails } from '@hmcts/rpx-xui-common-lib';
@@ -16,6 +16,7 @@ import * as fromCaseList from '../../store/reducers';
   standalone: false,
   selector: 'exui-case-share',
   templateUrl: './case-share.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./case-share.component.scss'],
 })
 export class CaseShareComponent implements OnInit {

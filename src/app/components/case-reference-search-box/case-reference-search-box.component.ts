@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -17,6 +26,7 @@ const REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
   standalone: false,
   selector: 'exui-case-reference-search-box',
   templateUrl: './case-reference-search-box.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./case-reference-search-box.component.scss'],
 })
 export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, AfterViewInit {

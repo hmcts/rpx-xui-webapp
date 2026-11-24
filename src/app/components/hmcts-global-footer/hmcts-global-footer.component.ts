@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 
@@ -6,6 +6,7 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
   standalone: false,
   selector: 'exui-app-hmcts-global-footer',
   templateUrl: './hmcts-global-footer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hmcts-global-footer.component.scss'],
 })
 export class HmctsGlobalFooterComponent {

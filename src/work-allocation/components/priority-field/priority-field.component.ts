@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { PriorityLimits, TaskPriority } from '../../enums';
 
 @Component({
   standalone: false,
   selector: 'exui-priority-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './priority-field.component.html',
 })
 export class PriorityFieldComponent {

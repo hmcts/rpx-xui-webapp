@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { map, skipWhile, switchMap } from 'rxjs/operators';
@@ -19,6 +19,7 @@ import { DecentralisedRedirectService } from '../../../decentralisation/decentra
   standalone: false,
   selector: 'exui-hmcts-global-header',
   templateUrl: './hmcts-global-header.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hmcts-global-header.component.scss'],
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {

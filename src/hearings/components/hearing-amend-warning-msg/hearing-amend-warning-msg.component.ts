@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { KEY_MODE } from '../../models/hearingConditions';
@@ -9,6 +9,7 @@ import { HearingsUtils } from '../../utils/hearings.utils';
 @Component({
   standalone: false,
   selector: 'exui-hearing-amend-warning-msg',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-amend-warning-msg.component.html',
 })
 export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {

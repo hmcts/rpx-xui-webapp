@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -29,6 +29,7 @@ import { isEmpty } from 'lodash';
 @Component({
   standalone: false,
   selector: 'exui-hearing-timing',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-timing.component.html',
 })
 export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {

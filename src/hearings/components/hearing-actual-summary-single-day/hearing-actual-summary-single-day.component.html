@@ -13,25 +13,33 @@
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Start time' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{ actualHearingDay?.hearingStartTime | ccdDate: 'local' | date: dateFormat.DisplayTime }}
+          {{ $safeNavigationMigration(actualHearingDay?.hearingStartTime) | ccdDate: 'local' | date: dateFormat.DisplayTime }}
         </dd>
       </div>
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Finish time' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{ actualHearingDay?.hearingEndTime | ccdDate: 'local' | date: dateFormat.DisplayTime }}
+          {{ $safeNavigationMigration(actualHearingDay?.hearingEndTime) | ccdDate: 'local' | date: dateFormat.DisplayTime }}
         </dd>
       </div>
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Pause time' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{ actualHearingDay.pauseDateTimes[0]?.pauseStartTime | ccdDate: 'local' | date: dateFormat.DisplayTime }}
+          {{
+            $safeNavigationMigration(actualHearingDay.pauseDateTimes[0]?.pauseStartTime)
+              | ccdDate: 'local'
+              | date: dateFormat.DisplayTime
+          }}
         </dd>
       </div>
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Resume time' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{ actualHearingDay.pauseDateTimes[0]?.pauseEndTime | ccdDate: 'local' | date: dateFormat.DisplayTime }}
+          {{
+            $safeNavigationMigration(actualHearingDay.pauseDateTimes[0]?.pauseEndTime)
+              | ccdDate: 'local'
+              | date: dateFormat.DisplayTime
+          }}
         </dd>
       </div>
     </dl>
@@ -52,7 +60,7 @@
             @for (party of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate); track party) {
               <div>
                 {{ party?.individualDetails?.firstName }} {{ party?.individualDetails?.lastName }}:
-                {{ party?.partyChannelSubType | convertToValue: partyChannels }}
+                {{ $safeNavigationMigration(party?.partyChannelSubType) | convertToValue: partyChannels }}
               </div>
             }
           </dd>

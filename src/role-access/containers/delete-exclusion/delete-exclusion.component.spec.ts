@@ -1,6 +1,6 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
+import { Component, NO_ERRORS_SCHEMA, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -15,6 +15,7 @@ import { DeleteExclusionComponent } from './delete-exclusion.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <exui-delete-exclusion></exui-delete-exclusion>`,
 })
 class WrapperComponent {
@@ -97,7 +98,7 @@ describe('DeleteExclusionComponent', () => {
           provide: CaseworkerDataService,
           useValue: mockCaseworkerDataService,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -277,7 +278,7 @@ describe('DeleteExclusionComponent with no name', () => {
           provide: CaseworkerDataService,
           useValue: mockCaseworkerDataService,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -430,7 +431,7 @@ describe('DeleteExclusionComponent names and answers', () => {
         { provide: RoleExclusionsService, useValue: mockRoleExclusionService },
         { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

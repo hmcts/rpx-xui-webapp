@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
@@ -10,6 +19,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-case-ref',
   templateUrl: 'noc-case-ref.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['noc-case-ref.component.scss'],
 })
 export class NocCaseRefComponent implements OnInit, OnDestroy {

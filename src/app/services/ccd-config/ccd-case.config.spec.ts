@@ -9,7 +9,7 @@ import { AppConfig } from './ccd-case.config';
 import { InitialisationSyncService } from './initialisation-sync-service';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 import { LoggerService } from '../logger/logger.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { AppConstants } from '../../../app/app.constants';
 
 class MockConfigService {
@@ -89,7 +89,7 @@ describe('AppConfiguration', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: EnvironmentService, useValue: mockEnvironmentService },
         { provide: LoggerService, useValue: mockLoggerService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -465,7 +465,7 @@ describe('AppConfiguration with different deployment environments', () => {
           { provide: FeatureToggleService, useValue: mockFeatureToggleServiceForEnv },
           { provide: EnvironmentService, useValue: mockEnvironmentServiceForEnv },
           { provide: LoggerService, useValue: mockLoggerServiceForEnv },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       });
@@ -493,7 +493,7 @@ describe('AppConfiguration with different deployment environments', () => {
           { provide: FeatureToggleService, useValue: mockFeatureToggleServiceForEnv },
           { provide: EnvironmentService, useValue: mockEnvironmentServiceForEnv },
           { provide: LoggerService, useValue: mockLoggerServiceForEnv },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       });
@@ -521,7 +521,7 @@ describe('AppConfiguration with different deployment environments', () => {
           { provide: FeatureToggleService, useValue: mockFeatureToggleServiceForEnv },
           { provide: EnvironmentService, useValue: mockEnvironmentServiceForEnv },
           { provide: LoggerService, useValue: mockLoggerServiceForEnv },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       });
@@ -570,7 +570,7 @@ describe('AppConfiguration edge cases and error scenarios', () => {
           { provide: FeatureToggleService, useValue: mockFeatureToggleServiceError },
           { provide: EnvironmentService, useValue: mockEnvironmentServiceError },
           { provide: LoggerService, useValue: mockLoggerServiceError },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       });
@@ -610,7 +610,7 @@ describe('AppConfiguration edge cases and error scenarios', () => {
           { provide: FeatureToggleService, useValue: mockFeatureToggleServiceError },
           { provide: EnvironmentService, useValue: mockEnvironmentServiceError },
           { provide: LoggerService, useValue: mockLoggerServiceError },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       });
@@ -651,7 +651,7 @@ describe('AppConfiguration edge cases and error scenarios', () => {
           { provide: FeatureToggleService, useValue: mockFeatureToggleServiceAsync },
           { provide: EnvironmentService, useValue: mockEnvironmentService },
           { provide: LoggerService, useValue: mockLoggerService },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       });
@@ -763,7 +763,7 @@ describe('AppConfiguration with specific config values', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleServiceConfig },
         { provide: EnvironmentService, useValue: mockEnvironmentServiceConfig },
         { provide: LoggerService, useValue: mockLoggerServiceConfig },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

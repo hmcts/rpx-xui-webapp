@@ -13,7 +13,7 @@ import { SearchResult } from '../../../search/models';
 import { NoResultsMessageId, ProcessForAccessType } from '../../enums';
 import { SearchService } from '../../services/search.service';
 import { SearchResultsComponent } from './search-results.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -161,7 +161,7 @@ describe('SearchResultsComponent', () => {
         { provide: FormBuilder, useValue: formBuilder },
         { provide: SearchService, useValue: searchService },
         { provide: JurisdictionService, useValue: jurisdictionService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
@@ -7,6 +7,7 @@ import * as fromHearingStore from '../../store';
   standalone: false,
   selector: 'exui-hearings-error-page',
   templateUrl: './error-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./error-page.component.scss'],
 })
 export class ErrorPageComponent implements OnInit, OnDestroy {

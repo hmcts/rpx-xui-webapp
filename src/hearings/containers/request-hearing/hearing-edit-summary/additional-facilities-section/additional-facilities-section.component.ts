@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
@@ -9,6 +9,7 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 @Component({
   standalone: false,
   selector: 'exui-additional-facilities-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './additional-facilities-section.component.html',
 })
 export class AdditionalFacilitiesSectionComponent implements OnInit {

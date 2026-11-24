@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -20,6 +20,7 @@ import * as fromHearingStore from '../../../store';
   standalone: false,
   selector: 'exui-check-your-answers',
   templateUrl: './linked-hearings-check-your-answers.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./linked-hearings-check-your-answers.component.scss'],
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestroy {

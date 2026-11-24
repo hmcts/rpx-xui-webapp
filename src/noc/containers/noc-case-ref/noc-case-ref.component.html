@@ -14,7 +14,7 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li>
-            <a href="noc#caseRef">{{ (validationErrors$ | async)?.message | rpxTranslate }}</a>
+            <a href="noc#caseRef">{{ $safeNavigationMigration((validationErrors$ | async)?.message) | rpxTranslate }}</a>
           </li>
         </ul>
       </div>

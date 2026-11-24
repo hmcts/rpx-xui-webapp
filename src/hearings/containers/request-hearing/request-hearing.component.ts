@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { ACTION, HearingRequestPageRouteNames } from '../../models/hearings.enum';
 import { HearingsService } from '../../services/hearings.service';
@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
   standalone: false,
   selector: 'exui-request-hearing',
   templateUrl: './request-hearing.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./request-hearing.component.scss'],
 })
 export class RequestHearingComponent implements OnDestroy {

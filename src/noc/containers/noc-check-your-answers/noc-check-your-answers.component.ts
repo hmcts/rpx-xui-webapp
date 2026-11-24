@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { NocAnswer, NocState } from '../../models';
@@ -8,6 +8,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-check-your-answers',
   templateUrl: './noc-check-your-answers.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./noc-check-your-answers.component.scss'],
 })
 export class NocCheckYourAnswersComponent implements OnInit {

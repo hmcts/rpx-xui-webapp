@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FilterConfig, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 import { InfoMessageCommService } from '../../../../app/shared/services/info-message-comms.service';
@@ -8,6 +8,7 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   standalone: false,
   selector: 'exui-staff-search',
   templateUrl: './staff-search.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./staff-search.component.scss'],
 })
 export class StaffSearchComponent implements OnInit, OnDestroy {

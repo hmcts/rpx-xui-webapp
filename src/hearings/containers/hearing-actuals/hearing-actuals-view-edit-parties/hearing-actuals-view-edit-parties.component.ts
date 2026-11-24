@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit, Renderer2, Optional } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, Renderer2, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
@@ -24,6 +24,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   standalone: false,
   selector: 'exui-hearing-actuals-view-edit-parties',
   styleUrls: ['./hearing-actuals-view-edit-parties.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-actuals-view-edit-parties.component.html',
 })
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {

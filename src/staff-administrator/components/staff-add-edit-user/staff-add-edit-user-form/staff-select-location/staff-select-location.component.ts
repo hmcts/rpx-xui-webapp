@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { RefDataService } from '@hmcts/rpx-xui-common-lib';
 import { combineLatest, iif, Observable, of } from 'rxjs';
@@ -10,6 +10,7 @@ import { StaffUserLocation } from '../../../../models/staff-user-location.model'
   standalone: false,
   selector: 'exui-staff-select-location',
   templateUrl: './staff-select-location.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./staff-select-location.component.scss'],
 })
 export class StaffSelectLocationComponent implements OnInit {

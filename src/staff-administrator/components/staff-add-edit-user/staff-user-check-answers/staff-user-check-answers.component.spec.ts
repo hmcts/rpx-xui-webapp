@@ -9,7 +9,7 @@ import { StaffUser } from '../../../models/staff-user.model';
 import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Pipe({
   standalone: false,
@@ -186,7 +186,7 @@ describe('StaffUserCheckAnswersComponent', () => {
           },
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

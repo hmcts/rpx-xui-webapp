@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { Answer } from '../../models';
 
 @Component({
   standalone: false,
   selector: 'exui-answers',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './answers.component.html',
 })
 export class AnswersComponent {

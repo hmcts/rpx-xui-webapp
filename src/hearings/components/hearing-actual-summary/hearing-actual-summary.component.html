@@ -56,7 +56,10 @@
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Adjournment date' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{ hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate | date: 'dd MMMM yyyy' }}
+          {{
+            $safeNavigationMigration(hearingActualsMainModel?.hearingActuals?.hearingOutcome?.hearingResultDate)
+              | date: 'dd MMMM yyyy'
+          }}
         </dd>
       </div>
     }

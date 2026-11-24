@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Task } from '../../../work-allocation/models/tasks';
 
 @Component({
   standalone: false,
   selector: 'exui-task-alert-banner',
   templateUrl: './task-alert-banner.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./task-alert-banner.component.scss'],
 })
 export class TaskAlertBannerComponent implements OnInit {

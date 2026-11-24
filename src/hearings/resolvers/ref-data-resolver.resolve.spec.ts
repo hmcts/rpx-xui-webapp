@@ -5,7 +5,7 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { SessionStorageService } from '../../app/services';
 import { HearingCategory } from '../models/hearings.enum';
@@ -41,7 +41,7 @@ describe('Ref Data Resolver', () => {
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: Router, useValue: mockRouter },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

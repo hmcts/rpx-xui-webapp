@@ -107,7 +107,7 @@
                 "
               >
                 <div class="govuk-details__summary-text govuk-!-padding-bottom-1">
-                  {{ actualHearingDay?.hearingStartTime | ccdDate: 'local' | date: 'dd MMMM yyyy' }}
+                  {{ $safeNavigationMigration(actualHearingDay?.hearingStartTime) | ccdDate: 'local' | date: 'dd MMMM yyyy' }}
                 </div>
                 @if (!hearingIsInFuture(actualHearingDay.hearingDate)) {
                   <div class="govuk-tag" [class.govuk-tag--grey]="!isDetailsProvidedForDay(actualHearingDay)">

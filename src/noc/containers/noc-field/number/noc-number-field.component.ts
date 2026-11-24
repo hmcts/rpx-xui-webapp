@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   standalone: false,
   selector: 'exui-noc-number-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './noc-number-field.component.html',
 })
 export class NocNumberFieldComponent extends AbstractFieldWriteComponent implements OnInit {

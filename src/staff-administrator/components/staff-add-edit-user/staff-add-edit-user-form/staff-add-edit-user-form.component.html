@@ -88,7 +88,13 @@
         </div>
       } @else {
         <div class="govuk-body">
-          <input type="text" class="govuk-input" id="email_id" [value]="form.get('email_id')?.value" disabled />
+          <input
+            type="text"
+            class="govuk-input"
+            id="email_id"
+            [value]="$safeNavigationMigration(form.get('email_id')?.value)"
+            disabled
+          />
         </div>
       }
     </div>

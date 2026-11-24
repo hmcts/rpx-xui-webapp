@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
@@ -12,6 +12,7 @@ import * as fromCaseCreate from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-case-details',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './case-details.component.html',
 })
 export class CaseDetailsComponent implements OnDestroy, OnInit {

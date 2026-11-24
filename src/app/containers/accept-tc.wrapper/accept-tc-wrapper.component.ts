@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Actions, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import * as fromStore from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-accept-terms-conditions-wrapper',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './accept-tc-wrapper.component.html',
 })
 export class AcceptTcWrapperComponent implements OnInit, OnDestroy {

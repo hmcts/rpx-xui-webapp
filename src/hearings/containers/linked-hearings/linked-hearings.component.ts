@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subscription, tap } from 'rxjs';
@@ -8,6 +8,7 @@ import * as fromHearingStore from '../../store';
   standalone: false,
   selector: 'exui-linked-hearings',
   templateUrl: './linked-hearings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./linked-hearings.component.scss'],
 })
 export class LinkedHearingsComponent implements OnInit, OnDestroy {

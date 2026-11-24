@@ -13,7 +13,7 @@ import { HeaderConfigService } from '../../services/header-config/header-config.
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 const storeMock = {
   pipe: () => of([]),
@@ -78,7 +78,7 @@ describe('AppHeaderComponent', () => {
           useValue: window,
         },
         AppHeaderComponent,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

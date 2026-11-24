@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
@@ -19,6 +19,7 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   standalone: false,
   selector: 'exui-all-work-tasks',
   templateUrl: 'all-work-task.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['all-work-task.component.scss'],
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {

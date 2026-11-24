@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 import { YesNoService } from './yes-no.service';
@@ -6,6 +6,7 @@ import { YesNoService } from './yes-no.service';
 @Component({
   standalone: false,
   selector: 'exui-noc-yes-no-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './noc-yes-no-field.component.html',
 })
 export class NocYesNoFieldComponent extends AbstractFieldWriteComponent implements OnInit {

@@ -7,7 +7,7 @@
     @if (errMsg) {
       <div class="error-summary">
         <h2 class="heading-medium error-summary-heading">
-          {{ 'Error: ' | rpxTranslate }} {{ errMsg?.error?.errorDescription | rpxTranslate }}
+          {{ 'Error: ' | rpxTranslate }} {{ $safeNavigationMigration(errMsg?.error?.errorDescription) | rpxTranslate }}
         </h2>
       </div>
     }

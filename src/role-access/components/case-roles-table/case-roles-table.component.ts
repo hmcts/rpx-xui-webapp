@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -12,6 +12,7 @@ interface Item extends CaseRole {
   standalone: false,
   selector: 'exui-case-roles-table',
   templateUrl: './case-roles-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./case-roles-table.component.scss'],
 })
 export class CaseRolesTableComponent implements OnInit {

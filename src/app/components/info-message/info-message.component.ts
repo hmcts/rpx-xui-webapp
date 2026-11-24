@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { InfoMessage } from '../../shared/enums/info-message';
 import { InfoMessageType } from '../../shared/enums/info-message-type';
 
 @Component({
   standalone: false,
   selector: 'exui-info-message',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './info-message.component.html',
 })
 export class InfoMessageComponent {

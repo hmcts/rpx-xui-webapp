@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -25,6 +25,7 @@ import { LoggerService } from '../../../../app/services/logger/logger.service';
   standalone: false,
   selector: 'exui-specific-access-home',
   templateUrl: './specific-access-home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./specific-access-home.component.scss'],
 })
 export class SpecificAccessHomeComponent implements OnInit, OnDestroy {

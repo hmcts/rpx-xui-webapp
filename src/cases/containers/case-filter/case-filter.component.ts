@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
@@ -27,6 +27,7 @@ import * as fromCaseCreate from '../../store/reducers';
       </exui-ccd-connector>
     </div>
   </exui-page-wrapper>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class CaseFilterComponent implements OnInit {

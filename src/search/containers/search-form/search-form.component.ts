@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
@@ -17,6 +17,7 @@ import { SearchValidators } from '../../utils';
   standalone: false,
   selector: 'exui-search-form',
   templateUrl: './search-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./search-form.component.scss'],
 })
 export class SearchFormComponent implements OnInit {

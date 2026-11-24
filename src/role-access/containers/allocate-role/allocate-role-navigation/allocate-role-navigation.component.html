@@ -1,4 +1,9 @@
-@if (isBackVisible((allocateRoleStateData$ | async)?.state, (allocateRoleStateData$ | async)?.action)) {
+@if (
+  isBackVisible(
+    $safeNavigationMigration((allocateRoleStateData$ | async)?.state),
+    $safeNavigationMigration((allocateRoleStateData$ | async)?.action)
+  )
+) {
   <a
     class="govuk-back-link govuk-!-margin-bottom-1"
     href="#"
@@ -8,7 +13,7 @@
 }
 <ng-content></ng-content>
 <div class="govuk-button-group">
-  @if (isVisible((allocateRoleStateData$ | async)?.state, continueVisibilityStates)) {
+  @if (isVisible($safeNavigationMigration((allocateRoleStateData$ | async)?.state), continueVisibilityStates)) {
     <button
       class="govuk-button govuk-!-margin-right-3"
       type="button"
@@ -17,7 +22,7 @@
       Continue
     </button>
   }
-  @if (isVisible((allocateRoleStateData$ | async)?.state, confirmExclusionButtonVisibilityStates)) {
+  @if (isVisible($safeNavigationMigration((allocateRoleStateData$ | async)?.state), confirmExclusionButtonVisibilityStates)) {
     <button
       class="govuk-button govuk-!-margin-right-3"
       type="button"
@@ -28,7 +33,7 @@
   }
   <div class="govuk-grid-column-full govuk-!-padding-left-0">
     <p>
-      @if (isVisible((allocateRoleStateData$ | async)?.state, cancelButtonVisibilityStates)) {
+      @if (isVisible($safeNavigationMigration((allocateRoleStateData$ | async)?.state), cancelButtonVisibilityStates)) {
         <a class="govuk-body" (click)="onEventTrigger(allocateRoleNavigationEvent.CANCEL); $event.preventDefault()" href="#"
           >Cancel</a
         >

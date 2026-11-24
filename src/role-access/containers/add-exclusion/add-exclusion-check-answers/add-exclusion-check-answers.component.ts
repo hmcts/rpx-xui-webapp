@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Answer, ExcludeOption, ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
@@ -9,6 +9,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-add-exclusion-check-answers',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './add-exclusion-check-answers.component.html',
 })
 export class AddExclusionCheckAnswersComponent implements OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
@@ -14,6 +14,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-navigation',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'specific-access-navigation.component.html',
 })
 export class SpecificAccessNavigationComponent implements OnInit {

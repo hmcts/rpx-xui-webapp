@@ -11,7 +11,7 @@ import { initialState } from '../../../hearing.test.data';
 import { HearingResult } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingStageResultComponent } from './hearing-stage-result.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('HearingStageResultComponent', () => {
   let component: HearingStageResultComponent;
@@ -70,7 +70,7 @@ describe('HearingStageResultComponent', () => {
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

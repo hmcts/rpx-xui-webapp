@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'exui-url-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './url-field.component.html',
 })
 export class UrlFieldComponent {

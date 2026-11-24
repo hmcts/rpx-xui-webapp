@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 /*
  * Sign Out Component
@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   standalone: false,
   selector: 'exui-sign-out',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './signed-out.component.html',
 })
 export class SignedOutComponent implements OnInit {

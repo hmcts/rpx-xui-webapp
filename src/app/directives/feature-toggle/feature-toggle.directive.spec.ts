@@ -1,4 +1,4 @@
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ConfigurationModel } from '../../models/configuration.model';
@@ -8,6 +8,7 @@ import { FeatureToggleDirective } from './feature-toggle.directive';
 // Test component that uses the directive
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div>
       <p *exuiFeatureToggle="'testFeature'" id="test-element">Feature content</p>

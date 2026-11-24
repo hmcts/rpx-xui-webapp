@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -18,6 +18,7 @@ import { DecentralisedRedirectService } from '../../../decentralisation/decentra
   standalone: false,
   selector: 'exui-case-task',
   templateUrl: './case-task.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./case-task.component.scss'],
 })
 export class CaseTaskComponent implements OnInit {

@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Location as AngularLocation } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, DebugElement, ViewChild } from '@angular/core';
+import { Component, DebugElement, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,10 +15,11 @@ import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTas
 import { TaskTypesService } from '../../services/task-types.service';
 import { MyWorkFilterComponent } from './my-work-filter.component';
 import { servicesMap } from '../../utils';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <exui-my-work-filter></exui-my-work-filter>`,
 })
 class WrapperComponent {
@@ -166,7 +167,7 @@ describe('MyWorkFilterComponent', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

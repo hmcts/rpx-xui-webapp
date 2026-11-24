@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, of, throwError } from 'rxjs';
@@ -8,6 +8,7 @@ import { AbstractFormFieldComponent } from './abstract-form-field.component';
 // Define a test-specific implementation of the abstract component
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class TestFormFieldComponent extends AbstractFormFieldComponent {

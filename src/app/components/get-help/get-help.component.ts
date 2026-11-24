@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -9,6 +9,7 @@ import * as fromRoot from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-get-help',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './get-help.component.html',
 })
 export class GetHelpComponent implements OnInit {

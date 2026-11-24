@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -14,6 +14,7 @@ import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../mo
   standalone: false,
   selector: 'exui-task-list',
   templateUrl: './task-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['task-list.component.scss'],
 })
 export class TaskListComponent implements OnChanges {

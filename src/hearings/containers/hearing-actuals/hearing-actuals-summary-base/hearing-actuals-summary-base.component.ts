@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
@@ -16,6 +16,7 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 @Component({
   standalone: false,
   selector: 'exui-hearing-actual-summary-base',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {

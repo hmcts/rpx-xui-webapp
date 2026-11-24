@@ -61,7 +61,7 @@
       </dt>
       <dd class="govuk-summary-list__value">
         <ccd-markdown
-          [content]="task?.description"
+          [content]="$safeNavigationMigration(task?.description)"
           [markdownUseHrefAsRouterLink]="true"
           (clicked)="onClick($event)"
         ></ccd-markdown>

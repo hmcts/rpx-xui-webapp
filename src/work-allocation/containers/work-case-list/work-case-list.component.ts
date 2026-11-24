@@ -1,5 +1,5 @@
 import { Location as StateLocation } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
@@ -14,6 +14,7 @@ import { Location, PaginationParameter } from '../../models/dtos';
   standalone: false,
   selector: 'exui-work-case-list',
   templateUrl: './work-case-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['work-case-list.component.scss'],
 })
 export class WorkCaseListComponent implements OnChanges {

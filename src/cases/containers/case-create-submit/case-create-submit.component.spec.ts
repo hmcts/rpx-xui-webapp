@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -33,7 +33,7 @@ import * as fromCases from '../../store/reducers';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
 import { InitialisationSyncService } from '../../../app/services/ccd-config/initialisation-sync-service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 class MockSortService {
   public features = {};
@@ -80,6 +80,7 @@ const SANITISED_EDIT_FORM: CaseEventData = {
 @Component({
   standalone: false,
   selector: 'exui-ccd-connector',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<div></div>',
 })
 class FakeExuidCcdConnectorComponent {}
@@ -164,7 +165,7 @@ describe('CaseCreateSubmitComponent', () => {
         },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: LoggerService, useValue: mockLoggerService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

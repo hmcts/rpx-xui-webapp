@@ -1,4 +1,4 @@
-import { Component, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, Input, Pipe, PipeTransform, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RouterTestingModule } from '@angular/router/testing';
@@ -22,6 +22,7 @@ import { TaskFieldComponent } from './task-field.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<exui-task-field [config]="config" [task]="task"></exui-task-field>',
 })
 class WrapperComponent {

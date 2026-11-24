@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'exui-hearing-confirmation',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-confirmation.component.html',
 })
 export class HearingConfirmationComponent {

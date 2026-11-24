@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -22,6 +22,7 @@ import { EnvironmentService } from '../../../app/shared/services/environment.ser
   standalone: false,
   selector: 'exui-case-viewer-container',
   templateUrl: './case-viewer-container.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./case-viewer-container.component.scss'],
 })
 export class CaseViewerContainerComponent implements OnInit {

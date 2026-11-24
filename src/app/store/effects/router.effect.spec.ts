@@ -8,7 +8,7 @@ import { hot } from 'jasmine-marbles';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { Back, CreateCaseGo, Forward, Go } from '../actions/router.action';
 import * as fromRouterEffects from './router.effect';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('Router Effects', () => {
   let actions$;
@@ -36,7 +36,7 @@ describe('Router Effects', () => {
         },
         fromRouterEffects.RouterEffects,
         provideMockActions(() => actions$),
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

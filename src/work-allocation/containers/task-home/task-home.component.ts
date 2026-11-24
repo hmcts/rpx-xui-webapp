@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { FeatureToggleService, FilterPersistence, SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
@@ -13,6 +13,7 @@ import { SortField } from '../../models/common';
   standalone: false,
   selector: 'exui-task-home',
   templateUrl: 'task-home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['task-home.component.scss'],
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {

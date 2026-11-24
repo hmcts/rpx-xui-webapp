@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterConfig, FilterService, GenericFilterComponent } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   standalone: false,
   selector: 'exui-staff-adv-filter',
   templateUrl: './staff-adv-filter.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./staff-adv-filter.component.scss'],
 })
 export class StaffAdvFilterComponent implements OnInit, OnDestroy {

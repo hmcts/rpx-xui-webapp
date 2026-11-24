@@ -11,8 +11,12 @@
           </div>
         }
         <div class="govuk-header__logo"></div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name | rpxTranslate">
-          {{ headerTitle?.name | rpxTranslate }}
+        <a
+          class="hmcts-header__link"
+          [routerLink]="$safeNavigationMigration(headerTitle?.url)"
+          [attr.aria-label]="$safeNavigationMigration(headerTitle?.name) | rpxTranslate"
+        >
+          {{ $safeNavigationMigration(headerTitle?.name) | rpxTranslate }}
         </a>
       }
       <!-- Logo for Case Manager Users -->
@@ -24,8 +28,12 @@
             </span>
           </a>
         </div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name | rpxTranslate">
-          {{ headerTitle?.name | rpxTranslate }}
+        <a
+          class="hmcts-header__link"
+          [routerLink]="$safeNavigationMigration(headerTitle?.url)"
+          [attr.aria-label]="$safeNavigationMigration(headerTitle?.name) | rpxTranslate"
+        >
+          {{ $safeNavigationMigration(headerTitle?.name) | rpxTranslate }}
         </a>
       }
       <!-- Logo for Users (Default) -->
@@ -40,8 +48,12 @@
           </div>
         }
         <div class="hmcts-header__logo">
-          <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name | rpxTranslate">
-            {{ headerTitle?.name | rpxTranslate }}
+          <a
+            class="hmcts-header__link"
+            [routerLink]="'/'"
+            [attr.aria-label]="$safeNavigationMigration(headerTitle?.name) | rpxTranslate"
+          >
+            {{ $safeNavigationMigration(headerTitle?.name) | rpxTranslate }}
           </a>
         </div>
       }
@@ -49,7 +61,7 @@
 
     <!-- HMCTS header navigation items displayed in top right-hand corner (currently, just one: "Sign out") -->
     <div class="hmcts-header__content">
-      <nav class="hmcts-header__navigation" attr.aria-label="{{ navigation?.label | rpxTranslate }}">
+      <nav class="hmcts-header__navigation" attr.aria-label="{{ $safeNavigationMigration(navigation?.label) | rpxTranslate }}">
         <ul class="hmcts-header__navigation-list">
           @for (item of navigation?.items; track item; let i = $index) {
             <li class="hmcts-header__navigation-item">
@@ -93,7 +105,7 @@
                     class="hmcts-primary-navigation__link"
                     (click)="onEmitSubMenu(item)"
                     [attr.aria-current]="item?.active ? true : null"
-                    [routerLink]="item?.href"
+                    [routerLink]="$safeNavigationMigration(item?.href)"
                   >
                     {{ item.text | rpxTranslate }}
                   </a>

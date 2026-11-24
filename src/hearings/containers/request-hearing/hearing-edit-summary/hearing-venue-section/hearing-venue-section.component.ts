@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
@@ -10,6 +10,7 @@ import { LocationsDataService } from '../../../../services/locations-data.servic
 @Component({
   standalone: false,
   selector: 'exui-hearing-venue-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-venue-section.component.html',
 })
 export class HearingVenueSectionComponent implements OnInit {

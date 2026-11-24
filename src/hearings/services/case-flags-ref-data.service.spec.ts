@@ -1,7 +1,7 @@
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { HearingsTelemetryService } from './hearings-telemetry.service';
 import { CaseFlagsRefDataService } from './case-flags-ref-data.service';
 
@@ -12,7 +12,7 @@ describe('CaseFlagsRefDataService', () => {
       providers: [
         { provide: HearingsTelemetryService, useValue: null },
         CaseFlagsRefDataService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

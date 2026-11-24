@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
@@ -39,6 +39,7 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
   standalone: false,
   selector: 'exui-allocate-role-home',
   templateUrl: './allocate-role-home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./allocate-role-home.component.scss'],
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {

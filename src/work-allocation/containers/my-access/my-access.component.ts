@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CasesService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { take } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
@@ -12,6 +12,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 @Component({
   standalone: false,
   selector: 'exui-my-access',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'my-access.component.html',
 })
 export class MyAccessComponent extends WorkCaseListWrapperComponent {

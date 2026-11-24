@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 @Component({
   standalone: false,
   selector: 'exui-hearing-completed-summary',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-completed-summary.component.html',
 })
 export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {

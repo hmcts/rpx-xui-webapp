@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -26,6 +26,7 @@ import { setErrorTitle } from '../../../utils';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-review',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './specific-access-review.component.html',
 })
 export class SpecificAccessReviewComponent implements OnInit, OnDestroy {

@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import * as fromRoot from '../../app/store';
 import { RefundsComponent } from './refunds.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('RefundsComponent', () => {
   let component: RefundsComponent;
@@ -33,7 +33,11 @@ describe('RefundsComponent', () => {
       declarations: [RefundsComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [],
-      providers: [provideMockStore({ initialState }), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        provideMockStore({ initialState }),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
   }));
 

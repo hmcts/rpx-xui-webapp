@@ -9,7 +9,7 @@
     [caption]="caption"
     [optionsList]="optionsList"
     [submitted]="submitted"
-    [errorText]="error?.description"
+    [errorText]="$safeNavigationMigration(error?.description)"
   >
   </exui-choose-radio-option>
 </div>

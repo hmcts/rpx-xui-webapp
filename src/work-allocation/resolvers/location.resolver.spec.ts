@@ -12,7 +12,7 @@ import { AllocateRoleService } from '../../role-access/services';
 import { LocationsByRegion } from '../models/dtos';
 import { LocationDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { AppTestConstants } from 'src/app/app.test-constants.spec';
 
 describe('LocationResolver', () => {
@@ -267,7 +267,7 @@ describe('LocationResolver', () => {
         LocationDataService,
         SessionStorageService,
         { provide: APP_BASE_HREF, useValue: '/' },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OptionsModel } from '../../models/options-model';
 
@@ -6,6 +6,7 @@ import { OptionsModel } from '../../models/options-model';
   standalone: false,
   selector: 'exui-choose-radio-option',
   templateUrl: './choose-radio-option.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./choose-radio-option.component.scss'],
 })
 export class ChooseRadioOptionComponent {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib';
@@ -12,6 +12,7 @@ import * as fromCaseList from '../../store/reducers';
   standalone: false,
   selector: 'exui-case-share-complete',
   templateUrl: './case-share-complete.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['case-share-complete.component.scss'],
 })
 export class CaseShareCompleteComponent implements OnInit, OnDestroy {

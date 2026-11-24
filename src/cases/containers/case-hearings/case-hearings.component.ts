@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, OnDestroy, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { CaseNotifier, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
@@ -28,6 +28,7 @@ import { HearingsTelemetryService } from '../../../hearings/services/hearings-te
   standalone: false,
   selector: 'exui-case-hearings',
   templateUrl: './case-hearings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./case-hearings.component.scss'],
 })
 export class CaseHearingsComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -13,6 +13,7 @@ const MEDIA_VIEWER = 'media-viewer-info';
   selector: 'exui-media-viewer',
   templateUrl: './media-viewer-wrapper.component.html',
   styleUrls: ['./media-viewer-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class MediaViewerWrapperComponent implements OnInit, OnDestroy {

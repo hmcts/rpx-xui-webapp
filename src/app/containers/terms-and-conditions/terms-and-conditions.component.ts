@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -8,6 +8,7 @@ import * as fromRoot from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-terms-and-conditions',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './terms-and-conditions.component.html',
 })
 export class TermsAndConditionsComponent implements OnInit, OnDestroy {

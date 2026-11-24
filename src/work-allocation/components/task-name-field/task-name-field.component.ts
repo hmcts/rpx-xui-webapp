@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 
 import { AppConstants } from '../../../app/app.constants';
 
@@ -6,6 +6,7 @@ import { AppConstants } from '../../../app/app.constants';
   standalone: false,
   selector: 'exui-task-name-field',
   templateUrl: './task-name-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['task-name-field.component.scss'],
 })
 /**

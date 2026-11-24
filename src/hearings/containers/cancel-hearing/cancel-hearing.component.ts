@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
@@ -15,6 +15,7 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
   standalone: false,
   selector: 'exui-cancel-hearing',
   templateUrl: './cancel-hearing.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./cancel-hearing.component.scss'],
 })
 export class CancelHearingComponent implements OnInit {

@@ -18,7 +18,7 @@ import {
   LoadUserFromOrgForCaseSuccess,
 } from '../actions';
 import * as fromShareCaseEffects from './share-case.effects';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('Share Case Effects', () => {
   let actions$;
@@ -47,7 +47,7 @@ describe('Share Case Effects', () => {
         },
         fromShareCaseEffects.ShareCaseEffects,
         provideMockActions(() => actions$),
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

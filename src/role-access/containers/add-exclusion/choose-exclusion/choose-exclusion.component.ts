@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { select, Store } from '@ngrx/store';
@@ -17,6 +17,7 @@ import { setErrorTitle } from '../../../utils';
 @Component({
   standalone: false,
   selector: 'exui-choose-exclusion',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './choose-exclusion.component.html',
 })
 export class ChooseExclusionComponent implements OnInit, OnDestroy {

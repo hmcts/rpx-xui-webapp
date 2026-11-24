@@ -27,7 +27,7 @@ import { SharedModule } from '../../../app/shared/shared.module';
 import { reducers } from '../../../app/store';
 import * as fromCases from '../../store/reducers';
 import { CasesCreateComponent } from './case-create.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 class MockSortService {
   public features = {};
@@ -87,7 +87,7 @@ describe('CaseCreateComponent', () => {
           provide: AppConfigService,
           useClass: MockSortService,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

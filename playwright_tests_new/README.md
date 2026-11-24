@@ -342,6 +342,7 @@ set -a
 source .env
 set +a
 ```
+Note: If you run `set -a; source .env; set +a` and see `.env:{line}: command not found: {includedWord}` or similar please ensure double quotes surround the relevant line (e.g. VARIABLE="{secret}").
 
 CI does not read the checked-out `.env` file. Jenkins loads Azure Key Vault secrets directly into environment variables in `Jenkinsfile_CNP`, `Jenkinsfile_nightly`, and `Jenkinsfile_parameterized`.
 

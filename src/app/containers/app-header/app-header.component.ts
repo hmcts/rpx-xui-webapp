@@ -34,6 +34,13 @@ import { getUserRolesExcludingSpecificAccessApprover } from '../../shared/utils/
  * @see app.constants.ts for application themes and defaults.
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
+  private static readonly ERROR_PAGE_URLS = ['/service-down', '/not-authorised'];
+  private static readonly CASE_PAGE_URL = /^\/cases\/(case-details|restricted-case-access)\//;
+
+  private static withActiveHref(items: NavigationItem[], activeHref: string | undefined): NavigationItem[] {
+    return items.map((item) => ({ ...item, active: !!activeHref && item.href === activeHref }));
+  }
+
   public navItems: NavigationItem[];
   public appHeaderTitle: AppTitleModel;
   public userNav: UserNavModel;
@@ -204,6 +211,16 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   private setupActiveNavLink(items: NavigationItem[]): void {
     if (this.router.url.includes('booking') && AppUtils.isBookableAndJudicialRole(this.userDetails)) {
       this.navItems = [];
+      return;
+    }
+    const path = this.router.url.split(/[?#]/)[0];
+    const previouslyActiveHref = this.navItems?.find((item) => item.active)?.href;
+    if (AppHeaderComponent.ERROR_PAGE_URLS.includes(path)) {
+      // Error pages are reached by redirect from the section the user was in, so keep that section selected.
+      this.navItems = AppHeaderComponent.withActiveHref(items, previouslyActiveHref);
+    } else if (AppHeaderComponent.CASE_PAGE_URL.test(path)) {
+      // A case can be opened from several sections; keep the one the user came from, else Case list.
+      this.navItems = AppHeaderComponent.withActiveHref(items, previouslyActiveHref || '/cases');
     } else {
       this.navItems = AppUtils.setActiveLink(items, this.router.url);
     }

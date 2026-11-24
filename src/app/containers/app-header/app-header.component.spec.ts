@@ -281,5 +281,54 @@ describe('AppHeaderComponent', () => {
       expect(isBookableAndJudicialRoleSpy).toHaveBeenCalledWith(component['userDetails']);
       expect(component.navItems).toEqual([]);
     });
+
+    it('should keep the previously active item selected on the service down page', () => {
+      component.navItems = [
+        { text: 'My work', href: '/work/my-work/list', active: true },
+        { text: 'Find case', href: '', active: false, align: 'right' },
+      ];
+      (component.router as any).url = '/service-down';
+
+      (component as any).setupActiveNavLink(component.navItems);
+
+      expect(component.navItems.map((item) => item.active)).toEqual([true, false]);
+    });
+
+    it('should select nothing on the service down page when nothing was selected before', () => {
+      component.navItems = undefined;
+      (component.router as any).url = '/service-down';
+
+      (component as any).setupActiveNavLink([
+        { text: 'My work', href: '/work/my-work/list', active: true },
+        { text: 'Find case', href: '', active: true, align: 'right' },
+      ]);
+
+      expect(component.navItems.map((item) => item.active)).toEqual([false, false]);
+    });
+
+    const caseNavItems = (activeHref?: string): NavigationItem[] =>
+      [
+        { text: 'My work', href: '/work/my-work/list' },
+        { text: 'Case list', href: '/cases' },
+        { text: 'Search', href: '/search' },
+      ].map((item) => ({ ...item, active: item.href === activeHref }));
+
+    it('should keep the section the case was opened from selected on case details', () => {
+      component.navItems = caseNavItems('/work/my-work/list');
+      (component.router as any).url = '/cases/case-details/DIVORCE/FINREM/1773932663436290#Event%20History';
+
+      (component as any).setupActiveNavLink(component.navItems);
+
+      expect(component.navItems.map((item) => item.active)).toEqual([true, false, false]);
+    });
+
+    it('should select Case list on case details when nothing was selected before', () => {
+      component.navItems = undefined;
+      (component.router as any).url = '/cases/case-details/1773932663436290';
+
+      (component as any).setupActiveNavLink(caseNavItems());
+
+      expect(component.navItems.map((item) => item.active)).toEqual([false, true, false]);
+    });
   });
 });

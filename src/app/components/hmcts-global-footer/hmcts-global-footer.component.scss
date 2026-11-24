@@ -8,3 +8,30 @@
   line-height: inherit;
   cursor: pointer;
 }
+
+// Stretch the footer content across the full page width (instead of the
+// 960px govuk-width-container) so the meta items sit at the far left and right.
+.govuk-width-container.exui-footer__container {
+  max-width: none;
+  margin-right: 15px;
+  margin-left: 15px;
+
+  @media (min-width: 40.0625em) {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+}
+
+// Keep the licence description on its own line below the OGL logo
+// rather than inline beside it once there is room.
+.exui-footer__container .govuk-footer__licence-logo {
+  display: block;
+  margin-bottom: 10px;
+}
+
+// Cap the width so the description wraps onto two lines (as in the GOV.UK
+// design system example) instead of running across the full-width footer.
+.exui-footer__container .govuk-footer__licence-description {
+  display: block;
+  max-width: 25em;
+}

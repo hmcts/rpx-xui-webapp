@@ -58,7 +58,9 @@
             <li
               *ngFor="let item of rightItems | async"
               class="govuk-service-navigation__item exui-service-navigation__item--search exui-service-navigation__item--end"
-              [class.govuk-service-navigation__item--active]="item?.active"
+              [class.govuk-service-navigation__item--active]="
+                item?.active && ((isUserCaseManager$ | async) || !isGlobalSearchEnabled)
+              "
             >
               <a
                 *ngIf="(isUserCaseManager$ | async) || !isGlobalSearchEnabled"

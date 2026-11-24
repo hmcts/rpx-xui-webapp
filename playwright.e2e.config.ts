@@ -72,6 +72,12 @@ const buildConfig = (env: EnvMap = process.env) => {
   const isAccessibilityRun = env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true';
   const disableGenericFailureArtifacts = env.PLAYWRIGHT_DISABLE_GENERIC_FAILURE_ARTIFACTS === 'true';
   const prewarmAccessibilitySession = isAccessibilityRun && env.PW_A11Y_PREWARM_SESSION === 'true';
+  const globalSetups = [
+    ...(env.PW_TARGET_PREFLIGHT?.trim().toLowerCase() === 'true'
+      ? ['./playwright_tests_new/common/targetEnvironmentPreflight.ts']
+      : []),
+    ...(prewarmAccessibilitySession ? ['./playwright_tests_new/E2E/setup/a11ySession.global-setup.ts'] : []),
+  ];
   const testTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_TEST_TIMEOUT_MS) ?? 60_000) : 180_000;
   const expectTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_EXPECT_TIMEOUT_MS) ?? 7_000) : 60_000;
 
@@ -134,7 +140,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   };
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | configured_workers=${workerCount} | ${resolveAgentHardware()}`;
   const reportBranch = resolveBranchName();
 
   const testIgnore = [
@@ -175,8 +181,9 @@ const buildConfig = (env: EnvMap = process.env) => {
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore,
-    ...(prewarmAccessibilitySession ? { globalSetup: './playwright_tests_new/E2E/setup/a11ySession.global-setup.ts' } : {}),
+    ...(globalSetups.length > 0 ? { globalSetup: globalSetups.length === 1 ? globalSetups[0] : globalSetups } : {}),
     fullyParallel: true,
+    forbidOnly: true,
     retries,
     timeout: testTimeoutMs,
     expect: {

@@ -31,29 +31,30 @@ test.describe('Show-condition reference coverage', { tag: ['@integration', '@int
     await expect(conditions.conditionalSource).toHaveValue('show');
   });
 
-  test('preserves a dependent answer at CYA when its source page was skipped', async ({
-    page,
-    caseDetailsPage,
-    createCasePage,
-  }) => {
-    const conditions = new ShowConditionsComponent(page);
-    await openShowConditionsJourney(page, caseDetailsPage, buildHiddenPageShowConditionsTrigger('show'));
-    await caseDetailsPage.selectCaseAction(EVENT_BEHAVIOUR_TRIGGER_NAME, {
-      expectedLocator: conditions.showSourcePage,
-    });
-    await caseDetailsPage.continueCaseEvent();
-    await expect(conditions.destinationNote).toBeVisible();
-    await expect(conditions.skippedPageSource).toBeHidden();
-    await expect(conditions.dependentDetail).toBeVisible();
-    await conditions.dependentDetail.fill('Visible from skipped source');
-    await caseDetailsPage.continueCaseEvent();
-    await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
-    const answers = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersTable);
-    expect(answers).toHaveProperty('Show source page', 'no');
-    expect(answers).not.toHaveProperty('Skipped page source');
-    test.fail(true, 'EXUI-1004: CYA drops an unvisited skipped-page source from its condition context');
-    expect(answers).toMatchObject({ 'Dependent detail': 'Visible from skipped source' });
-  });
+  test(
+    'EXUI-1004: preserves a dependent answer at CYA when its source page was skipped',
+    {
+      tag: '@blocked-exui-1004',
+    },
+    async ({ page, caseDetailsPage, createCasePage }) => {
+      const conditions = new ShowConditionsComponent(page);
+      await openShowConditionsJourney(page, caseDetailsPage, buildHiddenPageShowConditionsTrigger('show'));
+      await caseDetailsPage.selectCaseAction(EVENT_BEHAVIOUR_TRIGGER_NAME, {
+        expectedLocator: conditions.showSourcePage,
+      });
+      await caseDetailsPage.continueCaseEvent();
+      await expect(conditions.destinationNote).toBeVisible();
+      await expect(conditions.skippedPageSource).toBeHidden();
+      await expect(conditions.dependentDetail).toBeVisible();
+      await conditions.dependentDetail.fill('Visible from skipped source');
+      await caseDetailsPage.continueCaseEvent();
+      await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
+      const answers = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersTable);
+      expect(answers).toHaveProperty('Show source page', 'no');
+      expect(answers).not.toHaveProperty('Skipped page source');
+      expect(answers).toMatchObject({ 'Dependent detail': 'Visible from skipped source' });
+    }
+  );
 
   test('shows matching conditional fields and their entered values in check your answers', async ({
     page,

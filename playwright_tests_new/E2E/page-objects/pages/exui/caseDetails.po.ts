@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
+import type { Request, Response } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
@@ -63,8 +64,13 @@ export interface CaseFlagItem {
 }
 
 const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
-
+type CaseTaskSearch = { sequence: number; path: string; empty?: Promise<boolean> };
 export class CaseDetailsPage extends Base {
+  private taskTabNavigation?: { caseId: string; startedSequence: number };
+  private taskSearchSequence = 0;
+  private readonly taskSearches: CaseTaskSearch[] = [];
+  private readonly taskSearchByRequest = new WeakMap<Request, CaseTaskSearch>();
+
   readonly container = this.page.locator('exui-case-details-home');
 
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
@@ -72,6 +78,7 @@ export class CaseDetailsPage extends Base {
   readonly caseActionsDropdown = this.page.locator('#next-step');
 
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
+  readonly enabledCaseActionGoButton = this.page.locator('.event-trigger button:enabled');
 
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
   readonly continueButton = this.container.getByRole('button', { name: 'Continue', exact: true });
@@ -91,6 +98,11 @@ export class CaseDetailsPage extends Base {
 
   // Case flags
   readonly caseFlagsHeading = this.page.getByRole('heading', { name: 'Case flags', exact: true });
+  readonly caseLevelFlagRadio = this.page.getByLabel('Case level');
+  readonly callbackValidationErrorSummary = this.page
+    .locator('.error-summary')
+    .filter({ hasText: /the callback data failed validation/i })
+    .first();
 
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
 
@@ -148,6 +160,36 @@ export class CaseDetailsPage extends Base {
 
   constructor(page: Page) {
     super(page);
+    page.on('framenavigated', (frame) => {
+      if (frame === page.mainFrame()) this.taskTabNavigation = undefined;
+    });
+    page.on('request', (request) => this.recordCaseTaskSearch(request));
+    page.on('response', (response) => this.recordCaseTaskSearchResponse(response));
+    page.on('requestfailed', (request) => {
+      const search = this.taskSearchByRequest.get(request);
+      if (search) search.empty = undefined;
+    });
+  }
+
+  private recordCaseTaskSearch(request: Request): void {
+    const path = new URL(request.url()).pathname;
+    if (request.method() !== 'POST' || !/^\/workallocation\/case\/task\/[^/]+$/.test(path)) return;
+    const search = { sequence: ++this.taskSearchSequence, path };
+    this.taskSearchByRequest.set(request, search);
+    this.taskSearches.push(search);
+    if (this.taskSearches.length > 500) this.taskSearches.shift();
+  }
+
+  private recordCaseTaskSearchResponse(response: Response): void {
+    const search = this.taskSearchByRequest.get(response.request());
+    if (!search) return;
+    const status = response.status();
+    if (status >= 200 && status < 300) {
+      search.empty = response.json().then(
+        (body) => Array.isArray(body) && body.length === 0,
+        () => false
+      );
+    }
   }
 
   // Internal helper: obtain rows either from a selector string or a Locator
@@ -520,6 +562,9 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectCaseAction(action: string, options: CaseActionOptions = {}) {
+    if (!options.expectedPath && !options.expectedLocator) {
+      throw new Error('Selecting a case action requires an expected path or locator.');
+    }
     const deadlineMs = Date.now() + (options.timeoutMs ?? 30_000);
     const remaining = () => remainingNavigationTimeout(deadlineMs, `selecting case action "${action}"`);
     await this.caseActionGoButton.waitFor({ state: 'visible', timeout: remaining() });
@@ -540,10 +585,12 @@ export class CaseDetailsPage extends Base {
     }
     await this.caseActionsDropdown.selectOption(matchingOption.value, { timeout: remaining() });
     await this.waitForSpinnerToComplete('before submitting case action', remaining());
+    // The toolkit keeps Go disabled until the trigger form is valid, so this proves the selection was applied.
+    await this.enabledCaseActionGoButton.waitFor({ state: 'visible', timeout: remaining() });
     await this.caseActionGoButton.click({ timeout: remaining() });
-    await this.waitForSpinnerToComplete('after selecting case action', remaining());
-    await this.page.waitForLoadState('domcontentloaded', { timeout: remaining() });
     try {
+      await this.waitForSpinnerToComplete('after selecting case action', remaining());
+      await this.page.waitForLoadState('domcontentloaded', { timeout: remaining() });
       await waitForCaseActionDestination(this.page, action, options, deadlineMs, this.eventCreationErrorHeading);
     } catch (error) {
       if (options.retry !== false) throw error;
@@ -580,8 +627,8 @@ export class CaseDetailsPage extends Base {
     }
   }
 
-  async selectCaseDetailsEvent(action: string) {
-    await this.selectCaseAction(action);
+  async selectCaseDetailsEvent(action: string, options: CaseActionOptions) {
+    await this.selectCaseAction(action, options);
   }
 
   async openLinkCasesEvent(): Promise<void> {
@@ -630,8 +677,7 @@ export class CaseDetailsPage extends Base {
     if (await this.hasCallbackValidationErrorAlert()) {
       throw new Error('Callback data failed validation before selecting party flag target.');
     }
-    const targetRadio = this.page.getByRole('radio', { name: `${target} (${target})`, exact: true });
-    await targetRadio.check();
+    await this.partyFlagTarget(target).check();
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after selecting party flag target');
     await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
@@ -645,7 +691,7 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectCaseFlagTarget(flagType: string) {
-    await this.page.getByLabel('Case level').check();
+    await this.caseLevelFlagRadio.check();
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after selecting case level');
     await this.page.getByLabel(flagType).waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
@@ -657,6 +703,10 @@ export class CaseDetailsPage extends Base {
     await this.waitForSpinnerToComplete('after submitting case flag comment');
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after final case flag submit');
+  }
+
+  partyFlagTarget(target: string): Locator {
+    return this.page.getByRole('radio', { name: `${target} (${target})`, exact: true });
   }
 
   async hasCallbackValidationErrorAlert(timeoutMs = 1000): Promise<boolean> {
@@ -716,6 +766,7 @@ export class CaseDetailsPage extends Base {
       ? this.page.locator(`#${controlledPanelId}`)
       : this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(tabPanel, deadlineMs);
+    await tab.and(this.page.locator('[aria-selected="true"]')).waitFor({ state: 'visible', timeout: remaining() });
   }
 
   async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {
@@ -728,23 +779,39 @@ export class CaseDetailsPage extends Base {
   }
 
   async openTasksTab(jurisdiction: string, caseType: string, caseId: string, timeoutMs = 30_000): Promise<void> {
-    await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`, timeoutMs);
+    let startedSequence = this.taskSearchSequence;
+    const markNavigationAttempt = () => {
+      startedSequence = this.taskSearchSequence;
+    };
+    this.taskTabNavigation = undefined;
+    await this.gotoCaseDetailsPath(
+      `/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`,
+      timeoutMs,
+      markNavigationAttempt
+    );
     await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
-      await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`, timeoutMs);
+      startedSequence = this.taskSearchSequence;
+      await this.gotoCaseDetailsPath(
+        `/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`,
+        timeoutMs,
+        markNavigationAttempt
+      );
       await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
         throw error;
       });
     });
     await this.exuiSpinnerComponent.wait();
+    this.taskTabNavigation = { caseId, startedSequence };
   }
 
-  private async gotoCaseDetailsPath(targetUrl: string, timeoutMs: number): Promise<void> {
+  private async gotoCaseDetailsPath(targetUrl: string, timeoutMs: number, beforeAttempt?: () => void): Promise<void> {
     let lastError: unknown;
     const targetPath = targetUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const targetPattern = new RegExp(`${targetPath}(?:[/?#]|$)`);
 
     for (let attempt = 1; attempt <= 3; attempt += 1) {
       try {
+        beforeAttempt?.();
         await this.page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
         await this.page.waitForURL(targetPattern, { timeout: timeoutMs }).catch(() => undefined);
         if (!targetPattern.test(this.page.url())) {
@@ -927,17 +994,42 @@ export class CaseDetailsPage extends Base {
    * Each object maps row label -> row value for a single task.
    */
   async getTaskKeyValueRows(): Promise<Record<string, string>[]> {
+    await this.taskListContainer.waitFor({ state: 'visible' });
+    await this.waitForSpinnerToComplete('while loading case tasks');
     try {
       await this.taskItem.first().waitFor({ state: 'visible' });
-    } catch {
-      return [];
+    } catch (error) {
+      const emptyTaskList =
+        (await this.taskItem.count()) === 0 &&
+        (await this.taskListContainer.isVisible()) &&
+        !(await this.page.locator('xuilib-loading-spinner:visible').first().isVisible());
+      if (emptyTaskList) {
+        const navigation = this.taskTabNavigation;
+        const latestSearch = () =>
+          navigation &&
+          this.taskSearches
+            .filter(
+              (call) =>
+                call.path === `/workallocation/case/task/${encodeURIComponent(navigation.caseId)}` &&
+                call.sequence > navigation.startedSequence
+            )
+            .pop();
+        const search = latestSearch();
+        const empty = search?.empty;
+        if (
+          search &&
+          empty &&
+          (await empty) &&
+          search.empty === empty &&
+          search === latestSearch() &&
+          this.taskTabNavigation === navigation
+        )
+          return [];
+        throw new Error('Case task search did not succeed with an empty task array.');
+      }
+      throw error;
     }
     const taskCount = await this.taskItem.count();
-    if (taskCount === 0) {
-      return [];
-    }
-
-    await this.taskItem.first().waitFor({ state: 'visible' });
 
     const results: Record<string, string>[] = [];
 

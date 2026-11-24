@@ -19,6 +19,7 @@ test.describe.configure({ mode: 'serial' });
 function fakeSessionPage() {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     textContent: async () => '',
   };
 
@@ -32,6 +33,7 @@ function fakeSessionPage() {
 function hiddenLocator() {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     click: async () => undefined,
     fill: async () => undefined,
     isVisible: async () => false,
@@ -43,6 +45,7 @@ function hiddenLocator() {
 function visibleLocator(actions: string[], name: string, visible: () => boolean = () => true, onClick?: () => void) {
   const locator = {
     first: () => locator,
+    filter: () => locator,
     click: async () => {
       actions.push(`${name}:click`);
       onClick?.();
@@ -823,10 +826,12 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
   test('confirmAuthenticatedLogin includes accessible IDAM rejection evidence', async () => {
     const emptyLocator = {
       first: () => emptyLocator,
+      filter: () => emptyLocator,
       textContent: async () => '',
     };
     const alertLocator = {
       first: () => alertLocator,
+      filter: () => alertLocator,
       textContent: async () => 'Incorrect email or password',
     };
     const page = {
@@ -948,12 +953,14 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       const visible = selector === 'exui-header' || selector === 'exui-service-down';
       const locator = {
         first: () => locator,
+        filter: () => locator,
         isVisible: async () => visible,
       };
       return locator;
     };
     const hiddenRoleLocator = {
       first: () => hiddenRoleLocator,
+      filter: () => hiddenRoleLocator,
       isVisible: async () => false,
     };
     const page = {
@@ -986,12 +993,14 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       const visible = selector === 'exui-header';
       const locator = {
         first: () => locator,
+        filter: () => locator,
         isVisible: async () => visible,
       };
       return locator;
     };
     const errorHeading = {
       first: () => errorHeading,
+      filter: () => errorHeading,
       isVisible: async () => true,
     };
     const page = {
@@ -1763,7 +1772,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
           },
           resolveSessionIdentity: () => identity,
         })
-      ).rejects.toThrow('Recent session capture failed for UNIT_AFTER_LOCK_CAUSAL_USER');
+      ).rejects.toThrow(/^\[cooldown-suppressed\] Recent session capture failed for UNIT_AFTER_LOCK_CAUSAL_USER/);
 
       expect(loginCalled).toBe(false);
       expect(fs.existsSync(failurePath)).toBe(true);
@@ -2154,7 +2163,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
             password: 'not-used',
           }),
         })
-      ).rejects.toThrow('Recent session capture failed for IAC_Judge_WA_R1');
+      ).rejects.toMatchObject({
+        message: expect.stringMatching(/^\[cooldown-suppressed\] Recent session capture failed for IAC_Judge_WA_R1/),
+        // Machine-readable so CI intelligence can attribute cascades to the first failure, not each suppressed test.
+        context: expect.objectContaining({ cooldownSuppressed: true }),
+      });
 
       expect(lockCalled).toBe(false);
       expect(loginCalled).toBe(false);
@@ -2163,6 +2176,55 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
+
+  // Jenkins E2E sets PW_SESSION_CAPTURE_FAILURE_TTL_MS=60000; 0 (the old value) made every test re-attempt login.
+  for (const { ttlMs, expectLogin } of [
+    { ttlMs: '60000', expectLogin: false },
+    { ttlMs: '0', expectLogin: true },
+  ]) {
+    test(`a deterministic failure marker from another worker ${expectLogin ? 'is ignored' : 'suppresses login'} with PW_SESSION_CAPTURE_FAILURE_TTL_MS=${ttlMs}`, async () => {
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-ttl-env-'));
+      const previousCwd = process.cwd();
+      const sessionsDir = path.join(tempDir, '.sessions');
+      const identity = { userIdentifier: 'IAC_Judge_WA_R1', email: 'judge@example.test', password: 'not-used' };
+      const failurePath = path.join(sessionsDir, `${resolveSessionStorageKey(identity)}.capture-failed.json`);
+      let loginCalls = 0;
+
+      try {
+        process.chdir(tempDir);
+        fs.mkdirSync(sessionsDir, { recursive: true });
+        fs.writeFileSync(
+          failurePath,
+          JSON.stringify({ timestamp: Date.now() - 30_000, message: 'IDAM rejected the credentials', retryable: false })
+        );
+
+        const capture = sessionCaptureTest.sessionCaptureWith(['IAC_Judge_WA_R1'], {
+          chromiumLauncher: {} as never,
+          config: { urls: { exuiDefaultUrl: 'https://manage-case.example.test' } } as never,
+          env: { PW_SESSION_CAPTURE_FAILURE_TTL_MS: ttlMs },
+          isSessionFresh: () => false,
+          lockfile: { lock: async () => async () => undefined } as never,
+          loginAndPersistSession: async () => {
+            loginCalls += 1;
+          },
+          resolveSessionIdentity: () => identity,
+        });
+
+        if (expectLogin) {
+          await capture;
+          expect(loginCalls).toBe(1);
+        } else {
+          await expect(capture).rejects.toThrow(
+            /^\[cooldown-suppressed\] Recent session capture failed for IAC_Judge_WA_R1; .*IDAM rejected the credentials$/
+          );
+          expect(loginCalls).toBe(0);
+        }
+      } finally {
+        process.chdir(previousCwd);
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    });
+  }
 
   test('retries after a recent transient capture failure while retaining deterministic cooldowns', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-transient-cooldown-retry-unit-'));

@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { createRequire } from 'node:module';
 import { FullConfig } from '@playwright/test';
+import { minimatch } from 'minimatch';
 import ts from 'typescript';
 import {
   clearIntegrationSessionConfigurationMarker,
   validateIntegrationSessionConfiguration,
 } from './integrationSessionConfiguration';
+import { runTargetEnvironmentPreflight } from './targetEnvironmentPreflight';
 import { resolveIntegrationSessionUsers } from '../integration/helpers/integrationSessionUsers.helper';
 import * as playwrightConfigUtils from '../../playwright-config-utils';
 
@@ -25,12 +26,6 @@ export function resolveTagFiltersExport(module: unknown): ResolveTagFilters {
 }
 
 const resolveTagFilters = resolveTagFiltersExport(playwrightConfigUtils);
-const require = createRequire(import.meta.url);
-const minimatch = require('minimatch') as (
-  filePath: string,
-  pattern: string,
-  options: { nocase: boolean; dot: boolean }
-) => boolean;
 
 type TestFilePattern = string | RegExp;
 type TestFilePatterns = TestFilePattern | TestFilePattern[] | undefined;
@@ -95,11 +90,11 @@ function integrationTagsFromSource(source: string, fileName: string): { featureT
 
   const validateOptions = (options: ts.Expression): void => {
     if (!ts.isObjectLiteralExpression(options)) {
-      failDynamicTag(options);
+      return failDynamicTag(options);
     }
     for (const property of options.properties) {
       if (ts.isSpreadAssignment(property)) {
-        failDynamicTag(property);
+        return failDynamicTag(property);
       }
       if (ts.isShorthandPropertyAssignment(property) && property.name.text === 'tag') {
         failDynamicTag(property);
@@ -226,6 +221,9 @@ function resolveIntegrationTagSelection(env: NodeJS.ProcessEnv) {
 }
 
 export async function globalSetup(fullConfig: FullConfig) {
+  // No-op unless PW_TARGET_PREFLIGHT=true.
+  await runTargetEnvironmentPreflight(fullConfig);
+
   const integrationTestProjects = resolveIntegrationTestProjects(fullConfig);
   if (integrationTestProjects.length === 0) {
     return;

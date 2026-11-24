@@ -13,6 +13,9 @@ test.describe('Navigation readiness on a synthetic local document', { tag: ['@e2
 
   test('spinner-free empty feature remains a valid tab view', async ({ page }) => {
     await page.setContent(caseTabDocument());
+    await page.getByRole('tab', { name: 'Case File View' }).evaluate((tab) => {
+      tab.addEventListener('click', () => tab.setAttribute('aria-selected', 'true'));
+    });
     await new CaseDetailsPage(page).selectCaseDetailsTab('Case File View');
     await expect(page.getByRole('heading', { name: 'Documents (0)' })).toBeVisible();
     await expect(page.getByText('No results')).toBeVisible();
@@ -22,6 +25,42 @@ test.describe('Navigation readiness on a synthetic local document', { tag: ['@e2
     await page.setContent(caseTabDocument({ selected: true }));
     await new CaseDetailsPage(page).selectCaseDetailsTab('Case File View');
     await expect(page.getByText('No results')).toBeVisible();
+  });
+
+  test('tab selection fails when a click leaves the requested tab unselected', async ({ page }) => {
+    await page.setContent(caseTabDocument());
+    const details = new CaseDetailsPage(page);
+    Object.assign(details, { getRecommendedTimeoutMs: () => 3_000 });
+
+    await expect(details.selectCaseDetailsTab('Case File View')).rejects.toThrow(/aria-selected/);
+  });
+
+  test('tab selection waits for delayed activation', async ({ page }) => {
+    await page.setContent(caseTabDocument());
+    const tab = page.getByRole('tab', { name: 'Case File View' });
+    await tab.evaluate((element) => {
+      element.addEventListener('click', () => {
+        setTimeout(() => element.setAttribute('aria-selected', 'true'), 300);
+      });
+    });
+
+    await new CaseDetailsPage(page).selectCaseDetailsTab('Case File View');
+    expect(await tab.getAttribute('aria-selected')).toBe('true');
+  });
+
+  test('tab selection follows a replaced tab element', async ({ page }) => {
+    await page.setContent(caseTabDocument());
+    const tab = page.getByRole('tab', { name: 'Case File View' });
+    await tab.evaluate((element) => {
+      element.addEventListener('click', () => {
+        const replacement = element.cloneNode(true) as HTMLElement;
+        replacement.setAttribute('aria-selected', 'true');
+        element.replaceWith(replacement);
+      });
+    });
+
+    await new CaseDetailsPage(page).selectCaseDetailsTab('Case File View');
+    expect(await tab.getAttribute('aria-selected')).toBe('true');
   });
 
   for (const heading of ['', '<main><h1>Current heading</h1></main>']) {

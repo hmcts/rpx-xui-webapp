@@ -73,7 +73,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const workerCount = resolveWorkerCount(env);
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | configured_workers=${workerCount} | ${resolveAgentHardware()}`;
   const e2eTagFilters = resolveTagFilters({
     env: e2eEnv,
     includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
@@ -129,7 +129,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
-    forbidOnly: !!env.CI,
+    forbidOnly: true,
     /* Retry on CI only */
     retries: env.CI ? 1 : 0,
 

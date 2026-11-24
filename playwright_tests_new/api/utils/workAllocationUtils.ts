@@ -7,23 +7,6 @@ import type { Task, TaskListResponse, UserDetailsResponse } from './types';
 import { buildTaskSearchRequest, type SeededTaskResult } from './work-allocation';
 import type { ApiUserRole } from './auth';
 
-export function toArray<T>(payload: unknown): T[] {
-  if (Array.isArray(payload)) {
-    return payload as T[];
-  }
-  const obj = payload as Partial<{ task_names: T[]; taskNames: T[]; typesOfWork: T[] }>;
-  if (obj && Array.isArray(obj.task_names)) {
-    return obj.task_names;
-  }
-  if (obj && Array.isArray(obj.taskNames)) {
-    return obj.taskNames;
-  }
-  if (obj && Array.isArray(obj.typesOfWork)) {
-    return obj.typesOfWork;
-  }
-  return [];
-}
-
 export function assertLocationsListResponse(status: number, data: unknown): void {
   if (status !== 200) {
     return;
@@ -37,32 +20,6 @@ export function assertLocationsListResponse(status: number, data: unknown): void
       expect.objectContaining({
         id: expect.any(String),
         locationName: expect.any(String),
-      })
-    );
-  }
-}
-
-export function assertTaskNamesResponse(status: number, data: unknown): void {
-  if (status !== 200) {
-    return;
-  }
-  const names = toArray<string>(data);
-  expect(Array.isArray(names)).toBe(true);
-  if (names.length > 0) {
-    expect(typeof names[0]).toBe('string');
-  }
-}
-
-export function assertTypesOfWorkResponse(status: number, data: unknown): void {
-  if (status !== 200) {
-    return;
-  }
-  const types = toArray(data);
-  expect(Array.isArray(types)).toBe(true);
-  if (types.length > 0 && typeof types[0] === 'object' && types[0] !== null) {
-    expect(types[0]).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
       })
     );
   }
@@ -87,44 +44,6 @@ export function assertAllWorkResponse(status: number, data: unknown): void {
     return;
   }
   expectTaskList(data);
-}
-
-export function extractMyWorkCases(data: unknown): unknown[] {
-  if (Array.isArray(data)) {
-    return data;
-  }
-  if (typeof data === 'object' && data !== null && 'cases' in data) {
-    const cases = (data as { cases?: unknown }).cases;
-    if (Array.isArray(cases)) {
-      return cases;
-    }
-  }
-  return [];
-}
-
-export function assertMyWorkDashboardResponse(status: number, data: unknown): void {
-  if (status === 200 && data) {
-    const cases = extractMyWorkCases(data);
-    expect(Array.isArray(cases)).toBe(true);
-  }
-}
-
-interface MyWorkTotalsResponse {
-  total_records?: number;
-  cases?: unknown[];
-}
-
-export function assertMyWorkTotalsResponse(status: number, data: unknown): void {
-  if (status !== 200 || !data) {
-    return;
-  }
-  const typed = data as Partial<MyWorkTotalsResponse>;
-  if (typeof typed.total_records === 'number') {
-    expect(typed.total_records).toBeGreaterThanOrEqual(0);
-  }
-  if (Array.isArray(typed.cases)) {
-    expect(typed.cases.length).toBeGreaterThanOrEqual(0);
-  }
 }
 
 export function assertCaseworkerListResponse(status: number, data: unknown): void {

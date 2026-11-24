@@ -39,7 +39,7 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
 
   test('auth/isAuthenticated returns session status', async ({ apiClient }) => {
     const response = await apiClient.get<boolean>('auth/isAuthenticated', { throwOnError: false });
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
     if (response.status === 200) {
       expect(typeof response.data).toBe('boolean');
     }

@@ -150,14 +150,18 @@ describe('CaseRolesTableComponent', () => {
   });
 
   it('should show the reallocate and remove allocation link', () => {
+    component.showAllocateRoleLink = true;
     component.roles = CASEROLES as CaseRole[];
     fixture.detectChanges();
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
     const firstRow = tableBodyHTMLElement.children[0] as HTMLElement;
-    const manageLinkCell = firstRow.children[4].children[0] as HTMLElement;
-    manageLinkCell.click();
+    const manageButton = firstRow.querySelector('button.manage-toggle') as HTMLButtonElement;
+    expect(manageButton.getAttribute('aria-label')).toBe('Manage roles for Judge Beech');
+    expect(manageButton.getAttribute('aria-expanded')).toBe('false');
+    manageButton.click();
     fixture.detectChanges();
+    expect(manageButton.getAttribute('aria-expanded')).toBe('true');
     const secondRow = tableBodyHTMLElement.children[1] as HTMLElement;
     const manageLinkRow = secondRow.querySelector('.right') as HTMLElement;
     expect(manageLinkRow.children.length).toBe(2);

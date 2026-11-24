@@ -72,6 +72,12 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
 }
 
 @include govuk-media-query($until: desktop) {
+  // The case filter is a fixed, independently scrollable panel on small screens.
+  // Lock the page behind it so Dragon users only need to navigate one scroll area.
+  body.case-filter-open {
+    overflow: hidden;
+  }
+
   .js-enabled .hmcts-filter-layout__filter {
     background-color: govuk-colour('white');
     position: fixed;
@@ -662,6 +668,8 @@ $hmcts-secondary-link-hover-color: rgb(23, 24, 25);
   margin-top: govuk-spacing(1);
   padding: govuk-spacing(1);
   text-decoration: none;
+  text-align: left;
+  cursor: pointer;
 
   &:link,
   &:visited {

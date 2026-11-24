@@ -76,6 +76,16 @@ describe('PhaseBannerComponent', () => {
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
   });
 
+  it('should expose the close action as a named button', () => {
+    component.toggleLanguage('cy');
+    fixture.detectChanges();
+    const closeButton: HTMLButtonElement = fixture.nativeElement.querySelector('.govuk-notification-banner__header button.close');
+
+    expect(closeButton.getAttribute('aria-label')).toBe('Close notification banner');
+    closeButton.click();
+    expect(component.bannerPresent).toBe(false);
+  });
+
   it('should set bannerPresent to true when language is "cy"', () => {
     component.toggleLanguage('cy');
     expect(component.bannerPresent).toBe(true);

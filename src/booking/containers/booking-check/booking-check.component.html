@@ -13,6 +13,7 @@
       <a
         id="change-location"
         class="govuk-link"
+        aria-label="Change location"
         (click)="onEventTrigger(bookingNavigationEvent.CHANGELOCATIONCLICK)"
         [routerLink]=""
         >Change</a
@@ -33,7 +34,13 @@
       </p>
     </dd>
     <dd class="govuk-summary-list__actions">
-      <a id="change-duration" (click)="onEventTrigger(bookingNavigationEvent.CHANGEDURATIONCLICK)" [routerLink]="">Change</a>
+      <a
+        id="change-duration"
+        aria-label="Change duration"
+        (click)="onEventTrigger(bookingNavigationEvent.CHANGEDURATIONCLICK)"
+        [routerLink]=""
+        >Change</a
+      >
     </dd>
   </div>
 </dl>

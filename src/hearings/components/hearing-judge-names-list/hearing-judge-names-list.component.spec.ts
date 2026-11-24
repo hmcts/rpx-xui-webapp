@@ -46,6 +46,22 @@ describe('HearingJudgeNamesListComponent', () => {
     expect(component.displayedJudgeName(judgeDetails)).toBe('Jacky Collins (jacky.collins@judicial.com)');
   });
 
+  it('renders judge actions as named native buttons', () => {
+    component.submitButtonName = 'Exclude judge';
+    component.judgeList = [judgeDetails];
+    fixture.detectChanges();
+
+    const excludeButton: HTMLButtonElement = fixture.nativeElement.querySelector('.person-button button');
+    const removeButton: HTMLButtonElement = fixture.nativeElement.querySelector('.location-selection button');
+
+    expect(excludeButton.type).toBe('button');
+    expect(excludeButton.textContent.trim()).toBe('Exclude judge');
+    expect(removeButton.getAttribute('aria-label')).toBe('Remove selected judge Jacky Collins (jacky.collins@judicial.com)');
+    removeButton.click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.location-selection')).toBeNull();
+  });
+
   it('should remove selected Judge', () => {
     component.judgeList = [judgeDetails];
     component.removeSelectedJudge(judgeDetails);

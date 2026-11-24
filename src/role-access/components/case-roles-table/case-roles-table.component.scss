@@ -9,6 +9,17 @@ tr {
   }
 }
 
+.manage-toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #1d70b8;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .govuk-accordion-wa__icon {
   cursor: pointer;
   position: absolute;

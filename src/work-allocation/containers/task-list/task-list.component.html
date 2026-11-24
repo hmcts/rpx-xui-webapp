@@ -97,6 +97,7 @@
         <button
           type="button"
           [id]="'manage_' + rowData.id"
+          [attr.aria-label]="'Manage task ' + rowData.taskName + ' for case ' + rowData.case_id"
           (click)="setSelectedTask(rowData)"
           class="xui-manage-button"
           [attr.aria-expanded]="isTaskSelected(rowData)"
@@ -113,9 +114,15 @@
     <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length" class="cell-actions">
       <ng-container *ngIf="isTaskSelected(rowData)">
         <div *ngFor="let action of rowData.actions" class="task-action">
-          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action" [id]="'action_' + action.id">{{
-            action.title
-          }}</a>
+          <button
+            type="button"
+            (click)="onActionHandler(rowData, action)"
+            class="action"
+            [id]="'action_' + action.id"
+            [attr.aria-label]="action.title + ' for task ' + rowData.taskName + ' on case ' + rowData.case_id"
+          >
+            {{ action.title }}
+          </button>
         </div>
       </ng-container>
     </td>

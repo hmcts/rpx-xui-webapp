@@ -12,7 +12,7 @@ export class RoleAccessPage {
   readonly cancelLink = this.page.getByRole('link', { name: 'Cancel', exact: true });
   readonly summary = this.page.locator('exui-answers');
   readonly errorSummary = this.page.locator('exui-error-message');
-  readonly description = this.page.getByRole('textbox', { name: 'exclusion description' });
+  readonly description = this.page.getByRole('textbox', { name: /describe the exclusion/i });
 
   summaryValue(label: string) {
     return this.summary

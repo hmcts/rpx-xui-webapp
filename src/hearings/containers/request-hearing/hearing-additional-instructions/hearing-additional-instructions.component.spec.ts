@@ -59,6 +59,20 @@ describe('HearingAdditionalInstructionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should expose the editable instructions as a labelled textbox with its guidance', () => {
+    fixture.detectChanges();
+
+    const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('#additionalInstructionsTextarea');
+    const label: HTMLLabelElement = fixture.nativeElement.querySelector('label[for="additionalInstructionsTextarea"]');
+
+    expect(textarea.tagName).toBe('TEXTAREA');
+    expect(label).toBeTruthy();
+    expect(label.textContent.trim()).toContain('Enter any additional instructions for the hearing');
+    expect(textarea.getAttribute('aria-describedby')).toBe('event-name-hint with-hint-info');
+    expect(fixture.nativeElement.querySelector('#event-name-hint')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('#with-hint-info')).toBeTruthy();
+  });
+
   it('should check form validity', () => {
     fixture.detectChanges();
     spyOn<HearingsService>(hearingsService, 'navigateAction$' as never);

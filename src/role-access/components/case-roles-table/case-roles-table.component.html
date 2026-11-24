@@ -16,10 +16,17 @@
         <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ item.start | date: 'd MMMM yyyy' }}</td>
         <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{ item.end | date: 'd MMMM yyyy' }}</td>
         <td class="govuk-table__cell">
-          <span (click)="openManageLink(items, item)" [hidden]="!showAllocateRoleLink">
-            <a href="#" class="right_m" (click)="$event.preventDefault()">Manage</a
-            ><span class="govuk-accordion-wa__icon" [ngClass]="{ plus: !item.open, minus: item.open }"></span>
-          </span>
+          <button
+            type="button"
+            class="manage-toggle"
+            [hidden]="!showAllocateRoleLink"
+            [attr.aria-expanded]="item.open"
+            [attr.aria-label]="'Manage roles for ' + item.name"
+            (click)="openManageLink(items, item)"
+          >
+            Manage
+            <span aria-hidden="true" class="govuk-accordion-wa__icon" [ngClass]="{ plus: !item.open, minus: item.open }"></span>
+          </button>
         </td>
       </tr>
       <tr *ngIf="item.open">

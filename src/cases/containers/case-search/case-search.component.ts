@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   CaseState,
@@ -72,7 +73,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   constructor(
     public store: Store<fromCasesFeature.State>,
     private readonly appConfig: AppConfig,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   public ngOnInit(): void {
@@ -109,10 +111,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       };
     });
 
-    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe((result: boolean) => {
-      this.showFilter = result;
-      this.toggleButtonName = this.getToggleButtonName(this.showFilter);
-    });
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe((result: boolean) => this.onToggleHandler(result));
 
     this.listenToPaginationMetadata();
 
@@ -239,6 +238,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.SearchFilterToggle(!this.showFilter));
   }
 
+  public onToggleHandler(showFilter: boolean): void {
+    this.showFilter = showFilter;
+    this.toggleButtonName = this.getToggleButtonName(showFilter);
+    this.document.body?.classList.toggle('case-filter-open', showFilter);
+  }
+
   public applyChangePage(event) {
     this.page = event.selected.page;
     this.triggerQuery();
@@ -268,6 +273,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
+    this.document.body?.classList.remove('case-filter-open');
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
     }

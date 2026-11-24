@@ -43,32 +43,32 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
     });
 
-    it('should only show a link when it has a role setting of specific-access-denied', () => {
-      // No anchor shown yet.
-      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    it('should only show a button when it has a role setting of specific-access-denied', () => {
+      // No button shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('button')).toBeNull();
 
-      // Add the role denied and it should work (showing the link).
+      // Add the denied role and it should show the button.
       wrapper.workField = { role: 'specific-access-denied' };
       fixture.detectChanges();
-      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('button');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe('View');
     });
 
-    it('should remove the link if role is changed to a different role', () => {
-      // No anchor shown yet.
-      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    it('should remove the button if role is changed to a different role', () => {
+      // No button shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('button')).toBeNull();
 
       wrapper.workField = { role: 'specific-access-denied' };
       fixture.detectChanges();
-      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('button');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe('View');
 
-      // Change the value of role and we should no longer have the anchor.
+      // Change the value of role and we should no longer have the button.
       wrapper.workField = { role: 'specific-access-granted' };
       fixture.detectChanges();
-      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+      expect(fixture.debugElement.nativeElement.querySelector('button')).toBeNull();
     });
 
     it('should navigate to specific access rejected request view page', () => {

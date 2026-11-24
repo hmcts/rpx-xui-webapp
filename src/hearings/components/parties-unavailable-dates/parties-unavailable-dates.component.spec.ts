@@ -18,4 +18,12 @@ describe('PartiesUnavailableDatesComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('keeps long date lists in the page scroll flow instead of creating a nested scroll area', () => {
+    component.unAvailableDates = Array.from({ length: 11 }, (_, index) => `Date ${index + 1}`);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.scroll-view')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('.govuk-details__text span').length).toBe(11);
+  });
 });

@@ -40,9 +40,9 @@
     </dt>
     <dd class="govuk-summary-list__value">
       <ng-container *ngFor="let option of manageOptions">
-        <a [routerLink]="" tabindex="0" (click)="onActionHandler(task, option)" class="right" [id]="'action_' + option.id">{{
-          option.title
-        }}</a>
+        <button type="button" (click)="onActionHandler(task, option)" class="right" [id]="'action_' + option.id">
+          {{ option.title }}
+        </button>
       </ng-container>
     </dd>
   </div>

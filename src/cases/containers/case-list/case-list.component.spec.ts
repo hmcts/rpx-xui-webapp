@@ -343,6 +343,10 @@ describe('CaseListComponent', () => {
       component.onToggleHandler(showFilter);
 
       expect(component.showFilter).toEqual(showFilter);
+      expect(document.body.classList.contains('case-filter-open')).toBe(true);
+
+      component.onToggleHandler(false);
+      expect(document.body.classList.contains('case-filter-open')).toBe(false);
     });
   });
 

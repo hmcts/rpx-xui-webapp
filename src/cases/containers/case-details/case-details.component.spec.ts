@@ -34,6 +34,29 @@ describe('CaseDetailsComponent', () => {
     expect(component.caseId).toEqual('dummy');
   });
 
+  it('should render payment section titles as semantic level two headings', async () => {
+    const transactions = document.createElement('ccpay-case-transactions');
+    const paymentLabel = document.createElement('span');
+    paymentLabel.className = 'heading-medium';
+    paymentLabel.textContent = 'Payments';
+    const table = document.createElement('table');
+    transactions.append(paymentLabel, table);
+
+    const nonHeadingLabel = document.createElement('span');
+    nonHeadingLabel.className = 'heading-medium';
+    nonHeadingLabel.textContent = 'Group reference: 123';
+    transactions.appendChild(nonHeadingLabel);
+    transactions.appendChild(document.createElement('div'));
+    fixture.nativeElement.appendChild(transactions);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const paymentHeading = transactions.querySelector('h2.heading-medium');
+    expect(paymentHeading?.textContent).toBe('Payments');
+    expect(paymentLabel.isConnected).toBe(false);
+    expect(nonHeadingLabel.hasAttribute('role')).toBe(false);
+  });
+
   it('should unsubscribe', () => {
     spyOn(component.$caseIdSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();

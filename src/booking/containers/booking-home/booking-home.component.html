@@ -43,9 +43,9 @@
                           [disabled]="checkIfButtonDisabled(booking.beginTime)"
                           role="button"
                           class="govuk-button govuk-button--secondary"
-                          attr.aria-label="{{ booking.locationName }} {{ booking.beginTime | date: 'dd LLLL yyyy' }} to {{
-                            getPreviousDate(booking.endTime) | date: 'dd LLLL yyyy'
-                          }}"
+                          attr.aria-label="Continue: {{ booking.locationName }} {{
+                            booking.beginTime | date: 'dd LLLL yyyy'
+                          }} to {{ getPreviousDate(booking.endTime) | date: 'dd LLLL yyyy' }}"
                           (click)="onExistingBookingSelected(booking.locationId)"
                         >
                           Continue

@@ -52,7 +52,10 @@ export async function setupRolesAndAccessMockRoutes(
   const jurisdiction = options.jurisdiction ?? 'IA';
 
   await setupXuiAppShellBaseRoutes(page, {
-    userDetails: { roles: userDetails.userInfo.roles as string[] },
+    userDetails: {
+      roles: userDetails.userInfo.roles as string[],
+      roleAssignmentInfo: userDetails.roleAssignmentInfo,
+    },
     environmentConfig: { ccdGatewayUrl: '', launchDarklyClientId: '' },
     waSupportedJurisdictions: [jurisdiction],
   });

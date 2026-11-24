@@ -4,8 +4,8 @@
 
 $hmcts-images-path: '/assets/images/';
 
-// The header, service navigation, phase banner and page content use the full page width (with
-// GOV.UK gutters) so wide case and task tables have room.
+// The cookie banner, header, service navigation, phase banner and page content use the full page
+// width (with GOV.UK gutters) so wide case and task tables have room and everything lines up on the left.
 body .govuk-width-container {
   max-width: none;
 
@@ -15,8 +15,7 @@ body .govuk-width-container {
   }
 }
 
-// The cookie banner and footer keep the GOV.UK Frontend v6 fixed page width (960px).
-body xuilib-cookie-banner .govuk-width-container,
+// The footer keeps the GOV.UK Frontend v6 fixed page width (960px).
 body .govuk-footer .govuk-width-container {
   @include govuk-width-container;
 }

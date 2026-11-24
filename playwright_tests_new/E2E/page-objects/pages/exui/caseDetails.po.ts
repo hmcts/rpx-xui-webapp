@@ -20,13 +20,7 @@ const tableUtils = new TableUtils();
 export function extractCaseNumberFromUrl(url: string): string | null {
   try {
     const pathname = new URL(url).pathname;
-    const detailsPathMatch = /\/cases\/case-details\/(\d{16})(?:$|\/)/.exec(pathname);
-    if (detailsPathMatch?.[1]) {
-      return detailsPathMatch[1];
-    }
-
-    const trailingDigitsMatch = /(\d{16})(?:$|\/)/.exec(pathname);
-    return trailingDigitsMatch?.[1] ?? null;
+    return /^\/cases\/case-details\/(?:[^/]+\/[^/]+\/)?(\d{16})\/?$/.exec(pathname)?.[1] ?? null;
   } catch {
     return null;
   }

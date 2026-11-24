@@ -57,6 +57,10 @@ test.describe(
       });
       await createCasePage.clickSubmitAndWait('creating divorce test case', { timeoutMs: 60_000 });
       await expect(createCasePage.caseAlertSuccessMessage).toBeVisible();
+      await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
+      await expect
+        .poll(() => caseDetailsPage.caseActionsDropdown.locator('option:not([value=""]):not([disabled])').count())
+        .toBeGreaterThan(0);
       const caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
 
       await test.step('Validate the case number format and URL', async () => {
@@ -123,6 +127,10 @@ test.describe(
           const readbackDetails = new CaseDetailsPage(readbackPage);
           await readbackPage.goto(caseUrl);
           await readbackDetails.waitForCaseDetailsReady();
+          await expect(readbackDetails.caseActionsDropdown).toBeVisible();
+          await expect
+            .poll(() => readbackDetails.caseActionsDropdown.locator('option:not([value=""]):not([disabled])').count())
+            .toBeGreaterThan(0);
           expect(readbackStatus, 'Fresh case page must fetch the new case from CCD').toBe(200);
           expect(readbackFromServiceWorker, 'CCD readback must use a network response').toBe(false);
           expect(await readbackDetails.getCaseNumberFromUrl()).toBe(caseNumber);

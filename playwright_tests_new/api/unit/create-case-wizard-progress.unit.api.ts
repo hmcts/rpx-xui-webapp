@@ -45,7 +45,8 @@ function wizard(
       },
     },
     continueButton: button,
-    getApiCalls: () => calls,
+    getApiCallCursor: () => calls.length,
+    getApiCallsSince: (cursor: number) => calls.slice(cursor),
     getVisibleActionButton: async () => (options.missingButton ? null : button),
     clickContinueAndWait: async () => {
       clicks += 1;

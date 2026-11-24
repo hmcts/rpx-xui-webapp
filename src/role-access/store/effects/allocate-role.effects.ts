@@ -35,6 +35,15 @@ export class AllocateRoleEffects {
       mergeMap((data) =>
         this.allocateRoleService.confirmAllocation(data.payload).pipe(
           map(() => {
+            const [backUrl, fragment] = this.allocateRoleService.backUrl.split('#');
+            let decodedFragment = fragment;
+            try {
+              if (fragment) {
+                decodedFragment = decodeURIComponent(fragment);
+              }
+            } catch {
+              decodedFragment = fragment;
+            }
             const message: any = {
               type: 'success',
               message:
@@ -44,9 +53,10 @@ export class AllocateRoleEffects {
             };
             this.store.dispatch(new fromRoot.LoadUserDetails(true));
             return new routeAction.CreateCaseGo({
-              path: [this.allocateRoleService.backUrl],
+              path: [backUrl],
               caseId: data.payload.caseId,
               extras: {
+                ...(fragment && { fragment: decodedFragment }),
                 state: {
                   showMessage: true,
                   retainMessages: true,

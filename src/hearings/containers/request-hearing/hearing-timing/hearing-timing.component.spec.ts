@@ -495,6 +495,12 @@ describe('HearingTimingComponent', () => {
     expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart).toBe(undefined);
     hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
     component.showDateAvailability();
+    component.earliestHearingFormGroup.reset();
+    component.latestHearingFormGroup.patchValue({
+      latestHearingDate_day: '01',
+      latestHearingDate_month: '01',
+      latestHearingDate_year: '2021',
+    });
     component.prepareHearingRequestData();
     fixture.detectChanges();
     expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2021-01-01T00:00:00.000Z');
@@ -714,6 +720,8 @@ describe('HearingTimingComponent', () => {
 
   it('should set unavailabilityDateList from serviceHearingValuesModel when sourceOFData is SERVICE_HEARING_VALUES', () => {
     component.sourceOfData = SourceOfData.SERVICE_HEARING_VALUES;
+    component.getFormData(60, { dateRangeStart: null, dateRangeEnd: '2021-01-01T00:00:00.000Z' }, 'Urgent');
+    component.initForm();
 
     component.prepareHearingRequestData();
 

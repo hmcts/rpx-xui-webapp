@@ -73,7 +73,7 @@ export function submitFlowScenario({
       submitButton: submitButton as FlowOptions['submitButton'],
       continueButton: hiddenLocator as FlowOptions['continueButton'],
       somethingWentWrongHeading: hiddenLocator as FlowOptions['somethingWentWrongHeading'],
-      getApiCalls: () => observer.getApiCalls(),
+      getApiCallCursor: () => observer.getApiCallCursor(),
       getVisibleActionButton: async (locator) => (locator === submitButton ? locator : undefined),
       clickSubmitButtonWithRetry: async () => {
         clicks += 1;

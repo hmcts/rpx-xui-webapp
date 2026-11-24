@@ -4,20 +4,15 @@ import type { TestInfo } from '@playwright/test';
 import { test, expect } from './fixtures';
 import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import type { UserDetailsResponse } from './utils/types';
-import { buildTaskSearchRequest } from './utils/work-allocation';
-import { createWorkAllocationActionFixture } from './utils/workAllocationActionFixture';
+import { buildCaseSearchRequest, buildTaskSearchRequest } from './utils/work-allocation';
 import { requireWorkAllocationLocation, requireWorkAllocationUserId } from './utils/workAllocationSetup';
+import { expectContract, WorkAllocationSchemas } from './utils/contractValidation';
 import {
   assertAllWorkResponse,
   assertAvailableTasksResponse,
   assertCaseworkerListResponse,
   assertLocationsListResponse,
-  assertMyWorkDashboardResponse,
-  assertMyWorkTotalsResponse,
-  assertTaskNamesResponse,
   assertTaskSearchResponse,
-  assertTypesOfWorkResponse,
-  extractMyWorkCases,
   fetchFirstTask,
   guardedTaskSearch,
   hasSeededEnvTasks,
@@ -26,9 +21,7 @@ import {
   resolveLocationId,
   resolveSeededTaskIds,
   resolveUserId,
-  runSeededAction,
   selectTaskId,
-  toArray,
   toLocationList,
 } from './utils/workAllocationUtils';
 
@@ -51,7 +44,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     );
 
     // Then: API responds with expected status codes
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
 
     // And: Response data structure is validated
     assertLocationsListResponse(response.status, response.data);
@@ -70,16 +63,27 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     const response = await withRetry(
       () =>
         apiClient.get<unknown>('workallocation/taskNames', {
+          data: { service: 'IA' },
           throwOnError: false,
         }),
       { retries: 2, retryStatuses: [500, 502, 504] }
     );
 
-    // Then: API returns success or guarded downstream status
-    expectStatus(response.status, StatusSets.waReadOnly);
+    // Then: The configured catalogue request succeeds
+    expectStatus(response.status, StatusSets.okOnly);
 
-    // And: Response contains valid task names array
-    assertTaskNamesResponse(response.status, response.data);
+    // And: Response contains task type objects returned by the XUI route
+    expect(Array.isArray(response.data)).toBe(true);
+    for (const taskType of response.data as unknown[]) {
+      expect(taskType).toEqual(
+        expect.objectContaining({
+          task_type: expect.objectContaining({
+            task_type_id: expect.any(String),
+            task_type_name: expect.any(String),
+          }),
+        })
+      );
+    }
   });
 
   test('GET /workallocation/task/types-of-work returns catalogue of work type classifications', async ({ apiClient }) => {
@@ -95,10 +99,12 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     );
 
     // Then: API returns success or guarded downstream status
-    expectStatus(response.status, StatusSets.waReadOnly);
+    expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
 
     // And: Response contains valid work types array
-    assertTypesOfWorkResponse(response.status, response.data);
+    if (response.status === 200) {
+      expectContract(response.data, WorkAllocationSchemas.TypesOfWork);
+    }
   });
 
   test('Work allocation endpoints reject unauthenticated requests with 401 Unauthorized', async ({ anonymousClient }) => {
@@ -148,7 +154,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.waReadOnly);
+      expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
       assertTaskSearchResponse(response.status, response.data);
     });
 
@@ -167,7 +173,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.waReadOnly);
+      expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
       assertAvailableTasksResponse(response.status, response.data);
     });
 
@@ -190,7 +196,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
         retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.waReadOnly);
+      expectStatus(response.status, StatusSets.waReadOnly, { primary: 200 });
       assertAllWorkResponse(response.status, response.data);
     });
   });
@@ -199,34 +205,27 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
     const endpoints = ['workallocation/my-work/cases', 'workallocation/my-work/myaccess'];
     for (const endpoint of endpoints) {
       const tags = endpoint.endsWith('/myaccess') ? ['@svc-work-allocation-myaccess'] : [];
-      test(`${endpoint} returns data or guarded status`, { tag: tags }, async ({ apiClient }) => {
-        const response = await withXsrf('solicitor', (headers) =>
+      const view = endpoint.endsWith('/myaccess') ? 'MyAccess' : 'MyCases';
+      test(`${endpoint} returns structured data`, { tag: tags }, async ({ apiClientFor }) => {
+        const waClient = await apiClientFor('waSolicitor');
+        const response = await withXsrf('waSolicitor', (headers) =>
           guardedRequest(() =>
-            apiClient.get(endpoint, {
+            waClient.post(endpoint, {
+              data: buildCaseSearchRequest(view),
               headers,
               throwOnError: false,
               timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
             })
           )
         );
-        expectStatus(response.status, StatusSets.guardedExtended);
-        assertMyWorkDashboardResponse(response.status, response.data);
+        expectStatus(response.status, StatusSets.okOnly);
+        expect(response.data).toEqual(expect.objectContaining({ cases: expect.any(Array) }));
+        if (view === 'MyCases') {
+          expect(response.data).toEqual(expect.objectContaining({ total_records: expect.any(Number) }));
+          expect((response.data as { total_records: number }).total_records).toBeGreaterThanOrEqual(0);
+        }
       });
     }
-
-    test('GET /workallocation/my-work/cases exposes case totals in response when data available', async ({ apiClient }) => {
-      // Given: A solicitor user authenticated with valid session
-      // When: Requesting my-work cases dashboard
-      // Then: Response includes totals field with case counts when cases exist
-      const response = await withXsrf('solicitor', (headers) =>
-        apiClient.get('workallocation/my-work/cases', {
-          headers,
-          throwOnError: false,
-        })
-      );
-      expectStatus(response.status, StatusSets.guardedExtended);
-      assertMyWorkTotalsResponse(response.status, response.data);
-    });
   });
 
   test.describe('task actions (negative)', { tag: '@wa-action' }, () => {
@@ -285,7 +284,7 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
           throwOnError: false,
         })
       );
-      expectStatus(response.status, StatusSets.guardedExtended);
+      expectStatus(response.status, StatusSets.guardedExtended, { primary: 200 });
       assertCaseworkerListResponse(response.status, response.data);
     });
 
@@ -321,17 +320,6 @@ test.describe('Work allocation', { tag: '@svc-work-allocation' }, () => {
 });
 
 test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }, () => {
-  test('toArray utility normalizes API response formats (arrays, task_names, taskNames, typesOfWork) to consistent array output', () => {
-    // Given: Various API response payload formats from work allocation endpoints
-    // When: Normalizing different response shapes to arrays
-    // Then: toArray correctly extracts arrays from all known payload structures
-    expect(toArray(['a'])).toEqual(['a']);
-    expect(toArray({ task_names: ['b'] })).toEqual(['b']);
-    expect(toArray({ taskNames: ['c'] })).toEqual(['c']);
-    expect(toArray({ typesOfWork: ['d'] })).toEqual(['d']);
-    expect(toArray({})).toEqual([]);
-  });
-
   test('helper selectors cover ids, locations, and seeded tasks', () => {
     expect(resolveUserId({ userInfo: { id: 'id-1' } } as UserDetailsResponse)).toBe('id-1');
     expect(resolveUserId({ userInfo: { uid: 'uid-1' } } as UserDetailsResponse)).toBe('uid-1');
@@ -375,10 +363,6 @@ test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }
     expect(isActionSuccessStatus(200)).toBe(true);
     expect(isActionSuccessStatus(204)).toBe(true);
     expect(isActionSuccessStatus(400)).toBe(false);
-
-    expect(extractMyWorkCases([{ id: 'case-1' }])).toHaveLength(1);
-    expect(extractMyWorkCases({ cases: [{ id: 'case-2' }] })).toHaveLength(1);
-    expect(extractMyWorkCases({})).toEqual([]);
   });
 
   test('fetchFirstTask returns first task when available', async () => {
@@ -431,20 +415,6 @@ test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }
     assertLocationsListResponse(401, undefined);
   });
 
-  test('assertTaskNamesResponse covers array and empty data', () => {
-    assertTaskNamesResponse(200, ['task']);
-    assertTaskNamesResponse(200, { task_names: ['task'] });
-    assertTaskNamesResponse(200, []);
-    assertTaskNamesResponse(500, undefined);
-  });
-
-  test('assertTypesOfWorkResponse covers object shapes', () => {
-    assertTypesOfWorkResponse(200, [{ id: 'type-1' }]);
-    assertTypesOfWorkResponse(200, { typesOfWork: [{ id: 'type-2' }] });
-    assertTypesOfWorkResponse(200, []);
-    assertTypesOfWorkResponse(500, undefined);
-  });
-
   test('assertTaskSearchResponse covers success and failure', () => {
     assertTaskSearchResponse(200, { tasks: [{ id: 'task-1', task_state: 'assigned' }] });
     assertTaskSearchResponse(500, undefined);
@@ -458,21 +428,6 @@ test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }
   test('assertAllWorkResponse covers success and guarded', () => {
     assertAllWorkResponse(200, { tasks: [{ id: 'task-1', task_state: 'assigned' }] });
     assertAllWorkResponse(500, undefined);
-  });
-
-  test('assertMyWorkDashboardResponse covers case arrays', () => {
-    assertMyWorkDashboardResponse(200, { cases: [{ id: 'case-1' }] });
-    assertMyWorkDashboardResponse(200, []);
-    assertMyWorkDashboardResponse(200, { other: [] });
-    assertMyWorkDashboardResponse(401, undefined);
-  });
-
-  test('assertMyWorkTotalsResponse covers totals and cases', () => {
-    assertMyWorkTotalsResponse(200, { total_records: 1, cases: [] });
-    assertMyWorkTotalsResponse(200, { cases: [{ id: 'case-1' }] });
-    assertMyWorkTotalsResponse(200, { total_records: 'nope', cases: null });
-    assertMyWorkTotalsResponse(200, undefined);
-    assertMyWorkTotalsResponse(401, undefined);
   });
 
   test('assertCaseworkerListResponse covers list and empty payloads', () => {

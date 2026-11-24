@@ -15,6 +15,8 @@ import {
   type IdentityLease,
 } from '../common/identityLease';
 import type { IdentityCompatibilityRequirements } from '../common/identityPoolRegistry';
+import { annotatePhase, derivePhase, FrameworkError, inPhase, PHASE_ANNOTATION_TYPE } from './utils/frameworkError.js';
+import { annotateIdentityLeaseWait, attachServiceFailures } from './utils/evidenceMarkers.js';
 
 const require = createRequire(import.meta.url);
 const { buildFailureContext, redactText, redactUrl, redactValue } = require('../common/reporters/failure-context.cjs') as {
@@ -46,6 +48,8 @@ interface ApiError {
   method: string;
   initiatedFrom: string;
   resourceType: string;
+  /** Set for 5xx only: false when the response was fulfilled by a route mock rather than a real server. */
+  servedByNetwork?: boolean;
 }
 
 interface FailedRequest {
@@ -1022,7 +1026,9 @@ function createResponseHandler(
 
       // Track all 4xx and 5xx errors
       if (status >= 400 && !isKnownBenignApiError(sanitizedUrl, method, status)) {
-        apiErrors.push({ url: sanitizedUrl, status, method, initiatedFrom, resourceType });
+        // A route-fulfilled response has no server address, which keeps mocked 5xx out of service-failure evidence.
+        const servedByNetwork = status >= 500 ? (await response.serverAddr().catch(() => null)) !== null : undefined;
+        apiErrors.push({ url: sanitizedUrl, status, method, initiatedFrom, resourceType, servedByNetwork });
         if (apiErrors.length > maxTracked) {
           apiErrors.shift();
         }
@@ -1158,6 +1164,8 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
       : '';
   const backendWait = deriveBackendWaitFlag(failureType, serverErrors, clientErrors, slowCalls, failedRequests);
   const phaseMarker = derivePhaseMarker(failureType, error, executionSignals, backendWait, failureLocation, actionableError);
+  const currentPhase = testInfo.annotations.find((annotation) => annotation.type === PHASE_ANNOTATION_TYPE)?.description;
+  annotatePhase(testInfo, derivePhase(failureType, error, currentPhase));
   const likelyRootCause = deriveLikelyRootCause({
     failureType,
     testStatus,
@@ -1321,7 +1329,9 @@ async function attachFailureDiagnosisIfNeeded(
   buildContext: () => Omit<FailureDiagnosisContext, 'testInfo' | 'testStatus'>
 ): Promise<void> {
   if (shouldAttachFailureDiagnosis(testInfo.status)) {
-    await attachFailureDiagnosis({ testInfo, testStatus: testInfo.status, ...buildContext() });
+    const context = buildContext();
+    await attachFailureDiagnosis({ testInfo, testStatus: testInfo.status, ...context });
+    await attachServiceFailures(testInfo, context.apiErrors);
   }
 }
 
@@ -1357,8 +1367,6 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
   // eslint-disable-next-line no-empty-pattern
   identityLease: async ({}, use, testInfo) => {
     const releases: Array<() => Promise<void>> = [];
-    let testFailed = false;
-    let teardownFailure: Error | undefined;
     const timing = resolveIdentityLeaseTiming();
     const originalTimeoutMs = testInfo.timeout;
     const fixtureStartedAt = Date.now();
@@ -1366,34 +1374,38 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
       const elapsedBeforeAcquireMs = Date.now() - fixtureStartedAt;
       const timeouts = resolveIdentityLeaseTestTimeouts(originalTimeoutMs, elapsedBeforeAcquireMs, timing);
       testInfo.setTimeout(timeouts.duringAcquireMs);
-      const lease = await leaseFactory();
+      const acquireStartedAt = Date.now();
+      const lease = await inPhase(testInfo, 'setup', leaseFactory);
       releases.push(lease.release);
-      testInfo.setTimeout(
-        resolveIdentityLeaseTestTimeouts(originalTimeoutMs, Date.now() - fixtureStartedAt, timing).afterAcquireMs
-      );
+      // The wait headroom above is temporary; the lasting extension covers only the time actually spent so far.
+      const afterAcquireMs = resolveIdentityLeaseTestTimeouts(
+        originalTimeoutMs,
+        Date.now() - fixtureStartedAt,
+        timing
+      ).afterAcquireMs;
+      testInfo.setTimeout(afterAcquireMs);
+      annotateIdentityLeaseWait(testInfo, Date.now() - acquireStartedAt, afterAcquireMs, Boolean(process.env.PW_CAPACITY_REPORT));
       return lease;
     };
+    let releaseFailures: PromiseRejectedResult[] = [];
     try {
       await use({
         acquire: (requirements) => acquire(() => acquireIdentityLease(requirements, process.env, fetch, originalTimeoutMs)),
       });
-    } catch (error) {
-      testFailed = true;
-      throw error;
     } finally {
       const releaseResults = await Promise.allSettled(releases.reverse().map((release) => release()));
-      const releaseFailures = releaseResults.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-      if (releaseFailures.length > 0) {
-        releaseFailures.forEach(({ reason }) => {
-          console.warn('[identity-lease] lease release failed during test teardown', reason);
-        });
-        if (!testFailed) {
-          teardownFailure = new Error(`Failed to release ${releaseFailures.length} identity lease(s) during test teardown`);
-        }
-      }
+      releaseFailures = releaseResults.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
     }
-    if (teardownFailure) {
-      throw teardownFailure;
+    if (releaseFailures.length > 0) {
+      if (testInfo.errors.length === 0) {
+        annotatePhase(testInfo, 'teardown');
+      }
+      const reasons = releaseFailures.map(({ reason }) => (reason instanceof Error ? reason.message : String(reason)));
+      throw new FrameworkError(
+        'LEASE_RELEASE_FAILED',
+        'teardown',
+        `Failed to release ${releaseFailures.length} identity lease(s) during test teardown: ${reasons.join('; ')}`
+      );
     }
   },
 
@@ -1454,6 +1466,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
     page.on('requestfinished', createRequestFinishedHandler(slowCalls, slowThreshold, maxTracked));
     page.on('requestfailed', createRequestFailedHandler(failedRequests, maxTracked, networkTimeoutRef));
 
+    annotatePhase(testInfo, 'test');
     try {
       await use(page);
     } finally {

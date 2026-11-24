@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHearingsHttpClient } from '../hearings/services/hearings-http-client.provider';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf, Injector } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import {
   AbstractAppConfig,
@@ -140,7 +140,7 @@ import { WorkAllocationComponentsModule } from '../work-allocation/components/wo
     CcdCYAPageLabelFilterPipe,
     CaseFileViewService,
     JurisdictionService,
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHearingsHttpClient(),
   ],
 })
 /**

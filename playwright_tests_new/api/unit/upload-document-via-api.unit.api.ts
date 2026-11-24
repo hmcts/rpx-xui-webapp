@@ -107,7 +107,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
     });
   });
 
-  test('uploadDocumentViaApi preserves failure details from the proxy response', async () => {
+  test('uploadDocumentViaApi reports the proxy failure status', async () => {
     const consentButton = {
       first: () => consentButton,
       isVisible: async () => false,
@@ -134,7 +134,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
         mimeType: 'application/pdf',
         fileContent: '%PDF-1.4\n%%EOF',
       })
-    ).rejects.toThrow('Document upload API failed with HTTP 403: {"message":"Internal Server Error"}');
+    ).rejects.toThrow('Document upload API failed with HTTP 403');
   });
 
   test('uploadDocumentViaApi fails fast when the XSRF cookie never appears', async () => {
@@ -491,7 +491,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
         mimeType: 'application/pdf',
         fileContent: '%PDF-1.4\n%%EOF',
       })
-    ).rejects.toThrow('Document upload API failed with HTTP 500: {"message":"Internal Server Error"}');
+    ).rejects.toThrow('Document upload API failed with HTTP 500');
 
     expect(postAttempts).toBe(1);
   });

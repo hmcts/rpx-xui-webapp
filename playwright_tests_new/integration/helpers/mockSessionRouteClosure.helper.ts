@@ -30,6 +30,9 @@ export function describeUnexpectedSameOriginApiRequest(
     if (!webProtocols.has(request.protocol) || !webProtocols.has(initiator.protocol) || request.origin !== initiator.origin) {
       return undefined;
     }
+    if (method.toUpperCase() === 'POST' && /^\/rb_[A-Za-z0-9]+$/.test(request.pathname)) {
+      return undefined;
+    }
   } catch {
     return undefined;
   }

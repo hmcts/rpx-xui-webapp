@@ -1,6 +1,7 @@
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { CaseDetailsPage } from '../../page-objects/pages/exui/caseDetails.po';
 import { createLogger } from '@hmcts/playwright-common';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
@@ -11,6 +12,7 @@ test.describe(
   { tag: ['@e2e', '@e2e-create-case', '@e2e-data-loss', '@nightly'] },
   () => {
     test('Verify creating a case in the divorce jurisdiction works as expected', async ({
+      browser,
       page,
       validatorUtils,
       caseDetailsPage,
@@ -63,7 +65,8 @@ test.describe(
       });
 
       await test.step('Check the case tab Data, matches previously entered data (EXUI-848/EXUI-811/EXUI-433)', async () => {
-        const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
+        const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.caseViewerTable);
         expect.soft(table1).toMatchObject({
           'Text Field 0': caseData.textField0,
           'Text Field 2': caseData.textField2,
@@ -96,6 +99,50 @@ test.describe(
         };
         const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
         expect.soft(table).toMatchObject(expectedDetails);
+      });
+
+      await test.step('Read the created case from CCD in a fresh browser context', async () => {
+        const caseUrl = page.url();
+        const readbackContext = await browser.newContext({
+          storageState: await page.context().storageState(),
+          serviceWorkers: 'block',
+        });
+        try {
+          let readbackStatus: number | undefined;
+          let readbackFromServiceWorker: boolean | undefined;
+          const readbackPage = await readbackContext.newPage();
+          readbackPage.on('response', (response) => {
+            if (
+              response.request().method() === 'GET' &&
+              new URL(response.url()).pathname.endsWith(`/internal/cases/${caseNumber}`)
+            ) {
+              readbackStatus = response.status();
+              readbackFromServiceWorker = response.fromServiceWorker();
+            }
+          });
+          const readbackDetails = new CaseDetailsPage(readbackPage);
+          await readbackPage.goto(caseUrl);
+          await readbackDetails.waitForCaseDetailsReady();
+          expect(readbackStatus, 'Fresh case page must fetch the new case from CCD').toBe(200);
+          expect(readbackFromServiceWorker, 'CCD readback must use a network response').toBe(false);
+          expect(await readbackDetails.getCaseNumberFromUrl()).toBe(caseNumber);
+          await readbackDetails.selectCaseDetailsTab('Data');
+          const dataTab = readbackPage.getByRole('tab', { name: /^Data(?:,|$)/ });
+          if ((await dataTab.getAttribute('aria-selected')) !== 'true') {
+            await readbackDetails.selectCaseDetailsTab('Data');
+          }
+          await expect(dataTab).toHaveAttribute('aria-selected', 'true');
+          const expectedData = {
+            'Text Field 0': caseData.textField0,
+            'First Name': person1Data.firstName,
+            'Last Name': person1Data.lastName,
+          };
+          await expect
+            .poll(() => readbackDetails.trRowsToObjectInPage(readbackDetails.caseViewerTable), { timeout: 30_000 })
+            .toMatchObject(expectedData);
+        } finally {
+          await readbackContext.close();
+        }
       });
     });
   }

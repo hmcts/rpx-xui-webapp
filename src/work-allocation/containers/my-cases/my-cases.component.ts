@@ -1,4 +1,4 @@
-import { CurrentUserService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models/user-details.model';

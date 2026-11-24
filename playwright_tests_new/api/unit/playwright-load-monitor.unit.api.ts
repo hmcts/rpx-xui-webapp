@@ -25,6 +25,7 @@ interface Summary {
 }
 
 const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
+  buildMetadata: (commandArgs: string[], options: Record<string, unknown>) => { workers: string };
   buildLoadProfileHtml: (summary: Summary, samples: unknown[]) => string;
   buildInlineSvgChart: (samples: unknown[], timelineEvents?: unknown[]) => string;
   buildPressureSignals: (samples: unknown[]) => PressureSignals;
@@ -59,6 +60,22 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
 };
 
 test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => {
+  test('reports the command worker override ahead of the environment default', () => {
+    const previous = process.env.FUNCTIONAL_TESTS_WORKERS;
+    process.env.FUNCTIONAL_TESTS_WORKERS = '6';
+    try {
+      const options = loadMonitor.parseArgs(['--', 'yarn', 'test:playwright:integration', '--workers=12']).options;
+      expect(loadMonitor.buildMetadata(['yarn', 'test:playwright:integration', '--workers=12'], options).workers).toBe('12');
+    } finally {
+      if (previous === undefined) delete process.env.FUNCTIONAL_TESTS_WORKERS;
+      else process.env.FUNCTIONAL_TESTS_WORKERS = previous;
+    }
+  });
+
+  test('reports the split-form worker override', () => {
+    const options = loadMonitor.parseArgs(['--', 'yarn', 'test:playwright:integration', '--workers', '12']).options;
+    expect(loadMonitor.buildMetadata(['yarn', 'test:playwright:integration', '--workers', '12'], options).workers).toBe('12');
+  });
   test('parses wrapper options and preserves Playwright command arguments', () => {
     const parsed = loadMonitor.parseArgs([
       '--sample-interval-ms',
@@ -624,25 +641,25 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
         outputFolder,
         reportFolder: outputFolder,
         sampleIntervalMs: 5,
-        childIdleTimeoutMs: 20,
+        childIdleTimeoutMs: 150,
         childCloseGraceMs: 0,
-        childTerminateGraceMs: 20,
+        childTerminateGraceMs: 150,
         label: 'active-child',
         eventsFile: '',
         spawnProcess: () => child,
       });
 
       setTimeout(() => child.stdout.emit('data', Buffer.from('tick 1\n')), 10);
-      setTimeout(() => child.stdout.emit('data', Buffer.from('tick 2\n')), 25);
-      setTimeout(() => child.emit('close', 0, null), 35);
+      setTimeout(() => child.stdout.emit('data', Buffer.from('tick 2\n')), 100);
+      setTimeout(() => child.emit('close', 0, null), 190);
 
       await expect(runPromise).resolves.toBe(0);
     } finally {
       process.stdout.write = originalWrite;
     }
 
-    expect(signals).toEqual([]);
-    expect(fs.existsSync(path.join(outputFolder, 'summary.json'))).toBe(true);
+    expect(signals, 'watchdog must not signal a child that keeps emitting output').toEqual([]);
+    expect(fs.existsSync(path.join(outputFolder, 'summary.json')), 'summary.json written after active child').toBe(true);
   });
 
   test('continues after child exit when stdio close never arrives', async () => {

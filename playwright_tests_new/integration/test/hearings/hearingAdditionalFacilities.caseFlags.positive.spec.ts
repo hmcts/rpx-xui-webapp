@@ -1,9 +1,8 @@
 import { type Page } from '@playwright/test';
+import { createRequire } from 'node:module';
 import { expect, test } from '../../../E2E/fixtures';
 import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
-import { caseFlagsRefData, serviceHearingValuesModel } from '../../../../src/hearings/hearing.test.data';
 import type { ServiceHearingValuesModel } from '../../../../src/hearings/models/serviceHearingValues.model';
-import { CaseFlagsUtils } from '../../../../src/hearings/utils/case-flags.utils';
 import { LISTED_HEARING_SCENARIO, buildServiceHearingValuesMock } from '../../mocks/hearings.mock';
 import {
   applyHearingManagerSessionCookies,
@@ -14,6 +13,12 @@ import {
   hearingManagerRoles,
   setupHearingsMockRoutes,
 } from '../../helpers';
+
+const require = createRequire(import.meta.url);
+const { caseFlagsRefData, serviceHearingValuesModel } =
+  require('../../../../src/hearings/hearing.test.data') as typeof import('../../../../src/hearings/hearing.test.data');
+const { CaseFlagsUtils } =
+  require('../../../../src/hearings/utils/case-flags.utils') as typeof import('../../../../src/hearings/utils/case-flags.utils');
 
 type ServiceFlag = (typeof serviceHearingValuesModel.caseFlags.flags)[number];
 

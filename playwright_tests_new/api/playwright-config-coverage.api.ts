@@ -37,7 +37,15 @@ let e2eConfigModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
 let nightlyConfigModule: TestableConfigModule;
 
-const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
+const buildConfig = (env: EnvMap) =>
+  configModule.__test__.buildConfig(env) as {
+    workers: number;
+    forbidOnly: boolean;
+    reporter: [string, Record<string, unknown> | undefined][];
+    testIgnore: string[];
+    use: { baseURL: string };
+    projects: Array<{ name: string; workers?: number; use: { headless: boolean } }>;
+  };
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
 const resolveApiProjectWorkerCount = (env: EnvMap) =>
   (
@@ -67,6 +75,7 @@ const resolveE2eTagFilters = (env: EnvMap) =>
   };
 const buildE2eConfig = (env: EnvMap) =>
   e2eConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     reporter: [string, Record<string, unknown> | undefined][];
     globalSetup?: string;
     testIgnore: string[];
@@ -76,10 +85,12 @@ const buildE2eConfig = (env: EnvMap) =>
 
 const buildIntegrationConfig = (env: EnvMap) =>
   integrationConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     workers?: number;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
-    use: { trace: string | { mode: string; snapshots: { dom: boolean; aria: boolean; screen: boolean } } };
+    expect: { timeout: number };
+    use: { timezoneId: string; trace: string | { mode: string; snapshots: { dom: boolean; aria: boolean; screen: boolean } } };
     projects: Array<{
       name: string;
       workers?: number;
@@ -105,6 +116,7 @@ const resolveIntegrationWorkerCount = (env: EnvMap) =>
   ).resolveWorkerCount(env);
 const buildNightlyConfig = (env: EnvMap) =>
   nightlyConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { baseURL: string };
@@ -203,6 +215,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.project).toBe('Custom Project');
     expect(odhinOptions?.release).toBe('Custom Release');
     expect(odhinOptions?.testEnvironment).toContain('ci');
+    expect(odhinOptions?.testEnvironment).toContain(`configured_workers=${expectedWorkers}`);
     expect(config.projects[0].use.headless).toBe(false);
 
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
@@ -220,6 +233,15 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
     expect(nodeApiProject?.workers).toBe(2);
+  });
+
+  test('all suites reject focused tests locally and in CI', async () => {
+    for (const env of [{ CI: undefined }, { CI: 'true' }]) {
+      expect(buildConfig(env).forbidOnly).toBe(true);
+      expect(buildE2eConfig(env).forbidOnly).toBe(true);
+      expect(buildIntegrationConfig(env).forbidOnly).toBe(true);
+      expect(buildNightlyConfig(env).forbidOnly).toBe(true);
+    }
   });
 
   test('config defaults to local reporter values', async () => {
@@ -990,5 +1012,36 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(smokeRunner.buildSmokeEnvironment({ CI: undefined }).PLAYWRIGHT_REPORT_FOLDER).toBe(
       'functional-output/tests/playwright-e2e/odhin-report'
     );
+  });
+
+  test('every Playwright config sets action and navigation timeouts with env overrides', () => {
+    const env = { CI: undefined, TEST_URL: 'https://example.test' };
+    const timeoutsOf = (config: unknown) => (config as { use: Record<string, unknown> }).use;
+    const defaults = { actionTimeout: 20_000, navigationTimeout: 30_000 };
+    const overrides = { PW_ACTION_TIMEOUT_MS: '5000', PW_NAVIGATION_TIMEOUT_MS: '7000' };
+
+    for (const build of [buildConfig, buildE2eConfig, buildIntegrationConfig]) {
+      expect(timeoutsOf(build(env))).toMatchObject(defaults);
+      expect(timeoutsOf(build({ ...env, ...overrides }))).toMatchObject({ actionTimeout: 5000, navigationTimeout: 7000 });
+      expect(timeoutsOf(build({ ...env, PW_ACTION_TIMEOUT_MS: '0', PW_NAVIGATION_TIMEOUT_MS: 'abc' }))).toMatchObject(defaults);
+    }
+    expect(timeoutsOf(buildNightlyConfig(env))).toMatchObject({ actionTimeout: 60_000, navigationTimeout: 60_000 });
+    expect(timeoutsOf(buildNightlyConfig({ ...env, ...overrides }))).toMatchObject({
+      actionTimeout: 5000,
+      navigationTimeout: 7000,
+    });
+  });
+
+  test('main and integration configs take retries from env and default to 2', () => {
+    const env = { CI: undefined, TEST_URL: 'https://example.test', PW_E2E_RETRIES: undefined, PW_INTEGRATION_RETRIES: undefined };
+    const retriesOf = (config: unknown) => (config as { retries: number }).retries;
+
+    expect(retriesOf(buildConfig(env))).toBe(2);
+    expect(retriesOf(buildConfig({ ...env, PW_E2E_RETRIES: '0' }))).toBe(0);
+    expect(retriesOf(buildConfig({ ...env, PW_E2E_RETRIES: '-1' }))).toBe(2);
+    expect(retriesOf(buildIntegrationConfig(env))).toBe(2);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_INTEGRATION_RETRIES: '1' }))).toBe(1);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_INTEGRATION_RETRIES: '0' }))).toBe(0);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_E2E_RETRIES: '0' }))).toBe(2);
   });
 });

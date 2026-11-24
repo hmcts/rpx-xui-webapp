@@ -66,6 +66,7 @@ test.describe('same-origin mock-session route closure', { tag: '@svc-internal' }
       ['/nested/rb_bf24054dsx', 'POST'],
       ['/rb_', 'POST'],
       ['/rb_id/', 'POST'],
+      ['/rb_id/child', 'POST'],
       ['/rb_id-extra', 'POST'],
       ['/prefix_rb_id', 'POST'],
     ]) {
@@ -108,6 +109,7 @@ test.describe('same-origin mock-session route closure', { tag: '@svc-internal' }
       ['https', '/nested/rb_bf24054dsx', 'POST', 'fetch', true],
       ['https', '/rb_', 'POST', 'fetch', true],
       ['https', '/rb_id/', 'POST', 'fetch', true],
+      ['https', '/rb_id/child', 'POST', 'fetch', true],
       ['https', '/rb_id-extra', 'POST', 'fetch', true],
       ['https', '/prefix_rb_id', 'POST', 'fetch', true],
       ['https', '/api/cases/1234567890123456?token=secret', 'POST', 'fetch', true],
@@ -143,6 +145,7 @@ test.describe('same-origin mock-session route closure', { tag: '@svc-internal' }
       { method: 'POST', route: 'https://xui.example/nested/rb_bf24054dsx' },
       { method: 'POST', route: 'https://xui.example/rb_' },
       { method: 'POST', route: 'https://xui.example/rb_id/' },
+      { method: 'POST', route: 'https://xui.example/rb_id/child' },
       { method: 'POST', route: 'https://xui.example/rb_id-extra' },
       { method: 'POST', route: 'https://xui.example/prefix_rb_id' },
       { method: 'POST', route: 'https://xui.example/api/cases/:id' },

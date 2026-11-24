@@ -20,6 +20,12 @@ export class CaseListPage extends Base {
   readonly textField0FallbackInput = this.page
     .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
     .first();
+  readonly lastModifiedDateFromInput = this.page.locator('#dateFrom input.govuk-input');
+  readonly lastModifiedDateToInput = this.page.locator('#dateTo input.govuk-input');
+  readonly filterValidationSummary = this.page.locator('.case-list-component .govuk-error-summary');
+  readonly filterValidationSummaryTitle = this.filterValidationSummary.locator('.govuk-error-summary__title');
+  readonly filterValidationSummaryLinks = this.filterValidationSummary.locator('.govuk-error-summary__list a');
+  readonly dateRangeValidationErrors = this.page.locator('ccd-date-picker-range .error-message');
   readonly quickSearchContainer = this.page.locator('form:has(#exuiCaseReferenceSearch)');
   readonly quickSearchCaseReferenceInput = this.page.locator('#exuiCaseReferenceSearch');
   readonly quickSearchFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
@@ -73,6 +79,12 @@ export class CaseListPage extends Base {
     }
     await input.fill(textField0);
     return true;
+  }
+
+  public async setLastModifiedDateRange(dateFrom: string, dateTo: string): Promise<void> {
+    await this.lastModifiedDateFromInput.fill(dateFrom);
+    await this.lastModifiedDateToInput.fill(dateTo);
+    await this.lastModifiedDateToInput.blur();
   }
 
   public async quickSearchByCaseReference(caseReference: string): Promise<boolean> {

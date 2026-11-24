@@ -65,7 +65,7 @@ export const initProxy = (app: Express) => {
   );
 
   applyProxy(app, {
-    middlewares: [bodyParser.json()],
+    middlewares: [searchCases.validateLastModifiedDates, bodyParser.json()],
     onReq: searchCases.modifyRequest,
     onRes: searchCases.handleElasticSearchResponse,
     rewriteUrl: (path: string) => `/internal/searchCases${path.includes('?') ? path.substring(path.indexOf('?')) : ''}`,

@@ -226,6 +226,87 @@ describe('Search Cases Elastic Search', () => {
       expect(result.native_es_query.from).to.equal(0);
       expect(result.native_es_query.sort).to.deep.equal([]);
     });
+
+    it('should create an inclusive last-modified date range from datetime filters', () => {
+      const queryParams = {
+        'case.dateFrom': '2026-11-18T00:00:00.000',
+        'case.dateTo': '2026-11-20T00:00:00.000',
+        page: 1,
+      };
+      const userInfo: UserInfo = {
+        forename: 'Thomas',
+        roles: ['case'],
+        surname: 'Jones',
+      };
+
+      const result = searchCases.prepareElasticQuery(queryParams, undefined, userInfo);
+
+      expect(result.native_es_query.query).to.deep.equal({
+        bool: {
+          filter: [
+            {
+              range: {
+                last_modified: {
+                  gte: '2026-11-18T00:00:00.000Z',
+                  lt: '2026-11-21T00:00:00.000Z',
+                },
+              },
+            },
+          ],
+        },
+      });
+    });
+
+    it('should continue to accept date-only last-modified filters', () => {
+      const queryParams = {
+        'case.dateFrom': '2026-11-18',
+        'case.dateTo': '2026-11-18',
+      };
+      const userInfo: UserInfo = {
+        forename: 'Thomas',
+        roles: ['case'],
+        surname: 'Jones',
+      };
+
+      const result = searchCases.prepareElasticQuery(queryParams, undefined, userInfo);
+      const filter = result.native_es_query.query.bool.filter[0] as {
+        range: { last_modified: { gte: string; lt: string } };
+      };
+
+      expect(filter.range.last_modified).to.deep.equal({
+        gte: '2026-11-18T00:00:00.000Z',
+        lt: '2026-11-19T00:00:00.000Z',
+      });
+    });
+
+    it('should reject invalid last-modified datetimes', () => {
+      const queryParams = { 'case.dateFrom': '2026-11-18T24:00:00.000' };
+      const userInfo: UserInfo = {
+        forename: 'Thomas',
+        roles: ['case'],
+        surname: 'Jones',
+      };
+
+      expect(() => searchCases.prepareElasticQuery(queryParams, undefined, userInfo)).to.throw(
+        'case.dateFrom must be a valid ISO date or datetime'
+      );
+    });
+
+    it('should reject a last-modified range whose from date is after its to date', () => {
+      const queryParams = {
+        'case.dateFrom': '2026-11-20T00:00:00.000',
+        'case.dateTo': '2026-11-18T00:00:00.000',
+      };
+      const userInfo: UserInfo = {
+        forename: 'Thomas',
+        roles: ['case'],
+        surname: 'Jones',
+      };
+
+      expect(() => searchCases.prepareElasticQuery(queryParams, undefined, userInfo)).to.throw(
+        'case.dateFrom must be on or before case.dateTo'
+      );
+    });
   });
 
   describe('modifyRequest', () => {

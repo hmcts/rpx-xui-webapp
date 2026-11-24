@@ -17,6 +17,7 @@ export interface Query {
 }
 
 export interface Bool {
+  filter?: object[];
   must: Must[];
 }
 
@@ -31,4 +32,9 @@ export interface Match {
 
 export interface WildCard {
   wildcard: { [key: string]: object };
+}
+
+export interface DateRangeBounds {
+  startBound?: string;
+  endBound?: string;
 }

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { errors, expect, test } from '@playwright/test';
 
 import { TaskListPage } from '../../E2E/page-objects/pages/exui/taskList.po.js';
 
@@ -110,7 +110,7 @@ type TaskListShellNavigationMethod = (
   this: TaskListShellNavigationHarness,
   urlPattern: RegExp,
   context: string,
-  timeoutMs: number
+  deadlineMs: number
 ) => Promise<void>;
 
 const waitForTaskListShellReadyAfterNavigation = (
@@ -119,21 +119,118 @@ const waitForTaskListShellReadyAfterNavigation = (
   }
 ).waitForTaskListShellReadyAfterNavigation;
 
+const reloadBlankTaskListDocumentIfNeeded = (
+  TaskListPage.prototype as unknown as {
+    reloadBlankTaskListDocumentIfNeeded: (
+      this: TaskListPage,
+      urlPattern: RegExp,
+      context: string,
+      deadlineMs: number
+    ) => Promise<void>;
+  }
+).reloadBlankTaskListDocumentIfNeeded;
+
 test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, () => {
+  test('skips full-body probes when the target task table is already visible', async () => {
+    let bodyProbes = 0;
+    const taskList = Object.assign(Object.create(TaskListPage.prototype), {
+      page: { url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/my-access' },
+      taskListTable: { isVisible: async () => true },
+      isBlankTaskListDocument: async () => {
+        bodyProbes += 1;
+        return false;
+      },
+      isRecoverableBrowserNavigationDocument: async () => {
+        bodyProbes += 1;
+        return false;
+      },
+    }) as TaskListPage;
+
+    await reloadBlankTaskListDocumentIfNeeded.call(
+      taskList,
+      /\/work\/my-work\/my-access$/,
+      'large task list',
+      Date.now() + 30_000
+    );
+    expect(bodyProbes).toBe(0);
+  });
+
+  for (const scenario of [
+    { name: 'blank page', blank: true, browserError: false, expectedReloads: 1 },
+    { name: 'browser error', blank: false, browserError: true, expectedReloads: 1 },
+    { name: 'nonblank loading page', blank: false, browserError: false, expectedReloads: 0 },
+    { name: 'rejected table probe', blank: true, browserError: false, expectedReloads: 1, visibilityRejects: true },
+  ]) {
+    test(`retains ${scenario.name} recovery when the task table is not confirmed visible`, async () => {
+      let reloads = 0;
+      const taskList = Object.assign(Object.create(TaskListPage.prototype), {
+        page: {
+          url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/my-access',
+          reload: async () => {
+            reloads += 1;
+          },
+          waitForURL: async () => undefined,
+          waitForFunction: async () => {
+            throw new errors.TimeoutError('blank grace expired');
+          },
+        },
+        taskListTable: {
+          isVisible: async () => {
+            if ('visibilityRejects' in scenario) throw new Error('execution context was destroyed');
+            return false;
+          },
+        },
+        isBlankTaskListDocument: async () => scenario.blank,
+        isRecoverableBrowserNavigationDocument: async () => scenario.browserError,
+        logger: { warn: () => undefined },
+      }) as TaskListPage;
+
+      await reloadBlankTaskListDocumentIfNeeded.call(taskList, /\/work\/my-work\/my-access$/, scenario.name, Date.now() + 30_000);
+      expect(reloads).toBe(scenario.expectedReloads);
+    });
+  }
+
+  test('a timed-out body probe does not classify a loading task list as a blank document', async () => {
+    let bodyText: string | Error = new Error('locator.innerText: Timeout 500ms exceeded');
+    const taskList = Object.assign(Object.create(TaskListPage.prototype), {
+      page: {
+        url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/my-access',
+        locator: () => ({
+          innerText: async () => {
+            if (bodyText instanceof Error) throw bodyText;
+            return bodyText;
+          },
+        }),
+      },
+    }) as { isBlankTaskListDocument: (urlPattern: RegExp, timeoutMs: number) => Promise<boolean> };
+
+    await expect(taskList.isBlankTaskListDocument(/\/work\/my-work\/my-access$/, 500)).resolves.toBe(false);
+    bodyText = 'My work\nMy access\n497 cases';
+    await expect(taskList.isBlankTaskListDocument(/\/work\/my-work\/my-access$/, 500)).resolves.toBe(false);
+    bodyText = '';
+    await expect(taskList.isBlankTaskListDocument(/\/work\/my-work\/my-access$/, 500)).resolves.toBe(true);
+  });
+
   test('keeps the caller readiness budget after task-list navigation', async () => {
     const observedTimeouts: number[] = [];
+    const originalNow = Date.now;
+    Date.now = () => 0;
 
-    await waitForTaskListShellReadyAfterNavigation.call(
-      {
-        page: { url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/list' },
-        waitForTaskListShellReady: async (_context, timeoutMs) => {
-          observedTimeouts.push(timeoutMs);
+    try {
+      await waitForTaskListShellReadyAfterNavigation.call(
+        {
+          page: { url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/list' },
+          waitForTaskListShellReady: async (_context, timeoutMs) => {
+            observedTimeouts.push(timeoutMs);
+          },
         },
-      },
-      /\/work\/my-work\/list$/,
-      'unit task-list shell',
-      30_000
-    );
+        /\/work\/my-work\/list$/,
+        'unit task-list shell',
+        30_000
+      );
+    } finally {
+      Date.now = originalNow;
+    }
 
     expect(observedTimeouts).toEqual([30_000]);
   });
@@ -204,6 +301,10 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
                   },
                 ];
           },
+          getApiCallCursor: () => 0,
+          getApiCallsSince: () => [
+            { method: 'POST', url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task', status: 503 },
+          ],
           getLatestTaskDataCallSummary: () => 'POST /workallocation/task -> HTTP 503',
           getManageButtonForRow: () => ({
             isVisible: async () => false,
@@ -243,6 +344,8 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
               status: 502,
             },
           ],
+          getApiCallCursor: () => 1,
+          getApiCallsSince: () => [],
           getLatestTaskDataCallSummary: () => 'none captured',
           getManageButtonForRow: () => ({
             isVisible: async () => false,
@@ -266,6 +369,85 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
     expect(waitIntervals.length).toBeGreaterThan(0);
   });
 
+  test('task actions row wait keeps absent locator reads within its deadline', async () => {
+    const observedTimeouts: number[] = [];
+    const absentRow = {
+      isVisible: async () => false,
+      getAttribute: async (_name: string, options?: { timeout?: number }) => {
+        observedTimeouts.push(options?.timeout ?? 100);
+        await new Promise((resolve) => setTimeout(resolve, options?.timeout ?? 100));
+        throw new Error('absent');
+      },
+    };
+    const taskList = {
+      assertTaskListInteractive: async () => undefined,
+      getTaskActionsRow: () => absentRow,
+      page: {
+        waitForTimeout: async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)),
+        url: () => '/work/my-work/list',
+      },
+    };
+
+    await expect(
+      TaskListPage.prototype.waitForTaskActionsRowReady.call(taskList as never, 0, 'absent row', { timeoutMs: 10, pollMs: 2 })
+    ).rejects.toThrow('Timed out after 10ms');
+    expect(Math.max(...observedTimeouts)).toBeLessThanOrEqual(10);
+  });
+
+  test('Manage expansion wait keeps absent button reads within its deadline', async () => {
+    const observedTimeouts: number[] = [];
+    const absentButton = {
+      getAttribute: async (_name: string, options?: { timeout?: number }) => {
+        observedTimeouts.push(options?.timeout ?? 100);
+        await new Promise((resolve) => setTimeout(resolve, options?.timeout ?? 100));
+        throw new Error('absent');
+      },
+    };
+    const taskList = {
+      assertTaskListInteractive: async () => undefined,
+      getManageButtonForRow: () => absentButton,
+      page: {
+        waitForTimeout: async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)),
+        url: () => '/work/my-work/list',
+      },
+    };
+
+    await expect(
+      TaskListPage.prototype['waitForManageButtonExpanded'].call(taskList as never, 0, 'absent button', {
+        timeoutMs: 10,
+        pollMs: 2,
+      })
+    ).rejects.toThrow('Timed out after 10ms');
+    expect(Math.max(...observedTimeouts)).toBeLessThanOrEqual(10);
+  });
+
+  test('waitForTaskRowReady catches a fresh task HTTP 503 after history rollover', async () => {
+    const taskList = Object.assign(Object.create(TaskListPage.prototype), {
+      page: { waitForTimeout: async () => undefined },
+      maxApiCallsTracked: 500,
+      taskRows: { count: async () => 1 },
+      getTaskRow: () => ({ isVisible: async () => true }),
+      getManageButtonForRow: () => ({ isVisible: async () => true }),
+    }) as TaskListPage;
+    const record = (status: number) =>
+      taskList['recordApiCall']({
+        method: 'POST',
+        url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task',
+        status,
+        duration: 1,
+        timestamp: new Date().toISOString(),
+      });
+    for (let i = 0; i < 500; i += 1) record(200);
+    taskList['assertTaskListInteractive'] = async () => {
+      record(503);
+    };
+
+    await expect(taskList.waitForTaskRowReady('rollover', { timeoutMs: 100 })).rejects.toThrow(
+      'Task list failed while waiting for task row (rollover): POST https://manage-case.aat.platform.hmcts.net/workallocation/task returned HTTP 503'
+    );
+    expect(taskList.getApiCalls()).toHaveLength(500);
+  });
+
   test('waitForTaskDataResponse accepts a successful post-baseline task inspection', async () => {
     const apiCalls = [
       { method: 'POST', url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task', status: 503 },
@@ -277,6 +459,7 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
         {
           assertTaskListInteractive: async () => undefined,
           getApiCalls: () => apiCalls,
+          getApiCallsSince: (cursor: number) => apiCalls.slice(cursor),
           isTaskDataCall: (url: string) => url.endsWith('/workallocation/task'),
           page: {
             waitForTimeout: async () => undefined,
@@ -296,6 +479,9 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
         {
           assertTaskListInteractive: async () => undefined,
           getApiCalls: () => [
+            { method: 'POST', url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task', status: 500 },
+          ],
+          getApiCallsSince: () => [
             { method: 'POST', url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task', status: 500 },
           ],
           isTaskDataCall: (url: string) => url.endsWith('/workallocation/task'),

@@ -36,12 +36,16 @@ test.describe('dynamic field mock session selection', { tag: '@svc-internal' }, 
         },
         route: async (pattern: string, handler: (route: unknown) => Promise<void>) => routes.set(pattern, handler),
         goto: async (url: string) => calls.push(`goto:${url}`),
+        getByLabel: (label: string) => ({
+          waitFor: async ({ state }: { state: string }) => calls.push(`ready:${label}:${state}`),
+        }),
       };
       await exports.openDynamicFieldConfigJourney(...(skipSessionCookies ? [page, { skipSessionCookies: true }] : [page]));
       expect(calls).toEqual([
         ...(skipSessionCookies ? [] : ['cookies:SOLICITOR']),
         'seed-user',
         'goto:/cases/case-create/DIVORCE/xuiTestJurisdiction/createCase/',
+        'ready:Case title:visible',
       ]);
       expect([...routes.keys()]).toEqual([
         '**/api/user/details*',

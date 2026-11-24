@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { errors, expect, test } from '@playwright/test';
 import { TaskListPage } from '../../E2E/page-objects/pages/exui/taskList.po.js';
 
 function navigationHarness(options: { initialPath?: string; reloadPath?: string; headingVisible?: boolean } = {}) {
@@ -20,7 +20,9 @@ function navigationHarness(options: { initialPath?: string; reloadPath?: string;
       async waitForURL(pattern: RegExp) {
         if (!pattern.test(url)) throw new Error(`Unexpected route: ${url}`);
       },
-      async waitForFunction() {},
+      async waitForFunction() {
+        throw new errors.TimeoutError('blank grace expired');
+      },
       async waitForLoadState() {},
       async waitForTimeout() {},
       locator: () => ({ innerText: async () => (options.reloadPath && reloads === 0 ? '' : 'Rendered view') }),
@@ -30,6 +32,7 @@ function navigationHarness(options: { initialPath?: string; reloadPath?: string;
       },
     },
     logger: { warn() {} },
+    taskListTable: { isVisible: async () => false },
     notAuthorisedHeading: heading,
     serviceDownHeading: heading,
   }) as TaskListPage;

@@ -8,6 +8,10 @@
     "resolveJsonModule": true,
     "types": ["node", "mocha", "rxjs"],
     "baseUrl": ".",
+    "rootDir": "..",
+    "strict": false,
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0",
     "lib": ["es2017", "ES2021.String", "dom"]
   },
   "include": ["**/*.ts", "../*.ts"],

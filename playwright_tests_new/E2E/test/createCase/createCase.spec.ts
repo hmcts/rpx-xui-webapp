@@ -65,7 +65,13 @@ test.describe(
           hasExpectedAction: await caseDetailsPage.caseActionsDropdown
             .locator('option')
             .evaluateAll((options) =>
-              options.some((option) => option.textContent?.trim() === 'Next step' && !option.disabled && !!option.value)
+              options.some(
+                (option): option is HTMLOptionElement =>
+                  option instanceof HTMLOptionElement &&
+                  option.textContent?.trim() === 'Next step' &&
+                  !option.disabled &&
+                  !!option.value
+              )
             ),
         }))
         .toEqual({ dropdownEnabled: true, goButtonEnabled: true, hasExpectedAction: true });
@@ -143,7 +149,13 @@ test.describe(
               hasExpectedAction: await readbackDetails.caseActionsDropdown
                 .locator('option')
                 .evaluateAll((options) =>
-                  options.some((option) => option.textContent?.trim() === 'Next step' && !option.disabled && !!option.value)
+                  options.some(
+                    (option): option is HTMLOptionElement =>
+                      option instanceof HTMLOptionElement &&
+                      option.textContent?.trim() === 'Next step' &&
+                      !option.disabled &&
+                      !!option.value
+                  )
                 ),
             }))
             .toEqual({ dropdownEnabled: true, goButtonEnabled: true, hasExpectedAction: true });

@@ -142,6 +142,8 @@ Detailed suite documentation and architecture:
 
 For AAT and DEMO, generate and source the local Playwright env first with `yarn env:populate:playwright:aat` or `yarn env:populate:playwright:demo`, then `set -a; source .env; set +a`. For ITHC, export the required credentials through an approved local secret mechanism and keep passwords out of command history.
 
+Note: If you run `set -a; source .env; set +a` and see `.env:{line}: command not found: {includedWord}` or similar please ensure double quotes surround the relevant line (e.g. VARIABLE="{secret}").
+
 ### How tests operate
 
 - **Session management:** Playwright uses lazy session capture and shared `.sessions/` storage to avoid repeated logins during parallel runs.

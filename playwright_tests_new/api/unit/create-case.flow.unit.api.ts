@@ -61,7 +61,11 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
         submitCall: { method: 'POST', status: 502, url: SUBMIT_ENDPOINT },
         validationText: 'Secondary validation error',
       });
-      await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(`POST ${SUBMIT_ENDPOINT} returned HTTP 502`);
+      await expect(clickSubmitAndWaitFlow(scenario.options)).rejects.toThrow(
+        burstCount === 500
+          ? 'API call history cursor 500 is outside the retained range'
+          : `POST ${SUBMIT_ENDPOINT} returned HTTP 502`
+      );
       expect(scenario.clicks()).toBe(1);
     });
   }
@@ -220,7 +224,7 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
       submitButton: submitButton as never,
       continueButton: continueButton as never,
       somethingWentWrongHeading: somethingWentWrongHeading as never,
-      getApiCalls: () => [],
+      getApiCallCursor: () => 0,
       getVisibleActionButton: async (locator) => {
         if (locator === (submitButton as never)) {
           return submitVisible ? (submitButton as never) : undefined;
@@ -280,7 +284,7 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
       submitButton: submitButton as never,
       continueButton: continueButton as never,
       somethingWentWrongHeading: somethingWentWrongHeading as never,
-      getApiCalls: () => [],
+      getApiCallCursor: () => 0,
       getVisibleActionButton: async (locator) => (locator === (submitButton as never) ? (submitButton as never) : undefined),
       clickSubmitButtonWithRetry: async () => {
         actionSequence.push('submit');
@@ -338,7 +342,8 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
       eventTypeSelect: eventTypeSelect as never,
       startButton: startButton as never,
       somethingWentWrongHeading: somethingWentWrongHeading as never,
-      getApiCalls: () =>
+      getApiCallCursor: () => 0,
+      getApiCallsSince: () =>
         attempt === 1
           ? [
               {
@@ -407,7 +412,8 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
         eventTypeSelect: eventTypeSelect as never,
         startButton: startButton as never,
         somethingWentWrongHeading: somethingWentWrongHeading as never,
-        getApiCalls: () => apiCalls,
+        getApiCallCursor: () => apiCalls.length,
+        getApiCallsSince: (cursor) => apiCalls.slice(cursor),
         waitForSelectReady: async () => undefined,
         selectOptionSmart: async () => undefined,
         normalizeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
@@ -444,7 +450,8 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
         eventTypeSelect: createLocator() as never,
         startButton: createLocator() as never,
         somethingWentWrongHeading: createLocator() as never,
-        getApiCalls: () => apiCalls,
+        getApiCallCursor: () => apiCalls.length,
+        getApiCallsSince: (cursor) => apiCalls.slice(cursor),
         waitForSelectReady: async () => {
           apiCalls.push({ method: 'GET', status, url: buildTestAppUrl('/aggregated/caseworkers/123/jurisdictions') });
           throw new Error('Create case select "#cc-jurisdiction" did not become ready within 10ms');

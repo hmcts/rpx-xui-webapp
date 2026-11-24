@@ -217,7 +217,7 @@ const buildConfig = (env = process.env) => {
   const enableOdhinReporter = resolveFlag(env.PW_INTEGRATION_ODHIN, true);
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | configured_workers=${workerCount} | ${resolveAgentHardware()}`;
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
   reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
@@ -279,6 +279,7 @@ const buildConfig = (env = process.env) => {
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
+    forbidOnly: true,
     retries: resolveIntegrationRetries(env),
     timeout: INTEGRATION_TEST_TIMEOUT_MS,
     expect: { timeout: 60_000 },

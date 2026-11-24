@@ -55,6 +55,70 @@ test(
 test.describe('blank grace contracts', { tag: '@svc-internal' }, () => {
   test.describe.configure({ mode: 'serial' });
 
+  test('does not classify a replacement route as the blank task-list document', async () => {
+    let currentUrl = 'https://task-list.test/work/my-work/my-access';
+    const taskList = Object.assign(Object.create(TaskListPage.prototype), {
+      page: {
+        url: () => currentUrl,
+        locator: () => ({
+          innerText: async () => {
+            currentUrl = 'https://task-list.test/other';
+            return '';
+          },
+        }),
+      },
+    }) as TaskListPage;
+
+    await expect(taskList['isBlankTaskListDocument'](/\/work\/my-work\/my-access$/)).resolves.toBe(false);
+  });
+
+  test('does not classify a replacement route as a task-list browser error', async () => {
+    let currentUrl = 'https://task-list.test/work/my-work/my-access';
+    const taskList = Object.assign(Object.create(TaskListPage.prototype), {
+      page: {
+        url: () => currentUrl,
+        locator: () => ({
+          innerText: async () => {
+            currentUrl = 'https://task-list.test/other';
+            return 'ERR_CONNECTION_TIMED_OUT';
+          },
+        }),
+      },
+    }) as TaskListPage;
+
+    await expect(taskList['isRecoverableBrowserNavigationDocument'](/\/work\/my-work\/my-access$/)).resolves.toBe(false);
+  });
+
+  test('stops blank-page recovery if navigation changes between probes', async () => {
+    let currentUrl = 'https://task-list.test/work/my-work/my-access';
+    let graceWaits = 0;
+    let reloads = 0;
+    const taskList = Object.assign(Object.create(TaskListPage.prototype), {
+      page: {
+        url: () => currentUrl,
+        waitForFunction: async () => {
+          graceWaits += 1;
+          return { dispose: async () => undefined };
+        },
+        reload: async () => {
+          reloads += 1;
+        },
+        waitForURL: async () => undefined,
+      },
+      taskListTable: { isVisible: async () => false },
+      isRecoverableBrowserNavigationDocument: async () => false,
+      isBlankTaskListDocument: async () => {
+        currentUrl = 'https://task-list.test/other';
+        return true;
+      },
+      logger: { warn: () => {} },
+    }) as TaskListPage;
+
+    await taskList['reloadBlankTaskListDocumentIfNeeded'](/\/work\/my-work\/my-access$/, 'replacement', Date.now() + 5_000);
+    expect(graceWaits).toBe(0);
+    expect(reloads).toBe(0);
+  });
+
   test('waits at most 30 seconds, then reloads a document which remains blank', async () => {
     const { errors } = await import('@playwright/test');
     let now = 1_000;

@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
+import { hostname } from 'node:os';
 import path from 'node:path';
-import * as lockfile from 'proper-lockfile';
 import { FrameworkError } from '../E2E/utils/frameworkError.js';
 import type { IdentityCompatibilityRequirements, IdentityPoolIdentity } from './identityPoolRegistry.js';
 import { resolveConfiguredPoolIdentities } from './identityPoolRegistry.js';
@@ -11,8 +11,8 @@ const DEFAULT_EXECUTION_BUDGET_MS = 5 * 60_000;
 const DEFAULT_POLL_MS = 1_000;
 const DEFAULT_TTL_MS = 15 * 60_000;
 /**
- * Headroom allows time for release and teardown. Local lockfiles are refreshed while held, but coordinator leases
- * are not renewed; sequential acquisitions or slow teardown can still outlive a coordinator lease.
+ * Headroom allows time for release and teardown. Coordinator leases are not renewed; sequential acquisitions or slow
+ * teardown can still outlive a coordinator lease. Local locks do not expire and require verified cleanup after a crash.
  */
 const DEFAULT_TTL_HEADROOM_MS = 60_000;
 export const IDENTITY_POOL_EXHAUSTED_CODE = 'IDENTITY_POOL_EXHAUSTED';
@@ -95,7 +95,6 @@ async function acquireLocalIdentityLease(
   deadline: number,
   waitMs: number,
   pollMs: number,
-  ttlMs: number,
   env: NodeJS.ProcessEnv
 ): Promise<IdentityLease> {
   const directory = env.PW_IDENTITY_LEASE_DIR?.trim() || path.join(process.cwd(), '.sessions', 'identity-leases');
@@ -106,14 +105,44 @@ async function acquireLocalIdentityLease(
     for (const identity of candidates) {
       const leaseFile = path.join(directory, `${physicalIdentityKey(identity)}.lease`);
       await fs.appendFile(leaseFile, '');
+      const lockPath = `${leaseFile}.lock`;
+      let ownerFile: fs.FileHandle;
       try {
-        const release = await lockfile.lock(leaseFile, { realpath: false, retries: 0, stale: ttlMs });
-        return { identity, release };
+        ownerFile = await fs.open(lockPath, 'wx', 0o600);
       } catch (error) {
-        if (!(typeof error === 'object' && error !== null && 'code' in error && error.code === 'ELOCKED')) {
+        if (!(typeof error === 'object' && error !== null && 'code' in error && error.code === 'EEXIST')) {
           throw error;
         }
+        continue;
       }
+      const ownerToken = randomUUID();
+      try {
+        await ownerFile.writeFile(
+          JSON.stringify({ pid: process.pid, host: hostname(), createdAt: new Date().toISOString(), ownerToken })
+        );
+      } catch (error) {
+        await ownerFile.close();
+        await fs.unlink(lockPath);
+        throw error;
+      }
+      return {
+        identity,
+        release: async () => {
+          try {
+            const [owned, current, record] = await Promise.all([
+              ownerFile.stat(),
+              fs.stat(lockPath),
+              fs.readFile(lockPath, 'utf8'),
+            ]);
+            if (owned.dev !== current.dev || owned.ino !== current.ino || JSON.parse(record).ownerToken !== ownerToken) {
+              throw new Error('Identity lease ownership changed before release.');
+            }
+            await fs.unlink(lockPath);
+          } finally {
+            await ownerFile.close();
+          }
+        },
+      };
     }
     if (!reportedWait) {
       console.log(
@@ -141,7 +170,7 @@ async function acquireCompatibleIdentityLease(
   const { waitMs, pollMs, ttlMs } = resolveIdentityLeaseRuntimeSettings(env, requiredExecutionMs);
   const deadline = Date.now() + waitMs;
   if (!endpoint) {
-    return acquireLocalIdentityLease(candidates, requirements, deadline, waitMs, pollMs, ttlMs, env);
+    return acquireLocalIdentityLease(candidates, requirements, deadline, waitMs, pollMs, env);
   }
   const payload = {
     requestId: randomUUID(),

@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
 import { HearingListMainModel } from '../models/hearingListMain.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { ACTION, HearingChannelEnum } from '../models/hearings.enum';
+import { ACTION, HearingChannelEnum, HMCStatus } from '../models/hearings.enum';
 import { PropertiesUpdatedAutomatically, PropertiesUpdatedOnPageVisit } from '../models/hearingsUpdateMode.enum';
 import {
   LinkedHearingGroupMainModel,
@@ -239,12 +239,14 @@ export class HearingsService {
   public updateHearingActuals(
     hearingId: string,
     hearingActualsModel: HearingActualsModel,
-    caseId: string
+    caseId: string,
+    hearingStatus?: HMCStatus
   ): Observable<HearingActualsMainModel> {
+    const hearingStatusQuery = hearingStatus ? `&hearingStatus=${encodeURIComponent(hearingStatus)}` : '';
     return this.observeErrors(
       'updateHearingActuals',
       this.http.put<HearingActualsMainModel>(
-        `api/hearings/hearingActuals?hearingId=${hearingId}&caseId=${caseId}`,
+        `api/hearings/hearingActuals?hearingId=${hearingId}&caseId=${caseId}${hearingStatusQuery}`,
         hearingActualsModel
       ),
       { caseId, hearingId }

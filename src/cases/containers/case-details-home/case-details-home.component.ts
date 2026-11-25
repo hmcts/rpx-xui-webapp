@@ -25,10 +25,12 @@ export class CaseDetailsHomeComponent implements OnInit {
   }
 
   public ngOnInit() {
-    if (this.extras && this.extras.state && this.extras.state.showMessage && this.extras.state.messageText) {
+    const state = this.extras?.state ?? window.history.state;
+    if (state?.showMessage && state?.messageText) {
       // EUI-4488 - preserve alerts on initialisation so messages are not removed when first entering page
       this.alertService.setPreserveAlerts(true);
-      this.alertService.success({ phrase: this.extras.state.messageText });
+      this.alertService.success({ phrase: state.messageText });
+      window.history.replaceState({ ...window.history.state, showMessage: false }, '');
     }
     this.activatedRoute.data.subscribe((data) => {
       if (data && data.case && data.case.case_type && data.case.case_type.jurisdiction) {

@@ -22,6 +22,30 @@ function buildCreateCaseBootstrapFailureMessage(context: string, failure: ApiCal
   return `Create case bootstrap failed ${context}: ${failure.method} ${failure.url} returned HTTP ${failure.status}`;
 }
 
+const AGGREGATED_JURISDICTIONS_PATTERN = CREATE_CASE_BOOTSTRAP_API_PATTERNS[0];
+
+/**
+ * Bootstrap responses that a page reload cannot fix: 403 anywhere (the user lacks access), and 400/404/422 from the
+ * aggregated jurisdictions lookup (the user or test data is misconfigured). 401 stays retryable because a reload can
+ * refresh a stale session, and a case-type event-trigger 404 stays retryable because preview definition imports lag.
+ */
+export function isNonRetryableBootstrapFailure(failure: ApiCall): boolean {
+  if (failure.status === 403) return true;
+  return [400, 404, 422].includes(failure.status) && AGGREGATED_JURISDICTIONS_PATTERN.test(failure.url);
+}
+
+/** Prefixes a step context with a single "after", so callers may pass either "PoC text fields" or "after PoC text fields". */
+export function afterStepContext(context: string): string {
+  return `after ${context.trim().replace(/^after\s+/i, '')}`;
+}
+
+export function buildWizardValidationErrorMessage(context: string): string {
+  return `Validation error ${afterStepContext(context)}`;
+}
+
+/** Validation banner after the PoC text-field step; the divorce PoC journeys treat it as a retryable creation failure. */
+export const POC_TEXT_FIELDS_VALIDATION_ERROR = buildWizardValidationErrorMessage('PoC text fields');
+
 function caseSummaryId(pathname: string): string | undefined {
   if (pathname.includes('/trigger/')) return undefined;
   return /^\/cases\/case-details\/(?:[^/]+\/[^/]+\/)?([^/]+)\/?$/.exec(pathname)?.[1];
@@ -35,7 +59,7 @@ export async function clickSubmitAndWaitFlow({
   submitButton,
   continueButton,
   somethingWentWrongHeading,
-  getApiCalls,
+  getApiCallCursor,
   getVisibleActionButton,
   clickSubmitButtonWithRetry,
   clickContinueAndWait,
@@ -53,7 +77,7 @@ export async function clickSubmitAndWaitFlow({
   submitButton: Locator;
   continueButton: Locator;
   somethingWentWrongHeading: Locator;
-  getApiCalls: () => Array<{ status: number; url: string; method: string }>;
+  getApiCallCursor: () => number;
   getVisibleActionButton: VisibleActionButtonResolver;
   clickSubmitButtonWithRetry: (context: string, submitButton?: Locator) => Promise<void>;
   clickContinueAndWait: (context: string, options?: { continueButton?: Locator; timeoutMs?: number }) => Promise<void>;
@@ -61,11 +85,11 @@ export async function clickSubmitAndWaitFlow({
   assertNoEventCreationError: (context: string) => Promise<void>;
   checkForErrorMessage: (timeoutMs?: number) => Promise<boolean>;
   getValidationErrorText: () => Promise<string>;
-  failFastOnCriticalWizardEndpointFailure: (context: string, baselineIndex?: number) => void;
+  failFastOnCriticalWizardEndpointFailure: (context: string, cursor: number) => void;
   warn: (message: string, meta: Record<string, unknown>) => void;
 }): Promise<void> {
   const deadline = Date.now() + timeoutMs;
-  const apiCallsBaseline = getApiCalls().length;
+  const apiCallsBaseline = getApiCallCursor();
   let autoAdvanceCount = 0;
   const autoAdvanceTimeoutMs = Math.max(
     EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MIN,
@@ -98,13 +122,9 @@ export async function clickSubmitAndWaitFlow({
 
     const visibleSubmitButton = await getVisibleActionButton(submitButton);
     if (visibleSubmitButton) {
-      // The shared history is a capped FIFO; its last object remains a stable boundary when older calls are evicted.
-      const submitApiCallsBoundary = getApiCalls().slice(-1)[0];
+      const submitApiCallsBoundary = getApiCallCursor();
       const checkSubmitEndpointFailure = () =>
-        failFastOnCriticalWizardEndpointFailure(
-          `after submit ${context}`,
-          submitApiCallsBoundary ? getApiCalls().indexOf(submitApiCallsBoundary) + 1 : 0
-        );
+        failFastOnCriticalWizardEndpointFailure(`after submit ${context}`, submitApiCallsBoundary);
       const submitUrl = new URL(page.url());
       const expectedCaseId = caseSummaryId(submitUrl.pathname.split('/trigger/')[0]);
       try {
@@ -213,7 +233,8 @@ export async function startCreateCaseFlow({
   eventTypeSelect,
   startButton,
   somethingWentWrongHeading,
-  getApiCalls,
+  getApiCallCursor,
+  getApiCallsSince,
   waitForSelectReady,
   selectOptionSmart,
   normalizeUnknownError,
@@ -231,7 +252,8 @@ export async function startCreateCaseFlow({
   eventTypeSelect: Locator;
   startButton: Locator;
   somethingWentWrongHeading: Locator;
-  getApiCalls: () => Array<{ method: string; status: number; url: string }>;
+  getApiCallCursor: () => number;
+  getApiCallsSince: (cursor: number) => Array<{ method: string; status: number; url: string }>;
   waitForSelectReady: (selector: string, timeoutMs?: number) => Promise<void>;
   selectOptionSmart: (selectLocator: Locator, option: string) => Promise<void>;
   normalizeUnknownError: (error: unknown) => string;
@@ -239,7 +261,7 @@ export async function startCreateCaseFlow({
   debug: (message: string, meta: Record<string, unknown>) => void;
 }): Promise<void> {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    const apiCallsBaseline = getApiCalls().length;
+    const apiCallsBaseline = getApiCallCursor();
     try {
       if (!page.url().includes('/cases/case-filter')) {
         try {
@@ -254,7 +276,7 @@ export async function startCreateCaseFlow({
       }
       await jurisdictionSelect.waitFor({ state: 'visible' });
       await waitForSelectReady('#cc-jurisdiction', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
-        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCallsSince(apiCallsBaseline));
         if (bootstrapFailure) {
           throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading jurisdiction options)', bootstrapFailure));
         }
@@ -264,7 +286,7 @@ export async function startCreateCaseFlow({
 
       await caseTypeSelect.waitFor({ state: 'visible' });
       await waitForSelectReady('#cc-case-type', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
-        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCallsSince(apiCallsBaseline));
         if (bootstrapFailure) {
           throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading case type options)', bootstrapFailure));
         }
@@ -275,7 +297,7 @@ export async function startCreateCaseFlow({
       if (eventType) {
         await eventTypeSelect.click();
         await waitForSelectReady('#cc-event', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
-          const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+          const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCallsSince(apiCallsBaseline));
           if (bootstrapFailure) {
             throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading event options)', bootstrapFailure));
           }
@@ -290,7 +312,7 @@ export async function startCreateCaseFlow({
         if (!page.url().includes('/cases/case-filter')) {
           return;
         }
-        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCallsSince(apiCallsBaseline));
         if (bootstrapFailure) {
           throw new Error(buildCreateCaseBootstrapFailureMessage('(after clicking Start)', bootstrapFailure));
         }
@@ -303,11 +325,18 @@ export async function startCreateCaseFlow({
       }
       return;
     } catch (error) {
-      const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+      const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCallsSince(apiCallsBaseline));
       const jurisdictionBootstrapFailed =
         bootstrapFailure?.url.includes('/aggregated/caseworkers/') && bootstrapFailure.url.includes('/jurisdictions');
       const onSomethingWentWrongPage = await somethingWentWrongHeading.isVisible().catch(() => false);
 
+      if (bootstrapFailure && isNonRetryableBootstrapFailure(bootstrapFailure)) {
+        throw new Error(
+          buildCreateCaseBootstrapFailureMessage(`(non-retryable, attempt ${attempt}/${maxAttempts})`, bootstrapFailure) +
+            '; the signed-in user lacks create-case access or the test data is misconfigured.',
+          { cause: error }
+        );
+      }
       if (attempt === maxAttempts) {
         if (bootstrapFailure) {
           throw new Error(buildCreateCaseBootstrapFailureMessage(`(attempt ${attempt}/${maxAttempts})`, bootstrapFailure));

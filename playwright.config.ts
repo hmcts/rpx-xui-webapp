@@ -114,7 +114,7 @@ const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string =
   const runContext = env.CI ? 'ci' : 'local-run';
   const cpuCores = cpus()?.length ?? 'unknown';
   const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
-  return `${targetEnv} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  return `${targetEnv} | ${runContext} | configured_workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
 };
 
 const resolveApiTagFilters = (env: EnvMap = process.env) =>
@@ -194,7 +194,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     ],
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     fullyParallel: true,
-    forbidOnly: !!env.CI,
+    forbidOnly: true,
     retries: resolveE2eRetries(env),
     timeout: 180_000,
     expect: {

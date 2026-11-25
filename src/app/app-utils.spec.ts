@@ -544,7 +544,7 @@ describe('setThemeBasedOnUserType', () => {
     const theme = { appTitle: {} } as Theme;
     AppUtils.setThemeBasedOnUserType('LegalOps', theme);
     expect(theme.appTitle.name).toEqual('Manage cases');
-    expect(theme.backgroundColor).toEqual('#202020');
+    expect(theme.backgroundColor).toBeUndefined();
     expect(theme.logo).toEqual('');
   });
 
@@ -552,7 +552,7 @@ describe('setThemeBasedOnUserType', () => {
     const theme = { appTitle: {} } as Theme;
     AppUtils.setThemeBasedOnUserType('Solicitor', theme);
     expect(theme.appTitle.name).toEqual('Manage cases');
-    expect(theme.backgroundColor).toEqual('#202020');
+    expect(theme.backgroundColor).toBeUndefined();
     expect(theme.logo).toEqual('myhmcts');
   });
 });

@@ -39,7 +39,6 @@ const defaultUserTheme: ApplicationTheme = {
     name: 'Manage Cases',
     url: '/',
   },
-  backgroundColor: '#202020',
   logo: ApplicationThemeLogo.NONE,
 };
 

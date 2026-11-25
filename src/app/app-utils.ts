@@ -275,12 +275,10 @@ export class AppUtils {
         break;
       case 'LegalOps':
         theme.appTitle.name = 'Manage cases';
-        theme.backgroundColor = '#202020';
         theme.logo = '';
         break;
       case 'Solicitor':
         theme.appTitle.name = 'Manage cases';
-        theme.backgroundColor = '#202020';
         theme.logo = 'myhmcts';
         break;
       default:

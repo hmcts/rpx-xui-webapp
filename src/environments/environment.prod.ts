@@ -14,8 +14,8 @@ export const environment = {
       backgroundColor: '#8d0f0e',
       logo: 'judicial',
     },
-    'pui-case-manager': { appTitle: { name: 'Manage Cases', url: '/' }, backgroundColor: '#202020', logo: 'myhmcts' },
-    '.+': { appTitle: { name: 'Manage Cases', url: '/' }, backgroundColor: '#202020', logo: 'none' },
+    'pui-case-manager': { appTitle: { name: 'Manage Cases', url: '/' }, logo: 'myhmcts' },
+    '.+': { appTitle: { name: 'Manage Cases', url: '/' }, logo: 'none' },
   },
 };
 

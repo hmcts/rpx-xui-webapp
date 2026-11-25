@@ -57,6 +57,17 @@ test.describe(
       });
       await createCasePage.clickSubmitAndWait('creating divorce test case', { timeoutMs: 60_000 });
       await expect(createCasePage.caseAlertSuccessMessage).toBeVisible();
+      await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
+      await expect
+        .poll(async () => ({
+          dropdownEnabled: await caseDetailsPage.caseActionsDropdown.isEnabled(),
+          hasAvailableEvent: await caseDetailsPage.caseActionsDropdown
+            .locator('option')
+            .evaluateAll((options) =>
+              options.some((option) => option instanceof HTMLOptionElement && !option.disabled && !!option.value)
+            ),
+        }))
+        .toEqual({ dropdownEnabled: true, hasAvailableEvent: true });
       const caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
 
       await test.step('Validate the case number format and URL', async () => {
@@ -123,6 +134,17 @@ test.describe(
           const readbackDetails = new CaseDetailsPage(readbackPage);
           await readbackPage.goto(caseUrl);
           await readbackDetails.waitForCaseDetailsReady();
+          await expect(readbackDetails.caseActionsDropdown).toBeVisible();
+          await expect
+            .poll(async () => ({
+              dropdownEnabled: await readbackDetails.caseActionsDropdown.isEnabled(),
+              hasAvailableEvent: await readbackDetails.caseActionsDropdown
+                .locator('option')
+                .evaluateAll((options) =>
+                  options.some((option) => option instanceof HTMLOptionElement && !option.disabled && !!option.value)
+                ),
+            }))
+            .toEqual({ dropdownEnabled: true, hasAvailableEvent: true });
           expect(readbackStatus, 'Fresh case page must fetch the new case from CCD').toBe(200);
           expect(readbackFromServiceWorker, 'CCD readback must use a network response').toBe(false);
           expect(await readbackDetails.getCaseNumberFromUrl()).toBe(caseNumber);

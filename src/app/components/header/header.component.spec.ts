@@ -97,4 +97,14 @@ describe('Header Component', () => {
     expect(HeaderComponent.isSkipToMainContent('#url')).toBeFalsy();
     expect(HeaderComponent.isSkipToMainContent('#content')).toBeTruthy();
   });
+
+  it('uses the professional-user header class', () => {
+    component.backgroundColor = '#8d0f0e';
+    expect(component.backgroundClass).toBe('header-background--professional');
+  });
+
+  it('uses the default header class for the remaining configured themes', () => {
+    component.backgroundColor = '#202020';
+    expect(component.backgroundClass).toBe('header-background--default');
+  });
 });

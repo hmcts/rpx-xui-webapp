@@ -18,6 +18,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   standalone: false,
   selector: 'exui-hearing-link',
   templateUrl: './hearing-link.component.html',
+  styleUrls: ['./hearing-link.component.scss'],
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   private caseLinkingReasons: LovRefDataByServiceModel;

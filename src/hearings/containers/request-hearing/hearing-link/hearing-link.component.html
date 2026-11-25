@@ -71,9 +71,8 @@
           <td class="govuk-table__cell">
             <a
               [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, linkedCase.caseReference]"
-              class="govuk-link govuk-link--no-visited-state"
+              class="govuk-link govuk-link--no-visited-state linked-case-link"
               target="_blank"
-              style="text-decoration: none"
             >
               {{ linkedCase.caseReference | caseReference }}
               <br />

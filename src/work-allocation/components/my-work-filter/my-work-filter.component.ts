@@ -109,7 +109,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
         this.hideFilter = activatedRouteSnapshot.url[0].path?.includes('my-access');
         if (this.hideFilter) {
           this.toggleFilter = false;
-          this.onToggleFilter(this.toggleFilter);
+          this.onToggleFilter();
         }
       });
   }
@@ -446,17 +446,8 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
   /**
    * Toggles the filter state
    *
-   * @param showTypesOfWorkFilter - used to determine whether the types-of-work filters will be displayed
    */
-  public onToggleFilter(showTypesOfWorkFilter: boolean): void {
+  public onToggleFilter(): void {
     this.toggleFilter = !this.toggleFilter;
-    if (this.toggleFilter) {
-      setTimeout(() => {
-        const typesOfWorkParentElem = document.getElementById('types-of-work')?.closest('.contain-classes');
-        if (typesOfWorkParentElem) {
-          (typesOfWorkParentElem as HTMLElement).style.display = showTypesOfWorkFilter ? 'block' : 'none';
-        }
-      }, 0);
-    }
   }
 }

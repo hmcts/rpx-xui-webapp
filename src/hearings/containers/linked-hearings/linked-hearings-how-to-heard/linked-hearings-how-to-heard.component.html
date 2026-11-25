@@ -48,8 +48,7 @@
           <br />
           <div
             [ngClass]="{ 'govuk-form-group--error': hasInvalidOrderSelection() }"
-            style="margin: 15px"
-            class="govuk-error-message govuk-!-margin-top-2"
+            class="govuk-error-message govuk-!-margin-top-2 linked-hearing-option"
           >
             <table class="govuk-table" *ngIf="selectedOption === groupLinkType.ORDERED">
               <caption class="govuk-table__caption govuk-table__caption--m">
@@ -81,7 +80,7 @@
                     *ngFor="let group of hearingOrder.controls; let i = index"
                   >
                     <td class="govuk-table__cell">
-                      <a class="govuk-link govuk-link--no-visited-state" style="text-decoration: none">
+                      <a class="govuk-link govuk-link--no-visited-state linked-case-link">
                         {{ group.get('caseName').value }}
                         {{ group.get('caseReference').value | caseReference }}
                       </a>

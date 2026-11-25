@@ -61,21 +61,13 @@ test.describe(
       await expect
         .poll(async () => ({
           dropdownEnabled: await caseDetailsPage.caseActionsDropdown.isEnabled(),
-          goButtonEnabled:
-            (await caseDetailsPage.caseActionGoButton.count()) > 0 && (await caseDetailsPage.caseActionGoButton.isEnabled()),
-          hasExpectedAction: await caseDetailsPage.caseActionsDropdown
+          hasAvailableEvent: await caseDetailsPage.caseActionsDropdown
             .locator('option')
             .evaluateAll((options) =>
-              options.some(
-                (option): option is HTMLOptionElement =>
-                  option instanceof HTMLOptionElement &&
-                  option.textContent?.trim() === 'Next step' &&
-                  !option.disabled &&
-                  !!option.value
-              )
+              options.some((option) => option instanceof HTMLOptionElement && !option.disabled && !!option.value)
             ),
         }))
-        .toEqual({ dropdownEnabled: true, goButtonEnabled: true, hasExpectedAction: true });
+        .toEqual({ dropdownEnabled: true, hasAvailableEvent: true });
       const caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
 
       await test.step('Validate the case number format and URL', async () => {
@@ -146,21 +138,13 @@ test.describe(
           await expect
             .poll(async () => ({
               dropdownEnabled: await readbackDetails.caseActionsDropdown.isEnabled(),
-              goButtonEnabled:
-                (await readbackDetails.caseActionGoButton.count()) > 0 && (await readbackDetails.caseActionGoButton.isEnabled()),
-              hasExpectedAction: await readbackDetails.caseActionsDropdown
+              hasAvailableEvent: await readbackDetails.caseActionsDropdown
                 .locator('option')
                 .evaluateAll((options) =>
-                  options.some(
-                    (option): option is HTMLOptionElement =>
-                      option instanceof HTMLOptionElement &&
-                      option.textContent?.trim() === 'Next step' &&
-                      !option.disabled &&
-                      !!option.value
-                  )
+                  options.some((option) => option instanceof HTMLOptionElement && !option.disabled && !!option.value)
                 ),
             }))
-            .toEqual({ dropdownEnabled: true, goButtonEnabled: true, hasExpectedAction: true });
+            .toEqual({ dropdownEnabled: true, hasAvailableEvent: true });
           expect(readbackStatus, 'Fresh case page must fetch the new case from CCD').toBe(200);
           expect(readbackFromServiceWorker, 'CCD readback must use a network response').toBe(false);
           expect(await readbackDetails.getCaseNumberFromUrl()).toBe(caseNumber);

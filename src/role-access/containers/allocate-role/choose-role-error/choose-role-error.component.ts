@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { getLabel } from '../../../../work-allocation/utils';
 import { AllocateRoleNavigation } from '../../../models';
+import { getPersonRoleForWorkAllocation } from '@hmcts/rpx-xui-common-lib';
 
 @Component({
   standalone: false,
@@ -23,7 +23,7 @@ export class ChooseRoleErrorComponent implements OnInit {
     // 2. legalOps: add legal Ops role journey
     this.roleCategory =
       this.route.snapshot.queryParams && this.route.snapshot.queryParams.roleCategory
-        ? getLabel(this.route.snapshot.queryParams.roleCategory)
+        ? getPersonRoleForWorkAllocation(this.route.snapshot.queryParams.roleCategory)
         : '';
     this.jurisdiction =
       this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction

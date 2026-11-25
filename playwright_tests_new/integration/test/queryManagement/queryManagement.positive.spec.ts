@@ -93,7 +93,7 @@ test.describe('Query Management integration', { tag: ['@integration', '@integrat
         attachments: [],
       });
       expect(queryMessage?.id).toBeTruthy();
-      expect(queryMessage).not.toHaveProperty('isHmctsStaff');
+      expect(queryMessage).toHaveProperty('isHmctsStaff', 'No');
     });
 
     await test.step('Open the Queries tab and assert the submitted query is shown', async () => {

@@ -713,13 +713,13 @@ __metadata:
   linkType: hard
 
 "@axe-core/playwright@npm:^4.11.0, @axe-core/playwright@npm:^4.9.1":
-  version: 4.14.0
-  resolution: "@axe-core/playwright@npm:4.14.0"
+  version: 4.14.1
+  resolution: "@axe-core/playwright@npm:4.14.1"
   dependencies:
-    axe-core: "npm:~4.14.0"
+    axe-core: "npm:~4.14.1"
   peerDependencies:
     playwright-core: ">= 1.0.0"
-  checksum: 10/ee72bd4a961758b069e444d8fbf944a3deb9721d758cf720399b46af8196262d8fbf496e3bc410bf5b66f718376d6ffbe9167ea7487426071c653c63620da7f6
+  checksum: 10/44ee307625f0ccb70678e2fe55f140e14434535319d0744fd4e79f2ce67fd2ef6db9c230334ccf8f3c120087cdf7bff0d7e11056d5d6c8d76779e616de1cd1d1
   languageName: node
   linkType: hard
 
@@ -9515,7 +9515,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:^4.11.1, axe-core@npm:^4.9.1, axe-core@npm:~4.14.0":
+"axe-core@npm:^4.11.1, axe-core@npm:^4.9.1, axe-core@npm:~4.14.1":
   version: 4.14.1
   resolution: "axe-core@npm:4.14.1"
   checksum: 10/45c81d29170809bf48b0b34061f6f12bad27872695d3cbf83aacf7fe7d0d6c997214dff9c063c5e1ddc76e2de544da749eba518bc4c17494e79c56e93571888c

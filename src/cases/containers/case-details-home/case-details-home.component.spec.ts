@@ -91,4 +91,62 @@ describe('CaseDetailsHomeComponent', () => {
       expect(mockAlertService.success).toHaveBeenCalled();
     });
   });
+
+  describe('redirected after router navigation has completed', () => {
+    it('shows the success message from history state', () => {
+      const router = TestBed.inject(Router);
+      spyOn(router, 'getCurrentNavigation').and.returnValue(null);
+      const replaceState = jasmine.createSpy('replaceState');
+      const state = { navigationId: 7, showMessage: true, messageText: "You've reallocated a role" };
+      spyOnProperty(window, 'history', 'get').and.returnValue({
+        state,
+        replaceState,
+      } as unknown as History);
+
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      fixture.detectChanges();
+
+      expect(mockAlertService.success).toHaveBeenCalledWith({ phrase: "You've reallocated a role" });
+      expect(replaceState).toHaveBeenCalledWith({ ...state, showMessage: false }, '');
+    });
+
+    it('does not show or consume incomplete confirmation state', () => {
+      const router = TestBed.inject(Router);
+      spyOn(router, 'getCurrentNavigation').and.returnValue(null);
+      const replaceState = jasmine.createSpy('replaceState');
+      spyOnProperty(window, 'history', 'get').and.returnValue({
+        state: { showMessage: true },
+        replaceState,
+      } as unknown as History);
+      mockAlertService.success.calls.reset();
+
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      fixture.detectChanges();
+
+      expect(mockAlertService.success).not.toHaveBeenCalled();
+      expect(replaceState).not.toHaveBeenCalled();
+    });
+
+    it('does not replay a consumed confirmation on a second initialization', () => {
+      const router = TestBed.inject(Router);
+      spyOn(router, 'getCurrentNavigation').and.returnValue(null);
+      let state = { showMessage: true, messageText: "You've reallocated a role" };
+      spyOnProperty(window, 'history', 'get').and.returnValue({
+        get state() {
+          return state;
+        },
+        replaceState: (nextState) => {
+          state = nextState;
+        },
+      } as unknown as History);
+      mockAlertService.success.calls.reset();
+
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      fixture.detectChanges();
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      fixture.detectChanges();
+
+      expect(mockAlertService.success).toHaveBeenCalledTimes(1);
+    });
+  });
 });

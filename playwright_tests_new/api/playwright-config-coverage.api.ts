@@ -37,7 +37,15 @@ let e2eConfigModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
 let nightlyConfigModule: TestableConfigModule;
 
-const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
+const buildConfig = (env: EnvMap) =>
+  configModule.__test__.buildConfig(env) as {
+    workers: number;
+    forbidOnly: boolean;
+    reporter: [string, Record<string, unknown> | undefined][];
+    testIgnore: string[];
+    use: { baseURL: string };
+    projects: Array<{ name: string; workers?: number; use: { headless: boolean } }>;
+  };
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
 const resolveApiProjectWorkerCount = (env: EnvMap) =>
   (
@@ -67,6 +75,7 @@ const resolveE2eTagFilters = (env: EnvMap) =>
   };
 const buildE2eConfig = (env: EnvMap) =>
   e2eConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     reporter: [string, Record<string, unknown> | undefined][];
     globalSetup?: string;
     testIgnore: string[];
@@ -76,10 +85,12 @@ const buildE2eConfig = (env: EnvMap) =>
 
 const buildIntegrationConfig = (env: EnvMap) =>
   integrationConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     workers?: number;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
-    use: { trace: string };
+    expect: { timeout: number };
+    use: { timezoneId: string; trace: string | { mode: string; snapshots: { dom: boolean; aria: boolean; screen: boolean } } };
     projects: Array<{
       name: string;
       workers?: number;
@@ -105,6 +116,7 @@ const resolveIntegrationWorkerCount = (env: EnvMap) =>
   ).resolveWorkerCount(env);
 const buildNightlyConfig = (env: EnvMap) =>
   nightlyConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { baseURL: string };
@@ -203,6 +215,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.project).toBe('Custom Project');
     expect(odhinOptions?.release).toBe('Custom Release');
     expect(odhinOptions?.testEnvironment).toContain('ci');
+    expect(odhinOptions?.testEnvironment).toContain(`configured_workers=${expectedWorkers}`);
     expect(config.projects[0].use.headless).toBe(false);
 
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
@@ -220,6 +233,15 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
     expect(nodeApiProject?.workers).toBe(2);
+  });
+
+  test('all suites reject focused tests locally and in CI', async () => {
+    for (const env of [{ CI: undefined }, { CI: 'true' }]) {
+      expect(buildConfig(env).forbidOnly).toBe(true);
+      expect(buildE2eConfig(env).forbidOnly).toBe(true);
+      expect(buildIntegrationConfig(env).forbidOnly).toBe(true);
+      expect(buildNightlyConfig(env).forbidOnly).toBe(true);
+    }
   });
 
   test('config defaults to local reporter values', async () => {
@@ -390,6 +412,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     });
 
     expect(filters.excludedTags).toEqual(['@svc-work-allocation-myaccess']);
+    expect(filters.grepInvert?.test('@wa-action')).toBe(false);
     expect(filters.grepInvert?.test('@svc-work-allocation-myaccess')).toBe(true);
     expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
   });
@@ -459,17 +482,14 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults exclude only nightly coverage', () => {
+  test('E2E tag defaults include all retained scenarios independently of nightly coverage', () => {
     const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual(['@nightly']);
-    expect(filters.grepInvert).toBeInstanceOf(RegExp);
-    expect(filters.grepInvert?.test('@nightly')).toBe(true);
-    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(false);
-    expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(false);
-    expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
+    expect(filters.excludedTags).toEqual([]);
+    expect(filters.grepInvert).toBeUndefined();
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([
+        '@nightly',
         '@e2e-case-file-view',
         '@e2e-case-flags',
         '@e2e-civil-data-loss',
@@ -641,7 +661,12 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.profile).toBe(true);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
     expect(config.expect.timeout).toBe(60_000);
-    expect(config.use.trace).toBe('retain-on-failure');
+    expect(config.use.trace).toEqual({
+      mode: 'retain-on-failure',
+      snapshots: { dom: true, aria: true, screen: true },
+      screenshots: true,
+      sources: true,
+    });
     expect(config.use.timezoneId).toBe('Europe/London');
     expect(config.projects.map((project) => project.name)).toEqual(['chromium']);
     expect(config.projects[0]?.workers).toBeUndefined();
@@ -687,6 +712,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test('integration config applies only integration-scoped global exclusions', async () => {
     const filters = resolveIntegrationTagFilters({
       PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation,@e2e-search-case,@integration-manage-tasks',
+      INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
       CI: undefined,
     });
 
@@ -841,8 +867,18 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
     expect(config.projects.find((project) => project.name === 'firefox')?.use?.headless).toBe(false);
     expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
-    expect(config.projects.find((project) => project.name === 'firefox')?.use?.trace).toBe('retain-on-failure');
-    expect(config.projects.find((project) => project.name === 'webkit')?.use?.trace).toBe('retain-on-failure');
+    expect(config.projects.find((project) => project.name === 'firefox')?.use?.trace).toEqual({
+      mode: 'retain-on-failure',
+      snapshots: { dom: true, aria: true, screen: true },
+      screenshots: true,
+      sources: true,
+    });
+    expect(config.projects.find((project) => project.name === 'webkit')?.use?.trace).toEqual({
+      mode: 'retain-on-failure',
+      snapshots: { dom: true, aria: true, screen: true },
+      screenshots: true,
+      sources: true,
+    });
   });
 
   test('nightly config honours report folder and file overrides', async () => {
@@ -871,6 +907,35 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.projects.find((project) => project.name === 'firefox')?.grepInvert?.test('@e2e-search-case')).toBe(true);
     expect(config.projects.find((project) => project.name === 'webkit')?.grepInvert?.test('@e2e-search-case')).toBe(true);
     expect(config.projects.find((project) => project.name === 'firefox')?.grepInvert?.test('@svc-work-allocation')).toBe(false);
+  });
+
+  test('nightly cross-browser config keeps Chromium-only live E2E journeys out of Firefox and WebKit by default', async () => {
+    const config = buildNightlyConfig({
+      CI: 'true',
+      TEST_URL: 'https://example.test',
+    });
+
+    for (const project of config.projects) {
+      expect(project.grepInvert?.test('@e2e-document-upload')).toBe(true);
+      expect(project.grepInvert?.test('@e2e-document-upload-v1')).toBe(true);
+      expect(project.grepInvert?.test('@e2e-civil-data-loss')).toBe(true);
+      expect(project.grepInvert?.test('@e2e-hearings') ?? false).toBe(false);
+    }
+  });
+
+  test('nightly cross-browser config allows explicit excluded-tag override to restore Chromium-only journeys', async () => {
+    const config = buildNightlyConfig({
+      CI: 'true',
+      E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
+      TEST_URL: 'https://example.test',
+    });
+
+    for (const project of config.projects) {
+      expect(project.grepInvert?.test('@e2e-document-upload') ?? false).toBe(false);
+      expect(project.grepInvert?.test('@e2e-document-upload-v1') ?? false).toBe(false);
+      expect(project.grepInvert?.test('@e2e-civil-data-loss') ?? false).toBe(false);
+      expect(project.grepInvert?.test('@e2e-hearings') ?? false).toBe(false);
+    }
   });
 
   test('integration config avoids forced Odhin timeout in CI', async () => {
@@ -903,5 +968,80 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' }));
     expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' })).toBe(15_000);
     expect(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true', PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS: '0' })).toBe(0);
+  });
+
+  test('all Jenkins Playwright configs publish native JSON beside Odhín', () => {
+    const expected = ['json', { outputFile: 'functional-output/tests/proof/odhin-report/ci-evidence/playwright.json' }];
+    const containsEvidence = (config: { reporter: Array<[string, unknown?]> }) =>
+      config.reporter.some(([name, options]) => JSON.stringify([name, options]) === JSON.stringify(expected));
+    const env = { CI: 'true', PLAYWRIGHT_REPORT_FOLDER: 'functional-output/tests/proof/odhin-report' };
+
+    expect(containsEvidence(buildConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildE2eConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildNightlyConfig(env) as never)).toBe(true);
+    expect(containsEvidence(buildIntegrationConfig(env) as never)).toBe(true);
+  });
+
+  test('all Playwright configs write Perfetto into the configured Odhín suite directory', () => {
+    const reportFolder = 'functional-output/tests/playwright-integration/odhin-report';
+    const expected = ['perfetto', { outputFile: 'functional-output/tests/playwright-integration/test-results/perfetto.json' }];
+    const env = { CI: 'true', PLAYWRIGHT_REPORT_FOLDER: reportFolder };
+    const containsPerfetto = (config: { reporter: Array<[string, unknown?]> }) =>
+      config.reporter.some(([name, options]) => JSON.stringify([name, options]) === JSON.stringify(expected));
+
+    expect(containsPerfetto(buildConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildE2eConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildNightlyConfig(env) as never)).toBe(true);
+    expect(containsPerfetto(buildIntegrationConfig(env) as never)).toBe(true);
+  });
+
+  test('finalizes Perfetto before Odhín so the report can link the timeline', () => {
+    const env = { CI: 'true', PLAYWRIGHT_REPORT_FOLDER: 'functional-output/tests/playwright-integration/odhin-report' };
+    for (const config of [buildConfig(env), buildE2eConfig(env), buildNightlyConfig(env), buildIntegrationConfig(env)]) {
+      const perfettoIndex = config.reporter.findIndex(([name]) => name === 'perfetto');
+      const odhinIndex = config.reporter.findIndex(([name]) => name.includes('odhin-adaptive'));
+      expect(perfettoIndex).toBeGreaterThanOrEqual(0);
+      expect(odhinIndex).toBeGreaterThan(perfettoIndex);
+    }
+  });
+
+  test('separates CI smoke evidence from E2E evidence', () => {
+    expect(smokeRunner.buildSmokeEnvironment({ CI: 'true' }).PLAYWRIGHT_REPORT_FOLDER).toBe(
+      'functional-output/tests/playwright-smoke/odhin-report'
+    );
+    expect(smokeRunner.buildSmokeEnvironment({ CI: undefined }).PLAYWRIGHT_REPORT_FOLDER).toBe(
+      'functional-output/tests/playwright-e2e/odhin-report'
+    );
+  });
+
+  test('every Playwright config sets action and navigation timeouts with env overrides', () => {
+    const env = { CI: undefined, TEST_URL: 'https://example.test' };
+    const timeoutsOf = (config: unknown) => (config as { use: Record<string, unknown> }).use;
+    const defaults = { actionTimeout: 20_000, navigationTimeout: 30_000 };
+    const overrides = { PW_ACTION_TIMEOUT_MS: '5000', PW_NAVIGATION_TIMEOUT_MS: '7000' };
+
+    for (const build of [buildConfig, buildE2eConfig, buildIntegrationConfig]) {
+      expect(timeoutsOf(build(env))).toMatchObject(defaults);
+      expect(timeoutsOf(build({ ...env, ...overrides }))).toMatchObject({ actionTimeout: 5000, navigationTimeout: 7000 });
+      expect(timeoutsOf(build({ ...env, PW_ACTION_TIMEOUT_MS: '0', PW_NAVIGATION_TIMEOUT_MS: 'abc' }))).toMatchObject(defaults);
+    }
+    expect(timeoutsOf(buildNightlyConfig(env))).toMatchObject({ actionTimeout: 60_000, navigationTimeout: 60_000 });
+    expect(timeoutsOf(buildNightlyConfig({ ...env, ...overrides }))).toMatchObject({
+      actionTimeout: 5000,
+      navigationTimeout: 7000,
+    });
+  });
+
+  test('main and integration configs take retries from env and default to 2', () => {
+    const env = { CI: undefined, TEST_URL: 'https://example.test', PW_E2E_RETRIES: undefined, PW_INTEGRATION_RETRIES: undefined };
+    const retriesOf = (config: unknown) => (config as { retries: number }).retries;
+
+    expect(retriesOf(buildConfig(env))).toBe(2);
+    expect(retriesOf(buildConfig({ ...env, PW_E2E_RETRIES: '0' }))).toBe(0);
+    expect(retriesOf(buildConfig({ ...env, PW_E2E_RETRIES: '-1' }))).toBe(2);
+    expect(retriesOf(buildIntegrationConfig(env))).toBe(2);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_INTEGRATION_RETRIES: '1' }))).toBe(1);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_INTEGRATION_RETRIES: '0' }))).toBe(0);
+    expect(retriesOf(buildIntegrationConfig({ ...env, PW_E2E_RETRIES: '0' }))).toBe(2);
   });
 });

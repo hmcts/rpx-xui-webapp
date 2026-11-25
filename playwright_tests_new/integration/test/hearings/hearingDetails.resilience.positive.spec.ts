@@ -54,6 +54,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
 
     await openHearingsTabForScenario(page, caseDetailsPage, {
       userRoles: hearingViewerRoles,
+      hearings: [LISTED_HEARING_SCENARIO],
       hearingsApiOverrides: {
         getHearings: {
           body: nullablePayload,
@@ -61,8 +62,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
       },
     });
 
-    await expect(hearingsTabPage.container).toBeVisible();
-    await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeVisible();
+    await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);
     await expect(page.getByText('Invalid Date', { exact: false })).toHaveCount(0);
   });
 

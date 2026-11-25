@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
@@ -16,7 +16,7 @@ import * as fromHearingStore from '../../../hearings/store';
   templateUrl: './case-hearings-list.component.html',
   styleUrls: ['./case-hearings-list.component.scss'],
 })
-export class CaseHearingsListComponent implements OnInit {
+export class CaseHearingsListComponent implements OnInit, OnDestroy {
   @Input()
   public status: EXUISectionStatusEnum;
 
@@ -39,6 +39,7 @@ export class CaseHearingsListComponent implements OnInit {
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
   public isHearingAmendmentsEnabled = false;
+  private hearingAmendmentsSubscription: Subscription;
 
   constructor(
     private readonly hearingStore: Store<fromHearingStore.State>,
@@ -64,9 +65,13 @@ export class CaseHearingsListComponent implements OnInit {
     }
 
     const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
-    isHearingAmendmentsEnabled$.subscribe((enabled) => {
+    this.hearingAmendmentsSubscription = isHearingAmendmentsEnabled$.subscribe((enabled) => {
       this.isHearingAmendmentsEnabled = enabled;
     });
+  }
+
+  public ngOnDestroy(): void {
+    this.hearingAmendmentsSubscription?.unsubscribe();
   }
 
   public isAwaitingActual(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
@@ -92,17 +97,17 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public addAndEdit(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary'], {
+    void this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary'], {
       state: { caseId: this.caseId },
     });
   }
 
   public cancelHearing(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
+    void this.router.navigate(['/', 'hearings', 'cancel', hearingID]);
   }
 
   public linkHearing(hearingID: string): void {
-    this.router.navigate(['/', 'hearings', 'link', this.caseId, hearingID]);
+    void this.router.navigate(['/', 'hearings', 'link', this.caseId, hearingID]);
   }
 
   public manageLinks(hearing: HearingListViewModel): void {
@@ -120,7 +125,7 @@ export class CaseHearingsListComponent implements OnInit {
         caseId: this.caseId,
       })
     );
-    this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
+    void this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
   }
 
   public viewAndEdit(hearingID: string): void {
@@ -164,21 +169,24 @@ export class CaseHearingsListComponent implements OnInit {
         this.loadHearingRequestAndRedirect(
           hearing.hearingID,
           `/hearings/view/hearing-cancelled-summary/${hearing.hearingID}`,
-          this.caseId
+          this.caseId,
+          this.canEditHearingActuals()
         );
         break;
       case EXUIDisplayStatusEnum.COMPLETED:
         this.loadHearingRequestAndRedirect(
           hearing.hearingID,
           `/hearings/view/hearing-completed-summary/${hearing.hearingID}`,
-          this.caseId
+          this.caseId,
+          this.canEditHearingActuals()
         );
         break;
       case EXUIDisplayStatusEnum.ADJOURNED:
         this.loadHearingRequestAndRedirect(
           hearing.hearingID,
           `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`,
-          this.caseId
+          this.caseId,
+          this.canEditHearingActuals()
         );
         break;
       case EXUIDisplayStatusEnum.AWAITING_ACTUALS:
@@ -196,12 +204,16 @@ export class CaseHearingsListComponent implements OnInit {
         );
         break;
       default:
-        this.router.navigate(['/', 'hearings', 'view']);
+        void this.router.navigate(['/', 'hearings', 'view']);
         break;
     }
   }
 
-  public loadHearingRequestAndRedirect(hearingID: string, targetURL: string, caseRef?: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL, caseRef }));
+  public loadHearingRequestAndRedirect(hearingID: string, targetURL: string, caseRef?: string, showEditButton?: boolean) {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL, caseRef, showEditButton }));
+  }
+
+  private canEditHearingActuals(): boolean {
+    return !!this.actions?.includes(Actions.UPDATE);
   }
 }

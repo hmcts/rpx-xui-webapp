@@ -366,6 +366,12 @@ async function createStorageStateViaForm(
     }
 
     const loginUrl = loginPage.url?.() ?? `${baseUrl}/auth/login`;
+    if (!loginPage.text) {
+      throw new AuthenticationError('Login page response has no text reader', role, {
+        endpoint: 'auth/login',
+        status: loginPage.status(),
+      });
+    }
     const loginForm = parseLoginForm(await loginPage.text(), loginUrl);
     const loginResponse = await submitLoginForm(context, loginForm, credentials, role);
 

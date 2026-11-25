@@ -61,17 +61,14 @@ describe('ValidatorsUtils', () => {
     form.controls.days.setValue('5');
     form.controls.hours.setValue('');
     form.controls.minutes.setValue('');
-    console.log('FORM HAS ERROR', form.hasError('isValid'));
     expect(form.hasError('isValid')).toBeFalsy();
     form.controls.days.setValue('');
     form.controls.hours.setValue('4');
     form.controls.minutes.setValue('');
-    console.log('FORM HAS ERROR', form.hasError('isValid'));
     expect(form.hasError('isValid')).toBeFalsy();
     form.controls.days.setValue('');
     form.controls.hours.setValue('');
     form.controls.minutes.setValue('40');
-    console.log('FORM HAS ERROR', form.hasError('isValid'));
     expect(form.hasError('isValid')).toBeFalsy();
   }));
 

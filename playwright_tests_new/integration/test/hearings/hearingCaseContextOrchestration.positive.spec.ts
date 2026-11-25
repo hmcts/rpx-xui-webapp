@@ -1,14 +1,19 @@
 import { expect, test } from '../../../E2E/fixtures';
 import {
   HEARINGS_LISTED_HEARING_ID,
+  HEARINGS_CASE_REFERENCE,
   LISTED_HEARING_SCENARIO,
   buildServiceHearingValuesMock,
   type HearingsCaseConfig,
 } from '../../mocks/hearings.mock';
 import {
   HEARING_MANAGER_CR84_ON_USER,
+  applyHearingManagerSessionCookies,
+  caseDetailsUrl,
+  gotoCaseDetailsWithRetry,
   hearingManagerRoles,
   openHearingsTab,
+  setupHearingsMockRoutes,
   submitAdditionalInstructionsUpdate,
 } from '../../helpers';
 
@@ -25,13 +30,73 @@ test.describe(
   `Hearings case context orchestration as ${HEARING_MANAGER_CR84_ON_USER}`,
   { tag: ['@integration', '@integration-hearings'] },
   () => {
-    test('preserves non-default case context through view-edit-submit orchestration (EXUI-4431/EXUI-4433/EXUI-4434)', async ({
+    test('uses active route case context through view-edit-submit orchestration (EXUI-4529/EXUI-4431/EXUI-4433/EXUI-4434)', async ({
       page,
       caseDetailsPage,
       hearingsTabPage,
       hearingViewEditSummaryPage,
       hearingViewSummaryPage,
     }) => {
+      await applyHearingManagerSessionCookies(page, HEARING_MANAGER_CR84_ON_USER);
+      await setupHearingsMockRoutes(page, {
+        userRoles: hearingManagerRoles,
+        hearings: [LISTED_HEARING_SCENARIO],
+        summaryHearing: LISTED_HEARING_SCENARIO,
+        caseConfig: nonDefaultCaseConfig,
+        enabledCaseVariations: [{ jurisdiction: 'SSCS', caseType: 'Benefit' }],
+        amendmentCaseVariations: [{ jurisdiction: 'SSCS', caseType: 'Benefit' }],
+      });
+      await gotoCaseDetailsWithRetry(
+        page,
+        caseDetailsUrl(nonDefaultCaseConfig.jurisdictionId, nonDefaultCaseConfig.caseTypeId, nonDefaultCaseConfig.caseReference)
+      );
+      await caseDetailsPage.waitForCaseDetailsReady();
+      const staleCaseInfo = { caseId: HEARINGS_CASE_REFERENCE, jurisdiction: 'CIVIL', caseType: 'CIVIL' };
+      const seededCaseInfo = await page.evaluate((stale) => {
+        const staleValue = JSON.stringify(stale);
+        const originalSetItem = Storage.prototype.setItem;
+        const originalOpen = XMLHttpRequest.prototype.open;
+
+        window.sessionStorage.removeItem('caseInfoAtHearingsRequest');
+        window.sessionStorage.setItem('caseInfo', staleValue);
+        // CaseResolver runs again on fragment navigation; keep the stale fixture until Hearings starts its GET.
+        Storage.prototype.setItem = new Proxy(originalSetItem, {
+          apply(target, receiver, args) {
+            const result = Reflect.apply(target, receiver, args);
+            if (receiver === window.sessionStorage && args[0] === 'caseInfo') {
+              Reflect.apply(target, receiver, ['caseInfo', staleValue]);
+            }
+            return result;
+          },
+        });
+        XMLHttpRequest.prototype.open = new Proxy(originalOpen, {
+          apply(target, receiver, args) {
+            if (args[0] === 'GET' && String(args[1]).includes('api/hearings/getHearings?')) {
+              window.sessionStorage.setItem('caseInfoAtHearingsRequest', window.sessionStorage.getItem('caseInfo') ?? '');
+              Storage.prototype.setItem = originalSetItem;
+              XMLHttpRequest.prototype.open = originalOpen;
+            }
+            return Reflect.apply(target, receiver, args);
+          },
+        });
+        return JSON.parse(window.sessionStorage.getItem('caseInfo') ?? 'null');
+      }, staleCaseInfo);
+      expect(seededCaseInfo).toEqual(staleCaseInfo);
+      const hearingsListRequest = page.waitForRequest(
+        (request) => request.url().includes('/api/hearings/getHearings') && request.method() === 'GET'
+      );
+      await caseDetailsPage.selectCaseDetailsTab('Hearings');
+
+      await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);
+      await expect(page).toHaveURL(
+        new RegExp(`/cases/case-details/SSCS/Benefit/${nonDefaultCaseConfig.caseReference}#Hearings$`)
+      );
+      expect(new URL((await hearingsListRequest).url()).searchParams.get('caseId')).toBe(nonDefaultCaseConfig.caseReference);
+      const caseInfoAtRequest = await page.evaluate(() => {
+        const captured = window.sessionStorage.getItem('caseInfoAtHearingsRequest');
+        return captured ? JSON.parse(captured) : null;
+      });
+      expect(caseInfoAtRequest).toEqual(staleCaseInfo);
       const loadServiceValuesRequest = page.waitForRequest(
         (request) => request.url().includes('/api/hearings/loadServiceHearingValues') && request.method() === 'POST'
       );
@@ -39,20 +104,6 @@ test.describe(
         (request) => request.url().includes('/api/prd/lov/getLovRefData') && request.url().includes('caseType')
       );
       const courtLocationRequest = page.waitForRequest((request) => request.url().includes('/api/prd/location/getLocationById'));
-
-      await openHearingsTab(page, caseDetailsPage, {
-        userIdentifier: HEARING_MANAGER_CR84_ON_USER,
-        routeConfig: {
-          userRoles: hearingManagerRoles,
-          hearings: [LISTED_HEARING_SCENARIO],
-          summaryHearing: LISTED_HEARING_SCENARIO,
-          caseConfig: nonDefaultCaseConfig,
-          enabledCaseVariations: [{ jurisdiction: 'SSCS', caseType: 'Benefit' }],
-          amendmentCaseVariations: [{ jurisdiction: 'SSCS', caseType: 'Benefit' }],
-        },
-      });
-
-      await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);
       await hearingsTabPage.openViewDetails(HEARINGS_LISTED_HEARING_ID);
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-view-summary$/);
 
@@ -61,6 +112,8 @@ test.describe(
       expect(serviceValuesRequest.postDataJSON()).toEqual({
         caseReference: nonDefaultCaseConfig.caseReference,
       });
+      expect((await caseTypeLovRequest).url()).toContain('caseType');
+      expect((await courtLocationRequest).url()).toContain(nonDefaultCaseConfig.locationId);
 
       const additionalInstructions = 'Playwright case context orchestration verification';
       const updateRequest = await submitAdditionalInstructionsUpdate(
@@ -71,8 +124,6 @@ test.describe(
       );
       const updatePayload = updateRequest.postDataJSON();
 
-      expect((await caseTypeLovRequest).url()).toContain('caseType');
-      expect((await courtLocationRequest).url()).toContain(nonDefaultCaseConfig.locationId);
       expect(updatePayload).toEqual(
         expect.objectContaining({
           caseDetails: expect.objectContaining({

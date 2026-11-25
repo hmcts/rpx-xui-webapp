@@ -9,6 +9,22 @@
   "logging": "LOGGING",
   "now": "NOW",
   "maxLogLine": "MAX_LOG_LINE",
+  "appInsights": {
+    "samplingPercentage": {
+      "__name": "APPINSIGHTS_SAMPLING_PERCENTAGE",
+      "__format": "json"
+    }
+  },
+  "documentUploadThrottle": {
+    "initialMs": {
+      "__name": "DOCUMENT_UPLOAD_THROTTLE_INITIAL_MS",
+      "__format": "json"
+    },
+    "maxMs": {
+      "__name": "DOCUMENT_UPLOAD_THROTTLE_MAX_MS",
+      "__format": "json"
+    }
+  },
   "stub": {
     "__name": "STUB",
     "__format": "json"
@@ -56,6 +72,11 @@
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",
         "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
       },
+      "pcs": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_PCS",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_PCS"
+      },
+
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
       "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS",
       "previewDeploymentId": "PREVIEW_DEPLOYMENT_ID"
@@ -127,7 +148,7 @@
       "mc-session-secret": "SESSION_SECRET",
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
-      "webapp-redis-connection-string": "REDISCLOUD_URL",
+      "webapp-managed-redis-connection-string": "REDISCLOUD_URL",
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
       "system-user-name": "SYSTEM_USER_NAME"
     }
@@ -136,6 +157,10 @@
   "jurisdictions": "JURISDICTIONS",
   "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "waSupportedJurisdictionUsers": {
+    "__name": "WA_SUPPORTED_JURISDICTION_USERS",
+    "__format": "json"
+  },
   "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
   "serviceRefDataMapping": {
     "__name": "SERVICE_REF_DATA_MAPPING",
@@ -233,7 +258,6 @@
   },
   "pact": {
     "brokerUrl": "PACT_BROKER_URL",
-    "branchName": "PACT_BRANCH_NAME",
     "consumerVersion": "PACT_CONSUMER_VERSION",
     "brokerUsername": "PACT_BROKER_USERNAME"
   },

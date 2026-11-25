@@ -43,8 +43,8 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       const userRoleNames: UserRole[] = AppUtils.getUserRoleNames(userInfo.roles);
       const userRole: UserRole = userRoleNames[0] || undefined;
 
-      // get 'locations' key from local storage
-      const locationsFromLS = safeJsonParse<any>(localStorage.getItem(MyWorkFilterComponent.FILTER_NAME), null);
+      // Read saved selections through the filter ownership check.
+      const locationsFromLS = this.filterService.get(MyWorkFilterComponent.FILTER_NAME);
 
       // set service and location filters using data from local storage
       let serviceFilters = [];

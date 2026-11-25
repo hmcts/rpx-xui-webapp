@@ -1,7 +1,8 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
+import { hostname } from 'node:os';
 import path from 'node:path';
-import * as lockfile from 'proper-lockfile';
+import { FrameworkError } from '../E2E/utils/frameworkError.js';
 import type { IdentityCompatibilityRequirements, IdentityPoolIdentity } from './identityPoolRegistry.js';
 import { resolveConfiguredPoolIdentities } from './identityPoolRegistry.js';
 
@@ -9,6 +10,12 @@ const DEFAULT_WAIT_MS = 15 * 60_000;
 const DEFAULT_EXECUTION_BUDGET_MS = 5 * 60_000;
 const DEFAULT_POLL_MS = 1_000;
 const DEFAULT_TTL_MS = 15 * 60_000;
+/**
+ * Headroom allows time for release and teardown. Coordinator leases are not renewed; sequential acquisitions or slow
+ * teardown can still outlive a coordinator lease. Local locks do not expire and require verified cleanup after a crash.
+ */
+const DEFAULT_TTL_HEADROOM_MS = 60_000;
+export const IDENTITY_POOL_EXHAUSTED_CODE = 'IDENTITY_POOL_EXHAUSTED';
 
 export type IdentityLease = { identity: IdentityPoolIdentity; release: () => Promise<void> };
 export type IdentityLeaseTiming = { waitMs: number; executionBudgetMs: number };
@@ -16,9 +23,11 @@ export type IdentityLeaseRuntimeSettings = IdentityLeaseTiming & { pollMs: numbe
 type LeaseResponse = { status: 'acquired'; leaseId: string; userIdentifier: string } | { status: 'pending' };
 type FetchLike = typeof fetch;
 
-export class IdentityLeaseTimeoutError extends Error {
+export class IdentityLeaseTimeoutError extends FrameworkError {
   constructor(requirements: IdentityCompatibilityRequirements, waitMs: number, mode: 'local' | 'coordinator') {
     super(
+      IDENTITY_POOL_EXHAUSTED_CODE,
+      'setup',
       `Identity scheduling timed out after ${waitMs}ms waiting for a compatible configured account (${mode}; requirements=${JSON.stringify(requirements)}). No credential is missing; a previous owner may still hold or may have leaked the lease.`
     );
     this.name = 'IdentityLeaseTimeoutError';
@@ -43,7 +52,10 @@ export function resolveIdentityLeaseRuntimeSettings(
 ): IdentityLeaseRuntimeSettings {
   const timing = resolveIdentityLeaseTiming(env);
   const executionBudgetMs = Math.max(timing.executionBudgetMs, requiredExecutionMs);
-  const ttlMs = Math.max(positiveDuration(env.PW_IDENTITY_LEASE_TTL_MS, DEFAULT_TTL_MS), executionBudgetMs);
+  const ttlMs = Math.max(
+    positiveDuration(env.PW_IDENTITY_LEASE_TTL_MS, DEFAULT_TTL_MS),
+    executionBudgetMs + DEFAULT_TTL_HEADROOM_MS
+  );
   return {
     ...timing,
     executionBudgetMs,
@@ -83,24 +95,60 @@ async function acquireLocalIdentityLease(
   deadline: number,
   waitMs: number,
   pollMs: number,
-  ttlMs: number,
   env: NodeJS.ProcessEnv
 ): Promise<IdentityLease> {
   const directory = env.PW_IDENTITY_LEASE_DIR?.trim() || path.join(process.cwd(), '.sessions', 'identity-leases');
   await fs.mkdir(directory, { recursive: true });
 
+  let reportedWait = false;
   while (Date.now() < deadline) {
     for (const identity of candidates) {
       const leaseFile = path.join(directory, `${physicalIdentityKey(identity)}.lease`);
       await fs.appendFile(leaseFile, '');
+      const lockPath = `${leaseFile}.lock`;
+      let ownerFile: fs.FileHandle;
       try {
-        const release = await lockfile.lock(leaseFile, { realpath: false, retries: 0, stale: ttlMs });
-        return { identity, release };
+        ownerFile = await fs.open(lockPath, 'wx', 0o600);
       } catch (error) {
-        if (!(typeof error === 'object' && error !== null && 'code' in error && error.code === 'ELOCKED')) {
+        if (!(typeof error === 'object' && error !== null && 'code' in error && error.code === 'EEXIST')) {
           throw error;
         }
+        continue;
       }
+      const ownerToken = randomUUID();
+      try {
+        await ownerFile.writeFile(
+          JSON.stringify({ pid: process.pid, host: hostname(), createdAt: new Date().toISOString(), ownerToken })
+        );
+      } catch (error) {
+        await ownerFile.close();
+        await fs.unlink(lockPath);
+        throw error;
+      }
+      return {
+        identity,
+        release: async () => {
+          try {
+            const [owned, current, record] = await Promise.all([
+              ownerFile.stat(),
+              fs.stat(lockPath),
+              fs.readFile(lockPath, 'utf8'),
+            ]);
+            if (owned.dev !== current.dev || owned.ino !== current.ino || JSON.parse(record).ownerToken !== ownerToken) {
+              throw new Error('Identity lease ownership changed before release.');
+            }
+            await fs.unlink(lockPath);
+          } finally {
+            await ownerFile.close();
+          }
+        },
+      };
+    }
+    if (!reportedWait) {
+      console.log(
+        `[identity-lease] Waiting for an available identity (local; candidates=${candidates.length}; wait_limit_ms=${waitMs}).`
+      );
+      reportedWait = true;
     }
     await wait(Math.max(1, pollMs));
   }
@@ -122,7 +170,7 @@ async function acquireCompatibleIdentityLease(
   const { waitMs, pollMs, ttlMs } = resolveIdentityLeaseRuntimeSettings(env, requiredExecutionMs);
   const deadline = Date.now() + waitMs;
   if (!endpoint) {
-    return acquireLocalIdentityLease(candidates, requirements, deadline, waitMs, pollMs, ttlMs, env);
+    return acquireLocalIdentityLease(candidates, requirements, deadline, waitMs, pollMs, env);
   }
   const payload = {
     requestId: randomUUID(),
@@ -139,6 +187,7 @@ async function acquireCompatibleIdentityLease(
       tags: identity.tags,
     })),
   };
+  let reportedWait = false;
   while (Date.now() < deadline) {
     const remainingMs = Math.max(1, deadline - Date.now());
     let response: Response;
@@ -158,6 +207,12 @@ async function acquireCompatibleIdentityLease(
     if (!response.ok) throw new Error(`Identity lease coordinator returned HTTP ${response.status}.`);
     const lease = (await response.json()) as LeaseResponse;
     if (lease.status === 'pending') {
+      if (!reportedWait) {
+        console.log(
+          `[identity-lease] Waiting for an available identity (coordinator; candidates=${candidates.length}; wait_limit_ms=${waitMs}).`
+        );
+        reportedWait = true;
+      }
       await wait(Math.min(Math.max(1, pollMs), Math.max(1, deadline - Date.now())));
       continue;
     }

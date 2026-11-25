@@ -1,28 +1,11 @@
 import { expect } from '@playwright/test';
-import type { ApiClient } from '@hmcts/playwright-common';
+import type { ApiClient, ApiRequestOptions } from '@hmcts/playwright-common';
 
 import { expectStatus, withRetry, withXsrf } from './apiTestUtils';
 import { expectTaskList } from './assertions';
 import type { Task, TaskListResponse, UserDetailsResponse } from './types';
 import { buildTaskSearchRequest, type SeededTaskResult } from './work-allocation';
 import type { ApiUserRole } from './auth';
-
-export function toArray<T>(payload: unknown): T[] {
-  if (Array.isArray(payload)) {
-    return payload as T[];
-  }
-  const obj = payload as Partial<{ task_names: T[]; taskNames: T[]; typesOfWork: T[] }>;
-  if (obj && Array.isArray(obj.task_names)) {
-    return obj.task_names;
-  }
-  if (obj && Array.isArray(obj.taskNames)) {
-    return obj.taskNames;
-  }
-  if (obj && Array.isArray(obj.typesOfWork)) {
-    return obj.typesOfWork;
-  }
-  return [];
-}
 
 export function assertLocationsListResponse(status: number, data: unknown): void {
   if (status !== 200) {
@@ -37,32 +20,6 @@ export function assertLocationsListResponse(status: number, data: unknown): void
       expect.objectContaining({
         id: expect.any(String),
         locationName: expect.any(String),
-      })
-    );
-  }
-}
-
-export function assertTaskNamesResponse(status: number, data: unknown): void {
-  if (status !== 200) {
-    return;
-  }
-  const names = toArray<string>(data);
-  expect(Array.isArray(names)).toBe(true);
-  if (names.length > 0) {
-    expect(typeof names[0]).toBe('string');
-  }
-}
-
-export function assertTypesOfWorkResponse(status: number, data: unknown): void {
-  if (status !== 200) {
-    return;
-  }
-  const types = toArray(data);
-  expect(Array.isArray(types)).toBe(true);
-  if (types.length > 0 && typeof types[0] === 'object' && types[0] !== null) {
-    expect(types[0]).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
       })
     );
   }
@@ -89,44 +46,6 @@ export function assertAllWorkResponse(status: number, data: unknown): void {
   expectTaskList(data);
 }
 
-export function extractMyWorkCases(data: unknown): unknown[] {
-  if (Array.isArray(data)) {
-    return data;
-  }
-  if (typeof data === 'object' && data !== null && 'cases' in data) {
-    const cases = (data as { cases?: unknown }).cases;
-    if (Array.isArray(cases)) {
-      return cases;
-    }
-  }
-  return [];
-}
-
-export function assertMyWorkDashboardResponse(status: number, data: unknown): void {
-  if (status === 200 && data) {
-    const cases = extractMyWorkCases(data);
-    expect(Array.isArray(cases)).toBe(true);
-  }
-}
-
-interface MyWorkTotalsResponse {
-  total_records?: number;
-  cases?: unknown[];
-}
-
-export function assertMyWorkTotalsResponse(status: number, data: unknown): void {
-  if (status !== 200 || !data) {
-    return;
-  }
-  const typed = data as Partial<MyWorkTotalsResponse>;
-  if (typeof typed.total_records === 'number') {
-    expect(typed.total_records).toBeGreaterThanOrEqual(0);
-  }
-  if (Array.isArray(typed.cases)) {
-    expect(typed.cases.length).toBeGreaterThanOrEqual(0);
-  }
-}
-
 export function assertCaseworkerListResponse(status: number, data: unknown): void {
   if (status === 200 && Array.isArray(data) && data.length > 0) {
     expect(data[0]).toEqual(
@@ -139,7 +58,9 @@ export function assertCaseworkerListResponse(status: number, data: unknown): voi
   }
 }
 
-type WorkAllocationApiClient = Pick<ApiClient, 'post'> & Partial<Pick<ApiClient, 'get'>>;
+type WorkAllocationApiClient = {
+  post: (path: string, options: ApiRequestOptions) => Promise<{ status: number; data: unknown }>;
+} & Partial<Pick<ApiClient, 'get'>>;
 
 type FetchFirstTaskOptions = {
   failOnRequestError?: boolean;
@@ -292,38 +213,35 @@ export async function fetchTaskById(apiClient: WorkAllocationApiClient, id: stri
 }
 
 type TaskState = {
-  assignee?: string;
-  assigned_to?: string;
+  assignee?: string | null;
   task_state?: string;
-  state?: string;
 };
 
-export function assertStateTransition(action: string, before?: TaskState, after?: TaskState): void {
-  if (!after) {
-    return;
+export function assertStateTransition(action: string, before?: TaskState, after?: TaskState, expectedAssignee?: string): void {
+  expect(before, 'before task is required').toBeDefined();
+  expect(after, 'after task is required').toBeDefined();
+  const previous = before!;
+  const current = after!;
+  expect(['claim', 'assign', 'unclaim', 'unassign', 'complete', 'cancel']).toContain(action);
+  expect(['assigned', 'unassigned']).toContain(previous.task_state);
+  if (previous.task_state === 'assigned') {
+    expect(typeof previous.assignee).toBe('string');
+    expect(previous.assignee?.trim()).toBeTruthy();
+  } else {
+    expect(previous.assignee === undefined || previous.assignee === '' || previous.assignee === null).toBe(true);
   }
-  const prevAssignee = before?.assignee ?? before?.assigned_to;
-  const assignee = after.assignee ?? after.assigned_to;
-  const newState = (after.task_state ?? after.state ?? '').toLowerCase();
-  if (['claim', 'assign'].includes(action)) {
-    expect(assignee ?? '').not.toEqual('');
-    if (prevAssignee) {
-      expect(assignee).not.toEqual('');
-    }
-    if (newState) {
-      expect(newState).not.toContain('unassigned');
-    }
-  }
-  if (['unclaim', 'unassign', 'cancel'].includes(action)) {
-    if (prevAssignee) {
-      expect(assignee ?? '').toBe('');
-    }
-    if (newState) {
-      expect(newState).toMatch(/unassigned|cancel|unclaim/);
-    }
-  }
-  if (action === 'complete') {
-    expect(newState).toMatch(/complete|done|closed/);
+  if (action === 'claim' || action === 'assign') {
+    expect(expectedAssignee?.trim(), 'expected assignee is required').toBeTruthy();
+    if (action === 'claim') expect(previous.task_state).toBe('unassigned');
+    expect(current.task_state).toBe('assigned');
+    expect(current.assignee).toBe(expectedAssignee);
+    expect(current.assignee).not.toBe(previous.assignee);
+  } else if (action === 'unclaim' || action === 'unassign') {
+    expect(previous.task_state).toBe('assigned');
+    expect(current.task_state).toBe('unassigned');
+    expect(current.assignee === undefined || current.assignee === '' || current.assignee === null).toBe(true);
+  } else {
+    expect(current.task_state).toBe(action === 'complete' ? 'completed' : 'cancelled');
   }
 }
 
@@ -379,6 +297,7 @@ export function resolveTaskIdWithEnvFallback(
 
 type SeededActionDeps = {
   apiClient: WorkAllocationApiClient;
+  expectedAssignee?: string;
   envTaskId?: string;
   envAssignedTaskId?: string;
   hasSeededEnvTasksFn?: typeof hasSeededEnvTasks;
@@ -390,19 +309,40 @@ export async function runSeededAction(action: string, getId: () => string, deps:
   const withXsrfFn = deps.withXsrfFn ?? withXsrf;
   const taskId = getId();
 
-  // Skip only if no valid task ID available (neither env nor dynamic)
   if (!taskId || taskId === '00000000-0000-0000-0000-000000000000') {
-    return false;
+    throw new Error(`WA ${action} requires a real task id`);
+  }
+
+  const before = await fetchTaskById(deps.apiClient, taskId);
+  expectStatus(before.status, [200]);
+  expect(before.data?.task, 'before task readback is required').toBeDefined();
+  const task = before.data!.task!;
+  expect(['claim', 'assign', 'unclaim', 'unassign', 'complete', 'cancel']).toContain(action);
+  expect(['assigned', 'unassigned']).toContain(task.task_state);
+  if (action === 'claim') expect(task.task_state).toBe('unassigned');
+  if (action === 'unclaim' || action === 'unassign') expect(task.task_state).toBe('assigned');
+  if (action === 'unassign') {
+    expect(typeof task.assignee).toBe('string');
+    expect(task.assignee?.trim()).toBeTruthy();
+  }
+  if (action === 'claim' || action === 'assign') {
+    expect(deps.expectedAssignee?.trim(), 'expected assignee is required').toBeTruthy();
+    expect(task.assignee).not.toBe(deps.expectedAssignee);
   }
 
   await withXsrfFn(deps.role ?? 'solicitor', async (headers) => {
-    const res = await deps.apiClient.post(`workallocation/task/${taskId}/${action}`, {
-      data: {},
+    const endpoint = action === 'unassign' ? 'assign' : action;
+    const data = action === 'unassign' ? { userId: null } : action === 'assign' ? { userId: deps.expectedAssignee } : {};
+    const res = await deps.apiClient.post(`workallocation/task/${taskId}/${endpoint}`, {
+      data,
       headers,
       throwOnError: false,
     });
     expectStatus(res.status, [200, 204]);
   });
+  const after = await fetchTaskById(deps.apiClient, taskId);
+  expectStatus(after.status, [200]);
+  assertStateTransition(action, before.data?.task, after.data?.task, deps.expectedAssignee);
   return true;
 }
 
@@ -410,10 +350,11 @@ export function maybeAssertStateTransition(
   action: string,
   before: TaskState | undefined,
   after: TaskState | undefined,
-  status: number
+  status: number,
+  expectedAssignee?: string
 ): boolean {
   if (isActionSuccessStatus(status)) {
-    assertStateTransition(action, before, after);
+    assertStateTransition(action, before, after, expectedAssignee);
     return true;
   }
   return false;

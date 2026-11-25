@@ -49,8 +49,8 @@ export const CASE_LINKING_RELATED_CASE_REFERENCE = '1652112127295261';
 export const CASE_LINKING_SECOND_RELATED_CASE_REFERENCE = '1652112127295262';
 export const CASE_LINKING_REASON_CODE = 'CLRC015';
 export const CASE_LINKING_REASON_LABEL = 'Case consolidated';
-export const CASE_LINKING_SECONDARY_REASON_CODE = 'CLRC017';
-export const CASE_LINKING_SECONDARY_REASON_LABEL = 'Linked for a hearing';
+export const CASE_LINKING_HEARING_REASON_CODE = 'CLRC017';
+export const CASE_LINKING_HEARING_REASON_LABEL = 'Linked for a hearing';
 export const CASE_LINKING_OTHER_REASON_CODE = 'CLRC014';
 export const CASE_LINKING_OTHER_REASON_LABEL = 'Other';
 export const CASE_LINKING_OTHER_DESCRIPTION = 'Linked because the appeals should be managed together';
@@ -91,8 +91,8 @@ function buildFixedListFieldType() {
         order: 1,
       },
       {
-        code: CASE_LINKING_SECONDARY_REASON_CODE,
-        label: CASE_LINKING_SECONDARY_REASON_LABEL,
+        code: CASE_LINKING_HEARING_REASON_CODE,
+        label: CASE_LINKING_HEARING_REASON_LABEL,
         order: 2,
       },
       {
@@ -272,7 +272,7 @@ export function buildCaseLinkingReasonCodesMock() {
   return {
     list_of_values: [
       buildCaseLinkReasonLov(CASE_LINKING_REASON_CODE, CASE_LINKING_REASON_LABEL, 1),
-      buildCaseLinkReasonLov(CASE_LINKING_SECONDARY_REASON_CODE, CASE_LINKING_SECONDARY_REASON_LABEL, 2),
+      buildCaseLinkReasonLov(CASE_LINKING_HEARING_REASON_CODE, CASE_LINKING_HEARING_REASON_LABEL, 2),
       buildCaseLinkReasonLov(CASE_LINKING_OTHER_REASON_CODE, CASE_LINKING_OTHER_REASON_LABEL, 3),
     ],
   };

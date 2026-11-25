@@ -7,6 +7,7 @@ import {
   parseNonNegativeInt,
   resolveLocalWorktreeTestIgnorePatterns,
   resolveApiProjectWorkerCount,
+  resolveActionTimeouts,
   resolveDefaultReporter,
   resolveTagFilters,
   resolveWorkerCount,
@@ -29,6 +30,12 @@ const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
+
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
   const configured = env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim();
   if (configured) {
@@ -40,6 +47,9 @@ const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
   }
   if (outputFolder.includes('playwright-integration')) {
     return 'xui-playwright-integration.html';
+  }
+  if (outputFolder.includes('playwright-smoke')) {
+    return 'xui-playwright-smoke.html';
   }
   return 'xui-playwright-e2e.html';
 };
@@ -71,8 +81,9 @@ const resolveBranchName = (env: EnvMap = process.env): string => {
   return 'local';
 };
 
-const resolveApiRetries = (env: EnvMap = process.env) =>
-  parseNonNegativeInt(env.PW_API_RETRIES) ?? parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
+const resolveE2eRetries = (env: EnvMap = process.env) => parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
+
+const resolveApiRetries = (env: EnvMap = process.env) => parseNonNegativeInt(env.PW_API_RETRIES) ?? resolveE2eRetries(env);
 
 const resolveEnvironmentFromUrl = (baseUrl: string): string => {
   try {
@@ -103,7 +114,7 @@ const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string =
   const runContext = env.CI ? 'ci' : 'local-run';
   const cpuCores = cpus()?.length ?? 'unknown';
   const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
-  return `${targetEnv} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  return `${targetEnv} | ${runContext} | configured_workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
 };
 
 const resolveApiTagFilters = (env: EnvMap = process.env) =>
@@ -147,6 +158,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const reporter: [string, Record<string, unknown> | undefined][] = [
     [resolveDefaultReporter(env), undefined],
     ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs', undefined],
+    ...(env.PW_ENABLE_PERFETTO !== 'false'
+      ? [['perfetto', { outputFile: resolvePerfettoOutputFile(env) }] as [string, Record<string, unknown>]]
+      : []),
     [
       './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
       {
@@ -163,11 +177,14 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
     ],
   ];
+  if (env.CI && env.PLAYWRIGHT_INCLUDE_A11Y !== 'true' && env.PLAYWRIGHT_INCLUDE_WAVE_A11Y !== 'true') {
+    reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
+  }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
-
   return defineConfig({
     use: {
       baseURL: resolveBaseUrl(env),
+      ...resolveActionTimeouts(env),
     },
     testDir: '.',
     testMatch: [
@@ -177,8 +194,8 @@ const buildConfig = (env: EnvMap = process.env) => {
     ],
     testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     fullyParallel: true,
-    forbidOnly: !!env.CI,
-    retries: 2,
+    forbidOnly: true,
+    retries: resolveE2eRetries(env),
     timeout: 180_000,
     expect: {
       timeout: 60_000,
@@ -201,7 +218,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: 'retain-on-failure',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -219,7 +241,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           ...devices['Desktop Chrome'],
           channel: 'chrome',
           headless: headlessMode,
-          trace: 'retain-on-failure',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
           screenshot: {
             mode: 'only-on-failure',
             fullPage: true,
@@ -243,7 +270,12 @@ const buildConfig = (env: EnvMap = process.env) => {
           headless: true,
           screenshot: 'off',
           video: 'off',
-          trace: 'off',
+          trace: {
+            mode: 'retain-on-failure',
+            snapshots: { dom: true, aria: true, screen: true },
+            screenshots: true,
+            sources: true,
+          },
         },
       },
     ],
@@ -260,6 +292,7 @@ const config = buildConfig(process.env);
   resolveApiTagFilters,
   resolveE2eTagFilters,
   resolveApiRetries,
+  resolveE2eRetries,
   resolveDefaultReporter,
   buildConfig,
 };

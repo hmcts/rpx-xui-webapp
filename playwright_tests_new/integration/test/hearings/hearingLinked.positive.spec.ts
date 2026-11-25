@@ -23,10 +23,13 @@ test.describe(
         routeConfig: {
           userRoles: hearingManagerRoles,
           hearings: [{ ...LISTED_HEARING_SCENARIO, hearingIsLinkedFlag: true }],
+          caseConfig: { jurisdictionId: 'SSCS', caseTypeId: 'Benefit' },
+          enabledCaseVariations: [{ jurisdiction: 'SSCS', caseType: 'Benefit' }],
+          amendmentCaseVariations: [{ jurisdiction: 'CIVIL', caseType: 'CIVIL' }],
         },
       });
 
-      await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);
+      await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID, 'link');
       await hearingsTabPage.openLinkHearing(HEARINGS_LISTED_HEARING_ID);
 
       await expect(page.getByRole('heading', { name: /which hearings should be linked\?/i })).toBeVisible();
@@ -34,7 +37,7 @@ test.describe(
       await expect(page.getByRole('heading', { name: /how should these linked hearings be heard\?/i })).toBeVisible();
       await continueHearingsFlow(page);
       await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
-      const positionCells = page.locator('tbody.govuk-table__body td:nth-child(3)');
+      const positionCells = page.locator('tbody.govuk-table__body td:nth-child(4)');
       await expect(positionCells.filter({ hasText: /^1$/ })).toHaveCount(1);
       await expect(positionCells.filter({ hasText: /^2$/ })).toHaveCount(1);
       await expect(positionCells.filter({ hasText: /^3$/ })).toHaveCount(0);

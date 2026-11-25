@@ -17,12 +17,7 @@ import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { PUI_CASE_MANAGER } from '../user/utils';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
-import {
-  handleCaseWorkerForLocation,
-  handleCaseWorkerForLocationAndService,
-  handleCaseWorkerForService,
-  handlePostSearch,
-} from './caseWorkerService';
+import { handlePostSearch } from './caseWorkerService';
 import {
   fetchNewUserData,
   fetchRoleAssignments,
@@ -41,6 +36,14 @@ import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleTaskGet, handleTaskPost, handleTaskRolesGet, handleTaskSearch } from './taskService';
 import {
+  sendValidationError,
+  validateAllCasesBody,
+  validateGetUsersByServiceNameBody,
+  validateMyCasesBody,
+  validateSearchForCompletableBody,
+  validateSearchTaskBody,
+} from './validation';
+import {
   assignActionsToCases,
   assignActionsToUpdatedTasks,
   constructElasticSearchQuery,
@@ -57,10 +60,6 @@ import {
   handlePost,
   mapCasesFromData,
   paginate,
-  prepareCaseWorkerForLocation,
-  prepareCaseWorkerForLocationAndService,
-  prepareCaseWorkerForService,
-  prepareCaseWorkerSearchUrl,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
@@ -169,6 +168,11 @@ export async function getTaskRoles(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+    const validationFailure = validateSearchTaskBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
     const searchRequest = req.body.searchRequest;
@@ -279,7 +283,7 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   const traceProps = { functionCall: 'getTasksByCaseIdAndEventId' };
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
-    const jurisdictions = getWASupportedJurisdictionsList();
+    const jurisdictions = getWASupportedJurisdictionsList(req);
     // Adding log in app insights for task completion journey
     trackTrace(`Search for completable task of eventId and caseId: ${eventId} ${caseId}`, traceProps);
     const { status, data } = jurisdictions.includes(jurisdiction)
@@ -370,69 +374,14 @@ export async function postTaskCompletionForAccess(
   }
 }
 
-/**
- * Get CaseWorkers for Location
- */
-export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const locationId = req.params.locationId as string;
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocation(baseCaseWorkerRefUrl, locationId);
-    const jsonResponse = await handleCaseWorkerForLocation(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Get CaseWorkers for Service
- */
-export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const serviceId = req.params.serviceId as string;
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseCaseWorkerRefUrl, serviceId);
-    const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Get CaseWorkers for Location and Service
- */
-export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const locationId = req.params.locationId as string;
-  const serviceId = req.params.serviceId as string;
-  try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, locationId, serviceId);
-    const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Post to search for a Caseworker.
- */
-export async function searchCaseWorker(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
-    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
-    res.status(status);
-    res.send(data);
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const jurisdictions = getWASupportedJurisdictionsList();
+    const validationFailure = validateSearchForCompletableBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
+    const jurisdictions = getWASupportedJurisdictionsList(req);
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     const reqBody = {
       case_id: req.body.searchRequest.ccdId,
@@ -505,6 +454,11 @@ export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
+    const validationFailure = validateMyCasesBody(req.body);
+    if (validationFailure) {
+      return sendValidationError(res, validationFailure);
+    }
+
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
@@ -562,6 +516,11 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 }
 
 export async function getCases(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const validationFailure = validateAllCasesBody(req.body);
+  if (validationFailure) {
+    return sendValidationError(res, validationFailure);
+  }
+
   const searchParameters = req.body.searchRequest.search_parameters as SearchTaskParameter[];
   const pagination = req.body.searchRequest.pagination_parameters as PaginationParameter;
 
@@ -650,6 +609,12 @@ export async function getTaskNames(req: EnhancedRequest, res: Response): Promise
  */
 export async function getUsersByServiceName(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   try {
+    const validationFailure = validateGetUsersByServiceNameBody(req.body);
+    if (validationFailure) {
+      sendValidationError(res, validationFailure);
+      return;
+    }
+
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const term = req.body.term;
     const services = req.body.services;

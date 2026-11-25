@@ -8,6 +8,7 @@ import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
+import { expectContract, SearchSchemas } from './utils/contractValidation';
 import { RoleAssignmentContainer } from './utils/types';
 import {
   buildCaseIdListPayload,
@@ -20,7 +21,6 @@ import {
 import {
   applyExpiredCookies,
   assertGlobalSearchResults,
-  assertGlobalSearchServices,
   assertLocationsResponse,
   assertManageLabellingResponse,
   assertMyAccessCount,
@@ -43,8 +43,10 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(response.status, StatusSets.guardedBasic);
-    assertGlobalSearchServices(response.status, response.data);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
+    if (response.status === 200) {
+      expectContract(response.data, SearchSchemas.GlobalSearchServices);
+    }
   });
 
   test('returns results payload or guarded status', async ({ apiClient }) => {
@@ -56,16 +58,24 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
     assertGlobalSearchResults(response.status, response.data);
   });
 
-  test('searchCases proxy responds or guards', async ({ apiClient }) => {
+  test('searchCases proxy responds or guards', async ({ apiClient }, testInfo) => {
+    testInfo.setTimeout(120_000);
     const response = await withRetry(
       () =>
-        apiClient.post<{ total?: number; cases?: unknown[] }>('data/internal/searchCases?ctid=xuiTestCaseType', {
-          data: { size: 1, from: 0, sort: [], native_es_query: { match_all: {} } },
-          throwOnError: false,
-        }),
+        guardedRequest(() =>
+          apiClient.post<{ total?: number; cases?: unknown[] }>('data/internal/searchCases?ctid=xuiTestCaseType', {
+            data: { size: 1, from: 0, sort: [], native_es_query: { match_all: {} } },
+            timeoutMs: 30_000,
+            throwOnError: false,
+          })
+        ),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+    // Proxied to the CCD data store; gateway errors/timeouts (502/504, timeouts mapped to 504) are reported as degraded.
+    expectStatus(response.status, [200, 400, 401, 403, 404, 500], {
+      route: 'POST data/internal/searchCases',
+      tolerateDependencyUnavailable: [502, 504],
+    });
     assertSearchCasesResponse(response.status, response.data);
   });
 });
@@ -73,13 +83,13 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
 test.describe('Ref data and supported jurisdictions', { tag: '@svc-ref-data' }, () => {
   test('wa-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/wa-supported-jurisdiction', { throwOnError: false });
-    expectStatus(res.status, StatusSets.guardedBasic);
+    expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
     assertSupportedJurisdictions(res.status, res.data);
   });
 
   test('staff-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/staff-supported-jurisdiction', { throwOnError: false });
-    expectStatus(res.status, StatusSets.guardedBasic);
+    expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
     assertSupportedJurisdictions(res.status, res.data);
   });
 
@@ -89,7 +99,7 @@ test.describe('Ref data and supported jurisdictions', { tag: '@svc-ref-data' }, 
         headers,
         throwOnError: false,
       });
-      expectStatus(res.status, StatusSets.guardedBasic);
+      expectStatus(res.status, StatusSets.guardedBasic, { primary: 200 });
       assertLocationsResponse(res.status, res.data);
     });
   });
@@ -318,12 +328,6 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
 });
 
 test.describe('Search/refdata helper coverage', { tag: ['@svc-global-search', '@svc-ref-data'] }, () => {
-  test('assertGlobalSearchServices covers results and empty', () => {
-    assertGlobalSearchServices(200, [{ serviceId: 'svc', serviceName: 'Service' }]);
-    assertGlobalSearchServices(200, []);
-    assertGlobalSearchServices(401, []);
-  });
-
   test('assertGlobalSearchResults covers populated and empty results', () => {
     assertGlobalSearchResults(200, { results: [{ caseReference: '1234' }] });
     assertGlobalSearchResults(200, { results: [] });

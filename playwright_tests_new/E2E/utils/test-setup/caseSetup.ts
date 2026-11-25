@@ -3,6 +3,7 @@ import type { APIResponse, Page, TestInfo } from '@playwright/test';
 
 import type { CaseDetailsPage } from '../../page-objects/pages/exui/caseDetails.po';
 import type { CreateCasePage } from '../../page-objects/pages/exui/createCase.po';
+import { FrameworkError, inPhase } from '../frameworkError';
 import { withDirectCcdSetupGate } from './directCcdSetupGate';
 
 type SetupMode = 'api-required' | 'api-first' | 'ui-only';
@@ -70,6 +71,7 @@ const TRANSIENT_VALIDATE_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 const TRANSIENT_EVENT_TOKEN_STATUS_CODES = new Set([404, 429, 500, 502, 503, 504]);
 const TRANSIENT_USER_DETAILS_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 const TRANSIENT_AGGREGATED_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
+const IDENTITY_DENIED_AGGREGATED_STATUS_CODES = new Set([401, 403, 404]);
 const TRANSIENT_API_REQUEST_ERROR_MARKERS = [
   'econnreset',
   'econnrefused',
@@ -83,6 +85,15 @@ const TRANSIENT_API_REQUEST_ERROR_MARKERS = [
 
 function isTruthy(value: string | undefined): boolean {
   return TRUTHY_VALUES.has((value ?? '').trim().toLowerCase());
+}
+
+function resolveCaseSetupFieldValues(payload: Record<string, unknown> | undefined): Record<string, unknown> {
+  if (payload === undefined) return {};
+  const fields = payload.fieldValues;
+  if (typeof fields !== 'object' || fields === null || Array.isArray(fields)) {
+    throw new Error('Case setup payload must contain a fieldValues object; refusing to create an empty substitute case.');
+  }
+  return fields as Record<string, unknown>;
 }
 
 function summarizeDirectCcdValidationFailure(responseText: string): string {
@@ -311,22 +322,32 @@ async function resolveApiIdsFromAggregatedJurisdictions({
   effectiveTimeoutMs: number;
 }): Promise<{ jurisdictionId: string; caseTypeId: string }> {
   const requestedCaseTypeId = request.caseType;
-  const defaultIds = {
-    jurisdictionId: request.jurisdiction,
-    caseTypeId: requestedCaseTypeId,
-  };
-
   const route = `aggregated/caseworkers/${encodeURIComponent(userId)}/jurisdictions?access=create`;
   const response = await requestAggregatedJurisdictionsWithRetry(request, route, effectiveTimeoutMs);
 
   if (!response) {
-    return defaultIds;
+    throw new Error(`Direct CCD identity preflight unavailable for '${request.scenario}'; create access was not verified.`);
   }
 
-  if (response.status() < 200 || response.status() >= 300) {
+  const status = response.status();
+  if (IDENTITY_DENIED_AGGREGATED_STATUS_CODES.has(status)) {
+    throw new FrameworkError(
+      'CCD_IDENTITY_PREFLIGHT_DENIED',
+      'setup',
+      `Direct CCD identity preflight failed with HTTP ${status} for '${request.scenario}': the selected user ` +
+        `was refused create-access jurisdictions. This is a user/test-data configuration problem, not a transient failure.`
+    );
+  }
+  if (TRANSIENT_AGGREGATED_STATUS_CODES.has(status)) {
     throw new Error(
-      `Direct CCD identity preflight failed with HTTP ${response.status()} for '${request.scenario}': ` +
-        `the selected user did not return create-access jurisdictions.`
+      `Direct CCD identity preflight dependency unavailable for '${request.scenario}': aggregated jurisdictions ` +
+        `returned HTTP ${status} after bounded retries; create access was not verified.`
+    );
+  }
+  if (status < 200 || status >= 300) {
+    throw new Error(
+      `Direct CCD identity preflight rejected for '${request.scenario}': aggregated jurisdictions returned HTTP ${status}; ` +
+        `create access was not verified.`
     );
   }
 
@@ -406,12 +427,10 @@ async function requestAggregatedJurisdictionsWithRetry(
       }
 
       if (attempt >= maxAttempts) {
-        logger.warn('Aggregated jurisdictions lookup remained unavailable; using configured CCD identifiers', {
-          scenario: request.scenario,
-          attempt,
-          maxAttempts,
-        });
-        return undefined;
+        throw new Error(
+          `Direct CCD identity preflight unavailable for '${request.scenario}' after ${attempt} attempts; create access was not verified.`,
+          { cause: error }
+        );
       }
 
       logger.warn('Transient aggregated jurisdictions request failure during direct CCD setup, retrying', {
@@ -479,6 +498,7 @@ async function requestUserDetailsWithRetry(request: SetupCaseRequest, effectiveT
 }
 
 async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<DirectCaseSetupResult | undefined> {
+  const fieldValues = resolveCaseSetupFieldValues(request.apiPayload);
   const timeoutMs = Number.parseInt(process.env.PW_E2E_CASE_SETUP_TIMEOUT_MS ?? '', 10);
   const effectiveTimeoutMs = Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : DEFAULT_CASE_SETUP_TIMEOUT_MS;
 
@@ -575,11 +595,6 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<Dir
   if (!eventToken) {
     throw new Error(`Direct CCD event token response did not include token for '${request.scenario}'.`);
   }
-
-  const fieldValues =
-    typeof request.apiPayload?.fieldValues === 'object' && request.apiPayload?.fieldValues !== null
-      ? (request.apiPayload.fieldValues as Record<string, unknown>)
-      : {};
 
   const createCaseBody = {
     data: fieldValues,
@@ -684,6 +699,10 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<Dir
 }
 
 export async function setupCaseForJourney(request: SetupCaseRequest): Promise<SetupCaseResult> {
+  return request.testInfo ? inPhase(request.testInfo, 'setup', () => runCaseSetup(request)) : runCaseSetup(request);
+}
+
+async function runCaseSetup(request: SetupCaseRequest): Promise<SetupCaseResult> {
   const mode = resolveSetupMode(request.mode);
   const allowUiFallback = resolveUiFallbackFlag(request.allowUiFallback);
 
@@ -741,6 +760,7 @@ export async function setupCaseForJourney(request: SetupCaseRequest): Promise<Se
 }
 
 export const __test__ = {
+  resolveCaseSetupFieldValues,
   isTransientApiRequestError,
   retryTransientApiRequest,
   requestAggregatedJurisdictionsWithRetry,

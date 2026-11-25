@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppConstants } from '../../app.constants';
+import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+import { UserDetails } from '../../models/user-details.model';
+import { EnvironmentService } from '../../shared/services/environment.service';
 import * as fromRoot from '../../store';
 import { Helper, Navigation, NavigationItems } from './footer.model';
 
@@ -13,10 +18,21 @@ import { Helper, Navigation, NavigationItems } from './footer.model';
 export class FooterComponent implements OnInit {
   public helpData: Helper = AppConstants.FOOTER_DATA;
   public navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
+  public userEmail$: Observable<string>;
 
-  constructor(private readonly store: Store<fromRoot.State>) {}
+  constructor(
+    private readonly store: Store<fromRoot.State>,
+    private readonly environmentService: EnvironmentService
+  ) {}
 
   public ngOnInit() {
+    if (this.environmentService.getDeploymentEnv() !== DeploymentEnvironmentEnum.PROD) {
+      this.userEmail$ = this.store.pipe(
+        select(fromRoot.getUserDetails),
+        map((userDetails: UserDetails) => userDetails?.userInfo?.email)
+      );
+    }
+
     const tAndCNavItem = this.getNavigationItemForTandC(this.navigationData.items);
     if (tAndCNavItem) {
       this.store.pipe(select(fromRoot.getIsTermsAndConditionsFeatureEnabled)).subscribe((isEnabled) => {

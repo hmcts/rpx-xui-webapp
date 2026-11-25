@@ -7,13 +7,9 @@ import { test, expect } from './fixtures';
 import { expectStatus, guardedRequest, StatusSets } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
-import { z } from 'zod';
+import { buildTaskSearchRequest } from './utils/work-allocation';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
-const locationSchema = z.object({
-  id: z.string(),
-  locationName: z.string(),
-});
 
 test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, () => {
   test('GET /workallocation/location contract: returns array of location objects with required fields', async ({
@@ -26,20 +22,13 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     // When: Fetching locations
     const response = await apiClient.get(endpoint, { throwOnError: false });
 
-    // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
+    // Then: The contract endpoint succeeds
+    expectStatus(response.status, [200]);
 
-    // And: Response structure matches LocationList contract when successful
-    if (response.status === 200 && Array.isArray(response.data)) {
-      expectContract(response.data, WorkAllocationSchemas.LocationList, {
-        context: { endpoint, status: response.status },
-      });
-
-      // And: Each location has required fields
-      if (response.data.length > 0) {
-        locationSchema.parse(response.data[0]);
-      }
-    }
+    // And: Response structure matches the LocationList contract
+    expectContract(response.data, WorkAllocationSchemas.LocationList, {
+      context: { endpoint, status: response.status },
+    });
   });
 
   test('POST /workallocation/task contract: returns TaskList with tasks array and optional total_records', async ({
@@ -47,10 +36,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
   }) => {
     const apiClient = await apiClientFor('waSolicitor');
     // Given: A task search request for MyTasks view
-    const searchRequest = {
-      view: 'MyTasks',
-      searchRequest: [],
-    };
+    const searchRequest = buildTaskSearchRequest('MyTasks', { states: ['assigned'] });
 
     // When: Searching for tasks
     const response = await apiClient.post('workallocation/task', {
@@ -58,29 +44,11 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
       throwOnError: false,
     });
 
-    // Then: Response status is within expected range
-    expectStatus(response.status, [200, 401, 403, 500, 502]);
-
-    // And: Response structure matches TaskList contract when successful
-    if (response.status === 200) {
-      expectContract(response.data, WorkAllocationSchemas.TaskList, {
-        context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
-      });
-
-      // And: tasks array is present
-      const taskListData = response.data as { tasks: unknown[] };
-      expect(taskListData).toHaveProperty('tasks');
-      expect(Array.isArray(taskListData.tasks)).toBe(true);
-
-      // And: Each task has required fields
-      if (taskListData.tasks.length > 0) {
-        const firstTask = taskListData.tasks[0] as { id: unknown; task_state: unknown };
-        expect(firstTask).toHaveProperty('id');
-        expect(firstTask).toHaveProperty('task_state');
-        expect(typeof firstTask.id).toBe('string');
-        expect(typeof firstTask.task_state).toBe('string');
-      }
-    }
+    // Then: The contract endpoint succeeds and returns a valid TaskList
+    expectStatus(response.status, [200]);
+    expectContract(response.data, WorkAllocationSchemas.TaskList, {
+      context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
+    });
   });
 
   test('GET /workallocation/task/types-of-work contract: returns array of work type classifications', async ({
@@ -98,13 +66,10 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
 
     expectStatus(response.status, [200]);
 
-    // And: Response is an array or object containing work types
-    if (response.status === 200) {
-      expect(response.data).toBeDefined();
-    }
-    if (response.status === 200 && Array.isArray(response.data)) {
-      expect(response.data.length).toBeGreaterThanOrEqual(0);
-    }
+    // And: Successful responses match the mapped key/label catalogue returned by the XUI route
+    expectContract(response.data, WorkAllocationSchemas.TypesOfWork, {
+      context: { endpoint: 'workallocation/task/types-of-work', status: response.status },
+    });
   });
 });
 
@@ -114,22 +79,13 @@ test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search',
     // When: Fetching global search services
     const response = await apiClient.get('api/globalSearch/services', { throwOnError: false });
 
-    // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
+    // Then: The contract endpoint succeeds
+    expectStatus(response.status, [200]);
 
-    // And: Response structure matches GlobalSearchServices contract when successful
-    if (response.status === 200 && Array.isArray(response.data)) {
-      expectContract(response.data, SearchSchemas.GlobalSearchServices, {
-        context: { endpoint: 'api/globalSearch/services', status: response.status },
-      });
-
-      // And: Each service has required fields
-      if (response.data.length > 0) {
-        const firstService = response.data[0];
-        expect(firstService).toHaveProperty('serviceId');
-        expect(firstService).toHaveProperty('serviceName');
-      }
-    }
+    // And: Response structure matches the GlobalSearchServices contract
+    expectContract(response.data, SearchSchemas.GlobalSearchServices, {
+      context: { endpoint: 'api/globalSearch/services', status: response.status },
+    });
   });
 
   test('GET /api/wa-supported-jurisdiction contract: returns jurisdiction data', async ({ apiClient }) => {
@@ -138,7 +94,7 @@ test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search',
     const response = await apiClient.get('api/wa-supported-jurisdiction', { throwOnError: false });
 
     // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
 
     // And: Response is defined when successful (may be array or string)
     if (response.status === 200) {
@@ -153,7 +109,7 @@ test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search',
     const response = await apiClient.get('api/staff-supported-jurisdiction', { throwOnError: false });
 
     // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic);
+    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
 
     // And: Response is defined when successful (may be array or string)
     if (response.status === 200) {

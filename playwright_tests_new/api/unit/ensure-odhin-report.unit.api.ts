@@ -69,6 +69,7 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
     fs.mkdirSync(reportDir, { recursive: true });
     fs.mkdirSync(staleIntegrationDir, { recursive: true });
     fs.writeFileSync(path.join(reportDir, 'failure-data.json'), '{}');
+    fs.writeFileSync(path.join(reportDir, 'failure-context.json'), '{}');
     fs.mkdirSync(path.join(reportDir, 'test-results', 'failure'), { recursive: true });
     fs.writeFileSync(path.join(reportDir, 'test-results', 'failure', 'test-failed-1.png'), 'screenshot');
     fs.writeFileSync(path.join(reportDir, 'test-results', 'failure', 'trace.zip'), 'trace');
@@ -79,11 +80,49 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
       process.chdir(root);
       const diagnostics = ensureReport.collectDiagnostics(reportDir);
       expect(diagnostics).toContain(`${reportDir}/failure-data.json`);
+      expect(diagnostics).toContain(`${reportDir}/failure-context.json`);
       expect(diagnostics).toContain(`${reportDir}/test-results/failure/test-failed-1.png`);
       expect(diagnostics).toContain(`${reportDir}/test-results/failure/trace.zip`);
       expect(diagnostics.join('\n')).not.toContain('playwright-integration/load-profile');
     } finally {
       process.chdir(originalCwd);
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test('discovers diagnostics in the lane sibling test-results directory without crossing lanes', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-sibling-results-'));
+    const reportDir = path.join(root, 'functional-output/tests/playwright-api/odhin-report');
+    const siblingResults = path.join(root, 'functional-output/tests/playwright-api/test-results/failure');
+    const otherLaneResults = path.join(root, 'functional-output/tests/playwright-e2e/test-results/failure');
+    const profileReportDir = path.join(root, 'functional-output/tests/playwright-integration/odhin-report/aat-workers-7');
+    const profileResults = path.join(profileReportDir, 'test-results/profile-failure');
+    const laneLevelProfileResults = path.join(
+      root,
+      'functional-output/tests/playwright-integration/test-results/profile-failure'
+    );
+    fs.mkdirSync(reportDir, { recursive: true });
+    fs.mkdirSync(siblingResults, { recursive: true });
+    fs.mkdirSync(otherLaneResults, { recursive: true });
+    fs.mkdirSync(profileReportDir, { recursive: true });
+    fs.mkdirSync(profileResults, { recursive: true });
+    fs.mkdirSync(laneLevelProfileResults, { recursive: true });
+    fs.writeFileSync(path.join(siblingResults, 'failure-context.json'), '{}');
+    fs.writeFileSync(path.join(otherLaneResults, 'failure-context.json'), '{}');
+    fs.writeFileSync(path.join(profileResults, 'failure-context.json'), '{}');
+    fs.writeFileSync(path.join(laneLevelProfileResults, 'failure-context.json'), '{}');
+
+    try {
+      const diagnostics = ensureReport.collectDiagnostics(reportDir);
+
+      expect(diagnostics).toContain(`${siblingResults}/failure-context.json`);
+      expect(diagnostics.join('\n')).not.toContain('playwright-e2e/test-results');
+
+      const profileDiagnostics = ensureReport.collectDiagnostics(profileReportDir);
+      expect(profileDiagnostics).toContain(`${profileResults}/failure-context.json`);
+      expect(profileDiagnostics.join('\n')).not.toContain('playwright-integration/test-results/profile-failure');
+      expect(profileDiagnostics.join('\n')).not.toContain('playwright-api/test-results');
+    } finally {
       fs.rmSync(root, { recursive: true, force: true });
     }
   });

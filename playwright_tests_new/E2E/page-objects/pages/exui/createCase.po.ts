@@ -7,7 +7,14 @@ import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
-import { clickSubmitAndWaitFlow, findCreateCaseBootstrapFailure, startCreateCaseFlow } from './createCase.flow.js';
+import {
+  afterStepContext,
+  buildWizardValidationErrorMessage,
+  clickSubmitAndWaitFlow,
+  findCreateCaseBootstrapFailure,
+  POC_TEXT_FIELDS_VALIDATION_ERROR,
+  startCreateCaseFlow,
+} from './createCase.flow.js';
 import { buildCreateCaseLocators } from './createCase.locators.js';
 
 export type PersonData = {
@@ -64,6 +71,10 @@ export class CreateCasePage extends Base {
   readonly startButton!: Locator;
   readonly submitButton!: Locator;
   readonly continueButton!: Locator;
+  readonly caseTitleInput!: Locator;
+  readonly caseReferenceInput!: Locator;
+  readonly evidenceDocumentInput!: Locator;
+  readonly evidenceDocumentUploadError!: Locator;
 
   readonly legalRepParty1Block!: Locator;
   readonly legalRepParty2Block!: Locator;
@@ -213,7 +224,7 @@ export class CreateCasePage extends Base {
   }
   private async waitForSelectReady(selector: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_DEFAULT;
-    const apiCallsBaseline = this.getApiCalls().length;
+    const apiCallsBaseline = this.getApiCallCursor();
     const deadline = Date.now() + effectiveTimeoutMs;
 
     while (Date.now() < deadline) {
@@ -226,7 +237,7 @@ export class CreateCasePage extends Base {
         return;
       }
 
-      const bootstrapFailure = findCreateCaseBootstrapFailure(this.getApiCalls(), apiCallsBaseline);
+      const bootstrapFailure = findCreateCaseBootstrapFailure(this.getApiCallsSince(apiCallsBaseline));
       if (bootstrapFailure) {
         throw new Error(
           `Create case bootstrap failed while waiting for select "${selector}": ` +
@@ -376,7 +387,7 @@ export class CreateCasePage extends Base {
         throw new Error(`Continue click still intercepted after spinner wait ${context}: ${retryMessage.slice(0, 220)}`);
       }
     }
-    await this.waitForSpinnerToComplete(`after ${context}`, stepTimeout);
+    await this.waitForSpinnerToComplete(afterStepContext(context), stepTimeout);
     await this.assertNoEventCreationError(context);
     const hasValidationError = await this.checkForErrorMessage();
     if (hasValidationError) {
@@ -384,7 +395,7 @@ export class CreateCasePage extends Base {
       if (this.isEventCreationValidationText(validationText)) {
         throw new Error(`Case event failed ${context}: ${validationText}`);
       }
-      throw new Error(`Validation error after ${context}`);
+      throw new Error(buildWizardValidationErrorMessage(context));
     }
   }
 
@@ -481,14 +492,14 @@ export class CreateCasePage extends Base {
       submitButton: this.submitButton,
       continueButton: this.continueButton,
       somethingWentWrongHeading: this.somethingWentWrongHeading,
-      getApiCalls: () => this.getApiCalls(),
+      getApiCallCursor: () => this.getApiCallCursor(),
       getVisibleActionButton: (locator) => this.getVisibleActionButton(locator),
       clickSubmitButtonWithRetry: (submitContext, submitButton) => this.clickSubmitButtonWithRetry(submitContext, submitButton),
       clickContinueAndWait: (continueContext, continueOptions) => this.clickContinueAndWait(continueContext, continueOptions),
       waitForSpinnerToComplete: (spinnerContext, spinnerTimeoutMs) =>
         this.waitForSpinnerToComplete(spinnerContext, spinnerTimeoutMs),
       assertNoEventCreationError: (errorContext) => this.assertNoEventCreationError(errorContext),
-      checkForErrorMessage: () => this.checkForErrorMessage(),
+      checkForErrorMessage: (timeoutMs) => this.checkForErrorMessage(undefined, timeoutMs),
       getValidationErrorText: () => this.getValidationErrorText(),
       failFastOnCriticalWizardEndpointFailure: (failureContext, baselineIndex) =>
         this.failFastOnCriticalWizardEndpointFailure(failureContext, baselineIndex),
@@ -510,9 +521,9 @@ export class CreateCasePage extends Base {
     }
   }
 
-  private failFastOnCriticalWizardEndpointFailure(context: string, baselineIndex = 0) {
+  private failFastOnCriticalWizardEndpointFailure(context: string, cursor: number) {
     // Only inspect calls seen during the current submit cycle to avoid stale failures from earlier actions.
-    const recentCalls = this.getApiCalls().slice(Math.max(0, baselineIndex));
+    const recentCalls = this.getApiCallsSince(cursor);
     const criticalFailure = recentCalls.find(
       (call) => call.status >= 500 && CRITICAL_WIZARD_API_PATTERNS.some((pattern) => pattern.test(call.url))
     );
@@ -552,25 +563,26 @@ export class CreateCasePage extends Base {
       await waitForAdvance();
       return;
     } catch {
+      const stepContext = afterStepContext(context);
       if (this.page.isClosed()) {
-        throw new Error(`Page closed while waiting for wizard to advance after ${context}`);
+        throw new Error(`Page closed while waiting for wizard to advance ${stepContext}`);
       }
       const hasValidationError = await this.checkForErrorMessage();
       if (hasValidationError) {
         const validationText = await this.getValidationErrorText();
         if (this.isEventCreationValidationText(validationText)) {
-          throw new Error(`Case event failed after ${context}: ${validationText}`);
+          throw new Error(`Case event failed ${stepContext}: ${validationText}`);
         }
-        throw new Error(`Validation error after ${context}`);
+        throw new Error(buildWizardValidationErrorMessage(context));
       }
       if (this.page.isClosed()) {
-        throw new Error(`Page closed before retrying wizard advance after ${context}`);
+        throw new Error(`Page closed before retrying wizard advance ${stepContext}`);
       }
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
       if (!visibleContinueButton) {
-        throw new Error(`Continue button not visible while retrying wizard advance after ${context}`);
+        throw new Error(`Continue button not visible while retrying wizard advance ${stepContext}`);
       }
-      await this.clickContinueAndWait(`while retrying wizard advance after ${context}`, {
+      await this.clickContinueAndWait(`while retrying wizard advance ${stepContext}`, {
         continueButton: visibleContinueButton,
         timeoutMs,
       });
@@ -593,24 +605,41 @@ export class CreateCasePage extends Base {
     await this.ensureWizardAdvanced(context, initialUrl, options);
   }
 
-  async clickContinueMultipleTimes(count: number) {
+  async clickContinueMultipleTimes(count: number, finalStepLocator: Locator) {
     for (let i = 0; i < count; i++) {
+      const context = `after continue ${i + 1} of ${count}`;
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
       if (!visibleContinueButton) {
-        logger.info('Continue button not visible; stopping early', {
-          iteration: i + 1,
-          total: count,
-        });
-        break;
+        throw new Error(`Continue button not visible ${context}`);
       }
-      await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, {
-        continueButton: visibleContinueButton,
-      });
+      const initialPath = this.normalizePath(this.page.url());
+      const wizardPath = initialPath.slice(0, initialPath.lastIndexOf('/') + 1);
+      const apiCallsBaseline = this.getApiCallCursor();
+      try {
+        await this.clickContinueAndWait(context, { continueButton: visibleContinueButton });
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+        await this.page.waitForURL((url) => url.pathname.startsWith(wizardPath) && url.pathname !== initialPath, {
+          timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT,
+          waitUntil: 'commit',
+        });
+        if (i === count - 1) {
+          await finalStepLocator.waitFor({ state: 'attached', timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT });
+        } else {
+          await this.continueButton.filter({ visible: true }).first().waitFor({
+            state: 'visible',
+            timeout: EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT,
+          });
+        }
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+      } catch (error) {
+        this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
+        throw error;
+      }
       logger.info('Clicked continue button', { iteration: i + 1, total: count });
     }
   }
 
-  async checkForErrorMessage(message?: string, timeout = EXUI_TIMEOUTS.VALIDATION_ERROR_VISIBLE): Promise<boolean> {
+  async checkForErrorMessage(message?: string, timeout: number = EXUI_TIMEOUTS.VALIDATION_ERROR_VISIBLE): Promise<boolean> {
     const check = async (sel: Locator) => {
       try {
         await sel.waitFor({ state: 'visible', timeout });
@@ -718,7 +747,8 @@ export class CreateCasePage extends Base {
       eventTypeSelect: this.eventTypeSelect,
       startButton: this.startButton,
       somethingWentWrongHeading: this.somethingWentWrongHeading,
-      getApiCalls: () => this.getApiCalls(),
+      getApiCallCursor: () => this.getApiCallCursor(),
+      getApiCallsSince: (cursor) => this.getApiCallsSince(cursor),
       waitForSelectReady: (selector, timeoutMs) => this.waitForSelectReady(selector, timeoutMs),
       selectOptionSmart: (selectLocator, option) => this.selectOptionSmart(selectLocator, option),
       normalizeUnknownError: (error) => this.normalizeUnknownError(error),
@@ -753,7 +783,7 @@ export class CreateCasePage extends Base {
   async uploadFile(
     fileName: string,
     mimeType: string,
-    fileContent: string,
+    fileContent: string | Buffer,
     fileInput?: Locator,
     fileContentEncoding?: BufferEncoding
   ) {
@@ -762,7 +792,7 @@ export class CreateCasePage extends Base {
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
-        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
+        buffer: Buffer.isBuffer(fileContent) ? fileContent : Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
       });
     });
   }
@@ -1248,7 +1278,7 @@ export class CreateCasePage extends Base {
         const message = this.normalizeUnknownError(error);
         const isTransientCreationFailure =
           isTransientWorkflowFailure(error) ||
-          message.includes('Validation error after after PoC text fields') ||
+          message.includes(POC_TEXT_FIELDS_VALIDATION_ERROR) ||
           message.includes('The event could not be created') ||
           (await this.eventCreationErrorHeading.isVisible().catch(() => false));
         if (isTransientCreationFailure && attempt < maxAttempts) {

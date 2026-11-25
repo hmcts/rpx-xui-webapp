@@ -131,11 +131,8 @@ export class CaseFlagsUtils {
   }
 
   private static getAllNonRAFsWithGroup(flags: PartyFlagsDisplayModel[]): CaseFlagGroup[] {
-    const nonRAPFs = flags.filter((nonRAF) => nonRAF.displayPath.includes(CaseFlagType.PARTY_FLAGS));
-    const nonRAPFsWithGroup = _.groupBy(nonRAPFs, CaseFlagsUtils.PARTY_NAME);
-    const caseFlags = flags.filter((nonRAF) => nonRAF.displayPath.includes(CaseFlagType.CASE_FLAG));
-    const caseFlagsWithGroup = _.groupBy(caseFlags, CaseFlagsUtils.PARTY_NAME);
-    return this.convertMapToArray({ ...nonRAPFsWithGroup, ...caseFlagsWithGroup });
+    const allNonRAFsWithGroup = _.groupBy(flags, CaseFlagsUtils.PARTY_NAME);
+    return this.convertMapToArray(allNonRAFsWithGroup);
   }
 
   public static findFlagByFlagId(caseFlagReferenceModels: CaseFlagReferenceModel[], flagId: string): CaseFlagReferenceModel {

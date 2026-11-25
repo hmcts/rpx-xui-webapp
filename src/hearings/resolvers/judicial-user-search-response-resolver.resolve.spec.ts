@@ -5,12 +5,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { initialState } from '../hearing.test.data';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import { JudicialUserSearchResponseResolver } from './judicial-user-search-response-resolver.resolve';
 import * as fromHearingStore from '../store';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Ref Data Resolver', () => {
   let judicialRefDataService: JudicialRefDataService;
@@ -50,6 +51,7 @@ describe('Ref Data Resolver', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([])],
       providers: [
+        { provide: HearingsTelemetryService, useValue: null },
         provideMockStore({ initialState }),
         JudicialUserSearchResponseResolver,
         JudicialRefDataService,

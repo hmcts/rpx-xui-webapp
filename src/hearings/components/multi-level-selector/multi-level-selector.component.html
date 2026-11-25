@@ -33,7 +33,7 @@
         <input
           class="govuk-radios__input"
           id="{{ childNode.value.key }}"
-          name="priority"
+          [attr.name]="'multi-level-selector-priority-' + level"
           type="radio"
           [value]="childNode.value.value_en"
         />

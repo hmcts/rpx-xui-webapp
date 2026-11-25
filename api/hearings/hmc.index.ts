@@ -8,49 +8,29 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID,
 } from '../configuration/references';
-import { EnhancedRequest, JUILogger } from '../lib/models';
+import { trackTrace } from '../lib/appInsights';
+import { EnhancedRequest } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { LinkedHearingGroupMainModel, LinkedHearingGroupResponseModel } from './models/linkHearings.model';
-import { trackTrace } from '../lib/appInsights';
-import * as log4jui from '../lib/log4jui';
+import { HearingsTraceOperation, traceHearingsDiagnostic } from './hearings-telemetry';
 
 export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
-const logger: JUILogger = log4jui.getLogger('hmc-index');
 
 /**
  * handleHearingError - reusable error handler for hearing requests
  */
 function handleHearingError(
   error: any,
-  caseId: string,
-  operationName: string,
-  req: EnhancedRequest,
-  markupPath: string,
+  _caseId: string,
+  operationName: HearingsTraceOperation,
+  _req: EnhancedRequest,
+  _markupPath: string,
   next: NextFunction
 ): void {
-  const hearingId = req.query.hearingId;
-  const deepLink: string | undefined = req.body?.caseDetails?.caseDeepLink;
-  let inferredCaseId: string | undefined;
-  if (typeof deepLink === 'string') {
-    const specific = deepLink.match(/\/case-details\/(\d+)/);
-    inferredCaseId = specific?.[1] ?? deepLink.match(/\d{10,}/)?.[0];
-  }
-  const errorData = error?.data ?? error?.errors ?? null;
-  const caseRef = typeof caseId === 'string' && caseId.trim() ? caseId.trim() : inferredCaseId;
-  const caseInfo = caseRef ? ` caseID: ${caseRef}` : '';
-  const hearingInfo = hearingId ? ` hearingID: ${hearingId}` : '';
-  const idInfo = `${caseInfo}${hearingInfo}`;
-  logger.error(
-    `HMC-Index | ${operationName} error:${idInfo} : ${error.status} ${markupPath}`,
-    error.statusText,
-    JSON.stringify(errorData)
-  );
-  if (error.status >= 400 && error.status < 600) {
-    trackTrace(`HMC-Index | ${operationName} error${idInfo} : (${error.status}) : ${JSON.stringify(errorData)}`);
-  }
+  traceHearingsDiagnostic(operationName, 'failed', error);
   next(error);
 }
 
@@ -99,11 +79,11 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
-    trackTrace('submitting hearing request');
+    traceHearingsDiagnostic('submitHearingRequest', 'started');
     const { status, data }: { status: number; data: any } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
-    handleHearingError(error, null, 'SubmitHearingRequest', req, markupPath, next);
+    handleHearingError(error, null, 'submitHearingRequest', req, markupPath, next);
   }
 }
 
@@ -161,13 +141,36 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
  */
 export async function updateHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const hearingId = req.query.hearingId;
+  const hearingId = req.query.hearingId as string;
   const caseId = req.query.caseId as string;
+  const hearingStatus = req.query.hearingStatus as string;
+  const isFinalisedHearingEdit = ['COMPLETED', 'ADJOURNED', 'CANCELLED'].includes(hearingStatus);
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
+    if (isFinalisedHearingEdit) {
+      trackTrace('HMC-Index | finalised hearing edit update started', {
+        caseId,
+        hearingId,
+        hearingStatus,
+      });
+    }
     const { status, data }: { status: number; data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
+    if (isFinalisedHearingEdit) {
+      trackTrace('HMC-Index | finalised hearing edit update succeeded', {
+        caseId,
+        hearingId,
+        hearingStatus,
+      });
+    }
     res.status(status).send(data);
   } catch (error) {
+    if (isFinalisedHearingEdit) {
+      trackTrace('HMC-Index | finalised hearing edit update failed', {
+        caseId,
+        hearingId,
+        hearingStatus,
+      });
+    }
     handleHearingError(error, caseId, 'updateHearingActuals', req, markupPath, next);
   }
 }

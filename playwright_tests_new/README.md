@@ -33,7 +33,21 @@ Functional testing in this repo is the Playwright-based test set under `playwrig
 
 Default target environment is AAT (`https://manage-case.aat.platform.hmcts.net`). Set `TEST_URL=http://localhost:3000` for local EXUI runs.
 
+### Coverage and capacity evidence
+
+Run `mkdir -p functional-output/tests && yarn test:playwright:inventory > functional-output/tests/playwright-inventory.json` after loading the approved local test environment. The inventory uses Playwright discovery against the repository-default configs and reports separate counts for API service/contract tests, support unit tests, integration journeys, live E2E journeys, and advisory accessibility checks. It also lists integration scenarios omitted by the default blocked-tag filter and records the base Git revision plus a dirty-worktree marker. If API discovery needs credentials, supply them through the normal Key Vault-backed environment; the command fails instead of substituting a partial count. The JSON contains source file paths and test titles, never credentials.
+
+These are **discovered test counts**, not a requirement-to-test ledger, product coverage percentages or passing test results. The accessibility count is advisory and does not make accessibility a pipeline gate. Compare the inventory with the actual run's selected tags, final outcomes and retries before making a coverage claim. A twelve-worker setting is a requested process limit, not evidence of twelve active journeys or twelve compatible accounts; use `yarn test:playwright:preflight` for configured identity counts and the System Load profile for host pressure. Compare 4, 8 and 12 workers only on the same test selection and environment, recording first-attempt outcomes, identity wait, wall time and report finalization separately.
+
+Run `yarn typecheck:playwright:all` to compile every tracked Playwright TypeScript file and the root Playwright configs. The gate fails if a file is omitted from compilation, a new diagnostic appears or a resolved diagnostic remains in the baseline. The 65 existing Playwright diagnostics are recorded in `scripts/playwright-type-errors.baseline.json`; the command reports their count rather than presenting the suite as type clean. Remove a baseline entry in the same change that fixes its error. Do not add new entries to make CI green. Root application diagnostics are outside this Playwright gate.
+
+The [capability and exclusion ledger](COVERAGE_LEDGER.md) links representative requirements to mocked and live tests, records the owner and recheck criterion for every default integration exclusion, and identifies where a mocked response cannot prove backend persistence. Accessibility remains advisory.
+
 Do not use `yarn test:functional` for this Playwright suite; it is currently a compatibility placeholder that prints `Skipping functional tests`. Use the suite commands in this README instead.
+
+All Playwright configs reject `test.only`, including local runs. CNP and nightly run `yarn typecheck:playwright:critical` after dependency install; this checks the Playwright configs, shared support sources, and E2E utilities including the identity and dynamic organisation locks. The wider `playwright_tests_new/tsconfig.json` includes the webapp and API source and currently has existing errors, so this focused gate does not certify every Playwright spec.
+
+The System Load report labels the command's `--workers` override or `FUNCTIONAL_TESTS_WORKERS` value as **Requested workers**. Playwright may run fewer workers when the selected test set is smaller or a project cap applies.
 
 ### Local Prerequisites
 
@@ -49,6 +63,109 @@ E2E/session helpers load the workspace `.env` through `E2E/utils/config.utils.ts
 ---
 
 ## Quick Command Reference (AAT, DEMO, ITHC and LOCAL)
+
+### Playwright upgrade and order-dependency checks
+
+The runner is pinned to Playwright **1.65.1**. Run `yarn test:setup:playwright-version`
+after an immutable install to check that `@playwright/test`, `playwright` and
+`playwright-core` match the manifest. Jenkins and the Docker dependency build use
+the same check; the application image does not install browser binaries.
+
+The opt-in support-suite stability command uses Playwright 1.64's seeded shuffle
+with retries disabled. It does not alter normal CI ordering or retry defaults:
+
+```bash
+# Generate a seed (printed by Playwright), then replay a reported seed.
+yarn test:playwright:stability
+yarn test:playwright:stability 271828182 --workers=4
+```
+
+This runs `api/unit` support tests, including browser-backed checks, not live AAT
+journeys. Install Chromium first and load the environment as described above:
+some support modules validate solicitor credentials at import time even when
+their tests stub transport. The command does not inject dummy credentials or
+bypass those checks. Reports default to
+`functional-output/tests/playwright-stability/` and are replaced on the next run.
+For retained comparisons, set unique `PLAYWRIGHT_OUTPUT_DIR`,
+`PLAYWRIGHT_REPORT_FOLDER` and `PLAYWRIGHT_JUNIT_OUTPUT` paths per run and retain
+the console log with its seed. A seed reproduces shuffled order, not OS scheduling.
+For an affected E2E/integration journey, pass `--shuffle <seed> --retries=0`
+through its existing runner instead of adding it to this support-suite command.
+
+Existing DOM/ARIA/screen traces and Perfetto timelines remain enabled; video
+remains off. Use `--add-reporter=html` to add native step subtitles/parameters and
+the duration waterfall without replacing Odhín/JUnit/Perfetto reporters. Use
+`--add-reporter=failures` to also print failures and successful retries as they occur;
+keep the complete JUnit and Odhín reports for counts and assurance. Only use
+non-sensitive step metadata; native reports and traces remain restricted artefacts.
+
+For a controlled worker comparison, use a new output directory and the same selected
+suite, project, environment and account pool for every run:
+
+```bash
+yarn test:playwright:capacity --config playwright.config.ts --project node-api --suite playwright_tests_new/api/unit --output functional-output/tests/capacity-local-1
+```
+
+The command runs two sequential repeats each at 4, 8 and 12 workers with retries
+disabled. It preserves separate Odhín, load, Perfetto, JUnit and test-result
+artifacts per run, plus a `comparison.json` with exit status, wall time, observed
+worker processes, peak active tests, hook time, test-body time, identity wait and
+post-test/reporting time. It retains failures as failures and refuses to overwrite
+an existing comparison directory. The capacity reporter adds to the configured
+reporters; it does not replace them or capture test titles, URLs or credentials.
+When a live E2E journey uses an identity lease, the capacity run records every
+lease acquisition duration; otherwise `identityWaitSamples: 0` means no identity
+wait was observed, not that account capacity is unlimited. Hook and test-body
+durations are aggregate worker time, while wall and execution-window values are
+elapsed time. Test-body duration includes waits and cannot by itself prove useful
+business throughput. Compare first-attempt failures, identity waits, host pressure,
+and active concurrency before proposing a worker-limit change. Accessibility
+remains advisory and is not a failing capacity gate.
+Named test locks coordinate one Playwright run, not independent Jenkins jobs:
+keep the existing physical-identity and session leases for cross-process isolation.
+
+### Framework limits and diagnostics
+
+Run `yarn tsc --project playwright_tests_new/tsconfig.scoped.json` to check the
+maintained Playwright support, configs and affected journeys with strict types.
+The broad `tsconfig.json` also includes application sources and is a separate check.
+
+Action and navigation defaults are 20 seconds and 30 seconds respectively;
+cross-browser nightly uses 60 seconds for both. Override with positive
+`PW_ACTION_TIMEOUT_MS` and `PW_NAVIGATION_TIMEOUT_MS` values. Explicit action
+budgets still apply. Task-list navigation shares its existing 30-second allowance
+across navigation, bootstrap and row readiness. Header search shares a single
+budget comprising its existing click and response allowances; it requires the
+requested case with readable tabs, or a matching missing-case response followed
+by the no-results view.
+
+Retries remain two by default. `PW_API_RETRIES`, `PW_E2E_RETRIES` and
+`PW_INTEGRATION_RETRIES` configure their respective runners; zero disables retries.
+Cross-browser nightly retains its existing CI/local retry policy.
+
+The flake reporter stays report-only unless `PW_FLAKE_GATE=enforce`. It fails the
+run when flaky tests exceed either `PW_MAX_FLAKY_TESTS` (default 20) or
+`PW_MAX_FLAKY_RATE` (default 0.2). Enabling enforcement is a deliberate CI policy
+choice; it does not fix the underlying flake.
+
+Tag-filter files also accept owned exclusions alongside legacy `excludedTags`:
+
+```json
+{
+  "exclusions": [{ "tag": "@existing-feature-tag", "ticket": "EXUI-1234", "owner": "owning-team", "expires": "2026-12-31" }]
+}
+```
+
+Use a tag from the file's available tags. Expiry uses UTC calendar dates, includes
+the expiry day and warns afterwards while retaining the exclusion. Set
+`PW_TAG_FILTER_ENFORCE_EXPIRY=true` to fail configuration loading for expired
+exclusions. Explicit exclusion overrides retain their existing precedence.
+
+Failure annotations distinguish authentication, setup, test, teardown and runner
+phases. Authentication uses the current Playwright test context automatically.
+Document setup errors retain operation and HTTP status without raw upstream
+response bodies. Compare CI JSON attempt durations, Odhín results and the existing
+`stage-events.jsonl`/load-profile evidence before changing worker or retry budgets.
 
 By default, Playwright tests run against **AAT** from your local machine. Override `TEST_URL` to point the same suite at DEMO, ITHC, preview, or LOCAL.
 
@@ -226,6 +343,8 @@ source .env
 set +a
 ```
 
+Note: If you run `set -a; source .env; set +a` and see `.env:{line}: command not found: {includedWord}` or similar please ensure double quotes surround the relevant line (e.g. VARIABLE="{secret}").
+
 CI does not read the checked-out `.env` file. Jenkins loads Azure Key Vault secrets directly into environment variables in `Jenkinsfile_CNP`, `Jenkinsfile_nightly`, and `Jenkinsfile_parameterized`.
 
 Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populated via tags:
@@ -274,6 +393,7 @@ Notes:
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers use a process-run `local-<parent-pid>` identifier instead of the shared literal `local`; CI runs with no recognised unique identifier fail fast instead of sharing a local organisation.
 - Approval uses the existing RD Professional internal approval endpoint. If RD Professional approval is unavailable, setup fails before dynamic users are created.
 - Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
+- The organisation lock wait is finite: by default it allows the active-poll timeout plus 60 seconds for earlier provisioning. A valid owner can still be working when a waiter times out; the waiter fails without replacing the lock. Set `PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS` for runs whose preliminary provisioning needs longer.
 - Do not commit `.env`.
 
 ### AM roles for top navigation
@@ -379,7 +499,37 @@ The functional pipeline behavior is defined in `Jenkinsfile_CNP`, `Jenkinsfile_n
 | E2E                 | `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`                                                                                                                                                                   | `PREVIEW Playwright E2E`, `AAT Playwright E2E`, `Nightly Playwright E2E Cross Browser`                     |
 | Accessibility       | `functional-output/tests/playwright-accessibility/odhin-report/xui-playwright-accessibility.html`                                                                                                                                               | `PREVIEW Playwright Accessibility`, `Nightly Playwright Accessibility Test Report`                         |
 | Load profile        | `functional-output/tests/playwright-integration/load-profile/ci/load-profile.html` in CNP/nightly parent monitoring                                                                                                                             | `PREVIEW CI System Load`, `AAT CI System Load`, `Nightly CI System Load`                                   |
-| Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json`; `test-results/**/trace.zip` for failed or timed-out browser tests                                                           | Archived as Jenkins artifacts                                                                              |
+| Failure diagnostics | `functional-output/tests/playwright-diagnostics/failure-data/**/*` copied from `test-results/**/failure-data.json` and `failure-context.json`; `test-results/**/trace.zip` and screenshots for failed or timed-out browser tests                | Archived as Jenkins artifacts                                                                              |
+
+### Accessibility remediation pack
+
+Accessibility report finalization also writes `ACCESSIBILITY_FIX_INSTRUCTIONS.md` and
+`accessibility-findings.json` beside the Odhín HTML, with download links at the top
+of the report. This applies to nightly and on-demand runs using the existing
+reporter/wrapper; other reports without accessibility evidence are unchanged.
+
+Download both files and the relevant evidence, then explicitly ask Codex to follow
+the instructions in the owning repository. The JSON groups candidate findings by
+feature, persona/language/setup, rule family and selector while retaining page
+states and detector evidence. Groups are investigation candidates, not confirmed
+root causes or a count of PRs. Reported violations, known findings, incomplete
+results, scanner failures and unreachable pages remain distinct.
+
+The controlled instructions require reproduction against current source, ownership
+checks, regression proof, repository checks and human review before merge. They
+generate no fixes or PRs automatically and make no model/API calls. Captured report
+content is untrusted evidence. Raw DOM and messages are omitted; sensitive selector
+values are redacted and only existing regular local evidence files are linked.
+Build provenance is explicitly unknown where the manifest does not record it; bind
+the pack to the original build and tested commit before changing code. Automated
+and heuristic results do not establish WCAG conformance or replace assistive
+technology testing.
+
+Run the generator's browser-free checks with:
+
+```bash
+node --test playwright_tests_new/common/reporters/accessibility-remediation.test.cjs
+```
 
 The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, and `test:playwright:integration` also create local System Load reports through `scripts/playwright-load-monitor.js`. Raw CI commands rely on the parent Jenkins load monitor instead.
 
@@ -399,7 +549,9 @@ The wrapper commands `test:api:pw`, `test:playwrightE2E`, `test:crossbrowser`, a
 - Prefer `data-testid` selectors and Playwright CSS classes.
 - Use `@hmcts/playwright-common` table utilities for table assertions.
 - Do not commit `.env`, `.sessions/`, `test-results/`, or generated `functional-output/` reports.
-- When triaging failures, check Odhín first, then attached API logs or `failure-data.json`, then session/dynamic-user provisioning evidence before changing retries or worker counts.
+- When triaging failures, open the failed test's details and expand its **Failed test triage** block. It shows the observed classification, retry, source location, project, actionable signal, hypothesis label, and next checks alongside the raw Playwright error, trace, and screenshots.
+- Then inspect the bounded `failure-context.json` attachment for facts versus hypotheses. It is redacted by default and must not be treated as a substitute for approved restricted trace/screenshot handling.
+- Use `failure-data.json`, attached API logs, and session/dynamic-user provisioning evidence for supporting detail before changing retries or worker counts.
 
 ---
 
@@ -700,13 +852,14 @@ rm -rf .sessions && npx playwright test --config=playwright.e2e.config.ts
 - Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
 - Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
+- The default exclusion list is empty: all retained functional E2E scenarios run in normal PR/master E2E, with login smoke in its separate project. `@nightly` independently selects the cross-browser subset for nightly Jenkins; it does not remove tests from normal runs.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
 - Set `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
 - Jenkins exposes these as string parameters with the same names.
 - Key Vault-backed global exclusions are additive through `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`; see [`docs/playwright-global-exclusions.md`](../docs/playwright-global-exclusions.md).
-- The Civil data-loss regression is tagged `@e2e-civil-data-loss`, `@e2e-data-loss`, and `@nightly`, so it is excluded from the default PR E2E set. Run it explicitly when validating the Civil Create Case Flag data-loss path:
+- The Civil data-loss regression is included in normal PR/master E2E. Run it alone when validating the Civil Create Case Flag data-loss path:
 
 ```bash
 E2E_PW_INCLUDE_TAGS=@e2e-civil-data-loss \
@@ -718,8 +871,8 @@ yarn test:playwrightE2E:raw
 # Run only search-case E2E tests
 E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
 
-# Re-enable the V1 document-upload test for a targeted run
-E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-document-upload-v1 yarn test:playwrightE2E
+# Run only the V1 document-upload test
+E2E_PW_INCLUDE_TAGS=@e2e-document-upload-v1 yarn test:playwrightE2E
 
 # Ignore file-level excludes for this run
 E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwrightE2E
@@ -859,6 +1012,8 @@ Configured `STAFF_ADMIN_1` to `STAFF_ADMIN_8` credentials are discovered automat
 Before a live browser lane, run `yarn test:playwright:preflight -- --require=STAFF_ADMIN,HEARING_MANAGER_CR84_ON`. It reports distinct configured identities, never secret values, and warns about inherited Node inspector settings. Add `--tag=e2e,solicitor` to report only the compatibility pools selected by those tags. Pool capacity is advisory: a configured identity can be reused across workers. Add `--strict` only when a selected lane has no configured identity at all.
 
 State-changing live E2E journeys can opt into `identityLease` from `E2E/fixtures`. Call `await identityLease.acquire({ pool: 'PRL_SOLICITOR' })` before authentication, then use `lease.identity.userIdentifier` for session setup. Within one executor the fixture uses filesystem leases under `.sessions/identity-leases`; configure the approved cross-executor coordinator in `PW_IDENTITY_LEASE_ENDPOINT` when multiple executors share an identity pool. The fixture waits for a compatible exclusive account, always releases it in teardown, and never sends email addresses or passwords to the coordinator. Do not use this fixture for mocked integration tests or read-only journeys.
+
+Local identity leases use an exclusive file at `<opaque-key>.lease.lock`. They never expire by file age: a live owner remains protected even if a worker pauses longer than another worker's lease TTL. The file contains only PID, host, creation time, and a random owner token; it contains no account name or credential. After a worker crashes, verify that the recorded process has stopped on the recorded host and that no active run still owns the identity before removing that exact orphan lock file. A waiting worker reports `IDENTITY_POOL_EXHAUSTED` after its configured wait limit until the orphan is removed. Drain older workers that use `proper-lockfile` before rolling out this lock format; those workers can encounter the new file but cannot safely use it as their lock directory. Coordinator leases retain their TTL and are unaffected by local orphan cleanup.
 
 ### Session Capture Storage
 
@@ -1204,3 +1359,30 @@ export function isSessionFresh(
 - `api/utils/auth.ts` - API authentication helper
 - `api/data/testIds.ts` - Environment-driven test IDs
 - `api/utils/apiTestRuntimeConfig.ts` - Runtime user credential and environment configuration
+
+### Interactive Odhín reports
+
+API, integration and E2E reports retain their native run metadata, steps, external attachments and failure context, with a full-width responsive dashboard. Drag a panel’s resize handle (or use its arrow keys) to resize it; adjacent panels adapt. Expand and Reset layout controls are available, together with compact view and light/dark themes.
+
+Feature Overview expands into compact test rows with status, duration and View steps. Tests defaults to 100 rows, with search and combinable status, project, file, feature, tag, attempt and duration filters. Back to tests and previous/next navigation stay within the filtered, sorted results.
+
+Webapp accessibility evidence, issue summaries, issue filters and fix hints remain available. API coverage and load-profile publication continue through the existing scripts.
+
+Perfetto Results offers **Download JSON** and **Open in Perfetto** for each retained timeline. Timelines are copied unchanged into the report’s `perfetto/` folder and linked relatively, so Jenkins resource-domain reports can fetch them from the same origin; original test-result files remain available. The latter opens the hosted viewer and transfers the selected timeline after its supported handshake; allow the popup or use the download if it cannot open.
+
+Each retained test trace keeps **Download Trace** and adds **Open in Playwright Trace Viewer**. HTTP(S) reports pass the trace URL to the hosted viewer. If authentication or CORS prevents loading, download the ZIP and select it in the viewer. Reports opened from disk and embedded traces use the same download/select fallback. Lightweight reporting still omits successful-test traces according to its existing settings; viewer links do not generate missing artifacts.
+
+### Slack failure summaries
+
+The CNP PREVIEW/AAT and nightly pipelines send one companion summary after the API, E2E and integration suites finish. It follows the shared Jenkins library's build-failure routing: PR authors receive a DM through the existing GitHub-to-Slack mapping; master, runs without an author and unmapped authors use the configured team channel. Bot-author notifications are skipped. The Jenkins Slack app must be a member of that team channel; Slack rejects channel delivery with `not_in_channel` otherwise. The shared library still sends its normal build notification. Accessibility-only CNP runs do not send this companion summary.
+
+The summary reads each run's existing `odhin-report/ci-evidence/playwright.json`. It groups final failures, separates retries and expected failures, and labels interrupted or unavailable results explicitly. Integration matrix profiles remain separate runs. Successful runs with only retry recoveries are quiet. Expected JSON files are cleared before the suites start so old results cannot be reused.
+
+Only fixed diagnostic wording is sent: no test titles, raw errors, request URLs, bodies or credentials. Recognised direct E2E service hosts can be named when a failed-request attachment supplies evidence; proxy requests remain unattributed. API and integration request errors may be mocked and are labelled accordingly. An observed HTTP error or timeout is evidence, not a confirmed root cause. Unsupported or missing diagnostics retain a generic failure statement and the Jenkins report link.
+
+Summary generation or Slack delivery failure does not change the test outcome. Validate this reporting path locally without sending Slack messages:
+
+```bash
+node --test scripts/playwright-failure-summary.test.cjs scripts/write-integration-report-index.test.cjs
+groovy scripts/notify-playwright-failures.test.groovy
+```

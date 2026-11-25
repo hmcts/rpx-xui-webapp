@@ -247,8 +247,8 @@ describe('Accept Tc Wrapper Component', () => {
       fixture.detectChanges();
       const tcConfirm = fixture.debugElement.query(By.css('xuilib-tc-confirm'));
 
-      expect(tcConfirm.nativeElement.getAttribute('id')).toBe('content');
-      expect(tcConfirm.nativeElement.getAttribute('role')).toBe('main');
+      expect(tcConfirm.nativeElement.getAttribute('id')).toBeNull();
+      expect(tcConfirm.nativeElement.getAttribute('role')).toBeNull();
       expect(tcConfirm.nativeElement.getAttribute('buttonText')).toBe('Confirm');
     });
 

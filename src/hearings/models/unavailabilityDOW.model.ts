@@ -1,6 +1,1 @@
-import { DOW, DOWUnavailabilityType } from './hearings.enum';
-
-export interface UnavailabilityDOWModel {
-  DOW: DOW;
-  DOWUnavailabilityType: DOWUnavailabilityType;
-}
+export { UnavailabilityDOWModel } from './hearing-payload-support.model';

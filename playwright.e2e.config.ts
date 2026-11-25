@@ -5,6 +5,7 @@ import { version as appVersion } from './package.json';
 import {
   logResolvedTagFilters,
   parseNonNegativeInt,
+  resolveActionTimeouts,
   resolveDefaultReporter,
   resolveLocalWorktreeTestIgnorePatterns,
   resolveTagFilters,
@@ -15,8 +16,17 @@ type EnvMap = NodeJS.ProcessEnv;
 const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
   env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
 
+const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
+  env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+
 const resolveOdhinIndexFilename = (env: EnvMap = process.env): string =>
   env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || 'xui-playwright-e2e.html';
+
+const resolvePerfettoOutputFile = (env: EnvMap = process.env) => {
+  const outputDir =
+    env.PLAYWRIGHT_OUTPUT_DIR?.trim() || `${resolveOdhinOutputFolder(env).replace(/\/odhin-report$/, '')}/test-results`;
+  return env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE?.trim() || `${outputDir}/perfetto.json`;
+};
 
 const resolveOdhinTitle = (env: EnvMap = process.env): string => {
   const configured = env.PW_ODHIN_TITLE?.trim();
@@ -62,6 +72,12 @@ const buildConfig = (env: EnvMap = process.env) => {
   const isAccessibilityRun = env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true';
   const disableGenericFailureArtifacts = env.PLAYWRIGHT_DISABLE_GENERIC_FAILURE_ARTIFACTS === 'true';
   const prewarmAccessibilitySession = isAccessibilityRun && env.PW_A11Y_PREWARM_SESSION === 'true';
+  const globalSetups = [
+    ...(env.PW_TARGET_PREFLIGHT?.trim().toLowerCase() === 'true'
+      ? ['./playwright_tests_new/common/targetEnvironmentPreflight.ts']
+      : []),
+    ...(prewarmAccessibilitySession ? ['./playwright_tests_new/E2E/setup/a11ySession.global-setup.ts'] : []),
+  ];
   const testTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_TEST_TIMEOUT_MS) ?? 60_000) : 180_000;
   const expectTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_EXPECT_TIMEOUT_MS) ?? 7_000) : 60_000;
 
@@ -124,7 +140,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   };
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | configured_workers=${workerCount} | ${resolveAgentHardware()}`;
   const reportBranch = resolveBranchName();
 
   const testIgnore = [
@@ -136,6 +152,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const reporter: [string, Record<string, unknown> | undefined][] = [
     [resolveDefaultReporter(env), undefined],
     ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs', undefined],
+    ...(env.PW_ENABLE_PERFETTO !== 'false'
+      ? [['perfetto', { outputFile: resolvePerfettoOutputFile(env) }] as [string, Record<string, unknown>]]
+      : []),
     [
       './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
       {
@@ -152,16 +171,19 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
     ],
   ];
+  if (env.CI && !isAccessibilityRun) {
+    reporter.push(['json', { outputFile: env.PLAYWRIGHT_JSON_OUTPUT ?? `${odhinOutputFolder}/ci-evidence/playwright.json` }]);
+  }
   if (env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
     reporter.push(['junit', { outputFile: env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }
-
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore,
-    ...(prewarmAccessibilitySession ? { globalSetup: './playwright_tests_new/E2E/setup/a11ySession.global-setup.ts' } : {}),
+    ...(globalSetups.length > 0 ? { globalSetup: globalSetups.length === 1 ? globalSetups[0] : globalSetups } : {}),
     fullyParallel: true,
+    forbidOnly: true,
     retries,
     timeout: testTimeoutMs,
     expect: {
@@ -173,7 +195,10 @@ const buildConfig = (env: EnvMap = process.env) => {
     reporter,
     use: {
       baseURL: baseUrl,
-      trace: disableGenericFailureArtifacts ? 'off' : 'retain-on-failure',
+      ...resolveActionTimeouts(env),
+      trace: disableGenericFailureArtifacts
+        ? 'off'
+        : { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true },
       screenshot: disableGenericFailureArtifacts
         ? 'off'
         : {

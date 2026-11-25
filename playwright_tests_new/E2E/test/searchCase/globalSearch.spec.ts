@@ -3,7 +3,7 @@ import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-re
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 import { CCD_CASE_REFERENCE_LENGTH } from '../../page-objects/pages/exui/exui-timeouts';
 
-test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
+test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
   test.beforeEach(async ({ page, identityLease }) => {
     const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });
     await openHomeWithCapturedSession(page, lease.identity.userIdentifier);
@@ -18,7 +18,10 @@ test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', 
     const caseNumber = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
 
     await test.step('Initiate Global Search', async () => {
-      await globalSearchPage.performGlobalSearchWithCase(caseNumber, 'PUBLICLAW');
+      await globalSearchPage.searchLinkOnMenuBar.click();
+      await expect(page).toHaveURL(/\/search/);
+      await expect(globalSearchPage.pageHeading).toHaveText(/Search cases/);
+      await globalSearchPage.submitSearchWithCase(caseNumber, 'PUBLICLAW');
       const searchResultsTable = await tableUtils.parseDataTable(globalSearchPage.searchResultTable);
 
       expect(searchResultsTable.length).toBeGreaterThan(0);
@@ -35,6 +38,7 @@ test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', 
     await test.step('Verify case details page navigation and elements', async () => {
       await globalSearchPage.viewCaseDetails(caseNumber);
       await expect(page).toHaveURL(/\/cases\/case-details\//);
+      await caseDetailsPage.selectCaseDetailsTab('Summary');
       const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
       expect.soft(caseNumberFromUrl).toContain(caseNumber);
       await expect.soft(caseDetailsPage.caseSummaryHeading).toHaveText('Case information');

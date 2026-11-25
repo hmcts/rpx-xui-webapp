@@ -1,7 +1,6 @@
-import { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
-
 // Central map of commonly reused status code sets to reduce magic arrays in tests.
 export const StatusSets = {
   guardedBasic: [200, 401, 403, 502, 504] as const,
@@ -13,8 +12,6 @@ export const StatusSets = {
   globalSearch: [200, 400, 401, 403, 500, 502, 504] as const,
   okOnly: [200] as const,
   okOrBadRequest: [200, 400, 403] as const,
-  corsAllowed: [200, 204, 400, 401, 403] as const,
-  corsDisallowed: [200, 204, 400, 401, 403, 404] as const,
   retryable: [200, 401, 403, 404, 500, 502, 504] as const,
   roleAccessRetryable: [200, 400, 401, 403, 404, 409, 500, 502, 504] as const,
   /** WA read-only endpoints: guards against downstream 5xx while accepting auth rejections */
@@ -23,11 +20,78 @@ export const StatusSets = {
 
 export type StatusSetName = keyof typeof StatusSets;
 
-export function expectStatus(actual: number, allowed: ReadonlyArray<number>, message?: string) {
-  if (!allowed.includes(actual)) {
-    const hint = message ?? `Expected status to be one of: ${allowed.join(', ')}`;
+export type ExpectStatusOptions = {
+  message?: string;
+  /**
+   * The status this call is really about. When set, any other accepted status records a `status-tolerated`
+   * annotation. When omitted, only an allowed 5xx (or a status accepted solely through `tolerateDependencyUnavailable`)
+   * is reported; allowed 2xx and 4xx are treated as the asserted contract.
+   */
+  primary?: number;
+  /**
+   * Statuses that mean a downstream dependency is unavailable. They do not fail the test, but each one records a
+   * `status-tolerated` annotation so reports show the run as degraded rather than green.
+   * Use only where the dependency is genuinely outside the system under test, with a comment saying why.
+   */
+  tolerateDependencyUnavailable?: ReadonlyArray<number>;
+  /** Route label appended to the failure message. Never written to annotations, which stay free of data. */
+  route?: string;
+};
+
+/** Producer-contract section 8 marker names read by the CI analytics collector. */
+export const STATUS_TOLERATED_ANNOTATION = 'status-tolerated';
+export const RETRY_EXHAUSTED_ANNOTATION = 'retry-exhausted';
+/** Producer-contract section 7 stable failure code. */
+export const API_STATUS_UNEXPECTED_CODE = 'API_STATUS_UNEXPECTED';
+
+type TestInfo = ReturnType<typeof test.info>;
+
+function currentTestInfo(): TestInfo | undefined {
+  try {
+    return test.info();
+  } catch {
+    return undefined;
+  }
+}
+
+/** Pushes an annotation on the running test; a no-op outside a test (for example in global setup). */
+export function annotateCurrentTest(type: string, description: string): void {
+  currentTestInfo()?.annotations.push({ type, description });
+}
+
+function recordRetryExhausted(attempts: number, status: number): void {
+  annotateCurrentTest(RETRY_EXHAUSTED_ANNOTATION, `attempts=${attempts} last=${status}`);
+}
+
+/**
+ * A pass is "tolerated" (reported to CI analytics) when it hides a server or dependency failure: the status was only
+ * accepted through `tolerateDependencyUnavailable`, or it is a 5xx. Allowed 4xx are usually the asserted contract (e.g.
+ * anonymous callers get 401), so they are reported only when the caller names its expected `primary` status.
+ */
+function isToleratedPass(actual: number, allowed: ReadonlyArray<number>, primary: number | undefined): boolean {
+  if (!allowed.includes(actual)) return true;
+  if (primary !== undefined) return actual !== primary;
+  return actual >= 500;
+}
+
+/**
+ * Asserts `actual` is one of `allowed` (or `tolerateDependencyUnavailable`). Failures start with
+ * `API_STATUS_UNEXPECTED actual=<n>`. A tolerated pass (see `isToleratedPass`) records
+ * `status-tolerated` with `actual=<n> allowed=<accepted list>`, once per call. Retry exhaustion is a separate event.
+ */
+export function expectStatus(actual: number, allowed: ReadonlyArray<number>, messageOrOptions?: string | ExpectStatusOptions) {
+  const options: ExpectStatusOptions =
+    typeof messageOrOptions === 'string' ? { message: messageOrOptions } : (messageOrOptions ?? {});
+  const message = options.message;
+  const accepted = [...new Set([...allowed, ...(options.tolerateDependencyUnavailable ?? [])])];
+  if (!accepted.includes(actual)) {
+    const hint = `${API_STATUS_UNEXPECTED_CODE} actual=${actual} Received HTTP ${actual}. ${message ?? `Expected status to be one of: ${allowed.join(', ')}`}${options.route ? ` (route: ${options.route})` : ''}`;
     // Emit a Playwright diff if it fails, but keep the message readable.
     expect({ status: actual }, hint).toEqual({ status: allowed[0] });
+    return;
+  }
+  if (isToleratedPass(actual, allowed, options.primary)) {
+    annotateCurrentTest(STATUS_TOLERATED_ANNOTATION, `actual=${actual} allowed=${accepted.join(',')}`);
   }
 }
 
@@ -70,10 +134,16 @@ export async function withRetry<T extends { status: number }>(
   while (attempt <= retries) {
     try {
       const res = await fn();
-      if (retryStatuses.includes(res.status) && attempt < retries) {
-        await waitBeforeRetry();
-        attempt++;
-        continue;
+      if (retryStatuses.includes(res.status)) {
+        if (attempt < retries) {
+          await waitBeforeRetry();
+          attempt++;
+          continue;
+        }
+        if (retries > 0) {
+          // The retry budget ran out on a retryable status; the caller carries on with this response.
+          recordRetryExhausted(attempt + 1, res.status);
+        }
       }
       return res;
     } catch (error) {

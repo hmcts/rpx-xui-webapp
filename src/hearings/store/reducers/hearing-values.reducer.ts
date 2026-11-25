@@ -39,7 +39,6 @@ export function hearingValuesReducer(
       };
     }
     case fromActions.STORE_JURISDICTION_AND_CASE_REF: {
-      console.log('setting the value for caseInfo');
       return {
         ...currentState,
         caseInfo: action.payload,

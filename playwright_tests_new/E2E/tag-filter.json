@@ -1,5 +1,5 @@
 {
-  "excludedTags": ["@nightly"],
+  "excludedTags": [],
   "availableTags": [
     "@a11y",
     "@accessibility",

@@ -15,8 +15,8 @@ const REQUEST_BODY = {
   accessReason: 'Approve request',
   typeOfRole: { id: 'specific-access-granted', name: 'specific-access-granted' },
   period: {
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: new Date('2024-11-11T00:00:00.000Z'),
+    endDate: new Date('2024-11-11T00:00:00.000Z'),
   },
   actorId: '123',
   caseName: 'example name',
@@ -109,7 +109,7 @@ describe('access management service, delete role by assignment id', () => {
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
-        sandbox.stub(config, 'get').callsFake((prop) => {
+        sandbox.stub(Object.getPrototypeOf(config), 'get').callsFake((prop) => {
           return configValues[prop];
         });
 

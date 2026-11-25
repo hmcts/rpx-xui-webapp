@@ -7,16 +7,13 @@ import {
   YesNo,
 } from '../../utils/hearing-model';
 
-export const HEARINGS_USER_IDENTIFIER = 'HEARING_MANAGER_CR84_ON';
+export const HEARINGS_USER_IDENTIFIER = process.env.PW_HEARINGS_USER_IDENTIFIER || 'HEARING_MANAGER_CR84_ON';
 export const HEARING_REQUEST_EXPECTED_STATUS = 'WAITING TO BE LISTED';
 
 export const prlHearingHappyPathScenario = {
   route: {
     jurisdictionId: 'PRIVATELAW',
     caseTypeId: 'PRLAPPS',
-    caseReference: process.env.PRL_HEARINGS_CASE_REFERENCE,
-    caseReferencePattern: process.env.PRL_HEARINGS_CASE_REFERENCE_PATTERN ?? '*',
-    preferredStates: ['Judicial review', 'Prepare for hearing', 'Submitted', 'Case management'],
   },
   additionalInstructions: 'Additional instructions for E2E Playwright test',
   hearingFacilities: {
@@ -34,9 +31,6 @@ export const prlHearingHappyPathScenario = {
   },
   hearingVenue: {
     searchTerm: 'Basingstoke',
-    // Court the case is issued to during setup, so it is already selected on the venue page.
-    // caseManagementVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL?.trim() || 'East London Family Court',
-    defaultHearingVenue: process.env.PRL_HEARINGS_COURT_LOCATION_LABEL?.trim() || 'East London Family Court',
   },
   hearingDetails: {
     hearingInWelsh: 'No',
@@ -55,9 +49,6 @@ export const prlHearingHappyPathScenario = {
   route: {
     jurisdictionId: string;
     caseTypeId: string;
-    caseReference?: string;
-    caseReferencePattern: string;
-    preferredStates: string[];
   };
   additionalInstructions: string;
   hearingFacilities: {
@@ -75,8 +66,6 @@ export const prlHearingHappyPathScenario = {
   };
   hearingVenue: {
     searchTerm: string;
-    //caseManagementVenue: string;
-    defaultHearingVenue: string;
   };
   hearingDetails: {
     hearingInWelsh: YesNo;

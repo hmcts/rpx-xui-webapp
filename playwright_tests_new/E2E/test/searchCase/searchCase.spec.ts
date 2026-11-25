@@ -2,7 +2,7 @@ import { expect, test } from '../../fixtures';
 import { resolveCaseReferenceFromGlobalSearch, resolveNonExistentCaseReference } from '../../../E2E/utils/case-reference.utils';
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 
-test.describe('FPL global search user - 16-digit case search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
+test.describe('FPL global search user - 16-digit case search', { tag: ['@e2e', '@e2e-search-case', '@nightly'] }, () => {
   let availableCaseReference = '';
   test.beforeEach(async ({ page, identityLease }) => {
     const lease = await identityLease.acquire({ pool: 'FPL_GLOBAL_SEARCH' });
@@ -37,7 +37,7 @@ test.describe('FPL global search user - 16-digit case search', { tag: ['@e2e', '
     });
   });
 
-  test('Search invalid 16-digit case reference shows no results', async ({ searchCasePage, page }) => {
+  test('Search non-existent 16-digit case reference shows no results', async ({ caseListPage, searchCasePage, page }) => {
     const invalidCaseReference = await resolveNonExistentCaseReference(page, { jurisdictionIds: ['PUBLICLAW'] });
 
     await test.step('Submit a non-existent 16 digit case reference', async () => {
@@ -45,8 +45,14 @@ test.describe('FPL global search user - 16-digit case search', { tag: ['@e2e', '
     });
 
     await test.step('Search results not found content is shown', async () => {
-      await expect(searchCasePage.noResultsHeading).toBeVisible();
-      await expect(searchCasePage.backLink).toBeVisible();
+      if (await searchCasePage.noResultsContainer.isVisible()) {
+        await expect(page).toHaveURL(/\/search\/noresults(?:[/?#]|$)/);
+        await expect(searchCasePage.noResultsHeading).toBeVisible();
+        await expect(searchCasePage.backLink).toBeVisible();
+      } else {
+        await expect(page).toHaveURL(/\/cases(?:[/?#]|$)/);
+        await expect(caseListPage.caseSearchResultsMessage).toContainText(/No cases found/i);
+      }
     });
   });
 });

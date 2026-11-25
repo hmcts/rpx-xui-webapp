@@ -54,6 +54,7 @@
     <span class="govuk-body align-right">
       <a
         [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
+        (click)="hearingsService.recordAction('change')"
         id="hearing-stage-result-update-link"
         class="govuk-link"
         >{{ 'Update' | rpxTranslate }}</a
@@ -141,16 +142,19 @@
                     <dd class="govuk-summary-list__value"></dd>
                     <dd class="govuk-summary-list__actions">
                       <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                        <button
-                          type="button"
-                          (click)="confirmActualHearingTimeForDay(actualHearingDay)"
-                          id="hearing-timing-result-confirm-link"
-                          class="govuk-js-link"
-                        >
-                          {{ 'Confirm' | rpxTranslate }}</button
-                        >&nbsp;
+                        <ng-container *ngIf="!isFinalisedEditMode">
+                          <button
+                            type="button"
+                            (click)="confirmActualHearingTimeForDay(actualHearingDay)"
+                            id="hearing-timing-result-confirm-link"
+                            class="govuk-js-link"
+                          >
+                            {{ 'Confirm' | rpxTranslate }}</button
+                          >&nbsp;
+                        </ng-container>
                         <a
                           [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-timing', actualHearingDay.hearingDate]"
+                          (click)="hearingsService.recordAction('change')"
                           class="govuk-link"
                           >{{ 'Update' | rpxTranslate }}</a
                         >
@@ -204,18 +208,21 @@
                     <ng-container *ngIf="!actualHearingDay.notRequired">
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <button
-                            type="button"
-                            (click)="confirmActualPartiesForDay(actualHearingDay)"
-                            *ngIf="!haveParticipantsBeenAdded(actualHearingDay)"
-                            id="hearing-parties-result-confirm-link"
-                            class="govuk-js-link"
-                          >
-                            {{ 'Confirm' | rpxTranslate }}</button
-                          >&nbsp;
+                          <ng-container *ngIf="!isFinalisedEditMode">
+                            <button
+                              type="button"
+                              (click)="confirmActualPartiesForDay(actualHearingDay)"
+                              *ngIf="!haveParticipantsBeenAdded(actualHearingDay)"
+                              id="hearing-parties-result-confirm-link"
+                              class="govuk-js-link"
+                            >
+                              {{ 'Confirm' | rpxTranslate }}</button
+                            >&nbsp;
+                          </ng-container>
                           <a
                             *ngIf="!isPaperHearing"
                             [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
+                            (click)="hearingsService.recordAction('change')"
                             class="govuk-link"
                             >{{ 'Update' | rpxTranslate }}</a
                           >

@@ -1,12 +1,51 @@
 import { expect, test } from '@playwright/test';
 import childProcess from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const source = fs.readFileSync(path.join(repositoryRoot, 'Jenkinsfile_CNP'), 'utf8');
 const nightlySource = fs.readFileSync(path.join(repositoryRoot, 'Jenkinsfile_nightly'), 'utf8');
+const diagnosticCollector = path.join(repositoryRoot, 'scripts/collect-playwright-diagnostics.cjs');
+const diagnosticSource = fs.readFileSync(diagnosticCollector, 'utf8');
+
+function createFile(filePath: string, contents = 'diagnostic'): void {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, contents);
+}
+
+function runDiagnosticCollector(root: string, buildId: string): void {
+  childProcess.execFileSync(
+    process.execPath,
+    [
+      diagnosticCollector,
+      '--tests-root',
+      path.join(root, 'functional-output/tests'),
+      '--output-dir',
+      path.join(root, 'functional-output/tests/playwright-diagnostics/failure-data'),
+    ],
+    {
+      cwd: repositoryRoot,
+      env: { ...process.env, DIAGNOSTIC_BUILD_ID: buildId },
+      stdio: 'pipe',
+    }
+  );
+}
+
+function readDiagnosticManifest(root: string): string {
+  return fs.readFileSync(
+    path.join(root, 'functional-output/tests/playwright-diagnostics/failure-data/diagnostic-manifest.txt'),
+    'utf8'
+  );
+}
+
+function diagnosticArchiveBlock(jenkinsfile: string): string {
+  const start = jenkinsfile.indexOf('def archivePlaywrightDiagnostics = {');
+  const end = jenkinsfile.indexOf('\n}\n\ndef playwrightIntegrationReportFile', start);
+  return jenkinsfile.slice(start, end);
+}
 
 function fallbackCount(jenkinsfile: string, suiteName: string): number {
   return (jenkinsfile.match(new RegExp(`ensureHtmlReportForPublishing\\(\\s*'[^']+',\\s*'[^']+',\\s*'${suiteName}'`, 'g')) ?? [])
@@ -46,6 +85,33 @@ function expectInterruptedOutcomesToBypassFailure(jenkinsfile: string, expectedF
 }
 
 test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' }, () => {
+  test('keeps inline Jenkinsfile_CNP code under the CPS script method size limit', () => {
+    // Jenkins compiles the script body (top-level statements and closures) into one method capped at 64 KB of
+    // bytecode. Builds at 65,632 measured bytes failed with "Method too large"; 65,536 passed. Script methods
+    // (`def name(...) {`) compile separately and comments add no bytecode, so neither counts here.
+    const lines = source.split('\n');
+    let inlineBytes = 0;
+    for (let index = 0; index < lines.length; index += 1) {
+      if (/^def \w+\(.*\) \{$/.test(lines[index])) {
+        while (index < lines.length && lines[index] !== '}') index += 1;
+        continue;
+      }
+      if (!lines[index].trim().startsWith('//')) inlineBytes += Buffer.byteLength(lines[index]) + 1;
+    }
+    expect(inlineBytes, 'move a self-contained closure into a script method before adding more inline code').toBeLessThan(64_000);
+  });
+
+  test('archives a build summary that declares the expected suite reports for CI failure intelligence', () => {
+    expect(source).toContain('\\"schema\\": \\"xui-ci-build-summary/v1\\"');
+    expect(source).toContain("archiveArtifacts(allowEmptyArchive: false, artifacts: 'build-summary.json')");
+    expect(source).toContain(
+      "writeBuildSummary('preview', [[suite: 'Smoke', path: 'functional-output/tests/playwright-smoke/odhin-report/ci-evidence/playwright.json']] + failureReports)"
+    );
+    expect(source).toContain(
+      "writeBuildSummary('aat', [[suite: 'Smoke', path: 'functional-output/tests/playwright-smoke/odhin-report/ci-evidence/playwright.json']] + failureReports)"
+    );
+  });
+
   test('keeps an integration configuration failure in the published report directory', () => {
     for (const jenkinsfile of [source, nightlySource]) {
       expect(jenkinsfile).toContain('runner-failure.txt');
@@ -91,28 +157,50 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
   });
 
   test('keeps report diagnostics and JUnit output lane-local', () => {
-    expect(source).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
+    expect(source).toContain('node scripts/collect-playwright-diagnostics.cjs');
+    expect(source).not.toContain('find test-results -type f');
+    expect(source).toContain("suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'");
+    expect(source).toContain('outputDir = runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"');
+    expect(source).toContain('PLAYWRIGHT_OUTPUT_DIR=${outputDir}');
     expect(source).toContain('PLAYWRIGHT_JUNIT_OUTPUT=${junitFile}');
-    expect(source).toContain(
-      "'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'"
-    );
     expect(source).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
     expect(source).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
-    expect(source).toContain('test-results/**/*.png');
+    expect(source).toContain('test-results/perfetto*.json');
     expect(source).toContain('test-results/**/failure-data.json');
+    expect(source).toContain('test-results/**/failure-context.json');
+    expect(diagnosticSource).toContain('diagnostic-manifest.txt');
+    expect(diagnosticSource).toContain("const status = count > 0 ? 'present' : 'none-captured';");
+    expect(source).toContain('test-results/**/trace.zip');
+    expect(source).toContain('test-results/**/*.png');
+    expect(source).toContain('test-results/**/*.jpg');
+    expect(source).toContain('test-results/**/*.jpeg');
+    expect(source).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
     expect(source).toContain('def publishPlaywrightAccessibilityJUnit = {');
     expect(source).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
     expect(source.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(2);
-    expect(nightlySource).toContain('PLAYWRIGHT_OUTPUT_DIR=${runConfig.reportDir}/test-results');
+    expect(nightlySource).toContain("suiteResultsDir = 'functional-output/tests/playwright-integration/test-results'");
+    expect(nightlySource).toContain('node scripts/collect-playwright-diagnostics.cjs');
+    expect(nightlySource).not.toContain('find test-results -type f');
     expect(nightlySource).toContain(
-      "'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-api/odhin-report/playwright-junit.xml'"
+      'outputDir = runConfigs.size() == 1 ? suiteResultsDir : "${runConfig.reportDir}/test-results"'
     );
+    expect(nightlySource).toContain('PLAYWRIGHT_OUTPUT_DIR=${outputDir}');
     expect(nightlySource).toContain('PW_ODHIN_ENSURE_OUTCOME=${outcome}');
     expect(nightlySource).toContain("outcome = runnerCompleted ? 'completed' : 'test-failure'");
     expect(nightlySource).toContain('def publishPlaywrightAccessibilityJUnit = {');
+    expect(nightlySource).toContain('functional-output/tests/playwright-*/odhin-report/**/*');
+    expect(nightlySource).toContain('test-results/**/trace.zip');
+    expect(nightlySource).toContain('test-results/**/failure-context.json');
     expect(nightlySource).toContain('if (!fileExists(playwrightAccessibilityJunitFile))');
     expect(nightlySource).toContain('skipMarkingBuildUnstable: true, testResults: playwrightAccessibilityJunitFile');
     expect(nightlySource.match(/publishPlaywrightAccessibilityJUnit\(\)/g)).toHaveLength(1);
+
+    for (const jenkinsfile of [source, nightlySource]) {
+      const archiveBlock = diagnosticArchiveBlock(jenkinsfile);
+      expect(archiveBlock).toContain('node scripts/collect-playwright-diagnostics.cjs');
+      expect(archiveBlock).not.toContain('set +e');
+      expect(archiveBlock).not.toContain('exit 0');
+    }
   });
 
   test('preserves interrupted outcomes before creating fallback failure reports', () => {
@@ -120,18 +208,15 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expectInterruptedOutcomesToBypassFailure(nightlySource, 3);
   });
 
-  test('fails if an integration cancellation is classified as a test failure first', () => {
-    const interruptionFirst = `if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
-                throw e
-            }
-            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\\s+(129|137|143)/).find()) {
-                throw e
-            }
-            outcome = runnerCompleted ? 'completed' : 'test-failure'`;
-    const failureFirst = `outcome = runnerCompleted ? 'completed' : 'test-failure'
-            ${interruptionFirst}`;
-
-    expect(() => expectInterruptedOutcomesToBypassFailure(source.replace(interruptionFirst, failureFirst), 5)).toThrow();
+  test('keeps interruption handling ahead of failure classification', () => {
+    for (const jenkinsfile of [source, nightlySource]) {
+      for (const match of jenkinsfile.matchAll(/outcome = runnerCompleted \? 'completed' : 'test-failure'/g)) {
+        const outcomeIndex = match.index ?? -1;
+        const catchBlock = jenkinsfile.slice(jenkinsfile.lastIndexOf('catch (Exception e) {', outcomeIndex), outcomeIndex);
+        expect(catchBlock).toContain('FlowInterruptedException');
+        expect(catchBlock).toContain('hudson.AbortException');
+      }
+    }
   });
 
   test('clears the smoke report directory before Playwright starts', () => {
@@ -169,5 +254,160 @@ test.describe('Jenkins Playwright report publication', { tag: '@svc-internal' },
     expect(source.match(/"PW_E2E_CCD_SETUP_CONCURRENCY=1"/g)).toHaveLength(2);
     expect(nightlySource).toContain("'FUNCTIONAL_TESTS_WORKERS=7'");
     expect(nightlySource).toContain("'PW_E2E_CCD_SETUP_CONCURRENCY=1'");
+  });
+
+  test('keeps a short session-capture failure cooldown for E2E instead of disabling it', () => {
+    const e2eStages = [...source.matchAll(/stage\('Playwright E2E'\) \{/g)].map((match) =>
+      source.slice(match.index, source.indexOf("stage('Playwright Accessibility Tests')", match.index))
+    );
+
+    expect(e2eStages).toHaveLength(2);
+    for (const stage of e2eStages) {
+      expect(stage).not.toContain('"PW_SESSION_CAPTURE_FAILURE_TTL_MS=0"');
+      expect(stage.match(/"PW_SESSION_CAPTURE_FAILURE_TTL_MS=60000"/g)).toHaveLength(1);
+    }
+  });
+
+  test('lets the integration config resolve its capped worker count instead of a CLI --workers override', () => {
+    const matrixStart = source.indexOf('def runPlaywrightIntegrationProfileMatrix = {');
+    const matrix = source.slice(matrixStart, source.indexOf('\n}\n', matrixStart));
+
+    expect(matrixStart).toBeGreaterThanOrEqual(0);
+    expect(matrix).not.toContain('--workers');
+    expect(matrix).toContain('"FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}"');
+    expect(matrix).toContain(`"PW_PARALLEL_SUITES=\${runConfig.capWorkers ? (env.PW_PARALLEL_SUITES ?: '') : ''}"`);
+    expect(matrix).toContain(
+      `yarnBuilder.yarn("test:playwright:integration:raw\${runConfig.shardArg ? " --\${runConfig.shardArg}" : ''}")`
+    );
+    // Explicit INTEGRATION_PW_WORKERS / non-default profile runs are diagnostics and keep their requested count.
+    expect(source).toContain(
+      'return (workersOverride?.trim() as boolean) || (configured && configured != defaultIntegrationProfileRun)'
+    );
+    expect(source).toContain('integrationProfileRunConfig(spec, testType, capWorkers)');
+    // The integration branch runs inside the parallel-suite block that sets PW_PARALLEL_SUITES.
+    for (const [suites, integrationStage] of [
+      ['previewFunctionalSuites', "runPlaywrightIntegrationProfileMatrix('preview', 'PREVIEW')"],
+      ['aatFunctionalSuites', "runPlaywrightIntegrationProfileMatrix('aat', 'AAT')"],
+    ]) {
+      const stageIndex = source.indexOf(integrationStage);
+      expect(stageIndex).toBeGreaterThan(source.indexOf(`def ${suites} = [`));
+      expect(stageIndex).toBeLessThan(source.indexOf(`withEnv(["PW_PARALLEL_SUITES=\${${suites}.size() - 1}"])`));
+    }
+  });
+
+  test('reproduces the old root-only diagnostic scan missing lane-local output', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'diagnostic-root-scan-'));
+    const laneFile = path.join(root, 'functional-output/tests/playwright-e2e/test-results/test/failure-context.json');
+    createFile(laneFile);
+
+    try {
+      const oldScan = childProcess.execFileSync(
+        'sh',
+        ['-c', "if [ -d test-results ]; then find test-results -type f -name 'failure-context.json'; fi"],
+        { cwd: root, encoding: 'utf8' }
+      );
+
+      expect(oldScan).toBe('');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test('collects nested lane diagnostics and excludes video files', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'diagnostic-lanes-'));
+    const testsRoot = path.join(root, 'functional-output/tests');
+    const e2eResults = path.join(testsRoot, 'playwright-e2e/test-results/document-upload');
+    const integrationResults = path.join(
+      testsRoot,
+      'playwright-integration/odhin-report/aat-workers-7/test-results/document-upload'
+    );
+    createFile(path.join(e2eResults, 'failure-data.json'));
+    createFile(path.join(e2eResults, 'failure-context.json'));
+    createFile(path.join(e2eResults, 'trace.zip'));
+    createFile(path.join(e2eResults, 'failure.png'));
+    createFile(path.join(integrationResults, 'failure-data.json'));
+    createFile(path.join(integrationResults, 'failure.jpg'));
+    createFile(path.join(integrationResults, 'failure.jpeg'));
+    createFile(path.join(integrationResults, 'failure.webm'));
+    createFile(path.join(testsRoot, 'playwright-diagnostics/failure-data/stale.json'));
+    createFile(path.join(testsRoot, 'playwright-diagnostics/old-run/test-results/stale/failure-data.json'));
+
+    try {
+      runDiagnosticCollector(root, 'build-1');
+
+      const manifest = readDiagnosticManifest(root);
+      const outputDir = path.join(testsRoot, 'playwright-diagnostics/failure-data');
+      const copiedFiles = fs.readdirSync(outputDir);
+
+      expect(manifest, `manifest missing diagnostic_status=present; manifest was:\n${manifest}`).toContain(
+        'diagnostic_status=present'
+      );
+      expect(manifest, `manifest missing diagnostic_count=7; manifest was:\n${manifest}`).toContain('diagnostic_count=7');
+      expect(manifest, `manifest missing failure_data_count=2; manifest was:\n${manifest}`).toContain('failure_data_count=2');
+      expect(manifest, `manifest missing failure_context_count=1; manifest was:\n${manifest}`).toContain(
+        'failure_context_count=1'
+      );
+      expect(manifest, `manifest missing trace_count=1; manifest was:\n${manifest}`).toContain('trace_count=1');
+      expect(manifest, `manifest missing screenshot_count=3; manifest was:\n${manifest}`).toContain('screenshot_count=3');
+      expect(copiedFiles.some((file) => file.includes('playwright-e2e') && file.includes('failure-data.json__'))).toBe(true);
+      expect(copiedFiles.some((file) => file.includes('aat-workers-7') && file.includes('failure-data.json__'))).toBe(true);
+      expect(copiedFiles.some((file) => file.endsWith('.webm'))).toBe(false);
+      expect(copiedFiles).not.toContain('stale.json');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test('keeps structured diagnostics unique when readable path names collide', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'diagnostic-name-collision-'));
+    const testsRoot = path.join(root, 'functional-output/tests');
+    const firstFile = path.join(testsRoot, 'a b/test-results/failure-data.json');
+    const secondFile = path.join(testsRoot, 'a/b/test-results/failure-data.json');
+    const outputDir = path.join(testsRoot, 'playwright-diagnostics/failure-data');
+    createFile(firstFile, 'first diagnostic');
+    createFile(secondFile, 'second diagnostic');
+
+    try {
+      runDiagnosticCollector(root, 'build-collision');
+
+      const copiedFiles = fs.readdirSync(outputDir).filter((file) => file !== 'diagnostic-manifest.txt');
+      const copiedContents = new Set(copiedFiles.map((file) => fs.readFileSync(path.join(outputDir, file), 'utf8')));
+
+      expect(copiedFiles).toHaveLength(2);
+      expect(new Set(copiedFiles).size).toBe(2);
+      expect(copiedFiles.every((file) => file.includes('failure-data.json__'))).toBe(true);
+      expect(copiedContents).toEqual(new Set(['first diagnostic', 'second diagnostic']));
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test('clears stale diagnostics for a new build and retains diagnostics for repeated calls in one build', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'diagnostic-builds-'));
+    const testsRoot = path.join(root, 'functional-output/tests');
+    const firstFile = path.join(testsRoot, 'playwright-e2e/test-results/first/failure-context.json');
+    const secondFile = path.join(testsRoot, 'playwright-accessibility/test-results/second/failure-context.json');
+    const outputDir = path.join(testsRoot, 'playwright-diagnostics/failure-data');
+    createFile(firstFile);
+
+    try {
+      runDiagnosticCollector(root, 'build-1');
+      createFile(secondFile);
+      runDiagnosticCollector(root, 'build-1');
+
+      let copiedFiles = fs.readdirSync(outputDir);
+      expect(copiedFiles.filter((file) => file.includes('failure-context.json__'))).toHaveLength(2);
+      expect(readDiagnosticManifest(root)).toContain('diagnostic_count=2');
+
+      fs.rmSync(firstFile);
+      fs.rmSync(secondFile);
+      runDiagnosticCollector(root, 'build-2');
+
+      copiedFiles = fs.readdirSync(outputDir);
+      expect(readDiagnosticManifest(root)).toContain('diagnostic_status=none-captured');
+      expect(copiedFiles.filter((file) => file.includes('failure-context.json__'))).toHaveLength(0);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   });
 });

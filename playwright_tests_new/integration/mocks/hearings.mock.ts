@@ -20,6 +20,8 @@ export const HEARINGS_SERVICE_ID = 'ABA5';
 export const HEARINGS_LOCATION_ID = '827534';
 export const HEARINGS_LOCATION_NAME = 'Aberystwyth Justice Centre';
 export const HEARINGS_USER_ID = 'hearing-cr84-user';
+const HEARING_LINK_REASON_CODE = 'CLRC017';
+const HEARING_LINK_REASON_LABEL = 'Linked for a hearing';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -83,7 +85,7 @@ function asFeatureVariations(variations: HearingsCaseVariation[]): Array<{ juris
 }
 
 function resolveStatusMapping(hmcStatus: string) {
-  return hearingStatusMappings.find((statusMapping) => statusMapping.hmcStatus === hmcStatus);
+  return hearingStatusMappings[hmcStatus];
 }
 
 function resolveDisplayStatus(scenario: HearingScenario): string {
@@ -383,6 +385,7 @@ export function buildLovRefDataMock(
   options?: {
     hearingTypes?: string[];
     caseTypeId?: string;
+    judgeTypes?: Array<Record<string, unknown>>;
   }
 ) {
   const scenarioHearingTypes = options?.hearingTypes ?? [LISTED_HEARING_SCENARIO.hearingType ?? 'ABA5-ABC'];
@@ -445,6 +448,11 @@ export function buildLovRefDataMock(
         active_flag: true,
         child_nodes: [],
       },
+    ],
+    CaseManagementCancellationReasons: [
+      { key: 'reasonOne', value_en: 'Reason 1', lov_order: 1, active_flag: 'Y' },
+      { key: 'reasonTwo', value_en: 'Reason 2', lov_order: 2, active_flag: 'Y' },
+      { key: 'reasonThree', value_en: 'Reason 3', lov_order: 3, active_flag: 'Y' },
     ],
     Facilities: [],
     HearingChannel: [
@@ -531,7 +539,14 @@ export function buildLovRefDataMock(
         child_nodes: [],
       },
     ],
-    JudgeType: [],
+    JudgeType: (options?.judgeTypes ?? []).map((judgeType, index) => ({
+      ...judgeType,
+      lov_order: index + 1,
+      category_key: 'JudgeType',
+      parent_category: null,
+      active_flag: true,
+      child_nodes: [],
+    })),
     PanelMemberType: [],
   };
 
@@ -572,14 +587,37 @@ function resolveHearingLinks() {
   return (initialState.hearingLinks ?? hearingsState.hearingLinks ?? {}) as UnknownRecord;
 }
 
+function normalizeHearingLinkReasonCodes<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeHearingLinkReasonCodes(item)) as T;
+  }
+
+  if (value && typeof value === 'object') {
+    const record = value as UnknownRecord;
+    const normalizedRecord = Object.fromEntries(
+      Object.entries(record).map(([key, entry]) => {
+        if (key === 'reasonsForLink' && Array.isArray(entry)) {
+          return [key, entry.map((reason) => (reason === HEARING_LINK_REASON_LABEL ? HEARING_LINK_REASON_CODE : reason))];
+        }
+
+        return [key, normalizeHearingLinkReasonCodes(entry)];
+      })
+    );
+
+    return normalizedRecord as T;
+  }
+
+  return value;
+}
+
 export function buildServiceLinkedCasesMock() {
   const hearingLinks = resolveHearingLinks();
-  return deepClone(hearingLinks.serviceLinkedCases ?? []);
+  return normalizeHearingLinkReasonCodes(deepClone(hearingLinks.serviceLinkedCases ?? []));
 }
 
 export function buildLinkedCasesWithHearingsMock() {
   const hearingLinks = resolveHearingLinks();
-  return deepClone(hearingLinks.serviceLinkedCasesWithHearings ?? []);
+  return normalizeHearingLinkReasonCodes(deepClone(hearingLinks.serviceLinkedCasesWithHearings ?? []));
 }
 
 export function buildLinkedHearingGroupMock() {

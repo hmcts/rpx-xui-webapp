@@ -3,6 +3,8 @@ import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { TEST_USERS } from '../../testData';
 import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
+import { setupCaseworkerJurisdictionsRoute } from '../../helpers/caseworkerJurisdictionMockRoutes.helper';
+import { setupCcdProfileMockRoute } from '../../helpers/ccdProfileMockRoute.helper';
 
 const userIdentifier = TEST_USERS.SOLICITOR;
 const jurisdiction = 'DIVORCE';
@@ -38,6 +40,8 @@ test.describe(
           body: JSON.stringify(userDetails),
         });
       });
+      await setupCaseworkerJurisdictionsRoute(page, [jurisdiction]);
+      await setupCcdProfileMockRoute(page, userDetails.userInfo);
       await page.route(`**/data/internal/case-types/${caseType}/event-triggers/createCase*`, async (route) => {
         const body = JSON.stringify(divorcePocCaseData());
         await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -99,17 +103,12 @@ test.describe(
 
     test('User should see validation errors if they attempt to submit the form with missing mandatory fields', async ({
       createCasePage,
-      page,
     }) => {
-      await test.step('Navigate to the create case page', async () => {
-        await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase`);
-      });
-
       await test.step('Attempt to submit the form without filling in any mandatory fields', async () => {
         await createCasePage.genderRadioButtons.filter({ hasText: 'Female' }).first().click();
-        await createCasePage.clickContinueAndWait('after PoC personal details');
+        await createCasePage.clickContinueAndWaitForNext('after PoC personal details');
         await createCasePage.continueButton.click();
-        expect(await createCasePage.validationErrorMessage.allInnerTexts()).toEqual(['Text Field 0 is required']);
+        await expect(createCasePage.validationErrorMessage).toHaveText(['Text Field 0 is required']);
       });
     });
 
@@ -150,10 +149,10 @@ test.describe(
   }
 );
 
-// Skipped until EXUI-4272 is resolved and the error handling behaviour can be tested reliably
-test.describe.skip(
+// Blocked by EXUI-4272: the create-case bootstrap error UI is not implemented.
+test.describe(
   'Create case - bootstrap/load API error handling',
-  { tag: ['@integration', '@integration-create-case'] },
+  { tag: ['@integration', '@integration-create-case', '@blocked-exui-4272'] },
   () => {
     test.beforeEach(async ({ page }) => {
       await applySessionCookies(page, userIdentifier);

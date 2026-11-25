@@ -1,3 +1,4 @@
+import { Title } from '@angular/platform-browser';
 import { NavigationExtras } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
@@ -69,6 +70,13 @@ export const getRoles = (serviceId: string, sessionStorageService: ISessionStora
 export const setRoles = (serviceId: string, roles: Role[], sessionStorageService: ISessionStorageService): void => {
   const sessionKey = getRoleSessionStorageKeyForServiceId(serviceId);
   sessionStorageService.setItem(sessionKey, JSON.stringify(roles));
+};
+
+export const setErrorTitle = (titleService: Title): void => {
+  const currentTitle = titleService.getTitle();
+  if (!currentTitle.startsWith('Error:')) {
+    titleService.setTitle(`Error: ${currentTitle}`);
+  }
 };
 
 export const handleError = (error: RoleAccessHttpError, navigator: Navigator, defaultUrl: string): void => {

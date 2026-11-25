@@ -61,7 +61,8 @@ test.describe(
       await expect
         .poll(async () => ({
           dropdownEnabled: await caseDetailsPage.caseActionsDropdown.isEnabled(),
-          goButtonEnabled: await caseDetailsPage.enabledCaseActionGoButton.isEnabled(),
+          goButtonEnabled:
+            (await caseDetailsPage.caseActionGoButton.count()) > 0 && (await caseDetailsPage.caseActionGoButton.isEnabled()),
           hasExpectedAction: await caseDetailsPage.caseActionsDropdown
             .locator('option')
             .evaluateAll((options) =>
@@ -145,7 +146,8 @@ test.describe(
           await expect
             .poll(async () => ({
               dropdownEnabled: await readbackDetails.caseActionsDropdown.isEnabled(),
-              goButtonEnabled: await readbackDetails.enabledCaseActionGoButton.isEnabled(),
+              goButtonEnabled:
+                (await readbackDetails.caseActionGoButton.count()) > 0 && (await readbackDetails.caseActionGoButton.isEnabled()),
               hasExpectedAction: await readbackDetails.caseActionsDropdown
                 .locator('option')
                 .evaluateAll((options) =>

@@ -25,6 +25,7 @@ export abstract class Base {
   readonly exuiSpinnerComponent = new ExuiSpinnerComponent(this.page);
   private static readonly monitoredPages = new WeakSet<Page>();
   private static readonly pageApiCalls = new WeakMap<Page, ApiCall[]>();
+  private static readonly pageApiCallCount = new WeakMap<Page, number>();
   private readonly monitoringEnabled = true;
   private readonly maxApiCallsTracked = 500; // Prevent memory leaks in long-running tests
 
@@ -52,6 +53,7 @@ export abstract class Base {
   private recordApiCall(call: ApiCall): void {
     const apiCalls = this.getTrackedApiCalls();
     apiCalls.push(call);
+    Base.pageApiCallCount.set(this.page, this.getApiCallCursor() + 1);
 
     // Prevent memory leaks: cap at maxApiCallsTracked (FIFO - remove oldest)
     if (apiCalls.length > this.maxApiCallsTracked) {
@@ -150,6 +152,21 @@ export abstract class Base {
 
   public getApiCalls(): ApiCall[] {
     return [...this.getTrackedApiCalls()];
+  }
+
+  public getApiCallCursor(): number {
+    return Base.pageApiCallCount.get(this.page) ?? 0;
+  }
+
+  public getApiCallsSince(cursor: number): ApiCall[] {
+    const calls = this.getTrackedApiCalls();
+    const firstAvailableCursor = this.getApiCallCursor() - calls.length;
+    if (!Number.isInteger(cursor) || cursor < firstAvailableCursor || cursor > this.getApiCallCursor()) {
+      throw new Error(
+        `API call history cursor ${cursor} is outside the retained range ${firstAvailableCursor}-${this.getApiCallCursor()}`
+      );
+    }
+    return calls.slice(cursor - firstAvailableCursor);
   }
 
   public clearApiCalls(): void {

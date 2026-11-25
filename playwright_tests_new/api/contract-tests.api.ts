@@ -8,13 +8,8 @@ import { expectStatus, guardedRequest, StatusSets } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
 import { buildTaskSearchRequest } from './utils/work-allocation';
-import { z } from 'zod';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
-const locationSchema = z.object({
-  id: z.string(),
-  locationName: z.string(),
-});
 
 test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, () => {
   test('GET /workallocation/location contract: returns array of location objects with required fields', async ({
@@ -27,20 +22,13 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     // When: Fetching locations
     const response = await apiClient.get(endpoint, { throwOnError: false });
 
-    // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
+    // Then: The contract endpoint succeeds
+    expectStatus(response.status, [200]);
 
-    // And: Response structure matches LocationList contract when successful
-    if (response.status === 200 && Array.isArray(response.data)) {
-      expectContract(response.data, WorkAllocationSchemas.LocationList, {
-        context: { endpoint, status: response.status },
-      });
-
-      // And: Each location has required fields
-      if (response.data.length > 0) {
-        locationSchema.parse(response.data[0]);
-      }
-    }
+    // And: Response structure matches the LocationList contract
+    expectContract(response.data, WorkAllocationSchemas.LocationList, {
+      context: { endpoint, status: response.status },
+    });
   });
 
   test('POST /workallocation/task contract: returns TaskList with tasks array and optional total_records', async ({
@@ -78,13 +66,10 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
 
     expectStatus(response.status, [200]);
 
-    // And: Response is an array or object containing work types
-    if (response.status === 200) {
-      expect(response.data).toBeDefined();
-    }
-    if (response.status === 200 && Array.isArray(response.data)) {
-      expect(response.data.length).toBeGreaterThanOrEqual(0);
-    }
+    // And: Successful responses match the mapped key/label catalogue returned by the XUI route
+    expectContract(response.data, WorkAllocationSchemas.TypesOfWork, {
+      context: { endpoint: 'workallocation/task/types-of-work', status: response.status },
+    });
   });
 });
 
@@ -94,22 +79,13 @@ test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search',
     // When: Fetching global search services
     const response = await apiClient.get('api/globalSearch/services', { throwOnError: false });
 
-    // Then: Response status is within expected range
-    expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
+    // Then: The contract endpoint succeeds
+    expectStatus(response.status, [200]);
 
-    // And: Response structure matches GlobalSearchServices contract when successful
-    if (response.status === 200 && Array.isArray(response.data)) {
-      expectContract(response.data, SearchSchemas.GlobalSearchServices, {
-        context: { endpoint: 'api/globalSearch/services', status: response.status },
-      });
-
-      // And: Each service has required fields
-      if (response.data.length > 0) {
-        const firstService = response.data[0];
-        expect(firstService).toHaveProperty('serviceId');
-        expect(firstService).toHaveProperty('serviceName');
-      }
-    }
+    // And: Response structure matches the GlobalSearchServices contract
+    expectContract(response.data, SearchSchemas.GlobalSearchServices, {
+      context: { endpoint: 'api/globalSearch/services', status: response.status },
+    });
   });
 
   test('GET /api/wa-supported-jurisdiction contract: returns jurisdiction data', async ({ apiClient }) => {

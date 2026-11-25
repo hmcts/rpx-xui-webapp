@@ -1384,7 +1384,7 @@ export const test = baseTest.extend<TestFixtures, WorkerFixtures>({
         timing
       ).afterAcquireMs;
       testInfo.setTimeout(afterAcquireMs);
-      annotateIdentityLeaseWait(testInfo, Date.now() - acquireStartedAt, afterAcquireMs);
+      annotateIdentityLeaseWait(testInfo, Date.now() - acquireStartedAt, afterAcquireMs, Boolean(process.env.PW_CAPACITY_REPORT));
       return lease;
     };
     let releaseFailures: PromiseRejectedResult[] = [];

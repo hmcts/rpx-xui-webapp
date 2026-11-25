@@ -1,0 +1,13 @@
+{
+  "extends": "./playwright_tests_new/tsconfig.json",
+  "include": [
+    "./playwright.config.ts",
+    "./playwright.e2e.config.ts",
+    "./playwright-nightly.config.ts",
+    "./playwright.integration.config.ts",
+    "./playwright-config-utils.ts",
+    "./playwright_tests_new/common/**/*.ts",
+    "./playwright_tests_new/E2E/utils/**/*.ts"
+  ],
+  "exclude": ["./node_modules"]
+}

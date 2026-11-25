@@ -140,7 +140,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   };
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | configured_workers=${workerCount} | ${resolveAgentHardware()}`;
   const reportBranch = resolveBranchName();
 
   const testIgnore = [
@@ -183,6 +183,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     testIgnore,
     ...(globalSetups.length > 0 ? { globalSetup: globalSetups.length === 1 ? globalSetups[0] : globalSetups } : {}),
     fullyParallel: true,
+    forbidOnly: true,
     retries,
     timeout: testTimeoutMs,
     expect: {

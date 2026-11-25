@@ -68,7 +68,6 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
 
   test('Create Case Flag event does not modify or remove existing case data', async ({
     caseDetailsPage,
-    findCasePage,
     page,
     tableUtils,
   }, testInfo) => {
@@ -78,10 +77,7 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
       throw new Error('Unable to resolve Civil claimant party name from baseline case data.');
     }
 
-    await test.step('Search and open the Civil case by caseId', async () => {
-      await findCasePage.startFindCaseJourney(caseNumber, 'Civil', 'Civil', true);
-      await findCasePage.displayCaseDetailsFor(caseNumber);
-      await expect(page).toHaveURL(/\/cases\/case-details\//);
+    await test.step('Open the known Civil case', async () => {
       await page.goto(`/cases/case-details/CIVIL/CIVIL/${caseNumber}#Summary`);
       await caseDetailsPage.exuiSpinnerComponent.wait();
       await expect(page).toHaveURL(new RegExp(`/cases/case-details/CIVIL/CIVIL/${caseNumber}`));

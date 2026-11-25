@@ -224,7 +224,7 @@ export class CreateCasePage extends Base {
   }
   private async waitForSelectReady(selector: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_DEFAULT;
-    const apiCallsBaseline = this.getApiCalls().length;
+    const apiCallsBaseline = this.getApiCallCursor();
     const deadline = Date.now() + effectiveTimeoutMs;
 
     while (Date.now() < deadline) {
@@ -237,7 +237,7 @@ export class CreateCasePage extends Base {
         return;
       }
 
-      const bootstrapFailure = findCreateCaseBootstrapFailure(this.getApiCalls(), apiCallsBaseline);
+      const bootstrapFailure = findCreateCaseBootstrapFailure(this.getApiCallsSince(apiCallsBaseline));
       if (bootstrapFailure) {
         throw new Error(
           `Create case bootstrap failed while waiting for select "${selector}": ` +
@@ -492,7 +492,7 @@ export class CreateCasePage extends Base {
       submitButton: this.submitButton,
       continueButton: this.continueButton,
       somethingWentWrongHeading: this.somethingWentWrongHeading,
-      getApiCalls: () => this.getApiCalls(),
+      getApiCallCursor: () => this.getApiCallCursor(),
       getVisibleActionButton: (locator) => this.getVisibleActionButton(locator),
       clickSubmitButtonWithRetry: (submitContext, submitButton) => this.clickSubmitButtonWithRetry(submitContext, submitButton),
       clickContinueAndWait: (continueContext, continueOptions) => this.clickContinueAndWait(continueContext, continueOptions),
@@ -521,9 +521,9 @@ export class CreateCasePage extends Base {
     }
   }
 
-  private failFastOnCriticalWizardEndpointFailure(context: string, baselineIndex = 0) {
+  private failFastOnCriticalWizardEndpointFailure(context: string, cursor: number) {
     // Only inspect calls seen during the current submit cycle to avoid stale failures from earlier actions.
-    const recentCalls = this.getApiCalls().slice(Math.max(0, baselineIndex));
+    const recentCalls = this.getApiCallsSince(cursor);
     const criticalFailure = recentCalls.find(
       (call) => call.status >= 500 && CRITICAL_WIZARD_API_PATTERNS.some((pattern) => pattern.test(call.url))
     );
@@ -614,7 +614,7 @@ export class CreateCasePage extends Base {
       }
       const initialPath = this.normalizePath(this.page.url());
       const wizardPath = initialPath.slice(0, initialPath.lastIndexOf('/') + 1);
-      const apiCallsBaseline = this.getApiCalls().length;
+      const apiCallsBaseline = this.getApiCallCursor();
       try {
         await this.clickContinueAndWait(context, { continueButton: visibleContinueButton });
         this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
@@ -747,7 +747,8 @@ export class CreateCasePage extends Base {
       eventTypeSelect: this.eventTypeSelect,
       startButton: this.startButton,
       somethingWentWrongHeading: this.somethingWentWrongHeading,
-      getApiCalls: () => this.getApiCalls(),
+      getApiCallCursor: () => this.getApiCallCursor(),
+      getApiCallsSince: (cursor) => this.getApiCallsSince(cursor),
       waitForSelectReady: (selector, timeoutMs) => this.waitForSelectReady(selector, timeoutMs),
       selectOptionSmart: (selectLocator, option) => this.selectOptionSmart(selectLocator, option),
       normalizeUnknownError: (error) => this.normalizeUnknownError(error),

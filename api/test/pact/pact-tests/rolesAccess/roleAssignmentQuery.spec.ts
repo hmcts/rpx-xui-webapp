@@ -52,7 +52,7 @@ describe('access management service, query role assignments', () => {
           caseType: ['asylum'],
           jurisdiction: ['IAC'],
         },
-        roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'],
+        roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN', 'ENFORCEMENT'],
       },
     ],
   };

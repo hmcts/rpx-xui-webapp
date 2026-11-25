@@ -3215,9 +3215,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.28-exui-5310-sonar-fixes-v2":
-  version: 7.4.28-exui-5310-sonar-fixes-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.28-exui-5310-sonar-fixes-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.28-exui-5310-sonar-fixes-v3":
+  version: 7.4.28-exui-5310-sonar-fixes-v3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.28-exui-5310-sonar-fixes-v3"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
@@ -3264,7 +3264,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/c095254d0caefa18cc2ef60ea4e4f5ed071d0f37c46200c0cf3f049d7136d472441a073abff2280712cac37215dd6a8bca95f296c7f1117efeab51e672250706
+  checksum: 10/e3a90f91032590a9bd64e57c42f10968191dca07f6d0d0bd5a8a9751ee3e0f25dac6455d63ef777360c947d7beb98ab3cd7208bf06cf5449b5baecfed733ce9e
   languageName: node
   linkType: hard
 
@@ -20129,7 +20129,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.28-exui-5310-sonar-fixes-v2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.28-exui-5310-sonar-fixes-v3"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
     "@hmcts/media-viewer": "npm:4.2.49"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

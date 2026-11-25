@@ -1,6 +1,6 @@
 import 'zone.js';
 import '@angular/compiler';
-import { Component, provideZoneChangeDetection } from '@angular/core';
+import { ChangeDetectionStrategy, Component, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
@@ -22,6 +22,8 @@ class VenueFixture {
 Component({
   selector: 'venue-fixture',
   standalone: true,
+  // Angular 22 defaults to OnPush. Check this fixture on zone turns so debounced search results render.
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ExuiCommonLibModule],
   template: `<div class="search-location"><xuilib-search-venue [control]="control" [selectedLocations]="selected" />
     <a href="#" (click)="add(); $event.preventDefault()"> Add location </a></div>

@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import * as _ from 'lodash';
 import { initialState } from '../hearing.test.data';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
-import { ACTION, GroupLinkType } from '../models/hearings.enum';
+import { ACTION, GroupLinkType, HMCStatus } from '../models/hearings.enum';
 import { LinkedHearingGroupMainModel } from '../models/linkHearings.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { HearingsService } from './hearings.service';
@@ -349,6 +349,45 @@ describe('HearingsService', () => {
         req.flush(null);
       }
     ));
+
+    it('should report a failed finalised update and preserve the original error', () => {
+      const service = TestBed.inject(HearingsService);
+      const http = TestBed.inject(HttpTestingController);
+      const report = jasmine.createSpy('report');
+      const received = jasmine.createSpy('received');
+      telemetry.captureException.and.returnValue(report);
+
+      service.updateHearingActuals('hearing-a', payload, 'case-a', HMCStatus.COMPLETED).subscribe({ error: received });
+      const request = http.expectOne('api/hearings/hearingActuals?hearingId=hearing-a&caseId=case-a&hearingStatus=COMPLETED');
+      expect(request.request.method).toBe('PUT');
+      expect(request.request.body).toEqual(payload);
+      request.flush({}, { status: 500, statusText: 'Server error' });
+
+      expect(telemetry.captureException).toHaveBeenCalledOnceWith('updateHearingActuals', {
+        caseId: 'case-a',
+        hearingId: 'hearing-a',
+      });
+      expect(report).toHaveBeenCalledTimes(1);
+      expect(received).toHaveBeenCalledOnceWith(report.calls.first().args[0]);
+      expect(received.calls.first().args[0].status).toBe(500);
+      http.verify();
+    });
+
+    it('should update a finalised hearing with its status', inject(
+      [HttpTestingController, HearingsService],
+      (httpMock: HttpTestingController, service: HearingsService) => {
+        service.updateHearingActuals('1111222233334444', payload, '1234', HMCStatus.COMPLETED).subscribe((response) => {
+          expect(response).toBeNull();
+        });
+
+        const req = httpMock.expectOne(
+          'api/hearings/hearingActuals?hearingId=1111222233334444&caseId=1234&hearingStatus=COMPLETED'
+        );
+        expect(req.request.method).toEqual('PUT');
+        expect(req.request.body).toEqual(payload);
+        req.flush(null);
+      }
+    ));
   });
 
   describe('submitHearingActuals', () => {
@@ -361,6 +400,7 @@ describe('HearingsService', () => {
 
         const req = httpMock.expectOne('api/hearings/hearingActualsCompletion/1111222233334444?caseRef=1234');
         expect(req.request.method).toEqual('POST');
+        expect(req.request.body).toBeNull();
         req.flush(null);
       }
     ));

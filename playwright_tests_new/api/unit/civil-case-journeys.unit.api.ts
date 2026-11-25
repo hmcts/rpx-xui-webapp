@@ -5,6 +5,8 @@ import {
   type CcdCaseDetails,
 } from '../../E2E/utils/test-setup/journeys/civilCaseJourneys.js';
 
+import { submitCivilCitizenDraftEvent } from '../../E2E/utils/test-setup/journeys/civilEventApi.js';
+
 const ENV_KEYS = [
   'CCD_DATA_STORE_URL',
   'CIVIL_CITIZEN_PASSWORD',
@@ -19,6 +21,7 @@ const ENV_KEYS = [
   'PW_CIVIL_CREATE_CITIZEN_ACCOUNTS',
   'PW_CIVIL_COURT_STAFF_PASSWORD',
   'PW_CIVIL_DEFENDANT_EMAIL',
+  'PW_CIVIL_DEBUG_DEPENDENCY_BODIES',
   'PW_CIVIL_API_REQUEST_TIMEOUT_MS',
   'PW_CIVIL_SERVICE_URL',
   'PW_CIVIL_S2S_TOKEN',
@@ -80,6 +83,64 @@ test.describe('Civil journey helpers', { tag: '@svc-internal' }, () => {
     expect(config.defendantUser.password).toBe('citizen-password');
     expect(config.createClaimantAccount).toBe(true);
     expect(config.createDefendantAccount).toBe(true);
+  });
+
+  test('resolveCivilApiConfig preserves the configured Civil staging endpoint', () => {
+    configureBaseCivilEnv();
+    process.env.CIVIL_SERVICE_URL = 'https://civil-cui-civil-service-staging.aat.platform.hmcts.net/';
+
+    expect(civilCaseJourneyTestHelpers.resolveCivilApiConfig().civilServiceUrl).toBe(
+      'https://civil-cui-civil-service-staging.aat.platform.hmcts.net'
+    );
+  });
+
+  test('resolveCivilApiConfig pairs the staging CCD deployment with Civil staging', () => {
+    configureBaseCivilEnv();
+    process.env.CCD_DATA_STORE_URL = 'https://civil-cui-data-store-staging.aat.platform.hmcts.net';
+
+    expect(civilCaseJourneyTestHelpers.resolveCivilApiConfig().civilServiceUrl).toBe(
+      'https://civil-cui-civil-service-staging.aat.platform.hmcts.net'
+    );
+  });
+
+  test('resolveCivilApiConfig gives the explicit Civil override priority', () => {
+    configureBaseCivilEnv();
+    process.env.CIVIL_SERVICE_URL = 'https://civil-cui-civil-service-staging.aat.platform.hmcts.net';
+    process.env.PW_CIVIL_SERVICE_URL = 'https://civil-override.example.test/';
+
+    expect(civilCaseJourneyTestHelpers.resolveCivilApiConfig().civilServiceUrl).toBe('https://civil-override.example.test');
+  });
+
+  test('draft creation identifies a CCD case-type 404 without exposing the response body', async () => {
+    configureBaseCivilEnv();
+    const page = {
+      request: {
+        post: async () => ({
+          ok: () => false,
+          status: () => 404,
+          text: async () => '[404 Not Found] CCD: {"message":"No case type found","private":"private-response-data"}',
+        }),
+      },
+    };
+
+    const error = await submitCivilCitizenDraftEvent({
+      page: page as never,
+      config: civilCaseJourneyTestHelpers.resolveCivilApiConfig(),
+      eventPayload: {},
+      userId: 'citizen-id',
+      idamToken: 'test-idam-token',
+      s2sToken: 'test-s2s-token',
+      context: 'create LiP claim',
+    }).catch((failure: Error) => failure);
+
+    expect(error).toBeInstanceOf(Error);
+    const message = (error as Error).message;
+    expect(message).toContain('Civil API failed to create LiP claim (HTTP 404)');
+    expect(message).toContain("Service='http://civil-service-demo.service.core-compute-demo.internal'");
+    expect(message).toContain('CCD reported "No case type found"');
+    expect(message).not.toContain('private-response-data');
+    expect(message).not.toContain('test-idam-token');
+    expect(message).not.toContain('test-s2s-token');
   });
 
   test('withGeneratedCivilCitizenUsers replaces placeholder users with unique generated accounts', () => {

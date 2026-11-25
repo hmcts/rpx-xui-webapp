@@ -12,7 +12,6 @@ const CIVIL_SERVICE_INTERNAL_URLS_BY_ENV = {
 
 const CIVIL_SERVICE_AAT_STAGING_HOST = 'civil-cui-civil-service-staging.aat.platform.hmcts.net';
 const CCD_DATA_STORE_HOST_TO_CIVIL_SERVICE_ENV = new Map<string, keyof typeof CIVIL_SERVICE_INTERNAL_URLS_BY_ENV>([
-  ['civil-cui-data-store-staging.aat.platform.hmcts.net', 'aat'],
   ['ccd-data-store-api-aat.service.core-compute-aat.internal', 'aat'],
   ['ccd-data-store-api-demo.service.core-compute-demo.internal', 'demo'],
 ]);
@@ -185,14 +184,18 @@ function resolveCivilServiceUrl(): string {
   }
 
   const configured = firstNonEmpty(process.env.CIVIL_SERVICE_URL);
-  if (configured?.includes(CIVIL_SERVICE_AAT_STAGING_HOST)) {
-    return resolveCivilServiceInternalUrl('aat');
-  }
   if (configured) {
     return trimTrailingSlash(configured);
   }
 
   const ccdDataStoreUrl = firstNonEmpty(process.env.CCD_DATA_STORE_URL, process.env.SERVICES_CCD_DATA_STORE_API);
+  if (
+    ccdDataStoreUrl &&
+    URL.canParse(ccdDataStoreUrl) &&
+    new URL(ccdDataStoreUrl).hostname === 'civil-cui-data-store-staging.aat.platform.hmcts.net'
+  ) {
+    return `https://${CIVIL_SERVICE_AAT_STAGING_HOST}`;
+  }
   const civilServiceEnvFromCcd = resolveCivilServiceEnvironmentFromCcdDataStoreUrl(ccdDataStoreUrl);
   if (civilServiceEnvFromCcd) {
     return resolveCivilServiceInternalUrl(civilServiceEnvFromCcd);

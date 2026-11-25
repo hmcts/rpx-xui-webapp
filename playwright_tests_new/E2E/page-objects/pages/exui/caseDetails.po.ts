@@ -701,6 +701,12 @@ export class CaseDetailsPage extends Base {
     await this.caseFlagCommentBox.fill(`${flagType}`);
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after submitting case flag comment');
+    await this.page.getByRole('heading', { name: 'Confirm the status of the flag', exact: true }).waitFor({
+      state: 'visible',
+      timeout: this.getRecommendedTimeoutMs(),
+    });
+    await this.page.getByRole('radio', { name: 'Active', exact: true }).check();
+    await this.page.getByRole('button', { name: 'Continue', exact: true }).click();
     await this.page.getByRole('heading', { name: 'Review flag details', exact: true }).waitFor({
       state: 'visible',
       timeout: this.getRecommendedTimeoutMs(),

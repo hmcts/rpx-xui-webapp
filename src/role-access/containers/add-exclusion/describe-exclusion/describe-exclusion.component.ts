@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-describe-exclusion',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './describe-exclusion.component.html',
 })
 export class DescribeExclusionComponent implements OnInit, OnDestroy {

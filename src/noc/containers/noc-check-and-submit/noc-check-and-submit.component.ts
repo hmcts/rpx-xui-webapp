@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-check-and-submit',
   templateUrl: './noc-check-and-submit.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./noc-check-and-submit.component.scss'],
 })
 export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {

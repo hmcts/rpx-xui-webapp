@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input } from '@angular/core';
+import { Component, DebugElement, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Params } from '@angular/router';
@@ -11,6 +11,7 @@ import { RoleAccessSectionComponent } from './role-access-section.component';
 @Component({
   standalone: false,
   selector: 'exui-case-roles-table',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class MockCaseRolesTableComponent {
@@ -23,6 +24,7 @@ class MockCaseRolesTableComponent {
 @Component({
   standalone: false,
   selector: 'exui-allocate-a-role-link',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class MockAllocateRoleLinkComponent {

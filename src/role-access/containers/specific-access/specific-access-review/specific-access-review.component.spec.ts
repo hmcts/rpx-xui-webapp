@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -40,7 +40,7 @@ describe('SpecificAccessReviewComponent', () => {
         FormBuilder,
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Title, useValue: jasmine.createSpyObj('Title', { getTitle: 'Test Title', setTitle: undefined }) },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

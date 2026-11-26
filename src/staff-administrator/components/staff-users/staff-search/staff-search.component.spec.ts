@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffSearchComponent } from './staff-search.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('StaffSearchComponent', () => {
   let component: StaffSearchComponent;
@@ -55,7 +55,7 @@ describe('StaffSearchComponent', () => {
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
         { provide: FilterService, useValue: mockFilterService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

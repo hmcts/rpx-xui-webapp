@@ -11,7 +11,7 @@ import { of } from 'rxjs';
 import { StaffUsersFilterResult } from '../../../models/staff-users-filter-result.model';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffUserListComponent } from './staff-user-list.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('StaffUserListComponent', () => {
   let component: StaffUserListComponent;
@@ -31,7 +31,7 @@ describe('StaffUserListComponent', () => {
         RpxTranslationService,
         RpxTranslationConfig,
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

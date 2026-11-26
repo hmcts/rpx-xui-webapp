@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -15,6 +15,7 @@ import { InfoMessageType } from '../../../role-access/models/enums';
 @Component({
   standalone: false,
   selector: 'exui-available-tasks',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'available-tasks.component.html',
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {

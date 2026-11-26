@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -16,6 +16,7 @@ import { setErrorTitle } from '../../../utils';
 @Component({
   standalone: false,
   selector: 'exui-choose-role',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './choose-role.component.html',
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {

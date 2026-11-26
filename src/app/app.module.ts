@@ -1,4 +1,10 @@
-import { provideHttpClient, withInterceptors, withInterceptorsFromDi, withXsrfConfiguration } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptors,
+  withInterceptorsFromDi,
+  withXsrfConfiguration,
+  withXhr,
+} from '@angular/common/http';
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -135,6 +141,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     InitialisationSyncService,
     { provide: Window, useValue: window },
     provideHttpClient(
+      withXhr(),
       withInterceptors([hearingsJourneyInterceptor]),
       withInterceptorsFromDi(),
       withXsrfConfiguration({

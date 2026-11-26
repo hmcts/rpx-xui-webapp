@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { combineLatest, Observable, Subscription, Subject } from 'rxjs';
@@ -39,6 +39,7 @@ import { ServiceMessagesResponse } from '../../models/service-message/service-me
   standalone: false,
   selector: 'exui-query-management-container',
   templateUrl: './query-management-container.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./query-management-container.component.scss'],
 })
 export class QueryManagementContainerComponent implements OnInit, OnDestroy {

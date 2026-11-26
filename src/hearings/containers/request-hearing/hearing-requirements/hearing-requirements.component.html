@@ -1,81 +1,93 @@
-<div *ngIf="serviceHearingValuesModel" class="govuk-grid-row">
-  <div class="govuk-grid-column-three-quarters">
-    <exui-hearing-parties-title></exui-hearing-parties-title>
-    <h1 class="govuk-heading-l">
-      {{ 'Hearing requirements' | rpxTranslate }}
-    </h1>
-    <exui-hearing-amend-warning-msg [warningMsg]="'Review the information on this page, it has been updated.' | rpxTranslate">
-    </exui-hearing-amend-warning-msg>
-    <exui-hearing-amend-warning-msg
-      *ngIf="showReasonableAdjustmentFlagsWarningMessage"
-      [warningMsg]="'Some of the information shown below may not be sent as part of your hearing request to the listing system. If you think this is an issue then please raise a ServiceNow ticket.'"
-    >
-    </exui-hearing-amend-warning-msg>
-    <div *ngIf="showMismatchErrorMessage" class="hearing-requirements-dialog-overlay">
-      <section
-        #mismatchDialog
-        class="hearing-requirements-dialog govuk-error-summary"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="hearing-requirements-dialog-title"
-        aria-describedby="hearing-requirements-dialog-description"
-        cdkTrapFocus
-        cdkTrapFocusAutoCapture
-        tabindex="-1"
-        (keydown.escape)="closeMismatchErrorMessage()"
-      >
-        <h2 class="govuk-error-summary__title" id="hearing-requirements-dialog-title">
-          {{ 'There is a problem' | rpxTranslate }}
-        </h2>
-
-        <div class="govuk-error-summary__body">
-          <!-- prettier-ignore -->
-          <p id="hearing-requirements-dialog-description" class="govuk-body">{{ validationErrors.message[0] | rpxTranslate }} <a #mismatchDialogLink href="/">{{ validationErrors.message[1] | rpxTranslate }}</a> {{ validationErrors.message[2] | rpxTranslate }}</p>
-          <button type="button" class="govuk-button" (click)="closeMismatchErrorMessage()">
-            {{ 'Close' | rpxTranslate }}
-          </button>
+@if (serviceHearingValuesModel) {
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      <exui-hearing-parties-title></exui-hearing-parties-title>
+      <h1 class="govuk-heading-l">
+        {{ 'Hearing requirements' | rpxTranslate }}
+      </h1>
+      <exui-hearing-amend-warning-msg [warningMsg]="'Review the information on this page, it has been updated.' | rpxTranslate">
+      </exui-hearing-amend-warning-msg>
+      @if (showReasonableAdjustmentFlagsWarningMessage) {
+        <exui-hearing-amend-warning-msg
+          [warningMsg]="'Some of the information shown below may not be sent as part of your hearing request to the listing system. If you think this is an issue then please raise a ServiceNow ticket.'"
+        >
+        </exui-hearing-amend-warning-msg>
+      }
+      @if (showMismatchErrorMessage) {
+        <div class="hearing-requirements-dialog-overlay">
+          <section
+            #mismatchDialog
+            class="hearing-requirements-dialog govuk-error-summary"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="hearing-requirements-dialog-title"
+            aria-describedby="hearing-requirements-dialog-description"
+            cdkTrapFocus
+            cdkTrapFocusAutoCapture
+            tabindex="-1"
+            (keydown.escape)="closeMismatchErrorMessage()"
+          >
+            <h2 class="govuk-error-summary__title" id="hearing-requirements-dialog-title">
+              {{ 'There is a problem' | rpxTranslate }}
+            </h2>
+            <div class="govuk-error-summary__body">
+              <!-- prettier-ignore -->
+              <p id="hearing-requirements-dialog-description" class="govuk-body">{{ validationErrors.message[0] | rpxTranslate }} <a #mismatchDialogLink href="/">{{ validationErrors.message[1] | rpxTranslate }}</a> {{ validationErrors.message[2] | rpxTranslate }}</p>
+              <button type="button" class="govuk-button" (click)="closeMismatchErrorMessage()">
+                {{ 'Close' | rpxTranslate }}
+              </button>
+            </div>
+          </section>
         </div>
-      </section>
+      }
+      @if (showPageMismatchErrorMessage) {
+        <div
+          class="govuk-error-summary"
+          aria-labelledby="error-summary-title"
+          role="alert"
+          tabindex="-1"
+          data-module="govuk-error-summary"
+        >
+          <h2 class="govuk-error-summary__title" id="error-summary-title">
+            {{ 'There is a problem' | rpxTranslate }}
+          </h2>
+          <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+              <li>
+                <span id="error-answers-not-correct" class="govuk-error-message">
+                  {{ validationErrors.message[0] | rpxTranslate }}
+                  <a href="/">{{ validationErrors.message[1] | rpxTranslate }}</a>
+                  {{ validationErrors.message[2] | rpxTranslate }}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      }
+      @for (caseType of caseTypes; track caseType) {
+        <div>
+          <p class="govuk-body govuk-!-margin-bottom-2">{{ caseType.categoryDisplayValue }}</p>
+          <ul class="govuk-list govuk-list--bullet">
+            @for (subType of caseType.childNodes; track subType) {
+              <li>{{ subType.categoryDisplayValue }}</li>
+            }
+          </ul>
+        </div>
+      }
+      <exui-case-flags
+        [info]="'Any reasonable adjustments on this page will be included in the hearing request.' | rpxTranslate"
+        [caseFlagsGroup]="reasonableAdjustmentFlags"
+      >
+      </exui-case-flags>
+      @if (serviceHearingValuesModel.caseFlags?.flagAmendURL) {
+        <p class="govuk-body">
+          {{ 'Review ' | rpxTranslate }}
+          <a id="linkAmendFlags" target="_blank" href="{{ serviceHearingValuesModel.caseFlags?.flagAmendURL }}">
+            {{ 'case flags and reasonable adjustments (opens in new tab)' | rpxTranslate }}
+          </a>
+          {{ 'if you need to make any changes.' | rpxTranslate }}
+        </p>
+      }
     </div>
-    <div
-      *ngIf="showPageMismatchErrorMessage"
-      class="govuk-error-summary"
-      aria-labelledby="error-summary-title"
-      role="alert"
-      tabindex="-1"
-      data-module="govuk-error-summary"
-    >
-      <h2 class="govuk-error-summary__title" id="error-summary-title">
-        {{ 'There is a problem' | rpxTranslate }}
-      </h2>
-      <div class="govuk-error-summary__body">
-        <ul class="govuk-list govuk-error-summary__list">
-          <li>
-            <span id="error-answers-not-correct" class="govuk-error-message">
-              {{ validationErrors.message[0] | rpxTranslate }} <a href="/">{{ validationErrors.message[1] | rpxTranslate }}</a>
-              {{ validationErrors.message[2] | rpxTranslate }}
-            </span>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div *ngFor="let caseType of caseTypes">
-      <p class="govuk-body govuk-!-margin-bottom-2">{{ caseType.categoryDisplayValue }}</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li *ngFor="let subType of caseType.childNodes">{{ subType.categoryDisplayValue }}</li>
-      </ul>
-    </div>
-    <exui-case-flags
-      [info]="'Any reasonable adjustments on this page will be included in the hearing request.' | rpxTranslate"
-      [caseFlagsGroup]="reasonableAdjustmentFlags"
-    >
-    </exui-case-flags>
-    <p class="govuk-body" *ngIf="serviceHearingValuesModel.caseFlags?.flagAmendURL">
-      {{ 'Review ' | rpxTranslate }}
-      <a id="linkAmendFlags" target="_blank" href="{{ serviceHearingValuesModel.caseFlags?.flagAmendURL }}">
-        {{ 'case flags and reasonable adjustments (opens in new tab)' | rpxTranslate }}
-      </a>
-      {{ 'if you need to make any changes.' | rpxTranslate }}
-    </p>
   </div>
-</div>
+}

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { combineLatest, Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import { SearchService } from '../../services/search.service';
   standalone: false,
   selector: 'exui-search-results',
   templateUrl: './search-results.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./search-results.component.scss'],
 })
 export class SearchResultsComponent implements OnInit, OnDestroy {

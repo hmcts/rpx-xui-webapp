@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RpxTranslationService } from 'rpx-xui-translation';
 
 interface CookieDetails {
@@ -12,6 +12,7 @@ interface CookieDetails {
 @Component({
   standalone: false,
   selector: 'exui-cookie-policy',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './cookie-policy.component.html',
 })
 export class CookiePolicyComponent {

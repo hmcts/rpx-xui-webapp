@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleExclusion } from '../../models';
 
@@ -6,6 +6,7 @@ import { RoleExclusion } from '../../models';
   standalone: false,
   selector: 'exui-exclusions-table',
   templateUrl: './exclusions-table.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./exclusions-table.component.scss'],
 })
 export class ExclusionsTableComponent {

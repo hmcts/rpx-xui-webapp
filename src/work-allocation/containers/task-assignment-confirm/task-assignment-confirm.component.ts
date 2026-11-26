@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -16,6 +16,7 @@ import { handleTasksFatalErrors } from '../../utils';
 @Component({
   standalone: false,
   selector: 'exui-task-assignment-confirm',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './task-assignment-confirm.component.html',
 })
 export class TaskAssignmentConfirmComponent implements OnInit {

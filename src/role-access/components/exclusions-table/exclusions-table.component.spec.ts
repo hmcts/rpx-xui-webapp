@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExclusionsTableComponent } from './exclusions-table.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('ExclusionsTableComponent', () => {
   let component: ExclusionsTableComponent;
@@ -111,7 +111,7 @@ describe('ExclusionsTableComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ExclusionsTableComponent],
       imports: [RouterTestingModule.withRoutes([])],
-      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
   }));
 

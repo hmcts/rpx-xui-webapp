@@ -24,21 +24,21 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h2 class="govuk-fieldset__heading">
               {{ 'Will additional security be required?' | rpxTranslate }}
-              <exui-amendment-label
-                *ngIf="
-                  this.hearingFacilitiesChangesRequired &&
-                  !this.hearingFacilitiesChangesConfirmed &&
-                  this.additionalSecurityRequiredChanged
-                "
-                [displayLabel]="amendmentLabelEnum.AMENDED"
-              >
-              </exui-amendment-label>
+              @if (
+                this.hearingFacilitiesChangesRequired &&
+                !this.hearingFacilitiesChangesConfirmed &&
+                this.additionalSecurityRequiredChanged
+              ) {
+                <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+              }
             </h2>
           </legend>
-          <span class="govuk-error-message" *ngIf="!additionSecurityRequiredValid">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span
-            >{{ hearingFacilitiesEnum.additionSecurityError | rpxTranslate }}
-          </span>
+          @if (!additionSecurityRequiredValid) {
+            <span class="govuk-error-message">
+              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span
+              >{{ hearingFacilitiesEnum.additionSecurityError | rpxTranslate }}
+            </span>
+          }
           <div class="govuk-radios govuk-radios--inline">
             <div class="govuk-radios__item">
               <input
@@ -72,15 +72,13 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h2 class="govuk-fieldset__heading">
               {{ 'Select any additional facilities required' | rpxTranslate }}
-              <exui-amendment-label
-                *ngIf="
-                  this.hearingFacilitiesChangesRequired &&
-                  !this.hearingFacilitiesChangesConfirmed &&
-                  this.additionalFacilitiesChanged
-                "
-                [displayLabel]="amendmentLabelEnum.ACTION_NEEDED"
-              >
-              </exui-amendment-label>
+              @if (
+                this.hearingFacilitiesChangesRequired &&
+                !this.hearingFacilitiesChangesConfirmed &&
+                this.additionalFacilitiesChanged
+              ) {
+                <exui-amendment-label [displayLabel]="amendmentLabelEnum.ACTION_NEEDED"> </exui-amendment-label>
+              }
             </h2>
             <div id="facils-name-hint" class="govuk-hint">
               {{
@@ -97,25 +95,24 @@
                 formArrayName="addition-securities"
                 data-module="govuk-checkboxes"
               >
-                <div
-                  class="govuk-checkboxes__item"
-                  *ngFor="let additionalFacility of additionalFacilities; index as pos"
-                  [formGroupName]="pos"
-                >
-                  <input
-                    class="govuk-checkboxes__input"
-                    id="{{ additionalFacility.key }}"
-                    name="pos"
-                    type="checkbox"
-                    formControlName="selected"
-                    [value]="additionalFacility.value_en"
-                  />
-                  <label class="govuk-label govuk-checkboxes__label" for="{{ additionalFacility.key }}">
-                    {{ additionalFacility.value_en }}
-                    <exui-amendment-label *ngIf="additionalFacility.showAmendedLabel" [displayLabel]="amendmentLabelEnum.AMENDED">
-                    </exui-amendment-label>
-                  </label>
-                </div>
+                @for (additionalFacility of additionalFacilities; track additionalFacility; let pos = $index) {
+                  <div class="govuk-checkboxes__item" [formGroupName]="pos">
+                    <input
+                      class="govuk-checkboxes__input"
+                      id="{{ additionalFacility.key }}"
+                      name="pos"
+                      type="checkbox"
+                      formControlName="selected"
+                      [value]="additionalFacility.value_en"
+                    />
+                    <label class="govuk-label govuk-checkboxes__label" for="{{ additionalFacility.key }}">
+                      {{ additionalFacility.value_en }}
+                      @if (additionalFacility.showAmendedLabel) {
+                        <exui-amendment-label [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
+                      }
+                    </label>
+                  </div>
+                }
               </div>
             </div>
           </div>

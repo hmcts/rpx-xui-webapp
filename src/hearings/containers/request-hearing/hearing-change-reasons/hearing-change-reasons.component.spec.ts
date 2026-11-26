@@ -16,7 +16,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { HearingChangeReasonsComponent } from './hearing-change-reasons.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('HearingChangeReasonsComponent', () => {
   let component: HearingChangeReasonsComponent;
@@ -110,7 +110,7 @@ describe('HearingChangeReasonsComponent', () => {
           useValue: hearingsFeatureServiceMock,
         },
         FormBuilder,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

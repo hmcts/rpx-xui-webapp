@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -10,6 +10,7 @@ import { selectStaffError } from '../../store/selectors/staff-select.selector';
   selector: 'exui-staff-users',
   templateUrl: './staff-users.component.html',
   styleUrls: ['./staff-users.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [StaffDataFilterService],
 })
 export class StaffUsersComponent {

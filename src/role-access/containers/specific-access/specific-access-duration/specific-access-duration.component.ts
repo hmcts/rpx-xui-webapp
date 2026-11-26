@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
@@ -19,6 +19,7 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-specific-access-duration',
   templateUrl: './specific-access-duration.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./specific-access-duration.component.scss'],
 })
 export class SpecificAccessDurationComponent implements OnInit {

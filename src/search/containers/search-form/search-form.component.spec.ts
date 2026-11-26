@@ -10,7 +10,7 @@ import { SearchFormControl, SearchFormErrorMessage, SearchStatePersistenceKey } 
 import { SearchParameters } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { SearchFormComponent } from './search-form.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('SearchFormComponent', () => {
@@ -51,7 +51,7 @@ describe('SearchFormComponent', () => {
         { provide: FormBuilder, useValue: formBuilder },
         { provide: SearchService, useValue: searchService },
         { provide: JurisdictionsService, useValue: jurisdictionsService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

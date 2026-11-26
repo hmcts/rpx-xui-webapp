@@ -4,7 +4,7 @@ import { HMCTSServiceDetails } from '../../app/models';
 import { SearchStatePersistenceKey } from '../enums';
 import { SearchParameters, SearchRequest, SearchResult } from '../models';
 import { SearchService } from './search.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('Search Service', () => {
   let service: SearchService;
@@ -23,7 +23,7 @@ describe('Search Service', () => {
     };
     TestBed.configureTestingModule({
       imports: [],
-      providers: [SearchService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [SearchService, provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(SearchService);
     httpMock = TestBed.inject(HttpTestingController);

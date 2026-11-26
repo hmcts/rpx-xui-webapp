@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Params } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseRole } from '../../../role-access/models';
@@ -7,6 +7,7 @@ import { CaseRole } from '../../../role-access/models';
   standalone: false,
   selector: 'exui-allocate-a-role-link',
   templateUrl: './allocate-a-role-link.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./allocate-a-role-link.component.scss'],
 })
 export class AllocateARoleLinkComponent implements OnInit, OnChanges {

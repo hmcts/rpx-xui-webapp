@@ -1,4 +1,4 @@
-<ng-container *ngIf="error">
+@if (error) {
   <div
     class="govuk-error-summary"
     aria-labelledby="error-summary-title"
@@ -9,17 +9,18 @@
     <h2 class="govuk-error-summary__title" id="error-summary-title">{{ error.title | rpxTranslate }}</h2>
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
-        <ng-container *ngIf="error.multiple; else one">
-          <li *ngFor="let error of error.errors">
-            <a tabindex="0" [attr.href]="'#' + error.name">{{ error.error | rpxTranslate }}</a>
-          </li>
-        </ng-container>
-        <ng-template #one>
+        @if (error.multiple) {
+          @for (error of error.errors; track error) {
+            <li>
+              <a tabindex="0" [attr.href]="'#' + error.name">{{ error.error | rpxTranslate }}</a>
+            </li>
+          }
+        } @else {
           <li>
             <a tabindex="0" [attr.href]="'#' + error.fieldId">{{ error.description | rpxTranslate }}</a>
           </li>
-        </ng-template>
+        }
       </ul>
     </div>
   </div>
-</ng-container>
+}

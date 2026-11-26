@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideLocationMocks } from '@angular/common/testing';
 import { provideRouter, Router, Routes } from '@angular/router';
@@ -7,7 +7,7 @@ import { MonitoringService } from './monitoring.service';
 import { HearingsTelemetryService } from '../../../hearings/services/hearings-telemetry.service';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
-@Component({ template: '' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: '' })
 class TestPageComponent {}
 
 describe('Hearings page tracking', () => {

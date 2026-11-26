@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { ExuiCcdConnectorComponent } from './exui-ccd-connector.component';
@@ -6,6 +6,7 @@ import { ExuiCcdConnectorComponent } from './exui-ccd-connector.component';
 @Component({
   standalone: false,
   selector: 'ccd-test-component',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class MockCcdComponent {
@@ -15,6 +16,7 @@ class MockCcdComponent {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <exui-ccd-connector [store]="store" [fromFeatureStore]="fromFeatureStore" [eventsBindings]="eventsBindings">
       <ccd-test-component #ccdComponent></ccd-test-component>

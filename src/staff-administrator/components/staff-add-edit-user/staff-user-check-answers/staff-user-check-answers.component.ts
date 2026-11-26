@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { finalize } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import { ResponseErrorMessage } from '../../../../app/models/error-message.model
   standalone: false,
   selector: 'exui-staff-user-check-answers',
   templateUrl: './staff-user-check-answers.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./staff-user-check-answers.component.scss'],
 })
 export class StaffUserCheckAnswersComponent implements OnInit {

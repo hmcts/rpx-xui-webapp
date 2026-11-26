@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-denied',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './specific-access-denied.component.html',
 })
 export class SpecificAccessDeniedComponent implements OnDestroy {

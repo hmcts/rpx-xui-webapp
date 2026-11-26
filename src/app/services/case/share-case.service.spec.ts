@@ -2,7 +2,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { CaseShareService } from './share-case.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('Share Case Service', () => {
   let httpClientGetSpy: { get: jasmine.Spy };
@@ -13,7 +13,7 @@ describe('Share Case Service', () => {
     TestBed.configureTestingModule({
       teardown: { destroyAfterEach: false },
       imports: [StoreModule.forRoot({})],
-      providers: [CaseShareService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [CaseShareService, provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     httpClientGetSpy = jasmine.createSpyObj('HttpClient', ['get']);
     httpClientPostSpy = jasmine.createSpyObj('HttpClient', ['post']);

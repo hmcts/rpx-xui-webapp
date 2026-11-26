@@ -25,7 +25,7 @@ import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '../../co
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -207,7 +207,7 @@ describe('RolesContainerComponent', () => {
             },
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

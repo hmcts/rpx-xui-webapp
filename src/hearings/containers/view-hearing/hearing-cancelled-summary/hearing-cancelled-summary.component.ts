@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,7 @@ import { HEARING_CANCELLED_SUMMARY_TEMPLATE } from '../../../templates/hearing-c
 @Component({
   standalone: false,
   selector: 'exui-hearing-cancelled-summary',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-cancelled-summary.component.html',
   styleUrls: ['./hearing-cancelled-summary.component.scss'],
 })

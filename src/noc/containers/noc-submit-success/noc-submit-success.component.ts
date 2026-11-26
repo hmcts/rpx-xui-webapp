@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { NocState } from '../../models';
@@ -8,6 +8,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-submit-success',
   templateUrl: './noc-submit-success.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./noc-submit-success.component.scss'],
 })
 export class NocSubmitSuccessComponent implements OnInit {

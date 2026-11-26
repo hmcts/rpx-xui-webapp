@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -117,6 +117,7 @@ const partyDetailsFromLatestSHV: PartyDetailsModel[] = [
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class MockHearingPartiesComponent {

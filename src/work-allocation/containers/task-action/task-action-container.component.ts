@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -23,6 +23,7 @@ import { getAssigneeName, handleFatalErrors } from '../../utils';
 @Component({
   standalone: false,
   selector: 'exui-task-action-container',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'task-action-container.component.html',
 })
 export class TaskActionContainerComponent implements OnInit {

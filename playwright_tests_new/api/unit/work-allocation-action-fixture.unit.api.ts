@@ -84,7 +84,7 @@ test.describe('Owned WA action fixture', { tag: '@svc-internal' }, () => {
     ).rejects.toThrow('approved AAT');
   });
   test('cleanup completes only its verified owned task and proves the final state', async () => {
-    for (const initialState of ['unassigned', 'assigned', 'completed', 'cancelled', 'wrong-case']) {
+    for (const initialState of ['unassigned', 'assigned', 'completed', 'cancelled', 'terminated', 'wrong-case']) {
       const posts: string[] = [];
       const client = {
         get: async () => ({

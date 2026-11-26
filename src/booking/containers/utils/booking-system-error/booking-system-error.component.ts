@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'exui-booking-system-error',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './booking-system-error.component.html',
 })
 export class BookingSystemErrorComponent {

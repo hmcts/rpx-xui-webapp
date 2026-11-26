@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   standalone: false,
   selector: 'exui-privacy-policy',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './privacy-policy.component.html',
 })
 export class PrivacyPolicyComponent implements OnInit {

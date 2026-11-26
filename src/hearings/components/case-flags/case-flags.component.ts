@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CaseFlagGroup } from '../../models/caseFlagGroup.model';
 import { AmendmentLabelStatus } from '../../models/hearingsUpdateMode.enum';
 import { PartyFlagsDisplayModel } from 'src/hearings/models/partyFlags.model';
@@ -7,6 +7,7 @@ import { PartyFlagsDisplayModel } from 'src/hearings/models/partyFlags.model';
   standalone: false,
   selector: 'exui-case-flags',
   templateUrl: './case-flags.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./case-flags.component.scss'],
 })
 export class CaseFlagsComponent {

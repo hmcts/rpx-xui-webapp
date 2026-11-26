@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppConstants } from '../../../app/app.constants';
@@ -7,6 +7,7 @@ import { CaseReferenceFieldComponent } from './case-reference-field.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template:
     '<exui-case-reference-field [jurisdiction]="jurisdiction" [caseType]="caseType" [caseReference]="caseReference"></exui-case-reference-field>',
 })

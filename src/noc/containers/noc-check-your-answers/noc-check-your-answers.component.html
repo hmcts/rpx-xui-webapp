@@ -13,7 +13,7 @@
       </button>
     </div>
   </div>
-  <ng-container *ngFor="let qAndA of qAndA$ | async">
+  @for (qAndA of qAndA$ | async; track qAndA) {
     <div class="govuk-summary-list__row">
       <div class="govuk-summary-list__key">{{ qAndA.question_text | async | rpxTranslate }}</div>
       <div class="govuk-summary-list__value">
@@ -21,5 +21,5 @@
       </div>
       <div class="govuk-summary-list__actions">&nbsp;</div>
     </div>
-  </ng-container>
+  }
 </div>

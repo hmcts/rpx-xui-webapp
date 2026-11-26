@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { select, Store } from '@ngrx/store';
@@ -21,6 +21,7 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
   standalone: false,
   selector: 'exui-noc-home',
   templateUrl: 'noc-home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['noc-home.component.scss'],
 })
 export class NocHomeComponent implements OnInit, OnDestroy {

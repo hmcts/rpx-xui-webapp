@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
@@ -16,6 +16,7 @@ import { Utils } from '../../utils/utils';
 @Component({
   standalone: false,
   selector: 'exui-roles-and-access-container',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './roles-and-access-container.component.html',
 })
 export class RolesAndAccessContainerComponent implements OnInit {

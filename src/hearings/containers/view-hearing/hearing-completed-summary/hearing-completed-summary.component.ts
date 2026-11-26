@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
@@ -11,6 +11,7 @@ import * as fromHearingStore from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-hearing-completed-summary',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-completed-summary.component.html',
   styleUrls: ['./hearing-completed-summary.component.scss'],
 })

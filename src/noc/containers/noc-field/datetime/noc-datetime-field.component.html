@@ -1,11 +1,11 @@
 <div class="govuk-form-group" [ngClass]="{ 'form-group-error': !datetimeControl.valid }">
   <label class="govuk-label" [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
-      questionField.question_text | rpxTranslate
-    }}</span>
-    <span class="error-message" *ngIf="datetimeControl.errors && datetimeGroup.touched">{{
-      datetimeControl.errors | nocError | rpxTranslate
-    }}</span>
+    @if (questionField.question_text) {
+      <span class="form-label govuk-!-font-weight-bold">{{ questionField.question_text | rpxTranslate }}</span>
+    }
+    @if (datetimeControl.errors && datetimeGroup.touched) {
+      <span class="error-message">{{ datetimeControl.errors | nocError | rpxTranslate }}</span>
+    }
   </label>
 
   <div class="form-date" [formGroup]="datetimeGroup">

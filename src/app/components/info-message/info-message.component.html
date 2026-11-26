@@ -1,5 +1,5 @@
-<ng-container [ngSwitch]="type">
-  <ng-container *ngSwitchCase="infoMessageType.WARNING">
+@switch (type) {
+  @case (infoMessageType.WARNING) {
     <div class="hmcts-banner hmcts-banner--warning">
       <svg
         class="hmcts-banner__icon"
@@ -18,8 +18,8 @@
         {{ message }}
       </div>
     </div>
-  </ng-container>
-  <ng-container *ngSwitchCase="infoMessageType.SUCCESS">
+  }
+  @case (infoMessageType.SUCCESS) {
     <div class="hmcts-banner hmcts-banner--success">
       <svg
         class="hmcts-banner__icon"
@@ -38,8 +38,8 @@
         {{ message }}
       </div>
     </div>
-  </ng-container>
-  <ng-container *ngSwitchCase="infoMessageType.INFO">
+  }
+  @case (infoMessageType.INFO) {
     <div class="hmcts-banner">
       <svg
         class="hmcts-banner__icon"
@@ -61,5 +61,5 @@
         {{ message }}
       </div>
     </div>
-  </ng-container>
-</ng-container>
+  }
+}

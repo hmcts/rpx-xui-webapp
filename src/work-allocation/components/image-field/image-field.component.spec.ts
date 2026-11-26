@@ -1,10 +1,11 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
 import { ImageFieldComponent } from './image-field.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<exui-image-field [src]="src" [alt]="alt"></exui-image-field>',
 })
 class WrapperComponent {

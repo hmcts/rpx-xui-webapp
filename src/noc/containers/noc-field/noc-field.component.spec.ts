@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, Injector, NO_ERRORS_SCHEMA, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, Injector, NO_ERRORS_SCHEMA, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -16,6 +16,7 @@ import { NocYesNoFieldComponent } from './yes-no';
 @Component({
   standalone: false,
   selector: 'exui-test-component',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<div>Test Component</div>',
 })
 class TestComponent {
@@ -31,7 +32,6 @@ describe('NocFieldComponent', () => {
   let fixture: ComponentFixture<NocFieldComponent>;
   let mockPaletteService: jasmine.SpyObj<PaletteService>;
   let mockFormValidatorsService: jasmine.SpyObj<FormValidatorsService>;
-  let mockComponentFactoryResolver: jasmine.SpyObj<ComponentFactoryResolver>;
   let mockViewContainerRef: jasmine.SpyObj<ViewContainerRef>;
   let mockInjector: jasmine.SpyObj<Injector>;
 
@@ -58,8 +58,7 @@ describe('NocFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     mockPaletteService = jasmine.createSpyObj('PaletteService', ['getFieldComponentClass']);
     mockFormValidatorsService = jasmine.createSpyObj('FormValidatorsService', ['addValidators']);
-    mockComponentFactoryResolver = jasmine.createSpyObj('ComponentFactoryResolver', ['resolveComponentFactory']);
-    mockViewContainerRef = jasmine.createSpyObj('ViewContainerRef', ['insert']);
+    mockViewContainerRef = jasmine.createSpyObj('ViewContainerRef', ['createComponent']);
     mockInjector = jasmine.createSpyObj('Injector', ['get']);
     (mockInjector as any).destroy = jasmine.createSpy('destroy');
 
@@ -68,7 +67,6 @@ describe('NocFieldComponent', () => {
       providers: [
         { provide: PaletteService, useValue: mockPaletteService },
         { provide: FormValidatorsService, useValue: mockFormValidatorsService },
-        { provide: ComponentFactoryResolver, useValue: mockComponentFactoryResolver },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -97,25 +95,22 @@ describe('NocFieldComponent', () => {
     });
 
     it('should have correct template structure', () => {
-      const mockComponentInstance = {};
-      const mockComponentRef = {
-        instance: mockComponentInstance,
-        hostview: {},
-      } as any;
-      const mockComponentFactory = {
-        create: jasmine.createSpy('create').and.returnValue(mockComponentRef),
-      } as any;
-
-      mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
+      // Use the real ViewChild container for template rendering, rather than the hook-test spy.
+      fixture.destroy();
+      fixture = TestBed.createComponent(NocFieldComponent);
+      component = fixture.componentInstance;
+      component.questionField = mockNocQuestion;
+      component.formGroup = new FormGroup({});
+      component.answerValue$ = of('test-answer');
+      component.idPrefix = 'prefix-';
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
-      spyOn(Injector, 'create').and.returnValue(mockInjector as any);
 
       fixture.detectChanges();
 
       const containerElement = fixture.debugElement.query(By.css('div'));
       expect(containerElement).toBeTruthy();
 
-      expect(mockViewContainerRef.insert).toHaveBeenCalled();
+      expect(containerElement.nativeElement.textContent).toContain('Test Component');
     });
 
     it('should inherit from AbstractFieldWriteComponent', () => {
@@ -134,7 +129,6 @@ describe('NocFieldComponent', () => {
   });
 
   describe('ngAfterViewInit', () => {
-    let mockComponentFactory: any;
     let mockComponentRef: ComponentRef<any>;
     let mockComponentInstance: any;
 
@@ -151,16 +145,7 @@ describe('NocFieldComponent', () => {
         onDestroy: jasmine.createSpy('onDestroy'),
       } as any;
 
-      mockComponentFactory = {
-        create: jasmine.createSpy('create').and.returnValue(mockComponentRef),
-        selector: 'test-selector',
-        componentType: TestComponent,
-        ngContentSelectors: [],
-        inputs: [],
-        outputs: [],
-      };
-
-      mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
+      mockViewContainerRef.createComponent.and.returnValue(mockComponentRef);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
 
       // Mock Injector.create as a static method
@@ -171,7 +156,7 @@ describe('NocFieldComponent', () => {
       component.ngAfterViewInit();
 
       expect(mockPaletteService.getFieldComponentClass).toHaveBeenCalledWith(mockNocQuestion);
-      expect(mockComponentFactoryResolver.resolveComponentFactory).toHaveBeenCalledWith(TestComponent);
+      expect(mockViewContainerRef.createComponent).toHaveBeenCalledWith(TestComponent, { injector: mockInjector });
     });
 
     it('should create injector with correct parent', () => {
@@ -186,7 +171,7 @@ describe('NocFieldComponent', () => {
     it('should create component with injector', () => {
       component.ngAfterViewInit();
 
-      expect(mockComponentFactory.create).toHaveBeenCalledWith(mockInjector);
+      expect(mockViewContainerRef.createComponent).toHaveBeenCalledWith(TestComponent, { injector: mockInjector });
     });
 
     it('should set all required inputs on created component', () => {
@@ -219,7 +204,7 @@ describe('NocFieldComponent', () => {
     it('should insert component view into container', () => {
       component.ngAfterViewInit();
 
-      expect(mockViewContainerRef.insert).toHaveBeenCalledWith(mockComponentRef.hostView);
+      expect(mockViewContainerRef.createComponent).toHaveBeenCalledWith(TestComponent, { injector: mockInjector });
     });
 
     describe('Different Field Types', () => {
@@ -239,7 +224,7 @@ describe('NocFieldComponent', () => {
           component.ngAfterViewInit();
 
           expect(mockPaletteService.getFieldComponentClass).toHaveBeenCalledWith(component.questionField);
-          expect(mockComponentFactoryResolver.resolveComponentFactory).toHaveBeenCalledWith(expectedComponent);
+          expect(mockViewContainerRef.createComponent).toHaveBeenCalledWith(expectedComponent, { injector: mockInjector });
         });
       });
     });
@@ -299,16 +284,8 @@ describe('NocFieldComponent', () => {
         instance: mockComponentInstance,
         hostView: {},
       } as any;
-      const mockComponentFactory = {
-        create: jasmine.createSpy('create').and.returnValue(mockComponentRef),
-        selector: 'test-selector',
-        componentType: TestComponent,
-        ngContentSelectors: [],
-        inputs: [],
-        outputs: [],
-      } as any;
 
-      mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
+      mockViewContainerRef.createComponent.and.returnValue(mockComponentRef);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
       spyOn(Injector, 'create').and.returnValue(mockInjector as any);
     });

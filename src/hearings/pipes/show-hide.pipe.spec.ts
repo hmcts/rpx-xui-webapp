@@ -1,15 +1,18 @@
+import { cloneDeep } from 'lodash';
 import { TestBed } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { UserService } from '../../app/services/user/user.service';
-import { initialState } from '../hearing.test.data';
+import { initialState as sharedInitialState } from '../hearing.test.data';
 import { HearingChannelEnum, IsHiddenSource, MemberType, RequirementType } from '../models/hearings.enum';
 import { LocationByEpimmsModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { ShowHidePipe } from './show-hide.pipe';
 
 const storeMock = jasmine.createSpyObj('Store', ['dispatch', 'pipe']);
+
+const initialStateSnapshot = cloneDeep(sharedInitialState);
 
 describe('ShowHidePipe', () => {
   const FOUND_LOCATIONS: LocationByEpimmsModel[] = [
@@ -40,7 +43,10 @@ describe('ShowHidePipe', () => {
   let showHidePipe: ShowHidePipe;
   const locationsDataService = jasmine.createSpyObj('LocationsDataService', ['getLocationById']);
 
+  let initialState = cloneDeep(initialStateSnapshot);
+
   beforeEach(() => {
+    initialState = cloneDeep(initialStateSnapshot);
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
       providers: [

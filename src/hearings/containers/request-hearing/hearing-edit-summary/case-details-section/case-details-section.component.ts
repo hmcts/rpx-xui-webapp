@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AmendmentLabelStatus, WithinPageProperties } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { CaseCategoryDisplayModel } from '../../../../models/caseCategory.model';
@@ -9,6 +9,7 @@ import { CaseTypesUtils } from '../../../../utils/case-types.utils';
 @Component({
   standalone: false,
   selector: 'exui-case-details-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './case-details-section.component.html',
 })
 export class CaseDetailsSectionComponent implements OnInit {

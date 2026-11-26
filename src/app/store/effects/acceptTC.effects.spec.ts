@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { AcceptTermsService } from '../../../../src/app/services/acceptTerms/acceptTerms.service';
 import * as acceptTandCActions from '../actions';
 import * as fromTcEffects from './acceptTC.effects';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('acceptTC Effects', () => {
   let actions$;
@@ -24,7 +24,7 @@ describe('acceptTC Effects', () => {
         },
         fromTcEffects.AcceptTcEffects,
         provideMockActions(() => actions$),
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel } from '../../models/hearingActualsMainModel';
@@ -11,6 +11,7 @@ import moment from 'moment';
   standalone: false,
   selector: 'exui-hearing-actual-summary',
   templateUrl: './hearing-actual-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hearing-actual-summary.component.scss'],
 })
 export class HearingActualSummaryComponent implements OnInit {

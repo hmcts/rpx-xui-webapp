@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupOptions, RefDataRegion } from '@hmcts/rpx-xui-common-lib';
@@ -18,6 +18,7 @@ import { StaffAddEditUserFormValidationMessages } from './staff-add-edit-user-fo
   standalone: false,
   selector: 'exui-staff-add-edit-user-form',
   templateUrl: './staff-add-edit-user-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./staff-add-edit-user-form.component.scss'],
 })
 export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {

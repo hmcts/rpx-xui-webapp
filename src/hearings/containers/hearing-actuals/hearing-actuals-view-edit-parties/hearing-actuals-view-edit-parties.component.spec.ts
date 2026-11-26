@@ -15,7 +15,7 @@ import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel
 import { CategoryType, HMCStatus } from '../../../models/hearings.enum';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 const hearingRole = [
   {
@@ -383,7 +383,7 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
             },
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -508,7 +508,7 @@ describe('HearingViewEditSummaryComponent participants check', () => {
             },
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

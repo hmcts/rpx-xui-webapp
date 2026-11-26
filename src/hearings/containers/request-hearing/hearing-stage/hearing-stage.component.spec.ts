@@ -1,4 +1,4 @@
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -18,6 +18,7 @@ import { HearingStageComponent } from './hearing-stage.component';
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class MockHearingPartiesComponent {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import * as fromHearingStore from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-hearing-actuals-final-confirmation',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-actuals-final-confirmation.component.html',
 })
 export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestroy {

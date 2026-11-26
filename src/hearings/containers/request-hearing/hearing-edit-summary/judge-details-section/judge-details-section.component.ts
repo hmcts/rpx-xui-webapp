@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import * as _ from 'lodash';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { PanelRequirementsModel } from '../../../../../hearings/models/panelRequirements.model';
@@ -10,6 +10,7 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 @Component({
   standalone: false,
   selector: 'exui-judge-details-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './judge-details-section.component.html',
 })
 export class JudgeDetailsSectionComponent implements OnInit {

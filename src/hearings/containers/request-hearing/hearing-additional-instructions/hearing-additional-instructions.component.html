@@ -16,46 +16,47 @@
         }}
       </div>
       <div>
-        <div *ngIf="showReviewBox">
+        @if (showReviewBox) {
           <div>
-            <div id="additional-instructions-view-hint" class="govuk-hint">
+            <div>
+              <div id="additional-instructions-view-hint" class="govuk-hint">
+                {{
+                  'These are the additional instructions that were previously requested for this hearing. This section is read-only. You can copy them into the box below if they’re still relevant to the new journey.'
+                    | rpxTranslate
+                }}
+              </div>
+              <form class="form" [formGroup]="instructionsFormViewOnly">
+                <textarea
+                  class="govuk-textarea govuk-!-margin-bottom-1"
+                  id="additionalInstructionsViewOnlyTextarea"
+                  formControlName="instructionsViewOnly"
+                  name="additional-instructions-view-only-text"
+                  rows="5"
+                  [attr.maxlength]="instructionLength"
+                  readonly
+                ></textarea>
+              </form>
+            </div>
+            <div id="additional-instructions-edit-hint" class="govuk-hint">
+              {{ 'Check the instructions above and copy them here if still relevant.' | rpxTranslate }}
+            </div>
+            <div class="govuk-warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                {{
+                  'Failure to include any relevant instructions from above in the box below will result in them not being considered for this hearing'
+                }}
+              </strong>
+            </div>
+            <div class="govuk-hint">
               {{
-                'These are the additional instructions that were previously requested for this hearing. This section is read-only. You can copy them into the box below if they’re still relevant to the new journey.'
+                'This box may include system-generated comments. You can also edit or add additional instructions as needed.'
                   | rpxTranslate
               }}
             </div>
-            <form class="form" [formGroup]="instructionsFormViewOnly">
-              <textarea
-                class="govuk-textarea govuk-!-margin-bottom-1"
-                id="additionalInstructionsViewOnlyTextarea"
-                formControlName="instructionsViewOnly"
-                name="additional-instructions-view-only-text"
-                rows="5"
-                [attr.maxlength]="instructionLength"
-                readonly
-              ></textarea>
-            </form>
           </div>
-
-          <div id="additional-instructions-edit-hint" class="govuk-hint">
-            {{ 'Check the instructions above and copy them here if still relevant.' | rpxTranslate }}
-          </div>
-          <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-              <span class="govuk-visually-hidden">Warning</span>
-              {{
-                'Failure to include any relevant instructions from above in the box below will result in them not being considered for this hearing'
-              }}
-            </strong>
-          </div>
-          <div class="govuk-hint">
-            {{
-              'This box may include system-generated comments. You can also edit or add additional instructions as needed.'
-                | rpxTranslate
-            }}
-          </div>
-        </div>
+        }
         <form class="form" [formGroup]="instructionsForm">
           <textarea
             class="govuk-textarea govuk-!-margin-bottom-1"

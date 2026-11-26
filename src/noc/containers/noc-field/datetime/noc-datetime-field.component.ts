@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppUtils } from '../../../../app/app-utils';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
@@ -6,6 +6,7 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 @Component({
   standalone: false,
   selector: 'exui-noc-datetime-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './noc-datetime-field.component.html',
 })
 export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {

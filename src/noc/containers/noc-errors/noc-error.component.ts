@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { NoCErrorMap } from '../../constants/nocErrorMap.enum';
@@ -8,6 +8,7 @@ import * as fromFeature from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-noc-error',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'noc-error.component.html',
 })
 export class NocErrorComponent implements OnChanges {

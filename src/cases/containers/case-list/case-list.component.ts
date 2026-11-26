@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   CaseState,
@@ -39,6 +47,7 @@ const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
   selector: 'exui-case-list',
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['case-list.component.scss'],
 })
 export class CaseListComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
@@ -8,6 +8,7 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 @Component({
   standalone: false,
   selector: 'exui-language-requirements-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './language-requirements-section.component.html',
 })
 export class LanguageRequirementsSectionComponent {

@@ -12,7 +12,7 @@ import * as fromNocStore from '../../../noc/store';
 import { WAVerificationService } from '../../../work-allocation/services';
 import { LoggerService } from '../../services/logger/logger.service';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 @Pipe({
@@ -122,7 +122,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
           provide: LoggerService,
           useValue: loggerService,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -704,7 +704,7 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
           provide: LoggerService,
           useValue: loggerService,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

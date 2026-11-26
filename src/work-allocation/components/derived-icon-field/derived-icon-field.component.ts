@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { Task } from '../../models/tasks';
 
 @Component({
   standalone: false,
   selector: 'exui-derived-icon-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './derived-icon-field.component.html',
 })
 export class DerivedIconFieldComponent {

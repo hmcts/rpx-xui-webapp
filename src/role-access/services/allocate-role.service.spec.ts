@@ -1,5 +1,5 @@
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { inject, TestBed } from '@angular/core/testing';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
@@ -86,7 +86,7 @@ describe('AllocateRoleService', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [StoreModule.forRoot({})],
-        providers: [AllocateRoleService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+        providers: [AllocateRoleService, provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()],
       });
     });
 

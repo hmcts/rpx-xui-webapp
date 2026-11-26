@@ -11,11 +11,13 @@
           }}
         </li>
       </ul>
-      <div *ngIf="hasDisagreeError$ | async">
-        <span id="tickbox-warning-affirmation" class="govuk-error-message">
-          {{ 'Tick the box to confirm all these details are accurate and match what is written on the case' | rpxTranslate }}
-        </span>
-      </div>
+      @if (hasDisagreeError$ | async) {
+        <div>
+          <span id="tickbox-warning-affirmation" class="govuk-error-message">
+            {{ 'Tick the box to confirm all these details are accurate and match what is written on the case' | rpxTranslate }}
+          </span>
+        </div>
+      }
       <div class="govuk-checkboxes">
         <div class="govuk-checkboxes__item">
           <input
@@ -31,14 +33,16 @@
           </label>
         </div>
       </div>
-      <div *ngIf="hasNotifyEveryPartyError$ | async">
-        <span id="tickbox-warning-noticeEveryParty" class="govuk-error-message">
-          {{
-            'Tick the box to confirm you have served notice of this change on every party to the case, including the former legal representative (if there was one)'
-              | rpxTranslate
-          }}
-        </span>
-      </div>
+      @if (hasNotifyEveryPartyError$ | async) {
+        <div>
+          <span id="tickbox-warning-noticeEveryParty" class="govuk-error-message">
+            {{
+              'Tick the box to confirm you have served notice of this change on every party to the case, including the former legal representative (if there was one)'
+                | rpxTranslate
+            }}
+          </span>
+        </div>
+      }
       <div class="govuk-checkboxes">
         <div class="govuk-checkboxes__item">
           <input

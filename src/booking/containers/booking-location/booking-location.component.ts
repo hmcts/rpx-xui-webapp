@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BookingCheckType, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib';
@@ -10,6 +10,7 @@ import { BookingNavigationEvent, BookingProcess } from '../../models';
   standalone: false,
   selector: 'exui-booking-location',
   templateUrl: './booking-location.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./booking-location.component.scss'],
 })
 export class BookingLocationComponent implements AfterViewInit, OnInit {

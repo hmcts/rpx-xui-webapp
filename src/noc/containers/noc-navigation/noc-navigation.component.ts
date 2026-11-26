@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
@@ -15,6 +15,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-navigation',
   templateUrl: 'noc-navigation.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['noc-navigation.component.scss'],
 })
 export class NocNavigationComponent implements OnInit {

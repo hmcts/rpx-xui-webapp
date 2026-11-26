@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { throwError } from 'rxjs';
@@ -13,6 +13,7 @@ import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/bo
   standalone: false,
   selector: 'exui-booking-check',
   templateUrl: './booking-check.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./booking-check.component.scss'],
 })
 export class BookingCheckComponent {

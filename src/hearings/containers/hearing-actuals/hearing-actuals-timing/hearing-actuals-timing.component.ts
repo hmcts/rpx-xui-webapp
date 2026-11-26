@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -20,6 +20,7 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 @Component({
   standalone: false,
   selector: 'exui-hearing-actuals-timing',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-actuals-timing.component.html',
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {

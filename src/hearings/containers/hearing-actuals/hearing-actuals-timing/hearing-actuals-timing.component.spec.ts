@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -14,11 +14,12 @@ import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   standalone: false,
   selector: 'exui-app-blank',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class BlankComponent {}
@@ -66,7 +67,7 @@ describe('HearingActualsTimingComponent', () => {
         ValidatorsUtils,
         DatePipe,
         FormatTranslatorService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -242,7 +243,7 @@ describe('HearingActualsTimingComponent', () => {
         ValidatorsUtils,
         DatePipe,
         FormatTranslatorService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

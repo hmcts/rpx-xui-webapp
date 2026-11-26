@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppConstants } from '../../../app/app.constants';
@@ -7,6 +7,7 @@ import { TaskNameFieldComponent } from './task-name-field.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template:
     "<exui-task-name-field [taskName]=\"taskName\" [jurisdiction]='jurisdiction' [caseType]='caseType' [caseId]='caseId'></exui-task-name-field>",
 })

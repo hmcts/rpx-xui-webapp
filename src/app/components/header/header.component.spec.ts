@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { HeaderComponent } from './header.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Pipe({
   standalone: false,
@@ -46,7 +46,7 @@ describe('Header Component', () => {
           provide: RpxTranslationService,
           useFactory: rpxTranslationServiceStub,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

@@ -1,6 +1,14 @@
-<ng-container [ngSwitch]="priority">
-  <strong *ngSwitchCase="'URGENT'" class="hmcts-badge hmcts-badge--red"> urgent </strong>
-  <strong *ngSwitchCase="'HIGH'" class="govuk-tag govuk-tag--red"> high </strong>
-  <strong *ngSwitchCase="'MEDIUM'" class="govuk-tag govuk-tag--yellow"> medium </strong>
-  <strong *ngSwitchCase="'LOW'" class="govuk-tag govuk-tag--grey"> low </strong>
-</ng-container>
+@switch (priority) {
+  @case ('URGENT') {
+    <strong class="hmcts-badge hmcts-badge--red"> urgent </strong>
+  }
+  @case ('HIGH') {
+    <strong class="govuk-tag govuk-tag--red"> high </strong>
+  }
+  @case ('MEDIUM') {
+    <strong class="govuk-tag govuk-tag--yellow"> medium </strong>
+  }
+  @case ('LOW') {
+    <strong class="govuk-tag govuk-tag--grey"> low </strong>
+  }
+}

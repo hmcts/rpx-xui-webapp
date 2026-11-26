@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -22,6 +22,7 @@ import { getTitleText } from '../../../utils';
 @Component({
   standalone: false,
   selector: 'exui-allocate-role-search-person',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './allocate-role-search-person.component.html',
 })
 export class AllocateRoleSearchPersonComponent implements OnInit {

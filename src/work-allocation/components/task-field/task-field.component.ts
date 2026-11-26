@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { UserInfo } from '../../../app/models';
@@ -13,6 +13,7 @@ import { Task } from '../../models/tasks';
   selector: 'exui-task-field',
   templateUrl: './task-field.component.html',
   styleUrls: ['task-field.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class TaskFieldComponent implements OnInit {

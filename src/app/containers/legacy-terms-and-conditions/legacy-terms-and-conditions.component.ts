@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'exui-legacy-terms-and-conditions',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './legacy-terms-and-conditions.component.html',
 })
 export class LegacyTermsAndConditionsComponent {

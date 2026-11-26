@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -9,12 +9,13 @@ import { StaffDataAccessService } from '../../../services/staff-data-access/staf
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffAdvFilterComponent } from './staff-adv-filter.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 // tslint:disable-next-line:component-selector -- this is a stub component -- it is imported from common lib which has a different prefix
 @Component({
   standalone: false,
   selector: 'xuilib-generic-filter',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class GenericFilterStubComponent {
@@ -98,7 +99,7 @@ describe('StaffAdvFilterComponent', () => {
             },
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

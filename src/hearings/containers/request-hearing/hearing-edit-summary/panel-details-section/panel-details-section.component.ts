@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { MemberType, RadioOptions, RequirementType } from '../../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
@@ -8,6 +8,7 @@ import { PanelRequirementsModel } from '../../../../models/panelRequirements.mod
 @Component({
   standalone: false,
   selector: 'exui-panel-details-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './panel-details-section.component.html',
 })
 export class PanelDetailsSectionComponent implements OnInit {

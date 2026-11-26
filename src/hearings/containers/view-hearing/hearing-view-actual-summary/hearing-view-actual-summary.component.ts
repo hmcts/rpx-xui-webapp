@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -10,6 +10,7 @@ import * as fromHearingStore from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-hearing-view-actual-summary',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-view-actual-summary.component.html',
 })
 export class HearingViewActualSummaryComponent implements OnInit, OnDestroy {

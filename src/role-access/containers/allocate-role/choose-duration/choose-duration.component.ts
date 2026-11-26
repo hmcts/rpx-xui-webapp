@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import moment from 'moment';
@@ -19,6 +19,7 @@ import { getTitleText } from '../../../utils';
   standalone: false,
   selector: 'exui-choose-duration',
   templateUrl: './choose-duration.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./choose-duration.component.scss'],
 })
 export class ChooseDurationComponent implements OnInit {

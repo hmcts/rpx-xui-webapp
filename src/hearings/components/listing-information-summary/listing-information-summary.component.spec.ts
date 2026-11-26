@@ -11,7 +11,7 @@ import { caseFlagsRefData, initialState } from '../../hearing.test.data';
 import { EXUIDisplayStatusEnum } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import { ListingInformationSummaryComponent } from './listing-information-summary.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('ListingInformationSummaryComponent', () => {
   let component: ListingInformationSummaryComponent;
@@ -36,7 +36,7 @@ describe('ListingInformationSummaryComponent', () => {
             fragment: of('point-to-me'),
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

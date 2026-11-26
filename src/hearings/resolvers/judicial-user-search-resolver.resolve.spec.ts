@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { HearingsTelemetryService } from '../services/hearings-telemetry.service';
 import { initialStateImmutable } from '../hearing.test.data';
 import { JudicialUserModel } from '../models/judicialUser.model';
@@ -27,7 +27,7 @@ describe('Ref Data Resolver', () => {
         JudicialUserSearchResolver,
         JudicialRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

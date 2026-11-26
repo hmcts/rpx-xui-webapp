@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -26,6 +35,7 @@ import moment from 'moment';
   standalone: false,
   selector: 'exui-hearing-requirements',
   templateUrl: './hearing-requirements.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hearing-requirements.component.scss'],
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
@@ -44,7 +54,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
 
   public validationErrors: { id: string; message: string[] };
 
-  @HostListener('window:focus', ['$event'])
+  @HostListener('window:focus')
   public onFocus(): void {
     if (this.lostFocus) {
       this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
@@ -61,7 +71,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     }
   }
 
-  @HostListener('window:blur', ['$event'])
+  @HostListener('window:blur')
   public onBlur(): void {
     this.lostFocus = true;
   }

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 @Component({
   standalone: false,
   selector: 'exui-info-message-container',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './info-message-container.component.html',
 })
 export class InfoMessageContainerComponent implements OnInit {

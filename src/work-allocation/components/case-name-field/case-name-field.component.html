@@ -1,4 +1,8 @@
 <ng-container>
-  <exui-url-field *ngIf="hasAccess" class="xui-case-name-field" [href]="href" [label]="caseName"></exui-url-field>
-  <label *ngIf="!hasAccess">{{ caseName }}</label>
+  @if (hasAccess) {
+    <exui-url-field class="xui-case-name-field" [href]="href" [label]="caseName"></exui-url-field>
+  }
+  @if (!hasAccess) {
+    <label>{{ caseName }}</label>
+  }
 </ng-container>

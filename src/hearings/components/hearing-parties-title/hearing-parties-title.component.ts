@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
@@ -8,6 +8,7 @@ import { HearingsFeatureService } from '../../../hearings/services/hearings-feat
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-parties-title.component.html',
 })
 export class HearingPartiesTitleComponent implements OnInit, OnDestroy {

@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
   standalone: false,
   selector: 'exui-access-view-field',
   templateUrl: './access-view-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['access-view-field.component.scss'],
 })
 export class AccessViewFieldComponent {

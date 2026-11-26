@@ -1,5 +1,5 @@
 import { Location as StateLocation } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
@@ -16,6 +16,7 @@ import { TaskServiceConfig } from '../../models/tasks';
 @Component({
   standalone: false,
   selector: 'exui-task-container-assignment',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'task-assignment-container.component.html',
 })
 export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {

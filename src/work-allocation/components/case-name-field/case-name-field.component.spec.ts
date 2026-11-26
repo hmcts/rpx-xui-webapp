@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -8,6 +8,7 @@ import { CaseNameFieldComponent } from './case-name-field.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template:
     '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>',
 })
@@ -135,6 +136,7 @@ describe('WorkAllocation', () => {
 @Component({
   template:
     '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 class Wrapper1Component {

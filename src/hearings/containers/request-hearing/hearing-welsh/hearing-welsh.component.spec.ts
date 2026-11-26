@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -16,6 +16,7 @@ import { HearingWelshComponent } from './hearing-welsh.component';
 @Component({
   standalone: false,
   selector: 'exui-error-message',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class MockTestComponent {
@@ -25,6 +26,7 @@ class MockTestComponent {
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class MockHearingPartiesComponent {

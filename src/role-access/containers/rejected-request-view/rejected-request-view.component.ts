@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { first } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { AllocateRoleService } from '../../services';
 @Component({
   standalone: false,
   selector: 'exui-rejected-request',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './rejected-request-view.component.html',
 })
 export class RejectedRequestViewComponent implements OnInit {

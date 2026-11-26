@@ -7,15 +7,16 @@
 >
 </exui-case-roles-table>
 <p>
-  <exui-allocate-a-role-link
-    *ngIf="showAllocate"
-    [routerLink]="roleRouterLink"
-    [queryParams]="roleQueryParams"
-    [showAllocateRoleLink]="showAllocateRoleLink"
-    [roles]="roles"
-    [roleCategory]="roleCategory"
-    [linkText]="linkText"
-    [existingUsers]="existingUsers"
-  >
-  </exui-allocate-a-role-link>
+  @if (showAllocate) {
+    <exui-allocate-a-role-link
+      [routerLink]="roleRouterLink"
+      [queryParams]="roleQueryParams"
+      [showAllocateRoleLink]="showAllocateRoleLink"
+      [roles]="roles"
+      [roleCategory]="roleCategory"
+      [linkText]="linkText"
+      [existingUsers]="existingUsers"
+    >
+    </exui-allocate-a-role-link>
+  }
 </p>

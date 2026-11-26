@@ -8,7 +8,7 @@ import { firstValueFrom } from 'rxjs';
 import { GetHearingActuals } from '../store/actions/hearing-actuals.action';
 import * as fromHearingStore from '../store';
 import { ActualSummaryResponseResolver } from './actual-summary-response-resolver.resolve';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('ActualSummaryResponseResolver', () => {
   let store: MockStore;
@@ -19,7 +19,7 @@ describe('ActualSummaryResponseResolver', () => {
         provideMockStore(),
         ActualSummaryResponseResolver,
         { provide: APP_BASE_HREF, useValue: '/' },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

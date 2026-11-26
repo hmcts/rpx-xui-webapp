@@ -10,7 +10,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
 import { getAssignedMockTask, getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -171,7 +171,7 @@ describe('TasksContainerComponent', () => {
           provide: CaseNotifier,
           useValue: mockCaseNotifier,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

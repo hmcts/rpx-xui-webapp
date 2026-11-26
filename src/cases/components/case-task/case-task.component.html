@@ -5,27 +5,33 @@
 </p>
 <dl class="govuk-summary-list govuk-summary-list--no-border">
   <!-- Display priority label:  Judges will be able to see only URGENT priority labels; others can see all priority labels (URGENT/HIGH/LOW)-->
-  <div *ngIf="(isUserJudicial && isTaskUrgent) || !isUserJudicial" class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-      <span class="row-padding">Priority</span>
-    </dt>
-    <dd class="govuk-summary-list__value">
-      <exui-priority-field
-        [priorityDate]="toDate(task.priority_date)"
-        [majorPriority]="task.major_priority"
-        [dueDate]="toDate(task.dueDate)"
-        [jurisdiction]="task.jurisdiction"
-      >
-      </exui-priority-field>
-    </dd>
-  </div>
+  @if ((isUserJudicial && isTaskUrgent) || !isUserJudicial) {
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        <span class="row-padding">Priority</span>
+      </dt>
+      <dd class="govuk-summary-list__value">
+        <exui-priority-field
+          [priorityDate]="toDate(task.priority_date)"
+          [majorPriority]="task.major_priority"
+          [dueDate]="toDate(task.dueDate)"
+          [jurisdiction]="task.jurisdiction"
+        >
+        </exui-priority-field>
+      </dd>
+    </div>
+  }
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">
       <span class="row-padding">{{ getDueDateTitle() }}</span>
     </dt>
     <dd class="govuk-summary-list__value">
-      <span *ngIf="isUserJudicial">{{ task.created_date | date: 'd MMMM yyyy' }}</span>
-      <span *ngIf="!isUserJudicial">{{ task.due_date | date: 'd MMMM yyyy' }}</span>
+      @if (isUserJudicial) {
+        <span>{{ task.created_date | date: 'd MMMM yyyy' }}</span>
+      }
+      @if (!isUserJudicial) {
+        <span>{{ task.due_date | date: 'd MMMM yyyy' }}</span>
+      }
     </dd>
   </div>
   <div class="govuk-summary-list__row">
@@ -34,24 +40,32 @@
     </dt>
     <dd class="govuk-summary-list__value">{{ getAssigneeName(task) }}</dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="manageOptions && manageOptions.length > 0">
-    <dt class="govuk-summary-list__key">
-      <span class="row-padding">Manage</span>
-    </dt>
-    <dd class="govuk-summary-list__value">
-      <ng-container *ngFor="let option of manageOptions">
-        <a [routerLink]="" tabindex="0" (click)="onActionHandler(task, option)" class="right" [id]="'action_' + option.id">{{
-          option.title
-        }}</a>
-      </ng-container>
-    </dd>
-  </div>
-  <div *ngIf="isTaskAssignedToCurrentUser(task)" class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">
-      <span class="row-padding">Next steps</span>
-    </dt>
-    <dd class="govuk-summary-list__value">
-      <ccd-markdown [content]="task?.description" [markdownUseHrefAsRouterLink]="true" (clicked)="onClick($event)"></ccd-markdown>
-    </dd>
-  </div>
+  @if (manageOptions && manageOptions.length > 0) {
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        <span class="row-padding">Manage</span>
+      </dt>
+      <dd class="govuk-summary-list__value">
+        @for (option of manageOptions; track option) {
+          <a [routerLink]="" tabindex="0" (click)="onActionHandler(task, option)" class="right" [id]="'action_' + option.id">{{
+            option.title
+          }}</a>
+        }
+      </dd>
+    </div>
+  }
+  @if (isTaskAssignedToCurrentUser(task)) {
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">
+        <span class="row-padding">Next steps</span>
+      </dt>
+      <dd class="govuk-summary-list__value">
+        <ccd-markdown
+          [content]="$safeNavigationMigration(task?.description)"
+          [markdownUseHrefAsRouterLink]="true"
+          (clicked)="onClick($event)"
+        ></ccd-markdown>
+      </dd>
+    </div>
+  }
 </dl>

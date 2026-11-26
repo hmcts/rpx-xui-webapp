@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,10 +23,11 @@ import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <exui-task-action-container></exui-task-action-container>`,
 })
 class WrapperComponent {
@@ -36,6 +37,7 @@ class WrapperComponent {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <div>Nothing</div>`,
 })
 class NothingComponent {}
@@ -101,7 +103,7 @@ describe('WorkAllocation', () => {
             provide: RpxTranslationService,
             useFactory: rpxTranslationServiceStub,
           },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       }).compileComponents();
@@ -324,7 +326,7 @@ describe('WorkAllocation', () => {
             },
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       }).compileComponents();
@@ -412,7 +414,7 @@ describe('WorkAllocation', () => {
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           { provide: CaseNotifier, useValue: mockNotifierService },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       }).compileComponents();
@@ -493,7 +495,7 @@ describe('WorkAllocation', () => {
             },
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       }).compileComponents();
@@ -575,7 +577,7 @@ describe('WorkAllocation', () => {
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           { provide: CaseNotifier, useValue: mockNotifierService },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(withXhr(), withInterceptorsFromDi()),
           provideHttpClientTesting(),
         ],
       }).compileComponents();

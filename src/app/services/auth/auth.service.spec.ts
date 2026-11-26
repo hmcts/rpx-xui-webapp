@@ -4,13 +4,18 @@ import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { AuthService } from './auth.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('AuthService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
-      providers: [AuthService, SessionStorageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [
+        AuthService,
+        SessionStorageService,
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
   });
 

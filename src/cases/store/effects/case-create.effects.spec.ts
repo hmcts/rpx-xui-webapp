@@ -11,7 +11,7 @@ import { EnvironmentService } from '../../../app/shared/services/environment.ser
 import { CreateCaseGo, Go, NewCaseLoadedSuccessfully } from '../../../app/store/actions';
 import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset } from '../actions/create-case.action';
 import { CaseCreateEffects } from './case-create.effects';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { DecentralisedRedirectService } from '../../../decentralisation/decentralised-redirect.service';
 
 describe('CaseCreate Effects', () => {
@@ -35,7 +35,7 @@ describe('CaseCreate Effects', () => {
         { provide: EnvironmentService, useValue: mockEnvironmentService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: Window, useValue: mockWindow },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

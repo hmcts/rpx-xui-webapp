@@ -1,6 +1,8 @@
 <div class="govuk-!-margin-top-3">
   <exui-info-message-container></exui-info-message-container>
-  <exui-error-message *ngIf="staffSelectError" [error]="staffSelectErrors"></exui-error-message>
+  @if (staffSelectError) {
+    <exui-error-message [error]="staffSelectErrors"></exui-error-message>
+  }
 </div>
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="content" role="main">
@@ -11,22 +13,20 @@
   </div>
 
   <div>
-    <ng-container *ngIf="(staffDataFilterService.errors$ | async).errors.length">
+    @if ((staffDataFilterService.errors$ | async).errors.length) {
       <exui-error-message [error]="staffDataFilterService.errors$ | async"></exui-error-message>
-    </ng-container>
+    }
     <div class="hmcts-filter-layout">
       <div class="hmcts-filter-layout__filter staff-filters">
         <div class="container-fluid govuk-!-margin-top-4">
           <h2 class="govuk-heading-l">User search</h2>
 
           <div class="govuk-!-margin-bottom-4">
-            <ng-container *ngIf="!advancedSearchEnabled; else advFilter">
+            @if (!advancedSearchEnabled) {
               <exui-staff-search></exui-staff-search>
-            </ng-container>
-
-            <ng-template #advFilter>
+            } @else {
               <exui-staff-adv-filter></exui-staff-adv-filter>
-            </ng-template>
+            }
           </div>
 
           <div>

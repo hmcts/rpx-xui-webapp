@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   standalone: false,
   selector: 'exui-noc-postcode-field',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './noc-postcode-field.component.html',
 })
 export class NocPostcodeFieldComponent extends AbstractFieldWriteComponent implements OnInit {

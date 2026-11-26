@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as fromRoot from '../../../app/store';
@@ -14,6 +14,7 @@ import * as fromCaseCreate from '../../store';
   standalone: false,
   selector: 'exui-create-case',
   templateUrl: './case-create.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class CasesCreateComponent implements OnInit, OnDestroy {

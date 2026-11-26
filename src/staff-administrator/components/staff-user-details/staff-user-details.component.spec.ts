@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,10 +16,11 @@ import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staf
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffStatusComponent } from './staff-status/staff-status.component';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class StubComponent {}
@@ -169,7 +170,7 @@ describe('StaffUserDetailsComponent', () => {
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
         { provide: InfoMessageCommService, useValue: mockMessageService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

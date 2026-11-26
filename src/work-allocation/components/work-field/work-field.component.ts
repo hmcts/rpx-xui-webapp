@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { FieldType } from '../../enums';
@@ -11,6 +11,7 @@ import { Task } from '../../models/tasks';
   selector: 'exui-work-field',
   templateUrl: './work-field.component.html',
   styleUrls: ['./work-field.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class WorkFieldComponent {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { PartyType } from '../../../../../hearings/models/hearings.enum';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { CaseFlagReferenceModel } from '../../../../models/caseFlagReference.model';
@@ -13,6 +13,7 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 @Component({
   standalone: false,
   selector: 'exui-hearing-requirements-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-requirements-section.component.html',
 })
 export class HearingRequirementsSectionComponent implements OnInit {

@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Location } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -24,10 +24,11 @@ import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <exui-task-container-assignment></exui-task-container-assignment>`,
 })
 class WrapperComponent {
@@ -37,6 +38,7 @@ class WrapperComponent {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <div>Nothing</div>`,
 })
 class NothingComponent {}
@@ -123,7 +125,7 @@ describe('TaskAssignmentContainerComponent', () => {
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: Router, useValue: mockRouter },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

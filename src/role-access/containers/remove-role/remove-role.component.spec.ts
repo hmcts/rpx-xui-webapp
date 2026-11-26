@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
+import { Component, NO_ERRORS_SCHEMA, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -21,6 +21,7 @@ import { SessionStorageService } from '../../../app/services';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <exui-remove-role></exui-remove-role>`,
 })
 class WrapperComponent {
@@ -156,7 +157,7 @@ describe('RemoveRoleComponent', () => {
           provide: SessionStorageService,
           useValue: sessionStorageServiceMock,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

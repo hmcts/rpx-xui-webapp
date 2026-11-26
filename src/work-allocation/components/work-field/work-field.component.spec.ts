@@ -1,4 +1,4 @@
-import { Component, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, Input, Pipe, PipeTransform, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseReferencePipe } from '@hmcts/ccd-case-ui-toolkit';
@@ -21,6 +21,7 @@ import { WorkFieldComponent } from './work-field.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<exui-work-field [config]="config" [workField]="task"></exui-work-field>',
 })
 class WrapperComponent {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
@@ -8,6 +8,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-approved',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './specific-access-approved.component.html',
 })
 export class SpecificAccessApprovedComponent {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, OnDestroy, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
@@ -20,6 +20,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   standalone: false,
   selector: 'exui-linked-hearings-with-case',
   templateUrl: './linked-hearings-with-case.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./linked-hearings-with-case.component.scss'],
 })
 export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {

@@ -1,20 +1,21 @@
-<div
-  *ngIf="formError"
-  class="govuk-error-summary"
-  aria-labelledby="error-summary-title"
-  role="alert"
-  tabindex="-1"
-  data-module="govuk-error-summary"
->
-  <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
-  <div class="govuk-error-summary__body">
-    <ul class="govuk-list govuk-error-summary__list">
-      <li>
-        <button type="button" (click)="getLocationSearchFocus()" class="govuk-js-link">Enter a valid location</button>
-      </li>
-    </ul>
+@if (formError) {
+  <div
+    class="govuk-error-summary"
+    aria-labelledby="error-summary-title"
+    role="alert"
+    tabindex="-1"
+    data-module="govuk-error-summary"
+  >
+    <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <li>
+          <button type="button" (click)="getLocationSearchFocus()" class="govuk-js-link">Enter a valid location</button>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
+}
 <form [formGroup]="findLocationFormGroup" class="form">
   <div class="govuk-form-group">
     <h1 class="govuk-heading-l">
@@ -22,9 +23,11 @@
       Select a location
     </h1>
     <div [ngClass]="{ 'form-group-error': formError }">
-      <span *ngIf="formError" id="event-name-error" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error:</span> Enter a valid location
-      </span>
+      @if (formError) {
+        <span id="event-name-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> Enter a valid location
+        </span>
+      }
       <div class="govuk-hint">Enter the location name, for example, Taylor House Tribunal Hearing Centre.</div>
       <exui-search-location
         class="search-location"

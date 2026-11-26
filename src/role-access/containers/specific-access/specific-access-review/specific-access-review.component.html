@@ -1,5 +1,7 @@
 <div class="govuk-form-group" [formGroup]="formGroup">
-  <exui-error-message *ngIf="formGroup.invalid && submitted" [error]="errorMessage"> </exui-error-message>
+  @if (formGroup.invalid && submitted) {
+    <exui-error-message [error]="errorMessage"> </exui-error-message>
+  }
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h1 class="govuk-fieldset__heading">

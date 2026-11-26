@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AppConstants } from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
 import { AppTitleModel } from '../../models/app-title.model';
@@ -9,6 +9,7 @@ import { UserNavModel } from '../../models/user-nav.model';
 @Component({
   standalone: false,
   selector: 'exui-app-header-signed-out',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './app-header-signed-out.component.html',
 })
 export class AppHeaderSignedOutComponent implements OnInit {

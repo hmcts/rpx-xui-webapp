@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
@@ -7,6 +7,7 @@ import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 @Component({
   standalone: false,
   selector: 'exui-phase-banner',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './phase-banner.component.html',
 })
 export class PhaseBannerComponent implements OnInit, OnDestroy {

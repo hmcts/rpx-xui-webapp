@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseNotifier, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of, Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ import { getAssigneeIdsFromTasks, getAssigneeNameFromList } from '../../../work-
   standalone: false,
   selector: 'exui-tasks-container',
   templateUrl: './tasks-container.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./tasks-container.component.scss'],
 })
 export class TasksContainerComponent implements OnInit {

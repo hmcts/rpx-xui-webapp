@@ -1,3 +1,4 @@
+import { rejects } from 'node:assert/strict';
 import { expect, test } from '@playwright/test';
 import { loadMyWorkTest, loadTaskNamesTest } from '../utils/workAllocationSpecProbe';
 
@@ -8,12 +9,12 @@ test.describe('Authenticated work allocation status reporting', { tag: '@svc-int
       const fakeClient = (data: unknown) => ({
         apiClientFor: async () => ({ post: async () => ({ status: 200, data }) }),
       });
-      await expect(dashboardTest(fakeClient({ other: [] }))).rejects.toThrow();
-      await expect(
+      await rejects(() => dashboardTest(fakeClient({ other: [] })));
+      await rejects(() =>
         dashboardTest({ apiClientFor: async () => ({ post: async () => ({ status: 500, data: undefined }) }) })
-      ).rejects.toThrow();
+      );
       if (endpoint.endsWith('/cases')) {
-        await expect(dashboardTest(fakeClient({ cases: [], total_records: 'bad' }))).rejects.toThrow();
+        await rejects(() => dashboardTest(fakeClient({ cases: [], total_records: 'bad' })));
       }
       await dashboardTest(fakeClient({ cases: [], total_records: 0 }));
     }
@@ -22,13 +23,11 @@ test.describe('Authenticated work allocation status reporting', { tag: '@svc-int
   test('the task names test rejects malformed HTTP 200 catalogues', async () => {
     const taskNamesTest = loadTaskNamesTest(expect);
     for (const data of [{ task_names: [] }, ['task'], [{ task_type: { task_type_id: 'type-1' } }]]) {
-      await expect(
-        Promise.resolve(
-          taskNamesTest({
-            apiClient: { get: async () => ({ status: 200, data }) },
-          })
-        )
-      ).rejects.toThrow();
+      await rejects(() =>
+        taskNamesTest({
+          apiClient: { get: async () => ({ status: 200, data }) },
+        })
+      );
     }
   });
 
@@ -48,7 +47,7 @@ test.describe('Authenticated work allocation status reporting', { tag: '@svc-int
         },
       });
       if (status === 200) await response;
-      else await expect(Promise.resolve(response)).rejects.toThrow();
+      else await rejects(response);
       expect(requests).toEqual(
         Array(status === 500 ? 3 : 1).fill({
           url: 'workallocation/taskNames',

@@ -7,6 +7,7 @@ import {
   TemplateRef,
   ViewContainerRef,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -22,6 +23,7 @@ import { RpxTranslationModule } from 'rpx-xui-translation';
 @Component({
   standalone: false,
   selector: 'exui-ccd-connector',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<ng-content></ng-content>',
 })
 class MockCcdConnectorComponent {}
@@ -29,6 +31,7 @@ class MockCcdConnectorComponent {}
 @Component({
   standalone: false,
   selector: 'ccd-create-case-filters',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: 'Mock CCD Create Case Filters',
 })
 class MockCreateCaseFiltersComponent {}
@@ -36,6 +39,7 @@ class MockCreateCaseFiltersComponent {}
 @Component({
   standalone: false,
   selector: 'exui-page-wrapper',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<ng-content></ng-content>',
 })
 class MockPageWrapperComponent {}

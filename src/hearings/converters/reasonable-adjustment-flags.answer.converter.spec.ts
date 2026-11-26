@@ -1,17 +1,23 @@
+import { cloneDeep } from 'lodash';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { cold } from 'jasmine-marbles';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
-import { caseFlagsRefData, initialState } from '../hearing.test.data';
+import { caseFlagsRefData, initialState as sharedInitialState } from '../hearing.test.data';
 import { State } from '../store/reducers';
 import { ReasonableAdjustmentFlagsAnswerConverter } from './reasonable-adjustment-flags.answer.converter';
+
+const initialStateSnapshot = cloneDeep(sharedInitialState);
 
 describe('ReasonableAdjustmentFlagsAnswerConverter', () => {
   let reasonableAdjustmentFlagsConverter: ReasonableAdjustmentFlagsAnswerConverter;
   let router: any;
 
+  let initialState = cloneDeep(initialStateSnapshot);
+
   beforeEach(() => {
+    initialState = cloneDeep(initialStateSnapshot);
     TestBed.configureTestingModule({
       providers: [
         {

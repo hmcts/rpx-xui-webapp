@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { Logout } from '../actions';
 import * as fromAppEffects from './app.effects';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('App Effects', () => {
   let actions$;
@@ -28,7 +28,7 @@ describe('App Effects', () => {
         RoleService,
         fromAppEffects.AppEffects,
         provideMockActions(() => actions$),
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

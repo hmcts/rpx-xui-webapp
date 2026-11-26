@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import * as hearingRequestActions from '../../store/actions/hearing-request.acti
   standalone: false,
   selector: 'exui-hearing-actuals',
   templateUrl: './hearing-actuals.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hearing-actuals.component.scss'],
 })
 export class HearingActualsComponent implements OnInit, OnDestroy {

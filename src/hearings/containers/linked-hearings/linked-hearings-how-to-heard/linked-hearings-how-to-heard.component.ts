@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
@@ -21,6 +21,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   standalone: false,
   selector: 'exui-linked-hearings-how-to-heard',
   templateUrl: './linked-hearings-how-to-heard.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./linked-hearings-how-to-heard.component.scss'],
 })
 export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {

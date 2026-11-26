@@ -15,7 +15,7 @@ import { StaffUserListComponent } from '../../components/staff-users/staff-user-
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffMainContainerComponent } from './staff-main-container.component';
 import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('StaffMainContainerComponent', () => {
   let component: StaffMainContainerComponent;
@@ -62,7 +62,7 @@ describe('StaffMainContainerComponent', () => {
             },
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

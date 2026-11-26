@@ -28,7 +28,7 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { HearingsTelemetryService } from '../../../hearings/services/hearings-telemetry.service';
 
 describe('CaseHearingsComponent', () => {
@@ -502,7 +502,7 @@ describe('CaseHearingsComponent', () => {
           provide: CaseNotifier,
           useValue: mockCaseNotifier,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

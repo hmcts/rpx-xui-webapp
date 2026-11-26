@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import moment from 'moment';
@@ -22,6 +22,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-allocate-role-check-answers',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './allocate-role-check-answers.component.html',
 })
 export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {

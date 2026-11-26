@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Optional } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
@@ -13,6 +13,7 @@ import { HearingsService } from '../../services/hearings.service';
   standalone: false,
   selector: 'exui-hearing-summary',
   templateUrl: './hearing-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hearing-summary.component.scss'],
 })
 export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy {

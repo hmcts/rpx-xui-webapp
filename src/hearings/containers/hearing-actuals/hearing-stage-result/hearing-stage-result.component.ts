@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, OnDestroy, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -17,6 +17,7 @@ import * as fromHearingStore from '../../../store';
   standalone: false,
   selector: 'exui-hearing-stage-result',
   templateUrl: './hearing-stage-result.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hearing-stage-result.component.scss'],
 })
 export class HearingStageResultComponent implements OnInit, OnDestroy {

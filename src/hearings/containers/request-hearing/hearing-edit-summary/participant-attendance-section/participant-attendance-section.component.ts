@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import * as _ from 'lodash';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
@@ -14,6 +14,7 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
   standalone: false,
   selector: 'exui-participant-attendance-section',
   templateUrl: './participant-attendance-section.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./participant-attendance-section.component.scss'],
 })
 export class ParticipantAttendanceSectionComponent implements OnInit {

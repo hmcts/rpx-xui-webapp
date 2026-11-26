@@ -1,4 +1,13 @@
-import { AfterContentInit, Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChild,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
@@ -12,6 +21,7 @@ import { Subscription } from 'rxjs';
 @Component({
   standalone: false,
   selector: 'exui-ccd-connector',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <ng-container>
       <ng-content></ng-content>

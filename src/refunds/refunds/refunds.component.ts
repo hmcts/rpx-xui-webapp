@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../app/store';
 
@@ -6,6 +6,7 @@ import * as fromRoot from '../../app/store';
   standalone: false,
   selector: 'exui-refunds',
   templateUrl: './refunds.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./refunds.component.scss'],
 })
 export class RefundsComponent implements OnInit {

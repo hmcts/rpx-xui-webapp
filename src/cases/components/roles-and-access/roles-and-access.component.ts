@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
@@ -8,6 +8,7 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 @Component({
   standalone: false,
   selector: 'exui-roles-and-access',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './roles-and-access.component.html',
 })
 export class RolesAndAccessComponent implements OnInit, OnChanges {

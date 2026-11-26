@@ -1,5 +1,6 @@
+import { cloneDeep } from 'lodash';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +10,7 @@ import moment from 'moment';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
-import { initialState } from '../../../hearing.test.data';
+import { initialState as sharedInitialState } from '../../../hearing.test.data';
 import {
   ACTION,
   HearingDatePriorityEnum,
@@ -26,16 +27,19 @@ import { HearingTimingComponent } from './hearing-timing.component';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { SourceOfData } from '../../../../../api/hearings/models/hearings.enum';
 import { HearingsUtils } from '../../../utils/hearings.utils';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
+
+const initialStateSnapshot = cloneDeep(sharedInitialState);
 
 describe('HearingTimingComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -77,7 +81,10 @@ describe('HearingTimingComponent', () => {
     },
   ];
 
+  let initialState = cloneDeep(initialStateSnapshot);
+
   beforeEach(() => {
+    initialState = cloneDeep(initialStateSnapshot);
     TestBed.configureTestingModule({
       declarations: [HearingTimingComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       schemas: [NO_ERRORS_SCHEMA],
@@ -97,7 +104,7 @@ describe('HearingTimingComponent', () => {
             fragment: of('point-to-me'),
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -488,6 +495,12 @@ describe('HearingTimingComponent', () => {
     expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeStart).toBe(undefined);
     hearingAvailability.setValue(RadioOptions.CHOOSE_DATE_RANGE);
     component.showDateAvailability();
+    component.earliestHearingFormGroup.reset();
+    component.latestHearingFormGroup.patchValue({
+      latestHearingDate_day: '01',
+      latestHearingDate_month: '01',
+      latestHearingDate_year: '2021',
+    });
     component.prepareHearingRequestData();
     fixture.detectChanges();
     expect(component.hearingRequestMainModel.hearingDetails.hearingWindow.dateRangeEnd).toBe('2021-01-01T00:00:00.000Z');
@@ -707,6 +720,8 @@ describe('HearingTimingComponent', () => {
 
   it('should set unavailabilityDateList from serviceHearingValuesModel when sourceOFData is SERVICE_HEARING_VALUES', () => {
     component.sourceOfData = SourceOfData.SERVICE_HEARING_VALUES;
+    component.getFormData(60, { dateRangeStart: null, dateRangeEnd: '2021-01-01T00:00:00.000Z' }, 'Urgent');
+    component.initForm();
 
     component.prepareHearingRequestData();
 

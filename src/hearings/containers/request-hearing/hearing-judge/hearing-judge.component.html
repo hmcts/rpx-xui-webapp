@@ -8,10 +8,12 @@
     <form class="form" [formGroup]="hearingJudgeForm">
       <div class="govuk-form-group govuk-!-margin-top-5" [ngClass]="{ 'govuk-form-group--error': !!specificJudgeSelectionError }">
         <fieldset class="govuk-fieldset" id="specific-judge-selection">
-          <span class="govuk-error-message" *ngIf="specificJudgeSelectionError">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-            {{ specificJudgeSelectionError | rpxTranslate }}
-          </span>
+          @if (specificJudgeSelectionError) {
+            <span class="govuk-error-message">
+              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+              {{ specificJudgeSelectionError | rpxTranslate }}
+            </span>
+          }
           <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
             <div class="govuk-radios__item">
               <input
@@ -40,10 +42,12 @@
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     <h1 class="govuk-fieldset__heading">{{ 'Name of the judge' | rpxTranslate }}</h1>
                   </legend>
-                  <span id="validation-error" class="govuk-error-message" *ngIf="selectJudgeNameError">
-                    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-                    {{ selectJudgeNameError }}
-                  </span>
+                  @if (selectJudgeNameError) {
+                    <span id="validation-error" class="govuk-error-message">
+                      <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+                      {{ selectJudgeNameError }}
+                    </span>
+                  }
                   <xuilib-search-judicials
                     id="judicialSearch"
                     [placeholderContent]="'e.g. John Smith'"
@@ -75,33 +79,33 @@
             >
               <div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': !!selectJudgeTypesError }">
                 <fieldset class="govuk-fieldset">
-                  <span class="govuk-error-message" *ngIf="selectJudgeTypesError">
-                    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-                    {{ selectJudgeTypesError | rpxTranslate }}
-                  </span>
+                  @if (selectJudgeTypesError) {
+                    <span class="govuk-error-message">
+                      <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+                      {{ selectJudgeTypesError | rpxTranslate }}
+                    </span>
+                  }
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     <h1 class="govuk-fieldset__heading">{{ 'Select all judge types that apply' | rpxTranslate }}</h1>
                   </legend>
                   <div class="govuk-form-group" id="judgeTypes">
                     <fieldset class="govuk-fieldset">
                       <div class="govuk-checkboxes" formArrayName="judgeType" data-module="govuk-checkboxes">
-                        <div
-                          class="govuk-checkboxes__item"
-                          *ngFor="let judgeType of hearingJudgeTypes; index as pos"
-                          [formGroupName]="pos"
-                        >
-                          <input
-                            class="govuk-checkboxes__input"
-                            id="{{ judgeType.key }}"
-                            name="pos"
-                            type="checkbox"
-                            formControlName="selected"
-                            [value]="judgeType.key"
-                          />
-                          <label class="govuk-label govuk-checkboxes__label" for="{{ judgeType.key }}">{{
-                            judgeType.value_en
-                          }}</label>
-                        </div>
+                        @for (judgeType of hearingJudgeTypes; track judgeType; let pos = $index) {
+                          <div class="govuk-checkboxes__item" [formGroupName]="pos">
+                            <input
+                              class="govuk-checkboxes__input"
+                              id="{{ judgeType.key }}"
+                              name="pos"
+                              type="checkbox"
+                              formControlName="selected"
+                              [value]="judgeType.key"
+                            />
+                            <label class="govuk-label govuk-checkboxes__label" for="{{ judgeType.key }}">{{
+                              judgeType.value_en
+                            }}</label>
+                          </div>
+                        }
                       </div>
                     </fieldset>
                   </div>

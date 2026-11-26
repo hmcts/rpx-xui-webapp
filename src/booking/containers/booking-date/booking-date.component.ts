@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
 import { BookingDateValidationError, BookingNavigationEvent, BookingProcess } from '../../models';
 import { DateValidators } from '../utils';
@@ -14,6 +14,7 @@ import {
 @Component({
   standalone: false,
   selector: 'exui-booking-date',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './booking-date.component.html',
 })
 export class BookingDateComponent implements OnInit {

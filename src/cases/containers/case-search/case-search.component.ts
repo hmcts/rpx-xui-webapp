@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   CaseState,
@@ -26,6 +26,7 @@ import * as fromCasesFeature from '../../store';
   selector: 'exui-search-case',
   templateUrl: 'case-search.component.html',
   styleUrls: ['case-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class CaseSearchComponent implements OnInit, OnDestroy {

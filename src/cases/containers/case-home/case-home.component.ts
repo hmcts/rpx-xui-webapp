@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import {
   AlertService,
@@ -23,6 +23,7 @@ import { DecentralisedRedirectService } from '../../../decentralisation/decentra
   standalone: false,
   selector: 'exui-case-home',
   templateUrl: 'case-home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['case-home.component.scss'],
 })
 export class CaseHomeComponent implements OnInit, OnDestroy {

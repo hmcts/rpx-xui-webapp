@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ActualHearingDayModel, HearingActualsMainModel } from '../../models/hearingActualsMainModel';
 import { HearingDateEnum } from '../../models/hearings.enum';
@@ -9,6 +9,7 @@ import { ActualHearingsUtils } from '../../utils/actual-hearings.utils';
   standalone: false,
   selector: 'exui-hearing-actual-summary-single-day',
   templateUrl: './hearing-actual-summary-single-day.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hearing-actual-summary-single-day.component.scss'],
 })
 export class HearingActualSummarySingleDayComponent {

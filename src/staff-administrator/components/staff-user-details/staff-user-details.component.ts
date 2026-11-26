@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { finalize, switchMap, tap } from 'rxjs/operators';
@@ -15,6 +15,7 @@ import { StaffDataAccessService } from '../../services/staff-data-access/staff-d
   standalone: false,
   selector: 'exui-staff-user-details',
   templateUrl: './staff-user-details.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./staff-user-details.component.scss'],
 })
 export class StaffUserDetailsComponent {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { getLabel } from '../../../../work-allocation/utils';
@@ -7,6 +7,7 @@ import { AllocateRoleNavigation } from '../../../models';
 @Component({
   standalone: false,
   selector: 'exui-choose-role-error',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './choose-role-error.component.html',
 })
 export class ChooseRoleErrorComponent implements OnInit {

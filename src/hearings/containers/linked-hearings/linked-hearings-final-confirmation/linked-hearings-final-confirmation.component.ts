@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import * as fromHearingStore from '../../../store';
@@ -6,6 +6,7 @@ import * as fromHearingStore from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-linked-hearings-final-confirmation',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './linked-hearings-final-confirmation.component.html',
 })
 export class LinkedHearingsFinalConfirmationComponent implements OnInit {

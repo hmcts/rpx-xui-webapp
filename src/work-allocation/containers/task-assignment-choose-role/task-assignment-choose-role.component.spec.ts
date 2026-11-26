@@ -9,7 +9,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { TASK_ROLES } from '../../../../api/workAllocation/constants/task-roles.mock.data';
 import { ChooseRadioOptionComponent } from '../../../role-access/components';
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('TaskAssignmentChooseRoleComponent', () => {
   let component: TaskAssignmentChooseRoleComponent;
@@ -52,7 +52,7 @@ describe('TaskAssignmentChooseRoleComponent', () => {
         },
         { provide: Router, useValue: router },
         { provide: Location, useValue: mockLocation },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

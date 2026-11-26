@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import * as fromHearingStore from '../../store';
   standalone: false,
   selector: 'exui-view-hearing',
   templateUrl: './view-hearing.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./view-hearing.component.scss'],
 })
 export class ViewHearingComponent {

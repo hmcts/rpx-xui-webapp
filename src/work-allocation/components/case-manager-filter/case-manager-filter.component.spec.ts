@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
@@ -12,11 +12,12 @@ import { CaseManagerFilterComponent } from '..';
 import * as fromStore from '../../../app/store';
 import { LocationDataService, WorkAllocationCaseService } from '../../services';
 import { ALL_LOCATIONS } from '../constants/locations';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   standalone: false,
   selector: 'xuilib-generic-filter',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<span></span>',
 })
 class MockGenericFilterComponent {
@@ -55,7 +56,7 @@ describe('CaseManagerFilterComponent', () => {
           provide: FilterService,
           useValue: mockFilterService,
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

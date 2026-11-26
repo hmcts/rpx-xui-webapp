@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
@@ -8,6 +8,7 @@ import { AppUtils } from '../../../app/app-utils';
   standalone: false,
   selector: 'exui-all-work-home',
   templateUrl: 'all-work-home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['all-work-home.component.scss'],
 })
 export class AllWorkHomeComponent implements OnInit, OnDestroy {

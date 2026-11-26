@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Alert, AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import { Observable, Subscription } from 'rxjs';
   standalone: false,
   selector: 'exui-alert',
   templateUrl: './alert.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./alert.component.scss'],
 })
 export class AlertComponent implements OnInit, OnDestroy {

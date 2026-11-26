@@ -1,45 +1,59 @@
-<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
-<ng-container [ngSwitch]="true">
-  <div *ngSwitchCase="!isCaseStatusListed()">
-    <details
-      *ngIf="isListedCaseStatus || caseStatusName === exuiDisplayStatus.CANCELLED"
-      class="govuk-details"
-      data-module="govuk-details"
-    >
-      <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-          {{ 'Listing information summary' | rpxTranslate }}
-        </span>
-      </summary>
-      <div class="govuk-details__text listing-info" *ngIf="hearingDaySchedule.length === 1">
-        <ng-container *ngTemplateOutlet="listingContent"></ng-container>
-      </div>
-      <div class="govuk-details__text listing-info" *ngIf="hearingDaySchedule.length > 1">
-        <ng-container *ngTemplateOutlet="listingContentMultiDay"></ng-container>
-      </div>
-    </details>
-  </div>
-  <div *ngSwitchCase="isCaseStatusListed()">
-    <h2 class="govuk-heading-m">{{ 'Listing information summary' | rpxTranslate }}</h2>
-    <div class="listing-info" *ngIf="hearingDaySchedule.length === 1">
-      <ng-container *ngTemplateOutlet="listingContent"></ng-container>
+@if (showSpinner$ | async) {
+  <xuilib-loading-spinner></xuilib-loading-spinner>
+}
+@switch (true) {
+  @case (!isCaseStatusListed()) {
+    <div>
+      @if (isListedCaseStatus || caseStatusName === exuiDisplayStatus.CANCELLED) {
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              {{ 'Listing information summary' | rpxTranslate }}
+            </span>
+          </summary>
+          @if (hearingDaySchedule.length === 1) {
+            <div class="govuk-details__text listing-info">
+              <ng-container *ngTemplateOutlet="listingContent"></ng-container>
+            </div>
+          }
+          @if (hearingDaySchedule.length > 1) {
+            <div class="govuk-details__text listing-info">
+              <ng-container *ngTemplateOutlet="listingContentMultiDay"></ng-container>
+            </div>
+          }
+        </details>
+      }
     </div>
-    <div class="listing-info" *ngIf="hearingDaySchedule.length > 1">
-      <ng-container *ngTemplateOutlet="listingContentMultiDay"></ng-container>
+  }
+  @case (isCaseStatusListed()) {
+    <div>
+      <h2 class="govuk-heading-m">{{ 'Listing information summary' | rpxTranslate }}</h2>
+      @if (hearingDaySchedule.length === 1) {
+        <div class="listing-info">
+          <ng-container *ngTemplateOutlet="listingContent"></ng-container>
+        </div>
+      }
+      @if (hearingDaySchedule.length > 1) {
+        <div class="listing-info">
+          <ng-container *ngTemplateOutlet="listingContentMultiDay"></ng-container>
+        </div>
+      }
     </div>
-  </div>
-</ng-container>
+  }
+}
 
 <ng-template #listingContent>
   <dl class="govuk-summary-list govuk-!-margin-bottom-0 govuk-!-padding-right-2">
-    <div class="govuk-summary-list__row" *ngIf="!isCaseStatusListed()">
-      <dt class="govuk-summary-list__key">{{ 'Status' | rpxTranslate }}</dt>
-      <dd
-        class="govuk-summary-list__value"
-        [innerHtml]="answerSource.HEARING_RESPONSE_STATUS | transformAnswer: hearingState$ | async"
-      ></dd>
-      <dd class="govuk-summary-list__actions"></dd>
-    </div>
+    @if (!isCaseStatusListed()) {
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ 'Status' | rpxTranslate }}</dt>
+        <dd
+          class="govuk-summary-list__value"
+          [innerHtml]="answerSource.HEARING_RESPONSE_STATUS | transformAnswer: hearingState$ | async"
+        ></dd>
+        <dd class="govuk-summary-list__actions"></dd>
+      </div>
+    }
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">{{ 'Case name' | rpxTranslate }}</dt>
       <dd class="govuk-summary-list__value" [innerHtml]="answerSource.CASE_NAME | transformAnswer: hearingState$ | async"></dd>
@@ -63,14 +77,16 @@
       ></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
-      <dt class="govuk-summary-list__key">{{ 'Hearing methods' | rpxTranslate }}</dt>
-      <dd
-        class="govuk-summary-list__value"
-        [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer: hearingState$ | async"
-      ></dd>
-      <dd class="govuk-summary-list__actions"></dd>
-    </div>
+    @if (!isPaperHearing) {
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ 'Hearing methods' | rpxTranslate }}</dt>
+        <dd
+          class="govuk-summary-list__value"
+          [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer: hearingState$ | async"
+        ></dd>
+        <dd class="govuk-summary-list__actions"></dd>
+      </div>
+    }
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">{{ 'Hearing date' | rpxTranslate }}</dt>
       <dd
@@ -116,14 +132,16 @@
       ></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="displayPanelMembersSection">
-      <dt class="govuk-summary-list__key">{{ 'Panel members' | rpxTranslate }}</dt>
-      <dd
-        class="govuk-summary-list__value"
-        [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer: hearingState$ | async"
-      ></dd>
-      <dd class="govuk-summary-list__actions"></dd>
-    </div>
+    @if (displayPanelMembersSection) {
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ 'Panel members' | rpxTranslate }}</dt>
+        <dd
+          class="govuk-summary-list__value"
+          [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer: hearingState$ | async"
+        ></dd>
+        <dd class="govuk-summary-list__actions"></dd>
+      </div>
+    }
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">{{ 'Participant attendance' | rpxTranslate }}</dt>
       <dd
@@ -137,14 +155,16 @@
 
 <ng-template #listingContentMultiDay>
   <dl class="govuk-summary-list govuk-!-margin-bottom-0 govuk-!-padding-right-2">
-    <div class="govuk-summary-list__row" *ngIf="!isCaseStatusListed()">
-      <dt class="govuk-summary-list__key">{{ 'Status' | rpxTranslate }}</dt>
-      <dd
-        class="govuk-summary-list__value"
-        [innerHtml]="answerSource.HEARING_RESPONSE_STATUS | transformAnswer: hearingState$ | async"
-      ></dd>
-      <dd class="govuk-summary-list__actions"></dd>
-    </div>
+    @if (!isCaseStatusListed()) {
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ 'Status' | rpxTranslate }}</dt>
+        <dd
+          class="govuk-summary-list__value"
+          [innerHtml]="answerSource.HEARING_RESPONSE_STATUS | transformAnswer: hearingState$ | async"
+        ></dd>
+        <dd class="govuk-summary-list__actions"></dd>
+      </div>
+    }
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">{{ 'Case name' | rpxTranslate }}</dt>
       <dd class="govuk-summary-list__value" [innerHtml]="answerSource.CASE_NAME | transformAnswer: hearingState$ | async"></dd>
@@ -168,14 +188,16 @@
       ></dd>
       <dd class="govuk-summary-list__actions"></dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
-      <dt class="govuk-summary-list__key">{{ 'Hearing methods' | rpxTranslate }}</dt>
-      <dd
-        class="govuk-summary-list__value"
-        [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer: hearingState$ | async"
-      ></dd>
-      <dd class="govuk-summary-list__actions"></dd>
-    </div>
+    @if (!isPaperHearing) {
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ 'Hearing methods' | rpxTranslate }}</dt>
+        <dd
+          class="govuk-summary-list__value"
+          [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer: hearingState$ | async"
+        ></dd>
+        <dd class="govuk-summary-list__actions"></dd>
+      </div>
+    }
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">{{ 'Hearing dates' | rpxTranslate }}</dt>
       <dd
@@ -185,75 +207,78 @@
       <dd class="govuk-summary-list__actions"></dd>
     </div>
   </dl>
-  <dl
-    class="govuk-summary-list govuk-!-padding-top-3 govuk-!-padding-left-2 govuk-!-margin-bottom-0"
-    *ngFor="let schedule of hearingDaySchedule; let i = index"
-  >
-    <div class="govuk-summary-list__row">
-      <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-          <span
-            class="govuk-details__summary-text"
-            [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED | transformAnswer: hearingState$ : i | async"
-          ></span>
-        </summary>
-        <div class="govuk-details__text listing-info">
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">{{ 'Time' | rpxTranslate }}</dt>
-              <dd
-                class="govuk-summary-list__value"
-                [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED_TIME | transformAnswer: hearingState$ : i | async"
-              ></dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">{{ 'Total duration' | rpxTranslate }}</dt>
-              <dd
-                class="govuk-summary-list__value"
-                [innerHtml]="answerSource.HEARING_RESPONSE_LENGTH | transformAnswer: hearingState$ : i | async"
-              ></dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">{{ 'Venue' | rpxTranslate }}</dt>
-              <dd
-                class="govuk-summary-list__value"
-                [innerHtml]="answerSource.COURT_LOCATION | transformAnswer: hearingState$ : i | async"
-              ></dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">{{ 'Room' | rpxTranslate }}</dt>
-              <dd
-                class="govuk-summary-list__value"
-                [innerHtml]="answerSource.ROOM_ID | transformAnswer: hearingState$ : i | async"
-              ></dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">{{ 'Judge' | rpxTranslate }}</dt>
-              <dd
-                class="govuk-summary-list__value"
-                [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer: hearingState$ : i | async"
-              ></dd>
-            </div>
-            <div class="govuk-summary-list__row" *ngIf="displayPanelMembersSection">
-              <dt class="govuk-summary-list__key">{{ 'Panel members' | rpxTranslate }}</dt>
-              <dd
-                class="govuk-summary-list__value"
-                [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer: hearingState$ : i | async"
-              ></dd>
-              <dd class="govuk-summary-list__actions"></dd>
-            </div>
-            <div class="govuk-summary-list__row" *ngIf="!isPaperHearing">
-              <dt class="govuk-summary-list__key">
-                {{ 'How participants will attend' | rpxTranslate }}
-              </dt>
-              <dd
-                class="govuk-summary-list__value"
-                [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer: hearingState$ : i | async"
-              ></dd>
-            </div>
-          </dl>
-        </div>
-      </details>
-    </div>
-  </dl>
+  @for (schedule of hearingDaySchedule; track schedule; let i = $index) {
+    <dl class="govuk-summary-list govuk-!-padding-top-3 govuk-!-padding-left-2 govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span
+              class="govuk-details__summary-text"
+              [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED | transformAnswer: hearingState$ : i | async"
+            ></span>
+          </summary>
+          <div class="govuk-details__text listing-info">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">{{ 'Time' | rpxTranslate }}</dt>
+                <dd
+                  class="govuk-summary-list__value"
+                  [innerHtml]="answerSource.DATE_RESPONSE_SUBMITTED_TIME | transformAnswer: hearingState$ : i | async"
+                ></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">{{ 'Total duration' | rpxTranslate }}</dt>
+                <dd
+                  class="govuk-summary-list__value"
+                  [innerHtml]="answerSource.HEARING_RESPONSE_LENGTH | transformAnswer: hearingState$ : i | async"
+                ></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">{{ 'Venue' | rpxTranslate }}</dt>
+                <dd
+                  class="govuk-summary-list__value"
+                  [innerHtml]="answerSource.COURT_LOCATION | transformAnswer: hearingState$ : i | async"
+                ></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">{{ 'Room' | rpxTranslate }}</dt>
+                <dd
+                  class="govuk-summary-list__value"
+                  [innerHtml]="answerSource.ROOM_ID | transformAnswer: hearingState$ : i | async"
+                ></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">{{ 'Judge' | rpxTranslate }}</dt>
+                <dd
+                  class="govuk-summary-list__value"
+                  [innerHtml]="answerSource.JUDICIAL_MEMBERS | transformAnswer: hearingState$ : i | async"
+                ></dd>
+              </div>
+              @if (displayPanelMembersSection) {
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">{{ 'Panel members' | rpxTranslate }}</dt>
+                  <dd
+                    class="govuk-summary-list__value"
+                    [innerHtml]="answerSource.PANEL_MEMBERS | transformAnswer: hearingState$ : i | async"
+                  ></dd>
+                  <dd class="govuk-summary-list__actions"></dd>
+                </div>
+              }
+              @if (!isPaperHearing) {
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    {{ 'How participants will attend' | rpxTranslate }}
+                  </dt>
+                  <dd
+                    class="govuk-summary-list__value"
+                    [innerHtml]="answerSource.PARTICIPANT_ATTENDENCE | transformAnswer: hearingState$ : i | async"
+                  ></dd>
+                </div>
+              }
+            </dl>
+          </div>
+        </details>
+      </div>
+    </dl>
+  }
 </ng-template>

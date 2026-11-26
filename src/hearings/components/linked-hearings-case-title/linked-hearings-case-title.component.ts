@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Mode } from '../../models/hearings.enum';
 
 @Component({
   standalone: false,
   selector: 'exui-linked-hearings-case-title',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './linked-hearings-case-title.component.html',
 })
 export class LinkedHearingsCaseTitleComponent {

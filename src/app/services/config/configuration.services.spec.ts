@@ -2,7 +2,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { AppConfigService } from './configuration.services';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 
 describe('Configuration Service', () => {
@@ -14,7 +14,7 @@ describe('Configuration Service', () => {
     TestBed.configureTestingModule({
       teardown: { destroyAfterEach: false },
       imports: [StoreModule.forRoot({})],
-      providers: [AppConfigService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [AppConfigService, provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);

@@ -1,9 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AnswersComponent } from './answers.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template:
     '<exui-answers [caption]="caption" [heading]="heading" [hint]="hint" [answers]="answers" (navigate)="onNavigate($event)"></exui-answers>',
 })

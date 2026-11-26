@@ -1,13 +1,13 @@
 <exui-app-header></exui-app-header>
-<ng-container *ngIf="isTandCEnabled; else legacyTandC">
+@if (isTandCEnabled) {
   <div class="govuk-width-container">
-    <ng-container *ngIf="document; else loading">
+    @if (document) {
       <xuilib-terms-and-conditions [document]="document"></xuilib-terms-and-conditions>
-    </ng-container>
-    <ng-template #loading>Loading...</ng-template>
+    } @else {
+      Loading...
+    }
   </div>
-</ng-container>
-<ng-template #legacyTandC>
+} @else {
   <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-main-wrapper--l" id="content" role="main">
       <div class="govuk-grid-row">
@@ -53,5 +53,5 @@
       </div>
     </main>
   </div>
-</ng-template>
+}
 <exui-app-footer></exui-app-footer>

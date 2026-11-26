@@ -8,7 +8,7 @@ import { ErrorMessage } from '../../../app/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { StaffDataFilterService } from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffUsersComponent } from './staff-users.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('StaffUsersComponent', () => {
   let component: StaffUsersComponent;
@@ -38,7 +38,7 @@ describe('StaffUsersComponent', () => {
         { provide: StaffDataFilterService, useValue: staffDataFilterServiceMock },
         { provide: InfoMessageCommService, useValue: infoMessageCommMock },
         { provide: Store, useValue: storeMock },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

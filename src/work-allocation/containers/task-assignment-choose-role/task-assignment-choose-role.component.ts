@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -12,6 +12,7 @@ import { TaskPermission, TaskRole } from '../../models/tasks';
   standalone: false,
   selector: 'exui-task-assignment-choose-role',
   templateUrl: './task-assignment-choose-role.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./task-assignment-choose-role.component.scss'],
 })
 export class TaskAssignmentChooseRoleComponent implements OnInit {

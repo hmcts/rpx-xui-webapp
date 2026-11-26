@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserInfo } from '../../../app/models';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
@@ -16,6 +16,7 @@ import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState
   standalone: false,
   selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./booking-wrapper.component.scss'],
 })
 export class BookingWrapperComponent implements OnInit {

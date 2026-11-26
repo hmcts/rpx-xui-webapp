@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { select, Store } from '@ngrx/store';
@@ -21,6 +21,7 @@ import { getTitleText, setErrorTitle } from '../../../utils';
 @Component({
   standalone: false,
   selector: 'exui-choose-allocate-to',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './choose-allocate-to.component.html',
 })
 export class ChooseAllocateToComponent implements OnInit {

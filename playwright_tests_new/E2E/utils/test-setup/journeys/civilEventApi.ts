@@ -341,7 +341,16 @@ async function submitCivilServiceEvent(options: {
 
   if (!response.ok()) {
     const body = await response.text().catch(() => '');
-    throw new Error(civilDependencyError(`Civil API failed to ${options.context} (HTTP ${response.status()}).`, body));
+    const caseTypeHint =
+      response.status() === 404 && /No case type found/i.test(body)
+        ? ' CCD reported "No case type found". Check that Civil Service targets the intended CCD deployment and that the citizen can access the CIVIL case type.'
+        : '';
+    throw new Error(
+      civilDependencyError(
+        `Civil API failed to ${options.context} (HTTP ${response.status()}). Service='${new URL(options.url).origin}'.${caseTypeHint}`,
+        body
+      )
+    );
   }
 
   return (await response.json()) as CcdCaseDetails;

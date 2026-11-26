@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import * as _ from 'lodash';
 import moment from 'moment';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
@@ -14,6 +14,7 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 @Component({
   standalone: false,
   selector: 'exui-hearing-timing-section',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hearing-timing-section.component.html',
 })
 export class HearingTimingSectionComponent implements OnInit {

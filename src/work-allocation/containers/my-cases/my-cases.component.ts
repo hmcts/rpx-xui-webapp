@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models/user-details.model';
@@ -11,6 +11,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 @Component({
   standalone: false,
   selector: 'exui-my-cases',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'my-cases.component.html',
 })
 export class MyCasesComponent extends WorkCaseListWrapperComponent {

@@ -1,5 +1,8 @@
 <exui-page-wrapper [title]="'Case list' | rpxTranslate">
   <div class="case-list-component">
+    <div class="govuk-width-container" *ngIf="filterValidationError">
+      <exui-error-message [error]="filterValidationError"></exui-error-message>
+    </div>
     <div class="hmcts-action-bar">
       <div class="hmcts-action-bar__filter">
         <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button">
@@ -33,6 +36,7 @@
                 [jurisdictions]="jurisdictions"
                 [defaults]="defaults"
                 (onApply)="applyFilter($event)"
+                (validationErrors)="handleValidationErrors($event)"
               ></ccd-workbasket-filters>
             </exui-ccd-connector>
           </div>

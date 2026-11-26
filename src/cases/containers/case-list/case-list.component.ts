@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
+  CaseEditValidationError,
   CaseState,
   CaseType,
   DefinitionsService,
@@ -16,6 +17,7 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
 import { filter, mergeMap, take, takeUntil } from 'rxjs/operators';
+import { ErrorMessage } from '../../../app/models';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromRoot from '../../../app/store';
@@ -99,6 +101,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public organisationDetails: Partial<OrganisationDetails>;
 
   public resultViewIsReady: boolean = false;
+  public filterValidationError: ErrorMessage | null = null;
+  public caseEditValidationErrors: CaseEditValidationError[] = [];
 
   private readonly unsubscribe$ = new Subject();
 
@@ -408,6 +412,16 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * to dispatch an Action to get the Pagination Metadata for the filter selection.
    */
   public applyFilter(event) {
+    if (this.caseEditValidationErrors?.length > 0) {
+      this.filterValidationError = {
+        title: 'There is a problem',
+        description: 'Check the form for errors and try again.',
+        multiple: true,
+        errors: this.caseEditValidationErrors.map((err: CaseEditValidationError) => ({ error: err.message, name: err.id })),
+      };
+      window.scrollTo(0, 0);
+      return;
+    }
     this.page = event.selected.page;
     this.selected = event.selected;
     // EUI-2906. Reset the sort order when changing the filter.
@@ -507,5 +521,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));
       }
     });
+  }
+
+  public handleValidationErrors(validationErrors: CaseEditValidationError[]) {
+    // Handle validation errors from the workbasket filters
+    this.caseEditValidationErrors = validationErrors;
+    this.filterValidationError = null;
   }
 }

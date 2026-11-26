@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import {
   AlertService,
+  CaseEditValidationError,
   DefinitionsService,
   PaginationMetadata,
   SearchResultViewItem,
@@ -321,6 +322,50 @@ describe('CaseListComponent', () => {
       fixture.detectChanges();
 
       expect(component.page).toEqual(event.selected.page);
+    });
+
+    it('should display the validation errors and not apply the filter when there are case edit validation errors.', () => {
+      const validationErrors = [
+        { id: 'dateFrom', message: 'dateFrom is older than the minimum date allowed' },
+        { id: 'dateTo', message: 'dateTo is later than the maximum date allowed' },
+      ] as CaseEditValidationError[];
+      const scrollToSpy = spyOn(window, 'scrollTo');
+      const getElasticSearchResultsSpy = spyOn(component, 'getElasticSearchResults');
+      component.caseEditValidationErrors = validationErrors;
+      component.page = 2;
+
+      component.applyFilter(event);
+
+      expect(component.filterValidationError).toEqual({
+        title: 'There is a problem',
+        description: 'Check the form for errors and try again.',
+        multiple: true,
+        errors: [
+          { error: 'dateFrom is older than the minimum date allowed', name: 'dateFrom' },
+          { error: 'dateTo is later than the maximum date allowed', name: 'dateTo' },
+        ],
+      });
+      expect(scrollToSpy).toHaveBeenCalledWith(0, 0);
+      expect(component.page).toBe(2);
+      expect(component.selected).toBeUndefined();
+      expect(getElasticSearchResultsSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleValidationErrors()', () => {
+    it('should store the case edit validation errors and clear the filter validation error.', () => {
+      const validationErrors = [
+        { id: 'dateOfBirth', message: 'The date of birth must be in the past' },
+      ] as CaseEditValidationError[];
+      component.filterValidationError = {
+        title: 'There is a problem',
+        description: 'Check the form for errors and try again.',
+      };
+
+      component.handleValidationErrors(validationErrors);
+
+      expect(component.caseEditValidationErrors).toBe(validationErrors);
+      expect(component.filterValidationError).toBeNull();
     });
   });
 

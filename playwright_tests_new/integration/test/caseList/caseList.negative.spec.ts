@@ -48,6 +48,55 @@ test.describe(
   }
 );
 
+test.describe(`Case list filter validation for ${userIdentifier}`, { tag: ['@integration', '@integration-case-list'] }, () => {
+  test('prevents a search for an invalid date range and allows it after the range is corrected', async ({
+    caseListPage,
+    page,
+  }) => {
+    const dateRangeError = 'Date To must be the same as or later than Date From';
+    let searchRequestCount = 0;
+
+    await page.route('**/data/internal/searchCases*', async (route) => {
+      searchRequestCount += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(caseListMockResponse),
+      });
+    });
+
+    await caseListPage.navigateTo();
+    await expect(caseListPage.caseListResultsAmount).toBeVisible();
+    expect(searchRequestCount).toBe(1);
+
+    await caseListPage.setLastModifiedDateRange('24/11/2026', '23/11/2026');
+    await expect(caseListPage.dateRangeValidationErrors).toContainText(dateRangeError);
+
+    const invalidSearchRequest = page
+      .waitForRequest((request) => request.url().includes('/data/internal/searchCases'), { timeout: 2000 })
+      .then(() => true)
+      .catch(() => false);
+
+    await caseListPage.applyFilters();
+
+    await expect(caseListPage.filterValidationSummary).toBeVisible();
+    await expect(caseListPage.filterValidationSummaryTitle).toHaveText('There is a problem');
+    await expect(caseListPage.filterValidationSummaryLinks).toHaveText([dateRangeError]);
+    await expect(caseListPage.filterValidationSummaryLinks.first()).toHaveAttribute('href', '#dateTo');
+    expect(await invalidSearchRequest).toBe(false);
+    expect(searchRequestCount).toBe(1);
+
+    await caseListPage.setLastModifiedDateRange('24/11/2026', '25/11/2026');
+    await expect(caseListPage.filterValidationSummary).toBeHidden();
+
+    const validSearchRequest = page.waitForRequest((request) => request.url().includes('/data/internal/searchCases'));
+    await caseListPage.applyFilters();
+    await validSearchRequest;
+
+    expect(searchRequestCount).toBe(2);
+  });
+});
+
 test.describe(
   `Mimic Slow Response Times on  /searchCases call for ${userIdentifier}`,
   { tag: ['@integration', '@integration-case-list'] },

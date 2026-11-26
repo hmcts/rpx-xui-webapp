@@ -44,7 +44,7 @@ Use Playwright integration tests for local UI coverage with mocked backend route
 ### Prerequisites
 
 ```bash
-node -v   # requires >= 24.22.1
+node -v   # requires >= 24.22.2
 yarn install
 ```
 
@@ -141,6 +141,8 @@ Detailed suite documentation and architecture:
   - With coverage/report copy: `yarn test:api:pw:coverage`
 
 For AAT and DEMO, generate and source the local Playwright env first with `yarn env:populate:playwright:aat` or `yarn env:populate:playwright:demo`, then `set -a; source .env; set +a`. For ITHC, export the required credentials through an approved local secret mechanism and keep passwords out of command history.
+
+Note: If you run `set -a; source .env; set +a` and see `.env:{line}: command not found: {includedWord}` or similar please ensure double quotes surround the relevant line (e.g. VARIABLE="{secret}").
 
 ### How tests operate
 
@@ -521,4 +523,4 @@ Extended version of script below:
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
 
 END
-Trigger
+Trigger Trigger2 Trigger3

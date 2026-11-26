@@ -1,6 +1,7 @@
 import integrationConfigSupport from './playwright.integration.config.support.cjs';
 import { logResolvedTagFilters, resolveTagFilters } from './playwright-config-utils';
 
+// The CommonJS support module has inferred JSDoc types, so narrow it through `unknown` to this contract.
 const {
   buildConfig: buildSupportConfig,
   resolveOdhinConsoleCapture,
@@ -9,7 +10,7 @@ const {
   resolveOdhinLightweight,
   resolveOdhinRuntimeHookTimeoutMs,
   resolveWorkerCount,
-} = integrationConfigSupport as {
+} = integrationConfigSupport as unknown as {
   buildConfig: (env: NodeJS.ProcessEnv) => {
     reporter: [string, Record<string, unknown> | undefined][];
     workers?: number;

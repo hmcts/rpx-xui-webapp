@@ -1,4 +1,5 @@
 import { HttpParams } from '@angular/common/http';
+import { of } from 'rxjs';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataService } from './lov-ref-data.service';
 
@@ -7,6 +8,7 @@ describe('Lov RefData service', () => {
   describe('LovRefDataService', () => {
     it('getForService should make correct api call', () => {
       const service = new LovRefDataService(mockHttpService);
+      mockHttpService.get.and.returnValue(of([]));
       service.getListOfValues(HearingCategory.HearingPriority, 'BBA3', false);
 
       const options = {

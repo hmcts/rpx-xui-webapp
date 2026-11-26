@@ -43,6 +43,7 @@ describe('RemoveRoleComponent', () => {
   let sessionStorageServiceMock: jasmine.SpyObj<any>;
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate', 'getCurrentNavigation']);
   routerMock.navigate.and.returnValue(Promise.resolve(true));
+  routerMock.navigateByUrl.and.returnValue(Promise.resolve(true));
   const locationMock = jasmine.createSpyObj('Location', ['back']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll', 'getUserByIdamId']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
@@ -196,7 +197,7 @@ describe('RemoveRoleComponent', () => {
   });
 
   it('should navigate correctly on click', () => {
-    (component as any).backUrl = allworkUrl;
+    (component as any).backUrl = '/cases/case-details/IA/Asylum/111111#Roles%20and%20access';
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
     expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
@@ -204,7 +205,10 @@ describe('RemoveRoleComponent', () => {
     const additionalState = {
       state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage },
     };
-    expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(
+      '/cases/case-details/IA/Asylum/111111#Roles%20and%20access',
+      additionalState
+    );
   });
 
   it('should not set email when caseworkers JSON is invalid', () => {

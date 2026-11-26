@@ -81,7 +81,7 @@ const resolvedBaseLocations = [
 
 export type MyWorkFilterRoutesOptions = {
   fullLocationRouteHandler?: (route: Route) => Promise<void>;
-  myCasesRouteHandler?: Parameters<typeof setupMyCasesRoutes>[2]['routeHandler'];
+  myCasesRouteHandler?: NonNullable<Parameters<typeof setupMyCasesRoutes>[2]>['routeHandler'];
   roleAssignmentInfo: TaskListBootstrapRoleAssignment[];
 };
 

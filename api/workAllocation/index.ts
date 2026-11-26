@@ -283,7 +283,7 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
   const traceProps = { functionCall: 'getTasksByCaseIdAndEventId' };
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };
-    const jurisdictions = getWASupportedJurisdictionsList();
+    const jurisdictions = getWASupportedJurisdictionsList(req);
     // Adding log in app insights for task completion journey
     trackTrace(`Search for completable task of eventId and caseId: ${eventId} ${caseId}`, traceProps);
     const { status, data } = jurisdictions.includes(jurisdiction)
@@ -381,7 +381,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       return sendValidationError(res, validationFailure);
     }
 
-    const jurisdictions = getWASupportedJurisdictionsList();
+    const jurisdictions = getWASupportedJurisdictionsList(req);
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     const reqBody = {
       case_id: req.body.searchRequest.ccdId,

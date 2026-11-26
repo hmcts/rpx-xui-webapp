@@ -3,15 +3,20 @@ import type { Locator } from '@playwright/test';
 
 import { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po.js';
 
+const okEventTrigger = {
+  status: () => 200,
+  url: () => 'https://xui.example/data/internal/cases/1234567890123456/event-triggers/updateCase?ignore-warning=false',
+};
+
 test.describe('Case details case action helper', { tag: '@svc-internal' }, () => {
-  test('waits for a visible action spinner before submitting or retrying it', async () => {
+  test('waits for the action spinner before submitting once', async () => {
     let goClicks = 0;
-    let goClickAttempts = 0;
     let optionSelections = 0;
     let spinnerVisible = false;
     let spinnerWaits = 0;
     const spinnerTimeouts: number[] = [];
     let expectedWaits = 0;
+    let enabledWaits = 0;
 
     const spinner = {
       first: () => ({
@@ -29,7 +34,7 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
     };
     const dropdown = {
       locator: () => ({
-        evaluateAll: async () => [{ label: 'Upload Document', value: 'uploadDocument' }],
+        evaluateAll: async () => [{ label: 'Upload Document', value: '1: Object' }],
       }),
       selectOption: async () => {
         optionSelections += 1;
@@ -40,20 +45,11 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
     const expectedLocator = {
       waitFor: async () => {
         expectedWaits += 1;
-        if (expectedWaits === 1) {
-          spinnerVisible = true;
-          throw new Error('action page is still loading');
-        }
       },
     } as unknown as Locator;
     const caseDetailsPage = Object.assign(Object.create(CaseDetailsPage.prototype), {
       caseActionGoButton: {
         click: async () => {
-          goClickAttempts += 1;
-          if (goClickAttempts === 1) {
-            spinnerVisible = true;
-            throw new Error('loading spinner intercepted the click');
-          }
           if (spinnerVisible) {
             throw new Error('Go clicked while the previous action is still loading');
           }
@@ -62,11 +58,18 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
         waitFor: async () => undefined,
       },
       caseActionsDropdown: dropdown,
+      enabledCaseActionGoButton: {
+        waitFor: async () => {
+          enabledWaits += 1;
+          if (optionSelections === 0) throw new Error('Go enabled wait ran before selection');
+        },
+      },
       eventCreationErrorHeading: { isVisible: async () => false },
       logger: { warn: () => undefined },
       page: {
         locator: () => spinner,
         waitForLoadState: async () => undefined,
+        waitForResponse: async () => okEventTrigger,
       },
     });
 
@@ -77,9 +80,11 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
 
     expect(goClicks).toBe(1);
     expect(optionSelections).toBe(1);
-    expect(spinnerWaits).toBe(4);
-    expect(spinnerTimeouts).toEqual([50, 50, 50, 50]);
-    expect(expectedWaits).toBe(2);
+    expect(spinnerWaits).toBe(2);
+    expect(spinnerTimeouts).toHaveLength(2);
+    expect(spinnerTimeouts.every((timeout) => timeout > 0 && timeout <= 50)).toBe(true);
+    expect(expectedWaits).toBe(1);
+    expect(enabledWaits).toBe(1);
   });
 
   test('reports redacted Update Case readiness diagnostics without replaying the action', async () => {
@@ -94,14 +99,16 @@ test.describe('Case details case action helper', { tag: '@svc-internal' }, () =>
       },
       caseActionsDropdown: {
         waitFor: async () => undefined,
-        locator: () => ({ evaluateAll: async () => [{ label: 'Update case', value: 'updateCase' }] }),
+        locator: () => ({ evaluateAll: async () => [{ label: 'Update case', value: '1: Object' }] }),
         selectOption: async () => {
           optionSelections += 1;
         },
       },
+      enabledCaseActionGoButton: { waitFor: async () => undefined },
       eventCreationErrorHeading: { isVisible: async () => false },
       logger: { warn: () => undefined },
       page: {
+        waitForResponse: async () => okEventTrigger,
         locator: () => ({ first: () => ({ isVisible: async () => false, waitFor: async () => undefined }) }),
         url: () => 'https://xui.example/cases/case-details/1234567890123456?token=secret-value',
         waitForLoadState: async () => undefined,
@@ -164,12 +171,14 @@ for (const state of ['missing', 'wrong form', 'delayed upload form'] as const) {
       },
       caseActionsDropdown: {
         waitFor: async () => undefined,
-        locator: () => ({ evaluateAll: async () => [{ label: 'Upload Document', value: 'uploadDocument' }] }),
+        locator: () => ({ evaluateAll: async () => [{ label: 'Upload Document', value: '1: Object' }] }),
         selectOption: async () => undefined,
       },
+      enabledCaseActionGoButton: { waitFor: async () => undefined },
       eventCreationErrorHeading: { isVisible: async () => false },
       logger: { warn: () => undefined },
       page: {
+        waitForResponse: async () => okEventTrigger,
         locator: () => ({ first: () => ({ isVisible: async () => false, waitFor: async () => undefined }) }),
         url: () => 'https://xui.example/cases/case-details/1234567890123456',
         waitForLoadState: async () => undefined,
@@ -196,3 +205,77 @@ for (const state of ['missing', 'wrong form', 'delayed upload form'] as const) {
     expect(goClicks).toBe(1);
   });
 }
+
+type EventTriggerState = { status: number; url?: string } | 'none';
+
+function createEventTriggerHarness(eventTrigger: EventTriggerState) {
+  let goClicks = 0;
+  let responseWaitStartedBeforeClick = false;
+  let releaseResponse: () => void = () => undefined;
+  const responseReleased = new Promise<void>((resolve) => {
+    releaseResponse = resolve;
+  });
+  const details = Object.assign(Object.create(CaseDetailsPage.prototype), {
+    caseActionGoButton: {
+      waitFor: async () => undefined,
+      click: async () => {
+        goClicks++;
+        releaseResponse();
+      },
+    },
+    caseActionsDropdown: {
+      waitFor: async () => undefined,
+      locator: () => ({ evaluateAll: async () => [{ label: 'Upload Document', value: '1: Object' }] }),
+      selectOption: async () => undefined,
+    },
+    enabledCaseActionGoButton: { waitFor: async () => undefined },
+    eventCreationErrorHeading: { isVisible: async () => false },
+    logger: { warn: () => undefined },
+    page: {
+      locator: () => ({ first: () => ({ isVisible: async () => false, waitFor: async () => undefined }) }),
+      url: () => 'https://xui.example/cases/case-details/1234567890123456',
+      waitForLoadState: async () => undefined,
+      waitForResponse: async (_predicate: unknown, { timeout }: { timeout: number }) => {
+        responseWaitStartedBeforeClick = goClicks === 0;
+        expect(timeout).toBeGreaterThan(0);
+        await responseReleased;
+        if (eventTrigger === 'none') throw new Error('page.waitForResponse: Timeout exceeded');
+        return {
+          status: () => eventTrigger.status,
+          url: () => eventTrigger.url ?? 'https://xui.example/data/internal/cases/1234567890123456/event-triggers/uploadDocument',
+        };
+      },
+    },
+  });
+  return { details, goClicks: () => goClicks, startedBeforeClick: () => responseWaitStartedBeforeClick };
+}
+
+test.describe('Case details action destination', { tag: '@svc-internal' }, () => {
+  test('keeps waiting for the destination when no trigger response is observed', async () => {
+    const harness = createEventTriggerHarness('none');
+    const destination = { waitFor: async () => undefined } as unknown as Locator;
+    await CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document', {
+      expectedLocator: destination,
+    });
+    expect(harness.goClicks()).toBe(1);
+  });
+
+  test('ignores an unrelated failed event response while waiting for the selected destination', async () => {
+    const harness = createEventTriggerHarness({
+      status: 500,
+      url: 'https://xui.example/data/internal/cases/9876543210987654/event-triggers/otherAction',
+    });
+    const destination = { waitFor: () => new Promise<void>((resolve) => setTimeout(resolve, 20)) } as unknown as Locator;
+    await expect(
+      CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document', { expectedLocator: destination })
+    ).resolves.toBeUndefined();
+  });
+
+  test('requires a destination before starting an action', async () => {
+    const harness = createEventTriggerHarness({ status: 200 });
+    await expect(CaseDetailsPage.prototype.selectCaseAction.call(harness.details, 'Upload Document')).rejects.toThrow(
+      'requires an expected path or locator'
+    );
+    expect(harness.goClicks()).toBe(0);
+  });
+});

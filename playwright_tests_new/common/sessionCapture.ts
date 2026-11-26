@@ -1,4 +1,4 @@
-import { chromium, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { chromium, test, type BrowserContext, type Locator, type Page, type TestInfo } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -7,6 +7,7 @@ import { UserUtils } from '../E2E/utils/user.utils.js';
 import { IdamPage, createLogger } from '@hmcts/playwright-common';
 import type { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
+import { inPhase } from '../E2E/utils/frameworkError.js';
 import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
 import { SessionCaptureError, StorageStateCorruptedError } from '../api/utils/errors';
 import {
@@ -60,6 +61,7 @@ const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const DEFAULT_SESSION_CAPTURE_STAGGER_MS = 0;
 const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
+export const COOLDOWN_SUPPRESSED_MESSAGE_MARKER = '[cooldown-suppressed]';
 const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
 const SESSION_CAPTURE_BROWSER_LAUNCH_BUDGET_MS = 10_000;
 const SESSION_CAPTURE_CONTEXT_CREATE_BUDGET_MS = 5_000;
@@ -915,7 +917,24 @@ async function probeAuthenticatedShell(
 export async function ensureAuthenticatedPage(
   page: Page,
   userIdentifier: SessionIdentityInput,
-  options: { targetUrl?: string; waitForSelector?: string | false; timeoutMs?: number } = {}
+  options: AuthenticatedPageOptions = {}
+): Promise<LoadedSession> {
+  const { testInfo = test.info(), ...pageOptions } = options;
+  return inPhase(testInfo, 'auth', () => authenticatePage(page, userIdentifier, pageOptions));
+}
+
+type AuthenticatedPageOptions = {
+  targetUrl?: string;
+  waitForSelector?: string | false;
+  timeoutMs?: number;
+  /** Defaults to the current test; pass explicitly when composing test contexts. */
+  testInfo?: Pick<TestInfo, 'annotations'>;
+};
+
+async function authenticatePage(
+  page: Page,
+  userIdentifier: SessionIdentityInput,
+  options: Omit<AuthenticatedPageOptions, 'testInfo'>
 ): Promise<LoadedSession> {
   const resolveLoadedIdentity = (loadedSession: LoadedSession) => {
     if (
@@ -1191,11 +1210,17 @@ async function executeLoginAttempt(
 // login surface. Retrying with a fresh browser context is safe because no
 // credentials have been submitted yet.
 function unavailableIdamLoginSurfaceError(page: Page, userIdentifier: string): SessionCaptureError {
+  let currentUrl = 'unknown';
+  try {
+    currentUrl = new URL(page.url()).origin;
+  } catch {
+    // A malformed landing URL cannot safely be included in diagnostics.
+  }
   return new SessionCaptureError(
-    `IDAM login surface did not render within ${IDAM_LOGIN_SURFACE_TIMEOUT_MS}ms for ${userIdentifier}`,
+    `IDAM login surface did not render within ${IDAM_LOGIN_SURFACE_TIMEOUT_MS}ms for ${userIdentifier} (origin=${currentUrl})`,
     userIdentifier,
     {
-      currentUrl: sanitizedPageUrl(page),
+      currentUrl,
       failureKind: SERVICE_DOWN_SESSION_CAPTURE_FAILURE,
     }
   );
@@ -1244,7 +1269,7 @@ async function confirmAuthenticatedLogin(
     acceptCookies?: typeof acceptAccessCookiesIfPresent;
     waitForShell?: typeof waitForAuthenticatedShell;
     waitForAuthCookies?: typeof waitForRequiredAuthCookies;
-    info?: typeof logger.info;
+    info?: (message: string, metadata: Record<string, unknown>) => void;
   } = {}
 ): Promise<void> {
   const acceptCookies = deps.acceptCookies ?? acceptAccessCookiesIfPresent;
@@ -1601,9 +1626,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           });
           if (!requiresLockedFailureClear && (!recentFailure.retryable || recentFailure.recoveryAttempted)) {
             throw new SessionCaptureError(
-              `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
+              `${COOLDOWN_SUPPRESSED_MESSAGE_MARKER} Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailure.message}`,
               identity.userIdentifier,
-              { sessionPath, failureKind: recentFailure.failureKind }
+              { sessionPath, failureKind: recentFailure.failureKind, cooldownSuppressed: true }
             );
           }
         }
@@ -1679,9 +1704,9 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
           }
           if (!lockedRecentFailure.retryable || lockedRecentFailure.recoveryAttempted) {
             throw new SessionCaptureError(
-              `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
+              `${COOLDOWN_SUPPRESSED_MESSAGE_MARKER} Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailure.message}`,
               identity.userIdentifier,
-              { sessionPath, failureKind: lockedRecentFailure.failureKind }
+              { sessionPath, failureKind: lockedRecentFailure.failureKind, cooldownSuppressed: true }
             );
           }
 

@@ -133,7 +133,6 @@ Fortify Scan/
 
 # Local agent review artefacts
 /.agents/
-/AGENTS.md
 /DECISIONS.md
 /PLAN.md
 /RESULT.md

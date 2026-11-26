@@ -3068,13 +3068,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.28-angular-22":
-  version: 7.4.28-angular-22
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.28-angular-22"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.28-angular-22.1":
+  version: 7.4.28-angular-22.1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.28-angular-22.1"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
-    "@hmcts/media-viewer": "npm:4.2.49-upgrade-angular-22"
+    "@hmcts/media-viewer": "npm:4.2.50-upgrade-angular-22.0"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:5.13.0"
     katex: "npm:^0.18.2"
@@ -3119,8 +3119,8 @@ __metadata:
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
-    zone.js: ^0.15.1
-  checksum: 10/796891d31a817b5a31c9a68804e310a4f12174dfb4041ab7ef5005890c35082d2c4d151b9539d06544e107a642353d7d64e069f998fa5741793b7d9a342a0e26
+    zone.js: 0.16.3
+  checksum: 10/f26ef20651870b0ba0c4ae53d7e10e62630c00897f6bf9a20ce9ca207be879f53c0af47112451e268403209382a7553c1b6304282bad963e1c80e14cb4dea51f
   languageName: node
   linkType: hard
 
@@ -3138,9 +3138,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.49-upgrade-angular-22":
-  version: 4.2.49-upgrade-angular-22
-  resolution: "@hmcts/media-viewer@npm:4.2.49-upgrade-angular-22"
+"@hmcts/media-viewer@npm:4.2.50-upgrade-angular-22.0":
+  version: 4.2.50-upgrade-angular-22.0
+  resolution: "@hmcts/media-viewer@npm:4.2.50-upgrade-angular-22.0"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^25.1.0"
     moment-timezone: "npm:^0.6.2"
@@ -3161,9 +3161,9 @@ __metadata:
     "@ngrx/store": ^22.0.0
     "@ngrx/store-devtools": ^22.0.0
     ngx-chips: 3.0.0
-    rpx-xui-translation: 1.2.19-angular-22-upgrade
+    rpx-xui-translation: 1.2.20-angular-22-upgrade
     rxjs: ^7.8.2
-  checksum: 10/6730b02b2bf3628d4cd3868ac9dfbed2716c80d13af08fcf551d0981f4b6ab856e44f5c65af5c595dc87dabcba25af68659d342e74a894ed1fcab2e47f681c89
+  checksum: 10/ef65bc5b5671a313e14e404543a68d4c5c0800dcdbd17fe0f8e08c09b63457c9b8683e851db96f67228605aad56f13f3675880d11ac6bb136d208927fd85d493
   languageName: node
   linkType: hard
 
@@ -18374,9 +18374,9 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.28-angular-22"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.28-angular-22.1"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
-    "@hmcts/media-viewer": "npm:4.2.49-upgrade-angular-22"
+    "@hmcts/media-viewer": "npm:4.2.50-upgrade-angular-22.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.7"
     "@hmcts/properties-volume": "npm:^1.4.1"

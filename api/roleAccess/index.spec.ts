@@ -833,4 +833,22 @@ describe('roleAccess/index', () => {
       expect((index as any).getSpecificReason(jsonWithoutReason)).to.be.undefined;
     });
   });
+
+  describe('getRoleCategoryRequestPayload', () => {
+    it('uses the input args to get the payload', () => {
+      const payload = index.getRoleCategoryRequestPayload('C_ID', 'J_ID', 'C_TYPE');
+
+      expect(payload.queryRequests.length).to.equal(1);
+      expect(payload.queryRequests[0].roleCategory).to.have.ordered.members([
+        RoleCategory.LEGAL_OPERATIONS,
+        RoleCategory.JUDICIAL,
+        RoleCategory.CTSC,
+        RoleCategory.ADMIN,
+        RoleCategory.ENFORCEMENT,
+      ]);
+      expect(payload.queryRequests[0].attributes.caseId).to.have.members(['C_ID']);
+      expect(payload.queryRequests[0].attributes.jurisdiction).to.have.members(['J_ID']);
+      expect(payload.queryRequests[0].attributes.caseType).to.have.members(['C_TYPE']);
+    });
+  });
 });

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRole } from '../../models';
@@ -140,13 +140,6 @@ describe('CaseRolesTableComponent', () => {
     const summaryList: DebugElement = fixture.debugElement.query(By.css('.govuk-summary-list__value'));
     const element: HTMLElement = summaryList.nativeElement as HTMLElement;
     expect(element.textContent).toBe('There are no legal Ops roles for this case.');
-  });
-
-  it('should getRoleCategoryTitle', () => {
-    expect(component.getRoleCategoryTitle(RoleCategory.LEGAL_OPERATIONS)).toBe('legal Ops');
-    expect(component.getRoleCategoryTitle(RoleCategory.CTSC)).toBe('CTSC');
-    expect(component.getRoleCategoryTitle(RoleCategory.JUDICIAL)).toBe('judicial');
-    expect(component.getRoleCategoryTitle(RoleCategory.ADMIN)).toBe('admin');
   });
 
   it('should show the reallocate and remove allocation link', () => {

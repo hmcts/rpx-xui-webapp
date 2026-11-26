@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { AppConstants } from '../../app.constants';
@@ -49,6 +50,7 @@ export class AuthService {
   }
 
   private clearSessionStorage() {
+    CurrentUserService.resetUserDetails();
     this.sessionStorageService.clear();
   }
 

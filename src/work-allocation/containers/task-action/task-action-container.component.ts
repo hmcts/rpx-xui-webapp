@@ -1,10 +1,9 @@
+import { CurrentUserService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { UserInfo } from '../../../app/models';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -29,7 +28,6 @@ export class TaskActionContainerComponent implements OnInit {
   public tasks: any[];
   public sortedBy: any;
   public routeData: RouteData;
-  protected userDetailsKey: string = 'userDetails';
   public isJudicial: boolean;
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -93,12 +91,8 @@ export class TaskActionContainerComponent implements OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return false;
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       return !!userInfo.roleCategories?.includes(RoleCategory.JUDICIAL);
     }
     return false;
@@ -117,13 +111,9 @@ export class TaskActionContainerComponent implements OnInit {
       }
       case TaskActionType.Unassign: {
         action = ACTION.UNCLAIM;
-        const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+        const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
         let userId: string;
-        if (userInfoStr) {
-          const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-          if (!userInfo) {
-            break;
-          }
+        if (userInfo) {
           userId = userInfo.id ? userInfo.id : userInfo.uid;
           if (this.tasks[0].assignee !== userId) {
             action = ACTION.UNASSIGN;
@@ -171,15 +161,12 @@ export class TaskActionContainerComponent implements OnInit {
     if (!currentTask.assignee) {
       return true;
     }
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return true;
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       return id !== currentTask.assignee;
     }
+    return true;
   }
 
   public cancel(): void {

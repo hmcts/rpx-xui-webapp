@@ -1,39 +1,13 @@
-export interface UserInfo {
-  id: string;
-  forename: string;
-  surname: string;
-  email: string;
-  active: boolean;
-  roles: string[];
-  uid?: string;
+import { UserDetails as ToolkitUserDetails, UserInfo as ToolkitUserInfo } from '@hmcts/ccd-case-ui-toolkit';
+
+export { RoleAssignmentInfo } from '@hmcts/ccd-case-ui-toolkit';
+
+export interface UserInfo extends ToolkitUserInfo {
   filterOwnerHash?: string;
-  roleCategories?: string[];
 }
 
-export interface RoleAssignmentInfo {
-  primaryLocation?: string;
-  baseLocation?: string;
-  jurisdiction?: string;
-  substantive?: string;
-  isCaseAllocator: boolean;
-  bookable?: boolean | string;
-  region?: string;
-  roleType?: string;
-  roleName?: string;
-  roleCategory?: string;
-  beginTime?: string;
-  endTime?: string;
-  caseId?: string;
-}
-
-export interface UserDetails {
-  sessionTimeout: {
-    idleModalDisplayTime: number;
-    totalIdleTime: number;
-  };
-  canShareCases: boolean;
+export interface UserDetails extends ToolkitUserDetails {
   userInfo: UserInfo;
-  roleAssignmentInfo?: RoleAssignmentInfo[];
 }
 
 // This enum is used to refer to roles specifically, not role categories

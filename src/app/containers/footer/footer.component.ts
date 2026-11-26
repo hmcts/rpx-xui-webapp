@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -27,8 +28,7 @@ export class FooterComponent implements OnInit {
 
   public ngOnInit() {
     if (this.environmentService.getDeploymentEnv() !== DeploymentEnvironmentEnum.PROD) {
-      this.userEmail$ = this.store.pipe(
-        select(fromRoot.getUserDetails),
+      this.userEmail$ = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails).pipe(
         map((userDetails: UserDetails) => userDetails?.userInfo?.email)
       );
     }

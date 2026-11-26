@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../app/services';
 import { EnvironmentService } from '../app/shared/services/environment.service';
 import { getWebUrlForCaseType } from '../../common/decentralisation/decentralised-redirect.util';
@@ -23,25 +24,12 @@ export class DecentralisedRedirectService {
     @Inject(Window) private readonly window: Window
   ) {}
 
-  public static getExpectedSubFromUserDetails(userInfoStr?: string | null): string | null {
-    if (!userInfoStr) {
-      return null;
-    }
-
-    try {
-      const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
-      return userInfo.id || userInfo.uid || null;
-    } catch {
-      return null;
-    }
-  }
-
   public tryEventRedirect(params: BuildDecentralisedEventUrlInput): boolean {
     return this.redirect(
       this.buildDecentralisedEventUrl(
         params,
         this.environmentService.get('decentralisedCaseTypeConfig'),
-        DecentralisedRedirectService.getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
+        CurrentUserService.readUserId(this.sessionStorageService)
       )
     );
   }

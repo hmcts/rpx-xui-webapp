@@ -20,7 +20,7 @@ import { CaseRolesTableComponent } from '../../../role-access/components/case-ro
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
 import { RoleExclusionsService } from '../../../role-access/services';
 import { RoleExclusionsMockService } from '../../../role-access/services/role-exclusions.mock.service';
-import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
+import { initialMockState, initialMockUserDetails } from '../../../role-access/testing/app-initial-state.mock';
 import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '../../components';
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
@@ -223,7 +223,7 @@ describe('RolesContainerComponent', () => {
       sessionStorageService,
       mockCaseNotifier
     );
-    component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
+    component.setDisplayAllocateLink(initialMockUserDetails, 'JUDICIAL');
 
     expect(component.showAllocateRoleLink).toBeTruthy();
   });
@@ -391,7 +391,7 @@ describe('RolesContainerComponent', () => {
     );
     spyOn(component, 'setDisplayAllocateLink');
 
-    store.select.and.returnValue(of({}));
+    store.pipe.and.returnValue(of({}));
     component.applyJurisdiction(CASE_VIEW);
 
     expect(component.setDisplayAllocateLink).toHaveBeenCalled();

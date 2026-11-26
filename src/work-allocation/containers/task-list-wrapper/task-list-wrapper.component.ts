@@ -1,13 +1,13 @@
+import { CurrentUserService, AlertService, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Location as StateLocation } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
-import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
+import { HMCTSServiceDetails } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
@@ -54,7 +54,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public selectedWorkTypes: string[] = [];
   public selectedServices: string[] = [];
   public taskServiceConfig: TaskServiceConfig;
-  protected userDetailsKey: string = 'userDetails';
   private pTasks: Task[] = [];
   private myWorkSubscription: Subscription;
   private pTasksTotal: number;
@@ -408,12 +407,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return;
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
     }
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -487,12 +482,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getCurrentUserRoleCategories(): string[] {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
-      if (!userInfo) {
-        return [];
-      }
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       return userInfo.roleCategories || [];
     }
     return [];

@@ -704,7 +704,6 @@ describe('TaskAssignmentContainerComponent', () => {
       expect(newComponent.domain).toBe(PersonRole.ALL);
       expect(newComponent.formGroup).toBeDefined();
       expect(newComponent.formGroup.controls).toEqual({});
-      expect((newComponent as any).userDetailsKey).toBe('userDetails');
     });
   });
 });

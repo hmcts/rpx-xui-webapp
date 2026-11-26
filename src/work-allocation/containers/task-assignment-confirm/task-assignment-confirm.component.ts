@@ -1,11 +1,11 @@
+import { CurrentUserService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
-import { UserInfo } from '../../../app/models';
+
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { AssignHintText, TaskActionType } from '../../enums';
@@ -59,9 +59,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+    const userInfo = CurrentUserService.readUserInfo(this.sessionStorageService);
+    if (userInfo) {
       if (userInfo) {
         // EXUI-2907 - Use roleCategory instead of roles
         this.isUserJudicial = !!userInfo.roleCategories?.includes(RoleCategory.JUDICIAL);

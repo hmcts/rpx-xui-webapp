@@ -1,9 +1,10 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { WALandingPageRoles } from '../../../work-allocation/models/common/service-config.model';
@@ -34,12 +35,14 @@ export class ApplicationRoutingComponent implements OnInit {
   }
 
   public navigateBasedOnUserRole() {
-    const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
+    const userDetails$ = CurrentUserService.selectUserDetails(this.store, fromActions.getUserDetails);
     const waLandingPageRoles$ = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
     const waVerification$ = this.waVerificationService.getWAVerification();
     const userAccess$ = combineLatest([userDetails$, waLandingPageRoles$, waVerification$]);
     userAccess$
       .pipe(
+        filter(([userDetails]) => !!userDetails?.userInfo),
+        take(1),
         map(([userDetails, landingRoles, waVerification]) => {
           if (this.router.url !== '/') {
             return;

@@ -1,8 +1,8 @@
+import { CurrentUserService, CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { combineLatest, of, Observable, Subject } from 'rxjs';
 import { catchError, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
@@ -70,7 +70,9 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly environmentService: EnvironmentService,
     private readonly router: Router
   ) {
-    this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(map((userDetails) => userDetails?.userInfo?.roles));
+    this.userRoles$ = CurrentUserService.selectUserDetails(this.store, fromRoot.getUserDetails).pipe(
+      map((userDetails) => userDetails?.userInfo?.roles)
+    );
 
     this.deploymentEnv = this.environmentService.getDeploymentEnv();
 

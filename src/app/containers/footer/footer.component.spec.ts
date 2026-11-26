@@ -81,7 +81,7 @@ describe('FooterComponent', () => {
   describe('ngOnInit', () => {
     it('should expose the logged in user email in lower environments', (done) => {
       mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.AAT);
-      mockStore.pipe.and.returnValues(of('user@example.com'), of(true));
+      mockStore.pipe.and.returnValues(of({ userInfo: { email: 'user@example.com' } }), of(true));
 
       component.ngOnInit();
 

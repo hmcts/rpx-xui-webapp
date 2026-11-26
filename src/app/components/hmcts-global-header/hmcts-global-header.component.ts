@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { map, skipWhile, switchMap } from 'rxjs/operators';
 import { UserDetails } from '../../../app/models/user-details.model';
@@ -9,7 +10,6 @@ import { SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchService } from '../../../search/services/search.service';
 import { NavigationItem, UserNavModel } from '../../models';
 import { LoggerService } from '../../services/logger/logger.service';
-import { UserService } from '../../services/user/user.service';
 import { AppConstants } from '../../../app/app.constants';
 import { filterNavigationItemsByFlags, filterNavigationItemsByRoles } from '../../shared/utils/navigation-access.utils';
 import { WAVerificationService } from '../../../work-allocation/services';
@@ -57,7 +57,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   constructor(
     private readonly appStore: Store<fromAppStore.State>,
     private readonly nocStore: Store<fromNocStore.State>,
-    private readonly userService: UserService,
+    private readonly userService: CurrentUserService,
     private readonly searchService: SearchService,
     private readonly waVerificationService: WAVerificationService,
     private readonly loggerService: LoggerService,
@@ -65,7 +65,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   ) {}
 
   public ngOnInit(): void {
-    this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+    this.userDetails$ = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails);
     this.isUserCaseManager$ = this.userDetails$.pipe(
       skipWhile((details) => !details || !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
@@ -142,7 +142,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    const userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
+    const userDetails$ = CurrentUserService.selectUserDetails(this.appStore, fromAppStore.getUserDetails);
     const waVerification$ = this.waVerificationService.getWAVerification();
 
     return combineLatest([userDetails$, waVerification$]).pipe(

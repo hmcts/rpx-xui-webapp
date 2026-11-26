@@ -1,3 +1,4 @@
+import { CurrentUserService } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -89,7 +90,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
 
-    this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
+    this.userDetails$ = CurrentUserService.selectUserDetails(this.store, fromActions.getUserDetails);
     const decorate16DigitCaseReferenceSearchBoxInHeader$ = this.store.pipe(
       select(fromActions.getDecorate16digitCaseReferenceSearchBoxInHeader)
     );

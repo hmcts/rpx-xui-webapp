@@ -28,6 +28,15 @@ import * as fromCaseList from '../../store/reducers';
 
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
+// GET /refdata/external/v1/organisations: documented IDAM roles permitted by PRD.
+// https://hmcts.github.io/cnp-api-docs/api/rd-professional-api/#/organisation-external-controller/retrieveOrganisationUsingOrgIdentifier_1
+const ORGANISATION_LOOKUP_ROLES = [
+  'pui-organisation-manager',
+  'pui-finance-manager',
+  'pui-case-manager',
+  'pui-caa',
+  'pui-user-manager',
+];
 
 /**
  * Entry component wrapper for Case List
@@ -500,12 +509,24 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public getOrganisationDetailsFromStore(): void {
-    this.store.dispatch(new fromStore.LoadOrganisation());
-    this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe((response) => {
-      this.organisationDetails = response;
-      if (this.organisationDetails?.organisationIdentifier) {
-        sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));
-      }
-    });
+    this.userDetails
+      .pipe(
+        filter((details) => !!details?.userInfo),
+        take(1),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((details) => {
+        if (!details.userInfo.roles?.some((role: string) => ORGANISATION_LOOKUP_ROLES.includes(role))) {
+          return;
+        }
+
+        this.store.dispatch(new fromStore.LoadOrganisation());
+        this.orgStore.pipe(select(fromStore.getOrganisationSel), takeUntil(this.unsubscribe$)).subscribe((response) => {
+          this.organisationDetails = response;
+          if (this.organisationDetails?.organisationIdentifier) {
+            sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));
+          }
+        });
+      });
   }
 }

@@ -12,7 +12,8 @@ import {
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
+import { Subject, of } from 'rxjs';
+import { LoadOrganisation, getOrganisationSel } from '../../../organisation/store';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { CaseListComponent } from './case-list.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -121,6 +122,72 @@ describe('CaseListComponent', () => {
 
       expect(component.setCaseListFilterDefaults).toHaveBeenCalled();
       expect(component.listenToPaginationMetadata).toHaveBeenCalled();
+    });
+  });
+
+  describe('getOrganisationDetailsFromStore()', () => {
+    let userDetails$: Subject<any>;
+
+    beforeEach(() => {
+      userDetails$ = new Subject();
+      component.userDetails = userDetails$;
+      spyOnDispatchToStore.calls.reset();
+    });
+
+    it('should wait for user details and load a professional case manager organisation only once', () => {
+      const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
+      spyOnPipeToStore.and.returnValue(of(organisation));
+      const setItem = spyOn(sessionStorage, 'setItem');
+      component.getOrganisationDetailsFromStore();
+
+      userDetails$.next(undefined);
+      userDetails$.next({ userInfo: null });
+      expect(spyOnDispatchToStore).not.toHaveBeenCalled();
+
+      userDetails$.next({ userInfo: { roles: ['caseworker', 'pui-case-manager'] } });
+      userDetails$.next({ userInfo: { roles: ['caseworker', 'pui-case-manager'] } });
+
+      expect(spyOnDispatchToStore).toHaveBeenCalledOnceWith(new LoadOrganisation());
+      expect(setItem).toHaveBeenCalledWith('organisationDetails', JSON.stringify(organisation));
+    });
+
+    ['pui-organisation-manager', 'pui-finance-manager', 'pui-case-manager', 'pui-caa', 'pui-user-manager'].forEach((role) => {
+      it(`should load an organisation for the documented PRD role ${role}`, () => {
+        component.getOrganisationDetailsFromStore();
+        userDetails$.next({ userInfo: { roles: [role] } });
+
+        expect(spyOnDispatchToStore).toHaveBeenCalledOnceWith(new LoadOrganisation());
+      });
+    });
+
+    [['caseworker'], ['judge'], ['legal-operations', 'task-supervisor'], ['pui-unrecognised-role'], []].forEach((roles) => {
+      it(`should not load an organisation for a user with roles ${JSON.stringify(roles)}`, () => {
+        component.getOrganisationDetailsFromStore();
+        userDetails$.next({ userInfo: { roles, roleCategories: ['PROFESSIONAL'] } });
+
+        expect(spyOnDispatchToStore).not.toHaveBeenCalled();
+      });
+    });
+
+    it('should stop waiting for user details when the component is destroyed', () => {
+      component.getOrganisationDetailsFromStore();
+      component.ngOnDestroy();
+      userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
+
+      expect(spyOnDispatchToStore).not.toHaveBeenCalled();
+    });
+
+    it('should stop storing organisation updates when the component is destroyed', () => {
+      spyOnPipeToStore.and.callThrough();
+      const organisationSelector = store.overrideSelector(getOrganisationSel, {});
+      const setItem = spyOn(sessionStorage, 'setItem');
+      component.getOrganisationDetailsFromStore();
+      userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
+      component.ngOnDestroy();
+      organisationSelector.setResult({ organisationIdentifier: 'TEST123' });
+      store.refreshState();
+
+      expect(setItem).not.toHaveBeenCalled();
     });
   });
 

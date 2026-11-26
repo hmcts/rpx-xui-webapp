@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
+import { AppConstants } from '../../app.constants';
 import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
 import { TermsAndConditionsComponent } from './terms-and-conditions.component';
 
@@ -91,6 +92,23 @@ describe('TermsAndConditionsComponent', () => {
 
   it('should be created by angular', () => {
     expect(fixture).not.toBeNull();
+  });
+
+  it('should warn about new tabs for links rendered in the terms document', async () => {
+    spyOn(termsConditionsService, 'isTermsConditionsFeatureEnabled').and.returnValue(of(false));
+    fixture.detectChanges();
+
+    const link = document.createElement('a');
+    link.href = '/myhmcts';
+    link.target = '_blank';
+    link.setAttribute('aria-label', 'Visit MyHMCTS');
+    link.textContent = 'MyHMCTS';
+    fixture.nativeElement.appendChild(link);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(link.textContent).toContain(AppConstants.NEW_TAB_WARNING_TEXT);
+    expect(link.getAttribute('aria-label')).toContain(AppConstants.NEW_TAB_WARNING_TEXT);
   });
 
   it('should dispatch LoadTermsConditions', () => {

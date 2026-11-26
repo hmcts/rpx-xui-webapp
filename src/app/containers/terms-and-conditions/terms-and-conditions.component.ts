@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { AppConstants } from '../../app.constants';
 import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
 import * as fromRoot from '../../store';
 
@@ -10,9 +11,10 @@ import * as fromRoot from '../../store';
   selector: 'exui-terms-and-conditions',
   templateUrl: './terms-and-conditions.component.html',
 })
-export class TermsAndConditionsComponent implements OnInit, OnDestroy {
+export class TermsAndConditionsComponent implements AfterViewInit, OnInit, OnDestroy {
   public document: TCDocument = null;
   private readonly subscriptions = new Subscription();
+  private linkObserver: MutationObserver;
 
   public isTandCEnabled: boolean = false;
   public readonly introWithPrivacyPolicyText =
@@ -68,8 +70,16 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store<fromRoot.State>,
-    private readonly termsAndConditionsService: TermsConditionsService
+    private readonly termsAndConditionsService: TermsConditionsService,
+    private readonly elementRef: ElementRef<HTMLElement>
   ) {}
+
+  public ngAfterViewInit(): void {
+    const host = this.elementRef.nativeElement;
+    this.addNewWindowHints(host);
+    this.linkObserver = new MutationObserver(() => this.addNewWindowHints(host));
+    this.linkObserver.observe(host, { childList: true, subtree: true, attributes: true, attributeFilter: ['target'] });
+  }
 
   public ngOnInit() {
     this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe((enabled) => {
@@ -90,5 +100,23 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.linkObserver?.disconnect();
+  }
+
+  private addNewWindowHints(root: HTMLElement): void {
+    root.querySelectorAll<HTMLAnchorElement>('a[target="_blank"]').forEach((link) => {
+      if (!link.querySelector('[data-new-window-hint]') && !/opens in a new (tab|window)/i.test(link.textContent)) {
+        const hint = document.createElement('span');
+        hint.className = 'case-event-new-window-hint';
+        hint.dataset.newWindowHint = 'true';
+        hint.textContent = ` ${AppConstants.NEW_TAB_WARNING_TEXT}`;
+        link.appendChild(hint);
+      }
+
+      const ariaLabel = link.getAttribute('aria-label');
+      if (ariaLabel && !/opens in a new (tab|window)/i.test(ariaLabel)) {
+        link.setAttribute('aria-label', `${ariaLabel} ${AppConstants.NEW_TAB_WARNING_TEXT}`);
+      }
+    });
   }
 }

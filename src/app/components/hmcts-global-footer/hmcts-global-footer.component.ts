@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { AppConstants } from '../../app.constants';
 import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 
@@ -9,6 +10,7 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
   styleUrls: ['./hmcts-global-footer.component.scss'],
 })
 export class HmctsGlobalFooterComponent {
+  public readonly newTabWarningText = AppConstants.NEW_TAB_WARNING_TEXT;
   @Input() public help: Helper;
   @Input() public navigation: Navigation;
   @Input() public userEmail: string;

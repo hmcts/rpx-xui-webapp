@@ -3,7 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { combineLatest, of, Observable, Subject } from 'rxjs';
+import { combineLatest, of, Observable, Subject, BehaviorSubject } from 'rxjs';
 import { catchError, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserRole } from '../../../app/models/user-details.model';
@@ -18,6 +18,8 @@ import { DeploymentEnvironmentEnum } from '../../../app/enums/deployment-environ
 import { LaunchDarklyDefaultsConstants } from '../../../app/services/ccd-config/launch-darkly-defaults.constants';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
 
+type SpecialTabId = 'tasks' | 'roles-and-access' | 'hearings';
+
 @Component({
   standalone: false,
   selector: 'exui-case-viewer-container',
@@ -25,12 +27,14 @@ import { EnvironmentService } from '../../../app/shared/services/environment.ser
   styleUrls: ['./case-viewer-container.component.scss'],
 })
 export class CaseViewerContainerComponent implements OnInit {
-  public caseDetails: CaseView;
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
   private retryCount: number;
   private readonly destroy$ = new Subject<void>();
+  private hearingTabSuppliedByCCD: boolean;
+  private readonly caseDetailsSubject = new BehaviorSubject<CaseView | null>(null);
+  public readonly caseDetails$ = this.caseDetailsSubject.asObservable();
 
   private readonly prependedTabs: CaseTab[] = [
     {
@@ -77,12 +81,16 @@ export class CaseViewerContainerComponent implements OnInit {
     this.waServiceConfig$ = of(LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv)).pipe(shareReplay(1)); // cache for all subscribers
   }
 
+  private get currentCaseDetails(): CaseView {
+    return this.caseDetailsSubject.value!;
+  }
+
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[]): boolean {
     const caseJurisdiction =
-      this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction
-        ? this.caseDetails.case_type.jurisdiction.id
+      this.currentCaseDetails && this.currentCaseDetails.case_type && this.currentCaseDetails.case_type.jurisdiction
+        ? this.currentCaseDetails.case_type.jurisdiction.id
         : null;
-    const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
+    const caseType = this.currentCaseDetails && this.currentCaseDetails.case_type ? this.currentCaseDetails.case_type.id : null;
     let requiredFeature = false;
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
@@ -98,9 +106,10 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.caseDetails = this.route.snapshot.data.case as CaseView;
+    this.caseDetailsSubject.next(this.route.snapshot.data.case as CaseView);
+    this.checkSuppliedTabsByCCD();
     this.retryCount = 0;
-    this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
+    this.allocateRoleService.manageLabellingRoleAssignment(this.currentCaseDetails.case_id).subscribe();
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -109,7 +118,7 @@ export class CaseViewerContainerComponent implements OnInit {
       .subscribe((event: NavigationEnd) => {
         if (
           !event.url.includes(
-            `/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.caseDetails.case_id}`
+            `/cases/case-details/${this.currentCaseDetails.case_type.jurisdiction.id}/${this.currentCaseDetails.case_type.id}/${this.currentCaseDetails.case_id}`
           )
         ) {
           window.location.href = `/cases/case-details/${event.url.split('/')[5]}`;
@@ -134,16 +143,24 @@ export class CaseViewerContainerComponent implements OnInit {
   private setPrependedCaseViewTabs(): void {
     combineLatest([this.waServiceConfig$, this.userRoles$, this.waService.getWASupportedJurisdictions()])
       .pipe(
-        map(([feature, userRoles, supportedServices]: [WAFeatureConfig, string[], string[]]) =>
-          this.enablePrependedTabs(feature, userRoles, supportedServices) ? this.prependedTabs : []
-        ),
+        map(([feature, userRoles, supportedServices]: [WAFeatureConfig, string[], string[]]) => {
+          const prependedTabsRequired = this.enablePrependedTabs(feature, userRoles, supportedServices);
+          const tabs = prependedTabsRequired
+            ? this.prependedTabs.filter((tab) => !this.isTabSuppliedByCCD(tab.id as SpecialTabId))
+            : [];
+
+          return { prependedTabsRequired, tabs };
+        }),
         catchError((error) => {
           this.loggerService.log('case-viewer-container - Error in setPrependedCaseViewTabs', error);
-          return of([]);
+          return of({ prependedTabsRequired: false, tabs: [] });
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe((tabs) => {
+      .subscribe(({ prependedTabsRequired, tabs }) => {
+        if (!prependedTabsRequired) {
+          this.removeTabsFromTabList(['tasks', 'roles-and-access']);
+        }
         this.prependedTabs$ = of(tabs);
       });
   }
@@ -152,8 +169,8 @@ export class CaseViewerContainerComponent implements OnInit {
     combineLatest([this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig(), this.userRoles$])
       .pipe(
         map(([featureVariations, userRoles]) => {
-          const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
-          const caseTypeId = this.caseDetails.case_type.id;
+          const jurisdictionId = this.currentCaseDetails.case_type.jurisdiction.id;
+          const caseTypeId = this.currentCaseDetails.case_type.id;
           const hasMatchedPermissions = featureVariations.some((featureVariation) =>
             Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdictionId, caseTypeId)
           );
@@ -161,10 +178,24 @@ export class CaseViewerContainerComponent implements OnInit {
             userRoles.includes(UserRole.HearingViewer) ||
             userRoles.includes(UserRole.ListedHearingViewer) ||
             userRoles.includes(UserRole.HearingManager);
-          return hasMatchedPermissions && hasHearingRole ? this.appendedTabs : [];
+          const hearingTabRequired = hasMatchedPermissions && hasHearingRole;
+
+          return {
+            tabRequired: hearingTabRequired,
+            tabs: hearingTabRequired && !this.isTabSuppliedByCCD('hearings') ? this.appendedTabs : [],
+          };
         })
       )
-      .subscribe((tabs) => {
+      .subscribe(({ tabRequired, tabs }) => {
+        if (!tabRequired) {
+          this.removeTabsFromTabList(['hearings']);
+          if (this.hearingTabSuppliedByCCD) {
+            this.loggerService.log(
+              'case-viewer-container - Hearing tab is supplied by CCD and not required by WA feature toggle, so removed from tab list'
+            );
+          }
+        }
+
         this.appendedTabs$ = of(tabs);
       });
   }
@@ -172,5 +203,40 @@ export class CaseViewerContainerComponent implements OnInit {
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.caseDetailsSubject.complete();
+  }
+
+  private checkSuppliedTabsByCCD(): void {
+    this.hearingTabSuppliedByCCD = this.isTabSuppliedByCCD('hearings');
+  }
+
+  private isTabSuppliedByCCD(tabId: SpecialTabId): boolean {
+    return this.currentCaseDetails.tabs.some((tab) => this.getSpecialTabId(tab) === tabId);
+  }
+
+  private getSpecialTabId(tab: CaseTab): SpecialTabId | null {
+    const launcherFieldIds = new Set((tab.fields || []).map((field) => field.id?.toLowerCase()));
+
+    if (launcherFieldIds.has('tasklauncher')) {
+      return 'tasks';
+    }
+    if (launcherFieldIds.has('roleslauncher')) {
+      return 'roles-and-access';
+    }
+    if (launcherFieldIds.has('hearingslauncher')) {
+      return 'hearings';
+    }
+
+    return null;
+  }
+
+  private removeTabsFromTabList(tabIds: SpecialTabId[]): void {
+    this.caseDetailsSubject.next({
+      ...this.currentCaseDetails,
+      tabs: this.currentCaseDetails.tabs.filter((tab) => {
+        const specialTabId = this.getSpecialTabId(tab);
+        return !specialTabId || !tabIds.includes(specialTabId);
+      }),
+    });
   }
 }

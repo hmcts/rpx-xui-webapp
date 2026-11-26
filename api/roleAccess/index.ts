@@ -121,6 +121,32 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
   }
 }
 
+export async function getRoleCategoriesByUserId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const userId = req.body.userId;
+  if (!userId) {
+    return res.status(200).send([]);
+  }
+  const requestPayload = {
+    queryRequests: [
+      {
+        actorId: [userId],
+      },
+    ],
+  };
+  const fullPath = `${baseRoleAccessUrl}/am/role-assignments/query`;
+  const headers = setHeaders(req, release2ContentType);
+  try {
+    const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
+    const roleAssignments = response.data?.roleAssignmentResponse || [];
+    const roleCategories = roleAssignments
+      .map((roleAssignment: RoleAssignment) => roleAssignment.roleCategory)
+      .filter((roleCategory: string) => SUPPORTED_ROLE_CATEGORIES.includes(roleCategory));
+    return res.status(response.status).send([...new Set(roleCategories)]);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getMyAccessNewCount(req, resp, next) {
   try {
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);

@@ -54,18 +54,18 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
       }
     });
 
-    await test.step('Verify denied access rows render the trailing View link instead of a case link', async () => {
+    await test.step('Verify denied access rows render the trailing View button instead of a case link', async () => {
       const deniedCase = myAccessMockResponse.cases.find((c) => c.role === 'specific-access-denied');
       const deniedRow = taskListPage.taskListTable
         .locator('tr')
         .filter({ hasText: deniedCase?.case_name ?? '' })
         .first();
       const deniedCaseLink = deniedRow.getByRole('link', { name: deniedCase?.case_name ?? '' });
-      const viewLink = deniedRow.locator('a.xui-access-view-field');
+      const viewButton = deniedRow.getByRole('button', { name: 'View', exact: true });
 
       await expect(deniedCaseLink).toHaveCount(0);
-      await expect(viewLink).toBeVisible();
-      await expect(viewLink).toHaveText('View');
+      await expect(viewButton).toBeVisible();
+      await expect(viewButton).toHaveText('View');
     });
   });
 

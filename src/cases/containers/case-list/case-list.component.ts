@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   CaseState,
@@ -109,7 +110,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private readonly definitionsService: DefinitionsService,
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
-    private readonly cd: ChangeDetectorRef
+    private readonly cd: ChangeDetectorRef,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   public async ngOnInit() {
@@ -262,6 +264,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public onToggleHandler = (showFilter) => {
     this.showFilter = showFilter;
     this.toggleButtonName = this.getToggleButtonName(this.showFilter);
+    this.document.body?.classList.toggle('case-filter-open', this.showFilter);
   };
 
   public onResultsViewHandler = (resultView) => {
@@ -482,6 +485,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
+    this.document.body?.classList.remove('case-filter-open');
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
     }

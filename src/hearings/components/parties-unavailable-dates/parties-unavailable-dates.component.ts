@@ -11,6 +11,5 @@ export class PartiesUnavailableDatesComponent {
   @Input() public unAvailableDates: string[];
   @Input() public showAmendedLabel: boolean;
 
-  public maxScrollBarDatesLength: number = 10;
   public amendmentLabelEnum = AmendmentLabelStatus;
 }

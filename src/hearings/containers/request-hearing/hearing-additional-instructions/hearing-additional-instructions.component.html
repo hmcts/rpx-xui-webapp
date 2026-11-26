@@ -25,6 +25,9 @@
               }}
             </div>
             <form class="form" [formGroup]="instructionsFormViewOnly">
+              <label class="govuk-visually-hidden" for="additionalInstructionsViewOnlyTextarea">
+                {{ 'Previously requested additional instructions' | rpxTranslate }}
+              </label>
               <textarea
                 class="govuk-textarea govuk-!-margin-bottom-1"
                 id="additionalInstructionsViewOnlyTextarea"
@@ -32,6 +35,7 @@
                 name="additional-instructions-view-only-text"
                 rows="5"
                 [attr.maxlength]="instructionLength"
+                aria-describedby="additional-instructions-view-hint"
                 readonly
               ></textarea>
             </form>
@@ -64,6 +68,9 @@
             name="additional-instructions-text"
             rows="10"
             [attr.maxlength]="instructionLength"
+            [attr.aria-describedby]="
+              showReviewBox ? 'additional-instructions-edit-hint with-hint-info' : 'event-name-hint with-hint-info'
+            "
           ></textarea>
           <div id="with-hint-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-7" aria-live="polite">
             {{ 'You can enter up to ' | rpxTranslate }} {{ instructionLength | number: '' : 'en' }}

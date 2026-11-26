@@ -865,7 +865,7 @@ export class CaseDetailsPage extends Base {
   }
 
   getManageRoleLink(sectionTitle: 'Judiciary' | 'Legal Ops'): Locator {
-    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: 'Manage' });
+    return this.getRoleAccessSection(sectionTitle).getByRole('button', { name: /Manage/ });
   }
 
   async openRoleActions(sectionTitle: 'Judiciary' | 'Legal Ops'): Promise<void> {

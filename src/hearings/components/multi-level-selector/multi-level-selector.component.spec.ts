@@ -272,6 +272,14 @@ describe('MultiLevelSelectorComponent', () => {
     expect(component.controlType).toEqual(component.configLevels[component.level - 1].controlType);
   });
 
+  it('associates the specialism label with its select control', () => {
+    const select: HTMLSelectElement = fixture.nativeElement.querySelector('select.govuk-select');
+    const label: HTMLLabelElement = fixture.nativeElement.querySelector('label.govuk-label');
+
+    expect(select.labels).toContain(label);
+    expect(label.textContent).toContain('Choose specialism');
+  });
+
   it('should return true for validation', () => {
     component.formGroup.controls.item.setValue({
       key: 'Cardiologist',

@@ -127,6 +127,7 @@
         <button
           type="button"
           [id]="'manage_' + rowData.id"
+          [attr.aria-label]="'Manage case ' + rowData.case_id"
           (click)="setSelectedCase(rowData)"
           class="xui-manage-button"
           [attr.aria-expanded]="isCaseSelected(rowData)"
@@ -143,9 +144,15 @@
     <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length" class="cell-actions">
       <ng-container *ngIf="isCaseSelected(rowData)">
         <div *ngFor="let action of rowData.actions" class="case-action">
-          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action" [id]="'action_' + action.id">{{
-            action.title
-          }}</a>
+          <button
+            type="button"
+            (click)="onActionHandler(rowData, action)"
+            class="action"
+            [id]="'action_' + action.id"
+            [attr.aria-label]="action.title + ' for case ' + rowData.case_id"
+          >
+            {{ action.title }}
+          </button>
         </div>
       </ng-container>
     </td>

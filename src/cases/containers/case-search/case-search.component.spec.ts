@@ -132,6 +132,17 @@ describe('CaseSearchComponent', () => {
     });
   });
 
+  describe('onToggleHandler()', () => {
+    it('locks background scrolling while case filters are open', () => {
+      component.onToggleHandler(true);
+
+      expect(document.body.classList.contains('case-filter-open')).toBe(true);
+
+      component.onToggleHandler(false);
+      expect(document.body.classList.contains('case-filter-open')).toBe(false);
+    });
+  });
+
   describe('getToggleButtonName()', () => {
     it('should return hide filter when the filter is shown.', () => {
       expect(component.getToggleButtonName(true)).toEqual('Hide Filter');

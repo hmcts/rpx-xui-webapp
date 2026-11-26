@@ -10,6 +10,12 @@
 
   .action {
     padding: 2px;
+    border: 0;
+    background: none;
+    color: #1d70b8;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
   }
 }
 /**
@@ -70,6 +76,16 @@
         cursor: pointer;
         &:last-child {
           margin-right: 20px;
+        }
+
+        button {
+          padding: 0;
+          border: 0;
+          background: none;
+          color: inherit;
+          font: inherit;
+          text-decoration: inherit;
+          cursor: pointer;
         }
       }
     }

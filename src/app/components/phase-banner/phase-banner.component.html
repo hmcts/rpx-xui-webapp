@@ -32,7 +32,7 @@
     data-module="govuk-notification-banner"
   >
     <div class="govuk-notification-banner__header">
-      <span (click)="closeBanner()" class="close">X</span>
+      <button type="button" (click)="closeBanner()" class="close" aria-label="Close notification banner">X</button>
       <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Pwysig</h2>
     </div>
     <div class="govuk-notification-banner__content">

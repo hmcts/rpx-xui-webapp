@@ -199,6 +199,8 @@ const menuFlags = {
 };
 
 export class AppConstants {
+  public static readonly NEW_TAB_WARNING_TEXT = '(opens in a new tab)';
+  public static readonly NEW_TAB_WARNING_TEXT_WELSH = '(agor mewn tab newydd)';
   public static readonly FOOTER_DATA = null;
   public static readonly FOOTER_DATA_NAVIGATION = footerDataNavigation;
   public static readonly ENVIRONMENT_NAMES = environmentNames;

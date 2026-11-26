@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RpxTranslationService } from 'rpx-xui-translation';
+import { AppConstants } from '../../app.constants';
 
 interface CookieDetails {
   name: string;
@@ -15,6 +16,8 @@ interface CookieDetails {
   templateUrl: './cookie-policy.component.html',
 })
 export class CookiePolicyComponent {
+  public readonly newTabWarningText = AppConstants.NEW_TAB_WARNING_TEXT;
+  public readonly newTabWarningTextWelsh = AppConstants.NEW_TAB_WARNING_TEXT_WELSH;
   public readonly googlePurpose = "This helps us count how many people visit the service by tracking if you've visited before";
 
   // Ideally this would be an enum but angular can't seem to cope with enums in templates

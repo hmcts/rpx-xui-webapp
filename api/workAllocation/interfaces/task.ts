@@ -29,6 +29,7 @@ export interface Task {
   caseCategory: string;
   assigneeName: string;
   name: string;
+  next_hearing_date?: Date | string;
 }
 
 export interface TaskAction {

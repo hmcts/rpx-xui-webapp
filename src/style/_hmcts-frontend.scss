@@ -1003,10 +1003,14 @@ table caption {
 
 table:not(.govuk-table) th,
 table:not(.govuk-table) td {
+  font-family: nta, Arial, sans-serif;
+  font-weight: 400;
+  text-transform: none;
   font-size: 19px;
-  padding: 12px 20px 9px 0;
+  line-height: 1.3157894737;
+  padding: 10px 20px 10px 0;
   text-align: left;
-  border-bottom: 1px solid #bfc1c3;
+  border-bottom: 1px solid var(--govuk-border-colour, #cecece);
   vertical-align: top;
 }
 
@@ -1016,6 +1020,7 @@ table:not(.govuk-table) thead th {
 
 table:not(.govuk-table) tbody td {
   font-size: 16px;
+  line-height: 1.25;
   word-wrap: break-word;
 }
 
@@ -1030,6 +1035,10 @@ table:not(.govuk-table) tbody td a {
 
 table:not(.govuk-table) .numeric {
   text-align: right;
+}
+
+table:not(.govuk-table) td.numeric {
+  font-family: ntatabularnumbers, nta, Arial, sans-serif;
 }
 
 // =============================================================================
@@ -1061,53 +1070,6 @@ ol {
 .list-number {
   list-style-type: decimal;
   padding-left: 20px;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  width: 100%;
-}
-
-table th,
-table td {
-  font-family: nta, Arial, sans-serif;
-  font-weight: 400;
-  text-transform: none;
-  font-size: 16px;
-  line-height: 1.25;
-  padding: 0.6315789474em 1.0526315789em 0.4736842105em 0;
-  text-align: left;
-  border-bottom: 1px solid #bfc1c3;
-}
-
-@media (min-width: 641px) {
-  table th,
-  table td {
-    font-size: 19px;
-    line-height: 1.3157894737;
-  }
-}
-
-table thead th {
-  font-weight: 700;
-}
-
-table td:last-child,
-table th:last-child {
-  padding-right: 0;
-}
-
-table .numeric {
-  text-align: right;
-}
-
-table td.numeric {
-  font-family: ntatabularnumbers, nta, Arial, sans-serif;
-}
-
-table caption {
-  text-align: left;
 }
 
 .table-font-xsmall th {
@@ -2044,6 +2006,8 @@ table.form-table td.form-cell .form-group {
 
 .govuk-tag {
   display: inline-block;
+  // govuk-frontend caps tags at 160px, which wraps our uppercase, letter-spaced labels
+  max-width: none;
   outline: 2px solid transparent;
   outline-offset: -2px;
   letter-spacing: 1px;

@@ -3,7 +3,7 @@
   <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong id="alertMessage" class="govuk-warning-text__text">
-      <span class="govuk-warning-text__assistive">Warning</span>
+      <span class="govuk-visually-hidden">Warning</span>
       <ng-container *ngFor="let warning of warnings; let last = last">
         {{ warning.warningText }}<br *ngIf="!last" />
       </ng-container>

@@ -1,5 +1,5 @@
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
-<div class="govuk-tabs__panel">
+<div class="case-hearings-panel">
   <div class="govuk-width-container" *ngIf="serverError">
     <div class="govuk-main-wrapper">
       <p class="govuk-body">{{ serverError.message }}</p>
@@ -18,7 +18,6 @@
       currentCaseHearingsLoaded: currentCaseHearingsLoaded$ | async,
     } as data"
   >
-    <br />
     <ng-container *ngIf="!serverError && !data.currentCaseHearingsLoaded">
       <div class="hearings-loading-message" aria-live="polite">
         <p class="govuk-body">Retrieving hearing data...</p>

@@ -4,6 +4,15 @@
 
 $hmcts-images-path: '/assets/images/';
 
+// Keep a consistent, compact gap between the phase banner and page content.
+.govuk-main-wrapper {
+  padding-top: govuk-spacing(3);
+
+  @include govuk-media-query($from: tablet) {
+    padding-top: govuk-spacing(6);
+  }
+}
+
 // The cookie banner, header, service navigation, phase banner and page content use the full page
 // width (with GOV.UK gutters) so wide case and task tables have room and everything lines up on the left.
 body .govuk-width-container {

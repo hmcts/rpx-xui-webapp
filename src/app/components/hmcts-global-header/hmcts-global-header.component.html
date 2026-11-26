@@ -20,6 +20,7 @@
 <section
   *ngIf="showItems"
   class="govuk-service-navigation"
+  [class.exui-service-navigation--judicial]="logo === 'judicial'"
   data-module="govuk-service-navigation"
   [attr.aria-label]="'Service information' | rpxTranslate"
 >

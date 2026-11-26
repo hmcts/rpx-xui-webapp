@@ -135,7 +135,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     // Set the app header properties based on the retrieved application theme
     this.appHeaderTitle = applicationTheme.appTitle;
     this.userNav = {
-      label: 'Account navigation',
+      label: 'Account actions',
       items: this.userRoles.length > 0 ? [{ text: 'Sign out', emit: 'sign-out' }] : [],
     };
     this.backgroundColor = applicationTheme.backgroundColor;

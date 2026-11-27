@@ -128,61 +128,23 @@ describe('CaseListComponent', () => {
   });
 
   describe('getOrganisationDetailsFromStore()', () => {
-    let userDetails$: Subject<any>;
-
     beforeEach(() => {
-      userDetails$ = new Subject();
-      component.userDetails = userDetails$;
       spyOnDispatchToStore.calls.reset();
     });
 
-    it('should wait for user details and load a professional case manager organisation only once', () => {
+    it('should dispatch the lookup immediately and display organisation state', () => {
       const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
       spyOnPipeToStore.and.returnValue(of(organisation));
       component.getOrganisationDetailsFromStore();
 
-      userDetails$.next(undefined);
-      userDetails$.next({ userInfo: null });
-      expect(spyOnDispatchToStore).not.toHaveBeenCalled();
-
-      userDetails$.next({ userInfo: { roles: ['caseworker', 'pui-case-manager'] } });
-      userDetails$.next({ userInfo: { roles: ['caseworker', 'pui-case-manager'] } });
-
       expect(spyOnDispatchToStore).toHaveBeenCalledOnceWith(new LoadOrganisation());
       expect(component.organisationDetails).toEqual(organisation);
-    });
-
-    ['pui-organisation-manager', 'pui-finance-manager', 'pui-case-manager', 'pui-caa', 'pui-user-manager'].forEach((role) => {
-      it(`should load an organisation for the documented PRD role ${role}`, () => {
-        component.getOrganisationDetailsFromStore();
-        userDetails$.next({ userInfo: { roles: [role] } });
-
-        expect(spyOnDispatchToStore).toHaveBeenCalledOnceWith(new LoadOrganisation());
-      });
-    });
-
-    [['caseworker'], ['judge'], ['legal-operations', 'task-supervisor'], ['pui-unrecognised-role'], []].forEach((roles) => {
-      it(`should not load an organisation for a user with roles ${JSON.stringify(roles)}`, () => {
-        component.getOrganisationDetailsFromStore();
-        userDetails$.next({ userInfo: { roles, roleCategories: ['PROFESSIONAL'] } });
-
-        expect(spyOnDispatchToStore).not.toHaveBeenCalled();
-      });
-    });
-
-    it('should stop waiting for user details when the component is destroyed', () => {
-      component.getOrganisationDetailsFromStore();
-      component.ngOnDestroy();
-      userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
-
-      expect(spyOnDispatchToStore).not.toHaveBeenCalled();
     });
 
     it('should stop receiving organisation updates when the component is destroyed', () => {
       spyOnPipeToStore.and.callThrough();
       const organisationSelector = store.overrideSelector(getOrganisationSel, {});
       component.getOrganisationDetailsFromStore();
-      userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
       component.ngOnDestroy();
       organisationSelector.setResult({ organisationIdentifier: 'TEST123' });
       store.refreshState();
@@ -190,31 +152,45 @@ describe('CaseListComponent', () => {
       expect(component.organisationDetails).toEqual({});
     });
 
-    it('should persist a pending lookup through the effect after Case List is destroyed', () => {
-      const actions$ = new Subject<LoadOrganisation>();
-      const response$ = new Subject();
-      const organisationService = jasmine.createSpyObj('OrganisationService', ['fetchOrganisation']);
-      organisationService.fetchOrganisation.and.returnValue(response$);
-      const logger = jasmine.createSpyObj('LoggerService', ['error']);
-      const effects = new OrganisationEffects(new Actions(actions$), organisationService, logger);
-      const subscription = effects.loadOrganisation$.subscribe();
-      const setItem = spyOn(sessionStorage, 'setItem');
-      spyOnDispatchToStore.and.callFake((action) => actions$.next(action));
+    [true, false].forEach((destroyBeforeUserDetails) => {
+      it(`should persist the lookup when destroyed ${destroyBeforeUserDetails ? 'before user details arrive' : 'after the request starts'}`, () => {
+        const actions$ = new Subject<LoadOrganisation>();
+        const userDetails$ = new Subject();
+        const response$ = new Subject();
+        spyOn(store, 'select').and.returnValue(userDetails$);
+        const organisationService = jasmine.createSpyObj('OrganisationService', ['fetchOrganisation']);
+        organisationService.fetchOrganisation.and.returnValue(response$);
+        const logger = jasmine.createSpyObj('LoggerService', ['error']);
+        const effects = new OrganisationEffects(new Actions(actions$), organisationService, logger, store);
+        const subscription = effects.loadOrganisation$.subscribe();
+        const setItem = spyOn(sessionStorage, 'setItem');
+        spyOnDispatchToStore.and.callFake((action) => actions$.next(action));
 
-      try {
-        component.getOrganisationDetailsFromStore();
-        userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
-        expect(organisationService.fetchOrganisation).toHaveBeenCalledTimes(1);
-        expect(setItem).not.toHaveBeenCalled();
+        try {
+          component.getOrganisationDetailsFromStore();
+          userDetails$.next({ userInfo: null });
+          expect(organisationService.fetchOrganisation).not.toHaveBeenCalled();
+          if (destroyBeforeUserDetails) {
+            component.ngOnDestroy();
+          }
 
-        component.ngOnDestroy();
-        const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
-        response$.next(organisation);
+          userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
+          expect(organisationService.fetchOrganisation).toHaveBeenCalledTimes(1);
+          expect(setItem).not.toHaveBeenCalled();
+          if (!destroyBeforeUserDetails) {
+            component.ngOnDestroy();
+          }
 
-        expect(setItem).toHaveBeenCalledOnceWith('organisationDetails', JSON.stringify(organisation));
-      } finally {
-        subscription.unsubscribe();
-      }
+          const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
+          response$.next(organisation);
+          userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
+
+          expect(organisationService.fetchOrganisation).toHaveBeenCalledTimes(1);
+          expect(setItem).toHaveBeenCalledOnceWith('organisationDetails', JSON.stringify(organisation));
+        } finally {
+          subscription.unsubscribe();
+        }
+      });
     });
   });
 

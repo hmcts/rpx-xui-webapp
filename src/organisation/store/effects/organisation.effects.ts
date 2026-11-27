@@ -5,18 +5,9 @@ import { of } from 'rxjs';
 import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromRoot from '../../../app/store';
+import { canLoadOrganisation } from '../../organisation-permissions';
 import { OrganisationService } from '../../services/organisation.service';
 import * as organisationActions from '../actions';
-
-// GET /refdata/external/v1/organisations: documented IDAM roles permitted by PRD.
-// https://hmcts.github.io/cnp-api-docs/api/rd-professional-api/#/organisation-external-controller/retrieveOrganisationUsingOrgIdentifier_1
-const ORGANISATION_LOOKUP_ROLES = [
-  'pui-organisation-manager',
-  'pui-finance-manager',
-  'pui-case-manager',
-  'pui-caa',
-  'pui-user-manager',
-];
 
 @Injectable()
 export class OrganisationEffects {
@@ -35,7 +26,7 @@ export class OrganisationEffects {
           // Keep waiting independently of the component that requested the lookup.
           filter((details) => !!details?.userInfo),
           take(1),
-          filter((details) => details.userInfo.roles?.some((role) => ORGANISATION_LOOKUP_ROLES.includes(role))),
+          filter((details) => canLoadOrganisation(details.userInfo.roles)),
           switchMap(() => {
             return this.organisationService.fetchOrganisation().pipe(
               // The toolkit reads this value when opening an organisation field, even after Case List is destroyed.

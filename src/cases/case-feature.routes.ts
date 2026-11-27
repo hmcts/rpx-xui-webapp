@@ -18,6 +18,7 @@ import { CaseViewerContainerComponent } from './containers/case-viewer-container
 import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { CreateCaseOrganisationResolver } from './resolvers/create-case-organisation.resolver';
 
 export const ROUTES: Routes = [
   {
@@ -78,6 +79,7 @@ export const ROUTES: Routes = [
             component: CaseCreateSubmitComponent,
             resolve: {
               eventTrigger: CreateCaseEventTriggerResolver,
+              organisation: CreateCaseOrganisationResolver,
             },
             children: editorRouting,
           },

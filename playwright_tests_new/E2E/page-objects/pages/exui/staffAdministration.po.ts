@@ -37,8 +37,10 @@ export class StaffAdministrationPage {
   readonly paginationResults = this.page.locator('exui-staff-user-list .hmcts-pagination__results');
   readonly advancedStatus = this.page.locator('#user-status select');
   readonly advancedSearchSubmit = this.page.locator('#applyFilter');
-  // Shared pagination anchors have no href, so they do not expose a link role.
-  readonly secondPage = this.page.locator('#pagination-label a').filter({ hasText: /^page\s+2$/ });
+  readonly secondPage = this.page
+    .locator('exui-staff-user-list')
+    .getByRole('navigation', { name: 'Pagination' })
+    .getByRole('link', { name: 'Page 2', exact: true });
   readonly missingPrimaryLocationError = this.page.locator('#location-required-error');
   readonly noResults = this.page.locator('#user-list-no-results');
 

@@ -19,7 +19,7 @@ export class GlobalSearchPage extends Base {
   readonly searchResultTable = this.searchResultsTable;
   readonly searchResultRows = this.searchResultsTable.locator('tbody tr');
   readonly applicantOrPartyName = this.page.locator('.govuk-form-group').locator('#fullName');
-  readonly paginationLinks = this.page.locator('.govuk-width-container #pagination-label .hmcts-pagination__link');
+  readonly paginationLinks = this.page.locator('.govuk-width-container nav.govuk-pagination .govuk-pagination__link');
   readonly searchResultsHeader = this.page.locator('.govuk-width-container .govuk-heading-xl');
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
 

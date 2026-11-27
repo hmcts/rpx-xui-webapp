@@ -215,6 +215,16 @@ MIGRATION_STRICT_REFLOW=true VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" \
   migrationDocuments.visual.ts migrationCaseRecovery.visual.ts
 ```
 
+Run the broader visual sweep for shared pages, staff administration, case search and access, hearings, booking, My Work and query review:
+
+```bash
+MIGRATION_STRICT_REFLOW=true VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" \
+  yarn playwright test --config=playwright_tests_new/integration/visual.config.ts \
+  --grep @migration-sweep --reporter=list,html
+```
+
+The sweep checks that each expected state renders before capturing screenshots, document width and axe evidence. The 320 px cases require strict reflow. Compare screenshots and measurements across the same synthetic fixtures, including any failures on the starting release.
+
 Run against each comparison checkout and retain the layout and axe attachments. A failed strict reflow check indicates horizontal overflow in that page state. Review incomplete axe results and check zoom, keyboard focus visibility and screen-reader announcements manually. Use the live AAT suite separately to verify eligible users, case definitions and real service integration.
 
 ### E2E commands

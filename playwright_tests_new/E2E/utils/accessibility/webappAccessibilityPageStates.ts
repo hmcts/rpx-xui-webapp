@@ -89,6 +89,7 @@ const allWorkKnownViolations: KnownAxeViolation[] = [
 
 const staticAndErrorPages = [
   { path: '/accessibility', title: 'accessibility statement' },
+  { path: '/sitemap', title: 'site map' },
   { path: '/cookies', title: 'cookies' },
   { path: '/privacy-policy', title: 'privacy policy' },
   { path: '/get-help', title: 'get help' },

@@ -71,8 +71,13 @@ export async function attachServiceFailures(
 // Waits shorter than this are an uncontended acquire; annotating them would only add report noise.
 const MIN_REPORTED_LEASE_WAIT_MS = 1_000;
 
-export function annotateIdentityLeaseWait(testInfo: Pick<TestInfo, 'annotations'>, waitedMs: number, timeoutMs: number): void {
-  if (!(waitedMs >= MIN_REPORTED_LEASE_WAIT_MS)) return;
+export function annotateIdentityLeaseWait(
+  testInfo: Pick<TestInfo, 'annotations'>,
+  waitedMs: number,
+  timeoutMs: number,
+  captureAll = false
+): void {
+  if (!(waitedMs >= (captureAll ? 0 : MIN_REPORTED_LEASE_WAIT_MS))) return;
   testInfo.annotations.push({
     type: IDENTITY_LEASE_WAIT_ANNOTATION,
     description: `waited_ms=${Math.max(0, Math.round(waitedMs))} timeout_ms=${timeoutMs}`,

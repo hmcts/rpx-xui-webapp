@@ -89,4 +89,14 @@ test.describe('CI evidence markers', { tag: '@svc-internal' }, () => {
 
     expect(testInfo.annotations).toEqual([]);
   });
+
+  test('records short identity-lease acquisition only when capacity capture is enabled', () => {
+    const testInfo = { annotations: [] as Array<{ type: string; description?: string }> };
+
+    annotateIdentityLeaseWait(testInfo, 125, 180_000, true);
+
+    expect(testInfo.annotations).toEqual([
+      { type: IDENTITY_LEASE_WAIT_ANNOTATION, description: 'waited_ms=125 timeout_ms=180000' },
+    ]);
+  });
 });

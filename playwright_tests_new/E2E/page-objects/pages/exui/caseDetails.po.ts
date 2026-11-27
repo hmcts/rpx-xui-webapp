@@ -20,13 +20,7 @@ const tableUtils = new TableUtils();
 export function extractCaseNumberFromUrl(url: string): string | null {
   try {
     const pathname = new URL(url).pathname;
-    const detailsPathMatch = /\/cases\/case-details\/(\d{16})(?:$|\/)/.exec(pathname);
-    if (detailsPathMatch?.[1]) {
-      return detailsPathMatch[1];
-    }
-
-    const trailingDigitsMatch = /(\d{16})(?:$|\/)/.exec(pathname);
-    return trailingDigitsMatch?.[1] ?? null;
+    return /^\/cases\/case-details\/(?:[^/]+\/[^/]+\/)?(\d{16})\/?$/.exec(pathname)?.[1] ?? null;
   } catch {
     return null;
   }
@@ -701,7 +695,17 @@ export class CaseDetailsPage extends Base {
     await this.caseFlagCommentBox.fill(`${flagType}`);
     await this.submitCaseFlagButton.click();
     await this.waitForSpinnerToComplete('after submitting case flag comment');
-    await this.submitCaseFlagButton.click();
+    await this.page.getByRole('heading', { name: 'Confirm the status of the flag', exact: true }).waitFor({
+      state: 'visible',
+      timeout: this.getRecommendedTimeoutMs(),
+    });
+    await this.page.getByRole('radio', { name: 'Active', exact: true }).check();
+    await this.page.getByRole('button', { name: 'Continue', exact: true }).click();
+    await this.page.getByRole('heading', { name: 'Review flag details', exact: true }).waitFor({
+      state: 'visible',
+      timeout: this.getRecommendedTimeoutMs(),
+    });
+    await this.page.getByRole('button', { name: 'Submit', exact: true }).click();
     await this.waitForSpinnerToComplete('after final case flag submit');
   }
 
@@ -766,6 +770,7 @@ export class CaseDetailsPage extends Base {
       ? this.page.locator(`#${controlledPanelId}`)
       : this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(tabPanel, deadlineMs);
+    await tab.and(this.page.locator('[aria-selected="true"]')).waitFor({ state: 'visible', timeout: remaining() });
   }
 
   async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {

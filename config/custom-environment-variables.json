@@ -157,6 +157,10 @@
   "jurisdictions": "JURISDICTIONS",
   "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "waSupportedJurisdictionUsers": {
+    "__name": "WA_SUPPORTED_JURISDICTION_USERS",
+    "__format": "json"
+  },
   "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
   "serviceRefDataMapping": {
     "__name": "SERVICE_REF_DATA_MAPPING",

@@ -9,52 +9,49 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('Role reallocation', { tag: ['@integration', '@integration-case-details'] }, () => {
-  test(
-    'replaces only the selected assignee using the prior assignment identity',
-    { tag: ['@blocked-exui-5589'] },
-    async ({ page, caseDetailsPage }) => {
-      await page.clock.install({ time: new Date('2026-11-13T12:00:00.000Z') });
-      const { requests } = await setupRoleJourney(page);
-      const journey = new RoleAccessPage(page);
-      await caseDetailsPage.openRolesAndAccessTab(roleCaseId);
-      await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).toContainText('Alice Example');
-      await caseDetailsPage.openRoleActions('Legal Ops');
-      const reallocate = caseDetailsPage.getRoleActionLink('Legal Ops', 'Reallocate');
-      const link = new URL((await reallocate.getAttribute('href'))!, 'http://localhost');
-      expect(Object.fromEntries(link.searchParams)).toMatchObject({
-        caseId: roleCaseId,
-        assignmentId: 'assignment-legal-ops-case-100',
-        actorId: 'user-alice',
-        typeOfRole: 'case-manager',
-      });
-      await reallocate.click();
-      await journey.reviewReallocation();
-      await expect(journey.summaryValue('Person')).toHaveText('Clara Replacement\nclara@example.com', { useInnerText: true });
-      await expect(journey.summaryValue('Duration of role')).toHaveText('Indefinite');
-      await test.info().attach('mutation-return-context', {
-        body: JSON.stringify(await page.evaluate(() => ({ backUrl: window.history.state?.backUrl }))),
-        contentType: 'application/json',
-      });
-      await setupRoleReadback(page, reallocatedRecords);
-      const mutationResponse = page.waitForResponse('**/api/role-access/allocate-role/reallocate');
-      await journey.confirmButton.click();
-      await mutationResponse;
-      expect(requests).toHaveLength(1);
-      expect(requests[0].method()).toBe('POST');
-      expect(new URL(requests[0].url()).pathname).toBe('/api/role-access/allocate-role/reallocate');
-      expect(requests[0].postDataJSON()).toEqual(expectedReallocation);
-      await expect(page).toHaveURL(new RegExp(`/cases/case-details/IA/Asylum/${roleCaseId}(?:#.*)?$`));
-      await test.info().attach('automatic-return-url', { body: page.url(), contentType: 'text/plain' });
-      await expect.soft(page.getByText("You've reallocated a role", { exact: true })).toBeVisible();
+  test('replaces only the selected assignee using the prior assignment identity', async ({ page, caseDetailsPage }) => {
+    await page.clock.install({ time: new Date('2026-11-13T12:00:00.000Z') });
+    const { requests } = await setupRoleJourney(page);
+    const journey = new RoleAccessPage(page);
+    await caseDetailsPage.openRolesAndAccessTab(roleCaseId);
+    await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).toContainText('Alice Example');
+    await caseDetailsPage.openRoleActions('Legal Ops');
+    const reallocate = caseDetailsPage.getRoleActionLink('Legal Ops', 'Reallocate');
+    const link = new URL((await reallocate.getAttribute('href'))!, 'http://localhost');
+    expect(Object.fromEntries(link.searchParams)).toMatchObject({
+      caseId: roleCaseId,
+      assignmentId: 'assignment-legal-ops-case-100',
+      actorId: 'user-alice',
+      typeOfRole: 'case-manager',
+    });
+    await reallocate.click();
+    await journey.reviewReallocation();
+    await expect(journey.summaryValue('Person')).toHaveText('Clara Replacement\nclara@example.com', { useInnerText: true });
+    await expect(journey.summaryValue('Duration of role')).toHaveText('Indefinite');
+    await test.info().attach('mutation-return-context', {
+      body: JSON.stringify(await page.evaluate(() => ({ backUrl: window.history.state?.backUrl }))),
+      contentType: 'application/json',
+    });
+    await setupRoleReadback(page, reallocatedRecords);
+    const mutationResponse = page.waitForResponse('**/api/role-access/allocate-role/reallocate');
+    await journey.confirmButton.click();
+    await mutationResponse;
+    expect(requests).toHaveLength(1);
+    expect(requests[0].method()).toBe('POST');
+    expect(new URL(requests[0].url()).pathname).toBe('/api/role-access/allocate-role/reallocate');
+    expect(requests[0].postDataJSON()).toEqual(expectedReallocation);
+    await expect(page).toHaveURL(new RegExp(`/cases/case-details/IA/Asylum/${roleCaseId}#Roles%20and%20access$`));
+    await test.info().attach('automatic-return-url', { body: page.url(), contentType: 'text/plain' });
+    await expect(page.getByText("You've reallocated a role", { exact: true })).toBeVisible();
 
-      // The ticket requires refreshed roles, not an automatic selected-tab return.
-      await page.reload();
-      await caseDetailsPage.selectCaseDetailsTab('Roles and access');
-      await expect(caseDetailsPage.getRoleAccessSection('Legal Ops').locator('tbody tr')).toHaveCount(1);
-      await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).toContainText('Clara Replacement');
-      await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).not.toContainText('Alice Example');
-      await expect(caseDetailsPage.getRoleAccessSection('Judiciary')).toContainText('Bob Judge');
-      await expect(caseDetailsPage.getRoleAccessSection('Judiciary')).toContainText('10 February 2026');
-    }
-  );
+    // The ticket requires refreshed roles, not an automatic selected-tab return.
+    await page.reload();
+    await expect(page.getByText("You've reallocated a role", { exact: true })).toBeHidden();
+    await caseDetailsPage.selectCaseDetailsTab('Roles and access');
+    await expect(caseDetailsPage.getRoleAccessSection('Legal Ops').locator('tbody tr')).toHaveCount(1);
+    await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).toContainText('Clara Replacement');
+    await expect(caseDetailsPage.getRoleAccessSection('Legal Ops')).not.toContainText('Alice Example');
+    await expect(caseDetailsPage.getRoleAccessSection('Judiciary')).toContainText('Bob Judge');
+    await expect(caseDetailsPage.getRoleAccessSection('Judiciary')).toContainText('10 February 2026');
+  });
 });

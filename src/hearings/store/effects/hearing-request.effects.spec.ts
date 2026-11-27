@@ -27,7 +27,7 @@ describe('Hearing Request Effects', () => {
     'submitHearingRequest',
     'errorReporter',
   ]);
-  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', ['getCurrentPage', 'getLastPage', 'getNextPage']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
@@ -38,6 +38,7 @@ describe('Hearing Request Effects', () => {
   beforeEach(() => {
     hearingsServiceMock.errorReporter.and.returnValue(() => {});
     mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -73,6 +74,7 @@ describe('Hearing Request Effects', () => {
 
   afterEach(() => {
     mockRouter.navigate.calls.reset();
+    mockRouter.navigateByUrl.calls.reset();
   });
 
   describe('continueNavigation$', () => {
@@ -153,6 +155,32 @@ describe('Hearing Request Effects', () => {
       expect(effects.submitHearingRequest$).toBeObservable(expected);
       expect(hearingsServiceMock.submitHearingRequest).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.SubmitHearingRequestFailure(error));
+    });
+  });
+
+  describe('loadHearingRequest$', () => {
+    it('should load the hearing request and navigate with edit button state', () => {
+      const dispatchSpy = spyOn(store, 'dispatch');
+      hearingsServiceMock.loadHearingRequest.and.returnValue(of(hearingRequestMainModel));
+      const action = new hearingRequestActions.LoadHearingRequest({
+        hearingID: 'h100010',
+        targetURL: '/hearings/view/hearing-completed-summary/h100010',
+        caseRef: '1111222233334444',
+        showEditButton: true,
+      });
+      actions$ = cold('-a', { a: action });
+      const expected = cold('-b', { b: hearingRequestMainModel });
+
+      expect(effects.loadHearingRequest$).toBeObservable(expected);
+      expect(hearingsServiceMock.loadHearingRequest).toHaveBeenCalledWith('h100010', '1111222233334444');
+      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/hearings/view/hearing-completed-summary/h100010', {
+        state: {
+          hearingId: 'h100010',
+          caseRef: '1111222233334444',
+          showEditButton: true,
+        },
+      });
     });
   });
 

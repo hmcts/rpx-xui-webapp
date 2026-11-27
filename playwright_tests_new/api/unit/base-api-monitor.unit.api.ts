@@ -86,4 +86,28 @@ test.describe('Base API monitor unit tests', { tag: '@svc-internal' }, () => {
 
     expect(page.handlers.get('response')).toHaveLength(1);
   });
+
+  test('keeps a current-cycle server failure visible after the 500-call history rolls over', () => {
+    const page = new FakePage();
+    const observer = new TestBasePage(page as never);
+    const url = 'https://xui-webapp-aat.service.core-compute-aat.internal/workallocation/task';
+    for (let i = 0; i < 500; i += 1) page.emit('response', buildResponse(url, 200));
+
+    const cursor = observer.getApiCallCursor();
+    page.emit('response', buildResponse(url, 503));
+
+    expect(observer.getApiCalls()).toHaveLength(500);
+    expect(observer.getApiCallsSince(cursor)).toMatchObject([{ status: 503, url }]);
+  });
+
+  test('reports when a cycle outlives the retained history instead of returning incomplete evidence', () => {
+    const page = new FakePage();
+    const observer = new TestBasePage(page as never);
+    const cursor = observer.getApiCallCursor();
+    const url = 'https://xui-webapp-aat.service.core-compute-aat.internal/workallocation/task';
+    for (let i = 0; i < 501; i += 1) page.emit('response', buildResponse(url, 200));
+
+    expect(observer.getApiCalls()).toHaveLength(500);
+    expect(() => observer.getApiCallsSince(cursor)).toThrow('API call history cursor 0 is outside the retained range 1-501');
+  });
 });

@@ -9273,9 +9273,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"applicationinsights@npm:^3.17.0":
-  version: 3.17.0
-  resolution: "applicationinsights@npm:3.17.0"
+"applicationinsights@npm:^3.17.1":
+  version: 3.17.1
+  resolution: "applicationinsights@npm:3.17.1"
   dependencies:
     "@azure/core-auth": "npm:^1.9.0"
     "@azure/functions": "npm:^4.11.2"
@@ -9297,7 +9297,7 @@ __metadata:
     "@opentelemetry/sdk-trace-base": "npm:^2.10.0"
     "@opentelemetry/sdk-trace-node": "npm:^2.10.0"
     "@opentelemetry/semantic-conventions": "npm:^1.43.0"
-  checksum: 10/58dc0a508c3d4779dafb499085d1c77ab3567d0968b596035c1122ce8db7457eef5ecc92675c77183260c6d832a16cb37ab42d05deae1a84c1325cfaa437ce4a
+  checksum: 10/c64a10e282cb65ce40924b28168b8d0de7a8958b1033a5b47d58568eb6d13110993207d83bb1423181ef39a5caa40656442f1a53e46366016d075cae54b0e944
   languageName: node
   linkType: hard
 
@@ -13867,14 +13867,14 @@ __metadata:
   linkType: hard
 
 "global-agent@npm:^4.1.3":
-  version: 4.1.7
-  resolution: "global-agent@npm:4.1.7"
+  version: 4.1.8
+  resolution: "global-agent@npm:4.1.8"
   dependencies:
     globalthis: "npm:^1.0.2"
     matcher: "npm:^4.0.0"
     semver: "npm:^7.3.5"
     serialize-error: "npm:^8.1.0"
-  checksum: 10/1f29d48d19986aec6e7e104409274147772ec83b7b7a6b9d58e5c602c89c97818d76913c0959ede69b854a277132080e806ca12570d8d9483507de85da416c6a
+  checksum: 10/4ba6becbe7359893d29b98bfe6e0cd6fc2d0f91ef87073f06e3ce764c5b4c3fac52acdeeb91cd8b41bc84c44cda14abc908cf9bb4fa41f48453ebd9239d2f56c
   languageName: node
   linkType: hard
 
@@ -15523,7 +15523,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "jui@workspace:api"
   dependencies:
-    applicationinsights: "npm:^3.17.0"
+    applicationinsights: "npm:^3.17.1"
     express: "npm:^5.3.0"
   languageName: unknown
   linkType: soft
@@ -15742,23 +15742,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"launchdarkly-js-client-sdk@npm:3.9.6":
-  version: 3.9.6
-  resolution: "launchdarkly-js-client-sdk@npm:3.9.6"
+"launchdarkly-js-client-sdk@npm:3.9.7":
+  version: 3.9.7
+  resolution: "launchdarkly-js-client-sdk@npm:3.9.7"
   dependencies:
     escape-string-regexp: "npm:^4.0.0"
-    launchdarkly-js-sdk-common: "npm:5.8.3"
-  checksum: 10/a6f2fd0e4f9f5cbe2d14233a428315040559570839e07763b72a9c22a939c54a223366b334bf4eafb9e7a2dfde9b2b26804179792a6ed3511d552b9075f9b3bf
+    launchdarkly-js-sdk-common: "npm:5.8.4"
+  checksum: 10/9f6f65fcf8a57296fb608fde590557502f3b09617dc4de3bbb145dc546e3d58878ab2632d9672bd11fbe5d9a0e7902350c4f42532929f1feecf0833e523575d0
   languageName: node
   linkType: hard
 
-"launchdarkly-js-sdk-common@npm:5.8.3":
-  version: 5.8.3
-  resolution: "launchdarkly-js-sdk-common@npm:5.8.3"
+"launchdarkly-js-sdk-common@npm:5.8.4":
+  version: 5.8.4
+  resolution: "launchdarkly-js-sdk-common@npm:5.8.4"
   dependencies:
     base64-js: "npm:^1.3.0"
     fast-deep-equal: "npm:^2.0.1"
-  checksum: 10/cda341fb7ea0960724027abf42ba389c8f4d05d5579179094401812222f54827b0b0ce9a7174b797194e6fae4fc1a09fb9b42a6bfc66d7138350271810de695d
+  checksum: 10/1507bf84b96bac227080935ae55966adc7c6ae14753d27ca53a8cccb8554670c3a32477f1420416d4a673567c4f7ed890ea3c4aab015856175019f1894253bc9
   languageName: node
   linkType: hard
 
@@ -16712,23 +16712,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^11.0.5":
-  version: 11.0.5
-  resolution: "minimatch@npm:11.0.5"
+"minimatch@npm:^11.0.5, minimatch@npm:^11.0.8":
+  version: 11.0.9
+  resolution: "minimatch@npm:11.0.9"
   dependencies:
     "@isaacs/nonrecursive-glob-match": "npm:^1.1.0"
     brace-expansion: "npm:^5.0.12"
-  checksum: 10/40df2064d0bc512a6e06eba4b11aa62d411e3259aea41854cd48800416e4d81158dc27ff143a8e7359eeb12797b010969a1dd935e1fed3da1bb8f967634aea71
-  languageName: node
-  linkType: hard
-
-"minimatch@npm:^11.0.8":
-  version: 11.0.8
-  resolution: "minimatch@npm:11.0.8"
-  dependencies:
-    "@isaacs/nonrecursive-glob-match": "npm:^1.1.0"
-    brace-expansion: "npm:^5.0.12"
-  checksum: 10/c72623c8c38bf28a8c01634fbceab5bb3be1b68af5bc21cd32bc41968cd356bed570a88feb4c7da3a70322604d5d9afc9d8a96a799aeecafb7d2784ee3d7f2d4
+  checksum: 10/5a17bd87033371c50dbabead4b461d3a40ffedb496939a2da14f67f1381813db959ec0d32716cfe4eaa83f3ae945cdee2343398be20f7d195799d8b12981565d
   languageName: node
   linkType: hard
 
@@ -20170,7 +20160,7 @@ __metadata:
     "@typescript-eslint/utils": "npm:^8.53.1"
     accessibility-checker: "npm:^4.0.0"
     allure-js-commons: "npm:^3.0.0"
-    applicationinsights: "npm:^3.17.0"
+    applicationinsights: "npm:^3.17.1"
     axe-core: "npm:^4.9.1"
     axe-html-reporter: "npm:^2.2.3"
     axios: "npm:^1.21.1"
@@ -20210,7 +20200,7 @@ __metadata:
     karma-jasmine-html-reporter: "npm:^2.0.0"
     karma-sonarqube-unit-reporter: "npm:^0.0.23"
     karma-spec-reporter: "npm:0.0.37"
-    launchdarkly-js-client-sdk: "npm:3.9.6"
+    launchdarkly-js-client-sdk: "npm:3.9.7"
     lodash: "npm:^4.18.1"
     lz-string: "npm:^1.5.0"
     marked: "npm:^18.0.5"

@@ -38,6 +38,33 @@ describe('Allocate Role Effects', () => {
   });
 
   describe('confirmAllocation$', () => {
+    it('preserves a malformed return fragment after a successful allocation', () => {
+      allocateRoleServiceMock.backUrl = '/cases/case-details/IA/Asylum/111111#bad%';
+      allocateRoleServiceMock.confirmAllocation.and.returnValue(of({}));
+      const action = new allocateRoleAction.ConfirmAllocation({
+        caseId: '111111',
+        jurisdiction: 'IA',
+        state: AllocateRoleState.CHOOSE_ROLE,
+        typeOfRole: null,
+        allocateTo: AllocateTo.ALLOCATE_TO_ME,
+        person: null,
+        durationOfRole: DurationOfRole.SEVEN_DAYS,
+        action: Actions.Reallocate,
+        period: null,
+      });
+      actions$ = of(action);
+      let result: routeAction.CreateCaseGo;
+      effects.confirmAllocation$.subscribe({
+        next: (value) => {
+          result = value as routeAction.CreateCaseGo;
+        },
+        error: fail,
+      });
+
+      expect(result.payload.extras.fragment).toBe('bad%');
+      expect(result.payload.extras.state.showMessage).toBe(true);
+    });
+
     it('should return CreateCaseGo action with correct message text when allocate', () => {
       const STATE_DATA = {
         caseId: '111111',
@@ -74,6 +101,7 @@ describe('Allocate Role Effects', () => {
     });
 
     it('should return CreateCaseGo action with correct message text when reallocate', () => {
+      allocateRoleServiceMock.backUrl = '/cases/case-details/IA/Asylum/111111#Roles%20and%20access';
       const STATE_DATA = {
         caseId: '111111',
         jurisdiction: 'IA',
@@ -88,9 +116,10 @@ describe('Allocate Role Effects', () => {
       allocateRoleServiceMock.confirmAllocation.and.returnValue(of({}));
       const action = new allocateRoleAction.ConfirmAllocation(STATE_DATA);
       const completion = new routeAction.CreateCaseGo({
-        path: [allocateRoleServiceMock.backUrl],
+        path: ['/cases/case-details/IA/Asylum/111111'],
         caseId: '111111',
         extras: {
+          fragment: 'Roles and access',
           state: {
             showMessage: true,
             retainMessages: true,

@@ -8,6 +8,7 @@ import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
+import { expectContract, SearchSchemas } from './utils/contractValidation';
 import { RoleAssignmentContainer } from './utils/types';
 import {
   buildCaseIdListPayload,
@@ -20,7 +21,6 @@ import {
 import {
   applyExpiredCookies,
   assertGlobalSearchResults,
-  assertGlobalSearchServices,
   assertLocationsResponse,
   assertManageLabellingResponse,
   assertMyAccessCount,
@@ -44,7 +44,9 @@ test.describe('Global search', { tag: '@svc-global-search' }, () => {
       { retries: 1, retryStatuses: [502, 504] }
     );
     expectStatus(response.status, StatusSets.guardedBasic, { primary: 200 });
-    assertGlobalSearchServices(response.status, response.data);
+    if (response.status === 200) {
+      expectContract(response.data, SearchSchemas.GlobalSearchServices);
+    }
   });
 
   test('returns results payload or guarded status', async ({ apiClient }) => {
@@ -326,12 +328,6 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
 });
 
 test.describe('Search/refdata helper coverage', { tag: ['@svc-global-search', '@svc-ref-data'] }, () => {
-  test('assertGlobalSearchServices covers results and empty', () => {
-    assertGlobalSearchServices(200, [{ serviceId: 'svc', serviceName: 'Service' }]);
-    assertGlobalSearchServices(200, []);
-    assertGlobalSearchServices(401, []);
-  });
-
   test('assertGlobalSearchResults covers populated and empty results', () => {
     assertGlobalSearchResults(200, { results: [{ caseReference: '1234' }] });
     assertGlobalSearchResults(200, { results: [] });

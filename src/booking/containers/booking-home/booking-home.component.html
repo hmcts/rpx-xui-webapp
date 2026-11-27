@@ -43,12 +43,12 @@
                           [disabled]="checkIfButtonDisabled(booking.beginTime)"
                           role="button"
                           class="govuk-button govuk-button--secondary"
-                          attr.aria-label="{{ booking.locationName }} {{ booking.beginTime | date: 'dd LLLL yyyy' }} to {{
-                            getPreviousDate(booking.endTime) | date: 'dd LLLL yyyy'
-                          }}"
                           (click)="onExistingBookingSelected(booking.locationId)"
                         >
-                          Continue
+                          Continue<span class="govuk-visually-hidden">
+                            with {{ booking.locationName }} {{ booking.beginTime | date: 'dd LLLL yyyy' }} to
+                            {{ getPreviousDate(booking.endTime) | date: 'dd LLLL yyyy' }}</span
+                          >
                         </button>
                       </div>
                     </div>

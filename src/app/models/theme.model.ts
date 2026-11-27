@@ -6,7 +6,7 @@ export interface Theme {
   navigationItems: NavItemsModel[];
   accountNavigationItems: UserNavModel;
   showFindCase: boolean;
-  backgroundColor: string;
+  backgroundColor?: string;
   logoIsUsed: boolean;
   logo: string;
 }

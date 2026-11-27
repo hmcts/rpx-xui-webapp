@@ -5,7 +5,7 @@ export class HearingsCYAPage {
   constructor(private readonly page: Page) {}
 
   section(sectionTitle: string): Locator {
-    return this.page.locator('div#hearing-summary', {
+    return this.page.locator('div.hearing-summary', {
       has: this.page.getByRole('heading', { name: sectionTitle }),
     });
   }

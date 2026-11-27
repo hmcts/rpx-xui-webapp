@@ -105,7 +105,7 @@ test.describe(
       createCasePage,
     }) => {
       await test.step('Attempt to submit the form without filling in any mandatory fields', async () => {
-        await createCasePage.genderRadioButtons.filter({ hasText: 'Female' }).first().click();
+        await createCasePage.genderRadioButtons.getByLabel('Female', { exact: true }).check();
         await createCasePage.clickContinueAndWaitForNext('after PoC personal details');
         await createCasePage.continueButton.click();
         await expect(createCasePage.validationErrorMessage).toHaveText(['Text Field 0 is required']);

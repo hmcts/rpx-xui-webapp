@@ -7,7 +7,7 @@ export class GlobalSearchPage extends Base {
   readonly pageHeading = this.page.getByRole('heading', { level: 1 }).first();
   readonly searchForm = this.page.locator('main form').first();
   readonly servicesOption = this.page.locator('#servicesList');
-  readonly searchLinkOnMenuBar = this.page.locator('.hmcts-primary-navigation__link[href="/search"]');
+  readonly searchLinkOnMenuBar = this.page.locator('.govuk-service-navigation__link[href="/search"]');
   readonly searchButton = this.searchForm.getByRole('button', { name: 'Search', exact: true });
   readonly clearSearchButton = this.searchForm.getByRole('button', { name: /clear|reset/i }).first();
   readonly caseIdTextBox = this.page.locator('#caseRef');
@@ -19,7 +19,7 @@ export class GlobalSearchPage extends Base {
   readonly searchResultTable = this.searchResultsTable;
   readonly searchResultRows = this.searchResultsTable.locator('tbody tr');
   readonly applicantOrPartyName = this.page.locator('.govuk-form-group').locator('#fullName');
-  readonly paginationLinks = this.page.locator('.govuk-width-container #pagination-label .hmcts-pagination__link');
+  readonly paginationLinks = this.page.locator('.govuk-width-container nav.govuk-pagination .govuk-pagination__link');
   readonly searchResultsHeader = this.page.locator('.govuk-width-container .govuk-heading-xl');
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
 

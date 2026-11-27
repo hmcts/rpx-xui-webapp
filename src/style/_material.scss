@@ -1,14 +1,26 @@
-@use 'govuk-frontend/dist/govuk/helpers/colour' as govuk-colour;
+@use 'govuk-frontend/dist/govuk' as *;
 
-$outlineColor: #bfc1c3;
+$exui-tab-border-width: 1px;
 
 .mat-mdc-tab-header {
   border-bottom: 0;
 }
 
+// Tab panel — matches .govuk-tabs__panel. The top border is the line under the tab list.
 .mat-mdc-tab-body-wrapper {
-  border-top: 1px solid $outlineColor;
-  margin-top: -1px;
+  margin-top: -$exui-tab-border-width;
+  border: $exui-tab-border-width solid govuk-functional-colour(border);
+}
+
+// Padding goes on the body content (Material's overflow:auto scroll container), not the wrapper,
+// so .govuk-grid-row's negative margins bleed into the padding instead of triggering a scrollbar.
+.mat-mdc-tab-body-content {
+  box-sizing: border-box;
+  padding: govuk-spacing(4) govuk-spacing(3);
+
+  @media #{govuk-from-breakpoint(tablet)} {
+    padding: govuk-spacing(6) govuk-spacing(4);
+  }
 }
 
 .mat-mdc-tab-group .mdc-tab-indicator__content--underline,
@@ -16,6 +28,82 @@ $outlineColor: #bfc1c3;
   height: 0 !important;
   border-top-width: 0 !important;
 }
+
+.mat-mdc-tab-group > .mat-mdc-tab-header {
+  .mat-mdc-tab-labels {
+    // Unselected tabs sit lower than the (taller) selected tab, as in GOV.UK tabs
+    align-items: flex-end;
+  }
+
+  .mat-mdc-tab {
+    @include govuk-font($size: 19);
+    flex-grow: 0 !important;
+    min-width: 0;
+    height: auto;
+    // GOV.UK leaves a spacing(1) gap between unselected tabs and the list border;
+    // +1px because the border is drawn inside the header's bottom pixel (see above)
+    margin: 0 govuk-spacing(1) (govuk-spacing(1) + $exui-tab-border-width) 0;
+    padding: govuk-spacing(2) govuk-spacing(4);
+    outline: none;
+    background-color: govuk-colour('black', $variant: 'tint-95');
+    opacity: 1;
+
+    // Remove Material's hover/focus state layer and ripple
+    .mdc-tab__ripple,
+    .mat-ripple-element {
+      display: none;
+    }
+
+    .mdc-tab__text-label {
+      @include govuk-link-decoration;
+      color: govuk-functional-colour(text);
+      font: inherit;
+      letter-spacing: normal;
+    }
+
+    &:hover .mdc-tab__text-label {
+      @include govuk-link-hover-decoration;
+      color: govuk-functional-colour(text);
+    }
+
+    &.cdk-keyboard-focused .mdc-tab__text-label,
+    &:focus-visible .mdc-tab__text-label {
+      @include govuk-focused-text;
+    }
+  }
+
+  .mat-mdc-tab.mdc-tab--active {
+    margin-bottom: 0;
+    padding: (govuk-spacing(3) - $exui-tab-border-width) (govuk-spacing(4) - $exui-tab-border-width)
+      (govuk-spacing(3) + $exui-tab-border-width);
+    border: $exui-tab-border-width solid govuk-functional-colour(border);
+    border-bottom: 0;
+    background-color: govuk-functional-colour(body-background);
+
+    .mdc-tab__text-label {
+      text-decoration: none;
+    }
+  }
+}
+
+.mat-mdc-tab-group-stretch-tabs > .mat-mdc-tab-header .mat-mdc-tab {
+  flex: 0 0 auto !important;
+  flex-grow: 0 !important;
+}
+
+.mat-mdc-tab-header-pagination-before {
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.mat-mdc-tab-header-pagination-after {
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+// =============================================================================
+// Autocomplete
+// =============================================================================
 
 .mat-mdc-autocomplete-panel {
   background-color: #fff;
@@ -34,87 +122,4 @@ $outlineColor: #bfc1c3;
       0 4px 5px 0 rgba(0, 0, 0, 0.14),
       0 1px 10px 0 rgba(0, 0, 0, 0.12);
   }
-}
-
-.mat-mdc-tab-group-stretch-tabs > .mat-mdc-tab-header .mat-mdc-tab {
-  flex: 0 0 auto !important;
-  flex-grow: 0 !important;
-}
-
-// src/style/_material.scss
-
-.mat-mdc-tab-group > .mat-mdc-tab-header .mat-mdc-tab {
-  min-width: 80px !important;
-  height: 42px !important;
-  margin: 0 4px 7px 4px;
-  border-top: 3px solid #fff;
-  background-color: govuk-colour.govuk-colour('light-grey');
-  color: govuk-colour.govuk-colour('black');
-  opacity: 1 !important;
-
-  &.mdc-tab--active {
-    height: 48px !important;
-    margin: 1px 4px 0 4px;
-    border-top: 1px solid $outlineColor;
-    border-right: 1px solid $outlineColor;
-    border-left: 1px solid $outlineColor;
-    border-bottom: 0;
-    background-color: #fff;
-
-    .mdc-tab__ripple::before {
-      opacity: 0 !important;
-    }
-
-    .mat-ripple-element {
-      display: none;
-    }
-  }
-
-  &.cdk-focused {
-    border-top: 3px solid #ffdd00;
-    border-bottom: 4px solid #000;
-  }
-
-  // Must come after the normal active rule so focus wins.
-  &.mdc-tab--active.cdk-focused {
-    border-top: 3px solid #ffdd00;
-    border-bottom: 4px solid #000;
-  }
-}
-
-.mat-mdc-tab-group > .mat-mdc-tab-header .mat-mdc-tab.mdc-tab--active {
-  height: 48px !important;
-  margin: 1px 4px 0 4px;
-  border-top: 1px solid $outlineColor;
-  border-right: 1px solid $outlineColor;
-  border-left: 1px solid $outlineColor;
-  border-bottom: 0;
-  background-color: #fff;
-  .mdc-tab__ripple::before {
-    opacity: 0 !important;
-  }
-  .mat-ripple-element {
-    display: none;
-  }
-}
-
-.mat-mdc-tab .mdc-tab__text-label {
-  color: govuk-colour.govuk-colour('black') !important;
-}
-
-.mat-mdc-tab .mdc-tab__text-label {
-  font-family: 'GDS Transport', Arial, sans-serif;
-  font-size: 16px;
-  letter-spacing: normal;
-  font-weight: 400;
-}
-
-.mat-mdc-tab-header-pagination-before {
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-  z-index: 2;
-}
-
-.mat-mdc-tab-header-pagination-after {
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-  z-index: 2;
 }

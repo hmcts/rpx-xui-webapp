@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, Input } from '@angular/core';
 import { ErrorMessage } from '../../models';
 
 @Component({
@@ -8,4 +9,16 @@ import { ErrorMessage } from '../../models';
 })
 export class ErrorMessageComponent {
   @Input() public error: ErrorMessage;
+
+  constructor(@Inject(DOCUMENT) private readonly document: Document) {}
+
+  public focusField(event: Event, fieldId: string): void {
+    event.preventDefault();
+    const field = fieldId ? this.document.getElementById(fieldId) : null;
+    if (!field) {
+      return;
+    }
+    field.scrollIntoView();
+    field.focus();
+  }
 }

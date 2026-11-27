@@ -50,7 +50,7 @@
     </dl>
     <br />
 
-    <h1 class="govuk-heading-m" id="hearingStageResult">{{ 'Hearing stage and result' | rpxTranslate }}</h1>
+    <h2 class="govuk-heading-m" id="hearingStageResult">{{ 'Hearing stage and result' | rpxTranslate }}</h2>
     <span class="govuk-body align-right">
       <a
         [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
@@ -76,7 +76,7 @@
       </dl>
     </div>
     <br />
-    <h1 class="govuk-heading-m" id="hearingDate">{{ 'Hearing date(s)' | rpxTranslate }}</h1>
+    <h2 class="govuk-heading-m" id="hearingDate">{{ 'Hearing date(s)' | rpxTranslate }}</h2>
   </div>
 </div>
 
@@ -123,7 +123,7 @@
                   <ng-container>
                     <button
                       type="button"
-                      id="hearing-stage-result-change-link"
+                      [id]="'hearing-stage-result-change-link-' + i"
                       class="govuk-js-link"
                       (click)="changeWasThisHearingDayRequired(actualHearingDay)"
                     >
@@ -146,7 +146,7 @@
                           <button
                             type="button"
                             (click)="confirmActualHearingTimeForDay(actualHearingDay)"
-                            id="hearing-timing-result-confirm-link"
+                            [id]="'hearing-timing-result-confirm-link-' + i"
                             class="govuk-js-link"
                           >
                             {{ 'Confirm' | rpxTranslate }}</button
@@ -213,7 +213,7 @@
                               type="button"
                               (click)="confirmActualPartiesForDay(actualHearingDay)"
                               *ngIf="!haveParticipantsBeenAdded(actualHearingDay)"
-                              id="hearing-parties-result-confirm-link"
+                              [id]="'hearing-parties-result-confirm-link-' + i"
                               class="govuk-js-link"
                             >
                               {{ 'Confirm' | rpxTranslate }}</button

@@ -39,7 +39,6 @@ const defaultUserTheme: ApplicationTheme = {
     name: 'Manage Cases',
     url: '/',
   },
-  backgroundColor: '#202020',
   logo: ApplicationThemeLogo.NONE,
 };
 
@@ -199,7 +198,6 @@ const menuFlags = {
 };
 
 export class AppConstants {
-  public static readonly FOOTER_DATA = null;
   public static readonly FOOTER_DATA_NAVIGATION = footerDataNavigation;
   public static readonly ENVIRONMENT_NAMES = environmentNames;
   public static readonly HELP_CONTACT_DETAILS = helpContactDetails;

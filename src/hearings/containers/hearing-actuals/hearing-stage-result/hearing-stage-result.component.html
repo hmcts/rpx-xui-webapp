@@ -3,7 +3,7 @@
   [header]="'There is a problem' | rpxTranslate"
 ></xuilib-hmcts-error-summary>
 <a class="govuk-back-link" href="#" (click)="onBack(); $event.preventDefault()">{{ 'Back' | rpxTranslate }}</a>
-<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="content" role="main">
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <exui-hearing-actuals-case-title *ngIf="caseTitle" [caseTitle]="caseTitle"></exui-hearing-actuals-case-title>
@@ -35,9 +35,9 @@
         >
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-              <h1 class="govuk-fieldset__heading">
+              <h2 class="govuk-fieldset__heading">
                 {{ 'Hearing result' | rpxTranslate }}
-              </h1>
+              </h2>
               <div class="govuk-error-message" *ngIf="submitted && !formControls.valid && !formControls.hearingResult.valid">
                 {{ hearingStageResultEnum.HearingResultError | rpxTranslate }}
               </div>
@@ -144,4 +144,4 @@
       </form>
     </div>
   </div>
-</main>
+</div>

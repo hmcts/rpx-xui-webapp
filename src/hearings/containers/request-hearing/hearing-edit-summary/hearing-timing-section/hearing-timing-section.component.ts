@@ -118,7 +118,7 @@ export class HearingTimingSectionComponent implements OnInit {
       const firstDate = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth);
       specificDateSelection +=
         firstDate !== HearingDateEnum.InvalidDate
-          ? `<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt><exui-amendment-label [displayLabel]="${AmendmentLabelStatus.ACTION_NEEDED}"></exui-amendment-label>${firstDate}`
+          ? `<div class="heading-h3 bottom-0">The first date of the hearing must be</div><exui-amendment-label [displayLabel]="${AmendmentLabelStatus.ACTION_NEEDED}"></exui-amendment-label>${firstDate}`
           : '';
     } else if (hearingWindow === null) {
       specificDateSelection = RadioOptions.NO;

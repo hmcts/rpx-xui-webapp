@@ -33,6 +33,11 @@ test.describe(
       });
 
       await test.step('Verify the expected callback validation error is shown instead of the trim failure', async () => {
+        const callbackValidationErrorSummary = page
+          .locator('.govuk-error-summary')
+          .filter({ hasText: /the callback data failed validation/i })
+          .first();
+
         await expect(callbackValidationErrorSummary).toBeVisible();
         await expect(callbackValidationErrorSummary).toContainText(caseDetailsEventErrorsErrorMessage);
         await expect(page.getByText(/can't access property "trim", e is undefined/i)).toHaveCount(0);

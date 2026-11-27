@@ -1,12 +1,17 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !textControl.valid }">
-  <label class="govuk-label" [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
-      questionField.question_text | rpxTranslate
-    }}</span>
-    <span class="error-message" *ngIf="textControl.errors && textControl.touched">{{
-      textControl.errors | nocError | rpxTranslate
-    }}</span>
+<div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': textControl.errors && textControl.touched }">
+  <label class="govuk-label govuk-!-font-weight-bold" [for]="id()">
+    <ng-container *ngIf="questionField.question_text">{{ questionField.question_text | rpxTranslate }}</ng-container>
   </label>
-
-  <input class="govuk-input govuk-!-width-one-half" [id]="id()" type="text" [formControl]="textControl" />
+  <span class="govuk-error-message" *ngIf="textControl.errors && textControl.touched" [id]="id() + '-error'">
+    <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+    {{ textControl.errors | nocError | rpxTranslate }}
+  </span>
+  <input
+    class="govuk-input govuk-!-width-one-half"
+    [class.govuk-input--error]="textControl.errors && textControl.touched"
+    [id]="id()"
+    type="text"
+    [formControl]="textControl"
+    [attr.aria-describedby]="textControl.errors && textControl.touched ? id() + '-error' : null"
+  />
 </div>

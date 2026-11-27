@@ -1,9 +1,15 @@
+@use 'govuk-frontend/dist/govuk/base' as govuk;
+
 .case-reference-container {
   display: flex;
   flex-direction: row;
 
+  form {
+    display: flex;
+    align-items: flex-start;
+  }
+
   .case-reference-search-label {
-    color: white;
     font-weight: normal;
     margin: 8px 6px 0 0;
   }
@@ -12,8 +18,8 @@
     width: 219px;
   }
 
-  .govuk-button--secondary {
-    height: 36px;
-    margin: 2px 0 0 4px;
+  .govuk-button {
+    width: auto;
+    margin: 0 0 0 govuk.govuk-spacing(2);
   }
 }

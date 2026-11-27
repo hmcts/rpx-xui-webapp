@@ -1,5 +1,7 @@
+@forward 'govuk-frontend/dist/govuk';
+@use 'govuk-frontend/dist/govuk' as *;
+
 @import '_typography';
-@import 'govuk-frontend/dist/govuk/all';
 @import 'material-design-icons/iconfont/material-icons.css';
 
 $black: #323232;
@@ -7,7 +9,6 @@ $black: #323232;
 $path: '/assets/';
 
 $fa-font-path: '/node_modules/font-awesome/fonts';
-$govuk-template-image-path: '/assets';
 
 // Organise SASS (TODO / TS)
 @import './buttons';
@@ -369,13 +370,6 @@ select::-ms-expand {
 
 .bottom-30 {
   margin-bottom: 30px;
-}
-
-// govuk-frontend v5 caps checkbox labels at calc(100% - 74px), sized for the 44px checkbox. Small checkboxes
-// only take 50px (34px input + 16px label padding), so in content-sized items (multi-column/flex layouts)
-// the label ends up 24px narrower than its text and the last word wraps.
-.govuk-checkboxes--small .govuk-checkboxes__label {
-  max-width: calc(100% - 50px);
 }
 
 // govuk-elements grid layout — replaces removed @import 'govuk-elements'

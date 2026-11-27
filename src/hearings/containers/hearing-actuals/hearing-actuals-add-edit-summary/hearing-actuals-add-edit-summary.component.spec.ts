@@ -172,8 +172,8 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     setMatchingIndividualParties();
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('#hearing-timing-result-confirm-link'))).not.toBeNull();
-    expect(fixture.debugElement.query(By.css('#hearing-parties-result-confirm-link'))).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('[id^="hearing-timing-result-confirm-link-"]'))).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('[id^="hearing-parties-result-confirm-link-"]'))).not.toBeNull();
   });
 
   it('should hide confirm buttons when redirected from completed or adjourned hearing details', () => {
@@ -181,8 +181,8 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     setMatchingIndividualParties();
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('#hearing-timing-result-confirm-link'))).toBeNull();
-    expect(fixture.debugElement.query(By.css('#hearing-parties-result-confirm-link'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('[id^="hearing-timing-result-confirm-link-"]'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('[id^="hearing-parties-result-confirm-link-"]'))).toBeNull();
   });
 
   it('should unsubscribe', () => {

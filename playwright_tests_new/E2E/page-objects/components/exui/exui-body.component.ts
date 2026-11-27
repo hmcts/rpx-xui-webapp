@@ -12,11 +12,11 @@ export class ExuiBodyComponent {
   readonly table = this.page.locator('table.govuk-table');
   readonly tableHeaders = this.table.locator('thead th');
 
-  readonly paginationControls = this.page.locator('.ngx-pagination');
-  readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
-  readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');
-  readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous');
-  readonly paginationCurrentPage = this.paginationControls.locator('.current');
+  readonly paginationControls = this.page.locator('.govuk-pagination');
+  readonly paginationNextButton = this.paginationControls.locator('.govuk-pagination__next');
+  readonly paginationEllipsisButton = this.paginationControls.locator('.govuk-pagination__item--ellipsis');
+  readonly paginationPreviousButton = this.paginationControls.locator('.govuk-pagination__prev');
+  readonly paginationCurrentPage = this.paginationControls.locator('.govuk-pagination__item--current');
 
   constructor(private readonly page: Page) {}
 }

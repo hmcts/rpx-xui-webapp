@@ -2,7 +2,7 @@ import { ApplicationThemeLogo } from '../enums';
 
 export interface ApplicationTheme {
   appTitle: { name: string; url: string };
-  backgroundColor: string;
+  backgroundColor?: string;
   logo: ApplicationThemeLogo;
 }
 

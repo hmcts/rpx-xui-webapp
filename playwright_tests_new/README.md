@@ -215,7 +215,7 @@ MIGRATION_STRICT_REFLOW=true VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" \
   migrationDocuments.visual.ts migrationCaseRecovery.visual.ts
 ```
 
-Run the broader visual sweep for shared pages, staff administration, case search and access, hearings, booking, My Work and query review:
+Run the broader visual sweep for shared pages, staff administration, case search and access, hearings, booking, My Work, query review and Refunds:
 
 ```bash
 MIGRATION_STRICT_REFLOW=true VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" \

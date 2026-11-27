@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import * as path from 'path';
 import { csp, SECURITY_POLICY } from '@hmcts/rpx-xui-node-lib';
 import amRoutes from './accessManagement/routes';
-import { getXuiNodeMiddleware } from './auth';
+import { getXuiNodeMiddleware, requireAuthenticationReady } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
   DYNATRACE_CDN,
@@ -28,7 +28,6 @@ import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
-import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 import { hearingsTelemetryCorrelation } from './lib/hearings-telemetry-correlation';
 
@@ -127,6 +126,7 @@ export async function createApp() {
   health.addReformHealthCheck(app);
 
   const xuiNodeMiddleware = await getXuiNodeMiddleware();
+  app.use(requireAuthenticationReady);
   app.use(xuiNodeMiddleware as unknown as express.RequestHandler);
 
   // applyProxy needs to be used before bodyParser
@@ -159,8 +159,6 @@ export async function createApp() {
   });
 
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
-
-  new Promise(idamCheck).then(() => 'IDAM is up and running');
 
   return app;
 }

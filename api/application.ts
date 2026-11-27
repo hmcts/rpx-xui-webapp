@@ -3,7 +3,7 @@ import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { existsSync, readFileSync } from 'fs';
-import helmet, { HelmetOptions } from 'helmet';
+import helmet from 'helmet';
 import * as path from 'path';
 import { csp, SECURITY_POLICY } from '@hmcts/rpx-xui-node-lib';
 import amRoutes from './accessManagement/routes';
@@ -139,15 +139,15 @@ export async function createApp() {
 
   const logger: JUILogger = log4jui.getLogger('Application');
   if (showFeature(FEATURE_HELMET_ENABLED)) {
-    const helmetConfig = getConfigValue<Parameters<typeof helmet>[0]>(HELMET)
+    const helmetConfig = getConfigValue<Parameters<typeof helmet>[0]>(HELMET);
     if (helmetConfig && typeof helmetConfig === 'object') {
       app.use(
-      helmet({
-        ...helmetConfig,
-        // app sets content security policy
-        contentSecurityPolicy: false
-      })
-    );
+        helmet({
+          ...helmetConfig,
+          // app sets content security policy
+          contentSecurityPolicy: false,
+        })
+      );
     } else {
       // app sets content security policy
       app.use(helmet({ contentSecurityPolicy: false }));

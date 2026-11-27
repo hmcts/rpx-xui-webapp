@@ -35,8 +35,7 @@ export async function openMigrationLinkedHearingReview(page: Page, origin: strin
   return { submissions, allowSubmission: () => (rejectSubmission = false) };
 }
 
-export async function openMigrationTwoDayActuals(page: Page, origin: string) {
-  const model = buildMigrationTwoDayActuals();
+export async function openMigrationTwoDayActuals(page: Page, origin: string, model = buildMigrationTwoDayActuals()) {
   const firstDay = structuredClone(model.hearingActuals.actualHearingDays[0]);
   const hearings = await openMigrationHearings(page, {
     userRoles: hearingManagerRoles,

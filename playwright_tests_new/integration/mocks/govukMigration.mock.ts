@@ -1,10 +1,16 @@
-import { buildCaseViewerMock } from './caseViewer.mock';
+import { buildCaseViewerMock, CASE_VIEWER_CASE_REFERENCE } from './caseViewer.mock';
 
 const MIGRATION_PAYMENT_GROUP = 'PG-MIGRATION-001';
 export const MIGRATION_PAYMENT_REFERENCE = 'RC-MIGRATION-001';
 
-export function buildMigrationCaseMock() {
+export function buildMigrationCaseMock(caseReference = CASE_VIEWER_CASE_REFERENCE) {
   const mock = buildCaseViewerMock();
+  mock.case_id = caseReference;
+  mock.metadataFields = mock.metadataFields.map((field) =>
+    field.id === '[CASE_REFERENCE]' ? { ...field, value: caseReference } : field
+  );
+  const summaryReference = mock.tabs[0].fields[0] as { value: string };
+  summaryReference.value = caseReference;
   mock.state = {
     id: 'caseCreated',
     name: 'Case created',

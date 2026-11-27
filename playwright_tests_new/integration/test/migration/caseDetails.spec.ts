@@ -3,7 +3,7 @@ import { test } from '../../helpers/paymentInitialization.fixture';
 import { openMigrationCase } from '../../helpers/govukMigrationMockRoutes.helper';
 import { mockMigrationRequest } from '../../helpers/migrationVisualRoutes.helper';
 import { CASE_VIEWER_CASE_REFERENCE } from '../../mocks/caseViewer.mock';
-import { MIGRATION_PAYMENT_REFERENCE } from '../../mocks/govukMigration.mock';
+import { buildMigrationCaseMock, MIGRATION_PAYMENT_REFERENCE } from '../../mocks/govukMigration.mock';
 
 const reviewPath = `/payments/payment-groups/fee-pay-apportion/${MIGRATION_PAYMENT_REFERENCE}`;
 
@@ -93,6 +93,57 @@ test.describe('GOV.UK migration: Case Details', { tag: ['@integration', '@integr
     await page.getByRole('tab', { name: 'Payment history', exact: true }).click();
     const paymentLibrary = page.locator('ccpay-payment-lib');
     await expect(paymentLibrary.getByText(/no payments recorded/i)).toBeVisible();
+    await expect(paymentLibrary.getByRole('link', { name: 'Review', exact: true })).toHaveCount(0);
+  });
+
+  test('switching cases replaces a populated Payments panel with the second case empty state', async ({
+    page,
+    migrationOrigin,
+  }) => {
+    const emptyCaseReference = '1652112127295262';
+    const emptyPaymentsPath = `/payments/cases/${emptyCaseReference}/paymentgroups`;
+    let requestedEmptyPayments = false;
+    let releaseEmptyPayments!: () => void;
+    const holdEmptyPayments = new Promise<void>((resolve) => {
+      releaseEmptyPayments = resolve;
+    });
+    await mockMigrationRequest(page, migrationOrigin, 'GET', `/data/internal/cases/${emptyCaseReference}`, (route) =>
+      route.fulfill({ json: buildMigrationCaseMock(emptyCaseReference) })
+    );
+    await mockMigrationRequest(page, migrationOrigin, 'GET', emptyPaymentsPath, async (route) => {
+      requestedEmptyPayments = true;
+      await holdEmptyPayments;
+      await route.fulfill({ json: { payment_groups: [] } });
+    });
+    await mockMigrationRequest(page, migrationOrigin, 'GET', `/pay-bulkscan/cases/${emptyCaseReference}`, (route) =>
+      route.fulfill({ json: { payments: [] } })
+    );
+
+    const paymentTab = page.getByRole('tab', { name: 'Payment history', exact: true });
+    const paymentLibrary = page.locator('ccpay-payment-lib');
+    const firstPayment = paymentLibrary.getByRole('row').filter({ hasText: MIGRATION_PAYMENT_REFERENCE });
+    await paymentTab.click();
+    await expect.soft(firstPayment, 'The first case must render a payment before checking isolation').toBeVisible();
+
+    try {
+      const quickFind = page.getByRole('textbox', { name: '16-digit case reference:', exact: true });
+      await quickFind.fill(emptyCaseReference);
+      await quickFind.press('Enter');
+      await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:[^/]+/)*${emptyCaseReference}(?:[/?#]|$)`));
+      await expect(page.getByRole('tabpanel', { name: /^Case summary(?:,|$)/ })).toContainText(emptyCaseReference);
+      await paymentTab.click();
+      await expect.soft
+        .poll(() => requestedEmptyPayments, { message: 'The second case must request its own payment groups', timeout: 5000 })
+        .toBe(true);
+      expect.soft(await firstPayment.count(), 'The previous payment must not appear while the second case is loading').toBe(0);
+    } finally {
+      releaseEmptyPayments();
+    }
+    await expect(
+      paymentLibrary.getByText(/no payments recorded/i),
+      'The second case must render its own empty state'
+    ).toBeVisible();
+    await expect(firstPayment).toHaveCount(0);
     await expect(paymentLibrary.getByRole('link', { name: 'Review', exact: true })).toHaveCount(0);
   });
 

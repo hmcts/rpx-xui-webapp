@@ -3,6 +3,7 @@ import type { ActualHearingDayModel } from '../../../../src/hearings/models/hear
 import { openMigrationTwoDayActuals } from '../../helpers/migrationHearingRoutes.helper';
 import { HEARINGS_CASE_REFERENCE } from '../../mocks/hearings.mock';
 import {
+  buildMigrationTwoDayActuals,
   MIGRATION_ACTUALS_HEARING,
   MIGRATION_FIRST_HEARING_DAY,
   MIGRATION_SECOND_HEARING_DAY,
@@ -77,5 +78,60 @@ test(
     await expect(second.getByText('No', { exact: true })).toBeVisible();
     await expect(second.getByRole('heading', { name: 'Hearing timings', exact: true })).toHaveCount(0);
     expect(updates).toHaveLength(2);
+  }
+);
+
+test(
+  'clearing a day-two hearing start time blocks save until corrected',
+  { tag: ['@integration', '@integration-govuk-migration'] },
+  async ({ page, migrationOrigin }) => {
+    const model = buildMigrationTwoDayActuals();
+    model.caseDetails.caseRef = HEARINGS_CASE_REFERENCE;
+    const secondDay: ActualHearingDayModel = {
+      hearingDate: MIGRATION_SECOND_HEARING_DAY,
+      hearingStartTime: '2021-03-14T09:00:00.000Z',
+      hearingEndTime: '2021-03-14T10:00:00.000Z',
+      pauseDateTimes: [],
+      actualDayParties: [],
+      notRequired: false,
+    };
+    model.hearingActuals.actualHearingDays.push(secondDay);
+    const { firstDay, updates } = await openMigrationTwoDayActuals(page, migrationOrigin, model);
+    const summary = page.locator('exui-hearing-actuals-add-edit-summary');
+    const day = summary.locator('details').filter({ has: page.locator('summary').filter({ hasText: '14 March 2021' }) });
+    const dayLabel = day.locator('summary');
+    await dayLabel.click();
+    const updateTimings = day.getByRole('link', { name: 'Update', exact: true }).and(day.locator('[href*="/hearing-timing/"]'));
+    await updateTimings.press('Enter');
+    await expect(page).toHaveURL(new RegExp(`/hearing-timing/${MIGRATION_SECOND_HEARING_DAY}$`));
+
+    const start = page.getByRole('textbox', { name: 'Start time', exact: true });
+    const save = page.getByRole('button', { name: 'Save and continue', exact: true });
+    await expect(start).toHaveValue('09:00');
+    await page
+      .getByRole('group', { name: 'Do you need to record times the hearing was paused?' })
+      .getByRole('radio', { name: 'No', exact: true })
+      .check();
+    await start.clear();
+    await expect(start).toHaveValue('');
+    await start.press('Tab');
+    await save.click();
+    await expect(page.getByRole('alert').getByText('Enter hearing start time', { exact: true })).toBeVisible();
+    await expect(start).toHaveValue('');
+    expect(updates).toHaveLength(0);
+
+    await start.fill('09:15');
+    await start.press('Tab');
+    await save.click();
+    await expect.poll(() => updates.length).toBe(1);
+    const [saved] = updates;
+    expect(new URL(saved.url()).searchParams.get('hearingId')).toBe(MIGRATION_ACTUALS_HEARING.hearingId);
+    expect(new URL(saved.url()).searchParams.get('caseId')).toBe(HEARINGS_CASE_REFERENCE);
+    const actualDays = saved.postDataJSON().actualHearingDays as ActualHearingDayModel[];
+    expect(actualDays).toEqual([firstDay, { ...secondDay, hearingStartTime: '2021-03-14T09:15:00.000Z' }]);
+    await expect(summary.getByRole('heading', { name: 'Hearing details', exact: true })).toBeVisible();
+    await dayLabel.click();
+    await expect(day.getByText('09:15', { exact: true })).toBeVisible();
+    expect(updates).toHaveLength(1);
   }
 );

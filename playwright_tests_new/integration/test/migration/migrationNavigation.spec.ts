@@ -1,3 +1,4 @@
+import { formatCaseNumberWithDashes } from '../../../E2E/utils/validator.utils';
 import { expect, test } from '../../helpers/migrationTest.fixture';
 import {
   captureMigrationNavigation,
@@ -107,5 +108,47 @@ test(
       page.getByRole('combobox', { name: /^Case type/ }).getByRole('option', { name: 'Asylum', exact: true, selected: true })
     ).toHaveCount(1);
     await expect(page.getByRole('button', { name: 'Apply filter', exact: true })).toBeEnabled();
+  }
+);
+
+test(
+  'header case reference search restores keyboard focus after invalid input at 320px',
+  { tag: ['@integration', '@integration-govuk-migration'] },
+  async ({ page, migrationOrigin }) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    const caseResponses = await setupMigrationNavigationRoutes(page, migrationOrigin);
+    const work = await openMigrationNavigationSource(page, 'My work');
+    await expect(work.marker).toBeVisible();
+
+    const lookups: string[] = [];
+    page.on('request', (request) => {
+      const { origin, pathname } = new URL(request.url());
+      if (
+        origin === migrationOrigin &&
+        /^\/(?:data\/internal\/(?:cases\/|searchCases$)|api\/globalsearch\/results$)/i.test(pathname)
+      ) {
+        lookups.push(pathname);
+      }
+    });
+    const reference = page.getByRole('banner').getByRole('textbox', { name: '16-digit case reference:', exact: true });
+    const invalidReference = 'invalid-ref';
+    await reference.fill(invalidReference);
+    await page.keyboard.press('Enter');
+
+    await expect(page).toHaveURL(/\/search\/noresults$/);
+    await expect(page.getByRole('heading', { name: 'No results found', exact: true })).toBeVisible();
+    expect.soft(lookups, 'A malformed reference must not make a case lookup').toEqual([]);
+    await expect.soft(reference, 'The malformed reference must be available for correction').toHaveValue(invalidReference);
+    await expect.soft(reference, 'The recovery page should restore focus to the header reference field').toBeFocused();
+
+    const formattedReference = formatCaseNumberWithDashes(NAVIGATION_CASE_REFERENCE);
+    await reference.fill(formattedReference);
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:IA/Asylum/)?${NAVIGATION_CASE_REFERENCE}(?:[/?#]|$)`));
+    const summary = page.getByRole('tab', { name: /^Case summary(?:,|$)/ });
+    await expect(summary).toBeVisible();
+    await summary.click();
+    await expect(page.getByRole('tabpanel', { name: /^Case summary(?:,|$)/ })).toContainText(NAVIGATION_CASE_REFERENCE);
+    expect(caseResponses).toEqual([{ caseReference: NAVIGATION_CASE_REFERENCE, status: 200 }]);
   }
 );

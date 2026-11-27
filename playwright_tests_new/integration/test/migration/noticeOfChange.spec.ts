@@ -12,17 +12,27 @@ test(
     await page.goto('/noc');
 
     await expect(page.getByRole('heading', { name: 'Notice of change', exact: true })).toBeVisible();
+    await expect(page).toHaveTitle(/Notice of Change/);
+    const cleanTitle = await page.title();
+    expect(cleanTitle).not.toMatch(/^Error:/);
+    const errorTitle = `Error: ${cleanTitle}`;
     const caseReference = page.getByLabel('Online case reference number', { exact: true });
     await caseReference.fill('123');
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
     const referenceError = page.locator('exui-noc-case-ref').getByRole('alert');
     await expect(referenceError).toHaveAccessibleName('There is a problem');
-    await expect(referenceError.getByRole('link')).toHaveAttribute('href', 'noc#caseRef');
+    const referenceErrorLink = referenceError.getByRole('link');
+    await expect(referenceErrorLink).toHaveAttribute('href', 'noc#caseRef');
+    await expect(referenceError).toBeFocused();
+    await expect.soft(page, 'The invalid case reference should add one Error prefix').toHaveTitle(errorTitle);
+    await referenceErrorLink.press('Enter');
+    await expect(caseReference).toBeFocused();
     expect(requests.questionReferences).toEqual([]);
 
     await caseReference.fill('1652-1121-2729-5261');
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await expect(page.getByRole('heading', { name: "Enter your client's details", exact: true })).toBeVisible();
+    await expect(page).toHaveTitle(cleanTitle);
     expect(requests.questionReferences).toEqual([NOTICE_OF_CHANGE_CASE_REFERENCE]);
     await page.getByLabel('Synthetic client name', { exact: true }).fill('Synthetic Client');
     await page.getByLabel('Synthetic client email', { exact: true }).fill('not-an-email');
@@ -39,6 +49,7 @@ test(
     await page.getByLabel('Day', { exact: true }).fill('15');
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await expect(page.locator('#error-answers-not-matched')).toBeVisible();
+    await expect.soft(page, 'The service mismatch should add one Error prefix').toHaveTitle(errorTitle);
     expect(requests.validations).toHaveLength(1);
     await expect(page.locator('#syntheticEmail')).toHaveValue('client@example.test');
 
@@ -46,6 +57,7 @@ test(
     await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Check and submit', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'There is a problem', exact: true })).toHaveCount(0);
+    await expect(page).toHaveTitle(cleanTitle);
     const summary = page.locator('exui-noc-check-your-answers');
     await expect(summary).toContainText('Synthetic Client');
     await expect(summary).toContainText('corrected@example.test');

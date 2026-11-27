@@ -1,4 +1,5 @@
-import { expect, test } from '../../helpers/migrationTest.fixture';
+import { expect } from '../../helpers/migrationTest.fixture';
+import { test } from '../../helpers/paymentInitialization.fixture';
 import { openMigrationCase } from '../../helpers/govukMigrationMockRoutes.helper';
 import { mockMigrationRequest } from '../../helpers/migrationVisualRoutes.helper';
 import { CASE_VIEWER_CASE_REFERENCE } from '../../mocks/caseViewer.mock';

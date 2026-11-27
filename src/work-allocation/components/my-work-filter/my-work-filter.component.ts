@@ -70,6 +70,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
   public bookingLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
+  private readonly bookingFilterApplied: boolean;
   private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
@@ -94,6 +95,12 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     // The filter can be created after NavigationEnd, when there is no current navigation.
     const navigationState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
     this.bookingLocations = navigationState?.location?.ids ?? [];
+    this.bookingFilterApplied = navigationState?.bookingFilterApplied === true;
+    if (this.bookingLocations.length && !this.bookingFilterApplied) {
+      // Mark the originating entry before asynchronous initialization or a tab change.
+      // Retain the IDs so a reload still identifies this as a visit from a booking.
+      history.replaceState({ ...history.state, ...navigationState, bookingFilterApplied: true }, '');
+    }
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -245,7 +252,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     const regionLocations = safeJsonParse<any[]>(this.sessionStorageService.getItem('regionLocations'), []);
     const bookableServices = safeJsonParse<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     // get booking locations
-    if (this.bookingLocations && this.bookingLocations.length > 0) {
+    if (this.bookingLocations.length > 0 && (!this.bookingFilterApplied || !filterService)) {
       this.defaultLocations = this.bookingLocations;
     } else if (history.state?.location?.id) {
       const location: Location = history.state.location;
@@ -291,12 +298,6 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     if ((this.defaultLocations && this.defaultLocations.length > 0) || !savedFilterSetting) {
       this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
       this.filterService.isInitialSetting = true;
-      // Consume the booking handoff so reloading does not overwrite later filter changes.
-      if (this.bookingLocations.length && history.state?.location?.ids) {
-        const state = { ...history.state, location: { ...history.state.location } };
-        delete state.location.ids;
-        history.replaceState(state, '');
-      }
     }
   }
 

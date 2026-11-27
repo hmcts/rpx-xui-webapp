@@ -9,7 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import * as fromAppStore from '../../../app/store';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
@@ -303,14 +303,14 @@ describe('MyWorkFilterComponent booking handoff', () => {
     );
   });
 
-  function initialise(): void {
+  function initialise(assignedTasks = of([])): void {
     component = new MyWorkFilterComponent(
       { snapshot: { data: {} } } as ActivatedRoute,
       { path: () => '/work/my-work/list' } as AngularLocation,
       filterService,
       locationService,
       router,
-      { getUsersAssignedTasks: () => of([]), currentTasks$: of([]) } as any,
+      { getUsersAssignedTasks: () => assignedTasks, currentTasks$: of([]) } as any,
       { getWASupportedJurisdictions: () => of(['IA']) } as WASupportedJurisdictionsService,
       { getTypesOfWork: () => of(typesOfWorkForBooking) } as TaskTypesService,
       { getItem: () => '[]' } as any,
@@ -372,13 +372,50 @@ describe('MyWorkFilterComponent booking handoff', () => {
   it('consumes the booking handoff so later saved filter changes survive a reload', () => {
     history.replaceState({ location: { ids: [london.epimms_id] }, navigationId: 2, newBooking: true }, '');
     initialise();
-    expect(history.state).toEqual({ location: {}, navigationId: 2, newBooking: true });
+    expect(history.state).toEqual({
+      location: { ids: [london.epimms_id] },
+      navigationId: 2,
+      newBooking: true,
+      bookingFilterApplied: true,
+    });
     component.ngOnDestroy();
     filterService.get.and.returnValue({ id: filterId, fields: [{ name: 'locations', value: [aberdeen] }] });
     filterService.persist.calls.reset();
+    const removeItem = spyOn(localStorage, 'removeItem');
     initialise();
-    expect(component.bookingLocations).toEqual([]);
+    expect(removeItem).not.toHaveBeenCalledWith(filterId);
+    expect(component.bookingLocations).toEqual([london.epimms_id]);
     expect(filterService.persist).not.toHaveBeenCalled();
+  });
+
+  it('marks the originating entry before pending requests finish after a tab change', () => {
+    const assignedTasks = new Subject<[]>();
+    history.replaceState({ location: { ids: [london.epimms_id] }, navigationId: 2 }, '');
+    initialise(assignedTasks);
+    const bookingEntry = history.state;
+    expect(bookingEntry.bookingFilterApplied).toBe(true);
+    expect(filterService.persist).not.toHaveBeenCalled();
+
+    // The shared filter stays mounted when switching to Available tasks.
+    history.replaceState({ navigationId: 3 }, '');
+    assignedTasks.next([]);
+    expect(history.state).toEqual({ navigationId: 3 });
+    expect(filterService.persist).toHaveBeenCalledTimes(1);
+    component.ngOnDestroy();
+
+    // Returning to and reloading the original entry must retain later filter edits.
+    history.replaceState(bookingEntry, '');
+    filterService.get.and.returnValue({ id: filterId, fields: [{ name: 'locations', value: [aberdeen] }] });
+    filterService.persist.calls.reset();
+    initialise();
+    expect(filterService.persist).not.toHaveBeenCalled();
+  });
+
+  it('retries booking defaults on reload if initialization never persisted a filter', () => {
+    history.replaceState({ location: { ids: [london.epimms_id] }, bookingFilterApplied: true }, '');
+    initialise();
+    expect(component.defaultLocations).toEqual([london.epimms_id]);
+    expect(filterService.persist).toHaveBeenCalled();
   });
 
   it('retains the single-location history handoff', () => {

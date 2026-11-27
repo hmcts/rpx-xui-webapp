@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
@@ -465,6 +466,29 @@ describe('TaskListComponent', () => {
 
   describe('act upon deep linking', () => {
     const id = '12345678';
+
+    it('does not add a history entry when the task hash has not changed', () => {
+      component = fixture.componentInstance.appComponentRef;
+      const location = TestBed.inject(Location);
+      spyOn(location, 'path').and.returnValue(mockRouter.url);
+      const go = spyOn(location, 'go');
+      component.addActionsColumn = true;
+      component.setSelectedTask(null);
+      expect(go).not.toHaveBeenCalled();
+    });
+
+    it('preserves booking navigation state when updating the selected task hash', () => {
+      component = fixture.componentInstance.appComponentRef;
+      const location = TestBed.inject(Location);
+      const state = { location: { ids: ['20262'] }, bookingFilterApplied: true, navigationId: 2 };
+      spyOn(location, 'path').and.returnValue(mockRouter.url);
+      spyOn(location, 'getState').and.returnValue(state);
+      const go = spyOn(location, 'go');
+      component.addActionsColumn = true;
+      const task = getTasks()[0];
+      component.setSelectedTask(task);
+      expect(go).toHaveBeenCalledWith(`${mockRouter.url}#manage_${task.id}`, '', state);
+    });
 
     it('should select appropriate task from location hash', fakeAsync(async () => {
       component = fixture.componentInstance.appComponentRef;

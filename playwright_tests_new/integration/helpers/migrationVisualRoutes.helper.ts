@@ -3,12 +3,18 @@ import { MIGRATION_FEATURE_FLAGS } from '../mocks/govukMigration.mock';
 import { setupVisualManageCasesRoutes } from './visualManageCasesRoutes.helper';
 import { buildXuiAppShellEnvironmentConfigMock } from './xuiAppShellMockRoutes.helper';
 
-export async function setupMigrationVisualRoutes(page: Page, roles: string[]): Promise<void> {
+export async function setupMigrationVisualRoutes(
+  page: Page,
+  roles: string[],
+  flags: Partial<typeof MIGRATION_FEATURE_FLAGS> = {}
+): Promise<void> {
   await setupVisualManageCasesRoutes(page, roles);
 
   const headers = { date: new Date().toUTCString(), 'access-control-expose-headers': 'Date' };
   await page.route('**/*launchdarkly.com/**', (route) => route.fulfill({ status: 202, headers, body: '' }));
-  await page.route('**/*launchdarkly.com/sdk/eval**', (route) => route.fulfill({ headers, json: MIGRATION_FEATURE_FLAGS }));
+  await page.route('**/*launchdarkly.com/sdk/eval**', (route) =>
+    route.fulfill({ headers, json: { ...MIGRATION_FEATURE_FLAGS, ...flags } })
+  );
   await page.route('**/*launchdarkly.com/sdk/goals/**', (route) => route.fulfill({ headers, json: [] }));
   await page.route(/\/external\/config\/ui(?:\/|\?|$)/, (route) =>
     route.fulfill({

@@ -40,6 +40,15 @@ export function buildNoticeOfChangeTimeQuestionsMock(type: 'Time' | 'DateTime'):
   return { questions: [buildQuestion('syntheticAppointment', 'Synthetic client appointment', type, 1)] };
 }
 
+export function buildNoticeOfChangeAddressQuestionsMock(): NocQuestions {
+  return {
+    questions: [
+      buildQuestion('syntheticPostcode', 'Synthetic client postcode', 'Postcode', 1),
+      buildQuestion('syntheticCorrespondence', 'Does the client use a different correspondence address?', 'YesOrNo', 2),
+    ],
+  };
+}
+
 export const NOTICE_OF_CHANGE_MISMATCH_ERROR = {
   code: 'answers-not-matched-any-litigant',
   message: 'Synthetic mismatch',

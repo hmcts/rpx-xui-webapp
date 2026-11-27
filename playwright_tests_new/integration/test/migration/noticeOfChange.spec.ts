@@ -1,7 +1,11 @@
 import { expect, test } from '../../helpers/migrationTest.fixture';
 import { setupMigrationVisualRoutes } from '../../helpers/migrationVisualRoutes.helper';
 import { openNoticeOfChangeTimeQuestions, setupNoticeOfChangeMockRoutes } from '../../helpers/noticeOfChangeMockRoutes.helper';
-import { NOTICE_OF_CHANGE_CASE_REFERENCE, NOTICE_OF_CHANGE_SOLICITOR_ROLES } from '../../mocks/noticeOfChange.mock';
+import {
+  buildNoticeOfChangeAddressQuestionsMock,
+  NOTICE_OF_CHANGE_CASE_REFERENCE,
+  NOTICE_OF_CHANGE_SOLICITOR_ROLES,
+} from '../../mocks/noticeOfChange.mock';
 
 test(
   'Notice of Change validates and corrects client details before review',
@@ -71,6 +75,52 @@ test(
         { question_id: 'syntheticDate', value: '2000-01-15' },
       ],
     });
+    expect(requests.submissions).toEqual([]);
+  }
+);
+
+test(
+  'Notice of Change blocks an invalid postcode and preserves an explicit No after correction',
+  { tag: ['@integration', '@integration-govuk-migration'] },
+  async ({ page, migrationOrigin }) => {
+    await setupMigrationVisualRoutes(page, NOTICE_OF_CHANGE_SOLICITOR_ROLES);
+    const requests = await setupNoticeOfChangeMockRoutes(page, migrationOrigin, {
+      questions: buildNoticeOfChangeAddressQuestionsMock(),
+      mismatchFirstValidation: false,
+    });
+    await page.goto('/noc');
+    await page.getByLabel('Online case reference number', { exact: true }).fill(NOTICE_OF_CHANGE_CASE_REFERENCE);
+    const continueButton = page.getByRole('button', { name: 'Continue', exact: true });
+    await continueButton.click();
+    const postcode = page.locator('#syntheticPostcode');
+    await expect(postcode).toHaveAccessibleName('Synthetic client postcode');
+    await postcode.fill('NOT A POSTCODE');
+    const no = page.getByRole('radio', { name: 'No', exact: true });
+    await no.press('Space');
+    await expect(no).toBeChecked();
+    await continueButton.click();
+    await expect(page.getByText('The postcode is invalid', { exact: false })).toBeVisible();
+    expect(requests.validations).toEqual([]);
+    await expect
+      .soft(postcode, 'The invalid postcode should have an accessible error description')
+      .toHaveAccessibleDescription(/The postcode is invalid/);
+
+    await postcode.fill('SW1A 1AA');
+    await expect(no).toBeChecked();
+    await continueButton.click();
+    await expect(page.getByRole('heading', { name: 'Check and submit', exact: true })).toBeVisible();
+    const review = page.locator('exui-noc-check-your-answers');
+    await expect(review).toContainText('SW1A 1AA');
+    await expect(review.getByText('No', { exact: true })).toBeVisible();
+    expect(requests.validations).toEqual([
+      {
+        case_id: NOTICE_OF_CHANGE_CASE_REFERENCE,
+        answers: [
+          { question_id: 'syntheticPostcode', value: 'SW1A 1AA' },
+          { question_id: 'syntheticCorrespondence', value: 'No' },
+        ],
+      },
+    ]);
     expect(requests.submissions).toEqual([]);
   }
 );

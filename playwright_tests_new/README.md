@@ -198,6 +198,25 @@ Follow **Startup the Node service locally** in the project root `README.md`, the
 yarn start:ng
 ```
 
+### GOV.UK Frontend migration checks
+
+The existing macOS visual runner includes Case Details and Payments, keyboard and accessibility checks for the Case List and conditional form, and deterministic migration journeys with synthetic service responses.
+
+```bash
+VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" yarn playwright test --config=playwright_tests_new/integration/visual.config.ts
+```
+
+Run the focused migration checks in strict mode to include 768 px and 320 px reflow:
+
+```bash
+MIGRATION_STRICT_REFLOW=true VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" \
+  yarn playwright test --config=playwright_tests_new/integration/visual.config.ts \
+  caseDetails.visual.ts migrationLayout.visual.ts noticeOfChange.visual.ts \
+  migrationDocuments.visual.ts migrationCaseRecovery.visual.ts
+```
+
+Run against each comparison checkout and retain the layout and axe attachments. A failed strict reflow check indicates horizontal overflow in that page state. Review incomplete axe results and check zoom, keyboard focus visibility and screen-reader announcements manually. Use the live AAT suite separately to verify eligible users, case definitions and real service integration.
+
 ### E2E commands
 
 ```bash

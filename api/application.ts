@@ -3,7 +3,7 @@ import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import { existsSync, readFileSync } from 'fs';
-import helmet from 'helmet';
+import helmet, { HelmetOptions } from 'helmet';
 import * as path from 'path';
 import { csp, SECURITY_POLICY } from '@hmcts/rpx-xui-node-lib';
 import amRoutes from './accessManagement/routes';
@@ -139,16 +139,23 @@ export async function createApp() {
 
   const logger: JUILogger = log4jui.getLogger('Application');
   if (showFeature(FEATURE_HELMET_ENABLED)) {
-    const helmetConfig = getConfigValue(HELMET);
+    const helmetConfig = getConfigValue<Parameters<typeof helmet>[0]>(HELMET)
     if (helmetConfig && typeof helmetConfig === 'object') {
-      app.use(helmet(helmetConfig)); // use the configured rules
+      app.use(
+      helmet({
+        ...helmetConfig,
+        // app sets content security policy
+        contentSecurityPolicy: false
+      })
+    );
     } else {
-      app.use(helmet()); // fall back to Helmet defaults
+      // app sets content security policy
+      app.use(helmet({ contentSecurityPolicy: false }));
     }
     app.use(helmet.noSniff());
     app.use(helmet.frameguard({ action: 'deny' }));
     app.use(helmet.referrerPolicy({ policy: ['origin'] }));
-    app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
+    app.use(helmet.crossOriginResourcePolicy({ policy: 'same-site' }));
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));
     const cspMiddleware = csp({

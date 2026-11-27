@@ -41,13 +41,13 @@
         // fast, non-recursive: add nonce to any <style> lacking one in a string
         const stampStyleInHtml = (html) => String(html).replace(/<style(?![^>]*\bnonce=)/gi, `<style nonce="${n}"`);
 
-        /* 1) createElement: JS-created <style> and <script> */
+        /* 1) createElement: JS-created <style> elements */
         const _create = _Doc_createElement; // alias to the captured native
         Document.prototype.createElement = function (tag, opts) {
           const el = _create.call(this, tag, opts);
           const t = String(tag).toLowerCase();
-          if ((t === 'style' || t === 'script') && !el.hasAttribute('nonce')) {
-            el.setAttribute('nonce', n); // n is the meta[name=csp-nonce].content above
+          if (t === 'style' && !el.hasAttribute('nonce')) {
+            el.setAttribute('nonce', n);
           }
           return el;
         };

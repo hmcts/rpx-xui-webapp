@@ -3215,12 +3215,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.26-govuk6-v5":
-  version: 7.4.26-govuk6-v5
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.26-govuk6-v5"
+"@hmcts/ccd-case-ui-toolkit@portal:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccd-case-ui-toolkit@portal:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.28-v1"
+    "@hmcts/ccpay-web-component": "npm:6.5.28-v4"
     "@hmcts/media-viewer": "npm:4.2.49"
     file-saver: "npm:^2.0.5"
     govuk-frontend: "npm:6.4.0"
@@ -3264,24 +3264,8 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/c9e0eb5cf6277b2ff9cc5909378c79abe7d48de0fa7d6e6980292199d1fcb944fddde315fddf7217889cc26132a6a83624dadd2f405a4a953e1417e8c82c7cf4
   languageName: node
-  linkType: hard
-
-"@hmcts/ccpay-web-component@npm:6.5.28-v1":
-  version: 6.5.28-v1
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.28-v1"
-  dependencies:
-    exceljs: "npm:^4.4.0"
-    file-saver: "npm:^2.0.2"
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^20.3.1
-    "@angular/core": ~20.3.1
-    govuk-frontend: ^6.4.0
-  checksum: 10/ee5c681491e0c124a480ce728a5ec1be2c3acc0492b8e85e66aca0073703df86744bce797c2896c61e9ddd0ef9f080d5ca79451a46483d604cedbbdb8c85145e
-  languageName: node
-  linkType: hard
+  linkType: soft
 
 "@hmcts/ccpay-web-component@npm:6.5.28-v4":
   version: 6.5.28-v4
@@ -20135,7 +20119,7 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.26-govuk6-v5"
+    "@hmcts/ccd-case-ui-toolkit": "portal:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit"
     "@hmcts/ccpay-web-component": "npm:6.5.28-v4"
     "@hmcts/media-viewer": "npm:4.2.49"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"

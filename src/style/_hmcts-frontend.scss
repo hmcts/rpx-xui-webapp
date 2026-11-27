@@ -1033,6 +1033,20 @@ table:not(.govuk-table) tbody td a {
   float: left;
 }
 
+table:not(.govuk-table) td:has(dl.case-field .markdown > hr:only-child) {
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+table:not(.govuk-table) td dl.case-field .markdown > hr:only-child {
+  display: none;
+}
+
+table:not(.govuk-table) tbody td .markdown a {
+  float: none;
+}
+
 table:not(.govuk-table) .numeric {
   text-align: right;
 }

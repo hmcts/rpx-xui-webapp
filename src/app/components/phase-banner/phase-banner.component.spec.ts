@@ -62,7 +62,8 @@ describe('PhaseBannerComponent', () => {
     ).nativeElement;
 
     expect(feedbackLinkElement.getAttribute('target')).toBe('_blank');
-    expect(feedbackLinkSpanElement.innerHTML).toEqual('(Opens in a new window)');
+    expect(feedbackLinkElement.textContent.trim()).toEqual('feedback (opens in a new tab)');
+    expect(feedbackLinkSpanElement.textContent).toEqual('(opens in a new tab)');
   });
 
   it('should change the language', () => {

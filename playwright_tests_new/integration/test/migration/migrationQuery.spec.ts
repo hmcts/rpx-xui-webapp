@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../../helpers/migrationTest.fixture';
 import { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
 import { QueryManagementPage } from '../../../E2E/page-objects/pages/exui/queryManagement.po';
 import { captureMigrationState } from '../../helpers/migrationStateEvidence.helper';
@@ -16,13 +16,10 @@ import {
 for (const width of [1280, 320]) {
   test.describe(`Query review at ${width}px`, () => {
     test.use({ viewport: { width, height: 900 } });
-    test.beforeEach(() => {
-      test.skip(width === 320 && process.env.MIGRATION_STRICT_REFLOW !== 'true', 'Enable strict narrow reflow');
-    });
 
     test(
       'renders the entered query in review with submission still available',
-      { tag: '@migration-sweep' },
+      { tag: ['@integration', '@integration-govuk-migration'] },
       async ({ page }, testInfo) => {
         await setupMigrationVisualRoutes(page, ['pui-case-manager']);
         const requests = await setupQueryManagementMockRoutes(page, { user: 'solicitor' });

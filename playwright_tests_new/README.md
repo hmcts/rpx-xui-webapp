@@ -200,32 +200,34 @@ yarn start:ng
 
 ### GOV.UK Frontend migration checks
 
-The existing macOS visual runner includes Case Details and Payments, keyboard and accessibility checks for the Case List and conditional form, and deterministic migration journeys with synthetic service responses.
+The standard Playwright integration job discovers `@integration-govuk-migration` specs. They serve the
+Angular browser build from the CI checkout on a loopback port and supply synthetic service responses.
+The migration fixture records and fails unmocked requests. These checks run at the declared widths
+without a strict-mode switch.
+
+To run the same pack locally:
+
+```bash
+yarn build:ng:dev
+INTEGRATION_PW_INCLUDE_TAGS=@integration-govuk-migration \
+  yarn test:playwright:integration:raw -- --reporter=list,html
+```
+
+To compare builds, set `MIGRATION_BUILD_DIRECTORY` to the other checkout's compiled
+`dist/rpx-exui/browser` directory and run the same command from the test checkout. Build both
+revisions with the same Angular configuration. Save each report under a separate directory and record
+both build SHAs. Known regressions fail normally so the reports retain their evidence.
+
+The existing pixel comparisons for navigation, Case List and the conditional form use the approved
+macOS reference images. Run them separately:
 
 ```bash
 VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" yarn playwright test --config=playwright_tests_new/integration/visual.config.ts
 ```
 
-Run the focused migration checks in strict mode to include 768 px and 320 px reflow:
-
-```bash
-MIGRATION_STRICT_REFLOW=true VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" \
-  yarn playwright test --config=playwright_tests_new/integration/visual.config.ts \
-  caseDetails.visual.ts migrationLayout.visual.ts noticeOfChange.visual.ts \
-  migrationDocuments.visual.ts migrationCaseRecovery.visual.ts
-```
-
-Run the broader visual sweep for shared pages, staff administration, case search and access, hearings, booking, My Work, query review and Refunds:
-
-```bash
-MIGRATION_STRICT_REFLOW=true VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" \
-  yarn playwright test --config=playwright_tests_new/integration/visual.config.ts \
-  --grep @migration-sweep --reporter=list,html
-```
-
-The sweep checks that each expected state renders before capturing screenshots, document width and axe evidence. The 320 px cases require strict reflow. Compare screenshots and measurements across the same synthetic fixtures, including any failures on the starting release.
-
-Run against each comparison checkout and retain the layout and axe attachments. A failed strict reflow check indicates horizontal overflow in that page state. Review incomplete axe results and check zoom, keyboard focus visibility and screen-reader announcements manually. Use the live AAT suite separately to verify eligible users, case definitions and real service integration.
+Review changed screenshots alongside the geometry and axe attachments. Use live AAT checks for real
+case definitions and service integration. Test zoom, keyboard focus visibility and screen-reader
+announcements for representative critical journeys before SRT.
 
 ### E2E commands
 

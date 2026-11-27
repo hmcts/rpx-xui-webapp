@@ -40,6 +40,17 @@ export function buildMigrationPaymentsMock() {
   };
 }
 
+export function buildMigrationPaymentDetailsMock() {
+  return buildMigrationPaymentsMock().payment_groups[0];
+}
+
+export function buildMigrationPaymentStatusesMock() {
+  return {
+    amount: 215,
+    status_histories: [{ status: 'Success', date_created: '2026-01-15T12:00:00.000Z' }],
+  };
+}
+
 // These flags keep the Case Details fixture independent of the deployed environment.
 export const MIGRATION_FEATURE_FLAGS = {
   MC_Notice_of_Change: { value: true, version: 1 },

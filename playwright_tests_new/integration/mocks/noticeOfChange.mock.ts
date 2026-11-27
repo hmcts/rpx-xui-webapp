@@ -36,6 +36,10 @@ export function buildNoticeOfChangeQuestionsMock(): NocQuestions {
   };
 }
 
+export function buildNoticeOfChangeTimeQuestionsMock(type: 'Time' | 'DateTime'): NocQuestions {
+  return { questions: [buildQuestion('syntheticAppointment', 'Synthetic client appointment', type, 1)] };
+}
+
 export const NOTICE_OF_CHANGE_MISMATCH_ERROR = {
   code: 'answers-not-matched-any-litigant',
   message: 'Synthetic mismatch',

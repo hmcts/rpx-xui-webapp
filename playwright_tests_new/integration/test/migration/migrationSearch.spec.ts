@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../../helpers/migrationTest.fixture';
 import { FindCasePage } from '../../../E2E/page-objects/pages/exui/findCase.po';
 import { createFindCaseSearchResultsRouteHandler, setupFindCaseMockRoutes } from '../../helpers/caseSearchMockRoutes.helper';
 import { captureMigrationState } from '../../helpers/migrationStateEvidence.helper';
@@ -17,13 +17,10 @@ import { TEST_CASE_REFERENCES } from '../../testData';
 for (const width of [1280, 320]) {
   test.describe(`Find case at ${width}px`, () => {
     test.use({ viewport: { width, height: 900 } });
-    test.beforeEach(() => {
-      test.skip(width === 320 && process.env.MIGRATION_STRICT_REFLOW !== 'true', 'Enable strict narrow reflow');
-    });
 
     test(
       'shows distinct result and no-result states with usable search filters',
-      { tag: '@migration-sweep' },
+      { tag: ['@integration', '@integration-govuk-migration'] },
       async ({ page }, testInfo) => {
         const existingCaseReference = TEST_CASE_REFERENCES.FIND_CASE_EXISTING;
         await setupMigrationVisualRoutes(page, ['caseworker-cmc']);

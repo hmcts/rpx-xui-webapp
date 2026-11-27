@@ -1,20 +1,9 @@
-import type { Page } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
 import { MIGRATION_FEATURE_FLAGS } from '../mocks/govukMigration.mock';
 import { setupVisualManageCasesRoutes } from './visualManageCasesRoutes.helper';
 import { buildXuiAppShellEnvironmentConfigMock } from './xuiAppShellMockRoutes.helper';
 
 export async function setupMigrationVisualRoutes(page: Page, roles: string[]): Promise<void> {
-  await page.route(
-    (url) => !['localhost', '127.0.0.1'].includes(url.hostname),
-    (route) => route.abort('blockedbyclient')
-  );
-  // Route handlers below fulfil the synthetic API calls. Block any unmatched service request.
-  await page.route('**/*', (route) => {
-    const request = route.request();
-    const path = new URL(request.url()).pathname;
-    const isServiceRequest = request.method() !== 'GET' || ['fetch', 'xhr'].includes(request.resourceType());
-    return isServiceRequest && !path.startsWith('/assets/') ? route.abort('blockedbyclient') : route.fallback();
-  });
   await setupVisualManageCasesRoutes(page, roles);
 
   const headers = { date: new Date().toUTCString(), 'access-control-expose-headers': 'Date' };
@@ -28,5 +17,18 @@ export async function setupMigrationVisualRoutes(page: Page, roles: string[]): P
         hearingJurisdictionConfig: { hearingJurisdictions: { '.+': [] }, hearingAmendment: { '.+': [] } },
       },
     })
+  );
+}
+
+export function mockMigrationRequest(
+  page: Page,
+  origin: string,
+  method: 'GET' | 'POST',
+  pathname: string,
+  handler: (route: Route) => Promise<void>
+) {
+  return page.route(
+    (url) => url.origin === origin && url.pathname === pathname,
+    (route) => (route.request().method() === method ? handler(route) : route.fallback())
   );
 }

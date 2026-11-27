@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../../helpers/migrationTest.fixture';
 import { BookingUiPage } from '../../../E2E/page-objects/pages/exui/bookingUi.po';
 import { buildBookingUiBootstrapUser, setupBookingUiMockRoutes } from '../../helpers/bookingUiMockRoutes.helper';
 import { captureMigrationState } from '../../helpers/migrationStateEvidence.helper';
@@ -9,7 +9,7 @@ import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 
 test(
   'booking shows an actionable active record and a disabled past record',
-  { tag: '@migration-sweep' },
+  { tag: ['@integration', '@integration-govuk-migration'] },
   async ({ page }, testInfo) => {
     const userId = 'synthetic-migration-judge';
     const user = buildBookingUiBootstrapUser(userId);

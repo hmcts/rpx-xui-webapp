@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../../helpers/migrationTest.fixture';
 import { captureMigrationState } from '../../helpers/migrationStateEvidence.helper';
-import { setupMigrationVisualRoutes } from '../../helpers/migrationVisualRoutes.helper';
+import { mockMigrationRequest, setupMigrationVisualRoutes } from '../../helpers/migrationVisualRoutes.helper';
 import {
   buildCaseViewerMock,
   CASE_VIEWER_CASE_REFERENCE,
@@ -15,13 +15,12 @@ for (const width of [1280, 320]) {
   test.describe(`Case viewer states at ${width}px`, () => {
     test.use({ viewport: { width, height: 900 } });
     test.beforeEach(async ({ page }) => {
-      test.skip(width === 320 && process.env.MIGRATION_STRICT_REFLOW !== 'true', 'Enable strict narrow reflow');
       await setupMigrationVisualRoutes(page, ['caseworker-sscs', 'hmcts-staff']);
     });
 
     test(
       'activity tab shows an actual event and can return to the case summary',
-      { tag: '@migration-sweep' },
+      { tag: ['@integration', '@integration-govuk-migration'] },
       async ({ page }, testInfo) => {
         await page.route(caseApi, (route) => route.fulfill({ json: buildCaseViewerMock() }));
         await page.goto(casePath);
@@ -49,8 +48,11 @@ for (const width of [1280, 320]) {
 
     test(
       'restricted case keeps protected tabs out of the denied view',
-      { tag: '@migration-sweep' },
-      async ({ page }, testInfo) => {
+      { tag: ['@integration', '@integration-govuk-migration'] },
+      async ({ page, migrationOrigin }, testInfo) => {
+        await mockMigrationRequest(page, migrationOrigin, 'POST', '/workallocation/caseworker/getUsersByIdamIds', (route) =>
+          route.fulfill({ json: [] })
+        );
         await page.route(caseApi, (route) => route.fulfill({ status: 403, json: { message: 'Synthetic restricted case' } }));
         await page.goto(casePath);
         await expect(page).toHaveURL(/\/restricted-case-access\//);

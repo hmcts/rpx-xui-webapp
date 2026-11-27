@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../../helpers/migrationTest.fixture';
 import { StaffAdministrationPage } from '../../../E2E/page-objects/pages/exui/staffAdministration.po';
 import { captureMigrationState } from '../../helpers/migrationStateEvidence.helper';
 import { setupMigrationVisualRoutes } from '../../helpers/migrationVisualRoutes.helper';
@@ -8,13 +8,10 @@ import { staffUser, staffUserId } from '../../mocks/staffAdministration.mock';
 for (const width of [1280, 320]) {
   test.describe(`Staff administration at ${width}px`, () => {
     test.use({ viewport: { width, height: 900 } });
-    test.beforeEach(() => {
-      test.skip(width === 320 && process.env.MIGRATION_STRICT_REFLOW !== 'true', 'Enable strict narrow reflow');
-    });
 
     test(
       'distinguishes no matches from populated results and opens the selected user',
-      { tag: '@migration-sweep' },
+      { tag: ['@integration', '@integration-govuk-migration'] },
       async ({ page }, testInfo) => {
         await setupMigrationVisualRoutes(page, ['staff-admin']);
         const { detailsRequests } = await setupStaffAdministrationMockRoutes(page);

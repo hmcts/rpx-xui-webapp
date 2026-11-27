@@ -29,3 +29,25 @@ export async function scanMigrationAccessibility(page: Page, testInfo: TestInfo)
     .filter(({ impact }) => impact === 'critical' || impact === 'serious')
     .map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(({ target }) => target) }));
 }
+
+export async function measureControlFit(locator: Locator) {
+  return locator.evaluate((control) => {
+    const { left, right, width, height } = control.getBoundingClientRect();
+    let allowedLeft = 0;
+    let allowedRight = window.innerWidth;
+    for (let parent = control.parentElement; parent; parent = parent.parentElement) {
+      if (/^(hidden|clip|auto|scroll)$/.test(getComputedStyle(parent).overflowX)) {
+        const edge = parent.getBoundingClientRect().left + parent.clientLeft;
+        allowedLeft = Math.max(allowedLeft, edge);
+        allowedRight = Math.min(allowedRight, edge + parent.clientWidth);
+      }
+    }
+    return {
+      fits: width > 0 && height > 0 && left >= allowedLeft - 1 && right <= allowedRight + 1,
+      left,
+      right,
+      allowedLeft,
+      allowedRight,
+    };
+  });
+}

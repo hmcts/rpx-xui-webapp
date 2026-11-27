@@ -1,5 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../../helpers/migrationTest.fixture';
 import { captureMigrationState } from '../../helpers/migrationStateEvidence.helper';
+import { measureControlFit } from '../../helpers/migrationVisualChecks.helper';
 import { setupMigrationVisualRoutes } from '../../helpers/migrationVisualRoutes.helper';
 
 const states = [
@@ -11,14 +12,11 @@ const states = [
 for (const width of [1280, 320]) {
   test.describe(`Shared pages at ${width}px`, () => {
     test.use({ viewport: { width, height: 900 } });
-    test.beforeEach(() => {
-      test.skip(width === 320 && process.env.MIGRATION_STRICT_REFLOW !== 'true', 'Enable strict narrow reflow');
-    });
 
     for (const { path, heading, content } of states) {
       test(
         `${path} shows the intended page and usable shared navigation`,
-        { tag: '@migration-sweep' },
+        { tag: ['@integration', '@integration-govuk-migration'] },
         async ({ page }, testInfo) => {
           await setupMigrationVisualRoutes(page, ['caseworker-cmc']);
           await page.goto(path);
@@ -27,10 +25,17 @@ for (const width of [1280, 320]) {
           await expect(page.getByRole('link', { name: 'Case list', exact: true })).toHaveAttribute('href', /\/cases$/);
           const state = await captureMigrationState(page, testInfo);
           expect.soft(state.documentWidth, 'Shared page should fit the viewport').toBeLessThanOrEqual(width + 1);
+          const input = page.locator('#exuiCaseReferenceSearch');
           const find = page.getByRole('button', { name: 'Find', exact: true });
-          await expect(find).toBeVisible();
-          const bounds = await find.boundingBox();
-          expect.soft(bounds!.x + bounds!.width, 'Header Find control should fit horizontally').toBeLessThanOrEqual(width + 1);
+          for (const [name, control] of [
+            ['case-reference input', input],
+            ['Find button', find],
+          ] as const) {
+            await expect(control).toBeVisible();
+            expect
+              .soft(await measureControlFit(control), `Header ${name} should fit without clipping`)
+              .toMatchObject({ fits: true });
+          }
           expect.soft(state.violations).toEqual([]);
         }
       );

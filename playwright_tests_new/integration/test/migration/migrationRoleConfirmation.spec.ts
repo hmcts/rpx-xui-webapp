@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../../helpers/migrationTest.fixture';
 import { TaskListPage } from '../../../E2E/page-objects/pages/exui/taskList.po';
 import { captureMigrationState } from '../../helpers/migrationStateEvidence.helper';
 import { setupMigrationRoleConfirmation } from '../../helpers/migrationWorkRoutes.helper';
@@ -9,7 +9,7 @@ for (const { dualCategory, expectedHeader, absentHeader } of [
 ]) {
   test(
     `reassignment review shows ${expectedHeader} for a ${dualCategory ? 'dual' : 'single'}-category user`,
-    { tag: '@migration-sweep' },
+    { tag: ['@integration', '@integration-govuk-migration'] },
     async ({ page }, testInfo) => {
       const task = await setupMigrationRoleConfirmation(page, dualCategory);
       const tasks = new TaskListPage(page);
@@ -30,11 +30,10 @@ for (const { dualCategory, expectedHeader, absentHeader } of [
       await expect(page.getByRole('cell', { name: 'Review the appeal', exact: true })).toBeVisible();
       await expect(tasks.reassignButton).toBeEnabled();
       const state = await captureMigrationState(page, testInfo);
-      if (state.viewportWidth >= 768 || process.env.MIGRATION_STRICT_REFLOW === 'true') {
-        expect
-          .soft(state.documentWidth, 'The reassignment review should fit its viewport')
-          .toBeLessThanOrEqual(state.viewportWidth + 1);
-      }
+      expect.soft(state.violations, 'The reached state must have no serious or critical axe violations').toEqual([]);
+      expect
+        .soft(state.documentWidth, 'The reassignment review should fit its viewport')
+        .toBeLessThanOrEqual(state.viewportWidth + 1);
 
       const assignment = page.waitForRequest(
         (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${task.id}/assign`)

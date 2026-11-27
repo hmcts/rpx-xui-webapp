@@ -1,6 +1,5 @@
 import type { Page } from '@playwright/test';
 import { setupCaseListMocks } from './caseList.helper';
-import { setupXuiAppShellBaseRoutes } from './xuiAppShellMockRoutes.helper';
 import {
   buildCaseViewerMock,
   CASE_VIEWER_CASE_REFERENCE,
@@ -11,7 +10,6 @@ import { buildMigrationRecoveryCaseList } from '../mocks/migrationJourneys.mock'
 
 export async function setupMigrationCaseRecovery(page: Page) {
   const roles = ['caseworker-sscs', 'hmcts-staff'];
-  await setupXuiAppShellBaseRoutes(page, { userDetails: { roles } });
   await setupCaseListMocks(page, {
     jurisdictions: [
       {

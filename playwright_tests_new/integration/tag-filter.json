@@ -5,8 +5,7 @@
     { "tag": "@blocked-exui-4317", "ticket": "EXUI-4317", "owner": "@hmcts/exui-team", "expires": "2026-12-31" },
     { "tag": "@blocked-exui-4318", "ticket": "EXUI-4318", "owner": "@hmcts/exui-team", "expires": "2026-12-31" },
     { "tag": "@blocked-exui-5591", "ticket": "EXUI-5591", "owner": "@hmcts/exui-team", "expires": "2026-12-31" },
-    { "tag": "@blocked-exui-1004", "ticket": "EXUI-1004", "owner": "@hmcts/exui-team", "expires": "2026-12-31" },
-    { "tag": "@blocked-exui-5590", "ticket": "EXUI-5590", "owner": "@hmcts/exui-team", "expires": "2026-12-31" }
+    { "tag": "@blocked-exui-1004", "ticket": "EXUI-1004", "owner": "@hmcts/exui-team", "expires": "2026-12-31" }
   ],
   "availableTags": [
     "@integration",
@@ -40,7 +39,6 @@
     "@blocked-exui-4317",
     "@blocked-exui-4318",
     "@blocked-exui-5591",
-    "@blocked-exui-1004",
-    "@blocked-exui-5590"
+    "@blocked-exui-1004"
   ]
 }

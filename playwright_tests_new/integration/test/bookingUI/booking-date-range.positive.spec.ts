@@ -9,8 +9,7 @@ import {
 
 test.describe('Multi-day work booking', { tag: ['@integration', '@integration-booking-ui'] }, () => {
   test.use({ timezoneId: 'Europe/London' });
-  // EXUI-5590: the app omits the selected location from MyTasks; re-enable after the app fix.
-  test('normalizes a summer range to UTC boundaries and refreshes the selected work location @blocked-exui-5590', async ({
+  test('normalizes a summer range to UTC boundaries and refreshes the selected work location', async ({
     page,
     bookingUiPage,
     taskListPage,
@@ -77,5 +76,14 @@ test.describe('Multi-day work booking', { tag: ['@integration', '@integration-bo
     await expect(taskListPage.taskRows).toHaveCount(3);
     await taskListPage.openFilterPanel();
     await expect(taskListPage.selectedLocationTags).toHaveText([singleLocationMock[0].site_name]);
+
+    await test.step('Preserve subsequent saved filter changes when My Work reloads', async () => {
+      await taskListPage.removeAllSelectedLocations();
+      await taskListPage.applyCurrentFilters();
+      await page.reload();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.openFilterPanel();
+      await expect(taskListPage.selectedLocationTags).toHaveCount(0);
+    });
   });
 });

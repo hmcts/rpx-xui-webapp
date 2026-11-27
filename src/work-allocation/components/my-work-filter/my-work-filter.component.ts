@@ -14,7 +14,7 @@ import {
 } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
@@ -91,9 +91,9 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     private readonly appStore: Store<fromAppStore.State>,
     private readonly featureToggleService: FeatureToggleService
   ) {
-    if (this.router.getCurrentNavigation()?.extras?.state?.location) {
-      this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
-    }
+    // The filter can be created after NavigationEnd, when there is no current navigation.
+    const navigationState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
+    this.bookingLocations = navigationState?.location?.ids ?? [];
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -156,21 +156,23 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
       this.taskService.getUsersAssignedTasks(),
       this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices),
       this.featureToggleService.getValue('ServiceNames', servicesMap),
-    ]).subscribe(
-      ([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [
-        any[],
-        string[],
-        Task[],
-        LocationByEpimmsModel[],
-        any,
-      ]) => {
-        this.setUpServicesFilter(services, serviceNamesMap);
-        this.setUpLocationFilter(locations);
-        this.setUpTypesOfWorkFilter(typesOfWork);
-        this.persistFirstSetting();
-        this.subscribeToFilters(assignedTasks);
-      }
-    );
+    ])
+      .pipe(take(1))
+      .subscribe(
+        ([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [
+          any[],
+          string[],
+          Task[],
+          LocationByEpimmsModel[],
+          any,
+        ]) => {
+          this.setUpServicesFilter(services, serviceNamesMap);
+          this.setUpLocationFilter(locations);
+          this.setUpTypesOfWorkFilter(typesOfWork);
+          this.persistFirstSetting();
+          this.subscribeToFilters(assignedTasks);
+        }
+      );
 
     this.setErrors();
     this.setAllowTypesOfWorkFilter(this.router.url);
@@ -289,6 +291,12 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     if ((this.defaultLocations && this.defaultLocations.length > 0) || !savedFilterSetting) {
       this.filterService.persist(this.fieldsSettings, this.fieldsConfig.persistence);
       this.filterService.isInitialSetting = true;
+      // Consume the booking handoff so reloading does not overwrite later filter changes.
+      if (this.bookingLocations.length && history.state?.location?.ids) {
+        const state = { ...history.state, location: { ...history.state.location } };
+        delete state.location.ids;
+        history.replaceState(state, '');
+      }
     }
   }
 

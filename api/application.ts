@@ -53,6 +53,7 @@ function loadIndexHtml(staticRoot: string): string {
 
 const staticRoot = resolveStaticRoot();
 const indexHtmlRaw = loadIndexHtml(staticRoot);
+const UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
 
 function escapeHtmlAttribute(value: string): string {
   return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
@@ -67,11 +68,68 @@ function getDynatraceCdn(): string | null {
 }
 
 function injectTemplateValues(html: string, nonce: string): string {
+  // The CSP middleware only creates res.locals.cspNonce when Helmet is enabled.
+  // Use an empty value when Helmet is disabled so template markers are always
+  // removed and never become the literal string "undefined" in the response.
+  const cspNonce = nonce || '';
   const renderedHtml = html
     .replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(getDynatraceCdn() ?? ''))
-    .replaceAll(/{{cspNonce}}/g, nonce);
+    .replaceAll(/{{cspNonce}}/g, cspNonce);
 
-  return addNonceToExternalScripts(renderedHtml, nonce);
+  // Angular adds its generated bundle scripts during the production build, so
+  // those tags are not present in src/index.html to receive a nonce marker.
+  return addNonceToExternalScripts(renderedHtml, cspNonce);
+}
+
+/**
+ * Returns true when express.static would resolve a request pathname to the
+ * built application's root index.html file.
+ *
+ *  1. Decode the pathname with decodeURIComponent.
+ *  2. Prefix it with `.${path.sep}` so an absolute URL path is treated as a
+ *     path relative to the configured static root.
+ *  3. Normalize repeated separators and `.`/`..` segments.
+ *  4. Reject any `..` segment left after normalization, as `send` does before
+ *     resolving a path beneath its static root.
+ */
+function resolvesToIndexHtml(requestPath: string): boolean {
+  let decodedPath: string;
+  try {
+    decodedPath = decodeURIComponent(requestPath);
+  } catch {
+    // `send` also rejects malformed percent encoding rather than resolving it
+    // to a file, so it must not be treated as an index alias here.
+    return false;
+  }
+
+  // Null bytes are rejected by `send` and are not valid filesystem paths.
+  if (decodedPath.includes('\0')) {
+    return false;
+  }
+
+  const normalizedPath = path.normalize(`.${path.sep}${decodedPath}`);
+  return !UP_PATH_REGEXP.test(normalizedPath) && normalizedPath === 'index.html';
+}
+
+export function registerFrontendRoutes(app: express.Express, frontendRoot: string, entryHtml: string): void {
+  // Anything that resolves to the index.html file should be handled by the SPA renderer first
+  app.use((req, res, next) => {
+    if ((req.method !== 'GET' && req.method !== 'HEAD') || !resolvesToIndexHtml(req.path)) {
+      return next();
+    }
+
+    const html = injectTemplateValues(entryHtml, res.locals.cspNonce as string);
+    return res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
+  });
+
+  app.use(express.static(frontendRoot, { index: false }));
+
+  // Any route that did not map to a real asset is an Angular client-side route
+  // and receives the same rendered entry page. This also covers `/`.
+  app.use('/{*splat}', (req, res) => {
+    const html = injectTemplateValues(entryHtml, res.locals.cspNonce as string);
+    res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
+  });
 }
 
 export async function createApp() {
@@ -149,19 +207,7 @@ export async function createApp() {
     ignoreMethods: ['GET'],
   }) as unknown as express.RequestHandler;
   app.use(csrfMiddleware);
-  // Serve /index.html through the same nonce injector
-  // This is to ensure that <MC URL>/index.html works with CSP
-  app.get('/index.html', (req, res) => {
-    const html = injectTemplateValues(indexHtmlRaw, res.locals.cspNonce as string);
-    res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
-  });
-  // runs for every incoming request in the order middleware are declared
-  app.use(express.static(staticRoot, { index: false }));
-  // Catch-all handler for every URL that the static middleware didn’t serve
-  app.use('/{*splat}', (req, res) => {
-    const html = injectTemplateValues(indexHtmlRaw, res.locals.cspNonce as string);
-    res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
-  });
+  registerFrontendRoutes(app, staticRoot, indexHtmlRaw);
 
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 

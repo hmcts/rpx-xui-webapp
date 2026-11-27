@@ -41,5 +41,11 @@ export default defineConfig(
     rules: {
       '@typescript-eslint/no-require-imports': 'warn',
     },
+  },
+  {
+    files: ['api/test/browser-build/*.js'],
+    languageOptions: {
+      globals: { window: 'readonly' },
+    },
   }
 );

@@ -10,19 +10,6 @@ function getDynatraceCdn(): string | null {
   return getConfigValue<string>(DYNATRACE_CDN)?.trim() || null;
 }
 
-function resolveDynatraceOrigin(): string | null {
-  const dynatraceCdn = getDynatraceCdn();
-  if (!dynatraceCdn) {
-    return null;
-  }
-
-  try {
-    return new URL(dynatraceCdn).origin;
-  } catch {
-    return null;
-  }
-}
-
 function resolveDynatraceBeaconOrigin(): string | null {
   const dynatraceCdn = getDynatraceCdn();
   if (!dynatraceCdn) {
@@ -41,18 +28,11 @@ function resolveDynatraceBeaconOrigin(): string | null {
   }
 }
 
-const dynatraceOrigin = resolveDynatraceOrigin();
 const dynatraceBeaconOrigin = resolveDynatraceBeaconOrigin();
 
 export const MC_CSP: Parameters<typeof csp>[0] = {
   /* ── hosts common to every MC environment ─────────────── */
-  extraScript: [
-    "'wasm-unsafe-eval'",
-    'https://www.googletagmanager.com',
-    'https://www.google-analytics.com',
-    'az416426.vo.msecnd.net',
-    dynatraceOrigin || '',
-  ].filter(Boolean),
+  extraScript: ["'wasm-unsafe-eval'"].filter(Boolean),
 
   extraStyle: ['https://fonts.googleapis.com', 'https://fonts.gstatic.com', 'https://www.googletagmanager.com'],
 

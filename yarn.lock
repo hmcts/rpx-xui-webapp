@@ -3404,9 +3404,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.36":
-  version: 2.30.36
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.36"
+"@hmcts/rpx-xui-node-lib@npm:2.30.36-csp-script-changes":
+  version: 2.30.36-csp-script-changes
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.36-csp-script-changes"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.17.1"
     axios: "npm:^1.21.1"
@@ -3425,7 +3425,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/127420a83844271ffb8def50aff367ad3c6f52663e483723e8fdb25bebe2a13aa8844c091973359f14f354e8626d07e538f0f310690cf7ec9426b21ac9690e0b
+  checksum: 10/acf6f082774b61c3b33ff8bb951e1a1780f5997a3c54efb82edd9d8407129f290c1b9e59a4468d317005798adcc1768b7d7678363cf5c41e5e1608c3073ba34f
   languageName: node
   linkType: hard
 
@@ -20126,7 +20126,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:1.1.7"
     "@hmcts/properties-volume": "npm:^1.4.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.29"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.36"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.36-csp-script-changes"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

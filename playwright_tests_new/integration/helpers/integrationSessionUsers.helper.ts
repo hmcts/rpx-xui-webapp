@@ -41,6 +41,7 @@ const integrationSessionUsersByTag: Record<string, IntegrationSessionResolver> =
   ],
   // Authentication and user details are route-mocked by this suite.
   '@integration-hearing-link': () => [],
+  '@integration-govuk-migration': () => [],
   '@integration-manage-tasks': (env) => [...resolveStaffAdminSessionUsers(env), 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
   // Authentication and user details are route-mocked by this suite.
   '@integration-platform-services': () => [],

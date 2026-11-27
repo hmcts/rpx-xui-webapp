@@ -198,6 +198,37 @@ Follow **Startup the Node service locally** in the project root `README.md`, the
 yarn start:ng
 ```
 
+### GOV.UK Frontend migration checks
+
+The standard Playwright integration job discovers `@integration-govuk-migration` specs. They serve the
+Angular browser build from the CI checkout on a loopback port and supply synthetic service responses.
+The migration fixture records and fails unmocked requests. These checks run at the declared widths
+without a strict-mode switch.
+
+To run the same pack locally:
+
+```bash
+yarn build:ng:dev
+INTEGRATION_PW_INCLUDE_TAGS=@integration-govuk-migration \
+  yarn test:playwright:integration:raw -- --reporter=list,html
+```
+
+To compare builds, set `MIGRATION_BUILD_DIRECTORY` to the other checkout's compiled
+`dist/rpx-exui/browser` directory and run the same command from the test checkout. Build both
+revisions with the same Angular configuration. Save each report under a separate directory and record
+both build SHAs. Known regressions fail normally so the reports retain their evidence.
+
+The existing pixel comparisons for navigation, Case List and the conditional form use the approved
+macOS reference images. Run them separately:
+
+```bash
+VISUAL_CANDIDATE_SHA="$(git rev-parse HEAD)" yarn playwright test --config=playwright_tests_new/integration/visual.config.ts
+```
+
+Review changed screenshots alongside the geometry and axe attachments. Use live AAT checks for real
+case definitions and service integration. Test zoom, keyboard focus visibility and screen-reader
+announcements for representative critical journeys before SRT.
+
 ### E2E commands
 
 ```bash

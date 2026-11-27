@@ -11,9 +11,11 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { Actions } from '@ngrx/effects';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Subject, of } from 'rxjs';
 import { LoadOrganisation, getOrganisationSel } from '../../../organisation/store';
+import { OrganisationEffects } from '../../../organisation/store/effects/organisation.effects';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { CaseListComponent } from './case-list.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -137,7 +139,6 @@ describe('CaseListComponent', () => {
     it('should wait for user details and load a professional case manager organisation only once', () => {
       const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
       spyOnPipeToStore.and.returnValue(of(organisation));
-      const setItem = spyOn(sessionStorage, 'setItem');
       component.getOrganisationDetailsFromStore();
 
       userDetails$.next(undefined);
@@ -148,7 +149,7 @@ describe('CaseListComponent', () => {
       userDetails$.next({ userInfo: { roles: ['caseworker', 'pui-case-manager'] } });
 
       expect(spyOnDispatchToStore).toHaveBeenCalledOnceWith(new LoadOrganisation());
-      expect(setItem).toHaveBeenCalledWith('organisationDetails', JSON.stringify(organisation));
+      expect(component.organisationDetails).toEqual(organisation);
     });
 
     ['pui-organisation-manager', 'pui-finance-manager', 'pui-case-manager', 'pui-caa', 'pui-user-manager'].forEach((role) => {
@@ -177,17 +178,43 @@ describe('CaseListComponent', () => {
       expect(spyOnDispatchToStore).not.toHaveBeenCalled();
     });
 
-    it('should stop storing organisation updates when the component is destroyed', () => {
+    it('should stop receiving organisation updates when the component is destroyed', () => {
       spyOnPipeToStore.and.callThrough();
       const organisationSelector = store.overrideSelector(getOrganisationSel, {});
-      const setItem = spyOn(sessionStorage, 'setItem');
       component.getOrganisationDetailsFromStore();
       userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
       component.ngOnDestroy();
       organisationSelector.setResult({ organisationIdentifier: 'TEST123' });
       store.refreshState();
 
-      expect(setItem).not.toHaveBeenCalled();
+      expect(component.organisationDetails).toEqual({});
+    });
+
+    it('should persist a pending lookup through the effect after Case List is destroyed', () => {
+      const actions$ = new Subject<LoadOrganisation>();
+      const response$ = new Subject();
+      const organisationService = jasmine.createSpyObj('OrganisationService', ['fetchOrganisation']);
+      organisationService.fetchOrganisation.and.returnValue(response$);
+      const logger = jasmine.createSpyObj('LoggerService', ['error']);
+      const effects = new OrganisationEffects(new Actions(actions$), organisationService, logger);
+      const subscription = effects.loadOrganisation$.subscribe();
+      const setItem = spyOn(sessionStorage, 'setItem');
+      spyOnDispatchToStore.and.callFake((action) => actions$.next(action));
+
+      try {
+        component.getOrganisationDetailsFromStore();
+        userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
+        expect(organisationService.fetchOrganisation).toHaveBeenCalledTimes(1);
+        expect(setItem).not.toHaveBeenCalled();
+
+        component.ngOnDestroy();
+        const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
+        response$.next(organisation);
+
+        expect(setItem).toHaveBeenCalledOnceWith('organisationDetails', JSON.stringify(organisation));
+      } finally {
+        subscription.unsubscribe();
+      }
     });
   });
 

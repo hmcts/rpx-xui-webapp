@@ -523,9 +523,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromStore.LoadOrganisation());
         this.orgStore.pipe(select(fromStore.getOrganisationSel), takeUntil(this.unsubscribe$)).subscribe((response) => {
           this.organisationDetails = response;
-          if (this.organisationDetails?.organisationIdentifier) {
-            sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));
-          }
         });
       });
   }

@@ -51,6 +51,34 @@ describe('Organisation Effects', () => {
   });
 
   describe('loadOrganisation$', () => {
+    it('should persist the organisation before emitting success', () => {
+      const payload = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
+      const setItem = spyOn(sessionStorage, 'setItem');
+      const emitted = jasmine.createSpy('emitted');
+      organisationServiceMock.fetchOrganisation.and.returnValue(of(payload));
+      actions$ = of(new LoadOrganisation());
+
+      effects.loadOrganisation$.subscribe((action) => {
+        expect(setItem).toHaveBeenCalledOnceWith('organisationDetails', JSON.stringify(payload));
+        emitted(action);
+      });
+
+      expect(emitted).toHaveBeenCalledOnceWith(new LoadOrganisationSuccess(payload));
+    });
+
+    it('should not overwrite stored organisation details with a response without an identifier', () => {
+      const payload = {};
+      const setItem = spyOn(sessionStorage, 'setItem');
+      const emitted = jasmine.createSpy('emitted');
+      organisationServiceMock.fetchOrganisation.and.returnValue(of(payload));
+      actions$ = of(new LoadOrganisation());
+
+      effects.loadOrganisation$.subscribe(emitted);
+
+      expect(setItem).not.toHaveBeenCalled();
+      expect(emitted).toHaveBeenCalledOnceWith(new LoadOrganisationSuccess(payload));
+    });
+
     it('should return a collection from loadOrganisation$ - LoadOrganisationSuccess', () => {
       const payload = {
         account_number: 'someNumber',
@@ -71,6 +99,7 @@ describe('Organisation Effects', () => {
 
   describe('loadOrganisation$ error', () => {
     it('should return LoadOrganisationFail', () => {
+      const setItem = spyOn(sessionStorage, 'setItem');
       organisationServiceMock.fetchOrganisation.and.returnValue(throwError(new Error()));
       const action = new LoadOrganisation();
       const completion = new LoadOrganisationFail(new Error());
@@ -78,6 +107,7 @@ describe('Organisation Effects', () => {
       const expected = cold('-b', { b: completion });
       expect(effects.loadOrganisation$).toBeObservable(expected);
       expect(loggerService.error).toHaveBeenCalled();
+      expect(setItem).not.toHaveBeenCalled();
     });
   });
 });

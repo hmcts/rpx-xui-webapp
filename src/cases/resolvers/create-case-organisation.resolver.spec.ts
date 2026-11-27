@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Actions } from '@ngrx/effects';
@@ -11,7 +11,7 @@ import { State, getUserDetails } from '../../app/store';
 import { LoadOrganisation, LoadOrganisationSuccess } from '../../organisation/store/actions';
 import { OrganisationEffects } from '../../organisation/store/effects/organisation.effects';
 import { ROUTES } from '../case-feature.routes';
-import { CreateCaseOrganisationResolver } from './create-case-organisation.resolver';
+import { CreateCaseOrganisationResolver, ORGANISATION_RESOLVE_TIMEOUT_MS } from './create-case-organisation.resolver';
 
 @Component({ template: '', standalone: true })
 class OrganisationEditorStub implements OnInit {
@@ -127,6 +127,63 @@ describe('CreateCaseOrganisationResolver', () => {
     expect(resolved).not.toHaveBeenCalled();
     expect(actions$.observed).toBeFalse();
   });
+
+  it('should proceed when user details do not arrive before the deadline', fakeAsync(() => {
+    store.overrideSelector(getUserDetails, { userInfo: null } as UserDetails);
+    const resolved = jasmine.createSpy('resolved');
+    const completed = jasmine.createSpy('completed');
+    subscriptions.add(resolver.resolve().subscribe({ next: resolved, complete: completed }));
+
+    tick(ORGANISATION_RESOLVE_TIMEOUT_MS - 1);
+    expect(resolved).not.toHaveBeenCalled();
+    tick(1);
+
+    expect(resolved).toHaveBeenCalledOnceWith(true);
+    expect(completed).toHaveBeenCalledTimes(1);
+    expect(dispatch).not.toHaveBeenCalled();
+  }));
+
+  it('should use one deadline for both user details and the organisation lookup', fakeAsync(() => {
+    const selector = store.overrideSelector(getUserDetails, { userInfo: null } as UserDetails);
+    const resolved = jasmine.createSpy('resolved');
+    subscriptions.add(resolver.resolve().subscribe(resolved));
+    tick(ORGANISATION_RESOLVE_TIMEOUT_MS - 1);
+    selector.setResult({ userInfo: { roles: ['pui-case-manager'] } } as UserDetails);
+    store.refreshState();
+
+    expect(dispatch).toHaveBeenCalledOnceWith(new LoadOrganisation());
+    expect(resolved).not.toHaveBeenCalled();
+    tick(1);
+
+    expect(resolved).toHaveBeenCalledOnceWith(true);
+    expect(actions$.observed).toBeFalse();
+  }));
+
+  it('should proceed after a stalled lookup and still persist a late response through the effect', fakeAsync(() => {
+    const response$ = new Subject();
+    const organisationService = jasmine.createSpyObj('OrganisationService', ['fetchOrganisation']);
+    organisationService.fetchOrganisation.and.returnValue(response$);
+    const logger = jasmine.createSpyObj('LoggerService', ['error']);
+    const effects = new OrganisationEffects(new Actions(actions$), organisationService, logger, store);
+    subscriptions.add(effects.loadOrganisation$.subscribe((action) => actions$.next(action)));
+    dispatch.and.callFake((action) => actions$.next(action));
+    const setItem = spyOn(sessionStorage, 'setItem');
+    const resolved = jasmine.createSpy('resolved');
+    subscriptions.add(resolver.resolve().subscribe(resolved));
+
+    tick(ORGANISATION_RESOLVE_TIMEOUT_MS - 1);
+    expect(resolved).not.toHaveBeenCalled();
+    expect(setItem).not.toHaveBeenCalled();
+    tick(1);
+    expect(resolved).toHaveBeenCalledOnceWith(true);
+
+    const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
+    response$.next(organisation);
+
+    expect(organisationService.fetchOrganisation).toHaveBeenCalledTimes(1);
+    expect(setItem).toHaveBeenCalledOnceWith('organisationDetails', JSON.stringify(organisation));
+    expect(resolved).toHaveBeenCalledOnceWith(true);
+  }));
 
   [true, false].forEach((successful) => {
     it(`should initialise the editor only after lookup ${successful ? 'success and persistence' : 'failure'}`, async () => {

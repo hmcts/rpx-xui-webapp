@@ -11,8 +11,11 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { Actions } from '@ngrx/effects';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
+import { Subject, of } from 'rxjs';
+import { LoadOrganisation, getOrganisationSel } from '../../../organisation/store';
+import { OrganisationEffects } from '../../../organisation/store/effects/organisation.effects';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { CaseListComponent } from './case-list.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -121,6 +124,73 @@ describe('CaseListComponent', () => {
 
       expect(component.setCaseListFilterDefaults).toHaveBeenCalled();
       expect(component.listenToPaginationMetadata).toHaveBeenCalled();
+    });
+  });
+
+  describe('getOrganisationDetailsFromStore()', () => {
+    beforeEach(() => {
+      spyOnDispatchToStore.calls.reset();
+    });
+
+    it('should dispatch the lookup immediately and display organisation state', () => {
+      const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
+      spyOnPipeToStore.and.returnValue(of(organisation));
+      component.getOrganisationDetailsFromStore();
+
+      expect(spyOnDispatchToStore).toHaveBeenCalledOnceWith(new LoadOrganisation());
+      expect(component.organisationDetails).toEqual(organisation);
+    });
+
+    it('should stop receiving organisation updates when the component is destroyed', () => {
+      spyOnPipeToStore.and.callThrough();
+      const organisationSelector = store.overrideSelector(getOrganisationSel, {});
+      component.getOrganisationDetailsFromStore();
+      component.ngOnDestroy();
+      organisationSelector.setResult({ organisationIdentifier: 'TEST123' });
+      store.refreshState();
+
+      expect(component.organisationDetails).toEqual({});
+    });
+
+    [true, false].forEach((destroyBeforeUserDetails) => {
+      it(`should persist the lookup when destroyed ${destroyBeforeUserDetails ? 'before user details arrive' : 'after the request starts'}`, () => {
+        const actions$ = new Subject<LoadOrganisation>();
+        const userDetails$ = new Subject();
+        const response$ = new Subject();
+        spyOn(store, 'select').and.returnValue(userDetails$);
+        const organisationService = jasmine.createSpyObj('OrganisationService', ['fetchOrganisation']);
+        organisationService.fetchOrganisation.and.returnValue(response$);
+        const logger = jasmine.createSpyObj('LoggerService', ['error']);
+        const effects = new OrganisationEffects(new Actions(actions$), organisationService, logger, store);
+        const subscription = effects.loadOrganisation$.subscribe();
+        const setItem = spyOn(sessionStorage, 'setItem');
+        spyOnDispatchToStore.and.callFake((action) => actions$.next(action));
+
+        try {
+          component.getOrganisationDetailsFromStore();
+          userDetails$.next({ userInfo: null });
+          expect(organisationService.fetchOrganisation).not.toHaveBeenCalled();
+          if (destroyBeforeUserDetails) {
+            component.ngOnDestroy();
+          }
+
+          userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
+          expect(organisationService.fetchOrganisation).toHaveBeenCalledTimes(1);
+          expect(setItem).not.toHaveBeenCalled();
+          if (!destroyBeforeUserDetails) {
+            component.ngOnDestroy();
+          }
+
+          const organisation = { name: 'Test organisation', organisationIdentifier: 'TEST123' };
+          response$.next(organisation);
+          userDetails$.next({ userInfo: { roles: ['pui-case-manager'] } });
+
+          expect(organisationService.fetchOrganisation).toHaveBeenCalledTimes(1);
+          expect(setItem).toHaveBeenCalledOnceWith('organisationDetails', JSON.stringify(organisation));
+        } finally {
+          subscription.unsubscribe();
+        }
+      });
     });
   });
 

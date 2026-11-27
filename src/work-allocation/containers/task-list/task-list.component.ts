@@ -221,7 +221,9 @@ export class TaskListComponent implements OnChanges {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       this.newUrl = this.selectedTask ? `${basePath}#manage_${this.selectedTask.id}` : basePath;
-      this.location.go(this.newUrl);
+      if (this.newUrl !== this.location.path(true)) {
+        this.location.go(this.newUrl, '', this.location.getState());
+      }
     }
   }
 

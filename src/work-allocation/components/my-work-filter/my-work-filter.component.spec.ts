@@ -9,7 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
-import { of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import * as fromAppStore from '../../../app/store';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
@@ -276,5 +276,156 @@ describe('MyWorkFilterComponent', () => {
 
   afterAll(() => {
     component.ngOnDestroy();
+  });
+});
+
+describe('MyWorkFilterComponent booking handoff', () => {
+  const filterId = MyWorkFilterComponent.FILTER_NAME;
+  const london = { epimms_id: '20262', site_name: 'Central London County Court' };
+  const aberdeen = { epimms_id: '219164', site_name: 'Aberdeen Tribunal Hearing Centre' };
+  let component: MyWorkFilterComponent;
+  let originalHistoryState: unknown;
+  let serviceNames: BehaviorSubject<typeof servicesMap>;
+  let router: jasmine.SpyObj<Router>;
+  let filterService: jasmine.SpyObj<FilterService>;
+  let locationService: jasmine.SpyObj<LocationDataService>;
+
+  beforeEach(() => {
+    originalHistoryState = history.state;
+    serviceNames = new BehaviorSubject(servicesMap);
+    history.replaceState({}, '');
+    router = jasmine.createSpyObj('Router', ['getCurrentNavigation'], { events: of(), url: '/work/my-work/list' });
+    filterService = jasmine.createSpyObj('FilterService', ['get', 'persist', 'getStream'], { givenErrors: of(null) });
+    filterService.getStream.and.returnValue(of(null));
+    locationService = jasmine.createSpyObj('LocationDataService', ['getSpecificLocations']);
+    locationService.getSpecificLocations.and.callFake(
+      (ids) => of([london, aberdeen].filter((l) => ids?.includes(l.epimms_id))) as any
+    );
+  });
+
+  function initialise(assignedTasks = of([])): void {
+    component = new MyWorkFilterComponent(
+      { snapshot: { data: {} } } as ActivatedRoute,
+      { path: () => '/work/my-work/list' } as AngularLocation,
+      filterService,
+      locationService,
+      router,
+      { getUsersAssignedTasks: () => assignedTasks, currentTasks$: of([]) } as any,
+      { getWASupportedJurisdictions: () => of(['IA']) } as WASupportedJurisdictionsService,
+      { getTypesOfWork: () => of(typesOfWorkForBooking) } as TaskTypesService,
+      { getItem: () => '[]' } as any,
+      { pipe: () => of({ roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION', bookable: true }] }) } as any,
+      { getValue: () => serviceNames } as any
+    );
+    component.ngOnInit();
+  }
+
+  const typesOfWorkForBooking = [{ key: 'hearing_work', label: 'Hearing work' }];
+
+  [
+    { ids: [london.epimms_id], newBooking: true, expected: [london] },
+    { ids: [aberdeen.epimms_id], expected: [aberdeen] },
+    { ids: [london.epimms_id, aberdeen.epimms_id], expected: [london, aberdeen] },
+  ].forEach(({ ids, newBooking, expected }) => {
+    it(`persists booking locations ${ids.join(', ')} when navigation has completed`, () => {
+      router.getCurrentNavigation.and.returnValue(null);
+      history.replaceState({ location: { ids }, newBooking, navigationId: 2 }, '');
+      initialise();
+      expect(locationService.getSpecificLocations).toHaveBeenCalledWith(ids, []);
+      expect(filterService.persist).toHaveBeenCalledWith(
+        jasmine.objectContaining({ fields: jasmine.arrayContaining([{ name: 'locations', value: expected }]) }),
+        'session'
+      );
+    });
+  });
+
+  it('uses the active navigation instead of an earlier history entry', () => {
+    history.replaceState({ location: { ids: [aberdeen.epimms_id] } }, '');
+    router.getCurrentNavigation.and.returnValue({ extras: { state: { location: { ids: [london.epimms_id] } } } } as any);
+    initialise();
+    expect(component.defaultLocations).toEqual([london.epimms_id]);
+  });
+
+  it('preserves saved filters on an ordinary visit to My Work', () => {
+    const savedSetting = {
+      id: filterId,
+      fields: [
+        { name: 'services', value: ['IA'] },
+        { name: 'locations', value: [aberdeen] },
+        { name: 'types-of-work', value: ['hearing_work'] },
+      ],
+    };
+    filterService.get.and.returnValue(savedSetting);
+    initialise();
+    expect(filterService.persist).not.toHaveBeenCalled();
+    expect(filterService.get(filterId)).toEqual(savedSetting);
+  });
+
+  it('initialises controls and defaults only once when service names emit again', () => {
+    history.replaceState({ location: { ids: [london.epimms_id] } }, '');
+    initialise();
+    serviceNames.next({ ...servicesMap });
+    expect(component.fieldsConfig.fields.map((field) => field.name)).toEqual(['services', 'locations', 'types-of-work']);
+    expect(filterService.persist).toHaveBeenCalledTimes(1);
+  });
+
+  it('consumes the booking handoff so later saved filter changes survive a reload', () => {
+    history.replaceState({ location: { ids: [london.epimms_id] }, navigationId: 2, newBooking: true }, '');
+    initialise();
+    expect(history.state).toEqual({
+      location: { ids: [london.epimms_id] },
+      navigationId: 2,
+      newBooking: true,
+      bookingFilterApplied: true,
+    });
+    component.ngOnDestroy();
+    filterService.get.and.returnValue({ id: filterId, fields: [{ name: 'locations', value: [aberdeen] }] });
+    filterService.persist.calls.reset();
+    const removeItem = spyOn(localStorage, 'removeItem');
+    initialise();
+    expect(removeItem).not.toHaveBeenCalledWith(filterId);
+    expect(component.bookingLocations).toEqual([london.epimms_id]);
+    expect(filterService.persist).not.toHaveBeenCalled();
+  });
+
+  it('marks the originating entry before pending requests finish after a tab change', () => {
+    const assignedTasks = new Subject<[]>();
+    history.replaceState({ location: { ids: [london.epimms_id] }, navigationId: 2 }, '');
+    initialise(assignedTasks);
+    const bookingEntry = history.state;
+    expect(bookingEntry.bookingFilterApplied).toBe(true);
+    expect(filterService.persist).not.toHaveBeenCalled();
+
+    // The shared filter stays mounted when switching to Available tasks.
+    history.replaceState({ navigationId: 3 }, '');
+    assignedTasks.next([]);
+    expect(history.state).toEqual({ navigationId: 3 });
+    expect(filterService.persist).toHaveBeenCalledTimes(1);
+    component.ngOnDestroy();
+
+    // Returning to and reloading the original entry must retain later filter edits.
+    history.replaceState(bookingEntry, '');
+    filterService.get.and.returnValue({ id: filterId, fields: [{ name: 'locations', value: [aberdeen] }] });
+    filterService.persist.calls.reset();
+    initialise();
+    expect(filterService.persist).not.toHaveBeenCalled();
+  });
+
+  it('retries booking defaults on reload if initialization never persisted a filter', () => {
+    history.replaceState({ location: { ids: [london.epimms_id] }, bookingFilterApplied: true }, '');
+    initialise();
+    expect(component.defaultLocations).toEqual([london.epimms_id]);
+    expect(filterService.persist).toHaveBeenCalled();
+  });
+
+  it('retains the single-location history handoff', () => {
+    history.replaceState({ location: { id: aberdeen.epimms_id } }, '');
+    initialise();
+    expect(component.defaultLocations).toEqual([aberdeen.epimms_id]);
+  });
+
+  afterEach(() => {
+    component?.ngOnDestroy();
+    history.replaceState(originalHistoryState, '');
   });
 });

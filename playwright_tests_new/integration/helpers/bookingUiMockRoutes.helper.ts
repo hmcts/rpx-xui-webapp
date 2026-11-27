@@ -18,6 +18,7 @@ type BookingUiMockRoutesOptions = {
 };
 
 type BookingUiTestRoutesOptions = {
+  bootstrapUser?: Omit<TaskListBootstrapUserOptions, 'userId'>;
   onCreateBooking?: RouteHandler;
   onRefreshRoleAssignments?: RouteHandler;
 };
@@ -121,7 +122,7 @@ export async function setupBookableBookingUiRoutesForTest(
   const existingBookingsMock = buildExistingBookingsMock(userId);
 
   await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
-    bootstrapUser: buildBookingUiBootstrapUser(userId),
+    bootstrapUser: { ...buildBookingUiBootstrapUser(userId), ...options.bootstrapUser },
   });
   await setupBookingUiMockRoutes(page, {
     locationResponseBody: singleLocationMock,

@@ -14,7 +14,7 @@ import {
 } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
@@ -70,6 +70,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
   public bookingLocations: string[] = [];
   public toggleFilter = false;
   public errorSubscription: Subscription;
+  private readonly bookingFilterApplied: boolean;
   private routeSubscription: Subscription;
   private subscription: Subscription;
   private selectedLocationsSubscription: Subscription;
@@ -91,8 +92,14 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     private readonly appStore: Store<fromAppStore.State>,
     private readonly featureToggleService: FeatureToggleService
   ) {
-    if (this.router.getCurrentNavigation()?.extras?.state?.location) {
-      this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
+    // The filter can be created after NavigationEnd, when there is no current navigation.
+    const navigationState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
+    this.bookingLocations = navigationState?.location?.ids ?? [];
+    this.bookingFilterApplied = navigationState?.bookingFilterApplied === true;
+    if (this.bookingLocations.length && !this.bookingFilterApplied) {
+      // Mark the originating entry before asynchronous initialization or a tab change.
+      // Retain the IDs so a reload still identifies this as a visit from a booking.
+      history.replaceState({ ...history.state, ...navigationState, bookingFilterApplied: true }, '');
     }
     this.router.events
       .pipe(
@@ -156,21 +163,23 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
       this.taskService.getUsersAssignedTasks(),
       this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices),
       this.featureToggleService.getValue('ServiceNames', servicesMap),
-    ]).subscribe(
-      ([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [
-        any[],
-        string[],
-        Task[],
-        LocationByEpimmsModel[],
-        any,
-      ]) => {
-        this.setUpServicesFilter(services, serviceNamesMap);
-        this.setUpLocationFilter(locations);
-        this.setUpTypesOfWorkFilter(typesOfWork);
-        this.persistFirstSetting();
-        this.subscribeToFilters(assignedTasks);
-      }
-    );
+    ])
+      .pipe(take(1))
+      .subscribe(
+        ([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [
+          any[],
+          string[],
+          Task[],
+          LocationByEpimmsModel[],
+          any,
+        ]) => {
+          this.setUpServicesFilter(services, serviceNamesMap);
+          this.setUpLocationFilter(locations);
+          this.setUpTypesOfWorkFilter(typesOfWork);
+          this.persistFirstSetting();
+          this.subscribeToFilters(assignedTasks);
+        }
+      );
 
     this.setErrors();
     this.setAllowTypesOfWorkFilter(this.router.url);
@@ -243,7 +252,7 @@ export class MyWorkFilterComponent implements OnInit, OnDestroy {
     const regionLocations = safeJsonParse<any[]>(this.sessionStorageService.getItem('regionLocations'), []);
     const bookableServices = safeJsonParse<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     // get booking locations
-    if (this.bookingLocations && this.bookingLocations.length > 0) {
+    if (this.bookingLocations.length > 0 && (!this.bookingFilterApplied || !filterService)) {
       this.defaultLocations = this.bookingLocations;
     } else if (history.state?.location?.id) {
       const location: Location = history.state.location;

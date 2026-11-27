@@ -11,6 +11,7 @@ import { NavItemsModel } from './../../models/nav-item.model';
   standalone: false,
   selector: 'exui-header',
   templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
   @Input() public navItems: NavItemsModel[];
@@ -44,6 +45,10 @@ export class HeaderComponent {
 
   public getSkipToMainContentUrl(): string {
     return this.currentUrl?.split('#')[0] + HeaderComponent.contentHash;
+  }
+
+  public get backgroundClass(): string {
+    return this.backgroundColor === '#8d0f0e' ? 'header-background--professional' : 'header-background--default';
   }
 
   /**

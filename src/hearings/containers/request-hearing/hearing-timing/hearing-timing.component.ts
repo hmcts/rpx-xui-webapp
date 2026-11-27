@@ -136,6 +136,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       // Get the width of the legend text
       const legendWidth = legendElement.getBoundingClientRect().width;
 
+      // TODO Style: Need to replace the styling here
       // Position the amendment label right after the legend text
       amendmentLabel.style.position = 'absolute';
       amendmentLabel.style.top = '0';

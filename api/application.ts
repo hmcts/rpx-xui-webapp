@@ -31,6 +31,7 @@ import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 import { hearingsTelemetryCorrelation } from './lib/hearings-telemetry-correlation';
+import { addNonceToExternalScripts } from './lib/csp-nonce';
 
 const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
 
@@ -66,7 +67,11 @@ function getDynatraceCdn(): string | null {
 }
 
 function injectTemplateValues(html: string, nonce: string): string {
-  return html.replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(getDynatraceCdn() ?? '')).replaceAll(/{{cspNonce}}/g, nonce);
+  const renderedHtml = html
+    .replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(getDynatraceCdn() ?? ''))
+    .replaceAll(/{{cspNonce}}/g, nonce);
+
+  return addNonceToExternalScripts(renderedHtml, nonce);
 }
 
 export async function createApp() {

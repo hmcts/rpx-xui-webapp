@@ -251,7 +251,7 @@ describe('MyWorkFilterComponent', () => {
   // in the common lib GenericFilterComponent component to account for the
   // findLocationField not being present
   xit('should render filter with "Types of work" filter visible', fakeAsync(() => {
-    component.onToggleFilter(true);
+    component.onToggleFilter();
     fixture.detectChanges();
     tick(500);
     const typesOfWorkParentDivElem = fixture.debugElement.query(By.css('#types-of-work')).parent;
@@ -265,7 +265,7 @@ describe('MyWorkFilterComponent', () => {
   // findLocationField not being present
   xit('should render filter with "Types of work" filter NOT visible', fakeAsync(() => {
     component.allowTypesOfWorkFilter = false;
-    component.onToggleFilter(false);
+    component.onToggleFilter();
     fixture.detectChanges();
     tick(500);
     const typesOfWorkParentDivElem = fixture.debugElement.query(By.css('#types-of-work')).parent;

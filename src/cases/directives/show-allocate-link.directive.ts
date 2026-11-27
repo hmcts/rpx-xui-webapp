@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, HostBinding, Input, OnInit } from '@angular/core';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseRole, TypeOfRole } from '../../role-access/models';
 
@@ -12,8 +12,7 @@ export class ShowAllocateLinkDirective implements OnInit {
   @Input() public roles: CaseRole[];
   @Input() public roleCategory: RoleCategory;
   @Input() public existingUsers: string[] = [];
-
-  constructor(private readonly element: ElementRef<HTMLElement>) {}
+  @HostBinding('hidden') public hidden = false;
 
   private static canDisplayLink(roles: CaseRole[], roleCategory: RoleCategory, showAllocateRoleLink: boolean): boolean {
     const show = false;
@@ -33,8 +32,7 @@ export class ShowAllocateLinkDirective implements OnInit {
 
   public ngOnInit(): void {
     if (!ShowAllocateLinkDirective.canDisplayLink(this.roles, this.roleCategory, this.showAllocateRoleLink)) {
-      const host = this.element.nativeElement;
-      host.style.display = 'none';
+      this.hidden = true;
     }
   }
 }

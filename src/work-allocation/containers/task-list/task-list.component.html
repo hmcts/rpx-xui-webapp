@@ -62,11 +62,10 @@
   <ng-container *ngIf="!tasksTotal">
     <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
       <th
-        class="govuk-table__header"
         [attr.aria-sort]="getColumnSortedSetting(field.sortName)"
         cdk-header-cell
         *cdkHeaderCellDef
-        style="border: none"
+        class="govuk-table__header borderless-header"
       >
         <button
           class="column-sort"

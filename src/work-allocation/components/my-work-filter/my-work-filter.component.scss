@@ -34,3 +34,7 @@ div[field='services'] {
 .hideFilter {
   visibility: hidden;
 }
+
+.hide-types-of-work .contain-classes:has(#types-of-work) {
+  display: none;
+}

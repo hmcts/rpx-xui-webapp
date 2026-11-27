@@ -88,7 +88,7 @@ test.describe('Task list navigation deadline', { tag: '@svc-internal' }, () => {
     }) as TaskListPage;
     Date.now = () => now;
     try {
-      await taskList.gotoAndWaitForTaskRow('transport retry');
+      await taskList.gotoAndWaitForTaskRow('transport retry', { timeoutMs: 30_000 });
       expect(navigationBudgets).toEqual([15_000, 15_000, 1_000]);
       expect(routeBudgets).toEqual([500]);
     } finally {
@@ -135,7 +135,9 @@ test.describe('Task list navigation deadline', { tag: '@svc-internal' }, () => {
     }) as TaskListPage;
     Date.now = () => now;
     try {
-      await expect(taskList.gotoAndWaitForTaskRow('deadline exhausted')).rejects.toThrow('Timed out while');
+      await expect(taskList.gotoAndWaitForTaskRow('deadline exhausted', { timeoutMs: 30_000 })).rejects.toThrow(
+        'Timed out while'
+      );
       expect(rowWaits).toBe(0);
     } finally {
       Date.now = originalNow;
@@ -154,6 +156,8 @@ test.describe('Task list navigation deadline', { tag: '@svc-internal' }, () => {
         },
       },
       getApiCalls: () => [],
+      getApiCallCursor: () => 0,
+      getApiCallsSince: () => [],
       assertTaskListInteractive: async () => {},
       taskRows: { count: async () => 0 },
     }) as TaskListPage;

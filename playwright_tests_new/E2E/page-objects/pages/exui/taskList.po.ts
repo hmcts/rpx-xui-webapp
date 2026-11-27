@@ -1,8 +1,10 @@
-import { expect, Locator, Page, Request } from '@playwright/test';
+import { errors, expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 import { remainingNavigationTimeout } from '../../../utils/test-setup/navigationDeadline.js';
 
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
+const TASK_LIST_NAVIGATION_TIMEOUT_MS = 60_000;
+const TASK_LIST_BLANK_GRACE_MS = 30_000;
 const TASK_LIST_BLANK_DOCUMENT_RECOVERY_MS = 3_000;
 const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
@@ -184,7 +186,7 @@ export class TaskListPage extends Base {
   ) {
     const rowIndex = options.rowIndex ?? 0;
     const observedSinceSequence = this.taskSearchSequence;
-    const deadlineMs = Date.now() + (options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS);
+    const deadlineMs = Date.now() + (options.timeoutMs ?? TASK_LIST_NAVIGATION_TIMEOUT_MS);
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
 
     await this.gotoTaskListPath('/work/my-work/list', /\/work\/my-work\/list(?:\?.*)?$/, `${context} navigation`, deadlineMs);
@@ -199,7 +201,7 @@ export class TaskListPage extends Base {
     await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs: remaining() });
   }
 
-  async gotoMyCases(timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
+  async gotoMyCases(timeoutMs = TASK_LIST_NAVIGATION_TIMEOUT_MS) {
     await this.navigateToTaskListView('/work/my-work/my-cases', /\/work\/my-work\/my-cases(?:\?.*)?$/, 'my cases navigation', {
       timeoutMs,
     });
@@ -223,7 +225,7 @@ export class TaskListPage extends Base {
     );
   }
 
-  async gotoMyAccess(timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
+  async gotoMyAccess(timeoutMs = TASK_LIST_NAVIGATION_TIMEOUT_MS) {
     await this.navigateToTaskListView('/work/my-work/my-access', /\/work\/my-work\/my-access(?:\?.*)?$/, 'my access navigation', {
       timeoutMs,
     });
@@ -345,7 +347,7 @@ export class TaskListPage extends Base {
   private async navigateToTaskListView(path: string, urlPattern: RegExp, context: string, options: { timeoutMs?: number } = {}) {
     const navigationStartedMs = Date.now();
     const observedSinceSequence = this.taskSearchSequence;
-    const deadlineMs = navigationStartedMs + (options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS);
+    const deadlineMs = navigationStartedMs + (options.timeoutMs ?? TASK_LIST_NAVIGATION_TIMEOUT_MS);
     await this.gotoTaskListPath(path, urlPattern, context, deadlineMs);
     await this.waitForTaskListSpinnerToSettle(Math.min(10_000, remainingNavigationTimeout(deadlineMs, context)));
     await this.recoverBlankTaskListDocumentAfterNavigation(urlPattern, context, deadlineMs);
@@ -357,7 +359,7 @@ export class TaskListPage extends Base {
     urlPattern: RegExp,
     terminalHeading: Locator,
     context: string,
-    timeoutMs = TASK_LIST_READY_TIMEOUT_MS
+    timeoutMs = TASK_LIST_NAVIGATION_TIMEOUT_MS
   ) {
     const deadlineMs = Date.now() + timeoutMs;
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
@@ -508,11 +510,25 @@ export class TaskListPage extends Base {
     }
 
     const remaining = () => remainingNavigationTimeout(deadlineMs, context);
-    if (
-      !(await this.isBlankTaskListDocument(urlPattern, Math.min(500, remaining()))) &&
-      !(await this.isRecoverableBrowserNavigationDocument(urlPattern, Math.min(500, remaining())))
-    ) {
-      return;
+    const initialUrl = this.page.url();
+    const browserError = await this.isRecoverableBrowserNavigationDocument(urlPattern, Math.min(500, remaining()));
+    if (this.page.url() !== initialUrl) return;
+    if (!browserError) {
+      if (!(await this.isBlankTaskListDocument(urlPattern, Math.min(500, remaining())))) return;
+      if (this.page.url() !== initialUrl) return;
+      try {
+        const handle = await this.page.waitForFunction(
+          (url) => location.href !== url || !!document.body?.innerText.trim(),
+          initialUrl,
+          { timeout: Math.min(TASK_LIST_BLANK_GRACE_MS, remaining()) }
+        );
+        await handle.dispose();
+      } catch (error) {
+        if (!(error instanceof errors.TimeoutError)) throw error;
+      }
+      if (this.page.url() !== initialUrl) return;
+      if (!(await this.isBlankTaskListDocument(urlPattern, Math.min(500, remaining())))) return;
+      if (this.page.url() !== initialUrl) return;
     }
 
     this.logger.warn('TASK_LIST_BLANK_DOCUMENT_RELOAD', {
@@ -541,13 +557,14 @@ export class TaskListPage extends Base {
   async recoverBlankDocumentAfterCurrentNavigation(
     urlPattern: RegExp,
     context: string,
-    timeoutMs = TASK_LIST_READY_TIMEOUT_MS
+    timeoutMs = TASK_LIST_NAVIGATION_TIMEOUT_MS
   ): Promise<void> {
     await this.recoverBlankTaskListDocumentAfterNavigation(urlPattern, context, Date.now() + timeoutMs);
   }
 
   private async isBlankTaskListDocument(urlPattern: RegExp, timeoutMs = 500): Promise<boolean> {
-    if (!urlPattern.test(this.page.url())) {
+    const initialUrl = this.page.url();
+    if (!urlPattern.test(initialUrl)) {
       return false;
     }
 
@@ -555,7 +572,7 @@ export class TaskListPage extends Base {
       .locator('body')
       .innerText({ timeout: timeoutMs })
       .catch(() => null);
-    return bodyText !== null && bodyText.trim().length === 0;
+    return bodyText !== null && bodyText.trim().length === 0 && this.page.url() === initialUrl;
   }
 
   private async isRecoverableBrowserNavigationDocument(urlPattern: RegExp, timeoutMs = 500): Promise<boolean> {
@@ -563,7 +580,8 @@ export class TaskListPage extends Base {
       return true;
     }
 
-    if (!urlPattern.test(this.page.url())) {
+    const initialUrl = this.page.url();
+    if (!urlPattern.test(initialUrl)) {
       return false;
     }
 
@@ -571,7 +589,10 @@ export class TaskListPage extends Base {
       .locator('body')
       .innerText({ timeout: timeoutMs })
       .catch(() => '');
-    return /This site can.t be reached|ERR_(?:CONNECTION_TIMED_OUT|NAME_NOT_RESOLVED|NETWORK_CHANGED)/i.test(bodyText);
+    return (
+      this.page.url() === initialUrl &&
+      /This site can.t be reached|ERR_(?:CONNECTION_TIMED_OUT|NAME_NOT_RESOLVED|NETWORK_CHANGED)/i.test(bodyText)
+    );
   }
 
   private async assertTaskListHealthy(context: string, options: { allowServiceDown?: boolean } = {}): Promise<void> {
@@ -1212,9 +1233,8 @@ export class TaskListPage extends Base {
     return url.includes('/workallocation/task') && !url.includes('/types-of-work');
   }
 
-  private getLatestTaskDataCallSummary(baselineIndex = 0): string {
-    const latestTaskCall = [...this.getApiCalls()]
-      .slice(baselineIndex)
+  private getLatestTaskDataCallSummary(cursor: number): string {
+    const latestTaskCall = this.getApiCallsSince(cursor)
       .reverse()
       .find((call) => this.isTaskDataCall(call.url));
     return latestTaskCall ? `${latestTaskCall.method} ${latestTaskCall.url} -> HTTP ${latestTaskCall.status}` : 'none captured';
@@ -1232,14 +1252,14 @@ export class TaskListPage extends Base {
     const timeoutMs = options.timeoutMs ?? 60_000;
     const pollMs = options.pollMs ?? 500;
     const deadline = Date.now() + timeoutMs;
-    const apiCallsBaseline = this.getApiCalls().length;
+    const apiCallsBaseline = this.getApiCallCursor();
 
     while (Date.now() < deadline) {
       await this.assertTaskListInteractive(`waiting for task row (${context})`);
 
-      const taskApi5xx = this.getApiCalls()
-        .slice(apiCallsBaseline)
-        .find((call) => this.isTaskDataCall(call.url) && call.status >= 500);
+      const taskApi5xx = this.getApiCallsSince(apiCallsBaseline).find(
+        (call) => this.isTaskDataCall(call.url) && call.status >= 500
+      );
       if (taskApi5xx) {
         throw new Error(
           `Task list failed while waiting for task row (${context}): ${taskApi5xx.method} ${taskApi5xx.url} returned HTTP ${taskApi5xx.status}`
@@ -1271,7 +1291,7 @@ export class TaskListPage extends Base {
 
   async waitForTaskDataResponse(
     context: string,
-    baselineIndex: number,
+    cursor: number,
     options: { timeoutMs?: number; pollMs?: number } = {}
   ): Promise<void> {
     const timeoutMs = options.timeoutMs ?? 60_000;
@@ -1280,9 +1300,7 @@ export class TaskListPage extends Base {
 
     while (Date.now() < deadline) {
       await this.assertTaskListInteractive(`waiting for task data (${context})`);
-      const taskDataResponse = this.getApiCalls()
-        .slice(baselineIndex)
-        .find((call) => this.isTaskDataCall(call.url));
+      const taskDataResponse = this.getApiCallsSince(cursor).find((call) => this.isTaskDataCall(call.url));
       if (taskDataResponse) {
         if (taskDataResponse.status >= 400) {
           throw new Error(
@@ -1314,15 +1332,18 @@ export class TaskListPage extends Base {
       await this.assertTaskListInteractive(`waiting for task actions row (${context})`);
 
       const rowVisible = await taskActionsRow.isVisible().catch(() => false);
-      const ariaHidden = await taskActionsRow.getAttribute('aria-hidden').catch(() => null);
-      if (rowVisible && ariaHidden !== 'true') {
+      const ariaHidden = await taskActionsRow
+        .getAttribute('aria-hidden', { timeout: Math.max(1, deadline - Date.now()) })
+        .catch(() => null);
+      if (rowVisible && ariaHidden !== 'true' && Date.now() < deadline) {
         return taskActionsRow;
       }
 
-      await this.page.waitForTimeout(pollMs);
+      const remainingMs = deadline - Date.now();
+      if (remainingMs > 0) await this.page.waitForTimeout(Math.min(pollMs, remainingMs));
     }
 
-    const finalAriaHidden = await taskActionsRow.getAttribute('aria-hidden').catch(() => 'unknown');
+    const finalAriaHidden = await taskActionsRow.getAttribute('aria-hidden', { timeout: 1 }).catch(() => 'unknown');
     throw new Error(
       `Timed out after ${timeoutMs}ms waiting for task actions row (${context}) on row ${rowIndex + 1}. aria-hidden=${finalAriaHidden}. url=${this.page.url()}`
     );
@@ -1344,15 +1365,18 @@ export class TaskListPage extends Base {
     while (Date.now() < deadline) {
       await this.assertTaskListInteractive(`waiting for Manage button expansion (${context})`);
 
-      const ariaExpanded = await manageButton.getAttribute('aria-expanded').catch(() => null);
-      if (ariaExpanded === 'true') {
+      const ariaExpanded = await manageButton
+        .getAttribute('aria-expanded', { timeout: Math.max(1, deadline - Date.now()) })
+        .catch(() => null);
+      if (ariaExpanded === 'true' && Date.now() < deadline) {
         return;
       }
 
-      await this.page.waitForTimeout(pollMs);
+      const remainingMs = deadline - Date.now();
+      if (remainingMs > 0) await this.page.waitForTimeout(Math.min(pollMs, remainingMs));
     }
 
-    const finalAriaExpanded = await manageButton.getAttribute('aria-expanded').catch(() => 'unknown');
+    const finalAriaExpanded = await manageButton.getAttribute('aria-expanded', { timeout: 1 }).catch(() => 'unknown');
     throw new Error(
       `Timed out after ${timeoutMs}ms waiting for Manage button expansion (${context}) on row ${rowIndex + 1}. aria-expanded=${finalAriaExpanded}. url=${this.page.url()}`
     );

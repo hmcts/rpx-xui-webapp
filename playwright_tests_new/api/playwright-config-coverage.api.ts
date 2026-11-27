@@ -40,6 +40,7 @@ let nightlyConfigModule: TestableConfigModule;
 const buildConfig = (env: EnvMap) =>
   configModule.__test__.buildConfig(env) as {
     workers: number;
+    forbidOnly: boolean;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { baseURL: string };
@@ -74,6 +75,7 @@ const resolveE2eTagFilters = (env: EnvMap) =>
   };
 const buildE2eConfig = (env: EnvMap) =>
   e2eConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     reporter: [string, Record<string, unknown> | undefined][];
     globalSetup?: string;
     testIgnore: string[];
@@ -83,6 +85,7 @@ const buildE2eConfig = (env: EnvMap) =>
 
 const buildIntegrationConfig = (env: EnvMap) =>
   integrationConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     workers?: number;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
@@ -113,6 +116,7 @@ const resolveIntegrationWorkerCount = (env: EnvMap) =>
   ).resolveWorkerCount(env);
 const buildNightlyConfig = (env: EnvMap) =>
   nightlyConfigModule.__test__.buildConfig(env) as {
+    forbidOnly: boolean;
     reporter: [string, Record<string, unknown> | undefined][];
     testIgnore: string[];
     use: { baseURL: string };
@@ -211,6 +215,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.project).toBe('Custom Project');
     expect(odhinOptions?.release).toBe('Custom Release');
     expect(odhinOptions?.testEnvironment).toContain('ci');
+    expect(odhinOptions?.testEnvironment).toContain(`configured_workers=${expectedWorkers}`);
     expect(config.projects[0].use.headless).toBe(false);
 
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
@@ -228,6 +233,15 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
     expect(nodeApiProject?.workers).toBe(2);
+  });
+
+  test('all suites reject focused tests locally and in CI', async () => {
+    for (const env of [{ CI: undefined }, { CI: 'true' }]) {
+      expect(buildConfig(env).forbidOnly).toBe(true);
+      expect(buildE2eConfig(env).forbidOnly).toBe(true);
+      expect(buildIntegrationConfig(env).forbidOnly).toBe(true);
+      expect(buildNightlyConfig(env).forbidOnly).toBe(true);
+    }
   });
 
   test('config defaults to local reporter values', async () => {

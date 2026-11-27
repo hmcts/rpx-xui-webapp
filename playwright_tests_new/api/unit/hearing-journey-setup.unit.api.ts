@@ -13,6 +13,7 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
         caseTypeId: 'EXPLICIT_CASE_TYPE',
         caseReference: '1234123412341234',
         routeConfig: {
+          userRoles: [],
           caseConfig: {
             jurisdictionId: 'CONFIG_JURISDICTION',
             caseTypeId: 'CONFIG_CASE_TYPE',
@@ -31,6 +32,7 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
     expect(
       resolveHearingsCaseRoute({
         routeConfig: {
+          userRoles: [],
           caseConfig: {
             jurisdictionId: 'SSCS',
             caseTypeId: 'Benefit',
@@ -46,7 +48,7 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
   });
 
   test('falls back to the default hearings route when no overrides are supplied', () => {
-    expect(resolveHearingsCaseRoute({ routeConfig: {} })).toEqual({
+    expect(resolveHearingsCaseRoute({ routeConfig: { userRoles: [] } })).toEqual({
       jurisdictionId: 'CIVIL',
       caseTypeId: 'CIVIL',
       caseReference: '1234567812345678',
@@ -70,7 +72,7 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
     ]);
   });
 
-  test('applies and annotates only the worker-selected hearing identity', async () => {
+  test('passes the worker-selected hearing identity first and annotates the selected identity', async () => {
     const environment = {
       HEARING_MANAGER_CR84_ON_1_USERNAME: 'hearing-on-1@example.test',
       HEARING_MANAGER_CR84_ON_1_PASSWORD: 'not-a-real-password',
@@ -88,7 +90,7 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
     try {
       Object.assign(process.env, environment);
       await applyHearingManagerSessionCookies({} as never, 'HEARING_MANAGER_CR84_ON', testInfo, async (_page, candidates) => {
-        expect(candidates).toEqual([selectedIdentity]);
+        expect(candidates).toEqual([selectedIdentity, 'HEARING_MANAGER_CR84_ON-2']);
         return { userIdentifier: selectedIdentity, session: {} as never };
       });
 
@@ -101,6 +103,44 @@ test.describe('hearing journey setup helper', { tag: '@svc-internal' }, () => {
           process.env[key] = value;
         }
       }
+    }
+  });
+
+  test('rejects a missing numbered pool before applying a base alias', async () => {
+    const keys = [
+      'HEARING_MANAGER_CR84_ON_1_USERNAME',
+      'HEARING_MANAGER_CR84_ON_2_USERNAME',
+      'HEARING_MANAGER_CR84_ON_3_USERNAME',
+      'HEARING_MANAGER_CR84_ON_4_USERNAME',
+      'HEARING_MANAGER_CR84_ON_USERNAME',
+      'HEARING_MANAGER_CR84_ON_PASSWORD',
+    ];
+    const previous = keys.map((key) => process.env[key]);
+    try {
+      keys.forEach((key) => delete process.env[key]);
+      process.env.HEARING_MANAGER_CR84_ON_USERNAME = 'base@example.test';
+      process.env.HEARING_MANAGER_CR84_ON_PASSWORD = 'not-a-real-password';
+      let called = false;
+      await expect(
+        applyHearingManagerSessionCookies(
+          {} as never,
+          'HEARING_MANAGER_CR84_ON',
+          { annotations: [], parallelIndex: 0 },
+          async () => {
+            called = true;
+            return {} as never;
+          }
+        )
+      ).rejects.toThrow(/no configured hearing manager identity/i);
+      expect(called).toBe(false);
+      await expect(
+        applyHearingManagerSessionCookies({} as never, 'HEARING_MANAGER_CR84_ON-1', { annotations: [], parallelIndex: 0 })
+      ).rejects.toThrow(/no configured hearing manager identity/i);
+    } finally {
+      keys.forEach((key, index) => {
+        if (previous[index] === undefined) delete process.env[key];
+        else process.env[key] = previous[index];
+      });
     }
   });
 });

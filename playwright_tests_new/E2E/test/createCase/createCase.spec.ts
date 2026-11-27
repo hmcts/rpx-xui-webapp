@@ -1,6 +1,7 @@
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { CaseDetailsPage } from '../../page-objects/pages/exui/caseDetails.po';
 import { createLogger } from '@hmcts/playwright-common';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
@@ -11,6 +12,7 @@ test.describe(
   { tag: ['@e2e', '@e2e-create-case', '@e2e-data-loss', '@nightly'] },
   () => {
     test('Verify creating a case in the divorce jurisdiction works as expected', async ({
+      browser,
       page,
       validatorUtils,
       caseDetailsPage,
@@ -55,6 +57,17 @@ test.describe(
       });
       await createCasePage.clickSubmitAndWait('creating divorce test case', { timeoutMs: 60_000 });
       await expect(createCasePage.caseAlertSuccessMessage).toBeVisible();
+      await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
+      await expect
+        .poll(async () => ({
+          dropdownEnabled: await caseDetailsPage.caseActionsDropdown.isEnabled(),
+          hasAvailableEvent: await caseDetailsPage.caseActionsDropdown
+            .locator('option')
+            .evaluateAll((options) =>
+              options.some((option) => option instanceof HTMLOptionElement && !option.disabled && !!option.value)
+            ),
+        }))
+        .toEqual({ dropdownEnabled: true, hasAvailableEvent: true });
       const caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
 
       await test.step('Validate the case number format and URL', async () => {
@@ -97,6 +110,61 @@ test.describe(
         };
         const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
         expect.soft(table).toMatchObject(expectedDetails);
+      });
+
+      await test.step('Read the created case from CCD in a fresh browser context', async () => {
+        const caseUrl = page.url();
+        const readbackContext = await browser.newContext({
+          storageState: await page.context().storageState(),
+          serviceWorkers: 'block',
+        });
+        try {
+          let readbackStatus: number | undefined;
+          let readbackFromServiceWorker: boolean | undefined;
+          const readbackPage = await readbackContext.newPage();
+          readbackPage.on('response', (response) => {
+            if (
+              response.request().method() === 'GET' &&
+              new URL(response.url()).pathname.endsWith(`/internal/cases/${caseNumber}`)
+            ) {
+              readbackStatus = response.status();
+              readbackFromServiceWorker = response.fromServiceWorker();
+            }
+          });
+          const readbackDetails = new CaseDetailsPage(readbackPage);
+          await readbackPage.goto(caseUrl);
+          await readbackDetails.waitForCaseDetailsReady();
+          await expect(readbackDetails.caseActionsDropdown).toBeVisible();
+          await expect
+            .poll(async () => ({
+              dropdownEnabled: await readbackDetails.caseActionsDropdown.isEnabled(),
+              hasAvailableEvent: await readbackDetails.caseActionsDropdown
+                .locator('option')
+                .evaluateAll((options) =>
+                  options.some((option) => option instanceof HTMLOptionElement && !option.disabled && !!option.value)
+                ),
+            }))
+            .toEqual({ dropdownEnabled: true, hasAvailableEvent: true });
+          expect(readbackStatus, 'Fresh case page must fetch the new case from CCD').toBe(200);
+          expect(readbackFromServiceWorker, 'CCD readback must use a network response').toBe(false);
+          expect(await readbackDetails.getCaseNumberFromUrl()).toBe(caseNumber);
+          await readbackDetails.selectCaseDetailsTab('Data');
+          const dataTab = readbackPage.getByRole('tab', { name: /^Data(?:,|$)/ });
+          if ((await dataTab.getAttribute('aria-selected')) !== 'true') {
+            await readbackDetails.selectCaseDetailsTab('Data');
+          }
+          await expect(dataTab).toHaveAttribute('aria-selected', 'true');
+          const expectedData = {
+            'Text Field 0': caseData.textField0,
+            'First Name': person1Data.firstName,
+            'Last Name': person1Data.lastName,
+          };
+          await expect
+            .poll(() => readbackDetails.trRowsToObjectInPage(readbackDetails.caseViewerTable), { timeout: 30_000 })
+            .toMatchObject(expectedData);
+        } finally {
+          await readbackContext.close();
+        }
       });
     });
   }

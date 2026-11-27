@@ -14,7 +14,12 @@ export const isStrategyReady = (strategy: AuthenticationStrategy): boolean => st
 
 export const authenticationReadinessMiddleware =
   (isReady: () => boolean): RequestHandler =>
-  (_req, res, next) => {
+  (req, res, next) => {
+    // The anonymous CCD diagnostic must remain available while IDAM initializes.
+    if (/^\/api\/healthCheck\/?$/i.test(req.path)) {
+      next();
+      return;
+    }
     if (!isReady()) {
       res.set('Retry-After', '5');
       res.set('Cache-Control', 'no-store');

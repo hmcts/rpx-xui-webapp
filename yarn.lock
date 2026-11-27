@@ -3215,9 +3215,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.4.27":
-  version: 7.4.27
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.27"
+"@hmcts/ccd-case-ui-toolkit@npm:7.4.27-replace-inline-styles":
+  version: 7.4.27-replace-inline-styles
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.4.27-replace-inline-styles"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
@@ -3264,7 +3264,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/44cbaf9a82b433ad5a2828103b864e618fd313aaddc2e91fdee69953b6e75bc98a219e7c6e4b938de0b314636fe9d00ae1b09b17bf7319fda08b8a4a285d718e
+  checksum: 10/81308bf26e2020344e08826a85084a3a9fa4d802599e86b9f364edd9bc3bed685ea43d82f5691633665fe591f40802bac0fdae3a2774ad02e1ef4aa555ae899d
   languageName: node
   linkType: hard
 
@@ -3308,6 +3308,35 @@ __metadata:
     rpx-xui-translation: 1.2.18
     rxjs: ^7.8.2
   checksum: 10/e4d5e83230e00fa0f0d0f91bf3b6b6e8d7e526b29ca4f759c93a037bb6e9a7e5eb76dd24769f9a38f0302728033d10fd0d8c5769117e1abc0d7d10ab42290a6a
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.49-replace-inline-styles":
+  version: 4.2.49-replace-inline-styles
+  resolution: "@hmcts/media-viewer@npm:4.2.49-replace-inline-styles"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^23.0.1"
+    moment-timezone: "npm:^0.6.2"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.1.1"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.18
+    rxjs: ^7.8.2
+  checksum: 10/83141194ccb75531226604820abb85bb7870d7939d4381ad39bacce83bd58e0a7b099df933993af47eed028b1d5fd40e7e81c11e04fdc9e7a61a92a7f6f9394f
   languageName: node
   linkType: hard
 
@@ -3375,9 +3404,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.29":
-  version: 3.2.29
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.29"
+"@hmcts/rpx-xui-common-lib@npm:3.2.29-replace-inline-style":
+  version: 3.2.29-replace-inline-style
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.29-replace-inline-style"
   dependencies:
     govuk-frontend: "npm:5.13.0"
     tslib: "npm:^2.0.0"
@@ -3400,7 +3429,7 @@ __metadata:
     rpx-xui-translation: 1.2.19
     rxjs: ^7.8.1
     zone.js: ~0.15.1
-  checksum: 10/2d643470dfe839bed1814fda0d793b0c2d2fdf2e7c0b8b6ac009d72f0f2e4a5201313b362dbd4a137ce1fc949dbad0a8bc19036f0314222c69359cca4ddc019e
+  checksum: 10/acb93a38ec8539e843601628671b8230faaa9f54352907ff7332491a60917c60e79dc5cfc5b62005ecea2ff11e65746601e1124e5ef48a2d5c140eabb67cf25c
   languageName: node
   linkType: hard
 
@@ -20119,13 +20148,13 @@ __metadata:
     "@eslint-community/eslint-plugin-eslint-comments": "npm:^4.8.1"
     "@eslint/js": "npm:^9.39.5"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.27"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.4.27-replace-inline-styles"
     "@hmcts/ccpay-web-component": "npm:6.5.28"
-    "@hmcts/media-viewer": "npm:4.2.49"
+    "@hmcts/media-viewer": "npm:4.2.49-replace-inline-styles"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:1.1.7"
     "@hmcts/properties-volume": "npm:^1.4.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.29"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.29-replace-inline-style"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.36-improved-csp"
     "@microsoft/applicationinsights-web": "npm:^3.4.3"
     "@ng-idle/core": "npm:^16.0.0"

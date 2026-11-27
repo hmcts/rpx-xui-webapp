@@ -96,7 +96,7 @@ td {
   text-align: initial;
 }
 
-// gov uk frond-end template is not installed on this
+// gov uk front-end template is not installed on this
 .js-hidden {
   display: none;
   visibility: hidden;
@@ -116,20 +116,10 @@ a.hmcts-header__navigation-link {
   font-weight: bold;
 }
 
+// TODO STYLE: Remove the below styling once common-lib provides CSP-safe replacements for static inline declarations
 // CSP-safe replacements for static inline declarations currently emitted by rpx-xui-common-lib.
 // These can be removed after the corresponding library templates use CSS classes.
-.gem-c-modal-dialogue {
-  display: block;
-}
 
 .gem-c-modal-dialogue__box {
   margin-top: 300px;
-}
-
-.xui-generic-filter__field-title h3 {
-  margin-bottom: 0 !important;
-}
-
-.spinner-inner-container .spinner {
-  margin: auto;
 }

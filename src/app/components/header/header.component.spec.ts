@@ -69,6 +69,15 @@ describe('Header Component', () => {
     expect(translatePipeSpy).toHaveBeenCalledWith('Skip to main content');
   });
 
+  it('keeps phase banner controls within the header landmark', () => {
+    fixture.detectChanges();
+
+    const header = fixture.nativeElement.querySelector('header') as HTMLElement;
+    const phaseBanner = fixture.nativeElement.querySelector('exui-phase-banner') as HTMLElement;
+
+    expect(header.contains(phaseBanner)).toBe(true);
+  });
+
   it('should call emitNavigate with event and this.navigate', () => {
     const event = {};
     spyOn(component, 'emitNavigate');

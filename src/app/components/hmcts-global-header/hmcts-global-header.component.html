@@ -46,7 +46,11 @@
 
     <!-- HMCTS header navigation items displayed in top right-hand corner (currently, just one: "Sign out") -->
     <div class="hmcts-header__content">
-      <nav class="hmcts-header__navigation" attr.aria-label="{{ navigation?.label | rpxTranslate }}">
+      <nav
+        *ngIf="navigation?.items?.length"
+        class="hmcts-header__navigation"
+        [attr.aria-label]="navigation?.label || 'Account actions' | rpxTranslate"
+      >
         <ul class="hmcts-header__navigation-list">
           <li *ngFor="let item of navigation?.items; let i = index" class="hmcts-header__navigation-item">
             <a
@@ -66,11 +70,11 @@
   </div>
 </div>
 
-<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background">
+<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background" aria-label="Main services">
   <div class="hmcts-primary-navigation__container">
     <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
     <div class="hmcts-primary-navigation__nav">
-      <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
+      <div class="hmcts-primary-navigation transparent-background">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of leftItems | async">
             <a
@@ -92,7 +96,7 @@
             </a>
           </li>
         </ul>
-      </nav>
+      </div>
     </div>
     <div class="hmcts-primary-navigation__search">
       <div class="hmcts-primary-navigation__item">

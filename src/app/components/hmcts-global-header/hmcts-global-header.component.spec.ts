@@ -141,7 +141,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     };
     component.showItems = true;
     component.navigation = {
-      label: 'Account navigation',
+      label: 'Account actions',
       items: [
         { text: 'Nav item 1', emit: '#1' },
         { text: 'Nav item 2', emit: '#1' },
@@ -160,6 +160,31 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     expect(component).toBeTruthy();
   });
 
+  it('uses distinct labels for header navigation landmarks without nesting landmarks', () => {
+    const landmarks = Array.from(fixture.nativeElement.querySelectorAll('nav')) as HTMLElement[];
+
+    expect(landmarks.map((landmark) => landmark.getAttribute('aria-label'))).toEqual(['Account actions', 'Main services']);
+  });
+
+  it('omits the account landmark when it has no links', () => {
+    component.navigation = { label: '', items: [] };
+    fixture.detectChanges();
+
+    const landmarks = Array.from(fixture.nativeElement.querySelectorAll('nav')) as HTMLElement[];
+
+    expect(landmarks.map((landmark) => landmark.getAttribute('aria-label'))).toEqual(['Main services']);
+    expect(landmarks.every((landmark) => Boolean(landmark.getAttribute('aria-label')?.trim()))).toBe(true);
+  });
+
+  it('uses a concise fallback label when account links have no configured label', () => {
+    component.navigation = { label: '', items: [{ text: 'Sign out', emit: 'sign-out' }] };
+    fixture.detectChanges();
+
+    const accountLandmark: HTMLElement = fixture.nativeElement.querySelector('.hmcts-header__navigation');
+
+    expect(accountLandmark.getAttribute('aria-label')).toBe('Account actions');
+  });
+
   it('should onEmitSubMenu', () => {
     const menuItem = { href: '/noc', text: null };
     component.onEmitSubMenu(menuItem);
@@ -175,6 +200,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   it('should display find case right aligned', () => {
     component.showItems = true;
     component.items = [
+      {
+        text: 'Case list',
+        href: '/cases',
+        active: false,
+      },
       {
         align: 'right',
         text: 'Find case',
@@ -198,6 +228,12 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     component.isUserCaseManager$.subscribe((result) => {
       expect(result).toBe(true);
     });
+
+    const mainServicesLandmark: HTMLElement = fixture.nativeElement.querySelector('nav[aria-label="Main services"]');
+    const landmarkLinks = Array.from(mainServicesLandmark.querySelectorAll('a'));
+
+    expect(landmarkLinks.map((link) => link.textContent?.trim())).toContain('Case list');
+    expect(landmarkLinks.map((link) => link.textContent?.trim())).toContain('Find case');
   });
 
   it('should not display find case right aligned', () => {
@@ -721,7 +757,7 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     };
     component.showItems = true;
     component.navigation = {
-      label: 'Account navigation',
+      label: 'Account actions',
       items: [
         { text: 'Nav item 1', emit: '#1' },
         { text: 'Nav item 2', emit: '#1' },
